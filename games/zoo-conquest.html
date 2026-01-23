@@ -780,7 +780,7 @@
     );
 
     // Player Panel
-    const PlayerPanel = ({ player, isCurrentPlayer, armies, cards, onTradeCards, canTrade, troops, turnPhase }) => {
+    const PlayerPanel = ({ player, isCurrentPlayer, armies, cards, onTradeCards, canTrade, troops, turnPhase, isAI }) => {
       // Count card types for display
       const cardCounts = {
         infantry: cards.filter(c => c.type === 'infantry').length,
@@ -847,8 +847,8 @@
                 )}
               </div>
 
-              {/* Trade button - only during reinforce phase */}
-              {turnPhase === 'reinforce' && canTrade && (
+              {/* Trade button - only during reinforce phase for human players */}
+              {turnPhase === 'reinforce' && canTrade && !isAI && (
                 <button
                   onClick={onTradeCards}
                   className="w-full px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold rounded-lg shadow transition-all hover:scale-105"
@@ -856,7 +856,7 @@
                   🃏 Trade Cards for Animals!
                 </button>
               )}
-              {cards.length >= 5 && turnPhase === 'reinforce' && (
+              {cards.length >= 5 && turnPhase === 'reinforce' && !isAI && (
                 <div className="text-yellow-300 text-xs text-center mt-1 font-bold animate-pulse">
                   ⚠️ 5+ cards - Must trade!
                 </div>
@@ -1270,6 +1270,11 @@
 
       // Handle territory click
       const handleTerritoryClick = (id) => {
+        // Block clicks during AI turn
+        if (currentPlayer?.isAI) {
+          return;
+        }
+
         const territory = gameState.territories[id];
 
         if (turnPhase === 'reinforce' && territory?.owner === currentPlayer?.army && troopsToPlace > 0) {
@@ -1823,41 +1828,65 @@
             setEarnedCardThisTurn(true);
           }
           setTurnPhase('fortify');
-          setMessage('Fortify phase! Move troops between your territories.');
+          setMessage('Fortify phase! Move troops between your territories, or end your turn.');
         } else if (turnPhase === 'fortify') {
-          // Next player
-          const nextIndex = (currentPlayerIndex + 1) % players.length;
+          // Go to next player
+          goToNextPlayer();
+        }
+      };
 
-          // Skip eliminated players
-          let attempts = 0;
-          let idx = nextIndex;
-          while (attempts < players.length) {
-            const playerArmy = players[idx].army;
-            const hasTerritories = Object.values(gameState.territories).some(t => t.owner === playerArmy);
-            if (hasTerritories) break;
-            idx = (idx + 1) % players.length;
-            attempts++;
-          }
+      // End turn immediately (skip fortify phase)
+      const endTurn = () => {
+        setSelectedTerritory(null);
 
-          setCurrentPlayerIndex(idx);
-          setConqueredThisTurn(false);
-          setEarnedCardThisTurn(false); // Reset for next player's turn
+        // Award card if conquered territory this turn
+        if (conqueredThisTurn && !earnedCardThisTurn) {
+          const newCard = drawCard();
+          setCardReward(newCard);
+          setPlayerCards(prev => ({
+            ...prev,
+            [currentPlayer.army]: [...(prev[currentPlayer.army] || []), newCard]
+          }));
+          setEarnedCardThisTurn(true);
+        }
 
-          const nextPlayer = players[idx];
-          const newTroops = calculateReinforcements(nextPlayer, gameState.territories);
-          setTroopsToPlace(newTroops);
-          setTurnPhase('reinforce');
+        // Go directly to next player
+        goToNextPlayer();
+      };
 
-          // Check if player has 5+ cards (must trade)
-          const nextPlayerCards = playerCards[nextPlayer.army] || [];
-          if (nextPlayerCards.length >= 5 && canTradeCards(nextPlayerCards) && !nextPlayer.isAI) {
-            setMessage(`Your turn! You have ${nextPlayerCards.length} cards - you MUST trade first!`);
-            setShowCardTrade(true);
-          } else if (nextPlayer.isAI) {
-            setMessage(`🤖 ${nextPlayer.name} is taking their turn...`);
-          } else {
-            setMessage(`Your turn, ${nextPlayer.name}! Place ${newTroops} reinforcements.`);
-          }
+      // Helper: Advance to next player
+      const goToNextPlayer = () => {
+        const nextIndex = (currentPlayerIndex + 1) % players.length;
+
+        // Skip eliminated players
+        let attempts = 0;
+        let idx = nextIndex;
+        while (attempts < players.length) {
+          const playerArmy = players[idx].army;
+          const hasTerritories = Object.values(gameState.territories).some(t => t.owner === playerArmy);
+          if (hasTerritories) break;
+          idx = (idx + 1) % players.length;
+          attempts++;
+        }
+
+        setCurrentPlayerIndex(idx);
+        setConqueredThisTurn(false);
+        setEarnedCardThisTurn(false); // Reset for next player's turn
+
+        const nextPlayer = players[idx];
+        const newTroops = calculateReinforcements(nextPlayer, gameState.territories);
+        setTroopsToPlace(newTroops);
+        setTurnPhase('reinforce');
+
+        // Check if player has 5+ cards (must trade)
+        const nextPlayerCards = playerCards[nextPlayer.army] || [];
+        if (nextPlayerCards.length >= 5 && canTradeCards(nextPlayerCards) && !nextPlayer.isAI) {
+          setMessage(`Your turn! You have ${nextPlayerCards.length} cards - you MUST trade first!`);
+          setShowCardTrade(true);
+        } else if (nextPlayer.isAI) {
+          setMessage(`🤖 ${nextPlayer.name} is taking their turn...`);
+        } else {
+          setMessage(`Your turn, ${nextPlayer.name}! Place ${newTroops} reinforcements.`);
         }
       };
 
@@ -2043,9 +2072,18 @@
           {/* Header */}
           <div className="text-center mb-4">
             <h1 className="text-3xl game-title text-yellow-300 drop-shadow-lg">🦁 Zoo Conquest 🐘</h1>
-            <div className="bg-white/20 backdrop-blur rounded-full px-6 py-2 inline-block mt-2">
-              <span className="text-white font-semibold">{message}</span>
+            <div className={`backdrop-blur rounded-full px-6 py-2 inline-block mt-2 transition-all ${currentPlayer?.isAI ? 'bg-blue-500/50 ring-2 ring-blue-300' : 'bg-white/20'}`}>
+              <span className="text-white font-semibold">
+                {currentPlayer?.isAI && <span className="animate-pulse">🤖 </span>}
+                {message}
+                {currentPlayer?.isAI && aiThinking && <span className="ml-2 animate-spin inline-block">⚙️</span>}
+              </span>
             </div>
+            {currentPlayer?.isAI && (
+              <div className="text-blue-200 text-sm mt-1 animate-pulse">
+                AI is playing - please wait...
+              </div>
+            )}
           </div>
 
           <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-4">
@@ -2061,6 +2099,7 @@
                   canTrade={canCurrentPlayerTrade()}
                   troops={getPlayerTroops(currentPlayer.army)}
                   turnPhase={turnPhase}
+                  isAI={currentPlayer.isAI}
                 />
               )}
 
@@ -2079,13 +2118,42 @@
                   </div>
                 </div>
 
-                {(turnPhase === 'attack' || turnPhase === 'fortify') && (
-                  <button
-                    onClick={endPhase}
-                    className="w-full mt-3 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition-all"
-                  >
-                    {turnPhase === 'attack' ? '➡️ Go to Fortify' : '✅ End Turn'}
-                  </button>
+                {turnPhase === 'attack' && !currentPlayer?.isAI && (
+                  <div className="mt-3 space-y-2">
+                    <button
+                      onClick={endPhase}
+                      className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
+                    >
+                      🏃 Go to Fortify
+                    </button>
+                    <button
+                      onClick={endTurn}
+                      className="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition-all"
+                    >
+                      ✅ End Turn (Skip Fortify)
+                    </button>
+                  </div>
+                )}
+
+                {turnPhase === 'fortify' && !currentPlayer?.isAI && (
+                  <div className="mt-3 space-y-2">
+                    <div className="text-sm text-gray-200 text-center mb-2">
+                      {selectedTerritory ? 'Click a connected territory to move troops' : 'Select a territory to fortify from, or end turn'}
+                    </div>
+                    <button
+                      onClick={() => setSelectedTerritory(null)}
+                      className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
+                      disabled={!selectedTerritory}
+                    >
+                      🔄 Fortify Another Territory
+                    </button>
+                    <button
+                      onClick={endPhase}
+                      className="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition-all"
+                    >
+                      ✅ End Turn
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

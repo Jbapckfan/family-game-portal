@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOTS³ - Premium 3D Strategy</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1f2937 0%, #7c3aed 50%, #1f2937 100%);
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+            position: relative;
+        }
+
+        .bg-effects {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .bg-orb-1 {
+            width: 128px;
+            height: 128px;
+            background: #7c3aed;
+            top: 80px;
+            left: 80px;
+            animation-delay: 0s;
+        }
+
+        .bg-orb-2 {
+            width: 96px;
+            height: 96px;
+            background: #06b6d4;
+            top: 160px;
+            right: 128px;
+            animation-delay: 2s;
+        }
+
+        .bg-orb-3 {
+            width: 160px;
+            height: 160px;
+            background: #ec4899;
+            bottom: 128px;
+            left: 160px;
+            animation-delay: 4s;
+        }
+
+        .bg-orb-4 {
+            width: 112px;
+            height: 112px;
+            background: #3b82f6;
+            bottom: 80px;
+            right: 80px;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            background: rgba(31, 41, 55, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .game-title {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(45deg, #ec4899, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        #leftPanel {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            z-index: 100;
+            width: 200px;
+        }
+
+        .score-section {
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-selector {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-btn {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .difficulty-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(31, 41, 55, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            min-width: 150px;
+        }
+
+        .difficulty-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .difficulty-option {
+            padding: 10px 12px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 12px;
+        }
+
+        .difficulty-option:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .player-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .player-card.active {
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.15);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .player-card.human {
+            border-left: 3px solid #3b82f6;
+        }
+
+        .player-card.ai {
+            border-left: 3px solid #ef4444;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+
+        .player-avatar.human {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .player-avatar.ai {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: white;
+            font-size: 12px;
+        }
+
+        .player-type {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+        }
+
+        .player-score {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+        }
+
+        #rightPanel {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-button {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 100px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .action-button:hover {
+            background: rgba(31, 41, 55, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .action-button.primary {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border: none;
+        }
+
+        .action-button.active {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            border: none;
+        }
+
+        .help-button {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            background: rgba(31, 41, 55, 0.7);
+            transform: scale(1.1);
+        }
+
+        #gameStats {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+        }
+
+        .stat-card {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+        }
+
+        #aiThinking {
+            background: linear-gradient(135deg, #06b6d4, #7c3aed);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 11px;
+        }
+
+        #aiThinking.active {
+            opacity: 1;
+        }
+
+        .thinking-dots::after {
+            content: '';
+            animation: thinking 1.5s infinite;
+        }
+
+        @keyframes thinking {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(31, 41, 55, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .help-content {
+            text-align: left;
+        }
+
+        .help-section {
+            margin-bottom: 15px;
+        }
+
+        .help-section h4 {
+            color: #06b6d4;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .help-section p {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .help-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .help-control {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .help-key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .help-bottom {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 100;
+        }
+
+        .rotation-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 70px;
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+        }
+
+        .rotation-btn {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s ease;
+        }
+
+        .rotation-btn:hover {
+            background: rgba(31, 41, 55, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .rotation-btn.active {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border: none;
+        }
+
+        @keyframes faceComplete {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes cubeComplete {
+            0% { 
+                transform: scale(1) rotateY(0deg); 
+            }
+            50% { 
+                transform: scale(1.3) rotateY(180deg); 
+            }
+            100% { 
+                transform: scale(1) rotateY(360deg); 
+            }
+        }
+
+        @keyframes sparkle {
+            0% { 
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .celebration-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #fff, transparent);
+            pointer-events: none;
+            animation: sparkle 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+        <div class="bg-orb bg-orb-4"></div>
+    </div>
+
+    <div id="gameContainer">
+        <div class="header">
+            <div style="width: 40px;"></div>
+            <h1 class="game-title">DOTS³</h1>
+            <div style="width: 40px;"></div>
+        </div>
+        
+        <div id="leftPanel" class="glass-panel">
+            <div class="score-section">
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn" id="difficultyBtn">MEDIUM</button>
+                    <div class="difficulty-dropdown" id="difficultyDropdown">
+                        <div class="difficulty-option" data-level="easy">🟢 Easy</div>
+                        <div class="difficulty-option" data-level="medium">🟡 Medium</div>
+                        <div class="difficulty-option" data-level="hard">🔴 Hard</div>
+                        <div class="difficulty-option" data-level="impossible">🟣 Impossible</div>
+                    </div>
+                </div>
+                
+                <div class="player-card human active" id="player1Card">
+                    <div class="player-info">
+                        <div class="player-avatar human">👤</div>
+                        <div>
+                            <div class="player-name">You</div>
+                            <div class="player-type">Human</div>
+                        </div>
+                    </div>
+                    <div class="player-score" id="p1score">0</div>
+                </div>
+                
+                <div class="player-card ai" id="player2Card">
+                    <div class="player-info">
+                        <div class="player-avatar ai">🤖</div>
+                        <div>
+                            <div class="player-name">AI</div>
+                            <div class="player-type" id="aiTypeLabel">Smart AI</div>
+                        </div>
+                    </div>
+                    <div class="player-score" id="p2score">0</div>
+                </div>
+                
+                <div id="aiThinking">
+                    <span id="aiStatus">AI thinking</span>
+                    <span class="thinking-dots"></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="rightPanel">
+            <button class="action-button primary" onclick="game.newGame()">🎯 New Game</button>
+            <button class="action-button" onclick="game.showHint()">💡 Hint</button>
+            <button class="action-button" onclick="game.undoMove()">↶ Undo</button>
+            <button class="action-button" onclick="game.toggleAIMode()">🤖 AI vs AI</button>
+            <button class="action-button" id="autoRotateBtn" onclick="game.toggleAutoRotate()">🔄 Auto Rotate</button>
+        </div>
+
+        <div id="gameStats">
+            <div class="stat-card">
+                <div class="stat-value" id="moveCount">0</div>
+                <div class="stat-label">Moves</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="faceCount">0</div>
+                <div class="stat-label">Faces</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="cubeCount">0</div>
+                <div class="stat-label">Cubes</div>
+            </div>
+        </div>
+
+        <div class="rotation-controls">
+            <button class="rotation-btn" onclick="game.rotateLeft()">⬅️</button>
+            <button class="rotation-btn" onclick="game.rotateRight()">➡️</button>
+            <button class="rotation-btn" onclick="game.rotateUp()">⬆️</button>
+            <button class="rotation-btn" onclick="game.rotateDown()">⬇️</button>
+            <button class="rotation-btn" onclick="game.resetView()">🏠</button>
+        </div>
+
+        <div class="help-bottom">
+            <button class="help-button" onclick="game.showHelp()">?</button>
+        </div>
+
+        <div class="modal" id="gameEndModal">
+            <div class="modal-content">
+                <div class="modal-title" id="modalTitle">Game Over!</div>
+                <div class="modal-text" id="modalText">Well played!</div>
+                <div class="modal-buttons">
+                    <button class="modal-btn primary" onclick="game.playAgain()">Play Again</button>
+                    <button class="modal-btn secondary" onclick="game.closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="helpModal">
+            <div class="modal-content">
+                <div class="modal-title">🎮 How to Play DOTS³</div>
+                <div class="modal-text help-content">
+                    <div class="help-section">
+                        <h4>📋 Objective</h4>
+                        <p>Connect dots to complete faces and cubes. Each face = 1 point, each cube = 3 points.</p>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎯 Gameplay</h4>
+                        <p>• Click between any two dots to draw a line</p>
+                        <p>• Complete a face to score and get another turn</p>
+                        <p>• Complete all 6 faces of a cube for bonus points</p>
+                        <p>• Player with the most points wins!</p>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎮 Controls</h4>
+                        <div class="help-controls">
+                            <div class="help-control">
+                                <span>Draw Line</span>
+                                <span class="help-key">Click</span>
+                            </div>
+                            <div class="help-control">
+                                <span>Rotate View</span>
+                                <span class="help-key">Drag</span>
+                            </div>
+                            <div class="help-control">
+                                <span>Zoom</span>
+                                <span class="help-key">Scroll/Pinch</span>
+                            </div>
+                            <div class="help-control">
+                                <span>Show Hint</span>
+                                <span class="help-key">H</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-btn primary" onclick="game.closeHelp()">Got it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🎮 Starting DOTS³...');
+
+        class DotsGame3D {
+            constructor() {
+                this.gridSize = 3;
+                this.currentPlayer = 0; // 0 = human, 1 = AI
+                this.scores = [0, 0];
+                this.gameEnded = false;
+                this.isAiThinking = false;
+                this.gameMode = 'human-vs-ai';
+                this.aiDifficulty = 'medium';
+                this.moveCount = 0;
+                this.autoRotate = false;
+                this.rotationSpeed = 0.002;
+                this.faceCount = 0;
+                this.cubeCount = 0;
+                
+                // Initialize game state tracking
+                this.faces = [];
+                this.cubes = [];
+                this.completedFaces = new Set();
+                this.completedCubes = new Set();
+                
+                this.initGame();
+            }
+
+            initGame() {
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x000000, 0);
+                this.renderer.shadowMap.enabled = true;
+                document.getElementById('gameContainer').appendChild(this.renderer.domElement);
+                
+                // Camera setup
+                this.camera.position.set(10, 10, 20);
+                this.cameraTarget = new THREE.Vector3((this.gridSize - 1), (this.gridSize - 1), (this.gridSize - 1));
+                this.camera.lookAt(this.cameraTarget);
+                
+                // Store initial camera position for reset
+                this.initialCameraPosition = this.camera.position.clone();
+                
+                // Raycaster for click detection
+                this.raycaster = new THREE.Raycaster();
+                this.mouse = new THREE.Vector2();
+                
+                // Create groups
+                this.edgeGroup = new THREE.Group();
+                this.scene.add(this.edgeGroup);
+                
+                this.faceGroup = new THREE.Group();
+                this.scene.add(this.faceGroup);
+                
+                this.particleGroup = new THREE.Group();
+                this.scene.add(this.particleGroup);
+                
+                // Create pivot group for rotation
+                this.pivotGroup = new THREE.Group();
+                this.pivotGroup.position.copy(this.cameraTarget);
+                this.scene.add(this.pivotGroup);
+                
+                this.createGameObjects();
+                this.addLights();
+                this.setupControls();
+                this.setupUI();
+                this.defineFacesAndCubes();
+                this.animate();
+                this.updateUI();
+                
+                console.log('✨ Game ready!');
+            }
+
+            defineFacesAndCubes() {
+                // Define all faces in the 3x3x3 grid
+                // Each face is defined by 4 edges
+                this.faces = [];
+                
+                // Front/back faces (z constant)
+                for (let z = 0; z < this.gridSize; z++) {
+                    for (let x = 0; x < this.gridSize - 1; x++) {
+                        for (let y = 0; y < this.gridSize - 1; y++) {
+                            this.faces.push({
+                                edges: [
+                                    `${x},${y},${z},x`,
+                                    `${x+1},${y},${z},y`,
+                                    `${x},${y+1},${z},x`,
+                                    `${x},${y},${z},y`
+                                ],
+                                center: new THREE.Vector3(x * 2 + 1, y * 2 + 1, z * 2),
+                                normal: new THREE.Vector3(0, 0, z === 0 ? -1 : 1)
+                            });
+                        }
+                    }
+                }
+                
+                // Left/right faces (x constant)
+                for (let x = 0; x < this.gridSize; x++) {
+                    for (let y = 0; y < this.gridSize - 1; y++) {
+                        for (let z = 0; z < this.gridSize - 1; z++) {
+                            this.faces.push({
+                                edges: [
+                                    `${x},${y},${z},y`,
+                                    `${x},${y+1},${z},z`,
+                                    `${x},${y},${z+1},y`,
+                                    `${x},${y},${z},z`
+                                ],
+                                center: new THREE.Vector3(x * 2, y * 2 + 1, z * 2 + 1),
+                                normal: new THREE.Vector3(x === 0 ? -1 : 1, 0, 0)
+                            });
+                        }
+                    }
+                }
+                
+                // Top/bottom faces (y constant)
+                for (let y = 0; y < this.gridSize; y++) {
+                    for (let x = 0; x < this.gridSize - 1; x++) {
+                        for (let z = 0; z < this.gridSize - 1; z++) {
+                            this.faces.push({
+                                edges: [
+                                    `${x},${y},${z},x`,
+                                    `${x+1},${y},${z},z`,
+                                    `${x},${y},${z+1},x`,
+                                    `${x},${y},${z},z`
+                                ],
+                                center: new THREE.Vector3(x * 2 + 1, y * 2, z * 2 + 1),
+                                normal: new THREE.Vector3(0, y === 0 ? -1 : 1, 0)
+                            });
+                        }
+                    }
+                }
+                
+                // Define all cubes
+                this.cubes = [];
+                for (let x = 0; x < this.gridSize - 1; x++) {
+                    for (let y = 0; y < this.gridSize - 1; y++) {
+                        for (let z = 0; z < this.gridSize - 1; z++) {
+                            const cubeCenter = new THREE.Vector3(x * 2 + 1, y * 2 + 1, z * 2 + 1);
+                            const cubeFaces = this.faces.filter(face => {
+                                const dist = face.center.distanceTo(cubeCenter);
+                                return dist < 1.5; // Faces that are part of this cube
+                            });
+                            this.cubes.push({
+                                center: cubeCenter,
+                                faces: cubeFaces
+                            });
+                        }
+                    }
+                }
+            }
+
+            createGameObjects() {
+                // Create dots
+                const dotGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+                const dotMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0x06b6d4, 
+                    emissive: 0x444444, 
+                    shininess: 100 
+                });
+                
+                this.dots = [];
+                for (let x = 0; x < this.gridSize; x++) {
+                    for (let y = 0; y < this.gridSize; y++) {
+                        for (let z = 0; z < this.gridSize; z++) {
+                            const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+                            dot.position.set(x * 2, y * 2, z * 2);
+                            this.scene.add(dot);
+                            this.dots.push(dot);
+                        }
+                    }
+                }
+
+                // Create edges
+                this.edges = [];
+                this.edgeMap = new Map(); // For easy lookup
+                this.edgeMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x444444, 
+                    transparent: true, 
+                    opacity: 0.3 
+                });
+                this.completedEdgeMaterial = new THREE.MeshBasicMaterial({ color: 0x4ecdc4 });
+
+                // X-direction edges
+                const edgeGeometry = new THREE.BoxGeometry(1.8, 0.1, 0.1);
+                for (let x = 0; x < this.gridSize - 1; x++) {
+                    for (let y = 0; y < this.gridSize; y++) {
+                        for (let z = 0; z < this.gridSize; z++) {
+                            const edge = new THREE.Mesh(edgeGeometry, this.edgeMaterial.clone());
+                            edge.position.set(x * 2 + 1, y * 2, z * 2);
+                            const key = `${x},${y},${z},x`;
+                            edge.userData = { coords: [x, y, z], direction: 'x', completed: false, key };
+                            this.edgeGroup.add(edge);
+                            this.edges.push(edge);
+                            this.edgeMap.set(key, edge);
+                        }
+                    }
+                }
+
+                // Y-direction edges
+                const edgeGeometryY = new THREE.BoxGeometry(0.1, 1.8, 0.1);
+                for (let x = 0; x < this.gridSize; x++) {
+                    for (let y = 0; y < this.gridSize - 1; y++) {
+                        for (let z = 0; z < this.gridSize; z++) {
+                            const edge = new THREE.Mesh(edgeGeometryY, this.edgeMaterial.clone());
+                            edge.position.set(x * 2, y * 2 + 1, z * 2);
+                            const key = `${x},${y},${z},y`;
+                            edge.userData = { coords: [x, y, z], direction: 'y', completed: false, key };
+                            this.edgeGroup.add(edge);
+                            this.edges.push(edge);
+                            this.edgeMap.set(key, edge);
+                        }
+                    }
+                }
+
+                // Z-direction edges
+                const edgeGeometryZ = new THREE.BoxGeometry(0.1, 0.1, 1.8);
+                for (let x = 0; x < this.gridSize; x++) {
+                    for (let y = 0; y < this.gridSize; y++) {
+                        for (let z = 0; z < this.gridSize - 1; z++) {
+                            const edge = new THREE.Mesh(edgeGeometryZ, this.edgeMaterial.clone());
+                            edge.position.set(x * 2, y * 2, z * 2 + 1);
+                            const key = `${x},${y},${z},z`;
+                            edge.userData = { coords: [x, y, z], direction: 'z', completed: false, key };
+                            this.edgeGroup.add(edge);
+                            this.edges.push(edge);
+                            this.edgeMap.set(key, edge);
+                        }
+                    }
+                }
+            }
+
+            addLights() {
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                this.scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+                directionalLight.position.set(10, 10, 5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+                
+                const pointLight = new THREE.PointLight(0x06b6d4, 0.5, 20);
+                pointLight.position.set(-5, 5, -5);
+                this.scene.add(pointLight);
+            }
+
+            setupControls() {
+                this.isDragging = false;
+                this.previousMousePosition = { x: 0, y: 0 };
+                this.mouseDownTime = 0;
+                this.mouseDownX = 0;
+                this.mouseDownY = 0;
+                
+                // Touch variables for pinch zoom
+                this.touchStartDistance = 0;
+                this.isPinching = false;
+                
+                // Spherical coordinates for smoother rotation
+                this.spherical = new THREE.Spherical();
+                this.spherical.setFromVector3(this.camera.position.clone().sub(this.cameraTarget));
+                
+                this.renderer.domElement.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return;
+                    
+                    this.mouseDownTime = Date.now();
+                    this.mouseDownX = e.clientX;
+                    this.mouseDownY = e.clientY;
+                    this.isDragging = true;
+                    this.previousMousePosition = { x: e.clientX, y: e.clientY };
+                });
+                
+                this.renderer.domElement.addEventListener('mousemove', (e) => {
+                    if (this.isDragging) {
+                        const deltaMove = {
+                            x: e.clientX - this.previousMousePosition.x,
+                            y: e.clientY - this.previousMousePosition.y
+                        };
+                        
+                        // Update spherical coordinates
+                        this.spherical.theta -= deltaMove.x * 0.01;
+                        this.spherical.phi += deltaMove.y * 0.01;
+                        
+                        // Clamp phi to prevent flipping
+                        this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
+                        
+                        // Update camera position
+                        this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                        this.camera.lookAt(this.cameraTarget);
+                        
+                        this.previousMousePosition = { x: e.clientX, y: e.clientY };
+                    }
+                });
+                
+                this.renderer.domElement.addEventListener('mouseup', (e) => {
+                    const timeDiff = Date.now() - this.mouseDownTime;
+                    const moveDiff = Math.abs(e.clientX - this.mouseDownX) + Math.abs(e.clientY - this.mouseDownY);
+                    
+                    if (timeDiff < 200 && moveDiff < 5) {
+                        this.handleClick(e);
+                    }
+                    
+                    this.isDragging = false;
+                });
+                
+                // Touch controls for mobile
+                let touchStart = null;
+                this.renderer.domElement.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        touchStart = {
+                            x: e.touches[0].clientX,
+                            y: e.touches[0].clientY,
+                            time: Date.now()
+                        };
+                        this.previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                        this.isPinching = false;
+                    } else if (e.touches.length === 2) {
+                        // Start pinch zoom
+                        this.isPinching = true;
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        this.touchStartDistance = Math.sqrt(dx * dx + dy * dy);
+                    }
+                });
+                
+                this.renderer.domElement.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    
+                    if (e.touches.length === 1 && !this.isPinching && touchStart) {
+                        // Single touch - rotate
+                        const deltaMove = {
+                            x: e.touches[0].clientX - this.previousMousePosition.x,
+                            y: e.touches[0].clientY - this.previousMousePosition.y
+                        };
+                        
+                        this.spherical.theta -= deltaMove.x * 0.01;
+                        this.spherical.phi += deltaMove.y * 0.01;
+                        this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
+                        
+                        this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                        this.camera.lookAt(this.cameraTarget);
+                        
+                        this.previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                    } else if (e.touches.length === 2 && this.isPinching) {
+                        // Pinch zoom
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        const scale = distance / this.touchStartDistance;
+                        const newRadius = this.spherical.radius / scale;
+                        this.spherical.radius = Math.max(5, Math.min(30, newRadius));
+                        
+                        this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                        this.camera.lookAt(this.cameraTarget);
+                        
+                        this.touchStartDistance = distance;
+                    }
+                });
+                
+                this.renderer.domElement.addEventListener('touchend', (e) => {
+                    if (touchStart && e.changedTouches.length > 0 && !this.isPinching) {
+                        const timeDiff = Date.now() - touchStart.time;
+                        if (timeDiff < 200) {
+                            const moveDiff = Math.abs(e.changedTouches[0].clientX - touchStart.x) + 
+                                           Math.abs(e.changedTouches[0].clientY - touchStart.y);
+                            if (moveDiff < 10) {
+                                this.handleClick({
+                                    clientX: e.changedTouches[0].clientX,
+                                    clientY: e.changedTouches[0].clientY,
+                                    preventDefault: () => {}
+                                });
+                            }
+                        }
+                        touchStart = null;
+                    }
+                    
+                    if (e.touches.length === 0) {
+                        this.isPinching = false;
+                    }
+                });
+                
+                this.renderer.domElement.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const distance = this.spherical.radius;
+                    const newDistance = Math.max(5, Math.min(30, distance + e.deltaY * 0.01));
+                    this.spherical.radius = newDistance;
+                    
+                    this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                    this.camera.lookAt(this.cameraTarget);
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'h' || e.key === 'H') this.showHint();
+                    if (e.key === 'ArrowLeft') this.rotateLeft();
+                    if (e.key === 'ArrowRight') this.rotateRight();
+                    if (e.key === 'ArrowUp') this.rotateUp();
+                    if (e.key === 'ArrowDown') this.rotateDown();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleAutoRotate();
+                    }
+                });
+                
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+
+            // Rotation control methods
+            rotateLeft() {
+                this.spherical.theta -= 0.2;
+                this.updateCameraFromSpherical();
+            }
+
+            rotateRight() {
+                this.spherical.theta += 0.2;
+                this.updateCameraFromSpherical();
+            }
+
+            rotateUp() {
+                this.spherical.phi = Math.max(0.1, this.spherical.phi - 0.2);
+                this.updateCameraFromSpherical();
+            }
+
+            rotateDown() {
+                this.spherical.phi = Math.min(Math.PI - 0.1, this.spherical.phi + 0.2);
+                this.updateCameraFromSpherical();
+            }
+
+            updateCameraFromSpherical() {
+                this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                this.camera.lookAt(this.cameraTarget);
+            }
+
+            resetView() {
+                this.camera.position.copy(this.initialCameraPosition);
+                this.spherical.setFromVector3(this.camera.position.clone().sub(this.cameraTarget));
+                this.camera.lookAt(this.cameraTarget);
+            }
+
+            toggleAutoRotate() {
+                this.autoRotate = !this.autoRotate;
+                const btn = document.getElementById('autoRotateBtn');
+                if (this.autoRotate) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            }
+
+            handleClick(event) {
+                if (this.gameEnded) return;
+                
+                event.preventDefault();
+                const rect = this.renderer.domElement.getBoundingClientRect();
+                this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                this.mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.edgeGroup.children, true);
+                
+                if (intersects.length > 0) {
+                    const edge = intersects[0].object;
+                    this.completeEdge(edge);
+                }
+            }
+
+            completeEdge(edge) {
+                if (!edge.userData || edge.userData.completed) return;
+                
+                edge.userData.completed = true;
+                const playerColor = this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444;
+                edge.material.color.set(playerColor);
+                edge.material.opacity = 1.0;
+                
+                this.moveCount++;
+                
+                // Check for completed faces and cubes
+                const completedFaces = this.checkCompletedFaces();
+                const completedCubes = this.checkCompletedCubes();
+                
+                let pointsScored = 0;
+                let continuesTurn = false;
+                
+                // Score newly completed faces
+                completedFaces.forEach(face => {
+                    if (!this.completedFaces.has(face)) {
+                        this.completedFaces.add(face);
+                        pointsScored += 1;
+                        continuesTurn = true;
+                        this.animateFaceCompletion(face);
+                        this.faceCount++;
+                    }
+                });
+                
+                // Score newly completed cubes
+                completedCubes.forEach(cube => {
+                    if (!this.completedCubes.has(cube)) {
+                        this.completedCubes.add(cube);
+                        pointsScored += 3; // Bonus points for cube
+                        this.animateCubeCompletion(cube);
+                        this.cubeCount++;
+                    }
+                });
+                
+                this.scores[this.currentPlayer] += pointsScored;
+                
+                // Switch players only if no face was completed
+                if (!continuesTurn) {
+                    this.currentPlayer = (this.currentPlayer + 1) % 2;
+                }
+                
+                this.updateUI();
+                
+                // Check for game end
+                if (this.isGameOver()) {
+                    this.endGame();
+                    return;
+                }
+                
+                // Trigger AI move
+                if (this.currentPlayer === 1 && this.gameMode === 'human-vs-ai') {
+                    setTimeout(() => this.makeAIMove(), 500);
+                }
+            }
+
+            checkCompletedFaces() {
+                const completed = [];
+                
+                this.faces.forEach((face, index) => {
+                    const allEdgesCompleted = face.edges.every(edgeKey => {
+                        const edge = this.edgeMap.get(edgeKey);
+                        return edge && edge.userData.completed;
+                    });
+                    
+                    if (allEdgesCompleted) {
+                        completed.push(index);
+                    }
+                });
+                
+                return completed;
+            }
+
+            checkCompletedCubes() {
+                const completed = [];
+                
+                this.cubes.forEach((cube, index) => {
+                    const allFacesCompleted = cube.faces.every(face => {
+                        return face.edges.every(edgeKey => {
+                            const edge = this.edgeMap.get(edgeKey);
+                            return edge && edge.userData.completed;
+                        });
+                    });
+                    
+                    if (allFacesCompleted) {
+                        completed.push(index);
+                    }
+                });
+                
+                return completed;
+            }
+
+            animateFaceCompletion(faceIndex) {
+                const face = this.faces[faceIndex];
+                
+                // Create a semi-transparent plane for the face
+                const planeGeometry = new THREE.PlaneGeometry(1.8, 1.8);
+                const planeMaterial = new THREE.MeshBasicMaterial({
+                    color: this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444,
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                
+                const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+                plane.position.copy(face.center);
+                
+                // Align plane with face normal
+                if (Math.abs(face.normal.x) > 0.5) {
+                    plane.rotation.y = Math.PI / 2;
+                } else if (Math.abs(face.normal.z) > 0.5) {
+                    // Default orientation
+                } else if (Math.abs(face.normal.y) > 0.5) {
+                    plane.rotation.x = Math.PI / 2;
+                }
+                
+                this.faceGroup.add(plane);
+                
+                // Animate the face
+                const startScale = 0.1;
+                const endScale = 1;
+                const duration = 600;
+                const startTime = Date.now();
+                
+                const animatePlane = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const scale = startScale + (endScale - startScale) * progress;
+                    plane.scale.set(scale, scale, scale);
+                    
+                    // Pulse effect
+                    const pulseScale = 1 + Math.sin(progress * Math.PI) * 0.2;
+                    plane.scale.multiplyScalar(pulseScale);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animatePlane);
+                    }
+                };
+                
+                animatePlane();
+                
+                // Create particles
+                this.createParticles(face.center, 10, this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444);
+            }
+
+            animateCubeCompletion(cubeIndex) {
+                const cube = this.cubes[cubeIndex];
+                
+                // Create a wireframe cube
+                const cubeGeometry = new THREE.BoxGeometry(1.8, 1.8, 1.8);
+                const cubeMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffd700, // Gold color for cube completion
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                
+                const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+                cubeMesh.position.copy(cube.center);
+                this.faceGroup.add(cubeMesh);
+                
+                // Animate the cube
+                const duration = 1500;
+                const startTime = Date.now();
+                
+                const animateCube = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Rotation
+                    cubeMesh.rotation.x = progress * Math.PI * 2;
+                    cubeMesh.rotation.y = progress * Math.PI * 2;
+                    
+                    // Scale pulse
+                    const scale = 1 + Math.sin(progress * Math.PI * 2) * 0.3;
+                    cubeMesh.scale.set(scale, scale, scale);
+                    
+                    // Fade out
+                    cubeMaterial.opacity = 0.8 * (1 - progress * 0.5);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateCube);
+                    } else {
+                        this.faceGroup.remove(cubeMesh);
+                    }
+                };
+                
+                animateCube();
+                
+                // Create extra particles for cube completion
+                this.createParticles(cube.center, 20, 0xffd700);
+            }
+
+            createParticles(position, count, color) {
+                const particles = [];
+                
+                for (let i = 0; i < count; i++) {
+                    const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+                    const particleMaterial = new THREE.MeshBasicMaterial({
+                        color: color,
+                        transparent: true,
+                        opacity: 1
+                    });
+                    
+                    const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                    particle.position.copy(position);
+                    
+                    // Random velocity
+                    particle.velocity = new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.1,
+                        (Math.random() - 0.5) * 0.1,
+                        (Math.random() - 0.5) * 0.1
+                    );
+                    
+                    this.particleGroup.add(particle);
+                    particles.push(particle);
+                }
+                
+                // Animate particles
+                const duration = 1000;
+                const startTime = Date.now();
+                
+                const animateParticles = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    particles.forEach(particle => {
+                        particle.position.add(particle.velocity);
+                        particle.material.opacity = 1 - progress;
+                        particle.scale.setScalar(1 - progress * 0.5);
+                    });
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateParticles);
+                    } else {
+                        particles.forEach(particle => {
+                            this.particleGroup.remove(particle);
+                        });
+                    }
+                };
+                
+                animateParticles();
+            }
+
+            async makeAIMove() {
+                if (this.currentPlayer !== 1 || this.isAiThinking || this.gameEnded) return;
+                
+                this.setAIThinking(true);
+                
+                await this.delay(1000);
+                
+                // AI strategy based on difficulty
+                let selectedEdge = null;
+                
+                if (this.aiDifficulty === 'easy') {
+                    // Random move
+                    const availableEdges = this.edges.filter(edge => !edge.userData.completed);
+                    if (availableEdges.length > 0) {
+                        selectedEdge = availableEdges[Math.floor(Math.random() * availableEdges.length)];
+                    }
+                } else {
+                    // Smart AI - try to complete faces
+                    selectedEdge = this.findBestMove();
+                }
+                
+                if (selectedEdge) {
+                    this.completeEdge(selectedEdge);
+                }
+                
+                this.setAIThinking(false);
+            }
+
+            findBestMove() {
+                const availableEdges = this.edges.filter(edge => !edge.userData.completed);
+                
+                // First priority: complete a face
+                for (const edge of availableEdges) {
+                    const tempCompleted = new Set([...this.completedFaces]);
+                    edge.userData.completed = true;
+                    
+                    const wouldCompleteFaces = this.checkCompletedFaces();
+                    const newFaces = wouldCompleteFaces.filter(f => !tempCompleted.has(f));
+                    
+                    edge.userData.completed = false;
+                    
+                    if (newFaces.length > 0) {
+                        return edge;
+                    }
+                }
+                
+                // Second priority: block opponent from completing a face
+                // (simplified - just make a random move)
+                if (availableEdges.length > 0) {
+                    return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+                }
+                
+                return null;
+            }
+
+            isGameOver() {
+                return this.edges.every(edge => edge.userData.completed);
+            }
+
+            endGame() {
+                this.gameEnded = true;
+                this.setAIThinking(false);
+                
+                setTimeout(() => {
+                    const winner = this.scores[0] > this.scores[1] ? 'Human' : 
+                                  this.scores[1] > this.scores[0] ? 'AI' : 'Tie';
+                    this.showGameEndModal(winner);
+                }, 1000);
+            }
+
+            showGameEndModal(winner) {
+                const modal = document.getElementById('gameEndModal');
+                const title = document.getElementById('modalTitle');
+                const text = document.getElementById('modalText');
+                
+                if (winner === 'Tie') {
+                    title.textContent = "It's a Tie! 🤝";
+                    text.textContent = `Both scored ${this.scores[0]} points!`;
+                } else if (winner === 'Human') {
+                    title.textContent = "You Win! 🎉";
+                    text.textContent = `You scored ${this.scores[0]} vs AI's ${this.scores[1]}!`;
+                } else {
+                    title.textContent = "AI Wins! 🤖";
+                    text.textContent = `AI scored ${this.scores[1]} vs your ${this.scores[0]}!`;
+                }
+                
+                modal.classList.add('active');
+            }
+
+            showHint() {
+                if (this.currentPlayer !== 0 || this.gameEnded) return;
+                
+                const bestMove = this.findBestMove();
+                if (bestMove) {
+                    const originalColor = bestMove.material.color.getHex();
+                    
+                    bestMove.material.color.set(0xf59e0b);
+                    
+                    setTimeout(() => {
+                        bestMove.material.color.set(originalColor);
+                    }, 2000);
+                }
+            }
+
+            undoMove() {
+                const completedEdges = this.edges.filter(edge => edge.userData.completed);
+                if (completedEdges.length > 0) {
+                    const lastEdge = completedEdges[completedEdges.length - 1];
+                    lastEdge.userData.completed = false;
+                    lastEdge.material.color.set(0x444444);
+                    lastEdge.material.opacity = 0.3;
+                    
+                    // Note: This is simplified - doesn't properly handle face/cube scoring
+                    this.currentPlayer = (this.currentPlayer + 1) % 2;
+                    this.scores[this.currentPlayer] = Math.max(0, this.scores[this.currentPlayer] - 1);
+                    this.moveCount = Math.max(0, this.moveCount - 1);
+                    this.updateUI();
+                }
+            }
+
+            newGame() {
+                // Reset all edges
+                this.edges.forEach(edge => {
+                    edge.userData.completed = false;
+                    edge.material.color.set(0x444444);
+                    edge.material.opacity = 0.3;
+                });
+                
+                // Clear face group
+                while(this.faceGroup.children.length > 0) {
+                    this.faceGroup.remove(this.faceGroup.children[0]);
+                }
+                
+                // Clear particles
+                while(this.particleGroup.children.length > 0) {
+                    this.particleGroup.remove(this.particleGroup.children[0]);
+                }
+                
+                this.currentPlayer = 0;
+                this.scores = [0, 0];
+                this.moveCount = 0;
+                this.faceCount = 0;
+                this.cubeCount = 0;
+                this.completedFaces.clear();
+                this.completedCubes.clear();
+                this.gameEnded = false;
+                this.updateUI();
+            }
+
+            toggleAIMode() {
+                if (this.gameMode === 'human-vs-ai') {
+                    this.gameMode = 'ai-vs-ai';
+                } else {
+                    this.gameMode = 'human-vs-ai';
+                }
+            }
+
+            setupUI() {
+                document.getElementById('difficultyBtn').addEventListener('click', () => {
+                    const dropdown = document.getElementById('difficultyDropdown');
+                    dropdown.classList.toggle('active');
+                });
+                
+                document.querySelectorAll('.difficulty-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const level = e.target.dataset.level;
+                        this.setDifficulty(level);
+                        document.getElementById('difficultyDropdown').classList.remove('active');
+                    });
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.difficulty-selector')) {
+                        document.getElementById('difficultyDropdown').classList.remove('active');
+                    }
+                });
+            }
+
+            setDifficulty(level) {
+                this.aiDifficulty = level;
+                const btn = document.getElementById('difficultyBtn');
+                const label = document.getElementById('aiTypeLabel');
+                
+                switch(level) {
+                    case 'easy':
+                        btn.textContent = 'EASY';
+                        label.textContent = 'Random AI';
+                        break;
+                    case 'medium':
+                        btn.textContent = 'MEDIUM';
+                        label.textContent = 'Smart AI';
+                        break;
+                    case 'hard':
+                        btn.textContent = 'HARD';
+                        label.textContent = 'Strategic AI';
+                        break;
+                    case 'impossible':
+                        btn.textContent = 'IMPOSSIBLE';
+                        label.textContent = 'Unbeatable AI';
+                        break;
+                }
+            }
+
+            showHelp() {
+                document.getElementById('helpModal').classList.add('active');
+            }
+
+            closeHelp() {
+                document.getElementById('helpModal').classList.remove('active');
+            }
+
+            playAgain() {
+                this.closeModal();
+                this.newGame();
+            }
+
+            closeModal() {
+                document.getElementById('gameEndModal').classList.remove('active');
+            }
+
+            setAIThinking(thinking, message = 'AI thinking...') {
+                this.isAiThinking = thinking;
+                const aiThinking = document.getElementById('aiThinking');
+                const aiStatus = document.getElementById('aiStatus');
+                
+                if (thinking) {
+                    aiStatus.textContent = message;
+                    aiThinking.classList.add('active');
+                } else {
+                    aiThinking.classList.remove('active');
+                }
+            }
+
+            updateUI() {
+                document.getElementById('p1score').textContent = this.scores[0];
+                document.getElementById('p2score').textContent = this.scores[1];
+                
+                const player1Card = document.getElementById('player1Card');
+                const player2Card = document.getElementById('player2Card');
+                
+                player1Card.classList.toggle('active', this.currentPlayer === 0);
+                player2Card.classList.toggle('active', this.currentPlayer === 1);
+                
+                document.getElementById('moveCount').textContent = this.moveCount;
+                document.getElementById('faceCount').textContent = this.faceCount;
+                document.getElementById('cubeCount').textContent = this.cubeCount;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                // Auto-rotation
+                if (this.autoRotate) {
+                    this.spherical.theta += this.rotationSpeed;
+                    this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                    this.camera.lookAt(this.cameraTarget);
+                }
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // Initialize the game
+        let game;
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🎮 Starting DOTS³...');
+            game = new DotsGame3D();
+            window.game = game; // Make it globally accessible for button clicks
+        });
+    </script>
+</body>
+</html>

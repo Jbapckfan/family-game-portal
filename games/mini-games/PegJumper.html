@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peg Jumper - Pro Edition</title>
+    <!-- React and Babel for JSX transpilation -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useRef } = React;
+
+        // --- GAME CONSTANTS & DATA ---
+
+        // Represents the shape of various peg boards.
+        // 1: Valid peg position, null: Not a playable position.
+        const LEVELS = [
+            {
+                name: "Triangle",
+                layout: [
+                    [null, null, null, null, 1, null, null, null, null],
+                    [null, null, null, 1, null, 1, null, null, null],
+                    [null, null, 1, null, 1, null, 1, null, null],
+                    [null, 1, null, 1, null, 1, null, 1, null],
+                    [1, null, 1, null, 1, null, 1, null, 1],
+                ],
+                initialEmpty: { row: 0, col: 4 }
+            },
+            {
+                name: "Cross",
+                layout: [
+                    [null, null, 1, 1, 1, null, null],
+                    [null, null, 1, 1, 1, null, null],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [null, null, 1, 1, 1, null, null],
+                    [null, null, 1, 1, 1, null, null],
+                ],
+                initialEmpty: { row: 3, col: 3 }
+            },
+            {
+                name: "Triple Triangle",
+                layout: [
+                    [null, null, 1, null, 1, null, 1, null, null],
+                    [null, 1, null, 1, null, 1, null, 1, null],
+                    [1, null, 1, null, 1, null, 1, null, 1],
+                    [null, null, null, 1, null, 1, null, null, null],
+                    [null, null, 1, null, 1, null, 1, null, null],
+                ],
+                 initialEmpty: { row: 2, col: 4 }
+            },
+            {
+                name: "Rectangle",
+                layout: [
+                    [1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1],
+                ],
+                initialEmpty: { row: 1, col: 2 }
+            }
+        ];
+
+        const GameState = {
+            PLAYING: 'playing',
+            WON: 'won',
+            LOST: 'lost'
+        };
+
+        const RAPID_MOVE_BONUS = 50;
+        const RAPID_MOVE_THRESHOLD_MS = 2500;
+
+        // --- HELPER & UI COMPONENTS ---
+
+        const Celebration = ({ show }) => {
+            if (!show) return null;
+            return (
+                <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
+                    <div className="text-8xl animate-bounce">🏆</div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse"></div>
+                </div>
+            );
+        };
+
+        const Peg = ({ onClick, isSelected }) => (
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick}>
+                <div
+                    className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 ${isSelected ? 'border-4 border-yellow-400 animate-pulse' : 'border-2 border-cyan-400/30'}`}
+                />
+            </div>
+        );
+
+        const Hole = ({ onClick }) => (
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick}>
+                <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gray-800 shadow-inner border-2 border-purple-500/30 hover:border-purple-500 transition-colors" />
+            </div>
+        );
+
+        // --- MAIN PEG JUMPER GAME COMPONENT ---
+        const PegJumperGame = () => {
+            const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
+            const [board, setBoard] = useState([]);
+            const [selectedPeg, setSelectedPeg] = useState(null);
+            const [gameState, setGameState] = useState(GameState.PLAYING);
+            const [pegsRemaining, setPegsRemaining] = useState(0);
+            const [initialPegCount, setInitialPegCount] = useState(0);
+            const [showWin, setShowWin] = useState(false);
+            
+            // Scoring and Timer State
+            const [score, setScore] = useState(0);
+            const [highScores, setHighScores] = useState({});
+            const [time, setTime] = useState(0);
+            const [isTimerRunning, setIsTimerRunning] = useState(false);
+            const lastMoveTimestamp = useRef(0);
+            const timerRef = useRef(null);
+
+            // Load high scores from localStorage on mount
+            useEffect(() => {
+                try {
+                    const savedHighScores = localStorage.getItem('pegJumperHighScores');
+                    if (savedHighScores) {
+                        setHighScores(JSON.parse(savedHighScores));
+                    }
+                } catch (error) {
+                    console.error("Could not load high scores", error);
+                }
+            }, []);
+
+            // Timer effect
+            useEffect(() => {
+                if (isTimerRunning) {
+                    timerRef.current = setInterval(() => {
+                        setTime(prevTime => prevTime + 1);
+                    }, 1000);
+                } else {
+                    clearInterval(timerRef.current);
+                }
+                return () => clearInterval(timerRef.current);
+            }, [isTimerRunning]);
+
+            const initializeBoard = useCallback((levelIndex) => {
+                const level = LEVELS[levelIndex];
+                let pegCount = 0;
+                const newBoard = level.layout.map(row =>
+                    row.map(cell => {
+                        if (cell === 1) {
+                            pegCount++;
+                            return true; // true represents a peg
+                        }
+                        return null; // null for invalid spots
+                    })
+                );
+                
+                const { row, col } = level.initialEmpty;
+                if (newBoard[row] && newBoard[row][col] === true) {
+                    newBoard[row][col] = false;
+                    pegCount--;
+                }
+
+                setBoard(newBoard);
+                setInitialPegCount(pegCount);
+                setPegsRemaining(pegCount);
+                setGameState(GameState.PLAYING);
+                setSelectedPeg(null);
+                setShowWin(false);
+                setCurrentLevelIndex(levelIndex);
+                
+                // Reset score and timer
+                setScore(0);
+                setTime(0);
+                setIsTimerRunning(false);
+                lastMoveTimestamp.current = 0;
+
+            }, []);
+
+            useEffect(() => {
+                initializeBoard(0);
+            }, [initializeBoard]);
+            
+            // --- Game Logic ---
+
+            const checkForNoMoves = (currentBoard) => {
+                for (let r = 0; r < currentBoard.length; r++) {
+                    for (let c = 0; c < currentBoard[r].length; c++) {
+                        if (currentBoard[r][c] === true) { // It's a peg
+                            // Check all possible jump directions
+                            const directions = [
+                                [0, 4], [0, -4], // Horizontal
+                                [4, 0], [-4, 0], // Vertical
+                                [2, 2], [2, -2], // Diagonal
+                                [-2, 2], [-2, -2] // Diagonal
+                            ];
+                             for (const [dr, dc] of directions) {
+                                const endR = r + dr, endC = c + dc;
+                                const midR = r + dr / 2, midC = c + dc / 2;
+                                if (currentBoard[endR] && currentBoard[endR][endC] === false && currentBoard[midR] && currentBoard[midR][midC] === true) {
+                                    return false; // Found a possible move
+                                }
+                            }
+                        }
+                    }
+                }
+                return true; // No moves found
+            };
+
+            const handleCellClick = useCallback((row, col) => {
+                if (gameState !== GameState.PLAYING) return;
+
+                const cell = board[row][col];
+
+                if (cell === true) { // A peg was clicked
+                    setSelectedPeg(prev => (prev && prev.row === row && prev.col === col) ? null : { row, col });
+                } else if (cell === false) { // An empty hole was clicked
+                    if (selectedPeg) {
+                        const start = selectedPeg;
+                        const end = { row, col };
+                        
+                        const dr = end.row - start.row;
+                        const dc = end.col - start.col;
+
+                        const isHorizontalJump = dr === 0 && Math.abs(dc) === 2;
+                        const isVerticalJump = dc === 0 && Math.abs(dr) === 2;
+                        // Diagonal jumps are now different because of the grid structure
+                        const isDiagonalJump = Math.abs(dr) === 1 && Math.abs(dc) === 1;
+
+                        const jumpedRow = start.row + dr / 2;
+                        const jumpedCol = start.col + dc / 2;
+                        
+                        // The jump logic needs to account for the grid structure.
+                        // A visual jump over one peg in the array can be different distances.
+                        const isRealHorizontalJump = dr === 0 && Math.abs(dc) === 4;
+                        const isRealVerticalJump = dc === 0 && Math.abs(dr) === 4;
+                        const isRealDiagonalJump = Math.abs(dr) === 2 && Math.abs(dc) === 2;
+                        
+                        if ((isRealHorizontalJump || isRealVerticalJump || isRealDiagonalJump) && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
+                            if (!isTimerRunning) setIsTimerRunning(true); // Start timer on first move
+                            
+                            const newBoard = board.map(r => [...r]);
+                            newBoard[start.row][start.col] = false;
+                            newBoard[end.row][end.col] = true;
+                            newBoard[jumpedRow][jumpedCol] = false;
+
+                            // Bonus points for rapid moves
+                            const now = Date.now();
+                            if (lastMoveTimestamp.current > 0 && (now - lastMoveTimestamp.current) < RAPID_MOVE_THRESHOLD_MS) {
+                                setScore(s => s + RAPID_MOVE_BONUS);
+                            }
+                            lastMoveTimestamp.current = now;
+
+                            const newPegsRemaining = pegsRemaining - 1;
+                            setPegsRemaining(newPegsRemaining);
+                            setBoard(newBoard);
+                            setSelectedPeg(null);
+
+                            // Check for win/loss condition
+                            if (newPegsRemaining === 1) {
+                                setGameState(GameState.WON);
+                                setIsTimerRunning(false);
+                                setShowWin(true);
+                                setTimeout(() => setShowWin(false), 4000);
+                                // Final score calculation
+                                const finalScore = score + (initialPegCount * 100) - (time * 10);
+                                setScore(finalScore);
+                                if (finalScore > (highScores[currentLevelIndex] || 0)) {
+                                    const newHighScores = {...highScores, [currentLevelIndex]: finalScore};
+                                    setHighScores(newHighScores);
+                                    localStorage.setItem('pegJumperHighScores', JSON.stringify(newHighScores));
+                                }
+                            } else if (checkForNoMoves(newBoard)) {
+                                setGameState(GameState.LOST);
+                                setIsTimerRunning(false);
+                            }
+                        }
+                    }
+                }
+            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, time, highScores, currentLevelIndex, initialPegCount]);
+
+            const getGameStatusMessage = () => {
+                switch (gameState) {
+                    case GameState.PLAYING: return `Pegs: ${pegsRemaining}`;
+                    case GameState.WON: return '🎉 You Win! 🎉';
+                    case GameState.LOST: return 'No more moves!';
+                    default: return '';
+                }
+            };
+
+            return (
+                <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden flex flex-col items-center justify-center p-4">
+                    <div className="absolute inset-0">
+                        <div className="absolute top-20 left-20 w-32 h-32 bg-purple-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+                        <div className="absolute top-40 right-32 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
+                    </div>
+
+                    <div className="relative z-10 flex flex-col items-center w-full max-w-2xl">
+                        <h1 className="text-4xl sm:text-5xl font-black text-center bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                            Peg Jumper
+                        </h1>
+
+                        <div className="flex flex-wrap justify-center gap-2 mb-4">
+                            {LEVELS.map((level, index) => (
+                                <button key={level.name} onClick={() => initializeBoard(index)}
+                                    className={`px-3 py-1 text-sm font-bold rounded-lg transition-all transform hover:scale-105 ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}>
+                                    {level.name}
+                                </button>
+                            ))}
+                        </div>
+                        
+                        <div className="w-full flex justify-between items-center bg-black/20 p-2 rounded-lg mb-4 text-lg">
+                            <div className="text-left">
+                                <div>Score: <span className="font-bold text-cyan-400">{score}</span></div>
+                                <div>High Score: <span className="font-bold text-yellow-400">{highScores[currentLevelIndex] || 0}</span></div>
+                            </div>
+                            <div className="text-center text-2xl font-semibold text-white">{getGameStatusMessage()}</div>
+                            <div className="text-right">Time: <span className="font-bold text-pink-400">{new Date(time * 1000).toISOString().substr(14, 5)}</span></div>
+                        </div>
+
+                        <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center">
+                            {board.map((row, rowIndex) => (
+                                <div key={rowIndex} className="flex justify-center">
+                                    {row.map((cell, colIndex) => {
+                                        if (cell === null) return <div key={colIndex} className="w-8 h-8 sm:w-10 sm:h-10" />;
+                                        const isSelected = selectedPeg && selectedPeg.row === rowIndex && selectedPeg.col === colIndex;
+                                        return cell ? (
+                                            <Peg key={colIndex} isSelected={isSelected} onClick={() => handleCellClick(rowIndex, colIndex)} />
+                                        ) : (
+                                            <Hole key={colIndex} onClick={() => handleCellClick(rowIndex, colIndex)} />
+                                        );
+                                    })}
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <div className="mt-6">
+                            <button onClick={() => initializeBoard(currentLevelIndex)}
+                                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105">
+                                Reset Level
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <Celebration show={showWin} />
+                </div>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<PegJumperGame />);
+    </script>
+</body>
+</html>

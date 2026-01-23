@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lasers and Mirrors - Premium Physics Puzzle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow: hidden;
+            user-select: none;
+            background: radial-gradient(circle at center, #2d4aa7 0%, #1e2b73 40%, #0f1547 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 204, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 20, 147, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(138, 43, 226, 0.04) 0%, transparent 50%);
+            animation: ambientPulse 8s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes ambientPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1.0; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { 
+                transform: translateY(-10vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 3;
+        }
+
+        .ui-panel {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 16px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .ui-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .level-panel {
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            padding: 12px 16px;
+        }
+
+        .level-text {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            text-shadow: 
+                0 0 10px #7799ff,
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 6px;
+        }
+
+        .instruction-text {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            line-height: 1.3;
+        }
+
+        .controls-panel {
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .score-text {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #00ffcc;
+            text-shadow: 
+                0 0 10px #00ffcc,
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 0 8px rgba(0, 255, 204, 0.7));
+            margin-bottom: 8px;
+        }
+
+        .level-text {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            text-shadow: 
+                0 0 10px #7799ff,
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+        }
+
+        .instruction-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            line-height: 1.4;
+        }
+
+        .game-button {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2) 0%, rgba(0, 255, 204, 0.1) 100%);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 12px;
+            color: #00ffcc;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.7);
+            margin: 4px;
+        }
+
+        .game-button:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.3) 0%, rgba(0, 255, 204, 0.15) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
+        }
+
+        .game-button:active {
+            transform: scale(0.95);
+        }
+
+        .win-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ffcc;
+            text-shadow: 
+                0 0 20px #00ffcc,
+                0 4px 8px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0 0 12px rgba(0, 255, 204, 0.8));
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .win-message.show {
+            opacity: 1;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        canvas.drag-mode {
+            cursor: move;
+        }
+
+        .laser-source {
+            animation: pulse 2s infinite;
+        }
+
+        .target {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="ui-panel level-panel">
+            <div class="level-text">LEVEL 1: FIRST REFLECTION</div>
+            <div class="instruction-text">
+                Double-click to place next mirror • Drag mirrors to reposition • Delete key: return to storage
+            </div>
+        </div>
+
+        <div class="ui-panel controls-panel">
+            <button class="game-button" onclick="resetGame()">RESET</button>
+            <button class="game-button" onclick="fireLaser()">FIRE LASER</button>
+            <div class="score-text" id="modeIndicator" style="margin-top: 8px; font-size: 12px;">READY</div>
+        </div>
+
+        <div class="win-message" id="winMessage">TARGET ACQUIRED!</div>
+
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Bottom horizontal mirror toolbar -->
+        <div class="mirror-toolbar">
+            <div id="mirrorSlots" class="mirror-slots-row">
+                <!-- Mirror slots will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to full screen minus bottom toolbar
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - 80; // Account for 80px bottom toolbar
+
+        let gameState = {
+            laserSource: null,
+            target: null,
+            mirrors: [],
+            obstacles: [],
+            selectedMirror: null,
+            isDragging: false,
+            mouse: { x: 0, y: 0 },
+            particles: [],
+            won: false,
+            laserPath: [],
+            laserBeam: null,
+            mirrorInventory: [
+                { angle: 0, length: 60, id: 1, used: false },                    // Horizontal
+                { angle: Math.PI / 4, length: 50, id: 2, used: false },          // 45 degrees
+                { angle: -Math.PI / 4, length: 50, id: 3, used: false },         // -45 degrees
+                { angle: Math.PI / 2, length: 40, id: 4, used: false },          // Vertical
+                { angle: Math.PI / 6, length: 55, id: 5, used: false },          // 30 degrees
+                { angle: -Math.PI / 6, length: 55, id: 6, used: false },         // -30 degrees
+                { angle: Math.PI / 3, length: 45, id: 7, used: false },          // 60 degrees
+                { angle: -Math.PI / 3, length: 45, id: 8, used: false }          // -60 degrees
+            ]
+        };
+
+        // Laser Source class
+        class LaserSource {
+            constructor(x, y, angle) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle;
+                this.radius = 15;
+                this.color = '#ff1493';
+            }
+
+            draw() {
+                // Draw glow
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+                gradient.addColorStop(0, this.color);
+                gradient.addColorStop(0.5, this.color + '80');
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.save();
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Draw laser source
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Draw direction indicator
+                const dirX = this.x + Math.cos(this.angle) * (this.radius + 10);
+                const dirY = this.y + Math.sin(this.angle) * (this.radius + 10);
+                
+                ctx.save();
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.moveTo(this.x + Math.cos(this.angle) * this.radius, 
+                          this.y + Math.sin(this.angle) * this.radius);
+                ctx.lineTo(dirX, dirY);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        // Target class
+        class Target {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 20;
+                this.color = '#00ffcc';
+                this.hit = false;
+            }
+
+            checkHit(x, y) {
+                const distance = Math.sqrt((x - this.x) ** 2 + (y - this.y) ** 2);
+                return distance <= this.radius;
+            }
+
+            draw() {
+                // Draw glow
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2);
+                gradient.addColorStop(0, this.color);
+                gradient.addColorStop(0.5, this.color + '60');
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.save();
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                // Draw target rings
+                ctx.save();
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 3;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                
+                for (let i = 1; i <= 3; i++) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, (this.radius / 3) * i, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // Draw center
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Mirror class
+        class Mirror {
+            constructor(x, y, angle, length, id) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle; // Fixed angle, cannot be changed
+                this.length = length;
+                this.id = id;
+                this.isSelected = false;
+                this.color = '#7799ff';
+                this.isPlaced = false;
+                this.originalInventoryIndex = -1;
+            }
+
+            getEndpoints() {
+                const halfLength = this.length / 2;
+                return {
+                    x1: this.x - Math.cos(this.angle) * halfLength,
+                    y1: this.y - Math.sin(this.angle) * halfLength,
+                    x2: this.x + Math.cos(this.angle) * halfLength,
+                    y2: this.y + Math.sin(this.angle) * halfLength
+                };
+            }
+
+            reflect(rayAngle) {
+                // Calculate reflection using the law of reflection
+                // Mirror surface vector
+                const mirrorVecX = Math.cos(this.angle);
+                const mirrorVecY = Math.sin(this.angle);
+                
+                // Mirror normal (perpendicular to surface)
+                const normalX = -mirrorVecY;
+                const normalY = mirrorVecX;
+                
+                // Incident ray direction
+                const incidentX = Math.cos(rayAngle);
+                const incidentY = Math.sin(rayAngle);
+                
+                // Dot product of incident ray and normal
+                const dotProduct = incidentX * normalX + incidentY * normalY;
+                
+                // Reflected ray direction: R = I - 2(I·N)N
+                const reflectedX = incidentX - 2 * dotProduct * normalX;
+                const reflectedY = incidentY - 2 * dotProduct * normalY;
+                
+                return Math.atan2(reflectedY, reflectedX);
+            }
+
+            intersectsRay(startX, startY, angle) {
+                const endpoints = this.getEndpoints();
+                
+                // Ray direction vector
+                const rayDx = Math.cos(angle);
+                const rayDy = Math.sin(angle);
+                
+                // Mirror line vector
+                const mirrorDx = endpoints.x2 - endpoints.x1;
+                const mirrorDy = endpoints.y2 - endpoints.y1;
+                
+                // Calculate line intersection using parametric form
+                const denominator = rayDx * mirrorDy - rayDy * mirrorDx;
+                
+                // Check if lines are parallel
+                if (Math.abs(denominator) < 0.000001) return null;
+                
+                // Vector from ray start to mirror start
+                const toMirrorX = endpoints.x1 - startX;
+                const toMirrorY = endpoints.y1 - startY;
+                
+                // Calculate intersection parameters
+                const t = (toMirrorX * mirrorDy - toMirrorY * mirrorDx) / denominator;
+                const u = (toMirrorX * rayDy - toMirrorY * rayDx) / denominator;
+                
+                // Check if intersection is valid:
+                // t > 0: intersection is in front of ray start
+                // 0 <= u <= 1: intersection is within mirror segment
+                if (t > 0 && u >= 0 && u <= 1) {
+                    return {
+                        x: startX + t * rayDx,
+                        y: startY + t * rayDy,
+                        distance: t
+                    };
+                }
+                
+                return null;
+            }
+
+            containsPoint(x, y) {
+                const endpoints = this.getEndpoints();
+                const distance = this.distanceToLineSegment(x, y, endpoints.x1, endpoints.y1, endpoints.x2, endpoints.y2);
+                return distance <= 8;
+            }
+
+            distanceToLineSegment(px, py, x1, y1, x2, y2) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const length = dx * dx + dy * dy;
+                
+                if (length === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
+                
+                const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / length));
+                const closestX = x1 + t * dx;
+                const closestY = y1 + t * dy;
+                
+                return Math.sqrt((px - closestX) ** 2 + (py - closestY) ** 2);
+            }
+
+            draw() {
+                const endpoints = this.getEndpoints();
+                
+                // Determine visual state
+                const isSelected = this.isSelected;
+                const alpha = this.isPlaced ? 1.0 : 0.6;
+                
+                // Draw glow with size-based intensity
+                const glowIntensity = this.length / 60; // Normalize to original size
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = isSelected ? 25 * glowIntensity : 15 * glowIntensity;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = isSelected ? 8 : 6;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(endpoints.x1, endpoints.y1);
+                ctx.lineTo(endpoints.x2, endpoints.y2);
+                ctx.stroke();
+                ctx.restore();
+
+                // Draw mirror surface (reflective)
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = Math.max(2, this.length / 30);
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(endpoints.x1, endpoints.y1);
+                ctx.lineTo(endpoints.x2, endpoints.y2);
+                ctx.stroke();
+                ctx.restore();
+
+                // Draw center point if selected
+                if (isSelected) {
+                    ctx.save();
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // Draw normal indicator (showing reflection surface)
+                if (this.isPlaced) {
+                    // Draw both possible normals to show the mirror reflects from both sides
+                    const normalX = -Math.sin(this.angle);
+                    const normalY = Math.cos(this.angle);
+                    const normalLength = 15;
+                    
+                    // Draw normal on both sides
+                    for (let side = -1; side <= 1; side += 2) {
+                        const normalEndX = this.x + normalX * normalLength * side;
+                        const normalEndY = this.y + normalY * normalLength * side;
+                        
+                        ctx.save();
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = 0.3;
+                        ctx.setLineDash([2, 2]);
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(normalEndX, normalEndY);
+                        ctx.stroke();
+                        
+                        // Draw arrow head
+                        ctx.setLineDash([]);
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(normalEndX, normalEndY, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+            }
+        }
+
+        // Obstacle class
+        class Obstacle {
+            constructor(x, y, width, height) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.color = '#ff6b6b';
+            }
+
+            intersectsRay(startX, startY, angle) {
+                // Check intersection with each edge of the rectangle
+                const rays = [
+                    { x1: this.x, y1: this.y, x2: this.x + this.width, y2: this.y }, // top
+                    { x1: this.x + this.width, y1: this.y, x2: this.x + this.width, y2: this.y + this.height }, // right
+                    { x1: this.x + this.width, y1: this.y + this.height, x2: this.x, y2: this.y + this.height }, // bottom
+                    { x1: this.x, y1: this.y + this.height, x2: this.x, y2: this.y } // left
+                ];
+
+                let closestIntersection = null;
+                let minDistance = Infinity;
+
+                rays.forEach(edge => {
+                    const intersection = this.lineIntersection(
+                        startX, startY, 
+                        startX + Math.cos(angle) * 1000, startY + Math.sin(angle) * 1000,
+                        edge.x1, edge.y1, edge.x2, edge.y2
+                    );
+
+                    if (intersection) {
+                        const distance = Math.sqrt((intersection.x - startX) ** 2 + (intersection.y - startY) ** 2);
+                        if (distance < minDistance && distance > 1) { // Avoid self-intersection
+                            minDistance = distance;
+                            closestIntersection = { ...intersection, distance };
+                        }
+                    }
+                });
+
+                return closestIntersection;
+            }
+
+            lineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+                const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+                if (Math.abs(denom) < 0.0001) return null;
+
+                const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+                const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+
+                if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+                    return {
+                        x: x1 + t * (x2 - x1),
+                        y: y1 + t * (y2 - y1)
+                    };
+                }
+
+                return null;
+            }
+
+            draw() {
+                // Draw glow
+                ctx.save();
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = this.color + '60';
+                ctx.fillRect(this.x - 3, this.y - 3, this.width + 6, this.height + 6);
+                ctx.restore();
+
+                // Draw obstacle
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.restore();
+
+                // Draw border
+                ctx.save();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                ctx.restore();
+            }
+        }
+
+        // Laser Beam class
+        class LaserBeam {
+            constructor() {
+                this.segments = [];
+                this.particles = [];
+            }
+
+            calculate() {
+                this.segments = [];
+                
+                let currentX = gameState.laserSource.x + Math.cos(gameState.laserSource.angle) * gameState.laserSource.radius;
+                let currentY = gameState.laserSource.y + Math.sin(gameState.laserSource.angle) * gameState.laserSource.radius;
+                let currentAngle = gameState.laserSource.angle;
+                let maxReflections = 20;
+                let reflectionCount = 0;
+
+                while (reflectionCount < maxReflections) {
+                    let closestIntersection = null;
+                    let closestDistance = Infinity;
+                    let intersectedObject = null;
+
+                    // Check ALL objects for intersections and find the closest one
+                    const allObjects = [...gameState.mirrors.filter(m => m.isPlaced), ...gameState.obstacles];
+                    
+                    allObjects.forEach(obj => {
+                        const intersection = obj.intersectsRay(currentX, currentY, currentAngle);
+                        if (intersection && intersection.distance > 0.1 && intersection.distance < closestDistance) {
+                            closestDistance = intersection.distance;
+                            closestIntersection = intersection;
+                            intersectedObject = obj;
+                        }
+                    });
+
+                    // Check boundaries
+                    const boundaryIntersection = this.getBoundaryIntersection(currentX, currentY, currentAngle);
+                    if (boundaryIntersection && boundaryIntersection.distance > 0.1 && boundaryIntersection.distance < closestDistance) {
+                        closestDistance = boundaryIntersection.distance;
+                        closestIntersection = boundaryIntersection;
+                        intersectedObject = null;
+                    }
+
+                    if (closestIntersection) {
+                        // Add segment to the intersection point
+                        this.segments.push({
+                            startX: currentX,
+                            startY: currentY,
+                            endX: closestIntersection.x,
+                            endY: closestIntersection.y,
+                            angle: currentAngle
+                        });
+
+                        // Check target hit along the beam path
+                        if (this.checkTargetHitAlongBeam(currentX, currentY, closestIntersection.x, closestIntersection.y)) {
+                            this.winGame();
+                            break;
+                        }
+
+                        // If hit obstacle or boundary, stop the laser
+                        if (!intersectedObject || intersectedObject instanceof Obstacle) {
+                            break;
+                        }
+
+                        // If hit mirror, reflect and continue
+                        if (intersectedObject instanceof Mirror) {
+                            // Calculate reflection angle
+                            const reflectedAngle = intersectedObject.reflect(currentAngle);
+                            
+                            // Move slightly away from the mirror surface to avoid re-intersection
+                            const offsetDistance = 1.0;
+                            const reflectedDirX = Math.cos(reflectedAngle);
+                            const reflectedDirY = Math.sin(reflectedAngle);
+                            
+                            currentX = closestIntersection.x + reflectedDirX * offsetDistance;
+                            currentY = closestIntersection.y + reflectedDirY * offsetDistance;
+                            currentAngle = reflectedAngle;
+                            reflectionCount++;
+                            
+                            // Create reflection particles
+                            this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
+                            
+                            // Continue the loop to trace the reflected beam
+                            continue;
+                        }
+                    } else {
+                        // No intersection found, extend to boundary
+                        const maxDistance = Math.max(canvas.width, canvas.height) * 2;
+                        const endX = currentX + Math.cos(currentAngle) * maxDistance;
+                        const endY = currentY + Math.sin(currentAngle) * maxDistance;
+                        
+                        this.segments.push({
+                            startX: currentX,
+                            startY: currentY,
+                            endX: endX,
+                            endY: endY,
+                            angle: currentAngle
+                        });
+                        
+                        // Check target hit along this final beam
+                        if (this.checkTargetHitAlongBeam(currentX, currentY, endX, endY)) {
+                            this.winGame();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            checkTargetHitAlongBeam(startX, startY, endX, endY) {
+                // Check if the laser beam passes through the target
+                const beamLength = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+                if (beamLength === 0) return false;
+                
+                // Vector from beam start to target center
+                const toTargetX = gameState.target.x - startX;
+                const toTargetY = gameState.target.y - startY;
+                
+                // Beam direction vector (normalized)
+                const beamDx = (endX - startX) / beamLength;
+                const beamDy = (endY - startY) / beamLength;
+                
+                // Project target position onto beam
+                const projection = toTargetX * beamDx + toTargetY * beamDy;
+                
+                // Check if projection is within beam segment
+                if (projection < 0 || projection > beamLength) return false;
+                
+                // Find closest point on beam to target
+                const closestX = startX + projection * beamDx;
+                const closestY = startY + projection * beamDy;
+                
+                // Check if distance from target to beam is within target radius
+                const distanceToBeam = Math.sqrt((gameState.target.x - closestX) ** 2 + (gameState.target.y - closestY) ** 2);
+                return distanceToBeam <= gameState.target.radius;
+            }
+
+            getBoundaryIntersection(x, y, angle) {
+                const maxDist = Math.max(canvas.width, canvas.height) * 2;
+                const endX = x + Math.cos(angle) * maxDist;
+                const endY = y + Math.sin(angle) * maxDist;
+
+                let closestIntersection = null;
+                let minDistance = Infinity;
+
+                // Check canvas boundaries
+                const boundaries = [
+                    { x1: 0, y1: 0, x2: canvas.width, y2: 0 }, // top
+                    { x1: canvas.width, y1: 0, x2: canvas.width, y2: canvas.height }, // right
+                    { x1: canvas.width, y1: canvas.height, x2: 0, y2: canvas.height }, // bottom
+                    { x1: 0, y1: canvas.height, x2: 0, y2: 0 } // left
+                ];
+
+                boundaries.forEach(boundary => {
+                    const intersection = this.lineIntersection(
+                        x, y, endX, endY,
+                        boundary.x1, boundary.y1, boundary.x2, boundary.y2
+                    );
+
+                    if (intersection) {
+                        const distance = Math.sqrt((intersection.x - x) ** 2 + (intersection.y - y) ** 2);
+                        if (distance < minDistance && distance > 1) {
+                            minDistance = distance;
+                            closestIntersection = { ...intersection, distance };
+                        }
+                    }
+                });
+
+                return closestIntersection;
+            }
+
+            lineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+                const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+                if (Math.abs(denom) < 0.0001) return null;
+
+                const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+                const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+
+                if (t >= 0 && u >= 0 && u <= 1) {
+                    return {
+                        x: x1 + t * (x2 - x1),
+                        y: y1 + t * (y2 - y1)
+                    };
+                }
+
+                return null;
+            }
+
+            createReflectionParticles(x, y) {
+                for (let i = 0; i < 8; i++) {
+                    gameState.particles.push(new Particle(
+                        x + (Math.random() - 0.5) * 10,
+                        y + (Math.random() - 0.5) * 10,
+                        '#7799ff'
+                    ));
+                }
+            }
+
+            winGame() {
+                gameState.won = true;
+                document.getElementById('winMessage').classList.add('show');
+                
+                // Create celebration particles
+                for (let i = 0; i < 40; i++) {
+                    gameState.particles.push(new Particle(
+                        gameState.target.x + (Math.random() - 0.5) * 60,
+                        gameState.target.y + (Math.random() - 0.5) * 60,
+                        Math.random() > 0.5 ? '#00ffcc' : '#ff1493'
+                    ));
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('winMessage').classList.remove('show');
+                    gameState.won = false;
+                }, 3000);
+            }
+
+            draw() {
+                this.segments.forEach((segment, index) => {
+                    // Draw laser beam with glow
+                    ctx.save();
+                    
+                    // Different colors for different segments to show reflections
+                    const colors = ['#ff1493', '#ff6b6b', '#ffaa00', '#00ff88', '#0088ff'];
+                    const color = colors[index % colors.length];
+                    
+                    // Glow effect
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = 20;
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 6;
+                    ctx.lineCap = 'round';
+                    ctx.globalAlpha = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(segment.startX, segment.startY);
+                    ctx.lineTo(segment.endX, segment.endY);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    // Core beam
+                    ctx.save();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'round';
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(segment.startX, segment.startY);
+                    ctx.lineTo(segment.endX, segment.endY);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    // Add moving particles along beam
+                    if (Math.random() < 0.3) {
+                        const t = Math.random();
+                        const x = segment.startX + (segment.endX - segment.startX) * t;
+                        const y = segment.startY + (segment.endY - segment.startY) * t;
+                        
+                        gameState.particles.push(new Particle(x, y, color));
+                    }
+                });
+            }
+        }
+
+        // Particle class
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = (Math.random() - 0.5) * 6;
+                this.life = 60;
+                this.maxLife = 60;
+                this.color = color;
+                this.size = Math.random() * 3 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.life--;
+            }
+
+            draw() {
+                const alpha = this.life / this.maxLife;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * alpha, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Initialize game
+        function initGame() {
+            gameState.laserSource = new LaserSource(30, canvas.height / 2, 0);
+            gameState.target = new Target(canvas.width - 80, canvas.height / 3);
+            gameState.mirrors = [];
+            gameState.particles = [];
+            gameState.laserBeam = new LaserBeam();
+            
+            // Create obstacles positioned to use full vertical space of playable area
+            gameState.obstacles = [
+                new Obstacle(canvas.width / 3, canvas.height * 0.1, 40, canvas.height * 0.35),
+                new Obstacle(canvas.width * 2/3 - 20, canvas.height * 0.5, 40, canvas.height * 0.35),
+                new Obstacle(canvas.width * 0.25, canvas.height * 0.8, canvas.width * 0.3, 30)
+            ];
+            
+            // Initialize mirror inventory UI
+            createMirrorInventoryUI();
+            
+            // Auto-fire laser initially
+            gameState.laserBeam.calculate();
+            
+            createBackgroundParticles();
+        }
+
+        function createMirrorInventoryUI() {
+            const slotsContainer = document.getElementById('mirrorSlots');
+            slotsContainer.innerHTML = '';
+            
+            gameState.mirrorInventory.forEach((mirrorData, index) => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'mirror-slot';
+                slotElement.dataset.index = index;
+                
+                // Create actual-size mirror canvas
+                const mirrorCanvas = document.createElement('canvas');
+                mirrorCanvas.className = 'mirror-actual';
+                mirrorCanvas.width = 44;
+                mirrorCanvas.height = 44;
+                const mirrorCtx = mirrorCanvas.getContext('2d');
+                
+                // Draw actual mirror at proper scale
+                const centerX = 22;
+                const centerY = 22;
+                const scale = 0.6;
+                const halfLength = (mirrorData.length * scale) / 2;
+                
+                const x1 = centerX - Math.cos(mirrorData.angle) * halfLength;
+                const y1 = centerY - Math.sin(mirrorData.angle) * halfLength;
+                const x2 = centerX + Math.cos(mirrorData.angle) * halfLength;
+                const y2 = centerY + Math.sin(mirrorData.angle) * halfLength;
+                
+                // Draw glow
+                mirrorCtx.shadowColor = '#7799ff';
+                mirrorCtx.shadowBlur = 10;
+                mirrorCtx.strokeStyle = '#7799ff';
+                mirrorCtx.lineWidth = 5;
+                mirrorCtx.lineCap = 'round';
+                mirrorCtx.beginPath();
+                mirrorCtx.moveTo(x1, y1);
+                mirrorCtx.lineTo(x2, y2);
+                mirrorCtx.stroke();
+                
+                // Draw mirror surface
+                mirrorCtx.shadowBlur = 0;
+                mirrorCtx.strokeStyle = '#ffffff';
+                mirrorCtx.lineWidth = 2.5;
+                mirrorCtx.beginPath();
+                mirrorCtx.moveTo(x1, y1);
+                mirrorCtx.lineTo(x2, y2);
+                mirrorCtx.stroke();
+                
+                slotElement.appendChild(mirrorCanvas);
+                
+                // Add drag functionality
+                slotElement.addEventListener('mousedown', (e) => {
+                    if (!mirrorData.used) {
+                        startDragFromStorage(index, e);
+                    }
+                });
+                
+                // Add double-click functionality
+                slotElement.addEventListener('dblclick', (e) => {
+                    if (!mirrorData.used) {
+                        placeMirrorInCenter(index);
+                    }
+                });
+                
+                slotsContainer.appendChild(slotElement);
+            });
+            
+            updateMirrorStorageUI();
+        }
+
+        function placeMirrorInCenter(inventoryIndex) {
+            const mirrorData = gameState.mirrorInventory[inventoryIndex];
+            
+            // Place mirror in center of screen
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            const mirror = new Mirror(
+                centerX, centerY,
+                mirrorData.angle, 
+                mirrorData.length, 
+                mirrorData.id
+            );
+            
+            mirror.originalInventoryIndex = inventoryIndex;
+            mirror.isSelected = true;
+            mirror.isPlaced = true;
+            
+            gameState.mirrors.push(mirror);
+            gameState.selectedMirror = mirror;
+            
+            // Mark as used
+            mirrorData.used = true;
+            
+            // Auto-update laser
+            gameState.laserBeam.calculate();
+            
+            // Update UI
+            updateMirrorStorageUI();
+        }
+
+        function startDragFromStorage(inventoryIndex, e) {
+            const mirrorData = gameState.mirrorInventory[inventoryIndex];
+            const slotElement = e.currentTarget;
+            
+            // Visual feedback for the slot
+            slotElement.classList.add('dragging');
+            
+            // Create drag ghost
+            const dragGhost = createDragGhost(mirrorData);
+            document.body.appendChild(dragGhost);
+            
+            // Position drag ghost
+            updateDragGhost(dragGhost, e.clientX, e.clientY);
+            
+            // Create mirror in game world
+            const rect = canvas.getBoundingClientRect();
+            const gameX = e.clientX - rect.left;
+            const gameY = e.clientY - rect.top;
+            
+            const mirror = new Mirror(
+                gameX, gameY, 
+                mirrorData.angle, 
+                mirrorData.length, 
+                mirrorData.id
+            );
+            
+            mirror.originalInventoryIndex = inventoryIndex;
+            mirror.isSelected = true;
+            mirror.isPlaced = true;
+            
+            gameState.mirrors.push(mirror);
+            gameState.selectedMirror = mirror;
+            gameState.isDragging = true;
+            
+            // Mark as used
+            mirrorData.used = true;
+            
+            // Mouse move handler for drag ghost
+            const handleMouseMove = (e) => {
+                updateDragGhost(dragGhost, e.clientX, e.clientY);
+                
+                // Update mirror position in game
+                const rect = canvas.getBoundingClientRect();
+                const gameX = e.clientX - rect.left;
+                const gameY = e.clientY - rect.top;
+                
+                mirror.x = gameX;
+                mirror.y = gameY;
+                
+                // Auto-update laser
+                gameState.laserBeam.calculate();
+            };
+            
+            // Mouse up handler
+            const handleMouseUp = () => {
+                // Clean up drag ghost
+                if (dragGhost && dragGhost.parentNode) {
+                    dragGhost.parentNode.removeChild(dragGhost);
+                }
+                
+                // Remove slot dragging state
+                slotElement.classList.remove('dragging');
+                
+                // End dragging
+                gameState.isDragging = false;
+                
+                // Remove event listeners
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+                
+                // Update UI
+                updateMirrorStorageUI();
+                updateUI();
+            };
+            
+            // Add event listeners
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Prevent default drag behavior
+            e.preventDefault();
+        }
+
+        function createDragGhost(mirrorData) {
+            const ghost = document.createElement('div');
+            ghost.className = 'drag-ghost';
+            ghost.style.width = '44px';
+            ghost.style.height = '44px';
+            
+            const ghostCanvas = document.createElement('canvas');
+            ghostCanvas.width = 44;
+            ghostCanvas.height = 44;
+            const ghostCtx = ghostCanvas.getContext('2d');
+            
+            // Draw enlarged mirror preview
+            const centerX = 22;
+            const centerY = 22;
+            const scale = 0.6;
+            const halfLength = (mirrorData.length * scale) / 2;
+            
+            const x1 = centerX - Math.cos(mirrorData.angle) * halfLength;
+            const y1 = centerY - Math.sin(mirrorData.angle) * halfLength;
+            const x2 = centerX + Math.cos(mirrorData.angle) * halfLength;
+            const y2 = centerY + Math.sin(mirrorData.angle) * halfLength;
+            
+            // Draw glow
+            ghostCtx.shadowColor = '#7799ff';
+            ghostCtx.shadowBlur = 12;
+            ghostCtx.strokeStyle = '#7799ff';
+            ghostCtx.lineWidth = 5;
+            ghostCtx.lineCap = 'round';
+            ghostCtx.beginPath();
+            ghostCtx.moveTo(x1, y1);
+            ghostCtx.lineTo(x2, y2);
+            ghostCtx.stroke();
+            
+            // Draw mirror surface
+            ghostCtx.shadowBlur = 0;
+            ghostCtx.strokeStyle = '#ffffff';
+            ghostCtx.lineWidth = 2.5;
+            ghostCtx.beginPath();
+            ghostCtx.moveTo(x1, y1);
+            ghostCtx.lineTo(x2, y2);
+            ghostCtx.stroke();
+            
+            ghost.appendChild(ghostCanvas);
+            return ghost;
+        }
+
+        function updateDragGhost(ghost, mouseX, mouseY) {
+            ghost.style.left = (mouseX - 22) + 'px';
+            ghost.style.top = (mouseY - 22) + 'px';
+        }
+
+        function updateMirrorStorageUI() {
+            const slots = document.querySelectorAll('.mirror-slot');
+            let nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
+            
+            slots.forEach((slot, index) => {
+                // Remove all special classes first
+                slot.classList.remove('empty', 'next-to-place');
+                
+                if (gameState.mirrorInventory[index] && gameState.mirrorInventory[index].used) {
+                    slot.classList.add('empty');
+                } else if (index === nextMirrorIndex) {
+                    // Highlight the next mirror to be placed
+                    slot.classList.add('next-to-place');
+                }
+            });
+        }
+
+        function createBackgroundParticles() {
+            setInterval(() => {
+                if (document.querySelectorAll('.particle').length < 50) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                    particle.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 12000);
+                }
+            }, 500);
+        }
+
+        function updateUI() {
+            // UI updates handled by storage system
+        }
+
+        function resetGame() {
+            // Return mirrors to storage
+            gameState.mirrors.forEach(mirror => {
+                if (mirror.originalInventoryIndex >= 0) {
+                    gameState.mirrorInventory[mirror.originalInventoryIndex].used = false;
+                }
+            });
+            
+            gameState.mirrors = [];
+            gameState.selectedMirror = null;
+            gameState.isDragging = false;
+            gameState.particles = [];
+            gameState.laserBeam = new LaserBeam();
+            gameState.laserBeam.calculate(); // Auto-fire
+            
+            updateMirrorStorageUI();
+        }
+
+        function fireLaser() {
+            gameState.laserBeam.calculate();
+        }
+
+        // Event handlers
+        let lastTapTime = 0;
+        
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            gameState.mouse.x = x;
+            gameState.mouse.y = y;
+
+            // Check if clicking on existing mirror
+            let clickedMirror = null;
+            for (let mirror of gameState.mirrors) {
+                if (mirror.containsPoint(x, y)) {
+                    clickedMirror = mirror;
+                    break;
+                }
+            }
+
+            if (clickedMirror) {
+                // Clicking on existing mirror - select and start dragging
+                if (gameState.selectedMirror) {
+                    gameState.selectedMirror.isSelected = false;
+                }
+                gameState.selectedMirror = clickedMirror;
+                clickedMirror.isSelected = true;
+                gameState.isDragging = true;
+            } else {
+                // Clicking on empty space - deselect current mirror
+                if (gameState.selectedMirror) {
+                    gameState.selectedMirror.isSelected = false;
+                    gameState.selectedMirror = null;
+                    gameState.isDragging = false;
+                }
+            }
+        });
+
+        // Double-click handler for rapid mirror placement
+        canvas.addEventListener('dblclick', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Find next available mirror
+            const nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
+            
+            if (nextMirrorIndex !== -1) {
+                placeNextMirrorAt(nextMirrorIndex, x, y);
+            }
+        });
+
+        function placeNextMirrorAt(inventoryIndex, x, y) {
+            const mirrorData = gameState.mirrorInventory[inventoryIndex];
+            
+            // Create mirror at the specified position
+            const mirror = new Mirror(
+                x, y,
+                mirrorData.angle, 
+                mirrorData.length, 
+                mirrorData.id
+            );
+            
+            mirror.originalInventoryIndex = inventoryIndex;
+            mirror.isSelected = true;
+            mirror.isPlaced = true;
+            
+            // Deselect previous mirror
+            if (gameState.selectedMirror) {
+                gameState.selectedMirror.isSelected = false;
+            }
+            
+            gameState.mirrors.push(mirror);
+            gameState.selectedMirror = mirror;
+            
+            // Mark as used
+            mirrorData.used = true;
+            
+            // Auto-update laser
+            gameState.laserBeam.calculate();
+            
+            // Update UI
+            updateMirrorStorageUI();
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            gameState.mouse.x = x;
+            gameState.mouse.y = y;
+
+            if (gameState.selectedMirror && gameState.isDragging) {
+                gameState.selectedMirror.x = x;
+                gameState.selectedMirror.y = y;
+                
+                // Auto-update laser when mirror is moved
+                gameState.laserBeam.calculate();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            gameState.isDragging = false;
+        });
+
+        // Touch events for mobile with double-tap support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            
+            if (tapLength < 500 && tapLength > 0) {
+                // Double tap detected - place next mirror
+                const nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
+                if (nextMirrorIndex !== -1) {
+                    placeNextMirrorAt(nextMirrorIndex, x, y);
+                }
+            } else {
+                // Single tap - treat as mouse down
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }
+            
+            lastTapTime = currentTime;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup', {});
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (gameState.selectedMirror) {
+                switch(e.key) {
+                    case 'Delete':
+                    case 'Backspace':
+                        // Return mirror to storage
+                        if (gameState.selectedMirror.originalInventoryIndex >= 0) {
+                            gameState.mirrorInventory[gameState.selectedMirror.originalInventoryIndex].used = false;
+                        }
+                        
+                        const index = gameState.mirrors.indexOf(gameState.selectedMirror);
+                        if (index > -1) {
+                            gameState.mirrors.splice(index, 1);
+                            gameState.selectedMirror = null;
+                            gameState.isDragging = false;
+                            
+                            // Auto-update laser
+                            gameState.laserBeam.calculate();
+                            
+                            updateMirrorStorageUI();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Game loop
+        function gameLoop() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update cursor
+            canvas.className = gameState.isDragging ? 'drag-mode' : '';
+
+            // Update mode indicator
+            const modeIndicator = document.getElementById('modeIndicator');
+            if (gameState.selectedMirror) {
+                modeIndicator.textContent = gameState.isDragging ? 'POSITIONING' : 'SELECTED';
+                modeIndicator.style.color = '#7799ff';
+            } else {
+                modeIndicator.textContent = 'READY';
+                modeIndicator.style.color = '#ffffff';
+            }
+
+            // Update particles
+            gameState.particles = gameState.particles.filter(particle => {
+                particle.update();
+                return particle.life > 0;
+            });
+
+            // Draw everything
+            gameState.obstacles.forEach(obstacle => obstacle.draw());
+            gameState.mirrors.forEach(mirror => mirror.draw());
+            gameState.laserSource.draw();
+            gameState.target.draw();
+            
+            // Always draw laser beam
+            if (gameState.laserBeam) {
+                gameState.laserBeam.draw();
+            }
+            
+            gameState.particles.forEach(particle => particle.draw());
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Start game
+        initGame();
+        gameLoop();
+    </script>
+</body>
+</html>

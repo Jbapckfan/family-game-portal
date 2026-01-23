@@ -1,0 +1,16 @@
+:80 {
+    root * /srv/games
+    file_server browse
+
+    # Enable compression
+    encode gzip
+
+    # Handle SPA routing for games that need it
+    try_files {path} {path}/ /index.html
+
+    # CORS headers for local network
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    }
+}

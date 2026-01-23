@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Spark & Vesper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, system-ui, sans-serif;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overscroll-behavior: none;
+        }
+        
+        #gameContainer {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .world {
+            position: relative;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+        }
+        
+        #sparkWorld {
+            background: linear-gradient(180deg, #1a0f2a 0%, #2a1a3e 100%);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        #vesperWorld {
+            background: linear-gradient(180deg, #191970 0%, #0f1e3a 100%);
+            border-top: 1px solid rgba(107, 70, 193, 0.3);
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0f1c 0%, #1a0f2a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        #startScreen h1 {
+            font-size: 48px;
+            font-weight: 200;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+        
+        .spark-text {
+            background: linear-gradient(135deg, #FFD700, #FF6B35);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .vesper-text {
+            background: linear-gradient(135deg, #6B46C1, #191970);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        #startButton {
+            margin-top: 40px;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #FFD700, #6B46C1);
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-size: 16px;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        #startButton:active {
+            transform: scale(0.95);
+        }
+        
+        .debug-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            z-index: 1000;
+            font-family: monospace;
+        }
+        
+        #levelComplete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1500;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        #levelComplete.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        #levelComplete h2 {
+            background: linear-gradient(135deg, #FFD700, #6B46C1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="startScreen">
+            <h1>
+                <span class="spark-text">SPARK</span>
+                &
+                <span class="vesper-text">VESPER</span>
+            </h1>
+            <p style="opacity: 0.6; font-size: 14px;">Two souls. Two dimensions. One destiny.</p>
+            <button id="startButton">BEGIN JOURNEY</button>
+        </div>
+        
+        <div id="sparkWorld" class="world">
+            <canvas id="sparkCanvas"></canvas>
+            <div class="debug-info" id="sparkDebug"></div>
+        </div>
+        
+        <div id="vesperWorld" class="world">
+            <canvas id="vesperCanvas"></canvas>
+            <div class="debug-info" id="vesperDebug"></div>
+        </div>
+        
+        <div id="levelComplete">
+            <h2>HARMONIZED</h2>
+            <p>Spark and Vesper found each other</p>
+            <button onclick="nextLevel()">CONTINUE</button>
+        </div>
+    </div>
+    
+    <script>
+        // Game state with renamed characters
+        const game = {
+            spark: {
+                x: 100,
+                y: 100,
+                vx: 0,
+                vy: 0,
+                radius: 16,
+                targetX: 100,
+                targetY: 100,
+                charge: 0,
+                maxCharge: 100,
+                surgeActive: false,
+                trail: []
+            },
+            vesper: {
+                x: 100,
+                y: 100,
+                vx: 0,
+                vy: 0,
+                radius: 16,
+                targetX: 100,
+                targetY: 100,
+                flow: 0,
+                maxFlow: 100,
+                inFlow: false,
+                trail: []
+            },
+            proximityPower: 0,
+            dimensionalTears: [],
+            particles: [],
+            windPower: 0,
+            heatActive: false,
+            iceAlpha: 1,
+            bridgeExtension: 0,
+            gameStarted: false,
+            animTime: 0,
+            deltaTime: 0,
+            lastTime: 0
+        };
+        
+        // Canvas setup
+        let sparkCanvas, vesperCanvas, sparkCtx, vesperCtx;
+        
+        // Input handling
+        const input = {
+            sparkDragging: false,
+            vesperTouch: { x: -1, y: -1, active: false }
+        };
+        
+        // Initialize game
+        function init() {
+            console.log('Initializing game...');
+            
+            sparkCanvas = document.getElementById('sparkCanvas');
+            vesperCanvas = document.getElementById('vesperCanvas');
+            
+            if (!sparkCanvas || !vesperCanvas) {
+                console.error('Canvases not found!');
+                return;
+            }
+            
+            sparkCtx = sparkCanvas.getContext('2d');
+            vesperCtx = vesperCanvas.getContext('2d');
+            
+            resizeCanvases();
+            window.addEventListener('resize', resizeCanvases);
+            
+            // Setup controls
+            setupControls();
+            
+            // Start button
+            const startBtn = document.getElementById('startButton');
+            startBtn.addEventListener('click', startGame);
+            
+            console.log('Initialization complete');
+        }
+        
+        function resizeCanvases() {
+            const width = window.innerWidth;
+            const height = window.innerHeight / 2;
+            
+            sparkCanvas.width = width;
+            sparkCanvas.height = height;
+            vesperCanvas.width = width;
+            vesperCanvas.height = height;
+            
+            console.log(`Canvas resized to ${width}x${height}`);
+        }
+        
+        function setupControls() {
+            // Spark controls - drag
+            sparkCanvas.addEventListener('mousedown', handleSparkStart);
+            sparkCanvas.addEventListener('mousemove', handleSparkMove);
+            sparkCanvas.addEventListener('mouseup', handleSparkEnd);
+            sparkCanvas.addEventListener('touchstart', handleSparkStart, { passive: false });
+            sparkCanvas.addEventListener('touchmove', handleSparkMove, { passive: false });
+            sparkCanvas.addEventListener('touchend', handleSparkEnd, { passive: false });
+            
+            // Vesper controls - touch to attract
+            vesperCanvas.addEventListener('mousedown', handleVesperStart);
+            vesperCanvas.addEventListener('mousemove', handleVesperMove);
+            vesperCanvas.addEventListener('mouseup', handleVesperEnd);
+            vesperCanvas.addEventListener('touchstart', handleVesperStart, { passive: false });
+            vesperCanvas.addEventListener('touchmove', handleVesperMove, { passive: false });
+            vesperCanvas.addEventListener('touchend', handleVesperEnd, { passive: false });
+        }
+        
+        function handleSparkStart(e) {
+            e.preventDefault();
+            const rect = sparkCanvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            const x = (touch.clientX - rect.left) * (sparkCanvas.width / rect.width);
+            const y = (touch.clientY - rect.top) * (sparkCanvas.height / rect.height);
+            
+            const dist = Math.hypot(x - game.spark.x, y - game.spark.y);
+            if (dist < game.spark.radius * 3) {
+                input.sparkDragging = true;
+                game.spark.targetX = x;
+                game.spark.targetY = y;
+            }
+        }
+        
+        function handleSparkMove(e) {
+            if (!input.sparkDragging) return;
+            e.preventDefault();
+            
+            const rect = sparkCanvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            game.spark.targetX = (touch.clientX - rect.left) * (sparkCanvas.width / rect.width);
+            game.spark.targetY = (touch.clientY - rect.top) * (sparkCanvas.height / rect.height);
+        }
+        
+        function handleSparkEnd(e) {
+            e.preventDefault();
+            input.sparkDragging = false;
+        }
+        
+        function handleVesperStart(e) {
+            e.preventDefault();
+            input.vesperTouch.active = true;
+            const rect = vesperCanvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            input.vesperTouch.x = (touch.clientX - rect.left) * (vesperCanvas.width / rect.width);
+            input.vesperTouch.y = (touch.clientY - rect.top) * (vesperCanvas.height / rect.height);
+        }
+        
+        function handleVesperMove(e) {
+            if (!input.vesperTouch.active) return;
+            e.preventDefault();
+            
+            const rect = vesperCanvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            input.vesperTouch.x = (touch.clientX - rect.left) * (vesperCanvas.width / rect.width);
+            input.vesperTouch.y = (touch.clientY - rect.top) * (vesperCanvas.height / rect.height);
+        }
+        
+        function handleVesperEnd(e) {
+            e.preventDefault();
+            input.vesperTouch.active = false;
+        }
+        
+        function startGame() {
+            console.log('Starting game...');
+            document.getElementById('startScreen').style.display = 'none';
+            game.gameStarted = true;
+            game.lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function update(dt) {
+            if (!game.gameStarted) return;
+            
+            game.animTime += dt;
+            
+            // Update Spark with electric physics
+            const sparkAccel = 0.8;
+            const sparkFriction = 0.88;
+            
+            const dx = game.spark.targetX - game.spark.x;
+            const dy = game.spark.targetY - game.spark.y;
+            
+            game.spark.vx += dx * sparkAccel * dt;
+            game.spark.vy += dy * sparkAccel * dt;
+            game.spark.vx *= sparkFriction;
+            game.spark.vy *= sparkFriction;
+            
+            game.spark.x += game.spark.vx;
+            game.spark.y += game.spark.vy;
+            
+            // Keep in bounds
+            game.spark.x = Math.max(game.spark.radius, Math.min(sparkCanvas.width - game.spark.radius, game.spark.x));
+            game.spark.y = Math.max(game.spark.radius, Math.min(sparkCanvas.height - game.spark.radius, game.spark.y));
+            
+            // Build charge through movement
+            const separkSpeed = Math.hypot(game.spark.vx, game.spark.vy);
+            game.spark.charge = Math.min(game.spark.maxCharge, game.spark.charge + sparkSpeed * 0.5);
+            game.spark.charge *= 0.98; // Decay
+            
+            // Update Vesper with flowing physics
+            if (input.vesperTouch.active) {
+                const vesperAccel = 0.4;
+                const dx = input.vesperTouch.x - game.vesper.x;
+                const dy = input.vesperTouch.y - game.vesper.y;
+                const dist = Math.hypot(dx, dy);
+                
+                if (dist > 5) {
+                    const force = Math.min(1, dist / 150) * vesperAccel;
+                    game.vesper.vx += (dx / dist) * force;
+                    game.vesper.vy += (dy / dist) * force;
+                }
+            }
+            
+            // Vesper physics - more floaty
+            const vesperFriction = 0.95;
+            game.vesper.vx *= vesperFriction;
+            game.vesper.vy *= vesperFriction;
+            
+            game.vesper.x += game.vesper.vx;
+            game.vesper.y += game.vesper.vy;
+            
+            // Keep in bounds with bounce
+            if (game.vesper.x < game.vesper.radius || game.vesper.x > vesperCanvas.width - game.vesper.radius) {
+                game.vesper.vx *= -0.5;
+                game.vesper.x = Math.max(game.vesper.radius, Math.min(vesperCanvas.width - game.vesper.radius, game.vesper.x));
+            }
+            if (game.vesper.y < game.vesper.radius || game.vesper.y > vesperCanvas.height - game.vesper.radius) {
+                game.vesper.vy *= -0.5;
+                game.vesper.y = Math.max(game.vesper.radius, Math.min(vesperCanvas.height - game.vesper.radius, game.vesper.y));
+            }
+            
+            // Build flow through smooth movement
+            const vesperSpeed = Math.hypot(game.vesper.vx, game.vesper.vy);
+            if (vesperSpeed > 2) {
+                game.vesper.flow = Math.min(game.vesper.maxFlow, game.vesper.flow + 2);
+            } else {
+                game.vesper.flow *= 0.95;
+            }
+            
+            // Update trails
+            updateTrail(game.spark);
+            updateTrail(game.vesper);
+            
+            // Calculate proximity
+            const proximityDist = Math.hypot(game.spark.x - game.vesper.x, game.spark.y - game.vesper.y);
+            game.proximityPower = Math.max(0, 1 - proximityDist / 150);
+            
+            // Generate wind from Vesper's movement
+            game.windPower = vesperSpeed * 3;
+            
+            // Update particles
+            updateParticles(dt);
+            
+            // Debug info
+            updateDebugInfo();
+        }
+        
+        function updateTrail(character) {
+            character.trail.push({
+                x: character.x,
+                y: character.y,
+                life: 1
+            });
+            
+            character.trail = character.trail.filter(point => {
+                point.life -= 0.03;
+                return point.life > 0;
+            });
+            
+            if (character.trail.length > 25) {
+                character.trail.shift();
+            }
+        }
+        
+        function updateParticles(dt) {
+            // Generate particles based on character states
+            if (Math.random() < 0.1) {
+                // Spark particles
+                if (game.spark.charge > 20) {
+                    game.particles.push({
+                        x: game.spark.x + (Math.random() - 0.5) * 20,
+                        y: game.spark.y + (Math.random() - 0.5) * 20,
+                        vx: (Math.random() - 0.5) * 50,
+                        vy: (Math.random() - 0.5) * 50,
+                        life: 1,
+                        type: 'electric',
+                        color: '#FFD700'
+                    });
+                }
+                
+                // Vesper particles
+                if (game.vesper.flow > 20) {
+                    game.particles.push({
+                        x: game.vesper.x + (Math.random() - 0.5) * 20,
+                        y: game.vesper.y + (Math.random() - 0.5) * 20,
+                        vx: game.vesper.vx * 0.5 + (Math.random() - 0.5) * 20,
+                        vy: game.vesper.vy * 0.5 + (Math.random() - 0.5) * 20,
+                        life: 1.5,
+                        type: 'mist',
+                        color: '#6B46C1'
+                    });
+                }
+            }
+            
+            // Update existing particles
+            game.particles = game.particles.filter(p => {
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                p.life -= dt;
+                return p.life > 0;
+            });
+            
+            // Limit particles for performance
+            if (game.particles.length > 100) {
+                game.particles = game.particles.slice(-100);
+            }
+        }
+        
+        function renderSparkWorld() {
+            // Clear canvas
+            sparkCtx.fillStyle = 'rgba(26, 15, 42, 0.1)';
+            sparkCtx.fillRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+            
+            // Draw grid pattern
+            sparkCtx.strokeStyle = 'rgba(255, 215, 0, 0.05)';
+            sparkCtx.lineWidth = 1;
+            for (let i = 0; i < sparkCanvas.width; i += 40) {
+                sparkCtx.beginPath();
+                sparkCtx.moveTo(i, 0);
+                sparkCtx.lineTo(i, sparkCanvas.height);
+                sparkCtx.stroke();
+            }
+            
+            // Draw obstacles (placeholder)
+            sparkCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            sparkCtx.fillRect(200, 0, 300, sparkCanvas.height);
+            
+            // Draw bridge
+            if (game.bridgeExtension > 0) {
+                const bridgeWidth = 300 * game.bridgeExtension;
+                sparkCtx.fillStyle = `rgba(255, 215, 0, ${0.6 + Math.sin(game.animTime * 5) * 0.2})`;
+                sparkCtx.fillRect(200, sparkCanvas.height/2 - 20, bridgeWidth, 40);
+            }
+            
+            // Draw windmill
+            sparkCtx.save();
+            sparkCtx.translate(100, 100);
+            sparkCtx.rotate(game.animTime * game.windPower * 0.1);
+            sparkCtx.strokeStyle = '#FFD700';
+            sparkCtx.lineWidth = 3;
+            for (let i = 0; i < 4; i++) {
+                sparkCtx.rotate(Math.PI / 2);
+                sparkCtx.beginPath();
+                sparkCtx.moveTo(0, 0);
+                sparkCtx.lineTo(0, -30);
+                sparkCtx.stroke();
+            }
+            sparkCtx.restore();
+            
+            // Draw heat plate
+            const heatX = sparkCanvas.width - 100;
+            const heatY = sparkCanvas.height / 2;
+            sparkCtx.fillStyle = game.heatActive ? 'rgba(255, 100, 0, 0.8)' : 'rgba(150, 50, 0, 0.3)';
+            sparkCtx.fillRect(heatX - 40, heatY - 30, 80, 60);
+            
+            // Draw Spark's trail
+            sparkCtx.lineCap = 'round';
+            game.spark.trail.forEach((point, index) => {
+                if (index === 0) return;
+                const prev = game.spark.trail[index - 1];
+                
+                sparkCtx.strokeStyle = `rgba(255, 215, 0, ${point.life * 0.5})`;
+                sparkCtx.lineWidth = point.life * 6;
+                sparkCtx.beginPath();
+                sparkCtx.moveTo(prev.x, prev.y);
+                sparkCtx.lineTo(point.x, point.y);
+                sparkCtx.stroke();
+            });
+            
+            // Draw Spark
+            const sparkGlow = sparkCtx.createRadialGradient(
+                game.spark.x, game.spark.y, 0,
+                game.spark.x, game.spark.y, game.spark.radius * 2
+            );
+            sparkGlow.addColorStop(0, '#FFFFFF');
+            sparkGlow.addColorStop(0.3, '#FFD700');
+            sparkGlow.addColorStop(0.7, '#FF6B35');
+            sparkGlow.addColorStop(1, 'rgba(255, 107, 53, 0.2)');
+            
+            sparkCtx.fillStyle = sparkGlow;
+            sparkCtx.beginPath();
+            sparkCtx.arc(game.spark.x, game.spark.y, game.spark.radius, 0, Math.PI * 2);
+            sparkCtx.fill();
+            
+            // Draw charge indicator
+            if (game.spark.charge > 20) {
+                sparkCtx.strokeStyle = `rgba(255, 215, 0, ${game.spark.charge / 100})`;
+                sparkCtx.lineWidth = 2;
+                sparkCtx.beginPath();
+                sparkCtx.arc(game.spark.x, game.spark.y, game.spark.radius + 10, 0, (game.spark.charge / 100) * Math.PI * 2);
+                sparkCtx.stroke();
+            }
+            
+            // Draw particles in Spark's world
+            game.particles.forEach(p => {
+                if (p.type === 'electric') {
+                    sparkCtx.fillStyle = `rgba(255, 215, 0, ${p.life})`;
+                    sparkCtx.fillRect(p.x - 2, p.y - 2, 4, 4);
+                }
+            });
+        }
+        
+        function renderVesperWorld() {
+            // Clear canvas
+            vesperCtx.fillStyle = 'rgba(25, 25, 112, 0.1)';
+            vesperCtx.fillRect(0, 0, vesperCanvas.width, vesperCanvas.height);
+            
+            // Draw organic patterns
+            vesperCtx.strokeStyle = 'rgba(107, 70, 193, 0.05)';
+            vesperCtx.lineWidth = 2;
+            for (let i = 0; i < 5; i++) {
+                vesperCtx.beginPath();
+                vesperCtx.arc(
+                    100 + i * 150 + Math.sin(game.animTime + i) * 20,
+                    100 + Math.cos(game.animTime + i) * 20,
+                    50 + i * 10,
+                    0, Math.PI * 2
+                );
+                vesperCtx.stroke();
+            }
+            
+            // Draw ice wall
+            if (game.iceAlpha > 0) {
+                vesperCtx.fillStyle = `rgba(150, 200, 255, ${game.iceAlpha * 0.7})`;
+                vesperCtx.fillRect(vesperCanvas.width - 120, 0, 40, vesperCanvas.height);
+            }
+            
+            // Draw Vesper's trail
+            vesperCtx.lineCap = 'round';
+            game.vesper.trail.forEach((point, index) => {
+                if (index === 0) return;
+                const prev = game.vesper.trail[index - 1];
+                
+                vesperCtx.strokeStyle = `rgba(107, 70, 193, ${point.life * 0.3})`;
+                vesperCtx.lineWidth = point.life * 5;
+                vesperCtx.beginPath();
+                vesperCtx.moveTo(prev.x, prev.y);
+                vesperCtx.lineTo(point.x, point.y);
+                vesperCtx.stroke();
+            });
+            
+            // Draw Vesper
+            const vesperGlow = vesperCtx.createRadialGradient(
+                game.vesper.x, game.vesper.y, 0,
+                game.vesper.x, game.vesper.y, game.vesper.radius * 2
+            );
+            
+            if (input.vesperTouch.active) {
+                vesperGlow.addColorStop(0, '#FFFFFF');
+                vesperGlow.addColorStop(0.3, '#9966FF');
+                vesperGlow.addColorStop(0.6, '#6B46C1');
+                vesperGlow.addColorStop(1, 'rgba(107, 70, 193, 0.3)');
+            } else {
+                vesperGlow.addColorStop(0, '#AABBFF');
+                vesperGlow.addColorStop(0.5, '#6B46C1');
+                vesperGlow.addColorStop(1, 'rgba(107, 70, 193, 0.2)');
+            }
+            
+            vesperCtx.fillStyle = vesperGlow;
+            vesperCtx.beginPath();
+            vesperCtx.arc(game.vesper.x, game.vesper.y, game.vesper.radius, 0, Math.PI * 2);
+            vesperCtx.fill();
+            
+            // Draw flow indicator
+            if (game.vesper.flow > 20) {
+                vesperCtx.strokeStyle = `rgba(107, 70, 193, ${game.vesper.flow / 100})`;
+                vesperCtx.lineWidth = 2;
+                vesperCtx.setLineDash([5, 5]);
+                vesperCtx.beginPath();
+                vesperCtx.arc(game.vesper.x, game.vesper.y, game.vesper.radius + 12, game.animTime, game.animTime + (game.vesper.flow / 100) * Math.PI * 2);
+                vesperCtx.stroke();
+                vesperCtx.setLineDash([]);
+            }
+            
+            // Draw touch indicator
+            if (input.vesperTouch.active) {
+                const touchGradient = vesperCtx.createRadialGradient(
+                    input.vesperTouch.x, input.vesperTouch.y, 0,
+                    input.vesperTouch.x, input.vesperTouch.y, 30
+                );
+                touchGradient.addColorStop(0, 'rgba(153, 102, 255, 0.5)');
+                touchGradient.addColorStop(1, 'rgba(107, 70, 193, 0)');
+                
+                vesperCtx.fillStyle = touchGradient;
+                vesperCtx.beginPath();
+                vesperCtx.arc(input.vesperTouch.x, input.vesperTouch.y, 30, 0, Math.PI * 2);
+                vesperCtx.fill();
+            }
+            
+            // Draw particles in Vesper's world
+            game.particles.forEach(p => {
+                if (p.type === 'mist') {
+                    vesperCtx.fillStyle = `rgba(107, 70, 193, ${p.life * 0.5})`;
+                    vesperCtx.beginPath();
+                    vesperCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                    vesperCtx.fill();
+                }
+            });
+            
+            // Draw proximity connection
+            if (game.proximityPower > 0.3) {
+                const steps = 10;
+                for (let i = 0; i < steps; i++) {
+                    const t = i / steps;
+                    const x = game.vesper.x * (1 - t) + game.spark.x * t;
+                    const y = game.vesper.y * (1 - t) + (vesperCanvas.height - game.spark.y) * t;
+                    
+                    vesperCtx.fillStyle = `rgba(153, 102, 255, ${game.proximityPower * 0.5})`;
+                    vesperCtx.fillRect(x - 2, y - 2, 4, 4);
+                }
+            }
+        }
+        
+        function updateDebugInfo() {
+            document.getElementById('sparkDebug').innerHTML = `
+                Spark: ${Math.round(game.spark.x)}, ${Math.round(game.spark.y)}<br>
+                Charge: ${Math.round(game.spark.charge)}%<br>
+                Wind: ${Math.round(game.windPower)}
+            `;
+            
+            document.getElementById('vesperDebug').innerHTML = `
+                Vesper: ${Math.round(game.vesper.x)}, ${Math.round(game.vesper.y)}<br>
+                Flow: ${Math.round(game.vesper.flow)}%<br>
+                Proximity: ${Math.round(game.proximityPower * 100)}%
+            `;
+        }
+        
+        function nextLevel() {
+            document.getElementById('levelComplete').classList.remove('show');
+            // Reset game state
+            game.spark.x = 100;
+            game.spark.y = 100;
+            game.spark.targetX = 100;
+            game.spark.targetY = 100;
+            game.spark.vx = 0;
+            game.spark.vy = 0;
+            game.spark.charge = 0;
+            game.spark.trail = [];
+            
+            game.vesper.x = 100;
+            game.vesper.y = 100;
+            game.vesper.vx = 0;
+            game.vesper.vy = 0;
+            game.vesper.flow = 0;
+            game.vesper.trail = [];
+            
+            game.particles = [];
+            game.windPower = 0;
+            game.iceAlpha = 1;
+            game.bridgeExtension = 0;
+        }
+        
+        function gameLoop(currentTime) {
+            const dt = Math.min((currentTime - game.lastTime) / 1000, 0.033);
+            game.lastTime = currentTime;
+            game.deltaTime = dt;
+            
+            update(dt);
+            renderSparkWorld();
+            renderVesperWorld();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Prevent scrolling
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

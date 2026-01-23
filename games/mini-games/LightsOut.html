@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Lights Out</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-neon {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const GRID_SIZE = 5;
+        const LIGHT_COLOR_ON = 'rgb(34, 211, 238)';
+        const LIGHT_GLOW_ON = 'rgb(34, 211, 238)';
+        const LIGHT_COLOR_OFF = 'transparent';
+
+        // --- HELPER FUNCTIONS ---
+        const generateBoard = () => {
+            let board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
+            const clicks = Math.floor(Math.random() * 5) + 5;
+            for (let i = 0; i < clicks; i++) {
+                const r = Math.floor(Math.random() * GRID_SIZE);
+                const c = Math.floor(Math.random() * GRID_SIZE);
+                board = toggleLights(board, r, c);
+            }
+            return board;
+        };
+
+        const toggleLights = (board, r, c) => {
+            const newBoard = board.map(row => [...row]);
+            const positions = [[r, c], [r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+            positions.forEach(([row, col]) => {
+                if (row >= 0 && row < GRID_SIZE && col >= 0 && col < GRID_SIZE) {
+                    newBoard[row][col] = !newBoard[row][col];
+                }
+            });
+            return newBoard;
+        };
+
+        const checkWinCondition = (board) => {
+            return board.every(row => row.every(light => !light));
+        };
+
+        // --- COMPONENTS ---
+        const LightCell = ({ isOn, onClick }) => {
+            const style = {
+                backgroundColor: isOn ? LIGHT_COLOR_ON : LIGHT_COLOR_OFF,
+                boxShadow: isOn ? `0 0 15px ${LIGHT_GLOW_ON}, 0 0 25px ${LIGHT_GLOW_ON}60, inset 0 0 5px ${LIGHT_GLOW_ON}80` : 'inset 0 0 10px rgba(0,0,0,0.5)',
+            };
+            return (
+                <button
+                    onClick={onClick}
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 border-cyan-500/30 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-cyan-400"
+                    style={style}
+                />
+            );
+        };
+
+        const LightsOutGame = () => {
+            const [board, setBoard] = React.useState(generateBoard());
+            const [moves, setMoves] = React.useState(0);
+            const [isWon, setIsWon] = React.useState(false);
+
+            React.useEffect(() => {
+                setIsWon(checkWinCondition(board));
+            }, [board]);
+
+            const handleLightClick = (r, c) => {
+                if (isWon) return;
+                setBoard(prevBoard => toggleLights(prevBoard, r, c));
+                setMoves(prevMoves => prevMoves + 1);
+            };
+
+            const resetGame = () => {
+                setBoard(generateBoard());
+                setMoves(0);
+                setIsWon(false);
+            };
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-900/40 to-black" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation" />
+                    <div className="relative z-10 max-w-md mx-auto text-center">
+                        <header className="py-6">
+                            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                LIGHTS OUT
+                            </h1>
+                            <p className="text-cyan-300/80 mt-2">Turn off all the lights!</p>
+                        </header>
+                        <main className="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
+                            <div className="grid grid-cols-5 gap-2">
+                                {board.map((row, r) =>
+                                    row.map((isOn, c) => (
+                                        <LightCell
+                                            key={`${r}-${c}`}
+                                            isOn={isOn}
+                                            onClick={() => handleLightClick(r, c)}
+                                        />
+                                    ))
+                                )}
+                            </div>
+                        </main>
+                        <footer className="py-6">
+                            {isWon ? (
+                                <div className="animate-fade-in">
+                                    <h2 className="text-3xl font-bold text-yellow-300 text-shadow-neon mb-4">
+                                        YOU WON!
+                                    </h2>
+                                    <p className="text-lg text-white mb-4">
+                                        You solved it in {moves} moves.
+                                    </p>
+                                </div>
+                            ) : (
+                                 <div className="text-2xl text-white">
+                                    Moves: <span className="font-bold text-cyan-300">{moves}</span>
+                                </div>
+                            )}
+                            <button
+                                onClick={resetGame}
+                                className="mt-4 py-3 px-10 rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-yellow-400 to-orange-500 hover:scale-105 shadow-lg shadow-yellow-500/50"
+                            >
+                                {isWon ? 'Play Again' : 'Reset'}
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the main component to the root div
+        ReactDOM.render(<LightsOutGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

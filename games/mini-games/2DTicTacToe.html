@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe: Code Arcade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif; /* Retro-futuristic font */
+            background-color: #0d0c1d; /* Very dark blue/purple background */
+            background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
+            overflow: hidden; /* Prevent scrollbars from subtle animations */
+        }
+        .text-shadow-neon {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        .scanline-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(0, 0, 0, 0.1) 1px,
+                rgba(0, 0, 0, 0) 2px
+            );
+            pointer-events: none; /* Allow clicks through */
+            z-index: 0;
+        }
+        /* Winning Animation */
+        .win-animation {
+            animation: winPulse 1.5s infinite alternate;
+        }
+        @keyframes winPulse {
+            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 0, 0.5); }
+            100% { transform: scale(1.05); text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 0, 0.8), 0 0 30px rgba(255, 255, 0, 0.6); }
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #1a202c;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.7);
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+            border: 2px solid #00FFFF;
+            color: #E0F7FA; /* Light cyan text for readability */
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #00FFFF;
+            cursor: pointer;
+        }
+        .cell {
+            width: 100%;
+            padding-bottom: 100%; /* Makes cells square */
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.05); /* Subtle cell background */
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem; /* Size of X/O */
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-out;
+            cursor: pointer;
+            user-select: none; /* Prevent text selection */
+        }
+        .cell:hover {
+            background-color: rgba(34, 211, 238, 0.1); /* Hover glow */
+            transform: scale(1.02);
+        }
+        .cell.occupied {
+            cursor: default;
+        }
+        .cell-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1; /* Default to visible */
+            transform: scale(1); /* Default to full size */
+            filter: blur(0px); /* Default to no blur */
+            animation: popIn 0.4s forwards ease-out; /* Animation for initial pop */
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.2); filter: blur(5px); }
+            60% { opacity: 1; transform: scale(1.1); filter: blur(0px); } /* Overshoot for bounce */
+            100% { transform: scale(1); }
+        }
+        .x-color {
+            color: #FF007F; /* Neon Pink for X */
+            text-shadow: 0 0 10px #FF007F, 0 0 20px #FF007F; /* Enhanced glow */
+        }
+        .o-color {
+            color: #00FFFF; /* Cyan for O */
+            text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; /* Enhanced glow */
+        }
+
+        .win-line-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .win-line {
+            position: absolute;
+            background-color: #FFFF00; /* Yellow win line */
+            box-shadow: 0 0 15px #FFFF00, 0 0 25px #FFFF00;
+            animation: drawLine 0.5s forwards ease-out;
+        }
+        @keyframes drawLine {
+            from { transform: scaleX(0) scaleY(0); opacity: 0; }
+            to { transform: scaleX(1) scaleY(1); opacity: 1; }
+        }
+
+        /* AI Thinking Indicator */
+        .ai-thinking-indicator {
+            animation: blink 1s infinite alternate;
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Darker background */
+            backdrop-filter: blur(20px); /* Significantly stronger blur */
+            z-index: 50; /* Above game content, below modals */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const PLAYERS = { X: 'X', O: 'O' };
+        const GAME_MODES = { PVP: 'PvP', PVAI: 'PvAI' };
+        const AI_THINK_DELAY = 800; // Milliseconds for AI to "think"
+
+        // --- HELPER FUNCTIONS ---
+
+        /**
+         * Checks if there's a winner on the given board.
+         * @param {string[][]} board - The 3x3 game board.
+         * @param {string} player - The player ('X' or 'O') to check for.
+         * @returns {object|null} An object with winner and line coordinates if won, otherwise null.
+         */
+        const checkWinner = (board, player) => {
+            const flatBoard = board.flat();
+            const lines = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                if (flatBoard[a] === player && flatBoard[b] === player && flatBoard[c] === player) {
+                    return { winner: player, line: [a, b, c] };
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Checks if the game is a draw.
+         * @param {string[][]} board - The 3x3 game board.
+         * @returns {boolean} True if draw, false otherwise.
+         */
+        const checkDraw = (board) => {
+            return board.flat().every(cell => cell !== '');
+        };
+
+        /**
+         * AI logic to determine the best move. (Simplified Minimax)
+         * @param {string[][]} board - The current game board.
+         * @param {string} aiPlayer - The AI's player mark ('X' or 'O').
+         * @returns {number} The index of the best move.
+         */
+        const getAIMove = (board, aiPlayer) => {
+            const opponent = aiPlayer === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
+            const flatBoard = board.flat();
+            const emptyCells = flatBoard.map((cell, index) => cell === '' ? index : -1).filter(index => index !== -1);
+
+            // 1. Check for winning move
+            for (let i = 0; i < emptyCells.length; i++) {
+                const move = emptyCells[i];
+                const tempBoard = [...flatBoard];
+                tempBoard[move] = aiPlayer;
+                if (checkWinner(tempBoard.reduce((rows, key, index) => (index % 3 == 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []), aiPlayer)) {
+                    return move;
+                }
+            }
+
+            // 2. Check for blocking move
+            for (let i = 0; i < emptyCells.length; i++) {
+                const move = emptyCells[i];
+                const tempBoard = [...flatBoard];
+                tempBoard[move] = opponent;
+                if (checkWinner(tempBoard.reduce((rows, key, index) => (index % 3 == 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []), opponent)) {
+                    return move;
+                }
+            }
+
+            // 3. Take center if available
+            if (emptyCells.includes(4)) return 4;
+
+            // 4. Take a corner if available
+            const corners = [0, 2, 6, 8];
+            const availableCorners = corners.filter(corner => emptyCells.includes(corner));
+            if (availableCorners.length > 0) {
+                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+            }
+
+            // 5. Take any available side
+            const sides = [1, 3, 5, 7];
+            const availableSides = sides.filter(side => emptyCells.includes(side));
+            if (availableSides.length > 0) {
+                return availableSides[Math.floor(Math.random() * availableSides.length)];
+            }
+
+            // Fallback (should not be reached in a normal Tic-Tac-Toe game if logic is sound)
+            return emptyCells[0];
+        };
+
+
+        // --- COMPONENTS ---
+
+        /**
+         * Represents a single cell on the Tic-Tac-Toe board.
+         * @param {object} props
+         * @param {string} props.value - 'X', 'O', or ''.
+         * @param {function} props.onClick - Click handler for the cell.
+         */
+        const Cell = ({ value, onClick }) => (
+            <div
+                className={`cell rounded-lg transition-all duration-200 ${value ? 'occupied' : 'cursor-pointer'}`}
+                onClick={onClick}
+            >
+                {value && (
+                    <div className={`cell-content ${value === PLAYERS.X ? 'x-color' : 'o-color'}`}>
+                        {value}
+                    </div>
+                )}
+            </div>
+        );
+
+        /**
+         * Main Tic-Tac-Toe game component.
+         */
+        const TicTacToeGame = () => {
+            const [board, setBoard] = React.useState(Array(3).fill(null).map(() => Array(3).fill('')));
+            const [currentPlayer, setCurrentPlayer] = React.useState(PLAYERS.X);
+            const [gameMode, setGameMode] = React.useState(null); // null, 'PvP', 'PvAI'
+            const [winner, setWinner] = React.useState(null); // null, 'X', 'O', 'Draw'
+            const [winningLine, setWinningLine] = React.useState(null); // Array of indices for winning line
+            const [message, setMessage] = React.useState('');
+            const [showRules, setShowRules] = React.useState(false);
+            const [isPaused, setIsPaused] = React.useState(false);
+            const [aiThinking, setAiThinking] = React.useState(false); // New state for AI turn indicator
+
+            // Function to handle AI's move sequence
+            const handleAIMove = React.useCallback(() => {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused) {
+                    setAiThinking(true);
+                    setMessage("AI is thinking...");
+                    setTimeout(() => {
+                        const moveIndex = getAIMove(board, PLAYERS.O);
+                        const newBoardFlat = [...board.flat()]; // Create a new flat array
+                        newBoardFlat[moveIndex] = PLAYERS.O;
+                        const updatedBoard = newBoardFlat.reduce((rows, key, index) => (index % 3 === 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []);
+
+                        handleMove(updatedBoard, PLAYERS.O);
+                        setAiThinking(false);
+                    }, AI_THINK_DELAY);
+                }
+            }, [board, currentPlayer, gameMode, winner, isPaused]); // Dependencies for AI move
+
+            // Effect to trigger AI's turn when it's O's turn in PvAI mode
+            React.useEffect(() => {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused && !aiThinking) {
+                    handleAIMove();
+                }
+            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove]); // Added aiThinking and handleAIMove to dependencies
+
+            // Handle a player's move
+            const handleMove = (newBoard, playerMoved) => {
+                setBoard(newBoard);
+                const winResult = checkWinner(newBoard, playerMoved);
+
+                if (winResult) {
+                    setWinner(winResult.winner);
+                    setWinningLine(winResult.line);
+                    setMessage(`${winResult.winner} WINS!`);
+                } else if (checkDraw(newBoard)) {
+                    setWinner('Draw');
+                    setMessage("It's a DRAW!");
+                } else {
+                    setCurrentPlayer(playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X);
+                    setMessage(`Player ${playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X}'s turn`);
+                }
+            };
+
+            // Handle cell click from UI
+            const handleCellClick = (rowIndex, colIndex) => {
+                if (winner || isPaused || aiThinking || board[rowIndex][colIndex] !== '') {
+                    return; // Do nothing if game is over, paused, AI is thinking, or cell is occupied
+                }
+
+                const newBoard = board.map(row => [...row]);
+                newBoard[rowIndex][colIndex] = currentPlayer;
+
+                handleMove(newBoard, currentPlayer);
+            };
+
+            const resetGame = () => {
+                setBoard(Array(3).fill(null).map(() => Array(3).fill('')));
+                setCurrentPlayer(PLAYERS.X);
+                setWinner(null);
+                setWinningLine(null);
+                setMessage('');
+                setIsPaused(false);
+                setAiThinking(false);
+                setGameMode(null); // Go back to mode selection
+            };
+
+            const startGame = (mode) => {
+                setGameMode(mode);
+                setMessage(`Player ${PLAYERS.X}'s turn`);
+            };
+
+            // Render win line
+            const renderWinLine = () => {
+                if (!winningLine) return null;
+
+                const [c1, c2, c3] = winningLine;
+                const cells = document.querySelectorAll('.cell'); // Get actual cell elements
+                if (cells.length === 0) return null;
+
+                // Calculate positions based on first and last cell in the line
+                const rect1 = cells[c1].getBoundingClientRect();
+                const rect3 = cells[c3].getBoundingClientRect();
+
+                const startX = rect1.left + rect1.width / 2;
+                const startY = rect1.top + rect1.height / 2;
+                const endX = rect3.left + rect3.width / 2;
+                const endY = rect3.top + rect3.height / 2;
+
+                const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+
+                return (
+                    <div
+                        className="win-line absolute rounded-full"
+                        style={{
+                            width: `${length}px`,
+                            height: '8px', /* Thickness of the line */
+                            backgroundColor: '#FFFF00', /* Yellow neon */
+                            transformOrigin: 'left center',
+                            transform: `translate(${startX}px, ${startY - 4}px) rotate(${angle}deg)`, /* Adjust Y for half thickness */
+                        }}
+                    />
+                );
+            };
+
+
+            if (!gameMode) {
+                return (
+                    <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+                        <div className="scanline-overlay"></div>
+                        <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                TIC-TAC-TOE
+                            </h1>
+                            <p className="text-cyan-300/80 mb-6 text-shadow-neon">Choose your challenge:</p>
+                            <div className="flex flex-col space-y-4">
+                                <button
+                                    onClick={() => startGame(GAME_MODES.PVP)}
+                                    className="py-3 px-8 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
+                                >
+                                    1 vs 1 (Local)
+                                </button>
+                                <button
+                                    onClick={() => startGame(GAME_MODES.PVAI)}
+                                    className="py-3 px-8 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
+                                >
+                                    1 vs AI
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => setShowRules(true)}
+                                className="mt-8 py-2 px-6 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                            >
+                                Rules
+                            </button>
+                        </div>
+                        {showRules && (
+                            <div className="modal-overlay">
+                                <div className="modal-content">
+                                    <button onClick={() => setShowRules(false)} className="modal-close-button">
+                                        &times;
+                                    </button>
+                                    <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Tic-Tac-Toe</h2>
+                                    <p className="text-gray-200 mb-2">
+                                        The classic game of Tic-Tac-Toe! Get three of your marks ('X' or 'O') in a row, column, or diagonal to win.
+                                    </p>
+                                    <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
+                                    <ul className="list-disc list-inside text-gray-200 space-y-2">
+                                        <li>
+                                            **Choose a Mode:** Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
+                                        </li>
+                                        <li>
+                                            **Take Turns:** Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
+                                        </li>
+                                        <li>
+                                            **Win Condition:** The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
+                                        </li>
+                                        <li>
+                                            **Draw:** If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                                        </li>
+                                        <li>
+                                            **Pause/Resume:** Click the **"Pause"** button to temporarily stop the game and blur the screen. Click **"Resume"** to continue.
+                                        </li>
+                                        <li>
+                                            **New Game:** Click the "New Game" button to start over.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+                    {/* Scanline overlay for retro CRT effect */}
+                    <div className="scanline-overlay"></div>
+
+                    <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40">
+                        <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                            TIC-TAC-TOE
+                        </h1>
+                        <p className="text-center text-cyan-300/80 mb-4 text-shadow-neon">
+                            {message || `Player ${currentPlayer}'s turn`}
+                            {aiThinking && <span className="ai-thinking-indicator ml-2">. . .</span>}
+                        </p>
+
+                        {/* Game Board */}
+                        <div className="grid grid-cols-3 gap-2 p-4 bg-gray-700/30 rounded-lg shadow-inner border border-gray-600/30 mb-6">
+                            {board.flat().map((cellValue, index) => (
+                                <Cell
+                                    key={index}
+                                    value={cellValue}
+                                    onClick={() => handleCellClick(Math.floor(index / 3), index % 3)}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Win Line Overlay */}
+                        {winner && winner !== 'Draw' && (
+                            <div className="win-line-overlay">
+                                {renderWinLine()}
+                            </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                onClick={() => setShowRules(true)}
+                                className="py-2 px-4 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                disabled={isPaused}
+                            >
+                                Rules
+                            </button>
+                            <button
+                                onClick={() => setIsPaused(!isPaused)}
+                                className="py-2 px-4 bg-gray-700 hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg shadow-gray-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                disabled={winner !== null} /* Cannot pause if game is won/drawn */
+                            >
+                                {isPaused ? 'Resume' : 'Pause'}
+                            </button>
+                            <button
+                                onClick={resetGame}
+                                className="py-2 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                disabled={isPaused}
+                            >
+                                New Game
+                            </button>
+                        </div>
+
+                        {/* Win/Draw Overlay */}
+                        {winner && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 fade-in">
+                                <h2 className={`text-5xl font-bold text-yellow-300 text-shadow-neon ${winner !== 'Draw' ? 'win-animation' : ''}`}>
+                                    {winner === 'Draw' ? "IT'S A DRAW!" : `${winner} WINS!`}
+                                </h2>
+                            </div>
+                        )}
+
+                        {/* Pause Overlay */}
+                        {isPaused && (
+                            <div className="pause-overlay">
+                                PAUSED
+                            </div>
+                        )}
+
+                        {/* Rules Modal */}
+                        {showRules && (
+                            <div className="modal-overlay">
+                                <div className="modal-content">
+                                    <button onClick={() => setShowRules(false)} className="modal-close-button">
+                                        &times;
+                                    </button>
+                                    <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Tic-Tac-Toe</h2>
+                                    <p className="text-gray-200 mb-2">
+                                        The classic game of Tic-Tac-Toe! Get three of your marks ('X' or 'O') in a row, column, or diagonal to win.
+                                    </p>
+                                    <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
+                                    <ul className="list-disc list-inside text-gray-200 space-y-2">
+                                        <li>
+                                            **Choose a Mode:** Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
+                                        </li>
+                                        <li>
+                                            **Take Turns:** Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
+                                        </li>
+                                        <li>
+                                            **Win Condition:** The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
+                                        </li>
+                                        <li>
+                                            **Draw:** If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                                        </li>
+                                        <li>
+                                            **Pause/Resume:** Click the **"Pause"** button to temporarily stop the game and blur the screen. Click **"Resume"** to continue.
+                                        </li>
+                                        <li>
+                                            **New Game:** Click the "New Game" button to start over.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the main component to the root div
+        ReactDOM.render(<TicTacToeGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

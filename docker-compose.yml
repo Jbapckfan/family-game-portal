@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  game-portal:
+    image: caddy:2-alpine
+    container_name: game-portal
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./games:/srv/games
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - TZ=America/New_York
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Symbiosis - A Parallel Worlds Puzzle Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Orbitron', -apple-system, system-ui, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #gameContainer {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(ellipse at center, #0a0f1c 0%, #000 100%);
+            overflow: hidden;
+        }
+        
+        .world {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+        }
+        
+        #solWorld {
+            top: 0;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f23 100%);
+            border-bottom: 2px solid #ff6b35;
+            box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);
+        }
+        
+        #lunaWorld {
+            bottom: 0;
+            background: linear-gradient(180deg, #0f1e3a 0%, #1a2f4a 100%);
+            border-top: 2px solid #4a9eda;
+            box-shadow: 0 -2px 20px rgba(74, 158, 218, 0.3);
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+        
+        .level-indicator {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        #solWorld .level-indicator {
+            color: #ff9558;
+        }
+        
+        #lunaWorld .level-indicator {
+            color: #66ccff;
+        }
+        
+        .controls-hint {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 10px;
+            opacity: 0.5;
+            z-index: 10;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+        
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0f1c 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        #startScreen h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff6b35, #4a9eda);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+        }
+        
+        #startButton {
+            margin-top: 30px;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #ff6b35, #4a9eda);
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 90%;
+        }
+        
+        #message h2 {
+            margin-bottom: 20px;
+            color: #4a9eda;
+            text-transform: uppercase;
+        }
+        
+        #message button {
+            margin: 10px 5px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff6b35, #4a9eda);
+            border: none;
+            color: white;
+            border-radius: 25px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        #mobileControls {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: none;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            width: 55px;
+            height: 55px;
+            background: radial-gradient(ellipse at center, rgba(74, 158, 218, 0.4), rgba(74, 158, 218, 0.1));
+            border: 2px solid rgba(74, 158, 218, 0.6);
+            border-radius: 50%;
+            color: #66ccff;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+        
+        #tiltButton {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: rgba(74, 158, 218, 0.3);
+            border: 1px solid #4a9eda;
+            color: white;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            z-index: 100;
+            display: none;
+        }
+        
+        .mobile #tiltButton {
+            display: block;
+        }
+        
+        #tiltStatus {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 10px;
+            color: #66ccff;
+            opacity: 0.6;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="startScreen">
+            <h1>Symbiosis</h1>
+            <p>☀️ Sol & Luna 🌙</p>
+            <p>Two beings in parallel dimensions</p>
+            <button id="startButton" onclick="startGame()">Begin Journey</button>
+        </div>
+        
+        <div id="solWorld" class="world">
+            <canvas id="solCanvas"></canvas>
+            <div class="level-indicator">☀️ Sol</div>
+            <div class="controls-hint">Touch & Drag</div>
+        </div>
+        
+        <div id="lunaWorld" class="world">
+            <canvas id="lunaCanvas"></canvas>
+            <div class="level-indicator">🌙 Luna</div>
+            <div class="controls-hint">Use Buttons</div>
+            <div id="tiltStatus"></div>
+            <button id="tiltButton" onclick="requestTiltPermission()">Enable Tilt</button>
+            
+            <div id="mobileControls">
+                <button class="control-btn" id="leftBtn">◀</button>
+                <button class="control-btn" id="upBtn">▲</button>
+                <button class="control-btn" id="downBtn">▼</button>
+                <button class="control-btn" id="rightBtn">▶</button>
+            </div>
+        </div>
+        
+        <div id="message">
+            <h2>Level Complete!</h2>
+            <p>Sol and Luna have found their way!</p>
+            <button onclick="nextLevel()">Continue</button>
+        </div>
+    </div>
+    
+    <script>
+        // Game state
+        const game = {
+            sol: { x: 50, y: 90, radius: 14, targetX: 50, targetY: 90 },
+            luna: { x: 50, y: 90, radius: 14, vx: 0, vy: 0 },
+            windPower: { x: 0, y: 0 },
+            heatActive: false,
+            iceAlpha: 1,
+            windmillRotation: 0,
+            bridgeExtension: 0,
+            levelComplete: false,
+            gameStarted: false,
+            animTime: 0
+        };
+        
+        // Particles array
+        const particles = [];
+        
+        // Canvas setup
+        const solCanvas = document.getElementById('solCanvas');
+        const lunaCanvas = document.getElementById('lunaCanvas');
+        const solCtx = solCanvas.getContext('2d');
+        const lunaCtx = lunaCanvas.getContext('2d');
+        
+        function resizeCanvases() {
+            const container = document.getElementById('gameContainer');
+            const width = container.clientWidth;
+            const height = container.clientHeight / 2;
+            
+            solCanvas.width = width;
+            solCanvas.height = height;
+            lunaCanvas.width = width;
+            lunaCanvas.height = height;
+        }
+        
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            game.gameStarted = true;
+            resizeCanvases();
+            setupControls();
+            
+            // Check if mobile device
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                document.body.classList.add('mobile');
+                // Show tilt button for manual activation
+                const tiltBtn = document.getElementById('tiltButton');
+                if (tiltBtn) tiltBtn.style.display = 'block';
+                
+                // Try to auto-enable tilt
+                setTimeout(() => requestTiltPermission(), 1000);
+            }
+            
+            gameLoop();
+        }
+        
+        function requestTiltPermission() {
+            // Check if we need permission for iOS 13+
+            if (typeof DeviceOrientationEvent !== 'undefined' && 
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+                // iOS 13+ needs permission
+                if (confirm('Enable tilt controls?\n\nTilt your device to move Luna instead of using buttons.')) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === 'granted') {
+                                enableTilt();
+                                alert('✅ Tilt controls enabled!\n\nTilt your phone to move Luna.');
+                            } else {
+                                alert('Tilt permission denied. Using button controls.');
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error requesting permission:', err);
+                            alert('Could not enable tilt controls. Using buttons.');
+                        });
+                }
+            } else if (window.DeviceOrientationEvent) {
+                // Android or older iOS - just enable
+                enableTilt();
+            } else {
+                alert('Tilt controls not supported on this device.');
+            }
+        }
+        
+        function enableTilt() {
+            window.addEventListener('deviceorientation', handleTilt);
+            game.tiltEnabled = true;
+            
+            // Update UI to show tilt is active
+            const hint = document.querySelector('#lunaWorld .controls-hint');
+            if (hint) hint.textContent = 'Tilt to Move';
+            
+            // Optionally hide buttons when tilt works
+            setTimeout(() => {
+                if (game.tiltEnabled && (game.tiltX !== 0 || game.tiltY !== 0)) {
+                    document.getElementById('mobileControls').style.display = 'none';
+                }
+            }, 2000);
+        }
+        
+        function handleTilt(event) {
+            if (!game.gameStarted) return;
+            
+            // gamma is left/right tilt (-90 to 90)
+            // beta is front/back tilt (-180 to 180)
+            if (event.gamma !== null && event.beta !== null) {
+                game.tiltX = event.gamma; // left/right
+                game.tiltY = event.beta;  // front/back
+                game.tiltEnabled = true;
+                
+                // Update status display
+                const status = document.getElementById('tiltStatus');
+                if (status) {
+                    status.textContent = `Tilt: ${Math.round(event.gamma)}° / ${Math.round(event.beta)}°`;
+                }
+                
+                // Hide tilt button once working
+                const tiltBtn = document.getElementById('tiltButton');
+                if (tiltBtn) tiltBtn.style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('resize', resizeCanvases);
+        
+        // Controls
+        const controls = { left: false, right: false, up: false, down: false };
+        let isDragging = false;
+        
+        function setupControls() {
+            // Show mobile controls
+            document.getElementById('mobileControls').style.display = 'flex';
+            
+            // Button controls
+            ['leftBtn', 'rightBtn', 'upBtn', 'downBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                const dir = id.replace('Btn', '');
+                
+                btn.addEventListener('touchstart', e => {
+                    e.preventDefault();
+                    controls[dir] = true;
+                });
+                
+                btn.addEventListener('touchend', e => {
+                    e.preventDefault();
+                    controls[dir] = false;
+                });
+                
+                btn.addEventListener('mousedown', () => controls[dir] = true);
+                btn.addEventListener('mouseup', () => controls[dir] = false);
+            });
+            
+            // Sol touch controls
+            solCanvas.addEventListener('touchstart', e => {
+                e.preventDefault();
+                if (!game.gameStarted) return;
+                
+                const touch = e.touches[0];
+                const rect = solCanvas.getBoundingClientRect();
+                const x = (touch.clientX - rect.left) * (solCanvas.width / rect.width);
+                const y = (touch.clientY - rect.top) * (solCanvas.height / rect.height);
+                
+                isDragging = true;
+                game.sol.targetX = x;
+                game.sol.targetY = y;
+            });
+            
+            solCanvas.addEventListener('touchmove', e => {
+                e.preventDefault();
+                if (!isDragging || !game.gameStarted) return;
+                
+                const touch = e.touches[0];
+                const rect = solCanvas.getBoundingClientRect();
+                game.sol.targetX = (touch.clientX - rect.left) * (solCanvas.width / rect.width);
+                game.sol.targetY = (touch.clientY - rect.top) * (solCanvas.height / rect.height);
+            });
+            
+            solCanvas.addEventListener('touchend', () => isDragging = false);
+            
+            // Mouse controls for desktop
+            solCanvas.addEventListener('mousedown', e => {
+                if (!game.gameStarted) return;
+                const rect = solCanvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) * (solCanvas.width / rect.width);
+                const y = (e.clientY - rect.top) * (solCanvas.height / rect.height);
+                isDragging = true;
+                game.sol.targetX = x;
+                game.sol.targetY = y;
+            });
+            
+            solCanvas.addEventListener('mousemove', e => {
+                if (isDragging && game.gameStarted) {
+                    const rect = solCanvas.getBoundingClientRect();
+                    game.sol.targetX = (e.clientX - rect.left) * (solCanvas.width / rect.width);
+                    game.sol.targetY = (e.clientY - rect.top) * (solCanvas.height / rect.height);
+                }
+            });
+            
+            solCanvas.addEventListener('mouseup', () => isDragging = false);
+        }
+        
+        // Update game logic
+        function update() {
+            if (!game.gameStarted) return;
+            
+            game.animTime += 0.016;
+            
+            // Move Sol
+            const dx = game.sol.targetX - game.sol.x;
+            const dy = game.sol.targetY - game.sol.y;
+            game.sol.x += dx * 0.15;
+            game.sol.y += dy * 0.15;
+            
+            // Move Luna with tilt or button controls
+            const speed = 5;
+            
+            if (game.tiltEnabled && (Math.abs(game.tiltX) > 1 || Math.abs(game.tiltY) > 1)) {
+                // Use tilt for movement with smooth acceleration
+                // Clamp tilt values to reasonable range
+                const maxTilt = 25;
+                const tiltXClamped = Math.max(-maxTilt, Math.min(maxTilt, game.tiltX));
+                const tiltYClamped = Math.max(-maxTilt, Math.min(maxTilt, game.tiltY - 30)); // -30 offset for natural phone holding angle
+                
+                // Apply tilt as acceleration for smoother movement
+                const accelX = (tiltXClamped / maxTilt) * 0.8;
+                const accelY = (tiltYClamped / maxTilt) * 0.8;
+                
+                game.luna.vx += accelX;
+                game.luna.vy += accelY;
+                
+                // Limit max speed
+                const maxSpeed = 7;
+                const currentSpeed = Math.sqrt(game.luna.vx * game.luna.vx + game.luna.vy * game.luna.vy);
+                if (currentSpeed > maxSpeed) {
+                    game.luna.vx = (game.luna.vx / currentSpeed) * maxSpeed;
+                    game.luna.vy = (game.luna.vy / currentSpeed) * maxSpeed;
+                }
+                
+                // Apply friction for tilt mode
+                game.luna.vx *= 0.92;
+                game.luna.vy *= 0.92;
+            } else {
+                // Use button controls as fallback
+                if (controls.left) game.luna.vx = -speed;
+                else if (controls.right) game.luna.vx = speed;
+                else game.luna.vx *= 0.9;
+                
+                if (controls.up) game.luna.vy = -speed;
+                else if (controls.down) game.luna.vy = speed;
+                else game.luna.vy *= 0.9;
+            }
+            
+            // Apply Luna's velocity to position
+            game.luna.x += game.luna.vx;
+            game.luna.y += game.luna.vy;
+            
+            // Keep Luna in bounds
+            game.luna.x = Math.max(game.luna.radius, Math.min(lunaCanvas.width - game.luna.radius, game.luna.x));
+            game.luna.y = Math.max(game.luna.radius, Math.min(lunaCanvas.height - game.luna.radius, game.luna.y));
+            
+            // Generate wind from Luna's movement
+            game.windPower.x = game.luna.vx * 0.5;
+            game.windPower.y = game.luna.vy * 0.5;
+            const windStrength = Math.sqrt(game.windPower.x * game.windPower.x + game.windPower.y * game.windPower.y);
+            
+            // Wind affects windmill
+            game.windmillRotation += windStrength * 0.05;
+            
+            // Windmill extends bridge
+            if (windStrength > 1) {
+                game.bridgeExtension = Math.min(1, game.bridgeExtension + 0.03);
+            } else {
+                game.bridgeExtension = Math.max(0, game.bridgeExtension - 0.01);
+            }
+            
+            // Check if Sol is on heat plate
+            if (game.sol.x > solCanvas.width - 100 && game.sol.y > 150 && game.sol.y < 210) {
+                game.heatActive = true;
+            } else {
+                game.heatActive = false;
+            }
+            
+            // Melt ice based on heat
+            if (game.heatActive) {
+                game.iceAlpha = Math.max(0, game.iceAlpha - 0.03);
+            } else {
+                game.iceAlpha = Math.min(1, game.iceAlpha + 0.01);
+            }
+            
+            // Update particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.life -= 0.02;
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            
+            // Create particles with different colors for tilt vs buttons
+            if (Math.abs(game.luna.vx) > 0.5 || Math.abs(game.luna.vy) > 0.5) {
+                if (Math.random() < 0.3) {
+                    particles.push({
+                        x: game.luna.x,
+                        y: game.luna.y,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: (Math.random() - 0.5) * 2,
+                        life: 1,
+                        color: game.tiltEnabled ? '#00ffff' : '#66ccff'  // Cyan for tilt, blue for buttons
+                    });
+                }
+            }
+            
+            // Check win condition
+            const solAtExit = game.sol.x > solCanvas.width - 60 && game.sol.y < 60;
+            const lunaAtExit = game.luna.x > lunaCanvas.width - 60 && game.luna.y < 60;
+            
+            if (solAtExit && lunaAtExit && !game.levelComplete) {
+                game.levelComplete = true;
+                setTimeout(() => {
+                    document.getElementById('message').style.display = 'block';
+                }, 500);
+            }
+        }
+        
+        // Render Sol's world
+        function renderSolWorld() {
+            solCtx.clearRect(0, 0, solCanvas.width, solCanvas.height);
+            
+            // Grid background
+            solCtx.strokeStyle = 'rgba(255, 107, 53, 0.1)';
+            solCtx.lineWidth = 1;
+            for (let i = 0; i < solCanvas.width; i += 40) {
+                solCtx.beginPath();
+                solCtx.moveTo(i, 0);
+                solCtx.lineTo(i, solCanvas.height);
+                solCtx.stroke();
+            }
+            
+            // Draw chasm
+            solCtx.fillStyle = '#000';
+            solCtx.fillRect(200, 0, 400, solCanvas.height);
+            
+            // Draw bridge
+            if (game.bridgeExtension > 0) {
+                const bridgeWidth = 400 * game.bridgeExtension;
+                solCtx.fillStyle = 'rgba(255, 107, 53, 0.6)';
+                solCtx.fillRect(200, 170, bridgeWidth, 40);
+                
+                // Progress indicator
+                solCtx.fillStyle = '#ff9558';
+                solCtx.font = '12px Orbitron';
+                solCtx.fillText(`${Math.floor(game.bridgeExtension * 100)}%`, 200 + bridgeWidth + 10, 195);
+            }
+            
+            // Draw windmill
+            solCtx.save();
+            solCtx.translate(100, 100);
+            solCtx.rotate(game.windmillRotation);
+            solCtx.strokeStyle = '#ff6b35';
+            solCtx.lineWidth = 3;
+            for (let i = 0; i < 4; i++) {
+                solCtx.rotate(Math.PI / 2);
+                solCtx.beginPath();
+                solCtx.moveTo(0, 0);
+                solCtx.lineTo(0, -30);
+                solCtx.stroke();
+            }
+            solCtx.restore();
+            
+            // Draw heat plate
+            solCtx.fillStyle = game.heatActive ? 'rgba(255, 100, 0, 0.8)' : 'rgba(150, 50, 0, 0.4)';
+            solCtx.fillRect(solCanvas.width - 100, 150, 80, 60);
+            
+            if (game.heatActive) {
+                // Heat glow
+                const gradient = solCtx.createRadialGradient(
+                    solCanvas.width - 60, 180, 0,
+                    solCanvas.width - 60, 180, 40
+                );
+                gradient.addColorStop(0, 'rgba(255, 150, 0, 0.5)');
+                gradient.addColorStop(1, 'rgba(255, 100, 0, 0)');
+                solCtx.fillStyle = gradient;
+                solCtx.fillRect(solCanvas.width - 100, 140, 80, 80);
+            }
+            
+            // Draw exit portal
+            solCtx.strokeStyle = '#ff6b35';
+            solCtx.lineWidth = 2;
+            solCtx.beginPath();
+            solCtx.arc(solCanvas.width - 30, 30, 20, 0, Math.PI * 2);
+            solCtx.stroke();
+            
+            // Draw Sol
+            const gradient = solCtx.createRadialGradient(
+                game.sol.x, game.sol.y, 0,
+                game.sol.x, game.sol.y, game.sol.radius * 2
+            );
+            gradient.addColorStop(0, '#ffcc00');
+            gradient.addColorStop(0.5, '#ff9900');
+            gradient.addColorStop(1, 'rgba(255, 107, 53, 0.3)');
+            solCtx.fillStyle = gradient;
+            solCtx.beginPath();
+            solCtx.arc(game.sol.x, game.sol.y, game.sol.radius, 0, Math.PI * 2);
+            solCtx.fill();
+        }
+        
+        // Render Luna's world
+        function renderLunaWorld() {
+            lunaCtx.clearRect(0, 0, lunaCanvas.width, lunaCanvas.height);
+            
+            // Organic background
+            lunaCtx.strokeStyle = 'rgba(74, 158, 218, 0.1)';
+            lunaCtx.lineWidth = 2;
+            for (let i = 0; i < 5; i++) {
+                lunaCtx.beginPath();
+                lunaCtx.arc(
+                    100 + i * 150,
+                    100 + Math.sin(game.animTime + i) * 20,
+                    50 + i * 10,
+                    0, Math.PI * 2
+                );
+                lunaCtx.stroke();
+            }
+            
+            // Draw particles
+            particles.forEach(p => {
+                lunaCtx.save();
+                lunaCtx.globalAlpha = p.life;
+                lunaCtx.fillStyle = p.color;
+                lunaCtx.beginPath();
+                lunaCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                lunaCtx.fill();
+                lunaCtx.restore();
+            });
+            
+            // Draw ice wall
+            if (game.iceAlpha > 0) {
+                lunaCtx.fillStyle = `rgba(150, 200, 255, ${game.iceAlpha * 0.8})`;
+                lunaCtx.fillRect(lunaCanvas.width - 120, 0, 40, lunaCanvas.height);
+                
+                // Ice crystals
+                lunaCtx.strokeStyle = `rgba(200, 230, 255, ${game.iceAlpha})`;
+                lunaCtx.lineWidth = 1;
+                for (let y = 20; y < lunaCanvas.height; y += 40) {
+                    for (let x = lunaCanvas.width - 110; x < lunaCanvas.width - 80; x += 15) {
+                        lunaCtx.beginPath();
+                        lunaCtx.moveTo(x, y - 10);
+                        lunaCtx.lineTo(x, y + 10);
+                        lunaCtx.moveTo(x - 5, y - 5);
+                        lunaCtx.lineTo(x + 5, y + 5);
+                        lunaCtx.stroke();
+                    }
+                }
+            }
+            
+            // Draw wind effect
+            if (Math.abs(game.windPower.x) > 0.5 || Math.abs(game.windPower.y) > 0.5) {
+                lunaCtx.strokeStyle = 'rgba(100, 200, 255, 0.2)';
+                lunaCtx.lineWidth = 1;
+                for (let i = 0; i < 3; i++) {
+                    lunaCtx.beginPath();
+                    lunaCtx.moveTo(
+                        game.luna.x - game.windPower.x * 10,
+                        game.luna.y - game.windPower.y * 10
+                    );
+                    lunaCtx.lineTo(
+                        game.luna.x + game.windPower.x * 20,
+                        game.luna.y + game.windPower.y * 20
+                    );
+                    lunaCtx.stroke();
+                }
+            }
+            
+            // Draw exit portal
+            lunaCtx.strokeStyle = '#4a9eda';
+            lunaCtx.lineWidth = 2;
+            lunaCtx.beginPath();
+            lunaCtx.arc(lunaCanvas.width - 30, 30, 20, 0, Math.PI * 2);
+            lunaCtx.stroke();
+            
+            // Draw Luna with different glow for tilt mode
+            const gradient = lunaCtx.createRadialGradient(
+                game.luna.x, game.luna.y, 0,
+                game.luna.x, game.luna.y, game.luna.radius * 2
+            );
+            
+            if (game.tiltEnabled) {
+                // Cyan glow for tilt mode
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.3, '#00ffff');
+                gradient.addColorStop(0.6, '#00aacc');
+                gradient.addColorStop(1, 'rgba(0, 200, 255, 0.3)');
+                
+                // Extra glow ring
+                lunaCtx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+                lunaCtx.lineWidth = 2;
+                lunaCtx.beginPath();
+                lunaCtx.arc(game.luna.x, game.luna.y, game.luna.radius * 1.5, 0, Math.PI * 2);
+                lunaCtx.stroke();
+            } else {
+                // Normal blue for button mode
+                gradient.addColorStop(0, '#66ccff');
+                gradient.addColorStop(0.5, '#4a9eda');
+                gradient.addColorStop(1, 'rgba(74, 158, 218, 0.3)');
+            }
+            
+            lunaCtx.fillStyle = gradient;
+            lunaCtx.beginPath();
+            lunaCtx.arc(game.luna.x, game.luna.y, game.luna.radius, 0, Math.PI * 2);
+            lunaCtx.fill();
+        }
+        
+        function nextLevel() {
+            document.getElementById('message').style.display = 'none';
+            // Reset game
+            game.sol = { x: 50, y: 90, radius: 14, targetX: 50, targetY: 90 };
+            game.luna = { x: 50, y: 90, radius: 14, vx: 0, vy: 0 };
+            game.windPower = { x: 0, y: 0 };
+            game.heatActive = false;
+            game.iceAlpha = 1;
+            game.windmillRotation = 0;
+            game.bridgeExtension = 0;
+            game.levelComplete = false;
+        }
+        
+        // Game loop
+        function gameLoop() {
+            update();
+            renderSolWorld();
+            renderLunaWorld();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Prevent scrolling
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    </script>
+</body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastermind Code Breaker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0d0c1d;
+            background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        .text-shadow-neon {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        .peg-shadow-neon {
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.3), 0 0 15px rgba(34, 211, 238, 0.6);
+        }
+        .peg-shadow-neon.active-glow {
+            box-shadow: inset 0 0 8px rgba(255,255,255,0.4), 0 0 20px var(--peg-color-glow);
+        }
+        .feedback-peg-black {
+            background-color: #000;
+            border: 1px solid #0ff;
+            box-shadow: 0 0 5px #0ff;
+        }
+        .feedback-peg-white {
+            background-color: #fff;
+            border: 1px solid #eee;
+            box-shadow: 0 0 5px #fff;
+        }
+        .feedback-peg-empty {
+            background-color: #2d3748;
+            border: 1px solid #1a202c;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .scanline-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(0, 0, 0, 0.1) 1px,
+                rgba(0, 0, 0, 0) 2px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+        .win-animation {
+            animation: winPulse 1.5s infinite alternate;
+        }
+        @keyframes winPulse {
+            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 0, 0.5); }
+            100% { transform: scale(1.05); text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 0, 0.8), 0 0 30px rgba(255, 255, 0, 0.6); }
+        }
+        
+        /* FIX for board shifting on color picker click */
+        .color-picker-button {
+            border: 2px solid #4a5568; /* Matches Tailwind border-gray-600 */
+            box-shadow: 0 0 0px transparent; /* Initial transparent shadow to reserve space */
+            transition: transform 0.1s ease-in-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+        }
+        .color-picker-button:hover {
+            transform: scale(1.1);
+            border-color: #6b7280; /* Slightly lighter on hover, matches Tailwind gray-500 */
+            box-shadow: 0 0 10px rgba(255,255,255,0.3); /* Subtle white glow on hover */
+        }
+        .color-picker-button.selected {
+            border-color: white; /* Strong white border when selected */
+            box-shadow: 0 0 10px white, 0 0 20px white; /* Strong white glow when selected */
+            transform: scale(1.05); /* Maintain slight scale when selected, slightly less than hover to avoid jump */
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #1a202c;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.7);
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+            border: 2px solid #00FFFF;
+        }
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #00FFFF;
+            cursor: pointer;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 5s infinite linear;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #2d3748;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #00ffff;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ffff;
+        }
+        input:checked + .slider {
+            background-color: #4f46e5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: #8b5cf6;
+        }
+        .stats-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            text-align: center;
+        }
+        .stats-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #00ffff;
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums; /* FIX for time/guess count shifting */
+        }
+        .sr-only { /* For accessibility - visually hidden text */
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        // Sound effects
+        const selectSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        const placeSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        const submitSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        const winSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        const loseSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        const hintSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+
+        // --- CONFIGURATION ---
+        const GAME_PRESETS = {
+            easy: {
+                codeLength: 3,
+                maxGuesses: 12,
+                availableColors: ['#FF007F', '#00FFFF', '#00FF00', '#FFFF00'], // Fewer colors
+                initialHints: 2
+            },
+            medium: {
+                codeLength: 4,
+                maxGuesses: 10,
+                availableColors: ['#FF007F', '#00FFFF', '#00FF00', '#FFFF00', '#8A2BE2', '#FF8C00'], // All colors
+                initialHints: 1
+            },
+            hard: {
+                codeLength: 5, // Longer code
+                maxGuesses: 8, // Fewer guesses
+                availableColors: ['#FF007F', '#00FFFF', '#00FF00', '#FFFF00', '#8A2BE2', '#FF8C00'],
+                initialHints: 1
+            }
+        };
+
+        // --- HELPER FUNCTIONS ---
+        const generateSecretCode = (config, allowDuplicates) => {
+            const code = [];
+            let colorsToPickFrom = [...config.availableColors]; // Use a mutable copy
+
+            if (allowDuplicates) {
+                // If duplicates are allowed, pick from the full list each time
+                for (let i = 0; i < config.codeLength; i++) {
+                    const randomIndex = Math.floor(Math.random() * colorsToPickFrom.length);
+                    code.push(colorsToPickFrom[randomIndex]);
+                }
+            } else {
+                // If duplicates are NOT allowed, ensure enough unique colors are available
+                if (config.codeLength > colorsToPickFrom.length) {
+                    console.error("Cannot generate a secret code without duplicates: code length is greater than the number of unique colors available.");
+                    // In this scenario, it's impossible to create a non-duplicate code.
+                    // For the purpose of fixing the bug, we strictly enforce no duplicates if the flag is off.
+                    // This error log will indicate an issue with game preset configuration if it happens.
+                }
+
+                // Remove colors from the pool as they are picked to ensure no duplicates
+                for (let i = 0; i < config.codeLength; i++) {
+                    // Ensure there are still colors to pick from to avoid infinite loop or errors
+                    if (colorsToPickFrom.length === 0) {
+                        console.error("Ran out of unique colors before completing the secret code. This should not happen with current presets if duplicates are off.");
+                        break; // Exit to prevent errors, though this indicates a larger config issue
+                    }
+                    const randomIndex = Math.floor(Math.random() * colorsToPickFrom.length);
+                    code.push(colorsToPickFrom[randomIndex]);
+                    colorsToPickFrom.splice(randomIndex, 1); // Remove the picked color to ensure uniqueness
+                }
+            }
+            return code;
+        };
+
+        const getFeedback = (guess, secretCode) => {
+            const feedback = [];
+            const secretCodeCopy = [...secretCode];
+            const guessCopy = [...guess];
+
+            // Calculate black pegs (correct color and position)
+            for (let i = 0; i < secretCode.length; i++) {
+                if (guessCopy[i] === secretCodeCopy[i]) {
+                    feedback.push('black');
+                    secretCodeCopy[i] = null;
+                    guessCopy[i] = null;
+                }
+            }
+
+            // Calculate white pegs (correct color, wrong position)
+            for (let i = 0; i < secretCode.length; i++) {
+                if (guessCopy[i] !== null) {
+                    const secretIndex = secretCodeCopy.indexOf(guessCopy[i]);
+                    if (secretIndex !== -1) {
+                        feedback.push('white');
+                        secretCodeCopy[secretIndex] = null;
+                    }
+                }
+            }
+
+            // Fill remaining feedback slots with 'empty'
+            while (feedback.length < secretCode.length) {
+                feedback.push('empty');
+            }
+
+            // Sort feedback for consistency (black pegs first, then white)
+            feedback.sort((a, b) => {
+                if (a === 'black' && b !== 'black') return -1;
+                if (a !== 'black' && b === 'black') return 1;
+                if (a === 'white' && b === 'empty') return -1;
+                if (a === 'empty' && b === 'white') return 1;
+                return 0;
+            });
+
+            return feedback;
+        };
+
+        // --- COMPONENTS ---
+        const CodePeg = ({ color, onClick, index, totalPegs }) => {
+            const pegStyle = {
+                backgroundColor: color || '#2d3748',
+                '--peg-color-glow': color || 'transparent'
+            };
+            // Add aria-label for accessibility
+            const ariaLabel = color ? `Code peg ${index + 1} with color ${color}` : `Empty code peg ${index + 1}`;
+            return (
+                <div
+                    className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-transform duration-100 ease-in-out hover:scale-105 active:scale-95 ${onClick ? 'cursor-pointer' : ''} ${color ? 'peg-shadow-neon active-glow' : 'peg-shadow-neon'}`}
+                    style={pegStyle}
+                    onClick={onClick}
+                    role="button"
+                    aria-label={ariaLabel}
+                >
+                    {/* The previously mentioned colorblindness features (black dot, white triangle) were removed from here. */}
+                </div>
+            );
+        };
+
+        const FeedbackPeg = ({ type, index }) => (
+            <div 
+                className={`w-3 h-3 md:w-4 md:h-4 rounded-full ${type === 'black' ? 'feedback-peg-black' : type === 'white' ? 'feedback-peg-white' : 'feedback-peg-empty'}`}
+                role="status"
+                aria-label={type === 'black' ? 'Correct color and position' : type === 'white' ? 'Correct color, wrong position' : 'Empty feedback slot'}
+            >
+                <span className="sr-only">
+                    {type === 'black' ? 'Black peg' : type === 'white' ? 'White peg' : 'Empty peg'}
+                </span>
+            </div>
+        );
+
+        const GuessRow = ({ guess, feedback, codeLength }) => (
+            <div className="flex items-center justify-between p-2 my-2 bg-gray-700/50 rounded-lg shadow-md border border-gray-600/50 fade-in">
+                <div className="flex space-x-2">
+                    {Array.from({ length: codeLength }).map((_, i) => (
+                        <CodePeg key={i} color={guess[i]} index={i} totalPegs={codeLength} />
+                    ))}
+                </div>
+                <div className="grid grid-cols-2 gap-1 ml-4">
+                    {Array.from({ length: codeLength }).map((_, i) => (
+                        <FeedbackPeg key={i} type={feedback[i]} index={i} />
+                    ))}
+                </div>
+            </div>
+        );
+
+        const Particle = ({ id, color, size, top, left, duration }) => {
+            const style = {
+                backgroundColor: color,
+                width: `${size}px`,
+                height: `${size}px`,
+                top: `${top}%`,
+                left: `${left}%`,
+                animationDuration: `${duration}s`,
+                boxShadow: `0 0 10px ${color}, 0 0 20px ${color}`
+            };
+            return <div key={id} className="particle" style={style} />;
+        };
+
+        const ParticleBackground = ({ availableColors }) => {
+            const [particles, setParticles] = React.useState([]);
+            
+            React.useEffect(() => {
+                const newParticles = Array.from({ length: 20 }).map((_, i) => ({
+                    id: i,
+                    size: Math.random() * 5 + 2,
+                    duration: Math.random() * 4 + 2,
+                    color: availableColors[Math.floor(Math.random() * availableColors.length)],
+                    top: Math.random() * 100,
+                    left: Math.random() * 100
+                }));
+                setParticles(newParticles);
+            }, [availableColors]); // Regenerate particles if availableColors change
+            
+            return (
+                <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                    {particles.map(p => <Particle key={p.id} {...p} />)}
+                </div>
+            );
+        };
+
+        // --- MAIN GAME COMPONENT ---
+        const gameReducer = (state, action) => {
+            switch (action.type) {
+                case 'RESET_GAME':
+                    const newConfig = GAME_PRESETS[action.preset];
+                    return {
+                        ...state,
+                        gameConfig: newConfig,
+                        secretCode: generateSecretCode(newConfig, action.allowDuplicates),
+                        guesses: [],
+                        currentGuess: Array(newConfig.codeLength).fill(null),
+                        gameStatus: 'playing',
+                        message: 'Guess the secret code!',
+                        selectedColorFromPalette: null,
+                        elapsedTime: 0,
+                        hintsRemaining: newConfig.initialHints,
+                        allowDuplicates: action.allowDuplicates,
+                        currentBlackPegStreak: 0, // Reset streak
+                        comboMessage: '' // Reset combo message
+                    };
+                case 'SET_SELECTED_COLOR':
+                    return { ...state, selectedColorFromPalette: action.color, message: '' };
+                case 'UPDATE_CURRENT_GUESS':
+                    return { ...state, currentGuess: action.newGuess, message: '' };
+                case 'SUBMIT_GUESS':
+                    const feedback = getFeedback(state.currentGuess, state.secretCode);
+                    const newGuesses = [...state.guesses, { code: state.currentGuess, feedback }];
+                    
+                    let newGameStatus = state.gameStatus;
+                    let newMessage = '';
+                    let newStats = { ...state.stats };
+                    let newBlackPegStreak = state.currentBlackPegStreak;
+                    let newComboMessage = '';
+
+                    const blackPegsInGuess = feedback.filter(f => f === 'black').length;
+                    
+                    if (blackPegsInGuess > 0) {
+                        newBlackPegStreak++;
+                        if (newBlackPegStreak > 1) {
+                            newComboMessage = `COMBO x${newBlackPegStreak}!`;
+                        } else {
+                            newComboMessage = 'Good Guess!';
+                        }
+                    } else {
+                        newBlackPegStreak = 0;
+                        newComboMessage = ''; // Reset combo message if no black pegs
+                    }
+
+                    if (blackPegsInGuess === state.gameConfig.codeLength) {
+                        newGameStatus = 'won';
+                        newMessage = 'Congratulations! You broke the code!';
+                        winSound.play();
+                        newStats = {
+                            gamesPlayed: newStats.gamesPlayed + 1,
+                            wins: newStats.wins + 1,
+                            bestTime: Math.min(newStats.bestTime, state.elapsedTime),
+                            bestAttempts: Math.min(newStats.bestAttempts, newGuesses.length)
+                        };
+                        localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); // Save stats to local storage
+                    } else if (newGuesses.length >= state.gameConfig.maxGuesses) {
+                        newGameStatus = 'lost';
+                        newMessage = `Game Over! The code was revealed below.`;
+                        loseSound.play();
+                        newStats = {
+                            ...newStats,
+                            gamesPlayed: newStats.gamesPlayed + 1
+                        };
+                        localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); // Save stats to local storage
+                    } else {
+                        submitSound.play();
+                        newMessage = newComboMessage; // Display combo message after guess
+                    }
+
+                    return {
+                        ...state,
+                        guesses: newGuesses,
+                        currentGuess: Array(state.gameConfig.codeLength).fill(null),
+                        selectedColorFromPalette: null,
+                        gameStatus: newGameStatus,
+                        message: newMessage,
+                        stats: newStats,
+                        currentBlackPegStreak: newBlackPegStreak,
+                        comboMessage: newComboMessage
+                    };
+                case 'SET_MESSAGE':
+                    return { ...state, message: action.message };
+                case 'INCREMENT_TIME':
+                    return { ...state, elapsedTime: state.elapsedTime + 1 };
+                case 'USE_HINT':
+                    if (state.hintsRemaining <= 0 || state.gameStatus !== 'playing') return state;
+
+                    const emptySlots = state.currentGuess
+                        .map((color, index) => ({ color, index }))
+                        .filter(item => item.color === null)
+                        .map(item => item.index);
+                    
+                    if (emptySlots.length === 0) return state;
+                    
+                    const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+                    const newGuessWithHint = [...state.currentGuess];
+                    newGuessWithHint[randomSlot] = state.secretCode[randomSlot];
+                    hintSound.play();
+                    return { ...state, currentGuess: newGuessWithHint, hintsRemaining: state.hintsRemaining - 1 };
+                
+                case 'TOGGLE_DUPLICATES':
+                    // Only allow toggling if game hasn't started or no guesses made
+                    if (state.gameStatus !== 'playing' || state.guesses.length > 0) return state;
+                    return { ...state, allowDuplicates: !state.allowDuplicates };
+                
+                case 'SET_DIFFICULTY':
+                    return gameReducer(state, { type: 'RESET_GAME', preset: action.preset, allowDuplicates: state.allowDuplicates });
+
+                case 'SHOW_RULES':
+                    return { ...state, showRules: action.show };
+
+                default:
+                    return state;
+            }
+        };
+
+        const MastermindGame = () => {
+            const initialStats = JSON.parse(localStorage.getItem('neonBreakerStats')) || {
+                gamesPlayed: 0,
+                wins: 0,
+                bestTime: Infinity,
+                bestAttempts: Infinity
+            };
+
+            const [state, dispatch] = React.useReducer(gameReducer, {
+                gameConfig: GAME_PRESETS.medium, // Default starting config
+                secretCode: [],
+                guesses: [],
+                currentGuess: Array(GAME_PRESETS.medium.codeLength).fill(null),
+                gameStatus: 'playing',
+                message: 'Guess the secret code!',
+                selectedColorFromPalette: null,
+                elapsedTime: 0,
+                hintsRemaining: GAME_PRESETS.medium.initialHints,
+                allowDuplicates: false,
+                showRules: false,
+                stats: initialStats,
+                currentBlackPegStreak: 0,
+                comboMessage: ''
+            });
+
+            const {
+                gameConfig, secretCode, guesses, currentGuess, gameStatus, message,
+                selectedColorFromPalette, showRules, elapsedTime, hintsRemaining,
+                allowDuplicates, stats, comboMessage
+            } = state;
+
+            // Initialize game on component mount
+            React.useEffect(() => {
+                dispatch({ type: 'RESET_GAME', preset: 'medium', allowDuplicates: false });
+            }, []); // Run once on mount
+
+            // Timer effect
+            React.useEffect(() => {
+                const timer = setInterval(() => {
+                    if (gameStatus === 'playing') {
+                        dispatch({ type: 'INCREMENT_TIME' });
+                    }
+                }, 1000);
+                
+                return () => clearInterval(timer);
+            }, [gameStatus]); // Re-run if gameStatus changes
+
+            // Handle clicking on a color in the palette
+            const handlePaletteColorClick = (color) => {
+                if (gameStatus !== 'playing') return;
+                dispatch({ type: 'SET_SELECTED_COLOR', color });
+                selectSound.currentTime = 0;
+                selectSound.play();
+            };
+
+            // Handle clicking on a peg in the current guess area
+            const handleGuessPegClick = (index) => {
+                if (gameStatus !== 'playing') return;
+
+                const newGuess = [...currentGuess];
+
+                if (newGuess[index] !== null) {
+                    // Remove the color
+                    newGuess[index] = null;
+                    dispatch({ type: 'UPDATE_CURRENT_GUESS', newGuess });
+                    dispatch({ type: 'SET_SELECTED_COLOR', color: null });
+                    placeSound.currentTime = 0;
+                    placeSound.play();
+                } else {
+                    // Place the selected color
+                    if (selectedColorFromPalette !== null) {
+                        if (!allowDuplicates && newGuess.includes(selectedColorFromPalette)) {
+                            dispatch({ type: 'SET_MESSAGE', message: 'Colors must be unique in your guess!' });
+                            return;
+                        }
+                        newGuess[index] = selectedColorFromPalette;
+                        dispatch({ type: 'UPDATE_CURRENT_GUESS', newGuess });
+                        dispatch({ type: 'SET_SELECTED_COLOR', color: null });
+                        placeSound.currentTime = 0;
+                        placeSound.play();
+                    } else {
+                        dispatch({ type: 'SET_MESSAGE', message: 'Select a color from the palette first!' });
+                        return;
+                    }
+                }
+            };
+
+            // Submit the current guess for feedback
+            const handleSubmitGuess = () => {
+                if (gameStatus !== 'playing') return;
+                
+                if (currentGuess.includes(null)) {
+                    dispatch({ type: 'SET_MESSAGE', message: 'Please complete your guess!' });
+                    return;
+                }
+                dispatch({ type: 'SUBMIT_GUESS' });
+            };
+
+            // Reset the game to its initial state
+            const handleNewGame = () => {
+                dispatch({ type: 'RESET_GAME', preset: Object.keys(GAME_PRESETS).find(key => GAME_PRESETS[key] === gameConfig) || 'medium', allowDuplicates: allowDuplicates });
+            };
+
+            const handleToggleDuplicates = () => {
+                dispatch({ type: 'TOGGLE_DUPLICATES' });
+                // If toggling duplicates changes the setting, reset the game for new secret code
+                if (guesses.length === 0 && gameStatus === 'playing') {
+                     dispatch({ type: 'RESET_GAME', preset: Object.keys(GAME_PRESETS).find(key => GAME_PRESETS[key] === gameConfig) || 'medium', allowDuplicates: !allowDuplicates });
+                }
+            };
+
+            // Format time for display
+            const formatTime = (seconds) => {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            };
+
+            return (
+                <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+                    {/* Scanline and particle effects */}
+                    <div className="scanline-overlay"></div>
+                    <ParticleBackground availableColors={gameConfig.availableColors} />
+                    
+                    <div className="relative z-10 bg-black/60 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40">
+                        <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                            NEON BREAKER
+                        </h1>
+                        
+                        {/* Game stats and timer */}
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="stats-box">
+                                <div className="text-sm text-cyan-300">Time</div>
+                                <div className="stats-value">{formatTime(elapsedTime)}</div>
+                            </div>
+                            
+                            <div className="stats-box">
+                                <div className="text-sm text-cyan-300">Attempts</div>
+                                <div className="stats-value">{guesses.length}/{gameConfig.maxGuesses}</div>
+                            </div>
+                            
+                            <div className="stats-box">
+                                <div className="text-sm text-cyan-300">Hints</div>
+                                <div className="stats-value">{hintsRemaining}</div>
+                            </div>
+                        </div>
+                        
+                        {/* Game mode and difficulty toggle */}
+                        <div className="flex items-center justify-center mb-4 flex-wrap gap-2">
+                             <span className="mr-2 text-cyan-300">Difficulty:</span>
+                             <select
+                                className="bg-gray-800 text-white rounded p-1"
+                                value={Object.keys(GAME_PRESETS).find(key => GAME_PRESETS[key] === gameConfig) || 'medium'}
+                                onChange={(e) => dispatch({ type: 'SET_DIFFICULTY', preset: e.target.value })}
+                                disabled={gameStatus !== 'playing' || guesses.length > 0}
+                                aria-label="Select difficulty level"
+                             >
+                                 {Object.keys(GAME_PRESETS).map(presetKey => (
+                                     <option key={presetKey} value={presetKey}>
+                                         {presetKey.charAt(0).toUpperCase() + presetKey.slice(1)}
+                                     </option>
+                                 ))}
+                             </select>
+                            <span className="ml-4 mr-2 text-cyan-300">Duplicates:</span>
+                            <label className="switch">
+                                <input 
+                                    type="checkbox" 
+                                    checked={allowDuplicates}
+                                    onChange={handleToggleDuplicates}
+                                    disabled={gameStatus !== 'playing' || guesses.length > 0}
+                                    aria-label="Toggle duplicate colors"
+                                />
+                                <span className="slider"></span>
+                            </label>
+                            <span className="ml-2 text-cyan-300">{allowDuplicates ? "On" : "Off"}</span>
+                        </div>
+                        
+                        <p className="text-center text-cyan-300/80 mb-4 text-shadow-neon" role="alert" aria-live="polite">
+                            {comboMessage && <span className="text-yellow-300 mr-2">{comboMessage}</span>}
+                            {message}
+                        </p>
+
+                        {/* Secret Code Display (revealed on win/loss) */}
+                        <div className="flex justify-center mb-4">
+                            {gameStatus !== 'playing' && (
+                                <div className="flex space-x-2 p-3 bg-gray-700/50 rounded-lg shadow-inner fade-in border border-gray-600/50" aria-label="Secret code">
+                                    {secretCode.map((color, index) => (
+                                        <CodePeg key={index} color={color} index={index} totalPegs={gameConfig.codeLength} />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Past Guesses and Feedback */}
+                        <div className="max-h-64 overflow-y-auto mb-4 p-2 rounded-md bg-gray-700/30 border border-gray-600/30" aria-label="Past guesses and feedback">
+                            {guesses.map((g, index) => (
+                                <GuessRow key={index} guess={g.code} feedback={g.feedback} codeLength={gameConfig.codeLength} />
+                            ))}
+                        </div>
+
+                        {/* Current Guess Input */}
+                        <div className="flex justify-center space-x-2 mb-4 p-3 bg-gray-700/50 rounded-lg shadow-inner border border-gray-600/50" aria-label="Current guess input area">
+                            {Array.from({ length: gameConfig.codeLength }).map((_, i) => (
+                                <CodePeg
+                                    key={`current-${i}`}
+                                    color={currentGuess[i]}
+                                    onClick={() => handleGuessPegClick(i)}
+                                    index={i}
+                                    totalPegs={gameConfig.codeLength}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Color Picker */}
+                        <div className="flex flex-wrap justify-center gap-3 mb-4" role="group" aria-label="Color selection palette">
+                            {gameConfig.availableColors.map(color => (
+                                <button
+                                    key={color}
+                                    onClick={() => handlePaletteColorClick(color)}
+                                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full transition-transform duration-100 ease-in-out hover:scale-110 active:scale-90 color-picker-button ${selectedColorFromPalette === color ? 'selected' : ''}`}
+                                    style={{ backgroundColor: color }} /* Removed dynamic shadow/border classes */
+                                    disabled={gameStatus !== 'playing'}
+                                    aria-label={`Select color ${color}`}
+                                ></button>
+                            ))}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <button
+                                onClick={() => dispatch({ type: 'USE_HINT' })}
+                                disabled={hintsRemaining <= 0 || gameStatus !== 'playing'}
+                                className="py-2 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                aria-label={`Use hint. ${hintsRemaining} hints remaining.`}
+                            >
+                                Hint ({hintsRemaining})
+                            </button>
+                            
+                            <button
+                                onClick={() => dispatch({ type: 'SHOW_RULES', show: true })}
+                                className="py-2 px-4 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                aria-label="Show game rules"
+                            >
+                                Rules
+                            </button>
+                            
+                            <button
+                                onClick={handleSubmitGuess}
+                                className="py-2 px-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={gameStatus !== 'playing' || currentGuess.includes(null)}
+                                aria-label="Submit your guess"
+                            >
+                                Guess
+                            </button>
+                            
+                            <button
+                                onClick={handleNewGame}
+                                className="py-2 px-4 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                aria-label="Start a new game"
+                            >
+                                New Game
+                            </button>
+                        </div>
+                        
+                        {/* Win overlay */}
+                        {gameStatus === 'won' && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 fade-in" role="dialog" aria-labelledby="win-message">
+                                <h2 id="win-message" className="text-4xl md:text-5xl font-bold text-yellow-300 text-shadow-neon win-animation">
+                                    YOU WON!
+                                </h2>
+                            </div>
+                        )}
+
+                        {/* Rules Modal */}
+                        {showRules && (
+                            <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rules-heading">
+                                <div className="modal-content">
+                                    <button onClick={() => dispatch({ type: 'SHOW_RULES', show: false })} className="modal-close-button" aria-label="Close rules">
+                                        &times;
+                                    </button>
+                                    <h2 id="rules-heading" className="text-2xl md:text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Code Breaker</h2>
+                                    <p className="text-gray-200 mb-4">
+                                        Your goal is to guess the secret code, which consists of {gameConfig.codeLength} colors.
+                                        You have {gameConfig.maxGuesses} attempts.
+                                    </p>
+                                    
+                                    <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
+                                    <ul className="list-disc list-inside text-gray-200 space-y-2">
+                                        <li>
+                                            <span className="font-bold">Make a Guess:</span>
+                                            <ul className="list-disc list-inside ml-4 mt-1">
+                                                <li>Click a color from the palette at the bottom</li>
+                                                <li>Then click on any empty circle in your current guess area</li>
+                                                <li>To remove a color, click on a filled circle</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <span className="font-bold">Submit Your Guess:</span> Click "Guess" when your current guess is complete
+                                        </li>
+                                        <li>
+                                            <span className="font-bold">Receive Feedback:</span> 
+                                            <ul className="list-disc list-inside ml-4 mt-1">
+                                                <li><span className="feedback-peg-black inline-block w-3 h-3 rounded-full mr-2"></span> Black: Correct color in correct position</li>
+                                                <li><span className="feedback-peg-white inline-block w-3 h-3 rounded-full mr-2"></span> White: Correct color in wrong position</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <span className="font-bold">Win or Lose:</span>
+                                            <ul className="list-disc list-inside ml-4 mt-1">
+                                                <li>Win: Get {gameConfig.codeLength} black pegs</li>
+                                                <li>Lose: Run out of guesses</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <span className="font-bold">Hints:</span> Use the hint button to reveal one correct color ({gameConfig.initialHints} per game)
+                                        </li>
+                                        <li>
+                                            <span className="font-bold">Game Mode:</span> Toggle between allowing duplicate colors or requiring unique colors, and select difficulty.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    
+                    {/* Statistics footer */}
+                    <div className="mt-6 grid grid-cols-2 gap-4 text-sm" role="contentinfo" aria-label="Game statistics">
+                        <div className="stats-box">
+                            <div className="text-cyan-300">Games Played</div>
+                            <div className="stats-value">{stats.gamesPlayed}</div>
+                        </div>
+                        <div className="stats-box">
+                            <div className="text-cyan-300">Wins</div>
+                            <div className="stats-value">{stats.wins}</div>
+                        </div>
+                        <div className="stats-box">
+                            <div className="text-cyan-300">Best Time</div>
+                            <div className="stats-value">{stats.bestTime === Infinity ? '--:--' : formatTime(stats.bestTime)}</div>
+                        </div>
+                        <div className="stats-box">
+                            <div className="text-cyan-300">Best Attempts</div>
+                            <div className="stats-value">{stats.bestAttempts === Infinity ? '--' : stats.bestAttempts}</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the main component
+        ReactDOM.render(<MastermindGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 :80 {
-    root * /srv/games
+    root * /srv
     file_server browse
 
     # Enable compression

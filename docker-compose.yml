@@ -10,6 +10,7 @@ services:
       - "8443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./index.html:/srv/index.html
       - ./games:/srv/games
       - caddy_data:/data
       - caddy_config:/config

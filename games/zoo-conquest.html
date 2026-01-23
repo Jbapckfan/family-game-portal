@@ -1173,7 +1173,7 @@
         if (firstPlayer.isAI) {
           setMessage(`🤖 ${firstPlayer.name}'s turn!`);
         } else {
-          setMessage(`${firstPlayer.name}'s turn! Place ${initialTroops} reinforcements.`);
+          setMessage(`${firstPlayer.name}'s turn! Place your ${initialTroops} animals.`);
         }
       };
 
@@ -1220,7 +1220,7 @@
         setTroopsToPlace(prev => prev + bonusTroops);
         setTradeCount(prev => prev + 1);
         setShowCardTrade(false);
-        setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your reinforcements.`);
+        setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
       };
 
       // Get next trade value
@@ -1644,7 +1644,7 @@
             if (nextPlayer.isAI) {
               setMessage(`🤖 ${nextPlayer.name}'s turn!`);
             } else {
-              setMessage(`Your turn! Place ${newTroops} reinforcements.`);
+              setMessage(`Your turn! Place your ${newTroops} animals.`);
             }
 
             setAiThinking(false);
@@ -1828,7 +1828,7 @@
             setEarnedCardThisTurn(true);
           }
           setTurnPhase('fortify');
-          setMessage('Fortify phase! Move troops between your territories, or end your turn.');
+          setMessage('Fortify phase (optional)! Move animals between territories, or just end your turn.');
         } else if (turnPhase === 'fortify') {
           // Go to next player
           goToNextPlayer();
@@ -1886,7 +1886,7 @@
         } else if (nextPlayer.isAI) {
           setMessage(`🤖 ${nextPlayer.name} is taking their turn...`);
         } else {
-          setMessage(`Your turn, ${nextPlayer.name}! Place ${newTroops} reinforcements.`);
+          setMessage(`Your turn, ${nextPlayer.name}! Place your ${newTroops} animals.`);
         }
       };
 
@@ -2108,13 +2108,13 @@
                 <div className="text-white font-bold mb-3">Turn Phase</div>
                 <div className="flex gap-2 flex-wrap">
                   <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-white/20 text-gray-300'}`}>
-                    1. Reinforce {troopsToPlace > 0 && `(${troopsToPlace})`}
+                    1. Place Animals {troopsToPlace > 0 && `(${troopsToPlace})`}
                   </div>
                   <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'attack' ? 'bg-red-500 text-white' : 'bg-white/20 text-gray-300'}`}>
                     2. Attack
                   </div>
                   <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'fortify' ? 'bg-blue-500 text-white' : 'bg-white/20 text-gray-300'}`}>
-                    3. Fortify
+                    3. Fortify (Optional)
                   </div>
                 </div>
 
@@ -2138,21 +2138,25 @@
                 {turnPhase === 'fortify' && !currentPlayer?.isAI && (
                   <div className="mt-3 space-y-2">
                     <div className="text-sm text-gray-200 text-center mb-2">
-                      {selectedTerritory ? 'Click a connected territory to move troops' : 'Select a territory to fortify from, or end turn'}
+                      {selectedTerritory ? 'Click a connected friendly territory to move troops' : 'Fortify is optional! End turn or move troops.'}
                     </div>
                     <button
-                      onClick={() => setSelectedTerritory(null)}
-                      className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
-                      disabled={!selectedTerritory}
-                    >
-                      🔄 Fortify Another Territory
-                    </button>
-                    <button
                       onClick={endPhase}
-                      className="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition-all"
+                      className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-all"
                     >
                       ✅ End Turn
                     </button>
+                    {selectedTerritory && (
+                      <button
+                        onClick={() => setSelectedTerritory(null)}
+                        className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
+                      >
+                        🔄 Cancel Selection
+                      </button>
+                    )}
+                    <div className="text-xs text-gray-300 text-center mt-1">
+                      (Or click a territory with 2+ troops to move some)
+                    </div>
                   </div>
                 )}
               </div>

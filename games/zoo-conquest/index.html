@@ -468,7 +468,11 @@
       const regionColor = region?.color || '#6b7280';
 
       return (
-        <g className={`territory ${isSelected ? 'selected' : ''}`} onClick={() => onClick(id)}>
+        <g
+          className={`territory ${isSelected ? 'selected' : ''}`}
+          onClick={(e) => onClick(id, e.shiftKey)}
+          onDoubleClick={() => onClick(id, true)}
+        >
           {/* Outer glow for selected/valid */}
           {(isSelected || isValidTarget) && (
             <circle
@@ -1151,8 +1155,8 @@
         );
       };
 
-      // Handle territory click
-      const handleTerritoryClick = (id) => {
+      // Handle territory click - shift+click or double-click places all troops
+      const handleTerritoryClick = (id, placeAll = false) => {
         // Block clicks during AI turn
         if (currentPlayer?.isAI) {
           return;
@@ -1161,17 +1165,22 @@
         const territory = gameState.territories[id];
 
         if (turnPhase === 'reinforce' && territory?.owner === currentPlayer?.army && troopsToPlace > 0) {
-          // Place troops
+          // Place troops - if placeAll, place all remaining troops
+          const toPlace = placeAll ? troopsToPlace : 1;
+
           setGameState(prev => ({
             ...prev,
             territories: {
               ...prev.territories,
-              [id]: { ...prev.territories[id], troops: prev.territories[id].troops + 1 }
+              [id]: { ...prev.territories[id], troops: prev.territories[id].troops + toPlace }
             }
           }));
-          setTroopsToPlace(prev => prev - 1);
+          setTroopsToPlace(prev => prev - toPlace);
 
-          if (troopsToPlace === 1) {
+          if (troopsToPlace - toPlace <= 0) {
+            setTurnPhase('attack');
+            setMessage('Attack phase! Select a territory to attack from.');
+          } else if (placeAll) {
             setTurnPhase('attack');
             setMessage('Attack phase! Select a territory to attack from.');
           }
@@ -2078,8 +2087,13 @@
                     </button>
                   )}
                   {troopsToPlace > 0 && (
-                    <div className="text-center text-yellow-400 font-bold text-sm">
-                      Click your territories to place {troopsToPlace} animals!
+                    <div className="space-y-2">
+                      <div className="text-center text-yellow-400 font-bold text-sm">
+                        Click to place {troopsToPlace} animals
+                      </div>
+                      <div className="text-center text-gray-400 text-xs">
+                        Double-click or Shift+click to place ALL
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2091,7 +2105,7 @@
                     ✅ End Turn
                   </button>
                   <button onClick={endPhase} className="w-full py-1.5 bg-blue-500/80 hover:bg-blue-600 text-white rounded text-sm">
-                    Skip to Fortify →
+                    Fortify →
                   </button>
                 </div>
               )}

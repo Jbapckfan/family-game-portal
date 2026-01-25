@@ -352,7 +352,7 @@
     };
 
     // Card Trade Modal
-    const CardTradeModal = ({ cards, onTrade, onCancel, tradeCount, nextTradeValue }) => {
+    const CardTradeModal = ({ cards, onTrade, onCancel, tradeCount, nextTradeValue, mustTrade }) => {
       const [selectedCards, setSelectedCards] = useState([]);
 
       const toggleCard = (card) => {
@@ -364,6 +364,10 @@
       };
 
       const isValidSelection = selectedCards.length === 3 && isValidTradeSet(selectedCards);
+      // After trading, how many cards will remain?
+      const cardsAfterTrade = cards.length - 3;
+      // Must keep trading until 4 or fewer
+      const canClose = !mustTrade || cards.length <= 4;
 
       return (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -371,9 +375,15 @@
             <h2 className="text-2xl font-bold text-center mb-2 game-title text-amber-800">
               🃏 Trade Cards for Animals! 🃏
             </h2>
-            <p className="text-center text-amber-700 mb-4">
-              Select 3 cards: all same type OR one of each type
-            </p>
+            {mustTrade && cards.length > 4 ? (
+              <p className="text-center text-red-600 font-bold mb-4">
+                ⚠️ You have {cards.length} cards - must trade until you have 4 or fewer!
+              </p>
+            ) : (
+              <p className="text-center text-amber-700 mb-4">
+                Select 3 cards: all same type OR one of each type
+              </p>
+            )}
 
             {/* Trade value info */}
             <div className="bg-green-100 rounded-lg p-3 mb-4 text-center">
@@ -431,12 +441,14 @@
               >
                 🎁 Trade for {nextTradeValue} Animals!
               </button>
-              <button
-                onClick={onCancel}
-                className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
-              >
-                ❌ Cancel
-              </button>
+              {canClose && (
+                <button
+                  onClick={onCancel}
+                  className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
+                >
+                  ❌ Cancel
+                </button>
+              )}
             </div>
 
             {/* Help text */}
@@ -975,6 +987,7 @@
       const [message, setMessage] = useState('Welcome to Zoo Conquest! 🦁');
       const [aiThinking, setAiThinking] = useState(false);
       const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
+      const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
       const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
       const [cardDeck, setCardDeck] = useState([...CARD_DECK].sort(() => Math.random() - 0.5)); // Shuffled deck
 
@@ -1069,16 +1082,28 @@
 
         // Remove traded cards from player's hand
         const cardIds = selectedCards.map(c => c.id);
+        const currentCards = playerCards[army] || [];
+        const remainingCards = currentCards.filter(c => !cardIds.includes(c.id));
+
         setPlayerCards(prev => ({
           ...prev,
-          [army]: prev[army].filter(c => !cardIds.includes(c.id))
+          [army]: remainingCards
         }));
 
         // Add bonus troops
         setTroopsToPlace(prev => prev + bonusTroops);
         setTradeCount(prev => prev + 1);
-        setShowCardTrade(false);
-        setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
+
+        // Check if must continue trading (still over 4 cards)
+        if (mustTradeCards && remainingCards.length > 4 && canTradeCards(remainingCards)) {
+          // Keep modal open, must trade more
+          setMessage(`🎁 +${bonusTroops} animals! Still have ${remainingCards.length} cards - must trade to 4 or fewer!`);
+        } else {
+          // Done trading
+          setShowCardTrade(false);
+          setMustTradeCards(false);
+          setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
+        }
       };
 
       // Get next trade value
@@ -1662,30 +1687,47 @@
 
         // Check if defender is eliminated (no territories left)
         const defenderTerritories = Object.values(newTerritories).filter(t => t.owner === defeatedArmy);
+        let forceTrade = false;
         if (defenderTerritories.length === 0 && defeatedArmy) {
           // Transfer all cards from eliminated player
           const eliminatedCards = playerCards[defeatedArmy] || [];
           if (eliminatedCards.length > 0) {
+            const myCurrentCards = playerCards[currentPlayer.army] || [];
+            const newCardCount = myCurrentCards.length + eliminatedCards.length;
             setPlayerCards(prevCards => ({
               ...prevCards,
               [currentPlayer.army]: [...(prevCards[currentPlayer.army] || []), ...eliminatedCards],
               [defeatedArmy]: []
             }));
-            setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+            // Force trade if over 6 cards (Risk rule)
+            if (newCardCount > 6) {
+              forceTrade = true;
+              setMessage(`🎉 Conquered! 💀 Eliminated player - took ${eliminatedCards.length} cards! Must trade down to 4 or fewer!`);
+            } else {
+              setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+            }
           } else {
             setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Player eliminated!`);
           }
         } else {
-          setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! Continue attacking or move to fortify.`);
+          setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! Continue attacking from here or select another territory.`);
         }
 
         setGameState({ territories: newTerritories });
         setConqueredThisTurn(true);
         setBattleState(null);
-        setSelectedTerritory(null);
+
+        // Select the newly conquered territory so player can attack from it immediately
+        setSelectedTerritory(battleState.to);
 
         // Check for game over with the NEW territories
         checkGameOver(newTerritories);
+
+        // Force card trade modal if over 6 cards
+        if (forceTrade) {
+          setMustTradeCards(true);
+          setTimeout(() => setShowCardTrade(true), 300);
+        }
       };
 
       // Retreat from battle
@@ -2153,9 +2195,10 @@
             <CardTradeModal
               cards={playerCards[currentPlayer.army] || []}
               onTrade={handleCardTrade}
-              onCancel={() => setShowCardTrade(false)}
+              onCancel={() => { setShowCardTrade(false); setMustTradeCards(false); }}
               tradeCount={tradeCount}
               nextTradeValue={getNextTradeValue()}
+              mustTrade={mustTradeCards}
             />
           )}
         </div>

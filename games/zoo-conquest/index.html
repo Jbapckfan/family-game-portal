@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoo Conquest - A Risk-Style Adventure!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #1a1a2e;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .map-container {
+      width: 100%;
+      height: calc(100vh - 60px);
+    }
+
+    .game-title {
+      font-family: 'Fredoka One', cursive;
+    }
+
+    .territory {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .territory:hover {
+      filter: brightness(1.2);
+      transform: scale(1.02);
+    }
+
+    .territory.selected {
+      filter: brightness(1.3);
+      stroke-width: 4;
+      stroke: gold;
+    }
+
+    .dice {
+      animation: roll 0.5s ease-out;
+    }
+
+    @keyframes roll {
+      0% { transform: rotate(0deg) scale(0.5); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .bounce {
+      animation: bounce 0.5s ease infinite;
+    }
+
+    @keyframes cardFlip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+
+    .card-flip {
+      animation: cardFlip 0.6s ease;
+    }
+
+    .glow {
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    .animal-piece {
+      display: inline-block;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .animal-piece:hover {
+      animation: wiggle 0.3s ease infinite;
+    }
+
+    @keyframes placeAnimal {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .placing {
+      animation: placeAnimal 0.3s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+
+    // Animal Army Types with Colors
+    const ANIMAL_ARMIES = {
+      turtles: { name: 'Turtles', color: '#22c55e', emoji: '🐢', bgColor: 'bg-green-500' },
+      pandas: { name: 'Pandas', color: '#1f2937', emoji: '🐼', bgColor: 'bg-gray-800' },
+      penguins: { name: 'Penguins', color: '#3b82f6', emoji: '🐧', bgColor: 'bg-blue-500' },
+      stingrays: { name: 'Stingrays', color: '#92400e', emoji: '🦈', bgColor: 'bg-amber-700' },
+      redPandas: { name: 'Red Pandas', color: '#dc2626', emoji: '🦊', bgColor: 'bg-red-600' },
+      flamingos: { name: 'Flamingos', color: '#ec4899', emoji: '🦩', bgColor: 'bg-pink-500' },
+    };
+
+    // 42 Territories matching Risk exactly (with zoo-themed names)
+    // Map positioned for 900x600 viewBox
+    const TERRITORIES = {
+      // NORTH AMERICA - 9 territories (+5 bonus) - Top left area
+      alaska: { name: 'Alaska', region: 'NorthAmerica', x: 70, y: 70, connections: ['northwest', 'alberta', 'kamchatka'] },
+      northwest: { name: 'Northwest', region: 'NorthAmerica', x: 130, y: 90, connections: ['alaska', 'alberta', 'ontario', 'greenland'] },
+      greenland: { name: 'Greenland', region: 'NorthAmerica', x: 280, y: 50, connections: ['northwest', 'ontario', 'quebec', 'iceland'] },
+      alberta: { name: 'Alberta', region: 'NorthAmerica', x: 100, y: 140, connections: ['alaska', 'northwest', 'ontario', 'westus'] },
+      ontario: { name: 'Ontario', region: 'NorthAmerica', x: 170, y: 150, connections: ['northwest', 'alberta', 'greenland', 'quebec', 'westus', 'eastus'] },
+      quebec: { name: 'Quebec', region: 'NorthAmerica', x: 230, y: 140, connections: ['ontario', 'greenland', 'eastus'] },
+      westus: { name: 'West US', region: 'NorthAmerica', x: 90, y: 200, connections: ['alberta', 'ontario', 'eastus', 'centralam'] },
+      eastus: { name: 'East US', region: 'NorthAmerica', x: 160, y: 210, connections: ['ontario', 'quebec', 'westus', 'centralam'] },
+      centralam: { name: 'C. America', region: 'NorthAmerica', x: 120, y: 270, connections: ['westus', 'eastus', 'venezuela'] },
+
+      // SOUTH AMERICA - 4 territories (+2 bonus) - Bottom left
+      venezuela: { name: 'Venezuela', region: 'SouthAmerica', x: 160, y: 330, connections: ['centralam', 'peru', 'brazil'] },
+      peru: { name: 'Peru', region: 'SouthAmerica', x: 150, y: 400, connections: ['venezuela', 'brazil', 'argentina'] },
+      brazil: { name: 'Brazil', region: 'SouthAmerica', x: 210, y: 380, connections: ['venezuela', 'peru', 'argentina', 'northafrica'] },
+      argentina: { name: 'Argentina', region: 'SouthAmerica', x: 170, y: 480, connections: ['peru', 'brazil'] },
+
+      // EUROPE - 7 territories (+5 bonus) - Top center
+      iceland: { name: 'Iceland', region: 'Europe', x: 340, y: 70, connections: ['greenland', 'scandinavia', 'britain'] },
+      scandinavia: { name: 'Scandinavia', region: 'Europe', x: 420, y: 80, connections: ['iceland', 'britain', 'northeur', 'ukraine'] },
+      ukraine: { name: 'Ukraine', region: 'Europe', x: 490, y: 120, connections: ['scandinavia', 'northeur', 'southeur', 'ural', 'afghan', 'mideast'] },
+      britain: { name: 'Britain', region: 'Europe', x: 350, y: 140, connections: ['iceland', 'scandinavia', 'northeur', 'westeur'] },
+      northeur: { name: 'N. Europe', region: 'Europe', x: 420, y: 150, connections: ['scandinavia', 'ukraine', 'britain', 'westeur', 'southeur'] },
+      westeur: { name: 'W. Europe', region: 'Europe', x: 360, y: 210, connections: ['britain', 'northeur', 'southeur', 'northafrica'] },
+      southeur: { name: 'S. Europe', region: 'Europe', x: 430, y: 200, connections: ['northeur', 'ukraine', 'westeur', 'northafrica', 'egypt', 'mideast'] },
+
+      // AFRICA - 6 territories (+3 bonus) - Bottom center
+      northafrica: { name: 'N. Africa', region: 'Africa', x: 370, y: 300, connections: ['brazil', 'westeur', 'southeur', 'egypt', 'eastafrica', 'congo'] },
+      egypt: { name: 'Egypt', region: 'Africa', x: 440, y: 280, connections: ['southeur', 'northafrica', 'eastafrica', 'mideast'] },
+      eastafrica: { name: 'E. Africa', region: 'Africa', x: 470, y: 350, connections: ['northafrica', 'egypt', 'congo', 'southafrica', 'madagascar', 'mideast'] },
+      congo: { name: 'Congo', region: 'Africa', x: 410, y: 400, connections: ['northafrica', 'eastafrica', 'southafrica'] },
+      southafrica: { name: 'S. Africa', region: 'Africa', x: 430, y: 480, connections: ['congo', 'eastafrica', 'madagascar'] },
+      madagascar: { name: 'Madagascar', region: 'Africa', x: 500, y: 460, connections: ['eastafrica', 'southafrica'] },
+
+      // ASIA - 12 territories (+7 bonus) - Right side
+      ural: { name: 'Ural', region: 'Asia', x: 560, y: 100, connections: ['ukraine', 'siberia', 'afghan', 'china'] },
+      siberia: { name: 'Siberia', region: 'Asia', x: 620, y: 70, connections: ['ural', 'yakutsk', 'irkutsk', 'mongolia', 'china'] },
+      yakutsk: { name: 'Yakutsk', region: 'Asia', x: 700, y: 50, connections: ['siberia', 'irkutsk', 'kamchatka'] },
+      kamchatka: { name: 'Kamchatka', region: 'Asia', x: 780, y: 70, connections: ['alaska', 'yakutsk', 'irkutsk', 'mongolia', 'japan'] },
+      irkutsk: { name: 'Irkutsk', region: 'Asia', x: 680, y: 110, connections: ['siberia', 'yakutsk', 'kamchatka', 'mongolia'] },
+      mongolia: { name: 'Mongolia', region: 'Asia', x: 700, y: 170, connections: ['siberia', 'irkutsk', 'kamchatka', 'china', 'japan'] },
+      japan: { name: 'Japan', region: 'Asia', x: 800, y: 180, connections: ['kamchatka', 'mongolia'] },
+      afghan: { name: 'Afghan', region: 'Asia', x: 540, y: 190, connections: ['ukraine', 'ural', 'china', 'india', 'mideast'] },
+      china: { name: 'China', region: 'Asia', x: 650, y: 230, connections: ['ural', 'siberia', 'mongolia', 'afghan', 'india', 'siam'] },
+      mideast: { name: 'Mid East', region: 'Asia', x: 500, y: 260, connections: ['ukraine', 'southeur', 'egypt', 'eastafrica', 'afghan', 'india'] },
+      india: { name: 'India', region: 'Asia', x: 590, y: 300, connections: ['afghan', 'china', 'mideast', 'siam'] },
+      siam: { name: 'Siam', region: 'Asia', x: 660, y: 330, connections: ['china', 'india', 'indonesia'] },
+
+      // AUSTRALIA - 4 territories (+2 bonus) - Bottom right
+      indonesia: { name: 'Indonesia', region: 'Australia', x: 700, y: 400, connections: ['siam', 'newguinea', 'westaus'] },
+      newguinea: { name: 'New Guinea', region: 'Australia', x: 780, y: 380, connections: ['indonesia', 'westaus', 'eastaus'] },
+      westaus: { name: 'W. Australia', region: 'Australia', x: 730, y: 480, connections: ['indonesia', 'newguinea', 'eastaus'] },
+      eastaus: { name: 'E. Australia', region: 'Australia', x: 800, y: 500, connections: ['newguinea', 'westaus'] },
+    };
+
+    // 6 Continents matching Risk exactly
+    const REGIONS = {
+      NorthAmerica: {
+        territories: ['alaska', 'northwest', 'greenland', 'alberta', 'ontario', 'quebec', 'westus', 'eastus', 'centralam'],
+        bonus: 5,
+        color: '#F59E0B', // Yellow/gold
+        lightColor: '#FEF3C7',
+        darkColor: '#B45309',
+        emoji: '🦅'
+      },
+      SouthAmerica: {
+        territories: ['venezuela', 'peru', 'brazil', 'argentina'],
+        bonus: 2,
+        color: '#EF4444', // Red
+        lightColor: '#FEE2E2',
+        darkColor: '#B91C1C',
+        emoji: '🦜'
+      },
+      Europe: {
+        territories: ['iceland', 'scandinavia', 'ukraine', 'britain', 'northeur', 'westeur', 'southeur'],
+        bonus: 5,
+        color: '#3B82F6', // Blue
+        lightColor: '#DBEAFE',
+        darkColor: '#1D4ED8',
+        emoji: '🦌'
+      },
+      Africa: {
+        territories: ['northafrica', 'egypt', 'eastafrica', 'congo', 'southafrica', 'madagascar'],
+        bonus: 3,
+        color: '#F97316', // Orange
+        lightColor: '#FED7AA',
+        darkColor: '#C2410C',
+        emoji: '🦁'
+      },
+      Asia: {
+        territories: ['ural', 'siberia', 'yakutsk', 'kamchatka', 'irkutsk', 'mongolia', 'japan', 'afghan', 'china', 'mideast', 'india', 'siam'],
+        bonus: 7,
+        color: '#10B981', // Green
+        lightColor: '#D1FAE5',
+        darkColor: '#047857',
+        emoji: '🐅'
+      },
+      Australia: {
+        territories: ['indonesia', 'newguinea', 'westaus', 'eastaus'],
+        bonus: 2,
+        color: '#A855F7', // Purple
+        lightColor: '#F3E8FF',
+        darkColor: '#7E22CE',
+        emoji: '🦘'
+      },
+    };
+
+    // Risk-Style Cards - Three types plus wild
+    // Trade in 3 of same type OR 3 different types for bonus troops
+    const CARD_TYPES = {
+      infantry: { name: 'Infantry', emoji: '🐾', color: 'bg-green-500', description: 'Paw Print' },
+      cavalry: { name: 'Cavalry', emoji: '🦓', color: 'bg-blue-500', description: 'Zebra' },
+      artillery: { name: 'Artillery', emoji: '🐘', color: 'bg-red-500', description: 'Elephant' },
+      wild: { name: 'Wild', emoji: '🌟', color: 'bg-yellow-500', description: 'Star - counts as any!' },
+    };
+
+    // Card deck - 14 infantry, 14 cavalry, 14 artillery, 2 wild (like Risk)
+    const CARD_DECK = [
+      // Infantry cards (14)
+      ...Array(14).fill(null).map((_, i) => ({ id: `inf_${i}`, type: 'infantry', ...CARD_TYPES.infantry })),
+      // Cavalry cards (14)
+      ...Array(14).fill(null).map((_, i) => ({ id: `cav_${i}`, type: 'cavalry', ...CARD_TYPES.cavalry })),
+      // Artillery cards (14)
+      ...Array(14).fill(null).map((_, i) => ({ id: `art_${i}`, type: 'artillery', ...CARD_TYPES.artillery })),
+      // Wild cards (2)
+      ...Array(2).fill(null).map((_, i) => ({ id: `wild_${i}`, type: 'wild', ...CARD_TYPES.wild })),
+    ];
+
+    // Card trade-in values (escalating like Risk)
+    const TRADE_IN_VALUES = [4, 6, 8, 10, 12, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+
+    // Check if a set of 3 cards can be traded
+    const canTradeCards = (cards) => {
+      if (cards.length < 3) return false;
+
+      // Count card types (wild counts as any)
+      const types = cards.map(c => c.type);
+      const nonWildTypes = types.filter(t => t !== 'wild');
+      const wildCount = types.filter(t => t === 'wild').length;
+
+      // Check all combinations of 3 cards
+      for (let i = 0; i < cards.length - 2; i++) {
+        for (let j = i + 1; j < cards.length - 1; j++) {
+          for (let k = j + 1; k < cards.length; k++) {
+            const combo = [cards[i], cards[j], cards[k]];
+            if (isValidTradeSet(combo)) return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    // Check if exactly 3 cards form a valid trade set
+    const isValidTradeSet = (threeCards) => {
+      if (threeCards.length !== 3) return false;
+
+      const types = threeCards.map(c => c.type);
+      const wildCount = types.filter(t => t === 'wild').length;
+      const nonWildTypes = types.filter(t => t !== 'wild');
+
+      // All same type (with wilds filling in)
+      const uniqueNonWild = [...new Set(nonWildTypes)];
+      if (uniqueNonWild.length <= 1) return true; // All same (or all wild)
+
+      // All different types (with wilds filling in)
+      if (uniqueNonWild.length + wildCount >= 3 && uniqueNonWild.length === nonWildTypes.length) {
+        // Check if we have 3 different types
+        const allTypes = ['infantry', 'cavalry', 'artillery'];
+        const missingTypes = allTypes.filter(t => !nonWildTypes.includes(t));
+        if (missingTypes.length <= wildCount) return true;
+      }
+
+      return false;
+    };
+
+    // Find a valid trade set from cards (returns indices)
+    const findValidTradeSet = (cards) => {
+      for (let i = 0; i < cards.length - 2; i++) {
+        for (let j = i + 1; j < cards.length - 1; j++) {
+          for (let k = j + 1; k < cards.length; k++) {
+            const combo = [cards[i], cards[j], cards[k]];
+            if (isValidTradeSet(combo)) return [i, j, k];
+          }
+        }
+      }
+      return null;
+    };
+
+    // Dice Component
+    const Dice = ({ value, color, isRolling }) => {
+      const dots = {
+        1: [[50, 50]],
+        2: [[25, 25], [75, 75]],
+        3: [[25, 25], [50, 50], [75, 75]],
+        4: [[25, 25], [75, 25], [25, 75], [75, 75]],
+        5: [[25, 25], [75, 25], [50, 50], [25, 75], [75, 75]],
+        6: [[25, 25], [75, 25], [25, 50], [75, 50], [25, 75], [75, 75]],
+      };
+
+      return (
+        <div className={`w-14 h-14 rounded-lg shadow-lg flex items-center justify-center ${isRolling ? 'dice' : ''}`}
+             style={{ backgroundColor: color }}>
+          <svg viewBox="0 0 100 100" className="w-10 h-10">
+            {dots[value]?.map((pos, i) => (
+              <circle key={i} cx={pos[0]} cy={pos[1]} r="10" fill="white" />
+            ))}
+          </svg>
+        </div>
+      );
+    };
+
+    // Risk-Style Card Component
+    const Card = ({ card, isSelected, onSelect, small }) => {
+      const typeInfo = CARD_TYPES[card.type];
+      const sizeClass = small ? 'w-16 p-2' : 'w-24 p-3';
+
+      return (
+        <div
+          className={`${sizeClass} bg-white rounded-xl shadow-lg border-4 transition-all cursor-pointer hover:scale-105 ${
+            isSelected ? 'border-yellow-400 ring-2 ring-yellow-300' : 'border-gray-300'
+          }`}
+          onClick={() => onSelect && onSelect(card)}
+        >
+          <div className={`text-center mb-1 ${small ? 'text-2xl' : 'text-4xl'}`}>{typeInfo.emoji}</div>
+          <div className={`font-bold text-center text-gray-800 ${small ? 'text-xs' : 'text-sm'}`}>{typeInfo.name}</div>
+          <div className={`text-center mt-1 px-1 py-0.5 rounded-full ${typeInfo.color} text-white ${small ? 'text-[8px]' : 'text-xs'}`}>
+            {card.type === 'wild' ? '⭐ WILD' : typeInfo.description}
+          </div>
+        </div>
+      );
+    };
+
+    // Card Trade Modal
+    const CardTradeModal = ({ cards, onTrade, onCancel, tradeCount, nextTradeValue }) => {
+      const [selectedCards, setSelectedCards] = useState([]);
+
+      const toggleCard = (card) => {
+        if (selectedCards.find(c => c.id === card.id)) {
+          setSelectedCards(selectedCards.filter(c => c.id !== card.id));
+        } else if (selectedCards.length < 3) {
+          setSelectedCards([...selectedCards, card]);
+        }
+      };
+
+      const isValidSelection = selectedCards.length === 3 && isValidTradeSet(selectedCards);
+
+      return (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-b from-amber-100 to-amber-200 p-6 rounded-2xl max-w-2xl w-full mx-4 shadow-2xl">
+            <h2 className="text-2xl font-bold text-center mb-2 game-title text-amber-800">
+              🃏 Trade Cards for Animals! 🃏
+            </h2>
+            <p className="text-center text-amber-700 mb-4">
+              Select 3 cards: all same type OR one of each type
+            </p>
+
+            {/* Trade value info */}
+            <div className="bg-green-100 rounded-lg p-3 mb-4 text-center">
+              <span className="text-green-800 font-bold">
+                Next trade gives you: <span className="text-2xl">{nextTradeValue}</span> animals! 🎉
+              </span>
+              <div className="text-green-600 text-sm">(Trade #{tradeCount + 1})</div>
+            </div>
+
+            {/* Card selection */}
+            <div className="bg-white/50 rounded-xl p-4 mb-4">
+              <div className="text-sm font-bold text-amber-800 mb-2">Your Cards ({cards.length}):</div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {cards.map((card) => (
+                  <Card
+                    key={card.id}
+                    card={card}
+                    isSelected={selectedCards.find(c => c.id === card.id)}
+                    onSelect={toggleCard}
+                    small
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Selected cards preview */}
+            <div className="bg-amber-50 rounded-xl p-3 mb-4">
+              <div className="text-sm font-bold text-amber-800 mb-2">Selected ({selectedCards.length}/3):</div>
+              <div className="flex gap-2 justify-center min-h-[80px] items-center">
+                {selectedCards.length === 0 ? (
+                  <span className="text-amber-400">Click cards above to select</span>
+                ) : (
+                  selectedCards.map((card) => (
+                    <Card key={card.id} card={card} isSelected onSelect={toggleCard} small />
+                  ))
+                )}
+              </div>
+              {selectedCards.length === 3 && (
+                <div className={`text-center mt-2 font-bold ${isValidSelection ? 'text-green-600' : 'text-red-600'}`}>
+                  {isValidSelection ? '✅ Valid set!' : '❌ Must be 3 same OR 3 different types'}
+                </div>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => onTrade(selectedCards)}
+                disabled={!isValidSelection}
+                className={`px-6 py-3 font-bold rounded-xl shadow-lg transition-all ${
+                  isValidSelection
+                    ? 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                🎁 Trade for {nextTradeValue} Animals!
+              </button>
+              <button
+                onClick={onCancel}
+                className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
+              >
+                ❌ Cancel
+              </button>
+            </div>
+
+            {/* Help text */}
+            <div className="mt-4 text-center text-xs text-amber-600">
+              <div>🐾 Infantry | 🦓 Cavalry | 🐘 Artillery | 🌟 Wild (counts as any)</div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Territory on Map - Clean design with region colors
+    const Territory = ({ id, data, owner, troops, isSelected, isValidTarget, onClick }) => {
+      const army = owner ? ANIMAL_ARMIES[owner] : null;
+      const baseColor = army ? army.color : '#6b7280';
+      const region = REGIONS[data.region];
+      const regionColor = region?.color || '#6b7280';
+
+      return (
+        <g className={`territory ${isSelected ? 'selected' : ''}`} onClick={() => onClick(id)}>
+          {/* Outer glow for selected/valid */}
+          {(isSelected || isValidTarget) && (
+            <circle
+              cx={data.x}
+              cy={data.y}
+              r="28"
+              fill="none"
+              stroke={isValidTarget ? '#fbbf24' : '#ffffff'}
+              strokeWidth="2"
+              opacity="0.9"
+            />
+          )}
+
+          {/* Region color ring */}
+          <circle
+            cx={data.x}
+            cy={data.y}
+            r="24"
+            fill={regionColor}
+          />
+
+          {/* Main territory circle with player color */}
+          <circle
+            cx={data.x}
+            cy={data.y}
+            r="20"
+            fill={baseColor}
+            stroke="#000"
+            strokeWidth="1.5"
+          />
+
+          {/* Shine effect */}
+          <ellipse
+            cx={data.x}
+            cy={data.y - 5}
+            rx="12"
+            ry="8"
+            fill="white"
+            opacity="0.15"
+          />
+
+          {/* Army emoji */}
+          <text x={data.x} y={data.y + 5} textAnchor="middle" fill="white" fontSize="16"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
+            {army ? army.emoji : '❓'}
+          </text>
+
+          {/* Troop count badge */}
+          <circle
+            cx={data.x + 15}
+            cy={data.y + 15}
+            r="10"
+            fill="#000"
+            stroke="#fff"
+            strokeWidth="1.5"
+          />
+          <text x={data.x + 15} y={data.y + 19} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
+            {troops}
+          </text>
+
+          {/* Territory name below */}
+          <text x={data.x} y={data.y + 36} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,1)' }}>
+            {data.name}
+          </text>
+        </g>
+      );
+    };
+
+    // Game Board Map - Properly sized with region colors
+    const GameMap = ({ gameState, selectedTerritory, validTargets, onTerritoryClick }) => {
+      return (
+      <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
+        {/* Ocean background */}
+        <rect x="0" y="0" width="900" height="560" fill="#1a3a4a" />
+
+        {/* Region colored background zones - 6 Risk continents */}
+        {/* North America - top left */}
+        <ellipse cx="150" cy="150" rx="130" ry="130" fill={REGIONS.NorthAmerica.color} opacity="0.2" />
+        {/* South America - bottom left */}
+        <ellipse cx="175" cy="400" rx="80" ry="110" fill={REGIONS.SouthAmerica.color} opacity="0.2" />
+        {/* Europe - top center */}
+        <ellipse cx="410" cy="140" rx="100" ry="90" fill={REGIONS.Europe.color} opacity="0.2" />
+        {/* Africa - center */}
+        <ellipse cx="430" cy="380" rx="90" ry="130" fill={REGIONS.Africa.color} opacity="0.2" />
+        {/* Asia - right side (large) */}
+        <ellipse cx="650" cy="180" rx="180" ry="150" fill={REGIONS.Asia.color} opacity="0.15" />
+        {/* Australia - bottom right */}
+        <ellipse cx="750" cy="450" rx="90" ry="80" fill={REGIONS.Australia.color} opacity="0.2" />
+
+        {/* Region Labels */}
+        <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} N. AMERICA +{REGIONS.NorthAmerica.bonus}</text>
+        <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} S. AMERICA +{REGIONS.SouthAmerica.bonus}</text>
+        <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} EUROPE +{REGIONS.Europe.bonus}</text>
+        <text x="430" y="540" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} AFRICA +{REGIONS.Africa.bonus}</text>
+        <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} ASIA +{REGIONS.Asia.bonus}</text>
+        <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} AUSTRALIA +{REGIONS.Australia.bonus}</text>
+
+        {/* Alaska-Kamchatka wrap-around connection */}
+        <path d="M 70 70 Q 0 70, 0 300 Q 0 530, 70 530 M 830 70 Q 900 70, 900 300 Q 900 530, 830 530"
+              stroke="#666" strokeWidth="2" strokeDasharray="8,5" fill="none" opacity="0.5" />
+        <text x="10" y="300" fill="#888" fontSize="10" transform="rotate(-90, 10, 300)">← Alaska-Kamchatka →</text>
+
+        {/* Connection paths */}
+        {Object.entries(TERRITORIES).map(([id, data]) =>
+          data.connections.map(connId => {
+            if (id > connId) return null;
+            // Skip Alaska-Kamchatka - shown as wrap-around above
+            if ((id === 'alaska' && connId === 'kamchatka') || (id === 'kamchatka' && connId === 'alaska')) return null;
+            const conn = TERRITORIES[connId];
+            if (!conn) return null;
+            const sameRegion = data.region === conn.region;
+            const regionColor = REGIONS[data.region]?.color || '#666';
+
+            return (
+              <line
+                key={`path-${id}-${connId}`}
+                x1={data.x}
+                y1={data.y}
+                x2={conn.x}
+                y2={conn.y}
+                stroke={sameRegion ? regionColor : "#555"}
+                strokeWidth={sameRegion ? "3" : "2"}
+                strokeLinecap="round"
+                strokeDasharray={sameRegion ? "0" : "6,4"}
+                opacity={sameRegion ? "0.5" : "0.35"}
+              />
+            );
+          })
+        )}
+
+        {/* Territories */}
+        {Object.entries(TERRITORIES).map(([id, data]) => (
+          <Territory
+            key={id}
+            id={id}
+            data={data}
+            owner={gameState.territories[id]?.owner}
+            troops={gameState.territories[id]?.troops || 0}
+            isSelected={selectedTerritory === id}
+            isValidTarget={validTargets.includes(id)}
+            onClick={onTerritoryClick}
+          />
+        ))}
+      </svg>
+    );
+    };
+
+    // Region Legend Component - Shows all regions with bonuses
+    const REGION_DISPLAY_NAMES = {
+      NorthAmerica: 'N. America',
+      SouthAmerica: 'S. America',
+      Europe: 'Europe',
+      Africa: 'Africa',
+      Asia: 'Asia',
+      Australia: 'Australia'
+    };
+
+    const RegionLegend = () => (
+      <div className="bg-gradient-to-b from-amber-800 to-amber-900 rounded-xl p-3 shadow-lg border-2 border-amber-600">
+        <div className="text-center text-amber-100 font-bold text-sm mb-2 game-title">🗺️ Continents</div>
+        <div className="grid grid-cols-2 gap-1.5">
+          {Object.entries(REGIONS).map(([name, region]) => (
+            <div
+              key={name}
+              className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs"
+              style={{ backgroundColor: region.color + '33', borderLeft: `3px solid ${region.color}` }}
+            >
+              <span>{region.emoji}</span>
+              <span className="font-semibold text-white">{REGION_DISPLAY_NAMES[name]}</span>
+              <span className="ml-auto font-bold" style={{ color: region.lightColor }}>+{region.bonus}</span>
+            </div>
+          ))}
+        </div>
+        <div className="text-center text-amber-200 text-xs mt-2 italic">
+          Control all territories for bonus armies!
+        </div>
+      </div>
+    );
+
+    // Player Panel
+    const PlayerPanel = ({ player, isCurrentPlayer, armies, cards, onTradeCards, canTrade, troops, turnPhase, isAI }) => {
+      // Count card types for display
+      const cardCounts = {
+        infantry: cards.filter(c => c.type === 'infantry').length,
+        cavalry: cards.filter(c => c.type === 'cavalry').length,
+        artillery: cards.filter(c => c.type === 'artillery').length,
+        wild: cards.filter(c => c.type === 'wild').length,
+      };
+
+      return (
+        <div className={`p-4 rounded-xl ${isCurrentPlayer ? 'ring-4 ring-yellow-400 glow' : ''}`}
+             style={{ backgroundColor: armies.color + '33', borderLeft: `6px solid ${armies.color}` }}>
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-3xl">{armies.emoji}</span>
+            <div>
+              <div className="font-bold text-white text-lg">{player.name}</div>
+              <div className="text-sm text-gray-200">{armies.name} Army</div>
+            </div>
+            {isCurrentPlayer && (
+              <span className="ml-auto text-yellow-300 bounce">
+                {player.isAI ? '🤖 AI Turn' : '👑 Your Turn!'}
+              </span>
+            )}
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-center mb-3">
+            <div className="bg-white/20 rounded-lg p-2">
+              <div className="text-xl font-bold text-white">{player.territories}</div>
+              <div className="text-xs text-gray-200">Zones</div>
+            </div>
+            <div className="bg-white/20 rounded-lg p-2">
+              <div className="text-xl font-bold text-white">{troops}</div>
+              <div className="text-xs text-gray-200">Animals</div>
+            </div>
+            <div className="bg-white/20 rounded-lg p-2">
+              <div className="text-xl font-bold text-white">{cards.length}</div>
+              <div className="text-xs text-gray-200">Cards</div>
+            </div>
+          </div>
+
+          {/* Show card summary for current player */}
+          {isCurrentPlayer && cards.length > 0 && (
+            <div className="mt-2">
+              <div className="text-sm text-white mb-2">Your Cards:</div>
+              <div className="flex gap-1 justify-center mb-2">
+                {cardCounts.infantry > 0 && (
+                  <div className="bg-green-500 px-2 py-1 rounded text-white text-xs font-bold">
+                    🐾 ×{cardCounts.infantry}
+                  </div>
+                )}
+                {cardCounts.cavalry > 0 && (
+                  <div className="bg-blue-500 px-2 py-1 rounded text-white text-xs font-bold">
+                    🦓 ×{cardCounts.cavalry}
+                  </div>
+                )}
+                {cardCounts.artillery > 0 && (
+                  <div className="bg-red-500 px-2 py-1 rounded text-white text-xs font-bold">
+                    🐘 ×{cardCounts.artillery}
+                  </div>
+                )}
+                {cardCounts.wild > 0 && (
+                  <div className="bg-yellow-500 px-2 py-1 rounded text-white text-xs font-bold">
+                    🌟 ×{cardCounts.wild}
+                  </div>
+                )}
+              </div>
+
+              {/* Trade button - only during reinforce phase for human players */}
+              {turnPhase === 'reinforce' && canTrade && !isAI && (
+                <button
+                  onClick={onTradeCards}
+                  className="w-full px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold rounded-lg shadow transition-all hover:scale-105"
+                >
+                  🃏 Trade Cards for Animals!
+                </button>
+              )}
+              {cards.length >= 5 && turnPhase === 'reinforce' && !isAI && (
+                <div className="text-yellow-300 text-xs text-center mt-1 font-bold animate-pulse">
+                  ⚠️ 5+ cards - Must trade!
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Battle Modal
+    const BattleModal = ({ attacker, defender, attackingFrom, defendingTo, onRoll, onRetreat, onClaimTerritory, battleResult, attackerDice, defenderDice, isRolling, isVictory, troopsToMove, setTroopsToMove }) => {
+      // Attacker must leave 1 behind - can only attack with (troops - 1)
+      // This is the core Risk rule: you cannot empty a territory
+      const attackingAnimals = Math.max(0, attacker.troops - 1);
+      const attackDiceCount = Math.min(3, attackingAnimals);
+      const defendDiceCount = Math.min(2, defender.troops);
+      const canContinueBattle = !isVictory && attacker.troops > 1 && defender.troops > 0;
+      const cannotAttack = !isVictory && attacker.troops <= 1;
+
+      // For victory: min 1 troop must move, max is all but 1 (leave 1 behind)
+      const minTroopsToMove = 1;
+      const maxTroopsToMove = attacker.troops - 1;
+
+      return (
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div className="bg-gradient-to-b from-amber-100 to-amber-200 p-6 rounded-2xl max-w-lg w-full mx-4 shadow-2xl">
+          <h2 className="text-2xl font-bold text-center mb-4 game-title text-amber-800">
+            {isVictory ? '🎉 VICTORY! 🎉' : '⚔️ BATTLE TIME! ⚔️'}
+          </h2>
+
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-center">
+              <div className="text-4xl mb-2">{ANIMAL_ARMIES[attacker.army].emoji}</div>
+              <div className="font-bold text-amber-900">{ANIMAL_ARMIES[attacker.army].name}</div>
+              <div className="text-sm text-amber-700">{TERRITORIES[attackingFrom].name}</div>
+              <div className="text-lg text-amber-800 mt-2">
+                <span className="font-bold">{attacker.troops}</span> total
+              </div>
+              {!isVictory && (
+                <>
+                  <div className="text-sm text-amber-600">
+                    ({attackingAnimals} can attack, 1 stays behind)
+                  </div>
+                  <div className="text-xl font-bold text-red-600 mt-1">
+                    🎲 {attackDiceCount} {attackDiceCount === 1 ? 'die' : 'dice'}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="text-4xl">{isVictory ? '➡️' : '⚔️'}</div>
+
+            <div className="text-center">
+              <div className="text-4xl mb-2">{isVictory ? ANIMAL_ARMIES[attacker.army].emoji : ANIMAL_ARMIES[defender.army].emoji}</div>
+              <div className="font-bold text-amber-900">{isVictory ? 'NEW TERRITORY!' : ANIMAL_ARMIES[defender.army].name}</div>
+              <div className="text-sm text-amber-700">{TERRITORIES[defendingTo].name}</div>
+              {!isVictory && (
+                <>
+                  <div className="text-lg text-amber-800 mt-2">
+                    <span className="font-bold">{defender.troops}</span> defending
+                  </div>
+                  <div className="text-xl font-bold text-blue-600 mt-1">
+                    🎲 {defendDiceCount} {defendDiceCount === 1 ? 'die' : 'dice'}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {attackerDice.length > 0 && !isVictory && (
+            <div className="mb-6">
+              <div className="flex justify-center gap-8">
+                <div className="text-center">
+                  <div className="text-sm font-bold mb-2 text-red-600">Attacker</div>
+                  <div className="flex gap-2 justify-center">
+                    {[...attackerDice].sort((a, b) => b - a).map((val, i) => (
+                      <Dice key={i} value={val} color="#dc2626" isRolling={isRolling} />
+                    ))}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm font-bold mb-2 text-blue-600">Defender</div>
+                  <div className="flex gap-2 justify-center">
+                    {[...defenderDice].sort((a, b) => b - a).map((val, i) => (
+                      <Dice key={i} value={val} color="#2563eb" isRolling={isRolling} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {battleResult && !isVictory && (
+            <div className="text-center mb-4 p-3 bg-white/50 rounded-lg">
+              <div className="text-lg font-bold text-amber-900">{battleResult}</div>
+            </div>
+          )}
+
+          {/* Victory: Choose troops to move */}
+          {isVictory && (
+            <div className="mb-6 p-4 bg-green-100 rounded-xl">
+              <div className="text-center mb-3">
+                <div className="font-bold text-green-800 text-lg">How many animals to move?</div>
+                <div className="text-sm text-green-600">(Must leave at least 1 behind to guard)</div>
+              </div>
+
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setTroopsToMove(Math.max(minTroopsToMove, troopsToMove - 1))}
+                  className="w-10 h-10 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg text-xl"
+                  disabled={troopsToMove <= minTroopsToMove}
+                >
+                  -
+                </button>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-green-700">{troopsToMove}</div>
+                  <div className="text-sm text-green-600">{ANIMAL_ARMIES[attacker.army].emoji}</div>
+                </div>
+                <button
+                  onClick={() => setTroopsToMove(Math.min(maxTroopsToMove, troopsToMove + 1))}
+                  className="w-10 h-10 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg text-xl"
+                  disabled={troopsToMove >= maxTroopsToMove}
+                >
+                  +
+                </button>
+              </div>
+
+              <div className="text-center mt-3 text-sm text-green-700">
+                {attacker.troops - troopsToMove} will stay at {TERRITORIES[attackingFrom].name}
+              </div>
+            </div>
+          )}
+
+          {/* Buttons based on state */}
+          <div className="flex gap-3 justify-center">
+            {isVictory ? (
+              <button
+                onClick={() => onClaimTerritory(troopsToMove)}
+                className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg transition-all hover:scale-105"
+              >
+                🏆 Claim Territory!
+              </button>
+            ) : canContinueBattle ? (
+              <>
+                <button
+                  onClick={onRoll}
+                  disabled={isRolling}
+                  className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50"
+                >
+                  🎲 Roll Dice!
+                </button>
+                <button
+                  onClick={onRetreat}
+                  className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
+                >
+                  🏳️ Retreat
+                </button>
+              </>
+            ) : cannotAttack ? (
+              <button
+                onClick={onRetreat}
+                className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg transition-all"
+              >
+                😅 Done (No troops left to attack)
+              </button>
+            ) : (
+              <button
+                onClick={onRetreat}
+                className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
+              >
+                🏳️ Retreat
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+    };
+
+    // Card Reward Modal
+    const CardRewardModal = ({ card, onClose }) => {
+      const typeInfo = CARD_TYPES[card.type];
+      return (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-gradient-to-b from-yellow-100 to-yellow-200 p-8 rounded-2xl max-w-sm w-full mx-4 shadow-2xl text-center">
+            <h2 className="text-2xl font-bold mb-4 game-title text-yellow-800">🎉 You Won a Card! 🎉</h2>
+            <div className="mb-4">
+              <div className="text-6xl mb-2">{typeInfo.emoji}</div>
+              <div className="text-xl font-bold text-gray-800">{typeInfo.name}</div>
+              <div className={`inline-block mt-2 px-4 py-1 rounded-full ${typeInfo.color} text-white font-bold`}>
+                {card.type === 'wild' ? '⭐ WILD - Counts as any!' : typeInfo.description}
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              Collect 3 of the same type OR one of each type to trade for bonus animals!
+            </p>
+            <button
+              onClick={onClose}
+              className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl shadow-lg transition-all hover:scale-105"
+            >
+              Awesome! 🎊
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    // Reinforcement Tray - Shows individual animal pieces to place
+    const ReinforcementTray = ({ army, count, emoji }) => {
+      // Create array of animal pieces with staggered positions
+      const pieces = Array.from({ length: count }, (_, i) => i);
+
+      return (
+        <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-xl p-4 shadow-lg border-4 border-amber-800">
+          <div className="text-center mb-2">
+            <span className="text-white font-bold text-lg">🎯 Click your territories to deploy!</span>
+          </div>
+          <div className="bg-amber-900/50 rounded-lg p-3 min-h-[80px] flex flex-wrap justify-center items-center gap-1">
+            {pieces.length > 0 ? (
+              pieces.map((_, i) => (
+                <div
+                  key={i}
+                  className="animal-piece text-3xl transform hover:scale-125 transition-transform cursor-pointer animate-bounce"
+                  style={{
+                    animationDelay: `${i * 0.1}s`,
+                    animationDuration: '1s',
+                  }}
+                >
+                  {emoji}
+                </div>
+              ))
+            ) : (
+              <div className="text-amber-300 text-sm">All troops deployed! ✅</div>
+            )}
+          </div>
+          <div className="text-center mt-2">
+            <span className="text-amber-200 text-sm">{count} {count === 1 ? 'animal' : 'animals'} remaining</span>
+          </div>
+        </div>
+      );
+    };
+
+    // Main Game Component
+    const ZooRiskGame = () => {
+      const [gamePhase, setGamePhase] = useState('setup'); // setup, place, play, battle, fortify, gameOver
+      const [players, setPlayers] = useState([]);
+      const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+      const [gameState, setGameState] = useState({ territories: {} });
+      const [selectedTerritory, setSelectedTerritory] = useState(null);
+      const [troopsToPlace, setTroopsToPlace] = useState(0);
+      const [turnPhase, setTurnPhase] = useState('reinforce'); // reinforce, attack, fortify
+      const [battleState, setBattleState] = useState(null);
+      const [cardReward, setCardReward] = useState(null);
+      const [playerCards, setPlayerCards] = useState({});
+      const [conqueredThisTurn, setConqueredThisTurn] = useState(false);
+      const [earnedCardThisTurn, setEarnedCardThisTurn] = useState(false); // NEW: Track if card earned this turn
+      const [message, setMessage] = useState('Welcome to Zoo Conquest! 🦁');
+      const [aiThinking, setAiThinking] = useState(false);
+      const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
+      const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
+      const [cardDeck, setCardDeck] = useState([...CARD_DECK].sort(() => Math.random() - 0.5)); // Shuffled deck
+
+      // Setup functions
+      const startGame = (numHumans, numAI) => {
+        const totalPlayers = numHumans + numAI;
+        const armies = Object.keys(ANIMAL_ARMIES).slice(0, totalPlayers);
+        const aiNames = ['Captain Claw', 'Baron Beak', 'Duke Fang', 'Lady Paw', 'Sir Scales'];
+
+        const newPlayers = armies.map((army, i) => {
+          const isHuman = i < numHumans;
+          const aiIndex = i - numHumans;
+          return {
+            id: i,
+            name: isHuman ? (numHumans === 1 ? 'You' : `Player ${i + 1}`) : aiNames[aiIndex],
+            army,
+            territories: 0,
+            isAI: !isHuman,
+          };
+        });
+
+        // Distribute territories randomly
+        const territoryIds = Object.keys(TERRITORIES);
+        const shuffled = [...territoryIds].sort(() => Math.random() - 0.5);
+        const newTerritories = {};
+
+        shuffled.forEach((id, i) => {
+          const playerIdx = i % totalPlayers;
+          newTerritories[id] = {
+            owner: armies[playerIdx],
+            troops: 1,
+          };
+        });
+
+        // Count territories per player
+        newPlayers.forEach(p => {
+          p.territories = Object.values(newTerritories).filter(t => t.owner === p.army).length;
+        });
+
+        // Initialize player cards
+        const cards = {};
+        armies.forEach(army => cards[army] = []);
+
+        setPlayers(newPlayers);
+        setGameState({ territories: newTerritories });
+        setPlayerCards(cards);
+        setGamePhase('play');
+        setTurnPhase('reinforce');
+        setCurrentPlayerIndex(0);
+        setConqueredThisTurn(false);
+        const initialTroops = calculateReinforcements(newPlayers[0], newTerritories);
+        setTroopsToPlace(initialTroops);
+        const firstPlayer = newPlayers[0];
+        if (firstPlayer.isAI) {
+          setMessage(`🤖 ${firstPlayer.name}'s turn!`);
+        } else {
+          setMessage(`${firstPlayer.name}'s turn! Place your ${initialTroops} animals.`);
+        }
+      };
+
+      // Calculate reinforcements
+      const calculateReinforcements = (player, territories) => {
+        let troops = Math.max(3, Math.floor(player.territories / 3));
+
+        // Region bonuses
+        Object.entries(REGIONS).forEach(([name, region]) => {
+          const ownsAll = region.territories.every(t => territories[t]?.owner === player.army);
+          if (ownsAll) troops += region.bonus;
+        });
+
+        return troops;
+      };
+
+      // Draw a card from the deck
+      const drawCard = () => {
+        if (cardDeck.length === 0) {
+          // Reshuffle if deck is empty
+          setCardDeck([...CARD_DECK].sort(() => Math.random() - 0.5));
+          return CARD_DECK[Math.floor(Math.random() * CARD_DECK.length)];
+        }
+        const card = cardDeck[0];
+        setCardDeck(prev => prev.slice(1));
+        return card;
+      };
+
+      // Handle card trade
+      const handleCardTrade = (selectedCards) => {
+        if (!isValidTradeSet(selectedCards)) return;
+
+        const army = currentPlayer.army;
+        const bonusTroops = TRADE_IN_VALUES[Math.min(tradeCount, TRADE_IN_VALUES.length - 1)];
+
+        // Remove traded cards from player's hand
+        const cardIds = selectedCards.map(c => c.id);
+        setPlayerCards(prev => ({
+          ...prev,
+          [army]: prev[army].filter(c => !cardIds.includes(c.id))
+        }));
+
+        // Add bonus troops
+        setTroopsToPlace(prev => prev + bonusTroops);
+        setTradeCount(prev => prev + 1);
+        setShowCardTrade(false);
+        setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
+      };
+
+      // Get next trade value
+      const getNextTradeValue = () => {
+        return TRADE_IN_VALUES[Math.min(tradeCount, TRADE_IN_VALUES.length - 1)];
+      };
+
+      // Check if current player can trade cards
+      const canCurrentPlayerTrade = () => {
+        if (!currentPlayer) return false;
+        const cards = playerCards[currentPlayer.army] || [];
+        return canTradeCards(cards);
+      };
+
+      // Get current player
+      const currentPlayer = players[currentPlayerIndex];
+      const currentArmy = currentPlayer ? ANIMAL_ARMIES[currentPlayer.army] : null;
+
+      // Calculate total troops for a player
+      const getPlayerTroops = (army) => {
+        return Object.values(gameState.territories)
+          .filter(t => t.owner === army)
+          .reduce((sum, t) => sum + t.troops, 0);
+      };
+
+      // Get valid targets for attack
+      const getValidTargets = () => {
+        if (!selectedTerritory || turnPhase !== 'attack') return [];
+        const territory = TERRITORIES[selectedTerritory];
+        const myArmy = gameState.territories[selectedTerritory]?.owner;
+
+        return territory.connections.filter(connId =>
+          gameState.territories[connId]?.owner !== myArmy
+        );
+      };
+
+      // Get valid fortify targets
+      const getValidFortifyTargets = () => {
+        if (!selectedTerritory || turnPhase !== 'fortify') return [];
+        const territory = TERRITORIES[selectedTerritory];
+        const myArmy = gameState.territories[selectedTerritory]?.owner;
+
+        return territory.connections.filter(connId =>
+          gameState.territories[connId]?.owner === myArmy
+        );
+      };
+
+      // Handle territory click
+      const handleTerritoryClick = (id) => {
+        // Block clicks during AI turn
+        if (currentPlayer?.isAI) {
+          return;
+        }
+
+        const territory = gameState.territories[id];
+
+        if (turnPhase === 'reinforce' && territory?.owner === currentPlayer?.army && troopsToPlace > 0) {
+          // Place troops
+          setGameState(prev => ({
+            ...prev,
+            territories: {
+              ...prev.territories,
+              [id]: { ...prev.territories[id], troops: prev.territories[id].troops + 1 }
+            }
+          }));
+          setTroopsToPlace(prev => prev - 1);
+
+          if (troopsToPlace === 1) {
+            setTurnPhase('attack');
+            setMessage('Attack phase! Select a territory to attack from.');
+          }
+        } else if (turnPhase === 'attack') {
+          if (selectedTerritory === null) {
+            // Select attacking territory
+            if (territory?.owner === currentPlayer?.army && territory?.troops > 1) {
+              setSelectedTerritory(id);
+              setMessage('Now select an enemy territory to attack!');
+            }
+          } else if (selectedTerritory === id) {
+            // Deselect
+            setSelectedTerritory(null);
+            setMessage('Select a territory to attack from.');
+          } else {
+            // Attack target
+            const validTargets = getValidTargets();
+            if (validTargets.includes(id)) {
+              startBattle(selectedTerritory, id);
+            }
+          }
+        } else if (turnPhase === 'fortify') {
+          if (selectedTerritory === null) {
+            if (territory?.owner === currentPlayer?.army && territory?.troops > 1) {
+              setSelectedTerritory(id);
+              setMessage('Select an adjacent friendly territory to send troops to.');
+            }
+          } else if (selectedTerritory === id) {
+            setSelectedTerritory(null);
+            setMessage('Select a territory to fortify from, or end turn.');
+          } else {
+            const validTargets = getValidFortifyTargets();
+            if (validTargets.includes(id)) {
+              // Move troops (move half, rounded down)
+              const fromTroop = gameState.territories[selectedTerritory].troops;
+              const toMove = Math.floor((fromTroop - 1) / 2) + 1;
+
+              setGameState(prev => ({
+                ...prev,
+                territories: {
+                  ...prev.territories,
+                  [selectedTerritory]: { ...prev.territories[selectedTerritory], troops: fromTroop - toMove },
+                  [id]: { ...prev.territories[id], troops: prev.territories[id].troops + toMove }
+                }
+              }));
+              setSelectedTerritory(null);
+              setMessage(`Moved ${toMove} troops! You can fortify again or end turn.`);
+            }
+          }
+        }
+      };
+
+      // Start battle
+      const startBattle = (from, to) => {
+        setBattleState({
+          from,
+          to,
+          attackerTroops: gameState.territories[from].troops,
+          defenderTroops: gameState.territories[to].troops,
+          attackerDice: [],
+          defenderDice: [],
+          isRolling: false,
+          result: null,
+          isVictory: false,
+          troopsToMove: 1,
+        });
+      };
+
+      // ============ AI LOGIC ============
+
+      // AI: Get territories owned by a player
+      const getPlayerTerritories = (army) => {
+        return Object.entries(gameState.territories)
+          .filter(([id, t]) => t.owner === army)
+          .map(([id, t]) => ({ id, ...t }));
+      };
+
+      // AI: Find best territory to reinforce (border territories with enemies nearby)
+      const aiFindBestReinforceTarget = (army) => {
+        const myTerritories = getPlayerTerritories(army);
+        let bestTarget = null;
+        let bestScore = -1;
+
+        myTerritories.forEach(territory => {
+          const connections = TERRITORIES[territory.id].connections;
+          const enemyNeighbors = connections.filter(
+            connId => gameState.territories[connId]?.owner !== army
+          ).length;
+          // Prefer territories with more enemy neighbors and fewer troops
+          const score = enemyNeighbors * 10 - territory.troops;
+          if (score > bestScore) {
+            bestScore = score;
+            bestTarget = territory.id;
+          }
+        });
+        return bestTarget || myTerritories[0]?.id;
+      };
+
+      // AI: Find best attack opportunity
+      const aiFindBestAttack = (army) => {
+        const myTerritories = getPlayerTerritories(army);
+        let bestAttack = null;
+        let bestScore = -1;
+
+        myTerritories.forEach(territory => {
+          if (territory.troops <= 1) return; // Can't attack with 1 troop
+
+          const connections = TERRITORIES[territory.id].connections;
+          connections.forEach(targetId => {
+            const target = gameState.territories[targetId];
+            if (target?.owner === army) return; // Can't attack own territory
+
+            // Score based on advantage (my troops vs their troops)
+            const myAttackers = territory.troops - 1;
+            const theirDefenders = target.troops;
+            const advantage = myAttackers - theirDefenders;
+
+            // Only attack if we have advantage or are desperate
+            if (advantage >= 0 || (myAttackers >= 3 && theirDefenders <= 2)) {
+              const score = advantage + (myAttackers * 2);
+              if (score > bestScore) {
+                bestScore = score;
+                bestAttack = { from: territory.id, to: targetId };
+              }
+            }
+          });
+        });
+
+        return bestAttack;
+      };
+
+      // AI: Find best fortify move
+      const aiFindBestFortify = (army) => {
+        const myTerritories = getPlayerTerritories(army);
+        let bestMove = null;
+        let bestScore = -1;
+
+        myTerritories.forEach(from => {
+          if (from.troops <= 1) return;
+
+          const connections = TERRITORIES[from.id].connections;
+          const fromEnemyNeighbors = connections.filter(
+            id => gameState.territories[id]?.owner !== army
+          ).length;
+
+          // If this territory has no enemies nearby, move troops away
+          if (fromEnemyNeighbors === 0) {
+            connections.forEach(toId => {
+              const to = gameState.territories[toId];
+              if (to?.owner !== army) return;
+
+              const toConnections = TERRITORIES[toId].connections;
+              const toEnemyNeighbors = toConnections.filter(
+                id => gameState.territories[id]?.owner !== army
+              ).length;
+
+              if (toEnemyNeighbors > 0) {
+                const score = toEnemyNeighbors * 10 + (from.troops - 1);
+                if (score > bestScore) {
+                  bestScore = score;
+                  bestMove = { from: from.id, to: toId, troops: from.troops - 1 };
+                }
+              }
+            });
+          }
+        });
+
+        return bestMove;
+      };
+
+      // AI: Execute a single dice roll battle (returns promise)
+      const aiExecuteBattle = (from, to) => {
+        return new Promise((resolve) => {
+          const attackerTroops = gameState.territories[from].troops;
+          const defenderTroops = gameState.territories[to].troops;
+
+          const attackerMax = Math.min(3, attackerTroops - 1);
+          const defenderMax = Math.min(2, defenderTroops);
+
+          const attackerDice = Array.from({ length: attackerMax }, () => Math.floor(Math.random() * 6) + 1);
+          const defenderDice = Array.from({ length: defenderMax }, () => Math.floor(Math.random() * 6) + 1);
+
+          const sortedAttacker = [...attackerDice].sort((a, b) => b - a);
+          const sortedDefender = [...defenderDice].sort((a, b) => b - a);
+
+          let attackerLosses = 0;
+          let defenderLosses = 0;
+
+          const comparisons = Math.min(sortedAttacker.length, sortedDefender.length);
+          for (let i = 0; i < comparisons; i++) {
+            if (sortedAttacker[i] > sortedDefender[i]) {
+              defenderLosses++;
+            } else {
+              attackerLosses++;
+            }
+          }
+
+          const newAttackerTroops = attackerTroops - attackerLosses;
+          const newDefenderTroops = defenderTroops - defenderLosses;
+          const victory = newDefenderTroops <= 0;
+
+          resolve({
+            attackerDice,
+            defenderDice,
+            attackerLosses,
+            defenderLosses,
+            newAttackerTroops,
+            newDefenderTroops,
+            victory
+          });
+        });
+      };
+
+      // AI Turn Controller - FAST AI moves
+      useEffect(() => {
+        if (gamePhase !== 'play' || !currentPlayer?.isAI || battleState || cardReward || aiThinking) {
+          return;
+        }
+
+        const runAITurn = async () => {
+          setAiThinking(true);
+          const army = currentPlayer.army;
+          const aiName = currentPlayer.name;
+
+          // Phase 1: Reinforce - place ALL troops at once (fast)
+          if (turnPhase === 'reinforce' && troopsToPlace > 0) {
+            setMessage(`🤖 ${aiName} placing ${troopsToPlace} reinforcements...`);
+
+            // Place all troops at once instead of one by one
+            const reinforcements = {};
+            for (let i = 0; i < troopsToPlace; i++) {
+              const target = aiFindBestReinforceTarget(army);
+              if (target) {
+                reinforcements[target] = (reinforcements[target] || 0) + 1;
+              }
+            }
+
+            setGameState(prev => {
+              const newTerritories = { ...prev.territories };
+              Object.entries(reinforcements).forEach(([tid, count]) => {
+                newTerritories[tid] = { ...newTerritories[tid], troops: newTerritories[tid].troops + count };
+              });
+              return { ...prev, territories: newTerritories };
+            });
+
+            await new Promise(r => setTimeout(r, 150));
+            setTroopsToPlace(0);
+            setTurnPhase('attack');
+            setMessage(`🤖 ${aiName} attacking...`);
+            setAiThinking(false);
+            return;
+          }
+
+          // Phase 2: Attack
+          if (turnPhase === 'attack') {
+            const attack = aiFindBestAttack(army);
+
+            if (attack) {
+              setMessage(`🤖 ${aiName} ⚔️ ${TERRITORIES[attack.to].name}`);
+              await new Promise(r => setTimeout(r, 200));
+
+              // Execute battle
+              const result = await aiExecuteBattle(attack.from, attack.to);
+              const defeatedArmy = gameState.territories[attack.to]?.owner;
+
+              // Build new territories
+              const newTerritories = { ...gameState.territories };
+              newTerritories[attack.from] = {
+                ...newTerritories[attack.from],
+                troops: result.newAttackerTroops
+              };
+
+              if (result.victory) {
+                // Move troops to conquered territory
+                const troopsToMove = Math.max(1, result.newAttackerTroops - 1);
+                newTerritories[attack.to] = {
+                  owner: army,
+                  troops: troopsToMove
+                };
+                newTerritories[attack.from].troops -= troopsToMove;
+                setConqueredThisTurn(true);
+
+                // Check if defender is eliminated (no territories left)
+                const defenderTerritories = Object.values(newTerritories).filter(t => t.owner === defeatedArmy);
+                if (defenderTerritories.length === 0 && defeatedArmy) {
+                  // Transfer all cards from eliminated player to AI
+                  const eliminatedCards = playerCards[defeatedArmy] || [];
+                  if (eliminatedCards.length > 0) {
+                    setPlayerCards(prevCards => ({
+                      ...prevCards,
+                      [army]: [...(prevCards[army] || []), ...eliminatedCards],
+                      [defeatedArmy]: []
+                    }));
+                    setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+                  } else {
+                    setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}! 💀 Player eliminated!`);
+                  }
+                } else {
+                  setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}!`);
+                }
+              } else {
+                newTerritories[attack.to] = {
+                  ...newTerritories[attack.to],
+                  troops: result.newDefenderTroops
+                };
+              }
+
+              setGameState({ territories: newTerritories });
+
+              // Check for game over immediately with new territories
+              const owners = new Set(Object.values(newTerritories).map(t => t.owner));
+              if (owners.size === 1) {
+                setGamePhase('gameOver');
+                setAiThinking(false);
+                return;
+              }
+
+              await new Promise(r => setTimeout(r, 250));
+
+              // Check for more attacks
+              setAiThinking(false);
+              return;
+            } else {
+              // No good attacks, move to fortify
+              setTurnPhase('fortify');
+              setMessage(`🤖 ${aiName} fortifying...`);
+              setAiThinking(false);
+              return;
+            }
+          }
+
+          // Phase 3: Fortify
+          if (turnPhase === 'fortify') {
+            await new Promise(r => setTimeout(r, 100));
+            const fortify = aiFindBestFortify(army);
+
+            if (fortify) {
+              setGameState(prev => ({
+                ...prev,
+                territories: {
+                  ...prev.territories,
+                  [fortify.from]: { ...prev.territories[fortify.from], troops: prev.territories[fortify.from].troops - fortify.troops },
+                  [fortify.to]: { ...prev.territories[fortify.to], troops: prev.territories[fortify.to].troops + fortify.troops }
+                }
+              }));
+              setMessage(`🤖 ${aiName} fortified ${TERRITORIES[fortify.to].name}`);
+              await new Promise(r => setTimeout(r, 150));
+            }
+
+            // End AI turn
+            await new Promise(r => setTimeout(r, 100));
+
+            // Award card if conquered
+            if (conqueredThisTurn) {
+              const card = drawCard();
+              if (card) {
+                setPlayerCards(prev => ({
+                  ...prev,
+                  [army]: [...(prev[army] || []), card]
+                }));
+              }
+            }
+
+            // Move to next player
+            const nextIndex = (currentPlayerIndex + 1) % players.length;
+            let idx = nextIndex;
+            let attempts = 0;
+            while (attempts < players.length) {
+              const playerArmy = players[idx].army;
+              const hasTerritories = Object.values(gameState.territories).some(t => t.owner === playerArmy);
+              if (hasTerritories) break;
+              idx = (idx + 1) % players.length;
+              attempts++;
+            }
+
+            setCurrentPlayerIndex(idx);
+            setConqueredThisTurn(false);
+            setEarnedCardThisTurn(false);
+
+            const nextPlayer = players[idx];
+            const newTroops = calculateReinforcements(nextPlayer, gameState.territories);
+            setTroopsToPlace(newTroops);
+            setTurnPhase('reinforce');
+
+            if (nextPlayer.isAI) {
+              setMessage(`🤖 ${nextPlayer.name}'s turn!`);
+            } else {
+              setMessage(`Your turn! Place your ${newTroops} animals.`);
+            }
+
+            setAiThinking(false);
+
+            // Update territory counts using functional update to get latest state
+            setPlayers(prev => prev.map(p => ({
+              ...p,
+              territories: Object.values(gameState.territories).filter(t => t.owner === p.army).length
+            })));
+
+            return;
+          }
+
+          setAiThinking(false);
+        };
+
+        const timer = setTimeout(runAITurn, 150);
+        return () => clearTimeout(timer);
+      }, [gamePhase, currentPlayer, turnPhase, troopsToPlace, battleState, cardReward, aiThinking, gameState.territories]);
+
+      // ============ END AI LOGIC ============
+
+      // Roll dice (Risk rules)
+      // CRITICAL: Attacker must leave 1 troop behind, so max dice = troops - 1 (capped at 3)
+      const rollDice = () => {
+        // Get current troops from game state as source of truth
+        const currentAttackerTroops = battleState.attackerTroops;
+        const currentDefenderTroops = battleState.defenderTroops;
+
+        // Attacker: max 3 dice, but must leave 1 behind (so troops-1)
+        const attackerMax = Math.min(3, Math.max(0, currentAttackerTroops - 1));
+        // Defender: max 2 dice, uses all available
+        const defenderMax = Math.min(2, currentDefenderTroops);
+
+        // Prevent rolling with 0 dice
+        if (attackerMax <= 0) {
+          setBattleState(prev => ({
+            ...prev,
+            result: 'Not enough troops to attack! (Need at least 2)',
+            attackerDice: [],
+            defenderDice: []
+          }));
+          return;
+        }
+
+        const attackerDice = Array.from({ length: attackerMax }, () => Math.floor(Math.random() * 6) + 1);
+        const defenderDice = Array.from({ length: defenderMax }, () => Math.floor(Math.random() * 6) + 1);
+
+        setBattleState(prev => ({ ...prev, attackerDice, defenderDice, isRolling: true }));
+
+        setTimeout(() => {
+          // Compare dice (Risk rules: highest vs highest, then second highest)
+          const sortedAttacker = [...attackerDice].sort((a, b) => b - a);
+          const sortedDefender = [...defenderDice].sort((a, b) => b - a);
+
+          let attackerLosses = 0;
+          let defenderLosses = 0;
+
+          const comparisons = Math.min(sortedAttacker.length, sortedDefender.length);
+          for (let i = 0; i < comparisons; i++) {
+            if (sortedAttacker[i] > sortedDefender[i]) {
+              defenderLosses++;
+            } else {
+              attackerLosses++;
+            }
+          }
+
+          const newAttackerTroops = battleState.attackerTroops - attackerLosses;
+          const newDefenderTroops = battleState.defenderTroops - defenderLosses;
+
+          let result = `Attacker lost ${attackerLosses}, Defender lost ${defenderLosses}!`;
+          const isVictory = newDefenderTroops <= 0;
+
+          if (isVictory) {
+            result = '🎉 VICTORY! Territory conquered!';
+          } else if (newAttackerTroops <= 1) {
+            result = '😔 No more troops to attack with!';
+          }
+
+          // Update battle state - if victory, show claim UI instead of auto-moving
+          setBattleState(prev => ({
+            ...prev,
+            attackerTroops: newAttackerTroops,
+            defenderTroops: newDefenderTroops,
+            isRolling: false,
+            result,
+            isVictory,
+            troopsToMove: Math.max(1, newAttackerTroops - 1), // Default to moving all but 1
+          }));
+
+          // Only update game state for losses (not victory - that happens on claim)
+          if (!isVictory) {
+            setGameState(prev => {
+              const newTerritories = { ...prev.territories };
+              newTerritories[battleState.from] = {
+                ...newTerritories[battleState.from],
+                troops: newAttackerTroops
+              };
+              newTerritories[battleState.to] = {
+                ...newTerritories[battleState.to],
+                troops: newDefenderTroops
+              };
+              return { ...prev, territories: newTerritories };
+            });
+          }
+
+        }, 600);
+      };
+
+      // Claim territory after victory
+      const claimTerritory = (troopsToMove) => {
+        const newAttackerTroops = battleState.attackerTroops;
+        const defeatedArmy = gameState.territories[battleState.to]?.owner;
+
+        // Build new territories state
+        const newTerritories = { ...gameState.territories };
+        newTerritories[battleState.from] = {
+          ...newTerritories[battleState.from],
+          troops: newAttackerTroops - troopsToMove
+        };
+        newTerritories[battleState.to] = {
+          owner: currentPlayer.army,
+          troops: troopsToMove
+        };
+
+        // Check if defender is eliminated (no territories left)
+        const defenderTerritories = Object.values(newTerritories).filter(t => t.owner === defeatedArmy);
+        if (defenderTerritories.length === 0 && defeatedArmy) {
+          // Transfer all cards from eliminated player
+          const eliminatedCards = playerCards[defeatedArmy] || [];
+          if (eliminatedCards.length > 0) {
+            setPlayerCards(prevCards => ({
+              ...prevCards,
+              [currentPlayer.army]: [...(prevCards[currentPlayer.army] || []), ...eliminatedCards],
+              [defeatedArmy]: []
+            }));
+            setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+          } else {
+            setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Player eliminated!`);
+          }
+        } else {
+          setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! Continue attacking or move to fortify.`);
+        }
+
+        setGameState({ territories: newTerritories });
+        setConqueredThisTurn(true);
+        setBattleState(null);
+        setSelectedTerritory(null);
+
+        // Check for game over with the NEW territories
+        checkGameOver(newTerritories);
+      };
+
+      // Retreat from battle
+      const retreatBattle = () => {
+        setBattleState(null);
+        setSelectedTerritory(null);
+        // Don't award card here - only at end of attack phase
+        setMessage('Select another territory to attack, or move to fortify phase.');
+      };
+
+      // Check for game over - pass newTerritories directly since state is async
+      const checkGameOver = (newTerritories) => {
+        const territories = newTerritories || gameState.territories;
+        const owners = new Set(Object.values(territories).map(t => t.owner));
+        if (owners.size === 1) {
+          setGamePhase('gameOver');
+        }
+
+        // Update player territory counts
+        setPlayers(prev => prev.map(p => ({
+          ...p,
+          territories: Object.values(territories).filter(t => t.owner === p.army).length
+        })));
+      };
+
+      // End current phase
+      const endPhase = () => {
+        setSelectedTerritory(null);
+
+        if (turnPhase === 'attack') {
+          // Award ONE card if conquered at least one territory this turn (and haven't already earned one)
+          if (conqueredThisTurn && !earnedCardThisTurn) {
+            const newCard = drawCard();
+            setCardReward(newCard);
+            setPlayerCards(prev => ({
+              ...prev,
+              [currentPlayer.army]: [...(prev[currentPlayer.army] || []), newCard]
+            }));
+            setEarnedCardThisTurn(true);
+          }
+          setTurnPhase('fortify');
+          setMessage('Fortify phase (optional)! Move animals between territories, or just end your turn.');
+        } else if (turnPhase === 'fortify') {
+          // Go to next player
+          goToNextPlayer();
+        }
+      };
+
+      // End turn immediately (skip fortify phase)
+      const endTurn = () => {
+        setSelectedTerritory(null);
+
+        // Award card if conquered territory this turn
+        if (conqueredThisTurn && !earnedCardThisTurn) {
+          const newCard = drawCard();
+          setCardReward(newCard);
+          setPlayerCards(prev => ({
+            ...prev,
+            [currentPlayer.army]: [...(prev[currentPlayer.army] || []), newCard]
+          }));
+          setEarnedCardThisTurn(true);
+        }
+
+        // Go directly to next player
+        goToNextPlayer();
+      };
+
+      // Helper: Advance to next player
+      const goToNextPlayer = () => {
+        const nextIndex = (currentPlayerIndex + 1) % players.length;
+
+        // Skip eliminated players
+        let attempts = 0;
+        let idx = nextIndex;
+        while (attempts < players.length) {
+          const playerArmy = players[idx].army;
+          const hasTerritories = Object.values(gameState.territories).some(t => t.owner === playerArmy);
+          if (hasTerritories) break;
+          idx = (idx + 1) % players.length;
+          attempts++;
+        }
+
+        setCurrentPlayerIndex(idx);
+        setConqueredThisTurn(false);
+        setEarnedCardThisTurn(false); // Reset for next player's turn
+
+        const nextPlayer = players[idx];
+        const newTroops = calculateReinforcements(nextPlayer, gameState.territories);
+        setTroopsToPlace(newTroops);
+        setTurnPhase('reinforce');
+
+        // Check if player has 5+ cards (must trade)
+        const nextPlayerCards = playerCards[nextPlayer.army] || [];
+        if (nextPlayerCards.length >= 5 && canTradeCards(nextPlayerCards) && !nextPlayer.isAI) {
+          setMessage(`Your turn! You have ${nextPlayerCards.length} cards - you MUST trade first!`);
+          setShowCardTrade(true);
+        } else if (nextPlayer.isAI) {
+          setMessage(`🤖 ${nextPlayer.name} is taking their turn...`);
+        } else {
+          setMessage(`Your turn, ${nextPlayer.name}! Place your ${newTroops} animals.`);
+        }
+      };
+
+      // Setup Screen
+      const [setupHumans, setSetupHumans] = useState(1);
+      const [setupAIs, setSetupAIs] = useState(1);
+
+      if (gamePhase === 'setup') {
+        const aiNames = ['Captain Claw', 'Baron Beak', 'Duke Fang', 'Lady Paw', 'Sir Scales'];
+        const armyList = Object.entries(ANIMAL_ARMIES);
+        const totalPlayers = setupHumans + setupAIs;
+        const maxPlayers = 6;
+        const minTotal = 2;
+
+        const canAddHuman = totalPlayers < maxPlayers;
+        const canRemoveHuman = setupHumans > 0 && totalPlayers > minTotal;
+        const canAddAI = totalPlayers < maxPlayers;
+        const canRemoveAI = setupAIs > 0 && totalPlayers > minTotal;
+
+        return (
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white/90 backdrop-blur rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
+              <h1 className="text-4xl mb-2 game-title text-amber-800">🦁 Zoo Conquest 🐘</h1>
+              <p className="text-gray-600 mb-6">A Risk-style adventure at the Kansas City Zoo!</p>
+
+              {/* Player Selection */}
+              <div className="mb-6 bg-gray-50 rounded-xl p-4">
+                <div className="text-lg font-bold text-gray-800 mb-4">Choose Your Players</div>
+
+                {/* Human Players */}
+                <div className="flex items-center justify-between mb-4 bg-white rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">👤</span>
+                    <div className="text-left">
+                      <div className="font-bold text-gray-800">Human Players</div>
+                      <div className="text-xs text-gray-500">Pass & play with friends</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => canRemoveHuman && setSetupHumans(h => h - 1)}
+                      disabled={!canRemoveHuman}
+                      className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                    >
+                      -
+                    </button>
+                    <span className="w-8 text-center text-xl font-bold text-gray-800">{setupHumans}</span>
+                    <button
+                      onClick={() => canAddHuman && setSetupHumans(h => h + 1)}
+                      disabled={!canAddHuman}
+                      className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* AI Players */}
+                <div className="flex items-center justify-between bg-white rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🤖</span>
+                    <div className="text-left">
+                      <div className="font-bold text-gray-800">AI Opponents</div>
+                      <div className="text-xs text-gray-500">Computer-controlled</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => canRemoveAI && setSetupAIs(a => a - 1)}
+                      disabled={!canRemoveAI}
+                      className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                    >
+                      -
+                    </button>
+                    <span className="w-8 text-center text-xl font-bold text-gray-800">{setupAIs}</span>
+                    <button
+                      onClick={() => canAddAI && setSetupAIs(a => a + 1)}
+                      disabled={!canAddAI}
+                      className="w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-30 disabled:cursor-not-allowed font-bold"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="text-sm text-gray-500 mt-3">
+                  Total: {totalPlayers} players (min 2, max 6)
+                </div>
+              </div>
+
+              {/* Player Preview */}
+              <div className="bg-amber-50 rounded-xl p-3 mb-4">
+                <div className="text-sm font-bold text-amber-800 mb-2">Players in this game:</div>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {armyList.slice(0, totalPlayers).map(([key, army], i) => {
+                    const isHuman = i < setupHumans;
+                    const aiIndex = i - setupHumans;
+                    return (
+                      <div key={key} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs ${isHuman ? 'bg-green-100' : 'bg-blue-100'}`}>
+                        <span>{army.emoji}</span>
+                        <span className="text-gray-700">
+                          {isHuman ? `Player ${i + 1}` : aiNames[aiIndex]}
+                        </span>
+                        <span className="text-xs">{isHuman ? '👤' : '🤖'}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Start Button */}
+              <button
+                onClick={() => startGame(setupHumans, setupAIs)}
+                className="w-full mb-4 px-6 py-4 bg-gradient-to-b from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xl font-bold rounded-xl shadow-lg transition-all hover:scale-105"
+              >
+                🎮 Start Game!
+              </button>
+
+              <div className="text-left bg-gray-50 rounded-xl p-4">
+                <div className="font-bold text-gray-800 mb-2">🎮 How to Play:</div>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li>🎯 Conquer all zoo zones to win!</li>
+                  <li>🏠 1 animal must always stay behind to guard!</li>
+                  <li>🎲 Roll 1 die per attacking animal (max 3)</li>
+                  <li>🛡️ Defenders roll up to 2 dice</li>
+                  <li>🃏 Earn fun cards by conquering territories</li>
+                </ul>
+              </div>
+
+              <div className="text-left bg-blue-50 rounded-xl p-4 mt-3">
+                <div className="font-bold text-blue-800 mb-2">🎲 Dice Rules:</div>
+                <ul className="text-xs text-gray-700 space-y-1">
+                  <li>• 2 animals = 1 attack die (1 stays home)</li>
+                  <li>• 3 animals = 2 attack dice</li>
+                  <li>• 4+ animals = 3 attack dice (max)</li>
+                  <li>• Highest dice compare - ties go to defender!</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Game Over Screen
+      if (gamePhase === 'gameOver') {
+        const winner = players.find(p =>
+          Object.values(gameState.territories).some(t => t.owner === p.army)
+        );
+        const playerWon = winner && !winner.isAI;
+
+        return (
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white/90 backdrop-blur rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+              {playerWon ? (
+                <>
+                  <h1 className="text-4xl mb-4 game-title text-amber-800">🏆 YOU WON! 🏆</h1>
+                  <div className="text-6xl mb-4">{ANIMAL_ARMIES[winner.army].emoji}</div>
+                  <div className="text-2xl font-bold text-gray-800 mb-2">Congratulations!</div>
+                  <div className="text-lg text-gray-600 mb-6">Your {ANIMAL_ARMIES[winner.army].name} have conquered the entire zoo!</div>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-4xl mb-4 game-title text-red-800">😢 GAME OVER 😢</h1>
+                  <div className="text-6xl mb-4">{ANIMAL_ARMIES[winner?.army]?.emoji || '🤖'}</div>
+                  <div className="text-2xl font-bold text-gray-800 mb-2">{winner?.name || 'AI'} Wins!</div>
+                  <div className="text-lg text-gray-600 mb-6">The {ANIMAL_ARMIES[winner?.army]?.name || 'enemies'} have taken over the zoo!</div>
+                </>
+              )}
+              <button
+                onClick={() => setGamePhase('setup')}
+                className="px-8 py-4 bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white text-xl font-bold rounded-xl shadow-lg transition-all hover:scale-105"
+              >
+                🔄 Play Again!
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      // Main Game Screen - Map ~70% width, sidebar on right
+      return (
+        <div className="h-screen flex overflow-hidden bg-gray-900">
+          {/* MAP AREA */}
+          <div className="flex-1 p-3 flex flex-col">
+            {/* Message bar */}
+            <div className={`rounded-lg px-4 py-2 mb-2 text-center ${currentPlayer?.isAI ? 'bg-blue-600' : 'bg-gray-800'}`}>
+              <span className="text-white font-bold">
+                {currentPlayer?.isAI && '🤖 '}
+                {message}
+              </span>
+            </div>
+            {/* Map container */}
+            <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden">
+              <GameMap
+                gameState={gameState}
+                selectedTerritory={selectedTerritory}
+                validTargets={turnPhase === 'attack' ? getValidTargets() : getValidFortifyTargets()}
+                onTerritoryClick={handleTerritoryClick}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT SIDEBAR */}
+          <div className="w-72 bg-gray-800 p-3 flex flex-col gap-3 overflow-y-auto border-l-2 border-gray-700">
+            {/* Current Player */}
+            <div className="rounded-lg p-3" style={{backgroundColor: currentArmy?.color + '33', borderLeft: `4px solid ${currentArmy?.color}`}}>
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{currentArmy?.emoji}</span>
+                <div>
+                  <div className="text-white font-bold">{currentPlayer?.name}</div>
+                  <div className="text-gray-300 text-sm">{currentPlayer?.territories} zones • {getPlayerTroops(currentPlayer?.army)} animals</div>
+                </div>
+              </div>
+              {(playerCards[currentPlayer?.army]?.length > 0) && (
+                <div className="mt-2 text-yellow-400 text-sm">🃏 {playerCards[currentPlayer?.army]?.length} cards
+                  {turnPhase === 'reinforce' && canCurrentPlayerTrade() && !currentPlayer?.isAI && (
+                    <button onClick={() => setShowCardTrade(true)} className="ml-2 px-2 py-1 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-bold rounded">
+                      Trade
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Phase & Actions */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="flex gap-1 mb-3">
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Place {troopsToPlace > 0 && `(${troopsToPlace})`}
+                </div>
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'attack' ? 'bg-red-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Attack
+                </div>
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'fortify' ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Fortify
+                </div>
+              </div>
+
+              {turnPhase === 'reinforce' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  {/* Card Trade Button - Prominent at start of turn */}
+                  {canCurrentPlayerTrade() && (
+                    <button
+                      onClick={() => setShowCardTrade(true)}
+                      className="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold rounded-lg shadow-lg animate-pulse"
+                    >
+                      🃏 Trade Cards for +{getNextTradeValue()} Animals!
+                    </button>
+                  )}
+                  {troopsToPlace > 0 && (
+                    <div className="text-center text-yellow-400 font-bold text-sm">
+                      Click your territories to place {troopsToPlace} animals!
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {turnPhase === 'attack' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  <button onClick={endTurn} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                    ✅ End Turn
+                  </button>
+                  <button onClick={endPhase} className="w-full py-1.5 bg-blue-500/80 hover:bg-blue-600 text-white rounded text-sm">
+                    Skip to Fortify →
+                  </button>
+                </div>
+              )}
+
+              {turnPhase === 'fortify' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  <div className="text-gray-400 text-xs text-center">Optional: move animals</div>
+                  <button onClick={endPhase} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                    ✅ End Turn
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Your Cards */}
+            {!currentPlayer?.isAI && playerCards[currentPlayer?.army]?.length > 0 && (
+              <div className="bg-gradient-to-b from-amber-700 to-amber-800 rounded-lg p-3 border border-amber-600">
+                <div className="text-amber-100 font-bold text-sm mb-2">🃏 Your Cards ({playerCards[currentPlayer?.army]?.length})</div>
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {playerCards[currentPlayer?.army]?.map((card, idx) => (
+                    <div key={idx} className={`px-2 py-1 rounded text-xs font-bold text-white ${
+                      card.type === 'infantry' ? 'bg-green-600' :
+                      card.type === 'cavalry' ? 'bg-blue-600' :
+                      card.type === 'artillery' ? 'bg-red-600' : 'bg-yellow-500 text-black'
+                    }`}>
+                      {card.type === 'infantry' ? '🐾' : card.type === 'cavalry' ? '🦓' : card.type === 'artillery' ? '🐘' : '🌟'}
+                    </div>
+                  ))}
+                </div>
+                <div className="text-amber-200 text-xs">
+                  Trade 3 matching OR 1 of each type
+                </div>
+                {canCurrentPlayerTrade() && turnPhase === 'reinforce' && (
+                  <button
+                    onClick={() => setShowCardTrade(true)}
+                    className="w-full mt-2 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded text-sm"
+                  >
+                    Trade for +{getNextTradeValue()} 🐾
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Other Players */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-white font-bold text-sm mb-2">All Players</div>
+              {players.map((p, i) => (
+                <div key={p.id} className={`flex items-center gap-2 py-1.5 px-2 rounded mb-1 ${i === currentPlayerIndex ? 'bg-gray-600' : 'bg-gray-800'}`}>
+                  <span className="text-xl">{ANIMAL_ARMIES[p.army].emoji}</span>
+                  <span className="text-white flex-1 text-sm">{p.name}</span>
+                  <span className="text-gray-400 text-sm">{p.territories}</span>
+                  {p.isAI && <span className="text-blue-400 text-xs">🤖</span>}
+                  {playerCards[p.army]?.length > 0 && <span className="text-yellow-400 text-xs">🃏{playerCards[p.army].length}</span>}
+                </div>
+              ))}
+            </div>
+
+            {/* Region Legend */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-white font-bold text-sm mb-2">Regions</div>
+              {Object.entries(REGIONS).map(([name, region]) => (
+                <div key={name} className="flex items-center gap-2 py-0.5 text-sm">
+                  <div className="w-3 h-3 rounded" style={{backgroundColor: region.color}}></div>
+                  <span className="text-gray-300 flex-1">{region.emoji} {name}</span>
+                  <span className="text-green-400 font-bold">+{region.bonus}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Battle Modal */}
+          {battleState && (
+            <BattleModal
+              attacker={{ army: currentPlayer.army, troops: battleState.attackerTroops }}
+              defender={{ army: gameState.territories[battleState.to]?.owner || currentPlayer.army, troops: battleState.defenderTroops }}
+              attackingFrom={battleState.from}
+              defendingTo={battleState.to}
+              onRoll={rollDice}
+              onRetreat={retreatBattle}
+              onClaimTerritory={claimTerritory}
+              battleResult={battleState.result}
+              attackerDice={battleState.attackerDice}
+              defenderDice={battleState.defenderDice}
+              isRolling={battleState.isRolling}
+              isVictory={battleState.isVictory}
+              troopsToMove={battleState.troopsToMove}
+              setTroopsToMove={(val) => setBattleState(prev => ({ ...prev, troopsToMove: val }))}
+            />
+          )}
+
+          {/* Card Reward Modal */}
+          {cardReward && (
+            <CardRewardModal
+              card={cardReward}
+              onClose={() => setCardReward(null)}
+            />
+          )}
+
+          {/* Card Trade Modal */}
+          {showCardTrade && currentPlayer && (
+            <CardTradeModal
+              cards={playerCards[currentPlayer.army] || []}
+              onTrade={handleCardTrade}
+              onCancel={() => setShowCardTrade(false)}
+              tradeCount={tradeCount}
+              nextTradeValue={getNextTradeValue()}
+            />
+          )}
+        </div>
+      );
+    };
+
+    // Render the app
+    ReactDOM.createRoot(document.getElementById('root')).render(<ZooRiskGame />);
+  </script>
+</body>
+</html>

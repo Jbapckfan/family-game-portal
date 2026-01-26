@@ -1975,6 +1975,27 @@
                   <li>• Highest dice compare - ties go to defender!</li>
                 </ul>
               </div>
+
+              {/* Collapsible QR Code Share */}
+              <details className="mt-4 bg-purple-50 rounded-xl p-3">
+                <summary className="font-bold text-purple-800 cursor-pointer hover:text-purple-600 flex items-center justify-center gap-2">
+                  📱 Share Game (QR Code)
+                </summary>
+                <div className="mt-3 flex flex-col items-center">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}`}
+                    alt="QR Code to share game"
+                    className="rounded-lg shadow-md"
+                  />
+                  <p className="text-xs text-gray-600 mt-2">Scan to play on another device!</p>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!'))}
+                    className="mt-2 px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-sm rounded-lg"
+                  >
+                    📋 Copy Link
+                  </button>
+                </div>
+              </details>
             </div>
           </div>
         );

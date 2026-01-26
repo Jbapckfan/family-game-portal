@@ -13,8 +13,14 @@
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #2d5016 0%, #4a7c23 50%, #2d5016 100%);
+      background: #1a1a2e;
       min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .map-container {
+      width: 100%;
+      height: calc(100vh - 60px);
     }
 
     .game-title {
@@ -110,105 +116,113 @@
       flamingos: { name: 'Flamingos', color: '#ec4899', emoji: '🦩', bgColor: 'bg-pink-500' },
     };
 
-    // Kansas City Zoo Territories (based on actual zoo layout)
-    // IMPORTANT: All territories within the same region MUST be connected to each other
+    // 42 Territories matching Risk exactly (with zoo-themed names)
+    // Map positioned for 900x600 viewBox
     const TERRITORIES = {
-      // Africa Region - all 3 connected to each other
-      africa_savanna: { name: 'Africa Savanna', region: 'Africa', x: 120, y: 80, connections: ['africa_plains', 'africa_kopje', 'polar_passage'] },
-      africa_plains: { name: 'African Plains', region: 'Africa', x: 200, y: 120, connections: ['africa_savanna', 'africa_kopje', 'discovery_barn'] },
-      africa_kopje: { name: 'Kopje', region: 'Africa', x: 280, y: 80, connections: ['africa_savanna', 'africa_plains', 'tropics_entrance'] },
+      // NORTH AMERICA - 9 territories (+5 bonus) - Top left area
+      alaska: { name: 'Alaska', region: 'NorthAmerica', x: 70, y: 70, connections: ['northwest', 'alberta', 'kamchatka'] },
+      northwest: { name: 'Northwest', region: 'NorthAmerica', x: 130, y: 90, connections: ['alaska', 'alberta', 'ontario', 'greenland'] },
+      greenland: { name: 'Greenland', region: 'NorthAmerica', x: 280, y: 50, connections: ['northwest', 'ontario', 'quebec', 'iceland'] },
+      alberta: { name: 'Alberta', region: 'NorthAmerica', x: 100, y: 140, connections: ['alaska', 'northwest', 'ontario', 'westus'] },
+      ontario: { name: 'Ontario', region: 'NorthAmerica', x: 170, y: 150, connections: ['northwest', 'alberta', 'greenland', 'quebec', 'westus', 'eastus'] },
+      quebec: { name: 'Quebec', region: 'NorthAmerica', x: 230, y: 140, connections: ['ontario', 'greenland', 'eastus'] },
+      westus: { name: 'West US', region: 'NorthAmerica', x: 90, y: 200, connections: ['alberta', 'ontario', 'eastus', 'centralam'] },
+      eastus: { name: 'East US', region: 'NorthAmerica', x: 160, y: 210, connections: ['ontario', 'quebec', 'westus', 'centralam'] },
+      centralam: { name: 'C. America', region: 'NorthAmerica', x: 120, y: 270, connections: ['westus', 'eastus', 'venezuela'] },
 
-      // Tropics Region - all 3 connected to each other
-      tropics_entrance: { name: 'Tropics Entrance', region: 'Tropics', x: 380, y: 100, connections: ['africa_kopje', 'tropics_aviary', 'tropics_rainforest', 'australia'] },
-      tropics_aviary: { name: 'Tropical Aviary', region: 'Tropics', x: 450, y: 150, connections: ['tropics_entrance', 'tropics_rainforest'] },
-      tropics_rainforest: { name: 'Rainforest', region: 'Tropics', x: 520, y: 100, connections: ['tropics_entrance', 'tropics_aviary', 'penguin_plaza'] },
+      // SOUTH AMERICA - 4 territories (+2 bonus) - Bottom left
+      venezuela: { name: 'Venezuela', region: 'SouthAmerica', x: 160, y: 330, connections: ['centralam', 'peru', 'brazil'] },
+      peru: { name: 'Peru', region: 'SouthAmerica', x: 150, y: 400, connections: ['venezuela', 'brazil', 'argentina'] },
+      brazil: { name: 'Brazil', region: 'SouthAmerica', x: 210, y: 380, connections: ['venezuela', 'peru', 'argentina', 'northafrica'] },
+      argentina: { name: 'Argentina', region: 'SouthAmerica', x: 170, y: 480, connections: ['peru', 'brazil'] },
 
-      // Polar Region - both connected to each other
-      polar_passage: { name: 'Polar Passage', region: 'Polar', x: 80, y: 180, connections: ['africa_savanna', 'penguin_plaza', 'stingray_bay', 'sea_lion_sound'] },
-      penguin_plaza: { name: 'Penguin Plaza', region: 'Polar', x: 580, y: 180, connections: ['polar_passage', 'tropics_rainforest', 'australia'] },
+      // EUROPE - 7 territories (+5 bonus) - Top center
+      iceland: { name: 'Iceland', region: 'Europe', x: 340, y: 70, connections: ['greenland', 'scandinavia', 'britain'] },
+      scandinavia: { name: 'Scandinavia', region: 'Europe', x: 420, y: 80, connections: ['iceland', 'britain', 'northeur', 'ukraine'] },
+      ukraine: { name: 'Ukraine', region: 'Europe', x: 490, y: 120, connections: ['scandinavia', 'northeur', 'southeur', 'ural', 'afghan', 'mideast'] },
+      britain: { name: 'Britain', region: 'Europe', x: 350, y: 140, connections: ['iceland', 'scandinavia', 'northeur', 'westeur'] },
+      northeur: { name: 'N. Europe', region: 'Europe', x: 420, y: 150, connections: ['scandinavia', 'ukraine', 'britain', 'westeur', 'southeur'] },
+      westeur: { name: 'W. Europe', region: 'Europe', x: 360, y: 210, connections: ['britain', 'northeur', 'southeur', 'northafrica'] },
+      southeur: { name: 'S. Europe', region: 'Europe', x: 430, y: 200, connections: ['northeur', 'ukraine', 'westeur', 'northafrica', 'egypt', 'mideast'] },
 
-      // Aquatic Region - both connected to each other
-      stingray_bay: { name: 'Stingray Bay', region: 'Aquatic', x: 150, y: 280, connections: ['polar_passage', 'sea_lion_sound', 'discovery_barn'] },
-      sea_lion_sound: { name: 'Sea Lion Sound', region: 'Aquatic', x: 60, y: 350, connections: ['polar_passage', 'stingray_bay', 'kids_zoo'] },
+      // AFRICA - 6 territories (+3 bonus) - Bottom center
+      northafrica: { name: 'N. Africa', region: 'Africa', x: 370, y: 300, connections: ['brazil', 'westeur', 'southeur', 'egypt', 'eastafrica', 'congo'] },
+      egypt: { name: 'Egypt', region: 'Africa', x: 440, y: 280, connections: ['southeur', 'northafrica', 'eastafrica', 'mideast'] },
+      eastafrica: { name: 'E. Africa', region: 'Africa', x: 470, y: 350, connections: ['northafrica', 'egypt', 'congo', 'southafrica', 'madagascar', 'mideast'] },
+      congo: { name: 'Congo', region: 'Africa', x: 410, y: 400, connections: ['northafrica', 'eastafrica', 'southafrica'] },
+      southafrica: { name: 'S. Africa', region: 'Africa', x: 430, y: 480, connections: ['congo', 'eastafrica', 'madagascar'] },
+      madagascar: { name: 'Madagascar', region: 'Africa', x: 500, y: 460, connections: ['eastafrica', 'southafrica'] },
 
-      // Australia Region - single territory
-      australia: { name: 'Australia', region: 'Australia', x: 500, y: 250, connections: ['tropics_entrance', 'penguin_plaza', 'asia_trail'] },
+      // ASIA - 12 territories (+7 bonus) - Right side
+      ural: { name: 'Ural', region: 'Asia', x: 560, y: 100, connections: ['ukraine', 'siberia', 'afghan', 'china'] },
+      siberia: { name: 'Siberia', region: 'Asia', x: 620, y: 70, connections: ['ural', 'yakutsk', 'irkutsk', 'mongolia', 'china'] },
+      yakutsk: { name: 'Yakutsk', region: 'Asia', x: 700, y: 50, connections: ['siberia', 'irkutsk', 'kamchatka'] },
+      kamchatka: { name: 'Kamchatka', region: 'Asia', x: 780, y: 70, connections: ['alaska', 'yakutsk', 'irkutsk', 'mongolia', 'japan'] },
+      irkutsk: { name: 'Irkutsk', region: 'Asia', x: 680, y: 110, connections: ['siberia', 'yakutsk', 'kamchatka', 'mongolia'] },
+      mongolia: { name: 'Mongolia', region: 'Asia', x: 700, y: 170, connections: ['siberia', 'irkutsk', 'kamchatka', 'china', 'japan'] },
+      japan: { name: 'Japan', region: 'Asia', x: 800, y: 180, connections: ['kamchatka', 'mongolia'] },
+      afghan: { name: 'Afghan', region: 'Asia', x: 540, y: 190, connections: ['ukraine', 'ural', 'china', 'india', 'mideast'] },
+      china: { name: 'China', region: 'Asia', x: 650, y: 230, connections: ['ural', 'siberia', 'mongolia', 'afghan', 'india', 'siam'] },
+      mideast: { name: 'Mid East', region: 'Asia', x: 500, y: 260, connections: ['ukraine', 'southeur', 'egypt', 'eastafrica', 'afghan', 'india'] },
+      india: { name: 'India', region: 'Asia', x: 590, y: 300, connections: ['afghan', 'china', 'mideast', 'siam'] },
+      siam: { name: 'Siam', region: 'Asia', x: 660, y: 330, connections: ['china', 'india', 'indonesia'] },
 
-      // Asia Region - both connected to each other
-      asia_trail: { name: 'Asia Trail', region: 'Asia', x: 420, y: 320, connections: ['australia', 'tiger_trail', 'discovery_barn', 'helzberg_penguin'] },
-      tiger_trail: { name: 'Tiger Trail', region: 'Asia', x: 350, y: 380, connections: ['asia_trail', 'kids_zoo', 'carousel_plaza'] },
-
-      // Family Region - all 4 connected to each other (central hub)
-      discovery_barn: { name: 'Discovery Barn', region: 'Family', x: 250, y: 220, connections: ['africa_plains', 'stingray_bay', 'asia_trail', 'helzberg_penguin', 'kids_zoo', 'carousel_plaza'] },
-      kids_zoo: { name: "Kids' Zoo", region: 'Family', x: 180, y: 380, connections: ['sea_lion_sound', 'tiger_trail', 'carousel_plaza', 'discovery_barn', 'helzberg_penguin'] },
-      carousel_plaza: { name: 'Carousel Plaza', region: 'Family', x: 280, y: 450, connections: ['kids_zoo', 'helzberg_penguin', 'discovery_barn', 'tiger_trail'] },
-      helzberg_penguin: { name: 'Helzberg Penguin', region: 'Family', x: 350, y: 280, connections: ['discovery_barn', 'carousel_plaza', 'kids_zoo', 'asia_trail'] },
+      // AUSTRALIA - 4 territories (+2 bonus) - Bottom right
+      indonesia: { name: 'Indonesia', region: 'Australia', x: 700, y: 400, connections: ['siam', 'newguinea', 'westaus'] },
+      newguinea: { name: 'New Guinea', region: 'Australia', x: 780, y: 380, connections: ['indonesia', 'westaus', 'eastaus'] },
+      westaus: { name: 'W. Australia', region: 'Australia', x: 730, y: 480, connections: ['indonesia', 'newguinea', 'eastaus'] },
+      eastaus: { name: 'E. Australia', region: 'Australia', x: 800, y: 500, connections: ['newguinea', 'westaus'] },
     };
 
-    // Regions for bonus armies - Professional color palette with distinct, vibrant colors
+    // 6 Continents matching Risk exactly
     const REGIONS = {
-      Africa: {
-        territories: ['africa_savanna', 'africa_plains', 'africa_kopje'],
-        bonus: 3,
-        color: '#F59E0B',
+      NorthAmerica: {
+        territories: ['alaska', 'northwest', 'greenland', 'alberta', 'ontario', 'quebec', 'westus', 'eastus', 'centralam'],
+        bonus: 5,
+        color: '#F59E0B', // Yellow/gold
         lightColor: '#FEF3C7',
         darkColor: '#B45309',
-        emoji: '🦁',
-        labelPos: { x: 200, y: 45 }
+        emoji: '🦅'
       },
-      Tropics: {
-        territories: ['tropics_entrance', 'tropics_aviary', 'tropics_rainforest'],
-        bonus: 3,
-        color: '#10B981',
-        lightColor: '#D1FAE5',
-        darkColor: '#047857',
-        emoji: '🌴',
-        labelPos: { x: 450, y: 55 }
-      },
-      Polar: {
-        territories: ['polar_passage', 'penguin_plaza'],
+      SouthAmerica: {
+        territories: ['venezuela', 'peru', 'brazil', 'argentina'],
         bonus: 2,
-        color: '#3B82F6',
-        lightColor: '#DBEAFE',
-        darkColor: '#1D4ED8',
-        emoji: '❄️',
-        labelPos: { x: 330, y: 155 }
-      },
-      Aquatic: {
-        territories: ['stingray_bay', 'sea_lion_sound'],
-        bonus: 2,
-        color: '#06B6D4',
-        lightColor: '#CFFAFE',
-        darkColor: '#0E7490',
-        emoji: '🌊',
-        labelPos: { x: 80, y: 250 }
-      },
-      Australia: {
-        territories: ['australia'],
-        bonus: 1,
-        color: '#F97316',
-        lightColor: '#FED7AA',
-        darkColor: '#C2410C',
-        emoji: '🦘',
-        labelPos: { x: 530, y: 220 }
-      },
-      Asia: {
-        territories: ['asia_trail', 'tiger_trail'],
-        bonus: 2,
-        color: '#EF4444',
+        color: '#EF4444', // Red
         lightColor: '#FEE2E2',
         darkColor: '#B91C1C',
-        emoji: '🐅',
-        labelPos: { x: 420, y: 380 }
+        emoji: '🦜'
       },
-      Family: {
-        territories: ['discovery_barn', 'kids_zoo', 'carousel_plaza', 'helzberg_penguin'],
-        bonus: 4,
-        color: '#A855F7',
+      Europe: {
+        territories: ['iceland', 'scandinavia', 'ukraine', 'britain', 'northeur', 'westeur', 'southeur'],
+        bonus: 5,
+        color: '#3B82F6', // Blue
+        lightColor: '#DBEAFE',
+        darkColor: '#1D4ED8',
+        emoji: '🦌'
+      },
+      Africa: {
+        territories: ['northafrica', 'egypt', 'eastafrica', 'congo', 'southafrica', 'madagascar'],
+        bonus: 3,
+        color: '#F97316', // Orange
+        lightColor: '#FED7AA',
+        darkColor: '#C2410C',
+        emoji: '🦁'
+      },
+      Asia: {
+        territories: ['ural', 'siberia', 'yakutsk', 'kamchatka', 'irkutsk', 'mongolia', 'japan', 'afghan', 'china', 'mideast', 'india', 'siam'],
+        bonus: 7,
+        color: '#10B981', // Green
+        lightColor: '#D1FAE5',
+        darkColor: '#047857',
+        emoji: '🐅'
+      },
+      Australia: {
+        territories: ['indonesia', 'newguinea', 'westaus', 'eastaus'],
+        bonus: 2,
+        color: '#A855F7', // Purple
         lightColor: '#F3E8FF',
         darkColor: '#7E22CE',
-        emoji: '🎠',
-        labelPos: { x: 240, y: 320 }
+        emoji: '🦘'
       },
     };
 
@@ -338,7 +352,7 @@
     };
 
     // Card Trade Modal
-    const CardTradeModal = ({ cards, onTrade, onCancel, tradeCount, nextTradeValue }) => {
+    const CardTradeModal = ({ cards, onTrade, onCancel, tradeCount, nextTradeValue, mustTrade }) => {
       const [selectedCards, setSelectedCards] = useState([]);
 
       const toggleCard = (card) => {
@@ -350,6 +364,10 @@
       };
 
       const isValidSelection = selectedCards.length === 3 && isValidTradeSet(selectedCards);
+      // After trading, how many cards will remain?
+      const cardsAfterTrade = cards.length - 3;
+      // Must keep trading until 4 or fewer
+      const canClose = !mustTrade || cards.length <= 4;
 
       return (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -357,9 +375,15 @@
             <h2 className="text-2xl font-bold text-center mb-2 game-title text-amber-800">
               🃏 Trade Cards for Animals! 🃏
             </h2>
-            <p className="text-center text-amber-700 mb-4">
-              Select 3 cards: all same type OR one of each type
-            </p>
+            {mustTrade && cards.length > 4 ? (
+              <p className="text-center text-red-600 font-bold mb-4">
+                ⚠️ You have {cards.length} cards - must trade until you have 4 or fewer!
+              </p>
+            ) : (
+              <p className="text-center text-amber-700 mb-4">
+                Select 3 cards: all same type OR one of each type
+              </p>
+            )}
 
             {/* Trade value info */}
             <div className="bg-green-100 rounded-lg p-3 mb-4 text-center">
@@ -417,12 +441,14 @@
               >
                 🎁 Trade for {nextTradeValue} Animals!
               </button>
-              <button
-                onClick={onCancel}
-                className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
-              >
-                ❌ Cancel
-              </button>
+              {canClose && (
+                <button
+                  onClick={onCancel}
+                  className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all"
+                >
+                  ❌ Cancel
+                </button>
+              )}
             </div>
 
             {/* Help text */}
@@ -434,298 +460,146 @@
       );
     };
 
-    // Territory on Map - Enhanced with region color indicator
+    // Territory on Map - Clean design with region colors
     const Territory = ({ id, data, owner, troops, isSelected, isValidTarget, onClick }) => {
       const army = owner ? ANIMAL_ARMIES[owner] : null;
-      const baseColor = army ? army.color : '#9ca3af';
+      const baseColor = army ? army.color : '#6b7280';
       const region = REGIONS[data.region];
-      const regionColor = region?.darkColor || '#1f2937';
+      const regionColor = region?.color || '#6b7280';
 
       return (
-        <g className={`territory ${isSelected ? 'selected' : ''}`} onClick={() => onClick(id)}>
-          {/* Outer ring showing region color */}
+        <g
+          className={`territory ${isSelected ? 'selected' : ''}`}
+          onClick={(e) => onClick(id, e.shiftKey)}
+          onDoubleClick={() => onClick(id, true)}
+        >
+          {/* Outer glow for selected/valid */}
+          {(isSelected || isValidTarget) && (
+            <circle
+              cx={data.x}
+              cy={data.y}
+              r="28"
+              fill="none"
+              stroke={isValidTarget ? '#fbbf24' : '#ffffff'}
+              strokeWidth="2"
+              opacity="0.9"
+            />
+          )}
+
+          {/* Region color ring */}
           <circle
             cx={data.x}
             cy={data.y}
-            r="40"
-            fill="none"
-            stroke={regionColor}
-            strokeWidth="6"
-            opacity="0.8"
+            r="24"
+            fill={regionColor}
           />
 
-          {/* Shadow */}
-          <ellipse
-            cx={data.x + 2}
-            cy={data.y + 3}
-            rx="33"
-            ry="33"
-            fill="#000"
-            opacity="0.2"
-          />
-
-          {/* Main territory circle */}
+          {/* Main territory circle with player color */}
           <circle
             cx={data.x}
             cy={data.y}
-            r="33"
+            r="20"
             fill={baseColor}
-            stroke={isValidTarget ? '#fbbf24' : isSelected ? '#fff' : '#1f2937'}
-            strokeWidth={isValidTarget || isSelected ? 4 : 2}
+            stroke="#000"
+            strokeWidth="1.5"
           />
 
-          {/* Highlight gradient overlay */}
-          <circle
+          {/* Shine effect */}
+          <ellipse
             cx={data.x}
-            cy={data.y - 8}
-            r="25"
+            cy={data.y - 5}
+            rx="12"
+            ry="8"
             fill="white"
             opacity="0.15"
           />
 
           {/* Army emoji */}
-          <text x={data.x} y={data.y - 3} textAnchor="middle" fill="white" fontSize="22"
-                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+          <text x={data.x} y={data.y + 5} textAnchor="middle" fill="white" fontSize="16"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
             {army ? army.emoji : '❓'}
           </text>
 
           {/* Troop count badge */}
           <circle
-            cx={data.x + 20}
-            cy={data.y + 20}
-            r="14"
-            fill="#1f2937"
-            stroke="white"
-            strokeWidth="2"
+            cx={data.x + 15}
+            cy={data.y + 15}
+            r="10"
+            fill="#000"
+            stroke="#fff"
+            strokeWidth="1.5"
           />
-          <text x={data.x + 20} y={data.y + 25} textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">
+          <text x={data.x + 15} y={data.y + 19} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
             {troops}
           </text>
 
           {/* Territory name below */}
-          <text x={data.x} y={data.y + 55} textAnchor="middle" fill="#fef3c7" fontSize="9" fontWeight="600"
-                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
+          <text x={data.x} y={data.y + 36} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,1)' }}>
             {data.name}
           </text>
         </g>
       );
     };
 
-    // Game Board Map - Professional Design
+    // Game Board Map - Properly sized with region colors
     const GameMap = ({ gameState, selectedTerritory, validTargets, onTerritoryClick }) => {
-
-      // Create smooth convex hull-like path around region territories
-      const createRegionPath = (territories, padding = 55) => {
-        const points = territories.map(t => TERRITORIES[t]);
-        if (points.length === 1) {
-          // Single territory - create circle
-          const p = points[0];
-          return `M ${p.x - padding} ${p.y}
-                  A ${padding} ${padding} 0 1 1 ${p.x + padding} ${p.y}
-                  A ${padding} ${padding} 0 1 1 ${p.x - padding} ${p.y}`;
-        }
-
-        // Calculate centroid
-        const cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
-        const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
-
-        // Sort points by angle from centroid for proper polygon ordering
-        const sortedPoints = [...points].sort((a, b) => {
-          return Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx);
-        });
-
-        // Create expanded points
-        const expandedPoints = sortedPoints.map(p => {
-          const angle = Math.atan2(p.y - cy, p.x - cx);
-          return {
-            x: p.x + Math.cos(angle) * padding,
-            y: p.y + Math.sin(angle) * padding
-          };
-        });
-
-        // Create smooth curved path
-        if (expandedPoints.length === 2) {
-          const p1 = expandedPoints[0];
-          const p2 = expandedPoints[1];
-          const midX = (p1.x + p2.x) / 2;
-          const midY = (p1.y + p2.y) / 2;
-          const dist = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
-          const bulge = dist * 0.4;
-
-          // Calculate perpendicular direction
-          const dx = p2.x - p1.x;
-          const dy = p2.y - p1.y;
-          const perpX = -dy / dist * bulge;
-          const perpY = dx / dist * bulge;
-
-          return `M ${p1.x} ${p1.y}
-                  Q ${midX + perpX} ${midY + perpY} ${p2.x} ${p2.y}
-                  Q ${midX - perpX} ${midY - perpY} ${p1.x} ${p1.y}`;
-        }
-
-        // For 3+ points, create smooth bezier curves
-        let path = `M ${expandedPoints[0].x} ${expandedPoints[0].y}`;
-        for (let i = 0; i < expandedPoints.length; i++) {
-          const curr = expandedPoints[i];
-          const next = expandedPoints[(i + 1) % expandedPoints.length];
-          const midX = (curr.x + next.x) / 2;
-          const midY = (curr.y + next.y) / 2;
-          path += ` Q ${curr.x} ${curr.y} ${midX} ${midY}`;
-        }
-        path += ' Z';
-        return path;
-      };
-
       return (
-      <svg viewBox="0 0 650 570" className="w-full max-w-4xl mx-auto drop-shadow-2xl">
-        {/* Definitions for gradients and filters */}
-        <defs>
-          {/* Region gradients */}
-          {Object.entries(REGIONS).map(([name, region]) => (
-            <linearGradient key={`grad-${name}`} id={`region-gradient-${name}`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={region.lightColor} stopOpacity="0.7" />
-              <stop offset="100%" stopColor={region.color} stopOpacity="0.4" />
-            </linearGradient>
-          ))}
+      <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
+        {/* Ocean background */}
+        <rect x="0" y="0" width="900" height="560" fill="#1a3a4a" />
 
-          {/* Glow filter for regions */}
-          <filter id="region-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+        {/* Region colored background zones - 6 Risk continents */}
+        {/* North America - top left */}
+        <ellipse cx="150" cy="150" rx="130" ry="130" fill={REGIONS.NorthAmerica.color} opacity="0.2" />
+        {/* South America - bottom left */}
+        <ellipse cx="175" cy="400" rx="80" ry="110" fill={REGIONS.SouthAmerica.color} opacity="0.2" />
+        {/* Europe - top center */}
+        <ellipse cx="410" cy="140" rx="100" ry="90" fill={REGIONS.Europe.color} opacity="0.2" />
+        {/* Africa - center */}
+        <ellipse cx="430" cy="380" rx="90" ry="130" fill={REGIONS.Africa.color} opacity="0.2" />
+        {/* Asia - right side (large) */}
+        <ellipse cx="650" cy="180" rx="180" ry="150" fill={REGIONS.Asia.color} opacity="0.15" />
+        {/* Australia - bottom right */}
+        <ellipse cx="750" cy="450" rx="90" ry="80" fill={REGIONS.Australia.color} opacity="0.2" />
 
-          {/* Drop shadow for labels */}
-          <filter id="label-shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="1" dy="2" stdDeviation="2" floodOpacity="0.4" />
-          </filter>
+        {/* Region Labels */}
+        <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} N. AMERICA +{REGIONS.NorthAmerica.bonus}</text>
+        <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} S. AMERICA +{REGIONS.SouthAmerica.bonus}</text>
+        <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} EUROPE +{REGIONS.Europe.bonus}</text>
+        <text x="430" y="540" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} AFRICA +{REGIONS.Africa.bonus}</text>
+        <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} ASIA +{REGIONS.Asia.bonus}</text>
+        <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} AUSTRALIA +{REGIONS.Australia.bonus}</text>
 
-          {/* Path pattern */}
-          <pattern id="path-pattern" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
-            <circle cx="2" cy="2" r="1.5" fill="#1a3d0c" opacity="0.5" />
-          </pattern>
-        </defs>
+        {/* Alaska-Kamchatka wrap-around connection */}
+        <path d="M 70 70 Q 0 70, 0 300 Q 0 530, 70 530 M 830 70 Q 900 70, 900 300 Q 900 530, 830 530"
+              stroke="#666" strokeWidth="2" strokeDasharray="8,5" fill="none" opacity="0.5" />
+        <text x="10" y="300" fill="#888" fontSize="10" transform="rotate(-90, 10, 300)">← Alaska-Kamchatka →</text>
 
-        {/* Decorative border */}
-        <rect x="5" y="5" width="640" height="560" fill="none" stroke="#2d5016" strokeWidth="10" rx="25" />
-
-        {/* Main background with texture */}
-        <rect x="10" y="10" width="630" height="550" fill="#4a7c23" rx="20" />
-        <rect x="10" y="10" width="630" height="550" fill="url(#path-pattern)" rx="20" opacity="0.3" />
-
-        {/* REGION BACKGROUNDS - Main visual grouping */}
-        {Object.entries(REGIONS).map(([name, region]) => {
-          const path = createRegionPath(region.territories, 52);
-
-          return (
-            <g key={`region-bg-${name}`}>
-              {/* Outer glow/border */}
-              <path
-                d={path}
-                fill="none"
-                stroke={region.color}
-                strokeWidth="8"
-                opacity="0.3"
-                filter="url(#region-glow)"
-              />
-
-              {/* Main region fill */}
-              <path
-                d={path}
-                fill={`url(#region-gradient-${name})`}
-                stroke={region.darkColor}
-                strokeWidth="3"
-                strokeDasharray="0"
-              />
-
-              {/* Inner highlight */}
-              <path
-                d={createRegionPath(region.territories, 45)}
-                fill="none"
-                stroke={region.lightColor}
-                strokeWidth="2"
-                opacity="0.5"
-              />
-            </g>
-          );
-        })}
-
-        {/* REGION LABELS - Clear, prominent labels */}
-        {Object.entries(REGIONS).map(([name, region]) => {
-          const labelX = region.labelPos.x;
-          const labelY = region.labelPos.y;
-          const labelWidth = name.length * 9 + 60;
-
-          return (
-            <g key={`region-label-${name}`} filter="url(#label-shadow)">
-              {/* Label background plate */}
-              <rect
-                x={labelX - labelWidth / 2}
-                y={labelY - 14}
-                width={labelWidth}
-                height="28"
-                rx="14"
-                fill={region.darkColor}
-              />
-              <rect
-                x={labelX - labelWidth / 2 + 2}
-                y={labelY - 12}
-                width={labelWidth - 4}
-                height="24"
-                rx="12"
-                fill={region.color}
-              />
-
-              {/* Label text */}
-              <text
-                x={labelX}
-                y={labelY + 5}
-                textAnchor="middle"
-                fill="white"
-                fontSize="13"
-                fontWeight="bold"
-                fontFamily="'Fredoka One', cursive"
-              >
-                {region.emoji} {name} +{region.bonus}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Zoo paths/connections - drawn on top of regions */}
+        {/* Connection paths */}
         {Object.entries(TERRITORIES).map(([id, data]) =>
           data.connections.map(connId => {
-            if (id > connId) return null; // Only draw each connection once
+            if (id > connId) return null;
+            // Skip Alaska-Kamchatka - shown as wrap-around above
+            if ((id === 'alaska' && connId === 'kamchatka') || (id === 'kamchatka' && connId === 'alaska')) return null;
             const conn = TERRITORIES[connId];
+            if (!conn) return null;
             const sameRegion = data.region === conn.region;
+            const regionColor = REGIONS[data.region]?.color || '#666';
 
             return (
-              <g key={`path-${id}-${connId}`}>
-                {/* Path shadow */}
-                <line
-                  x1={data.x}
-                  y1={data.y + 2}
-                  x2={conn.x}
-                  y2={conn.y + 2}
-                  stroke="#1a3d0c"
-                  strokeWidth="7"
-                  strokeLinecap="round"
-                  opacity="0.4"
-                />
-                {/* Main path */}
-                <line
-                  x1={data.x}
-                  y1={data.y}
-                  x2={conn.x}
-                  y2={conn.y}
-                  stroke={sameRegion ? "#5d9c2e" : "#3d6b1c"}
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                  strokeDasharray={sameRegion ? "0" : "8,6"}
-                />
-              </g>
+              <line
+                key={`path-${id}-${connId}`}
+                x1={data.x}
+                y1={data.y}
+                x2={conn.x}
+                y2={conn.y}
+                stroke={sameRegion ? regionColor : "#555"}
+                strokeWidth={sameRegion ? "3" : "2"}
+                strokeLinecap="round"
+                strokeDasharray={sameRegion ? "0" : "6,4"}
+                opacity={sameRegion ? "0.5" : "0.35"}
+              />
             );
           })
         )}
@@ -743,23 +617,23 @@
             onClick={onTerritoryClick}
           />
         ))}
-
-        {/* Title Banner */}
-        <g>
-          <rect x="175" y="520" width="300" height="35" rx="17" fill="#2d5016" />
-          <rect x="178" y="523" width="294" height="29" rx="14" fill="#4a7c23" />
-          <text x="325" y="543" textAnchor="middle" fill="#fef3c7" fontSize="15" fontWeight="bold" fontFamily="'Fredoka One', cursive">
-            🦁 Kansas City Zoo Adventure 🐘
-          </text>
-        </g>
       </svg>
     );
     };
 
     // Region Legend Component - Shows all regions with bonuses
+    const REGION_DISPLAY_NAMES = {
+      NorthAmerica: 'N. America',
+      SouthAmerica: 'S. America',
+      Europe: 'Europe',
+      Africa: 'Africa',
+      Asia: 'Asia',
+      Australia: 'Australia'
+    };
+
     const RegionLegend = () => (
       <div className="bg-gradient-to-b from-amber-800 to-amber-900 rounded-xl p-3 shadow-lg border-2 border-amber-600">
-        <div className="text-center text-amber-100 font-bold text-sm mb-2 game-title">🗺️ Zoo Regions</div>
+        <div className="text-center text-amber-100 font-bold text-sm mb-2 game-title">🗺️ Continents</div>
         <div className="grid grid-cols-2 gap-1.5">
           {Object.entries(REGIONS).map(([name, region]) => (
             <div
@@ -768,13 +642,13 @@
               style={{ backgroundColor: region.color + '33', borderLeft: `3px solid ${region.color}` }}
             >
               <span>{region.emoji}</span>
-              <span className="font-semibold text-white">{name}</span>
+              <span className="font-semibold text-white">{REGION_DISPLAY_NAMES[name]}</span>
               <span className="ml-auto font-bold" style={{ color: region.lightColor }}>+{region.bonus}</span>
             </div>
           ))}
         </div>
         <div className="text-center text-amber-200 text-xs mt-2 italic">
-          Control all territories in a region for bonus animals!
+          Control all territories for bonus armies!
         </div>
       </div>
     );
@@ -1117,6 +991,7 @@
       const [message, setMessage] = useState('Welcome to Zoo Conquest! 🦁');
       const [aiThinking, setAiThinking] = useState(false);
       const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
+      const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
       const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
       const [cardDeck, setCardDeck] = useState([...CARD_DECK].sort(() => Math.random() - 0.5)); // Shuffled deck
 
@@ -1211,16 +1086,28 @@
 
         // Remove traded cards from player's hand
         const cardIds = selectedCards.map(c => c.id);
+        const currentCards = playerCards[army] || [];
+        const remainingCards = currentCards.filter(c => !cardIds.includes(c.id));
+
         setPlayerCards(prev => ({
           ...prev,
-          [army]: prev[army].filter(c => !cardIds.includes(c.id))
+          [army]: remainingCards
         }));
 
         // Add bonus troops
         setTroopsToPlace(prev => prev + bonusTroops);
         setTradeCount(prev => prev + 1);
-        setShowCardTrade(false);
-        setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
+
+        // Check if must continue trading (still over 4 cards)
+        if (mustTradeCards && remainingCards.length > 4 && canTradeCards(remainingCards)) {
+          // Keep modal open, must trade more
+          setMessage(`🎁 +${bonusTroops} animals! Still have ${remainingCards.length} cards - must trade to 4 or fewer!`);
+        } else {
+          // Done trading
+          setShowCardTrade(false);
+          setMustTradeCards(false);
+          setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
+        }
       };
 
       // Get next trade value
@@ -1268,8 +1155,8 @@
         );
       };
 
-      // Handle territory click
-      const handleTerritoryClick = (id) => {
+      // Handle territory click - shift+click or double-click places all troops
+      const handleTerritoryClick = (id, placeAll = false) => {
         // Block clicks during AI turn
         if (currentPlayer?.isAI) {
           return;
@@ -1278,17 +1165,22 @@
         const territory = gameState.territories[id];
 
         if (turnPhase === 'reinforce' && territory?.owner === currentPlayer?.army && troopsToPlace > 0) {
-          // Place troops
+          // Place troops - if placeAll, place all remaining troops
+          const toPlace = placeAll ? troopsToPlace : 1;
+
           setGameState(prev => ({
             ...prev,
             territories: {
               ...prev.territories,
-              [id]: { ...prev.territories[id], troops: prev.territories[id].troops + 1 }
+              [id]: { ...prev.territories[id], troops: prev.territories[id].troops + toPlace }
             }
           }));
-          setTroopsToPlace(prev => prev - 1);
+          setTroopsToPlace(prev => prev - toPlace);
 
-          if (troopsToPlace === 1) {
+          if (troopsToPlace - toPlace <= 0) {
+            setTurnPhase('attack');
+            setMessage('Attack phase! Select a territory to attack from.');
+          } else if (placeAll) {
             setTurnPhase('attack');
             setMessage('Attack phase! Select a territory to attack from.');
           }
@@ -1502,7 +1394,7 @@
         });
       };
 
-      // AI Turn Controller
+      // AI Turn Controller - FAST AI moves
       useEffect(() => {
         if (gamePhase !== 'play' || !currentPlayer?.isAI || battleState || cardReward || aiThinking) {
           return;
@@ -1513,28 +1405,31 @@
           const army = currentPlayer.army;
           const aiName = currentPlayer.name;
 
-          // Phase 1: Reinforce
+          // Phase 1: Reinforce - place ALL troops at once (fast)
           if (turnPhase === 'reinforce' && troopsToPlace > 0) {
-            setMessage(`🤖 ${aiName} is placing reinforcements...`);
+            setMessage(`🤖 ${aiName} placing ${troopsToPlace} reinforcements...`);
 
+            // Place all troops at once instead of one by one
+            const reinforcements = {};
             for (let i = 0; i < troopsToPlace; i++) {
-              await new Promise(r => setTimeout(r, 300));
               const target = aiFindBestReinforceTarget(army);
               if (target) {
-                setGameState(prev => ({
-                  ...prev,
-                  territories: {
-                    ...prev.territories,
-                    [target]: { ...prev.territories[target], troops: prev.territories[target].troops + 1 }
-                  }
-                }));
+                reinforcements[target] = (reinforcements[target] || 0) + 1;
               }
             }
 
-            await new Promise(r => setTimeout(r, 500));
+            setGameState(prev => {
+              const newTerritories = { ...prev.territories };
+              Object.entries(reinforcements).forEach(([tid, count]) => {
+                newTerritories[tid] = { ...newTerritories[tid], troops: newTerritories[tid].troops + count };
+              });
+              return { ...prev, territories: newTerritories };
+            });
+
+            await new Promise(r => setTimeout(r, 150));
             setTroopsToPlace(0);
             setTurnPhase('attack');
-            setMessage(`🤖 ${aiName} is looking for targets...`);
+            setMessage(`🤖 ${aiName} attacking...`);
             setAiThinking(false);
             return;
           }
@@ -1544,40 +1439,66 @@
             const attack = aiFindBestAttack(army);
 
             if (attack) {
-              setMessage(`🤖 ${aiName} attacks ${TERRITORIES[attack.to].name}!`);
-              await new Promise(r => setTimeout(r, 800));
+              setMessage(`🤖 ${aiName} ⚔️ ${TERRITORIES[attack.to].name}`);
+              await new Promise(r => setTimeout(r, 200));
 
               // Execute battle
               const result = await aiExecuteBattle(attack.from, attack.to);
+              const defeatedArmy = gameState.territories[attack.to]?.owner;
 
-              setGameState(prev => {
-                const newTerritories = { ...prev.territories };
-                newTerritories[attack.from] = {
-                  ...newTerritories[attack.from],
-                  troops: result.newAttackerTroops
+              // Build new territories
+              const newTerritories = { ...gameState.territories };
+              newTerritories[attack.from] = {
+                ...newTerritories[attack.from],
+                troops: result.newAttackerTroops
+              };
+
+              if (result.victory) {
+                // Move troops to conquered territory
+                const troopsToMove = Math.max(1, result.newAttackerTroops - 1);
+                newTerritories[attack.to] = {
+                  owner: army,
+                  troops: troopsToMove
                 };
+                newTerritories[attack.from].troops -= troopsToMove;
+                setConqueredThisTurn(true);
 
-                if (result.victory) {
-                  // Move troops to conquered territory
-                  const troopsToMove = Math.max(1, result.newAttackerTroops - 1);
-                  newTerritories[attack.to] = {
-                    owner: army,
-                    troops: troopsToMove
-                  };
-                  newTerritories[attack.from].troops -= troopsToMove;
-                  setConqueredThisTurn(true);
-                  setMessage(`🤖 ${aiName} conquered ${TERRITORIES[attack.to].name}!`);
+                // Check if defender is eliminated (no territories left)
+                const defenderTerritories = Object.values(newTerritories).filter(t => t.owner === defeatedArmy);
+                if (defenderTerritories.length === 0 && defeatedArmy) {
+                  // Transfer all cards from eliminated player to AI
+                  const eliminatedCards = playerCards[defeatedArmy] || [];
+                  if (eliminatedCards.length > 0) {
+                    setPlayerCards(prevCards => ({
+                      ...prevCards,
+                      [army]: [...(prevCards[army] || []), ...eliminatedCards],
+                      [defeatedArmy]: []
+                    }));
+                    setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+                  } else {
+                    setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}! 💀 Player eliminated!`);
+                  }
                 } else {
-                  newTerritories[attack.to] = {
-                    ...newTerritories[attack.to],
-                    troops: result.newDefenderTroops
-                  };
+                  setMessage(`🤖 ${aiName} took ${TERRITORIES[attack.to].name}!`);
                 }
+              } else {
+                newTerritories[attack.to] = {
+                  ...newTerritories[attack.to],
+                  troops: result.newDefenderTroops
+                };
+              }
 
-                return { ...prev, territories: newTerritories };
-              });
+              setGameState({ territories: newTerritories });
 
-              await new Promise(r => setTimeout(r, 1000));
+              // Check for game over immediately with new territories
+              const owners = new Set(Object.values(newTerritories).map(t => t.owner));
+              if (owners.size === 1) {
+                setGamePhase('gameOver');
+                setAiThinking(false);
+                return;
+              }
+
+              await new Promise(r => setTimeout(r, 250));
 
               // Check for more attacks
               setAiThinking(false);
@@ -1585,7 +1506,7 @@
             } else {
               // No good attacks, move to fortify
               setTurnPhase('fortify');
-              setMessage(`🤖 ${aiName} is fortifying...`);
+              setMessage(`🤖 ${aiName} fortifying...`);
               setAiThinking(false);
               return;
             }
@@ -1593,7 +1514,7 @@
 
           // Phase 3: Fortify
           if (turnPhase === 'fortify') {
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 100));
             const fortify = aiFindBestFortify(army);
 
             if (fortify) {
@@ -1605,20 +1526,22 @@
                   [fortify.to]: { ...prev.territories[fortify.to], troops: prev.territories[fortify.to].troops + fortify.troops }
                 }
               }));
-              setMessage(`🤖 ${aiName} moved troops to ${TERRITORIES[fortify.to].name}`);
-              await new Promise(r => setTimeout(r, 800));
+              setMessage(`🤖 ${aiName} fortified ${TERRITORIES[fortify.to].name}`);
+              await new Promise(r => setTimeout(r, 150));
             }
 
             // End AI turn
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 100));
 
             // Award card if conquered
             if (conqueredThisTurn) {
-              const randomCard = CARDS[Math.floor(Math.random() * CARDS.length)];
-              setPlayerCards(prev => ({
-                ...prev,
-                [army]: [...(prev[army] || []), randomCard]
-              }));
+              const card = drawCard();
+              if (card) {
+                setPlayerCards(prev => ({
+                  ...prev,
+                  [army]: [...(prev[army] || []), card]
+                }));
+              }
             }
 
             // Move to next player
@@ -1635,6 +1558,7 @@
 
             setCurrentPlayerIndex(idx);
             setConqueredThisTurn(false);
+            setEarnedCardThisTurn(false);
 
             const nextPlayer = players[idx];
             const newTroops = calculateReinforcements(nextPlayer, gameState.territories);
@@ -1649,13 +1573,7 @@
 
             setAiThinking(false);
 
-            // Check game over
-            const owners = new Set(Object.values(gameState.territories).map(t => t.owner));
-            if (owners.size === 1) {
-              setGamePhase('gameOver');
-            }
-
-            // Update territory counts
+            // Update territory counts using functional update to get latest state
             setPlayers(prev => prev.map(p => ({
               ...p,
               territories: Object.values(gameState.territories).filter(t => t.owner === p.army).length
@@ -1667,7 +1585,7 @@
           setAiThinking(false);
         };
 
-        const timer = setTimeout(runAITurn, 600);
+        const timer = setTimeout(runAITurn, 150);
         return () => clearTimeout(timer);
       }, [gamePhase, currentPlayer, turnPhase, troopsToPlace, battleState, cardReward, aiThinking, gameState.territories]);
 
@@ -1763,31 +1681,62 @@
       // Claim territory after victory
       const claimTerritory = (troopsToMove) => {
         const newAttackerTroops = battleState.attackerTroops;
+        const defeatedArmy = gameState.territories[battleState.to]?.owner;
 
-        setGameState(prev => {
-          const newTerritories = { ...prev.territories };
-          // Leave remaining troops at origin
-          newTerritories[battleState.from] = {
-            ...newTerritories[battleState.from],
-            troops: newAttackerTroops - troopsToMove
-          };
-          // Move selected troops to conquered territory
-          newTerritories[battleState.to] = {
-            owner: currentPlayer.army,
-            troops: troopsToMove
-          };
-          return { ...prev, territories: newTerritories };
-        });
+        // Build new territories state
+        const newTerritories = { ...gameState.territories };
+        newTerritories[battleState.from] = {
+          ...newTerritories[battleState.from],
+          troops: newAttackerTroops - troopsToMove
+        };
+        newTerritories[battleState.to] = {
+          owner: currentPlayer.army,
+          troops: troopsToMove
+        };
 
+        // Check if defender is eliminated (no territories left)
+        const defenderTerritories = Object.values(newTerritories).filter(t => t.owner === defeatedArmy);
+        let forceTrade = false;
+        if (defenderTerritories.length === 0 && defeatedArmy) {
+          // Transfer all cards from eliminated player
+          const eliminatedCards = playerCards[defeatedArmy] || [];
+          if (eliminatedCards.length > 0) {
+            const myCurrentCards = playerCards[currentPlayer.army] || [];
+            const newCardCount = myCurrentCards.length + eliminatedCards.length;
+            setPlayerCards(prevCards => ({
+              ...prevCards,
+              [currentPlayer.army]: [...(prevCards[currentPlayer.army] || []), ...eliminatedCards],
+              [defeatedArmy]: []
+            }));
+            // Force trade if over 6 cards (Risk rule)
+            if (newCardCount > 6) {
+              forceTrade = true;
+              setMessage(`🎉 Conquered! 💀 Eliminated player - took ${eliminatedCards.length} cards! Must trade down to 4 or fewer!`);
+            } else {
+              setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Eliminated player - took ${eliminatedCards.length} cards!`);
+            }
+          } else {
+            setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! 💀 Player eliminated!`);
+          }
+        } else {
+          setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! Continue attacking from here or select another territory.`);
+        }
+
+        setGameState({ territories: newTerritories });
         setConqueredThisTurn(true);
         setBattleState(null);
-        setSelectedTerritory(null);
-        setMessage(`🎉 Conquered ${TERRITORIES[battleState.to].name}! Continue attacking or move to fortify.`);
 
-        // Check for game over
-        setTimeout(() => {
-          checkGameOver();
-        }, 100);
+        // Select the newly conquered territory so player can attack from it immediately
+        setSelectedTerritory(battleState.to);
+
+        // Check for game over with the NEW territories
+        checkGameOver(newTerritories);
+
+        // Force card trade modal if over 6 cards
+        if (forceTrade) {
+          setMustTradeCards(true);
+          setTimeout(() => setShowCardTrade(true), 300);
+        }
       };
 
       // Retreat from battle
@@ -1798,9 +1747,10 @@
         setMessage('Select another territory to attack, or move to fortify phase.');
       };
 
-      // Check for game over
-      const checkGameOver = () => {
-        const owners = new Set(Object.values(gameState.territories).map(t => t.owner));
+      // Check for game over - pass newTerritories directly since state is async
+      const checkGameOver = (newTerritories) => {
+        const territories = newTerritories || gameState.territories;
+        const owners = new Set(Object.values(territories).map(t => t.owner));
         if (owners.size === 1) {
           setGamePhase('gameOver');
         }
@@ -1808,7 +1758,7 @@
         // Update player territory counts
         setPlayers(prev => prev.map(p => ({
           ...p,
-          territories: Object.values(gameState.territories).filter(t => t.owner === p.army).length
+          territories: Object.values(territories).filter(t => t.owner === p.army).length
         })));
       };
 
@@ -2066,180 +2016,163 @@
         );
       }
 
-      // Main Game Screen
+      // Main Game Screen - Map ~70% width, sidebar on right
       return (
-        <div className="min-h-screen p-4">
-          {/* Header */}
-          <div className="text-center mb-4">
-            <h1 className="text-3xl game-title text-yellow-300 drop-shadow-lg">🦁 Zoo Conquest 🐘</h1>
-            <div className={`backdrop-blur rounded-full px-6 py-2 inline-block mt-2 transition-all ${currentPlayer?.isAI ? 'bg-blue-500/50 ring-2 ring-blue-300' : 'bg-white/20'}`}>
-              <span className="text-white font-semibold">
-                {currentPlayer?.isAI && <span className="animate-pulse">🤖 </span>}
+        <div className="h-screen flex overflow-hidden bg-gray-900">
+          {/* MAP AREA */}
+          <div className="flex-1 p-3 flex flex-col">
+            {/* Message bar */}
+            <div className={`rounded-lg px-4 py-2 mb-2 text-center ${currentPlayer?.isAI ? 'bg-blue-600' : 'bg-gray-800'}`}>
+              <span className="text-white font-bold">
+                {currentPlayer?.isAI && '🤖 '}
                 {message}
-                {currentPlayer?.isAI && aiThinking && <span className="ml-2 animate-spin inline-block">⚙️</span>}
               </span>
             </div>
-            {currentPlayer?.isAI && (
-              <div className="text-blue-200 text-sm mt-1 animate-pulse">
-                AI is playing - please wait...
-              </div>
-            )}
+            {/* Map container */}
+            <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden">
+              <GameMap
+                gameState={gameState}
+                selectedTerritory={selectedTerritory}
+                validTargets={turnPhase === 'attack' ? getValidTargets() : getValidFortifyTargets()}
+                onTerritoryClick={handleTerritoryClick}
+              />
+            </div>
           </div>
 
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-4">
-            {/* Left Panel - Current Player */}
-            <div className="lg:col-span-1 space-y-4">
-              {currentPlayer && (
-                <PlayerPanel
-                  player={currentPlayer}
-                  isCurrentPlayer={true}
-                  armies={currentArmy}
-                  cards={playerCards[currentPlayer.army] || []}
-                  onTradeCards={() => setShowCardTrade(true)}
-                  canTrade={canCurrentPlayerTrade()}
-                  troops={getPlayerTroops(currentPlayer.army)}
-                  turnPhase={turnPhase}
-                  isAI={currentPlayer.isAI}
-                />
-              )}
-
-              {/* Phase Controls */}
-              <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <div className="text-white font-bold mb-3">Turn Phase</div>
-                <div className="flex gap-2 flex-wrap">
-                  <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-white/20 text-gray-300'}`}>
-                    1. Place Animals {troopsToPlace > 0 && `(${troopsToPlace})`}
-                  </div>
-                  <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'attack' ? 'bg-red-500 text-white' : 'bg-white/20 text-gray-300'}`}>
-                    2. Attack
-                  </div>
-                  <div className={`px-3 py-2 rounded-lg text-sm font-semibold ${turnPhase === 'fortify' ? 'bg-blue-500 text-white' : 'bg-white/20 text-gray-300'}`}>
-                    3. Fortify (Optional)
-                  </div>
+          {/* RIGHT SIDEBAR */}
+          <div className="w-72 bg-gray-800 p-3 flex flex-col gap-3 overflow-y-auto border-l-2 border-gray-700">
+            {/* Current Player */}
+            <div className="rounded-lg p-3" style={{backgroundColor: currentArmy?.color + '33', borderLeft: `4px solid ${currentArmy?.color}`}}>
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{currentArmy?.emoji}</span>
+                <div>
+                  <div className="text-white font-bold">{currentPlayer?.name}</div>
+                  <div className="text-gray-300 text-sm">{currentPlayer?.territories} zones • {getPlayerTroops(currentPlayer?.army)} animals</div>
                 </div>
-
-                {turnPhase === 'attack' && !currentPlayer?.isAI && (
-                  <div className="mt-3 space-y-2">
-                    <button
-                      onClick={endPhase}
-                      className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
-                    >
-                      🏃 Go to Fortify
-                    </button>
-                    <button
-                      onClick={endTurn}
-                      className="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition-all"
-                    >
-                      ✅ End Turn (Skip Fortify)
-                    </button>
-                  </div>
-                )}
-
-                {turnPhase === 'fortify' && !currentPlayer?.isAI && (
-                  <div className="mt-3 space-y-2">
-                    <div className="text-sm text-gray-200 text-center mb-2">
-                      {selectedTerritory ? 'Click a connected friendly territory to move troops' : 'Fortify is optional! End turn or move troops.'}
-                    </div>
-                    <button
-                      onClick={endPhase}
-                      className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-all"
-                    >
-                      ✅ End Turn
-                    </button>
-                    {selectedTerritory && (
-                      <button
-                        onClick={() => setSelectedTerritory(null)}
-                        className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all"
-                      >
-                        🔄 Cancel Selection
-                      </button>
-                    )}
-                    <div className="text-xs text-gray-300 text-center mt-1">
-                      (Or click a territory with 2+ troops to move some)
-                    </div>
-                  </div>
-                )}
               </div>
+              {(playerCards[currentPlayer?.army]?.length > 0) && (
+                <div className="mt-2 text-yellow-400 text-sm">🃏 {playerCards[currentPlayer?.army]?.length} cards
+                  {turnPhase === 'reinforce' && canCurrentPlayerTrade() && !currentPlayer?.isAI && (
+                    <button onClick={() => setShowCardTrade(true)} className="ml-2 px-2 py-1 bg-yellow-500 hover:bg-yellow-600 text-black text-xs font-bold rounded">
+                      Trade
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Center - Map */}
-            <div className="lg:col-span-2">
-              <div className="bg-white/10 backdrop-blur rounded-2xl p-4">
-                <GameMap
-                  gameState={gameState}
-                  selectedTerritory={selectedTerritory}
-                  validTargets={turnPhase === 'attack' ? getValidTargets() : getValidFortifyTargets()}
-                  onTerritoryClick={handleTerritoryClick}
-                />
+            {/* Phase & Actions */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="flex gap-1 mb-3">
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Place {troopsToPlace > 0 && `(${troopsToPlace})`}
+                </div>
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'attack' ? 'bg-red-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Attack
+                </div>
+                <div className={`flex-1 text-center py-1.5 rounded font-bold text-xs ${turnPhase === 'fortify' ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-400'}`}>
+                  Fortify
+                </div>
               </div>
 
-              {/* Reinforcement Tray - Show during reinforce phase for human players */}
-              {turnPhase === 'reinforce' && troopsToPlace > 0 && currentPlayer && !currentPlayer.isAI && (
-                <div className="mt-4">
-                  <ReinforcementTray
-                    army={currentPlayer.army}
-                    count={troopsToPlace}
-                    emoji={ANIMAL_ARMIES[currentPlayer.army].emoji}
-                  />
+              {turnPhase === 'reinforce' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  {/* Card Trade Button - Prominent at start of turn */}
+                  {canCurrentPlayerTrade() && (
+                    <button
+                      onClick={() => setShowCardTrade(true)}
+                      className="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold rounded-lg shadow-lg animate-pulse"
+                    >
+                      🃏 Trade Cards for +{getNextTradeValue()} Animals!
+                    </button>
+                  )}
+                  {troopsToPlace > 0 && (
+                    <div className="space-y-2">
+                      <div className="text-center text-yellow-400 font-bold text-sm">
+                        Click to place {troopsToPlace} animals
+                      </div>
+                      <div className="text-center text-gray-400 text-xs">
+                        Double-click or Shift+click to place ALL
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Legend */}
-              <div className="mt-4 bg-white/10 backdrop-blur rounded-xl p-3">
-                <div className="flex flex-wrap justify-center gap-4">
-                  {players.map(p => (
-                    <div key={p.id} className="flex items-center gap-2">
-                      <span className="text-xl">{ANIMAL_ARMIES[p.army].emoji}</span>
-                      <span className="text-white text-sm">{ANIMAL_ARMIES[p.army].name}: {p.territories} zones</span>
+              {turnPhase === 'attack' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  <button onClick={endTurn} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                    ✅ End Turn
+                  </button>
+                  <button onClick={endPhase} className="w-full py-1.5 bg-blue-500/80 hover:bg-blue-600 text-white rounded text-sm">
+                    Fortify →
+                  </button>
+                </div>
+              )}
+
+              {turnPhase === 'fortify' && !currentPlayer?.isAI && (
+                <div className="space-y-2">
+                  <div className="text-gray-400 text-xs text-center">Optional: move animals</div>
+                  <button onClick={endPhase} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                    ✅ End Turn
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Your Cards */}
+            {!currentPlayer?.isAI && playerCards[currentPlayer?.army]?.length > 0 && (
+              <div className="bg-gradient-to-b from-amber-700 to-amber-800 rounded-lg p-3 border border-amber-600">
+                <div className="text-amber-100 font-bold text-sm mb-2">🃏 Your Cards ({playerCards[currentPlayer?.army]?.length})</div>
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {playerCards[currentPlayer?.army]?.map((card, idx) => (
+                    <div key={idx} className={`px-2 py-1 rounded text-xs font-bold text-white ${
+                      card.type === 'infantry' ? 'bg-green-600' :
+                      card.type === 'cavalry' ? 'bg-blue-600' :
+                      card.type === 'artillery' ? 'bg-red-600' : 'bg-yellow-500 text-black'
+                    }`}>
+                      {card.type === 'infantry' ? '🐾' : card.type === 'cavalry' ? '🦓' : card.type === 'artillery' ? '🐘' : '🌟'}
                     </div>
                   ))}
                 </div>
+                <div className="text-amber-200 text-xs">
+                  Trade 3 matching OR 1 of each type
+                </div>
+                {canCurrentPlayerTrade() && turnPhase === 'reinforce' && (
+                  <button
+                    onClick={() => setShowCardTrade(true)}
+                    className="w-full mt-2 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded text-sm"
+                  >
+                    Trade for +{getNextTradeValue()} 🐾
+                  </button>
+                )}
               </div>
-            </div>
+            )}
 
-            {/* Right Panel - Other Players */}
-            <div className="lg:col-span-1 space-y-3">
-              <div className="text-white font-bold mb-2">Other Players</div>
-              {players.filter((p, i) => i !== currentPlayerIndex).map(p => (
-                <div key={p.id} className={`bg-white/10 backdrop-blur rounded-xl p-3`}>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{ANIMAL_ARMIES[p.army].emoji}</span>
-                    <div className="flex-1">
-                      <div className="text-white font-semibold flex items-center gap-2">
-                        {p.name}
-                        <span className={`text-xs px-1 rounded ${p.isAI ? 'bg-blue-500' : 'bg-green-500'}`}>
-                          {p.isAI ? '🤖' : '👤'}
-                        </span>
-                      </div>
-                      <div className="text-gray-300 text-sm">{p.territories} zones • {getPlayerTroops(p.army)} troops</div>
-                    </div>
-                  </div>
-                  {playerCards[p.army]?.length > 0 && (
-                    <div className="text-yellow-300 text-sm mt-1">🃏 {playerCards[p.army].length} cards</div>
-                  )}
+            {/* Other Players */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-white font-bold text-sm mb-2">All Players</div>
+              {players.map((p, i) => (
+                <div key={p.id} className={`flex items-center gap-2 py-1.5 px-2 rounded mb-1 ${i === currentPlayerIndex ? 'bg-gray-600' : 'bg-gray-800'}`}>
+                  <span className="text-xl">{ANIMAL_ARMIES[p.army].emoji}</span>
+                  <span className="text-white flex-1 text-sm">{p.name}</span>
+                  <span className="text-gray-400 text-sm">{p.territories}</span>
+                  {p.isAI && <span className="text-blue-400 text-xs">🤖</span>}
+                  {playerCards[p.army]?.length > 0 && <span className="text-yellow-400 text-xs">🃏{playerCards[p.army].length}</span>}
                 </div>
               ))}
+            </div>
 
-              {/* Region Legend */}
-              <RegionLegend />
-
-              {/* Card Trading Info */}
-              <div className="bg-amber-100 rounded-xl p-4 mt-3">
-                <div className="font-bold text-amber-800 mb-2">🃏 Card Trading</div>
-                <div className="text-xs space-y-1 text-gray-700">
-                  <div className="flex items-center gap-1">
-                    <span className="bg-green-500 text-white px-1 rounded">🐾</span>
-                    <span className="bg-blue-500 text-white px-1 rounded">🦓</span>
-                    <span className="bg-red-500 text-white px-1 rounded">🐘</span>
-                    <span className="bg-yellow-500 text-white px-1 rounded">🌟</span>
-                  </div>
-                  <div className="mt-2"><span className="font-bold">Trade 3 cards:</span></div>
-                  <div>• 3 of same type, OR</div>
-                  <div>• 1 of each type</div>
-                  <div className="mt-1 text-amber-600 font-semibold">🌟 Wild = any type!</div>
-                  <div className="mt-2 text-green-700">Next trade: +{getNextTradeValue()} animals</div>
+            {/* Region Legend */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-white font-bold text-sm mb-2">Regions</div>
+              {Object.entries(REGIONS).map(([name, region]) => (
+                <div key={name} className="flex items-center gap-2 py-0.5 text-sm">
+                  <div className="w-3 h-3 rounded" style={{backgroundColor: region.color}}></div>
+                  <span className="text-gray-300 flex-1">{region.emoji} {name}</span>
+                  <span className="text-green-400 font-bold">+{region.bonus}</span>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -2276,9 +2209,10 @@
             <CardTradeModal
               cards={playerCards[currentPlayer.army] || []}
               onTrade={handleCardTrade}
-              onCancel={() => setShowCardTrade(false)}
+              onCancel={() => { setShowCardTrade(false); setMustTradeCards(false); }}
               tradeCount={tradeCount}
               nextTradeValue={getNextTradeValue()}
+              mustTrade={mustTradeCards}
             />
           )}
         </div>

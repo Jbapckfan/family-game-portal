@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="description" content="Symbiosis - A dual-world physics puzzle where two souls must cooperate across dimensions to reunite.">
+    <meta name="theme-color" content="#0a0f1c">
+    <meta property="og:title" content="Symbiosis - Dual World Puzzle">
+    <meta property="og:description" content="Guide Sol and Luna through parallel dimensions in this physics puzzle game.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Symbiosis">
     <title>Symbiosis</title>
     <style>
         * {
@@ -17,7 +24,7 @@
             touch-action: none;
             overscroll-behavior: none;
         }
-        
+
         body {
             background: #000;
             color: #fff;
@@ -27,33 +34,33 @@
             width: 100%;
             height: 100%;
         }
-        
+
         #gameContainer {
             width: 100%;
             height: 100%;
             position: relative;
             background: #000;
         }
-        
+
         .world {
             position: absolute;
             width: 100%;
             height: 50%;
             overflow: hidden;
         }
-        
+
         #solWorld {
             top: 0;
             background: linear-gradient(180deg, #2a1a3e 0%, #0f0f23 100%);
             border-bottom: 1px solid rgba(255, 107, 53, 0.5);
         }
-        
+
         #lunaWorld {
             bottom: 0;
             background: linear-gradient(180deg, #0f1e3a 0%, #1a2f4a 100%);
             border-top: 1px solid rgba(74, 158, 218, 0.5);
         }
-        
+
         canvas {
             position: absolute;
             top: 0;
@@ -61,7 +68,7 @@
             width: 100%;
             height: 100%;
         }
-        
+
         #startScreen {
             position: absolute;
             top: 0;
@@ -76,7 +83,7 @@
             z-index: 2000;
             transition: opacity 0.5s;
         }
-        
+
         #startScreen h1 {
             font-size: 60px;
             font-weight: 200;
@@ -87,14 +94,14 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
+
         #startScreen p {
             font-size: 14px;
-            opacity: 0.6;
+            opacity: 0.8;
             margin: 10px 0;
             letter-spacing: 2px;
         }
-        
+
         #startButton {
             margin-top: 40px;
             padding: 15px 40px;
@@ -107,32 +114,32 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        
+
         #startButton:active {
             transform: scale(0.95);
         }
-        
+
         .ui-text {
             position: absolute;
             font-size: 11px;
-            opacity: 0.4;
+            opacity: 0.75;
             letter-spacing: 1px;
             pointer-events: none;
             z-index: 100;
         }
-        
+
         #solHint {
-            top: 10px;
-            right: 10px;
+            top: calc(10px + env(safe-area-inset-top));
+            right: calc(10px + env(safe-area-inset-right));
             color: #ff9558;
         }
-        
+
         #lunaHint {
-            bottom: 10px;
-            right: 10px;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            right: calc(10px + env(safe-area-inset-right));
             color: #66ccff;
         }
-        
+
         #proximityIndicator {
             position: absolute;
             top: 50%;
@@ -146,7 +153,7 @@
             z-index: 500;
             letter-spacing: 3px;
         }
-        
+
         #levelComplete {
             position: absolute;
             top: 50%;
@@ -160,20 +167,21 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-        
+
         #levelComplete.show {
             transform: translate(-50%, -50%) scale(1);
         }
-        
+
         #levelComplete h2 {
             color: #9966ff;
             margin-bottom: 20px;
             letter-spacing: 3px;
         }
-        
+
         #levelComplete button {
             margin-top: 20px;
             padding: 12px 30px;
+            min-height: 44px;
             background: linear-gradient(135deg, #ff6b35, #4a9eda);
             border: none;
             color: white;
@@ -182,6 +190,19 @@
             letter-spacing: 2px;
             cursor: pointer;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+
+        button:focus-visible, #startButton:focus-visible {
+          outline: 2px solid #fff;
+          outline-offset: 4px;
+        }
     </style>
 </head>
 <body>
@@ -189,32 +210,35 @@
         <div id="startScreen">
             <h1>SYMBIOSIS</h1>
             <p>Two souls. Two dimensions. One destiny.</p>
-            <p style="font-size: 12px; opacity: 0.4;">Touch to attract • Drag to guide</p>
+            <p style="font-size: 12px; opacity: 0.7;">Touch to attract • Drag to guide</p>
             <button id="startButton" onclick="startGame()">BEGIN</button>
         </div>
-        
+
         <div id="solWorld" class="world">
             <canvas id="bgCanvasSol"></canvas>
             <canvas id="gameCanvasSol"></canvas>
             <div id="solHint" class="ui-text">DRAG SOL</div>
         </div>
-        
+
         <div id="lunaWorld" class="world">
             <canvas id="bgCanvasLuna"></canvas>
             <canvas id="gameCanvasLuna"></canvas>
             <div id="lunaHint" class="ui-text">TOUCH TO ATTRACT LUNA</div>
         </div>
-        
+
         <div id="proximityIndicator">RESONANCE</div>
-        
+
         <div id="levelComplete">
             <h2>HARMONIZED</h2>
             <p>Sol and Luna are reunited</p>
-            <button onclick="nextLevel()">CONTINUE</button>
+            <button onclick="nextLevel()">PLAY AGAIN</button>
         </div>
     </div>
-    
+
     <script>
+        // Fix 7: Reduced motion preference check
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // Game state
         const game = {
             sol: {
@@ -261,7 +285,7 @@
                 luna: []
             }
         };
-        
+
         // Canvas references
         const canvases = {
             solGame: null,
@@ -273,53 +297,84 @@
             lunaCtx: null,
             lunaBgCtx: null
         };
-        
+
         // Input state
         const input = {
             solDragging: false,
             lunaTouch: { x: -1, y: -1, active: false }
         };
-        
+
+        // Fix 8: Canvas error handling
         function initCanvases() {
             canvases.solGame = document.getElementById('gameCanvasSol');
             canvases.solBg = document.getElementById('bgCanvasSol');
             canvases.lunaGame = document.getElementById('gameCanvasLuna');
             canvases.lunaBg = document.getElementById('bgCanvasLuna');
-            
+
             canvases.solCtx = canvases.solGame.getContext('2d');
+            if (!canvases.solCtx) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;background:#0a0f1c;font-family:sans-serif;text-align:center;padding:2rem"><div><h2>Canvas Not Supported</h2><p>Your browser does not support the canvas element required for this game.</p></div></div>';
+                return;
+            }
             canvases.solBgCtx = canvases.solBg.getContext('2d');
+            if (!canvases.solBgCtx) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;background:#0a0f1c;font-family:sans-serif;text-align:center;padding:2rem"><div><h2>Canvas Not Supported</h2><p>Your browser does not support the canvas element required for this game.</p></div></div>';
+                return;
+            }
             canvases.lunaCtx = canvases.lunaGame.getContext('2d');
+            if (!canvases.lunaCtx) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;background:#0a0f1c;font-family:sans-serif;text-align:center;padding:2rem"><div><h2>Canvas Not Supported</h2><p>Your browser does not support the canvas element required for this game.</p></div></div>';
+                return;
+            }
             canvases.lunaBgCtx = canvases.lunaBg.getContext('2d');
-            
+            if (!canvases.lunaBgCtx) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;background:#0a0f1c;font-family:sans-serif;text-align:center;padding:2rem"><div><h2>Canvas Not Supported</h2><p>Your browser does not support the canvas element required for this game.</p></div></div>';
+                return;
+            }
+
             resizeCanvases();
         }
-        
+
+        // Fix 1: DPI scaling in resizeCanvases
         function resizeCanvases() {
-            const width = window.innerWidth;
-            const height = window.innerHeight / 2;
-            
-            [canvases.solGame, canvases.solBg, canvases.lunaGame, canvases.lunaBg].forEach(canvas => {
-                if (canvas) {
-                    canvas.width = width;
-                    canvas.height = height;
+            const dpr = window.devicePixelRatio || 1;
+            const w = window.innerWidth;
+            const h = window.innerHeight / 2;
+
+            [canvases.solBg, canvases.solGame].forEach(c => {
+                if (c) {
+                    c.width = w * dpr;
+                    c.height = h * dpr;
+                    c.style.width = w + 'px';
+                    c.style.height = h + 'px';
+                    c.getContext('2d').scale(dpr, dpr);
+                }
+            });
+            [canvases.lunaBg, canvases.lunaGame].forEach(c => {
+                if (c) {
+                    c.width = w * dpr;
+                    c.height = h * dpr;
+                    c.style.width = w + 'px';
+                    c.style.height = h + 'px';
+                    c.getContext('2d').scale(dpr, dpr);
                 }
             });
         }
-        
+
         function startGame() {
             const startScreen = document.getElementById('startScreen');
             startScreen.style.opacity = '0';
             setTimeout(() => {
                 startScreen.style.display = 'none';
             }, 500);
-            
+
             initCanvases();
             initParallaxLayers();
             setupControls();
             game.gameStarted = true;
             requestAnimationFrame(gameLoop);
         }
-        
+
         function initParallaxLayers() {
             // Create parallax layers for depth
             for (let i = 0; i < 3; i++) {
@@ -328,13 +383,13 @@
                     speed: 0.2 + i * 0.1,
                     opacity: 0.05 + i * 0.02
                 });
-                
+
                 game.parallaxLayers.luna.push({
                     shapes: [],
                     speed: 0.2 + i * 0.1,
                     opacity: 0.05 + i * 0.02
                 });
-                
+
                 // Generate random shapes for each layer
                 for (let j = 0; j < 10; j++) {
                     game.parallaxLayers.sol[i].shapes.push({
@@ -343,7 +398,7 @@
                         size: 20 + Math.random() * 40,
                         rotation: Math.random() * Math.PI * 2
                     });
-                    
+
                     game.parallaxLayers.luna[i].shapes.push({
                         x: Math.random() * canvases.lunaGame.width,
                         y: Math.random() * canvases.lunaGame.height,
@@ -353,56 +408,63 @@
                 }
             }
         }
-        
+
         function setupControls() {
             // Sol controls - drag to move
             canvases.solGame.addEventListener('mousedown', handleSolStart);
             canvases.solGame.addEventListener('mousemove', handleSolMove);
             canvases.solGame.addEventListener('mouseup', handleSolEnd);
-            canvases.solGame.addEventListener('touchstart', handleSolStart);
-            canvases.solGame.addEventListener('touchmove', handleSolMove);
-            canvases.solGame.addEventListener('touchend', handleSolEnd);
-            
+            // Fix 5: passive: false for touch events
+            canvases.solGame.addEventListener('touchstart', handleSolStart, { passive: false });
+            canvases.solGame.addEventListener('touchmove', handleSolMove, { passive: false });
+            canvases.solGame.addEventListener('touchend', handleSolEnd, { passive: false });
+
             // Luna controls - touch to attract
             canvases.lunaGame.addEventListener('mousedown', handleLunaStart);
             canvases.lunaGame.addEventListener('mousemove', handleLunaMove);
             canvases.lunaGame.addEventListener('mouseup', handleLunaEnd);
-            canvases.lunaGame.addEventListener('touchstart', handleLunaStart);
-            canvases.lunaGame.addEventListener('touchmove', handleLunaMove);
-            canvases.lunaGame.addEventListener('touchend', handleLunaEnd);
-            
-            window.addEventListener('resize', resizeCanvases);
+            // Fix 5: passive: false for touch events
+            canvases.lunaGame.addEventListener('touchstart', handleLunaStart, { passive: false });
+            canvases.lunaGame.addEventListener('touchmove', handleLunaMove, { passive: false });
+            canvases.lunaGame.addEventListener('touchend', handleLunaEnd, { passive: false });
+
+            // Fix 4: Debounced resize listener
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(resizeCanvases, 200);
+            });
         }
-        
+
         function handleSolStart(e) {
             e.preventDefault();
             const rect = canvases.solGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
             const x = (touch.clientX - rect.left) * (canvases.solGame.width / rect.width);
             const y = (touch.clientY - rect.top) * (canvases.solGame.height / rect.height);
-            
+
             // Check if clicking on Sol
             const dist = Math.hypot(x - game.sol.x, y - game.sol.y);
             if (dist < game.sol.radius * 2) {
                 input.solDragging = true;
             }
         }
-        
+
         function handleSolMove(e) {
             if (!input.solDragging) return;
             e.preventDefault();
-            
+
             const rect = canvases.solGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
             game.sol.targetX = (touch.clientX - rect.left) * (canvases.solGame.width / rect.width);
             game.sol.targetY = (touch.clientY - rect.top) * (canvases.solGame.height / rect.height);
         }
-        
+
         function handleSolEnd(e) {
             e.preventDefault();
             input.solDragging = false;
         }
-        
+
         function handleLunaStart(e) {
             e.preventDefault();
             input.lunaTouch.active = true;
@@ -411,54 +473,54 @@
             input.lunaTouch.x = (touch.clientX - rect.left) * (canvases.lunaGame.width / rect.width);
             input.lunaTouch.y = (touch.clientY - rect.top) * (canvases.lunaGame.height / rect.height);
         }
-        
+
         function handleLunaMove(e) {
             if (!input.lunaTouch.active) return;
             e.preventDefault();
-            
+
             const rect = canvases.lunaGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
             input.lunaTouch.x = (touch.clientX - rect.left) * (canvases.lunaGame.width / rect.width);
             input.lunaTouch.y = (touch.clientY - rect.top) * (canvases.lunaGame.height / rect.height);
         }
-        
+
         function handleLunaEnd(e) {
             e.preventDefault();
             input.lunaTouch.active = false;
         }
-        
+
         function update(deltaTime) {
             if (!game.gameStarted) return;
-            
+
             game.animTime += deltaTime;
-            
+
             // Update Sol with momentum physics
             const solAccel = 0.5;
             const solFriction = 0.85;
-            
+
             const dx = game.sol.targetX - game.sol.x;
             const dy = game.sol.targetY - game.sol.y;
-            
+
             game.sol.vx += dx * solAccel * deltaTime;
             game.sol.vy += dy * solAccel * deltaTime;
             const solFrictionDt = Math.pow(solFriction, deltaTime * 60);
             game.sol.vx *= solFrictionDt;
             game.sol.vy *= solFrictionDt;
-            
+
             game.sol.x += game.sol.vx;
             game.sol.y += game.sol.vy;
-            
+
             // Keep Sol in bounds
             game.sol.x = Math.max(game.sol.radius, Math.min(canvases.solGame.width - game.sol.radius, game.sol.x));
             game.sol.y = Math.max(game.sol.radius, Math.min(canvases.solGame.height - game.sol.radius, game.sol.y));
-            
+
             // Update Luna with magnetic attraction
             if (input.lunaTouch.active) {
                 const lunaAccel = 0.3;
                 const dx = input.lunaTouch.x - game.luna.x;
                 const dy = input.lunaTouch.y - game.luna.y;
                 const dist = Math.hypot(dx, dy);
-                
+
                 if (dist > 5) {
                     // Stronger attraction when farther away
                     const force = Math.min(1, dist / 200) * lunaAccel;
@@ -466,16 +528,16 @@
                     game.luna.vy += (dy / dist) * force * deltaTime * 60;
                 }
             }
-            
+
             // Luna physics with ice sliding
             const lunaFriction = 0.94; // Less friction = more sliding
             const lunaFrictionDt = Math.pow(lunaFriction, deltaTime * 60);
             game.luna.vx *= lunaFrictionDt;
             game.luna.vy *= lunaFrictionDt;
-            
+
             game.luna.x += game.luna.vx;
             game.luna.y += game.luna.vy;
-            
+
             // Keep Luna in bounds with bounce
             if (game.luna.x < game.luna.radius || game.luna.x > canvases.lunaGame.width - game.luna.radius) {
                 game.luna.vx *= -0.5;
@@ -485,15 +547,15 @@
                 game.luna.vy *= -0.5;
                 game.luna.y = Math.max(game.luna.radius, Math.min(canvases.lunaGame.height - game.luna.radius, game.luna.y));
             }
-            
+
             // Update trails
             updateTrail(game.sol, deltaTime);
             updateTrail(game.luna, deltaTime);
-            
+
             // Calculate proximity magnetism
             const proximityDist = Math.hypot(game.sol.x - game.luna.x, game.sol.y - game.luna.y);
             game.proximityPower = Math.max(0, 1 - proximityDist / 200);
-            
+
             if (game.proximityPower > 0.5) {
                 // Time dilation effect
                 const slowFactor = 0.5 + (1 - game.proximityPower) * 0.5;
@@ -502,13 +564,13 @@
                 game.sol.vy *= slowFactorDt;
                 game.luna.vx *= slowFactorDt;
                 game.luna.vy *= slowFactorDt;
-                
+
                 // Screen shake
                 game.screenShake.power = game.proximityPower * 2;
-                
+
                 // Show proximity indicator
                 document.getElementById('proximityIndicator').style.opacity = game.proximityPower;
-                
+
                 // Create dimensional tear
                 if (Math.random() < game.proximityPower * 0.1) {
                     game.dimensionalTears.push({
@@ -521,18 +583,18 @@
             } else {
                 document.getElementById('proximityIndicator').style.opacity = 0;
             }
-            
+
             // Update dimensional tears
             game.dimensionalTears = game.dimensionalTears.filter(tear => {
                 tear.life -= deltaTime * 0.5;
                 return tear.life > 0;
             });
-            
+
             // Generate wind from Luna's movement
             const lunaSpeed = Math.hypot(game.luna.vx, game.luna.vy);
             game.windPower = lunaSpeed * 2;
             game.windAngle = Math.atan2(game.luna.vy, game.luna.vx);
-            
+
             // Create wind particles
             if (game.windPower > 1 && Math.random() < 0.3) {
                 for (let i = 0; i < 3; i++) {
@@ -546,7 +608,7 @@
                     });
                 }
             }
-            
+
             // Update wind particles
             game.windParticles = game.windParticles.filter(p => {
                 p.x += p.vx * deltaTime * 60;
@@ -557,36 +619,36 @@
                 p.life -= deltaTime;
                 return p.life > 0;
             });
-            
+
             // Update windmill
             game.windmillRotation += game.windPower * deltaTime * 2;
-            
+
             // Extend bridge based on windmill
             if (game.windPower > 2) {
                 game.bridgeExtension = Math.min(1, game.bridgeExtension + deltaTime);
             } else {
                 game.bridgeExtension = Math.max(0, game.bridgeExtension - deltaTime * 0.5);
             }
-            
+
             // Check heat plate collision
             const heatPlateX = canvases.solGame.width - 100;
             const heatPlateY = canvases.solGame.height / 2;
             const heatDist = Math.hypot(game.sol.x - heatPlateX, game.sol.y - heatPlateY);
             game.heatActive = heatDist < 60;
-            
+
             if (game.heatActive) {
                 game.heatPower = Math.min(1, game.heatPower + deltaTime * 2);
             } else {
                 game.heatPower = Math.max(0, game.heatPower - deltaTime);
             }
-            
+
             // Melt ice based on heat
             if (game.heatPower > 0) {
                 game.iceAlpha = Math.max(0, game.iceAlpha - game.heatPower * deltaTime);
             } else {
                 game.iceAlpha = Math.min(1, game.iceAlpha + deltaTime * 0.3);
             }
-            
+
             // Add frost patterns where Luna touches
             if (lunaSpeed < 1 && Math.random() < 0.05) {
                 game.luna.frostPatterns.push({
@@ -597,14 +659,14 @@
                     growth: 0
                 });
             }
-            
+
             // Update frost patterns
             game.luna.frostPatterns = game.luna.frostPatterns.filter(frost => {
                 frost.growth = Math.min(1, frost.growth + deltaTime * 0.5);
                 frost.life -= deltaTime * 0.1;
                 return frost.life > 0;
             });
-            
+
             // Character squash and stretch (lerp factor 0.2 per frame at 60fps)
             const lerpFactor = 1 - Math.pow(1 - 0.2, deltaTime * 60);
             const solSpeed = Math.hypot(game.sol.vx, game.sol.vy);
@@ -617,25 +679,37 @@
             const targetScaleYLuna = 1 - lunaSpeed * 0.03;
             game.luna.scaleX += (targetScaleXLuna - game.luna.scaleX) * lerpFactor;
             game.luna.scaleY += (targetScaleYLuna - game.luna.scaleY) * lerpFactor;
-            
+
             // Update screen shake
+            // Fix 7: Skip shake for reduced motion preference
             if (game.screenShake.power > 0) {
-                game.screenShake.x = (Math.random() - 0.5) * game.screenShake.power;
-                game.screenShake.y = (Math.random() - 0.5) * game.screenShake.power;
-                game.screenShake.power *= Math.pow(0.9, deltaTime * 60);
+                if (prefersReducedMotion) {
+                    game.screenShake.x = 0;
+                    game.screenShake.y = 0;
+                    game.screenShake.power = 0;
+                } else {
+                    game.screenShake.x = (Math.random() - 0.5) * game.screenShake.power;
+                    game.screenShake.y = (Math.random() - 0.5) * game.screenShake.power;
+                    game.screenShake.power *= Math.pow(0.9, deltaTime * 60);
+                }
             }
-            
+
             // Check win condition
             const exitX = canvases.solGame.width - 40;
             const exitY = 40;
             const solAtExit = Math.hypot(game.sol.x - exitX, game.sol.y - exitY) < 30;
             const lunaAtExit = Math.hypot(game.luna.x - exitX, game.luna.y - exitY) < 30;
-            
+
+            // Fix 9: Feedback when at exit but ice not melted
             if (solAtExit && lunaAtExit && game.iceAlpha < 0.1) {
                 document.getElementById('levelComplete').classList.add('show');
+            } else if (solAtExit && lunaAtExit && game.iceAlpha >= 0.1) {
+                // Show hint about ice
+                document.getElementById('proximityIndicator').textContent = 'MELT THE ICE BARRIER';
+                document.getElementById('proximityIndicator').style.opacity = '1';
             }
         }
-        
+
         function updateTrail(character, deltaTime) {
             // Add current position to trail
             character.trail.push({
@@ -649,27 +723,32 @@
                 point.life -= 1.2 * deltaTime;
                 return point.life > 0;
             });
-            
+
             // Limit trail length
             if (character.trail.length > 30) {
                 character.trail.shift();
             }
         }
-        
+
         function renderSolWorld() {
             const ctx = canvases.solCtx;
             const bgCtx = canvases.solBgCtx;
             const width = canvases.solGame.width;
             const height = canvases.solGame.height;
-            
+
+            // Fix 2: Periodic full clear to prevent ghosting
+            game.frameCount = (game.frameCount || 0) + 1;
+            if (game.frameCount % 60 === 0) {
+                ctx.clearRect(0, 0, canvases.solGame.width, canvases.solGame.height);
+            }
             // Clear with subtle fade for motion blur
-            ctx.fillStyle = 'rgba(15, 15, 35, 0.1)';
+            ctx.fillStyle = 'rgba(15, 15, 35, 0.15)';
             ctx.fillRect(0, 0, width, height);
-            
+
             // Apply screen shake
             ctx.save();
             ctx.translate(game.screenShake.x, game.screenShake.y);
-            
+
             // Render parallax background
             bgCtx.clearRect(0, 0, width, height);
             game.parallaxLayers.sol.forEach(layer => {
@@ -682,7 +761,7 @@
                     bgCtx.restore();
                 });
             });
-            
+
             // Draw chasm
             const gradient = ctx.createLinearGradient(200, 0, 600, 0);
             gradient.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
@@ -690,11 +769,11 @@
             gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
             ctx.fillStyle = gradient;
             ctx.fillRect(200, 0, 400, height);
-            
+
             // Draw bridge with glow
             if (game.bridgeExtension > 0) {
                 const bridgeWidth = 400 * game.bridgeExtension;
-                
+
                 // Bridge glow
                 const glow = ctx.createRadialGradient(
                     200 + bridgeWidth/2, height/2, 0,
@@ -704,11 +783,11 @@
                 glow.addColorStop(1, 'rgba(255, 107, 53, 0)');
                 ctx.fillStyle = glow;
                 ctx.fillRect(180, height/2 - 40, bridgeWidth + 40, 80);
-                
+
                 // Bridge body
                 ctx.fillStyle = `rgba(255, 140, 60, ${0.6 + Math.sin(game.animTime * 5) * 0.1})`;
                 ctx.fillRect(200, height/2 - 20, bridgeWidth, 40);
-                
+
                 // Energy lines
                 ctx.strokeStyle = '#ffaa55';
                 ctx.lineWidth = 2;
@@ -719,11 +798,11 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
             }
-            
+
             // Draw windmill with dynamic rotation
             ctx.save();
             ctx.translate(100, 100);
-            
+
             // Windmill glow
             if (game.windPower > 0) {
                 const glowRadius = 30 + game.windPower * 10;
@@ -733,7 +812,7 @@
                 ctx.fillStyle = windGlow;
                 ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
             }
-            
+
             ctx.rotate(game.windmillRotation);
             for (let i = 0; i < 4; i++) {
                 ctx.rotate(Math.PI / 2);
@@ -746,11 +825,11 @@
                 ctx.fill();
             }
             ctx.restore();
-            
+
             // Draw heat plate
             const heatX = width - 100;
             const heatY = height / 2;
-            
+
             if (game.heatPower > 0) {
                 // Heat waves
                 for (let i = 0; i < 3; i++) {
@@ -762,32 +841,32 @@
                     ctx.stroke();
                 }
             }
-            
-            ctx.fillStyle = game.heatActive ? 
-                `rgba(255, 100, 0, ${0.6 + Math.sin(game.animTime * 10) * 0.2})` : 
+
+            ctx.fillStyle = game.heatActive ?
+                `rgba(255, 100, 0, ${0.6 + Math.sin(game.animTime * 10) * 0.2})` :
                 'rgba(150, 50, 0, 0.3)';
             ctx.fillRect(heatX - 40, heatY - 30, 80, 60);
-            
+
             // Draw exit portal
             const exitX = width - 40;
             const exitY = 40;
-            
+
             ctx.strokeStyle = `rgba(255, 107, 53, ${0.5 + Math.sin(game.animTime * 3) * 0.3})`;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(exitX, exitY, 25, game.animTime, game.animTime + Math.PI * 1.8);
             ctx.stroke();
-            
+
             // Draw Sol's burning trail
             ctx.lineCap = 'round';
             game.sol.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.sol.trail[index - 1];
-                
+
                 const gradient = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
                 gradient.addColorStop(0, `rgba(255, 150, 50, ${prev.life * 0.5})`);
                 gradient.addColorStop(1, `rgba(255, 100, 0, ${point.life * 0.3})`);
-                
+
                 ctx.strokeStyle = gradient;
                 ctx.lineWidth = point.life * 8;
                 ctx.beginPath();
@@ -795,36 +874,36 @@
                 ctx.lineTo(point.x, point.y);
                 ctx.stroke();
             });
-            
+
             // Draw Sol with squash/stretch
             ctx.save();
             ctx.translate(game.sol.x, game.sol.y);
             ctx.scale(game.sol.scaleX, game.sol.scaleY);
-            
+
             // Sol glow
             const solGlow = ctx.createRadialGradient(0, 0, 0, 0, 0, game.sol.radius * 2);
             solGlow.addColorStop(0, '#ffdd00');
             solGlow.addColorStop(0.5, '#ff9900');
             solGlow.addColorStop(1, 'rgba(255, 107, 53, 0.3)');
-            
+
             ctx.fillStyle = solGlow;
             ctx.beginPath();
             ctx.arc(0, 0, game.sol.radius, 0, Math.PI * 2);
             ctx.fill();
-            
+
             // Sol core
             ctx.fillStyle = '#fff';
             ctx.beginPath();
             ctx.arc(0, 0, game.sol.radius * 0.3, 0, Math.PI * 2);
             ctx.fill();
-            
+
             ctx.restore();
-            
+
             // Draw dimensional tears in Sol's world
             game.dimensionalTears.forEach(tear => {
                 ctx.save();
                 ctx.globalAlpha = tear.life;
-                
+
                 const tearGradient = ctx.createRadialGradient(
                     tear.x, tear.y / 2, 0,
                     tear.x, tear.y / 2, tear.size
@@ -832,29 +911,34 @@
                 tearGradient.addColorStop(0, '#ff00ff');
                 tearGradient.addColorStop(0.5, '#9966ff');
                 tearGradient.addColorStop(1, 'rgba(153, 102, 255, 0)');
-                
+
                 ctx.fillStyle = tearGradient;
                 ctx.fillRect(tear.x - tear.size, tear.y / 2 - tear.size, tear.size * 2, tear.size * 2);
                 ctx.restore();
             });
-            
+
             ctx.restore();
         }
-        
+
         function renderLunaWorld() {
             const ctx = canvases.lunaCtx;
             const bgCtx = canvases.lunaBgCtx;
             const width = canvases.lunaGame.width;
             const height = canvases.lunaGame.height;
-            
+
+            // Fix 2: Periodic full clear to prevent ghosting
+            game.frameCountLuna = (game.frameCountLuna || 0) + 1;
+            if (game.frameCountLuna % 60 === 0) {
+                ctx.clearRect(0, 0, canvases.lunaGame.width, canvases.lunaGame.height);
+            }
             // Clear with fade
-            ctx.fillStyle = 'rgba(15, 30, 50, 0.1)';
+            ctx.fillStyle = 'rgba(15, 30, 50, 0.15)';
             ctx.fillRect(0, 0, width, height);
-            
+
             // Apply screen shake
             ctx.save();
             ctx.translate(game.screenShake.x, game.screenShake.y);
-            
+
             // Render parallax background
             bgCtx.clearRect(0, 0, width, height);
             game.parallaxLayers.luna.forEach(layer => {
@@ -869,12 +953,12 @@
                     bgCtx.restore();
                 });
             });
-            
+
             // Draw frost patterns
             game.luna.frostPatterns.forEach(frost => {
                 ctx.save();
                 ctx.globalAlpha = frost.life * 0.3;
-                
+
                 const frostGradient = ctx.createRadialGradient(
                     frost.x, frost.y, 0,
                     frost.x, frost.y, frost.size * frost.growth
@@ -882,12 +966,12 @@
                 frostGradient.addColorStop(0, 'rgba(200, 230, 255, 0.5)');
                 frostGradient.addColorStop(0.5, 'rgba(150, 200, 255, 0.3)');
                 frostGradient.addColorStop(1, 'rgba(100, 150, 255, 0)');
-                
+
                 ctx.fillStyle = frostGradient;
                 ctx.beginPath();
                 ctx.arc(frost.x, frost.y, frost.size * frost.growth, 0, Math.PI * 2);
                 ctx.fill();
-                
+
                 // Draw crystalline structure
                 ctx.strokeStyle = `rgba(200, 230, 255, ${frost.life * 0.5})`;
                 ctx.lineWidth = 1;
@@ -901,17 +985,17 @@
                     );
                     ctx.stroke();
                 }
-                
+
                 ctx.restore();
             });
-            
+
             // Draw ice wall
             if (game.iceAlpha > 0) {
                 const iceX = width - 120;
-                
+
                 ctx.save();
                 ctx.globalAlpha = game.iceAlpha;
-                
+
                 // Ice gradient
                 const iceGradient = ctx.createLinearGradient(iceX, 0, iceX + 40, 0);
                 iceGradient.addColorStop(0, 'rgba(150, 200, 255, 0.6)');
@@ -919,7 +1003,7 @@
                 iceGradient.addColorStop(1, 'rgba(150, 200, 255, 0.6)');
                 ctx.fillStyle = iceGradient;
                 ctx.fillRect(iceX, 0, 40, height);
-                
+
                 // Ice cracks when melting
                 if (game.iceAlpha < 0.8) {
                     ctx.strokeStyle = `rgba(50, 100, 150, ${1 - game.iceAlpha})`;
@@ -931,15 +1015,15 @@
                         ctx.stroke();
                     }
                 }
-                
+
                 ctx.restore();
             }
-            
+
             // Draw visible wind particles
             game.windParticles.forEach(p => {
                 ctx.save();
                 ctx.globalAlpha = p.life * 0.6;
-                
+
                 // Wind streak
                 const windGradient = ctx.createLinearGradient(
                     p.x - p.vx * 5, p.y - p.vy * 5,
@@ -947,7 +1031,7 @@
                 );
                 windGradient.addColorStop(0, 'rgba(100, 200, 255, 0)');
                 windGradient.addColorStop(1, 'rgba(150, 220, 255, 0.8)');
-                
+
                 ctx.strokeStyle = windGradient;
                 ctx.lineWidth = p.size;
                 ctx.lineCap = 'round';
@@ -955,30 +1039,30 @@
                 ctx.moveTo(p.x - p.vx * 10, p.y - p.vy * 10);
                 ctx.lineTo(p.x, p.y);
                 ctx.stroke();
-                
+
                 ctx.restore();
             });
-            
+
             // Draw exit portal
             const exitX = width - 40;
             const exitY = 40;
-            
+
             ctx.strokeStyle = `rgba(74, 158, 218, ${0.5 + Math.sin(game.animTime * 3 + Math.PI) * 0.3})`;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(exitX, exitY, 25, -game.animTime, -game.animTime + Math.PI * 1.8);
             ctx.stroke();
-            
+
             // Draw Luna's frost trail
             ctx.lineCap = 'round';
             game.luna.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.luna.trail[index - 1];
-                
+
                 const gradient = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
                 gradient.addColorStop(0, `rgba(150, 200, 255, ${prev.life * 0.3})`);
                 gradient.addColorStop(1, `rgba(100, 180, 255, ${point.life * 0.2})`);
-                
+
                 ctx.strokeStyle = gradient;
                 ctx.lineWidth = point.life * 6;
                 ctx.beginPath();
@@ -986,12 +1070,12 @@
                 ctx.lineTo(point.x, point.y);
                 ctx.stroke();
             });
-            
+
             // Draw Luna with squash/stretch
             ctx.save();
             ctx.translate(game.luna.x, game.luna.y);
             ctx.scale(game.luna.scaleX, game.luna.scaleY);
-            
+
             // Luna glow (changes when attracted)
             const lunaGlow = ctx.createRadialGradient(0, 0, 0, 0, 0, game.luna.radius * 2);
             if (input.lunaTouch.active) {
@@ -1004,45 +1088,45 @@
                 lunaGlow.addColorStop(0.5, '#66aaff');
                 lunaGlow.addColorStop(1, 'rgba(74, 158, 218, 0.3)');
             }
-            
+
             ctx.fillStyle = lunaGlow;
             ctx.beginPath();
             ctx.arc(0, 0, game.luna.radius, 0, Math.PI * 2);
             ctx.fill();
-            
+
             // Luna core
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(0, 0, game.luna.radius * 0.3, 0, Math.PI * 2);
             ctx.fill();
-            
+
             ctx.restore();
-            
+
             // Draw touch indicator
             if (input.lunaTouch.active) {
                 ctx.save();
                 ctx.globalAlpha = 0.5;
-                
+
                 const touchGradient = ctx.createRadialGradient(
                     input.lunaTouch.x, input.lunaTouch.y, 0,
                     input.lunaTouch.x, input.lunaTouch.y, 40
                 );
                 touchGradient.addColorStop(0, 'rgba(0, 200, 255, 0.5)');
                 touchGradient.addColorStop(1, 'rgba(0, 150, 255, 0)');
-                
+
                 ctx.fillStyle = touchGradient;
                 ctx.beginPath();
                 ctx.arc(input.lunaTouch.x, input.lunaTouch.y, 40, 0, Math.PI * 2);
                 ctx.fill();
-                
+
                 ctx.restore();
             }
-            
+
             // Draw dimensional tears in Luna's world
             game.dimensionalTears.forEach(tear => {
                 ctx.save();
                 ctx.globalAlpha = tear.life;
-                
+
                 const tearGradient = ctx.createRadialGradient(
                     tear.x, height - tear.y / 2, 0,
                     tear.x, height - tear.y / 2, tear.size
@@ -1050,18 +1134,18 @@
                 tearGradient.addColorStop(0, '#ff00ff');
                 tearGradient.addColorStop(0.5, '#9966ff');
                 tearGradient.addColorStop(1, 'rgba(153, 102, 255, 0)');
-                
+
                 ctx.fillStyle = tearGradient;
                 ctx.fillRect(tear.x - tear.size, height - tear.y / 2 - tear.size, tear.size * 2, tear.size * 2);
                 ctx.restore();
             });
-            
+
             ctx.restore();
         }
-        
+
         function nextLevel() {
             document.getElementById('levelComplete').classList.remove('show');
-            
+
             // Reset positions
             game.sol.x = 100;
             game.sol.y = 100;
@@ -1070,14 +1154,14 @@
             game.sol.vx = 0;
             game.sol.vy = 0;
             game.sol.trail = [];
-            
+
             game.luna.x = 100;
             game.luna.y = 100;
             game.luna.vx = 0;
             game.luna.vy = 0;
             game.luna.trail = [];
             game.luna.frostPatterns = [];
-            
+
             game.windPower = 0;
             game.windParticles = [];
             game.heatPower = 0;
@@ -1086,22 +1170,26 @@
             game.windmillRotation = 0;
             game.dimensionalTears = [];
         }
-        
+
+        // Fix 6: addEventListener for buttons (in addition to existing onclick)
+        document.getElementById('startButton').addEventListener('click', startGame);
+        document.getElementById('levelComplete').querySelector('button').addEventListener('click', nextLevel);
+
         let lastTime = 0;
         function gameLoop(currentTime) {
             const deltaTime = Math.min((currentTime - lastTime) / 1000, 0.033); // Cap at 30fps minimum
             lastTime = currentTime;
-            
+
             update(deltaTime);
             renderSolWorld();
             renderLunaWorld();
-            
+
             requestAnimationFrame(gameLoop);
         }
-        
+
         // Prevent scrolling
         document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-        window.addEventListener('resize', resizeCanvases);
+        // Fix 3: Removed duplicate resize listener (kept the one in setupControls)
     </script>
 </body>
 </html>

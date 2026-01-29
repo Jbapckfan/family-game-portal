@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Velocity" />
+    <meta name="apple-mobile-web-app-title" content="Marble POV: Velocity" />
     <meta name="theme-color" content="#050505" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="description" content="Marble POV: Velocity - A high-speed 3D marble physics runner with collectibles, power-ups, and unlockable marbles.">
+    <meta property="og:title" content="Marble POV: Velocity">
+    <meta property="og:description" content="A high-speed 3D marble physics runner with collectibles, power-ups, and unlockable marbles.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Marble POV: Velocity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,25 +40,32 @@
         width: 100%;
         height: 100%;
         position: fixed;
-        top: 0;
-        left: 0;
-      }
-      /* Safe area padding for notched devices */
-      @supports (padding: env(safe-area-inset-top)) {
-        body {
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
-          padding-left: env(safe-area-inset-left);
-          padding-right: env(safe-area-inset-right);
-        }
+        top: env(safe-area-inset-top, 0px);
+        left: env(safe-area-inset-left, 0px);
+        right: env(safe-area-inset-right, 0px);
+        bottom: env(safe-area-inset-bottom, 0px);
       }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: #111; }
       ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 3px; }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
     </style>
+    <link rel="modulepreload" href="./assets/index-CsjiDm7H.js">
+    <link rel="manifest" href="./manifest.json">
     <script type="module" crossorigin src="./assets/index-CsjiDm7H.js"></script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050505;color:#00f0ff;font-family:'Rajdhani',sans-serif;text-align:center;padding:20px;">
+        <p>This game requires JavaScript and a WebGL-capable browser to play.</p>
+      </div>
+    </noscript>
   </body>
 </html>

@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="description" content="Spark &amp; Vesper - Two souls, two dimensions, one destiny. A cooperative split-screen experience.">
+    <meta name="theme-color" content="#1a0820">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta property="og:title" content="Spark &amp; Vesper">
+    <meta property="og:description" content="Two souls, two dimensions, one destiny. A cooperative split-screen experience.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Spark & Vesper</title>
     <style>
         * {
@@ -61,8 +68,8 @@
         
         .meter {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: calc(10px + env(safe-area-inset-top));
+            right: calc(10px + env(safe-area-inset-right));
             width: 150px;
             height: 20px;
             background: rgba(0,0,0,0.5);
@@ -91,8 +98,8 @@
             position: absolute;
             top: -20px;
             right: 0;
-            font-size: 10px;
-            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
             letter-spacing: 2px;
             text-transform: uppercase;
         }
@@ -113,10 +120,11 @@
         }
         
         h1 {
-            font-size: 56px;
+            font-size: clamp(28px, 8vw, 56px);
             font-weight: 200;
-            letter-spacing: 10px;
+            letter-spacing: clamp(3px, 1.5vw, 10px);
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .spark-title {
@@ -143,10 +151,17 @@
             letter-spacing: 3px;
             cursor: pointer;
             transition: transform 0.2s;
+            min-height: 44px;
+            min-width: 44px;
         }
         
         #startBtn:active {
             transform: scale(0.95);
+        }
+
+        #startBtn:focus-visible {
+            outline: 3px solid #FFD700;
+            outline-offset: 4px;
         }
         
         #divider {
@@ -174,6 +189,11 @@
                 #9370DB 70%, 
                 transparent);
         }
+        @media (prefers-reduced-motion: reduce) {
+            .meter-fill { transition: none; }
+            #startScreen { transition: none; }
+            #divider { transition: none; }
+        }
     </style>
 </head>
 <body>
@@ -183,8 +203,8 @@
             <span style="color: rgba(255,255,255,0.6);">&amp;</span>
             <span class="vesper-title">VESPER</span>
         </h1>
-        <p style="color: rgba(255,255,255,0.5); margin-bottom: 30px;">Two souls • Two dimensions • One destiny</p>
-        <button id="startBtn">BEGIN JOURNEY</button>
+        <p style="color: rgba(255,255,255,0.7); margin-bottom: 30px;">Two souls • Two dimensions • One destiny</p>
+        <button id="startBtn" aria-label="Start Game">BEGIN JOURNEY</button>
     </div>
     
     <div id="game">
@@ -231,16 +251,20 @@
             particles: [],
             proximityPower: 0,
             started: false,
-            time: 0
+            time: 0,
+            frameCount: 0
         };
-        
+
         // Canvas setup
         let sparkCanvas, vesperCanvas, sparkCtx, vesperCtx;
         let width, height;
 
         // Cached DOM elements (avoid querying every frame)
         let dividerEl, sparkMeterFillEl, vesperMeterFillEl;
-        
+
+        // Accessibility: prefers-reduced-motion JS check
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // Particle System
         class Particle {
             constructor(x, y, type, config = {}) {
@@ -254,12 +278,12 @@
                 this.size = config.size || 3;
                 this.color = config.color || '#FFFFFF';
             }
-            
+
             update(dt) {
                 this.x += this.vx;
                 this.y += this.vy;
                 this.life -= dt * 2;
-                
+
                 if (this.type === 'electric') {
                     // Jittery electric movement
                     this.vx += (Math.random() - 0.5) * 0.5;
@@ -272,14 +296,14 @@
                     this.vx *= 0.98;
                     this.vy *= 0.98;
                 }
-                
+
                 return this.life > 0;
             }
-            
+
             render(ctx) {
                 ctx.save();
                 ctx.globalAlpha = this.life / this.maxLife;
-                
+
                 if (this.type === 'electric') {
                     // Electric spark
                     const gradient = ctx.createRadialGradient(
@@ -291,7 +315,7 @@
                     gradient.addColorStop(1, 'transparent');
                     ctx.fillStyle = gradient;
                     ctx.fillRect(this.x - this.size, this.y - this.size, this.size * 2, this.size * 2);
-                    
+
                     // Random lightning line
                     if (Math.random() < 0.1) {
                         ctx.strokeStyle = this.color;
@@ -314,46 +338,59 @@
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
-                
+
                 ctx.restore();
             }
         }
-        
+
         function init() {
             sparkCanvas = document.getElementById('sparkCanvas');
             vesperCanvas = document.getElementById('vesperCanvas');
             sparkCtx = sparkCanvas.getContext('2d');
             vesperCtx = vesperCanvas.getContext('2d');
+
+            if (!sparkCtx || !vesperCtx) {
+                console.error('Canvas context not available');
+                return;
+            }
+
             dividerEl = document.getElementById('divider');
             sparkMeterFillEl = document.querySelector('#sparkMeter .meter-fill');
             vesperMeterFillEl = document.querySelector('#vesperMeter .meter-fill');
 
             resize();
-            window.addEventListener('resize', resize);
-            
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resize, 200);
+            });
+
             // Controls
             sparkCanvas.addEventListener('touchstart', handleSparkTouch, {passive: false});
             sparkCanvas.addEventListener('touchmove', handleSparkTouch, {passive: false});
             sparkCanvas.addEventListener('mousedown', handleSparkTouch);
             sparkCanvas.addEventListener('mousemove', handleSparkMove);
-            
+
             vesperCanvas.addEventListener('touchstart', handleVesperTouch, {passive: false});
             vesperCanvas.addEventListener('touchmove', handleVesperTouch, {passive: false});
             vesperCanvas.addEventListener('mousedown', handleVesperTouch);
             vesperCanvas.addEventListener('mousemove', handleVesperMove);
-            
+
             document.getElementById('startBtn').addEventListener('click', startGame);
         }
-        
+
         function resize() {
+            const dpr = window.devicePixelRatio || 1;
             width = window.innerWidth;
             height = window.innerHeight / 2;
-            sparkCanvas.width = width;
-            sparkCanvas.height = height;
-            vesperCanvas.width = width;
-            vesperCanvas.height = height;
+            sparkCanvas.width = width * dpr;
+            sparkCanvas.height = height * dpr;
+            vesperCanvas.width = width * dpr;
+            vesperCanvas.height = height * dpr;
+            sparkCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            vesperCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
-        
+
         let sparkDragging = false;
         function handleSparkTouch(e) {
             e.preventDefault();
@@ -362,17 +399,17 @@
             const touch = e.touches ? e.touches[0] : e;
             const x = (touch.clientX - rect.left) * (width / rect.width);
             const y = (touch.clientY - rect.top) * (height / rect.height);
-            
+
             // Direct control for Spark
             game.spark.x = x;
             game.spark.y = y;
         }
-        
+
         function handleSparkMove(e) {
             if (!sparkDragging && e.type === 'mousemove') return;
             handleSparkTouch(e);
         }
-        
+
         function handleVesperTouch(e) {
             e.preventDefault();
             const rect = vesperCanvas.getBoundingClientRect();
@@ -380,15 +417,15 @@
             game.vesper.targetX = (touch.clientX - rect.left) * (width / rect.width);
             game.vesper.targetY = (touch.clientY - rect.top) * (height / rect.height);
         }
-        
+
         function handleVesperMove(e) {
             if (e.buttons === 0 && e.type === 'mousemove') return;
             handleVesperTouch(e);
         }
-        
+
         window.addEventListener('mouseup', () => sparkDragging = false);
         window.addEventListener('touchend', () => sparkDragging = false);
-        
+
         function startGame() {
             if (game.started) return; // Prevent multiple game loops
             document.getElementById('startScreen').style.opacity = '0';
@@ -398,38 +435,40 @@
             game.started = true;
             requestAnimationFrame(gameLoop);
         }
-        
+
         function update(dt) {
             if (!game.started) return;
-            
+
             game.time += dt;
-            
+            game.frameCount++;
+
             // Calculate velocity from position change (using previous frame's position)
             game.spark.vx = game.spark.x - (game.spark.prevX || game.spark.x);
             game.spark.vy = game.spark.y - (game.spark.prevY || game.spark.y);
-            
+
             // Build charge through movement
             const sparkSpeed = Math.sqrt(game.spark.vx * game.spark.vx + game.spark.vy * game.spark.vy);
             game.spark.charge = Math.min(100, game.spark.charge + sparkSpeed * 0.5);
-            game.spark.charge *= 0.98; // Decay
-            
+            game.spark.charge *= Math.pow(0.98, dt * 60); // Framerate-independent decay
+
             // Update Vesper with magnetic attraction
             const dx = game.vesper.targetX - game.vesper.x;
             const dy = game.vesper.targetY - game.vesper.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            
+
             if (dist > 5) {
                 const force = Math.min(1, dist / 100) * 0.4;
                 game.vesper.vx += (dx / dist) * force;
                 game.vesper.vy += (dy / dist) * force;
             }
-            
-            game.vesper.vx *= 0.92; // Friction
-            game.vesper.vy *= 0.92;
-            
+
+            const frictionFactor = Math.pow(0.92, dt * 60);
+            game.vesper.vx *= frictionFactor;
+            game.vesper.vy *= frictionFactor;
+
             game.vesper.x += game.vesper.vx;
             game.vesper.y += game.vesper.vy;
-            
+
             // Build flow through smooth movement
             const vesperSpeed = Math.sqrt(game.vesper.vx * game.vesper.vx + game.vesper.vy * game.vesper.vy);
             if (vesperSpeed > 2) {
@@ -437,30 +476,30 @@
             } else {
                 game.vesper.flow *= 0.95;
             }
-            
+
             // Keep in bounds
             game.spark.x = Math.max(game.spark.radius, Math.min(width - game.spark.radius, game.spark.x));
             game.spark.y = Math.max(game.spark.radius, Math.min(height - game.spark.radius, game.spark.y));
             game.vesper.x = Math.max(game.vesper.radius, Math.min(width - game.vesper.radius, game.vesper.x));
             game.vesper.y = Math.max(game.vesper.radius, Math.min(height - game.vesper.radius, game.vesper.y));
-            
+
             // Update trails
             updateTrail(game.spark, sparkSpeed);
             updateTrail(game.vesper, vesperSpeed);
-            
+
             // Calculate proximity (Euclidean distance)
             const proxDx = game.spark.x - game.vesper.x;
             const proxDy = game.spark.y - game.vesper.y;
             const proxDist = Math.sqrt(proxDx * proxDx + proxDy * proxDy);
             game.proximityPower = Math.max(0, 1 - proxDist / 200);
-            
+
             // Update divider glow based on proximity
             if (game.proximityPower > 0.5) {
                 dividerEl.classList.add('resonating');
             } else {
                 dividerEl.classList.remove('resonating');
             }
-            
+
             // Spawn particles
             if (game.spark.charge > 20 && Math.random() < 0.3) {
                 game.particles.push(new Particle(
@@ -470,7 +509,7 @@
                     { color: '#FFD700', size: 2 + Math.random() * 2 }
                 ));
             }
-            
+
             if (game.vesper.flow > 20 && Math.random() < 0.3) {
                 game.particles.push(new Particle(
                     game.vesper.x + (Math.random() - 0.5) * 20,
@@ -479,15 +518,15 @@
                     { color: '#9370DB', size: 3 + Math.random() * 3 }
                 ));
             }
-            
+
             // Update particles
             game.particles = game.particles.filter(p => p.update(dt));
-            
+
             // Limit particles for performance
             if (game.particles.length > 200) {
                 game.particles = game.particles.slice(-200);
             }
-            
+
             // Store previous positions for next frame's velocity calculation
             game.spark.prevX = game.spark.x;
             game.spark.prevY = game.spark.y;
@@ -496,7 +535,7 @@
             sparkMeterFillEl.style.width = game.spark.charge + '%';
             vesperMeterFillEl.style.width = game.vesper.flow + '%';
         }
-        
+
         function updateTrail(character, speed) {
             if (speed > 0.5) {
                 character.trail.push({
@@ -505,28 +544,34 @@
                     life: 1
                 });
             }
-            
+
             character.trail = character.trail.filter(point => {
                 point.life -= 0.05;
                 return point.life > 0;
             });
-            
+
             if (character.trail.length > 20) {
                 character.trail.shift();
             }
         }
-        
+
         function renderSparkWorld() {
+            // Periodic full clear to prevent ghosting
+            if (game.frameCount % 60 === 0) {
+                sparkCtx.clearRect(0, 0, width, height);
+                sparkCtx.fillStyle = 'rgba(26, 8, 32, 1)';
+                sparkCtx.fillRect(0, 0, width, height);
+            }
             // Subtle fade for motion blur
             sparkCtx.fillStyle = 'rgba(26, 8, 32, 0.1)';
             sparkCtx.fillRect(0, 0, width, height);
-            
+
             // Render Spark's trail
             sparkCtx.lineCap = 'round';
             game.spark.trail.forEach((point, i) => {
                 if (i === 0) return;
                 const prev = game.spark.trail[i - 1];
-                
+
                 sparkCtx.strokeStyle = `rgba(255, 215, 0, ${point.life * 0.5})`;
                 sparkCtx.lineWidth = point.life * 6;
                 sparkCtx.beginPath();
@@ -534,17 +579,17 @@
                 sparkCtx.lineTo(point.x, point.y);
                 sparkCtx.stroke();
             });
-            
+
             // Render electric particles
             game.particles.forEach(p => {
                 if (p.type === 'electric') {
                     p.render(sparkCtx);
                 }
             });
-            
+
             // Render Spark with surge effect
             const surgeScale = 1 + (game.spark.charge / 100) * 0.3;
-            
+
             // Outer glow
             const outerGlow = sparkCtx.createRadialGradient(
                 game.spark.x, game.spark.y, 0,
@@ -554,20 +599,20 @@
             outerGlow.addColorStop(0.3, 'rgba(255, 215, 0, 0.6)');
             outerGlow.addColorStop(0.6, 'rgba(255, 140, 0, 0.3)');
             outerGlow.addColorStop(1, 'transparent');
-            
+
             sparkCtx.fillStyle = outerGlow;
             sparkCtx.beginPath();
             sparkCtx.arc(game.spark.x, game.spark.y, game.spark.radius * 2 * surgeScale, 0, Math.PI * 2);
             sparkCtx.fill();
-            
+
             // Core
             sparkCtx.fillStyle = '#FFFFFF';
             sparkCtx.beginPath();
             sparkCtx.arc(game.spark.x, game.spark.y, game.spark.radius * 0.5, 0, Math.PI * 2);
             sparkCtx.fill();
-            
-            // Electric arcs when charged
-            if (game.spark.charge > 50) {
+
+            // Electric arcs when charged (skip for reduced motion)
+            if (game.spark.charge > 50 && !prefersReducedMotion) {
                 sparkCtx.strokeStyle = `rgba(255, 215, 0, ${game.spark.charge / 200})`;
                 sparkCtx.lineWidth = 1;
                 for (let i = 0; i < 3; i++) {
@@ -577,7 +622,7 @@
                     sparkCtx.moveTo(game.spark.x, game.spark.y);
                     const endX = game.spark.x + Math.cos(angle) * reach;
                     const endY = game.spark.y + Math.sin(angle) * reach;
-                    
+
                     // Lightning path
                     const steps = 5;
                     for (let j = 0; j < steps; j++) {
@@ -590,18 +635,24 @@
                 }
             }
         }
-        
+
         function renderVesperWorld() {
+            // Periodic full clear to prevent ghosting
+            if (game.frameCount % 60 === 0) {
+                vesperCtx.clearRect(0, 0, width, height);
+                vesperCtx.fillStyle = 'rgba(15, 15, 58, 1)';
+                vesperCtx.fillRect(0, 0, width, height);
+            }
             // Subtle fade
             vesperCtx.fillStyle = 'rgba(15, 15, 58, 0.1)';
             vesperCtx.fillRect(0, 0, width, height);
-            
+
             // Render Vesper's trail
             vesperCtx.lineCap = 'round';
             game.vesper.trail.forEach((point, i) => {
                 if (i === 0) return;
                 const prev = game.vesper.trail[i - 1];
-                
+
                 vesperCtx.strokeStyle = `rgba(147, 112, 219, ${point.life * 0.3})`;
                 vesperCtx.lineWidth = point.life * 8;
                 vesperCtx.beginPath();
@@ -609,14 +660,14 @@
                 vesperCtx.lineTo(point.x, point.y);
                 vesperCtx.stroke();
             });
-            
+
             // Render mist particles
             game.particles.forEach(p => {
                 if (p.type === 'mist') {
                     p.render(vesperCtx);
                 }
             });
-            
+
             // Render touch target if active
             if (Math.abs(game.vesper.targetX - game.vesper.x) > 5) {
                 const targetGlow = vesperCtx.createRadialGradient(
@@ -630,10 +681,10 @@
                 vesperCtx.arc(game.vesper.targetX, game.vesper.targetY, 30, 0, Math.PI * 2);
                 vesperCtx.fill();
             }
-            
+
             // Render Vesper with flow effect
             const flowAlpha = game.vesper.flow > 50 ? 0.7 : 1;
-            
+
             // Outer mist
             if (game.vesper.flow > 30) {
                 const mistGlow = vesperCtx.createRadialGradient(
@@ -643,13 +694,13 @@
                 mistGlow.addColorStop(0, 'transparent');
                 mistGlow.addColorStop(0.5, `rgba(147, 112, 219, ${game.vesper.flow / 200})`);
                 mistGlow.addColorStop(1, 'transparent');
-                
+
                 vesperCtx.fillStyle = mistGlow;
                 vesperCtx.beginPath();
                 vesperCtx.arc(game.vesper.x, game.vesper.y, game.vesper.radius * 3, 0, Math.PI * 2);
                 vesperCtx.fill();
             }
-            
+
             // Main body
             vesperCtx.globalAlpha = flowAlpha;
             const vesperGlow = vesperCtx.createRadialGradient(
@@ -660,35 +711,38 @@
             vesperGlow.addColorStop(0.3, '#9370DB');
             vesperGlow.addColorStop(0.7, '#6B46C1');
             vesperGlow.addColorStop(1, 'transparent');
-            
+
             vesperCtx.fillStyle = vesperGlow;
             vesperCtx.beginPath();
             vesperCtx.arc(game.vesper.x, game.vesper.y, game.vesper.radius * 1.5, 0, Math.PI * 2);
             vesperCtx.fill();
             vesperCtx.globalAlpha = 1;
-            
+
             // Core
             vesperCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
             vesperCtx.beginPath();
             vesperCtx.arc(game.vesper.x, game.vesper.y, game.vesper.radius * 0.3, 0, Math.PI * 2);
             vesperCtx.fill();
         }
-        
+
         let lastTime = 0;
         function gameLoop(currentTime) {
-            const dt = Math.min((currentTime - lastTime) / 1000, 0.033);
-            lastTime = currentTime;
-            
-            update(dt);
-            renderSparkWorld();
-            renderVesperWorld();
-            
+            try {
+                const dt = Math.min((currentTime - lastTime) / 1000, 0.033);
+                lastTime = currentTime;
+
+                update(dt);
+                renderSparkWorld();
+                renderVesperWorld();
+            } catch (err) {
+                console.error('Game loop error:', err);
+            }
             requestAnimationFrame(gameLoop);
         }
-        
+
         // Prevent scrolling
         document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-        
+
         // Initialize
         init();
     </script>

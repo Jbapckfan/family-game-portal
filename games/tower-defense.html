@@ -6,7 +6,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
-    <title>Ultra Premium Tower Defense - v2</title>
+    <meta name="description" content="Tower Defense - Strategic tower placement, upgradeable defenses, and epic boss battles.">
+    <meta name="theme-color" content="#0a0a2e">
+    <meta property="og:title" content="Tower Defense">
+    <meta property="og:description" content="Strategic tower placement, upgradeable defenses, and epic boss battles.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Ultra Premium Tower Defense</title>
 
 <script src="app_store_features.js"></script>
 <script src="game_assets.js"></script>
@@ -216,6 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
             box-shadow: 0 4px 20px rgba(138, 43, 226, 0.6), inset 0 -2px 10px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
+            min-height: 44px;
+            min-width: 44px;
             /* iOS specific */
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
@@ -260,13 +268,20 @@ document.addEventListener('DOMContentLoaded', function() {
             transform: none;
             filter: grayscale(50%);
         }
-        
+
+        button:focus-visible, .target-option:focus-visible, select:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+
         #pauseBtn {
             min-width: 80px;
         }
         
         #autoStartCheck {
             margin-right: 5px;
+            min-width: 24px;
+            min-height: 24px;
         }
         
         #addTowerBtn {
@@ -994,6 +1009,14 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 20px;
     }
 
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
 </style>
 </head>
 <body>
@@ -1123,7 +1146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
 
-        <canvas id="gameCanvas" style="display: block; background: #222; min-height: 400px; width: 100%;"></canvas>
+        <canvas id="gameCanvas" role="img" aria-label="Tower Defense game board" style="display: block; background: #222; min-height: 400px; width: 100%;"></canvas>
         
         
         <!-- Wave Preview Panel -->
@@ -1133,7 +1156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         
         <!-- Achievement Popup -->
-        <div id="achievementPopup">
+        <div id="achievementPopup" role="alert" aria-live="polite">
             <h3>🏆 Achievement Unlocked!</h3>
             <p id="achievementText"></p>
         </div>
@@ -1351,6 +1374,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // Initialize canvas - these need to be global
 let canvas, ctx;
+
+// Accessibility: respect reduced-motion preference
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Audio stub - not implemented yet
 function playSound(name) { /* audio not implemented yet */ }
@@ -1681,22 +1707,38 @@ let frameSkipThreshold = 30;
 
 
 
+// DPI scaling factor (global for other functions to reference)
+let dpr = window.devicePixelRatio || 1;
+
 // Set canvas size
 function resizeCanvas() {
     if (!canvas) {
         console.error('Canvas not initialized in resizeCanvas');
         return;
     }
-    
+
+    dpr = window.devicePixelRatio || 1;
+
     const ui = document.getElementById('ui');
-    const width = window.innerWidth || 800;
-    const height = (window.innerHeight || 600) - (ui ? ui.offsetHeight : 70);
-    
-    canvas.width = Math.max(100, width);
-    canvas.height = Math.max(100, height);
-    
-    console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
-    
+    const width = Math.max(100, window.innerWidth || 800);
+    const height = Math.max(100, (window.innerHeight || 600) - (ui ? ui.offsetHeight : 70));
+
+    // Set CSS display size
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+
+    // Set actual canvas buffer size scaled for DPI
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    // Scale the drawing context so game code can use CSS pixel coordinates
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Invalidate cached background so it is recreated at the new resolution
+    cachedBackgroundCanvas = null;
+
+    console.log('Canvas resized to:', width, 'x', height, '(DPR:', dpr + ')');
+
     // Update path scaling when canvas resizes
     if (originalPath) {
         path = scalePath();
@@ -5320,24 +5362,29 @@ function drawBackground() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     } else {
         // Cache the background for better performance
-        if (!cachedBackgroundCanvas || cachedBackgroundCanvas.width !== canvas.width) {
+        // Use CSS pixel dimensions for comparison (canvas.width includes DPR scaling)
+        const cssWidth = Math.round(canvas.width / (dpr || 1));
+        const cssHeight = Math.round(canvas.height / (dpr || 1));
+        if (!cachedBackgroundCanvas || cachedBackgroundCanvas._cssWidth !== cssWidth) {
             cachedBackgroundCanvas = document.createElement('canvas');
             cachedBackgroundCanvas.width = canvas.width;
             cachedBackgroundCanvas.height = canvas.height;
+            cachedBackgroundCanvas._cssWidth = cssWidth;
             const cacheCtx = cachedBackgroundCanvas.getContext('2d');
-            
-            const gradient = cacheCtx.createLinearGradient(0, 0, 0, canvas.height);
+            cacheCtx.setTransform(dpr || 1, 0, 0, dpr || 1, 0, 0);
+
+            const gradient = cacheCtx.createLinearGradient(0, 0, 0, cssHeight);
             gradient.addColorStop(0, '#0a0a2e');
             gradient.addColorStop(0.5, '#000511');
             gradient.addColorStop(1, '#1a0033');
             cacheCtx.fillStyle = gradient;
-            cacheCtx.fillRect(0, 0, canvas.width, canvas.height);
-            
+            cacheCtx.fillRect(0, 0, cssWidth, cssHeight);
+
             // Stars
             cacheCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             for (let i = 0; i < 100; i++) {
-                const x = (i * 137) % canvas.width;
-                const y = (i * 91) % canvas.height;
+                const x = (i * 137) % cssWidth;
+                const y = (i * 91) % cssHeight;
                 const size = (i % 3) * 0.5 + 0.5;
                 cacheCtx.beginPath();
                 cacheCtx.arc(x, y, size, 0, Math.PI * 2);
@@ -6787,8 +6834,9 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Add screen shake effect
+// Add screen shake effect (respects prefers-reduced-motion)
 function addScreenShake(intensity) {
+    if (prefersReducedMotion) return;
     screenShake = Math.max(screenShake, intensity);
 }
 
@@ -6844,11 +6892,63 @@ function gameOver() {
     
     if (qualifies) {
         setTimeout(() => {
-            const name = prompt('New High Score! Enter your name for the leaderboard:') || 'Anonymous';
-            addToLeaderboard(name, score, level);
-            showLeaderboard();
+            showNameInputModal(score, level);
         }, 1000);
     }
+}
+
+// In-game name input modal (replaces prompt() for app-store compliance)
+function showNameInputModal(finalScore, finalLevel) {
+    // Remove any existing modal
+    const existing = document.getElementById('nameInputModal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'nameInputModal';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:10000;';
+
+    const box = document.createElement('div');
+    box.style.cssText = 'background:linear-gradient(135deg,#1a1a3e,#0a0a2e);border:2px solid #8a2be2;border-radius:15px;padding:30px;text-align:center;max-width:400px;width:90%;box-shadow:0 0 30px rgba(138,43,226,0.5);';
+
+    const title = document.createElement('div');
+    title.textContent = 'New High Score!';
+    title.style.cssText = 'font-family:Orbitron,sans-serif;font-size:24px;color:#ffd700;margin-bottom:20px;text-shadow:0 0 10px rgba(255,215,0,0.5);';
+
+    const label = document.createElement('div');
+    label.textContent = 'Enter your name for the leaderboard:';
+    label.style.cssText = 'font-family:Orbitron,sans-serif;font-size:14px;color:#ccc;margin-bottom:15px;';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.maxLength = 20;
+    input.placeholder = 'Your name';
+    input.style.cssText = 'width:100%;padding:12px;font-family:Orbitron,sans-serif;font-size:16px;background:#0a0a2e;color:#fff;border:1px solid #8a2be2;border-radius:8px;text-align:center;outline:none;box-sizing:border-box;';
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Submit';
+    btn.style.cssText = 'margin-top:20px;padding:12px 40px;font-family:Orbitron,sans-serif;font-size:16px;background:linear-gradient(135deg,#8a2be2,#ff1493);color:#fff;border:none;border-radius:8px;cursor:pointer;min-width:150px;';
+
+    function submitName() {
+        const name = input.value.trim() || 'Anonymous';
+        overlay.remove();
+        addToLeaderboard(name, finalScore, finalLevel);
+        showLeaderboard();
+    }
+
+    btn.addEventListener('click', submitName);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitName();
+    });
+
+    box.appendChild(title);
+    box.appendChild(label);
+    box.appendChild(input);
+    box.appendChild(btn);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    // Focus the input after a brief delay so the modal is visible
+    setTimeout(() => input.focus(), 100);
 }
 
 // Spawn level
@@ -7147,8 +7247,10 @@ function addPlayerXP(amount) {
 // Hook into existing game events
 const originalEnemyDeath = Enemy.prototype.die;
 Enemy.prototype.die = function() {
-    originalEnemyDeath.call(this);
-    
+    if (typeof originalEnemyDeath === 'function') {
+        originalEnemyDeath.call(this);
+    }
+
     // Add XP for kill
     addPlayerXP(this.xp || 1);
     
@@ -7571,7 +7673,7 @@ function setupEventListeners() {
     }
 });
 
-// Touch events for iOS
+// Touch events for iOS (passive: false required for preventDefault)
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (e.touches.length > 0) {
@@ -7579,7 +7681,7 @@ canvas.addEventListener('touchstart', (e) => {
         updatePointerPosition(touch.clientX, touch.clientY);
         handleCanvasClick();
     }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
@@ -7587,11 +7689,11 @@ canvas.addEventListener('touchmove', (e) => {
         const touch = e.touches[0];
         updatePointerPosition(touch.clientX, touch.clientY);
     }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
-});
+}, { passive: false });
 
 // Function to handle canvas clicks/taps
 function handleCanvasClick() {
@@ -7885,8 +7987,12 @@ function initGame() {
     // Set initial canvas size
     resizeCanvas();
     
-    // Add resize listener
-    window.addEventListener('resize', resizeCanvas);
+    // Add debounced resize listener
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resizeCanvas, 150);
+    });
 
     // Initialize scaled elements after canvas is ready
     if (originalPath) {
@@ -7938,6 +8044,14 @@ function initGame() {
     console.log('Starting game loop...');
     requestAnimationFrame(gameLoop);
 }
+
+// Warn before leaving during active gameplay
+window.addEventListener('beforeunload', (e) => {
+    if (levelActive) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
 
 // Call initGame when page loads
 window.addEventListener('load', function() {

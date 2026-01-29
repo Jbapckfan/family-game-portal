@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Zoo Conquest - A Risk-Style Adventure!</title>
+    <meta name="description" content="Zoo Conquest - A Risk-style strategy board game set in the Kansas City Zoo. Conquer territories with animal armies!">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Zoo Conquest - Animal Strategy Game">
+    <meta property="og:description" content="A Risk-style strategy board game set in the Kansas City Zoo. Play with friends or against AI!">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Zoo Conquest">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
@@ -15,7 +24,7 @@
       font-family: 'Nunito', sans-serif;
       background: #1a1a2e;
       min-height: 100vh;
-      overflow: hidden;
+      overflow: auto;
     }
 
     .map-container {
@@ -99,10 +108,37 @@
     .placing {
       animation: placeAnimal 0.3s ease forwards;
     }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      button:focus-visible {
+        outline: 2px solid #fbbf24;
+        outline-offset: 2px;
+      }
+
+      @supports (padding: env(safe-area-inset-top)) {
+        body {
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+        }
+      }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:#fff;font-family:sans-serif;flex-direction:column">
+        <div style="font-size:3rem;margin-bottom:1rem">🦁</div>
+        <div style="font-size:1.2rem">Loading Zoo Conquest...</div>
+      </div>
+    </div>
   <script type="text/babel">
     const { useState, useEffect, useCallback } = React;
 
@@ -119,7 +155,7 @@
     // Animal Army Types with Colors
     const ANIMAL_ARMIES = {
       turtles: { name: 'Turtles', color: '#22c55e', emoji: '🐢', bgColor: 'bg-green-500' },
-      pandas: { name: 'Pandas', color: '#1f2937', emoji: '🐼', bgColor: 'bg-gray-800' },
+      pandas: { name: 'Pandas', color: '#6b7280', emoji: '🐼', bgColor: 'bg-gray-800' },
       penguins: { name: 'Penguins', color: '#3b82f6', emoji: '🐧', bgColor: 'bg-blue-500' },
       stingrays: { name: 'Stingrays', color: '#92400e', emoji: '🦈', bgColor: 'bg-amber-700' },
       redPandas: { name: 'Red Pandas', color: '#dc2626', emoji: '🦊', bgColor: 'bg-red-600' },
@@ -927,6 +963,30 @@
       );
     };
 
+    class ErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+      }
+      static getDerivedStateFromError() {
+        return { hasError: true };
+      }
+      render() {
+        if (this.state.hasError) {
+          return (
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',background:'#1a1a2e',color:'#fff',flexDirection:'column',fontFamily:'sans-serif'}}>
+              <div style={{fontSize:'3rem',marginBottom:'1rem'}}>😿</div>
+              <h2 style={{marginBottom:'0.5rem'}}>Something went wrong</h2>
+              <button onClick={() => window.location.reload()} style={{padding:'0.75rem 2rem',background:'#f59e0b',color:'#000',border:'none',borderRadius:'0.5rem',fontSize:'1rem',fontWeight:'bold',cursor:'pointer'}}>
+                Reload Game
+              </button>
+            </div>
+          );
+        }
+        return this.props.children;
+      }
+    }
+
     // Main Game Component
     const ZooRiskGame = () => {
       const [gamePhase, setGamePhase] = useState('setup'); // setup, place, play, battle, fortify, gameOver
@@ -1554,6 +1614,17 @@
 
       // ============ END AI LOGIC ============
 
+      useEffect(() => {
+        const handler = (e) => {
+          if (gamePhase === 'play') {
+            e.preventDefault();
+            e.returnValue = '';
+          }
+        };
+        window.addEventListener('beforeunload', handler);
+        return () => window.removeEventListener('beforeunload', handler);
+      }, [gamePhase]);
+
       // Roll dice (Risk rules)
       // CRITICAL: Attacker must leave 1 troop behind, so max dice = troops - 1 (capped at 3)
       const rollDice = () => {
@@ -1952,7 +2023,14 @@
                   />
                   <p className="text-xs text-gray-600 mt-2">Scan to play on another device!</p>
                   <button
-                    onClick={() => navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!'))}
+                    onClick={(e) => {
+                      navigator.clipboard.writeText(window.location.href).then(() => {
+                        const btn = e.target;
+                        const orig = btn.textContent;
+                        btn.textContent = '✅ Copied!';
+                        setTimeout(() => { btn.textContent = orig; }, 2000);
+                      });
+                    }}
                     className="mt-2 px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-sm rounded-lg"
                   >
                     📋 Copy Link
@@ -2065,7 +2143,7 @@
                   {canCurrentPlayerTrade() && (
                     <button
                       onClick={() => setShowCardTrade(true)}
-                      className="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold rounded-lg shadow-lg animate-pulse"
+                      className="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold rounded-lg shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-gray-700"
                     >
                       🃏 Trade Cards for +{getNextTradeValue()} Animals!
                     </button>
@@ -2075,8 +2153,8 @@
                       <div className="text-center text-yellow-400 font-bold text-sm">
                         Click to place {troopsToPlace} animals
                       </div>
-                      <div className="text-center text-gray-400 text-xs">
-                        Double-click or Shift+click to place ALL
+                      <div className="text-center text-gray-300 text-xs">
+                        {'ontouchstart' in window ? 'Double-tap to place ALL' : 'Double-click or Shift+click to place ALL'}
                       </div>
                     </div>
                   )}
@@ -2096,7 +2174,7 @@
 
               {turnPhase === 'fortify' && !currentPlayer?.isAI && (
                 <div className="space-y-2">
-                  <div className="text-gray-400 text-xs text-center">Optional: move animals</div>
+                  <div className="text-gray-300 text-xs text-center">Optional: move animals</div>
                   <button onClick={endPhase} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
                     ✅ End Turn
                   </button>
@@ -2140,7 +2218,7 @@
                 <div key={p.id} className={`flex items-center gap-2 py-1.5 px-2 rounded mb-1 ${i === currentPlayerIndex ? 'bg-gray-600' : 'bg-gray-800'}`}>
                   <span className="text-xl">{ANIMAL_ARMIES[p.army].emoji}</span>
                   <span className="text-white flex-1 text-sm">{p.name}</span>
-                  <span className="text-gray-400 text-sm">{p.territories}</span>
+                  <span className="text-gray-300 text-sm">{p.territories}</span>
                   {p.isAI && <span className="text-blue-400 text-xs">🤖</span>}
                   {playerCards[p.army]?.length > 0 && <span className="text-yellow-400 text-xs">🃏{playerCards[p.army].length}</span>}
                 </div>
@@ -2158,6 +2236,13 @@
                 </div>
               ))}
             </div>
+
+            <button
+              onClick={() => { if (confirm('Return to setup? Current game will be lost.')) setGamePhase('setup'); }}
+              className="w-full py-2 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded-lg text-sm font-bold mt-auto"
+            >
+              🏠 Return to Menu
+            </button>
           </div>
 
           {/* Battle Modal */}
@@ -2204,7 +2289,7 @@
     };
 
     // Render the app
-    ReactDOM.createRoot(document.getElementById('root')).render(<ZooRiskGame />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><ZooRiskGame /></ErrorBoundary>);
   </script>
 </body>
 </html>

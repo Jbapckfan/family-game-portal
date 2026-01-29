@@ -1811,8 +1811,16 @@
             }));
             setEarnedCardThisTurn(true);
           }
-          setTurnPhase('fortify');
-          setMessage('Fortify phase (optional)! Move animals between territories, or just end your turn.');
+          // Check if player can fortify (any territory with >1 troop)
+          const canMove = Object.entries(gameState.territories).some(([id, t]) =>
+            t.owner === currentPlayer.army && t.troops > 1
+          );
+          if (canMove) {
+            setTurnPhase('fortify');
+            setMessage('Fortify phase (optional)! Move animals between territories, or just end your turn.');
+          } else {
+            goToNextPlayer();
+          }
         } else if (turnPhase === 'fortify') {
           // Go to next player
           goToNextPlayer();
@@ -2161,16 +2169,23 @@
                 </div>
               )}
 
-              {turnPhase === 'attack' && !currentPlayer?.isAI && (
-                <div className="space-y-2">
-                  <button onClick={endTurn} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
-                    ✅ End Turn
-                  </button>
-                  <button onClick={endPhase} className="w-full py-1.5 bg-blue-500/80 hover:bg-blue-600 text-white rounded text-sm">
-                    Fortify →
-                  </button>
-                </div>
-              )}
+              {turnPhase === 'attack' && !currentPlayer?.isAI && (() => {
+                const canMove = Object.entries(gameState.territories).some(([id, t]) =>
+                  t.owner === currentPlayer.army && t.troops > 1
+                );
+                return (
+                  <div className="space-y-2">
+                    <button onClick={endTurn} className="w-full py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                      ✅ End Turn
+                    </button>
+                    {canMove && (
+                      <button onClick={endPhase} className="w-full py-1.5 bg-blue-500/80 hover:bg-blue-600 text-white rounded text-sm">
+                        Fortify →
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
 
               {turnPhase === 'fortify' && !currentPlayer?.isAI && (
                 <div className="space-y-2">

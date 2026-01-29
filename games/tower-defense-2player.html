@@ -6,11 +6,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="Tower Defense 2-Player - Cooperative and competitive tower defense with friends.">
+    <meta name="theme-color" content="#0a0a2e">
+    <meta property="og:title" content="Tower Defense 2-Player">
+    <meta property="og:description" content="Cooperative and competitive tower defense with friends.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Ultra Premium Tower Defense - v2</title>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        /* @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap'); — moved to <link> for font-display: swap */
 
         * {
             margin: 0;
@@ -184,6 +192,8 @@
             box-shadow: 0 4px 20px rgba(138, 43, 226, 0.6), inset 0 -2px 10px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
+            min-height: 44px;
+            min-width: 44px;
             /* iOS specific */
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
@@ -410,7 +420,7 @@
         
         .stat-label {
             font-size: 10px;
-            color: #888;
+            color: #b0b0b0;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -571,12 +581,7 @@
             backdrop-filter: blur(10px);
             animation: slideInRight 0.3s ease-out;
         }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
+
         #towerInfo h3 {
             color: #fff;
             margin: 0 0 15px 0;
@@ -593,7 +598,7 @@
         }
         
         .tower-stat-label {
-            color: #888;
+            color: #b0b0b0;
         }
         
         .tower-stat-value {
@@ -622,9 +627,9 @@
             font-size: 16px !important;
             cursor: pointer !important;
             padding: 0 !important;
-            width: 28px !important;
-            height: 28px !important;
-            border-radius: 14px !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 22px !important;
             box-shadow: none !important;
             transition: all 0.3s !important;
             display: flex !important;
@@ -755,7 +760,7 @@
         }
         
         .wave-enemy-count {
-            color: #888;
+            color: #b0b0b0;
         }
         
         /* Achievements */
@@ -805,6 +810,11 @@
             padding: 3px 8px;
             border-radius: 10px;
             transition: all 0.3s;
+            min-height: 44px;
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .target-option:hover {
@@ -858,6 +868,19 @@
         @keyframes powerupFloat {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+
+        button:focus-visible, .target-option:focus-visible, select:focus-visible, .towerOption:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -941,7 +964,7 @@
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <button id="addTowerBtn">🏗️ Add Tower</button>
                     <button id="startLevel">▶️ Start Level 1</button>
-                    <select id="levelSelect" onchange="selectLevel(this.value)" style="background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%); color: white; border: 2px solid #ff1493; padding: 8px; border-radius: 20px; font-weight: bold; min-width: 120px;">
+                    <select id="levelSelect" aria-label="Jump to level" onchange="selectLevel(this.value)" style="background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%); color: white; border: 2px solid #ff1493; padding: 8px; border-radius: 20px; font-weight: bold; min-width: 120px;">
                         <option value="">Jump to Level...</option>
                     </select>
                 </div>
@@ -964,7 +987,7 @@
             </div>
         </div>
 
-        <canvas id="gameCanvas" style="display: block; background: #222; min-height: 400px; width: 100%;"></canvas>
+        <canvas id="gameCanvas" role="img" aria-label="Tower Defense 2-Player game board" style="display: block; background: #222; min-height: 400px; width: 100%;"></canvas>
         
         
         <!-- Wave Preview Panel -->
@@ -1025,7 +1048,7 @@
             </div>
             <button id="sellBtn" onclick="sellTower()" style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); margin-top: 10px; width: 100%;">💰 SELL</button>
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); text-align: center;">
-                <div style="font-size: 11px; color: #888;">Hotkeys: U = Upgrade • S = Sell</div>
+                <div style="font-size: 11px; color: #b0b0b0;">Hotkeys: U = Upgrade • S = Sell</div>
             </div>
         </div>
         
@@ -1193,28 +1216,49 @@
 // Audio stub - sound not implemented yet
 function playSound(name) { /* audio not implemented yet */ }
 
+// DPI scaling factor (persists globally)
+const dpr = window.devicePixelRatio || 1;
+
+// Accessibility: reduced-motion preference
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Initialize canvas - these need to be global
 let canvas, ctx;
 
 // Game settings
 let gameSpeed = 1;
 
-// Set canvas size
+// Canvas CSS-pixel dimensions (game logic reads these instead of canvas.width/height)
+let canvasWidth = 800;
+let canvasHeight = 600;
+
+// Set canvas size with DPI scaling for crisp rendering
 function resizeCanvas() {
     if (!canvas) {
         console.error('Canvas not initialized in resizeCanvas');
         return;
     }
-    
+
     const ui = document.getElementById('ui');
-    const width = window.innerWidth || 800;
-    const height = (window.innerHeight || 600) - (ui ? ui.offsetHeight : 70);
-    
-    canvas.width = Math.max(100, width);
-    canvas.height = Math.max(100, height);
-    
-    console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
-    
+    canvasWidth = Math.max(100, window.innerWidth || 800);
+    canvasHeight = Math.max(100, (window.innerHeight || 600) - (ui ? ui.offsetHeight : 70));
+
+    // Set CSS display size
+    canvas.style.width = canvasWidth + 'px';
+    canvas.style.height = canvasHeight + 'px';
+
+    // Set actual backing-store size scaled by DPI
+    canvas.width = canvasWidth * dpr;
+    canvas.height = canvasHeight * dpr;
+
+    // Scale all drawing operations so game logic uses CSS pixels
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Invalidate cached background so it redraws at new size
+    cachedBackgroundCanvas = null;
+
+    console.log('Canvas resized to:', canvasWidth, 'x', canvasHeight, '(DPI:', dpr, ')');
+
     // Update path scaling when canvas resizes
     if (originalPath) {
         path = scalePath();
@@ -1360,8 +1404,8 @@ const base = {
 // Function to update base position based on canvas size
 function updateBasePosition() {
     const scale = getScaleFactor();
-    base.x = 20 * (canvas.width / 800);
-    base.y = 280 * (canvas.height / 600);
+    base.x = 20 * (canvasWidth / 800);
+    base.y = 280 * (canvasHeight / 600);
     base.width = 100 * scale;
     base.height = 100 * scale;
 }
@@ -1733,8 +1777,8 @@ let originalPath = pathLayouts[currentPathLayout];
 function scalePath() {
     const baseWidth = 800;
     const baseHeight = 600;
-    const scaleX = (canvas.width || baseWidth) / baseWidth;
-    const scaleY = (canvas.height || baseHeight) / baseHeight;
+    const scaleX = (canvasWidth || baseWidth) / baseWidth;
+    const scaleY = (canvasHeight || baseHeight) / baseHeight;
     
     return originalPath.map(point => ({
         x: point.x * scaleX,
@@ -1749,7 +1793,7 @@ let path = [];
 // Calculate scale factor for game elements
 function getScaleFactor() {
     const baseSize = 800; // Base size for original design
-    const scale = Math.min(canvas.width, canvas.height) / baseSize;
+    const scale = Math.min(canvasWidth, canvasHeight) / baseSize;
     // Ensure we have a valid scale factor
     return isNaN(scale) || scale <= 0 ? 1 : scale;
 }
@@ -1977,7 +2021,7 @@ class Tower {
         this.type = type;
         this.x = x;
         this.y = y;
-        this.id = 'tower_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        this.id = 'tower_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
         this.stats = {...towerTypes[type]};
         this.lastShot = 0;
         this.rotation = 0;
@@ -2413,7 +2457,7 @@ class Tower {
                                 type: 'explosion'
                             });
                         }
-                        screenShake = 30;
+                        addScreenShake(30);
                         playSound('explosion');
                     }
                     break;
@@ -2426,7 +2470,7 @@ class Tower {
                     // Time stop visual
                     ctx.save();
                     ctx.fillStyle = 'rgba(128, 128, 255, 0.3)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                     ctx.restore();
                     playSound('powerup');
                     break;
@@ -3871,8 +3915,8 @@ function updateProjectiles() {
                 return true;
             });
             
-            return proj.x > -100 && proj.x < canvas.width + 100 &&
-                   proj.y > -100 && proj.y < canvas.height + 100;
+            return proj.x > -100 && proj.x < canvasWidth + 100 &&
+                   proj.y > -100 && proj.y < canvasHeight + 100;
         } else if (enemies.includes(proj.target)) {
             if (proj.target.inTunnel) {
                 for (let i = 0; i < 10; i++) {
@@ -4056,27 +4100,27 @@ function drawBackground() {
     if (performanceMode) {
         // Simple solid background in performance mode
         ctx.fillStyle = '#0a0a2e';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     } else {
         // Cache the background for better performance
-        if (!cachedBackgroundCanvas || cachedBackgroundCanvas.width !== canvas.width) {
+        if (!cachedBackgroundCanvas || cachedBackgroundCanvas.width !== canvasWidth) {
             cachedBackgroundCanvas = document.createElement('canvas');
-            cachedBackgroundCanvas.width = canvas.width;
-            cachedBackgroundCanvas.height = canvas.height;
+            cachedBackgroundCanvas.width = canvasWidth;
+            cachedBackgroundCanvas.height = canvasHeight;
             const cacheCtx = cachedBackgroundCanvas.getContext('2d');
             
-            const gradient = cacheCtx.createLinearGradient(0, 0, 0, canvas.height);
+            const gradient = cacheCtx.createLinearGradient(0, 0, 0, canvasHeight);
             gradient.addColorStop(0, '#0a0a2e');
             gradient.addColorStop(0.5, '#000511');
             gradient.addColorStop(1, '#1a0033');
             cacheCtx.fillStyle = gradient;
-            cacheCtx.fillRect(0, 0, canvas.width, canvas.height);
+            cacheCtx.fillRect(0, 0, canvasWidth, canvasHeight);
             
             // Stars
             cacheCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             for (let i = 0; i < 100; i++) {
-                const x = (i * 137) % canvas.width;
-                const y = (i * 91) % canvas.height;
+                const x = (i * 137) % canvasWidth;
+                const y = (i * 91) % canvasHeight;
                 const size = (i % 3) * 0.5 + 0.5;
                 cacheCtx.beginPath();
                 cacheCtx.arc(x, y, size, 0, Math.PI * 2);
@@ -4101,13 +4145,13 @@ function drawGrid() {
     
     const gridSize = 50;
     ctx.beginPath();
-    for (let x = 0; x < canvas.width; x += gridSize) {
+    for (let x = 0; x < canvasWidth; x += gridSize) {
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
+        ctx.lineTo(x, canvasHeight);
     }
-    for (let y = 0; y < canvas.height; y += gridSize) {
+    for (let y = 0; y < canvasHeight; y += gridSize) {
         ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
+        ctx.lineTo(canvasWidth, y);
     }
     ctx.stroke();
 }
@@ -4275,8 +4319,8 @@ function drawPath() {
     
     // Draw dot pattern
     ctx.fillStyle = '#ffffff';
-    for (let x = 0; x < canvas.width; x += 8) {
-        for (let y = 0; y < canvas.height; y += 8) {
+    for (let x = 0; x < canvasWidth; x += 8) {
+        for (let y = 0; y < canvasHeight; y += 8) {
             if ((x + y) % 16 === 0) {
                 ctx.fillRect(x, y, 1, 1);
             }
@@ -4662,9 +4706,9 @@ function drawBossHealthBars() {
     
     // Draw each boss health bar
     bosses.forEach((boss, index) => {
-        const barWidth = canvas.width * 0.6;
+        const barWidth = canvasWidth * 0.6;
         const barHeight = 30;
-        const barX = (canvas.width - barWidth) / 2;
+        const barX = (canvasWidth - barWidth) / 2;
         const barY = 10 + (index * 40); // Stack multiple boss bars
         
         // Background
@@ -4718,11 +4762,11 @@ function drawBossHealthBars() {
         if (boss.type === 'finalBoss') bossName = '☠️ FINAL BOSS ☠️';
         else if (boss.type === 'megaBoss') bossName = '💀 MEGA BOSS 💀';
         
-        ctx.fillText(bossName, canvas.width / 2, barY + barHeight / 2);
+        ctx.fillText(bossName, canvasWidth / 2, barY + barHeight / 2);
         
         // Health numbers
         ctx.font = '12px Orbitron';
-        ctx.fillText(`${Math.floor(boss.health)} / ${boss.maxHealth}`, canvas.width / 2, barY + barHeight + 12);
+        ctx.fillText(`${Math.floor(boss.health)} / ${boss.maxHealth}`, canvasWidth / 2, barY + barHeight + 12);
     });
 }
 
@@ -5057,20 +5101,18 @@ function resetGameState() {
 
     // Reset core game variables
     money = 200;
-    lives = 10;
+    health = 100;
     level = 1;
     score = 0;
     currentWave = 0;
     totalWaves = 1;
-    waveStarted = false;
     levelActive = false;
     gameSpeed = 1;
-    paused = false;
+    isPaused = false;
     enemies = [];
     towers = [];
     projectiles = [];
     particles = [];
-    explosions = [];
 
     // Reset repositioning system
     if (recentlyPlacedTowers) {
@@ -5311,8 +5353,8 @@ function updatePlayer2Cursor() {
     if (player2Keys['d']) player2Cursor.x += speed;
     
     // Keep cursor on screen
-    player2Cursor.x = Math.max(0, Math.min(canvas.width, player2Cursor.x));
-    player2Cursor.y = Math.max(0, Math.min(canvas.height, player2Cursor.y));
+    player2Cursor.x = Math.max(0, Math.min(canvasWidth, player2Cursor.x));
+    player2Cursor.y = Math.max(0, Math.min(canvasHeight, player2Cursor.y));
     
     // Update cursor position on screen
     const cursorElement = document.getElementById('player2Cursor');
@@ -5815,8 +5857,29 @@ function showNotification(message) {
     }, 3000);
 }
 
+// Special ability handler (bomb, freeze, double damage)
+function useSpecialAbility(type) {
+    if (type === 'bomb') {
+        // Deal area damage to all enemies
+        enemies.forEach(e => { if (e && e.health) e.health -= 50; });
+        addScreenShake(10);
+        showNotification('Bomb activated!');
+    } else if (type === 'freeze') {
+        // Slow all enemies temporarily
+        enemies.forEach(e => { if (e) e.speed *= 0.5; });
+        setTimeout(() => { enemies.forEach(e => { if (e) e.speed *= 2; }); }, 5000);
+        showNotification('Freeze activated!');
+    } else if (type === 'double') {
+        // Double damage for all towers temporarily
+        towers.forEach(t => { if (t && t.stats) t.stats.damage *= 2; });
+        setTimeout(() => { towers.forEach(t => { if (t && t.stats) t.stats.damage /= 2; }); }, 5000);
+        showNotification('Double damage activated!');
+    }
+}
+
 // Add screen shake effect
 function addScreenShake(intensity) {
+    if (prefersReducedMotion) return;
     screenShake = Math.max(screenShake, intensity);
 }
 
@@ -5872,11 +5935,57 @@ function gameOver() {
     
     if (qualifies) {
         setTimeout(() => {
-            const name = prompt('New High Score! Enter your name for the leaderboard:') || 'Anonymous';
-            addToLeaderboard(name, score, level);
-            showLeaderboard();
+            showNameInputModal(score, level);
         }, 1000);
     }
+}
+
+// In-game name input modal (replaces blocking prompt())
+function showNameInputModal(finalScore, finalLevel) {
+    const overlay = document.createElement('div');
+    overlay.id = 'nameInputOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:10000;';
+
+    const box = document.createElement('div');
+    box.style.cssText = 'background:linear-gradient(135deg,#1a0033,#0a0a2e);border:2px solid #8a2be2;border-radius:16px;padding:30px;text-align:center;max-width:340px;width:90%;font-family:Orbitron,monospace;color:#fff;box-shadow:0 0 40px rgba(138,43,226,0.5);';
+
+    const title = document.createElement('div');
+    title.textContent = 'New High Score!';
+    title.style.cssText = 'font-size:20px;font-weight:bold;margin-bottom:8px;color:#ffcc00;';
+
+    const scoreText = document.createElement('div');
+    scoreText.textContent = 'Score: ' + finalScore;
+    scoreText.style.cssText = 'font-size:14px;margin-bottom:16px;color:#aaa;';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.maxLength = 20;
+    input.placeholder = 'Enter your name';
+    input.style.cssText = 'width:100%;padding:10px;font-size:16px;font-family:Orbitron,monospace;background:#111;color:#fff;border:1px solid #8a2be2;border-radius:8px;text-align:center;outline:none;box-sizing:border-box;';
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Submit';
+    btn.style.cssText = 'margin-top:16px;padding:10px 32px;font-size:16px;font-family:Orbitron,monospace;background:linear-gradient(135deg,#8a2be2,#ff1493);color:#fff;border:none;border-radius:8px;cursor:pointer;';
+
+    function submitName() {
+        const name = input.value.trim() || 'Anonymous';
+        document.body.removeChild(overlay);
+        addToLeaderboard(name, finalScore, finalLevel);
+        showLeaderboard();
+    }
+
+    btn.addEventListener('click', submitName);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitName(); });
+
+    box.appendChild(title);
+    box.appendChild(scoreText);
+    box.appendChild(input);
+    box.appendChild(btn);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    // Focus input after a short delay for iOS
+    setTimeout(() => input.focus(), 100);
 }
 
 // Spawn level
@@ -6111,19 +6220,19 @@ function gameLoop(currentTime) {
     if (isPaused) {
         // Draw pause overlay
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 48px Orbitron';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
+        ctx.fillText('PAUSED', canvasWidth / 2, canvasHeight / 2);
         requestAnimationFrame(gameLoop);
         return; // Don't continue game loop
     }
     
     try {
         // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         
         // Check if game is initialized
         if (!path || path.length === 0) {
@@ -6134,11 +6243,11 @@ function gameLoop(currentTime) {
             } else {
                 // Still not ready, show loading
                 ctx.fillStyle = '#333';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 ctx.fillStyle = '#fff';
                 ctx.font = '20px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText('Initializing game...', canvas.width/2, canvas.height/2);
+                ctx.fillText('Initializing game...', canvasWidth/2, canvasHeight/2);
             }
             
             requestAnimationFrame(gameLoop);
@@ -6268,13 +6377,13 @@ function gameLoop(currentTime) {
         if (waveCountdown > 0 && !levelActive) {
             ctx.save();
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(canvas.width/2 - 150, canvas.height/2 - 50, 300, 100);
+            ctx.fillRect(canvasWidth/2 - 150, canvasHeight/2 - 50, 300, 100);
             
             ctx.fillStyle = '#00ff88';
             ctx.font = 'bold 36px Orbitron';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(`Next wave in: ${Math.ceil(waveCountdown / 60)}`, canvas.width/2, canvas.height/2);
+            ctx.fillText(`Next wave in: ${Math.ceil(waveCountdown / 60)}`, canvasWidth/2, canvasHeight/2);
             ctx.restore();
             
             waveCountdown -= gameSpeed;
@@ -6386,7 +6495,7 @@ function setupEventListeners() {
     }
 });
 
-// Touch events for iOS
+// Touch events for iOS (passive:false to allow preventDefault)
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (e.touches.length > 0) {
@@ -6394,7 +6503,7 @@ canvas.addEventListener('touchstart', (e) => {
         updatePointerPosition(touch.clientX, touch.clientY);
         handleCanvasClick();
     }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
@@ -6405,7 +6514,7 @@ canvas.addEventListener('touchmove', (e) => {
         // Handle repositioning drag
         handleRepositioningDrag(e);
     }
-});
+}, { passive: false });
 
 // Mouse up event
 canvas.addEventListener('mouseup', (e) => {
@@ -6415,7 +6524,7 @@ canvas.addEventListener('mouseup', (e) => {
 canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
     stopRepositioning(e);
-});
+}, { passive: false });
 
 // Function to handle canvas clicks/taps
 function handleCanvasClick() {
@@ -6747,8 +6856,20 @@ function initGame() {
     // Set initial canvas size
     resizeCanvas();
     
-    // Add resize listener
-    window.addEventListener('resize', resizeCanvas);
+    // Add debounced resize listener
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resizeCanvas, 150);
+    });
+
+    // Warn before leaving during active gameplay
+    window.addEventListener('beforeunload', (e) => {
+        if (levelActive) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 
     // Initialize scaled elements after canvas is ready
     if (originalPath) {
@@ -6770,7 +6891,8 @@ function initGame() {
     window.closeLeaderboard = closeLeaderboard;
     window.showInGameLeaderboard = showInGameLeaderboard;
     window.selectLevel = selectLevel;
-    
+    window.useSpecialAbility = useSpecialAbility;
+
     // Also make canvas and ctx globally accessible
     window.canvas = canvas;
     window.ctx = ctx;

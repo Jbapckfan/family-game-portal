@@ -2,11 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Tic Tac Toe - Classic strategy game with AI opponent and neon cyberpunk styling.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta property="og:title" content="Tic Tac Toe">
+    <meta property="og:description" content="Classic strategy game with AI opponent.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Tic-Tac-Toe: Code Arcade</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,6 +182,17 @@
             font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
         }
+        button:focus-visible, [role="button"]:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -281,10 +299,14 @@
          * @param {string} props.value - 'X', 'O', or ''.
          * @param {function} props.onClick - Click handler for the cell.
          */
-        const Cell = ({ value, onClick }) => (
+        const Cell = ({ value, onClick, row, col }) => (
             <div
                 className={`cell rounded-lg transition-all duration-200 ${value ? 'occupied' : 'cursor-pointer'}`}
                 onClick={onClick}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+                role="button"
+                tabIndex="0"
+                aria-label={`Cell row ${row + 1}, column ${col + 1}${value ? `, marked ${value}` : ', empty'}`}
             >
                 {value && (
                     <div className={`cell-content ${value === PLAYERS.X ? 'x-color' : 'o-color'}`}>
@@ -501,6 +523,8 @@
                                 <Cell
                                     key={index}
                                     value={cellValue}
+                                    row={Math.floor(index / 3)}
+                                    col={index % 3}
                                     onClick={() => handleCellClick(Math.floor(index / 3), index % 3)}
                                 />
                             ))}
@@ -540,7 +564,7 @@
 
                         {/* Win/Draw Overlay */}
                         {winner && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none" role="alert">
                                 <h2 className={`text-5xl font-bold text-yellow-300 text-shadow-neon ${winner !== 'Draw' ? 'win-animation' : ''}`}>
                                     {winner === 'Draw' ? "IT'S A DRAW!" : `${winner} WINS!`}
                                 </h2>

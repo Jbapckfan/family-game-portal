@@ -2,15 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Lights Out - Toggle lights to turn them all off in this classic logic puzzle.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta property="og:title" content="Lights Out">
+    <meta property="og:description" content="Toggle lights to turn them all off in this classic logic puzzle.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Neon Lights Out</title>
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- React Libraries -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     
     <!-- Babel to transpile JSX in the browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -46,6 +53,17 @@
         }
         .animate-fade-in {
           animation: fade-in 0.5s ease-out forwards;
+        }
+        button:focus-visible, [role="button"]:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -96,7 +114,7 @@
         };
 
         // --- COMPONENTS ---
-        const LightCell = ({ isOn, onClick }) => {
+        const LightCell = ({ isOn, onClick, row, col }) => {
             const style = {
                 backgroundColor: isOn ? LIGHT_COLOR_ON : LIGHT_COLOR_OFF,
                 boxShadow: isOn ? `0 0 15px ${LIGHT_GLOW_ON}, 0 0 25px ${LIGHT_GLOW_ON}60, inset 0 0 5px ${LIGHT_GLOW_ON}80` : 'inset 0 0 10px rgba(0,0,0,0.5)',
@@ -106,6 +124,7 @@
                     onClick={onClick}
                     className="w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 border-cyan-500/30 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-cyan-400"
                     style={style}
+                    aria-label={`Light at row ${row + 1}, column ${col + 1}, ${isOn ? 'on' : 'off'}`}
                 />
             );
         };
@@ -144,6 +163,8 @@
                                         <LightCell
                                             key={`${r}-${c}`}
                                             isOn={isOn}
+                                            row={r}
+                                            col={c}
                                             onClick={() => handleLightClick(r, c)}
                                         />
                                     ))
@@ -152,7 +173,7 @@
                         </main>
                         <footer className="py-6">
                             {isWon ? (
-                                <div className="animate-fade-in">
+                                <div className="animate-fade-in" role="alert">
                                     <h2 className="text-3xl font-bold text-yellow-300 text-shadow-neon mb-4">
                                         YOU WON!
                                     </h2>

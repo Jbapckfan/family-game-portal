@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Lasers and Mirrors - Aim lasers and place mirrors to hit targets in this optics puzzle.">
+    <meta name="theme-color" content="#050510">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Lasers and Mirrors">
+    <meta property="og:description" content="Aim lasers and place mirrors to hit targets in this optics puzzle.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Lasers and Mirrors - Premium Physics Puzzle</title>
     <style>
         * {
@@ -106,7 +114,7 @@
         }
 
         .level-panel {
-            top: 20px;
+            top: max(10px, env(safe-area-inset-top));
             left: 20px;
             z-index: 10;
             padding: 12px 16px;
@@ -131,7 +139,7 @@
         }
 
         .controls-panel {
-            top: 20px;
+            top: max(10px, env(safe-area-inset-top));
             right: 20px;
             z-index: 10;
         }
@@ -230,7 +238,7 @@
         /* Mirror toolbar - horizontal bar at the bottom of the screen */
         .mirror-toolbar {
             position: fixed;
-            bottom: 0;
+            bottom: env(safe-area-inset-bottom, 0px);
             left: 0;
             width: 100%;
             height: 80px;
@@ -314,6 +322,19 @@
             width: 44px;
             height: 44px;
         }
+
+        button:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -321,7 +342,7 @@
         <div class="ui-panel level-panel">
             <div class="level-text">LEVEL 1: FIRST REFLECTION</div>
             <div class="instruction-text">
-                Double-click to place next mirror • Drag mirrors to reposition • Delete key: return to storage
+                Double-click/tap to place next mirror • Drag mirrors to reposition • Delete key: return to storage
             </div>
         </div>
 
@@ -333,7 +354,7 @@
 
         <div class="win-message" id="winMessage">TARGET ACQUIRED!</div>
 
-        <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" role="img" aria-label="Lasers and Mirrors game board"></canvas>
         
         <!-- Bottom horizontal mirror toolbar -->
         <div class="mirror-toolbar">
@@ -345,12 +366,20 @@
 
     <script>
         // Game variables
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Set canvas size to full screen minus bottom toolbar
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight - 80; // Account for 80px bottom toolbar
+        // Set canvas size to full screen minus bottom toolbar (DPI-aware)
+        const dpr = window.devicePixelRatio || 1;
+        let canvasCSSWidth = window.innerWidth;
+        let canvasCSSHeight = window.innerHeight - 80;
+        canvas.width = canvasCSSWidth * dpr;
+        canvas.height = canvasCSSHeight * dpr;
+        canvas.style.width = canvasCSSWidth + 'px';
+        canvas.style.height = canvasCSSHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         let gameState = {
             laserSource: null,
@@ -840,7 +869,7 @@
                         }
                     } else {
                         // No intersection found, extend to boundary
-                        const maxDistance = Math.max(canvas.width, canvas.height) * 2;
+                        const maxDistance = Math.max(canvasCSSWidth, canvasCSSHeight) * 2;
                         const endX = currentX + Math.cos(currentAngle) * maxDistance;
                         const endY = currentY + Math.sin(currentAngle) * maxDistance;
                         
@@ -890,7 +919,7 @@
             }
 
             getBoundaryIntersection(x, y, angle) {
-                const maxDist = Math.max(canvas.width, canvas.height) * 2;
+                const maxDist = Math.max(canvasCSSWidth, canvasCSSHeight) * 2;
                 const endX = x + Math.cos(angle) * maxDist;
                 const endY = y + Math.sin(angle) * maxDist;
 
@@ -899,10 +928,10 @@
 
                 // Check canvas boundaries
                 const boundaries = [
-                    { x1: 0, y1: 0, x2: canvas.width, y2: 0 }, // top
-                    { x1: canvas.width, y1: 0, x2: canvas.width, y2: canvas.height }, // right
-                    { x1: canvas.width, y1: canvas.height, x2: 0, y2: canvas.height }, // bottom
-                    { x1: 0, y1: canvas.height, x2: 0, y2: 0 } // left
+                    { x1: 0, y1: 0, x2: canvasCSSWidth, y2: 0 }, // top
+                    { x1: canvasCSSWidth, y1: 0, x2: canvasCSSWidth, y2: canvasCSSHeight }, // right
+                    { x1: canvasCSSWidth, y1: canvasCSSHeight, x2: 0, y2: canvasCSSHeight }, // bottom
+                    { x1: 0, y1: canvasCSSHeight, x2: 0, y2: 0 } // left
                 ];
 
                 boundaries.forEach(boundary => {
@@ -941,6 +970,7 @@
             }
 
             createReflectionParticles(x, y) {
+                if (prefersReducedMotion) return;
                 for (let i = 0; i < 8; i++) {
                     gameState.particles.push(new Particle(
                         x + (Math.random() - 0.5) * 10,
@@ -955,12 +985,14 @@
                 document.getElementById('winMessage').classList.add('show');
                 
                 // Create celebration particles
-                for (let i = 0; i < 40; i++) {
-                    gameState.particles.push(new Particle(
-                        gameState.target.x + (Math.random() - 0.5) * 60,
-                        gameState.target.y + (Math.random() - 0.5) * 60,
-                        Math.random() > 0.5 ? '#00ffcc' : '#ff1493'
-                    ));
+                if (!prefersReducedMotion) {
+                    for (let i = 0; i < 40; i++) {
+                        gameState.particles.push(new Particle(
+                            gameState.target.x + (Math.random() - 0.5) * 60,
+                            gameState.target.y + (Math.random() - 0.5) * 60,
+                            Math.random() > 0.5 ? '#00ffcc' : '#ff1493'
+                        ));
+                    }
                 }
                 
                 setTimeout(() => {
@@ -1005,11 +1037,11 @@
                     ctx.restore();
 
                     // Add moving particles along beam
-                    if (Math.random() < 0.3) {
+                    if (!prefersReducedMotion && Math.random() < 0.3) {
                         const t = Math.random();
                         const x = segment.startX + (segment.endX - segment.startX) * t;
                         const y = segment.startY + (segment.endY - segment.startY) * t;
-                        
+
                         gameState.particles.push(new Particle(x, y, color));
                     }
                 });
@@ -1053,17 +1085,17 @@
 
         // Initialize game
         function initGame() {
-            gameState.laserSource = new LaserSource(30, canvas.height / 2, 0);
-            gameState.target = new Target(canvas.width - 80, canvas.height / 3);
+            gameState.laserSource = new LaserSource(30, canvasCSSHeight / 2, 0);
+            gameState.target = new Target(canvasCSSWidth - 80, canvasCSSHeight / 3);
             gameState.mirrors = [];
             gameState.particles = [];
             gameState.laserBeam = new LaserBeam();
             
             // Create obstacles positioned to use full vertical space of playable area
             gameState.obstacles = [
-                new Obstacle(canvas.width / 3, canvas.height * 0.1, 40, canvas.height * 0.35),
-                new Obstacle(canvas.width * 2/3 - 20, canvas.height * 0.5, 40, canvas.height * 0.35),
-                new Obstacle(canvas.width * 0.25, canvas.height * 0.8, canvas.width * 0.3, 30)
+                new Obstacle(canvasCSSWidth / 3, canvasCSSHeight * 0.1, 40, canvasCSSHeight * 0.35),
+                new Obstacle(canvasCSSWidth * 2/3 - 20, canvasCSSHeight * 0.5, 40, canvasCSSHeight * 0.35),
+                new Obstacle(canvasCSSWidth * 0.25, canvasCSSHeight * 0.8, canvasCSSWidth * 0.3, 30)
             ];
             
             // Initialize mirror inventory UI
@@ -1163,8 +1195,8 @@
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
             
             // Place mirror in center of screen
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+            const centerX = canvasCSSWidth / 2;
+            const centerY = canvasCSSHeight / 2;
             
             const mirror = new Mirror(
                 centerX, centerY,
@@ -1384,6 +1416,7 @@
         }
 
         function createBackgroundParticles() {
+            if (prefersReducedMotion) return;
             setInterval(() => {
                 if (document.querySelectorAll('.particle').length < 50) {
                     const particle = document.createElement('div');
@@ -1392,7 +1425,7 @@
                     particle.style.animationDuration = (8 + Math.random() * 4) + 's';
                     particle.style.animationDelay = Math.random() * 2 + 's';
                     document.body.appendChild(particle);
-                    
+
                     setTimeout(() => {
                         particle.remove();
                     }, 12000);
@@ -1606,8 +1639,8 @@
 
         // Game loop
         function gameLoop() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Clear canvas (use CSS pixel dimensions since ctx has DPR transform)
+            ctx.clearRect(0, 0, canvasCSSWidth, canvasCSSHeight);
 
             // Update cursor
             canvas.className = gameState.isDragging ? 'drag-mode' : '';
@@ -1644,10 +1677,20 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Resize handler
+        // Resize handler (debounced, DPI-aware)
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight - 80;
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const currentDpr = window.devicePixelRatio || 1;
+                canvasCSSWidth = window.innerWidth;
+                canvasCSSHeight = window.innerHeight - 80;
+                canvas.width = canvasCSSWidth * currentDpr;
+                canvas.height = canvasCSSHeight * currentDpr;
+                canvas.style.width = canvasCSSWidth + 'px';
+                canvas.style.height = canvasCSSHeight + 'px';
+                ctx.setTransform(currentDpr, 0, 0, currentDpr, 0, 0);
+            }, 150);
         });
 
         // Start game

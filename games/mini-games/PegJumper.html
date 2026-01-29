@@ -2,11 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Peg Jumper - Jump pegs to leave just one in this classic board puzzle.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta property="og:title" content="Peg Jumper">
+    <meta property="og:description" content="Jump pegs to leave just one in this classic board puzzle.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Peg Jumper - Pro Edition</title>
     <!-- React and Babel for JSX transpilation -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,6 +23,17 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+        }
+        button:focus-visible, [role="button"]:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -107,7 +125,7 @@
         };
 
         const Peg = ({ onClick, isSelected }) => (
-            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick}>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick} role="button" aria-label="Peg">
                 <div
                     className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 ${isSelected ? 'border-4 border-yellow-400 animate-pulse' : 'border-2 border-cyan-400/30'}`}
                 />
@@ -115,7 +133,7 @@
         );
 
         const Hole = ({ onClick }) => (
-            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick}>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick} role="button" aria-label="Empty hole">
                 <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gray-800 shadow-inner border-2 border-purple-500/30 hover:border-purple-500 transition-colors" />
             </div>
         );
@@ -275,7 +293,7 @@
                                 if (finalScore > (highScores[currentLevelIndex] || 0)) {
                                     const newHighScores = {...highScores, [currentLevelIndex]: finalScore};
                                     setHighScores(newHighScores);
-                                    localStorage.setItem('pegJumperHighScores', JSON.stringify(newHighScores));
+                                    try { localStorage.setItem('pegJumperHighScores', JSON.stringify(newHighScores)); } catch (e) { console.warn('Could not save high scores', e); }
                                 }
                             } else if (checkForNoMoves(newBoard)) {
                                 setGameState(GameState.LOST);
@@ -321,7 +339,7 @@
                                 <div>Score: <span className="font-bold text-cyan-400">{score}</span></div>
                                 <div>High Score: <span className="font-bold text-yellow-400">{highScores[currentLevelIndex] || 0}</span></div>
                             </div>
-                            <div className="text-center text-2xl font-semibold text-white">{getGameStatusMessage()}</div>
+                            <div className="text-center text-2xl font-semibold text-white" role="status" aria-live="polite">{getGameStatusMessage()}</div>
                             <div className="text-right">Time: <span className="font-bold text-pink-400">{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
                         </div>
 

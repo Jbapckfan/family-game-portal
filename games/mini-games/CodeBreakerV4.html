@@ -2,11 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Code Breaker - Crack the secret color code using logic and deduction.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta property="og:title" content="Code Breaker">
+    <meta property="og:description" content="Crack the secret color code using logic and deduction.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Mastermind Code Breaker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,6 +212,17 @@
             white-space: nowrap;
             border-width: 0;
         }
+        button:focus-visible, [role="button"]:focus-visible {
+            outline: 2px solid #00ffff;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -232,6 +250,23 @@
                 }
             };
         })();
+
+        // --- COLOR NAME MAP (for accessible aria-labels) ---
+        const COLOR_NAMES = {
+            '#FF007F': 'Pink',
+            '#00E5FF': 'Cyan',
+            '#00FFFF': 'Cyan',
+            '#76FF03': 'Green',
+            '#00FF00': 'Green',
+            '#FFD600': 'Yellow',
+            '#FFFF00': 'Yellow',
+            '#FF3D00': 'Orange',
+            '#FF8C00': 'Orange',
+            '#D500F9': 'Purple',
+            '#8A2BE2': 'Purple',
+            '#FFFFFF': 'White',
+            '#607D8B': 'Gray'
+        };
 
         // --- CONFIGURATION ---
         const GAME_PRESETS = {
@@ -473,7 +508,7 @@
                             bestTime: Math.min(newStats.bestTime, state.elapsedTime),
                             bestAttempts: Math.min(newStats.bestAttempts, newGuesses.length)
                         };
-                        localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); // Save stats to local storage
+                        try { localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); } catch (e) { console.warn('Could not save stats', e); }
                     } else if (newGuesses.length >= state.gameConfig.maxGuesses) {
                         newGameStatus = 'lost';
                         newMessage = `Game Over! The code was revealed below.`;
@@ -482,7 +517,7 @@
                             ...newStats,
                             gamesPlayed: newStats.gamesPlayed + 1
                         };
-                        localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); // Save stats to local storage
+                        try { localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); } catch (e) { console.warn('Could not save stats', e); }
                     } else {
                         AudioSystem.play(660);
                         newMessage = newComboMessage; // Display combo message after guess
@@ -754,7 +789,7 @@
                                     className={`w-10 h-10 md:w-12 md:h-12 rounded-full transition-transform duration-100 ease-in-out hover:scale-110 active:scale-90 color-picker-button ${selectedColorFromPalette === color ? 'selected' : ''}`}
                                     style={{ backgroundColor: color }} /* Removed dynamic shadow/border classes */
                                     disabled={gameStatus !== 'playing'}
-                                    aria-label={`Select color ${color}`}
+                                    aria-label={`Select color ${COLOR_NAMES[color] || color}`}
                                 ></button>
                             ))}
                         </div>

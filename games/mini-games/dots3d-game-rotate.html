@@ -2,11 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="3D Dots and Boxes - Connect dots to complete faces and cubes in this strategic 3D puzzle game.">
+    <meta name="theme-color" content="#1f2937">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="3D Dots and Boxes">
+    <meta property="og:description" content="Connect dots to complete faces and cubes in this strategic 3D puzzle game.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>DOTS³ - Premium 3D Strategy</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -15,6 +23,7 @@
             background: linear-gradient(135deg, #1f2937 0%, #7c3aed 50%, #1f2937 100%);
             overflow: hidden;
             height: 100vh;
+            height: 100dvh;
             user-select: none;
             position: relative;
         }
@@ -118,8 +127,8 @@
 
         #leftPanel {
             position: absolute;
-            top: 20px;
-            left: 15px;
+            top: max(20px, env(safe-area-inset-top));
+            left: max(15px, env(safe-area-inset-left));
             z-index: 100;
             width: 200px;
         }
@@ -145,6 +154,8 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         .difficulty-btn:hover {
@@ -245,7 +256,7 @@
         }
 
         .player-type {
-            font-size: 9px;
+            font-size: 11px;
             color: rgba(255, 255, 255, 0.7);
             text-transform: uppercase;
         }
@@ -277,6 +288,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
             min-width: 100px;
+            min-height: 44px;
             text-align: center;
             font-size: 11px;
         }
@@ -301,8 +313,10 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(6, 182, 212, 0.3);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
+            min-height: 44px;
+            min-width: 44px;
             color: white;
             cursor: pointer;
             display: flex;
@@ -319,8 +333,8 @@
 
         #gameStats {
             position: absolute;
-            bottom: 15px;
-            left: 15px;
+            bottom: max(15px, env(safe-area-inset-bottom));
+            left: max(15px, env(safe-area-inset-left));
             z-index: 100;
             display: flex;
             gap: 8px;
@@ -344,7 +358,7 @@
         }
 
         .stat-label {
-            font-size: 9px;
+            font-size: 11px;
             color: rgba(255, 255, 255, 0.7);
             text-transform: uppercase;
         }
@@ -493,14 +507,14 @@
 
         .help-bottom {
             position: absolute;
-            bottom: 15px;
-            right: 15px;
+            bottom: max(15px, env(safe-area-inset-bottom));
+            right: max(15px, env(safe-area-inset-right));
             z-index: 100;
         }
 
         .rotation-controls {
             position: absolute;
-            bottom: 15px;
+            bottom: max(15px, env(safe-area-inset-bottom));
             right: 70px;
             z-index: 100;
             display: flex;
@@ -517,6 +531,8 @@
             cursor: pointer;
             font-size: 11px;
             transition: all 0.3s ease;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         .rotation-btn:hover {
@@ -565,6 +581,19 @@
             background: radial-gradient(circle, #fff, transparent);
             pointer-events: none;
             animation: sparkle 1s ease-out forwards;
+        }
+
+        button:focus-visible, .action-button:focus-visible, .rotation-btn:focus-visible, .help-button:focus-visible {
+            outline: 2px solid #4ecdc4;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -617,7 +646,7 @@
                     <div class="player-score" id="p2score">0</div>
                 </div>
                 
-                <div id="aiThinking">
+                <div id="aiThinking" aria-live="polite" role="status">
                     <span id="aiStatus">AI thinking</span>
                     <span class="thinking-dots"></span>
                 </div>
@@ -648,18 +677,18 @@
         </div>
 
         <div class="rotation-controls">
-            <button class="rotation-btn" onclick="game.rotateLeft()">⬅️</button>
-            <button class="rotation-btn" onclick="game.rotateRight()">➡️</button>
-            <button class="rotation-btn" onclick="game.rotateUp()">⬆️</button>
-            <button class="rotation-btn" onclick="game.rotateDown()">⬇️</button>
-            <button class="rotation-btn" onclick="game.resetView()">🏠</button>
+            <button class="rotation-btn" onclick="game.rotateLeft()" aria-label="Rotate left">⬅️</button>
+            <button class="rotation-btn" onclick="game.rotateRight()" aria-label="Rotate right">➡️</button>
+            <button class="rotation-btn" onclick="game.rotateUp()" aria-label="Rotate up">⬆️</button>
+            <button class="rotation-btn" onclick="game.rotateDown()" aria-label="Rotate down">⬇️</button>
+            <button class="rotation-btn" onclick="game.resetView()" aria-label="Reset view">🏠</button>
         </div>
 
         <div class="help-bottom">
-            <button class="help-button" onclick="game.showHelp()">?</button>
+            <button class="help-button" onclick="game.showHelp()" aria-label="Help">?</button>
         </div>
 
-        <div class="modal" id="gameEndModal">
+        <div class="modal" id="gameEndModal" role="dialog" aria-modal="true">
             <div class="modal-content">
                 <div class="modal-title" id="modalTitle">Game Over!</div>
                 <div class="modal-text" id="modalText">Well played!</div>
@@ -670,7 +699,7 @@
             </div>
         </div>
 
-        <div class="modal" id="helpModal">
+        <div class="modal" id="helpModal" role="dialog" aria-modal="true">
             <div class="modal-content">
                 <div class="modal-title">🎮 How to Play DOTS³</div>
                 <div class="modal-text help-content">
@@ -747,7 +776,7 @@
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setPixelRatio(window.devicePixelRatio);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 this.renderer.setClearColor(0x000000, 0);
                 this.renderer.shadowMap.enabled = true;
                 document.getElementById('gameContainer').appendChild(this.renderer.domElement);
@@ -786,7 +815,15 @@
                 this.defineFacesAndCubes();
                 this.animate();
                 this.updateUI();
-                
+
+                // Warn before leaving if game is in progress
+                window.addEventListener('beforeunload', (e) => {
+                    if (!this.gameEnded && this.moveCount > 0) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                    }
+                });
+
                 console.log('✨ Game ready!');
             }
 
@@ -1042,38 +1079,38 @@
                 
                 this.renderer.domElement.addEventListener('touchmove', (e) => {
                     e.preventDefault();
-                    
+
                     if (e.touches.length === 1 && !this.isPinching && touchStart) {
                         // Single touch - rotate
                         const deltaMove = {
                             x: e.touches[0].clientX - this.previousMousePosition.x,
                             y: e.touches[0].clientY - this.previousMousePosition.y
                         };
-                        
+
                         this.spherical.theta -= deltaMove.x * 0.01;
                         this.spherical.phi += deltaMove.y * 0.01;
                         this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
-                        
+
                         this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                         this.camera.lookAt(this.cameraTarget);
-                        
+
                         this.previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
                     } else if (e.touches.length === 2 && this.isPinching) {
                         // Pinch zoom
                         const dx = e.touches[0].clientX - e.touches[1].clientX;
                         const dy = e.touches[0].clientY - e.touches[1].clientY;
                         const distance = Math.sqrt(dx * dx + dy * dy);
-                        
+
                         const scale = distance / this.touchStartDistance;
                         const newRadius = this.spherical.radius / scale;
                         this.spherical.radius = Math.max(5, Math.min(30, newRadius));
-                        
+
                         this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                         this.camera.lookAt(this.cameraTarget);
-                        
+
                         this.touchStartDistance = distance;
                     }
-                });
+                }, { passive: false });
                 
                 this.renderer.domElement.addEventListener('touchend', (e) => {
                     if (touchStart && e.changedTouches.length > 0 && !this.isPinching) {
@@ -1102,10 +1139,10 @@
                     const distance = this.spherical.radius;
                     const newDistance = Math.max(5, Math.min(30, distance + e.deltaY * 0.01));
                     this.spherical.radius = newDistance;
-                    
+
                     this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                     this.camera.lookAt(this.cameraTarget);
-                });
+                }, { passive: false });
                 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'h' || e.key === 'H') this.showHint();
@@ -1119,10 +1156,14 @@
                     }
                 });
                 
+                this._resizeTimeout = null;
                 window.addEventListener('resize', () => {
-                    this.camera.aspect = window.innerWidth / window.innerHeight;
-                    this.camera.updateProjectionMatrix();
-                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    clearTimeout(this._resizeTimeout);
+                    this._resizeTimeout = setTimeout(() => {
+                        this.camera.aspect = window.innerWidth / window.innerHeight;
+                        this.camera.updateProjectionMatrix();
+                        this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    }, 150);
                 });
             }
 
@@ -1705,14 +1746,15 @@
 
             animate() {
                 requestAnimationFrame(() => this.animate());
-                
-                // Auto-rotation
-                if (this.autoRotate) {
+
+                // Auto-rotation (respect prefers-reduced-motion)
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (this.autoRotate && !prefersReducedMotion) {
                     this.spherical.theta += this.rotationSpeed;
                     this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                     this.camera.lookAt(this.cameraTarget);
                 }
-                
+
                 this.renderer.render(this.scene, this.camera);
             }
         }

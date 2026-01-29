@@ -571,16 +571,16 @@
                 dispatch({ type: 'RESET_GAME', preset: 'medium', allowDuplicates: false });
             }, []); // Run once on mount
 
-            // Timer effect
+            // Timer effect — only run the interval while the game is active
             React.useEffect(() => {
+                if (gameStatus !== 'playing') return;
+
                 const timer = setInterval(() => {
-                    if (gameStatus === 'playing') {
-                        dispatch({ type: 'INCREMENT_TIME' });
-                    }
+                    dispatch({ type: 'INCREMENT_TIME' });
                 }, 1000);
-                
+
                 return () => clearInterval(timer);
-            }, [gameStatus]); // Re-run if gameStatus changes
+            }, [gameStatus]); // Clears interval when gameStatus leaves 'playing'
 
             // Handle clicking on a color in the palette
             const handlePaletteColorClick = (color) => {
@@ -798,10 +798,18 @@
                         
                         {/* Win overlay */}
                         {gameStatus === 'won' && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 fade-in" role="dialog" aria-labelledby="win-message">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in" role="dialog" aria-labelledby="win-message">
                                 <h2 id="win-message" className="text-4xl md:text-5xl font-bold text-yellow-300 text-shadow-neon win-animation">
                                     YOU WON!
                                 </h2>
+                                <p className="text-cyan-200 mt-3 text-sm">Solved in {guesses.length} {guesses.length === 1 ? 'attempt' : 'attempts'} ({formatTime(elapsedTime)})</p>
+                                <button
+                                    onClick={handleNewGame}
+                                    className="mt-6 py-3 px-8 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg shadow-lg shadow-cyan-500/50 transition-all duration-200 transform hover:scale-105 active:scale-95 border border-cyan-400"
+                                    aria-label="Play again"
+                                >
+                                    Play Again
+                                </button>
                             </div>
                         )}
 

@@ -441,8 +441,9 @@
             
             game.sol.vx += dx * solAccel * deltaTime;
             game.sol.vy += dy * solAccel * deltaTime;
-            game.sol.vx *= solFriction;
-            game.sol.vy *= solFriction;
+            const solFrictionDt = Math.pow(solFriction, deltaTime * 60);
+            game.sol.vx *= solFrictionDt;
+            game.sol.vy *= solFrictionDt;
             
             game.sol.x += game.sol.vx;
             game.sol.y += game.sol.vy;
@@ -461,15 +462,16 @@
                 if (dist > 5) {
                     // Stronger attraction when farther away
                     const force = Math.min(1, dist / 200) * lunaAccel;
-                    game.luna.vx += (dx / dist) * force;
-                    game.luna.vy += (dy / dist) * force;
+                    game.luna.vx += (dx / dist) * force * deltaTime * 60;
+                    game.luna.vy += (dy / dist) * force * deltaTime * 60;
                 }
             }
             
             // Luna physics with ice sliding
             const lunaFriction = 0.94; // Less friction = more sliding
-            game.luna.vx *= lunaFriction;
-            game.luna.vy *= lunaFriction;
+            const lunaFrictionDt = Math.pow(lunaFriction, deltaTime * 60);
+            game.luna.vx *= lunaFrictionDt;
+            game.luna.vy *= lunaFrictionDt;
             
             game.luna.x += game.luna.vx;
             game.luna.y += game.luna.vy;
@@ -485,8 +487,8 @@
             }
             
             // Update trails
-            updateTrail(game.sol);
-            updateTrail(game.luna);
+            updateTrail(game.sol, deltaTime);
+            updateTrail(game.luna, deltaTime);
             
             // Calculate proximity magnetism
             const proximityDist = Math.hypot(game.sol.x - game.luna.x, game.sol.y - game.luna.y);
@@ -495,10 +497,11 @@
             if (game.proximityPower > 0.5) {
                 // Time dilation effect
                 const slowFactor = 0.5 + (1 - game.proximityPower) * 0.5;
-                game.sol.vx *= slowFactor;
-                game.sol.vy *= slowFactor;
-                game.luna.vx *= slowFactor;
-                game.luna.vy *= slowFactor;
+                const slowFactorDt = Math.pow(slowFactor, deltaTime * 60);
+                game.sol.vx *= slowFactorDt;
+                game.sol.vy *= slowFactorDt;
+                game.luna.vx *= slowFactorDt;
+                game.luna.vy *= slowFactorDt;
                 
                 // Screen shake
                 game.screenShake.power = game.proximityPower * 2;
@@ -548,8 +551,9 @@
             game.windParticles = game.windParticles.filter(p => {
                 p.x += p.vx * deltaTime * 60;
                 p.y += p.vy * deltaTime * 60;
-                p.vx *= 0.98;
-                p.vy *= 0.98;
+                const windFrictionDt = Math.pow(0.98, deltaTime * 60);
+                p.vx *= windFrictionDt;
+                p.vy *= windFrictionDt;
                 p.life -= deltaTime;
                 return p.life > 0;
             });
@@ -601,23 +605,24 @@
                 return frost.life > 0;
             });
             
-            // Character squash and stretch
+            // Character squash and stretch (lerp factor 0.2 per frame at 60fps)
+            const lerpFactor = 1 - Math.pow(1 - 0.2, deltaTime * 60);
             const solSpeed = Math.hypot(game.sol.vx, game.sol.vy);
             const targetScaleX = 1 + solSpeed * 0.02;
             const targetScaleY = 1 - solSpeed * 0.02;
-            game.sol.scaleX += (targetScaleX - game.sol.scaleX) * 0.2;
-            game.sol.scaleY += (targetScaleY - game.sol.scaleY) * 0.2;
-            
+            game.sol.scaleX += (targetScaleX - game.sol.scaleX) * lerpFactor;
+            game.sol.scaleY += (targetScaleY - game.sol.scaleY) * lerpFactor;
+
             const targetScaleXLuna = 1 + lunaSpeed * 0.03;
             const targetScaleYLuna = 1 - lunaSpeed * 0.03;
-            game.luna.scaleX += (targetScaleXLuna - game.luna.scaleX) * 0.2;
-            game.luna.scaleY += (targetScaleYLuna - game.luna.scaleY) * 0.2;
+            game.luna.scaleX += (targetScaleXLuna - game.luna.scaleX) * lerpFactor;
+            game.luna.scaleY += (targetScaleYLuna - game.luna.scaleY) * lerpFactor;
             
             // Update screen shake
             if (game.screenShake.power > 0) {
                 game.screenShake.x = (Math.random() - 0.5) * game.screenShake.power;
                 game.screenShake.y = (Math.random() - 0.5) * game.screenShake.power;
-                game.screenShake.power *= 0.9;
+                game.screenShake.power *= Math.pow(0.9, deltaTime * 60);
             }
             
             // Check win condition
@@ -631,17 +636,17 @@
             }
         }
         
-        function updateTrail(character) {
+        function updateTrail(character, deltaTime) {
             // Add current position to trail
             character.trail.push({
                 x: character.x,
                 y: character.y,
                 life: 1
             });
-            
-            // Update and clean trail
+
+            // Update and clean trail (0.02 per frame at 60fps = 1.2 per second)
             character.trail = character.trail.filter(point => {
-                point.life -= 0.02;
+                point.life -= 1.2 * deltaTime;
                 return point.life > 0;
             });
             

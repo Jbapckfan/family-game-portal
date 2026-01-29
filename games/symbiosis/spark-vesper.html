@@ -180,7 +180,7 @@
     <div id="startScreen">
         <h1>
             <span class="spark-title">SPARK</span>
-            &
+            <span style="color: rgba(255,255,255,0.6);">&amp;</span>
             <span class="vesper-title">VESPER</span>
         </h1>
         <p style="color: rgba(255,255,255,0.5); margin-bottom: 30px;">Two souls • Two dimensions • One destiny</p>
@@ -237,6 +237,9 @@
         // Canvas setup
         let sparkCanvas, vesperCanvas, sparkCtx, vesperCtx;
         let width, height;
+
+        // Cached DOM elements (avoid querying every frame)
+        let dividerEl, sparkMeterFillEl, vesperMeterFillEl;
         
         // Particle System
         class Particle {
@@ -321,7 +324,10 @@
             vesperCanvas = document.getElementById('vesperCanvas');
             sparkCtx = sparkCanvas.getContext('2d');
             vesperCtx = vesperCanvas.getContext('2d');
-            
+            dividerEl = document.getElementById('divider');
+            sparkMeterFillEl = document.querySelector('#sparkMeter .meter-fill');
+            vesperMeterFillEl = document.querySelector('#vesperMeter .meter-fill');
+
             resize();
             window.addEventListener('resize', resize);
             
@@ -442,16 +448,17 @@
             updateTrail(game.spark, sparkSpeed);
             updateTrail(game.vesper, vesperSpeed);
             
-            // Calculate proximity
-            const proxDist = Math.abs(game.spark.x - game.vesper.x) + Math.abs(game.spark.y - game.vesper.y);
+            // Calculate proximity (Euclidean distance)
+            const proxDx = game.spark.x - game.vesper.x;
+            const proxDy = game.spark.y - game.vesper.y;
+            const proxDist = Math.sqrt(proxDx * proxDx + proxDy * proxDy);
             game.proximityPower = Math.max(0, 1 - proxDist / 200);
             
             // Update divider glow based on proximity
-            const divider = document.getElementById('divider');
             if (game.proximityPower > 0.5) {
-                divider.classList.add('resonating');
+                dividerEl.classList.add('resonating');
             } else {
-                divider.classList.remove('resonating');
+                dividerEl.classList.remove('resonating');
             }
             
             // Spawn particles
@@ -486,8 +493,8 @@
             game.spark.prevY = game.spark.y;
 
             // Update meters
-            document.querySelector('#sparkMeter .meter-fill').style.width = game.spark.charge + '%';
-            document.querySelector('#vesperMeter .meter-fill').style.width = game.vesper.flow + '%';
+            sparkMeterFillEl.style.width = game.spark.charge + '%';
+            vesperMeterFillEl.style.width = game.vesper.flow + '%';
         }
         
         function updateTrail(character, speed) {

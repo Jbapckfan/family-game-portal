@@ -771,6 +771,7 @@
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(window.devicePixelRatio);
                 this.renderer.setClearColor(0x000000, 0);
                 this.renderer.shadowMap.enabled = true;
                 document.getElementById('gameContainer').appendChild(this.renderer.domElement);
@@ -1395,6 +1396,8 @@
                     if (progress < 1) {
                         requestAnimationFrame(animateCube);
                     } else {
+                        cubeGeometry.dispose();
+                        cubeMaterial.dispose();
                         this.faceGroup.remove(cubeMesh);
                     }
                 };
@@ -1448,6 +1451,9 @@
                         requestAnimationFrame(animateParticles);
                     } else {
                         particles.forEach(particle => {
+                            particle.geometry.dispose();
+                            if (particle.material.map) particle.material.map.dispose();
+                            particle.material.dispose();
                             this.particleGroup.remove(particle);
                         });
                     }
@@ -1585,14 +1591,26 @@
                     edge.material.opacity = 0.3;
                 });
                 
-                // Clear face group
+                // Clear face group (dispose geometry/materials to prevent memory leaks)
                 while(this.faceGroup.children.length > 0) {
-                    this.faceGroup.remove(this.faceGroup.children[0]);
+                    const child = this.faceGroup.children[0];
+                    if (child.geometry) child.geometry.dispose();
+                    if (child.material) {
+                        if (child.material.map) child.material.map.dispose();
+                        child.material.dispose();
+                    }
+                    this.faceGroup.remove(child);
                 }
-                
-                // Clear particles
+
+                // Clear particles (dispose geometry/materials to prevent memory leaks)
                 while(this.particleGroup.children.length > 0) {
-                    this.particleGroup.remove(this.particleGroup.children[0]);
+                    const child = this.particleGroup.children[0];
+                    if (child.geometry) child.geometry.dispose();
+                    if (child.material) {
+                        if (child.material.map) child.material.map.dispose();
+                        child.material.dispose();
+                    }
+                    this.particleGroup.remove(child);
                 }
                 
                 this.currentPlayer = 0;

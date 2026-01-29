@@ -3907,7 +3907,6 @@ class Planet {
         this.shieldTime = 0;
         this.empTime = 0;
         this.wormholePartner = null;
-        this.incomingAttacks = [];
         this.orbitParticles = [];
         this.blackHoleAngle = 0;
         this.selected = false; // Track selection state
@@ -3957,12 +3956,6 @@ class Planet {
         for (const p of this.orbitParticles) {
             p.angle += p.speed * dt;
         }
-        
-        // Filter out stealthed player particles from incoming attacks (AI can't see them)
-        this.incomingAttacks = flyingParticles.filter(p =>
-            p.target === this && p.owner !== this.owner &&
-            !(p.owner === PLAYER && p.stealthTime > 0)
-        );
         
         // Update selection state based on game.selectedPlanets
         this.selected = game.selectedPlanets.includes(this);
@@ -4100,23 +4093,6 @@ class Planet {
                 ctx.textAlign = 'center';
                 ctx.fillText(`#${selIndex}`, this.x + this.size + 20, this.y - this.size - 5);
             }
-        }
-        
-        // Incoming attack warning
-        if (this.incomingAttacks.length > 0 && isMyPlanet(this)) {
-            const warningPulse = (Math.sin(Date.now() / 100) + 1) / 2;
-            ctx.strokeStyle = `rgba(255, 100, 100, ${0.3 + warningPulse * 0.5})`;
-            ctx.lineWidth = 3;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size + 25, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            ctx.fillStyle = '#f44';
-            ctx.font = 'bold 12px system-ui';
-            ctx.textAlign = 'center';
-            ctx.fillText(`⚠️ ${this.incomingAttacks.length}`, this.x, this.y - this.size - 30);
         }
         
         // Shield effect
@@ -5608,7 +5584,7 @@ function animate(time) {
             // - Single player: always
             // - Co-op multiplayer: only on host
             // - PvP multiplayer: never
-            if (!multiplayerActive || (isCoopMode && isHost)) {
+            if (!multiplayerActive || (mpGameMode === 'coop' && isHost)) {
                 updateAI(dt);
             }
             updateAbilities(realDt);
@@ -5817,6 +5793,7 @@ document.getElementById('playAgainBtn').addEventListener('click', () => {
     document.getElementById('resultScreen').classList.add('hidden');
     playerHarvested = 0;
     enemyHarvested = 0;
+    resetCurrentGameStats();
     generateLevel();
     startMusic();
 });

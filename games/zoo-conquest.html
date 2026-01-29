@@ -106,6 +106,16 @@
   <script type="text/babel">
     const { useState, useEffect, useCallback } = React;
 
+    // Fisher-Yates shuffle for unbiased randomization
+    function shuffleArray(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
     // Animal Army Types with Colors
     const ANIMAL_ARMIES = {
       turtles: { name: 'Turtles', color: '#22c55e', emoji: '🐢', bgColor: 'bg-green-500' },
@@ -631,28 +641,6 @@
       Australia: 'Australia'
     };
 
-    const RegionLegend = () => (
-      <div className="bg-gradient-to-b from-amber-800 to-amber-900 rounded-xl p-3 shadow-lg border-2 border-amber-600">
-        <div className="text-center text-amber-100 font-bold text-sm mb-2 game-title">🗺️ Continents</div>
-        <div className="grid grid-cols-2 gap-1.5">
-          {Object.entries(REGIONS).map(([name, region]) => (
-            <div
-              key={name}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs"
-              style={{ backgroundColor: region.color + '33', borderLeft: `3px solid ${region.color}` }}
-            >
-              <span>{region.emoji}</span>
-              <span className="font-semibold text-white">{REGION_DISPLAY_NAMES[name]}</span>
-              <span className="ml-auto font-bold" style={{ color: region.lightColor }}>+{region.bonus}</span>
-            </div>
-          ))}
-        </div>
-        <div className="text-center text-amber-200 text-xs mt-2 italic">
-          Control all territories for bonus armies!
-        </div>
-      </div>
-    );
-
     // Player Panel
     const PlayerPanel = ({ player, isCurrentPlayer, armies, cards, onTradeCards, canTrade, troops, turnPhase, isAI }) => {
       // Count card types for display
@@ -939,41 +927,6 @@
       );
     };
 
-    // Reinforcement Tray - Shows individual animal pieces to place
-    const ReinforcementTray = ({ army, count, emoji }) => {
-      // Create array of animal pieces with staggered positions
-      const pieces = Array.from({ length: count }, (_, i) => i);
-
-      return (
-        <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-xl p-4 shadow-lg border-4 border-amber-800">
-          <div className="text-center mb-2">
-            <span className="text-white font-bold text-lg">🎯 Click your territories to deploy!</span>
-          </div>
-          <div className="bg-amber-900/50 rounded-lg p-3 min-h-[80px] flex flex-wrap justify-center items-center gap-1">
-            {pieces.length > 0 ? (
-              pieces.map((_, i) => (
-                <div
-                  key={i}
-                  className="animal-piece text-3xl transform hover:scale-125 transition-transform cursor-pointer animate-bounce"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    animationDuration: '1s',
-                  }}
-                >
-                  {emoji}
-                </div>
-              ))
-            ) : (
-              <div className="text-amber-300 text-sm">All troops deployed! ✅</div>
-            )}
-          </div>
-          <div className="text-center mt-2">
-            <span className="text-amber-200 text-sm">{count} {count === 1 ? 'animal' : 'animals'} remaining</span>
-          </div>
-        </div>
-      );
-    };
-
     // Main Game Component
     const ZooRiskGame = () => {
       const [gamePhase, setGamePhase] = useState('setup'); // setup, place, play, battle, fortify, gameOver
@@ -993,7 +946,7 @@
       const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
       const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
       const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
-      const [cardDeck, setCardDeck] = useState([...CARD_DECK].sort(() => Math.random() - 0.5)); // Shuffled deck
+      const [cardDeck, setCardDeck] = useState(shuffleArray(CARD_DECK)); // Shuffled deck
 
       // Setup functions
       const startGame = (numHumans, numAI) => {
@@ -1015,7 +968,7 @@
 
         // Distribute territories randomly
         const territoryIds = Object.keys(TERRITORIES);
-        const shuffled = [...territoryIds].sort(() => Math.random() - 0.5);
+        const shuffled = shuffleArray(territoryIds);
         const newTerritories = {};
 
         shuffled.forEach((id, i) => {
@@ -1069,8 +1022,10 @@
       const drawCard = () => {
         if (cardDeck.length === 0) {
           // Reshuffle if deck is empty
-          setCardDeck([...CARD_DECK].sort(() => Math.random() - 0.5));
-          return CARD_DECK[Math.floor(Math.random() * CARD_DECK.length)];
+          const reshuffled = shuffleArray(CARD_DECK);
+          const card = reshuffled[0];
+          setCardDeck(reshuffled.slice(1));
+          return card;
         }
         const card = cardDeck[0];
         setCardDeck(prev => prev.slice(1));
@@ -1259,15 +1214,17 @@
       };
 
       // AI: Find best territory to reinforce (border territories with enemies nearby)
-      const aiFindBestReinforceTarget = (army) => {
-        const myTerritories = getPlayerTerritories(army);
+      const aiFindBestReinforceTarget = (army, territories) => {
+        const myTerritories = Object.entries(territories)
+          .filter(([id, t]) => t.owner === army)
+          .map(([id, t]) => ({ id, ...t }));
         let bestTarget = null;
         let bestScore = -1;
 
         myTerritories.forEach(territory => {
           const connections = TERRITORIES[territory.id].connections;
           const enemyNeighbors = connections.filter(
-            connId => gameState.territories[connId]?.owner !== army
+            connId => territories[connId]?.owner !== army
           ).length;
           // Prefer territories with more enemy neighbors and fewer troops
           const score = enemyNeighbors * 10 - territory.troops;
@@ -1410,11 +1367,17 @@
             setMessage(`🤖 ${aiName} placing ${troopsToPlace} reinforcements...`);
 
             // Place all troops at once instead of one by one
+            // Use a local copy of territories so each iteration sees updated troop counts
+            const localTerritories = {};
+            Object.entries(gameState.territories).forEach(([id, t]) => {
+              localTerritories[id] = { ...t };
+            });
             const reinforcements = {};
             for (let i = 0; i < troopsToPlace; i++) {
-              const target = aiFindBestReinforceTarget(army);
+              const target = aiFindBestReinforceTarget(army, localTerritories);
               if (target) {
                 reinforcements[target] = (reinforcements[target] || 0) + 1;
+                localTerritories[target] = { ...localTerritories[target], troops: localTerritories[target].troops + 1 };
               }
             }
 

@@ -162,65 +162,65 @@
       flamingos: { name: 'Flamingos', color: '#ec4899', emoji: '🦩', bgColor: 'bg-pink-500' },
     };
 
-    // 42 Territories matching Risk exactly (with zoo-themed names)
+    // 42 Territories matching Risk layout (with zoo-themed names)
     // Map positioned for 900x600 viewBox
     const TERRITORIES = {
-      // NORTH AMERICA - 9 territories (+5 bonus) - Top left area
-      alaska: { name: 'Alaska', region: 'NorthAmerica', x: 70, y: 70, connections: ['northwest', 'alberta', 'kamchatka'] },
-      northwest: { name: 'Northwest', region: 'NorthAmerica', x: 130, y: 90, connections: ['alaska', 'alberta', 'ontario', 'greenland'] },
-      greenland: { name: 'Greenland', region: 'NorthAmerica', x: 280, y: 50, connections: ['northwest', 'ontario', 'quebec', 'iceland'] },
-      alberta: { name: 'Alberta', region: 'NorthAmerica', x: 100, y: 140, connections: ['alaska', 'northwest', 'ontario', 'westus'] },
-      ontario: { name: 'Ontario', region: 'NorthAmerica', x: 170, y: 150, connections: ['northwest', 'alberta', 'greenland', 'quebec', 'westus', 'eastus'] },
-      quebec: { name: 'Quebec', region: 'NorthAmerica', x: 230, y: 140, connections: ['ontario', 'greenland', 'eastus'] },
-      westus: { name: 'West US', region: 'NorthAmerica', x: 90, y: 200, connections: ['alberta', 'ontario', 'eastus', 'centralam'] },
-      eastus: { name: 'East US', region: 'NorthAmerica', x: 160, y: 210, connections: ['ontario', 'quebec', 'westus', 'centralam'] },
-      centralam: { name: 'C. America', region: 'NorthAmerica', x: 120, y: 270, connections: ['westus', 'eastus', 'venezuela'] },
+      // EAGLE RIDGE - 9 territories (+5 bonus) - Top left area
+      alaska: { name: "Eagle's Peak", region: 'NorthAmerica', x: 70, y: 70, connections: ['northwest', 'alberta', 'kamchatka'] },
+      northwest: { name: 'Wolf Den', region: 'NorthAmerica', x: 130, y: 90, connections: ['alaska', 'alberta', 'ontario', 'greenland'] },
+      greenland: { name: 'Polar Bear Cave', region: 'NorthAmerica', x: 280, y: 50, connections: ['northwest', 'ontario', 'quebec', 'iceland'] },
+      alberta: { name: 'Bison Plains', region: 'NorthAmerica', x: 100, y: 140, connections: ['alaska', 'northwest', 'ontario', 'westus'] },
+      ontario: { name: 'Moose Meadow', region: 'NorthAmerica', x: 170, y: 150, connections: ['northwest', 'alberta', 'greenland', 'quebec', 'westus', 'eastus'] },
+      quebec: { name: 'Beaver Lodge', region: 'NorthAmerica', x: 230, y: 140, connections: ['ontario', 'greenland', 'eastus'] },
+      westus: { name: 'Coyote Canyon', region: 'NorthAmerica', x: 90, y: 200, connections: ['alberta', 'ontario', 'eastus', 'centralam'] },
+      eastus: { name: 'Deer Hollow', region: 'NorthAmerica', x: 160, y: 210, connections: ['ontario', 'quebec', 'westus', 'centralam'] },
+      centralam: { name: 'Jaguar Jungle', region: 'NorthAmerica', x: 120, y: 270, connections: ['westus', 'eastus', 'venezuela'] },
 
-      // SOUTH AMERICA - 4 territories (+2 bonus) - Bottom left
-      venezuela: { name: 'Venezuela', region: 'SouthAmerica', x: 160, y: 330, connections: ['centralam', 'peru', 'brazil'] },
-      peru: { name: 'Peru', region: 'SouthAmerica', x: 150, y: 400, connections: ['venezuela', 'brazil', 'argentina'] },
-      brazil: { name: 'Brazil', region: 'SouthAmerica', x: 210, y: 380, connections: ['venezuela', 'peru', 'argentina', 'northafrica'] },
-      argentina: { name: 'Argentina', region: 'SouthAmerica', x: 170, y: 480, connections: ['peru', 'brazil'] },
+      // PARROT PARADISE - 4 territories (+2 bonus) - Bottom left
+      venezuela: { name: 'Macaw Canopy', region: 'SouthAmerica', x: 160, y: 330, connections: ['centralam', 'peru', 'brazil'] },
+      peru: { name: 'Llama Heights', region: 'SouthAmerica', x: 150, y: 400, connections: ['venezuela', 'brazil', 'argentina'] },
+      brazil: { name: 'Toucan Forest', region: 'SouthAmerica', x: 210, y: 380, connections: ['venezuela', 'peru', 'argentina', 'northafrica'] },
+      argentina: { name: 'Penguin Shore', region: 'SouthAmerica', x: 170, y: 480, connections: ['peru', 'brazil'] },
 
-      // EUROPE - 7 territories (+5 bonus) - Top center
-      iceland: { name: 'Iceland', region: 'Europe', x: 340, y: 70, connections: ['greenland', 'scandinavia', 'britain'] },
-      scandinavia: { name: 'Scandinavia', region: 'Europe', x: 420, y: 80, connections: ['iceland', 'britain', 'northeur', 'ukraine'] },
-      ukraine: { name: 'Ukraine', region: 'Europe', x: 490, y: 120, connections: ['scandinavia', 'northeur', 'southeur', 'ural', 'afghan', 'mideast'] },
-      britain: { name: 'Britain', region: 'Europe', x: 350, y: 140, connections: ['iceland', 'scandinavia', 'northeur', 'westeur'] },
-      northeur: { name: 'N. Europe', region: 'Europe', x: 420, y: 150, connections: ['scandinavia', 'ukraine', 'britain', 'westeur', 'southeur'] },
-      westeur: { name: 'W. Europe', region: 'Europe', x: 360, y: 210, connections: ['britain', 'northeur', 'southeur', 'northafrica'] },
-      southeur: { name: 'S. Europe', region: 'Europe', x: 430, y: 200, connections: ['northeur', 'ukraine', 'westeur', 'northafrica', 'egypt', 'mideast'] },
+      // DEER WOODS - 7 territories (+5 bonus) - Top center
+      iceland: { name: 'Puffin Cliffs', region: 'Europe', x: 340, y: 70, connections: ['greenland', 'scandinavia', 'britain'] },
+      scandinavia: { name: 'Reindeer Tundra', region: 'Europe', x: 420, y: 80, connections: ['iceland', 'britain', 'northeur', 'ukraine'] },
+      ukraine: { name: 'Lynx Woods', region: 'Europe', x: 490, y: 120, connections: ['scandinavia', 'northeur', 'southeur', 'ural', 'afghan', 'mideast'] },
+      britain: { name: 'Fox Burrow', region: 'Europe', x: 350, y: 140, connections: ['iceland', 'scandinavia', 'northeur', 'westeur'] },
+      northeur: { name: 'Hedgehog Thicket', region: 'Europe', x: 420, y: 150, connections: ['scandinavia', 'ukraine', 'britain', 'westeur', 'southeur'] },
+      westeur: { name: 'Stork Nest', region: 'Europe', x: 360, y: 210, connections: ['britain', 'northeur', 'southeur', 'northafrica'] },
+      southeur: { name: 'Ibex Ridge', region: 'Europe', x: 430, y: 200, connections: ['northeur', 'ukraine', 'westeur', 'northafrica', 'egypt', 'mideast'] },
 
-      // AFRICA - 6 territories (+3 bonus) - Bottom center
-      northafrica: { name: 'N. Africa', region: 'Africa', x: 370, y: 300, connections: ['brazil', 'westeur', 'southeur', 'egypt', 'eastafrica', 'congo'] },
-      egypt: { name: 'Egypt', region: 'Africa', x: 440, y: 280, connections: ['southeur', 'northafrica', 'eastafrica', 'mideast'] },
-      eastafrica: { name: 'E. Africa', region: 'Africa', x: 470, y: 350, connections: ['northafrica', 'egypt', 'congo', 'southafrica', 'madagascar', 'mideast'] },
-      congo: { name: 'Congo', region: 'Africa', x: 410, y: 400, connections: ['northafrica', 'eastafrica', 'southafrica'] },
-      southafrica: { name: 'S. Africa', region: 'Africa', x: 430, y: 480, connections: ['congo', 'eastafrica', 'madagascar'] },
-      madagascar: { name: 'Madagascar', region: 'Africa', x: 500, y: 460, connections: ['eastafrica', 'southafrica'] },
+      // LION SAVANNA - 6 territories (+3 bonus) - Bottom center
+      northafrica: { name: 'Camel Dunes', region: 'Africa', x: 370, y: 300, connections: ['brazil', 'westeur', 'southeur', 'egypt', 'eastafrica', 'congo'] },
+      egypt: { name: 'Cobra Oasis', region: 'Africa', x: 440, y: 280, connections: ['southeur', 'northafrica', 'eastafrica', 'mideast'] },
+      eastafrica: { name: 'Zebra Savanna', region: 'Africa', x: 470, y: 350, connections: ['northafrica', 'egypt', 'congo', 'southafrica', 'madagascar', 'mideast'] },
+      congo: { name: 'Gorilla Grove', region: 'Africa', x: 410, y: 400, connections: ['northafrica', 'eastafrica', 'southafrica'] },
+      southafrica: { name: 'Rhino Plateau', region: 'Africa', x: 430, y: 480, connections: ['congo', 'eastafrica', 'madagascar'] },
+      madagascar: { name: 'Lemur Island', region: 'Africa', x: 500, y: 460, connections: ['eastafrica', 'southafrica'] },
 
-      // ASIA - 12 territories (+7 bonus) - Right side
-      ural: { name: 'Ural', region: 'Asia', x: 560, y: 100, connections: ['ukraine', 'siberia', 'afghan', 'china'] },
-      siberia: { name: 'Siberia', region: 'Asia', x: 620, y: 70, connections: ['ural', 'yakutsk', 'irkutsk', 'mongolia', 'china'] },
-      yakutsk: { name: 'Yakutsk', region: 'Asia', x: 700, y: 50, connections: ['siberia', 'irkutsk', 'kamchatka'] },
-      kamchatka: { name: 'Kamchatka', region: 'Asia', x: 780, y: 70, connections: ['alaska', 'yakutsk', 'irkutsk', 'mongolia', 'japan'] },
-      irkutsk: { name: 'Irkutsk', region: 'Asia', x: 680, y: 110, connections: ['siberia', 'yakutsk', 'kamchatka', 'mongolia'] },
-      mongolia: { name: 'Mongolia', region: 'Asia', x: 700, y: 170, connections: ['siberia', 'irkutsk', 'kamchatka', 'china', 'japan'] },
-      japan: { name: 'Japan', region: 'Asia', x: 800, y: 180, connections: ['kamchatka', 'mongolia'] },
-      afghan: { name: 'Afghan', region: 'Asia', x: 540, y: 190, connections: ['ukraine', 'ural', 'china', 'india', 'mideast'] },
-      china: { name: 'China', region: 'Asia', x: 650, y: 230, connections: ['ural', 'siberia', 'mongolia', 'afghan', 'india', 'siam'] },
-      mideast: { name: 'Mid East', region: 'Asia', x: 500, y: 260, connections: ['ukraine', 'southeur', 'egypt', 'eastafrica', 'afghan', 'india'] },
-      india: { name: 'India', region: 'Asia', x: 590, y: 300, connections: ['afghan', 'china', 'mideast', 'siam'] },
-      siam: { name: 'Siam', region: 'Asia', x: 660, y: 330, connections: ['china', 'india', 'indonesia'] },
+      // TIGER TERRITORY - 12 territories (+7 bonus) - Right side
+      ural: { name: 'Snow Leopard Pass', region: 'Asia', x: 560, y: 100, connections: ['ukraine', 'siberia', 'afghan', 'china'] },
+      siberia: { name: 'Tiger Trail', region: 'Asia', x: 620, y: 70, connections: ['ural', 'yakutsk', 'irkutsk', 'mongolia', 'china'] },
+      yakutsk: { name: 'Yak Steppe', region: 'Asia', x: 700, y: 50, connections: ['siberia', 'irkutsk', 'kamchatka'] },
+      kamchatka: { name: 'Crane Marsh', region: 'Asia', x: 780, y: 70, connections: ['alaska', 'yakutsk', 'irkutsk', 'mongolia', 'japan'] },
+      irkutsk: { name: 'Sable Forest', region: 'Asia', x: 680, y: 110, connections: ['siberia', 'yakutsk', 'kamchatka', 'mongolia'] },
+      mongolia: { name: 'Wild Horse Range', region: 'Asia', x: 700, y: 170, connections: ['siberia', 'irkutsk', 'kamchatka', 'china', 'japan'] },
+      japan: { name: 'Tanuki Garden', region: 'Asia', x: 800, y: 180, connections: ['kamchatka', 'mongolia'] },
+      afghan: { name: 'Markhor Summit', region: 'Asia', x: 540, y: 190, connections: ['ukraine', 'ural', 'china', 'india', 'mideast'] },
+      china: { name: 'Panda Bamboo', region: 'Asia', x: 650, y: 230, connections: ['ural', 'siberia', 'mongolia', 'afghan', 'india', 'siam'] },
+      mideast: { name: 'Oryx Desert', region: 'Asia', x: 500, y: 260, connections: ['ukraine', 'southeur', 'egypt', 'eastafrica', 'afghan', 'india'] },
+      india: { name: 'Elephant Temple', region: 'Asia', x: 590, y: 300, connections: ['afghan', 'china', 'mideast', 'siam'] },
+      siam: { name: 'Gibbon Canopy', region: 'Asia', x: 660, y: 330, connections: ['china', 'india', 'indonesia'] },
 
-      // AUSTRALIA - 4 territories (+2 bonus) - Bottom right
-      indonesia: { name: 'Indonesia', region: 'Australia', x: 700, y: 400, connections: ['siam', 'newguinea', 'westaus'] },
-      newguinea: { name: 'New Guinea', region: 'Australia', x: 780, y: 380, connections: ['indonesia', 'westaus', 'eastaus'] },
-      westaus: { name: 'W. Australia', region: 'Australia', x: 730, y: 480, connections: ['indonesia', 'newguinea', 'eastaus'] },
-      eastaus: { name: 'E. Australia', region: 'Australia', x: 800, y: 500, connections: ['newguinea', 'westaus'] },
+      // KANGAROO OUTBACK - 4 territories (+2 bonus) - Bottom right
+      indonesia: { name: 'Komodo Beach', region: 'Australia', x: 700, y: 400, connections: ['siam', 'newguinea', 'westaus'] },
+      newguinea: { name: 'Bird of Paradise', region: 'Australia', x: 780, y: 380, connections: ['indonesia', 'westaus', 'eastaus'] },
+      westaus: { name: 'Wombat Outback', region: 'Australia', x: 730, y: 480, connections: ['indonesia', 'newguinea', 'eastaus'] },
+      eastaus: { name: 'Koala Grove', region: 'Australia', x: 800, y: 500, connections: ['newguinea', 'westaus'] },
     };
 
-    // 6 Continents matching Risk exactly
+    // 6 Zoo habitat regions (matching Risk layout)
     const REGIONS = {
       NorthAmerica: {
         territories: ['alaska', 'northwest', 'greenland', 'alberta', 'ontario', 'quebec', 'westus', 'eastus', 'centralam'],
@@ -610,23 +610,23 @@
         <ellipse cx="750" cy="450" rx="90" ry="80" fill={REGIONS.Australia.color} opacity="0.2" />
 
         {/* Region Labels */}
-        <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} N. AMERICA +{REGIONS.NorthAmerica.bonus}</text>
-        <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} S. AMERICA +{REGIONS.SouthAmerica.bonus}</text>
-        <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} EUROPE +{REGIONS.Europe.bonus}</text>
-        <text x="430" y="540" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} AFRICA +{REGIONS.Africa.bonus}</text>
-        <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} ASIA +{REGIONS.Asia.bonus}</text>
-        <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} AUSTRALIA +{REGIONS.Australia.bonus}</text>
+        <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} EAGLE RIDGE +{REGIONS.NorthAmerica.bonus}</text>
+        <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} PARROT PARADISE +{REGIONS.SouthAmerica.bonus}</text>
+        <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} DEER WOODS +{REGIONS.Europe.bonus}</text>
+        <text x="430" y="540" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} LION SAVANNA +{REGIONS.Africa.bonus}</text>
+        <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} TIGER TERRITORY +{REGIONS.Asia.bonus}</text>
+        <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} KANGAROO OUTBACK +{REGIONS.Australia.bonus}</text>
 
-        {/* Alaska-Kamchatka wrap-around connection */}
+        {/* Eagle's Peak-Crane Marsh wrap-around connection */}
         <path d="M 70 70 Q 0 70, 0 300 Q 0 530, 70 530 M 830 70 Q 900 70, 900 300 Q 900 530, 830 530"
               stroke="#666" strokeWidth="2" strokeDasharray="8,5" fill="none" opacity="0.5" />
-        <text x="10" y="300" fill="#888" fontSize="10" transform="rotate(-90, 10, 300)">← Alaska-Kamchatka →</text>
+        <text x="10" y="300" fill="#888" fontSize="10" transform="rotate(-90, 10, 300)">← Eagle's Peak–Crane Marsh →</text>
 
         {/* Connection paths */}
         {Object.entries(TERRITORIES).map(([id, data]) =>
           data.connections.map(connId => {
             if (id > connId) return null;
-            // Skip Alaska-Kamchatka - shown as wrap-around above
+            // Skip Eagle's Peak-Crane Marsh - shown as wrap-around above
             if ((id === 'alaska' && connId === 'kamchatka') || (id === 'kamchatka' && connId === 'alaska')) return null;
             const conn = TERRITORIES[connId];
             if (!conn) return null;
@@ -669,12 +669,12 @@
 
     // Region Legend Component - Shows all regions with bonuses
     const REGION_DISPLAY_NAMES = {
-      NorthAmerica: 'N. America',
-      SouthAmerica: 'S. America',
-      Europe: 'Europe',
-      Africa: 'Africa',
-      Asia: 'Asia',
-      Australia: 'Australia'
+      NorthAmerica: 'Eagle Ridge',
+      SouthAmerica: 'Parrot Paradise',
+      Europe: 'Deer Woods',
+      Africa: 'Lion Savanna',
+      Asia: 'Tiger Territory',
+      Australia: 'Kangaroo Outback'
     };
 
     // Player Panel

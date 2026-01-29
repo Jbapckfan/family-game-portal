@@ -1061,7 +1061,7 @@
         if (firstPlayer.isAI) {
           setMessage(`🤖 ${firstPlayer.name}'s turn!`);
         } else {
-          setMessage(`${firstPlayer.name}'s turn! Place your ${initialTroops} animals.`);
+          setMessage(`Your turn! Place your ${initialTroops} animals.`);
         }
       };
 
@@ -2231,7 +2231,7 @@
               {Object.entries(REGIONS).map(([name, region]) => (
                 <div key={name} className="flex items-center gap-2 py-0.5 text-sm">
                   <div className="w-3 h-3 rounded" style={{backgroundColor: region.color}}></div>
-                  <span className="text-gray-300 flex-1">{region.emoji} {name}</span>
+                  <span className="text-gray-300 flex-1">{region.emoji} {REGION_DISPLAY_NAMES[name]}</span>
                   <span className="text-green-400 font-bold">+{region.bonus}</span>
                 </div>
               ))}

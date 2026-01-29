@@ -384,6 +384,7 @@
         window.addEventListener('touchend', () => sparkDragging = false);
         
         function startGame() {
+            if (game.started) return; // Prevent multiple game loops
             document.getElementById('startScreen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('startScreen').style.display = 'none';
@@ -397,13 +398,9 @@
             
             game.time += dt;
             
-            // Update Spark physics
-            const prevSparkX = game.spark.x;
-            const prevSparkY = game.spark.y;
-            
-            // Calculate velocity from position change
-            game.spark.vx = game.spark.x - prevSparkX;
-            game.spark.vy = game.spark.y - prevSparkY;
+            // Calculate velocity from position change (using previous frame's position)
+            game.spark.vx = game.spark.x - (game.spark.prevX || game.spark.x);
+            game.spark.vy = game.spark.y - (game.spark.prevY || game.spark.y);
             
             // Build charge through movement
             const sparkSpeed = Math.sqrt(game.spark.vx * game.spark.vx + game.spark.vy * game.spark.vy);
@@ -484,6 +481,10 @@
                 game.particles = game.particles.slice(-200);
             }
             
+            // Store previous positions for next frame's velocity calculation
+            game.spark.prevX = game.spark.x;
+            game.spark.prevY = game.spark.y;
+
             // Update meters
             document.querySelector('#sparkMeter .meter-fill').style.width = game.spark.charge + '%';
             document.querySelector('#vesperMeter .meter-fill').style.width = game.vesper.flow + '%';

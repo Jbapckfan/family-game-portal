@@ -61,13 +61,22 @@
 
         // --- HELPER FUNCTIONS ---
         const generateBoard = () => {
-            let board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
-            const clicks = Math.floor(Math.random() * 5) + 5;
-            for (let i = 0; i < clicks; i++) {
-                const r = Math.floor(Math.random() * GRID_SIZE);
-                const c = Math.floor(Math.random() * GRID_SIZE);
-                board = toggleLights(board, r, c);
-            }
+            let board;
+            do {
+                board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
+                const clicks = Math.floor(Math.random() * 8) + 5;
+                const usedPositions = new Set();
+                for (let i = 0; i < clicks; i++) {
+                    let r, c, key;
+                    do {
+                        r = Math.floor(Math.random() * GRID_SIZE);
+                        c = Math.floor(Math.random() * GRID_SIZE);
+                        key = r + ',' + c;
+                    } while (usedPositions.has(key));
+                    usedPositions.add(key);
+                    board = toggleLights(board, r, c);
+                }
+            } while (checkWinCondition(board));
             return board;
         };
 
@@ -104,11 +113,7 @@
         const LightsOutGame = () => {
             const [board, setBoard] = React.useState(generateBoard());
             const [moves, setMoves] = React.useState(0);
-            const [isWon, setIsWon] = React.useState(false);
-
-            React.useEffect(() => {
-                setIsWon(checkWinCondition(board));
-            }, [board]);
+            const isWon = checkWinCondition(board);
 
             const handleLightClick = (r, c) => {
                 if (isWon) return;
@@ -119,7 +124,6 @@
             const resetGame = () => {
                 setBoard(generateBoard());
                 setMoves(0);
-                setIsWon(false);
             };
 
             return (

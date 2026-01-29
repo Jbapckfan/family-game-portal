@@ -456,22 +456,22 @@
                                     <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
                                     <ul className="list-disc list-inside text-gray-200 space-y-2">
                                         <li>
-                                            **Choose a Mode:** Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
+                                            <strong>Choose a Mode:</strong> Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
                                         </li>
                                         <li>
-                                            **Take Turns:** Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
+                                            <strong>Take Turns:</strong> Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
                                         </li>
                                         <li>
-                                            **Win Condition:** The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
+                                            <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
                                         </li>
                                         <li>
-                                            **Draw:** If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                                            <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
                                         </li>
                                         <li>
-                                            **Pause/Resume:** Click the **"Pause"** button to temporarily stop the game and blur the screen. Click **"Resume"** to continue.
+                                            <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
                                         </li>
                                         <li>
-                                            **New Game:** Click the "New Game" button to start over.
+                                            <strong>New Game:</strong> Click the "New Game" button to start over.
                                         </li>
                                     </ul>
                                 </div>
@@ -540,10 +540,16 @@
 
                         {/* Win/Draw Overlay */}
                         {winner && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 fade-in">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none">
                                 <h2 className={`text-5xl font-bold text-yellow-300 text-shadow-neon ${winner !== 'Draw' ? 'win-animation' : ''}`}>
                                     {winner === 'Draw' ? "IT'S A DRAW!" : `${winner} WINS!`}
                                 </h2>
+                                <button
+                                    onClick={resetGame}
+                                    className="mt-6 py-2 px-6 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                >
+                                    New Game
+                                </button>
                             </div>
                         )}
 
@@ -568,22 +574,22 @@
                                     <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
                                     <ul className="list-disc list-inside text-gray-200 space-y-2">
                                         <li>
-                                            **Choose a Mode:** Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
+                                            <strong>Choose a Mode:</strong> Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
                                         </li>
                                         <li>
-                                            **Take Turns:** Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
+                                            <strong>Take Turns:</strong> Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
                                         </li>
                                         <li>
-                                            **Win Condition:** The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
+                                            <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
                                         </li>
                                         <li>
-                                            **Draw:** If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                                            <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
                                         </li>
                                         <li>
-                                            **Pause/Resume:** Click the **"Pause"** button to temporarily stop the game and blur the screen. Click **"Resume"** to continue.
+                                            <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
                                         </li>
                                         <li>
-                                            **New Game:** Click the "New Game" button to start over.
+                                            <strong>New Game:</strong> Click the "New Game" button to start over.
                                         </li>
                                     </ul>
                                 </div>

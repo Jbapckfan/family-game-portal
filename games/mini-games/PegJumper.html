@@ -39,7 +39,9 @@
                     [null, 1, null, 1, null, 1, null, 1, null],
                     [1, null, 1, null, 1, null, 1, null, 1],
                 ],
-                initialEmpty: { row: 0, col: 4 }
+                initialEmpty: { row: 0, col: 4 },
+                // Staggered grid: adjacent pegs are 2 cols apart
+                directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
                 name: "Cross",
@@ -52,7 +54,9 @@
                     [null, null, 1, 1, 1, null, null],
                     [null, null, 1, 1, 1, null, null],
                 ],
-                initialEmpty: { row: 3, col: 3 }
+                initialEmpty: { row: 3, col: 3 },
+                // Dense grid: adjacent pegs are 1 col apart
+                directions: [[0,2],[0,-2],[2,0],[-2,0]]
             },
             {
                 name: "Triple Triangle",
@@ -63,7 +67,9 @@
                     [null, null, null, 1, null, 1, null, null, null],
                     [null, null, 1, null, 1, null, 1, null, null],
                 ],
-                 initialEmpty: { row: 2, col: 4 }
+                initialEmpty: { row: 2, col: 4 },
+                // Staggered grid: same spacing as Triangle
+                directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
                 name: "Rectangle",
@@ -73,7 +79,9 @@
                     [1, 1, 1, 1, 1],
                     [1, 1, 1, 1, 1],
                 ],
-                initialEmpty: { row: 1, col: 2 }
+                initialEmpty: { row: 1, col: 2 },
+                // Dense grid: adjacent pegs are 1 col apart
+                directions: [[0,2],[0,-2],[2,0],[-2,0]]
             }
         ];
 
@@ -196,17 +204,11 @@
             // --- Game Logic ---
 
             const checkForNoMoves = (currentBoard) => {
+                const levelDirections = LEVELS[currentLevelIndex].directions;
                 for (let r = 0; r < currentBoard.length; r++) {
                     for (let c = 0; c < currentBoard[r].length; c++) {
                         if (currentBoard[r][c] === true) { // It's a peg
-                            // Check all possible jump directions
-                            const directions = [
-                                [0, 4], [0, -4], // Horizontal
-                                [4, 0], [-4, 0], // Vertical
-                                [2, 2], [2, -2], // Diagonal
-                                [-2, 2], [-2, -2] // Diagonal
-                            ];
-                             for (const [dr, dc] of directions) {
+                             for (const [dr, dc] of levelDirections) {
                                 const endR = r + dr, endC = c + dc;
                                 const midR = r + dr / 2, midC = c + dc / 2;
                                 if (currentBoard[endR] && currentBoard[endR][endC] === false && currentBoard[midR] && currentBoard[midR][midC] === true) {
@@ -234,21 +236,14 @@
                         const dr = end.row - start.row;
                         const dc = end.col - start.col;
 
-                        const isHorizontalJump = dr === 0 && Math.abs(dc) === 2;
-                        const isVerticalJump = dc === 0 && Math.abs(dr) === 2;
-                        // Diagonal jumps are now different because of the grid structure
-                        const isDiagonalJump = Math.abs(dr) === 1 && Math.abs(dc) === 1;
-
                         const jumpedRow = start.row + dr / 2;
                         const jumpedCol = start.col + dc / 2;
-                        
-                        // The jump logic needs to account for the grid structure.
-                        // A visual jump over one peg in the array can be different distances.
-                        const isRealHorizontalJump = dr === 0 && Math.abs(dc) === 4;
-                        const isRealVerticalJump = dc === 0 && Math.abs(dr) === 4;
-                        const isRealDiagonalJump = Math.abs(dr) === 2 && Math.abs(dc) === 2;
-                        
-                        if ((isRealHorizontalJump || isRealVerticalJump || isRealDiagonalJump) && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
+
+                        // Check if this jump matches one of the level's valid directions
+                        const levelDirections = LEVELS[currentLevelIndex].directions;
+                        const isValidJump = levelDirections.some(([jdr, jdc]) => dr === jdr && dc === jdc);
+
+                        if (isValidJump && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
                             if (!isTimerRunning) setIsTimerRunning(true); // Start timer on first move
                             
                             const newBoard = board.map(r => [...r]);
@@ -327,7 +322,7 @@
                                 <div>High Score: <span className="font-bold text-yellow-400">{highScores[currentLevelIndex] || 0}</span></div>
                             </div>
                             <div className="text-center text-2xl font-semibold text-white">{getGameStatusMessage()}</div>
-                            <div className="text-right">Time: <span className="font-bold text-pink-400">{new Date(time * 1000).toISOString().substr(14, 5)}</span></div>
+                            <div className="text-right">Time: <span className="font-bold text-pink-400">{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
                         </div>
 
                         <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center">

@@ -317,7 +317,7 @@
             initParallaxLayers();
             setupControls();
             game.gameStarted = true;
-            gameLoop();
+            requestAnimationFrame(gameLoop);
         }
         
         function initParallaxLayers() {

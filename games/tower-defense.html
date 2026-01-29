@@ -1352,6 +1352,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize canvas - these need to be global
 let canvas, ctx;
 
+// Audio stub - not implemented yet
+function playSound(name) { /* audio not implemented yet */ }
+
 // Game settings
 let gameSpeed = 1;
 
@@ -1498,7 +1501,7 @@ class GradientCache {
     getLinearGradient(ctx, x0, y0, x1, y1, stops) {
         const key = `linear_${x0}_${y0}_${x1}_${y1}_${JSON.stringify(stops)}`;
         if (!this.cache.has(key)) {
-            const gradient = gradientCache.getLinearGradient(ctx, x0, y0, x1, y1, [
+            const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
             for (const [position, color] of stops) {
                 gradient.addColorStop(position, color);
             }
@@ -1506,11 +1509,11 @@ class GradientCache {
         }
         return this.cache.get(key);
     }
-    
+
     getRadialGradient(ctx, x0, y0, r0, x1, y1, r1, stops) {
         const key = `radial_${x0}_${y0}_${r0}_${x1}_${y1}_${r1}_${JSON.stringify(stops)}`;
         if (!this.cache.has(key)) {
-            const gradient = gradientCache.getRadialGradient(ctx, x0, y0, r0, x1, y1, r1, [
+            const gradient = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
             for (const [position, color] of stops) {
                 gradient.addColorStop(position, color);
             }
@@ -2885,14 +2888,14 @@ class Tower {
                         enemies.forEach(enemy => {
                             const distSq = distanceSquared(enemy.position.x, enemy.position.y, target.position.x, target.position.y);
                             if (distSq <= 150 * 150) {
-                                enemy.takeDamage(1000 * (1 - dist / 150));
+                                enemy.takeDamage(1000 * (1 - Math.sqrt(distSq) / 150));
                             }
                         });
                         // Nuke explosion effect
                         for (let i = 0; i < 100; i++) {
                             const angle = Math.random() * Math.PI * 2;
                             const speed = Math.random() * 30;
-                            particlePool.get(target.position.x, target.position.y, Math.cos(angle) * speed, Math.sin(angle) * speed, ['#ff0000', 1, 15);
+                            particlePool.get(target.position.x, target.position.y, Math.cos(angle) * speed, Math.sin(angle) * speed, '#ff0000', 1, 15);
                         }
                         screenShake = 30;
                         playSound('explosion');
@@ -3021,9 +3024,9 @@ class Tower {
             if (enemy.inTunnel) continue;
             
             const distSq = distanceSquared(enemy.position.x, enemy.position.y, this.x, this.y);
-            
-            if (dist < effectiveRange) {
-                targets.push({ enemy, dist });
+
+            if (distSq < effectiveRange * effectiveRange) {
+                targets.push({ enemy, dist: distSq });
             }
         }
         
@@ -3090,10 +3093,10 @@ class Tower {
                     if (hitTargets.includes(enemy) || enemy.inTunnel) continue;
                     
                     const distSq = distanceSquared(enemy.position.x, enemy.position.y, currentTarget.position.x, currentTarget.position.y);
-                    
-                    if (dist < nearestDist) {
+
+                    if (distSq < nearestDist * nearestDist) {
                         nearestEnemy = enemy;
-                        nearestDist = dist;
+                        nearestDist = Math.sqrt(distSq);
                     }
                 }
                 
@@ -3162,9 +3165,9 @@ class Tower {
         const inRange = enemies.filter(enemy => {
             if (enemy.inTunnel) return false;
             const distSq = distanceSquared(enemy.position.x, enemy.position.y, this.x, this.y);
-            return dist < this.stats.range;
+            return distSq < this.stats.range * this.stats.range;
         });
-        
+
         inRange.forEach(enemy => {
             const damage = this.stats.damage * (1 + this.synergyBonus) * 3;
             if (enemy.takeDamage(damage, enemy.position.x, enemy.position.y)) {
@@ -3190,7 +3193,7 @@ class Tower {
         const allEnemies = enemies.filter(enemy => {
             if (enemy.inTunnel) return false;
             const distSq = distanceSquared(enemy.position.x, enemy.position.y, this.x, this.y);
-            return dist < this.stats.range * 1.5;
+            return distSq < (this.stats.range * 1.5) * (this.stats.range * 1.5);
         });
         
         allEnemies.forEach(enemy => {
@@ -3223,8 +3226,9 @@ class Tower {
         enemies.forEach(enemy => {
             if (enemy.inTunnel) return;
             const distSq = distanceSquared(enemy.position.x, enemy.position.y, x, y);
-            if (dist < radius) {
-                const damage = this.stats.damage * (1 + this.synergyBonus) * 4 * (1 - dist / radius);
+            if (distSq < radius * radius) {
+                const actualDist = Math.sqrt(distSq);
+                const damage = this.stats.damage * (1 + this.synergyBonus) * 4 * (1 - actualDist / radius);
                 if (enemy.takeDamage(damage, enemy.position.x, enemy.position.y)) {
                     const index = enemies.indexOf(enemy);
                 if (index !== -1) enemies.splice(index, 1);
@@ -5177,8 +5181,8 @@ function updateProjectiles() {
             const dx = proj.target.position.x - proj.x;
             const dy = proj.target.position.y - proj.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distSq < 20 * 20) {
+
+            if (dist < 20) {
                 // Hit target
                 if (proj.target.takeDamage(proj.damage, proj.target.position.x, proj.target.position.y)) {
                     const index = enemies.indexOf(proj.target);
@@ -5195,11 +5199,10 @@ function updateProjectiles() {
                         if (enemy === proj.target || enemy.inTunnel) return true;
                         
                         const explodeDistSq = distanceSquared(
-                            Math.pow(enemy.position.x - proj.x, 2) +
-                            Math.pow(enemy.position.y - proj.y, 2)
+                            enemy.position.x, enemy.position.y, proj.x, proj.y
                         );
-                        
-                        if (explodeDist < 80) {
+
+                        if (explodeDistSq < 80 * 80) {
                             if (enemy.takeDamage(proj.damage * 0.5, enemy.position.x, enemy.position.y)) {
                                 if (proj.towerRef) {
                                     proj.towerRef.kills++;
@@ -5219,11 +5222,10 @@ function updateProjectiles() {
                         if (enemy === proj.target || enemy.inTunnel) return true;
                         
                         const splashDistSq = distanceSquared(
-                            Math.pow(enemy.position.x - proj.x, 2) +
-                            Math.pow(enemy.position.y - proj.y, 2)
+                            enemy.position.x, enemy.position.y, proj.x, proj.y
                         );
-                        
-                        if (splashDist < proj.splashRadius) {
+
+                        if (splashDistSq < proj.splashRadius * proj.splashRadius) {
                             if (enemy.takeDamage(proj.damage * 0.3, enemy.position.x, enemy.position.y)) {
                                 if (proj.towerRef) {
                                     proj.towerRef.kills++;
@@ -5284,7 +5286,7 @@ function updateBeams() {
 function updatePowerups() {
     powerups = powerups.filter(powerup => {
         // Check if player collected it (click)
-        const distSq = distanceSquared(mousePos.x - (powerup.x, mousePos.y - (powerup.y, camera.x), camera.y));
+        const distSq = distanceSquared(mousePos.x, mousePos.y, powerup.x - camera.x, powerup.y - camera.y);
         
         if (distSq < 30 * 30) {
             if (powerup.type === 'money') {
@@ -6553,19 +6555,17 @@ function canPlaceTower(x, y) {
     // Check if position overlaps with existing towers
     for (let tower of towers) {
         const distSq = distanceSquared(tower.x, tower.y, gridX, gridY);
-        if (dist < gridSize) return false;
+        if (distSq < gridSize * gridSize) return false;
     }
-    
+
     // Check enemy spawn and base
     const spawnDistSq = distanceSquared(
-        Math.pow(gridX - path[0].x, 2) + 
-        Math.pow(gridY - path[0].y, 2)
+        gridX, gridY, path[0].x, path[0].y
     );
     const baseDistSq = distanceSquared(
-        Math.pow(gridX - path[path.length-1].x, 2) + 
-        Math.pow(gridY - path[path.length-1].y, 2)
+        gridX, gridY, path[path.length-1].x, path[path.length-1].y
     );
-    if (spawnDist < 100 || baseDist < 100) return false;
+    if (spawnDistSq < 100 * 100 || baseDistSq < 100 * 100) return false;
     
     return true;
 }
@@ -6663,18 +6663,17 @@ function changePathLayout(newLayout) {
             const p1 = path[i];
             const p2 = path[i + 1];
             const dist = distanceToLineSegment(savedTower.x, savedTower.y, p1, p2);
-            if (distSq < 45 * 45) {
+            if (dist < 45) {
                 validPosition = false;
                 break;
             }
         }
-        
+
         // Check distance from new base position
         const baseDistSq = distanceSquared(
-            Math.pow(savedTower.x - (base.x + base.width/2), 2) +
-            Math.pow(savedTower.y - (base.y + base.height/2), 2)
+            savedTower.x, savedTower.y, base.x + base.width/2, base.y + base.height/2
         );
-        if (baseDist < 100) validPosition = false;
+        if (baseDistSq < 100 * 100) validPosition = false;
         
         if (validPosition) {
             // Recreate tower at same position
@@ -7404,26 +7403,24 @@ function gameLoop(currentTime) {
                 const p1 = path[i];
                 const p2 = path[i + 1];
                 const dist = distanceToLineSegment(worldX, worldY, p1, p2);
-                if (distSq < 45 * 45) { // Adjusted for narrower path
+                if (dist < 45) { // Adjusted for narrower path
                     validPosition = false;
                     break;
                 }
             }
-            
+
             // Check distance from base
             const baseDistSq = distanceSquared(
-                Math.pow(worldX - (base.x + base.width/2), 2) +
-                Math.pow(worldY - (base.y + base.height/2), 2)
+                worldX, worldY, base.x + base.width/2, base.y + base.height/2
             );
-            if (baseDist < 100) validPosition = false;
-            
+            if (baseDistSq < 100 * 100) validPosition = false;
+
             // Check distance from other towers
             for (let tower of towers) {
                 const towerDistSq = distanceSquared(
-                    Math.pow(worldX - tower.x, 2) +
-                    Math.pow(worldY - tower.y, 2)
+                    worldX, worldY, tower.x, tower.y
                 );
-                if (towerDist < 60) {
+                if (towerDistSq < 60 * 60) {
                     validPosition = false;
                     break;
                 }
@@ -7568,10 +7565,9 @@ function setupEventListeners() {
         const screenX = tower.x - camera.x;
         const screenY = tower.y - camera.y;
         const mouseDistSq = distanceSquared(
-            Math.pow(screenX - mousePos.x, 2) +
-            Math.pow(screenY - mousePos.y, 2)
+            screenX, screenY, mousePos.x, mousePos.y
         );
-        tower.showFaintRange = mouseDist < 100 && tower !== selectedTower && tower !== hoveredTower;
+        tower.showFaintRange = mouseDistSq < 100 * 100 && tower !== selectedTower && tower !== hoveredTower;
     }
 });
 
@@ -7643,31 +7639,29 @@ function handleCanvasClick() {
             const p1 = path[i];
             const p2 = path[i + 1];
             const dist = distanceToLineSegment(worldX, worldY, p1, p2);
-            if (distSq < 45 * 45) { // Adjusted for narrower path
+            if (dist < 45) { // Adjusted for narrower path
                 validPosition = false;
                 break;
             }
         }
-        
+
         // Check distance from base
         const baseDistSq = distanceSquared(
-            Math.pow(worldX - (base.x + base.width/2), 2) +
-            Math.pow(worldY - (base.y + base.height/2), 2)
+            worldX, worldY, base.x + base.width/2, base.y + base.height/2
         );
-        if (baseDist < 100) validPosition = false;
-        
+        if (baseDistSq < 100 * 100) validPosition = false;
+
         // Check distance from other towers
         for (let tower of towers) {
             const towerDistSq = distanceSquared(
-                Math.pow(worldX - tower.x, 2) +
-                Math.pow(worldY - tower.y, 2)
+                worldX, worldY, tower.x, tower.y
             );
-            if (towerDist < 60) {
+            if (towerDistSq < 60 * 60) {
                 validPosition = false;
                 break;
             }
         }
-        
+
         const cost = towerTypes[selectedTowerType].cost;
         if (validPosition && money >= cost) {
             money -= cost;
@@ -7728,11 +7722,10 @@ function handleCanvasClick() {
             const abilityX = clickedTower.x + 30 * scale;
             const abilityY = clickedTower.y - 30 * scale;
             const abilityDistSq = distanceSquared(
-                Math.pow(worldX - abilityX, 2) +
-                Math.pow(worldY - abilityY, 2)
+                worldX, worldY, abilityX, abilityY
             );
-            
-            if (abilityDist < 15 * scale && clickedTower.level >= 5) {
+
+            if (abilityDistSq < (15 * scale) * (15 * scale) && clickedTower.level >= 5) {
                 // Clicked on ability button
                 clickedTower.activateAbility();
             } else {

@@ -600,7 +600,7 @@
 
     <div id="gameContainer">
         <div class="header">
-            <a href="../MainMenuView.swift" class="nav-button">
+            <a href="../../" class="nav-button">
                 🏠 Main Menu
             </a>
             <h1 class="game-title">DOTS³</h1>
@@ -1192,8 +1192,8 @@
             }
 
             handleClick(event) {
-                if (this.gameEnded) return;
-                
+                if (this.gameEnded || this.currentPlayer !== 0 || this.isAiThinking) return;
+
                 event.preventDefault();
                 const rect = this.renderer.domElement.getBoundingClientRect();
                 this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -1262,7 +1262,7 @@
                 }
                 
                 // Trigger AI move
-                if (this.currentPlayer === 1 && this.gameMode === 'human-vs-ai') {
+                if (this.gameMode === 'ai-vs-ai' || (this.currentPlayer === 1 && this.gameMode === 'human-vs-ai')) {
                     setTimeout(() => this.makeAIMove(), 500);
                 }
             }
@@ -1457,7 +1457,8 @@
             }
 
             async makeAIMove() {
-                if (this.currentPlayer !== 1 || this.isAiThinking || this.gameEnded) return;
+                if (this.isAiThinking || this.gameEnded) return;
+                if (this.gameMode === 'human-vs-ai' && this.currentPlayer !== 1) return;
                 
                 this.setAIThinking(true);
                 

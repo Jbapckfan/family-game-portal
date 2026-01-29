@@ -8,9 +8,6 @@
     <meta name="format-detection" content="telephone=no">
     <title>Ultra Premium Tower Defense - v2</title>
 
-    <!-- ENHANCEMENT SYSTEMS -->
-    <script src="flawless_placement_system.js"></script>
-    <script src="critical_gameplay_fix.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
@@ -1193,6 +1190,9 @@
     </div>
 
 <script>
+// Audio stub - sound not implemented yet
+function playSound(name) { /* audio not implemented yet */ }
+
 // Initialize canvas - these need to be global
 let canvas, ctx;
 
@@ -1545,8 +1545,8 @@ const pathLayouts = {
         { x: 50, y: 280, tunnel: false },
         { x: 20, y: 280, tunnel: false }
     ],
-    zigzag: [
-        // Zigzag pattern - Levels 6-10
+    zigzagAlt: [
+        // Zigzag pattern (alternate) - Levels 6-10
         { x: 50, y: 100, tunnel: false },
         { x: 150, y: 100, tunnel: false },
         { x: 250, y: 100, tunnel: false },
@@ -5157,7 +5157,7 @@ function startChallengeWave() {
     // Add harder enemies as waves progress
     if (challengeWave >= 3) {
         for (let i = 0; i < Math.floor(challengeWave / 3); i++) {
-            enemyPool.push('drone');
+            enemyPool.push('speeder');
         }
     }
     
@@ -5169,7 +5169,7 @@ function startChallengeWave() {
     
     if (challengeWave >= 10) {
         for (let i = 0; i < Math.floor(challengeWave / 10); i++) {
-            enemyPool.push('destroyer');
+            enemyPool.push('brute');
         }
     }
     
@@ -5651,7 +5651,7 @@ function getPathLayoutForLevel(level) {
     else if (level <= 25) return 'spiral';
     // Loop back through paths for higher levels
     else {
-        const pathCycle = ['serpentine', 'figure8', 'zigzag', 'diamond', 'spiral'];
+        const pathCycle = ['serpentine', 'figure8', 'zigzag', 'diamond', 'spiral', 'zigzagAlt'];
         const index = Math.floor((level - 1) / 5) % pathCycle.length;
         return pathCycle[index];
     }
@@ -5766,6 +5766,7 @@ function showPathTransition(newLayout) {
     const layoutNames = {
         spiral: 'Spiral Path',
         zigzag: 'Zigzag Highway',
+        zigzagAlt: 'Zigzag Alternate',
         cross: 'Cross Roads',
         maze: 'The Maze',
         highway: 'Speed Highway'
@@ -6551,7 +6552,7 @@ function handleCanvasClick() {
         }
         
         if (clickedTower) {
-            const sellPrice = Math.floor(clickedTower.stats.cost * 0.7);
+            const sellPrice = Math.floor(clickedTower.stats.cost * 0.7 * clickedTower.level);
             money += sellPrice;
             towers = towers.filter(t => t !== clickedTower);
             if (selectedTower === clickedTower) {

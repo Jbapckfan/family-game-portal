@@ -227,6 +227,93 @@
         .target {
             animation: pulse 1.5s infinite;
         }
+        /* Mirror toolbar - horizontal bar at the bottom of the screen */
+        .mirror-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(0deg, rgba(15, 21, 71, 0.95) 0%, rgba(15, 21, 71, 0.7) 100%);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(119, 153, 255, 0.25);
+            z-index: 20;
+            padding: 0 16px;
+        }
+
+        .mirror-slots-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mirror-slot {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(119, 153, 255, 0.3);
+            border-radius: 12px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .mirror-slot:hover {
+            background: rgba(119, 153, 255, 0.15);
+            border-color: rgba(119, 153, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .mirror-slot.empty {
+            opacity: 0.3;
+            cursor: default;
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mirror-slot.empty:hover {
+            transform: none;
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mirror-slot.next-to-place {
+            border-color: rgba(0, 255, 204, 0.7);
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4), inset 0 0 8px rgba(0, 255, 204, 0.1);
+            animation: slotPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes slotPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(0, 255, 204, 0.4), inset 0 0 8px rgba(0, 255, 204, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 204, 0.6), inset 0 0 12px rgba(0, 255, 204, 0.2); }
+        }
+
+        .mirror-slot.dragging {
+            opacity: 0.4;
+            transform: scale(0.9);
+            border-style: dashed;
+        }
+
+        .drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            filter: drop-shadow(0 0 12px rgba(119, 153, 255, 0.8));
+            opacity: 0.9;
+        }
+
+        .mirror-actual {
+            display: block;
+            width: 44px;
+            height: 44px;
+        }
     </style>
 </head>
 <body>
@@ -1043,7 +1130,22 @@
                         startDragFromStorage(index, e);
                     }
                 });
-                
+
+                // Add touch drag functionality
+                slotElement.addEventListener('touchstart', (e) => {
+                    if (!mirrorData.used) {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        const touchEvent = {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY,
+                            currentTarget: e.currentTarget,
+                            preventDefault: function() {}
+                        };
+                        startDragFromStorage(index, touchEvent, true);
+                    }
+                });
+
                 // Add double-click functionality
                 slotElement.addEventListener('dblclick', (e) => {
                     if (!mirrorData.used) {
@@ -1088,85 +1190,127 @@
             updateMirrorStorageUI();
         }
 
-        function startDragFromStorage(inventoryIndex, e) {
+        function startDragFromStorage(inventoryIndex, e, isTouch) {
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
             const slotElement = e.currentTarget;
-            
+
             // Visual feedback for the slot
             slotElement.classList.add('dragging');
-            
+
             // Create drag ghost
             const dragGhost = createDragGhost(mirrorData);
             document.body.appendChild(dragGhost);
-            
+
             // Position drag ghost
             updateDragGhost(dragGhost, e.clientX, e.clientY);
-            
+
             // Create mirror in game world
             const rect = canvas.getBoundingClientRect();
             const gameX = e.clientX - rect.left;
             const gameY = e.clientY - rect.top;
-            
+
             const mirror = new Mirror(
-                gameX, gameY, 
-                mirrorData.angle, 
-                mirrorData.length, 
+                gameX, gameY,
+                mirrorData.angle,
+                mirrorData.length,
                 mirrorData.id
             );
-            
+
             mirror.originalInventoryIndex = inventoryIndex;
             mirror.isSelected = true;
             mirror.isPlaced = true;
-            
+
             gameState.mirrors.push(mirror);
             gameState.selectedMirror = mirror;
             gameState.isDragging = true;
-            
+
             // Mark as used
             mirrorData.used = true;
-            
+
             // Mouse move handler for drag ghost
             const handleMouseMove = (e) => {
                 updateDragGhost(dragGhost, e.clientX, e.clientY);
-                
+
                 // Update mirror position in game
                 const rect = canvas.getBoundingClientRect();
                 const gameX = e.clientX - rect.left;
                 const gameY = e.clientY - rect.top;
-                
+
                 mirror.x = gameX;
                 mirror.y = gameY;
-                
+
                 // Auto-update laser
                 gameState.laserBeam.calculate();
             };
-            
+
+            // Touch move handler for drag ghost
+            const handleTouchMove = (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                updateDragGhost(dragGhost, touch.clientX, touch.clientY);
+
+                // Update mirror position in game
+                const rect = canvas.getBoundingClientRect();
+                const gameX = touch.clientX - rect.left;
+                const gameY = touch.clientY - rect.top;
+
+                mirror.x = gameX;
+                mirror.y = gameY;
+
+                // Auto-update laser
+                gameState.laserBeam.calculate();
+            };
+
             // Mouse up handler
             const handleMouseUp = () => {
                 // Clean up drag ghost
                 if (dragGhost && dragGhost.parentNode) {
                     dragGhost.parentNode.removeChild(dragGhost);
                 }
-                
+
                 // Remove slot dragging state
                 slotElement.classList.remove('dragging');
-                
+
                 // End dragging
                 gameState.isDragging = false;
-                
+
                 // Remove event listeners
                 document.removeEventListener('mousemove', handleMouseMove);
                 document.removeEventListener('mouseup', handleMouseUp);
-                
+
                 // Update UI
                 updateMirrorStorageUI();
                 updateUI();
             };
-            
-            // Add event listeners
+
+            // Touch end handler
+            const handleTouchEnd = () => {
+                // Clean up drag ghost
+                if (dragGhost && dragGhost.parentNode) {
+                    dragGhost.parentNode.removeChild(dragGhost);
+                }
+
+                // Remove slot dragging state
+                slotElement.classList.remove('dragging');
+
+                // End dragging
+                gameState.isDragging = false;
+
+                // Remove event listeners
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
+
+                // Update UI
+                updateMirrorStorageUI();
+                updateUI();
+            };
+
+            // Add event listeners (mouse and touch)
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
-            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+
             // Prevent default drag behavior
             e.preventDefault();
         }
@@ -1503,7 +1647,7 @@
         // Resize handler
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.height = window.innerHeight - 80;
         });
 
         // Start game

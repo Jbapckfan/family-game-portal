@@ -16,7 +16,7 @@
             font-family: 'Orbitron', sans-serif;
             background-color: #0d0c1d;
             background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
-            overflow: hidden;
+            overflow-x: hidden;
             margin: 0;
             padding: 0;
         }
@@ -211,13 +211,27 @@
     <div id="root"></div>
     
     <script type="text/babel">
-        // Sound effects
-        const selectSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-        const placeSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-        const submitSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-        const winSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-        const loseSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-        const hintSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        // Sound effects using Web Audio API
+        const AudioSystem = (() => {
+            let ctx;
+            const getCtx = () => ctx || (ctx = new (window.AudioContext || window.webkitAudioContext)());
+            return {
+                play(freq, duration = 0.15, type = 'sine') {
+                    try {
+                        const c = getCtx();
+                        const o = c.createOscillator();
+                        const g = c.createGain();
+                        o.type = type;
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.1, c.currentTime);
+                        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+                        o.connect(g).connect(c.destination);
+                        o.start();
+                        o.stop(c.currentTime + duration);
+                    } catch(e) {}
+                }
+            };
+        })();
 
         // --- CONFIGURATION ---
         const GAME_PRESETS = {
@@ -452,7 +466,7 @@
                     if (blackPegsInGuess === state.gameConfig.codeLength) {
                         newGameStatus = 'won';
                         newMessage = 'Congratulations! You broke the code!';
-                        winSound.play();
+                        AudioSystem.play(880, 0.5);
                         newStats = {
                             gamesPlayed: newStats.gamesPlayed + 1,
                             wins: newStats.wins + 1,
@@ -463,14 +477,14 @@
                     } else if (newGuesses.length >= state.gameConfig.maxGuesses) {
                         newGameStatus = 'lost';
                         newMessage = `Game Over! The code was revealed below.`;
-                        loseSound.play();
+                        AudioSystem.play(220, 0.3, 'sawtooth');
                         newStats = {
                             ...newStats,
                             gamesPlayed: newStats.gamesPlayed + 1
                         };
                         localStorage.setItem('neonBreakerStats', JSON.stringify(newStats)); // Save stats to local storage
                     } else {
-                        submitSound.play();
+                        AudioSystem.play(660);
                         newMessage = newComboMessage; // Display combo message after guess
                     }
 
@@ -502,7 +516,7 @@
                     const randomSlot = emptySlots[Math.floor(Math.random() * emptySlots.length)];
                     const newGuessWithHint = [...state.currentGuess];
                     newGuessWithHint[randomSlot] = state.secretCode[randomSlot];
-                    hintSound.play();
+                    AudioSystem.play(600);
                     return { ...state, currentGuess: newGuessWithHint, hintsRemaining: state.hintsRemaining - 1 };
                 
                 case 'TOGGLE_DUPLICATES':
@@ -572,8 +586,7 @@
             const handlePaletteColorClick = (color) => {
                 if (gameStatus !== 'playing') return;
                 dispatch({ type: 'SET_SELECTED_COLOR', color });
-                selectSound.currentTime = 0;
-                selectSound.play();
+                AudioSystem.play(440);
             };
 
             // Handle clicking on a peg in the current guess area
@@ -587,8 +600,7 @@
                     newGuess[index] = null;
                     dispatch({ type: 'UPDATE_CURRENT_GUESS', newGuess });
                     dispatch({ type: 'SET_SELECTED_COLOR', color: null });
-                    placeSound.currentTime = 0;
-                    placeSound.play();
+                    AudioSystem.play(520);
                 } else {
                     // Place the selected color
                     if (selectedColorFromPalette !== null) {
@@ -599,8 +611,7 @@
                         newGuess[index] = selectedColorFromPalette;
                         dispatch({ type: 'UPDATE_CURRENT_GUESS', newGuess });
                         dispatch({ type: 'SET_SELECTED_COLOR', color: null });
-                        placeSound.currentTime = 0;
-                        placeSound.play();
+                        AudioSystem.play(520);
                     } else {
                         dispatch({ type: 'SET_MESSAGE', message: 'Select a color from the palette first!' });
                         return;

@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Alford Family Game Portal</title>
+    <meta name="description" content="Alford Family Game Portal - A collection of 14 browser-based games including strategy, puzzle, tower defense, and more.">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Game Portal">
+    <meta property="og:title" content="Alford Family Game Portal">
+    <meta property="og:description" content="A collection of 14 browser-based games including strategy, puzzle, tower defense, and more.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="manifest" href="manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -13,6 +23,7 @@
             min-height: 100vh;
             color: #fff;
             padding: 20px;
+            padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
         }
 
         .container {
@@ -34,7 +45,7 @@
         }
 
         .subtitle {
-            color: #a0a0a0;
+            color: #b8b8b8;
             font-size: 1.1rem;
         }
 
@@ -75,7 +86,7 @@
         }
 
         .game-desc {
-            color: #a0a0a0;
+            color: #b8b8b8;
             font-size: 0.9rem;
             line-height: 1.5;
         }
@@ -108,113 +119,136 @@
         footer {
             text-align: center;
             padding: 40px;
-            color: #666;
+            color: #9a9a9a;
             font-size: 0.9rem;
+        }
+
+        .game-card:focus-visible {
+            outline: 2px solid #feca57;
+            outline-offset: 4px;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .game-card {
+                transition: none;
+            }
+            .game-card:hover {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .header { padding: 20px 15px; }
+            .game-grid { gap: 15px; }
+            .game-card { padding: 18px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <main class="container" id="main-content">
         <header>
             <h1>Alford Family Game Portal</h1>
             <p class="subtitle">Dad's experimental games - test at your own risk!</p>
         </header>
 
-        <section class="category">
-            <h2>Featured Games</h2>
+        <section class="category" aria-labelledby="featured-games">
+            <h2 id="featured-games">Featured Games</h2>
             <div class="game-grid">
                 <a href="./games/zoo-conquest.html" class="game-card">
-                    <div class="game-icon">🦁</div>
+                    <div class="game-icon" aria-hidden="true">🦁</div>
                     <div class="game-title">Zoo Conquest</div>
                     <div class="game-desc">Risk-style strategy board game - conquer territories with animal armies!</div>
                     <span class="badge badge-new">New</span>
                 </a>
 
                 <a href="./games/particle-conquest/" class="game-card">
-                    <div class="game-icon">🎯</div>
+                    <div class="game-icon" aria-hidden="true">🎯</div>
                     <div class="game-title">Particle Conquest Pro</div>
                     <div class="game-desc">Real-time strategy particle conquest - capture territory and dominate!</div>
                     <span class="badge badge-popular">Popular</span>
                 </a>
 
                 <a href="./games/symbiosis/" class="game-card">
-                    <div class="game-icon">🔮</div>
+                    <div class="game-icon" aria-hidden="true">🔮</div>
                     <div class="game-title">Symbiosis</div>
                     <div class="game-desc">Cooperative puzzle adventure with unique mechanics</div>
                     <span class="badge badge-new">New</span>
                 </a>
 
                 <a href="./games/symbiosis/spark-vesper.html" class="game-card">
-                    <div class="game-icon">✨</div>
+                    <div class="game-icon" aria-hidden="true">✨</div>
                     <div class="game-title">Spark & Vesper</div>
                     <div class="game-desc">Dual-character puzzle game with light and shadow</div>
                     <span class="badge badge-multiplayer">Co-op</span>
                 </a>
 
                 <a href="./games/tower-defense.html" class="game-card">
-                    <div class="game-icon">🏰</div>
+                    <div class="game-icon" aria-hidden="true">🏰</div>
                     <div class="game-title">Ultra Premium Tower Defense</div>
                     <div class="game-desc">Epic tower defense with upgrades, waves, and boss battles!</div>
                     <span class="badge badge-popular">Popular</span>
                 </a>
 
                 <a href="./games/tower-defense-2player.html" class="game-card">
-                    <div class="game-icon">⚔️</div>
+                    <div class="game-icon" aria-hidden="true">⚔️</div>
                     <div class="game-title">Tower Defense 2-Player</div>
                     <div class="game-desc">Compete head-to-head in tower defense battles!</div>
                     <span class="badge badge-multiplayer">2 Player</span>
                 </a>
 
                 <a href="./games/velocity-marble-run/" class="game-card">
-                    <div class="game-icon">🔴</div>
+                    <div class="game-icon" aria-hidden="true">🔴</div>
                     <div class="game-title">Velocity Marble Run</div>
                     <div class="game-desc">First-person marble racing through crazy tracks!</div>
                     <span class="badge badge-new">New</span>
                 </a>
 
                 <a href="./games/dots-and-boxes-3d.html" class="game-card">
-                    <div class="game-icon">🎮</div>
+                    <div class="game-icon" aria-hidden="true">🎮</div>
                     <div class="game-title">Dots & Boxes 3D Premium</div>
                     <div class="game-desc">Classic game reimagined in stunning 3D</div>
                 </a>
             </div>
         </section>
 
-        <section class="category">
-            <h2>Mini Games Collection</h2>
+        <section class="category" aria-labelledby="mini-games">
+            <h2 id="mini-games">Mini Games Collection</h2>
             <div class="game-grid">
                 <a href="./games/mini-games/2DTicTacToe.html" class="game-card">
-                    <div class="game-icon">⭕</div>
+                    <div class="game-icon" aria-hidden="true">⭕</div>
                     <div class="game-title">Tic Tac Toe</div>
                     <div class="game-desc">Classic X's and O's game</div>
                 </a>
 
                 <a href="./games/mini-games/CodeBreakerV4.html" class="game-card">
-                    <div class="game-icon">🔐</div>
+                    <div class="game-icon" aria-hidden="true">🔐</div>
                     <div class="game-title">Code Breaker</div>
                     <div class="game-desc">Crack the code puzzle game</div>
                 </a>
 
                 <a href="./games/mini-games/dots3d-game-rotate.html" class="game-card">
-                    <div class="game-icon">🎲</div>
+                    <div class="game-icon" aria-hidden="true">🎲</div>
                     <div class="game-title">3D Dots & Boxes</div>
                     <div class="game-desc">Classic dots and boxes in 3D</div>
                 </a>
 
                 <a href="./games/mini-games/lasers_mirrors_game.html" class="game-card">
-                    <div class="game-icon">🔦</div>
+                    <div class="game-icon" aria-hidden="true">🔦</div>
                     <div class="game-title">Lasers & Mirrors</div>
                     <div class="game-desc">Reflect lasers to hit targets</div>
                 </a>
 
                 <a href="./games/mini-games/LightsOut.html" class="game-card">
-                    <div class="game-icon">💡</div>
+                    <div class="game-icon" aria-hidden="true">💡</div>
                     <div class="game-title">Lights Out</div>
                     <div class="game-desc">Turn off all the lights puzzle</div>
                 </a>
 
                 <a href="./games/mini-games/PegJumper.html" class="game-card">
-                    <div class="game-icon">🔘</div>
+                    <div class="game-icon" aria-hidden="true">🔘</div>
                     <div class="game-title">Peg Jumper</div>
                     <div class="game-desc">Classic peg solitaire puzzle</div>
                 </a>
@@ -222,8 +256,8 @@
         </section>
 
         <footer>
-            <p>Built with love by Dad | Games may crash, explode, or do weird things</p>
+            <p>Built with love by Dad | Experimental games — feedback welcome!</p>
         </footer>
-    </div>
+    </main>
 </body>
 </html>

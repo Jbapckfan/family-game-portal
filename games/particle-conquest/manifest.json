@@ -4,8 +4,20 @@
   "description": "Real-time strategy particle game - conquer the galaxy!",
   "start_url": "./index.html",
   "display": "fullscreen",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#00ffff",
-  "categories": ["games", "strategy"]
+  "categories": ["games", "strategy"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

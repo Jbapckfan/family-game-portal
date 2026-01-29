@@ -11,6 +11,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Real-time strategy particle game - conquer the galaxy in epic 4v4 battles!">
+    <meta property="og:title" content="Particle Conquest Pro">
+    <meta property="og:description" content="Real-time strategy particle game — conquer the galaxy!">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Particle Conquest Pro">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -19,7 +24,6 @@
     <link rel="apple-touch-icon" id="appleTouchIcon">
 
     <!-- Splash Screens (iOS) -->
-    <meta name="apple-mobile-web-app-title" content="Conquest">
 
     <title>Particle Conquest Pro</title>
     <style>
@@ -35,10 +39,6 @@
         }
         canvas {
             display: block;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
         }
 
         .hud {
@@ -81,7 +81,7 @@
         
         .game-status {
             font-size: 13px;
-            color: #888;
+            color: #aaa;
             text-align: center;
         }
         
@@ -134,7 +134,7 @@
         
         .ability-btn .key-hint {
             font-size: 10px;
-            color: #666;
+            color: #999;
             margin-top: 2px;
         }
         
@@ -155,6 +155,8 @@
         
         .speed-btn {
             padding: 6px 12px;
+            min-height: 44px;
+            min-width: 44px;
             font-size: 12px;
             background: #222;
             border: 1px solid #444;
@@ -201,7 +203,7 @@
             position: fixed;
             top: 55px;
             left: 20px;
-            color: #555;
+            color: #aaa;
             font-size: 12px;
             z-index: 100;
         }
@@ -212,7 +214,7 @@
             bottom: calc(20px + env(safe-area-inset-bottom));
             left: max(20px, env(safe-area-inset-left));
             font-size: 10px;
-            color: #555;
+            color: #aaa;
             z-index: 100;
         }
         
@@ -252,7 +254,7 @@
         }
         
         .menu .subtitle {
-            color: #666;
+            color: #999;
             font-size: 14px;
             margin-bottom: 30px;
         }
@@ -1196,8 +1198,8 @@
             position: fixed;
             top: max(12px, env(safe-area-inset-top));
             left: max(20px, env(safe-area-inset-left));
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: rgba(30, 30, 30, 0.8);
             border: 2px solid #555;
             border-radius: 10px;
@@ -1437,38 +1439,6 @@
             justify-content: center;
         }
 
-        .diff-btn {
-            padding: 10px 20px;
-            border-radius: 20px;
-            border: 2px solid #333;
-            background: rgba(30, 30, 30, 0.9);
-            color: #888;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .diff-btn:hover {
-            border-color: #555;
-            color: #fff;
-        }
-
-        .diff-btn.selected {
-            border-color: #0ff;
-            color: #0ff;
-            background: rgba(0, 255, 255, 0.1);
-        }
-
-        .diff-btn.easy { --diff-color: #4a4; }
-        .diff-btn.medium { --diff-color: #fa0; }
-        .diff-btn.hard { --diff-color: #f44; }
-        .diff-btn.brutal { --diff-color: #a0f; }
-
-        .diff-btn.selected.easy { border-color: #4a4; color: #4a4; background: rgba(68, 170, 68, 0.1); }
-        .diff-btn.selected.medium { border-color: #fa0; color: #fa0; background: rgba(255, 170, 0, 0.1); }
-        .diff-btn.selected.hard { border-color: #f44; color: #f44; background: rgba(255, 68, 68, 0.1); }
-        .diff-btn.selected.brutal { border-color: #a0f; color: #a0f; background: rgba(170, 0, 255, 0.1); }
-
         /* Achievement gallery */
         .achievement-gallery {
             display: grid;
@@ -1552,13 +1522,26 @@
             z-index: 100;
             pointer-events: none;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        button:focus-visible, .diff-btn:focus-visible, .ability-btn:focus-visible, .speed-btn:focus-visible {
+            outline: 2px solid #0ff;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
 
     <!-- Pause Button -->
-    <button class="pause-btn hidden" id="pauseBtn" title="Pause (P)">⏸️</button>
+    <button class="pause-btn hidden" id="pauseBtn" title="Pause (P)" aria-label="Pause game">⏸️</button>
 
     <!-- Pause Menu -->
     <div class="pause-menu hidden" id="pauseMenu">
@@ -1594,7 +1577,7 @@
     </div>
 
     <!-- Sound Toggle -->
-    <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+    <button class="sound-toggle" id="soundToggle" title="Toggle Sound" aria-label="Toggle sound">🔊</button>
 
     <!-- Stats Screen -->
     <div class="stats-screen hidden" id="statsScreen">
@@ -1671,13 +1654,13 @@
     <div class="ad-free-badge">✨ Ad-free • No login required</div>
 
     <div class="hud">
-        <div class="player-info">
+        <div class="player-info" aria-label="Player stats">
             <div class="player-dot player"></div>
             <div class="player-stats" id="playerStats">0</div>
             <span style="color:#0ff; font-size:12px; margin-left:5px;">YOU</span>
         </div>
-        <div class="game-status" id="gameStatus">Select a planet</div>
-        <div class="player-info">
+        <div class="game-status" id="gameStatus" role="status" aria-live="polite">Select a planet</div>
+        <div class="player-info" aria-label="Enemy stats">
             <span style="color:#f44; font-size:12px; margin-right:5px;">AI</span>
             <div class="player-stats" id="enemyStats">0</div>
             <div class="player-dot enemy"></div>
@@ -1711,27 +1694,27 @@
     </div>
 
     <div class="abilities-bar" id="abilitiesBar">
-        <button class="ability-btn" data-ability="boost" title="Speed Boost">
+        <button class="ability-btn" data-ability="boost" title="Speed Boost" aria-label="Boost ability">
             ⚡
             <span class="key-hint">1</span>
             <div class="cooldown-overlay"></div>
         </button>
-        <button class="ability-btn" data-ability="shield" title="Shield">
+        <button class="ability-btn" data-ability="shield" title="Shield" aria-label="Shield ability">
             🛡️
             <span class="key-hint">2</span>
             <div class="cooldown-overlay"></div>
         </button>
-        <button class="ability-btn" data-ability="emp" title="EMP">
+        <button class="ability-btn" data-ability="emp" title="EMP" aria-label="EMP ability">
             💥
             <span class="key-hint">3</span>
             <div class="cooldown-overlay"></div>
         </button>
-        <button class="ability-btn" data-ability="nuke" title="Nuke">
+        <button class="ability-btn" data-ability="nuke" title="Nuke" aria-label="Nuke ability">
             ☢️
             <span class="key-hint">4</span>
             <div class="cooldown-overlay"></div>
         </button>
-        <button class="ability-btn" data-ability="stealth" title="Stealth Attack" id="stealthBtn" style="display:none;">
+        <button class="ability-btn" data-ability="stealth" title="Stealth Attack" id="stealthBtn" style="display:none;" aria-label="Stealth ability">
             👻
             <span class="key-hint">5</span>
             <div class="cooldown-overlay"></div>
@@ -1879,6 +1862,8 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let W, H;
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ==================== LOCALSTORAGE & STATS SYSTEM ====================
 const STORAGE_KEY = 'particleConquestPro';
@@ -2188,7 +2173,9 @@ function startMusic() {
             if (!musicPlaying) return;
             const time = audioCtx.currentTime;
             filter.frequency.setValueAtTime(600 + Math.sin(time * 0.3) * 300, time);
-            setTimeout(animateFilter, 100);
+            if (musicPlaying) {
+                requestAnimationFrame(animateFilter);
+            }
         }
         animateFilter();
 
@@ -3246,6 +3233,7 @@ const juice = {
     particles: [],
 
     shake(intensity = 10, duration = 200) {
+        if (prefersReducedMotion) return;
         this.shakeIntensity = Math.max(this.shakeIntensity, intensity);
         this.shakeDuration = Math.max(this.shakeDuration, duration);
         this.shakeDecay = this.shakeIntensity / (duration / 1000);
@@ -3253,11 +3241,13 @@ const juice = {
     },
 
     slowMo(scale = 0.3, duration = 500) {
+        if (prefersReducedMotion) return;
         this.slowMotionScale = scale;
         this.slowMotionDuration = duration;
     },
 
     flash(color = '#fff', alpha = 0.4) {
+        if (prefersReducedMotion) return;
         this.flashColor = color;
         this.flashAlpha = alpha;
     },
@@ -3397,47 +3387,6 @@ const haptics = {
     }
 };
 
-// ============================================
-// DIFFICULTY SETTINGS
-// ============================================
-const difficultySettings = {
-    easy: {
-        name: 'Easy',
-        aiReactionTime: 3000,
-        aiAggressiveness: 0.3,
-        aiAbilityChance: 0.2,
-        playerBonus: 15,
-        enemyPenalty: 10,
-        description: 'Relaxed pace'
-    },
-    medium: {
-        name: 'Medium',
-        aiReactionTime: 1500,
-        aiAggressiveness: 0.5,
-        aiAbilityChance: 0.5,
-        playerBonus: 0,
-        enemyPenalty: 0,
-        description: 'Balanced'
-    },
-    hard: {
-        name: 'Hard',
-        aiReactionTime: 800,
-        aiAggressiveness: 0.7,
-        aiAbilityChance: 0.8,
-        playerBonus: -10,
-        enemyPenalty: -10,
-        description: 'Challenging'
-    },
-    brutal: {
-        name: 'Brutal',
-        aiReactionTime: 400,
-        aiAggressiveness: 0.9,
-        aiAbilityChance: 1.0,
-        playerBonus: -20,
-        enemyPenalty: -20,
-        description: 'Merciless'
-    }
-};
 
 // ============================================
 // ACHIEVEMENT SYSTEM
@@ -3962,8 +3911,9 @@ class Planet {
     }
     
     draw() {
-        const baseColor = this.typeData.color || COLORS[this.owner].main;
-        const glowColor = this.typeData.color || COLORS[this.owner].glow;
+        const ownerColors = COLORS[this.owner] || COLORS[0]; // fallback to neutral
+        const baseColor = this.typeData.color || ownerColors.main;
+        const glowColor = this.typeData.color || ownerColors.glow;
         const pulse = 1 + Math.sin(this.pulsePhase) * 0.05;
         
         // Black hole special rendering
@@ -4288,13 +4238,14 @@ class FlyingParticle {
                         haptics.error();
                     }
 
+                    const captureColors = COLORS[this.owner] || COLORS[0]; // fallback to neutral
                     effects.push(new Effect('capture', this.target.x, this.target.y, {
                         duration: 0.8,
                         radius: this.target.size,
-                        color: COLORS[this.owner].main
+                        color: captureColors.main
                     }));
 
-                    showFloatText(this.target.x, this.target.y, 'CAPTURED!', COLORS[this.owner].main);
+                    showFloatText(this.target.x, this.target.y, 'CAPTURED!', captureColors.main);
                 }
             }
             return false;
@@ -4615,6 +4566,10 @@ class HarvestParticle {
 }
 
 function showFloatText(x, y, text, color) {
+    const existingFloats = document.querySelectorAll('.float-text');
+    if (existingFloats.length > 10) {
+        existingFloats[0].remove();
+    }
     const el = document.createElement('div');
     el.className = 'float-text';
     el.style.left = x + 'px';
@@ -4735,7 +4690,6 @@ function generateLevel() {
         }
     }
     
-    let wormholeCount = 0;
     const wormholePlanets = [];
     
     const startUnits = game.mode === 'harvest' ? 5 : settings.startingUnits;
@@ -5510,6 +5464,7 @@ let lastTime = 0;
 let currentTouch = null;
 
 function animate(time) {
+    try {
     const realDt = Math.min((time - lastTime) / 1000, 0.1);
     const dt = realDt * game.speed * juice.getTimeScale();
     lastTime = time;
@@ -5629,6 +5584,14 @@ function animate(time) {
     juice.draw(ctx, W, H);
 
     requestAnimationFrame(animate);
+    } catch (err) {
+        console.error('Game loop error:', err);
+        // Show error overlay
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);color:#ff4444;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:system-ui;';
+        errDiv.innerHTML = '<h2 style="font-size:24px;margin-bottom:16px;">Something went wrong</h2><button onclick="location.reload()" style="padding:12px 24px;background:#0ff;color:#000;border:none;border-radius:8px;font-size:16px;cursor:pointer;">Restart Game</button>';
+        document.body.appendChild(errDiv);
+    }
 }
 
 // Input handling with double-click detection
@@ -5731,9 +5694,9 @@ canvas.addEventListener('mouseup', e => handleEnd(e.clientX, e.clientY));
 canvas.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
 
 // Touch
-canvas.addEventListener('touchstart', e => { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); if (e.touches.length === 0) return; handleStart(e.touches[0].clientX, e.touches[0].clientY); });
 canvas.addEventListener('touchend', e => { e.preventDefault(); if (e.changedTouches.length) handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
-canvas.addEventListener('touchmove', e => { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (e.touches.length === 0) return; handleMove(e.touches[0].clientX, e.touches[0].clientY); });
 
 // Keyboard shortcuts
 document.addEventListener('keydown', e => {
@@ -6162,7 +6125,7 @@ registerServiceWorker();
 setTimeout(() => {
     hideLoadingScreen();
     requestAnimationFrame(animate);
-}, 800);
+}, 300);
     </script>
 </body>
 </html>

@@ -1,10 +1,8 @@
 const CACHE_NAME = 'particle-conquest-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 // Install - cache assets

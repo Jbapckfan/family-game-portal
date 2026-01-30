@@ -6,19 +6,20 @@
     <meta name="description" content="Lights Out - Toggle lights to turn them all off in this classic logic puzzle.">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta property="og:title" content="Lights Out">
     <meta property="og:description" content="Toggle lights to turn them all off in this classic logic puzzle.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <title>Neon Lights Out</title>
-    
+
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- React Libraries -->
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    
+
     <!-- Babel to transpile JSX in the browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -28,6 +29,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 
     <style>
+        html, body {
+            background-color: #000;
+        }
         body {
             font-family: 'Orbitron', sans-serif;
         }
@@ -54,7 +58,7 @@
         .animate-fade-in {
           animation: fade-in 0.5s ease-out forwards;
         }
-        button:focus-visible, [role="button"]:focus-visible {
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
             outline: 2px solid #00ffff;
             outline-offset: 2px;
         }
@@ -68,6 +72,12 @@
     </style>
 </head>
 <body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#22d3ee;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play Lights Out. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -78,8 +88,11 @@
         const LIGHT_COLOR_OFF = 'transparent';
 
         // --- HELPER FUNCTIONS ---
+        const MAX_BOARD_GEN_ITERATIONS = 1000;
+
         const generateBoard = () => {
             let board;
+            let iterations = 0;
             do {
                 board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(false));
                 const clicks = Math.floor(Math.random() * 8) + 5;
@@ -94,7 +107,8 @@
                     usedPositions.add(key);
                     board = toggleLights(board, r, c);
                 }
-            } while (checkWinCondition(board));
+                iterations++;
+            } while (checkWinCondition(board) && iterations < MAX_BOARD_GEN_ITERATIONS);
             return board;
         };
 
@@ -114,61 +128,221 @@
         };
 
         // --- COMPONENTS ---
-        const LightCell = ({ isOn, onClick, row, col }) => {
-            const style = {
-                backgroundColor: isOn ? LIGHT_COLOR_ON : LIGHT_COLOR_OFF,
-                boxShadow: isOn ? `0 0 15px ${LIGHT_GLOW_ON}, 0 0 25px ${LIGHT_GLOW_ON}60, inset 0 0 5px ${LIGHT_GLOW_ON}80` : 'inset 0 0 10px rgba(0,0,0,0.5)',
-            };
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            // Focus management: move focus into modal on open, restore on close
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            // Escape key and focus trap
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        onClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, onClose]);
+
+            // Restore focus to trigger on close
+            const handleClose = React.useCallback(() => {
+                onClose();
+                // Defer focus restoration to after the modal unmounts
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            if (!isOpen) return null;
             return (
-                <button
-                    onClick={onClick}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 border-cyan-500/30 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-cyan-400"
-                    style={style}
-                    aria-label={`Light at row ${row + 1}, column ${col + 1}, ${isOn ? 'on' : 'off'}`}
-                />
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-cyan-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-cyan-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-cyan-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-cyan-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Click any <strong className="text-cyan-300">light</strong> to toggle it and its <strong className="text-cyan-300">4 adjacent neighbors</strong> (up, down, left, right).</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Your goal is to turn <strong className="text-yellow-300">ALL lights off</strong> to win the game.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>The <strong className="text-cyan-300">fewer moves</strong> you use, the better your score!</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
             );
         };
 
-        const LightsOutGame = () => {
-            const [board, setBoard] = React.useState(generateBoard());
-            const [moves, setMoves] = React.useState(0);
-            const isWon = checkWinCondition(board);
+        const LightCell = React.memo(({ isOn, onToggle, row, col }) => {
+            const style = React.useMemo(() => ({
+                backgroundColor: isOn ? LIGHT_COLOR_ON : LIGHT_COLOR_OFF,
+                boxShadow: isOn ? `0 0 15px ${LIGHT_GLOW_ON}, 0 0 25px ${LIGHT_GLOW_ON}60, inset 0 0 5px ${LIGHT_GLOW_ON}80` : 'inset 0 0 10px rgba(0,0,0,0.5)',
+            }), [isOn]);
 
-            const handleLightClick = (r, c) => {
+            const handleClick = React.useCallback(() => {
+                onToggle(row, col);
+            }, [onToggle, row, col]);
+
+            return (
+                <button
+                    onClick={handleClick}
+                    role="gridcell"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-lg border-2 border-cyan-500/30 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-cyan-400"
+                    style={style}
+                    aria-label={`Row ${row + 1}, Column ${col + 1}, light ${isOn ? 'on' : 'off'}`}
+                    aria-pressed={isOn}
+                />
+            );
+        });
+
+        const LightsOutGame = () => {
+            const [board, setBoard] = React.useState(() => generateBoard());
+            const [moves, setMoves] = React.useState(0);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+            const howToPlayTriggerRef = React.useRef(null);
+            const resetButtonRef = React.useRef(null);
+            const isWon = checkWinCondition(board);
+            const prevIsWonRef = React.useRef(false);
+
+            // When the game is won, focus the reset/play again button
+            React.useEffect(() => {
+                if (isWon && !prevIsWonRef.current && resetButtonRef.current) {
+                    resetButtonRef.current.focus();
+                }
+                prevIsWonRef.current = isWon;
+            }, [isWon]);
+
+            const handleLightClick = React.useCallback((r, c) => {
                 if (isWon) return;
                 setBoard(prevBoard => toggleLights(prevBoard, r, c));
                 setMoves(prevMoves => prevMoves + 1);
-            };
+            }, [isWon]);
 
-            const resetGame = () => {
+            const resetGame = React.useCallback(() => {
                 setBoard(generateBoard());
                 setMoves(0);
-            };
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => {
+                setShowHowToPlay(true);
+            }, []);
+
+            const closeHowToPlay = React.useCallback(() => {
+                setShowHowToPlay(false);
+            }, []);
+
+            const lightsOnCount = React.useMemo(() => {
+                return board.reduce((total, row) => total + row.filter(Boolean).length, 0);
+            }, [board]);
 
             return (
                 <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-900/40 to-black" />
-                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-900/40 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 max-w-md mx-auto text-center">
                         <header className="py-6">
-                            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
-                                LIGHTS OUT
-                            </h1>
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    LIGHTS OUT
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-cyan-500/50 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
                             <p className="text-cyan-300/80 mt-2">Turn off all the lights!</p>
                         </header>
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
                         <main className="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
-                            <div className="grid grid-cols-5 gap-2">
-                                {board.map((row, r) =>
-                                    row.map((isOn, c) => (
-                                        <LightCell
-                                            key={`${r}-${c}`}
-                                            isOn={isOn}
-                                            row={r}
-                                            col={c}
-                                            onClick={() => handleLightClick(r, c)}
-                                        />
-                                    ))
-                                )}
+                            <div
+                                role="grid"
+                                aria-label={`Lights Out puzzle grid, ${lightsOnCount} lights remaining`}
+                                className="flex flex-col gap-2"
+                            >
+                                {board.map((row, r) => (
+                                    <div key={r} role="row" className="flex gap-2 justify-center">
+                                        {row.map((isOn, c) => (
+                                            <LightCell
+                                                key={`${r}-${c}`}
+                                                isOn={isOn}
+                                                row={r}
+                                                col={c}
+                                                onToggle={handleLightClick}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
                             </div>
                         </main>
                         <footer className="py-6">
@@ -182,13 +356,14 @@
                                     </p>
                                 </div>
                             ) : (
-                                 <div className="text-2xl text-white">
+                                 <div className="text-2xl text-white" aria-live="polite" aria-atomic="true">
                                     Moves: <span className="font-bold text-cyan-300">{moves}</span>
                                 </div>
                             )}
                             <button
+                                ref={resetButtonRef}
                                 onClick={resetGame}
-                                className="mt-4 py-3 px-10 rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-yellow-400 to-orange-500 hover:scale-105 shadow-lg shadow-yellow-500/50"
+                                className="mt-4 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-yellow-400 to-orange-500 hover:scale-105 shadow-lg shadow-yellow-500/50"
                             >
                                 {isWon ? 'Play Again' : 'Reset'}
                             </button>

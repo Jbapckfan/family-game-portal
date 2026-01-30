@@ -6,6 +6,7 @@
     <meta name="description" content="Tic Tac Toe - Classic strategy game with AI opponent and neon cyberpunk styling.">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta property="og:title" content="Tic Tac Toe">
     <meta property="og:description" content="Classic strategy game with AI opponent.">
     <meta property="og:type" content="website">
@@ -23,7 +24,7 @@
             font-family: 'Orbitron', sans-serif; /* Retro-futuristic font */
             background-color: #0d0c1d; /* Very dark blue/purple background */
             background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
-            overflow: hidden; /* Prevent scrollbars from subtle animations */
+            overflow-x: hidden; /* Prevent horizontal scroll but allow vertical scrolling on mobile */
         }
         .text-shadow-neon {
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
@@ -79,13 +80,22 @@
         }
         .modal-close-button {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.5rem;
+            right: 0.5rem;
             background: none;
             border: none;
             font-size: 1.5rem;
             color: #00FFFF;
             cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+        }
+        .modal-close-button:hover {
+            background-color: rgba(0, 255, 255, 0.15);
         }
         .cell {
             width: 100%;
@@ -96,11 +106,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem; /* Size of X/O */
+            font-size: clamp(1.8rem, 8vmin, 3rem); /* Responsive size of X/O */
             font-weight: bold;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-out;
             cursor: pointer;
             user-select: none; /* Prevent text selection */
+            min-height: 44px; /* Touch target minimum */
         }
         .cell:hover {
             background-color: rgba(34, 211, 238, 0.1); /* Hover glow */
@@ -137,24 +148,14 @@
             text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; /* Enhanced glow */
         }
 
-        .win-line-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
+        /* Win line SVG animation - pathLength normalises speed regardless of line length */
+        .win-line-svg line {
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            animation: drawSvgLine 0.5s ease-out forwards;
         }
-        .win-line {
-            position: absolute;
-            background-color: #FFFF00; /* Yellow win line */
-            box-shadow: 0 0 15px #FFFF00, 0 0 25px #FFFF00;
-            animation: drawLine 0.5s forwards ease-out;
-        }
-        @keyframes drawLine {
-            from { transform: scaleX(0) scaleY(0); opacity: 0; }
-            to { transform: scaleX(1) scaleY(1); opacity: 1; }
+        @keyframes drawSvgLine {
+            to { stroke-dashoffset: 0; }
         }
 
         /* AI Thinking Indicator */
@@ -181,10 +182,27 @@
             font-size: 2rem;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            border-radius: 0.75rem;
+        }
+        /* Touch target minimum for action buttons */
+        .action-btn {
+            min-height: 44px;
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         button:focus-visible, [role="button"]:focus-visible {
             outline: 2px solid #00ffff;
             outline-offset: 2px;
+        }
+        /* Title overflow on narrow viewports */
+        h1 {
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        @media (max-width: 360px) {
+            h1 { font-size: clamp(1.5rem, 8vw, 2.25rem) !important; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -196,6 +214,12 @@
     </style>
 </head>
 <body>
+  <a href="../../"
+     aria-label="Back to menu"
+     style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;"
+     onmouseover="this.style.background='rgba(0,0,0,0.9)'"
+     onmouseout="this.style.background='rgba(0,0,0,0.7)'"
+  >&#x1F3E0; Menu</a>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -239,6 +263,15 @@
         };
 
         /**
+         * Converts a flat array back into a 3x3 board.
+         * @param {string[]} flat - A 9-element flat array.
+         * @returns {string[][]} A 3x3 board.
+         */
+        const unflatten = (flat) => {
+            return [flat.slice(0, 3), flat.slice(3, 6), flat.slice(6, 9)];
+        };
+
+        /**
          * AI logic to determine the best move. (Simplified Minimax)
          * @param {string[][]} board - The current game board.
          * @param {string} aiPlayer - The AI's player mark ('X' or 'O').
@@ -254,7 +287,7 @@
                 const move = emptyCells[i];
                 const tempBoard = [...flatBoard];
                 tempBoard[move] = aiPlayer;
-                if (checkWinner(tempBoard.reduce((rows, key, index) => (index % 3 == 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []), aiPlayer)) {
+                if (checkWinner(unflatten(tempBoard), aiPlayer)) {
                     return move;
                 }
             }
@@ -264,7 +297,7 @@
                 const move = emptyCells[i];
                 const tempBoard = [...flatBoard];
                 tempBoard[move] = opponent;
-                if (checkWinner(tempBoard.reduce((rows, key, index) => (index % 3 == 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []), opponent)) {
+                if (checkWinner(unflatten(tempBoard), opponent)) {
                     return move;
                 }
             }
@@ -294,27 +327,182 @@
         // --- COMPONENTS ---
 
         /**
+         * Rules modal with focus trapping and escape key support.
+         */
+        const RulesModal = ({ onClose }) => {
+            const closeRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            // Focus the close button when modal opens
+            React.useEffect(() => {
+                const prevFocus = document.activeElement;
+                if (closeRef.current) closeRef.current.focus();
+
+                return () => {
+                    // Restore focus when modal closes
+                    if (prevFocus && typeof prevFocus.focus === 'function') {
+                        prevFocus.focus();
+                    }
+                };
+            }, []);
+
+            // Escape key closes modal
+            React.useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        onClose();
+                    }
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [onClose]);
+
+            // Focus trap: cycle focus within modal
+            const handleModalKeyDown = (e) => {
+                if (e.key !== 'Tab') return;
+                const focusable = modalRef.current.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            };
+
+            return (
+                <div
+                    className="modal-overlay"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Game rules"
+                    onKeyDown={handleModalKeyDown}
+                    ref={modalRef}
+                    onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+                >
+                    <div className="modal-content">
+                        <button
+                            ref={closeRef}
+                            onClick={onClose}
+                            className="modal-close-button"
+                            aria-label="Close rules"
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Tic-Tac-Toe</h2>
+                        <p className="text-gray-200 mb-2">
+                            The classic game of Tic-Tac-Toe! Get three of your marks ('X' or 'O') in a row, column, or diagonal to win.
+                        </p>
+                        <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
+                        <ul className="list-disc list-inside text-gray-200 space-y-2">
+                            <li>
+                                <strong>Choose a Mode:</strong> Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
+                            </li>
+                            <li>
+                                <strong>Take Turns:</strong> Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
+                            </li>
+                            <li>
+                                <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
+                            </li>
+                            <li>
+                                <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                            </li>
+                            <li>
+                                <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
+                            </li>
+                            <li>
+                                <strong>New Game:</strong> Click the "New Game" button to start over.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
          * Represents a single cell on the Tic-Tac-Toe board.
          * @param {object} props
          * @param {string} props.value - 'X', 'O', or ''.
          * @param {function} props.onClick - Click handler for the cell.
          */
-        const Cell = ({ value, onClick, row, col }) => (
-            <div
-                className={`cell rounded-lg transition-all duration-200 ${value ? 'occupied' : 'cursor-pointer'}`}
-                onClick={onClick}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
-                role="button"
-                tabIndex="0"
-                aria-label={`Cell row ${row + 1}, column ${col + 1}${value ? `, marked ${value}` : ', empty'}`}
-            >
-                {value && (
-                    <div className={`cell-content ${value === PLAYERS.X ? 'x-color' : 'o-color'}`}>
-                        {value}
-                    </div>
-                )}
-            </div>
-        );
+        const Cell = ({ value, onClick, row, col }) => {
+            const isOccupied = !!value;
+            return (
+                <div
+                    className={`cell rounded-lg transition-all duration-200 ${isOccupied ? 'occupied' : 'cursor-pointer'}`}
+                    onClick={isOccupied ? undefined : onClick}
+                    onKeyDown={isOccupied ? undefined : (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+                    role="gridcell"
+                    tabIndex={isOccupied ? "-1" : "0"}
+                    aria-disabled={isOccupied ? "true" : undefined}
+                    aria-label={`Row ${row + 1}, column ${col + 1}${value ? `, marked ${value}` : ', empty'}`}
+                >
+                    {value && (
+                        <div className={`cell-content ${value === PLAYERS.X ? 'x-color' : 'o-color'}`} aria-hidden="true">
+                            {value}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        /**
+         * SVG win line overlay using grid-relative coordinates.
+         * No DOM measurement needed - positions are calculated from cell indices.
+         */
+        const WinLineOverlay = ({ winningLine }) => {
+            if (!winningLine) return null;
+
+            const [c1, , c3] = winningLine;
+            const row1 = Math.floor(c1 / 3);
+            const col1 = c1 % 3;
+            const row3 = Math.floor(c3 / 3);
+            const col3 = c3 % 3;
+
+            // Map grid indices to SVG coordinates (0-3 viewBox, centers at 0.5, 1.5, 2.5)
+            const x1 = col1 + 0.5;
+            const y1 = row1 + 0.5;
+            const x2 = col3 + 0.5;
+            const y2 = row3 + 0.5;
+
+            return (
+                <svg
+                    className="win-line-svg"
+                    viewBox="0 0 3 3"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        pointerEvents: 'none',
+                        zIndex: 10,
+                    }}
+                >
+                    <line
+                        x1={x1} y1={y1}
+                        x2={x2} y2={y2}
+                        stroke="#FFFF00"
+                        strokeWidth="0.12"
+                        strokeLinecap="round"
+                        pathLength="1"
+                        style={{ filter: 'drop-shadow(0 0 3px #FFFF00)' }}
+                    />
+                </svg>
+            );
+        };
 
         /**
          * Main Tic-Tac-Toe game component.
@@ -328,34 +516,29 @@
             const [message, setMessage] = React.useState('');
             const [showRules, setShowRules] = React.useState(false);
             const [isPaused, setIsPaused] = React.useState(false);
-            const [aiThinking, setAiThinking] = React.useState(false); // New state for AI turn indicator
+            const [aiThinking, setAiThinking] = React.useState(false);
 
-            // Function to handle AI's move sequence
-            const handleAIMove = React.useCallback(() => {
-                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused) {
-                    setAiThinking(true);
-                    setMessage("AI is thinking...");
-                    setTimeout(() => {
-                        const moveIndex = getAIMove(board, PLAYERS.O);
-                        const newBoardFlat = [...board.flat()]; // Create a new flat array
-                        newBoardFlat[moveIndex] = PLAYERS.O;
-                        const updatedBoard = newBoardFlat.reduce((rows, key, index) => (index % 3 === 0 ? rows.push([key]) : rows[rows.length-1].push(key)) && rows, []);
+            // Ref to hold AI timeout for proper cleanup
+            const aiTimeoutRef = React.useRef(null);
+            // Ref to hold the latest board state so AI timeout closure is never stale
+            const boardRef = React.useRef(board);
+            React.useEffect(() => { boardRef.current = board; }, [board]);
+            // Refs for focus management
+            const gridRef = React.useRef(null);
+            const winButtonRef = React.useRef(null);
 
-                        handleMove(updatedBoard, PLAYERS.O);
-                        setAiThinking(false);
-                    }, AI_THINK_DELAY);
-                }
-            }, [board, currentPlayer, gameMode, winner, isPaused]); // Dependencies for AI move
-
-            // Effect to trigger AI's turn when it's O's turn in PvAI mode
+            // Clean up AI timeout on unmount
             React.useEffect(() => {
-                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused && !aiThinking) {
-                    handleAIMove();
-                }
-            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove]); // Added aiThinking and handleAIMove to dependencies
+                return () => {
+                    if (aiTimeoutRef.current !== null) {
+                        clearTimeout(aiTimeoutRef.current);
+                        aiTimeoutRef.current = null;
+                    }
+                };
+            }, []);
 
-            // Handle a player's move
-            const handleMove = (newBoard, playerMoved) => {
+            // Handle a player's move (stable callback - only uses setState functions which are stable)
+            const handleMove = React.useCallback((newBoard, playerMoved) => {
                 setBoard(newBoard);
                 const winResult = checkWinner(newBoard, playerMoved);
 
@@ -370,10 +553,46 @@
                     setCurrentPlayer(playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X);
                     setMessage(`Player ${playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X}'s turn`);
                 }
-            };
+            }, []);
 
-            // Handle cell click from UI
-            const handleCellClick = (rowIndex, colIndex) => {
+            // Function to handle AI's move sequence
+            // Uses boardRef inside the timeout so the closure always reads the latest board
+            const handleAIMove = React.useCallback(() => {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused) {
+                    setAiThinking(true);
+                    setMessage("AI is thinking...");
+                    aiTimeoutRef.current = setTimeout(() => {
+                        aiTimeoutRef.current = null;
+                        const latestBoard = boardRef.current;
+                        const moveIndex = getAIMove(latestBoard, PLAYERS.O);
+                        const newBoardFlat = [...latestBoard.flat()];
+                        newBoardFlat[moveIndex] = PLAYERS.O;
+                        const updatedBoard = unflatten(newBoardFlat);
+
+                        handleMove(updatedBoard, PLAYERS.O);
+                        setAiThinking(false);
+                    }, AI_THINK_DELAY);
+                }
+            }, [board, currentPlayer, gameMode, winner, isPaused, handleMove]);
+
+            // Effect to trigger AI's turn when it's O's turn in PvAI mode
+            React.useEffect(() => {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused && !aiThinking) {
+                    handleAIMove();
+                }
+                // Cleanup: cancel pending AI move if dependencies change before it fires
+                return () => {
+                    if (aiTimeoutRef.current !== null) {
+                        clearTimeout(aiTimeoutRef.current);
+                        aiTimeoutRef.current = null;
+                        // Only reset aiThinking if we actually cancelled a pending move
+                        setAiThinking(false);
+                    }
+                };
+            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove]);
+
+            // Handle cell click from UI (memoized)
+            const handleCellClick = React.useCallback((rowIndex, colIndex) => {
                 if (winner || isPaused || aiThinking || board[rowIndex][colIndex] !== '') {
                     return; // Do nothing if game is over, paused, AI is thinking, or cell is occupied
                 }
@@ -382,9 +601,14 @@
                 newBoard[rowIndex][colIndex] = currentPlayer;
 
                 handleMove(newBoard, currentPlayer);
-            };
+            }, [winner, isPaused, aiThinking, board, currentPlayer, handleMove]);
 
             const resetGame = () => {
+                // Clear any pending AI timeout to prevent stale state updates
+                if (aiTimeoutRef.current !== null) {
+                    clearTimeout(aiTimeoutRef.current);
+                    aiTimeoutRef.current = null;
+                }
                 setBoard(Array(3).fill(null).map(() => Array(3).fill('')));
                 setCurrentPlayer(PLAYERS.X);
                 setWinner(null);
@@ -395,110 +619,49 @@
                 setGameMode(null); // Go back to mode selection
             };
 
+            // Focus management: move focus to Play Again button when win/draw overlay appears
+            React.useEffect(() => {
+                if (winner && winButtonRef.current) {
+                    winButtonRef.current.focus();
+                }
+            }, [winner]);
+
             const startGame = (mode) => {
                 setGameMode(mode);
                 setMessage(`Player ${PLAYERS.X}'s turn`);
             };
 
-            // Render win line
-            const renderWinLine = () => {
-                if (!winningLine) return null;
-
-                const [c1, c2, c3] = winningLine;
-                const cells = document.querySelectorAll('.cell'); // Get actual cell elements
-                if (cells.length === 0) return null;
-
-                // Calculate positions based on first and last cell in the line
-                const rect1 = cells[c1].getBoundingClientRect();
-                const rect3 = cells[c3].getBoundingClientRect();
-
-                const startX = rect1.left + rect1.width / 2;
-                const startY = rect1.top + rect1.height / 2;
-                const endX = rect3.left + rect3.width / 2;
-                const endY = rect3.top + rect3.height / 2;
-
-                const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-
-                return (
-                    <div
-                        className="win-line absolute rounded-full"
-                        style={{
-                            width: `${length}px`,
-                            height: '8px', /* Thickness of the line */
-                            backgroundColor: '#FFFF00', /* Yellow neon */
-                            transformOrigin: 'left center',
-                            transform: `translate(${startX}px, ${startY - 4}px) rotate(${angle}deg)`, /* Adjust Y for half thickness */
-                        }}
-                    />
-                );
-            };
-
-
             if (!gameMode) {
                 return (
                     <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
-                        <div className="scanline-overlay"></div>
+                        <div className="scanline-overlay" aria-hidden="true"></div>
                         <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
                             <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                                 TIC-TAC-TOE
                             </h1>
                             <p className="text-cyan-300/80 mb-6 text-shadow-neon">Choose your challenge:</p>
-                            <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col space-y-4" role="group" aria-label="Game mode selection">
                                 <button
                                     onClick={() => startGame(GAME_MODES.PVP)}
-                                    className="py-3 px-8 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
+                                    className="action-btn py-3 px-8 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
                                 >
                                     1 vs 1 (Local)
                                 </button>
                                 <button
                                     onClick={() => startGame(GAME_MODES.PVAI)}
-                                    className="py-3 px-8 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
+                                    className="action-btn py-3 px-8 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-xl"
                                 >
                                     1 vs AI
                                 </button>
                             </div>
                             <button
                                 onClick={() => setShowRules(true)}
-                                className="mt-8 py-2 px-6 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn mt-8 py-2 px-6 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                             >
                                 Rules
                             </button>
                         </div>
-                        {showRules && (
-                            <div className="modal-overlay">
-                                <div className="modal-content">
-                                    <button onClick={() => setShowRules(false)} className="modal-close-button">
-                                        &times;
-                                    </button>
-                                    <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Tic-Tac-Toe</h2>
-                                    <p className="text-gray-200 mb-2">
-                                        The classic game of Tic-Tac-Toe! Get three of your marks ('X' or 'O') in a row, column, or diagonal to win.
-                                    </p>
-                                    <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
-                                    <ul className="list-disc list-inside text-gray-200 space-y-2">
-                                        <li>
-                                            <strong>Choose a Mode:</strong> Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
-                                        </li>
-                                        <li>
-                                            <strong>Take Turns:</strong> Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
-                                        </li>
-                                        <li>
-                                            <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
-                                        </li>
-                                        <li>
-                                            <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
-                                        </li>
-                                        <li>
-                                            <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
-                                        </li>
-                                        <li>
-                                            <strong>New Game:</strong> Click the "New Game" button to start over.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
+                        {showRules && <RulesModal onClose={() => setShowRules(false)} />}
                     </div>
                 );
             }
@@ -506,57 +669,72 @@
             return (
                 <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
                     {/* Scanline overlay for retro CRT effect */}
-                    <div className="scanline-overlay"></div>
+                    <div className="scanline-overlay" aria-hidden="true"></div>
 
                     <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40">
                         <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                             TIC-TAC-TOE
                         </h1>
-                        <p className="text-center text-cyan-300/80 mb-4 text-shadow-neon">
+                        <p
+                            className="text-center text-cyan-300/80 mb-4 text-shadow-neon"
+                            role="status"
+                            aria-live="polite"
+                            aria-atomic="true"
+                        >
                             {message || `Player ${currentPlayer}'s turn`}
-                            {aiThinking && <span className="ai-thinking-indicator ml-2">. . .</span>}
+                            {aiThinking && <span className="ai-thinking-indicator ml-2" aria-hidden="true">. . .</span>}
                         </p>
 
                         {/* Game Board */}
-                        <div className="grid grid-cols-3 gap-2 p-4 bg-gray-700/30 rounded-lg shadow-inner border border-gray-600/30 mb-6">
-                            {board.flat().map((cellValue, index) => (
-                                <Cell
-                                    key={index}
-                                    value={cellValue}
-                                    row={Math.floor(index / 3)}
-                                    col={index % 3}
-                                    onClick={() => handleCellClick(Math.floor(index / 3), index % 3)}
-                                />
+                        <div
+                            className="p-4 bg-gray-700/30 rounded-lg shadow-inner border border-gray-600/30 mb-6 relative"
+                            role="grid"
+                            aria-label="Tic-Tac-Toe board"
+                            ref={gridRef}
+                        >
+                            {board.map((rowCells, rowIndex) => (
+                                <div key={`row-${rowIndex}`} role="row" className="grid grid-cols-3 gap-2" style={rowIndex < 2 ? { marginBottom: '0.5rem' } : undefined}>
+                                    {rowCells.map((cellValue, colIndex) => (
+                                        <Cell
+                                            key={`${rowIndex}-${colIndex}`}
+                                            value={cellValue}
+                                            row={rowIndex}
+                                            col={colIndex}
+                                            onClick={() => handleCellClick(rowIndex, colIndex)}
+                                        />
+                                    ))}
+                                </div>
                             ))}
-                        </div>
 
-                        {/* Win Line Overlay */}
-                        {winner && winner !== 'Draw' && (
-                            <div className="win-line-overlay">
-                                {renderWinLine()}
-                            </div>
-                        )}
+                            {/* Win Line Overlay - positioned relative to grid */}
+                            {winner && winner !== 'Draw' && (
+                                <WinLineOverlay winningLine={winningLine} />
+                            )}
+                        </div>
 
                         {/* Action Buttons */}
                         <div className="flex justify-center space-x-4">
                             <button
                                 onClick={() => setShowRules(true)}
-                                className="py-2 px-4 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn py-2 px-4 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 disabled={isPaused}
+                                aria-label="Show game rules"
                             >
                                 Rules
                             </button>
                             <button
                                 onClick={() => setIsPaused(!isPaused)}
-                                className="py-2 px-4 bg-gray-700 hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg shadow-gray-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn py-2 px-4 bg-gray-700 hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg shadow-gray-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 disabled={winner !== null} /* Cannot pause if game is won/drawn */
+                                aria-label={isPaused ? 'Resume game' : 'Pause game'}
                             >
                                 {isPaused ? 'Resume' : 'Pause'}
                             </button>
                             <button
                                 onClick={resetGame}
-                                className="py-2 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn py-2 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 disabled={isPaused}
+                                aria-label="Start a new game"
                             >
                                 New Game
                             </button>
@@ -564,61 +742,29 @@
 
                         {/* Win/Draw Overlay */}
                         {winner && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none" role="alert">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none rounded-xl" role="alert" aria-live="assertive">
                                 <h2 className={`text-5xl font-bold text-yellow-300 text-shadow-neon ${winner !== 'Draw' ? 'win-animation' : ''}`}>
                                     {winner === 'Draw' ? "IT'S A DRAW!" : `${winner} WINS!`}
                                 </h2>
                                 <button
+                                    ref={winButtonRef}
                                     onClick={resetGame}
-                                    className="mt-6 py-2 px-6 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                    className="action-btn mt-6 py-2 px-6 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
                                 >
-                                    New Game
+                                    Play Again
                                 </button>
                             </div>
                         )}
 
                         {/* Pause Overlay */}
                         {isPaused && (
-                            <div className="pause-overlay">
+                            <div className="pause-overlay" role="alert" aria-live="assertive">
                                 PAUSED
                             </div>
                         )}
 
                         {/* Rules Modal */}
-                        {showRules && (
-                            <div className="modal-overlay">
-                                <div className="modal-content">
-                                    <button onClick={() => setShowRules(false)} className="modal-close-button">
-                                        &times;
-                                    </button>
-                                    <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-shadow-neon">Game Rules: Tic-Tac-Toe</h2>
-                                    <p className="text-gray-200 mb-2">
-                                        The classic game of Tic-Tac-Toe! Get three of your marks ('X' or 'O') in a row, column, or diagonal to win.
-                                    </p>
-                                    <h3 className="text-xl font-bold text-blue-300 mt-4 mb-2">How to Play:</h3>
-                                    <ul className="list-disc list-inside text-gray-200 space-y-2">
-                                        <li>
-                                            <strong>Choose a Mode:</strong> Select "1 vs 1 (Local)" to play against another person on the same device, or "1 vs AI" to challenge the computer.
-                                        </li>
-                                        <li>
-                                            <strong>Take Turns:</strong> Players take turns placing their mark ('X' or 'O') into an empty square on the 3x3 grid.
-                                        </li>
-                                        <li>
-                                            <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
-                                        </li>
-                                        <li>
-                                            <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
-                                        </li>
-                                        <li>
-                                            <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
-                                        </li>
-                                        <li>
-                                            <strong>New Game:</strong> Click the "New Game" button to start over.
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
+                        {showRules && <RulesModal onClose={() => setShowRules(false)} />}
                     </div>
                 </div>
             );

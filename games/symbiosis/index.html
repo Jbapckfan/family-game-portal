@@ -206,12 +206,13 @@
     </style>
 </head>
 <body>
+  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
     <div id="gameContainer">
         <div id="startScreen">
             <h1>SYMBIOSIS</h1>
             <p>Two souls. Two dimensions. One destiny.</p>
             <p style="font-size: 12px; opacity: 0.7;">Touch to attract • Drag to guide</p>
-            <button id="startButton" onclick="startGame()">BEGIN</button>
+            <button id="startButton">BEGIN</button>
         </div>
 
         <div id="solWorld" class="world">
@@ -231,7 +232,7 @@
         <div id="levelComplete">
             <h2>HARMONIZED</h2>
             <p>Sol and Luna are reunited</p>
-            <button onclick="nextLevel()">PLAY AGAIN</button>
+            <button>PLAY AGAIN</button>
         </div>
     </div>
 
@@ -283,7 +284,10 @@
             parallaxLayers: {
                 sol: [],
                 luna: []
-            }
+            },
+            frameCount: 0,
+            frameCountLuna: 0,
+            iceCracks: []
         };
 
         // Canvas references
@@ -297,6 +301,12 @@
             lunaCtx: null,
             lunaBgCtx: null
         };
+
+        // CSS pixel dimensions (game logic uses these, NOT canvas.width/height which are scaled by DPR)
+        let solCssWidth = 0;
+        let solCssHeight = 0;
+        let lunaCssWidth = 0;
+        let lunaCssHeight = 0;
 
         // Input state
         const input = {
@@ -341,6 +351,12 @@
             const w = window.innerWidth;
             const h = window.innerHeight / 2;
 
+            // Store CSS pixel dimensions for all game logic
+            solCssWidth = w;
+            solCssHeight = h;
+            lunaCssWidth = w;
+            lunaCssHeight = h;
+
             [canvases.solBg, canvases.solGame].forEach(c => {
                 if (c) {
                     c.width = w * dpr;
@@ -376,6 +392,9 @@
         }
 
         function initParallaxLayers() {
+            // Reset layers before (re-)initializing
+            game.parallaxLayers.sol = [];
+            game.parallaxLayers.luna = [];
             // Create parallax layers for depth
             for (let i = 0; i < 3; i++) {
                 game.parallaxLayers.sol.push({
@@ -393,15 +412,15 @@
                 // Generate random shapes for each layer
                 for (let j = 0; j < 10; j++) {
                     game.parallaxLayers.sol[i].shapes.push({
-                        x: Math.random() * canvases.solGame.width,
-                        y: Math.random() * canvases.solGame.height,
+                        x: Math.random() * solCssWidth,
+                        y: Math.random() * solCssHeight,
                         size: 20 + Math.random() * 40,
                         rotation: Math.random() * Math.PI * 2
                     });
 
                     game.parallaxLayers.luna[i].shapes.push({
-                        x: Math.random() * canvases.lunaGame.width,
-                        y: Math.random() * canvases.lunaGame.height,
+                        x: Math.random() * lunaCssWidth,
+                        y: Math.random() * lunaCssHeight,
                         size: 20 + Math.random() * 40,
                         rotation: Math.random() * Math.PI * 2
                     });
@@ -432,7 +451,10 @@
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(resizeCanvases, 200);
+                resizeTimeout = setTimeout(() => {
+                    resizeCanvases();
+                    initParallaxLayers();
+                }, 200);
             });
         }
 
@@ -440,8 +462,8 @@
             e.preventDefault();
             const rect = canvases.solGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
-            const x = (touch.clientX - rect.left) * (canvases.solGame.width / rect.width);
-            const y = (touch.clientY - rect.top) * (canvases.solGame.height / rect.height);
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
 
             // Check if clicking on Sol
             const dist = Math.hypot(x - game.sol.x, y - game.sol.y);
@@ -456,8 +478,8 @@
 
             const rect = canvases.solGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
-            game.sol.targetX = (touch.clientX - rect.left) * (canvases.solGame.width / rect.width);
-            game.sol.targetY = (touch.clientY - rect.top) * (canvases.solGame.height / rect.height);
+            game.sol.targetX = touch.clientX - rect.left;
+            game.sol.targetY = touch.clientY - rect.top;
         }
 
         function handleSolEnd(e) {
@@ -470,8 +492,8 @@
             input.lunaTouch.active = true;
             const rect = canvases.lunaGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
-            input.lunaTouch.x = (touch.clientX - rect.left) * (canvases.lunaGame.width / rect.width);
-            input.lunaTouch.y = (touch.clientY - rect.top) * (canvases.lunaGame.height / rect.height);
+            input.lunaTouch.x = touch.clientX - rect.left;
+            input.lunaTouch.y = touch.clientY - rect.top;
         }
 
         function handleLunaMove(e) {
@@ -480,8 +502,8 @@
 
             const rect = canvases.lunaGame.getBoundingClientRect();
             const touch = e.touches ? e.touches[0] : e;
-            input.lunaTouch.x = (touch.clientX - rect.left) * (canvases.lunaGame.width / rect.width);
-            input.lunaTouch.y = (touch.clientY - rect.top) * (canvases.lunaGame.height / rect.height);
+            input.lunaTouch.x = touch.clientX - rect.left;
+            input.lunaTouch.y = touch.clientY - rect.top;
         }
 
         function handleLunaEnd(e) {
@@ -511,8 +533,8 @@
             game.sol.y += game.sol.vy;
 
             // Keep Sol in bounds
-            game.sol.x = Math.max(game.sol.radius, Math.min(canvases.solGame.width - game.sol.radius, game.sol.x));
-            game.sol.y = Math.max(game.sol.radius, Math.min(canvases.solGame.height - game.sol.radius, game.sol.y));
+            game.sol.x = Math.max(game.sol.radius, Math.min(solCssWidth - game.sol.radius, game.sol.x));
+            game.sol.y = Math.max(game.sol.radius, Math.min(solCssHeight - game.sol.radius, game.sol.y));
 
             // Update Luna with magnetic attraction
             if (input.lunaTouch.active) {
@@ -539,13 +561,13 @@
             game.luna.y += game.luna.vy;
 
             // Keep Luna in bounds with bounce
-            if (game.luna.x < game.luna.radius || game.luna.x > canvases.lunaGame.width - game.luna.radius) {
+            if (game.luna.x < game.luna.radius || game.luna.x > lunaCssWidth - game.luna.radius) {
                 game.luna.vx *= -0.5;
-                game.luna.x = Math.max(game.luna.radius, Math.min(canvases.lunaGame.width - game.luna.radius, game.luna.x));
+                game.luna.x = Math.max(game.luna.radius, Math.min(lunaCssWidth - game.luna.radius, game.luna.x));
             }
-            if (game.luna.y < game.luna.radius || game.luna.y > canvases.lunaGame.height - game.luna.radius) {
+            if (game.luna.y < game.luna.radius || game.luna.y > lunaCssHeight - game.luna.radius) {
                 game.luna.vy *= -0.5;
-                game.luna.y = Math.max(game.luna.radius, Math.min(canvases.lunaGame.height - game.luna.radius, game.luna.y));
+                game.luna.y = Math.max(game.luna.radius, Math.min(lunaCssHeight - game.luna.radius, game.luna.y));
             }
 
             // Update trails
@@ -631,8 +653,8 @@
             }
 
             // Check heat plate collision
-            const heatPlateX = canvases.solGame.width - 100;
-            const heatPlateY = canvases.solGame.height / 2;
+            const heatPlateX = solCssWidth - 100;
+            const heatPlateY = solCssHeight / 2;
             const heatDist = Math.hypot(game.sol.x - heatPlateX, game.sol.y - heatPlateY);
             game.heatActive = heatDist < 60;
 
@@ -695,7 +717,7 @@
             }
 
             // Check win condition
-            const exitX = canvases.solGame.width - 40;
+            const exitX = solCssWidth - 40;
             const exitY = 40;
             const solAtExit = Math.hypot(game.sol.x - exitX, game.sol.y - exitY) < 30;
             const lunaAtExit = Math.hypot(game.luna.x - exitX, game.luna.y - exitY) < 30;
@@ -707,6 +729,9 @@
                 // Show hint about ice
                 document.getElementById('proximityIndicator').textContent = 'MELT THE ICE BARRIER';
                 document.getElementById('proximityIndicator').style.opacity = '1';
+            } else {
+                // Reset text when condition is no longer met
+                document.getElementById('proximityIndicator').textContent = 'RESONANCE';
             }
         }
 
@@ -733,13 +758,13 @@
         function renderSolWorld() {
             const ctx = canvases.solCtx;
             const bgCtx = canvases.solBgCtx;
-            const width = canvases.solGame.width;
-            const height = canvases.solGame.height;
+            const width = solCssWidth;
+            const height = solCssHeight;
 
             // Fix 2: Periodic full clear to prevent ghosting
-            game.frameCount = (game.frameCount || 0) + 1;
+            game.frameCount += 1;
             if (game.frameCount % 60 === 0) {
-                ctx.clearRect(0, 0, canvases.solGame.width, canvases.solGame.height);
+                ctx.clearRect(0, 0, solCssWidth, solCssHeight);
             }
             // Clear with subtle fade for motion blur
             ctx.fillStyle = 'rgba(15, 15, 35, 0.15)';
@@ -923,13 +948,13 @@
         function renderLunaWorld() {
             const ctx = canvases.lunaCtx;
             const bgCtx = canvases.lunaBgCtx;
-            const width = canvases.lunaGame.width;
-            const height = canvases.lunaGame.height;
+            const width = lunaCssWidth;
+            const height = lunaCssHeight;
 
             // Fix 2: Periodic full clear to prevent ghosting
-            game.frameCountLuna = (game.frameCountLuna || 0) + 1;
+            game.frameCountLuna += 1;
             if (game.frameCountLuna % 60 === 0) {
-                ctx.clearRect(0, 0, canvases.lunaGame.width, canvases.lunaGame.height);
+                ctx.clearRect(0, 0, lunaCssWidth, lunaCssHeight);
             }
             // Clear with fade
             ctx.fillStyle = 'rgba(15, 30, 50, 0.15)';
@@ -1006,12 +1031,24 @@
 
                 // Ice cracks when melting
                 if (game.iceAlpha < 0.8) {
+                    // Generate crack positions once and store them
+                    if (game.iceCracks.length === 0) {
+                        for (let i = 0; i < 5; i++) {
+                            game.iceCracks.push({
+                                x1: Math.random() * 40,
+                                y1: Math.random() * height,
+                                x2: Math.random() * 40,
+                                y2: Math.random() * height
+                            });
+                        }
+                    }
                     ctx.strokeStyle = `rgba(50, 100, 150, ${1 - game.iceAlpha})`;
                     ctx.lineWidth = 2;
-                    for (let i = 0; i < 5; i++) {
+                    for (let i = 0; i < game.iceCracks.length; i++) {
+                        const crack = game.iceCracks[i];
                         ctx.beginPath();
-                        ctx.moveTo(iceX + Math.random() * 40, Math.random() * height);
-                        ctx.lineTo(iceX + Math.random() * 40, Math.random() * height);
+                        ctx.moveTo(iceX + crack.x1, crack.y1);
+                        ctx.lineTo(iceX + crack.x2, crack.y2);
                         ctx.stroke();
                     }
                 }
@@ -1166,6 +1203,7 @@
             game.windParticles = [];
             game.heatPower = 0;
             game.iceAlpha = 1;
+            game.iceCracks = [];
             game.bridgeExtension = 0;
             game.windmillRotation = 0;
             game.dimensionalTears = [];

@@ -197,6 +197,7 @@
     </style>
 </head>
 <body>
+    <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#x1F3E0; Menu</a>
     <div id="startScreen">
         <h1>
             <span class="spark-title">SPARK</span>
@@ -280,21 +281,21 @@
             }
 
             update(dt) {
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx * dt * 60;
+                this.y += this.vy * dt * 60;
                 this.life -= dt * 2;
 
                 if (this.type === 'electric') {
                     // Jittery electric movement
-                    this.vx += (Math.random() - 0.5) * 0.5;
-                    this.vy -= 0.5; // Rise
+                    this.vx += (Math.random() - 0.5) * 0.5 * dt * 60;
+                    this.vy -= 0.5 * dt * 60; // Rise
                 } else if (this.type === 'mist') {
                     // Swirling mist
                     const swirl = this.life * 3;
-                    this.vx += Math.cos(swirl) * 0.1;
-                    this.vy += Math.sin(swirl) * 0.1;
-                    this.vx *= 0.98;
-                    this.vy *= 0.98;
+                    this.vx += Math.cos(swirl) * 0.1 * dt * 60;
+                    this.vy += Math.sin(swirl) * 0.1 * dt * 60;
+                    this.vx *= Math.pow(0.98, dt * 60);
+                    this.vy *= Math.pow(0.98, dt * 60);
                 }
 
                 return this.life > 0;
@@ -442,13 +443,13 @@
             game.time += dt;
             game.frameCount++;
 
-            // Calculate velocity from position change (using previous frame's position)
-            game.spark.vx = game.spark.x - (game.spark.prevX || game.spark.x);
-            game.spark.vy = game.spark.y - (game.spark.prevY || game.spark.y);
+            // Calculate velocity from position change (using previous frame's position), normalized to per-second
+            game.spark.vx = dt > 0 ? (game.spark.x - (game.spark.prevX || game.spark.x)) / dt : 0;
+            game.spark.vy = dt > 0 ? (game.spark.y - (game.spark.prevY || game.spark.y)) / dt : 0;
 
-            // Build charge through movement
+            // Build charge through movement (dt-scaled accumulation)
             const sparkSpeed = Math.sqrt(game.spark.vx * game.spark.vx + game.spark.vy * game.spark.vy);
-            game.spark.charge = Math.min(100, game.spark.charge + sparkSpeed * 0.5);
+            game.spark.charge = Math.min(100, game.spark.charge + sparkSpeed * 0.5 * dt);
             game.spark.charge *= Math.pow(0.98, dt * 60); // Framerate-independent decay
 
             // Update Vesper with magnetic attraction
@@ -472,9 +473,9 @@
             // Build flow through smooth movement
             const vesperSpeed = Math.sqrt(game.vesper.vx * game.vesper.vx + game.vesper.vy * game.vesper.vy);
             if (vesperSpeed > 2) {
-                game.vesper.flow = Math.min(100, game.vesper.flow + 1);
+                game.vesper.flow = Math.min(100, game.vesper.flow + 60 * dt);
             } else {
-                game.vesper.flow *= 0.95;
+                game.vesper.flow *= Math.pow(0.95, dt * 60);
             }
 
             // Keep in bounds
@@ -484,8 +485,8 @@
             game.vesper.y = Math.max(game.vesper.radius, Math.min(height - game.vesper.radius, game.vesper.y));
 
             // Update trails
-            updateTrail(game.spark, sparkSpeed);
-            updateTrail(game.vesper, vesperSpeed);
+            updateTrail(game.spark, sparkSpeed, dt);
+            updateTrail(game.vesper, vesperSpeed, dt);
 
             // Calculate proximity (Euclidean distance)
             const proxDx = game.spark.x - game.vesper.x;
@@ -536,7 +537,7 @@
             vesperMeterFillEl.style.width = game.vesper.flow + '%';
         }
 
-        function updateTrail(character, speed) {
+        function updateTrail(character, speed, dt) {
             if (speed > 0.5) {
                 character.trail.push({
                     x: character.x,
@@ -546,7 +547,7 @@
             }
 
             character.trail = character.trail.filter(point => {
-                point.life -= 0.05;
+                point.life -= 3 * dt;
                 return point.life > 0;
             });
 

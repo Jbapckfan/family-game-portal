@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TD 2-Player">
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="Tower Defense 2-Player - Cooperative and competitive tower defense with friends.">
     <meta name="theme-color" content="#0a0a2e">
@@ -870,7 +871,7 @@
             50% { transform: translateY(-10px); }
         }
 
-        button:focus-visible, .target-option:focus-visible, select:focus-visible, .towerOption:focus-visible {
+        a:focus-visible, button:focus-visible, .target-option:focus-visible, select:focus-visible, .towerOption:focus-visible, .game-mode-option:focus-visible {
             outline: 2px solid #00ffff;
             outline-offset: 2px;
         }
@@ -885,17 +886,18 @@
     </style>
 </head>
 <body>
+  <a href="../" aria-label="Back to home menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
     <!-- Game Mode Selection -->
     <div id="gameModeSelect" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0a0a2e 0%, #000511 50%, #1a0033 100%); display: flex; justify-content: center; align-items: center; z-index: 3000;">
         <div style="background: linear-gradient(135deg, rgba(20,20,60,0.98) 0%, rgba(40,20,80,0.98) 100%); padding: 60px; border-radius: 40px; text-align: center; box-shadow: 0 30px 80px rgba(138, 43, 226, 1); border: 4px solid; border-image: linear-gradient(135deg, #8a2be2, #ff1493) 1;">
             <h1 style="color: #fff; margin-bottom: 40px; font-size: 48px; text-shadow: 0 0 20px rgba(255,20,147,0.8);">Ultra Premium Tower Defense</h1>
             <div style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
-                <div class="game-mode-option" onclick="startSinglePlayer()">
+                <div class="game-mode-option" role="button" tabindex="0" aria-label="Single Player - Classic tower defense experience" onclick="startSinglePlayer()">
                     <div style="font-size: 60px; margin-bottom: 20px;">🎮</div>
                     <h2>Single Player</h2>
                     <p>Classic tower defense experience</p>
                 </div>
-                <div class="game-mode-option" onclick="startCoOp()">
+                <div class="game-mode-option" role="button" tabindex="0" aria-label="Co-Op Mode - Team up with a friend" onclick="startCoOp()">
                     <div style="font-size: 60px; margin-bottom: 20px;">👥</div>
                     <h2>Local Co-Op</h2>
                     <p>Team up with a friend!</p>
@@ -903,12 +905,12 @@
                         P1: Mouse | P2: WASD + Space
                     </div>
                 </div>
-                <div class="game-mode-option" onclick="viewLeaderboard()">
+                <div class="game-mode-option" role="button" tabindex="0" aria-label="Leaderboard - View high scores" onclick="viewLeaderboard()">
                     <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
                     <h2>Leaderboard</h2>
                     <p>View high scores</p>
                 </div>
-                <div class="game-mode-option" onclick="startChallenge()">
+                <div class="game-mode-option" role="button" tabindex="0" aria-label="Challenge Mode - Endless waves, limited lives" onclick="startChallenge()">
                     <div style="font-size: 60px; margin-bottom: 20px;">🔥</div>
                     <h2>Challenge Mode</h2>
                     <p>Endless waves, limited lives</p>
@@ -962,23 +964,23 @@
             </div>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; max-width: 100%; overflow: hidden;">
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <button id="addTowerBtn">🏗️ Add Tower</button>
-                    <button id="startLevel">▶️ Start Level 1</button>
+                    <button id="addTowerBtn" aria-label="Add Tower">🏗️ Add Tower</button>
+                    <button id="startLevel" aria-label="Start Level 1">▶️ Start Level 1</button>
                     <select id="levelSelect" aria-label="Jump to level" onchange="selectLevel(this.value)" style="background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%); color: white; border: 2px solid #ff1493; padding: 8px; border-radius: 20px; font-weight: bold; min-width: 120px;">
                         <option value="">Jump to Level...</option>
                     </select>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                    <button id="pauseBtn" onclick="togglePause()">⏸️ Pause</button>
-                    <button id="speedBtn" onclick="cycleGameSpeed()">⚡ 1x Speed</button>
-                    <button id="perfBtn" onclick="togglePerformanceMode()" title="Toggle Performance Mode">🚀 Perf</button>
+                    <button id="pauseBtn" aria-label="Pause game" onclick="togglePause()">⏸️ Pause</button>
+                    <button id="speedBtn" aria-label="Cycle game speed" onclick="cycleGameSpeed()">⚡ 1x Speed</button>
+                    <button id="perfBtn" aria-label="Toggle Performance Mode" onclick="togglePerformanceMode()" title="Toggle Performance Mode">🚀 Perf</button>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                    <button id="bombBtn" onclick="useSpecialAbility('bomb')" title="Bomb (B) - Unlocks at level 10" style="background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%); position: relative; display: none;">💣 <span id="bombCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
-                    <button id="freezeBtn" onclick="useSpecialAbility('freeze')" title="Freeze (F) - Unlocks at level 15" style="background: linear-gradient(135deg, #00ccff 0%, #0088ff 100%); position: relative; display: none;">❄️ <span id="freezeCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
-                    <button id="doubleBtn" onclick="useSpecialAbility('double')" title="Double Damage (D) - Unlocks at level 20" style="background: linear-gradient(135deg, #ffcc00 0%, #ff8800 100%); position: relative; display: none;">⚔️ <span id="doubleCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
-                    <button id="wavePreviewBtn" onclick="toggleWavePreview()">👁️ Preview</button>
-                    <button id="leaderboardBtn" onclick="showInGameLeaderboard()">🏆</button>
+                    <button id="bombBtn" aria-label="Bomb ability" onclick="useSpecialAbility('bomb')" title="Bomb (B) - Unlocks at level 10" style="background: linear-gradient(135deg, #ff6600 0%, #ff3300 100%); position: relative; display: none;">💣 <span id="bombCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
+                    <button id="freezeBtn" aria-label="Freeze ability" onclick="useSpecialAbility('freeze')" title="Freeze (F) - Unlocks at level 15" style="background: linear-gradient(135deg, #00ccff 0%, #0088ff 100%); position: relative; display: none;">❄️ <span id="freezeCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
+                    <button id="doubleBtn" aria-label="Double damage ability" onclick="useSpecialAbility('double')" title="Double Damage (D) - Unlocks at level 20" style="background: linear-gradient(135deg, #ffcc00 0%, #ff8800 100%); position: relative; display: none;">⚔️ <span id="doubleCooldown" style="position: absolute; top: -5px; right: -5px; font-size: 10px; background: black; padding: 2px; border-radius: 10px;"></span></button>
+                    <button id="wavePreviewBtn" aria-label="Preview incoming waves" onclick="toggleWavePreview()">👁️ Preview</button>
+                    <button id="leaderboardBtn" aria-label="Show leaderboard" onclick="showInGameLeaderboard()">🏆</button>
                 </div>
                 <label style="font-size: 12px; white-space: nowrap;">
                     <input type="checkbox" id="autoStartCheck" checked onchange="toggleAutoStart()">
@@ -1006,7 +1008,7 @@
         <div id="towerInfo">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 id="towerName">Tower Name</h3>
-                <button class="closeBtn" onclick="selectedTower = null; updateUI();">✕</button>
+                <button class="closeBtn" aria-label="Close tower info" onclick="selectedTower = null; updateUI();">✕</button>
             </div>
             <div class="tower-stat">
                 <span class="tower-stat-label">Level:</span>
@@ -1039,14 +1041,14 @@
                 <div class="target-option" data-priority="strongest" onclick="setTowerTargeting('strongest')">Strong</div>
                 <div class="target-option" data-priority="weakest" onclick="setTowerTargeting('weakest')">Weak</div>
             </div>
-            <button id="upgradeBtn" onclick="upgradeTower()">⬆️ UPGRADE (💰100)</button>
+            <button id="upgradeBtn" aria-label="Upgrade tower" onclick="upgradeTower()">⬆️ UPGRADE (💰100)</button>
             <div class="spec-buttons" id="specButtons" style="display: none;">
                 <h4 style="color: #aaa; font-size: 12px; margin: 0 0 10px 0; text-align: center;">Choose Specialization:</h4>
-                <button class="spec-btn" onclick="specializeTower('power')">💥 Power</button>
-                <button class="spec-btn" onclick="specializeTower('speed')">⚡ Speed</button>
-                <button class="spec-btn" onclick="specializeTower('effect')">✨ Effect</button>
+                <button class="spec-btn" aria-label="Power specialization" onclick="specializeTower('power')">💥 Power</button>
+                <button class="spec-btn" aria-label="Speed specialization" onclick="specializeTower('speed')">⚡ Speed</button>
+                <button class="spec-btn" aria-label="Effect specialization" onclick="specializeTower('effect')">✨ Effect</button>
             </div>
-            <button id="sellBtn" onclick="sellTower()" style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); margin-top: 10px; width: 100%;">💰 SELL</button>
+            <button id="sellBtn" aria-label="Sell tower" onclick="sellTower()" style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); margin-top: 10px; width: 100%;">💰 SELL</button>
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); text-align: center;">
                 <div style="font-size: 11px; color: #b0b0b0;">Hotkeys: U = Upgrade • S = Sell</div>
             </div>
@@ -1057,7 +1059,7 @@
             <div id="towerGrid">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                     <h2 style="color: #fff; font-size: 36px; margin: 0; text-shadow: 0 0 20px rgba(255,20,147,0.8);">🏗️ Choose Your Tower</h2>
-                    <button id="closeTowerModal" style="background: linear-gradient(135deg, #ff4444, #cc0000); width: 50px; height: 50px; border-radius: 50%; font-size: 24px;">✖</button>
+                    <button id="closeTowerModal" aria-label="Close tower selection" style="background: linear-gradient(135deg, #ff4444, #cc0000); width: 50px; height: 50px; border-radius: 50%; font-size: 24px;">✖</button>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                     <div class="towerOption" data-type="pulse">
@@ -1192,8 +1194,8 @@
             <p style="font-size: 18px; margin: 10px 0;">Best Wave: <span id="bestWave" style="color: #00ffff;">0</span></p>
             <p style="font-size: 18px; margin: 10px 0;">Total Kills: <span id="totalKills" style="color: #ffaa00;">0</span></p>
             <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
-                <button onclick="restartGame()" style="font-size: 20px; padding: 15px 40px;">Play Again</button>
-                <button onclick="showLeaderboard()" style="font-size: 20px; padding: 15px 40px;">🏆 Leaderboard</button>
+                <button aria-label="Play again" onclick="restartGame()" style="font-size: 20px; padding: 15px 40px;">Play Again</button>
+                <button aria-label="Show leaderboard" onclick="showLeaderboard()" style="font-size: 20px; padding: 15px 40px;">🏆 Leaderboard</button>
             </div>
         </div>
     </div>
@@ -1201,13 +1203,13 @@
     <!-- Leaderboard Modal -->
     <div id="leaderboardModal" onclick="if(event.target === this) closeLeaderboard()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center;">
         <div style="background: linear-gradient(135deg, rgba(20,20,60,0.98) 0%, rgba(40,20,80,0.98) 100%); padding: 40px; border-radius: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(138, 43, 226, 1); border: 3px solid; border-image: linear-gradient(135deg, #8a2be2, #ff1493) 1; position: relative;">
-            <button class="closeBtn" onclick="closeLeaderboard()" style="position: absolute; top: 15px; right: 15px;">✕</button>
+            <button class="closeBtn" aria-label="Close leaderboard" onclick="closeLeaderboard()" style="position: absolute; top: 15px; right: 15px;">✕</button>
             <h2 style="color: #fff; text-align: center; margin-bottom: 30px; font-size: 36px;">🏆 Leaderboard</h2>
             <div id="leaderboardContent">
                 <!-- Leaderboard entries will be added here -->
             </div>
             <div style="text-align: center; margin-top: 30px;">
-                <button onclick="closeLeaderboard()" style="min-width: 150px; background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%);">Close</button>
+                <button aria-label="Close leaderboard" onclick="closeLeaderboard()" style="min-width: 150px; background: linear-gradient(135deg, #8a2be2 0%, #ff1493 100%);">Close</button>
             </div>
         </div>
     </div>
@@ -1254,8 +1256,9 @@ function resizeCanvas() {
     // Scale all drawing operations so game logic uses CSS pixels
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Invalidate cached background so it redraws at new size
+    // Invalidate cached canvases so they redraw at new size
     cachedBackgroundCanvas = null;
+    cachedPathCanvas = null;
 
     console.log('Canvas resized to:', canvasWidth, 'x', canvasHeight, '(DPI:', dpr, ')');
 
@@ -1308,6 +1311,20 @@ let isPaused = false;
 let screenShake = 0;
 let shakeX = 0;
 let shakeY = 0;
+
+// Guard flag to prevent double initialization
+let gameInitialized = false;
+
+// UI dirty flag - only update DOM when state changes
+let uiDirty = true;
+
+// Per-frame cached values (set once at top of gameLoop, used everywhere)
+let frameNow = 0;    // Date.now() cached for the current frame
+let frameScale = 1;  // getScaleFactor() cached for the current frame
+
+// Timer tracking for cleanup on restart
+let activeTimeouts = [];
+let activeIntervals = [];
 
 // Co-op mode variables
 let isCoOpMode = false;
@@ -2094,9 +2111,9 @@ class Tower {
             if (this.level === 10 && !achievements.upgradeMax.unlocked) {
                 unlockAchievement('upgradeMax');
             }
-            
-            updateUI();
-            
+
+            uiDirty = true;
+
             // Upgrade effects
             for (let i = 0; i < 30; i++) {
                 const angle = (i / 30) * Math.PI * 2;
@@ -2550,7 +2567,7 @@ class Tower {
         const rotDiff = this.targetRotation - this.rotation;
         this.rotation += rotDiff * 0.2;
         
-        const now = Date.now();
+        const now = frameNow;
         let effectiveFireRate = this.stats.fireRate;
         
         // Pulse ability: double fire rate
@@ -2878,10 +2895,9 @@ class Tower {
     draw() {
         const x = this.x - camera.x;
         const y = this.y - camera.y;
-        const scale = getScaleFactor();
-        
-        // Idle animation
-        this.idleAnimation += 0.02;
+        const scale = frameScale;
+
+        // Idle animation (increment is in update() only, not here)
         
         // Upgrade animation effect
         if (this.upgradeAnimation > 0) {
@@ -2903,7 +2919,7 @@ class Tower {
             // Draw electric sparks around stunned tower
             const sparkCount = 5;
             for (let i = 0; i < sparkCount; i++) {
-                const angle = (Math.PI * 2 * i) / sparkCount + Date.now() * 0.002;
+                const angle = (Math.PI * 2 * i) / sparkCount + frameNow * 0.002;
                 const sparkX = x + Math.cos(angle) * 30 * scale;
                 const sparkY = y + Math.sin(angle) * 30 * scale;
                 ctx.strokeStyle = '#ff00ff';
@@ -3004,7 +3020,7 @@ class Tower {
             ctx.lineWidth = 2;
             ctx.setLineDash([10, 5]);
             ctx.beginPath();
-            ctx.arc(x, y, this.stats.range * getScaleFactor(), 0, Math.PI * 2);
+            ctx.arc(x, y, this.stats.range * frameScale, 0, Math.PI * 2);
             ctx.stroke();
             ctx.setLineDash([]);
             
@@ -3019,7 +3035,7 @@ class Tower {
             ctx.lineWidth = 1;
             ctx.setLineDash([5, 10]);
             ctx.beginPath();
-            ctx.arc(x, y, this.stats.range * getScaleFactor(), 0, Math.PI * 2);
+            ctx.arc(x, y, this.stats.range * frameScale, 0, Math.PI * 2);
             ctx.stroke();
             ctx.setLineDash([]);
         }
@@ -3053,7 +3069,7 @@ class Tower {
         // Draw synergy indicators (skip in performance mode)
         if (!performanceMode && this.synergyBonus > 0) {
             // Synergy aura effect
-            const synergyPulse = Math.sin(Date.now() * 0.003) * 0.3 + 0.7;
+            const synergyPulse = Math.sin(frameNow * 0.003) * 0.3 + 0.7;
             ctx.save();
             
             // Outer synergy ring
@@ -3068,8 +3084,8 @@ class Tower {
             // Synergy particles
             const particleCount = Math.floor(this.synergyBonus * 10);
             for (let i = 0; i < particleCount; i++) {
-                const angle = (Date.now() * 0.001 + i * Math.PI * 2 / particleCount) % (Math.PI * 2);
-                const radius = 40 * scale + Math.sin(Date.now() * 0.002 + i) * 5 * scale;
+                const angle = (frameNow * 0.001 + i * Math.PI * 2 / particleCount) % (Math.PI * 2);
+                const radius = 40 * scale + Math.sin(frameNow * 0.002 + i) * 5 * scale;
                 const px = x + Math.cos(angle) * radius;
                 const py = y + Math.sin(angle) * radius;
                 
@@ -3109,7 +3125,7 @@ class Tower {
                 ctx.stroke();
             } else {
                 // Ready to use
-                const pulse = Math.sin(Date.now() * 0.005) * 0.2 + 0.8;
+                const pulse = Math.sin(frameNow * 0.005) * 0.2 + 0.8;
                 abilityGrad.addColorStop(0, `rgba(255, 215, 0, ${pulse})`);
                 abilityGrad.addColorStop(1, `rgba(255, 140, 0, ${pulse})`);
             }
@@ -3153,11 +3169,9 @@ class Tower {
         ctx.fillStyle = '#00cc66';
         ctx.fillRect(15 * scale, -8 * scale, 20 * scale, 16 * scale);
 
-        // Glowing core - single gradient
-        const coreGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * scale);
-        coreGrad.addColorStop(0, '#ffffff');
-        coreGrad.addColorStop(0.5, '#00ff88');
-        coreGrad.addColorStop(1, 'transparent');
+        // Glowing core - single gradient (cached)
+        const coreGrad = getCachedRadialGradient('pulse_core', ctx, 0, 0, 0, 0, 0, 12 * scale,
+            [0, '#ffffff', 0.5, '#00ff88', 1, 'transparent']);
         ctx.fillStyle = coreGrad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3179,11 +3193,9 @@ class Tower {
         ctx.arc(0, 0, 15 * scale, 0, Math.PI * 2);
         ctx.fill();
 
-        // Glowing core
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#ff0000');
-        grad.addColorStop(1, 'transparent');
+        // Glowing core (cached)
+        const grad = getCachedRadialGradient('laser_core', ctx, 0, 0, 0, 0, 0, 12 * scale,
+            [0, '#ffffff', 0.5, '#ff0000', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3207,11 +3219,9 @@ class Tower {
         ctx.fillStyle = '#cc5500';
         ctx.fillRect(15 * scale, -8 * scale, 25 * scale, 16 * scale);
 
-        // Glowing tip
-        const grad = ctx.createRadialGradient(40 * scale, 0, 0, 40 * scale, 0, 8 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#ff6600');
-        grad.addColorStop(1, 'transparent');
+        // Glowing tip (cached)
+        const grad = getCachedRadialGradient('missile_tip', ctx, 40 * scale, 0, 0, 40 * scale, 0, 8 * scale,
+            [0, '#ffffff', 0.5, '#ff6600', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3231,11 +3241,9 @@ class Tower {
         ctx.fillStyle = '#ffff00';
         ctx.fillRect(-10 * scale, -15 * scale, 20 * scale, 30 * scale);
 
-        // Glowing orb
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 15 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#ffff00');
-        grad.addColorStop(1, 'transparent');
+        // Glowing orb (cached)
+        const grad = getCachedRadialGradient('tesla_orb', ctx, 0, 0, 0, 0, 0, 15 * scale,
+            [0, '#ffffff', 0.5, '#ffff00', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3257,11 +3265,9 @@ class Tower {
         ctx.arc(0, 0, 16 * scale, 0, Math.PI * 2);
         ctx.fill();
 
-        // Glowing core
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 14 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#ff00ff');
-        grad.addColorStop(1, 'transparent');
+        // Glowing core (cached)
+        const grad = getCachedRadialGradient('plasma_core', ctx, 0, 0, 0, 0, 0, 14 * scale,
+            [0, '#ffffff', 0.5, '#ff00ff', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3287,11 +3293,9 @@ class Tower {
         ctx.fillStyle = '#00cccc';
         ctx.fillRect(10 * scale, -6 * scale, 40 * scale, 12 * scale);
 
-        // Glowing energy
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#00ffff');
-        grad.addColorStop(1, 'transparent');
+        // Glowing energy (cached)
+        const grad = getCachedRadialGradient('railgun_energy', ctx, 0, 0, 0, 0, 0, 12 * scale,
+            [0, '#ffffff', 0.5, '#00ffff', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3320,11 +3324,9 @@ class Tower {
         ctx.closePath();
         ctx.fill();
 
-        // Glowing quantum core
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#9400d3');
-        grad.addColorStop(1, 'transparent');
+        // Glowing quantum core (cached)
+        const grad = getCachedRadialGradient('quantum_core', ctx, 0, 0, 0, 0, 0, 12 * scale,
+            [0, '#ffffff', 0.5, '#9400d3', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3346,11 +3348,9 @@ class Tower {
         ctx.arc(0, 0, 17 * scale, 0, Math.PI * 2);
         ctx.fill();
 
-        // Dark void core
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 14 * scale);
-        grad.addColorStop(0, '#000000');
-        grad.addColorStop(0.5, '#4b0082');
-        grad.addColorStop(1, 'transparent');
+        // Dark void core (cached)
+        const grad = getCachedRadialGradient('void_core', ctx, 0, 0, 0, 0, 0, 14 * scale,
+            [0, '#000000', 0.5, '#4b0082', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3376,11 +3376,9 @@ class Tower {
         ctx.closePath();
         ctx.fill();
 
-        // Glowing prism
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 13 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#e0e0ff');
-        grad.addColorStop(1, 'transparent');
+        // Glowing prism (cached)
+        const grad = getCachedRadialGradient('crystal_prism', ctx, 0, 0, 0, 0, 0, 13 * scale,
+            [0, '#ffffff', 0.5, '#e0e0ff', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3410,11 +3408,9 @@ class Tower {
         ctx.closePath();
         ctx.fill();
 
-        // Glowing ultimate core
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 15 * scale);
-        grad.addColorStop(0, '#ffffff');
-        grad.addColorStop(0.5, '#ffd700');
-        grad.addColorStop(1, 'transparent');
+        // Glowing ultimate core (cached)
+        const grad = getCachedRadialGradient('omega_core', ctx, 0, 0, 0, 0, 0, 15 * scale,
+            [0, '#ffffff', 0.5, '#ffd700', 1, 'transparent']);
         ctx.fillStyle = grad;
         ctx.globalAlpha = pulse;
         ctx.beginPath();
@@ -3622,7 +3618,7 @@ class Enemy {
             
             if (distance < 30) {
                 health -= this.boss ? 50 : 10;
-                updateUI();
+                uiDirty = true;
                 return true;
             }
             
@@ -3651,7 +3647,7 @@ class Enemy {
         }
 
         // Enemy body
-        const scale = getScaleFactor();
+        const scale = frameScale;
 
         // Shield effect - simple ring, no blur
         if (this.shield > 0) {
@@ -3782,7 +3778,7 @@ class Enemy {
         if (this.health <= 0) {
             money += this.reward;
             score += this.reward * level;
-            updateUI();
+            uiDirty = true;
             
             // Reward numbers disabled for performance
             // showDamageNumber(this.position.x - camera.x, this.position.y - camera.y, `+${this.reward}`, '#00ff00');
@@ -4069,7 +4065,7 @@ function updatePowerups() {
             } else if (powerup.type === 'health') {
                 health = Math.min(100, health + powerup.value);
             }
-            updateUI();
+            uiDirty = true;
             
             // Collection effect
             for (let i = 0; i < 10; i++) {
@@ -4094,6 +4090,47 @@ function updatePowerups() {
 // Cached background
 let cachedBackground = null;
 let cachedBackgroundCanvas = null;
+
+// Gradient cache - avoids recreating identical CanvasGradient objects every frame
+const _gradientCache = new Map();
+let _gradientCacheScale = -1; // track scale to invalidate when it changes
+
+function getCachedRadialGradient(key, ctx, x0, y0, r0, x1, y1, r1, stops) {
+    if (_gradientCacheScale !== frameScale) {
+        _gradientCache.clear();
+        _gradientCacheScale = frameScale;
+    }
+    let g = _gradientCache.get(key);
+    if (!g) {
+        g = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+        for (let i = 0; i < stops.length; i += 2) {
+            g.addColorStop(stops[i], stops[i + 1]);
+        }
+        _gradientCache.set(key, g);
+    }
+    return g;
+}
+
+function getCachedLinearGradient(key, ctx, x0, y0, x1, y1, stops) {
+    if (_gradientCacheScale !== frameScale) {
+        _gradientCache.clear();
+        _gradientCacheScale = frameScale;
+    }
+    let g = _gradientCache.get(key);
+    if (!g) {
+        g = ctx.createLinearGradient(x0, y0, x1, y1);
+        for (let i = 0; i < stops.length; i += 2) {
+            g.addColorStop(stops[i], stops[i + 1]);
+        }
+        _gradientCache.set(key, g);
+    }
+    return g;
+}
+
+// Cached path canvas - drawPath() static parts rendered once, invalidated on path change
+let cachedPathCanvas = null;
+let cachedPathCameraX = null;
+let cachedPathCameraY = null;
 
 // Draw background
 function drawBackground() {
@@ -4157,58 +4194,110 @@ function drawGrid() {
 }
 
 // Draw path with directional indicators
+// Static parts (shadow glow, border, gradient surface, dots, edge highlights) are cached
+// to an offscreen canvas and only redrawn when the path changes.
 function drawPath() {
-    const scale = getScaleFactor();
-    
-    // Glowing path outline
-    ctx.save();
-    ctx.shadowColor = 'rgba(100, 200, 255, 0.8)';
-    ctx.shadowBlur = 20 * scale;
-    ctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
-    ctx.lineWidth = 45 * scale;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    
-    ctx.beginPath();
-    ctx.moveTo(path[0].x - camera.x, path[0].y - camera.y);
-    for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x - camera.x, path[i].y - camera.y);
+    const scale = frameScale;
+
+    // --- Render static path parts to offscreen cache if needed ---
+    if (!cachedPathCanvas || cachedPathCanvas.width !== canvasWidth * dpr || cachedPathCanvas.height !== canvasHeight * dpr) {
+        cachedPathCanvas = document.createElement('canvas');
+        cachedPathCanvas.width = canvasWidth * dpr;
+        cachedPathCanvas.height = canvasHeight * dpr;
+        const pctx = cachedPathCanvas.getContext('2d');
+        pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        // Build path shape helper
+        function tracePath(c) {
+            c.beginPath();
+            c.moveTo(path[0].x - camera.x, path[0].y - camera.y);
+            for (let i = 1; i < path.length; i++) {
+                c.lineTo(path[i].x - camera.x, path[i].y - camera.y);
+            }
+            c.lineTo(base.x + base.width/2 - camera.x, base.y + base.height/2 - camera.y);
+        }
+
+        // Glowing path outline (expensive shadowBlur - only rendered once)
+        pctx.save();
+        pctx.shadowColor = 'rgba(100, 200, 255, 0.8)';
+        pctx.shadowBlur = 20 * scale;
+        pctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
+        pctx.lineWidth = 45 * scale;
+        pctx.lineJoin = 'round';
+        pctx.lineCap = 'round';
+        tracePath(pctx);
+        pctx.stroke();
+        pctx.restore();
+
+        // Path border
+        pctx.strokeStyle = '#2a5570';
+        pctx.lineWidth = 36 * scale;
+        pctx.lineJoin = 'round';
+        pctx.lineCap = 'round';
+        pctx.stroke();
+
+        // Main path surface with brighter gradient
+        const pathGradient = pctx.createLinearGradient(
+            path[0].x - camera.x, path[0].y - camera.y,
+            base.x - camera.x, base.y - camera.y
+        );
+        pathGradient.addColorStop(0, '#506080');
+        pathGradient.addColorStop(0.5, '#405070');
+        pathGradient.addColorStop(1, '#354560');
+        pctx.strokeStyle = pathGradient;
+        pctx.lineWidth = 32 * scale;
+        pctx.lineJoin = 'round';
+        pctx.lineCap = 'round';
+        pctx.stroke();
+
+        // Path center line for extra definition
+        pctx.strokeStyle = 'rgba(150, 200, 255, 0.2)';
+        pctx.lineWidth = 2 * scale;
+        pctx.stroke();
+
+        // Path surface texture - subtle dots (expensive loop - only rendered once)
+        pctx.save();
+        pctx.globalAlpha = 0.08;
+        tracePath(pctx);
+        pctx.lineWidth = 28 * scale;
+        pctx.lineCap = 'round';
+        pctx.lineJoin = 'round';
+        pctx.stroke();
+        pctx.clip();
+
+        pctx.fillStyle = '#ffffff';
+        for (let x = 0; x < canvasWidth; x += 8) {
+            for (let y = 0; y < canvasHeight; y += 8) {
+                if ((x + y) % 16 === 0) {
+                    pctx.fillRect(x, y, 1, 1);
+                }
+            }
+        }
+        pctx.restore();
+
+        // Path highlights on edges
+        pctx.save();
+        pctx.globalAlpha = 0.1;
+        pctx.strokeStyle = '#ffffff';
+        pctx.lineWidth = 1;
+        pctx.setLineDash([20, 20]);
+        tracePath(pctx);
+        pctx.stroke();
+        pctx.setLineDash([]);
+        pctx.restore();
     }
-    ctx.lineTo(base.x + base.width/2 - camera.x, base.y + base.height/2 - camera.y);
-    ctx.stroke();
-    ctx.restore();
-    
-    // Path border
-    ctx.strokeStyle = '#2a5570';
-    ctx.lineWidth = 36 * scale;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    
-    // Main path surface with brighter gradient
-    const pathGradient = ctx.createLinearGradient(
-        path[0].x - camera.x, path[0].y - camera.y,
-        base.x - camera.x, base.y - camera.y
-    );
-    pathGradient.addColorStop(0, '#506080');
-    pathGradient.addColorStop(0.5, '#405070');
-    pathGradient.addColorStop(1, '#354560');
-    ctx.strokeStyle = pathGradient;
-    ctx.lineWidth = 32 * scale;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    
-    // Path center line for extra definition
-    ctx.strokeStyle = 'rgba(150, 200, 255, 0.2)';
-    ctx.lineWidth = 2 * scale;
-    ctx.stroke();
-    
-    // Directional texture - subtle arrows in the center of the path
+
+    // Blit cached static path
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset to pixel coords for drawImage
+    ctx.drawImage(cachedPathCanvas, 0, 0);
+    ctx.restore(); // restores DPI transform
+
+    // --- Animated directional arrows (drawn every frame) ---
     ctx.save();
     const arrowSpacing = 60;
-    const animOffset = (Date.now() * 0.03) % arrowSpacing;
-    
+    const animOffset = (frameNow * 0.03) % arrowSpacing;
+
     // Create clipping path for arrows
     ctx.beginPath();
     ctx.moveTo(path[0].x - camera.x, path[0].y - camera.y);
@@ -4221,7 +4310,7 @@ function drawPath() {
     ctx.lineJoin = 'round';
     ctx.stroke();
     ctx.clip();
-    
+
     // Draw directional arrows along the path
     for (let i = 0; i < path.length - 1; i++) {
         const current = path[i];
@@ -4230,39 +4319,39 @@ function drawPath() {
         const dy = next.y - current.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx);
-        
+
         const numArrows = Math.floor(distance / arrowSpacing);
-        
+
         for (let j = 0; j <= numArrows; j++) {
             const progress = j / Math.max(1, numArrows);
             const arrowX = current.x + dx * progress - camera.x;
             const arrowY = current.y + dy * progress - camera.y;
-            
+
             // Calculate opacity based on animation
             const localOffset = (j * arrowSpacing - animOffset + arrowSpacing) % arrowSpacing;
             const opacity = 0.3 + (1 - localOffset / arrowSpacing) * 0.4;
-            
+
             ctx.save();
             ctx.translate(arrowX, arrowY);
             ctx.rotate(angle);
-            
+
             // Draw glowing arrow
             ctx.strokeStyle = `rgba(150, 220, 255, ${opacity})`;
             ctx.lineWidth = 2.5;
             ctx.lineCap = 'round';
             ctx.shadowColor = 'rgba(100, 200, 255, 0.8)';
             ctx.shadowBlur = 5;
-            
+
             ctx.beginPath();
             ctx.moveTo(-10, -5);
             ctx.lineTo(0, 0);
             ctx.lineTo(-10, 5);
             ctx.stroke();
-            
+
             ctx.restore();
         }
     }
-    
+
     // Draw arrows for final segment to base
     const lastPath = path[path.length - 1];
     const baseX = base.x + base.width/2;
@@ -4271,78 +4360,33 @@ function drawPath() {
     const dy = baseY - lastPath.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     const angle = Math.atan2(dy, dx);
-    
+
     const numArrows = Math.floor(distance / arrowSpacing);
     for (let j = 0; j <= numArrows; j++) {
         const progress = j / Math.max(1, numArrows);
         const arrowX = lastPath.x + dx * progress - camera.x;
         const arrowY = lastPath.y + dy * progress - camera.y;
-        
+
         const localOffset = (j * arrowSpacing - animOffset + arrowSpacing) % arrowSpacing;
         const opacity = 0.1 + (1 - localOffset / arrowSpacing) * 0.15;
-        
+
         ctx.save();
         ctx.translate(arrowX, arrowY);
         ctx.rotate(angle);
-        
+
         ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
         ctx.lineWidth = 1.5;
         ctx.lineCap = 'round';
-        
+
         ctx.beginPath();
         ctx.moveTo(-8, -4);
         ctx.lineTo(0, 0);
         ctx.lineTo(-8, 4);
         ctx.stroke();
-        
+
         ctx.restore();
     }
-    
-    ctx.restore();
-    
-    // Path surface texture - subtle dots
-    ctx.save();
-    ctx.globalAlpha = 0.08;
-    
-    // Create clipping path
-    ctx.beginPath();
-    ctx.moveTo(path[0].x - camera.x, path[0].y - camera.y);
-    for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x - camera.x, path[i].y - camera.y);
-    }
-    ctx.lineTo(base.x + base.width/2 - camera.x, base.y + base.height/2 - camera.y);
-    ctx.lineWidth = 28 * scale;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-    ctx.clip();
-    
-    // Draw dot pattern
-    ctx.fillStyle = '#ffffff';
-    for (let x = 0; x < canvasWidth; x += 8) {
-        for (let y = 0; y < canvasHeight; y += 8) {
-            if ((x + y) % 16 === 0) {
-                ctx.fillRect(x, y, 1, 1);
-            }
-        }
-    }
-    
-    ctx.restore();
-    
-    // Path highlights on edges
-    ctx.save();
-    ctx.globalAlpha = 0.1;
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([20, 20]);
-    ctx.beginPath();
-    ctx.moveTo(path[0].x - camera.x, path[0].y - camera.y);
-    for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x - camera.x, path[i].y - camera.y);
-    }
-    ctx.lineTo(base.x + base.width/2 - camera.x, base.y + base.height/2 - camera.y);
-    ctx.stroke();
-    ctx.setLineDash([]);
+
     ctx.restore();
 }
 
@@ -4381,12 +4425,10 @@ function drawBase() {
         ctx.save();
         ctx.rotate(ring.rotation);
         
-        // Ring gradient
-        const ringGradient = ctx.createLinearGradient(-ring.radius, 0, ring.radius, 0);
-        ringGradient.addColorStop(0, 'transparent');
-        ringGradient.addColorStop(0.4, ring.color);
-        ringGradient.addColorStop(0.6, ring.color);
-        ringGradient.addColorStop(1, 'transparent');
+        // Ring gradient (cached)
+        const ringGradient = getCachedLinearGradient(
+            `base_ring_${i}`, ctx, -ring.radius, 0, ring.radius, 0,
+            [0, 'transparent', 0.4, ring.color, 0.6, ring.color, 1, 'transparent']);
         
         ctx.strokeStyle = ringGradient;
         ctx.lineWidth = 3;
@@ -4403,10 +4445,9 @@ function drawBase() {
             const nodeX = Math.cos(angle) * ring.radius;
             const nodeY = Math.sin(angle) * ring.radius * 0.4;
             
-            const nodeGradient = ctx.createRadialGradient(nodeX, nodeY, 0, nodeX, nodeY, 6);
-            nodeGradient.addColorStop(0, '#ffffff');
-            nodeGradient.addColorStop(0.5, ring.color);
-            nodeGradient.addColorStop(1, 'transparent');
+            const nodeGradient = getCachedRadialGradient(
+                `base_node_${i}_${j}`, ctx, nodeX, nodeY, 0, nodeX, nodeY, 6,
+                [0, '#ffffff', 0.5, ring.color, 1, 'transparent']);
             ctx.fillStyle = nodeGradient;
             ctx.beginPath();
             ctx.arc(nodeX, nodeY, 6, 0, Math.PI * 2);
@@ -4435,11 +4476,9 @@ function drawBase() {
     ctx.closePath();
     ctx.fill();
     
-    // Platform edges with gradient
-    const edgeGradient = ctx.createLinearGradient(-50, -50, 50, 50);
-    edgeGradient.addColorStop(0, '#8a2be2');
-    edgeGradient.addColorStop(0.5, '#ff1493');
-    edgeGradient.addColorStop(1, '#00ffff');
+    // Platform edges with gradient (cached)
+    const edgeGradient = getCachedLinearGradient('base_edge', ctx, -50, -50, 50, 50,
+        [0, '#8a2be2', 0.5, '#ff1493', 1, '#00ffff']);
     ctx.strokeStyle = edgeGradient;
     ctx.lineWidth = 4;
     ctx.stroke();
@@ -4739,7 +4778,7 @@ function drawBossHealthBars() {
         ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
         
         // Animated shine effect
-        const shineX = barX + (Date.now() % 2000) / 2000 * barWidth;
+        const shineX = barX + (frameNow % 2000) / 2000 * barWidth;
         const shineGrad = ctx.createLinearGradient(shineX - 20, barY, shineX + 20, barY);
         shineGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
         shineGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
@@ -4780,9 +4819,10 @@ function drawPowerups() {
         ctx.translate(x, y);
         
         // Glow effect
-        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
-        gradient.addColorStop(0, powerup.type === 'money' ? 'rgba(255,215,0,0.3)' : 'rgba(255,0,0,0.3)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        const gradKey = powerup.type === 'money' ? 'pu_money' : 'pu_health';
+        const gradColor = powerup.type === 'money' ? 'rgba(255,215,0,0.3)' : 'rgba(255,0,0,0.3)';
+        const gradient = getCachedRadialGradient(gradKey, ctx, 0, 0, 0, 0, 0, 30,
+            [0, gradColor, 1, 'rgba(0,0,0,0)']);
         ctx.fillStyle = gradient;
         ctx.fillRect(-30, -30, 60, 60);
         
@@ -4815,7 +4855,8 @@ function updateUI() {
     document.getElementById('health').textContent = health;
     document.getElementById('level').textContent = level;
     document.getElementById('score').textContent = score;
-    document.getElementById('themeName').textContent = 'Grassland';
+    const currentLevelData = levelData[Math.min(level - 1, levelData.length - 1)];
+    document.getElementById('themeName').textContent = currentLevelData ? currentLevelData.theme : 'Unknown';
     
     if (enemiesSpawning || enemies.length > 0) {
         document.getElementById('waveStatus').style.display = 'flex';
@@ -5147,8 +5188,11 @@ function startCoOp() {
     document.getElementById('gameContainer').style.display = 'block';
     document.getElementById('coopIndicator').style.display = 'block';
     document.getElementById('player2Cursor').style.display = 'block';
-    initGame();
-    
+    // Do NOT call initGame() again - it already ran on window load.
+    // Just reset game state for co-op mode.
+    restartGame();
+    uiDirty = true;
+
     // Initialize player 2 controls
     setupPlayer2Controls();
 }
@@ -5157,24 +5201,28 @@ function startChallenge() {
     challengeMode = true;
     challengeWave = 0;
     challengeLives = 3;
-    health = 3; // Only 3 lives in challenge mode
-    money = 600; // Start with more money but can't sell
     document.getElementById('gameModeSelect').style.display = 'none';
     document.getElementById('gameContainer').style.display = 'block';
     document.getElementById('coopIndicator').style.display = 'none';
     document.getElementById('player2Cursor').style.display = 'none';
-    
+
     // Show challenge mode indicator
     showNotification('🔥 CHALLENGE MODE: No selling • 3 lives • Endless waves');
-    
-    initGame();
-    
+
+    // Do NOT call initGame() again - it already ran on window load.
+    // Just reset game state for challenge mode.
+    restartGame();
+    health = 3; // Only 3 lives in challenge mode
+    money = 600; // Start with more money but can't sell
+    uiDirty = true;
+
     // Auto-start first wave after delay
-    setTimeout(() => {
+    const t = setTimeout(() => {
         if (challengeMode) {
             startChallengeWave();
         }
     }, 3000);
+    activeTimeouts.push(t);
 }
 
 function startChallengeWave() {
@@ -5715,7 +5763,8 @@ function changePathLayout(newLayout) {
     currentPathLayout = newLayout;
     originalPath = pathLayouts[currentPathLayout];
     path = scalePath();
-    
+    cachedPathCanvas = null; // invalidate path render cache
+
     // Update base position for new path
     updateBasePosition();
     
@@ -5885,6 +5934,12 @@ function addScreenShake(intensity) {
 
 // Restart game
 function restartGame() {
+    // Clear all tracked timers to prevent stale spawns
+    activeTimeouts.forEach(t => clearTimeout(t));
+    activeIntervals.forEach(t => clearInterval(t));
+    activeTimeouts = [];
+    activeIntervals = [];
+
     // Reset game state
     money = 400;
     health = 100;
@@ -6022,27 +6077,29 @@ function spawnWave(levelInfo) {
     enemiesRemaining = totalEnemies;
     
     enemySpawns.forEach(spawn => {
-        setTimeout(() => {
+        const t = setTimeout(() => {
             if (levelActive && health > 0) {
                 const enemy = new Enemy(spawn.type);
                 enemies.push(enemy);
                 enemiesRemaining--;
-                
+
                 if (enemiesRemaining === 0) {
                     enemiesSpawning = false;
-                    
+
                     if (currentWave < totalWaves) {
                         // Wait for current wave to be cleared before spawning next
                         const checkForNextWave = setInterval(() => {
                             if (enemies.length === 0 && levelActive && health > 0) {
                                 clearInterval(checkForNextWave);
-                                setTimeout(() => {
+                                const t2 = setTimeout(() => {
                                     if (levelActive && health > 0) {
                                         spawnWave(levelInfo);
                                     }
                                 }, 2000);
+                                activeTimeouts.push(t2);
                             }
                         }, 100);
+                        activeIntervals.push(checkForNextWave);
                     }
                 }
             } else {
@@ -6052,6 +6109,7 @@ function spawnWave(levelInfo) {
                 }
             }
         }, spawn.delay);
+        activeTimeouts.push(t);
     });
 }
 
@@ -6062,16 +6120,17 @@ function checkLevelComplete() {
         const waveBonus = 50 * challengeWave;
         money += waveBonus;
         score += waveBonus * 2;
-        updateUI();
-        
+        uiDirty = true;
+
         showNotification(`Wave ${challengeWave} Complete! +💰${waveBonus}`);
         
         // Auto-start next wave after delay
-        setTimeout(() => {
+        const t = setTimeout(() => {
             if (challengeMode && health > 0) {
                 startChallengeWave();
             }
         }, 3000);
+        activeTimeouts.push(t);
         return;
     }
     
@@ -6080,7 +6139,7 @@ function checkLevelComplete() {
         const reward = 100 + level * 50;
         money += reward;
         score += reward;
-        updateUI();
+        uiDirty = true;
         
         if (level === 10 && !achievements.wave10.unlocked) {
             unlockAchievement('wave10');
@@ -6093,11 +6152,11 @@ function checkLevelComplete() {
             <div style="font-size: 24px; color: #ffd700;">+${reward} 💰</div>
         `;
         levelInfo.style.display = 'block';
-        
-        setTimeout(() => {
+
+        const lvlCompleteTimer = setTimeout(() => {
             levelInfo.style.display = 'none';
             level++;
-            updateUI();
+            uiDirty = true;
             
             const maxLevel = levelData.length;
             
@@ -6115,6 +6174,7 @@ function checkLevelComplete() {
                 }
             }
         }, 3000);
+        activeTimeouts.push(lvlCompleteTimer);
     }
 }
 
@@ -6231,14 +6291,19 @@ function gameLoop(currentTime) {
     }
     
     try {
+        // Cache per-frame values (avoids repeated calls per entity)
+        frameNow = Date.now();
+        frameScale = getScaleFactor();
+
         // Clear canvas
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        
+
         // Check if game is initialized
         if (!path || path.length === 0) {
             // Try to initialize path
             if (originalPath && originalPath.length > 0) {
                 path = scalePath();
+                cachedPathCanvas = null; // invalidate path render cache
                 updateBasePosition();
             } else {
                 // Still not ready, show loading
@@ -6255,11 +6320,13 @@ function gameLoop(currentTime) {
         }
         
         // Handle screen shake
+        var didShake = false;
         if (screenShake > 0) {
             shakeX = (Math.random() - 0.5) * screenShake;
             shakeY = (Math.random() - 0.5) * screenShake;
             ctx.save();
             ctx.translate(shakeX, shakeY);
+            didShake = true;
             screenShake *= 0.9; // Decay shake
             if (screenShake < 0.1) screenShake = 0;
         }
@@ -6346,7 +6413,7 @@ function gameLoop(currentTime) {
             ctx.lineWidth = 2;
             ctx.setLineDash([10, 5]);
             ctx.beginPath();
-            ctx.arc(mousePos.x, mousePos.y, towerTypes[selectedTowerType].range * getScaleFactor(), 0, Math.PI * 2);
+            ctx.arc(mousePos.x, mousePos.y, towerTypes[selectedTowerType].range * frameScale, 0, Math.PI * 2);
             ctx.stroke();
             ctx.setLineDash([]);
             ctx.restore();
@@ -6392,18 +6459,26 @@ function gameLoop(currentTime) {
             }
         }
         
-        // Update UI
-        updateUI();
-        
-        // Restore context if shake was applied
-        if (screenShake > 0) {
-            ctx.restore();
+        // Update UI only when state has changed
+        if (uiDirty) {
+            updateUI();
+            uiDirty = false;
         }
         
+        // Restore context if shake was applied
+        if (didShake) {
+            ctx.restore();
+        }
+
     } catch (error) {
         console.error('Game loop error:', error);
         console.error('Error stack:', error.stack);
-        
+
+        // Restore context if shake was applied before error
+        if (didShake) {
+            ctx.restore();
+        }
+
         // Try to draw something simple to show canvas is working
         ctx.fillStyle = 'yellow';
         ctx.font = '20px Arial';
@@ -6566,7 +6641,7 @@ function handleCanvasClick() {
             } else if (powerup.type === 'health') {
                 health = Math.min(100, health + powerup.value);
             }
-            updateUI();
+            uiDirty = true;
             
             // Collection effect
             for (let j = 0; j < 10; j++) {
@@ -6830,8 +6905,13 @@ document.addEventListener('keyup', (e) => {
 
 // Initialize everything when DOM is ready
 function initGame() {
+    if (gameInitialized) {
+        console.log('initGame() already called, skipping duplicate initialization');
+        return;
+    }
+    gameInitialized = true;
     console.log('Initializing game...');
-    
+
     // Load leaderboard data
     loadLeaderboard();
     
@@ -6874,6 +6954,7 @@ function initGame() {
     // Initialize scaled elements after canvas is ready
     if (originalPath) {
         path = scalePath();
+        cachedPathCanvas = null; // invalidate path render cache
         updateBasePosition();
     }
 

@@ -570,44 +570,6 @@
             border: none;
         }
 
-        @keyframes faceComplete {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes cubeComplete {
-            0% { 
-                transform: scale(1) rotateY(0deg); 
-            }
-            50% { 
-                transform: scale(1.3) rotateY(180deg); 
-            }
-            100% { 
-                transform: scale(1) rotateY(360deg); 
-            }
-        }
-
-        @keyframes sparkle {
-            0% { 
-                transform: translate(0, 0) scale(0);
-                opacity: 1;
-            }
-            100% { 
-                transform: translate(var(--x), var(--y)) scale(1);
-                opacity: 0;
-            }
-        }
-
-        .celebration-particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, #fff, transparent);
-            pointer-events: none;
-            animation: sparkle 1s ease-out forwards;
-        }
-
         button:focus-visible, .action-button:focus-visible, .rotation-btn:focus-visible, .help-button:focus-visible {
             outline: 2px solid #4ecdc4;
             outline-offset: 2px;
@@ -632,7 +594,7 @@
 
     <div id="gameContainer">
         <div class="header">
-            <a href="../../" class="nav-button">
+            <a href="../" class="nav-button">
                 🏠 Main Menu
             </a>
             <h1 class="game-title">DOTS³</h1>
@@ -681,11 +643,11 @@
         </div>
 
         <div id="rightPanel">
-            <button class="action-button primary" onclick="game.newGame()">🎯 New Game</button>
-            <button class="action-button" onclick="game.showHint()">💡 Hint</button>
-            <button class="action-button" onclick="game.undoMove()">↶ Undo</button>
-            <button class="action-button" onclick="game.toggleAIMode()">🤖 AI vs AI</button>
-            <button class="action-button" id="autoRotateBtn" onclick="game.toggleAutoRotate()">🔄 Auto Rotate</button>
+            <button class="action-button primary" onclick="game.newGame()" aria-label="New Game">🎯 New Game</button>
+            <button class="action-button" onclick="game.showHint()" aria-label="Hint">💡 Hint</button>
+            <button class="action-button" onclick="game.undoMove()" aria-label="Undo">↶ Undo</button>
+            <button class="action-button" onclick="game.toggleAIMode()" aria-label="AI vs AI">🤖 AI vs AI</button>
+            <button class="action-button" id="autoRotateBtn" onclick="game.toggleAutoRotate()" aria-label="Auto Rotate">🔄 Auto Rotate</button>
         </div>
 
         <div id="gameStats">
@@ -795,7 +757,14 @@
                 this.cubes = [];
                 this.completedFaces = new Set();
                 this.completedCubes = new Set();
-                
+                this.moveHistory = [];
+                this.faceMeshMap = new Map(); // faceIndex -> THREE.Mesh for undo support
+
+                // Hint state tracking
+                this.hintTimeoutId = null;
+                this.hintedEdge = null;
+                this.hintOriginalColor = null;
+
                 this.initGame();
             }
 
@@ -831,12 +800,7 @@
                 
                 this.particleGroup = new THREE.Group();
                 this.scene.add(this.particleGroup);
-                
-                // Create pivot group for rotation
-                this.pivotGroup = new THREE.Group();
-                this.pivotGroup.position.copy(this.cameraTarget);
-                this.scene.add(this.pivotGroup);
-                
+
                 this.createGameObjects();
                 this.addLights();
                 this.setupControls();
@@ -927,19 +891,19 @@
             }
 
             createGameObjects() {
-                // Create dots
-                const dotGeometry = new THREE.SphereGeometry(0.25, 16, 16);
-                const dotMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x06b6d4, 
-                    emissive: 0x444444, 
-                    shininess: 100 
+                // Create dots - store shared geometry/material for disposal
+                this.dotGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+                this.dotMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x06b6d4,
+                    emissive: 0x444444,
+                    shininess: 100
                 });
-                
+
                 this.dots = [];
                 for (let x = 0; x < this.gridSize; x++) {
                     for (let y = 0; y < this.gridSize; y++) {
                         for (let z = 0; z < this.gridSize; z++) {
-                            const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+                            const dot = new THREE.Mesh(this.dotGeometry, this.dotMaterial);
                             dot.position.set(x * 2, y * 2, z * 2);
                             this.scene.add(dot);
                             this.dots.push(dot);
@@ -950,19 +914,17 @@
                 // Create edges
                 this.edges = [];
                 this.edgeMap = new Map(); // For easy lookup
-                this.edgeMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0x444444, 
-                    transparent: true, 
-                    opacity: 0.3 
+                this.edgeMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x444444,
+                    transparent: true,
+                    opacity: 0.3
                 });
-                this.completedEdgeMaterial = new THREE.MeshBasicMaterial({ color: 0x4ecdc4 });
-
-                // X-direction edges
-                const edgeGeometry = new THREE.BoxGeometry(1.8, 0.1, 0.1);
+                // X-direction edges - store shared geometry for disposal
+                this.edgeGeometryX = new THREE.BoxGeometry(1.8, 0.1, 0.1);
                 for (let x = 0; x < this.gridSize - 1; x++) {
                     for (let y = 0; y < this.gridSize; y++) {
                         for (let z = 0; z < this.gridSize; z++) {
-                            const edge = new THREE.Mesh(edgeGeometry, this.edgeMaterial.clone());
+                            const edge = new THREE.Mesh(this.edgeGeometryX, this.edgeMaterial.clone());
                             edge.position.set(x * 2 + 1, y * 2, z * 2);
                             const key = `${x},${y},${z},x`;
                             edge.userData = { coords: [x, y, z], direction: 'x', completed: false, key };
@@ -973,12 +935,12 @@
                     }
                 }
 
-                // Y-direction edges
-                const edgeGeometryY = new THREE.BoxGeometry(0.1, 1.8, 0.1);
+                // Y-direction edges - store shared geometry for disposal
+                this.edgeGeometryY = new THREE.BoxGeometry(0.1, 1.8, 0.1);
                 for (let x = 0; x < this.gridSize; x++) {
                     for (let y = 0; y < this.gridSize - 1; y++) {
                         for (let z = 0; z < this.gridSize; z++) {
-                            const edge = new THREE.Mesh(edgeGeometryY, this.edgeMaterial.clone());
+                            const edge = new THREE.Mesh(this.edgeGeometryY, this.edgeMaterial.clone());
                             edge.position.set(x * 2, y * 2 + 1, z * 2);
                             const key = `${x},${y},${z},y`;
                             edge.userData = { coords: [x, y, z], direction: 'y', completed: false, key };
@@ -989,12 +951,12 @@
                     }
                 }
 
-                // Z-direction edges
-                const edgeGeometryZ = new THREE.BoxGeometry(0.1, 0.1, 1.8);
+                // Z-direction edges - store shared geometry for disposal
+                this.edgeGeometryZ = new THREE.BoxGeometry(0.1, 0.1, 1.8);
                 for (let x = 0; x < this.gridSize; x++) {
                     for (let y = 0; y < this.gridSize; y++) {
                         for (let z = 0; z < this.gridSize - 1; z++) {
-                            const edge = new THREE.Mesh(edgeGeometryZ, this.edgeMaterial.clone());
+                            const edge = new THREE.Mesh(this.edgeGeometryZ, this.edgeMaterial.clone());
                             edge.position.set(x * 2, y * 2, z * 2 + 1);
                             const key = `${x},${y},${z},z`;
                             edge.userData = { coords: [x, y, z], direction: 'z', completed: false, key };
@@ -1026,63 +988,65 @@
                 this.mouseDownTime = 0;
                 this.mouseDownX = 0;
                 this.mouseDownY = 0;
-                
+
                 // Touch variables for pinch zoom
                 this.touchStartDistance = 0;
                 this.isPinching = false;
-                
+
                 // Spherical coordinates for smoother rotation
                 this.spherical = new THREE.Spherical();
                 this.spherical.setFromVector3(this.camera.position.clone().sub(this.cameraTarget));
-                
-                this.renderer.domElement.addEventListener('mousedown', (e) => {
+
+                // Store touchStart in a scope accessible to handlers
+                this._touchStart = null;
+
+                // Store bound event handlers for cleanup (Issue 3)
+                this._onMouseDown = (e) => {
                     if (e.button !== 0) return;
-                    
+
                     this.mouseDownTime = Date.now();
                     this.mouseDownX = e.clientX;
                     this.mouseDownY = e.clientY;
                     this.isDragging = true;
                     this.previousMousePosition = { x: e.clientX, y: e.clientY };
-                });
-                
-                this.renderer.domElement.addEventListener('mousemove', (e) => {
+                };
+
+                this._onMouseMove = (e) => {
                     if (this.isDragging) {
                         const deltaMove = {
                             x: e.clientX - this.previousMousePosition.x,
                             y: e.clientY - this.previousMousePosition.y
                         };
-                        
+
                         // Update spherical coordinates
                         this.spherical.theta -= deltaMove.x * 0.01;
                         this.spherical.phi += deltaMove.y * 0.01;
-                        
+
                         // Clamp phi to prevent flipping
                         this.spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, this.spherical.phi));
-                        
+
                         // Update camera position
                         this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                         this.camera.lookAt(this.cameraTarget);
-                        
+
                         this.previousMousePosition = { x: e.clientX, y: e.clientY };
                     }
-                });
-                
-                this.renderer.domElement.addEventListener('mouseup', (e) => {
+                };
+
+                this._onMouseUp = (e) => {
                     const timeDiff = Date.now() - this.mouseDownTime;
                     const moveDiff = Math.abs(e.clientX - this.mouseDownX) + Math.abs(e.clientY - this.mouseDownY);
-                    
+
                     if (timeDiff < 200 && moveDiff < 5) {
                         this.handleClick(e);
                     }
-                    
+
                     this.isDragging = false;
-                });
-                
-                // Touch controls for mobile
-                let touchStart = null;
-                this.renderer.domElement.addEventListener('touchstart', (e) => {
+                };
+
+                this._onTouchStart = (e) => {
                     if (e.touches.length === 1) {
-                        touchStart = {
+                        this._touchStart = {
                             x: e.touches[0].clientX,
                             y: e.touches[0].clientY,
                             time: Date.now()
@@ -1096,12 +1060,16 @@
                         const dy = e.touches[0].clientY - e.touches[1].clientY;
                         this.touchStartDistance = Math.sqrt(dx * dx + dy * dy);
                     }
-                });
-                
-                this.renderer.domElement.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
+                };
 
-                    if (e.touches.length === 1 && !this.isPinching && touchStart) {
+                this._onTouchMove = (e) => {
+                    // Only preventDefault when actively interacting with the
+                    // canvas (dragging or pinching), not unconditionally (Issue 5)
+                    if (this._touchStart || this.isPinching) {
+                        e.preventDefault();
+                    }
+
+                    if (e.touches.length === 1 && !this.isPinching && this._touchStart) {
                         // Single touch - rotate
                         const deltaMove = {
                             x: e.touches[0].clientX - this.previousMousePosition.x,
@@ -1131,14 +1099,14 @@
 
                         this.touchStartDistance = distance;
                     }
-                }, { passive: false });
-                
-                this.renderer.domElement.addEventListener('touchend', (e) => {
-                    if (touchStart && e.changedTouches.length > 0 && !this.isPinching) {
-                        const timeDiff = Date.now() - touchStart.time;
+                };
+
+                this._onTouchEnd = (e) => {
+                    if (this._touchStart && e.changedTouches.length > 0 && !this.isPinching) {
+                        const timeDiff = Date.now() - this._touchStart.time;
                         if (timeDiff < 200) {
-                            const moveDiff = Math.abs(e.changedTouches[0].clientX - touchStart.x) + 
-                                           Math.abs(e.changedTouches[0].clientY - touchStart.y);
+                            const moveDiff = Math.abs(e.changedTouches[0].clientX - this._touchStart.x) +
+                                           Math.abs(e.changedTouches[0].clientY - this._touchStart.y);
                             if (moveDiff < 10) {
                                 this.handleClick({
                                     clientX: e.changedTouches[0].clientX,
@@ -1147,15 +1115,15 @@
                                 });
                             }
                         }
-                        touchStart = null;
+                        this._touchStart = null;
                     }
-                    
+
                     if (e.touches.length === 0) {
                         this.isPinching = false;
                     }
-                });
-                
-                this.renderer.domElement.addEventListener('wheel', (e) => {
+                };
+
+                this._onWheel = (e) => {
                     e.preventDefault();
                     const distance = this.spherical.radius;
                     const newDistance = Math.max(5, Math.min(30, distance + e.deltaY * 0.01));
@@ -1163,9 +1131,20 @@
 
                     this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                     this.camera.lookAt(this.cameraTarget);
-                }, { passive: false });
-                
-                document.addEventListener('keydown', (e) => {
+                };
+
+                this._onKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        const gameEndModal = document.getElementById('gameEndModal');
+                        const helpModal = document.getElementById('helpModal');
+                        if (gameEndModal && gameEndModal.classList.contains('active')) {
+                            this.closeModal();
+                        }
+                        if (helpModal && helpModal.classList.contains('active')) {
+                            this.closeHelp();
+                        }
+                        return;
+                    }
                     if (e.key === 'h' || e.key === 'H') this.showHint();
                     if (e.key === 'ArrowLeft') this.rotateLeft();
                     if (e.key === 'ArrowRight') this.rotateRight();
@@ -1175,17 +1154,42 @@
                         e.preventDefault();
                         this.toggleAutoRotate();
                     }
-                });
-                
+                };
+
                 let resizeTimeout;
-                window.addEventListener('resize', () => {
+                this._onResize = () => {
                     clearTimeout(resizeTimeout);
                     resizeTimeout = setTimeout(() => {
                         this.camera.aspect = window.innerWidth / window.innerHeight;
                         this.camera.updateProjectionMatrix();
                         this.renderer.setSize(window.innerWidth, window.innerHeight);
                     }, 150);
-                });
+                };
+
+                // Attach all event listeners using stored references
+                const canvas = this.renderer.domElement;
+                canvas.addEventListener('mousedown', this._onMouseDown);
+                canvas.addEventListener('mousemove', this._onMouseMove);
+                canvas.addEventListener('mouseup', this._onMouseUp);
+                canvas.addEventListener('touchstart', this._onTouchStart);
+                canvas.addEventListener('touchmove', this._onTouchMove, { passive: false });
+                canvas.addEventListener('touchend', this._onTouchEnd);
+                canvas.addEventListener('wheel', this._onWheel, { passive: false });
+                document.addEventListener('keydown', this._onKeyDown);
+                window.addEventListener('resize', this._onResize);
+            }
+
+            removeControls() {
+                const canvas = this.renderer.domElement;
+                if (this._onMouseDown) canvas.removeEventListener('mousedown', this._onMouseDown);
+                if (this._onMouseMove) canvas.removeEventListener('mousemove', this._onMouseMove);
+                if (this._onMouseUp) canvas.removeEventListener('mouseup', this._onMouseUp);
+                if (this._onTouchStart) canvas.removeEventListener('touchstart', this._onTouchStart);
+                if (this._onTouchMove) canvas.removeEventListener('touchmove', this._onTouchMove);
+                if (this._onTouchEnd) canvas.removeEventListener('touchend', this._onTouchEnd);
+                if (this._onWheel) canvas.removeEventListener('wheel', this._onWheel);
+                if (this._onKeyDown) document.removeEventListener('keydown', this._onKeyDown);
+                if (this._onResize) window.removeEventListener('resize', this._onResize);
             }
 
             // Rotation control methods
@@ -1249,21 +1253,31 @@
 
             completeEdge(edge) {
                 if (!edge.userData || edge.userData.completed) return;
-                
+
+                // If this edge is the currently hinted one, clear the hint
+                if (this.hintedEdge === edge) {
+                    this.clearHint();
+                }
+
+                // Record state before the move for undo support
+                const prevPlayer = this.currentPlayer;
+
                 edge.userData.completed = true;
                 const playerColor = this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444;
                 edge.material.color.set(playerColor);
                 edge.material.opacity = 1.0;
-                
+
                 this.moveCount++;
-                
+
                 // Check for completed faces and cubes
                 const completedFaces = this.checkCompletedFaces();
                 const completedCubes = this.checkCompletedCubes();
-                
+
                 let pointsScored = 0;
                 let continuesTurn = false;
-                
+                const newFaces = [];
+                const newCubes = [];
+
                 // Score newly completed faces
                 completedFaces.forEach(face => {
                     if (!this.completedFaces.has(face)) {
@@ -1272,9 +1286,10 @@
                         continuesTurn = true;
                         this.animateFaceCompletion(face);
                         this.faceCount++;
+                        newFaces.push(face);
                     }
                 });
-                
+
                 // Score newly completed cubes
                 completedCubes.forEach(cube => {
                     if (!this.completedCubes.has(cube)) {
@@ -1282,24 +1297,35 @@
                         pointsScored += 3; // Bonus points for cube
                         this.animateCubeCompletion(cube);
                         this.cubeCount++;
+                        newCubes.push(cube);
                     }
                 });
-                
+
                 this.scores[this.currentPlayer] += pointsScored;
-                
+
+                // Push move onto history
+                this.moveHistory.push({
+                    edgeKey: edge.userData.key,
+                    player: prevPlayer,
+                    pointsScored: pointsScored,
+                    newFaces: newFaces,
+                    newCubes: newCubes,
+                    turnContinued: continuesTurn
+                });
+
                 // Switch players only if no face was completed
                 if (!continuesTurn) {
                     this.currentPlayer = (this.currentPlayer + 1) % 2;
                 }
-                
+
                 this.updateUI();
-                
+
                 // Check for game end
                 if (this.isGameOver()) {
                     this.endGame();
                     return;
                 }
-                
+
                 // Trigger AI move
                 if (this.gameMode === 'ai-vs-ai' || (this.currentPlayer === 1 && this.gameMode === 'human-vs-ai')) {
                     setTimeout(() => this.makeAIMove(), 500);
@@ -1367,7 +1393,10 @@
                 }
                 
                 this.faceGroup.add(plane);
-                
+
+                // Track the mesh for undo support
+                this.faceMeshMap.set(faceIndex, plane);
+
                 // Animate the face
                 const startScale = 0.1;
                 const endScale = 1;
@@ -1503,57 +1532,405 @@
             async makeAIMove() {
                 if (this.isAiThinking || this.gameEnded) return;
                 if (this.gameMode === 'human-vs-ai' && this.currentPlayer !== 1) return;
-                
+
                 this.setAIThinking(true);
-                
-                await this.delay(1000);
-                
+
+                await this.delay(600);
+
                 // AI strategy based on difficulty
                 let selectedEdge = null;
-                
-                if (this.aiDifficulty === 'easy') {
-                    // Random move
-                    const availableEdges = this.edges.filter(edge => !edge.userData.completed);
-                    if (availableEdges.length > 0) {
-                        selectedEdge = availableEdges[Math.floor(Math.random() * availableEdges.length)];
-                    }
-                } else {
-                    // Smart AI - try to complete faces
-                    selectedEdge = this.findBestMove();
+
+                switch (this.aiDifficulty) {
+                    case 'easy':
+                        selectedEdge = this.findEasyMove();
+                        break;
+                    case 'medium':
+                        selectedEdge = this.findMediumMove();
+                        break;
+                    case 'hard':
+                        selectedEdge = this.findHardMove();
+                        break;
+                    case 'impossible':
+                        selectedEdge = this.findImpossibleMove();
+                        break;
+                    default:
+                        selectedEdge = this.findMediumMove();
                 }
-                
+
                 if (selectedEdge) {
                     this.completeEdge(selectedEdge);
                 }
-                
+
                 this.setAIThinking(false);
             }
 
-            findBestMove() {
-                const availableEdges = this.edges.filter(edge => !edge.userData.completed);
-                
-                // First priority: complete a face
+            // --- AI: Easy ---
+            // Mostly random, with a 20% chance of picking the optimal move
+            findEasyMove() {
+                const availableEdges = this.edges.filter(e => !e.userData.completed);
+                if (availableEdges.length === 0) return null;
+
+                if (Math.random() < 0.20) {
+                    return this.findMediumMove();
+                }
+                return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+            }
+
+            // --- AI: Medium ---
+            // Complete a face if possible, otherwise pick randomly
+            findMediumMove() {
+                const availableEdges = this.edges.filter(e => !e.userData.completed);
+                if (availableEdges.length === 0) return null;
+
+                // Priority: complete a face
+                const faceCompleting = this.findFaceCompletingMove(availableEdges);
+                if (faceCompleting) return faceCompleting;
+
+                // Fallback: random
+                return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+            }
+
+            // --- AI: Hard ---
+            // Always complete faces if possible, otherwise avoid giving
+            // the opponent a face, and among safe moves prefer those that
+            // build toward future faces.
+            findHardMove() {
+                const availableEdges = this.edges.filter(e => !e.userData.completed);
+                if (availableEdges.length === 0) return null;
+
+                // Priority 1: Complete a face (greedy -- pick the one that
+                // scores the most points)
+                let bestCompleting = null;
+                let bestCompletingScore = -1;
                 for (const edge of availableEdges) {
-                    const tempCompleted = new Set([...this.completedFaces]);
-                    edge.userData.completed = true;
-                    
-                    const wouldCompleteFaces = this.checkCompletedFaces();
-                    const newFaces = wouldCompleteFaces.filter(f => !tempCompleted.has(f));
-                    
-                    edge.userData.completed = false;
-                    
-                    if (newFaces.length > 0) {
-                        return edge;
+                    const score = this.simulateMoveScore(edge);
+                    if (score > 0 && score > bestCompletingScore) {
+                        bestCompletingScore = score;
+                        bestCompleting = edge;
                     }
                 }
-                
-                // Second priority: block opponent from completing a face
-                // (simplified - just make a random move)
-                if (availableEdges.length > 0) {
-                    return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+                if (bestCompleting) return bestCompleting;
+
+                // Priority 2: Among moves that do NOT give the opponent a
+                // face completion, pick the one that builds toward the most
+                // faces (has the most adjacent edges already claimed).
+                const safeMoves = [];
+                const unsafeMoves = [];
+
+                for (const edge of availableEdges) {
+                    if (this.moveGivesOpponentFace(edge)) {
+                        unsafeMoves.push(edge);
+                    } else {
+                        safeMoves.push(edge);
+                    }
                 }
-                
-                return null;
+
+                const pool = safeMoves.length > 0 ? safeMoves : unsafeMoves;
+
+                // Score each candidate by how many edges are already
+                // completed on its adjacent (incomplete) faces.
+                let bestEdge = pool[0];
+                let bestBuildScore = -1;
+                for (const edge of pool) {
+                    const buildScore = this.computeBuildScore(edge);
+                    if (buildScore > bestBuildScore) {
+                        bestBuildScore = buildScore;
+                        bestEdge = edge;
+                    }
+                }
+                return bestEdge;
+            }
+
+            // --- AI: Impossible ---
+            // Uses minimax with alpha-beta pruning. Increases search depth
+            // as the number of remaining moves shrinks.
+            findImpossibleMove() {
+                const availableEdges = this.edges.filter(e => !e.userData.completed);
+                if (availableEdges.length === 0) return null;
+
+                // Quick-win: if we can complete a face, always do it first
+                // (this is always optimal and speeds up the search)
+                const faceCompleting = this.findFaceCompletingMove(availableEdges);
+                if (faceCompleting) return faceCompleting;
+
+                // Determine search depth based on remaining moves
+                const remaining = availableEdges.length;
+                let depth;
+                if (remaining <= 8) depth = remaining; // solve perfectly
+                else if (remaining <= 14) depth = 6;
+                else if (remaining <= 20) depth = 4;
+                else depth = 3;
+
+                let bestScore = -Infinity;
+                let bestEdge = availableEdges[0];
+
+                // Order moves: prefer moves that don't give opponent a face
+                const ordered = [...availableEdges].sort((a, b) => {
+                    const aGives = this.moveGivesOpponentFace(a) ? 1 : 0;
+                    const bGives = this.moveGivesOpponentFace(b) ? 1 : 0;
+                    return aGives - bGives;
+                });
+
+                for (const edge of ordered) {
+                    const result = this.simulateMove(edge);
+                    const score = this.minimax(
+                        depth - 1,
+                        result.nextPlayer,
+                        -Infinity,
+                        Infinity,
+                        result.scoreDelta
+                    );
+                    this.undoSimulatedMove(edge, result);
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestEdge = edge;
+                    }
+                }
+
+                return bestEdge;
+            }
+
+            // Minimax with alpha-beta pruning.
+            // scoreSoFar tracks cumulative (AI score - human score) delta
+            // from the root of the search.
+            minimax(depth, currentPlayer, alpha, beta, scoreSoFar) {
+                // Terminal conditions
+                const availableEdges = this.edges.filter(e => !e.userData.completed);
+                if (depth <= 0 || availableEdges.length === 0) {
+                    return scoreSoFar + this.evaluatePosition();
+                }
+
+                const isMaximizing = (currentPlayer === 1); // AI is player 1
+
+                // Quick check: if current player can complete a face, always
+                // take it (pruning optimisation -- face completions are
+                // always beneficial for the current player)
+                const faceMove = this.findFaceCompletingMove(availableEdges);
+                if (faceMove) {
+                    const result = this.simulateMove(faceMove);
+                    const score = this.minimax(
+                        depth - 1,
+                        result.nextPlayer,
+                        alpha,
+                        beta,
+                        scoreSoFar + result.scoreDelta
+                    );
+                    this.undoSimulatedMove(faceMove, result);
+                    return score;
+                }
+
+                if (isMaximizing) {
+                    let maxEval = -Infinity;
+                    for (const edge of availableEdges) {
+                        const result = this.simulateMove(edge);
+                        const evalScore = this.minimax(
+                            depth - 1,
+                            result.nextPlayer,
+                            alpha,
+                            beta,
+                            scoreSoFar + result.scoreDelta
+                        );
+                        this.undoSimulatedMove(edge, result);
+                        maxEval = Math.max(maxEval, evalScore);
+                        alpha = Math.max(alpha, evalScore);
+                        if (beta <= alpha) break;
+                    }
+                    return maxEval;
+                } else {
+                    let minEval = Infinity;
+                    for (const edge of availableEdges) {
+                        const result = this.simulateMove(edge);
+                        const evalScore = this.minimax(
+                            depth - 1,
+                            result.nextPlayer,
+                            alpha,
+                            beta,
+                            scoreSoFar + result.scoreDelta
+                        );
+                        this.undoSimulatedMove(edge, result);
+                        minEval = Math.min(minEval, evalScore);
+                        beta = Math.min(beta, evalScore);
+                        if (beta <= alpha) break;
+                    }
+                    return minEval;
+                }
+            }
+
+            // Simulate placing an edge (for minimax). Returns info needed
+            // to undo the simulation. No visual updates are performed.
+            simulateMove(edge) {
+                edge.userData.completed = true;
+
+                const prevCompletedFaces = new Set(this.completedFaces);
+                const prevCompletedCubes = new Set(this.completedCubes);
+
+                const completedFaceIndices = this.checkCompletedFaces();
+                const completedCubeIndices = this.checkCompletedCubes();
+
+                const newFaces = [];
+                const newCubes = [];
+                let pointsScored = 0;
+                let continuesTurn = false;
+
+                completedFaceIndices.forEach(f => {
+                    if (!this.completedFaces.has(f)) {
+                        this.completedFaces.add(f);
+                        pointsScored += 1;
+                        continuesTurn = true;
+                        newFaces.push(f);
+                    }
+                });
+
+                completedCubeIndices.forEach(c => {
+                    if (!this.completedCubes.has(c)) {
+                        this.completedCubes.add(c);
+                        pointsScored += 3;
+                        newCubes.push(c);
+                    }
+                });
+
+                // scoreDelta is positive if AI (player 1) scored, negative
+                // if human (player 0) scored.
+                const currentPlayer = this.currentPlayer;
+                const scoreDelta = (currentPlayer === 1 ? 1 : -1) * pointsScored;
+
+                const nextPlayer = continuesTurn ? currentPlayer : (currentPlayer + 1) % 2;
+                const prevPlayer = currentPlayer;
+                this.currentPlayer = nextPlayer;
+
+                return {
+                    newFaces,
+                    newCubes,
+                    pointsScored,
+                    scoreDelta,
+                    continuesTurn,
+                    nextPlayer,
+                    prevPlayer
+                };
+            }
+
+            // Undo a simulated move (no visuals).
+            undoSimulatedMove(edge, result) {
+                edge.userData.completed = false;
+                result.newFaces.forEach(f => this.completedFaces.delete(f));
+                result.newCubes.forEach(c => this.completedCubes.delete(c));
+                this.currentPlayer = result.prevPlayer;
+            }
+
+            // Static evaluation of the current position for minimax leaf
+            // nodes. Returns a score from AI's perspective (positive = good
+            // for AI).
+            evaluatePosition() {
+                let score = 0;
+                // Count nearly-complete faces (3 of 4 edges done) for each
+                // player -- faces that the current player could complete on
+                // their turn are advantageous.
+                this.faces.forEach((face, idx) => {
+                    if (this.completedFaces.has(idx)) return;
+                    let completedCount = 0;
+                    face.edges.forEach(edgeKey => {
+                        const e = this.edgeMap.get(edgeKey);
+                        if (e && e.userData.completed) completedCount++;
+                    });
+                    if (completedCount === 3) {
+                        // Whoever's turn it is will capture this face
+                        score += (this.currentPlayer === 1) ? 2 : -2;
+                    } else if (completedCount === 2) {
+                        // A face with 2 edges is a setup; placing the 3rd
+                        // edge gives the opponent a capture. Slight penalty.
+                        score += (this.currentPlayer === 1) ? -0.5 : 0.5;
+                    }
+                });
+                return score;
+            }
+
+            // --- Shared AI utility methods ---
+
+            // Find a move that completes at least one face.
+            findFaceCompletingMove(availableEdges) {
+                let bestEdge = null;
+                let bestNewFaces = 0;
+                for (const edge of availableEdges) {
+                    edge.userData.completed = true;
+                    const completed = this.checkCompletedFaces();
+                    const newCount = completed.filter(f => !this.completedFaces.has(f)).length;
+                    edge.userData.completed = false;
+                    if (newCount > 0 && newCount > bestNewFaces) {
+                        bestNewFaces = newCount;
+                        bestEdge = edge;
+                    }
+                }
+                return bestEdge;
+            }
+
+            // Simulate a move and return how many points it would score.
+            simulateMoveScore(edge) {
+                edge.userData.completed = true;
+                const completedFaceIndices = this.checkCompletedFaces();
+                const completedCubeIndices = this.checkCompletedCubes();
+                edge.userData.completed = false;
+
+                let points = 0;
+                completedFaceIndices.forEach(f => {
+                    if (!this.completedFaces.has(f)) points += 1;
+                });
+                completedCubeIndices.forEach(c => {
+                    if (!this.completedCubes.has(c)) points += 3;
+                });
+                return points;
+            }
+
+            // Check whether placing this edge would allow the opponent to
+            // complete a face on their next move.
+            moveGivesOpponentFace(edge) {
+                edge.userData.completed = true;
+
+                // Check if this move itself completes a face (that's good,
+                // not giving to opponent)
+                const selfCompleted = this.checkCompletedFaces();
+                const selfNew = selfCompleted.filter(f => !this.completedFaces.has(f));
+
+                if (selfNew.length > 0) {
+                    // This move completes a face for us, not the opponent
+                    edge.userData.completed = false;
+                    return false;
+                }
+
+                // Now check if any remaining edge would complete a face
+                const remaining = this.edges.filter(e => !e.userData.completed);
+                for (const other of remaining) {
+                    other.userData.completed = true;
+                    const oppCompleted = this.checkCompletedFaces();
+                    const oppNew = oppCompleted.filter(f => !this.completedFaces.has(f));
+                    other.userData.completed = false;
+                    if (oppNew.length > 0) {
+                        edge.userData.completed = false;
+                        return true;
+                    }
+                }
+
+                edge.userData.completed = false;
+                return false;
+            }
+
+            // Compute a "build score" for a move -- how many edges are
+            // already completed on adjacent incomplete faces. Higher means
+            // the move is building toward completing faces.
+            computeBuildScore(edge) {
+                let score = 0;
+                const edgeKey = edge.userData.key;
+                this.faces.forEach((face, idx) => {
+                    if (this.completedFaces.has(idx)) return;
+                    if (!face.edges.includes(edgeKey)) return;
+                    let completedCount = 0;
+                    face.edges.forEach(ek => {
+                        const e = this.edgeMap.get(ek);
+                        if (e && e.userData.completed) completedCount++;
+                    });
+                    score += completedCount;
+                });
+                return score;
             }
 
             isGameOver() {
@@ -1575,7 +1952,7 @@
                 const modal = document.getElementById('gameEndModal');
                 const title = document.getElementById('modalTitle');
                 const text = document.getElementById('modalText');
-                
+
                 if (winner === 'Tie') {
                     title.textContent = "It's a Tie! 🤝";
                     text.textContent = `Both scored ${this.scores[0]} points!`;
@@ -1586,39 +1963,105 @@
                     title.textContent = "AI Wins! 🤖";
                     text.textContent = `AI scored ${this.scores[1]} vs your ${this.scores[0]}!`;
                 }
-                
+
                 modal.classList.add('active');
+                this._trapFocus(modal);
             }
 
             showHint() {
                 if (this.currentPlayer !== 0 || this.gameEnded) return;
-                
-                const bestMove = this.findBestMove();
+
+                // Clear any previous hint before starting a new one
+                this.clearHint();
+
+                // Use the hard AI logic to suggest a good hint
+                const bestMove = this.findHardMove();
                 if (bestMove) {
-                    const originalColor = bestMove.material.color.getHex();
-                    
+                    this.hintOriginalColor = bestMove.material.color.getHex();
+                    this.hintedEdge = bestMove;
+
                     bestMove.material.color.set(0xf59e0b);
-                    
-                    setTimeout(() => {
-                        bestMove.material.color.set(originalColor);
+
+                    this.hintTimeoutId = setTimeout(() => {
+                        this.clearHint();
                     }, 2000);
                 }
             }
 
-            undoMove() {
-                const completedEdges = this.edges.filter(edge => edge.userData.completed);
-                if (completedEdges.length > 0) {
-                    const lastEdge = completedEdges[completedEdges.length - 1];
-                    lastEdge.userData.completed = false;
-                    lastEdge.material.color.set(0x444444);
-                    lastEdge.material.opacity = 0.3;
-                    
-                    // Note: This is simplified - doesn't properly handle face/cube scoring
-                    this.currentPlayer = (this.currentPlayer + 1) % 2;
-                    this.scores[this.currentPlayer] = Math.max(0, this.scores[this.currentPlayer] - 1);
-                    this.moveCount = Math.max(0, this.moveCount - 1);
-                    this.updateUI();
+            clearHint() {
+                if (this.hintTimeoutId !== null) {
+                    clearTimeout(this.hintTimeoutId);
+                    this.hintTimeoutId = null;
                 }
+                if (this.hintedEdge && !this.hintedEdge.userData.completed) {
+                    this.hintedEdge.material.color.set(this.hintOriginalColor);
+                }
+                this.hintedEdge = null;
+                this.hintOriginalColor = null;
+            }
+
+            undoMove() {
+                if (this.moveHistory.length === 0 || this.isAiThinking || this.gameEnded) return;
+
+                // We undo all consecutive AI moves on top, then undo one
+                // human move (which may consist of multiple consecutive
+                // entries if the human scored and got extra turns).
+
+                // Helper to revert a single move history entry
+                const revertOne = () => {
+                    if (this.moveHistory.length === 0) return null;
+                    const entry = this.moveHistory.pop();
+                    const edge = this.edgeMap.get(entry.edgeKey);
+                    if (edge) {
+                        edge.userData.completed = false;
+                        edge.material.color.set(0x444444);
+                        edge.material.opacity = 0.3;
+                    }
+                    // Remove any faces completed by this move
+                    entry.newFaces.forEach(faceIdx => {
+                        this.completedFaces.delete(faceIdx);
+                        this.faceCount = Math.max(0, this.faceCount - 1);
+                        // Remove visual face mesh
+                        const mesh = this.faceMeshMap.get(faceIdx);
+                        if (mesh) {
+                            if (mesh.geometry) mesh.geometry.dispose();
+                            if (mesh.material) mesh.material.dispose();
+                            this.faceGroup.remove(mesh);
+                            this.faceMeshMap.delete(faceIdx);
+                        }
+                    });
+                    // Remove any cubes completed by this move
+                    entry.newCubes.forEach(cubeIdx => {
+                        this.completedCubes.delete(cubeIdx);
+                        this.cubeCount = Math.max(0, this.cubeCount - 1);
+                    });
+                    // Subtract points
+                    this.scores[entry.player] = Math.max(0, this.scores[entry.player] - entry.pointsScored);
+                    this.moveCount = Math.max(0, this.moveCount - 1);
+                    return entry;
+                };
+
+                // Step 1: Undo AI moves on top of the stack
+                while (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 1) {
+                    revertOne();
+                }
+
+                // Step 2: Undo the human player's turn (one or more moves
+                // if they scored consecutive extra turns)
+                if (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0) {
+                    // Undo all consecutive human moves that were part of the
+                    // same turn chain. A move with turnContinued===true means
+                    // the player scored and kept going, so it's part of the
+                    // same logical turn.
+                    let entry;
+                    do {
+                        entry = revertOne();
+                    } while (entry && entry.turnContinued && this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0);
+                }
+
+                // Restore current player to human
+                this.currentPlayer = 0;
+                this.updateUI();
             }
 
             newGame() {
@@ -1651,6 +2094,7 @@
                     this.particleGroup.remove(child);
                 }
                 
+                this.clearHint();
                 this.currentPlayer = 0;
                 this.scores = [0, 0];
                 this.moveCount = 0;
@@ -1658,6 +2102,8 @@
                 this.cubeCount = 0;
                 this.completedFaces.clear();
                 this.completedCubes.clear();
+                this.moveHistory = [];
+                this.faceMeshMap.clear();
                 this.gameEnded = false;
                 this.updateUI();
             }
@@ -1714,14 +2160,59 @@
                         label.textContent = 'Unbeatable AI';
                         break;
                 }
+                this.newGame();
+            }
+
+            _trapFocus(modal) {
+                const focusableSelectors = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+                const focusableEls = modal.querySelectorAll(focusableSelectors);
+                if (focusableEls.length === 0) return;
+
+                const firstEl = focusableEls[0];
+                const lastEl = focusableEls[focusableEls.length - 1];
+
+                this._previouslyFocused = document.activeElement;
+
+                this._focusTrapHandler = (e) => {
+                    if (e.key !== 'Tab') return;
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstEl) {
+                            e.preventDefault();
+                            lastEl.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastEl) {
+                            e.preventDefault();
+                            firstEl.focus();
+                        }
+                    }
+                };
+
+                modal.addEventListener('keydown', this._focusTrapHandler);
+                firstEl.focus();
+            }
+
+            _releaseFocusTrap(modal) {
+                if (this._focusTrapHandler) {
+                    modal.removeEventListener('keydown', this._focusTrapHandler);
+                    this._focusTrapHandler = null;
+                }
+                if (this._previouslyFocused && typeof this._previouslyFocused.focus === 'function') {
+                    this._previouslyFocused.focus();
+                    this._previouslyFocused = null;
+                }
             }
 
             showHelp() {
-                document.getElementById('helpModal').classList.add('active');
+                const modal = document.getElementById('helpModal');
+                modal.classList.add('active');
+                this._trapFocus(modal);
             }
 
             closeHelp() {
-                document.getElementById('helpModal').classList.remove('active');
+                const modal = document.getElementById('helpModal');
+                this._releaseFocusTrap(modal);
+                modal.classList.remove('active');
             }
 
             playAgain() {
@@ -1730,7 +2221,9 @@
             }
 
             closeModal() {
-                document.getElementById('gameEndModal').classList.remove('active');
+                const modal = document.getElementById('gameEndModal');
+                this._releaseFocusTrap(modal);
+                modal.classList.remove('active');
             }
 
             setAIThinking(thinking, message = 'AI thinking...') {
@@ -1766,16 +2259,77 @@
             }
 
             animate() {
-                requestAnimationFrame(() => this.animate());
-                
+                this.animationFrameId = requestAnimationFrame(() => this.animate());
+
                 // Auto-rotation
                 if (this.autoRotate && !prefersReducedMotion) {
                     this.spherical.theta += this.rotationSpeed;
                     this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                     this.camera.lookAt(this.cameraTarget);
                 }
-                
+
                 this.renderer.render(this.scene, this.camera);
+            }
+
+            stopAnimation() {
+                if (this.animationFrameId != null) {
+                    cancelAnimationFrame(this.animationFrameId);
+                    this.animationFrameId = null;
+                }
+            }
+
+            dispose() {
+                // Stop the render loop (Issue 2)
+                this.stopAnimation();
+
+                // Remove all event listeners (Issue 3)
+                this.removeControls();
+
+                // Dispose shared geometries (Issue 1)
+                if (this.dotGeometry) this.dotGeometry.dispose();
+                if (this.dotMaterial) this.dotMaterial.dispose();
+                if (this.edgeGeometryX) this.edgeGeometryX.dispose();
+                if (this.edgeGeometryY) this.edgeGeometryY.dispose();
+                if (this.edgeGeometryZ) this.edgeGeometryZ.dispose();
+                if (this.edgeMaterial) this.edgeMaterial.dispose();
+
+                // Dispose cloned edge materials
+                if (this.edges) {
+                    this.edges.forEach(edge => {
+                        if (edge.material) edge.material.dispose();
+                    });
+                }
+
+                // Dispose face group children
+                if (this.faceGroup) {
+                    while (this.faceGroup.children.length > 0) {
+                        const child = this.faceGroup.children[0];
+                        if (child.geometry) child.geometry.dispose();
+                        if (child.material) {
+                            if (child.material.map) child.material.map.dispose();
+                            child.material.dispose();
+                        }
+                        this.faceGroup.remove(child);
+                    }
+                }
+
+                // Dispose particle group children
+                if (this.particleGroup) {
+                    while (this.particleGroup.children.length > 0) {
+                        const child = this.particleGroup.children[0];
+                        if (child.geometry) child.geometry.dispose();
+                        if (child.material) {
+                            if (child.material.map) child.material.map.dispose();
+                            child.material.dispose();
+                        }
+                        this.particleGroup.remove(child);
+                    }
+                }
+
+                // Dispose the renderer
+                if (this.renderer) {
+                    this.renderer.dispose();
+                }
             }
         }
 
@@ -1788,9 +2342,14 @@
         });
 
         window.addEventListener('beforeunload', (e) => {
+            // Dispose Three.js resources on page unload (Issue 1)
+            if (game) {
+                game.dispose();
+            }
+            // Warn about unsaved game in progress (Issue 6: modern pattern)
             if (game && game.moveCount > 0 && !game.gameEnded) {
                 e.preventDefault();
-                e.returnValue = '';
+                return '';
             }
         });
     </script>

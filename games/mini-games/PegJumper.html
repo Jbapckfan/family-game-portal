@@ -6,6 +6,8 @@
     <meta name="description" content="Peg Jumper - Jump pegs to leave just one in this classic board puzzle.">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Peg Jumper">
     <meta property="og:title" content="Peg Jumper">
     <meta property="og:description" content="Jump pegs to leave just one in this classic board puzzle.">
     <meta property="og:type" content="website">
@@ -24,8 +26,14 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-        button:focus-visible, [role="button"]:focus-visible {
-            outline: 2px solid #00ffff;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        button:focus-visible,
+        [role="button"]:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #00ffff;
             outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
@@ -38,6 +46,12 @@
     </style>
 </head>
 <body class="bg-gray-900">
+  <a href="../../"
+     aria-label="Back to main menu"
+     style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;min-width:44px;display:flex;align-items:center;gap:6px;"
+     onmouseover="this.style.background='rgba(0,0,0,0.9)'"
+     onmouseout="this.style.background='rgba(0,0,0,0.7)'"
+  >&#x1F3E0; Menu</a>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -58,7 +72,6 @@
                     [1, null, 1, null, 1, null, 1, null, 1],
                 ],
                 initialEmpty: { row: 0, col: 4 },
-                // Staggered grid: adjacent pegs are 2 cols apart
                 directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
@@ -73,7 +86,6 @@
                     [null, null, 1, 1, 1, null, null],
                 ],
                 initialEmpty: { row: 3, col: 3 },
-                // Dense grid: adjacent pegs are 1 col apart
                 directions: [[0,2],[0,-2],[2,0],[-2,0]]
             },
             {
@@ -86,7 +98,6 @@
                     [null, null, 1, null, 1, null, 1, null, null],
                 ],
                 initialEmpty: { row: 2, col: 4 },
-                // Staggered grid: same spacing as Triangle
                 directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
@@ -98,7 +109,6 @@
                     [1, 1, 1, 1, 1],
                 ],
                 initialEmpty: { row: 1, col: 2 },
-                // Dense grid: adjacent pegs are 1 col apart
                 directions: [[0,2],[0,-2],[2,0],[-2,0]]
             }
         ];
@@ -112,31 +122,173 @@
         const RAPID_MOVE_BONUS = 50;
         const RAPID_MOVE_THRESHOLD_MS = 2500;
 
+        // --- SAFE LOCALSTORAGE HELPERS ---
+        function safeGetItem(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('localStorage read failed:', e);
+                return null;
+            }
+        }
+
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                console.warn('localStorage write failed:', e);
+            }
+        }
+
         // --- HELPER & UI COMPONENTS ---
 
         const Celebration = ({ show }) => {
             if (!show) return null;
             return (
-                <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
-                    <div className="text-8xl animate-bounce">🏆</div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse"></div>
+                <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center"
+                     role="status"
+                     aria-live="assertive"
+                     aria-label="Congratulations, you won!"
+                >
+                    <div className="text-8xl animate-bounce" aria-hidden="true">&#x1F3C6;</div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse" aria-hidden="true"></div>
                 </div>
             );
         };
 
-        const Peg = ({ onClick, isSelected }) => (
-            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick} role="button" aria-label="Peg">
+        const Peg = ({ onClick, onKeyDown, isSelected, rowIndex, colIndex }) => (
+            <div
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                onClick={onClick}
+                onKeyDown={onKeyDown}
+                role="button"
+                tabIndex={0}
+                aria-label={`Peg at row ${rowIndex + 1}, column ${colIndex + 1}${isSelected ? ', selected' : ''}`}
+                aria-pressed={isSelected}
+            >
                 <div
-                    className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 ${isSelected ? 'border-4 border-yellow-400 animate-pulse' : 'border-2 border-cyan-400/30'}`}
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 pointer-events-none ${isSelected ? 'border-4 border-yellow-400 animate-pulse ring-2 ring-yellow-400/50' : 'border-2 border-cyan-400/30'}`}
+                    aria-hidden="true"
                 />
             </div>
         );
 
-        const Hole = ({ onClick }) => (
-            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center cursor-pointer" onClick={onClick} role="button" aria-label="Empty hole">
-                <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gray-800 shadow-inner border-2 border-purple-500/30 hover:border-purple-500 transition-colors" />
+        const Hole = ({ onClick, onKeyDown, rowIndex, colIndex }) => (
+            <div
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                onClick={onClick}
+                onKeyDown={onKeyDown}
+                role="button"
+                tabIndex={0}
+                aria-label={`Empty hole at row ${rowIndex + 1}, column ${colIndex + 1}`}
+            >
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-800 shadow-inner border-2 border-purple-500/30 hover:border-purple-500 transition-colors pointer-events-none" aria-hidden="true" />
             </div>
         );
+
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = useRef(null);
+            const gotItButtonRef = useRef(null);
+            const modalRef = useRef(null);
+
+            // Focus trap and focus management
+            useEffect(() => {
+                if (!isOpen) return;
+
+                // Focus the close button on open
+                const timer = setTimeout(() => {
+                    if (gotItButtonRef.current) gotItButtonRef.current.focus();
+                }, 50);
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        onClose();
+                        return;
+                    }
+                    // Trap focus within modal
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusable = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        const first = focusable[0];
+                        const last = focusable[focusable.length - 1];
+                        if (e.shiftKey && document.activeElement === first) {
+                            e.preventDefault();
+                            last.focus();
+                        } else if (!e.shiftKey && document.activeElement === last) {
+                            e.preventDefault();
+                            first.focus();
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => {
+                    clearTimeout(timer);
+                    document.removeEventListener('keydown', handleKeyDown);
+                    // Return focus to trigger element
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                };
+            }, [isOpen, onClose, triggerRef]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={onClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        ref={modalRef}
+                        className="relative bg-gray-900 border border-purple-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-purple-500/20"
+                        style={{ animation: 'fadeIn 0.3s ease-out' }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={onClose}
+                            className="absolute top-3 right-3 text-purple-300 hover:text-white transition-colors text-2xl leading-none min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-purple-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span><strong className="text-cyan-300">Click a peg</strong> to select it, then click an <strong className="text-cyan-300">empty hole</strong> two spaces away to jump.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>The peg you <strong className="text-pink-300">jump over</strong> is removed from the board.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Goal: remove as many pegs as possible. Ideally, leave <strong className="text-yellow-300">just 1 peg</strong>!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Jump over adjacent pegs into empty holes along <strong className="text-cyan-300">valid paths</strong>.</span>
+                            </li>
+                        </ul>
+                        <button
+                            ref={gotItButtonRef}
+                            onClick={onClose}
+                            className="mt-5 w-full py-3 rounded-lg font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 transition-all min-h-[44px]"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
 
         // --- MAIN PEG JUMPER GAME COMPONENT ---
         const PegJumperGame = () => {
@@ -147,7 +299,8 @@
             const [pegsRemaining, setPegsRemaining] = useState(0);
             const [initialPegCount, setInitialPegCount] = useState(0);
             const [showWin, setShowWin] = useState(false);
-            
+            const [showHowToPlay, setShowHowToPlay] = useState(false);
+
             // Scoring and Timer State
             const [score, setScore] = useState(0);
             const [highScores, setHighScores] = useState({});
@@ -155,16 +308,19 @@
             const [isTimerRunning, setIsTimerRunning] = useState(false);
             const lastMoveTimestamp = useRef(0);
             const timerRef = useRef(null);
+            const timeRef = useRef(0);
+            const winTimeoutRef = useRef(null);
+            const howToPlayTriggerRef = useRef(null);
 
             // Load high scores from localStorage on mount
             useEffect(() => {
-                try {
-                    const savedHighScores = localStorage.getItem('pegJumperHighScores');
-                    if (savedHighScores) {
-                        setHighScores(JSON.parse(savedHighScores));
+                const saved = safeGetItem('pegJumperHighScores');
+                if (saved) {
+                    try {
+                        setHighScores(JSON.parse(saved));
+                    } catch (e) {
+                        console.warn('Could not parse high scores:', e);
                     }
-                } catch (error) {
-                    console.error("Could not load high scores", error);
                 }
             }, []);
 
@@ -172,7 +328,11 @@
             useEffect(() => {
                 if (isTimerRunning) {
                     timerRef.current = setInterval(() => {
-                        setTime(prevTime => prevTime + 1);
+                        setTime(prevTime => {
+                            const newTime = prevTime + 1;
+                            timeRef.current = newTime;
+                            return newTime;
+                        });
                     }, 1000);
                 } else {
                     clearInterval(timerRef.current);
@@ -180,7 +340,23 @@
                 return () => clearInterval(timerRef.current);
             }, [isTimerRunning]);
 
+            // Cleanup win celebration timeout on unmount or level change
+            useEffect(() => {
+                return () => {
+                    if (winTimeoutRef.current) {
+                        clearTimeout(winTimeoutRef.current);
+                        winTimeoutRef.current = null;
+                    }
+                };
+            }, []);
+
             const initializeBoard = useCallback((levelIndex) => {
+                // Clear any pending win timeout from previous game
+                if (winTimeoutRef.current) {
+                    clearTimeout(winTimeoutRef.current);
+                    winTimeoutRef.current = null;
+                }
+
                 const level = LEVELS[levelIndex];
                 let pegCount = 0;
                 const newBoard = level.layout.map(row =>
@@ -192,7 +368,7 @@
                         return null; // null for invalid spots
                     })
                 );
-                
+
                 const { row, col } = level.initialEmpty;
                 if (newBoard[row] && newBoard[row][col] === true) {
                     newBoard[row][col] = false;
@@ -206,10 +382,11 @@
                 setSelectedPeg(null);
                 setShowWin(false);
                 setCurrentLevelIndex(levelIndex);
-                
+
                 // Reset score and timer
                 setScore(0);
                 setTime(0);
+                timeRef.current = 0;
                 setIsTimerRunning(false);
                 lastMoveTimestamp.current = 0;
 
@@ -218,11 +395,11 @@
             useEffect(() => {
                 initializeBoard(0);
             }, [initializeBoard]);
-            
+
             // --- Game Logic ---
 
-            const checkForNoMoves = (currentBoard) => {
-                const levelDirections = LEVELS[currentLevelIndex].directions;
+            const checkForNoMoves = useCallback((currentBoard, levelIndex) => {
+                const levelDirections = LEVELS[levelIndex].directions;
                 for (let r = 0; r < currentBoard.length; r++) {
                     for (let c = 0; c < currentBoard[r].length; c++) {
                         if (currentBoard[r][c] === true) { // It's a peg
@@ -237,7 +414,7 @@
                     }
                 }
                 return true; // No moves found
-            };
+            }, []);
 
             const handleCellClick = useCallback((row, col) => {
                 if (gameState !== GameState.PLAYING) return;
@@ -250,7 +427,7 @@
                     if (selectedPeg) {
                         const start = selectedPeg;
                         const end = { row, col };
-                        
+
                         const dr = end.row - start.row;
                         const dc = end.col - start.col;
 
@@ -263,17 +440,15 @@
 
                         if (isValidJump && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
                             if (!isTimerRunning) setIsTimerRunning(true); // Start timer on first move
-                            
+
                             const newBoard = board.map(r => [...r]);
                             newBoard[start.row][start.col] = false;
                             newBoard[end.row][end.col] = true;
                             newBoard[jumpedRow][jumpedCol] = false;
 
-                            // Bonus points for rapid moves
+                            // Check for rapid-move bonus
                             const now = Date.now();
-                            if (lastMoveTimestamp.current > 0 && (now - lastMoveTimestamp.current) < RAPID_MOVE_THRESHOLD_MS) {
-                                setScore(s => s + RAPID_MOVE_BONUS);
-                            }
+                            const isRapidMove = lastMoveTimestamp.current > 0 && (now - lastMoveTimestamp.current) < RAPID_MOVE_THRESHOLD_MS;
                             lastMoveTimestamp.current = now;
 
                             const newPegsRemaining = pegsRemaining - 1;
@@ -286,87 +461,159 @@
                                 setGameState(GameState.WON);
                                 setIsTimerRunning(false);
                                 setShowWin(true);
-                                setTimeout(() => setShowWin(false), 4000);
-                                // Final score calculation
-                                const finalScore = score + (initialPegCount * 100) - (time * 10);
+                                winTimeoutRef.current = setTimeout(() => {
+                                    setShowWin(false);
+                                    winTimeoutRef.current = null;
+                                }, 4000);
+                                // Include rapid-move bonus in final score so it isn't lost to the overwrite
+                                const rapidBonus = isRapidMove ? RAPID_MOVE_BONUS : 0;
+                                const currentScore = score + rapidBonus;
+                                const finalScore = Math.max(0, currentScore + (initialPegCount * 100) - (timeRef.current * 10));
                                 setScore(finalScore);
                                 if (finalScore > (highScores[currentLevelIndex] || 0)) {
                                     const newHighScores = {...highScores, [currentLevelIndex]: finalScore};
                                     setHighScores(newHighScores);
-                                    try { localStorage.setItem('pegJumperHighScores', JSON.stringify(newHighScores)); } catch (e) { console.warn('Could not save high scores', e); }
+                                    safeSetItem('pegJumperHighScores', JSON.stringify(newHighScores));
                                 }
-                            } else if (checkForNoMoves(newBoard)) {
-                                setGameState(GameState.LOST);
-                                setIsTimerRunning(false);
+                            } else {
+                                // Award rapid-move bonus for non-winning moves
+                                if (isRapidMove) {
+                                    setScore(s => s + RAPID_MOVE_BONUS);
+                                }
+                                if (checkForNoMoves(newBoard, currentLevelIndex)) {
+                                    setGameState(GameState.LOST);
+                                    setIsTimerRunning(false);
+                                }
                             }
                         }
                     }
                 }
-            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, time, highScores, currentLevelIndex, initialPegCount]);
+            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves]);
+
+            // Keyboard handler for peg/hole interaction
+            const handleCellKeyDown = useCallback((e, row, col) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCellClick(row, col);
+                }
+            }, [handleCellClick]);
 
             const getGameStatusMessage = () => {
                 switch (gameState) {
                     case GameState.PLAYING: return `Pegs: ${pegsRemaining}`;
-                    case GameState.WON: return '🎉 You Win! 🎉';
+                    case GameState.WON: return 'You Win!';
                     case GameState.LOST: return 'No more moves!';
+                    default: return '';
+                }
+            };
+
+            const getGameStatusAria = () => {
+                switch (gameState) {
+                    case GameState.PLAYING: return `Playing. ${pegsRemaining} pegs remaining.`;
+                    case GameState.WON: return `Congratulations! You won with a score of ${score}!`;
+                    case GameState.LOST: return `Game over. No more moves available. ${pegsRemaining} pegs remaining.`;
                     default: return '';
                 }
             };
 
             return (
                 <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden flex flex-col items-center justify-center p-4">
-                    <div className="absolute inset-0">
+                    <div className="absolute inset-0" aria-hidden="true">
                         <div className="absolute top-20 left-20 w-32 h-32 bg-purple-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
                         <div className="absolute top-40 right-32 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
                     </div>
 
-                    <div className="relative z-10 flex flex-col items-center w-full max-w-2xl">
-                        <h1 className="text-4xl sm:text-5xl font-black text-center bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                            Peg Jumper
-                        </h1>
+                    <main className="relative z-10 flex flex-col items-center w-full max-w-2xl" role="main">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                            <h1 className="text-4xl sm:text-5xl font-black text-center bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                                Peg Jumper
+                            </h1>
+                            <button
+                                ref={howToPlayTriggerRef}
+                                onClick={() => setShowHowToPlay(true)}
+                                className="min-w-[44px] min-h-[44px] rounded-full border border-purple-500/50 bg-purple-500/10 text-purple-300 hover:bg-purple-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                aria-label="How to Play"
+                                title="How to Play"
+                            >
+                                &#10067;
+                            </button>
+                        </div>
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={() => setShowHowToPlay(false)} triggerRef={howToPlayTriggerRef} />
 
-                        <div className="flex flex-wrap justify-center gap-2 mb-4">
+                        <nav aria-label="Level selection" className="flex flex-wrap justify-center gap-2 mb-4">
                             {LEVELS.map((level, index) => (
-                                <button key={level.name} onClick={() => initializeBoard(index)}
-                                    className={`px-3 py-1 text-sm font-bold rounded-lg transition-all transform hover:scale-105 ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}>
+                                <button
+                                    key={level.name}
+                                    onClick={() => initializeBoard(index)}
+                                    aria-pressed={currentLevelIndex === index}
+                                    className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 min-h-[44px] ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+                                >
                                     {level.name}
                                 </button>
                             ))}
-                        </div>
-                        
-                        <div className="w-full flex justify-between items-center bg-black/20 p-2 rounded-lg mb-4 text-lg">
+                        </nav>
+
+                        <div className="w-full flex justify-between items-center bg-black/20 p-2 rounded-lg mb-4 text-lg" aria-label="Game statistics">
                             <div className="text-left">
-                                <div>Score: <span className="font-bold text-cyan-400">{score}</span></div>
-                                <div>High Score: <span className="font-bold text-yellow-400">{highScores[currentLevelIndex] || 0}</span></div>
+                                <div>Score: <span className="font-bold text-cyan-400" aria-label={`Score: ${score}`}>{score}</span></div>
+                                <div>High Score: <span className="font-bold text-yellow-400" aria-label={`High score: ${highScores[currentLevelIndex] || 0}`}>{highScores[currentLevelIndex] || 0}</span></div>
                             </div>
-                            <div className="text-center text-2xl font-semibold text-white" role="status" aria-live="polite">{getGameStatusMessage()}</div>
-                            <div className="text-right">Time: <span className="font-bold text-pink-400">{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
+                            <div
+                                className="text-center text-2xl font-semibold text-white"
+                                role="status"
+                                aria-live="polite"
+                                aria-label={getGameStatusAria()}
+                            >
+                                {getGameStatusMessage()}
+                            </div>
+                            <div className="text-right">Time: <span className="font-bold text-pink-400" aria-label={`Time: ${Math.floor(time / 60)} minutes ${time % 60} seconds`}>{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
                         </div>
 
-                        <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center">
+                        <div
+                            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center"
+                            role="grid"
+                            aria-label={`${LEVELS[currentLevelIndex].name} game board`}
+                        >
                             {board.map((row, rowIndex) => (
-                                <div key={rowIndex} className="flex justify-center">
+                                <div key={rowIndex} className="flex justify-center" role="row">
                                     {row.map((cell, colIndex) => {
-                                        if (cell === null) return <div key={colIndex} className="w-8 h-8 sm:w-10 sm:h-10" />;
+                                        if (cell === null) return <div key={colIndex} className="min-w-[44px] min-h-[44px]" role="gridcell" aria-hidden="true" />;
                                         const isSelected = selectedPeg && selectedPeg.row === rowIndex && selectedPeg.col === colIndex;
-                                        return cell ? (
-                                            <Peg key={colIndex} isSelected={isSelected} onClick={() => handleCellClick(rowIndex, colIndex)} />
-                                        ) : (
-                                            <Hole key={colIndex} onClick={() => handleCellClick(rowIndex, colIndex)} />
+                                        return (
+                                            <div key={colIndex} role="gridcell">
+                                                {cell ? (
+                                                    <Peg
+                                                        isSelected={isSelected}
+                                                        onClick={() => handleCellClick(rowIndex, colIndex)}
+                                                        onKeyDown={(e) => handleCellKeyDown(e, rowIndex, colIndex)}
+                                                        rowIndex={rowIndex}
+                                                        colIndex={colIndex}
+                                                    />
+                                                ) : (
+                                                    <Hole
+                                                        onClick={() => handleCellClick(rowIndex, colIndex)}
+                                                        onKeyDown={(e) => handleCellKeyDown(e, rowIndex, colIndex)}
+                                                        rowIndex={rowIndex}
+                                                        colIndex={colIndex}
+                                                    />
+                                                )}
+                                            </div>
                                         );
                                     })}
                                 </div>
                             ))}
                         </div>
-                        
+
                         <div className="mt-6">
                             <button onClick={() => initializeBoard(currentLevelIndex)}
-                                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105">
+                                className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 min-h-[44px]"
+                                aria-label={`Reset ${LEVELS[currentLevelIndex].name} level`}
+                            >
                                 Reset Level
                             </button>
                         </div>
-                    </div>
-                    
+                    </main>
+
                     <Celebration show={showWin} />
                 </div>
             );

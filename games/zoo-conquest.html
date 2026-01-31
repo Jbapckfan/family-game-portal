@@ -135,6 +135,65 @@
         }
       }
 
+      /* Mobile: sidebar becomes a slide-in overlay */
+      @media (max-width: 767px) {
+        .game-sidebar {
+          position: fixed !important;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 85vw !important;
+          max-width: 320px;
+          z-index: 50;
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+        }
+        .game-sidebar.open {
+          transform: translateX(0);
+        }
+        .sidebar-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.5);
+          z-index: 40;
+        }
+        .mobile-toggle-btn {
+          position: fixed;
+          bottom: 16px;
+          right: 16px;
+          z-index: 30;
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          background: rgba(59,130,246,0.9);
+          color: #fff;
+          border: 2px solid rgba(255,255,255,0.3);
+          font-size: 22px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+          cursor: pointer;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+        .mobile-toggle-btn:active {
+          transform: scale(0.92);
+        }
+        /* Compact spacing on mobile */
+        .game-message-bar {
+          font-size: 0.8rem;
+          padding: 6px 10px !important;
+        }
+        .game-map-area {
+          padding: 6px !important;
+        }
+      }
+      @media (min-width: 768px) {
+        .sidebar-backdrop { display: none !important; }
+        .mobile-toggle-btn { display: none !important; }
+      }
+
       /* Battle animation keyframes */
       @keyframes troopReady {
         0%, 100% { transform: scale(1); opacity: 1; }
@@ -1299,6 +1358,7 @@
       const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
       const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
       const [cardDeck, setCardDeck] = useState(shuffleArray(CARD_DECK)); // Shuffled deck
+      const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
       // Setup functions
       const startGame = (numHumans, numAI) => {
@@ -2415,13 +2475,37 @@
       return (
         <div className="h-screen flex overflow-hidden bg-gray-900">
           {/* MAP AREA */}
-          <div className="flex-1 p-3 flex flex-col">
+          <div className="game-map-area flex-1 p-3 flex flex-col min-w-0">
             {/* Message bar */}
-            <div aria-live="polite" role="status" className={`rounded-lg px-4 py-2 mb-2 text-center ${currentPlayer?.isAI ? 'bg-blue-600' : 'bg-gray-800'}`}>
-              <span className="text-white font-bold">
+            <div aria-live="polite" role="status" className={`game-message-bar rounded-lg px-4 py-2 mb-2 text-center ${currentPlayer?.isAI ? 'bg-blue-600' : 'bg-gray-800'}`}>
+              <span className="text-white font-bold text-sm">
                 {currentPlayer?.isAI && '🤖 '}
                 {message}
               </span>
+            </div>
+            {/* Mobile-only compact phase bar */}
+            <div className="mb-2 flex gap-1 items-center md:hidden">
+              <div className="flex gap-0.5 flex-1">
+                <div className={`flex-1 text-center py-1 rounded font-bold text-xs ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-500'}`}>
+                  Place{troopsToPlace > 0 && ` (${troopsToPlace})`}
+                </div>
+                <div className={`flex-1 text-center py-1 rounded font-bold text-xs ${turnPhase === 'attack' ? 'bg-red-500 text-white' : 'bg-gray-700 text-gray-500'}`}>
+                  Attack
+                </div>
+                <div className={`flex-1 text-center py-1 rounded font-bold text-xs ${turnPhase === 'fortify' ? 'bg-blue-500 text-white' : 'bg-gray-700 text-gray-500'}`}>
+                  Fortify
+                </div>
+              </div>
+              {turnPhase === 'attack' && !currentPlayer?.isAI && (
+                <button onClick={endTurn} className="py-1 px-2 bg-green-500 text-white font-bold rounded text-xs whitespace-nowrap">
+                  End Turn
+                </button>
+              )}
+              {turnPhase === 'fortify' && !currentPlayer?.isAI && (
+                <button onClick={endPhase} className="py-1 px-2 bg-green-500 text-white font-bold rounded text-xs whitespace-nowrap">
+                  End Turn
+                </button>
+              )}
             </div>
             {/* Map container */}
             <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden">
@@ -2434,8 +2518,16 @@
             </div>
           </div>
 
-          {/* RIGHT SIDEBAR */}
-          <div className="w-72 bg-gray-800 p-3 flex flex-col gap-3 overflow-y-auto border-l-2 border-gray-700">
+          {/* Mobile sidebar backdrop */}
+          {showMobileSidebar && <div className="sidebar-backdrop" onClick={() => setShowMobileSidebar(false)} />}
+
+          {/* Mobile toggle button */}
+          <button className="mobile-toggle-btn" onClick={() => setShowMobileSidebar(s => !s)} aria-label="Toggle info panel">
+            {showMobileSidebar ? '✕' : '📋'}
+          </button>
+
+          {/* RIGHT SIDEBAR - static on desktop, slide-in overlay on mobile */}
+          <div className={`game-sidebar w-72 bg-gray-800 p-3 flex flex-col gap-3 overflow-y-auto border-l-2 border-gray-700 ${showMobileSidebar ? 'open' : ''}`}>
             {/* Current Player */}
             <div aria-live="polite" className="rounded-lg p-3" style={{backgroundColor: currentArmy?.color + '33', borderLeft: `4px solid ${currentArmy?.color}`}}>
               <div className="flex items-center gap-3">

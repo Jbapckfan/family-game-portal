@@ -25,9 +25,11 @@
             font-family: 'Orbitron', sans-serif;
             background-color: #0d0c1d;
             background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
-            overflow-x: hidden;
+            overflow: hidden;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            height: 100dvh;
         }
         .text-shadow-neon {
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
@@ -199,17 +201,17 @@
         }
         .stats-box {
             background-color: rgba(0, 0, 0, 0.4);
-            padding: 12px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
             border: 1px solid rgba(34, 211, 238, 0.3);
             text-align: center;
         }
         .stats-value {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #00ffff;
-            margin-top: 4px;
-            font-variant-numeric: tabular-nums; /* FIX for time/guess count shifting */
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
         }
         .sr-only { /* For accessibility - visually hidden text */
             position: absolute;
@@ -440,7 +442,7 @@
             const whiteCount = feedback.filter(f => f === 'white').length;
             const summaryLabel = `Guess ${rowNumber}: ${blackCount} exact, ${whiteCount} wrong position`;
             return (
-                <div className="flex items-center justify-between p-2 my-2 bg-gray-700/50 rounded-lg shadow-md border border-gray-600/50 fade-in"
+                <div className="flex items-center justify-between px-2 py-1.5 my-1 bg-gray-700/50 rounded-lg shadow-md border border-gray-600/50 fade-in"
                      role="listitem"
                      aria-label={summaryLabel}>
                     <div className="flex flex-wrap gap-1">
@@ -765,8 +767,25 @@
             // Handle clicking on a color in the palette
             const handlePaletteColorClick = (color) => {
                 if (gameStatus !== 'playing') return;
-                dispatch({ type: 'SET_SELECTED_COLOR', color });
-                AudioSystem.play(440);
+
+                const newGuess = [...currentGuess];
+                const emptyIndex = newGuess.indexOf(null);
+
+                if (emptyIndex !== -1) {
+                    // Auto-place into leftmost empty slot
+                    if (!allowDuplicates && newGuess.includes(color)) {
+                        dispatch({ type: 'SET_MESSAGE', message: 'Colors must be unique in your guess!' });
+                        return;
+                    }
+                    newGuess[emptyIndex] = color;
+                    dispatch({ type: 'UPDATE_CURRENT_GUESS', newGuess });
+                    dispatch({ type: 'SET_SELECTED_COLOR', color: null });
+                    AudioSystem.play(520);
+                } else {
+                    // All slots full -- select the color so user can tap a slot to replace
+                    dispatch({ type: 'SET_SELECTED_COLOR', color });
+                    AudioSystem.play(440);
+                }
             };
 
             // Handle clicking on a peg in the current guess area
@@ -830,18 +849,18 @@
             };
 
             return (
-                <main className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4" role="main">
+                <main className="h-screen h-[100dvh] relative bg-gray-900 text-white flex flex-col items-center p-2 pt-14 overflow-hidden" role="main">
                     {/* Scanline and particle effects */}
                     <div className="scanline-overlay" aria-hidden="true"></div>
                     <ParticleBackground availableColors={gameConfig.availableColors} />
                     
-                    <div className="relative z-10 bg-black/60 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40">
-                        <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                    <div className="relative z-10 bg-black/60 rounded-xl shadow-2xl p-4 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 flex flex-col flex-1 min-h-0 overflow-hidden">
+                        <h1 className="text-3xl md:text-4xl font-bold text-center mb-2 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                             NEON BREAKER
                         </h1>
                         
                         {/* Game stats and timer */}
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center mb-2">
                             <div className="stats-box">
                                 <div className="text-sm text-cyan-300">Time</div>
                                 <div className="stats-value">{formatTime(elapsedTime)}</div>
@@ -859,7 +878,7 @@
                         </div>
                         
                         {/* Game mode and difficulty toggle */}
-                        <div className="flex items-center justify-center mb-4 flex-wrap gap-2">
+                        <div className="flex items-center justify-center mb-2 flex-wrap gap-1 text-sm">
                              <span className="mr-2 text-cyan-300">Difficulty:</span>
                              <select
                                 className="bg-gray-800 text-white rounded p-1 touch-select"
@@ -888,13 +907,13 @@
                             <span className="ml-2 text-cyan-300">{allowDuplicates ? "On" : "Off"}</span>
                         </div>
                         
-                        <p className="text-center text-cyan-300/80 mb-4 text-shadow-neon" role="status" aria-live="polite" aria-atomic="true">
+                        <p className="text-center text-cyan-300/80 mb-1 text-sm text-shadow-neon" role="status" aria-live="polite" aria-atomic="true">
                             {comboMessage && <span className="text-yellow-300 mr-2">{comboMessage}</span>}
                             {message}
                         </p>
 
                         {/* Secret Code Display (revealed on win/loss) */}
-                        <div className="flex justify-center mb-4" role="status" aria-live="polite">
+                        <div className="flex justify-center mb-1" role="status" aria-live="polite">
                             {gameStatus !== 'playing' && (
                                 <div className="flex space-x-2 p-3 bg-gray-700/50 rounded-lg shadow-inner fade-in border border-gray-600/50" aria-label="Secret code revealed">
                                     {secretCode.map((color, index) => (
@@ -905,14 +924,14 @@
                         </div>
 
                         {/* Past Guesses and Feedback */}
-                        <div ref={guessListRef} className="max-h-64 overflow-y-auto mb-4 p-2 rounded-md bg-gray-700/30 border border-gray-600/30" role="list" aria-label="Past guesses and feedback">
+                        <div ref={guessListRef} className="flex-1 min-h-0 overflow-y-auto mb-2 p-1 rounded-md bg-gray-700/30 border border-gray-600/30" role="list" aria-label="Past guesses and feedback">
                             {guesses.map((g, index) => (
                                 <GuessRow key={index} guess={g.code} feedback={g.feedback} codeLength={gameConfig.codeLength} rowNumber={index + 1} />
                             ))}
                         </div>
 
                         {/* Current Guess Input */}
-                        <div ref={guessInputRef} className="flex flex-wrap justify-center gap-2 mb-4 p-3 bg-gray-700/50 rounded-lg shadow-inner border border-gray-600/50" aria-label="Current guess input area">
+                        <div ref={guessInputRef} className="flex flex-wrap justify-center gap-2 mb-2 p-2 bg-gray-700/50 rounded-lg shadow-inner border border-gray-600/50" aria-label="Current guess input area">
                             {Array.from({ length: gameConfig.codeLength }).map((_, i) => (
                                 <CodePeg
                                     key={`current-${i}`}
@@ -925,7 +944,7 @@
                         </div>
 
                         {/* Color Picker */}
-                        <div className="flex flex-wrap justify-center gap-3 mb-4" role="group" aria-label="Color selection palette">
+                        <div className="flex flex-wrap justify-center gap-2 mb-2" role="group" aria-label="Color selection palette">
                             {gameConfig.availableColors.map(color => (
                                 <button
                                     key={color}
@@ -940,11 +959,11 @@
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-wrap justify-center gap-3">
+                        <div className="flex flex-wrap justify-center gap-2">
                             <button
                                 onClick={() => dispatch({ type: 'USE_HINT' })}
                                 disabled={hintsRemaining <= 0 || gameStatus !== 'playing'}
-                                className="action-btn py-2 px-4 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="action-btn py-1.5 px-3 text-sm bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                 aria-label={`Use hint. ${hintsRemaining} hints remaining.`}
                             >
                                 Hint ({hintsRemaining})
@@ -952,7 +971,7 @@
 
                             <button
                                 onClick={() => dispatch({ type: 'SHOW_RULES', show: true })}
-                                className="action-btn py-2 px-4 bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn py-1.5 px-3 text-sm bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 aria-label="Show game rules"
                             >
                                 Rules
@@ -960,7 +979,7 @@
 
                             <button
                                 onClick={handleSubmitGuess}
-                                className="action-btn py-2 px-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="action-btn py-1.5 px-3 text-sm bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-lg shadow-blue-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={gameStatus !== 'playing' || currentGuess.includes(null)}
                                 aria-label="Submit your guess"
                             >
@@ -969,7 +988,7 @@
 
                             <button
                                 onClick={handleNewGame}
-                                className="action-btn py-2 px-4 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn py-1.5 px-3 text-sm bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg shadow-lg shadow-green-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 aria-label="Start a new game"
                             >
                                 New Game
@@ -1062,25 +1081,12 @@
                                 </div>
                             </div>
                         )}
-                    </div>
-                    
-                    {/* Statistics footer */}
-                    <div className="mt-6 grid grid-cols-2 gap-4 text-sm w-full max-w-md" role="contentinfo" aria-label="Game statistics">
-                        <div className="stats-box">
-                            <div className="text-cyan-300">Games Played</div>
-                            <div className="stats-value">{stats.gamesPlayed}</div>
-                        </div>
-                        <div className="stats-box">
-                            <div className="text-cyan-300">Wins</div>
-                            <div className="stats-value">{stats.wins}</div>
-                        </div>
-                        <div className="stats-box">
-                            <div className="text-cyan-300">Best Time</div>
-                            <div className="stats-value">{stats.bestTime === Infinity ? '--:--' : formatTime(stats.bestTime)}</div>
-                        </div>
-                        <div className="stats-box">
-                            <div className="text-cyan-300">Best Attempts</div>
-                            <div className="stats-value">{stats.bestAttempts === Infinity ? '--' : stats.bestAttempts}</div>
+                        {/* Compact statistics row */}
+                        <div className="mt-2 flex justify-between text-xs opacity-70 px-1" role="contentinfo" aria-label="Game statistics">
+                            <span className="text-cyan-300">Played: <span className="text-white font-bold">{stats.gamesPlayed}</span></span>
+                            <span className="text-cyan-300">Wins: <span className="text-white font-bold">{stats.wins}</span></span>
+                            <span className="text-cyan-300">Best: <span className="text-white font-bold">{stats.bestTime === Infinity ? '--:--' : formatTime(stats.bestTime)}</span></span>
+                            <span className="text-cyan-300">Fewest: <span className="text-white font-bold">{stats.bestAttempts === Infinity ? '--' : stats.bestAttempts}</span></span>
                         </div>
                     </div>
                 </main>

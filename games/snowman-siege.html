@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Snowman Siege</title>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body, #root { width: 100%; height: 100%; overflow: hidden; background: #000; }
+
+        /* ===== BACK BUTTON ===== */
+        .back-btn {
+            position: fixed; top: 12px; left: 12px;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            font-family: system-ui, sans-serif;
+            z-index: 9999;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            border-color: #8b5cf6; color: #c4b5fd;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-btn">&#x1F3E0; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
+
+    // ===== CONSTANTS =====
+    const GAME_WIDTH = 400;
+    const GAME_HEIGHT = 800;
+    const PLAYER_MAX_HP = 5;
+    const PLAYER_MAX_AMMO = 40;
+    const FIRE_RATE = 1000 / 12;
+    const RELOAD_TIME = 1200;
+    const WAVE_INTERVAL = 15000;
+    const DANGER_LINE_Y = 720;
+
+    const ENEMY_STATS = {
+        BASIC:   { hp: 3, speed: 1.2, points: 100, radius: 25 },
+        CHUNKY:  { hp: 8, speed: 0.6, points: 250, radius: 40 },
+        THROWER: { hp: 4, speed: 1.0, points: 200, radius: 22 }
+    };
+
+    const COLORS = {
+        SKY_TOP: '#2c3e50',
+        SKY_BOTTOM: '#34495e',
+        SNOW: '#ecf0f1',
+        SNOW_SHADOW: '#bdc3c7',
+        AMMO: '#f1c40f',
+        PLAYER_PROJECTILE: '#ffffff',
+        ENEMY_PROJECTILE: '#e74c3c',
+        DANGER: '#e74c3c'
+    };
+
+    const EnemyType = { BASIC: 'BASIC', CHUNKY: 'CHUNKY', THROWER: 'THROWER' };
+    const Screen = { HOME: 'HOME', GAME: 'GAME', GAMEOVER: 'GAMEOVER' };
+
+    // ===== AUDIO =====
+    const playSound = (freq, type, duration, volume = 0.1) => {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq / 2, audioCtx.currentTime + duration);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+    };
+
+    // ===== HOME VIEW =====
+    const HomeView = ({ onPlay, bestScore }) => (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 to-slate-900 text-white p-8">
+            <div className="mb-12 text-center">
+                <h1 className="text-5xl font-black mb-2 tracking-tighter drop-shadow-lg">
+                    SNOWMAN<br/>SIEGE
+                </h1>
+                <p className="text-slate-400 font-medium uppercase tracking-widest text-xs">Winter Arcade Defense</p>
+            </div>
+            <div className="w-full space-y-6 flex flex-col items-center">
+                <button
+                    onClick={onPlay}
+                    className="w-48 bg-white text-slate-900 font-bold py-4 rounded-full text-xl shadow-xl active:scale-95 transition-transform"
+                >
+                    PLAY
+                </button>
+                <div className="text-center">
+                    <p className="text-slate-500 text-xs font-bold uppercase mb-1">Best Score</p>
+                    <p className="text-2xl font-mono text-yellow-400">{bestScore.toLocaleString()}</p>
+                </div>
+            </div>
+            <div className="mt-24 text-center text-slate-500 text-[10px] leading-relaxed max-w-[200px]">
+                HOLD TO FIRE &bull; RELEASE TO RELOAD<br/>
+                DEFEND THE VILLAGE FROM THE FROZEN HORDE
+            </div>
+        </div>
+    );
+
+    // ===== GAME OVER VIEW =====
+    const GameOverView = ({ score, bestScore, onRestart, onHome }) => (
+        <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center p-8 z-50">
+            <div className="text-center mb-8">
+                <h2 className="text-red-500 text-5xl font-black italic tracking-tighter mb-2">GAME OVER</h2>
+                <p className="text-white/40 uppercase tracking-widest text-xs">The siege has broken through</p>
+            </div>
+            <div className="bg-white/5 w-full rounded-3xl p-6 mb-8 text-center space-y-4">
+                <div>
+                    <p className="text-white/40 text-[10px] uppercase font-bold">Final Score</p>
+                    <p className="text-white text-4xl font-mono font-bold">{score.toLocaleString()}</p>
+                </div>
+                <div className="pt-2 border-t border-white/10">
+                    <p className="text-white/40 text-[10px] uppercase font-bold">Best Record</p>
+                    <p className="text-yellow-400 text-2xl font-mono font-bold">{bestScore.toLocaleString()}</p>
+                </div>
+            </div>
+            <div className="w-full flex flex-col gap-3">
+                <button
+                    onClick={onRestart}
+                    className="w-full bg-white text-slate-900 font-bold py-4 rounded-2xl shadow-xl active:scale-95 transition-transform"
+                >
+                    RETRY
+                </button>
+                <button
+                    onClick={onHome}
+                    className="w-full bg-white/10 text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform"
+                >
+                    HOME
+                </button>
+            </div>
+        </div>
+    );
+
+    // ===== GAME HUD VIEW =====
+    const GameHUDView = ({ status, onPause }) => {
+        const hpCores = Array.from({ length: 5 }, (_, i) => i < status.hp);
+        return (
+            <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
+                <div className="flex justify-between items-start pt-2">
+                    <div className="flex flex-col">
+                        <p className="text-white/50 text-[10px] font-bold uppercase tracking-widest">Score</p>
+                        <p className="text-white text-2xl font-mono leading-none">{status.score.toLocaleString()}</p>
+                    </div>
+                    <button
+                        onClick={onPause}
+                        className="pointer-events-auto bg-white/10 backdrop-blur-md p-2 rounded-xl active:scale-90"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                            <rect x="6" y="5" width="4" height="14" rx="1" />
+                            <rect x="14" y="5" width="4" height="14" rx="1" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="flex flex-col gap-4 pb-4">
+                    {status.reloading && (
+                        <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-yellow-400 transition-all duration-75"
+                                style={{ width: `${status.reloadProgress * 100}%` }}
+                            />
+                        </div>
+                    )}
+                    <div className="flex justify-between items-end">
+                        <div className="flex gap-1.5">
+                            {hpCores.map((active, i) => (
+                                <div
+                                    key={i}
+                                    className={`w-4 h-6 rounded-sm border-2 transition-colors ${active ? 'bg-red-500 border-red-400 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-transparent border-white/20'}`}
+                                />
+                            ))}
+                        </div>
+                        <div className="flex flex-col items-end">
+                            <p className="text-white/50 text-[10px] font-bold uppercase tracking-widest">Ammo</p>
+                            <div className="flex items-baseline gap-1">
+                                <span className={`text-2xl font-mono leading-none ${status.ammo < 10 ? 'text-red-500' : 'text-white'}`}>
+                                    {status.ammo}
+                                </span>
+                                <span className="text-white/40 text-sm font-mono">/ {status.maxAmmo}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // ===== GAME CONTAINER VIEW (CORE ENGINE) =====
+    const GameContainerView = ({ onGameOver }) => {
+        const canvasRef = useRef(null);
+        const [status, setStatus] = useState({
+            score: 0,
+            hp: PLAYER_MAX_HP,
+            ammo: PLAYER_MAX_AMMO,
+            maxAmmo: PLAYER_MAX_AMMO,
+            reloading: false,
+            reloadProgress: 0,
+            wave: 1,
+            isPaused: false
+        });
+
+        const stateRef = useRef({
+            hp: PLAYER_MAX_HP,
+            score: 0,
+            ammo: PLAYER_MAX_AMMO,
+            reloading: false,
+            reloadStartTime: 0,
+            lastFireTime: 0,
+            lastSpawnTime: 0,
+            lastWaveTime: Date.now(),
+            isPaused: false,
+            isMouseDown: false,
+            mousePos: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 },
+            wave: 1,
+            enemies: [],
+            projectiles: [],
+            particles: [],
+            screenShake: 0,
+            backgroundSnow: []
+        });
+
+        const requestRef = useRef();
+
+        useEffect(() => {
+            stateRef.current.backgroundSnow = Array.from({ length: 50 }, () => ({
+                x: Math.random() * GAME_WIDTH,
+                y: Math.random() * GAME_HEIGHT,
+                s: 1 + Math.random() * 2
+            }));
+        }, []);
+
+        const updateMousePos = (e) => {
+            if (!canvasRef.current) return;
+            const rect = canvasRef.current.getBoundingClientRect();
+            const scaleX = GAME_WIDTH / rect.width;
+            const scaleY = GAME_HEIGHT / rect.height;
+            stateRef.current.mousePos = {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        };
+
+        const handlePointerDown = useCallback((e) => {
+            if (stateRef.current.isPaused) return;
+            stateRef.current.isMouseDown = true;
+            updateMousePos(e);
+        }, []);
+
+        const handlePointerUp = useCallback(() => {
+            stateRef.current.isMouseDown = false;
+            if (stateRef.current.ammo < PLAYER_MAX_AMMO && !stateRef.current.reloading) {
+                stateRef.current.reloading = true;
+                stateRef.current.reloadStartTime = Date.now();
+                playSound(200, 'sine', 0.5, 0.05);
+            }
+        }, []);
+
+        const handlePointerMove = useCallback((e) => {
+            updateMousePos(e);
+        }, []);
+
+        const togglePause = useCallback(() => {
+            stateRef.current.isPaused = !stateRef.current.isPaused;
+            setStatus(prev => ({ ...prev, isPaused: stateRef.current.isPaused }));
+        }, []);
+
+        const spawnParticles = (x, y, color, count, velocityMult = 1) => {
+            for (let i = 0; i < count; i++) {
+                stateRef.current.particles.push({
+                    id: Math.random().toString(),
+                    x, y,
+                    vx: (Math.random() - 0.5) * 10 * velocityMult,
+                    vy: (Math.random() - 0.5) * 10 * velocityMult,
+                    life: 0.5 + Math.random() * 0.5,
+                    color
+                });
+            }
+        };
+
+        const shake = (amount) => {
+            stateRef.current.screenShake = amount;
+            if (window.navigator.vibrate) window.navigator.vibrate(Math.min(amount * 5, 100));
+        };
+
+        const update = useCallback(() => {
+            const s = stateRef.current;
+            if (s.isPaused) {
+                requestRef.current = requestAnimationFrame(update);
+                return;
+            }
+
+            const now = Date.now();
+
+            // Wave Progression
+            if (now - s.lastWaveTime > WAVE_INTERVAL) {
+                s.wave += 1;
+                s.lastWaveTime = now;
+                playSound(400 + s.wave * 50, 'triangle', 0.3, 0.05);
+            }
+
+            // Background Snow Move
+            s.backgroundSnow.forEach(sn => {
+                sn.y += sn.s;
+                if (sn.y > GAME_HEIGHT) sn.y = -10;
+            });
+
+            // Spawning
+            const spawnRate = Math.max(450, 2200 - s.wave * 180);
+            if (now - s.lastSpawnTime > spawnRate) {
+                const typeRoll = Math.random();
+                let type = EnemyType.BASIC;
+                if (s.wave >= 2 && typeRoll > 0.7) type = EnemyType.THROWER;
+                if (s.wave >= 3 && typeRoll > 0.85) type = EnemyType.CHUNKY;
+
+                const stats = ENEMY_STATS[type];
+                s.enemies.push({
+                    id: Math.random().toString(),
+                    type,
+                    x: stats.radius + Math.random() * (GAME_WIDTH - stats.radius * 2),
+                    y: -stats.radius * 2,
+                    hp: stats.hp,
+                    maxHp: stats.hp,
+                    speed: stats.speed + (s.wave * 0.08),
+                    lastThrowTime: now + Math.random() * 2000,
+                    points: stats.points,
+                    radius: stats.radius
+                });
+                s.lastSpawnTime = now;
+            }
+
+            // Firing
+            if (s.isMouseDown && !s.reloading && s.ammo > 0) {
+                if (now - s.lastFireTime > FIRE_RATE) {
+                    const originX = GAME_WIDTH / 2;
+                    const originY = GAME_HEIGHT - 60;
+                    const dx = s.mousePos.x - originX;
+                    const dy = s.mousePos.y - originY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const vx = (dx / dist) * 20;
+                    const vy = (dy / dist) * 20;
+
+                    s.projectiles.push({
+                        id: Math.random().toString(),
+                        x: originX, y: originY,
+                        vx, vy,
+                        isPlayerOwned: true,
+                        radius: 6
+                    });
+
+                    playSound(800 + Math.random() * 100, 'square', 0.05, 0.03);
+                    s.ammo -= 1;
+                    s.lastFireTime = now;
+                    if (s.ammo <= 0) {
+                        s.reloading = true;
+                        s.reloadStartTime = now;
+                        playSound(150, 'sine', 0.4, 0.05);
+                    }
+                }
+            }
+
+            // Reloading
+            if (s.reloading) {
+                const elapsed = now - s.reloadStartTime;
+                const progress = Math.min(1, elapsed / RELOAD_TIME);
+                if (progress >= 1) {
+                    s.ammo = PLAYER_MAX_AMMO;
+                    s.reloading = false;
+                    playSound(600, 'sine', 0.1, 0.05);
+                }
+            }
+
+            // Projectiles
+            for (let i = s.projectiles.length - 1; i >= 0; i--) {
+                const p = s.projectiles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < -100 || p.x > GAME_WIDTH + 100 || p.y < -100 || p.y > GAME_HEIGHT + 100) {
+                    s.projectiles.splice(i, 1);
+                    continue;
+                }
+
+                if (p.isPlayerOwned) {
+                    let hit = false;
+                    for (let j = s.enemies.length - 1; j >= 0; j--) {
+                        const e = s.enemies[j];
+                        const dist = Math.sqrt((p.x - e.x) ** 2 + (p.y - e.y) ** 2);
+                        if (dist < e.radius + p.radius) {
+                            e.hp -= 1;
+                            spawnParticles(p.x, p.y, COLORS.SNOW, 4);
+                            playSound(300 + Math.random() * 200, 'sawtooth', 0.05, 0.04);
+                            s.projectiles.splice(i, 1);
+                            hit = true;
+                            if (e.hp <= 0) {
+                                s.score += e.points;
+                                spawnParticles(e.x, e.y, COLORS.SNOW, 15, 2);
+                                shake(8);
+                                playSound(100, 'square', 0.2, 0.08);
+                                s.enemies.splice(j, 1);
+                            }
+                            break;
+                        }
+                    }
+                    if (hit) continue;
+                } else {
+                    const playerX = GAME_WIDTH / 2;
+                    const playerY = GAME_HEIGHT - 60;
+                    const dist = Math.sqrt((p.x - playerX) ** 2 + (p.y - playerY) ** 2);
+                    if (dist < 50 + p.radius) {
+                        s.hp -= 1;
+                        shake(20);
+                        playSound(50, 'square', 0.3, 0.1);
+                        s.projectiles.splice(i, 1);
+                        if (s.hp <= 0) onGameOver(s.score);
+                    }
+                }
+            }
+
+            // Enemies
+            for (let i = s.enemies.length - 1; i >= 0; i--) {
+                const e = s.enemies[i];
+                e.y += e.speed;
+
+                if (e.type === EnemyType.THROWER) {
+                    const throwInterval = Math.max(1200, 3000 - s.wave * 100);
+                    if (now - e.lastThrowTime > throwInterval) {
+                        const dx = (GAME_WIDTH / 2) - e.x;
+                        const dy = (GAME_HEIGHT - 60) - e.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        s.projectiles.push({
+                            id: Math.random().toString(),
+                            x: e.x, y: e.y,
+                            vx: (dx / dist) * 7,
+                            vy: (dy / dist) * 7,
+                            isPlayerOwned: false,
+                            radius: 8
+                        });
+                        playSound(400, 'sine', 0.1, 0.02);
+                        e.lastThrowTime = now;
+                    }
+                }
+
+                if (e.y > DANGER_LINE_Y) {
+                    s.hp -= 1;
+                    shake(30);
+                    playSound(60, 'sawtooth', 0.4, 0.1);
+                    s.enemies.splice(i, 1);
+                    if (s.hp <= 0) onGameOver(s.score);
+                }
+            }
+
+            // Particles
+            for (let i = s.particles.length - 1; i >= 0; i--) {
+                const p = s.particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.03;
+                if (p.life <= 0) s.particles.splice(i, 1);
+            }
+
+            setStatus(prev => ({
+                ...prev,
+                score: s.score,
+                hp: Math.max(0, s.hp),
+                ammo: s.ammo,
+                reloading: s.reloading,
+                reloadProgress: s.reloading ? (now - s.reloadStartTime) / RELOAD_TIME : 0,
+                wave: s.wave
+            }));
+
+            draw();
+            requestRef.current = requestAnimationFrame(update);
+        }, [onGameOver]);
+
+        const draw = () => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const s = stateRef.current;
+            ctx.save();
+
+            if (s.screenShake > 0) {
+                ctx.translate((Math.random() - 0.5) * s.screenShake, (Math.random() - 0.5) * s.screenShake);
+                s.screenShake *= 0.88;
+            }
+
+            // Background Gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+            skyGrad.addColorStop(0, COLORS.SKY_TOP);
+            skyGrad.addColorStop(0.7, COLORS.SKY_BOTTOM);
+            skyGrad.addColorStop(0.7, '#1a2a3a');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // Distant Hills
+            ctx.fillStyle = '#243444';
+            ctx.beginPath();
+            ctx.moveTo(0, 500);
+            ctx.quadraticCurveTo(GAME_WIDTH / 4, 450, GAME_WIDTH / 2, 500);
+            ctx.quadraticCurveTo(3 * GAME_WIDTH / 4, 520, GAME_WIDTH, 480);
+            ctx.lineTo(GAME_WIDTH, DANGER_LINE_Y);
+            ctx.lineTo(0, DANGER_LINE_Y);
+            ctx.fill();
+
+            // Background Snowflakes
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            s.backgroundSnow.forEach(sn => {
+                ctx.beginPath();
+                ctx.arc(sn.x, sn.y, sn.s, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Ground
+            ctx.fillStyle = COLORS.SNOW;
+            ctx.fillRect(0, DANGER_LINE_Y, GAME_WIDTH, GAME_HEIGHT - DANGER_LINE_Y);
+
+            // Danger Line Glow
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = COLORS.DANGER;
+            ctx.strokeStyle = COLORS.DANGER;
+            ctx.lineWidth = 4;
+            ctx.setLineDash([15, 10]);
+            ctx.beginPath();
+            ctx.moveTo(0, DANGER_LINE_Y);
+            ctx.lineTo(GAME_WIDTH, DANGER_LINE_Y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.shadowBlur = 0;
+
+            // Projectiles
+            s.projectiles.forEach(p => {
+                ctx.fillStyle = p.isPlayerOwned ? COLORS.PLAYER_PROJECTILE : COLORS.ENEMY_PROJECTILE;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                if (p.isPlayerOwned) {
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = 'white';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            });
+
+            // Enemies with perspective sizing
+            s.enemies.forEach(e => {
+                const perspectiveScale = 0.5 + (e.y / DANGER_LINE_Y) * 0.5;
+                const r = e.radius * perspectiveScale;
+
+                ctx.save();
+                ctx.translate(e.x, e.y);
+
+                // Body Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.beginPath();
+                ctx.ellipse(0, 10 * perspectiveScale, r, r * 0.3, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Body (3 parts)
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(0, 0, r * 0.8, 0, Math.PI * 2);
+                ctx.arc(0, -r * 0.7, r * 0.6, 0, Math.PI * 2);
+                ctx.arc(0, -r * 1.3, r * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eyes
+                ctx.fillStyle = '#333';
+                ctx.beginPath();
+                ctx.arc(-r * 0.15, -r * 1.35, r * 0.08, 0, Math.PI * 2);
+                ctx.arc(r * 0.15, -r * 1.35, r * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Nose
+                ctx.fillStyle = 'orange';
+                ctx.beginPath();
+                ctx.moveTo(0, -r * 1.3);
+                ctx.lineTo(r * 0.3, -r * 1.25);
+                ctx.lineTo(0, -r * 1.2);
+                ctx.fill();
+
+                if (e.type === EnemyType.CHUNKY) {
+                    ctx.fillStyle = '#c0392b';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r * 0.1, 0, Math.PI * 2);
+                    ctx.arc(0, -r * 0.7, r * 0.1, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (e.type === EnemyType.THROWER) {
+                    ctx.fillStyle = '#2980b9';
+                    ctx.fillRect(-r * 0.4, -r * 1.8, r * 0.8, r * 0.4);
+                    ctx.fillRect(-r * 0.6, -r * 1.5, r * 1.2, r * 0.1);
+                }
+
+                // HP Bar
+                const barWidth = r * 1.8;
+                const barHeight = 4 * perspectiveScale;
+                ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                ctx.fillRect(-barWidth / 2, r + 5, barWidth, barHeight);
+                ctx.fillStyle = e.hp > e.maxHp * 0.5 ? '#2ecc71' : '#e74c3c';
+                ctx.fillRect(-barWidth / 2, r + 5, barWidth * (e.hp / e.maxHp), barHeight);
+
+                ctx.restore();
+            });
+
+            // Particles
+            s.particles.forEach(p => {
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, (1.5 + p.life * 4), 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+
+            // Player snowball launcher
+            const launcherX = GAME_WIDTH / 2;
+            const launcherY = GAME_HEIGHT - 30;
+            const angle = Math.atan2(s.mousePos.y - launcherY, s.mousePos.x - launcherX);
+
+            ctx.save();
+            ctx.translate(launcherX, launcherY);
+            ctx.rotate(angle);
+            ctx.fillStyle = '#7f8c8d';
+            ctx.fillRect(0, -10, 40, 20);
+            ctx.fillStyle = '#95a5a6';
+            ctx.fillRect(35, -12, 10, 24);
+            ctx.restore();
+
+            // Crosshair
+            const chX = s.mousePos.x;
+            const chY = s.mousePos.y;
+            ctx.strokeStyle = s.reloading ? 'rgba(255,0,0,0.5)' : 'rgba(255,255,255,0.8)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(chX, chY, 18, 0, Math.PI * 2);
+            ctx.moveTo(chX - 25, chY); ctx.lineTo(chX + 25, chY);
+            ctx.moveTo(chX, chY - 25); ctx.lineTo(chX, chY + 25);
+            ctx.stroke();
+
+            if (s.reloading) {
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 10px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('RELOADING', chX, chY + 40);
+            }
+
+            ctx.restore();
+        };
+
+        useEffect(() => {
+            requestRef.current = requestAnimationFrame(update);
+            return () => {
+                if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            };
+        }, [update]);
+
+        return (
+            <div
+                className="relative w-full h-full touch-none select-none overflow-hidden"
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                onPointerMove={handlePointerMove}
+                onPointerLeave={handlePointerUp}
+            >
+                <canvas
+                    ref={canvasRef}
+                    width={GAME_WIDTH}
+                    height={GAME_HEIGHT}
+                    className="w-full h-full object-contain bg-slate-900"
+                />
+                <GameHUDView status={status} onPause={togglePause} />
+
+                {status.isPaused && (
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center z-40">
+                        <h2 className="text-white text-4xl font-black mb-8 italic">PAUSED</h2>
+                        <button
+                            onClick={togglePause}
+                            className="bg-white text-slate-900 font-bold px-12 py-4 rounded-full text-xl shadow-2xl active:scale-95 transition-transform"
+                        >
+                            RESUME
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // ===== APP =====
+    const App = () => {
+        const [currentScreen, setCurrentScreen] = useState(Screen.HOME);
+        const [lastScore, setLastScore] = useState(0);
+        const [bestScore, setBestScore] = useState(0);
+
+        useEffect(() => {
+            const saved = localStorage.getItem('snowman_siege_best_score');
+            if (saved) setBestScore(parseInt(saved, 10));
+        }, []);
+
+        const handleGameOver = useCallback((score) => {
+            setLastScore(score);
+            if (score > bestScore) {
+                setBestScore(score);
+                localStorage.setItem('snowman_siege_best_score', score.toString());
+            }
+            setCurrentScreen(Screen.GAMEOVER);
+        }, [bestScore]);
+
+        const startGame = () => setCurrentScreen(Screen.GAME);
+        const goToHome = () => setCurrentScreen(Screen.HOME);
+
+        return (
+            <div className="w-full h-screen overflow-hidden bg-black flex items-center justify-center">
+                <div className="relative w-full max-w-[400px] h-full max-h-[800px] bg-slate-900 shadow-2xl overflow-hidden">
+                    {currentScreen === Screen.HOME && (
+                        <HomeView onPlay={startGame} bestScore={bestScore} />
+                    )}
+                    {currentScreen === Screen.GAME && (
+                        <GameContainerView onGameOver={handleGameOver} />
+                    )}
+                    {currentScreen === Screen.GAMEOVER && (
+                        <GameOverView score={lastScore} bestScore={bestScore} onRestart={startGame} onHome={goToHome} />
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

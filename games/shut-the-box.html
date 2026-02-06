@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Shut the Box - Alford Family Game Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a1a;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            position: relative;
+        }
+
+        /* Ambient background glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(120, 40, 200, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(233, 69, 96, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #setup-screen, #game-screen, #game-over-screen, #round-summary-screen {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ══════ Setup Screen ══════ */
+        #setup-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .setup-title {
+            font-size: 2.6rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ff6b9d, #ffa66b, #fffb7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+            text-align: center;
+            filter: drop-shadow(0 2px 12px rgba(255,107,157,0.3));
+        }
+
+        .setup-subtitle {
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .setup-box {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .player-count-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .player-count-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .count-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.6);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .count-btn:hover {
+            border-color: rgba(255,107,157,0.4);
+            background: rgba(255,107,157,0.08);
+            color: #fff;
+        }
+
+        .count-btn.active {
+            border-color: #ff6b9d;
+            background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,166,107,0.12));
+            color: #fff;
+            box-shadow: 0 0 16px rgba(255,107,157,0.15);
+        }
+
+        .player-configs { display: flex; flex-direction: column; gap: 10px; }
+
+        .player-config {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            transition: background 0.2s;
+        }
+
+        .player-config:hover { background: rgba(255,255,255,0.05); }
+
+        .player-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .player-config input[type="text"] {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .player-config input[type="text"]::placeholder { color: rgba(255,255,255,0.25); }
+        .player-config input[type="text"]:focus {
+            border-color: rgba(255,107,157,0.5);
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+
+        .type-toggle {
+            display: flex;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .type-toggle button {
+            padding: 7px 14px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            letter-spacing: 0.02em;
+        }
+
+        .type-toggle button:hover { color: rgba(255,255,255,0.7); }
+        .type-toggle button.active {
+            background: linear-gradient(135deg, #ff6b9d, #e94560);
+            color: #fff;
+        }
+
+        .start-btn {
+            display: block;
+            width: 100%;
+            margin-top: 28px;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff6b9d, #e94560, #ff6b6b);
+            background-size: 200% 100%;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background-position 0.4s;
+            box-shadow: 0 4px 20px rgba(233,69,96,0.25);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+            background-position: 100% 0;
+        }
+
+        .start-btn:active { transform: translateY(0); }
+
+        /* ══════ Game Screen ══════ */
+        #game-screen { display: none; min-height: 100vh; padding: 16px; }
+
+        .game-header { text-align: center; padding: 12px 0 8px; }
+
+        .game-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ff6b9d, #ffa66b, #fffb7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .turn-indicator {
+            font-size: 0.95rem;
+            margin-top: 6px;
+            color: rgba(255,255,255,0.5);
+            min-height: 1.4em;
+            font-weight: 500;
+        }
+
+        .turn-indicator .player-name-highlight { font-weight: 700; }
+
+        /* ══════ Scoreboard ══════ */
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px auto;
+            max-width: 600px;
+        }
+
+        .score-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 16px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .score-chip.active {
+            border-color: rgba(255,107,157,0.5);
+            background: rgba(255,107,157,0.1);
+            box-shadow: 0 0 16px rgba(255,107,157,0.12);
+        }
+        .score-chip .dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+        .score-chip .sname { font-weight: 600; color: rgba(255,255,255,0.85); }
+        .score-chip .sval { color: #fffb7d; font-weight: 800; }
+
+        /* ══════ Tile Box ══════ */
+        .box-area {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin: 18px auto;
+            max-width: 680px;
+            flex-wrap: wrap;
+        }
+
+        .tile {
+            width: 48px;
+            height: 58px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.9);
+            position: relative;
+        }
+
+        .tile:hover:not(.shut):not(.disabled) {
+            border-color: rgba(255,251,125,0.5);
+            background: rgba(255,251,125,0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(255,251,125,0.12);
+        }
+
+        .tile.selected {
+            border-color: #48dbfb;
+            background: linear-gradient(135deg, rgba(72,219,251,0.15), rgba(72,219,251,0.08));
+            transform: translateY(-5px);
+            box-shadow: 0 6px 24px rgba(72,219,251,0.25), inset 0 0 12px rgba(72,219,251,0.1);
+            color: #fff;
+        }
+
+        .tile.matched {
+            border-color: #6ee7a0;
+            background: linear-gradient(135deg, rgba(110,231,160,0.25), rgba(110,231,160,0.1));
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 6px 24px rgba(110,231,160,0.35), inset 0 0 12px rgba(110,231,160,0.15);
+            color: #fff;
+        }
+
+        .tile.closing {
+            animation: tileClose 0.45s ease-in forwards;
+            pointer-events: none;
+        }
+
+        @keyframes tileClose {
+            0% { transform: translateY(-5px) scale(1.05); opacity: 1; border-color: #6ee7a0; background: rgba(110,231,160,0.25); }
+            40% { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(0.85) translateY(2px); opacity: 0.4; border-color: rgba(255,255,255,0.04); background: rgba(255,255,255,0.015); }
+        }
+
+        .tile.shut {
+            background: rgba(255,255,255,0.015);
+            border-color: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.12);
+            cursor: default;
+            transform: scale(0.92);
+        }
+
+        .tile.shut span { text-decoration: line-through; }
+
+        .tile.disabled { cursor: default; opacity: 0.45; }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Celebration text */
+        .celebrate-text {
+            animation: celebratePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes celebratePop {
+            0% { transform: scale(0.3); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Dice total badge */
+        .dice-total-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,251,125,0.15), rgba(255,166,107,0.1));
+            border: 2px solid rgba(255,251,125,0.4);
+            color: #fffb7d;
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin: 0 auto 4px;
+            box-shadow: 0 0 20px rgba(255,251,125,0.15);
+            animation: badgePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ══════ 3D DICE ══════ */
+        .dice-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin: 18px auto;
+        }
+
+        .dice-tray {
+            position: relative;
+            padding: 5px;
+            border-radius: 16px;
+            /* Outer wood rim with richer grain */
+            background: linear-gradient(145deg, #6b4423 0%, #4a2d12 40%, #3a2009 60%, #5c3b1e 100%);
+            box-shadow:
+                0 6px 20px rgba(0,0,0,0.5),
+                0 2px 6px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.12),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
+        }
+
+        .dice-tray-inner {
+            border-radius: 11px;
+            /* Rich dark green felt */
+            background:
+                radial-gradient(ellipse at 50% 40%, #1e6b30 0%, #12522a 40%, #0c3d1a 70%, #082e12 100%);
+            box-shadow:
+                inset 0 3px 12px rgba(0,0,0,0.6),
+                inset 0 0 24px rgba(0,0,0,0.25),
+                inset 0 -1px 4px rgba(30,107,48,0.2);
+            overflow: visible;
+            position: relative;
+            /* Clip dice at left/right/bottom edges but let them fly in from top */
+            clip-path: inset(-200px -4px -4px -4px);
+        }
+
+        /* Subtle felt texture */
+        .dice-tray-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(255,255,255,0.025)'/%3E%3Ccircle cx='4' cy='4' r='0.5' fill='rgba(0,0,0,0.04)'/%3E%3C/svg%3E");
+            border-radius: 11px;
+            pointer-events: none;
+        }
+
+        .dice-row {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+            min-width: 240px;
+            padding: 24px 40px;
+            position: relative;
+        }
+
+        .die-scene {
+            width: 68px;
+            height: 68px;
+            perspective: 400px;
+            position: relative;
+        }
+
+        .die-shadow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(1) scaleY(1);
+            width: 56px;
+            height: 14px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            transition: transform 1.1s cubic-bezier(0.12, 0.75, 0.28, 1.02),
+                        opacity  1.1s cubic-bezier(0.12, 0.75, 0.28, 1.02);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .die-shadow.thrown {
+            transform: translateX(-50%) scaleX(0.4) scaleY(0.4);
+            opacity: 0.2;
+        }
+
+        .die-cube {
+            width: 68px;
+            height: 68px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-15deg) rotateY(-15deg);
+            transition: transform 1.1s cubic-bezier(0.12, 0.75, 0.28, 1.02);
+        }
+
+
+        .die-face {
+            position: absolute;
+            width: 68px;
+            height: 68px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 50%, #e4e4e4 100%);
+            border: 1px solid rgba(0,0,0,0.12);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), inset 0 -2px 4px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            padding: 11px;
+            gap: 1px;
+            backface-visibility: hidden;
+        }
+
+        /* Face positions on the cube */
+        .die-face.f1 { transform: translateZ(34px); }
+        .die-face.f6 { transform: rotateY(180deg) translateZ(34px); }
+        .die-face.f3 { transform: rotateY(90deg) translateZ(34px); }
+        .die-face.f4 { transform: rotateY(-90deg) translateZ(34px); }
+        .die-face.f2 { transform: rotateX(90deg) translateZ(34px); }
+        .die-face.f5 { transform: rotateX(-90deg) translateZ(34px); }
+
+        .pip {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 38% 32%, #444, #1a1a1a);
+            border-radius: 50%;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 1px rgba(0,0,0,0.1);
+            align-self: center;
+            justify-self: center;
+        }
+
+        /* ══════ Buttons ══════ */
+        .action-btn {
+            padding: 14px 36px;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #fff;
+            position: relative;
+        }
+
+        .action-btn:disabled { opacity: 0.3; cursor: default; transform: none !important; box-shadow: none !important; }
+
+        .btn-roll {
+            background: linear-gradient(135deg, #ff6b9d, #e94560);
+            box-shadow: 0 3px 16px rgba(233,69,96,0.2);
+            animation: rollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes rollPulse {
+            0%, 100% { box-shadow: 0 3px 16px rgba(233,69,96,0.2); }
+            50% { box-shadow: 0 3px 24px rgba(233,69,96,0.45); }
+        }
+
+        .btn-roll:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(233,69,96,0.4);
+            animation: none;
+        }
+        .btn-roll:active:not(:disabled) { transform: translateY(0); animation: none; }
+        .btn-roll:disabled { animation: none; }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .selection-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.45);
+            min-height: 1.5em;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .selection-info .sum { color: #48dbfb; font-weight: 700; font-size: 1.1em; }
+        .selection-info .target { color: #fffb7d; font-weight: 700; }
+        .selection-info .match { color: #6ee7a0; font-weight: 700; font-size: 1em; }
+
+        .message-area {
+            text-align: center;
+            min-height: 2em;
+            margin: 10px 0;
+            font-size: 0.95rem;
+            color: #fffb7d;
+            font-weight: 600;
+        }
+
+        /* ══════ Game Over ══════ */
+        #game-over-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .results-box {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .results-box h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fffb7d, #ffa66b, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 2px 8px rgba(255,107,157,0.2));
+        }
+
+        .winner-name {
+            font-size: 1.2rem;
+            color: #fffb7d;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .final-scores { list-style: none; margin-bottom: 28px; }
+
+        .final-scores li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 16px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.2s;
+        }
+
+        .final-scores li.winner-row {
+            background: rgba(255,251,125,0.08);
+            border: 1px solid rgba(255,251,125,0.2);
+        }
+
+        .final-scores .rank { color: rgba(255,255,255,0.4); font-size: 0.85rem; width: 28px; text-align: left; }
+        .final-scores .fname { font-weight: 600; flex: 1; text-align: left; }
+        .final-scores .fscore { font-weight: 800; color: #fffb7d; }
+        .final-scores .perfect { color: #6ee7a0; }
+
+        .play-again-btn {
+            display: block; width: 100%; padding: 15px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #ff6b9d, #e94560);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; margin-bottom: 10px;
+            box-shadow: 0 4px 20px rgba(233,69,96,0.25);
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+        }
+
+        .new-game-btn {
+            display: block; width: 100%; padding: 13px;
+            border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px;
+            background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.6);
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+
+        .new-game-btn:hover {
+            border-color: rgba(255,107,157,0.4);
+            color: #fff;
+            background: rgba(255,107,157,0.06);
+        }
+
+        .home-link {
+            display: inline-block; margin-top: 18px;
+            color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.88rem;
+            font-weight: 500; transition: color 0.2s;
+        }
+
+        .home-link:hover { color: #fffb7d; }
+
+        /* ══════ Rounds selector ══════ */
+        .rounds-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .rounds-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .round-badge {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 8px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .round-badge .rb-current { color: #fffb7d; font-weight: 700; }
+
+        /* ══════ Round Summary Screen ══════ */
+        #round-summary-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .round-summary-box {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .round-summary-box h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fffb7d, #ffa66b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .round-summary-box .rs-subtitle {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.88rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .round-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            font-size: 0.88rem;
+        }
+
+        .round-table th {
+            color: rgba(255,255,255,0.4);
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+        }
+
+        .round-table th:first-child { text-align: left; }
+
+        .round-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .round-table td:first-child { text-align: left; font-weight: 600; }
+
+        .round-table .rt-total { color: #fffb7d; font-weight: 800; }
+        .round-table .rt-round-best { color: #6ee7a0; }
+        .round-table .rt-leader td { background: rgba(255,251,125,0.05); }
+
+        .next-round-btn {
+            display: block; width: 100%; padding: 15px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #ff6b9d, #e94560);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(233,69,96,0.25);
+        }
+
+        .next-round-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+        }
+
+        /* ══════ Rules ══════ */
+        .rules-toggle { text-align: center; margin-top: 14px; }
+
+        .rules-toggle button {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.4); padding: 7px 18px; border-radius: 10px;
+            font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 500;
+            cursor: pointer; transition: all 0.25s;
+        }
+
+        .rules-toggle button:hover {
+            border-color: rgba(255,107,157,0.3);
+            color: rgba(255,255,255,0.7);
+            background: rgba(255,107,157,0.05);
+        }
+
+        .rules-panel {
+            display: none; max-width: 500px; margin: 14px auto;
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; font-size: 0.86rem; color: rgba(255,255,255,0.6); line-height: 1.7;
+        }
+
+        .rules-panel.open { display: block; }
+        .rules-panel h3 {
+            color: #fffb7d; margin-bottom: 10px; font-size: 0.95rem;
+            font-weight: 700; letter-spacing: -0.01em;
+        }
+        .rules-panel ul { padding-left: 20px; margin-bottom: 10px; }
+        .rules-panel li { margin-bottom: 4px; }
+
+        /* ══════ AI thinking ══════ */
+        .ai-thinking {
+            display: inline-flex; align-items: center; gap: 7px;
+            color: #48dbfb; font-size: 0.9rem; font-weight: 500;
+        }
+
+        .ai-thinking .dots span {
+            display: inline-block; width: 5px; height: 5px;
+            border-radius: 50%; background: #48dbfb; animation: aiDot 1.2s infinite ease-in-out;
+        }
+
+        .ai-thinking .dots span:nth-child(2) { animation-delay: 0.2s; }
+        .ai-thinking .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes aiDot {
+            0%, 80%, 100% { opacity: 0.15; transform: scale(0.7); }
+            40% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* ══════ Responsive ══════ */
+        @media (max-width: 520px) {
+            .setup-title { font-size: 2rem; }
+            .setup-box { padding: 22px 18px; }
+            .tile { width: 42px; height: 50px; font-size: 1.05rem; border-radius: 10px; }
+            .box-area { gap: 4px; }
+            .dice-row { padding: 18px 24px; min-height: 100px; gap: 18px; }
+            .die-scene { width: 58px; height: 58px; }
+            .die-cube { width: 58px; height: 58px; }
+            .die-face { width: 58px; height: 58px; padding: 8px; border-radius: 10px; }
+            .die-face.f1 { transform: translateZ(29px); }
+            .die-face.f6 { transform: rotateY(180deg) translateZ(29px); }
+            .die-face.f3 { transform: rotateY(90deg) translateZ(29px); }
+            .die-face.f4 { transform: rotateY(-90deg) translateZ(29px); }
+            .die-face.f2 { transform: rotateX(90deg) translateZ(29px); }
+            .die-face.f5 { transform: rotateX(-90deg) translateZ(29px); }
+            .pip { width: 10px; height: 10px; }
+            .action-btn { padding: 12px 24px; font-size: 0.95rem; }
+            .score-chip { padding: 5px 12px; font-size: 0.8rem; }
+            .results-box { padding: 28px 22px; }
+            .round-summary-box { padding: 26px 20px; }
+        }
+
+        @media (max-width: 380px) {
+            .setup-title { font-size: 1.7rem; }
+            .tile { width: 38px; height: 46px; font-size: 0.95rem; }
+            .game-header h1 { font-size: 1.3rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .die-cube, .die-shadow { transition: none !important; }
+            .tile, .action-btn, .game-card, .count-btn, .start-btn { transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ SETUP SCREEN ════════ -->
+<div id="setup-screen">
+    <div class="setup-title">Shut the Box</div>
+    <p class="setup-subtitle">Roll dice, close tiles, lowest score wins!</p>
+
+    <div class="setup-box">
+        <div class="player-count-label">Number of Players</div>
+        <div class="player-count-row" id="count-row"></div>
+        <div class="player-configs" id="player-configs"></div>
+
+        <div class="rounds-label">Number of Rounds</div>
+        <div class="rounds-row" id="rounds-row"></div>
+
+        <button class="start-btn" onclick="startGame()">Start Game</button>
+    </div>
+
+    <div class="rules-toggle" style="margin-top:20px">
+        <button onclick="toggleRules('setup-rules')">How to Play</button>
+    </div>
+    <div class="rules-panel" id="setup-rules">
+        <h3>How to Play Shut the Box</h3>
+        <ul>
+            <li>Each player has tiles numbered <strong>1 through 12</strong>.</li>
+            <li>On your turn, <strong>roll two dice</strong>.</li>
+            <li>Tap any combination of open tiles that <strong>add up to the dice total</strong> — they close automatically!</li>
+            <li>If your remaining tiles sum to <strong>6 or less</strong>, you roll only one die.</li>
+            <li>If no valid combination exists, your turn <strong>ends</strong>.</li>
+            <li>Your score is the <strong>sum of remaining open tiles</strong> (lower is better).</li>
+            <li>Closing all 12 tiles = <strong>"Shut the Box"</strong> — a perfect 0!</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ════════ GAME SCREEN ════════ -->
+<div id="game-screen">
+    <div class="game-header">
+        <h1>Shut the Box</h1>
+        <div id="round-indicator"></div>
+        <div class="turn-indicator" id="turn-indicator"></div>
+    </div>
+
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="box-area" id="box-area"></div>
+    <div class="selection-info" id="selection-info"></div>
+
+    <div class="dice-area">
+        <div class="dice-tray">
+            <div class="dice-tray-inner">
+                <div class="dice-row" id="dice-row"></div>
+            </div>
+        </div>
+        <div class="btn-row">
+            <button class="action-btn btn-roll" id="btn-roll" onclick="rollDice()">Roll Dice</button>
+        </div>
+    </div>
+
+    <div class="message-area" id="message-area"></div>
+
+    <div class="rules-toggle">
+        <button onclick="toggleRules('game-rules')">How to Play</button>
+    </div>
+    <div class="rules-panel" id="game-rules">
+        <h3>How to Play</h3>
+        <ul>
+            <li>Roll the dice, then pick tiles that <strong>add up to the total</strong>.</li>
+            <li>When remaining tiles sum to 6 or less you roll <strong>one die</strong>.</li>
+            <li>No valid moves? Your turn <strong>ends</strong>.</li>
+            <li>Lowest score wins. Closing all 12 tiles = <strong>Shut the Box!</strong></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ════════ ROUND SUMMARY ════════ -->
+<div id="round-summary-screen">
+    <div class="round-summary-box" id="round-summary-box"></div>
+</div>
+
+<!-- ════════ GAME OVER ════════ -->
+<div id="game-over-screen">
+    <div class="results-box" id="results-box"></div>
+    <a href="../index.html" class="home-link">Back to Game Portal</a>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+<script>
+/* ══════════════════════════════════════════════════════
+   SHUT THE BOX — Alford Family Game Portal
+   Tiles 1-12, 3D dice, 1-4 players with AI, multi-round
+   ══════════════════════════════════════════════════════ */
+
+const TILES = 12;
+const PLAYER_COLORS = ['#e94560', '#48dbfb', '#27ae60', '#feca57'];
+const AI_DELAY = 800;
+const THROW_DURATION = 1400;
+const ROUND_OPTIONS = [1, 3, 5, 7];
+
+const FACE_ROT = {
+    1: { x: 0, y: 0 },    2: { x: -90, y: 0 },
+    3: { x: 0, y: -90 },  4: { x: 0, y: 90 },
+    5: { x: 90, y: 0 },   6: { x: 0, y: 180 }
+};
+
+const PIP_POS = {
+    1: [[2,2]],
+    2: [[1,3],[3,1]],
+    3: [[1,3],[2,2],[3,1]],
+    4: [[1,1],[1,3],[3,1],[3,3]],
+    5: [[1,1],[1,3],[2,2],[3,1],[3,3]],
+    6: [[1,1],[1,3],[2,1],[2,3],[3,1],[3,3]]
+};
+
+let players = [];
+let currentPlayerIdx = 0;
+let diceValues = [];
+let diceTotal = 0;
+let selectedTiles = new Set();
+let phase = 'roll';
+let playerCount = 2;
+let rolling = false;
+let totalRounds = 1;
+let currentRound = 0;  // 0-based
+
+/* ═══════════════ SETUP ═══════════════ */
+
+function initSetup() {
+    // Player count buttons
+    const row = document.getElementById('count-row');
+    row.innerHTML = '';
+    for (let i = 1; i <= 4; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'count-btn' + (i === playerCount ? ' active' : '');
+        btn.textContent = i;
+        btn.onclick = () => setPlayerCount(i);
+        row.appendChild(btn);
+    }
+    // Round count buttons
+    const rrow = document.getElementById('rounds-row');
+    rrow.innerHTML = '';
+    ROUND_OPTIONS.forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'count-btn' + (r === totalRounds ? ' active' : '');
+        btn.textContent = r;
+        btn.onclick = () => setRounds(r);
+        rrow.appendChild(btn);
+    });
+    renderPlayerConfigs();
+}
+
+function setPlayerCount(n) {
+    playerCount = n;
+    document.querySelectorAll('#count-row .count-btn').forEach((b, i) =>
+        b.classList.toggle('active', i + 1 === n));
+    renderPlayerConfigs();
+}
+
+function setRounds(n) {
+    totalRounds = n;
+    document.querySelectorAll('#rounds-row .count-btn').forEach((b, i) =>
+        b.classList.toggle('active', ROUND_OPTIONS[i] === n));
+}
+
+function renderPlayerConfigs() {
+    const c = document.getElementById('player-configs');
+    c.innerHTML = '';
+    for (let i = 0; i < playerCount; i++) {
+        const div = document.createElement('div');
+        div.className = 'player-config';
+
+        const dot = document.createElement('div');
+        dot.className = 'player-color-dot';
+        dot.style.background = PLAYER_COLORS[i];
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Player ${i + 1}`;
+        input.id = `pname-${i}`;
+        input.maxLength = 16;
+
+        const toggle = document.createElement('div');
+        toggle.className = 'type-toggle';
+
+        const hBtn = document.createElement('button');
+        hBtn.textContent = 'Human';
+        hBtn.className = (i === 0) ? 'active' : '';
+
+        const aBtn = document.createElement('button');
+        aBtn.textContent = 'AI';
+        aBtn.className = (i !== 0) ? 'active' : '';
+
+        hBtn.onclick = () => { hBtn.classList.add('active'); aBtn.classList.remove('active'); };
+        aBtn.onclick = () => { aBtn.classList.add('active'); hBtn.classList.remove('active'); };
+
+        toggle.append(hBtn, aBtn);
+        div.append(dot, input, toggle);
+        c.appendChild(div);
+    }
+}
+
+function toggleRules(id) {
+    document.getElementById(id).classList.toggle('open');
+}
+
+/* ═══════════════ START GAME ═══════════════ */
+
+function startGame() {
+    players = [];
+    for (let i = 0; i < playerCount; i++) {
+        const name = document.getElementById(`pname-${i}`).value.trim() || `Player ${i + 1}`;
+        const cfg = document.querySelectorAll('.player-config')[i];
+        const isAI = cfg.querySelector('.type-toggle button:last-child').classList.contains('active');
+        players.push({
+            name, isAI, color: PLAYER_COLORS[i],
+            shutTiles: new Set(), score: null, done: false,
+            roundScores: []
+        });
+    }
+    currentRound = 0;
+    currentPlayerIdx = 0;
+    phase = 'roll';
+    diceValues = [];
+    diceTotal = 0;
+    selectedTiles.clear();
+    rolling = false;
+
+    showScreen('game-screen');
+    renderAll();
+    beginTurn();
+}
+
+function startNextRound() {
+    currentRound++;
+    players.forEach(p => {
+        p.shutTiles = new Set();
+        p.score = null;
+        p.done = false;
+    });
+    currentPlayerIdx = 0;
+    phase = 'roll';
+    diceValues = [];
+    diceTotal = 0;
+    selectedTiles.clear();
+    rolling = false;
+
+    showScreen('game-screen');
+    renderAll();
+    beginTurn();
+}
+
+/* ═══════════════ RENDERING ═══════════════ */
+
+function renderAll() {
+    renderRoundIndicator();
+    renderScoreboard();
+    renderTiles();
+    renderDice();
+    updateButtons();
+    updateSelectionInfo();
+}
+
+function renderRoundIndicator() {
+    const el = document.getElementById('round-indicator');
+    if (totalRounds <= 1) { el.innerHTML = ''; return; }
+    el.innerHTML = `<span class="round-badge">Round <span class="rb-current">${currentRound + 1}</span> of ${totalRounds}</span>`;
+}
+
+function renderScoreboard() {
+    document.getElementById('scoreboard').innerHTML = players.map((p, i) => {
+        const prevTotal = p.roundScores.reduce((a, b) => a + b, 0);
+        const thisRound = p.score !== null ? p.score : (p.done ? sumOpen(p) : null);
+        let display;
+        if (totalRounds <= 1) {
+            display = thisRound !== null ? thisRound : '—';
+        } else {
+            const total = prevTotal + (thisRound !== null ? thisRound : 0);
+            display = thisRound !== null ? total : (prevTotal > 0 ? prevTotal : '—');
+        }
+        return `<div class="score-chip ${i === currentPlayerIdx ? 'active' : ''}">
+            <div class="dot" style="background:${p.color}"></div>
+            <span class="sname">${esc(p.name)}</span>
+            <span class="sval">${display}</span></div>`;
+    }).join('');
+}
+
+function renderTiles() {
+    const cp = players[currentPlayerIdx];
+    const area = document.getElementById('box-area');
+    const canSelect = phase === 'select' && !cp.isAI && !autoConfirming;
+    area.innerHTML = '';
+    for (let t = 1; t <= TILES; t++) {
+        const tile = document.createElement('div');
+        const shut = cp.shutTiles.has(t);
+        const sel = selectedTiles.has(t);
+        tile.className = 'tile' + (shut ? ' shut' : '') + (sel ? ' selected' : '')
+            + (!canSelect || shut ? ' disabled' : '');
+        tile.textContent = t;
+        if (canSelect && !shut) tile.onclick = () => toggleTile(t);
+        area.appendChild(tile);
+    }
+}
+
+/* ═══════════════ 3D DICE ═══════════════ */
+
+function buildFaceHTML(val) {
+    return PIP_POS[val].map(([r, c]) =>
+        `<div class="pip" style="grid-row:${r};grid-column:${c}"></div>`).join('');
+}
+
+function buildCubeHTML() {
+    let h = '';
+    for (let v = 1; v <= 6; v++) h += `<div class="die-face f${v}">${buildFaceHTML(v)}</div>`;
+    return h;
+}
+
+function renderDice() {
+    const row = document.getElementById('dice-row');
+
+    // No dice rolled yet — show empty tray
+    if (diceValues.length === 0) {
+        row.innerHTML = '';
+        return;
+    }
+
+    const cp = players[currentPlayerIdx];
+    const useOne = sumOpen(cp) <= 6;
+    const count = useOne ? 1 : 2;
+
+    const scenes = row.querySelectorAll('.die-scene');
+    if (scenes.length !== count) {
+        row.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const scene = document.createElement('div');
+            scene.className = 'die-scene';
+
+            const shadow = document.createElement('div');
+            shadow.className = 'die-shadow';
+
+            const cube = document.createElement('div');
+            cube.className = 'die-cube';
+            cube.innerHTML = buildCubeHTML();
+            // Start hidden — animateThrow() will position and reveal
+            cube.style.transform = 'translateY(-200px) scale(0)';
+
+            scene.append(cube, shadow);
+            row.appendChild(scene);
+        }
+    }
+}
+
+function ensureDiceInDOM() {
+    // Create dice elements if not present (called right before animateThrow)
+    const row = document.getElementById('dice-row');
+    const cp = players[currentPlayerIdx];
+    const useOne = sumOpen(cp) <= 6;
+    const count = useOne ? 1 : 2;
+
+    const scenes = row.querySelectorAll('.die-scene');
+    if (scenes.length !== count) {
+        row.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const scene = document.createElement('div');
+            scene.className = 'die-scene';
+
+            const shadow = document.createElement('div');
+            shadow.className = 'die-shadow thrown';
+
+            const cube = document.createElement('div');
+            cube.className = 'die-cube';
+            cube.innerHTML = buildCubeHTML();
+            cube.style.transition = 'none';
+            cube.style.transform = 'translateY(-200px) scale(0)';
+
+            scene.append(cube, shadow);
+            row.appendChild(scene);
+        }
+    }
+}
+
+function animateThrow(targetValues) {
+    return new Promise(resolve => {
+        const cubes = document.querySelectorAll('.die-cube');
+        const shadows = document.querySelectorAll('.die-shadow');
+
+        cubes.forEach((cube, i) => {
+            const val = targetValues[i];
+            const t = FACE_ROT[val];
+
+            const extraX = (2 + Math.floor(Math.random() * 2)) * 360 * (Math.random() > 0.5 ? 1 : -1);
+            const extraY = (2 + Math.floor(Math.random() * 2)) * 360 * (Math.random() > 0.5 ? 1 : -1);
+            const landX = (Math.random() - 0.5) * 20;
+
+            // Start: tossed up, small, random rotation, offset sideways
+            cube.classList.remove('idle');
+            cube.style.transition = 'none';
+            cube.style.transform = `
+                translateY(-140px) translateX(${(Math.random() > 0.5 ? -1 : 1) * (60 + Math.random() * 40)}px)
+                scale(0.4)
+                rotateX(${Math.random() * 360}deg)
+                rotateY(${Math.random() * 360}deg)
+                rotateZ(${Math.random() * 360}deg)
+            `;
+
+            if (shadows[i]) {
+                shadows[i].style.transition = 'none';
+                shadows[i].classList.add('thrown');
+            }
+
+            cube.offsetHeight;
+
+            const stagger = i * 100;
+            setTimeout(() => {
+                // Dice fly in from above and to the side, tumble, then land center
+                cube.style.transition = `transform ${THROW_DURATION}ms cubic-bezier(0.10, 0.70, 0.25, 1.03)`;
+                cube.style.transform = `
+                    translateY(0) translateX(${landX}px)
+                    scale(1)
+                    rotateX(${t.x + extraX}deg)
+                    rotateY(${t.y + extraY}deg)
+                    rotateZ(${(Math.random() - 0.5) * 8}deg)
+                `;
+
+                if (shadows[i]) {
+                    shadows[i].style.transition = `transform ${THROW_DURATION}ms cubic-bezier(0.10, 0.70, 0.25, 1.03),
+                                                   opacity ${THROW_DURATION}ms cubic-bezier(0.10, 0.70, 0.25, 1.03)`;
+                    shadows[i].classList.remove('thrown');
+                }
+            }, stagger);
+        });
+
+        setTimeout(resolve, THROW_DURATION + 120);
+    });
+}
+
+/* ═══════════════ BUTTONS & INFO ═══════════════ */
+
+let autoConfirming = false;
+
+function updateButtons() {
+    const cp = players[currentPlayerIdx];
+    const rollBtn = document.getElementById('btn-roll');
+
+    if (cp.isAI) {
+        rollBtn.style.display = 'none';
+        return;
+    }
+
+    rollBtn.style.display = (phase === 'roll') ? '' : 'none';
+    rollBtn.disabled = (phase !== 'roll' || rolling);
+}
+
+function updateSelectionInfo() {
+    const info = document.getElementById('selection-info');
+    if (phase !== 'select' || players[currentPlayerIdx].isAI) { info.innerHTML = ''; return; }
+
+    const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
+    if (selectedTiles.size === 0) {
+        info.innerHTML = `Tap tiles that add up to <span class="dice-total-badge">${diceTotal}</span>`;
+    } else if (selSum < diceTotal) {
+        info.innerHTML = `<span class="sum">${selSum}</span> / <span class="target">${diceTotal}</span>`;
+    }
+    // When matched, info is cleared by the auto-confirm flow
+}
+
+function setMessage(msg) { document.getElementById('message-area').innerHTML = msg; }
+function setTurnIndicator(html) { document.getElementById('turn-indicator').innerHTML = html; }
+
+/* ═══════════════ CONFETTI ═══════════════ */
+
+function launchConfetti(duration) {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#ff6b9d', '#ffa66b', '#fffb7d', '#48dbfb', '#6ee7a0', '#e94560', '#ff6b6b'];
+    const particles = [];
+    const startTime = performance.now();
+
+    for (let i = 0; i < 120; i++) {
+        particles.push({
+            x: canvas.width * 0.5 + (Math.random() - 0.5) * canvas.width * 0.4,
+            y: canvas.height * 0.4,
+            vx: (Math.random() - 0.5) * 14,
+            vy: -Math.random() * 16 - 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            size: Math.random() * 6 + 3,
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 12,
+            gravity: 0.25 + Math.random() * 0.1,
+            opacity: 1,
+            shape: Math.random() > 0.5 ? 'rect' : 'circle'
+        });
+    }
+
+    function frame(now) {
+        const elapsed = now - startTime;
+        if (elapsed > duration) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.vy += p.gravity;
+            p.y += p.vy;
+            p.vx *= 0.99;
+            p.rotation += p.rotSpeed;
+            p.opacity = Math.max(0, 1 - elapsed / duration);
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation * Math.PI / 180);
+            ctx.globalAlpha = p.opacity;
+            ctx.fillStyle = p.color;
+
+            if (p.shape === 'rect') {
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+            } else {
+                ctx.beginPath();
+                ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        });
+
+        requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+}
+
+/* ═══════════════ GAME LOGIC ═══════════════ */
+
+function sumOpen(p) {
+    let s = 0;
+    for (let t = 1; t <= TILES; t++) if (!p.shutTiles.has(t)) s += t;
+    return s;
+}
+
+function getOpenTiles(p) {
+    const open = [];
+    for (let t = 1; t <= TILES; t++) if (!p.shutTiles.has(t)) open.push(t);
+    return open;
+}
+
+function findCombinations(openTiles, target) {
+    const results = [];
+    const n = openTiles.length;
+    for (let mask = 1; mask < (1 << n); mask++) {
+        let sum = 0;
+        const combo = [];
+        for (let i = 0; i < n; i++) {
+            if (mask & (1 << i)) { sum += openTiles[i]; combo.push(openTiles[i]); }
+            if (sum > target) break;
+        }
+        if (sum === target) results.push(combo);
+    }
+    return results;
+}
+
+function beginTurn() {
+    const cp = players[currentPlayerIdx];
+    if (cp.done) { nextPlayer(); return; }
+
+    phase = 'roll';
+    diceValues = [];
+    diceTotal = 0;
+    selectedTiles.clear();
+    rolling = false;
+
+    setTurnIndicator(`<span class="player-name-highlight" style="color:${cp.color}">${esc(cp.name)}</span>'s turn`);
+    setMessage('');
+    renderAll();
+
+    if (cp.isAI) {
+        setMessage(`<span class="ai-thinking">${esc(cp.name)} is thinking<span class="dots"><span></span><span></span><span></span></span></span>`);
+        setTimeout(() => aiRoll(), AI_DELAY);
+    }
+}
+
+async function rollDice() {
+    if (phase !== 'roll' || rolling) return;
+    rolling = true;
+    updateButtons();
+
+    const cp = players[currentPlayerIdx];
+    const useOne = sumOpen(cp) <= 6;
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = useOne ? 0 : Math.floor(Math.random() * 6) + 1;
+    diceValues = useOne ? [d1] : [d1, d2];
+    diceTotal = useOne ? d1 : d1 + d2;
+
+    ensureDiceInDOM();
+    await animateThrow(diceValues);
+    rolling = false;
+    afterRoll(cp);
+}
+
+function afterRoll(cp) {
+    const openTiles = getOpenTiles(cp);
+    const combos = findCombinations(openTiles, diceTotal);
+
+    if (combos.length === 0) {
+        phase = 'roll';
+        cp.score = sumOpen(cp);
+        cp.done = true;
+        setMessage(`No tiles add up to ${diceTotal}. ${esc(cp.name)} scores <strong>${cp.score}</strong>.`);
+        renderScoreboard();
+        updateButtons();
+        setTimeout(() => nextPlayer(), 1800);
+    } else {
+        phase = 'select';
+        selectedTiles.clear();
+        setMessage('');
+        renderTiles();
+        updateButtons();
+        updateSelectionInfo();
+    }
+}
+
+function toggleTile(t) {
+    if (phase !== 'select' || autoConfirming) return;
+    if (selectedTiles.has(t)) selectedTiles.delete(t);
+    else selectedTiles.add(t);
+
+    const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
+
+    // If selection exceeds target, reject the last tap
+    if (selSum > diceTotal) {
+        selectedTiles.delete(t);
+        // Flash the tile red briefly
+        const tiles = document.querySelectorAll('.tile');
+        const tileEl = tiles[t - 1];
+        if (tileEl) {
+            tileEl.style.borderColor = 'rgba(233,69,96,0.6)';
+            tileEl.style.boxShadow = '0 0 12px rgba(233,69,96,0.3)';
+            setTimeout(() => { tileEl.style.borderColor = ''; tileEl.style.boxShadow = ''; }, 300);
+        }
+        return;
+    }
+
+    renderTiles();
+    updateSelectionInfo();
+
+    // Auto-confirm when selection matches dice total
+    if (selSum === diceTotal && selectedTiles.size > 0) {
+        autoConfirmSelection();
+    }
+}
+
+function autoConfirmSelection() {
+    autoConfirming = true;
+    const cp = players[currentPlayerIdx];
+    const tilesToClose = [...selectedTiles];
+
+    // Show matched state briefly
+    const tileEls = document.querySelectorAll('.tile');
+    tilesToClose.forEach(t => {
+        const el = tileEls[t - 1];
+        if (el) {
+            el.classList.remove('selected');
+            el.classList.add('matched');
+        }
+    });
+
+    document.getElementById('selection-info').innerHTML = `<span class="match">&#10003; Closing ${tilesToClose.join(' + ')}!</span>`;
+
+    // After brief matched state, animate closing
+    setTimeout(() => {
+        tilesToClose.forEach(t => {
+            const el = tileEls[t - 1];
+            if (el) {
+                el.classList.remove('matched');
+                el.classList.add('closing');
+            }
+        });
+
+        // After close animation, update game state
+        setTimeout(() => {
+            tilesToClose.forEach(t => cp.shutTiles.add(t));
+            selectedTiles.clear();
+            autoConfirming = false;
+
+            if (cp.shutTiles.size === TILES) {
+                cp.score = 0;
+                cp.done = true;
+                setMessage(`<span class="celebrate-text"><strong style="color:#fffb7d">SHUT THE BOX!</strong></span>`);
+                launchConfetti(3000);
+                renderAll();
+                setTimeout(() => nextPlayer(), 2500);
+                return;
+            }
+
+            phase = 'roll';
+            setMessage('');
+            renderTiles();
+            renderScoreboard();
+            updateButtons();
+            updateSelectionInfo();
+        }, 400);
+    }, 250);
+}
+
+function nextPlayer() {
+    if (players.every(p => p.done)) {
+        endRound();
+        return;
+    }
+    let next = (currentPlayerIdx + 1) % players.length;
+    let safety = 0;
+    while (players[next].done && safety < players.length) {
+        next = (next + 1) % players.length; safety++;
+    }
+    currentPlayerIdx = next;
+    beginTurn();
+}
+
+/* ═══════════════ AI ═══════════════ */
+
+async function aiRoll() {
+    const cp = players[currentPlayerIdx];
+    if (cp.done) { nextPlayer(); return; }
+
+    const useOne = sumOpen(cp) <= 6;
+    const d1 = Math.floor(Math.random() * 6) + 1;
+    const d2 = useOne ? 0 : Math.floor(Math.random() * 6) + 1;
+    diceValues = useOne ? [d1] : [d1, d2];
+    diceTotal = useOne ? d1 : d1 + d2;
+
+    ensureDiceInDOM();
+    await animateThrow(diceValues);
+
+    const openTiles = getOpenTiles(cp);
+    const combos = findCombinations(openTiles, diceTotal);
+
+    if (combos.length === 0) {
+        cp.score = sumOpen(cp);
+        cp.done = true;
+        setMessage(`${esc(cp.name)} rolled ${diceTotal} — no moves! Score: <strong>${cp.score}</strong>.`);
+        renderScoreboard();
+        setTimeout(() => nextPlayer(), 1800);
+    } else {
+        const best = pickBestCombo(combos);
+        phase = 'select';
+        setMessage(`${esc(cp.name)} rolled <strong>${diceTotal}</strong>...`);
+        renderTiles();
+
+        setTimeout(() => {
+            best.forEach(t => selectedTiles.add(t));
+            renderTiles();
+            updateSelectionInfo();
+
+            setTimeout(() => {
+                best.forEach(t => cp.shutTiles.add(t));
+                selectedTiles.clear();
+                setMessage(`${esc(cp.name)} closed <strong>${best.join(' + ')}</strong>.`);
+
+                if (cp.shutTiles.size === TILES) {
+                    cp.score = 0;
+                    cp.done = true;
+                    setMessage(`<span class="celebrate-text"><strong style="color:#fffb7d">${esc(cp.name)} SHUT THE BOX!</strong></span>`);
+                    launchConfetti(3000);
+                    renderAll();
+                    setTimeout(() => nextPlayer(), 2500);
+                } else {
+                    phase = 'roll';
+                    renderTiles();
+                    renderScoreboard();
+                    setTimeout(() => aiRoll(), AI_DELAY);
+                }
+            }, 600);
+        }, AI_DELAY);
+    }
+}
+
+function pickBestCombo(combos) {
+    combos.sort((a, b) => {
+        const maxA = Math.max(...a), maxB = Math.max(...b);
+        if (maxB !== maxA) return maxB - maxA;
+        return a.length - b.length;
+    });
+    return combos[0];
+}
+
+/* ═══════════════ ROUND END ═══════════════ */
+
+function endRound() {
+    players.forEach(p => {
+        if (p.score === null) p.score = sumOpen(p);
+        p.roundScores.push(p.score);
+    });
+
+    if (currentRound + 1 >= totalRounds) {
+        endGame();
+    } else {
+        showRoundSummary();
+    }
+}
+
+function showRoundSummary() {
+    const box = document.getElementById('round-summary-box');
+    const rn = currentRound + 1;
+
+    // Find round winner (lowest this round)
+    const bestThisRound = Math.min(...players.map(p => p.roundScores[currentRound]));
+
+    let html = `<h2>Round ${rn} Complete</h2>`;
+    html += `<p class="rs-subtitle">${totalRounds - rn} round${totalRounds - rn !== 1 ? 's' : ''} remaining</p>`;
+
+    // Build table: Player | R1 | R2 | ... | Total
+    html += `<table class="round-table"><thead><tr><th>Player</th>`;
+    for (let r = 0; r <= currentRound; r++) html += `<th>R${r + 1}</th>`;
+    html += `<th>Total</th></tr></thead><tbody>`;
+
+    // Sort by cumulative total for display
+    const sorted = [...players].sort((a, b) => {
+        const ta = a.roundScores.reduce((x, y) => x + y, 0);
+        const tb = b.roundScores.reduce((x, y) => x + y, 0);
+        return ta - tb;
+    });
+
+    const bestTotal = sorted[0].roundScores.reduce((a, b) => a + b, 0);
+
+    sorted.forEach(p => {
+        const total = p.roundScores.reduce((a, b) => a + b, 0);
+        const isLeader = total === bestTotal;
+        html += `<tr class="${isLeader ? 'rt-leader' : ''}">`;
+        html += `<td style="color:${p.color}">${esc(p.name)}</td>`;
+        for (let r = 0; r <= currentRound; r++) {
+            const s = p.roundScores[r];
+            const isBest = s === bestThisRound && r === currentRound;
+            html += `<td class="${isBest ? 'rt-round-best' : ''}">${s}${s === 0 ? '!' : ''}</td>`;
+        }
+        html += `<td class="rt-total">${total}</td></tr>`;
+    });
+
+    html += `</tbody></table>`;
+    html += `<button class="next-round-btn" onclick="startNextRound()">Start Round ${rn + 1}</button>`;
+
+    box.innerHTML = html;
+    showScreen('round-summary-screen');
+}
+
+/* ═══════════════ GAME OVER ═══════════════ */
+
+function endGame() {
+    phase = 'gameover';
+
+    // Calculate totals
+    const totals = players.map(p => ({
+        ...p,
+        total: p.roundScores.reduce((a, b) => a + b, 0)
+    }));
+
+    const sorted = [...totals].sort((a, b) => a.total - b.total);
+    const winner = sorted[0];
+    const isTie = sorted.length > 1 && sorted[0].total === sorted[1].total;
+
+    let html = `<h2>Game Over!</h2>`;
+    if (isTie) {
+        const tied = sorted.filter(p => p.total === winner.total);
+        html += `<div class="winner-name">Tie: ${tied.map(p => esc(p.name)).join(' & ')}</div>`;
+    } else {
+        html += `<div class="winner-name" style="color:${winner.color}">${esc(winner.name)} Wins!</div>`;
+    }
+
+    // Multi-round: show full breakdown table
+    if (totalRounds > 1) {
+        html += `<table class="round-table"><thead><tr><th>Player</th>`;
+        for (let r = 0; r < totalRounds; r++) html += `<th>R${r + 1}</th>`;
+        html += `<th>Total</th></tr></thead><tbody>`;
+
+        sorted.forEach(p => {
+            const isW = p.total === winner.total;
+            html += `<tr class="${isW ? 'rt-leader' : ''}">`;
+            html += `<td style="color:${p.color}">${esc(p.name)}</td>`;
+            for (let r = 0; r < totalRounds; r++) {
+                const s = p.roundScores[r];
+                html += `<td>${s}${s === 0 ? '!' : ''}</td>`;
+            }
+            html += `<td class="rt-total">${p.total}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+    } else {
+        // Single round: simple list
+        html += `<ul class="final-scores">`;
+        sorted.forEach((p, i) => {
+            const w = p.total === winner.total;
+            html += `<li class="${w ? 'winner-row' : ''}">
+                <span class="rank">#${i + 1}</span>
+                <span class="fname" style="color:${p.color}">${esc(p.name)}</span>
+                <span class="fscore ${p.total === 0 ? 'perfect' : ''}">${p.total}${p.total === 0 ? ' (Perfect!)' : ''}</span></li>`;
+        });
+        html += `</ul>`;
+    }
+
+    html += `<button class="play-again-btn" onclick="playAgain()">Play Again (Same Players)</button>
+             <button class="new-game-btn" onclick="newGame()">New Game</button>`;
+
+    document.getElementById('results-box').innerHTML = html;
+    showScreen('game-over-screen');
+    launchConfetti(2500);
+}
+
+function playAgain() {
+    players.forEach(p => {
+        p.shutTiles = new Set();
+        p.score = null;
+        p.done = false;
+        p.roundScores = [];
+    });
+    currentRound = 0;
+    currentPlayerIdx = 0;
+    phase = 'roll';
+    diceValues = [];
+    diceTotal = 0;
+    selectedTiles.clear();
+    rolling = false;
+
+    showScreen('game-screen');
+    renderAll();
+    beginTurn();
+}
+
+function newGame() {
+    showScreen('setup-screen');
+    initSetup();
+}
+
+/* ═══════════════ UTILITIES ═══════════════ */
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+const ALL_SCREENS = ['setup-screen', 'game-screen', 'round-summary-screen', 'game-over-screen'];
+function showScreen(id) {
+    ALL_SCREENS.forEach(s => {
+        const el = document.getElementById(s);
+        if (s === id) {
+            el.style.display = (s === 'setup-screen' || s === 'round-summary-screen' || s === 'game-over-screen') ? 'flex' : 'block';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+}
+
+/* ═══════════════ INIT ═══════════════ */
+initSetup();
+</script>
+</body>
+</html>

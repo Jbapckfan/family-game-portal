@@ -575,6 +575,126 @@
             outline-offset: 2px;
         }
 
+        /* Hover tooltip for edge completion info */
+        .hover-tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(31, 41, 55, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .hover-tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Grid size selector */
+        .grid-selector {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .grid-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            min-width: 44px;
+            width: 100%;
+        }
+
+        .grid-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .grid-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(31, 41, 55, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            min-width: 150px;
+        }
+
+        .grid-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .grid-option {
+            padding: 10px 12px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 12px;
+        }
+
+        .grid-option:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Mute button */
+        .mute-btn {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 100px;
+            min-height: 44px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .mute-btn:hover {
+            background: rgba(31, 41, 55, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .mute-btn.muted {
+            border-color: rgba(239, 68, 68, 0.5);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Player 2 human styling */
+        .player-card.human2 {
+            border-left: 3px solid #ec4899;
+        }
+
+        .player-avatar.human2 {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -612,6 +732,14 @@
                         <div class="difficulty-option" data-level="impossible">🟣 Impossible</div>
                     </div>
                 </div>
+                <div class="grid-selector">
+                    <button class="grid-btn" id="gridBtn">3x3x3 GRID</button>
+                    <div class="grid-dropdown" id="gridDropdown">
+                        <div class="grid-option" data-size="2">2x2x2 - Small</div>
+                        <div class="grid-option" data-size="3">3x3x3 - Standard</div>
+                        <div class="grid-option" data-size="4">4x4x4 - Large</div>
+                    </div>
+                </div>
                 
                 <div class="player-card human active" id="player1Card">
                     <div class="player-info">
@@ -646,8 +774,9 @@
             <button class="action-button primary" onclick="game.newGame()" aria-label="New Game">🎯 New Game</button>
             <button class="action-button" onclick="game.showHint()" aria-label="Hint">💡 Hint</button>
             <button class="action-button" onclick="game.undoMove()" aria-label="Undo">↶ Undo</button>
-            <button class="action-button" onclick="game.toggleAIMode()" aria-label="AI vs AI">🤖 AI vs AI</button>
+            <button class="action-button" id="modeBtn" onclick="game.toggleAIMode()" aria-label="Toggle Mode">🤖 AI vs AI</button>
             <button class="action-button" id="autoRotateBtn" onclick="game.toggleAutoRotate()" aria-label="Auto Rotate">🔄 Auto Rotate</button>
+            <button class="mute-btn" id="muteBtn" onclick="game.toggleMute()" aria-label="Toggle Sound">🔊 Sound ON</button>
         </div>
 
         <div id="gameStats">
@@ -687,6 +816,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="hover-tooltip" id="hoverTooltip"></div>
 
         <div class="modal" id="helpModal" role="dialog" aria-modal="true">
             <div class="modal-content">
@@ -764,6 +895,20 @@
                 this.hintTimeoutId = null;
                 this.hintedEdge = null;
                 this.hintOriginalColor = null;
+
+                // Hover highlight state
+                this.hoveredEdge = null;
+                this.hoveredEdgeOriginalColor = null;
+                this.hoveredEdgeOriginalOpacity = null;
+                this.hoveredEdgeOriginalScale = null;
+
+                // Sound state
+                this.soundMuted = false;
+                this.audioCtx = null;
+
+                // Near-completion pulse state
+                this.pulsingEdges = new Set();
+                this.pulseTime = 0;
 
                 this.initGame();
             }
@@ -1030,6 +1175,12 @@
                         this.camera.lookAt(this.cameraTarget);
 
                         this.previousMousePosition = { x: e.clientX, y: e.clientY };
+
+                        // Clear hover when dragging
+                        this.clearHoverHighlight();
+                    } else {
+                        // Edge hover highlighting
+                        this.updateHoverHighlight(e);
                     }
                 };
 
@@ -1235,7 +1386,9 @@
             }
 
             handleClick(event) {
-                if (this.gameEnded || this.currentPlayer !== 0 || this.isAiThinking) return;
+                // In HvH mode, both players can click. In HvAI, only player 0.
+                const humanCanClick = this.gameMode === 'human-vs-human' || this.currentPlayer === 0;
+                if (this.gameEnded || !humanCanClick || this.isAiThinking) return;
 
                 event.preventDefault();
                 const rect = this.renderer.domElement.getBoundingClientRect();
@@ -1259,6 +1412,11 @@
                     this.clearHint();
                 }
 
+                // Clear hover highlight if this edge was hovered
+                if (this.hoveredEdge === edge) {
+                    this.hoveredEdge = null;
+                }
+
                 // Record state before the move for undo support
                 const prevPlayer = this.currentPlayer;
 
@@ -1266,8 +1424,12 @@
                 const playerColor = this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444;
                 edge.material.color.set(playerColor);
                 edge.material.opacity = 1.0;
+                edge.scale.set(1, 1, 1); // Reset any hover scale
 
                 this.moveCount++;
+
+                // Play edge placement sound
+                this.playClickSound();
 
                 // Check for completed faces and cubes
                 const completedFaces = this.checkCompletedFaces();
@@ -1290,6 +1452,11 @@
                     }
                 });
 
+                // Play face completion sound
+                if (newFaces.length > 0) {
+                    this.playFaceSound();
+                }
+
                 // Score newly completed cubes
                 completedCubes.forEach(cube => {
                     if (!this.completedCubes.has(cube)) {
@@ -1300,6 +1467,11 @@
                         newCubes.push(cube);
                     }
                 });
+
+                // Play cube completion sound
+                if (newCubes.length > 0) {
+                    this.playCubeSound();
+                }
 
                 this.scores[this.currentPlayer] += pointsScored;
 
@@ -1326,7 +1498,7 @@
                     return;
                 }
 
-                // Trigger AI move
+                // Trigger AI move (skip in human-vs-human mode)
                 if (this.gameMode === 'ai-vs-ai' || (this.currentPlayer === 1 && this.gameMode === 'human-vs-ai')) {
                     setTimeout(() => this.makeAIMove(), 500);
                 }
@@ -1653,13 +1825,21 @@
                 const faceCompleting = this.findFaceCompletingMove(availableEdges);
                 if (faceCompleting) return faceCompleting;
 
-                // Determine search depth based on remaining moves
+                // Determine search depth based on remaining moves and grid size
                 const remaining = availableEdges.length;
                 let depth;
-                if (remaining <= 8) depth = remaining; // solve perfectly
-                else if (remaining <= 14) depth = 6;
-                else if (remaining <= 20) depth = 4;
-                else depth = 3;
+                if (this.gridSize <= 3) {
+                    if (remaining <= 8) depth = remaining; // solve perfectly
+                    else if (remaining <= 14) depth = 6;
+                    else if (remaining <= 20) depth = 4;
+                    else depth = 3;
+                } else {
+                    // Larger grids: reduce depth to avoid freezing
+                    if (remaining <= 6) depth = remaining;
+                    else if (remaining <= 12) depth = 4;
+                    else if (remaining <= 20) depth = 3;
+                    else depth = 2;
+                }
 
                 let bestScore = -Infinity;
                 let bestEdge = availableEdges[0];
@@ -1940,10 +2120,18 @@
             endGame() {
                 this.gameEnded = true;
                 this.setAIThinking(false);
-                
+                this.playVictorySound();
+
                 setTimeout(() => {
-                    const winner = this.scores[0] > this.scores[1] ? 'Human' : 
-                                  this.scores[1] > this.scores[0] ? 'AI' : 'Tie';
+                    let winner;
+                    if (this.scores[0] === this.scores[1]) {
+                        winner = 'Tie';
+                    } else if (this.scores[0] > this.scores[1]) {
+                        winner = this.gameMode === 'human-vs-human' ? 'Player 1' : 'Human';
+                    } else {
+                        winner = this.gameMode === 'human-vs-human' ? 'Player 2' :
+                                 this.gameMode === 'ai-vs-ai' ? 'AI 2' : 'AI';
+                    }
                     this.showGameEndModal(winner);
                 }, 1000);
             }
@@ -1959,6 +2147,15 @@
                 } else if (winner === 'Human') {
                     title.textContent = "You Win! 🎉";
                     text.textContent = `You scored ${this.scores[0]} vs AI's ${this.scores[1]}!`;
+                } else if (winner === 'Player 1') {
+                    title.textContent = "Player 1 Wins! 🎉";
+                    text.textContent = `P1 scored ${this.scores[0]} vs P2's ${this.scores[1]}!`;
+                } else if (winner === 'Player 2') {
+                    title.textContent = "Player 2 Wins! 🎉";
+                    text.textContent = `P2 scored ${this.scores[1]} vs P1's ${this.scores[0]}!`;
+                } else if (winner === 'AI 2') {
+                    title.textContent = "AI 2 Wins! 🤖";
+                    text.textContent = `AI 2 scored ${this.scores[1]} vs AI 1's ${this.scores[0]}!`;
                 } else {
                     title.textContent = "AI Wins! 🤖";
                     text.textContent = `AI scored ${this.scores[1]} vs your ${this.scores[0]}!`;
@@ -1969,7 +2166,9 @@
             }
 
             showHint() {
-                if (this.currentPlayer !== 0 || this.gameEnded) return;
+                // Allow hints for human players
+                const isHumanTurn = this.gameMode === 'human-vs-human' || this.currentPlayer === 0;
+                if (!isHumanTurn || this.gameEnded) return;
 
                 // Clear any previous hint before starting a new one
                 this.clearHint();
@@ -2041,26 +2240,35 @@
                     return entry;
                 };
 
-                // Step 1: Undo AI moves on top of the stack
-                while (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 1) {
-                    revertOne();
-                }
+                if (this.gameMode === 'human-vs-human') {
+                    // In HvH mode, undo the last turn (consecutive moves by the same player)
+                    if (this.moveHistory.length > 0) {
+                        const lastPlayer = this.moveHistory[this.moveHistory.length - 1].player;
+                        let entry;
+                        do {
+                            entry = revertOne();
+                        } while (entry && entry.turnContinued && this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === lastPlayer);
+                        // Restore to that player's turn
+                        this.currentPlayer = lastPlayer;
+                    }
+                } else {
+                    // Step 1: Undo AI moves on top of the stack
+                    while (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 1) {
+                        revertOne();
+                    }
 
-                // Step 2: Undo the human player's turn (one or more moves
-                // if they scored consecutive extra turns)
-                if (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0) {
-                    // Undo all consecutive human moves that were part of the
-                    // same turn chain. A move with turnContinued===true means
-                    // the player scored and kept going, so it's part of the
-                    // same logical turn.
-                    let entry;
-                    do {
-                        entry = revertOne();
-                    } while (entry && entry.turnContinued && this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0);
-                }
+                    // Step 2: Undo the human player's turn (one or more moves
+                    // if they scored consecutive extra turns)
+                    if (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0) {
+                        let entry;
+                        do {
+                            entry = revertOne();
+                        } while (entry && entry.turnContinued && this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 0);
+                    }
 
-                // Restore current player to human
-                this.currentPlayer = 0;
+                    // Restore current player to human
+                    this.currentPlayer = 0;
+                }
                 this.updateUI();
             }
 
@@ -2095,6 +2303,7 @@
                 }
                 
                 this.clearHint();
+                this.clearHoverHighlight();
                 this.currentPlayer = 0;
                 this.scores = [0, 0];
                 this.moveCount = 0;
@@ -2104,6 +2313,8 @@
                 this.completedCubes.clear();
                 this.moveHistory = [];
                 this.faceMeshMap.clear();
+                this.pulsingEdges.clear();
+                this.pulseTime = 0;
                 this.gameEnded = false;
                 this.updateUI();
             }
@@ -2111,8 +2322,79 @@
             toggleAIMode() {
                 if (this.gameMode === 'human-vs-ai') {
                     this.gameMode = 'ai-vs-ai';
+                } else if (this.gameMode === 'ai-vs-ai') {
+                    this.gameMode = 'human-vs-human';
                 } else {
                     this.gameMode = 'human-vs-ai';
+                }
+                this.updateModeUI();
+                this.newGame();
+
+                // In AI-vs-AI mode, start the AI immediately
+                if (this.gameMode === 'ai-vs-ai') {
+                    setTimeout(() => this.makeAIMove(), 500);
+                }
+            }
+
+            updateModeUI() {
+                const modeBtn = document.getElementById('modeBtn');
+                const player2Card = document.getElementById('player2Card');
+                const p2Avatar = player2Card.querySelector('.player-avatar');
+                const p2Name = player2Card.querySelector('.player-name');
+                const p2Type = player2Card.querySelector('.player-type');
+                const p1Card = document.getElementById('player1Card');
+                const p1Name = p1Card.querySelector('.player-name');
+                const p1Type = p1Card.querySelector('.player-type');
+
+                // Reset player 1 card
+                p1Card.className = 'player-card human';
+                const p1Avatar = p1Card.querySelector('.player-avatar');
+
+                if (this.gameMode === 'human-vs-ai') {
+                    modeBtn.textContent = '🤖 AI vs AI';
+                    player2Card.className = 'player-card ai';
+                    p2Avatar.className = 'player-avatar ai';
+                    p2Avatar.textContent = '🤖';
+                    p2Name.textContent = 'AI';
+                    p2Type.textContent = this.getAITypeLabel();
+                    p1Avatar.className = 'player-avatar human';
+                    p1Avatar.textContent = '👤';
+                    p1Name.textContent = 'You';
+                    p1Type.textContent = 'Human';
+                } else if (this.gameMode === 'ai-vs-ai') {
+                    modeBtn.textContent = '👥 Human vs Human';
+                    player2Card.className = 'player-card ai';
+                    p2Avatar.className = 'player-avatar ai';
+                    p2Avatar.textContent = '🤖';
+                    p2Name.textContent = 'AI 2';
+                    p2Type.textContent = this.getAITypeLabel();
+                    p1Card.className = 'player-card ai';
+                    p1Avatar.className = 'player-avatar ai';
+                    p1Avatar.textContent = '🤖';
+                    p1Name.textContent = 'AI 1';
+                    p1Type.textContent = this.getAITypeLabel();
+                } else {
+                    // human-vs-human
+                    modeBtn.textContent = '🎮 Human vs AI';
+                    player2Card.className = 'player-card human2';
+                    p2Avatar.className = 'player-avatar human2';
+                    p2Avatar.textContent = '👤';
+                    p2Name.textContent = 'Player 2';
+                    p2Type.textContent = 'Human';
+                    p1Avatar.className = 'player-avatar human';
+                    p1Avatar.textContent = '👤';
+                    p1Name.textContent = 'Player 1';
+                    p1Type.textContent = 'Human';
+                }
+            }
+
+            getAITypeLabel() {
+                switch(this.aiDifficulty) {
+                    case 'easy': return 'Random AI';
+                    case 'medium': return 'Smart AI';
+                    case 'hard': return 'Strategic AI';
+                    case 'impossible': return 'Unbeatable AI';
+                    default: return 'Smart AI';
                 }
             }
 
@@ -2120,8 +2402,10 @@
                 document.getElementById('difficultyBtn').addEventListener('click', () => {
                     const dropdown = document.getElementById('difficultyDropdown');
                     dropdown.classList.toggle('active');
+                    // Close grid dropdown when opening difficulty
+                    document.getElementById('gridDropdown').classList.remove('active');
                 });
-                
+
                 document.querySelectorAll('.difficulty-option').forEach(option => {
                     option.addEventListener('click', (e) => {
                         const level = e.target.dataset.level;
@@ -2129,10 +2413,29 @@
                         document.getElementById('difficultyDropdown').classList.remove('active');
                     });
                 });
-                
+
+                // Grid size selector
+                document.getElementById('gridBtn').addEventListener('click', () => {
+                    const dropdown = document.getElementById('gridDropdown');
+                    dropdown.classList.toggle('active');
+                    // Close difficulty dropdown when opening grid
+                    document.getElementById('difficultyDropdown').classList.remove('active');
+                });
+
+                document.querySelectorAll('.grid-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const size = parseInt(e.target.dataset.size);
+                        this.setGridSize(size);
+                        document.getElementById('gridDropdown').classList.remove('active');
+                    });
+                });
+
                 document.addEventListener('click', (e) => {
                     if (!e.target.closest('.difficulty-selector')) {
                         document.getElementById('difficultyDropdown').classList.remove('active');
+                    }
+                    if (!e.target.closest('.grid-selector')) {
+                        document.getElementById('gridDropdown').classList.remove('active');
                     }
                 });
             }
@@ -2140,26 +2443,22 @@
             setDifficulty(level) {
                 this.aiDifficulty = level;
                 const btn = document.getElementById('difficultyBtn');
-                const label = document.getElementById('aiTypeLabel');
                 
                 switch(level) {
                     case 'easy':
                         btn.textContent = 'EASY';
-                        label.textContent = 'Random AI';
                         break;
                     case 'medium':
                         btn.textContent = 'MEDIUM';
-                        label.textContent = 'Smart AI';
                         break;
                     case 'hard':
                         btn.textContent = 'HARD';
-                        label.textContent = 'Strategic AI';
                         break;
                     case 'impossible':
                         btn.textContent = 'IMPOSSIBLE';
-                        label.textContent = 'Unbeatable AI';
                         break;
                 }
+                this.updateModeUI();
                 this.newGame();
             }
 
@@ -2242,13 +2541,19 @@
             updateUI() {
                 document.getElementById('p1score').textContent = this.scores[0];
                 document.getElementById('p2score').textContent = this.scores[1];
-                
+
                 const player1Card = document.getElementById('player1Card');
                 const player2Card = document.getElementById('player2Card');
-                
-                player1Card.classList.toggle('active', this.currentPlayer === 0);
-                player2Card.classList.toggle('active', this.currentPlayer === 1);
-                
+
+                // Preserve base class while toggling active
+                if (this.currentPlayer === 0) {
+                    player1Card.classList.add('active');
+                    player2Card.classList.remove('active');
+                } else {
+                    player1Card.classList.remove('active');
+                    player2Card.classList.add('active');
+                }
+
                 document.getElementById('moveCount').textContent = this.moveCount;
                 document.getElementById('faceCount').textContent = this.faceCount;
                 document.getElementById('cubeCount').textContent = this.cubeCount;
@@ -2268,6 +2573,10 @@
                     this.camera.lookAt(this.cameraTarget);
                 }
 
+                // Near-completion face pulse effect
+                this.pulseTime += 0.03;
+                this.updateNearCompletionPulse();
+
                 this.renderer.render(this.scene, this.camera);
             }
 
@@ -2276,6 +2585,407 @@
                     cancelAnimationFrame(this.animationFrameId);
                     this.animationFrameId = null;
                 }
+            }
+
+            // ========== FEATURE 1: Edge Hover Highlighting ==========
+
+            updateHoverHighlight(event) {
+                if (this.gameEnded || this.isAiThinking) {
+                    this.clearHoverHighlight();
+                    return;
+                }
+
+                // In AI-vs-AI mode, no hover needed
+                if (this.gameMode === 'ai-vs-ai') {
+                    this.clearHoverHighlight();
+                    return;
+                }
+
+                const rect = this.renderer.domElement.getBoundingClientRect();
+                this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.edgeGroup.children, true);
+
+                // Find first uncompleted edge
+                let targetEdge = null;
+                for (const hit of intersects) {
+                    if (hit.object.userData && !hit.object.userData.completed) {
+                        targetEdge = hit.object;
+                        break;
+                    }
+                }
+
+                if (targetEdge === this.hoveredEdge) {
+                    // Update tooltip position even if same edge
+                    if (targetEdge) {
+                        this.updateHoverTooltip(event, targetEdge);
+                    }
+                    return;
+                }
+
+                // Restore previously hovered edge
+                this.clearHoverHighlight();
+
+                if (targetEdge) {
+                    // Save original state
+                    this.hoveredEdge = targetEdge;
+                    this.hoveredEdgeOriginalColor = targetEdge.material.color.getHex();
+                    this.hoveredEdgeOriginalOpacity = targetEdge.material.opacity;
+                    this.hoveredEdgeOriginalScale = targetEdge.scale.clone();
+
+                    // Highlight with current player's color at partial opacity
+                    const playerColor = this.currentPlayer === 0 ? 0x3b82f6 : 0xef4444;
+                    targetEdge.material.color.set(playerColor);
+                    targetEdge.material.opacity = 0.6;
+                    targetEdge.scale.set(
+                        this.hoveredEdgeOriginalScale.x * 1.3,
+                        this.hoveredEdgeOriginalScale.y * 1.3,
+                        this.hoveredEdgeOriginalScale.z * 1.3
+                    );
+
+                    // Show tooltip
+                    this.updateHoverTooltip(event, targetEdge);
+                } else {
+                    this.hideHoverTooltip();
+                }
+            }
+
+            clearHoverHighlight() {
+                if (this.hoveredEdge && !this.hoveredEdge.userData.completed) {
+                    // Only restore if not pulsing (near-completion will handle its own colors)
+                    if (!this.pulsingEdges.has(this.hoveredEdge.userData.key)) {
+                        this.hoveredEdge.material.color.set(this.hoveredEdgeOriginalColor);
+                        this.hoveredEdge.material.opacity = this.hoveredEdgeOriginalOpacity;
+                    }
+                    this.hoveredEdge.scale.copy(this.hoveredEdgeOriginalScale);
+                }
+                this.hoveredEdge = null;
+                this.hoveredEdgeOriginalColor = null;
+                this.hoveredEdgeOriginalOpacity = null;
+                this.hoveredEdgeOriginalScale = null;
+                this.hideHoverTooltip();
+            }
+
+            updateHoverTooltip(event, edge) {
+                const tooltip = document.getElementById('hoverTooltip');
+                if (!tooltip || !edge) return;
+
+                // Calculate how many faces this edge would complete
+                const edgeKey = edge.userData.key;
+                let facesWouldComplete = 0;
+                this.faces.forEach((face, idx) => {
+                    if (this.completedFaces.has(idx)) return;
+                    if (!face.edges.includes(edgeKey)) return;
+                    let completedCount = 0;
+                    face.edges.forEach(ek => {
+                        const e = this.edgeMap.get(ek);
+                        if (e && e.userData.completed) completedCount++;
+                    });
+                    if (completedCount === 3) facesWouldComplete++;
+                });
+
+                if (facesWouldComplete > 0) {
+                    tooltip.textContent = `Completes ${facesWouldComplete} face${facesWouldComplete > 1 ? 's' : ''}!`;
+                    tooltip.classList.add('visible');
+                } else {
+                    tooltip.textContent = '';
+                    tooltip.classList.remove('visible');
+                }
+
+                tooltip.style.left = (event.clientX + 15) + 'px';
+                tooltip.style.top = (event.clientY - 10) + 'px';
+            }
+
+            hideHoverTooltip() {
+                const tooltip = document.getElementById('hoverTooltip');
+                if (tooltip) {
+                    tooltip.classList.remove('visible');
+                }
+            }
+
+            // ========== FEATURE 3: Sound Effects via Web Audio API ==========
+
+            initAudio() {
+                if (this.audioCtx) return;
+                try {
+                    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.warn('Web Audio API not available');
+                }
+            }
+
+            playClickSound() {
+                if (this.soundMuted) return;
+                this.initAudio();
+                if (!this.audioCtx) return;
+
+                const ctx = this.audioCtx;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.08);
+            }
+
+            playFaceSound() {
+                if (this.soundMuted) return;
+                this.initAudio();
+                if (!this.audioCtx) return;
+
+                const ctx = this.audioCtx;
+                // Two-note ascending chime
+                const notes = [523.25, 659.25]; // C5, E5
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.type = 'sine';
+                    const startTime = ctx.currentTime + i * 0.12;
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.3);
+                });
+            }
+
+            playCubeSound() {
+                if (this.soundMuted) return;
+                this.initAudio();
+                if (!this.audioCtx) return;
+
+                const ctx = this.audioCtx;
+                // Three-note chord: C5, E5, G5
+                const notes = [523.25, 659.25, 783.99];
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.type = 'triangle';
+                    const startTime = ctx.currentTime + i * 0.08;
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.18, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.5);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.5);
+                });
+            }
+
+            playVictorySound() {
+                if (this.soundMuted) return;
+                this.initAudio();
+                if (!this.audioCtx) return;
+
+                const ctx = this.audioCtx;
+                // Fanfare: C5, E5, G5, C6
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.type = 'sine';
+                    const startTime = ctx.currentTime + i * 0.15;
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.2, startTime + 0.03);
+                    gain.gain.setValueAtTime(0.2, startTime + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.6);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.6);
+                });
+
+                // Final sustained chord
+                const chordNotes = [523.25, 659.25, 783.99, 1046.50];
+                chordNotes.forEach(freq => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.type = 'sine';
+                    const startTime = ctx.currentTime + 0.65;
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.12, startTime + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.2);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + 1.2);
+                });
+            }
+
+            toggleMute() {
+                this.soundMuted = !this.soundMuted;
+                const btn = document.getElementById('muteBtn');
+                if (this.soundMuted) {
+                    btn.textContent = '🔇 Sound OFF';
+                    btn.classList.add('muted');
+                } else {
+                    btn.textContent = '🔊 Sound ON';
+                    btn.classList.remove('muted');
+                    // Play a small click to confirm unmute
+                    this.playClickSound();
+                }
+            }
+
+            // ========== FEATURE 4: Near-Completion Face Indicators ==========
+
+            updateNearCompletionPulse() {
+                // Clear previous pulse tracking
+                const prevPulsing = new Set(this.pulsingEdges);
+                this.pulsingEdges.clear();
+
+                // Find faces with exactly 3 of 4 edges completed
+                this.faces.forEach((face, idx) => {
+                    if (this.completedFaces.has(idx)) return;
+
+                    let completedCount = 0;
+                    let incompleteEdgeKey = null;
+                    face.edges.forEach(edgeKey => {
+                        const e = this.edgeMap.get(edgeKey);
+                        if (e && e.userData.completed) {
+                            completedCount++;
+                        } else {
+                            incompleteEdgeKey = edgeKey;
+                        }
+                    });
+
+                    if (completedCount === 3) {
+                        // Pulse the completed edges of this near-complete face
+                        face.edges.forEach(edgeKey => {
+                            const e = this.edgeMap.get(edgeKey);
+                            if (e && e.userData.completed) {
+                                this.pulsingEdges.add(edgeKey);
+                                // Glow effect: modulate emissive-like brightness via opacity
+                                const pulse = 0.7 + 0.3 * Math.sin(this.pulseTime * 3);
+                                // We only modulate the opacity slightly to create a subtle glow
+                                e.material.opacity = pulse;
+                            }
+                        });
+                    }
+                });
+
+                // Restore edges that stopped pulsing
+                prevPulsing.forEach(key => {
+                    if (!this.pulsingEdges.has(key)) {
+                        const e = this.edgeMap.get(key);
+                        if (e && e.userData.completed) {
+                            e.material.opacity = 1.0;
+                        }
+                    }
+                });
+            }
+
+            // ========== FEATURE 5: Configurable Grid Size ==========
+
+            setGridSize(size) {
+                if (size === this.gridSize) return;
+
+                const btn = document.getElementById('gridBtn');
+                btn.textContent = `${size}x${size}x${size} GRID`;
+
+                this.rebuildGrid(size);
+            }
+
+            rebuildGrid(newSize) {
+                // Dispose all existing game objects
+                this.clearHint();
+                this.clearHoverHighlight();
+
+                // Remove dots
+                if (this.dots) {
+                    this.dots.forEach(dot => {
+                        this.scene.remove(dot);
+                    });
+                    this.dots = [];
+                }
+
+                // Dispose shared geometries and materials
+                if (this.dotGeometry) { this.dotGeometry.dispose(); this.dotGeometry = null; }
+                if (this.dotMaterial) { this.dotMaterial.dispose(); this.dotMaterial = null; }
+                if (this.edgeMaterial) { this.edgeMaterial.dispose(); this.edgeMaterial = null; }
+                if (this.edgeGeometryX) { this.edgeGeometryX.dispose(); this.edgeGeometryX = null; }
+                if (this.edgeGeometryY) { this.edgeGeometryY.dispose(); this.edgeGeometryY = null; }
+                if (this.edgeGeometryZ) { this.edgeGeometryZ.dispose(); this.edgeGeometryZ = null; }
+
+                // Dispose cloned edge materials
+                if (this.edges) {
+                    this.edges.forEach(edge => {
+                        if (edge.material) edge.material.dispose();
+                    });
+                }
+
+                // Clear edge group
+                while (this.edgeGroup.children.length > 0) {
+                    this.edgeGroup.remove(this.edgeGroup.children[0]);
+                }
+
+                // Clear face group
+                while (this.faceGroup.children.length > 0) {
+                    const child = this.faceGroup.children[0];
+                    if (child.geometry) child.geometry.dispose();
+                    if (child.material) child.material.dispose();
+                    this.faceGroup.remove(child);
+                }
+
+                // Clear particle group
+                while (this.particleGroup.children.length > 0) {
+                    const child = this.particleGroup.children[0];
+                    if (child.geometry) child.geometry.dispose();
+                    if (child.material) child.material.dispose();
+                    this.particleGroup.remove(child);
+                }
+
+                // Update grid size
+                this.gridSize = newSize;
+                this.edges = [];
+                this.edgeMap = new Map();
+                this.faces = [];
+                this.cubes = [];
+                this.completedFaces = new Set();
+                this.completedCubes = new Set();
+                this.moveHistory = [];
+                this.faceMeshMap = new Map();
+                this.pulsingEdges = new Set();
+
+                // Recreate game objects
+                this.createGameObjects();
+                this.defineFacesAndCubes();
+
+                // Update camera to center on new grid
+                const center = (newSize - 1);
+                this.cameraTarget = new THREE.Vector3(center, center, center);
+
+                // Scale camera distance based on grid size
+                const dist = newSize * 5.5;
+                this.camera.position.set(dist * 0.5, dist * 0.5, dist);
+                this.initialCameraPosition = this.camera.position.clone();
+                this.spherical.setFromVector3(this.camera.position.clone().sub(this.cameraTarget));
+                this.camera.lookAt(this.cameraTarget);
+
+                // Reset game state
+                this.newGame();
             }
 
             dispose() {
@@ -2324,6 +3034,12 @@
                         }
                         this.particleGroup.remove(child);
                     }
+                }
+
+                // Close audio context
+                if (this.audioCtx) {
+                    this.audioCtx.close().catch(() => {});
+                    this.audioCtx = null;
                 }
 
                 // Dispose the renderer

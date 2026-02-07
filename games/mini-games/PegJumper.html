@@ -30,6 +30,32 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes validTargetPulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.5), 0 0 8px rgba(74, 222, 128, 0.3); border-color: rgba(74, 222, 128, 0.7); }
+            50% { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.8), 0 0 16px rgba(74, 222, 128, 0.5); border-color: rgba(74, 222, 128, 1); }
+        }
+        .valid-target-hole {
+            animation: validTargetPulse 1s ease-in-out infinite;
+            border-color: rgba(74, 222, 128, 0.7) !important;
+            background: rgba(74, 222, 128, 0.15) !important;
+        }
+        @keyframes pegShrinkFade {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        .peg-shrink-fade {
+            animation: pegShrinkFade 0.35s ease-in forwards;
+        }
+        .peg-flying {
+            position: absolute;
+            z-index: 100;
+            transition: left 0.35s ease-in-out, top 0.35s ease-in-out;
+            pointer-events: none;
+        }
+        .solved-level-btn {
+            border: 2px solid #fbbf24 !important;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+        }
         button:focus-visible,
         [role="button"]:focus-visible,
         a:focus-visible {
@@ -156,7 +182,7 @@
             );
         };
 
-        const Peg = ({ onClick, onKeyDown, isSelected, rowIndex, colIndex }) => (
+        const Peg = ({ onClick, onKeyDown, isSelected, rowIndex, colIndex, animClass, hidden }) => (
             <div
                 className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
                 onClick={onClick}
@@ -167,22 +193,23 @@
                 aria-pressed={isSelected}
             >
                 <div
-                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 pointer-events-none ${isSelected ? 'border-4 border-yellow-400 animate-pulse ring-2 ring-yellow-400/50' : 'border-2 border-cyan-400/30'}`}
+                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 transition-all duration-200 pointer-events-none ${isSelected ? 'border-4 border-yellow-400 animate-pulse ring-2 ring-yellow-400/50' : 'border-2 border-cyan-400/30'} ${animClass || ''}`}
+                    style={hidden ? { opacity: 0 } : undefined}
                     aria-hidden="true"
                 />
             </div>
         );
 
-        const Hole = ({ onClick, onKeyDown, rowIndex, colIndex }) => (
+        const Hole = ({ onClick, onKeyDown, rowIndex, colIndex, isValidTarget }) => (
             <div
                 className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
                 onClick={onClick}
                 onKeyDown={onKeyDown}
                 role="button"
                 tabIndex={0}
-                aria-label={`Empty hole at row ${rowIndex + 1}, column ${colIndex + 1}`}
+                aria-label={`Empty hole at row ${rowIndex + 1}, column ${colIndex + 1}${isValidTarget ? ', valid move target' : ''}`}
             >
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-800 shadow-inner border-2 border-purple-500/30 hover:border-purple-500 transition-colors pointer-events-none" aria-hidden="true" />
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full shadow-inner border-2 transition-colors pointer-events-none ${isValidTarget ? 'valid-target-hole bg-gray-800' : 'bg-gray-800 border-purple-500/30 hover:border-purple-500'}`} aria-hidden="true" />
             </div>
         );
 
@@ -290,6 +317,46 @@
             );
         };
 
+        // Feature 5: Flying peg animation component
+        const FlyingPeg = ({ from, to, getCellPosition }) => {
+            const [style, setStyle] = useState({});
+            const pegRef = useRef(null);
+
+            useEffect(() => {
+                const fromPos = getCellPosition(from.row, from.col);
+                const toPos = getCellPosition(to.row, to.col);
+
+                // Start at the origin position
+                setStyle({
+                    left: fromPos.x - 18,
+                    top: fromPos.y - 18,
+                    width: 36,
+                    height: 36
+                });
+
+                // Trigger the transition to the destination after a frame
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        setStyle({
+                            left: toPos.x - 18,
+                            top: toPos.y - 18,
+                            width: 36,
+                            height: 36
+                        });
+                    });
+                });
+            }, [from, to, getCellPosition]);
+
+            return (
+                <div
+                    ref={pegRef}
+                    className="peg-flying rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-400/70 border-2 border-yellow-400"
+                    style={style}
+                    aria-hidden="true"
+                />
+            );
+        };
+
         // --- MAIN PEG JUMPER GAME COMPONENT ---
         const PegJumperGame = () => {
             const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
@@ -312,7 +379,20 @@
             const winTimeoutRef = useRef(null);
             const howToPlayTriggerRef = useRef(null);
 
-            // Load high scores from localStorage on mount
+            // Feature 2: Multi-step undo history stack
+            const [historyStack, setHistoryStack] = useState([]);
+
+            // Feature 3: Move counter
+            const [moveCount, setMoveCount] = useState(0);
+
+            // Feature 4: Solved levels persistence
+            const [solvedLevels, setSolvedLevels] = useState({});
+
+            // Feature 5: Animation state
+            const [animatingMove, setAnimatingMove] = useState(null); // {from, to, jumped}
+            const boardRef = useRef(null);
+
+            // Load high scores and solved levels from localStorage on mount
             useEffect(() => {
                 const saved = safeGetItem('pegJumperHighScores');
                 if (saved) {
@@ -322,7 +402,34 @@
                         console.warn('Could not parse high scores:', e);
                     }
                 }
+                const savedSolved = safeGetItem('pegJumperSolvedLevels');
+                if (savedSolved) {
+                    try {
+                        setSolvedLevels(JSON.parse(savedSolved));
+                    } catch (e) {
+                        console.warn('Could not parse solved levels:', e);
+                    }
+                }
             }, []);
+
+            // Feature 1: Compute valid move targets for selected peg
+            const getValidTargets = useCallback((currentBoard, selected, levelIndex) => {
+                const targets = new Set();
+                if (!selected || !currentBoard.length) return targets;
+                const levelDirections = LEVELS[levelIndex].directions;
+                const { row, col } = selected;
+                for (const [dr, dc] of levelDirections) {
+                    const endR = row + dr, endC = col + dc;
+                    const midR = row + dr / 2, midC = col + dc / 2;
+                    if (currentBoard[endR] && currentBoard[endR][endC] === false &&
+                        currentBoard[midR] && currentBoard[midR][midC] === true) {
+                        targets.add(`${endR},${endC}`);
+                    }
+                }
+                return targets;
+            }, []);
+
+            const validTargets = selectedPeg ? getValidTargets(board, selectedPeg, currentLevelIndex) : new Set();
 
             // Timer effect
             useEffect(() => {
@@ -390,6 +497,11 @@
                 setIsTimerRunning(false);
                 lastMoveTimestamp.current = 0;
 
+                // Reset history, moves, animation
+                setHistoryStack([]);
+                setMoveCount(0);
+                setAnimatingMove(null);
+
             }, []);
 
             useEffect(() => {
@@ -416,8 +528,50 @@
                 return true; // No moves found
             }, []);
 
+            // Feature 5: Apply board changes after animation completes
+            const applyMove = useCallback((newBoard, start, end, jumpedRow, jumpedCol, isRapidMove) => {
+                const newPegsRemaining = pegsRemaining - 1;
+                setPegsRemaining(newPegsRemaining);
+                setBoard(newBoard);
+                setSelectedPeg(null);
+                setMoveCount(mc => mc + 1);
+                setAnimatingMove(null);
+
+                // Check for win/loss condition
+                if (newPegsRemaining === 1) {
+                    setGameState(GameState.WON);
+                    setIsTimerRunning(false);
+                    setShowWin(true);
+                    winTimeoutRef.current = setTimeout(() => {
+                        setShowWin(false);
+                        winTimeoutRef.current = null;
+                    }, 4000);
+                    const rapidBonus = isRapidMove ? RAPID_MOVE_BONUS : 0;
+                    const currentScore = score + rapidBonus;
+                    const finalScore = Math.max(0, currentScore + (initialPegCount * 100) - (timeRef.current * 10));
+                    setScore(finalScore);
+                    if (finalScore > (highScores[currentLevelIndex] || 0)) {
+                        const newHighScores = {...highScores, [currentLevelIndex]: finalScore};
+                        setHighScores(newHighScores);
+                        safeSetItem('pegJumperHighScores', JSON.stringify(newHighScores));
+                    }
+                    // Feature 4: Mark level as solved
+                    const newSolved = {...solvedLevels, [currentLevelIndex]: true};
+                    setSolvedLevels(newSolved);
+                    safeSetItem('pegJumperSolvedLevels', JSON.stringify(newSolved));
+                } else {
+                    if (isRapidMove) {
+                        setScore(s => s + RAPID_MOVE_BONUS);
+                    }
+                    if (checkForNoMoves(newBoard, currentLevelIndex)) {
+                        setGameState(GameState.LOST);
+                        setIsTimerRunning(false);
+                    }
+                }
+            }, [pegsRemaining, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, solvedLevels]);
+
             const handleCellClick = useCallback((row, col) => {
-                if (gameState !== GameState.PLAYING) return;
+                if (gameState !== GameState.PLAYING || animatingMove) return;
 
                 const cell = board[row][col];
 
@@ -434,61 +588,62 @@
                         const jumpedRow = start.row + dr / 2;
                         const jumpedCol = start.col + dc / 2;
 
-                        // Check if this jump matches one of the level's valid directions
                         const levelDirections = LEVELS[currentLevelIndex].directions;
                         const isValidJump = levelDirections.some(([jdr, jdc]) => dr === jdr && dc === jdc);
 
                         if (isValidJump && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
-                            if (!isTimerRunning) setIsTimerRunning(true); // Start timer on first move
+                            if (!isTimerRunning) setIsTimerRunning(true);
+
+                            // Feature 2: Push current state to history before the move
+                            setHistoryStack(prev => [...prev, {
+                                board: board.map(r => [...r]),
+                                pegsRemaining,
+                                score,
+                                moveCount,
+                                time: timeRef.current
+                            }]);
+
+                            const now = Date.now();
+                            const isRapidMove = lastMoveTimestamp.current > 0 && (now - lastMoveTimestamp.current) < RAPID_MOVE_THRESHOLD_MS;
+                            lastMoveTimestamp.current = now;
 
                             const newBoard = board.map(r => [...r]);
                             newBoard[start.row][start.col] = false;
                             newBoard[end.row][end.col] = true;
                             newBoard[jumpedRow][jumpedCol] = false;
 
-                            // Check for rapid-move bonus
-                            const now = Date.now();
-                            const isRapidMove = lastMoveTimestamp.current > 0 && (now - lastMoveTimestamp.current) < RAPID_MOVE_THRESHOLD_MS;
-                            lastMoveTimestamp.current = now;
-
-                            const newPegsRemaining = pegsRemaining - 1;
-                            setPegsRemaining(newPegsRemaining);
-                            setBoard(newBoard);
+                            // Feature 5: Start animation
+                            setAnimatingMove({ from: start, to: end, jumped: { row: jumpedRow, col: jumpedCol } });
                             setSelectedPeg(null);
 
-                            // Check for win/loss condition
-                            if (newPegsRemaining === 1) {
-                                setGameState(GameState.WON);
-                                setIsTimerRunning(false);
-                                setShowWin(true);
-                                winTimeoutRef.current = setTimeout(() => {
-                                    setShowWin(false);
-                                    winTimeoutRef.current = null;
-                                }, 4000);
-                                // Include rapid-move bonus in final score so it isn't lost to the overwrite
-                                const rapidBonus = isRapidMove ? RAPID_MOVE_BONUS : 0;
-                                const currentScore = score + rapidBonus;
-                                const finalScore = Math.max(0, currentScore + (initialPegCount * 100) - (timeRef.current * 10));
-                                setScore(finalScore);
-                                if (finalScore > (highScores[currentLevelIndex] || 0)) {
-                                    const newHighScores = {...highScores, [currentLevelIndex]: finalScore};
-                                    setHighScores(newHighScores);
-                                    safeSetItem('pegJumperHighScores', JSON.stringify(newHighScores));
-                                }
-                            } else {
-                                // Award rapid-move bonus for non-winning moves
-                                if (isRapidMove) {
-                                    setScore(s => s + RAPID_MOVE_BONUS);
-                                }
-                                if (checkForNoMoves(newBoard, currentLevelIndex)) {
-                                    setGameState(GameState.LOST);
-                                    setIsTimerRunning(false);
-                                }
-                            }
+                            // After animation duration, apply the actual board change
+                            setTimeout(() => {
+                                applyMove(newBoard, start, end, jumpedRow, jumpedCol, isRapidMove);
+                            }, 370);
                         }
                     }
                 }
-            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves]);
+            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, animatingMove, moveCount, applyMove]);
+
+            // Feature 2: Undo handler
+            const handleUndo = useCallback(() => {
+                if (historyStack.length === 0 || animatingMove) return;
+                const prevState = historyStack[historyStack.length - 1];
+                setHistoryStack(prev => prev.slice(0, -1));
+                setBoard(prevState.board);
+                setPegsRemaining(prevState.pegsRemaining);
+                setScore(prevState.score);
+                setMoveCount(prevState.moveCount);
+                setTime(prevState.time);
+                timeRef.current = prevState.time;
+                setSelectedPeg(null);
+                setGameState(GameState.PLAYING);
+                if (historyStack.length === 1) {
+                    // Undoing the very first move, stop timer
+                    setIsTimerRunning(false);
+                    lastMoveTimestamp.current = 0;
+                }
+            }, [historyStack, animatingMove]);
 
             // Keyboard handler for peg/hole interaction
             const handleCellKeyDown = useCallback((e, row, col) => {
@@ -509,12 +664,28 @@
 
             const getGameStatusAria = () => {
                 switch (gameState) {
-                    case GameState.PLAYING: return `Playing. ${pegsRemaining} pegs remaining.`;
-                    case GameState.WON: return `Congratulations! You won with a score of ${score}!`;
-                    case GameState.LOST: return `Game over. No more moves available. ${pegsRemaining} pegs remaining.`;
+                    case GameState.PLAYING: return `Playing. ${pegsRemaining} of ${initialPegCount} pegs remaining. ${moveCount} moves made.`;
+                    case GameState.WON: return `Congratulations! You won with a score of ${score} in ${moveCount} moves!`;
+                    case GameState.LOST: return `Game over. No more moves available. ${pegsRemaining} pegs remaining after ${moveCount} moves.`;
                     default: return '';
                 }
             };
+
+            // Feature 5: Helper to get cell position for animation
+            const getCellPosition = useCallback((row, col) => {
+                if (!boardRef.current) return { x: 0, y: 0 };
+                const boardEl = boardRef.current;
+                const rows = boardEl.querySelectorAll('[role="row"]');
+                if (!rows[row]) return { x: 0, y: 0 };
+                const cells = rows[row].querySelectorAll('[role="gridcell"]');
+                if (!cells[col]) return { x: 0, y: 0 };
+                const cellRect = cells[col].getBoundingClientRect();
+                const boardRect = boardEl.getBoundingClientRect();
+                return {
+                    x: cellRect.left - boardRect.left + cellRect.width / 2,
+                    y: cellRect.top - boardRect.top + cellRect.height / 2
+                };
+            }, []);
 
             return (
                 <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden flex flex-col items-center justify-center p-4">
@@ -546,31 +717,40 @@
                                     key={level.name}
                                     onClick={() => initializeBoard(index)}
                                     aria-pressed={currentLevelIndex === index}
-                                    className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 min-h-[44px] ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+                                    className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 min-h-[44px] relative ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'} ${solvedLevels[index] ? 'solved-level-btn' : ''}`}
                                 >
+                                    {solvedLevels[index] && <span className="absolute -top-1.5 -right-1.5 text-yellow-400 text-sm" aria-label="Solved">&#9733;</span>}
                                     {level.name}
                                 </button>
                             ))}
                         </nav>
 
-                        <div className="w-full flex justify-between items-center bg-black/20 p-2 rounded-lg mb-4 text-lg" aria-label="Game statistics">
-                            <div className="text-left">
-                                <div>Score: <span className="font-bold text-cyan-400" aria-label={`Score: ${score}`}>{score}</span></div>
-                                <div>High Score: <span className="font-bold text-yellow-400" aria-label={`High score: ${highScores[currentLevelIndex] || 0}`}>{highScores[currentLevelIndex] || 0}</span></div>
+                        <div className="w-full bg-black/20 p-3 rounded-lg mb-4" aria-label="Game statistics">
+                            <div className="flex justify-between items-center text-lg">
+                                <div className="text-left">
+                                    <div>Score: <span className="font-bold text-cyan-400" aria-label={`Score: ${score}`}>{score}</span></div>
+                                    <div>High Score: <span className="font-bold text-yellow-400" aria-label={`High score: ${highScores[currentLevelIndex] || 0}`}>{highScores[currentLevelIndex] || 0}</span></div>
+                                </div>
+                                <div
+                                    className="text-center text-2xl font-semibold text-white"
+                                    role="status"
+                                    aria-live="polite"
+                                    aria-label={getGameStatusAria()}
+                                >
+                                    {getGameStatusMessage()}
+                                </div>
+                                <div className="text-right">Time: <span className="font-bold text-pink-400" aria-label={`Time: ${Math.floor(time / 60)} minutes ${time % 60} seconds`}>{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
                             </div>
-                            <div
-                                className="text-center text-2xl font-semibold text-white"
-                                role="status"
-                                aria-live="polite"
-                                aria-label={getGameStatusAria()}
-                            >
-                                {getGameStatusMessage()}
+                            <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/10 text-sm text-purple-200">
+                                <div>Moves: <span className="font-bold text-white">{moveCount}</span></div>
+                                <div>Pegs: <span className="font-bold text-white">{pegsRemaining}</span> / <span className="text-purple-300">{initialPegCount}</span></div>
+                                <div className="text-purple-400">Best possible: <span className="font-bold text-green-400">1 peg</span></div>
                             </div>
-                            <div className="text-right">Time: <span className="font-bold text-pink-400" aria-label={`Time: ${Math.floor(time / 60)} minutes ${time % 60} seconds`}>{new Date(time * 1000).toISOString().substring(14, 19)}</span></div>
                         </div>
 
                         <div
-                            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center"
+                            ref={boardRef}
+                            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center relative"
                             role="grid"
                             aria-label={`${LEVELS[currentLevelIndex].name} game board`}
                         >
@@ -579,6 +759,21 @@
                                     {row.map((cell, colIndex) => {
                                         if (cell === null) return <div key={colIndex} className="min-w-[44px] min-h-[44px]" role="gridcell" aria-hidden="true" />;
                                         const isSelected = selectedPeg && selectedPeg.row === rowIndex && selectedPeg.col === colIndex;
+                                        const isValidTarget = cell === false && validTargets.has(`${rowIndex},${colIndex}`);
+
+                                        // Feature 5: Determine animation classes
+                                        let animClass = '';
+                                        if (animatingMove) {
+                                            if (animatingMove.jumped.row === rowIndex && animatingMove.jumped.col === colIndex) {
+                                                animClass = 'peg-shrink-fade';
+                                            }
+                                        }
+
+                                        // During animation, show peg at origin (it will be hidden by the flying peg overlay)
+                                        // and hide the destination (it hasn't "arrived" yet visually)
+                                        const isAnimFrom = animatingMove && animatingMove.from.row === rowIndex && animatingMove.from.col === colIndex;
+                                        const isAnimTo = animatingMove && animatingMove.to.row === rowIndex && animatingMove.to.col === colIndex;
+
                                         return (
                                             <div key={colIndex} role="gridcell">
                                                 {cell ? (
@@ -588,6 +783,8 @@
                                                         onKeyDown={(e) => handleCellKeyDown(e, rowIndex, colIndex)}
                                                         rowIndex={rowIndex}
                                                         colIndex={colIndex}
+                                                        animClass={animClass}
+                                                        hidden={isAnimFrom}
                                                     />
                                                 ) : (
                                                     <Hole
@@ -595,6 +792,7 @@
                                                         onKeyDown={(e) => handleCellKeyDown(e, rowIndex, colIndex)}
                                                         rowIndex={rowIndex}
                                                         colIndex={colIndex}
+                                                        isValidTarget={isValidTarget}
                                                     />
                                                 )}
                                             </div>
@@ -602,9 +800,18 @@
                                     })}
                                 </div>
                             ))}
+                            {animatingMove && <FlyingPeg from={animatingMove.from} to={animatingMove.to} getCellPosition={getCellPosition} />}
                         </div>
 
-                        <div className="mt-6">
+                        <div className="mt-6 flex gap-3">
+                            <button
+                                onClick={handleUndo}
+                                disabled={historyStack.length === 0 || !!animatingMove}
+                                className={`px-6 py-3 rounded-lg font-bold text-lg transition-all transform hover:scale-105 min-h-[44px] ${historyStack.length === 0 || animatingMove ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white'}`}
+                                aria-label={`Undo last move${historyStack.length > 0 ? ` (${historyStack.length} moves to undo)` : ''}`}
+                            >
+                                &#8630; Undo
+                            </button>
                             <button onClick={() => initializeBoard(currentLevelIndex)}
                                 className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 min-h-[44px]"
                                 aria-label={`Reset ${LEVELS[currentLevelIndex].name} level`}

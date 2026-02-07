@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a1a"/>
+      <stop offset="50%" stop-color="#12122e"/>
+      <stop offset="100%" stop-color="#0a0a1a"/>
+    </linearGradient>
+    <linearGradient id="dieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#e0e0e0"/>
+    </linearGradient>
+    <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6b4423"/>
+      <stop offset="40%" stop-color="#4a2d12"/>
+      <stop offset="60%" stop-color="#3a2009"/>
+      <stop offset="100%" stop-color="#5c3b1e"/>
+    </linearGradient>
+    <radialGradient id="feltGrad" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#1e6b30"/>
+      <stop offset="40%" stop-color="#12522a"/>
+      <stop offset="70%" stop-color="#0c3d1a"/>
+      <stop offset="100%" stop-color="#082e12"/>
+    </radialGradient>
+    <radialGradient id="glow1" cx="30%" cy="25%">
+      <stop offset="0%" stop-color="#7828c8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#7828c8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="75%" cy="80%">
+      <stop offset="0%" stop-color="#e94560" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#e94560" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pipGrad">
+      <stop offset="0%" stop-color="#444444"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </radialGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b9d"/>
+      <stop offset="50%" stop-color="#ffa66b"/>
+      <stop offset="100%" stop-color="#fffb7d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect width="640" height="360" fill="url(#glow1)"/>
+  <rect width="640" height="360" fill="url(#glow2)"/>
+
+  <!-- Title -->
+  <text x="320" y="42" text-anchor="middle" fill="url(#titleGrad)" font-family="system-ui, sans-serif" font-size="28" font-weight="900" letter-spacing="-0.5">Shut the Box</text>
+
+  <!-- Tiles row -->
+  <g transform="translate(47, 60)">
+    <!-- Tile 1 - shut -->
+    <rect x="0" y="0" width="40" height="48" rx="7" fill="#0c3d1a" fill-opacity="0.5" stroke="#6ee7a0" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="20" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.12" font-family="system-ui, sans-serif" font-size="15" font-weight="800">1</text>
+
+    <!-- Tile 2 - shut -->
+    <rect x="46" y="0" width="40" height="48" rx="7" fill="#0c3d1a" fill-opacity="0.5" stroke="#6ee7a0" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="66" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.12" font-family="system-ui, sans-serif" font-size="15" font-weight="800">2</text>
+
+    <!-- Tile 3 - shut -->
+    <rect x="92" y="0" width="40" height="48" rx="7" fill="#0c3d1a" fill-opacity="0.5" stroke="#6ee7a0" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="112" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.12" font-family="system-ui, sans-serif" font-size="15" font-weight="800">3</text>
+
+    <!-- Tile 4 - open -->
+    <rect x="138" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="158" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="15" font-weight="800">4</text>
+
+    <!-- Tile 5 - selected (cyan glow) -->
+    <rect x="184" y="-3" width="40" height="48" rx="7" fill="#48dbfb" fill-opacity="0.12" stroke="#48dbfb" stroke-width="1.5"/>
+    <text x="204" y="27" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="15" font-weight="800">5</text>
+
+    <!-- Tile 6 - open -->
+    <rect x="230" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="250" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="15" font-weight="800">6</text>
+
+    <!-- Tile 7 - selected (cyan glow) -->
+    <rect x="276" y="-3" width="40" height="48" rx="7" fill="#48dbfb" fill-opacity="0.12" stroke="#48dbfb" stroke-width="1.5"/>
+    <text x="296" y="27" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-size="15" font-weight="800">7</text>
+
+    <!-- Tile 8 - open -->
+    <rect x="322" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="342" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="15" font-weight="800">8</text>
+
+    <!-- Tile 9 - shut -->
+    <rect x="368" y="0" width="40" height="48" rx="7" fill="#0c3d1a" fill-opacity="0.5" stroke="#6ee7a0" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="388" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.12" font-family="system-ui, sans-serif" font-size="15" font-weight="800">9</text>
+
+    <!-- Tile 10 - open -->
+    <rect x="414" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="434" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="13" font-weight="800">10</text>
+
+    <!-- Tile 11 - open -->
+    <rect x="460" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="480" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="13" font-weight="800">11</text>
+
+    <!-- Tile 12 - open -->
+    <rect x="506" y="0" width="40" height="48" rx="7" fill="#ffffff" fill-opacity="0.07" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5"/>
+    <text x="526" y="30" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="system-ui, sans-serif" font-size="13" font-weight="800">12</text>
+  </g>
+
+  <!-- Dice tray -->
+  <g transform="translate(175, 130)">
+    <!-- Wood rim -->
+    <rect x="0" y="0" width="290" height="150" rx="16" fill="url(#woodGrad)"/>
+    <!-- Inner shadow rim -->
+    <rect x="3" y="3" width="284" height="144" rx="14" fill="#2a1508" fill-opacity="0.5"/>
+    <!-- Green felt inner -->
+    <rect x="6" y="6" width="278" height="138" rx="11" fill="url(#feltGrad)"/>
+
+    <!-- Die 1 showing 6 -->
+    <g transform="translate(42, 26)">
+      <rect x="0" y="0" width="86" height="86" rx="14" fill="url(#dieGrad)" stroke="#cccccc" stroke-opacity="0.3" stroke-width="1"/>
+      <!-- 6 pips -->
+      <circle cx="24" cy="22" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="24" cy="43" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="24" cy="64" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="22" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="43" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="64" r="7.5" fill="url(#pipGrad)"/>
+    </g>
+
+    <!-- Die 2 showing 6 -->
+    <g transform="translate(162, 32)">
+      <rect x="0" y="0" width="86" height="86" rx="14" fill="url(#dieGrad)" stroke="#cccccc" stroke-opacity="0.3" stroke-width="1"/>
+      <!-- 6 pips -->
+      <circle cx="24" cy="22" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="24" cy="43" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="24" cy="64" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="22" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="43" r="7.5" fill="url(#pipGrad)"/>
+      <circle cx="62" cy="64" r="7.5" fill="url(#pipGrad)"/>
+    </g>
+  </g>
+
+  <!-- Dice total badge -->
+  <circle cx="320" cy="305" r="22" fill="#fffb7d" fill-opacity="0.15" stroke="#fffb7d" stroke-opacity="0.5" stroke-width="2"/>
+  <text x="320" y="312" text-anchor="middle" fill="#fffb7d" font-family="system-ui, sans-serif" font-size="18" font-weight="900">12</text>
+
+  <!-- Selection info -->
+  <text x="320" y="345" text-anchor="middle" fill="#48dbfb" fill-opacity="0.8" font-family="system-ui, sans-serif" font-size="13" font-weight="600">5 + 7 = 12</text>
+
+  <!-- Score chips -->
+  <rect x="25" y="310" width="88" height="28" rx="14" fill="#ff6b9d" fill-opacity="0.12" stroke="#ff6b9d" stroke-opacity="0.4" stroke-width="1.5"/>
+  <circle cx="41" cy="324" r="5" fill="#e94560"/>
+  <text x="55" y="328" fill="#ffffff" fill-opacity="0.85" font-family="system-ui, sans-serif" font-size="11" font-weight="600">Dad</text>
+  <text x="97" y="328" fill="#fffb7d" font-family="system-ui, sans-serif" font-size="11" font-weight="800">15</text>
+
+  <rect x="122" y="310" width="72" height="28" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5"/>
+  <circle cx="138" cy="324" r="5" fill="#48dbfb"/>
+  <text x="152" y="328" fill="#ffffff" fill-opacity="0.85" font-family="system-ui, sans-serif" font-size="11" font-weight="600">AI</text>
+</svg>

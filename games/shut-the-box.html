@@ -51,7 +51,79 @@
             z-index: 1;
         }
 
-        /* ══════ Setup Screen ══════ */
+        /* ====== Mute Toggle Button ====== */
+        .mute-btn {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        .mute-btn:hover {
+            border-color: rgba(255,107,157,0.4);
+            color: #fff;
+            background: rgba(255,107,157,0.1);
+        }
+        .mute-btn.muted {
+            color: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.08);
+        }
+
+        /* ====== Turn Banner Overlay ====== */
+        .turn-banner {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 90;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .turn-banner.visible {
+            opacity: 1;
+        }
+        .turn-banner-inner {
+            padding: 20px 48px;
+            border-radius: 20px;
+            background: rgba(10, 10, 26, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            text-align: center;
+            transform: scale(0.85);
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .turn-banner.visible .turn-banner-inner {
+            transform: scale(1);
+        }
+        .turn-banner-name {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+        .turn-banner-sub {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* ====== Setup Screen ====== */
         #setup-screen {
             display: flex;
             flex-direction: column;
@@ -146,6 +218,7 @@
             border-radius: 12px;
             padding: 12px 14px;
             transition: background 0.2s;
+            flex-wrap: wrap;
         }
 
         .player-config:hover { background: rgba(255,255,255,0.05); }
@@ -160,6 +233,7 @@
 
         .player-config input[type="text"] {
             flex: 1;
+            min-width: 80px;
             padding: 9px 14px;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.1);
@@ -206,6 +280,141 @@
             color: #fff;
         }
 
+        /* AI Difficulty Selector */
+        .ai-diff-select {
+            display: none;
+            margin-top: 6px;
+            width: 100%;
+            padding-left: 22px;
+        }
+        .ai-diff-select.visible {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .ai-diff-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.35);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .diff-toggle {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+        }
+        .diff-toggle button {
+            padding: 5px 12px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.35);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .diff-toggle button:hover { color: rgba(255,255,255,0.6); }
+        .diff-toggle button.active {
+            background: linear-gradient(135deg, #48dbfb, #27ae60);
+            color: #fff;
+        }
+
+        /* Stats Leaderboard on Setup */
+        .stats-section {
+            margin-top: 24px;
+            width: 100%;
+            max-width: 480px;
+        }
+        .stats-toggle-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.4);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+        }
+        .stats-toggle-btn:hover {
+            border-color: rgba(255,107,157,0.3);
+            color: rgba(255,255,255,0.7);
+            background: rgba(255,107,157,0.05);
+        }
+        .stats-panel {
+            display: none;
+            margin-top: 10px;
+            padding: 18px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+        }
+        .stats-panel.open { display: block; }
+        .stats-panel h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fffb7d;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        .stats-table th {
+            color: rgba(255,255,255,0.4);
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 6px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+        }
+        .stats-table th:first-child { text-align: left; }
+        .stats-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.7);
+        }
+        .stats-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+        }
+        .stats-table .stat-wins { color: #6ee7a0; font-weight: 700; }
+        .stats-table .stat-perfect { color: #fffb7d; font-weight: 700; }
+        .stats-clear-btn {
+            margin-top: 10px;
+            padding: 6px 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.3);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .stats-clear-btn:hover {
+            border-color: rgba(233,69,96,0.4);
+            color: rgba(233,69,96,0.8);
+        }
+
         .start-btn {
             display: block;
             width: 100%;
@@ -233,7 +442,7 @@
 
         .start-btn:active { transform: translateY(0); }
 
-        /* ══════ Game Screen ══════ */
+        /* ====== Game Screen ====== */
         #game-screen { display: none; min-height: 100vh; padding: 16px; }
 
         .game-header { text-align: center; padding: 12px 0 8px; }
@@ -257,7 +466,7 @@
 
         .turn-indicator .player-name-highlight { font-weight: 700; }
 
-        /* ══════ Scoreboard ══════ */
+        /* ====== Scoreboard ====== */
         .scoreboard {
             display: flex;
             justify-content: center;
@@ -290,7 +499,17 @@
         .score-chip .sname { font-weight: 600; color: rgba(255,255,255,0.85); }
         .score-chip .sval { color: #fffb7d; font-weight: 800; }
 
-        /* ══════ Tile Box ══════ */
+        /* Score finalize animation */
+        .score-chip.score-finalized .sval {
+            animation: scorePulse 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes scorePulse {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.4); color: #6ee7a0; }
+            100% { transform: scale(1); }
+        }
+
+        /* ====== Tile Box ====== */
         .box-area {
             display: flex;
             justify-content: center;
@@ -298,6 +517,12 @@
             margin: 18px auto;
             max-width: 680px;
             flex-wrap: wrap;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .box-area.transitioning {
+            opacity: 0;
+            transform: translateY(8px);
         }
 
         .tile {
@@ -330,6 +555,18 @@
             transform: translateY(-5px);
             box-shadow: 0 6px 24px rgba(72,219,251,0.25), inset 0 0 12px rgba(72,219,251,0.1);
             color: #fff;
+        }
+
+        /* Valid tile hint pulse */
+        .tile.valid-hint:not(.shut):not(.selected):not(.matched):not(.closing) {
+            border-color: rgba(255,251,125,0.35);
+            box-shadow: 0 0 10px rgba(255,251,125,0.1);
+            animation: validPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes validPulse {
+            0%, 100% { border-color: rgba(255,251,125,0.35); box-shadow: 0 0 10px rgba(255,251,125,0.1); }
+            50% { border-color: rgba(255,251,125,0.55); box-shadow: 0 0 16px rgba(255,251,125,0.2); }
         }
 
         .tile.matched {
@@ -406,7 +643,7 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* ══════ 3D DICE ══════ */
+        /* ====== 3D DICE ====== */
         .dice-area {
             display: flex;
             flex-direction: column;
@@ -419,7 +656,6 @@
             position: relative;
             padding: 5px;
             border-radius: 16px;
-            /* Outer wood rim with richer grain */
             background: linear-gradient(145deg, #6b4423 0%, #4a2d12 40%, #3a2009 60%, #5c3b1e 100%);
             box-shadow:
                 0 6px 20px rgba(0,0,0,0.5),
@@ -430,7 +666,6 @@
 
         .dice-tray-inner {
             border-radius: 11px;
-            /* Rich dark green felt */
             background:
                 radial-gradient(ellipse at 50% 40%, #1e6b30 0%, #12522a 40%, #0c3d1a 70%, #082e12 100%);
             box-shadow:
@@ -439,11 +674,9 @@
                 inset 0 -1px 4px rgba(30,107,48,0.2);
             overflow: visible;
             position: relative;
-            /* Clip dice at left/right/bottom edges but let them fly in from top */
             clip-path: inset(-200px -4px -4px -4px);
         }
 
-        /* Subtle felt texture */
         .dice-tray-inner::before {
             content: '';
             position: absolute;
@@ -517,7 +750,6 @@
             backface-visibility: hidden;
         }
 
-        /* Face positions on the cube */
         .die-face.f1 { transform: translateZ(34px); }
         .die-face.f6 { transform: rotateY(180deg) translateZ(34px); }
         .die-face.f3 { transform: rotateY(90deg) translateZ(34px); }
@@ -535,7 +767,7 @@
             justify-self: center;
         }
 
-        /* ══════ Buttons ══════ */
+        /* ====== Buttons ====== */
         .action-btn {
             padding: 14px 36px;
             border: none;
@@ -600,7 +832,7 @@
             font-weight: 600;
         }
 
-        /* ══════ Game Over ══════ */
+        /* ====== Game Over ====== */
         #game-over-screen {
             display: none;
             flex-direction: column;
@@ -692,15 +924,7 @@
             background: rgba(255,107,157,0.06);
         }
 
-        .home-link {
-            display: inline-block; margin-top: 18px;
-            color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.88rem;
-            font-weight: 500; transition: color 0.2s;
-        }
-
-        .home-link:hover { color: #fffb7d; }
-
-        /* ══════ Rounds selector ══════ */
+        /* ====== Rounds selector ====== */
         .rounds-label {
             font-size: 0.8rem;
             font-weight: 700;
@@ -732,7 +956,7 @@
 
         .round-badge .rb-current { color: #fffb7d; font-weight: 700; }
 
-        /* ══════ Round Summary Screen ══════ */
+        /* ====== Round Summary Screen ====== */
         #round-summary-screen {
             display: none;
             flex-direction: column;
@@ -817,7 +1041,7 @@
             box-shadow: 0 8px 32px rgba(233,69,96,0.4);
         }
 
-        /* ══════ Rules ══════ */
+        /* ====== Rules ====== */
         .rules-toggle { text-align: center; margin-top: 14px; }
 
         .rules-toggle button {
@@ -851,7 +1075,7 @@
         .rules-panel ul { padding-left: 20px; margin-bottom: 10px; }
         .rules-panel li { margin-bottom: 4px; }
 
-        /* ══════ AI thinking ══════ */
+        /* ====== AI thinking ====== */
         .ai-thinking {
             display: inline-flex; align-items: center; gap: 7px;
             color: #48dbfb; font-size: 0.9rem; font-weight: 500;
@@ -870,7 +1094,7 @@
             40% { opacity: 1; transform: scale(1.3); }
         }
 
-        /* ══════ Responsive ══════ */
+        /* ====== Responsive ====== */
         @media (max-width: 520px) {
             .setup-title { font-size: 2rem; }
             .setup-box { padding: 22px 18px; }
@@ -899,15 +1123,50 @@
             .game-header h1 { font-size: 1.3rem; }
         }
 
+        /* ====== Back Button ====== */
+        .back-btn {
+            position: fixed; top: 12px; left: 12px;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            font-family: 'Inter', system-ui, sans-serif;
+            z-index: 9999;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            border-color: #8b5cf6; color: #c4b5fd;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .die-cube, .die-shadow { transition: none !important; }
             .tile, .action-btn, .game-card, .count-btn, .start-btn { transition: none; }
+            .tile.valid-hint:not(.shut):not(.selected):not(.matched):not(.closing) { animation: none; }
         }
     </style>
 </head>
 <body>
+<a href="../" class="back-btn">&#x1F3E0; Menu</a>
 
-<!-- ════════ SETUP SCREEN ════════ -->
+<!-- Mute Toggle -->
+<button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Toggle sound">
+    <svg id="mute-icon-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    <svg id="mute-icon-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+</button>
+
+<!-- Turn Banner Overlay -->
+<div class="turn-banner" id="turn-banner">
+    <div class="turn-banner-inner">
+        <div class="turn-banner-name" id="turn-banner-name"></div>
+        <div class="turn-banner-sub" id="turn-banner-sub"></div>
+    </div>
+</div>
+
+<!-- ======== SETUP SCREEN ======== -->
 <div id="setup-screen">
     <div class="setup-title">Shut the Box</div>
     <p class="setup-subtitle">Roll dice, close tiles, lowest score wins!</p>
@@ -923,6 +1182,12 @@
         <button class="start-btn" onclick="startGame()">Start Game</button>
     </div>
 
+    <!-- Stats Leaderboard -->
+    <div class="stats-section" id="stats-section">
+        <button class="stats-toggle-btn" onclick="toggleStats()">Leaderboard &amp; Stats</button>
+        <div class="stats-panel" id="stats-panel"></div>
+    </div>
+
     <div class="rules-toggle" style="margin-top:20px">
         <button onclick="toggleRules('setup-rules')">How to Play</button>
     </div>
@@ -931,16 +1196,16 @@
         <ul>
             <li>Each player has tiles numbered <strong>1 through 12</strong>.</li>
             <li>On your turn, <strong>roll two dice</strong>.</li>
-            <li>Tap any combination of open tiles that <strong>add up to the dice total</strong> — they close automatically!</li>
+            <li>Tap any combination of open tiles that <strong>add up to the dice total</strong> -- they close automatically!</li>
             <li>If your remaining tiles sum to <strong>6 or less</strong>, you roll only one die.</li>
             <li>If no valid combination exists, your turn <strong>ends</strong>.</li>
             <li>Your score is the <strong>sum of remaining open tiles</strong> (lower is better).</li>
-            <li>Closing all 12 tiles = <strong>"Shut the Box"</strong> — a perfect 0!</li>
+            <li>Closing all 12 tiles = <strong>"Shut the Box"</strong> -- a perfect 0!</li>
         </ul>
     </div>
 </div>
 
-<!-- ════════ GAME SCREEN ════════ -->
+<!-- ======== GAME SCREEN ======== -->
 <div id="game-screen">
     <div class="game-header">
         <h1>Shut the Box</h1>
@@ -979,23 +1244,24 @@
     </div>
 </div>
 
-<!-- ════════ ROUND SUMMARY ════════ -->
+<!-- ======== ROUND SUMMARY ======== -->
 <div id="round-summary-screen">
     <div class="round-summary-box" id="round-summary-box"></div>
 </div>
 
-<!-- ════════ GAME OVER ════════ -->
+<!-- ======== GAME OVER ======== -->
 <div id="game-over-screen">
     <div class="results-box" id="results-box"></div>
-    <a href="../index.html" class="home-link">Back to Game Portal</a>
 </div>
 
 <canvas id="confetti-canvas"></canvas>
 <script>
-/* ══════════════════════════════════════════════════════
-   SHUT THE BOX — Alford Family Game Portal
+/* ======================================================
+   SHUT THE BOX -- Alford Family Game Portal
    Tiles 1-12, 3D dice, 1-4 players with AI, multi-round
-   ══════════════════════════════════════════════════════ */
+   + Sound FX, Valid Tile Hints, AI Difficulty,
+     Turn Transitions, Persistent Stats
+   ====================================================== */
 
 const TILES = 12;
 const PLAYER_COLORS = ['#e94560', '#48dbfb', '#27ae60', '#feca57'];
@@ -1023,13 +1289,263 @@ let currentPlayerIdx = 0;
 let diceValues = [];
 let diceTotal = 0;
 let selectedTiles = new Set();
+let validTileSet = new Set();
 let phase = 'roll';
 let playerCount = 2;
 let rolling = false;
 let totalRounds = 1;
-let currentRound = 0;  // 0-based
+let currentRound = 0;
 
-/* ═══════════════ SETUP ═══════════════ */
+/* =============== SOUND FX (Web Audio API) =============== */
+
+let audioCtx = null;
+let soundMuted = false;
+
+function ensureAudioCtx() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return audioCtx;
+}
+
+function toggleMute() {
+    soundMuted = !soundMuted;
+    const btn = document.getElementById('mute-btn');
+    btn.classList.toggle('muted', soundMuted);
+    document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
+    document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
+}
+
+function playDiceRattle() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    const duration = 0.8;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Generate rattling noise bursts
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / ctx.sampleRate;
+        // Decaying noise with rhythmic bursts to simulate tumbling
+        const burst = Math.sin(t * 35) > 0.3 ? 1 : 0.2;
+        const envelope = Math.exp(-t * 4) * burst;
+        data[i] = (Math.random() * 2 - 1) * envelope * 0.15;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 3000;
+    filter.Q.value = 0.8;
+
+    source.connect(filter);
+    filter.connect(ctx.destination);
+    source.start();
+}
+
+function playTileClack() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    const duration = 0.12;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        const t = i / ctx.sampleRate;
+        // Sharp attack, quick decay -- wooden knock
+        const envelope = Math.exp(-t * 60);
+        data[i] = (Math.random() * 2 - 1) * envelope * 0.3 +
+                  Math.sin(t * 1800) * envelope * 0.15;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 800;
+
+    source.connect(filter);
+    filter.connect(ctx.destination);
+    source.start();
+}
+
+function playFanfare() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    const startTimes = [0, 0.15, 0.3, 0.45];
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+
+        const noteGain = ctx.createGain();
+        noteGain.gain.setValueAtTime(0, ctx.currentTime + startTimes[i]);
+        noteGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + startTimes[i] + 0.05);
+        noteGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTimes[i] + 0.6);
+
+        osc.connect(noteGain);
+        noteGain.connect(gain);
+        osc.start(ctx.currentTime + startTimes[i]);
+        osc.stop(ctx.currentTime + startTimes[i] + 0.7);
+    });
+}
+
+function playErrorTone() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(320, ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(200, ctx.currentTime + 0.35);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.45);
+}
+
+function playTurnChime() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+}
+
+/* =============== PERSISTENT GAME STATISTICS =============== */
+
+const STATS_KEY = 'shutTheBox_stats';
+
+function loadStats() {
+    try {
+        const raw = localStorage.getItem(STATS_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveStats(stats) {
+    try {
+        localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    } catch (e) { /* silently fail */ }
+}
+
+function recordGameStats(playerResults) {
+    // playerResults: array of { name, total, isPerfectRound (any round was 0), isWinner, roundScores }
+    const stats = loadStats();
+    playerResults.forEach(pr => {
+        const key = pr.name.toLowerCase().trim();
+        if (!key) return;
+        if (!stats[key]) {
+            stats[key] = {
+                displayName: pr.name,
+                gamesPlayed: 0,
+                wins: 0,
+                totalScore: 0,
+                perfectRounds: 0,
+                bestRoundScore: null
+            };
+        }
+        const s = stats[key];
+        s.displayName = pr.name;
+        s.gamesPlayed++;
+        if (pr.isWinner) s.wins++;
+        s.totalScore += pr.total;
+        s.perfectRounds += pr.perfectRoundCount;
+        // Best single-round score (lowest)
+        pr.roundScores.forEach(rs => {
+            if (s.bestRoundScore === null || rs < s.bestRoundScore) {
+                s.bestRoundScore = rs;
+            }
+        });
+    });
+    saveStats(stats);
+}
+
+function renderStatsPanel() {
+    const panel = document.getElementById('stats-panel');
+    const stats = loadStats();
+    const entries = Object.values(stats).sort((a, b) => {
+        // Sort by win rate desc, then avg score asc
+        const wrA = a.gamesPlayed > 0 ? a.wins / a.gamesPlayed : 0;
+        const wrB = b.gamesPlayed > 0 ? b.wins / b.gamesPlayed : 0;
+        if (wrB !== wrA) return wrB - wrA;
+        const avgA = a.gamesPlayed > 0 ? a.totalScore / a.gamesPlayed : 999;
+        const avgB = b.gamesPlayed > 0 ? b.totalScore / b.gamesPlayed : 999;
+        return avgA - avgB;
+    });
+
+    if (entries.length === 0) {
+        panel.innerHTML = '<p style="color:rgba(255,255,255,0.35);font-size:0.85rem;text-align:center;padding:12px 0">No stats yet. Play a game to see your leaderboard!</p>';
+        return;
+    }
+
+    let html = '<h3>Leaderboard</h3>';
+    html += '<table class="stats-table"><thead><tr>';
+    html += '<th>Player</th><th>Games</th><th>Wins</th><th>Avg</th><th>Best</th><th>STB</th>';
+    html += '</tr></thead><tbody>';
+
+    entries.forEach(s => {
+        const avg = s.gamesPlayed > 0 ? (s.totalScore / s.gamesPlayed).toFixed(1) : '--';
+        const best = s.bestRoundScore !== null ? s.bestRoundScore : '--';
+        html += `<tr>
+            <td>${esc(s.displayName)}</td>
+            <td>${s.gamesPlayed}</td>
+            <td class="stat-wins">${s.wins}</td>
+            <td>${avg}</td>
+            <td>${best === 0 ? '<span class="stat-perfect">0!</span>' : best}</td>
+            <td class="stat-perfect">${s.perfectRounds}</td>
+        </tr>`;
+    });
+
+    html += '</tbody></table>';
+    html += '<div style="text-align:right"><button class="stats-clear-btn" onclick="clearStats()">Clear All Stats</button></div>';
+
+    panel.innerHTML = html;
+}
+
+function toggleStats() {
+    const panel = document.getElementById('stats-panel');
+    const isOpen = panel.classList.contains('open');
+    if (!isOpen) renderStatsPanel();
+    panel.classList.toggle('open');
+}
+
+function clearStats() {
+    if (confirm('Clear all player statistics?')) {
+        localStorage.removeItem(STATS_KEY);
+        renderStatsPanel();
+    }
+}
+
+/* =============== SETUP =============== */
 
 function initSetup() {
     // Player count buttons
@@ -1053,6 +1569,7 @@ function initSetup() {
         rrow.appendChild(btn);
     });
     renderPlayerConfigs();
+    renderStatsPanel();
 }
 
 function setPlayerCount(n) {
@@ -1096,11 +1613,46 @@ function renderPlayerConfigs() {
         aBtn.textContent = 'AI';
         aBtn.className = (i !== 0) ? 'active' : '';
 
-        hBtn.onclick = () => { hBtn.classList.add('active'); aBtn.classList.remove('active'); };
-        aBtn.onclick = () => { aBtn.classList.add('active'); hBtn.classList.remove('active'); };
+        // AI difficulty selector
+        const diffRow = document.createElement('div');
+        diffRow.className = 'ai-diff-select' + ((i !== 0) ? ' visible' : '');
+        diffRow.id = `diff-row-${i}`;
+
+        const diffLabel = document.createElement('span');
+        diffLabel.className = 'ai-diff-label';
+        diffLabel.textContent = 'AI:';
+
+        const diffToggle = document.createElement('div');
+        diffToggle.className = 'diff-toggle';
+        diffToggle.id = `diff-toggle-${i}`;
+
+        ['Easy', 'Medium', 'Hard'].forEach((level, li) => {
+            const db = document.createElement('button');
+            db.textContent = level;
+            db.className = (li === 2) ? 'active' : ''; // Default to Hard
+            db.setAttribute('data-diff', level.toLowerCase());
+            db.onclick = () => {
+                diffToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                db.classList.add('active');
+            };
+            diffToggle.appendChild(db);
+        });
+
+        diffRow.append(diffLabel, diffToggle);
+
+        hBtn.onclick = () => {
+            hBtn.classList.add('active');
+            aBtn.classList.remove('active');
+            diffRow.classList.remove('visible');
+        };
+        aBtn.onclick = () => {
+            aBtn.classList.add('active');
+            hBtn.classList.remove('active');
+            diffRow.classList.add('visible');
+        };
 
         toggle.append(hBtn, aBtn);
-        div.append(dot, input, toggle);
+        div.append(dot, input, toggle, diffRow);
         c.appendChild(div);
     }
 }
@@ -1109,7 +1661,7 @@ function toggleRules(id) {
     document.getElementById(id).classList.toggle('open');
 }
 
-/* ═══════════════ START GAME ═══════════════ */
+/* =============== START GAME =============== */
 
 function startGame() {
     players = [];
@@ -1117,10 +1669,22 @@ function startGame() {
         const name = document.getElementById(`pname-${i}`).value.trim() || `Player ${i + 1}`;
         const cfg = document.querySelectorAll('.player-config')[i];
         const isAI = cfg.querySelector('.type-toggle button:last-child').classList.contains('active');
+
+        // Get AI difficulty
+        let aiDifficulty = 'hard';
+        if (isAI) {
+            const diffToggle = document.getElementById(`diff-toggle-${i}`);
+            if (diffToggle) {
+                const activeBtn = diffToggle.querySelector('button.active');
+                if (activeBtn) aiDifficulty = activeBtn.getAttribute('data-diff');
+            }
+        }
+
         players.push({
             name, isAI, color: PLAYER_COLORS[i],
             shutTiles: new Set(), score: null, done: false,
-            roundScores: []
+            roundScores: [],
+            aiDifficulty
         });
     }
     currentRound = 0;
@@ -1129,6 +1693,7 @@ function startGame() {
     diceValues = [];
     diceTotal = 0;
     selectedTiles.clear();
+    validTileSet.clear();
     rolling = false;
 
     showScreen('game-screen');
@@ -1148,6 +1713,7 @@ function startNextRound() {
     diceValues = [];
     diceTotal = 0;
     selectedTiles.clear();
+    validTileSet.clear();
     rolling = false;
 
     showScreen('game-screen');
@@ -1155,7 +1721,7 @@ function startNextRound() {
     beginTurn();
 }
 
-/* ═══════════════ RENDERING ═══════════════ */
+/* =============== RENDERING =============== */
 
 function renderAll() {
     renderRoundIndicator();
@@ -1178,16 +1744,24 @@ function renderScoreboard() {
         const thisRound = p.score !== null ? p.score : (p.done ? sumOpen(p) : null);
         let display;
         if (totalRounds <= 1) {
-            display = thisRound !== null ? thisRound : '—';
+            display = thisRound !== null ? thisRound : '--';
         } else {
             const total = prevTotal + (thisRound !== null ? thisRound : 0);
-            display = thisRound !== null ? total : (prevTotal > 0 ? prevTotal : '—');
+            display = thisRound !== null ? total : (prevTotal > 0 ? prevTotal : '--');
         }
-        return `<div class="score-chip ${i === currentPlayerIdx ? 'active' : ''}">
+        return `<div class="score-chip ${i === currentPlayerIdx ? 'active' : ''}" id="score-chip-${i}">
             <div class="dot" style="background:${p.color}"></div>
             <span class="sname">${esc(p.name)}</span>
             <span class="sval">${display}</span></div>`;
     }).join('');
+}
+
+function animateScoreFinalize(playerIdx) {
+    const chip = document.getElementById(`score-chip-${playerIdx}`);
+    if (chip) {
+        chip.classList.add('score-finalized');
+        setTimeout(() => chip.classList.remove('score-finalized'), 700);
+    }
 }
 
 function renderTiles() {
@@ -1199,7 +1773,9 @@ function renderTiles() {
         const tile = document.createElement('div');
         const shut = cp.shutTiles.has(t);
         const sel = selectedTiles.has(t);
+        const isValid = validTileSet.has(t);
         tile.className = 'tile' + (shut ? ' shut' : '') + (sel ? ' selected' : '')
+            + (isValid && !shut && !sel && phase === 'select' ? ' valid-hint' : '')
             + (!canSelect || shut ? ' disabled' : '');
         tile.textContent = t;
         if (canSelect && !shut) tile.onclick = () => toggleTile(t);
@@ -1207,7 +1783,7 @@ function renderTiles() {
     }
 }
 
-/* ═══════════════ 3D DICE ═══════════════ */
+/* =============== 3D DICE =============== */
 
 function buildFaceHTML(val) {
     return PIP_POS[val].map(([r, c]) =>
@@ -1223,7 +1799,6 @@ function buildCubeHTML() {
 function renderDice() {
     const row = document.getElementById('dice-row');
 
-    // No dice rolled yet — show empty tray
     if (diceValues.length === 0) {
         row.innerHTML = '';
         return;
@@ -1246,7 +1821,6 @@ function renderDice() {
             const cube = document.createElement('div');
             cube.className = 'die-cube';
             cube.innerHTML = buildCubeHTML();
-            // Start hidden — animateThrow() will position and reveal
             cube.style.transform = 'translateY(-200px) scale(0)';
 
             scene.append(cube, shadow);
@@ -1256,7 +1830,6 @@ function renderDice() {
 }
 
 function ensureDiceInDOM() {
-    // Create dice elements if not present (called right before animateThrow)
     const row = document.getElementById('dice-row');
     const cp = players[currentPlayerIdx];
     const useOne = sumOpen(cp) <= 6;
@@ -1297,7 +1870,6 @@ function animateThrow(targetValues) {
             const extraY = (2 + Math.floor(Math.random() * 2)) * 360 * (Math.random() > 0.5 ? 1 : -1);
             const landX = (Math.random() - 0.5) * 20;
 
-            // Start: tossed up, small, random rotation, offset sideways
             cube.classList.remove('idle');
             cube.style.transition = 'none';
             cube.style.transform = `
@@ -1317,7 +1889,6 @@ function animateThrow(targetValues) {
 
             const stagger = i * 100;
             setTimeout(() => {
-                // Dice fly in from above and to the side, tumble, then land center
                 cube.style.transition = `transform ${THROW_DURATION}ms cubic-bezier(0.10, 0.70, 0.25, 1.03)`;
                 cube.style.transform = `
                     translateY(0) translateX(${landX}px)
@@ -1339,7 +1910,7 @@ function animateThrow(targetValues) {
     });
 }
 
-/* ═══════════════ BUTTONS & INFO ═══════════════ */
+/* =============== BUTTONS & INFO =============== */
 
 let autoConfirming = false;
 
@@ -1366,13 +1937,12 @@ function updateSelectionInfo() {
     } else if (selSum < diceTotal) {
         info.innerHTML = `<span class="sum">${selSum}</span> / <span class="target">${diceTotal}</span>`;
     }
-    // When matched, info is cleared by the auto-confirm flow
 }
 
 function setMessage(msg) { document.getElementById('message-area').innerHTML = msg; }
 function setTurnIndicator(html) { document.getElementById('turn-indicator').innerHTML = html; }
 
-/* ═══════════════ CONFETTI ═══════════════ */
+/* =============== CONFETTI =============== */
 
 function launchConfetti(duration) {
     const canvas = document.getElementById('confetti-canvas');
@@ -1440,7 +2010,42 @@ function launchConfetti(duration) {
     requestAnimationFrame(frame);
 }
 
-/* ═══════════════ GAME LOGIC ═══════════════ */
+/* =============== TURN BANNER (Animated Transition) =============== */
+
+function showTurnBanner(playerName, playerColor, subtitle) {
+    return new Promise(resolve => {
+        const banner = document.getElementById('turn-banner');
+        const nameEl = document.getElementById('turn-banner-name');
+        const subEl = document.getElementById('turn-banner-sub');
+
+        nameEl.textContent = playerName;
+        nameEl.style.color = playerColor;
+        subEl.textContent = subtitle || "Your turn";
+
+        banner.classList.add('visible');
+
+        setTimeout(() => {
+            banner.classList.remove('visible');
+            setTimeout(resolve, 300);
+        }, 1000);
+    });
+}
+
+function transitionTileArea() {
+    return new Promise(resolve => {
+        const area = document.getElementById('box-area');
+        area.classList.add('transitioning');
+        setTimeout(() => {
+            renderTiles();
+            // Force reflow then remove transitioning
+            area.offsetHeight;
+            area.classList.remove('transitioning');
+            setTimeout(resolve, 300);
+        }, 300);
+    });
+}
+
+/* =============== GAME LOGIC =============== */
 
 function sumOpen(p) {
     let s = 0;
@@ -1469,7 +2074,16 @@ function findCombinations(openTiles, target) {
     return results;
 }
 
-function beginTurn() {
+function computeValidTiles(cp) {
+    const openTiles = getOpenTiles(cp);
+    const combos = findCombinations(openTiles, diceTotal);
+    validTileSet.clear();
+    combos.forEach(combo => {
+        combo.forEach(t => validTileSet.add(t));
+    });
+}
+
+async function beginTurn() {
     const cp = players[currentPlayerIdx];
     if (cp.done) { nextPlayer(); return; }
 
@@ -1477,11 +2091,26 @@ function beginTurn() {
     diceValues = [];
     diceTotal = 0;
     selectedTiles.clear();
+    validTileSet.clear();
     rolling = false;
 
+    // Play turn transition chime
+    playTurnChime();
+
+    // Animate tile area transition
+    const area = document.getElementById('box-area');
+    area.classList.add('transitioning');
+
+    // Show turn banner
+    const subtitle = cp.isAI ? 'AI thinking...' : 'Your turn';
+    await showTurnBanner(cp.name, cp.color, subtitle);
+
+    // Finish tile transition
     setTurnIndicator(`<span class="player-name-highlight" style="color:${cp.color}">${esc(cp.name)}</span>'s turn`);
     setMessage('');
     renderAll();
+    area.offsetHeight;
+    area.classList.remove('transitioning');
 
     if (cp.isAI) {
         setMessage(`<span class="ai-thinking">${esc(cp.name)} is thinking<span class="dots"><span></span><span></span><span></span></span></span>`);
@@ -1502,6 +2131,7 @@ async function rollDice() {
     diceTotal = useOne ? d1 : d1 + d2;
 
     ensureDiceInDOM();
+    playDiceRattle();
     await animateThrow(diceValues);
     rolling = false;
     afterRoll(cp);
@@ -1515,13 +2145,18 @@ function afterRoll(cp) {
         phase = 'roll';
         cp.score = sumOpen(cp);
         cp.done = true;
+        validTileSet.clear();
+        playErrorTone();
         setMessage(`No tiles add up to ${diceTotal}. ${esc(cp.name)} scores <strong>${cp.score}</strong>.`);
         renderScoreboard();
+        animateScoreFinalize(currentPlayerIdx);
         updateButtons();
         setTimeout(() => nextPlayer(), 1800);
     } else {
         phase = 'select';
         selectedTiles.clear();
+        // Compute and highlight valid tiles
+        computeValidTiles(cp);
         setMessage('');
         renderTiles();
         updateButtons();
@@ -1536,10 +2171,8 @@ function toggleTile(t) {
 
     const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
 
-    // If selection exceeds target, reject the last tap
     if (selSum > diceTotal) {
         selectedTiles.delete(t);
-        // Flash the tile red briefly
         const tiles = document.querySelectorAll('.tile');
         const tileEl = tiles[t - 1];
         if (tileEl) {
@@ -1553,7 +2186,6 @@ function toggleTile(t) {
     renderTiles();
     updateSelectionInfo();
 
-    // Auto-confirm when selection matches dice total
     if (selSum === diceTotal && selectedTiles.size > 0) {
         autoConfirmSelection();
     }
@@ -1586,18 +2218,26 @@ function autoConfirmSelection() {
             }
         });
 
+        // Play wooden clack sound for each tile (slightly staggered)
+        tilesToClose.forEach((t, i) => {
+            setTimeout(() => playTileClack(), i * 60);
+        });
+
         // After close animation, update game state
         setTimeout(() => {
             tilesToClose.forEach(t => cp.shutTiles.add(t));
             selectedTiles.clear();
+            validTileSet.clear();
             autoConfirming = false;
 
             if (cp.shutTiles.size === TILES) {
                 cp.score = 0;
                 cp.done = true;
+                playFanfare();
                 setMessage(`<span class="celebrate-text"><strong style="color:#fffb7d">SHUT THE BOX!</strong></span>`);
                 launchConfetti(3000);
                 renderAll();
+                animateScoreFinalize(currentPlayerIdx);
                 setTimeout(() => nextPlayer(), 2500);
                 return;
             }
@@ -1626,7 +2266,7 @@ function nextPlayer() {
     beginTurn();
 }
 
-/* ═══════════════ AI ═══════════════ */
+/* =============== AI =============== */
 
 async function aiRoll() {
     const cp = players[currentPlayerIdx];
@@ -1639,6 +2279,7 @@ async function aiRoll() {
     diceTotal = useOne ? d1 : d1 + d2;
 
     ensureDiceInDOM();
+    playDiceRattle();
     await animateThrow(diceValues);
 
     const openTiles = getOpenTiles(cp);
@@ -1647,44 +2288,65 @@ async function aiRoll() {
     if (combos.length === 0) {
         cp.score = sumOpen(cp);
         cp.done = true;
-        setMessage(`${esc(cp.name)} rolled ${diceTotal} — no moves! Score: <strong>${cp.score}</strong>.`);
+        validTileSet.clear();
+        playErrorTone();
+        setMessage(`${esc(cp.name)} rolled ${diceTotal} -- no moves! Score: <strong>${cp.score}</strong>.`);
         renderScoreboard();
+        animateScoreFinalize(currentPlayerIdx);
         setTimeout(() => nextPlayer(), 1800);
     } else {
-        const best = pickBestCombo(combos);
+        const best = pickBestCombo(combos, cp.aiDifficulty);
         phase = 'select';
+        computeValidTiles(cp);
         setMessage(`${esc(cp.name)} rolled <strong>${diceTotal}</strong>...`);
         renderTiles();
 
+        // AI selects tiles visually, then uses autoConfirmSelection pipeline
         setTimeout(() => {
             best.forEach(t => selectedTiles.add(t));
             renderTiles();
             updateSelectionInfo();
 
+            // Use autoConfirmSelection for matched/closing animation + sound
             setTimeout(() => {
-                best.forEach(t => cp.shutTiles.add(t));
-                selectedTiles.clear();
-                setMessage(`${esc(cp.name)} closed <strong>${best.join(' + ')}</strong>.`);
+                autoConfirmSelection();
 
-                if (cp.shutTiles.size === TILES) {
-                    cp.score = 0;
-                    cp.done = true;
-                    setMessage(`<span class="celebrate-text"><strong style="color:#fffb7d">${esc(cp.name)} SHUT THE BOX!</strong></span>`);
-                    launchConfetti(3000);
-                    renderAll();
-                    setTimeout(() => nextPlayer(), 2500);
-                } else {
-                    phase = 'roll';
-                    renderTiles();
-                    renderScoreboard();
-                    setTimeout(() => aiRoll(), AI_DELAY);
-                }
-            }, 600);
+                // After autoConfirmSelection finishes, continue AI turn or end
+                // autoConfirmSelection sets autoConfirming=false when done and handles shut-the-box
+                // We need to wait for it to complete, then either continue rolling or it already called nextPlayer
+                const waitForConfirm = setInterval(() => {
+                    if (!autoConfirming) {
+                        clearInterval(waitForConfirm);
+                        // If the player is not done and phase is 'roll', continue AI rolling
+                        if (!cp.done && phase === 'roll') {
+                            setTimeout(() => aiRoll(), AI_DELAY);
+                        }
+                    }
+                }, 100);
+            }, 400);
         }, AI_DELAY);
     }
 }
 
-function pickBestCombo(combos) {
+function pickBestCombo(combos, difficulty) {
+    if (!difficulty) difficulty = 'hard';
+
+    if (difficulty === 'easy') {
+        // Random valid combo
+        return combos[Math.floor(Math.random() * combos.length)];
+    }
+
+    if (difficulty === 'medium') {
+        // Prefer combos with more tiles (closing more tiles keeps options open)
+        combos.sort((a, b) => {
+            if (b.length !== a.length) return b.length - a.length;
+            // Tie-break: prefer lower max tile
+            return Math.min(...a) - Math.min(...b);
+        });
+        return combos[0];
+    }
+
+    // Hard: highest-first greedy (original strategy)
     combos.sort((a, b) => {
         const maxA = Math.max(...a), maxB = Math.max(...b);
         if (maxB !== maxA) return maxB - maxA;
@@ -1693,7 +2355,7 @@ function pickBestCombo(combos) {
     return combos[0];
 }
 
-/* ═══════════════ ROUND END ═══════════════ */
+/* =============== ROUND END =============== */
 
 function endRound() {
     players.forEach(p => {
@@ -1712,18 +2374,15 @@ function showRoundSummary() {
     const box = document.getElementById('round-summary-box');
     const rn = currentRound + 1;
 
-    // Find round winner (lowest this round)
     const bestThisRound = Math.min(...players.map(p => p.roundScores[currentRound]));
 
     let html = `<h2>Round ${rn} Complete</h2>`;
     html += `<p class="rs-subtitle">${totalRounds - rn} round${totalRounds - rn !== 1 ? 's' : ''} remaining</p>`;
 
-    // Build table: Player | R1 | R2 | ... | Total
     html += `<table class="round-table"><thead><tr><th>Player</th>`;
     for (let r = 0; r <= currentRound; r++) html += `<th>R${r + 1}</th>`;
     html += `<th>Total</th></tr></thead><tbody>`;
 
-    // Sort by cumulative total for display
     const sorted = [...players].sort((a, b) => {
         const ta = a.roundScores.reduce((x, y) => x + y, 0);
         const tb = b.roundScores.reduce((x, y) => x + y, 0);
@@ -1752,12 +2411,11 @@ function showRoundSummary() {
     showScreen('round-summary-screen');
 }
 
-/* ═══════════════ GAME OVER ═══════════════ */
+/* =============== GAME OVER =============== */
 
 function endGame() {
     phase = 'gameover';
 
-    // Calculate totals
     const totals = players.map(p => ({
         ...p,
         total: p.roundScores.reduce((a, b) => a + b, 0)
@@ -1767,6 +2425,21 @@ function endGame() {
     const winner = sorted[0];
     const isTie = sorted.length > 1 && sorted[0].total === sorted[1].total;
 
+    // Save persistent stats
+    const winnerTotal = winner.total;
+    const playerResults = players.map(p => {
+        const total = p.roundScores.reduce((a, b) => a + b, 0);
+        const perfectRoundCount = p.roundScores.filter(s => s === 0).length;
+        return {
+            name: p.name,
+            total,
+            perfectRoundCount,
+            isWinner: total === winnerTotal,
+            roundScores: [...p.roundScores]
+        };
+    });
+    recordGameStats(playerResults);
+
     let html = `<h2>Game Over!</h2>`;
     if (isTie) {
         const tied = sorted.filter(p => p.total === winner.total);
@@ -1775,7 +2448,6 @@ function endGame() {
         html += `<div class="winner-name" style="color:${winner.color}">${esc(winner.name)} Wins!</div>`;
     }
 
-    // Multi-round: show full breakdown table
     if (totalRounds > 1) {
         html += `<table class="round-table"><thead><tr><th>Player</th>`;
         for (let r = 0; r < totalRounds; r++) html += `<th>R${r + 1}</th>`;
@@ -1793,7 +2465,6 @@ function endGame() {
         });
         html += `</tbody></table>`;
     } else {
-        // Single round: simple list
         html += `<ul class="final-scores">`;
         sorted.forEach((p, i) => {
             const w = p.total === winner.total;
@@ -1826,6 +2497,7 @@ function playAgain() {
     diceValues = [];
     diceTotal = 0;
     selectedTiles.clear();
+    validTileSet.clear();
     rolling = false;
 
     showScreen('game-screen');
@@ -1838,7 +2510,7 @@ function newGame() {
     initSetup();
 }
 
-/* ═══════════════ UTILITIES ═══════════════ */
+/* =============== UTILITIES =============== */
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
@@ -1854,7 +2526,7 @@ function showScreen(id) {
     });
 }
 
-/* ═══════════════ INIT ═══════════════ */
+/* =============== INIT =============== */
 initSetup();
 </script>
 </body>

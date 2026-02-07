@@ -35,7 +35,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 80%, rgba(0, 255, 204, 0.06) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 20, 147, 0.06) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(138, 43, 226, 0.04) 0%, transparent 50%);
@@ -55,13 +55,13 @@
         }
 
         @keyframes particleFloat {
-            0% { 
+            0% {
                 transform: translateY(100vh) translateX(0px);
                 opacity: 0;
             }
             10% { opacity: 0.8; }
             90% { opacity: 0.8; }
-            100% { 
+            100% {
                 transform: translateY(-10vh) translateX(20px);
                 opacity: 0;
             }
@@ -70,6 +70,12 @@
         @keyframes pulse {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes hintPulse {
+            0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.4; }
+            100% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.8; }
         }
 
         .particle {
@@ -96,7 +102,7 @@
             border-radius: 16px;
             padding: 16px 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
+            box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
             overflow: hidden;
@@ -131,7 +137,7 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #00ffcc;
-            text-shadow: 
+            text-shadow:
                 0 0 10px #00ffcc,
                 0 2px 4px rgba(0, 0, 0, 0.3);
             filter: drop-shadow(0 0 8px rgba(0, 255, 204, 0.7));
@@ -143,7 +149,7 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #ffffff;
-            text-shadow: 
+            text-shadow:
                 0 0 10px #7799ff,
                 0 2px 4px rgba(0, 0, 0, 0.3);
             margin-bottom: 8px;
@@ -154,6 +160,15 @@
             color: rgba(255, 255, 255, 0.8);
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
             line-height: 1.4;
+        }
+
+        .move-counter {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+            margin-top: 6px;
+            margin-bottom: 4px;
         }
 
         .game-button {
@@ -181,6 +196,65 @@
             transform: scale(0.95);
         }
 
+        .game-button.hint-btn {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.2) 0%, rgba(255, 204, 0, 0.1) 100%);
+            border-color: rgba(255, 204, 0, 0.3);
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
+            font-size: 12px;
+            padding: 6px 12px;
+            min-height: 36px;
+        }
+
+        .game-button.hint-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.3) 0%, rgba(255, 204, 0, 0.15) 100%);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
+        }
+
+        .game-button.hint-btn:disabled {
+            opacity: 0.3;
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .game-button.levels-btn {
+            background: linear-gradient(135deg, rgba(119, 153, 255, 0.2) 0%, rgba(119, 153, 255, 0.1) 100%);
+            border-color: rgba(119, 153, 255, 0.3);
+            color: #7799ff;
+            text-shadow: 0 0 8px rgba(119, 153, 255, 0.7);
+            font-size: 12px;
+            padding: 6px 12px;
+            min-height: 36px;
+        }
+
+        .game-button.levels-btn:hover {
+            background: linear-gradient(135deg, rgba(119, 153, 255, 0.3) 0%, rgba(119, 153, 255, 0.15) 100%);
+            box-shadow: 0 4px 12px rgba(119, 153, 255, 0.3);
+        }
+
+        .mute-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 4px 10px;
+            min-height: 32px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+            margin: 4px;
+            display: inline-block;
+        }
+
+        .mute-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        }
+
+        .mute-btn.muted {
+            opacity: 0.5;
+        }
+
         .win-message {
             position: absolute;
             top: 50%;
@@ -203,12 +277,28 @@
             border: 2px solid rgba(0, 255, 204, 0.4);
             backdrop-filter: blur(8px);
             pointer-events: none;
-            white-space: nowrap;
+            text-align: center;
         }
 
         .win-message.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
+        }
+
+        .win-stars {
+            font-size: 36px;
+            display: block;
+            margin-top: 8px;
+            filter: none;
+        }
+
+        .win-moves {
+            font-size: 14px;
+            display: block;
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: none;
+            filter: none;
         }
 
         canvas {
@@ -232,6 +322,130 @@
         .target {
             animation: pulse 1.5s infinite;
         }
+
+        /* Level Select Overlay */
+        .level-select-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .level-select-overlay.active {
+            display: flex;
+        }
+
+        .level-select-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(119, 153, 255, 0.6);
+            margin-bottom: 24px;
+            letter-spacing: 2px;
+        }
+
+        .level-select-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: 560px;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 500px) {
+            .level-select-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        .level-select-card {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 2px solid rgba(119, 153, 255, 0.3);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .level-select-card:hover:not(.locked) {
+            border-color: rgba(0, 255, 204, 0.6);
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.1) 0%, rgba(0, 255, 204, 0.04) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 255, 204, 0.2);
+        }
+
+        .level-select-card.locked {
+            opacity: 0.35;
+            cursor: default;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .level-select-card.current {
+            border-color: rgba(0, 255, 204, 0.7);
+            box-shadow: 0 0 16px rgba(0, 255, 204, 0.3), inset 0 0 12px rgba(0, 255, 204, 0.08);
+        }
+
+        .level-card-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(119, 153, 255, 0.5);
+        }
+
+        .level-card-name {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            text-align: center;
+            padding: 0 4px;
+        }
+
+        .level-card-stars {
+            margin-top: 6px;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .level-card-lock {
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        .level-select-close {
+            margin-top: 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 10px 32px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 44px;
+            transition: all 0.15s ease;
+        }
+
+        .level-select-close:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+        }
+
         /* Mirror toolbar - horizontal bar at the bottom of the screen */
         .mirror-toolbar {
             position: fixed;
@@ -335,27 +549,46 @@
     </style>
 </head>
 <body>
-  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
+  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#x1F3E0; Menu</a>
     <div class="game-container">
         <div class="ui-panel level-panel" style="left:80px;">
             <div class="level-text" id="levelText">LEVEL 1: FIRST BOUNCE</div>
             <div class="level-progress" id="levelProgress" style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;"></div>
+            <div class="move-counter" id="moveCounter">MOVES: 0 / PAR: 1</div>
             <div class="instruction-text">
-                Double-click/tap to place mirror • Drag to reposition • Delete key: return to storage<br>
-                <span style="opacity:0.7">Keyboard: Arrow keys cycle mirrors • R/Space rotate • Tab for UI</span>
+                Double-click/tap to place mirror &bull; Drag to reposition &bull; Delete key: return to storage<br>
+                <span style="opacity:0.7">Keyboard: Arrow keys cycle mirrors &bull; R/Space rotate &bull; Tab for UI</span>
             </div>
         </div>
 
         <div class="ui-panel controls-panel">
-            <button class="game-button" onclick="resetGame()" aria-label="Reset level">↺ RESET</button>
-            <button class="game-button" onclick="fireLaser()" aria-label="Fire laser">⚡ FIRE</button>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+                <button class="game-button" onclick="resetGame()" aria-label="Reset level">&#x21BA; RESET</button>
+                <button class="game-button" onclick="fireLaser()" aria-label="Fire laser">&#x26A1; FIRE</button>
+                <button class="mute-btn" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound">&#x1F50A;</button>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+                <button class="game-button levels-btn" onclick="showLevelSelect()" aria-label="Level select">&#x1F4CB; LEVELS</button>
+                <button class="game-button hint-btn" id="hintBtn" onclick="useHint()" aria-label="Get hint">&#x1F4A1; HINT (2)</button>
+            </div>
             <div class="score-text" id="modeIndicator" style="margin-top: 8px; font-size: 12px;">READY</div>
         </div>
 
-        <div class="win-message" id="winMessage" aria-live="assertive">TARGET ACQUIRED!</div>
+        <div class="win-message" id="winMessage" aria-live="assertive">
+            TARGET ACQUIRED!
+            <span class="win-stars" id="winStars"></span>
+            <span class="win-moves" id="winMoves"></span>
+        </div>
+
+        <!-- Level Select Overlay -->
+        <div class="level-select-overlay" id="levelSelectOverlay">
+            <div class="level-select-title">SELECT LEVEL</div>
+            <div class="level-select-grid" id="levelSelectGrid"></div>
+            <button class="level-select-close" onclick="hideLevelSelect()">BACK TO GAME</button>
+        </div>
 
         <canvas id="gameCanvas" role="application" aria-label="Lasers and Mirrors interactive game board" tabindex="0"></canvas>
-        
+
         <!-- Bottom horizontal mirror toolbar -->
         <div class="mirror-toolbar" role="toolbar" aria-label="Mirror inventory">
             <div id="mirrorSlots" class="mirror-slots-row">
@@ -370,7 +603,7 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        
+
         // Set canvas size to full screen minus bottom toolbar (DPI-aware)
         const dpr = window.devicePixelRatio || 1;
         let canvasCSSWidth = window.innerWidth;
@@ -386,18 +619,31 @@
         let keyboardMirrorIndex = -1; // Index into gameState.mirrors for keyboard focus
         let backgroundParticleInterval = null;
 
-        // --- Level persistence (issue 1) ---
+        // === IMPROVEMENT 1: Move counter & star ratings ===
+        let moveCount = 0;
+        let levelStars = {}; // { levelIndex: starCount } persisted in localStorage
+
+        // === IMPROVEMENT 3: Hint system ===
+        let hintsRemaining = 2;
+        let activeHint = null; // { x, y, startTime }
+
+        // === IMPROVEMENT 5: Sound system ===
+        let audioCtx = null;
+        let isMuted = false;
+
+        // --- Level persistence ---
         const PROGRESS_KEY = 'lasersMirrorsProgress';
 
         function saveProgress() {
             try {
                 const data = {
                     currentLevel: currentLevel,
-                    highestUnlocked: highestUnlockedLevel
+                    highestUnlocked: highestUnlockedLevel,
+                    levelStars: levelStars
                 };
                 localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
             } catch (e) {
-                // localStorage unavailable (private browsing, quota, etc.) — silently ignore
+                // localStorage unavailable (private browsing, quota, etc.)
             }
         }
 
@@ -416,24 +662,33 @@
                         data.highestUnlocked < LEVELS.length) {
                         highestUnlockedLevel = data.highestUnlocked;
                     }
+                    if (data.levelStars && typeof data.levelStars === 'object') {
+                        levelStars = data.levelStars;
+                    }
+                }
+                // Load mute preference
+                const muteRaw = localStorage.getItem('lasersMirrorsMuted');
+                if (muteRaw === 'true') {
+                    isMuted = true;
+                    const muteBtn = document.getElementById('muteBtn');
+                    if (muteBtn) {
+                        muteBtn.textContent = '\u{1F507}';
+                        muteBtn.classList.add('muted');
+                    }
                 }
             } catch (e) {
-                // localStorage unavailable or corrupt — start from level 0
+                // localStorage unavailable or corrupt
             }
         }
 
-        // Level definitions — all use only 45° and -45° mirrors for clean, predictable reflections.
-        // Reflection rule: mirror at angle θ reflects ray angle α to (2θ - α).
-        //   -45° mirror: right(0)→up(-π/2), up(-π/2)→right(0), left(π)→down(π/2), down(π/2)→left(π)
-        //   +45° mirror: right(0)→down(π/2), down(π/2)→right(0), left(π)→up(-π/2), up(-π/2)→left(π)
-        // Each level gives exactly the mirrors needed to solve it — no extras.
+        // Level definitions -- all use only 45deg and -45deg mirrors for clean, predictable reflections.
         const M45 = Math.PI / 4;
         const M_45 = -Math.PI / 4;
 
         const LEVELS = [
             {
-                // Laser→right, mirror deflects up, target above mirror.
                 name: "FIRST BOUNCE",
+                par: 1,
                 laser: { xPct: 0.05, yPct: 0.5, angle: 0 },
                 target: { xPct: 0.5, yPct: 0.1 },
                 obstacles: [],
@@ -442,8 +697,8 @@
                 ]
             },
             {
-                // Laser→right, 45° sends down, target below.
                 name: "DOWN BELOW",
+                par: 1,
                 laser: { xPct: 0.05, yPct: 0.2, angle: 0 },
                 target: { xPct: 0.45, yPct: 0.85 },
                 obstacles: [],
@@ -452,9 +707,8 @@
                 ]
             },
             {
-                // Laser→right, wall blocks direct path. -45° sends up, -45° sends right to target.
-                // Path: right → up → right
                 name: "UP AND OVER",
+                par: 2,
                 laser: { xPct: 0.05, yPct: 0.7, angle: 0 },
                 target: { xPct: 0.85, yPct: 0.2 },
                 obstacles: [
@@ -466,9 +720,8 @@
                 ]
             },
             {
-                // Laser→right, wall blocks. 45° sends down, 45° sends right.
-                // Path: right → down → right
                 name: "THE DETOUR",
+                par: 2,
                 laser: { xPct: 0.05, yPct: 0.2, angle: 0 },
                 target: { xPct: 0.85, yPct: 0.75 },
                 obstacles: [
@@ -480,9 +733,8 @@
                 ]
             },
             {
-                // Laser→right, target is back on the LEFT side but higher.
-                // Path: right → up(-45°) → left(+45°)
                 name: "BOOMERANG",
+                par: 2,
                 laser: { xPct: 0.05, yPct: 0.8, angle: 0 },
                 target: { xPct: 0.12, yPct: 0.12 },
                 obstacles: [
@@ -494,9 +746,8 @@
                 ]
             },
             {
-                // Laser→right, two walls create zigzag.
-                // Path: right → down(+45°) → right(+45°) → up(-45°)
                 name: "ZIGZAG",
+                par: 3,
                 laser: { xPct: 0.05, yPct: 0.2, angle: 0 },
                 target: { xPct: 0.85, yPct: 0.2 },
                 obstacles: [
@@ -510,9 +761,8 @@
                 ]
             },
             {
-                // Laser→right, three walls force a staircase path.
-                // Path: right → up(-45°) → right(-45°) → down(+45°) → right(+45°)
                 name: "THE STAIRCASE",
+                par: 4,
                 laser: { xPct: 0.05, yPct: 0.7, angle: 0 },
                 target: { xPct: 0.92, yPct: 0.7 },
                 obstacles: [
@@ -528,9 +778,8 @@
                 ]
             },
             {
-                // Laser→right, four walls force a full zigzag across the screen.
-                // Path: right → down(+45°) → right(+45°) → up(-45°) → right(-45°) → down(+45°)
                 name: "THE GAUNTLET",
+                par: 5,
                 laser: { xPct: 0.05, yPct: 0.15, angle: 0 },
                 target: { xPct: 0.92, yPct: 0.85 },
                 obstacles: [
@@ -564,6 +813,382 @@
             mirrorInventory: []
         };
 
+        // ================================================================
+        // IMPROVEMENT 5: Web Audio API Sound Effects
+        // ================================================================
+        function initAudio() {
+            if (audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                // Web Audio not supported
+            }
+        }
+
+        // Ensure AudioContext is created on first user gesture
+        function ensureAudio() {
+            if (!audioCtx) initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playClinkSound() {
+            if (isMuted || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                // Metallic clink: short burst with high-frequency content
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc1.type = 'square';
+                osc1.frequency.setValueAtTime(2400, now);
+                osc1.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(4800, now);
+                osc2.frequency.exponentialRampToValueAtTime(1200, now + 0.06);
+
+                filter.type = 'highpass';
+                filter.frequency.setValueAtTime(1000, now);
+
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.12);
+                osc2.stop(now + 0.12);
+            } catch (e) {}
+        }
+
+        function playLaserZapSound(segmentCount) {
+            if (isMuted || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                const duration = Math.min(0.3 + segmentCount * 0.08, 0.8);
+
+                // Electric zap: noise-like with frequency sweep
+                const osc = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(80, now + duration);
+
+                osc2.type = 'square';
+                osc2.frequency.setValueAtTime(60, now);
+                osc2.frequency.linearRampToValueAtTime(40, now + duration);
+
+                // Modulate with LFO for buzzing
+                const lfo = audioCtx.createOscillator();
+                const lfoGain = audioCtx.createGain();
+                lfo.type = 'sine';
+                lfo.frequency.setValueAtTime(30, now);
+                lfoGain.gain.setValueAtTime(50, now);
+                lfo.connect(lfoGain);
+                lfoGain.connect(osc.frequency);
+
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(400, now);
+                filter.Q.setValueAtTime(2, now);
+
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.setValueAtTime(0.1, now + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                lfo.start(now);
+                osc.start(now);
+                osc2.start(now);
+                lfo.stop(now + duration);
+                osc.stop(now + duration);
+                osc2.stop(now + duration);
+            } catch (e) {}
+        }
+
+        function playChimeSound() {
+            if (isMuted || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                // Satisfying chime: harmonious ascending tones
+                const freqs = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+                freqs.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    const startTime = now + i * 0.08;
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.12, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.5);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.5);
+                });
+            } catch (e) {}
+        }
+
+        function playThudSound() {
+            if (isMuted || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                // Thud: low frequency drop
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } catch (e) {}
+        }
+
+        function toggleMute() {
+            ensureAudio();
+            isMuted = !isMuted;
+            const muteBtn = document.getElementById('muteBtn');
+            if (isMuted) {
+                muteBtn.textContent = '\u{1F507}';
+                muteBtn.classList.add('muted');
+            } else {
+                muteBtn.textContent = '\u{1F50A}';
+                muteBtn.classList.remove('muted');
+            }
+            try {
+                localStorage.setItem('lasersMirrorsMuted', isMuted ? 'true' : 'false');
+            } catch (e) {}
+        }
+
+        // ================================================================
+        // IMPROVEMENT 1: Star calculation helpers
+        // ================================================================
+        function calculateStars(moves, par) {
+            if (moves <= par) return 3;
+            if (moves <= par + 2) return 2;
+            return 1;
+        }
+
+        function getStarString(count) {
+            const filled = '\u2605'; // filled star
+            const empty = '\u2606';  // empty star
+            let s = '';
+            for (let i = 0; i < 3; i++) {
+                s += (i < count) ? filled : empty;
+            }
+            return s;
+        }
+
+        function updateMoveCounter() {
+            const level = LEVELS[currentLevel];
+            const el = document.getElementById('moveCounter');
+            el.textContent = `MOVES: ${moveCount} / PAR: ${level.par}`;
+            if (moveCount <= level.par) {
+                el.style.color = '#00ffcc';
+            } else if (moveCount <= level.par + 2) {
+                el.style.color = '#ffcc00';
+            } else {
+                el.style.color = '#ff6b6b';
+            }
+        }
+
+        function incrementMoveCount() {
+            moveCount++;
+            updateMoveCounter();
+        }
+
+        // ================================================================
+        // IMPROVEMENT 2: Level Select Screen
+        // ================================================================
+        function showLevelSelect() {
+            const overlay = document.getElementById('levelSelectOverlay');
+            const grid = document.getElementById('levelSelectGrid');
+            grid.innerHTML = '';
+
+            LEVELS.forEach((level, i) => {
+                const card = document.createElement('div');
+                card.className = 'level-select-card';
+                const isUnlocked = i <= highestUnlockedLevel;
+                const isCurrent = i === currentLevel;
+
+                if (!isUnlocked) card.classList.add('locked');
+                if (isCurrent) card.classList.add('current');
+
+                if (isUnlocked) {
+                    const numEl = document.createElement('div');
+                    numEl.className = 'level-card-number';
+                    numEl.textContent = i + 1;
+                    card.appendChild(numEl);
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = 'level-card-name';
+                    nameEl.textContent = level.name;
+                    card.appendChild(nameEl);
+
+                    const savedStars = levelStars[i];
+                    if (savedStars) {
+                        const starsEl = document.createElement('div');
+                        starsEl.className = 'level-card-stars';
+                        starsEl.textContent = getStarString(savedStars);
+                        starsEl.style.color = '#ffcc00';
+                        card.appendChild(starsEl);
+                    }
+
+                    card.addEventListener('click', () => {
+                        hideLevelSelect();
+                        loadLevel(i);
+                    });
+                } else {
+                    const lockEl = document.createElement('div');
+                    lockEl.className = 'level-card-lock';
+                    lockEl.textContent = '\u{1F512}';
+                    card.appendChild(lockEl);
+
+                    const numEl = document.createElement('div');
+                    numEl.className = 'level-card-name';
+                    numEl.textContent = 'LEVEL ' + (i + 1);
+                    card.appendChild(numEl);
+                }
+
+                grid.appendChild(card);
+            });
+
+            overlay.classList.add('active');
+        }
+
+        function hideLevelSelect() {
+            document.getElementById('levelSelectOverlay').classList.remove('active');
+        }
+
+        // ================================================================
+        // IMPROVEMENT 3: Hint System
+        // ================================================================
+        function useHint() {
+            ensureAudio();
+            if (hintsRemaining <= 0 || gameState.won) return;
+
+            hintsRemaining--;
+            const hintBtn = document.getElementById('hintBtn');
+            hintBtn.textContent = '\u{1F4A1} HINT (' + hintsRemaining + ')';
+            if (hintsRemaining <= 0) {
+                hintBtn.disabled = true;
+            }
+
+            // Determine hint zone: find where the next mirror should roughly go
+            // Strategy: trace the laser and find where it ends (hits boundary/obstacle)
+            // The hint zone is the quadrant/area near where the beam terminates
+            const hintPos = computeHintPosition();
+            if (hintPos) {
+                // Add some randomness so it's a general area, not exact
+                const jitterX = (Math.random() - 0.5) * canvasCSSWidth * 0.12;
+                const jitterY = (Math.random() - 0.5) * canvasCSSHeight * 0.12;
+                activeHint = {
+                    x: Math.max(40, Math.min(canvasCSSWidth - 40, hintPos.x + jitterX)),
+                    y: Math.max(40, Math.min(canvasCSSHeight - 40, hintPos.y + jitterY)),
+                    startTime: Date.now(),
+                    duration: 2500
+                };
+            }
+        }
+
+        function computeHintPosition() {
+            // Trace the current laser beam and find where it stops
+            // The hint should point to the area near the beam's termination point
+            // (which is where the player likely needs to place the next mirror)
+            if (!gameState.laserBeam || gameState.laserBeam.segments.length === 0) return null;
+
+            const segments = gameState.laserBeam.segments;
+            const lastSeg = segments[segments.length - 1];
+
+            // If the beam already hits the target, no hint needed
+            if (gameState.won) return null;
+
+            // The end of the last segment is where the beam terminates
+            // A good hint is partway between the beam end and the target
+            const endX = lastSeg.endX;
+            const endY = lastSeg.endY;
+            const targetX = gameState.target.x;
+            const targetY = gameState.target.y;
+
+            // Hint at a point roughly near the beam endpoint, biased toward needing to redirect
+            // Use a point about 60% from beam end toward a midpoint
+            const midX = (endX + targetX) / 2;
+            const midY = (endY + targetY) / 2;
+            return {
+                x: endX * 0.4 + midX * 0.6,
+                y: endY * 0.4 + midY * 0.6
+            };
+        }
+
+        function drawHintCircle() {
+            if (!activeHint) return;
+            const elapsed = Date.now() - activeHint.startTime;
+            if (elapsed > activeHint.duration) {
+                activeHint = null;
+                return;
+            }
+
+            const progress = elapsed / activeHint.duration;
+            const alpha = Math.sin(progress * Math.PI) * 0.5; // fade in and out
+            const pulseScale = 0.8 + 0.4 * Math.sin(elapsed / 200); // pulsing
+            const radius = 60 * pulseScale;
+
+            ctx.save();
+            ctx.globalAlpha = alpha;
+
+            // Outer glow
+            const gradient = ctx.createRadialGradient(
+                activeHint.x, activeHint.y, 0,
+                activeHint.x, activeHint.y, radius
+            );
+            gradient.addColorStop(0, 'rgba(255, 204, 0, 0.3)');
+            gradient.addColorStop(0.6, 'rgba(255, 204, 0, 0.1)');
+            gradient.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(activeHint.x, activeHint.y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ring
+            ctx.strokeStyle = 'rgba(255, 204, 0, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.arc(activeHint.x, activeHint.y, radius * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.restore();
+        }
+
+        // ================================================================
+        // Game Classes
+        // ================================================================
+
         // Laser Source class
         class LaserSource {
             constructor(x, y, angle) {
@@ -580,7 +1205,7 @@
                 gradient.addColorStop(0, this.color);
                 gradient.addColorStop(0.5, this.color + '80');
                 gradient.addColorStop(1, 'transparent');
-                
+
                 ctx.save();
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
@@ -601,7 +1226,7 @@
                 // Draw direction indicator
                 const dirX = this.x + Math.cos(this.angle) * (this.radius + 10);
                 const dirY = this.y + Math.sin(this.angle) * (this.radius + 10);
-                
+
                 ctx.save();
                 ctx.strokeStyle = this.color;
                 ctx.lineWidth = 3;
@@ -609,7 +1234,7 @@
                 ctx.shadowColor = this.color;
                 ctx.shadowBlur = 10;
                 ctx.beginPath();
-                ctx.moveTo(this.x + Math.cos(this.angle) * this.radius, 
+                ctx.moveTo(this.x + Math.cos(this.angle) * this.radius,
                           this.y + Math.sin(this.angle) * this.radius);
                 ctx.lineTo(dirX, dirY);
                 ctx.stroke();
@@ -636,11 +1261,9 @@
                 const t = Date.now() / 1000;
 
                 if (this.hit) {
-                    // --- HIT STATE: pulsing bright glow ---
                     const pulse = 0.8 + 0.2 * Math.sin(t * 10);
                     const glowRadius = this.radius * (3 + Math.sin(t * 8) * 0.8);
 
-                    // Big bright glow
                     const hitGlow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowRadius);
                     hitGlow.addColorStop(0, '#ffffff');
                     hitGlow.addColorStop(0.3, '#00ffcc');
@@ -655,7 +1278,6 @@
                     ctx.fill();
                     ctx.restore();
 
-                    // Bright solid center
                     ctx.save();
                     ctx.fillStyle = '#ffffff';
                     ctx.shadowColor = '#00ffcc';
@@ -665,7 +1287,6 @@
                     ctx.fill();
                     ctx.restore();
 
-                    // Expanding ring
                     const ringPhase = (t * 3) % 1;
                     ctx.save();
                     ctx.strokeStyle = '#00ffcc';
@@ -678,11 +1299,8 @@
                     return;
                 }
 
-                // --- NORMAL STATE ---
-                // Subtle idle pulse
                 const idlePulse = 1 + 0.05 * Math.sin(t * 2);
 
-                // Draw glow
                 const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2 * idlePulse);
                 gradient.addColorStop(0, this.color);
                 gradient.addColorStop(0.5, this.color + '60');
@@ -695,7 +1313,6 @@
                 ctx.fill();
                 ctx.restore();
 
-                // Draw target rings
                 ctx.save();
                 ctx.strokeStyle = this.color;
                 ctx.lineWidth = 3;
@@ -709,7 +1326,6 @@
                 }
                 ctx.restore();
 
-                // Draw center
                 ctx.save();
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
@@ -721,18 +1337,33 @@
             }
         }
 
-        // Mirror class
+        // Mirror class -- IMPROVEMENT 4: stores percentage-based positions
         class Mirror {
             constructor(x, y, angle, length, id) {
                 this.x = x;
                 this.y = y;
-                this.angle = angle; // Fixed angle, cannot be changed
+                this.angle = angle;
                 this.length = length;
                 this.id = id;
                 this.isSelected = false;
                 this.color = '#7799ff';
                 this.isPlaced = false;
                 this.originalInventoryIndex = -1;
+                // IMPROVEMENT 4: Store position as percentages for resize handling
+                this.xPct = x / canvasCSSWidth;
+                this.yPct = y / canvasCSSHeight;
+            }
+
+            // IMPROVEMENT 4: Update percentage when position changes
+            updatePercentage() {
+                this.xPct = this.x / canvasCSSWidth;
+                this.yPct = this.y / canvasCSSHeight;
+            }
+
+            // IMPROVEMENT 4: Restore pixel position from percentages after resize
+            restoreFromPercentage(newWidth, newHeight) {
+                this.x = this.xPct * newWidth;
+                this.y = this.yPct * newHeight;
             }
 
             getEndpoints() {
@@ -746,57 +1377,42 @@
             }
 
             reflect(rayAngle) {
-                // Calculate reflection using the law of reflection
-                // Mirror surface vector
                 const mirrorVecX = Math.cos(this.angle);
                 const mirrorVecY = Math.sin(this.angle);
-                
-                // Mirror normal (perpendicular to surface)
+
                 const normalX = -mirrorVecY;
                 const normalY = mirrorVecX;
-                
-                // Incident ray direction
+
                 const incidentX = Math.cos(rayAngle);
                 const incidentY = Math.sin(rayAngle);
-                
-                // Dot product of incident ray and normal
+
                 const dotProduct = incidentX * normalX + incidentY * normalY;
-                
-                // Reflected ray direction: R = I - 2(I·N)N
+
                 const reflectedX = incidentX - 2 * dotProduct * normalX;
                 const reflectedY = incidentY - 2 * dotProduct * normalY;
-                
+
                 return Math.atan2(reflectedY, reflectedX);
             }
 
             intersectsRay(startX, startY, angle) {
                 const endpoints = this.getEndpoints();
-                
-                // Ray direction vector
+
                 const rayDx = Math.cos(angle);
                 const rayDy = Math.sin(angle);
-                
-                // Mirror line vector
+
                 const mirrorDx = endpoints.x2 - endpoints.x1;
                 const mirrorDy = endpoints.y2 - endpoints.y1;
-                
-                // Calculate line intersection using parametric form
+
                 const denominator = rayDx * mirrorDy - rayDy * mirrorDx;
-                
-                // Check if lines are parallel
+
                 if (Math.abs(denominator) < 0.000001) return null;
-                
-                // Vector from ray start to mirror start
+
                 const toMirrorX = endpoints.x1 - startX;
                 const toMirrorY = endpoints.y1 - startY;
-                
-                // Calculate intersection parameters
+
                 const t = (toMirrorX * mirrorDy - toMirrorY * mirrorDx) / denominator;
                 const u = (toMirrorX * rayDy - toMirrorY * rayDx) / denominator;
-                
-                // Check if intersection is valid:
-                // t > 0: intersection is in front of ray start
-                // 0 <= u <= 1: intersection is within mirror segment
+
                 if (t > 0 && u >= 0 && u <= 1) {
                     return {
                         x: startX + t * rayDx,
@@ -804,7 +1420,7 @@
                         distance: t
                     };
                 }
-                
+
                 return null;
             }
 
@@ -818,25 +1434,23 @@
                 const dx = x2 - x1;
                 const dy = y2 - y1;
                 const length = dx * dx + dy * dy;
-                
+
                 if (length === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
-                
+
                 const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / length));
                 const closestX = x1 + t * dx;
                 const closestY = y1 + t * dy;
-                
+
                 return Math.sqrt((px - closestX) ** 2 + (py - closestY) ** 2);
             }
 
             draw() {
                 const endpoints = this.getEndpoints();
-                
-                // Determine visual state
+
                 const isSelected = this.isSelected;
                 const alpha = this.isPlaced ? 1.0 : 0.6;
-                
-                // Draw glow with size-based intensity
-                const glowIntensity = this.length / 60; // Normalize to original size
+
+                const glowIntensity = this.length / 60;
                 ctx.save();
                 ctx.globalAlpha = alpha;
                 ctx.shadowColor = this.color;
@@ -850,7 +1464,6 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // Draw mirror surface (reflective)
                 ctx.save();
                 ctx.globalAlpha = alpha;
                 ctx.strokeStyle = '#ffffff';
@@ -862,7 +1475,6 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // Draw keyboard focus indicator
                 const kbIndex = gameState.mirrors.indexOf(this);
                 if (kbIndex !== -1 && kbIndex === keyboardMirrorIndex) {
                     ctx.save();
@@ -878,7 +1490,6 @@
                     ctx.restore();
                 }
 
-                // Draw center point if selected
                 if (isSelected) {
                     ctx.save();
                     ctx.fillStyle = this.color;
@@ -890,18 +1501,15 @@
                     ctx.restore();
                 }
 
-                // Draw normal indicator (showing reflection surface)
                 if (this.isPlaced) {
-                    // Draw both possible normals to show the mirror reflects from both sides
                     const normalX = -Math.sin(this.angle);
                     const normalY = Math.cos(this.angle);
                     const normalLength = 15;
-                    
-                    // Draw normal on both sides
+
                     for (let side = -1; side <= 1; side += 2) {
                         const normalEndX = this.x + normalX * normalLength * side;
                         const normalEndY = this.y + normalY * normalLength * side;
-                        
+
                         ctx.save();
                         ctx.strokeStyle = this.color;
                         ctx.lineWidth = 1;
@@ -911,8 +1519,7 @@
                         ctx.moveTo(this.x, this.y);
                         ctx.lineTo(normalEndX, normalEndY);
                         ctx.stroke();
-                        
-                        // Draw arrow head
+
                         ctx.setLineDash([]);
                         ctx.fillStyle = this.color;
                         ctx.beginPath();
@@ -935,12 +1542,11 @@
             }
 
             intersectsRay(startX, startY, angle) {
-                // Check intersection with each edge of the rectangle
                 const rays = [
-                    { x1: this.x, y1: this.y, x2: this.x + this.width, y2: this.y }, // top
-                    { x1: this.x + this.width, y1: this.y, x2: this.x + this.width, y2: this.y + this.height }, // right
-                    { x1: this.x + this.width, y1: this.y + this.height, x2: this.x, y2: this.y + this.height }, // bottom
-                    { x1: this.x, y1: this.y + this.height, x2: this.x, y2: this.y } // left
+                    { x1: this.x, y1: this.y, x2: this.x + this.width, y2: this.y },
+                    { x1: this.x + this.width, y1: this.y, x2: this.x + this.width, y2: this.y + this.height },
+                    { x1: this.x + this.width, y1: this.y + this.height, x2: this.x, y2: this.y + this.height },
+                    { x1: this.x, y1: this.y + this.height, x2: this.x, y2: this.y }
                 ];
 
                 let closestIntersection = null;
@@ -948,14 +1554,14 @@
 
                 rays.forEach(edge => {
                     const intersection = this.lineIntersection(
-                        startX, startY, 
+                        startX, startY,
                         startX + Math.cos(angle) * 1000, startY + Math.sin(angle) * 1000,
                         edge.x1, edge.y1, edge.x2, edge.y2
                     );
 
                     if (intersection) {
                         const distance = Math.sqrt((intersection.x - startX) ** 2 + (intersection.y - startY) ** 2);
-                        if (distance < minDistance && distance > 1) { // Avoid self-intersection
+                        if (distance < minDistance && distance > 1) {
                             minDistance = distance;
                             closestIntersection = { ...intersection, distance };
                         }
@@ -983,7 +1589,6 @@
             }
 
             draw() {
-                // Draw glow
                 ctx.save();
                 ctx.shadowColor = this.color;
                 ctx.shadowBlur = 15;
@@ -991,7 +1596,6 @@
                 ctx.fillRect(this.x - 3, this.y - 3, this.width + 6, this.height + 6);
                 ctx.restore();
 
-                // Draw obstacle
                 ctx.save();
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
@@ -999,7 +1603,6 @@
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 ctx.restore();
 
-                // Draw border
                 ctx.save();
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 2;
@@ -1013,11 +1616,13 @@
             constructor() {
                 this.segments = [];
                 this.particles = [];
+                this.hitObstacle = false; // Track if laser hit an obstacle
             }
 
             calculate() {
                 this.segments = [];
-                
+                this.hitObstacle = false;
+
                 let currentX = gameState.laserSource.x + Math.cos(gameState.laserSource.angle) * gameState.laserSource.radius;
                 let currentY = gameState.laserSource.y + Math.sin(gameState.laserSource.angle) * gameState.laserSource.radius;
                 let currentAngle = gameState.laserSource.angle;
@@ -1029,9 +1634,8 @@
                     let closestDistance = Infinity;
                     let intersectedObject = null;
 
-                    // Check ALL objects for intersections and find the closest one
                     const allObjects = [...gameState.mirrors.filter(m => m.isPlaced), ...gameState.obstacles];
-                    
+
                     allObjects.forEach(obj => {
                         const intersection = obj.intersectsRay(currentX, currentY, currentAngle);
                         if (intersection && intersection.distance > 0.1 && intersection.distance < closestDistance) {
@@ -1041,7 +1645,6 @@
                         }
                     });
 
-                    // Check boundaries
                     const boundaryIntersection = this.getBoundaryIntersection(currentX, currentY, currentAngle);
                     if (boundaryIntersection && boundaryIntersection.distance > 0.1 && boundaryIntersection.distance < closestDistance) {
                         closestDistance = boundaryIntersection.distance;
@@ -1050,7 +1653,6 @@
                     }
 
                     if (closestIntersection) {
-                        // Add segment to the intersection point
                         this.segments.push({
                             startX: currentX,
                             startY: currentY,
@@ -1059,44 +1661,39 @@
                             angle: currentAngle
                         });
 
-                        // Check target hit along the beam path
                         if (this.checkTargetHitAlongBeam(currentX, currentY, closestIntersection.x, closestIntersection.y)) {
                             this.winGame();
                             break;
                         }
 
-                        // If hit obstacle or boundary, stop the laser
                         if (!intersectedObject || intersectedObject instanceof Obstacle) {
+                            if (intersectedObject instanceof Obstacle) {
+                                this.hitObstacle = true;
+                            }
                             break;
                         }
 
-                        // If hit mirror, reflect and continue
                         if (intersectedObject instanceof Mirror) {
-                            // Calculate reflection angle
                             const reflectedAngle = intersectedObject.reflect(currentAngle);
-                            
-                            // Move slightly away from the mirror surface to avoid re-intersection
+
                             const offsetDistance = 1.0;
                             const reflectedDirX = Math.cos(reflectedAngle);
                             const reflectedDirY = Math.sin(reflectedAngle);
-                            
+
                             currentX = closestIntersection.x + reflectedDirX * offsetDistance;
                             currentY = closestIntersection.y + reflectedDirY * offsetDistance;
                             currentAngle = reflectedAngle;
                             reflectionCount++;
-                            
-                            // Create reflection particles
+
                             this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
-                            
-                            // Continue the loop to trace the reflected beam
+
                             continue;
                         }
                     } else {
-                        // No intersection found, extend to boundary
                         const maxDistance = Math.max(canvasCSSWidth, canvasCSSHeight) * 2;
                         const endX = currentX + Math.cos(currentAngle) * maxDistance;
                         const endY = currentY + Math.sin(currentAngle) * maxDistance;
-                        
+
                         this.segments.push({
                             startX: currentX,
                             startY: currentY,
@@ -1104,8 +1701,7 @@
                             endY: endY,
                             angle: currentAngle
                         });
-                        
-                        // Check target hit along this final beam
+
                         if (this.checkTargetHitAlongBeam(currentX, currentY, endX, endY)) {
                             this.winGame();
                         }
@@ -1115,29 +1711,22 @@
             }
 
             checkTargetHitAlongBeam(startX, startY, endX, endY) {
-                // Check if the laser beam passes through the target
                 const beamLength = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
                 if (beamLength === 0) return false;
-                
-                // Vector from beam start to target center
+
                 const toTargetX = gameState.target.x - startX;
                 const toTargetY = gameState.target.y - startY;
-                
-                // Beam direction vector (normalized)
+
                 const beamDx = (endX - startX) / beamLength;
                 const beamDy = (endY - startY) / beamLength;
-                
-                // Project target position onto beam
+
                 const projection = toTargetX * beamDx + toTargetY * beamDy;
-                
-                // Check if projection is within beam segment
+
                 if (projection < 0 || projection > beamLength) return false;
-                
-                // Find closest point on beam to target
+
                 const closestX = startX + projection * beamDx;
                 const closestY = startY + projection * beamDy;
-                
-                // Check if distance from target to beam is within target radius
+
                 const distanceToBeam = Math.sqrt((gameState.target.x - closestX) ** 2 + (gameState.target.y - closestY) ** 2);
                 return distanceToBeam <= gameState.target.radius;
             }
@@ -1150,12 +1739,11 @@
                 let closestIntersection = null;
                 let minDistance = Infinity;
 
-                // Check canvas boundaries
                 const boundaries = [
-                    { x1: 0, y1: 0, x2: canvasCSSWidth, y2: 0 }, // top
-                    { x1: canvasCSSWidth, y1: 0, x2: canvasCSSWidth, y2: canvasCSSHeight }, // right
-                    { x1: canvasCSSWidth, y1: canvasCSSHeight, x2: 0, y2: canvasCSSHeight }, // bottom
-                    { x1: 0, y1: canvasCSSHeight, x2: 0, y2: 0 } // left
+                    { x1: 0, y1: 0, x2: canvasCSSWidth, y2: 0 },
+                    { x1: canvasCSSWidth, y1: 0, x2: canvasCSSWidth, y2: canvasCSSHeight },
+                    { x1: canvasCSSWidth, y1: canvasCSSHeight, x2: 0, y2: canvasCSSHeight },
+                    { x1: 0, y1: canvasCSSHeight, x2: 0, y2: 0 }
                 ];
 
                 boundaries.forEach(boundary => {
@@ -1205,33 +1793,50 @@
             }
 
             winGame() {
-                // Guard against multiple triggers
                 if (gameState.won) return;
                 gameState.won = true;
 
-                // Mark target as hit for visual feedback
                 gameState.target.hit = true;
 
-                // Capture state at win-time to avoid stale closure references
+                // IMPROVEMENT 5: Play chime sound on win
+                playChimeSound();
+
                 const wonLevel = currentLevel;
                 const hasNextLevel = wonLevel < LEVELS.length - 1;
                 const nextLevel = hasNextLevel ? wonLevel + 1 : 0;
                 const targetX = gameState.target.x;
                 const targetY = gameState.target.y;
 
-                // Update highest unlocked level and persist
+                // IMPROVEMENT 1: Calculate stars
+                const level = LEVELS[wonLevel];
+                const stars = calculateStars(moveCount, level.par);
+                // Save best stars
+                const prevStars = levelStars[wonLevel] || 0;
+                if (stars > prevStars) {
+                    levelStars[wonLevel] = stars;
+                }
+
                 if (hasNextLevel && nextLevel > highestUnlockedLevel) {
                     highestUnlockedLevel = nextLevel;
                 }
                 saveProgress();
 
                 const winMsg = document.getElementById('winMessage');
-                winMsg.textContent = hasNextLevel
-                    ? `\u2713 TARGET ACQUIRED!  \u2192  LEVEL ${wonLevel + 2}`
-                    : '\uD83C\uDF89 ALL LEVELS COMPLETE! \uD83C\uDF89';
+                const winStarsEl = document.getElementById('winStars');
+                const winMovesEl = document.getElementById('winMoves');
+
+                const mainText = hasNextLevel
+                    ? '\u2713 TARGET ACQUIRED!'
+                    : '\u{1F389} ALL LEVELS COMPLETE! \u{1F389}';
+
+                winMsg.childNodes[0].textContent = mainText + ' ';
+                winStarsEl.textContent = getStarString(stars);
+                winStarsEl.style.color = '#ffcc00';
+                winMovesEl.textContent = `${moveCount} move${moveCount !== 1 ? 's' : ''} (par: ${level.par})` +
+                    (hasNextLevel ? '  \u2192  Level ' + (wonLevel + 2) : '');
+
                 winMsg.classList.add('show');
 
-                // Create celebration particles using captured target position
                 if (!prefersReducedMotion) {
                     for (let i = 0; i < 50; i++) {
                         setTimeout(() => {
@@ -1255,14 +1860,11 @@
 
             draw() {
                 this.segments.forEach((segment, index) => {
-                    // Draw laser beam with glow
                     ctx.save();
-                    
-                    // Different colors for different segments to show reflections
+
                     const colors = ['#ff1493', '#ff6b6b', '#ffaa00', '#00ff88', '#0088ff'];
                     const color = colors[index % colors.length];
-                    
-                    // Glow effect
+
                     ctx.shadowColor = color;
                     ctx.shadowBlur = 20;
                     ctx.strokeStyle = color;
@@ -1275,7 +1877,6 @@
                     ctx.stroke();
                     ctx.restore();
 
-                    // Core beam
                     ctx.save();
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 2;
@@ -1288,7 +1889,6 @@
                     ctx.stroke();
                     ctx.restore();
 
-                    // Add moving particles along beam
                     if (!prefersReducedMotion && Math.random() < 0.3) {
                         const t = Math.random();
                         const x = segment.startX + (segment.endX - segment.startX) * t;
@@ -1338,30 +1938,41 @@
         // Initialize game
         function loadLevel(levelIndex) {
             currentLevel = levelIndex;
-            keyboardMirrorIndex = -1; // Reset keyboard focus on level change
+            keyboardMirrorIndex = -1;
+
+            // IMPROVEMENT 1: Reset move counter
+            moveCount = 0;
+
+            // IMPROVEMENT 3: Reset hints
+            hintsRemaining = 2;
+            activeHint = null;
+            const hintBtn = document.getElementById('hintBtn');
+            if (hintBtn) {
+                hintBtn.textContent = '\u{1F4A1} HINT (2)';
+                hintBtn.disabled = false;
+            }
+
             saveProgress();
             const level = LEVELS[currentLevel];
 
-            // Update level text and progress
             document.getElementById('levelText').textContent =
                 `LEVEL ${currentLevel + 1}: ${level.name}`;
             document.getElementById('levelProgress').textContent =
-                `${currentLevel + 1} / ${LEVELS.length}  •  ${level.mirrors.length} mirror${level.mirrors.length === 1 ? '' : 's'}`;
+                `${currentLevel + 1} / ${LEVELS.length}  \u2022  ${level.mirrors.length} mirror${level.mirrors.length === 1 ? '' : 's'}`;
 
-            // Set up laser source
+            updateMoveCounter();
+
             gameState.laserSource = new LaserSource(
                 canvasCSSWidth * level.laser.xPct,
                 canvasCSSHeight * level.laser.yPct,
                 level.laser.angle
             );
 
-            // Set up target
             gameState.target = new Target(
                 canvasCSSWidth * level.target.xPct,
                 canvasCSSHeight * level.target.yPct
             );
 
-            // Set up obstacles
             gameState.obstacles = level.obstacles.map(o => new Obstacle(
                 canvasCSSWidth * o.xPct,
                 canvasCSSHeight * o.yPct,
@@ -1369,7 +1980,6 @@
                 canvasCSSHeight * o.hPct
             ));
 
-            // Set up mirror inventory from level definition
             gameState.mirrorInventory = level.mirrors.map((m, i) => ({
                 angle: m.angle,
                 length: m.length,
@@ -1385,10 +1995,8 @@
 
             gameState.won = false;
 
-            // Initialize mirror inventory UI
             createMirrorInventoryUI();
 
-            // Auto-fire laser initially
             gameState.laserBeam.calculate();
 
             createBackgroundParticles();
@@ -1402,7 +2010,7 @@
         function createMirrorInventoryUI() {
             const slotsContainer = document.getElementById('mirrorSlots');
             slotsContainer.innerHTML = '';
-            
+
             gameState.mirrorInventory.forEach((mirrorData, index) => {
                 const slotElement = document.createElement('div');
                 slotElement.className = 'mirror-slot';
@@ -1410,26 +2018,23 @@
                 slotElement.setAttribute('role', 'button');
                 slotElement.setAttribute('aria-label', `Mirror ${index + 1}: ${mirrorData.angle > 0 ? '+45' : '-45'} degrees`);
                 slotElement.setAttribute('tabindex', '0');
-                
-                // Create actual-size mirror canvas
+
                 const mirrorCanvas = document.createElement('canvas');
                 mirrorCanvas.className = 'mirror-actual';
                 mirrorCanvas.width = 44;
                 mirrorCanvas.height = 44;
                 const mirrorCtx = mirrorCanvas.getContext('2d');
-                
-                // Draw actual mirror at proper scale
+
                 const centerX = 22;
                 const centerY = 22;
                 const scale = 0.6;
                 const halfLength = (mirrorData.length * scale) / 2;
-                
+
                 const x1 = centerX - Math.cos(mirrorData.angle) * halfLength;
                 const y1 = centerY - Math.sin(mirrorData.angle) * halfLength;
                 const x2 = centerX + Math.cos(mirrorData.angle) * halfLength;
                 const y2 = centerY + Math.sin(mirrorData.angle) * halfLength;
-                
-                // Draw glow
+
                 mirrorCtx.shadowColor = '#7799ff';
                 mirrorCtx.shadowBlur = 10;
                 mirrorCtx.strokeStyle = '#7799ff';
@@ -1439,8 +2044,7 @@
                 mirrorCtx.moveTo(x1, y1);
                 mirrorCtx.lineTo(x2, y2);
                 mirrorCtx.stroke();
-                
-                // Draw mirror surface
+
                 mirrorCtx.shadowBlur = 0;
                 mirrorCtx.strokeStyle = '#ffffff';
                 mirrorCtx.lineWidth = 2.5;
@@ -1448,19 +2052,19 @@
                 mirrorCtx.moveTo(x1, y1);
                 mirrorCtx.lineTo(x2, y2);
                 mirrorCtx.stroke();
-                
+
                 slotElement.appendChild(mirrorCanvas);
-                
-                // Add drag functionality
+
                 slotElement.addEventListener('mousedown', (e) => {
                     if (!mirrorData.used) {
+                        ensureAudio();
                         startDragFromStorage(index, e);
                     }
                 });
 
-                // Add touch drag functionality
                 slotElement.addEventListener('touchstart', (e) => {
                     if (!mirrorData.used) {
+                        ensureAudio();
                         e.preventDefault();
                         const touch = e.touches[0];
                         const touchEvent = {
@@ -1473,47 +2077,49 @@
                     }
                 });
 
-                // Add double-click functionality
                 slotElement.addEventListener('dblclick', (e) => {
                     if (!mirrorData.used) {
+                        ensureAudio();
                         placeMirrorInCenter(index);
                     }
                 });
-                
+
                 slotsContainer.appendChild(slotElement);
             });
-            
+
             updateMirrorStorageUI();
         }
 
         function placeMirrorInCenter(inventoryIndex) {
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
-            
-            // Place mirror in center of screen
+
             const centerX = canvasCSSWidth / 2;
             const centerY = canvasCSSHeight / 2;
-            
+
             const mirror = new Mirror(
                 centerX, centerY,
-                mirrorData.angle, 
-                mirrorData.length, 
+                mirrorData.angle,
+                mirrorData.length,
                 mirrorData.id
             );
-            
+
             mirror.originalInventoryIndex = inventoryIndex;
             mirror.isSelected = true;
             mirror.isPlaced = true;
-            
+            mirror.updatePercentage(); // IMPROVEMENT 4
+
             gameState.mirrors.push(mirror);
             gameState.selectedMirror = mirror;
-            
-            // Mark as used
+
             mirrorData.used = true;
-            
-            // Auto-update laser
+
+            // IMPROVEMENT 1: Count the placement as a move
+            incrementMoveCount();
+            // IMPROVEMENT 5: Play clink sound
+            playClinkSound();
+
             gameState.laserBeam.calculate();
-            
-            // Update UI
+
             updateMirrorStorageUI();
         }
 
@@ -1521,17 +2127,13 @@
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
             const slotElement = e.currentTarget;
 
-            // Visual feedback for the slot
             slotElement.classList.add('dragging');
 
-            // Create drag ghost
             const dragGhost = createDragGhost(mirrorData);
             document.body.appendChild(dragGhost);
 
-            // Position drag ghost
             updateDragGhost(dragGhost, e.clientX, e.clientY);
 
-            // Create mirror in game world
             const rect = canvas.getBoundingClientRect();
             const gameX = e.clientX - rect.left;
             const gameY = e.clientY - rect.top;
@@ -1551,94 +2153,82 @@
             gameState.selectedMirror = mirror;
             gameState.isDragging = true;
 
-            // Mark as used
             mirrorData.used = true;
 
-            // Mouse move handler for drag ghost
+            // IMPROVEMENT 1: Count placement as a move
+            incrementMoveCount();
+            // IMPROVEMENT 5: Play clink sound
+            playClinkSound();
+
             const handleMouseMove = (e) => {
                 updateDragGhost(dragGhost, e.clientX, e.clientY);
 
-                // Update mirror position in game
                 const rect = canvas.getBoundingClientRect();
                 const gameX = e.clientX - rect.left;
                 const gameY = e.clientY - rect.top;
 
                 mirror.x = gameX;
                 mirror.y = gameY;
+                mirror.updatePercentage(); // IMPROVEMENT 4
 
-                // Auto-update laser
                 gameState.laserBeam.calculate();
             };
 
-            // Touch move handler for drag ghost
             const handleTouchMove = (e) => {
                 e.preventDefault();
                 const touch = e.touches[0];
                 updateDragGhost(dragGhost, touch.clientX, touch.clientY);
 
-                // Update mirror position in game
                 const rect = canvas.getBoundingClientRect();
                 const gameX = touch.clientX - rect.left;
                 const gameY = touch.clientY - rect.top;
 
                 mirror.x = gameX;
                 mirror.y = gameY;
+                mirror.updatePercentage(); // IMPROVEMENT 4
 
-                // Auto-update laser
                 gameState.laserBeam.calculate();
             };
 
-            // Mouse up handler
             const handleMouseUp = () => {
-                // Clean up drag ghost
                 if (dragGhost && dragGhost.parentNode) {
                     dragGhost.parentNode.removeChild(dragGhost);
                 }
 
-                // Remove slot dragging state
                 slotElement.classList.remove('dragging');
 
-                // End dragging
                 gameState.isDragging = false;
+                mirror.updatePercentage(); // IMPROVEMENT 4: finalize percentage
 
-                // Remove event listeners
                 document.removeEventListener('mousemove', handleMouseMove);
                 document.removeEventListener('mouseup', handleMouseUp);
 
-                // Update UI
                 updateMirrorStorageUI();
                 updateUI();
             };
 
-            // Touch end handler
             const handleTouchEnd = () => {
-                // Clean up drag ghost
                 if (dragGhost && dragGhost.parentNode) {
                     dragGhost.parentNode.removeChild(dragGhost);
                 }
 
-                // Remove slot dragging state
                 slotElement.classList.remove('dragging');
 
-                // End dragging
                 gameState.isDragging = false;
+                mirror.updatePercentage(); // IMPROVEMENT 4: finalize percentage
 
-                // Remove event listeners
                 document.removeEventListener('touchmove', handleTouchMove);
                 document.removeEventListener('touchend', handleTouchEnd);
 
-                // Update UI
                 updateMirrorStorageUI();
                 updateUI();
             };
 
-            // Add event listeners (mouse and touch)
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
             document.addEventListener('touchend', handleTouchEnd);
 
-            // Prevent default drag behavior
             e.preventDefault();
         }
 
@@ -1647,24 +2237,22 @@
             ghost.className = 'drag-ghost';
             ghost.style.width = '44px';
             ghost.style.height = '44px';
-            
+
             const ghostCanvas = document.createElement('canvas');
             ghostCanvas.width = 44;
             ghostCanvas.height = 44;
             const ghostCtx = ghostCanvas.getContext('2d');
-            
-            // Draw enlarged mirror preview
+
             const centerX = 22;
             const centerY = 22;
             const scale = 0.6;
             const halfLength = (mirrorData.length * scale) / 2;
-            
+
             const x1 = centerX - Math.cos(mirrorData.angle) * halfLength;
             const y1 = centerY - Math.sin(mirrorData.angle) * halfLength;
             const x2 = centerX + Math.cos(mirrorData.angle) * halfLength;
             const y2 = centerY + Math.sin(mirrorData.angle) * halfLength;
-            
-            // Draw glow
+
             ghostCtx.shadowColor = '#7799ff';
             ghostCtx.shadowBlur = 12;
             ghostCtx.strokeStyle = '#7799ff';
@@ -1674,8 +2262,7 @@
             ghostCtx.moveTo(x1, y1);
             ghostCtx.lineTo(x2, y2);
             ghostCtx.stroke();
-            
-            // Draw mirror surface
+
             ghostCtx.shadowBlur = 0;
             ghostCtx.strokeStyle = '#ffffff';
             ghostCtx.lineWidth = 2.5;
@@ -1683,7 +2270,7 @@
             ghostCtx.moveTo(x1, y1);
             ghostCtx.lineTo(x2, y2);
             ghostCtx.stroke();
-            
+
             ghost.appendChild(ghostCanvas);
             return ghost;
         }
@@ -1696,15 +2283,13 @@
         function updateMirrorStorageUI() {
             const slots = document.querySelectorAll('.mirror-slot');
             let nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
-            
+
             slots.forEach((slot, index) => {
-                // Remove all special classes first
                 slot.classList.remove('empty', 'next-to-place');
-                
+
                 if (gameState.mirrorInventory[index] && gameState.mirrorInventory[index].used) {
                     slot.classList.add('empty');
                 } else if (index === nextMirrorIndex) {
-                    // Highlight the next mirror to be placed
                     slot.classList.add('next-to-place');
                 }
             });
@@ -1736,39 +2321,66 @@
         }
 
         function resetGame() {
+            ensureAudio();
             // Return mirrors to storage
             gameState.mirrors.forEach(mirror => {
                 if (mirror.originalInventoryIndex >= 0) {
                     gameState.mirrorInventory[mirror.originalInventoryIndex].used = false;
                 }
             });
-            
+
             gameState.mirrors = [];
             gameState.selectedMirror = null;
             gameState.isDragging = false;
             gameState.particles = [];
             gameState.laserBeam = new LaserBeam();
-            gameState.laserBeam.calculate(); // Auto-fire
-            
+            gameState.laserBeam.calculate();
+
+            // IMPROVEMENT 1: Reset move counter
+            moveCount = 0;
+            updateMoveCounter();
+
+            // IMPROVEMENT 3: Reset hints
+            hintsRemaining = 2;
+            activeHint = null;
+            const hintBtn = document.getElementById('hintBtn');
+            if (hintBtn) {
+                hintBtn.textContent = '\u{1F4A1} HINT (2)';
+                hintBtn.disabled = false;
+            }
+
             updateMirrorStorageUI();
         }
 
         function fireLaser() {
+            ensureAudio();
             gameState.laserBeam.calculate();
+
+            // IMPROVEMENT 5: Play laser sound
+            const segCount = gameState.laserBeam.segments.length;
+            playLaserZapSound(segCount);
+
+            // IMPROVEMENT 5: Play thud if hit obstacle
+            if (gameState.laserBeam.hitObstacle) {
+                setTimeout(() => playThudSound(), 100);
+            }
         }
 
         // Event handlers
         let lastTapTime = 0;
-        
+
+        // Track if a mirror was repositioned (dragged after already placed) for move counting
+        let dragWasReposition = false;
+
         canvas.addEventListener('mousedown', (e) => {
+            ensureAudio();
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             gameState.mouse.x = x;
             gameState.mouse.y = y;
 
-            // Check if clicking on existing mirror
             let clickedMirror = null;
             for (let mirror of gameState.mirrors) {
                 if (mirror.containsPoint(x, y)) {
@@ -1778,32 +2390,32 @@
             }
 
             if (clickedMirror) {
-                // Clicking on existing mirror - select and start dragging
                 if (gameState.selectedMirror) {
                     gameState.selectedMirror.isSelected = false;
                 }
                 gameState.selectedMirror = clickedMirror;
                 clickedMirror.isSelected = true;
                 gameState.isDragging = true;
+                dragWasReposition = true; // This is a reposition of an existing mirror
             } else {
-                // Clicking on empty space - deselect current mirror
                 if (gameState.selectedMirror) {
                     gameState.selectedMirror.isSelected = false;
                     gameState.selectedMirror = null;
                     gameState.isDragging = false;
                 }
+                dragWasReposition = false;
             }
         });
 
         // Double-click handler for rapid mirror placement
         canvas.addEventListener('dblclick', (e) => {
+            ensureAudio();
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
-            // Find next available mirror
+
             const nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
-            
+
             if (nextMirrorIndex !== -1) {
                 placeNextMirrorAt(nextMirrorIndex, x, y);
             }
@@ -1811,34 +2423,35 @@
 
         function placeNextMirrorAt(inventoryIndex, x, y) {
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
-            
-            // Create mirror at the specified position
+
             const mirror = new Mirror(
                 x, y,
-                mirrorData.angle, 
-                mirrorData.length, 
+                mirrorData.angle,
+                mirrorData.length,
                 mirrorData.id
             );
-            
+
             mirror.originalInventoryIndex = inventoryIndex;
             mirror.isSelected = true;
             mirror.isPlaced = true;
-            
-            // Deselect previous mirror
+            mirror.updatePercentage(); // IMPROVEMENT 4
+
             if (gameState.selectedMirror) {
                 gameState.selectedMirror.isSelected = false;
             }
-            
+
             gameState.mirrors.push(mirror);
             gameState.selectedMirror = mirror;
-            
-            // Mark as used
+
             mirrorData.used = true;
-            
-            // Auto-update laser
+
+            // IMPROVEMENT 1: Count placement as a move
+            incrementMoveCount();
+            // IMPROVEMENT 5: Play clink sound
+            playClinkSound();
+
             gameState.laserBeam.calculate();
-            
-            // Update UI
+
             updateMirrorStorageUI();
         }
 
@@ -1846,49 +2459,56 @@
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             gameState.mouse.x = x;
             gameState.mouse.y = y;
 
             if (gameState.selectedMirror && gameState.isDragging) {
                 gameState.selectedMirror.x = x;
                 gameState.selectedMirror.y = y;
-                
-                // Auto-update laser when mirror is moved
+                gameState.selectedMirror.updatePercentage(); // IMPROVEMENT 4
+
                 gameState.laserBeam.calculate();
             }
         });
 
         canvas.addEventListener('mouseup', () => {
+            if (gameState.isDragging && dragWasReposition && gameState.selectedMirror) {
+                // IMPROVEMENT 1: Count repositioning as a move
+                incrementMoveCount();
+                // IMPROVEMENT 5: Play clink sound for repositioning
+                playClinkSound();
+                gameState.selectedMirror.updatePercentage(); // IMPROVEMENT 4: finalize
+            }
             gameState.isDragging = false;
+            dragWasReposition = false;
         });
 
         // Touch events for mobile with double-tap support
         canvas.addEventListener('touchstart', (e) => {
+            ensureAudio();
             e.preventDefault();
             const touch = e.touches[0];
             const rect = canvas.getBoundingClientRect();
             const x = touch.clientX - rect.left;
             const y = touch.clientY - rect.top;
-            
+
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTapTime;
-            
+
             if (tapLength < 500 && tapLength > 0) {
-                // Double tap detected - place next mirror
                 const nextMirrorIndex = gameState.mirrorInventory.findIndex(mirror => !mirror.used);
                 if (nextMirrorIndex !== -1) {
                     placeNextMirrorAt(nextMirrorIndex, x, y);
                 }
             } else {
-                // Single tap - treat as mouse down
                 const mouseEvent = new MouseEvent('mousedown', {
                     clientX: touch.clientX,
                     clientY: touch.clientY
                 });
                 canvas.dispatchEvent(mouseEvent);
             }
-            
+
             lastTapTime = currentTime;
         });
 
@@ -1908,11 +2528,13 @@
             canvas.dispatchEvent(mouseEvent);
         });
 
-        // Keyboard controls — enhanced for accessibility
+        // Keyboard controls
         document.addEventListener('keydown', (e) => {
+            // Don't handle keyboard when level select is open
+            if (document.getElementById('levelSelectOverlay').classList.contains('active')) return;
+
             const placedMirrors = gameState.mirrors;
 
-            // Arrow keys: cycle through placed mirrors on the board
             if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
                 if (placedMirrors.length > 0) {
                     e.preventDefault();
@@ -1932,27 +2554,28 @@
                 return;
             }
 
-            // R or Space: rotate the currently selected mirror by 45 degrees
             if (e.key === 'r' || e.key === 'R' || e.key === ' ') {
                 if (gameState.selectedMirror) {
                     e.preventDefault();
                     gameState.selectedMirror.angle += Math.PI / 4;
-                    // Normalize angle to [-PI, PI)
                     while (gameState.selectedMirror.angle >= Math.PI) {
                         gameState.selectedMirror.angle -= 2 * Math.PI;
                     }
-                    // Auto-update laser after rotation
                     gameState.laserBeam.calculate();
                 }
                 return;
             }
 
-            // Delete / Backspace: return selected mirror to storage
+            // Escape closes level select
+            if (e.key === 'Escape') {
+                hideLevelSelect();
+                return;
+            }
+
             if (gameState.selectedMirror) {
                 switch(e.key) {
                     case 'Delete':
                     case 'Backspace':
-                        // Return mirror to storage
                         if (gameState.selectedMirror.originalInventoryIndex >= 0) {
                             gameState.mirrorInventory[gameState.selectedMirror.originalInventoryIndex].used = false;
                         }
@@ -1964,7 +2587,6 @@
                             gameState.isDragging = false;
                             keyboardMirrorIndex = -1;
 
-                            // Auto-update laser
                             gameState.laserBeam.calculate();
 
                             updateMirrorStorageUI();
@@ -1974,9 +2596,7 @@
             }
         });
 
-        // Helper: select a mirror via keyboard index
         function selectMirrorByKeyboard(idx) {
-            // Deselect previous
             if (gameState.selectedMirror) {
                 gameState.selectedMirror.isSelected = false;
             }
@@ -1984,7 +2604,6 @@
             if (mirror) {
                 mirror.isSelected = true;
                 gameState.selectedMirror = mirror;
-                // Announce to screen readers
                 const modeIndicator = document.getElementById('modeIndicator');
                 modeIndicator.textContent = `MIRROR ${idx + 1} SELECTED`;
             }
@@ -1993,18 +2612,14 @@
         // Game loop
         let lastFrameTime = performance.now();
         function gameLoop(now) {
-            // Compute delta time normalized to 60fps (1.0 = perfect 60fps frame)
-            const dt = Math.min(now - lastFrameTime, 100); // cap at 100ms to avoid spiral
+            const dt = Math.min(now - lastFrameTime, 100);
             lastFrameTime = now;
             const dt60 = dt / (1000 / 60);
 
-            // Clear canvas (use CSS pixel dimensions since ctx has DPR transform)
             ctx.clearRect(0, 0, canvasCSSWidth, canvasCSSHeight);
 
-            // Update cursor
             canvas.className = gameState.isDragging ? 'drag-mode' : '';
 
-            // Update mode indicator
             const modeIndicator = document.getElementById('modeIndicator');
             if (gameState.selectedMirror) {
                 modeIndicator.textContent = gameState.isDragging ? 'POSITIONING' : 'SELECTED';
@@ -2014,36 +2629,39 @@
                 modeIndicator.style.color = '#ffffff';
             }
 
-            // Update particles
             gameState.particles = gameState.particles.filter(particle => {
                 particle.update(dt60);
                 return particle.life > 0;
             });
 
-            // Draw everything
             gameState.obstacles.forEach(obstacle => obstacle.draw());
             gameState.mirrors.forEach(mirror => mirror.draw());
             gameState.laserSource.draw();
             gameState.target.draw();
-            
-            // Always draw laser beam
+
             if (gameState.laserBeam) {
                 gameState.laserBeam.draw();
             }
-            
+
             gameState.particles.forEach(particle => particle.draw());
+
+            // IMPROVEMENT 3: Draw hint circle if active
+            drawHintCircle();
 
             requestAnimationFrame(gameLoop);
         }
 
-        // Resize handler (debounced, DPI-aware)
+        // IMPROVEMENT 4: Resize handler with mirror percentage restoration
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 const currentDpr = window.devicePixelRatio || 1;
-                canvasCSSWidth = window.innerWidth;
-                canvasCSSHeight = window.innerHeight - 80;
+                const newCSSWidth = window.innerWidth;
+                const newCSSHeight = window.innerHeight - 80;
+
+                canvasCSSWidth = newCSSWidth;
+                canvasCSSHeight = newCSSHeight;
                 canvas.width = canvasCSSWidth * currentDpr;
                 canvas.height = canvasCSSHeight * currentDpr;
                 canvas.style.width = canvasCSSWidth + 'px';
@@ -2065,6 +2683,12 @@
                             obs.height = level.obstacles[i].hPct * canvasCSSHeight;
                         }
                     });
+
+                    // IMPROVEMENT 4: Restore mirrors from percentage-based positions
+                    gameState.mirrors.forEach(mirror => {
+                        mirror.restoreFromPercentage(canvasCSSWidth, canvasCSSHeight);
+                    });
+
                     gameState.laserBeam.calculate();
                 }
             }, 150);

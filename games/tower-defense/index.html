@@ -770,6 +770,347 @@
             color: var(--neon-cyan);
         }
 
+        /* Pause Overlay */
+        #pauseOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 900;
+            pointer-events: none;
+        }
+
+        #pauseOverlay.open {
+            display: flex;
+        }
+
+        #pauseOverlay .pause-text {
+            font-family: 'Orbitron';
+            font-size: 72px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 40px var(--neon-cyan), 0 0 80px var(--neon-cyan);
+            animation: pausePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pausePulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .btn-pause {
+            background: linear-gradient(135deg, #1a1a3a 0%, #2a2a5a 100%);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-pause.paused {
+            border-color: var(--neon-yellow);
+            color: var(--neon-yellow);
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .btn-mute {
+            background: linear-gradient(135deg, #1a1a3a 0%, #2a2a5a 100%);
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
+            min-width: 44px;
+            font-size: 16px;
+        }
+
+        .btn-mute.muted {
+            opacity: 0.5;
+        }
+
+        /* Wave Preview Panel */
+        #wavePreview {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            width: 280px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(138, 43, 226, 0.2);
+            z-index: 150;
+            display: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        #wavePreview.open { display: block; animation: panelSlide 0.25s ease; }
+
+        .wave-preview-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, rgba(0, 100, 150, 0.3), rgba(0, 50, 100, 0.3));
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .wave-preview-head h3 {
+            font-family: 'Orbitron';
+            font-size: 12px;
+            color: var(--neon-cyan);
+        }
+
+        .wave-preview-body {
+            padding: 10px 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .wave-enemy-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .wave-enemy-row:last-child { border-bottom: none; }
+
+        .wave-enemy-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .wave-enemy-name {
+            flex: 1;
+            font-size: 11px;
+            color: #ccc;
+        }
+
+        .wave-enemy-count {
+            font-family: 'Orbitron';
+            font-size: 12px;
+            color: var(--neon-yellow);
+        }
+
+        .btn-bestiary {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-family: 'Orbitron';
+            padding: 0;
+        }
+
+        .btn-bestiary:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        /* Bestiary Popup */
+        #bestiaryPopup {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        #bestiaryPopup.open { display: flex; animation: fadeIn 0.2s ease; }
+
+        .bestiary-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 95vw;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.3);
+        }
+
+        .bestiary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .bestiary-header h2 {
+            font-family: 'Orbitron';
+            font-size: 20px;
+            color: var(--neon-cyan);
+        }
+
+        .bestiary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .bestiary-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(100, 50, 150, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .bestiary-card .enemy-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .bestiary-card .enemy-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bestiary-card .enemy-name {
+            font-family: 'Orbitron';
+            font-size: 11px;
+            color: #fff;
+        }
+
+        .bestiary-card .enemy-stats {
+            font-size: 10px;
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .bestiary-card .enemy-stats strong {
+            color: var(--neon-green);
+        }
+
+        .bestiary-card .enemy-ability {
+            font-size: 10px;
+            color: var(--neon-yellow);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Specialization Dialog */
+        #specDialog {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        #specDialog.open { display: flex; animation: fadeIn 0.2s ease; }
+
+        .spec-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-yellow);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 600px;
+            width: 95vw;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+        }
+
+        .spec-container h2 {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            color: var(--neon-yellow);
+            margin-bottom: 8px;
+        }
+
+        .spec-container .spec-subtitle {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .spec-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .spec-card {
+            background: linear-gradient(145deg, rgba(15, 10, 30, 0.9), rgba(8, 5, 20, 0.9));
+            border: 2px solid rgba(100, 50, 150, 0.4);
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .spec-card:hover {
+            border-color: var(--neon-yellow);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+        }
+
+        .spec-card .spec-name {
+            font-family: 'Orbitron';
+            font-size: 14px;
+            color: var(--neon-yellow);
+            margin-bottom: 6px;
+        }
+
+        .spec-card .spec-desc {
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .spec-card .spec-mods {
+            font-size: 10px;
+            color: var(--neon-green);
+            line-height: 1.6;
+        }
+
+        .spec-card .spec-mods .nerf {
+            color: var(--neon-red);
+        }
+
+        /* Trophy counter in HUD */
+        .resource.trophy .val { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
+
+        /* Best score on map card */
+        .map-best-score {
+            font-family: 'Orbitron';
+            font-size: 10px;
+            color: var(--neon-green);
+            margin-top: 4px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .resource { padding: 4px 8px; font-size: 11px; }
@@ -815,6 +1156,12 @@
                 <button class="btn btn-primary" id="buildBtn">🏗️ BUILD</button>
                 <button class="btn btn-success" id="startBtn">▶ START</button>
                 <button class="btn btn-primary" id="speedBtn">⚡1X</button>
+                <button class="btn btn-pause" id="pauseBtn" title="Pause (P)">⏸️</button>
+                <button class="btn btn-mute" id="muteBtn" title="Toggle Sound (M)">🔊</button>
+                <div class="resource trophy">
+                    <span class="icon">🏆</span>
+                    <span class="val" id="trophyVal">0</span>
+                </div>
             </div>
         </div>
 
@@ -893,6 +1240,36 @@
                 <p>Final Score</p>
             </div>
             <button class="btn btn-primary" style="font-size: 16px; padding: 15px 40px;" onclick="location.reload()">TRY AGAIN</button>
+        </div>
+
+        <div id="pauseOverlay">
+            <div class="pause-text">PAUSED</div>
+        </div>
+
+        <div id="wavePreview">
+            <div class="wave-preview-head">
+                <h3 id="wavePreviewTitle">NEXT WAVE</h3>
+                <button class="btn-bestiary" id="bestiaryBtn" title="Enemy Bestiary">?</button>
+            </div>
+            <div class="wave-preview-body" id="wavePreviewBody"></div>
+        </div>
+
+        <div id="bestiaryPopup">
+            <div class="bestiary-container">
+                <div class="bestiary-header">
+                    <h2>ENEMY BESTIARY</h2>
+                    <button class="close-x" id="closeBestiary">&#10005;</button>
+                </div>
+                <div class="bestiary-grid" id="bestiaryGrid"></div>
+            </div>
+        </div>
+
+        <div id="specDialog">
+            <div class="spec-container">
+                <h2>CHOOSE SPECIALIZATION</h2>
+                <p class="spec-subtitle" id="specSubtitle">Your tower has reached Level 3!</p>
+                <div class="spec-choices" id="specChoices"></div>
+            </div>
         </div>
 
         <div id="achievementPopup">
@@ -1124,6 +1501,513 @@ const ACHIEVEMENTS = {
 let abilityUses = 0;
 let perfectWave = true;
 
+// ===============================================================
+// PAUSE STATE
+// ===============================================================
+let gamePaused = false;
+
+function togglePause() {
+    gamePaused = !gamePaused;
+    const overlay = document.getElementById('pauseOverlay');
+    const btn = document.getElementById('pauseBtn');
+    if (gamePaused) {
+        overlay.classList.add('open');
+        btn.classList.add('paused');
+        btn.textContent = '▶️';
+    } else {
+        overlay.classList.remove('open');
+        btn.classList.remove('paused');
+        btn.textContent = '⏸️';
+    }
+}
+
+// ===============================================================
+// SOUND EFFECTS VIA WEB AUDIO API
+// ===============================================================
+let audioCtx = null;
+let soundMuted = false;
+
+function initAudio() {
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) {
+        console.warn('Web Audio API not supported');
+    }
+}
+
+function ensureAudio() {
+    if (!audioCtx) initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playSound(type) {
+    if (soundMuted || !audioCtx) return;
+    try {
+        const t = audioCtx.currentTime;
+        switch(type) {
+            case 'towerFire': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, t);
+                osc.frequency.exponentialRampToValueAtTime(400, t + 0.06);
+                gain.gain.setValueAtTime(0.08, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+                osc.start(t);
+                osc.stop(t + 0.06);
+                break;
+            }
+            case 'enemyDeath': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, t);
+                osc.frequency.exponentialRampToValueAtTime(100, t + 0.15);
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                osc.start(t);
+                osc.stop(t + 0.15);
+                break;
+            }
+            case 'waveStart': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, t);
+                osc.frequency.exponentialRampToValueAtTime(800, t + 0.3);
+                gain.gain.setValueAtTime(0.1, t);
+                gain.gain.linearRampToValueAtTime(0.15, t + 0.15);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc.start(t);
+                osc.stop(t + 0.4);
+                break;
+            }
+            case 'abilityMeteor': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(1200, t);
+                osc.frequency.exponentialRampToValueAtTime(60, t + 0.5);
+                gain.gain.setValueAtTime(0.15, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.start(t);
+                osc.stop(t + 0.5);
+                break;
+            }
+            case 'abilityFreeze': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1500, t);
+                osc.frequency.exponentialRampToValueAtTime(2500, t + 0.2);
+                osc.frequency.exponentialRampToValueAtTime(1500, t + 0.4);
+                gain.gain.setValueAtTime(0.1, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc.start(t);
+                osc.stop(t + 0.4);
+                break;
+            }
+            case 'abilityGold': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(500, t);
+                osc.frequency.setValueAtTime(700, t + 0.1);
+                osc.frequency.setValueAtTime(900, t + 0.2);
+                gain.gain.setValueAtTime(0.12, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+                osc.start(t);
+                osc.stop(t + 0.35);
+                break;
+            }
+            case 'bossSpawn': {
+                for (let i = 0; i < 3; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'square';
+                    const st = t + i * 0.15;
+                    osc.frequency.setValueAtTime(150, st);
+                    osc.frequency.setValueAtTime(200, st + 0.07);
+                    gain.gain.setValueAtTime(0.12, st);
+                    gain.gain.exponentialRampToValueAtTime(0.001, st + 0.12);
+                    osc.start(st);
+                    osc.stop(st + 0.12);
+                }
+                break;
+            }
+            case 'nexusDamage': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(200, t);
+                osc.frequency.setValueAtTime(150, t + 0.1);
+                osc.frequency.setValueAtTime(200, t + 0.2);
+                osc.frequency.setValueAtTime(150, t + 0.3);
+                gain.gain.setValueAtTime(0.15, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc.start(t);
+                osc.stop(t + 0.4);
+                break;
+            }
+        }
+    } catch(e) { /* audio error, ignore */ }
+}
+
+function toggleMute() {
+    soundMuted = !soundMuted;
+    const btn = document.getElementById('muteBtn');
+    btn.textContent = soundMuted ? '🔇' : '🔊';
+    btn.classList.toggle('muted', soundMuted);
+}
+
+// ===============================================================
+// TOWER SPECIALIZATION DEFINITIONS
+// ===============================================================
+const SPECIALIZATIONS = {
+    pulse: [
+        { name: 'Overcharge', desc: 'Devastating focused fire', dmgMult: 2.0, rateMult: 0.6, mods: ['+100% Damage', '-40% Fire Rate'] },
+        { name: 'Gatling', desc: 'Extreme rate of fire', dmgMult: 0.5, rateMult: 3.0, mods: ['-50% Damage', '+200% Fire Rate'] }
+    ],
+    scatter: [
+        { name: 'Shrapnel', desc: 'Massive spread area', dmgMult: 0.7, rateMult: 1.0, spreadMult: 2, rangeMult: 1.3, mods: ['-30% Damage', '6 Projectiles', '+30% Range'] },
+        { name: 'Slugshot', desc: 'Single powerful slug', dmgMult: 3.0, rateMult: 0.8, spreadMult: 0, mods: ['+200% Damage', 'Single Shot', '-20% Rate'] }
+    ],
+    frost: [
+        { name: 'Permafrost', desc: 'Extreme slow effect', dmgMult: 0.6, rateMult: 1.0, slowMult: 1.6, mods: ['-40% Damage', '80% Slow'] },
+        { name: 'Iceshard', desc: 'Frozen shards deal more damage', dmgMult: 2.5, rateMult: 1.2, slowMult: 0.6, mods: ['+150% Damage', '+20% Rate', 'Reduced Slow'] }
+    ],
+    flame: [
+        { name: 'Inferno', desc: 'Burns last much longer', dmgMult: 1.0, rateMult: 1.0, burnMult: 3.0, mods: ['3x Burn Duration', 'Same Fire Rate'] },
+        { name: 'Flamethrower+', desc: 'Wider, faster flames', dmgMult: 0.8, rateMult: 2.0, rangeMult: 1.4, mods: ['-20% Damage', '+100% Rate', '+40% Range'] }
+    ],
+    laser: [
+        { name: 'Death Ray', desc: 'Sustained high damage beam', dmgMult: 2.5, rateMult: 0.5, mods: ['+150% Damage', '-50% Rate'] },
+        { name: 'Pulse Laser', desc: 'Rapid beam pulses', dmgMult: 0.7, rateMult: 2.5, mods: ['-30% Damage', '+150% Rate'] }
+    ],
+    tesla: [
+        { name: 'Storm Core', desc: 'Chains to many more enemies', dmgMult: 0.7, rateMult: 1.0, chainMult: 2, mods: ['-30% Damage', '8 Chain Targets'] },
+        { name: 'Thunder Strike', desc: 'Massive single-target shock', dmgMult: 3.0, rateMult: 0.6, chainMult: 0, mods: ['+200% Damage', '-40% Rate', 'No Chain'] }
+    ],
+    missile: [
+        { name: 'Cluster Bomb', desc: 'Huge explosion radius', dmgMult: 0.7, rateMult: 1.0, splashMult: 2.5, mods: ['-30% Damage', '+150% Splash Radius'] },
+        { name: 'Bunker Buster', desc: 'Anti-boss heavy warhead', dmgMult: 3.0, rateMult: 0.5, splashMult: 0.3, mods: ['+200% Damage', '-50% Rate', 'Tiny Splash'] }
+    ],
+    sniper: [
+        { name: 'Railgun+', desc: 'Pierces everything in line', dmgMult: 1.5, rateMult: 0.8, pierceMult: 3, mods: ['+50% Damage', '9 Pierce', '-20% Rate'] },
+        { name: 'Marksman', desc: 'Extreme precision crits', dmgMult: 2.0, rateMult: 1.0, critMult: 2, mods: ['+100% Damage', '60% Crit Chance'] }
+    ],
+    plasma: [
+        { name: 'Nova Bomb', desc: 'Giga-sized explosions', dmgMult: 0.8, rateMult: 0.7, splashMult: 2.0, mods: ['-20% Damage', '-30% Rate', '+100% Splash'] },
+        { name: 'Plasma Rifle', desc: 'Fast direct plasma bolts', dmgMult: 2.0, rateMult: 2.5, splashMult: 0, mods: ['+100% Damage', '+150% Rate', 'No Splash'] }
+    ],
+    vortex: [
+        { name: 'Black Hole', desc: 'Extreme pull, wider range', dmgMult: 1.5, rateMult: 1.0, pullMult: 2.5, rangeMult: 1.5, mods: ['+50% Damage', '+150% Pull', '+50% Range'] },
+        { name: 'Void Shred', desc: 'Rapid damage in aura', dmgMult: 4.0, rateMult: 1.0, pullMult: 0.3, mods: ['+300% Damage', '-70% Pull'] }
+    ],
+    quantum: [
+        { name: 'Phase Shift', desc: 'Teleports enemies much further', dmgMult: 1.0, rateMult: 1.2, teleportMult: 3, mods: ['+20% Rate', '3x Teleport Distance'] },
+        { name: 'Quantum Blast', desc: 'Heavy damage, minor teleport', dmgMult: 3.5, rateMult: 0.8, teleportMult: 0.3, mods: ['+250% Damage', '-20% Rate', 'Minor Teleport'] }
+    ],
+    omega: [
+        { name: 'Omega Prime', desc: 'Maximum single-target obliteration', dmgMult: 3.0, rateMult: 0.4, critMult: 2, mods: ['+200% Damage', '-60% Rate', '60% Crit'] },
+        { name: 'Omega Storm', desc: 'Rapid suppression fire', dmgMult: 0.6, rateMult: 3.0, mods: ['-40% Damage', '+200% Rate'] }
+    ]
+};
+
+let pendingSpecTower = null;
+
+function showSpecDialog(tower) {
+    pendingSpecTower = tower;
+    const specs = SPECIALIZATIONS[tower.type];
+    if (!specs) return false;
+
+    const container = document.getElementById('specChoices');
+    document.getElementById('specSubtitle').textContent = `${tower.name} has reached Level 3! Choose a path:`;
+    container.innerHTML = '';
+
+    specs.forEach((spec, idx) => {
+        const card = document.createElement('div');
+        card.className = 'spec-card';
+        card.innerHTML = `
+            <div class="spec-name">${spec.name}</div>
+            <div class="spec-desc">${spec.desc}</div>
+            <div class="spec-mods">${spec.mods.map(m => {
+                const isNerf = m.startsWith('-') || m.includes('No ') || m.includes('Reduced') || m.includes('Tiny') || m.includes('Minor');
+                return `<div class="${isNerf ? 'nerf' : ''}">${isNerf ? '▼' : '▲'} ${m}</div>`;
+            }).join('')}</div>
+        `;
+        card.onclick = () => applySpecialization(idx);
+        container.appendChild(card);
+    });
+
+    document.getElementById('specDialog').classList.add('open');
+    return true;
+}
+
+function applySpecialization(specIdx) {
+    const tower = pendingSpecTower;
+    if (!tower) return;
+
+    const specs = SPECIALIZATIONS[tower.type];
+    if (!specs || !specs[specIdx]) return;
+
+    const spec = specs[specIdx];
+    tower.specialization = spec.name;
+
+    // Apply multipliers
+    tower.dmg = Math.floor(tower.dmg * spec.dmgMult);
+    tower.rate = tower.rate * spec.rateMult;
+    if (spec.rangeMult) tower.range = Math.floor(tower.range * spec.rangeMult);
+
+    // Specific modifiers
+    if (spec.spreadMult !== undefined) {
+        if (spec.spreadMult === 0) {
+            tower.special.spread = 0;
+        } else {
+            tower.special.spread = Math.floor((tower.special.spread || 3) * spec.spreadMult);
+        }
+    }
+    if (spec.slowMult !== undefined && tower.special.slow) {
+        tower.special.slow = Math.min(0.9, tower.special.slow * spec.slowMult);
+    }
+    if (spec.burnMult !== undefined && tower.special.burnDur) {
+        tower.special.burnDur = Math.floor(tower.special.burnDur * spec.burnMult);
+    }
+    if (spec.chainMult !== undefined) {
+        if (spec.chainMult === 0) {
+            tower.special.chain = 0;
+        } else {
+            tower.special.chain = Math.floor((tower.special.chain || 4) * spec.chainMult);
+        }
+    }
+    if (spec.splashMult !== undefined) {
+        if (spec.splashMult === 0) {
+            tower.special.splash = 0;
+        } else {
+            tower.special.splash = Math.floor((tower.special.splash || 60) * spec.splashMult);
+        }
+    }
+    if (spec.pierceMult !== undefined) {
+        tower.special.pierce = Math.floor((tower.special.pierce || 3) * spec.pierceMult);
+    }
+    if (spec.critMult !== undefined) {
+        tower.special.critChance = Math.min(0.8, (tower.special.critChance || 0.3) * spec.critMult);
+    }
+    if (spec.pullMult !== undefined && tower.special.pull) {
+        tower.special.pull = tower.special.pull * spec.pullMult;
+    }
+    if (spec.teleportMult !== undefined && tower.special.teleport) {
+        tower.special.teleport = Math.floor(tower.special.teleport * spec.teleportMult);
+    }
+
+    // Store base values from specialization for future level-ups
+    tower.baseDmg = tower.dmg;
+    tower.baseRate = tower.rate;
+    tower.baseRange = tower.range;
+
+    spawnParticles(tower.x, tower.y, 30, '#ffd700');
+    showDamageNumber(tower.x, tower.y - 40, spec.name + '!', '#ffd700', true);
+
+    document.getElementById('specDialog').classList.remove('open');
+    pendingSpecTower = null;
+    updateUI();
+}
+
+// ===============================================================
+// PERSISTENT STORAGE (localStorage)
+// ===============================================================
+const STORAGE_KEY = 'nexusDefenseData';
+
+function loadPersistentData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return {
+        bestScores: {},
+        stats: { enemiesKilled: 0, goldEarned: 0, towersBuilt: 0 },
+        achievements: []
+    };
+}
+
+function savePersistentData(data) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch(e) {}
+}
+
+function getPersistentData() {
+    if (!window._persistData) {
+        window._persistData = loadPersistentData();
+    }
+    return window._persistData;
+}
+
+function recordBestScore(mapIdx, score) {
+    const data = getPersistentData();
+    const key = 'map_' + mapIdx;
+    if (!data.bestScores[key] || score > data.bestScores[key]) {
+        data.bestScores[key] = score;
+    }
+    savePersistentData(data);
+}
+
+function recordStat(stat, amount) {
+    const data = getPersistentData();
+    data.stats[stat] = (data.stats[stat] || 0) + amount;
+    savePersistentData(data);
+}
+
+function recordAchievement(id) {
+    const data = getPersistentData();
+    if (!data.achievements.includes(id)) {
+        data.achievements.push(id);
+        savePersistentData(data);
+    }
+}
+
+function getBestScore(mapIdx) {
+    const data = getPersistentData();
+    return data.bestScores['map_' + mapIdx] || 0;
+}
+
+function getTotalAchievements() {
+    const data = getPersistentData();
+    return data.achievements.length;
+}
+
+function updateTrophyCounter() {
+    document.getElementById('trophyVal').textContent = getTotalAchievements();
+}
+
+// ===============================================================
+// ENEMY DISPLAY INFO (for bestiary and wave preview)
+// ===============================================================
+const ENEMY_NAMES = {
+    scout: 'Scout', runner: 'Runner', soldier: 'Soldier', heavy: 'Heavy',
+    speeder: 'Speeder', tank: 'Tank', healer: 'Healer', splitter: 'Splitter',
+    boss: 'Boss', swarm: 'Swarm'
+};
+
+const ENEMY_ICONS = {
+    scout: '👾', runner: '🏃', soldier: '🛡️', heavy: '🔩',
+    speeder: '💨', tank: '🪖', healer: '💚', splitter: '🔶',
+    boss: '💀', swarm: '🐜'
+};
+
+const ENEMY_ABILITIES = {
+    scout: 'None', runner: 'Fast movement', soldier: 'None',
+    heavy: 'High HP', speeder: 'Very fast', tank: 'Extreme HP, slow',
+    healer: 'Heals nearby enemies', splitter: 'Splits into swarm on death',
+    boss: 'Extreme HP, 30 nexus damage', swarm: 'Tiny but numerous'
+};
+
+function generateBestiary() {
+    const grid = document.getElementById('bestiaryGrid');
+    grid.innerHTML = '';
+
+    Object.entries(ENEMIES).forEach(([key, e]) => {
+        const card = document.createElement('div');
+        card.className = 'bestiary-card';
+        card.innerHTML = `
+            <div class="enemy-header">
+                <div class="enemy-icon" style="background:${e.color}30; border: 1px solid ${e.color};">${ENEMY_ICONS[key]}</div>
+                <div class="enemy-name">${ENEMY_NAMES[key]}</div>
+            </div>
+            <div class="enemy-stats">
+                <div>HP: <strong>${e.hp}</strong></div>
+                <div>Speed: <strong>${e.spd}</strong></div>
+                <div>Reward: <strong>${e.reward}g</strong></div>
+            </div>
+            <div class="enemy-ability">${ENEMY_ABILITIES[key]}</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function generateWavePreview() {
+    if (G.running) {
+        document.getElementById('wavePreview').classList.remove('open');
+        return;
+    }
+
+    const comp = getWavePreviewComp();
+    const counts = {};
+    comp.forEach(type => {
+        counts[type] = (counts[type] || 0) + 1;
+    });
+
+    const body = document.getElementById('wavePreviewBody');
+    body.innerHTML = '';
+
+    const title = document.getElementById('wavePreviewTitle');
+    title.textContent = `NEXT: WAVE ${G.wave}`;
+
+    Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
+        const e = ENEMIES[type];
+        const row = document.createElement('div');
+        row.className = 'wave-enemy-row';
+        row.innerHTML = `
+            <div class="wave-enemy-icon" style="background:${e.color}30; border: 1px solid ${e.color};">${ENEMY_ICONS[type]}</div>
+            <div class="wave-enemy-name">${ENEMY_NAMES[type]}</div>
+            <div class="wave-enemy-count">x${count}</div>
+        `;
+        body.appendChild(row);
+    });
+
+    document.getElementById('wavePreview').classList.add('open');
+}
+
+function getWavePreviewComp() {
+    // Deterministic preview based on wave number (mirrors getWaveComp logic)
+    const comp = [];
+    const w = G.wave;
+    const subWaves = Math.min(3 + Math.floor(w / 8), 5);
+
+    for (let sw = 1; sw <= subWaves; sw++) {
+        const count = 10 + w * 2 + sw * 3;
+        const pool = ['scout'];
+        if (w >= 2) pool.push('runner');
+        if (w >= 3) pool.push('soldier');
+        if (w >= 5) pool.push('heavy');
+        if (w >= 7) pool.push('speeder');
+        if (w >= 10) pool.push('tank');
+        if (w >= 8) pool.push('healer');
+        if (w >= 12) pool.push('splitter');
+
+        // Estimate composition
+        for (let i = 0; i < count; i++) {
+            if (i < count * 0.35) comp.push(pool[0]);
+            else if (i < count * 0.55 && pool.length > 1) comp.push(pool[1]);
+            else if (i < count * 0.72 && pool.length > 2) comp.push(pool[2]);
+            else if (pool.length > 3) comp.push(pool[Math.min(pool.length - 1, 3)]);
+            else comp.push(pool[pool.length - 1]);
+        }
+
+        if (w % 5 === 0 && sw === subWaves) {
+            comp.push('boss');
+        }
+    }
+
+    return comp;
+}
+
 // ═══════════════════════════════════════════════════════════════
 // INITIALIZATION
 // ═══════════════════════════════════════════════════════════════
@@ -1131,10 +2015,24 @@ function init() {
     resize();
     window.addEventListener('resize', resize);
 
+    // Load persistent data and restore achievements
+    const savedData = getPersistentData();
+    if (savedData.achievements) {
+        savedData.achievements.forEach(id => G.achievements.add(id));
+    }
+
     initStars();
     generateTowerCards();
     generateMapCards();
+    generateBestiary();
     bindEvents();
+    updateTrophyCounter();
+
+    // Init audio on first user interaction
+    document.addEventListener('click', function audioInit() {
+        ensureAudio();
+        document.removeEventListener('click', audioInit);
+    }, { once: true });
 
     // Start background animation
     animateBg();
@@ -1167,6 +2065,8 @@ function selectMap(idx) {
     const map = MAPS[idx];
     scalePath(map.path);
     document.getElementById('mapSelect').classList.add('hidden');
+    ensureAudio();
+    generateWavePreview();
     gameLoop();
 }
 
@@ -1213,12 +2113,14 @@ function generateMapCards() {
     MAPS.forEach((map, i) => {
         const card = document.createElement('div');
         card.className = 'map-card';
+        const best = getBestScore(i);
         card.innerHTML = `
             <div class="map-preview"><canvas id="mp${i}" width="250" height="120"></canvas></div>
             <div class="map-info">
                 <h3 style="color: ${map.pathStroke}">${map.name}</h3>
                 <p>${map.desc}</p>
                 <div class="difficulty">Difficulty: <span class="stars">${'★'.repeat(map.difficulty)}${'☆'.repeat(4 - map.difficulty)}</span></div>
+                ${best > 0 ? `<div class="map-best-score">Best: ${best}</div>` : ''}
             </div>
         `;
         card.onclick = () => selectMap(i);
@@ -1348,6 +2250,9 @@ class Tower {
 
         const t = this.target;
         const s = this.special;
+
+        // Sound effect
+        playSound('towerFire');
 
         // Muzzle flash
         spawnParticles(this.x + Math.cos(this.rotation) * 30, this.y + Math.sin(this.rotation) * 30, 3, this.color);
@@ -1536,10 +2441,14 @@ class Tower {
             ctx.fillText(stars, x, y + CFG.TOWER_RADIUS + 14);
         }
 
-        // Tier badge
+        // Tier badge / Specialization label
         ctx.fillStyle = this.color;
         ctx.font = 'bold 8px Orbitron';
-        ctx.fillText(`T${this.tier}`, x, y - CFG.TOWER_RADIUS - 8);
+        if (this.specialization) {
+            ctx.fillText(this.specialization, x, y - CFG.TOWER_RADIUS - 8);
+        } else {
+            ctx.fillText(`T${this.tier}`, x, y - CFG.TOWER_RADIUS - 8);
+        }
     }
 
     upgrade() {
@@ -1556,6 +2465,11 @@ class Tower {
         showDamageNumber(this.x, this.y - 35, `LVL ${this.level}!`, '#ffd700', true);
 
         if (this.level >= 5) unlock('maxTower');
+
+        // Specialization choice at level 3
+        if (this.level === 3 && !this.specialization && SPECIALIZATIONS[this.type]) {
+            showSpecDialog(this);
+        }
 
         updateUI();
         return true;
@@ -1649,6 +2563,7 @@ class Enemy {
             G.hp -= dmg;
             this.dead = true;
             perfectWave = false;
+            playSound('nexusDamage');
             document.getElementById('app').classList.add('shake');
             setTimeout(() => document.getElementById('app').classList.remove('shake'), 400);
             showDamageNumber(canvas.width / 2, canvas.height / 2, `-${dmg} HP`, '#ff0000', true);
@@ -1766,6 +2681,13 @@ class Enemy {
         G.gold += this.reward;
         G.score += this.reward * 2;
         if (source) source.kills++;
+
+        // Sound
+        playSound('enemyDeath');
+
+        // Record persistent stats
+        recordStat('enemiesKilled', 1);
+        recordStat('goldEarned', this.reward);
 
         // Combo system
         G.combo++;
@@ -2269,6 +3191,8 @@ function startWave() {
     G.subWave = 0;
     G.maxSubWaves = Math.min(3 + Math.floor(G.wave / 8), 5);
     perfectWave = true;
+    playSound('waveStart');
+    document.getElementById('wavePreview').classList.remove('open');
     spawnSubWave();
 }
 
@@ -2281,14 +3205,22 @@ function spawnSubWave() {
     const comp = getWaveComp();
     let idx = 0;
 
+    // Check for boss in this subwave
+    const hasBoss = comp.includes('boss');
+    if (hasBoss) {
+        playSound('bossSpawn');
+    }
+
     const interval = setInterval(() => {
         if (idx >= comp.length || !G.running) {
             clearInterval(interval);
             G.spawning = false;
             return;
         }
-        enemies.push(new Enemy(comp[idx]));
-        idx++;
+        if (!gamePaused) {
+            enemies.push(new Enemy(comp[idx]));
+            idx++;
+        }
     }, Math.max(150, 500 - G.wave * 8));
 
     updateUI();
@@ -2351,6 +3283,9 @@ function completeWave() {
     if (G.wave >= 10) unlock('wave10');
     if (perfectWave) unlock('noLeak');
 
+    // Record persistent score
+    recordBestScore(G.mapIdx, G.score);
+
     announce(`WAVE ${G.wave} COMPLETE!`, '#00ff88');
     showDamageNumber(canvas.width / 2, canvas.height / 2 + 50, `+${bonus} GOLD`, '#ffd700', true);
 
@@ -2359,6 +3294,8 @@ function completeWave() {
     if (G.wave > CFG.MAX_LEVEL) {
         victory();
     } else {
+        // Show wave preview for next wave
+        setTimeout(generateWavePreview, 2200);
         updateUI();
     }
 }
@@ -2372,11 +3309,13 @@ function announce(text, color = '#fff') {
 }
 
 function victory() {
+    recordBestScore(G.mapIdx, G.score);
     document.getElementById('victoryScore').textContent = G.score;
     document.getElementById('victoryOverlay').classList.add('open');
 }
 
 function defeat() {
+    recordBestScore(G.mapIdx, G.score);
     document.getElementById('defeatScore').textContent = G.score;
     document.getElementById('defeatOverlay').classList.add('open');
 }
@@ -2393,6 +3332,11 @@ function useAbility(type) {
     abilityUses++;
 
     if (abilityUses >= 5) unlock('ability5');
+
+    // Play ability-specific sounds
+    if (type === 'meteor') playSound('abilityMeteor');
+    else if (type === 'freeze') playSound('abilityFreeze');
+    else if (type === 'goldRush') playSound('abilityGold');
 
     if (type === 'meteor') {
         // Meteor strike at mouse position
@@ -2450,6 +3394,7 @@ function placeTower(x, y) {
     G.gold -= t.cost;
     towers.push(new Tower(x, y, G.placing));
 
+    recordStat('towersBuilt', 1);
     if (towers.length >= 10) unlock('tower10');
 
     spawnParticles(x, y, 15, t.color);
@@ -2520,6 +3465,11 @@ function updateUI() {
         const upgBtn = document.getElementById('upgradeBtn');
         upgBtn.textContent = t.level >= 5 ? '⬆️ MAX LEVEL' : `⬆️ UPGRADE (${upgCost})`;
         upgBtn.disabled = G.gold < upgCost || t.level >= 5;
+
+        // Show specialization in title if present
+        if (t.specialization) {
+            document.getElementById('towerTitle').textContent = `${t.icon} ${t.specialization}`;
+        }
 
         document.getElementById('sellBtn').textContent = `💰 SELL (+${t.getSellValue()})`;
 
@@ -2604,6 +3554,10 @@ function unlock(id) {
     if (G.achievements.has(id)) return;
     G.achievements.add(id);
 
+    // Persist achievement
+    recordAchievement(id);
+    updateTrophyCounter();
+
     const ach = ACHIEVEMENTS[id];
     document.getElementById('achieveTitle').textContent = ach.name;
     document.getElementById('achieveDesc').textContent = ach.desc;
@@ -2679,11 +3633,31 @@ function bindEvents() {
     document.addEventListener('keydown', e => {
         const key = e.key.toLowerCase();
         if (key === 'escape') {
+            // Close spec dialog if open
+            if (document.getElementById('specDialog').classList.contains('open')) {
+                document.getElementById('specDialog').classList.remove('open');
+                pendingSpecTower = null;
+                return;
+            }
+            // Close bestiary if open
+            if (document.getElementById('bestiaryPopup').classList.contains('open')) {
+                document.getElementById('bestiaryPopup').classList.remove('open');
+                return;
+            }
             G.placing = null;
             G.selected = null;
             document.getElementById('buildMenu').classList.remove('open');
             canvas.style.cursor = 'crosshair';
             updateUI();
+        }
+        if (key === 'p') togglePause();
+        if (key === 'm') toggleMute();
+        if (gamePaused && key !== 'p' && key !== 'm' && key !== 'escape') {
+            // While paused, still allow build/upgrade/sell/targeting keys
+            if (key === 'u' && G.selected) { G.selected.upgrade(); return; }
+            if (key === 's' && G.selected) { sellTower(); return; }
+            // Block other game actions
+            return;
         }
         if (key === 'q') useAbility('meteor');
         if (key === 'w') useAbility('freeze');
@@ -2725,6 +3699,15 @@ function bindEvents() {
     document.getElementById('ability2').onclick = () => useAbility('freeze');
     document.getElementById('ability3').onclick = () => useAbility('goldRush');
 
+    document.getElementById('pauseBtn').onclick = togglePause;
+    document.getElementById('muteBtn').onclick = toggleMute;
+    document.getElementById('bestiaryBtn').onclick = () => {
+        document.getElementById('bestiaryPopup').classList.add('open');
+    };
+    document.getElementById('closeBestiary').onclick = () => {
+        document.getElementById('bestiaryPopup').classList.remove('open');
+    };
+
     // Targeting buttons
     document.querySelectorAll('.target-btn').forEach(btn => {
         btn.onclick = () => {
@@ -2757,28 +3740,30 @@ function bindEvents() {
 // GAME LOOP
 // ═══════════════════════════════════════════════════════════════
 function gameLoop() {
-    G.time++;
+    if (!gamePaused) {
+        G.time++;
 
-    // Update
-    towers.forEach(t => t.update());
+        // Update
+        towers.forEach(t => t.update());
 
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        enemies[i].update();
-        if (enemies[i].dead) enemies.splice(i, 1);
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            enemies[i].update();
+            if (enemies[i].dead) enemies.splice(i, 1);
+        }
+
+        updateProjectiles();
+        updateEffects();
+
+        // Check game over
+        if (G.hp <= 0) {
+            defeat();
+            return;
+        }
+
+        checkWaveComplete();
     }
 
-    updateProjectiles();
-    updateEffects();
-
-    // Check game over
-    if (G.hp <= 0) {
-        defeat();
-        return;
-    }
-
-    checkWaveComplete();
-
-    // Draw
+    // Draw always (so player can see the state while paused)
     draw();
     updateUI();
 

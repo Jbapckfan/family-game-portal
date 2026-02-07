@@ -1535,6 +1535,179 @@
             outline: 2px solid #0ff;
             outline-offset: 2px;
         }
+
+        /* ============================================
+           MINIMAP
+           ============================================ */
+        #minimapCanvas {
+            position: fixed;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            right: max(20px, env(safe-area-inset-right));
+            width: 140px;
+            height: 140px;
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.55);
+            z-index: 110;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           RALLY POINT INDICATOR
+           ============================================ */
+        .rally-hint {
+            position: fixed;
+            bottom: calc(170px + env(safe-area-inset-bottom));
+            right: max(20px, env(safe-area-inset-right));
+            font-size: 10px;
+            color: #888;
+            z-index: 110;
+            text-align: right;
+            pointer-events: none;
+        }
+
+        /* ============================================
+           UPGRADE SCREEN (between levels)
+           ============================================ */
+        .upgrade-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 210;
+            padding: 20px;
+        }
+        .upgrade-screen h1 {
+            font-size: 36px;
+            color: #0ff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px #0ff;
+        }
+        .upgrade-screen .upgrade-sub {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .upgrade-cards {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .upgrade-card {
+            width: 180px;
+            padding: 24px 18px;
+            background: rgba(255,255,255,0.04);
+            border: 2px solid #444;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .upgrade-card:hover {
+            border-color: #0ff;
+            transform: translateY(-6px);
+            box-shadow: 0 8px 30px rgba(0,255,255,0.25);
+        }
+        .upgrade-card .upg-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .upgrade-card .upg-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .upgrade-card .upg-desc {
+            font-size: 12px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        .active-upgrades {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .active-upgrade-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: rgba(0,255,255,0.1);
+            border: 1px solid #0ff3;
+            border-radius: 12px;
+            color: #0ff;
+        }
+
+        /* ============================================
+           POST-GAME TIMELINE
+           ============================================ */
+        .timeline-section {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .timeline-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .timeline-bar {
+            position: relative;
+            height: 36px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+        .timeline-event {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            cursor: default;
+            transition: transform 0.15s;
+        }
+        .timeline-event:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 2;
+        }
+        .timeline-event .tl-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background: #000;
+            border: 1px solid #555;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #ccc;
+        }
+        .timeline-event:hover .tl-tooltip { display: block; }
+
+        .sparkline-container {
+            height: 50px;
+            margin-top: 10px;
+            position: relative;
+        }
+        .sparkline-container canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -1746,6 +1919,18 @@
 
     <div class="selection-indicator hidden" id="selectionIndicator">0 planets selected</div>
 
+    <!-- Minimap -->
+    <canvas id="minimapCanvas" class="hidden" width="140" height="140"></canvas>
+    <div class="rally-hint hidden" id="rallyHint">Right-click planet: set rally<br>Shift+right-click: clear rally</div>
+
+    <!-- Upgrade Screen (between levels) -->
+    <div class="upgrade-screen hidden" id="upgradeScreen">
+        <h1>LEVEL UP!</h1>
+        <p class="upgrade-sub">Choose an upgrade for your forces</p>
+        <div class="upgrade-cards" id="upgradeCards"></div>
+        <div class="active-upgrades" id="activeUpgrades"></div>
+    </div>
+
     <div class="menu" id="menu">
         <h1>🌍 PARTICLE CONQUEST</h1>
         <p class="subtitle">Capture all planets to win</p>
@@ -1851,6 +2036,13 @@
                 <div class="result-stat-label">Streak</div>
             </div>
         </div>
+        <!-- Post-Game Timeline -->
+        <div class="timeline-section" id="timelineSection" style="display:none;">
+            <h3>Battle Timeline</h3>
+            <div class="timeline-bar" id="timelineBar"></div>
+            <div class="sparkline-container"><canvas id="sparklineCanvas"></canvas></div>
+        </div>
+
         <div class="result-buttons">
             <button class="menu-link-btn" id="menuBtn">Menu</button>
             <button class="play-again-btn" id="playAgainBtn">Continue</button>
@@ -3746,6 +3938,360 @@ let bgParticles = [];
 let effects = [];
 let wormholePairs = [];
 
+// ==================== RALLY POINT SYSTEM ====================
+let rallyPoints = new Map(); // planet index -> target planet index
+const RALLY_AUTO_SEND_THRESHOLD = 5;
+let longPressTimer = null;
+let longPressTarget = null;
+const LONG_PRESS_DURATION = 500; // ms for mobile long-press
+
+// ==================== POST-GAME TIMELINE ====================
+let gameTimeline = []; // { time: seconds, type: string, icon: string, desc: string }
+let unitCountHistory = []; // { time, player, enemy }
+let unitHistoryInterval = null;
+
+function pushTimelineEvent(type, icon, desc) {
+    if (game.state !== 'playing' && game.state !== 'harvest') return;
+    const elapsed = (Date.now() - (currentGameStats.startTime || Date.now())) / 1000;
+    gameTimeline.push({ time: elapsed, type, icon, desc });
+}
+
+function startUnitTracking() {
+    unitCountHistory = [];
+    if (unitHistoryInterval) clearInterval(unitHistoryInterval);
+    unitHistoryInterval = setInterval(() => {
+        if (game.state !== 'playing') return;
+        let pUnits = 0, eUnits = 0;
+        for (const p of planets) {
+            if (p.owner === PLAYER) pUnits += Math.floor(p.units);
+            if (p.owner === ENEMY) eUnits += Math.floor(p.units);
+        }
+        pUnits += flyingParticles.filter(p => p.owner === PLAYER).length;
+        eUnits += flyingParticles.filter(p => p.owner === ENEMY).length;
+        const elapsed = (Date.now() - (currentGameStats.startTime || Date.now())) / 1000;
+        unitCountHistory.push({ time: elapsed, player: pUnits, enemy: eUnits });
+    }, 2000);
+}
+
+function stopUnitTracking() {
+    if (unitHistoryInterval) { clearInterval(unitHistoryInterval); unitHistoryInterval = null; }
+}
+
+// ==================== BETWEEN-LEVEL UPGRADE SYSTEM ====================
+let chosenUpgrades = []; // array of upgrade ids
+const ALL_UPGRADES = [
+    { id: 'particle_speed', name: 'Swift Particles', icon: '💨', desc: '+15% particle speed', apply: () => { upgradeModifiers.particleSpeedMult += 0.15; } },
+    { id: 'shield_duration', name: 'Fortified Shields', icon: '🛡️', desc: 'Shield duration +3s', apply: () => { upgradeModifiers.shieldDurationBonus += 3; } },
+    { id: 'extra_planet', name: 'Advance Scout', icon: '🌍', desc: 'Start with an extra planet', apply: () => { upgradeModifiers.extraStartPlanets += 1; } },
+    { id: 'nuke_cooldown', name: 'Rapid Warheads', icon: '☢️', desc: 'Nuke cooldown -5s', apply: () => { upgradeModifiers.nukeCooldownReduction += 5; } },
+    { id: 'production_boost', name: 'Overdrive', icon: '⚙️', desc: '+20% unit production', apply: () => { upgradeModifiers.productionMult += 0.20; } },
+    { id: 'starting_units', name: 'Reinforcements', icon: '🚀', desc: '+10 starting units', apply: () => { upgradeModifiers.startingUnitsBonus += 10; } },
+    { id: 'emp_duration', name: 'EMP Overcharge', icon: '💥', desc: 'EMP duration +3s', apply: () => { upgradeModifiers.empDurationBonus += 3; } },
+    { id: 'boost_duration', name: 'Afterburners', icon: '⚡', desc: 'Boost duration +3s', apply: () => { upgradeModifiers.boostDurationBonus += 3; } },
+    { id: 'defense_bonus', name: 'Hardened Armor', icon: '🏰', desc: '+25% planet defense', apply: () => { upgradeModifiers.defenseMult += 0.25; } },
+    { id: 'max_units', name: 'Expanded Capacity', icon: '📦', desc: '+30% max planet units', apply: () => { upgradeModifiers.maxUnitsMult += 0.30; } }
+];
+
+let upgradeModifiers = {
+    particleSpeedMult: 0,
+    shieldDurationBonus: 0,
+    nukeCooldownReduction: 0,
+    productionMult: 0,
+    extraStartPlanets: 0,
+    startingUnitsBonus: 0,
+    empDurationBonus: 0,
+    boostDurationBonus: 0,
+    defenseMult: 0,
+    maxUnitsMult: 0
+};
+
+function resetUpgrades() {
+    chosenUpgrades = [];
+    upgradeModifiers = {
+        particleSpeedMult: 0, shieldDurationBonus: 0, nukeCooldownReduction: 0,
+        productionMult: 0, extraStartPlanets: 0, startingUnitsBonus: 0,
+        empDurationBonus: 0, boostDurationBonus: 0, defenseMult: 0, maxUnitsMult: 0
+    };
+}
+
+function applyAllUpgrades() {
+    // Reset modifiers
+    upgradeModifiers = {
+        particleSpeedMult: 0, shieldDurationBonus: 0, nukeCooldownReduction: 0,
+        productionMult: 0, extraStartPlanets: 0, startingUnitsBonus: 0,
+        empDurationBonus: 0, boostDurationBonus: 0, defenseMult: 0, maxUnitsMult: 0
+    };
+    for (const id of chosenUpgrades) {
+        const upg = ALL_UPGRADES.find(u => u.id === id);
+        if (upg) upg.apply();
+    }
+}
+
+function showUpgradeScreen() {
+    // Pick 3 random upgrades not yet maxed
+    const available = ALL_UPGRADES.filter(u => {
+        const count = chosenUpgrades.filter(id => id === u.id).length;
+        return count < 3; // max 3 stacks
+    });
+    const shuffled = available.sort(() => Math.random() - 0.5).slice(0, 3);
+    if (shuffled.length === 0) { proceedToNextLevel(); return; }
+
+    const container = document.getElementById('upgradeCards');
+    container.innerHTML = '';
+    for (const upg of shuffled) {
+        const card = document.createElement('div');
+        card.className = 'upgrade-card';
+        const stackCount = chosenUpgrades.filter(id => id === upg.id).length;
+        card.innerHTML = `
+            <div class="upg-icon">${upg.icon}</div>
+            <div class="upg-name">${upg.name}${stackCount > 0 ? ' x' + (stackCount+1) : ''}</div>
+            <div class="upg-desc">${upg.desc}</div>
+        `;
+        card.addEventListener('click', () => {
+            chosenUpgrades.push(upg.id);
+            applyAllUpgrades();
+            playSound('ability');
+            document.getElementById('upgradeScreen').classList.add('hidden');
+            proceedToNextLevel();
+        });
+        container.appendChild(card);
+    }
+
+    // Show active upgrades
+    const activeEl = document.getElementById('activeUpgrades');
+    if (chosenUpgrades.length > 0) {
+        const counts = {};
+        for (const id of chosenUpgrades) counts[id] = (counts[id]||0) + 1;
+        activeEl.innerHTML = Object.entries(counts).map(([id, ct]) => {
+            const u = ALL_UPGRADES.find(a => a.id === id);
+            return `<span class="active-upgrade-tag">${u.icon} ${u.name}${ct > 1 ? ' x'+ct : ''}</span>`;
+        }).join('');
+    } else {
+        activeEl.innerHTML = '';
+    }
+
+    document.getElementById('upgradeScreen').classList.remove('hidden');
+}
+
+function proceedToNextLevel() {
+    playerHarvested = 0;
+    enemyHarvested = 0;
+    resetCurrentGameStats();
+    generateLevel();
+    startMusic();
+}
+
+// ==================== MINIMAP SYSTEM ====================
+const minimapCanvas = document.getElementById('minimapCanvas');
+const minimapCtx = minimapCanvas.getContext('2d');
+const MINIMAP_SIZE = 140;
+let discoveredPlanets = new Set(); // indices of planets the player has seen
+
+function updateDiscoveredPlanets() {
+    for (let i = 0; i < planets.length; i++) {
+        const p = planets[i];
+        if (isMyPlanet(p) || !game.features.fog || isVisibleToPlayer(p.x, p.y)) {
+            discoveredPlanets.add(i);
+        }
+    }
+}
+
+function drawMinimap() {
+    if (game.state !== 'playing' && game.state !== 'harvest') return;
+
+    const mc = minimapCtx;
+    mc.clearRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
+
+    // Background
+    mc.fillStyle = 'rgba(0,0,0,0.6)';
+    mc.fillRect(0, 0, MINIMAP_SIZE, MINIMAP_SIZE);
+
+    const scaleX = MINIMAP_SIZE / W;
+    const scaleY = MINIMAP_SIZE / H;
+
+    updateDiscoveredPlanets();
+
+    // Draw planets as dots
+    const now = Date.now();
+    for (let i = 0; i < planets.length; i++) {
+        const p = planets[i];
+        // Respect fog of war - only show discovered planets
+        if (game.features.fog && !discoveredPlanets.has(i)) continue;
+
+        const mx = p.x * scaleX;
+        const my = p.y * scaleY;
+        const mr = Math.max(3, p.size * scaleX * 0.6);
+
+        // Color by ownership
+        const colors = getOwnerColor(p.owner);
+        mc.fillStyle = colors.main;
+
+        // Check for active combat (flying particles targeting this planet)
+        const hasCombat = flyingParticles.some(fp => fp.target === p && fp.owner !== p.owner);
+        if (hasCombat) {
+            // Pulsing effect for combat
+            const pulse = 0.5 + Math.sin(now / 150) * 0.5;
+            mc.fillStyle = `rgba(255, 255, 100, ${0.5 + pulse * 0.5})`;
+            mc.beginPath();
+            mc.arc(mx, my, mr + 2 + pulse * 2, 0, Math.PI * 2);
+            mc.fill();
+            mc.fillStyle = colors.main;
+        }
+
+        mc.beginPath();
+        mc.arc(mx, my, mr, 0, Math.PI * 2);
+        mc.fill();
+    }
+
+    // Draw rally point arrows on minimap
+    for (const [srcIdx, tgtIdx] of rallyPoints) {
+        const src = planets[srcIdx];
+        const tgt = planets[tgtIdx];
+        if (!src || !tgt) continue;
+        mc.strokeStyle = 'rgba(0,255,255,0.5)';
+        mc.lineWidth = 1;
+        mc.beginPath();
+        mc.moveTo(src.x * scaleX, src.y * scaleY);
+        mc.lineTo(tgt.x * scaleX, tgt.y * scaleY);
+        mc.stroke();
+    }
+
+    // Viewport indicator (for future pan/zoom, show full viewport for now)
+    mc.strokeStyle = 'rgba(255,255,255,0.5)';
+    mc.lineWidth = 1;
+    mc.strokeRect(1, 1, MINIMAP_SIZE - 2, MINIMAP_SIZE - 2);
+}
+
+// ==================== RENDER TIMELINE ON END SCREEN ====================
+function renderTimeline() {
+    const section = document.getElementById('timelineSection');
+    const bar = document.getElementById('timelineBar');
+    if (!gameTimeline.length && !unitCountHistory.length) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = 'block';
+    bar.innerHTML = '';
+
+    const totalTime = currentGameStats.gameTime || 1;
+
+    // Render event icons
+    for (const evt of gameTimeline) {
+        const pct = Math.min(100, (evt.time / totalTime) * 100);
+        const el = document.createElement('div');
+        el.className = 'timeline-event';
+        el.style.left = pct + '%';
+        el.innerHTML = `${evt.icon}<span class="tl-tooltip">${Math.floor(evt.time)}s - ${evt.desc}</span>`;
+        bar.appendChild(el);
+    }
+
+    // Render sparkline
+    if (unitCountHistory.length > 1) {
+        const sparkCanvas = document.getElementById('sparklineCanvas');
+        const rect = sparkCanvas.parentElement.getBoundingClientRect();
+        sparkCanvas.width = rect.width || 500;
+        sparkCanvas.height = 50;
+        const sc = sparkCanvas.getContext('2d');
+        sc.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+
+        const maxUnits = Math.max(1, ...unitCountHistory.map(h => Math.max(h.player, h.enemy)));
+        const w = sparkCanvas.width;
+        const h = sparkCanvas.height;
+
+        // Player line (cyan)
+        sc.strokeStyle = '#0ff';
+        sc.lineWidth = 2;
+        sc.beginPath();
+        unitCountHistory.forEach((pt, i) => {
+            const x = (pt.time / totalTime) * w;
+            const y = h - (pt.player / maxUnits) * (h - 4) - 2;
+            if (i === 0) sc.moveTo(x, y);
+            else sc.lineTo(x, y);
+        });
+        sc.stroke();
+
+        // Enemy line (red)
+        sc.strokeStyle = '#f44';
+        sc.lineWidth = 2;
+        sc.beginPath();
+        unitCountHistory.forEach((pt, i) => {
+            const x = (pt.time / totalTime) * w;
+            const y = h - (pt.enemy / maxUnits) * (h - 4) - 2;
+            if (i === 0) sc.moveTo(x, y);
+            else sc.lineTo(x, y);
+        });
+        sc.stroke();
+
+        // Labels
+        sc.fillStyle = '#0ff';
+        sc.font = '9px system-ui';
+        sc.fillText('You', 4, 10);
+        sc.fillStyle = '#f44';
+        sc.fillText('AI', 30, 10);
+    }
+}
+
+// ==================== RALLY POINT DRAWING & AUTO-SEND ====================
+function drawRallyPoints() {
+    for (const [srcIdx, tgtIdx] of rallyPoints) {
+        const src = planets[srcIdx];
+        const tgt = planets[tgtIdx];
+        if (!src || !tgt || !isMyPlanet(src)) continue;
+
+        const dx = tgt.x - src.x;
+        const dy = tgt.y - src.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const angle = Math.atan2(dy, dx);
+
+        // Thin colored arrow
+        ctx.save();
+        ctx.strokeStyle = 'rgba(0, 255, 200, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath();
+        ctx.moveTo(src.x, src.y);
+        ctx.lineTo(tgt.x, tgt.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Arrowhead
+        const headLen = 12;
+        const ax = tgt.x - Math.cos(angle) * (tgt.size + 10);
+        const ay = tgt.y - Math.sin(angle) * (tgt.size + 10);
+        ctx.fillStyle = 'rgba(0, 255, 200, 0.6)';
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(ax - headLen * Math.cos(angle - 0.4), ay - headLen * Math.sin(angle - 0.4));
+        ctx.lineTo(ax - headLen * Math.cos(angle + 0.4), ay - headLen * Math.sin(angle + 0.4));
+        ctx.closePath();
+        ctx.fill();
+
+        // Small "R" indicator on source planet
+        ctx.fillStyle = 'rgba(0, 255, 200, 0.7)';
+        ctx.font = 'bold 10px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('R', src.x + src.size + 12, src.y - src.size - 2);
+        ctx.restore();
+    }
+}
+
+function updateRallyAutoSend(dt) {
+    for (const [srcIdx, tgtIdx] of rallyPoints) {
+        const src = planets[srcIdx];
+        const tgt = planets[tgtIdx];
+        if (!src || !tgt) { rallyPoints.delete(srcIdx); continue; }
+        if (!isMyPlanet(src)) { rallyPoints.delete(srcIdx); continue; }
+
+        // Auto-send when planet accumulates enough units
+        if (src.units >= RALLY_AUTO_SEND_THRESHOLD + 2) {
+            const toSend = Math.floor(src.units - 2); // keep 2 on planet
+            if (toSend >= RALLY_AUTO_SEND_THRESHOLD) {
+                sendUnits(src, tgt, Math.floor((toSend / src.units) * 100));
+            }
+        }
+    }
+}
+
 function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
@@ -3893,14 +4439,36 @@ class Planet {
         const myTeam = getMyTeam();
         const isEnemy = multiplayerActive ? this.owner !== myTeam && this.owner >= 0 : this.owner === ENEMY;
         if (this.empTime > 0 && isEnemy) return 0;
-        return this.baseProductionRate * this.typeData.productionMult;
+        let rate = this.baseProductionRate * this.typeData.productionMult;
+        // Apply upgrade: production bonus for player planets
+        const isMine = multiplayerActive ? this.owner === myTeam : this.owner === PLAYER;
+        if (isMine && upgradeModifiers.productionMult > 0) {
+            rate *= (1 + upgradeModifiers.productionMult);
+        }
+        return rate;
     }
-    
+
     get defenseMult() {
         let mult = this.typeData.defenseMult;
         if (mult === 0) mult = 0.01;
         if (this.shielded) mult *= 10;
+        // Apply upgrade: defense bonus for player planets
+        const myTeam = getMyTeam();
+        const isMine = multiplayerActive ? this.owner === myTeam : this.owner === PLAYER;
+        if (isMine && upgradeModifiers.defenseMult > 0) {
+            mult *= (1 + upgradeModifiers.defenseMult);
+        }
         return mult;
+    }
+
+    get effectiveMaxUnits() {
+        let max = this.maxUnits;
+        const myTeam = getMyTeam();
+        const isMine = multiplayerActive ? this.owner === myTeam : this.owner === PLAYER;
+        if (isMine && upgradeModifiers.maxUnitsMult > 0) {
+            max *= (1 + upgradeModifiers.maxUnitsMult);
+        }
+        return max;
     }
     
     update(dt) {
@@ -3914,7 +4482,7 @@ class Planet {
         }
         
         const isNeutral = multiplayerActive ? this.owner < 0 : this.owner === NEUTRAL;
-        if (!isNeutral && this.units < this.maxUnits && this.type !== 'blackhole') {
+        if (!isNeutral && this.units < this.effectiveMaxUnits && this.type !== 'blackhole') {
             this.units += this.productionRate * dt;
         }
         
@@ -4172,6 +4740,10 @@ class FlyingParticle {
             ? lobby.players.find(p => p.id === myPlayerId)?.team === this.owner
             : this.owner === PLAYER;
         if (isMyTeam && abilities.boost.active) spd *= 3;
+        // Apply upgrade: particle speed bonus
+        if (isMyTeam && upgradeModifiers.particleSpeedMult > 0) {
+            spd *= (1 + upgradeModifiers.particleSpeedMult);
+        }
         return spd;
     }
     
@@ -4242,6 +4814,8 @@ class FlyingParticle {
                         juice.burst(this.target.x, this.target.y, teamColor, 25, 120);
                         juice.flash(teamColor, 0.2);
                         haptics.heavy();
+                        // Timeline event: planet captured
+                        pushTimelineEvent('capture', '🏴', 'Captured a planet');
 
                         // Check if all planets owned for daily challenge
                         if (!multiplayerActive && planets.every(p => p.owner === PLAYER)) {
@@ -4258,6 +4832,8 @@ class FlyingParticle {
                         juice.shake(10, 150);
                         juice.burst(this.target.x, this.target.y, '#f44', 20, 100);
                         haptics.error();
+                        // Timeline event: planet lost
+                        pushTimelineEvent('lost', '💔', 'Lost a planet');
                     }
 
                     const captureColors = getOwnerColor(this.owner);
@@ -4714,21 +5290,21 @@ function generateLevel() {
     
     const wormholePlanets = [];
     
-    const startUnits = game.mode === 'harvest' ? 5 : settings.startingUnits;
-    
+    const startUnits = game.mode === 'harvest' ? 5 : settings.startingUnits + upgradeModifiers.startingUnitsBonus;
+
     for (let i = 0; i < positions.length; i++) {
         const pos = positions[i];
         const size = 30 + Math.random() * 35;
         let owner = NEUTRAL;
         let units = 10 + Math.random() * 15;
         let type = 'normal';
-        
+
         if (i === 0) {
             owner = PLAYER;
             units = startUnits;
         } else if (i === positions.length - 1) {
             owner = ENEMY;
-            units = startUnits;
+            units = game.mode === 'harvest' ? 5 : settings.startingUnits; // enemy doesn't get upgrade bonus
         } else if (specialIndices.includes(i)) {
             type = specialTypes[specialIndices.indexOf(i) % specialTypes.length];
             if (type === 'blackhole') {
@@ -4736,7 +5312,7 @@ function generateLevel() {
                 owner = NEUTRAL;
             }
         }
-        
+
         const planet = new Planet(pos.x, pos.y, size, owner, units, type);
         planets.push(planet);
         
@@ -4751,7 +5327,31 @@ function generateLevel() {
             wormholePlanets[i + 1].wormholePartner = wormholePlanets[i];
         }
     }
-    
+
+    // Apply upgrade: extra starting planets
+    if (upgradeModifiers.extraStartPlanets > 0) {
+        const neutralPlanets = planets.filter(p => p.owner === NEUTRAL && p.type !== 'blackhole');
+        // Sort by distance to first player planet for nearby extras
+        const playerPlanet = planets.find(p => p.owner === PLAYER);
+        if (playerPlanet) {
+            neutralPlanets.sort((a, b) => {
+                const dA = Math.sqrt((a.x - playerPlanet.x)**2 + (a.y - playerPlanet.y)**2);
+                const dB = Math.sqrt((b.x - playerPlanet.x)**2 + (b.y - playerPlanet.y)**2);
+                return dA - dB;
+            });
+        }
+        for (let e = 0; e < upgradeModifiers.extraStartPlanets && e < neutralPlanets.length; e++) {
+            neutralPlanets[e].owner = PLAYER;
+            neutralPlanets[e].units = Math.max(neutralPlanets[e].units, 15);
+        }
+    }
+
+    // Reset rally points and timeline for new level
+    rallyPoints.clear();
+    discoveredPlanets.clear();
+    gameTimeline = [];
+    startUnitTracking();
+
     if (game.mode === 'harvest') {
         for (let i = 0; i < HARVEST_PARTICLE_COUNT; i++) {
             harvestParticles.push(new HarvestParticle());
@@ -4772,6 +5372,11 @@ function generateLevel() {
     
     document.getElementById('levelInfo').textContent = `Level ${game.level} • ${game.difficulty.toUpperCase()} • ${game.mode.toUpperCase()}`;
     updateSelectionIndicator();
+
+    // Show minimap and rally hint
+    document.getElementById('minimapCanvas').classList.remove('hidden');
+    document.getElementById('rallyHint').classList.remove('hidden');
+    game._lastMilestone = 0;
 
     // Start tutorial for first-time players
     if (game.state === 'playing' && game.level === 1) {
@@ -4911,55 +5516,153 @@ function sendUnifiedAttack(target, percent) {
 }
 
 let lastAIAction = 0;
+let lastAIReinforce = 0;
+let lastAIPincer = 0;
 
 function updateAI(dt) {
     const settings = DIFFICULTY[game.difficulty];
     const now = Date.now();
-    
+
+    // ---- Smarter AI: Reinforce threatened front-line planets ----
+    if (now - lastAIReinforce > 2000 / settings.aiSpeed) {
+        lastAIReinforce = now;
+        aiReinforce(settings);
+    }
+
+    // ---- Smarter AI: Coordinated pincer attacks ----
+    if (now - lastAIPincer > 3000 / settings.aiSpeed) {
+        lastAIPincer = now;
+        if (Math.random() < settings.aiAggression * 0.6) {
+            aiPincerAttack(settings);
+        }
+    }
+
+    // ---- Standard AI action (single planet attack) ----
     if (now - lastAIAction < 800 / settings.aiSpeed) return;
     lastAIAction = now;
-    
+
     const aiPlanets = planets.filter(p => p.owner === ENEMY && p.units > 8);
     if (aiPlanets.length === 0) return;
-    
+
     if (Math.random() > settings.aiAggression) return;
-    
+
     const source = aiPlanets[Math.floor(Math.random() * aiPlanets.length)];
-    
+
     let bestTarget = null;
     let bestScore = -Infinity;
-    
+
     for (const planet of planets) {
         if (planet === source || planet.type === 'blackhole') continue;
-        
+
         const dist = Math.sqrt((planet.x - source.x) ** 2 + (planet.y - source.y) ** 2);
         let score = 0;
-        
+
         if (planet.owner === PLAYER) {
+            // (c) AVOID shielded planets entirely
+            if (planet.shielded) continue;
             score = 100 - planet.units * planet.defenseMult - dist / 15;
-            if (planet.shielded) score -= 200;
         } else if (planet.owner === NEUTRAL) {
             score = 60 - planet.units - dist / 8;
             if (planet.type === 'factory') score += 30;
             if (planet.type === 'fortress') score += 20;
         } else {
-            score = -100;
+            score = -100; // own planet
         }
-        
+
         if (planet.type === 'wormhole' && planet.owner !== ENEMY) score += 25;
-        
+
         if (score > bestScore) {
             bestScore = score;
             bestTarget = planet;
         }
     }
-    
+
     if (bestTarget && bestScore > -30) {
         let percent = 50;
         if (bestTarget.owner === PLAYER && bestTarget.units < source.units * 0.4) percent = 80;
         if (bestTarget.owner === NEUTRAL) percent = Math.min(70, (bestTarget.units + 5) / source.units * 100);
-        
+
         sendUnits(source, bestTarget, percent);
+    }
+}
+
+// (a) Reinforce threatened front-line planets from safe rear planets
+function aiReinforce(settings) {
+    const aiPlanets = planets.filter(p => p.owner === ENEMY);
+    if (aiPlanets.length < 2) return;
+
+    // Identify front-line planets (near player planets)
+    const playerPlanets = planets.filter(p => p.owner === PLAYER);
+    if (playerPlanets.length === 0) return;
+
+    for (const aiP of aiPlanets) {
+        // Calculate threat: how close and strong are nearby player planets
+        let threat = 0;
+        for (const pp of playerPlanets) {
+            const dist = Math.sqrt((pp.x - aiP.x)**2 + (pp.y - aiP.y)**2);
+            if (dist < 350) {
+                threat += (pp.units * (350 - dist)) / 350;
+            }
+        }
+        aiP._aiThreat = threat;
+
+        // Is this planet "safe"? (far from any player planet)
+        const nearestPlayerDist = Math.min(...playerPlanets.map(pp =>
+            Math.sqrt((pp.x - aiP.x)**2 + (pp.y - aiP.y)**2)
+        ));
+        aiP._aiSafe = nearestPlayerDist > 300;
+    }
+
+    // Find threatened front-line planets with low units
+    const threatened = aiPlanets.filter(p => p._aiThreat > 15 && p.units < 25);
+    const safe = aiPlanets.filter(p => p._aiSafe && p.units > 15);
+
+    if (threatened.length > 0 && safe.length > 0) {
+        // Send reinforcements from safest to most threatened
+        threatened.sort((a, b) => b._aiThreat - a._aiThreat);
+        safe.sort((a, b) => b.units - a.units);
+
+        const target = threatened[0];
+        const source = safe[0];
+        if (source !== target && source.units > 10) {
+            const percent = Math.min(60, Math.floor((source.units - 5) / source.units * 100));
+            sendUnits(source, target, percent);
+        }
+    }
+}
+
+// (b) Coordinate multi-planet pincer attacks
+function aiPincerAttack(settings) {
+    const aiPlanets = planets.filter(p => p.owner === ENEMY && p.units > 12);
+    if (aiPlanets.length < 2) return;
+
+    // Find a good target for a pincer
+    const playerPlanets = planets.filter(p => p.owner === PLAYER && !p.shielded);
+    if (playerPlanets.length === 0) return;
+
+    for (const target of playerPlanets) {
+        // Skip shielded planets entirely
+        if (target.shielded) continue;
+
+        // Find 2-3 nearby AI planets that could attack together
+        const nearby = aiPlanets.filter(ap => {
+            const dist = Math.sqrt((ap.x - target.x)**2 + (ap.y - target.y)**2);
+            return dist < 450;
+        });
+
+        if (nearby.length >= 2) {
+            // Check if combined force can overwhelm the target
+            const totalForce = nearby.reduce((sum, p) => sum + Math.floor(p.units * 0.6), 0);
+            const targetDefense = target.units * target.defenseMult;
+
+            if (totalForce > targetDefense * 1.3) {
+                // Execute pincer attack from all nearby planets simultaneously
+                for (const attacker of nearby.slice(0, 3)) {
+                    sendUnits(attacker, target, 60);
+                }
+                return; // Only one pincer per tick
+            }
+        }
     }
 }
 
@@ -5015,11 +5718,14 @@ function activateAbility(abilityName) {
     }
 
     playSound('ability');
+    // Timeline event for ability use
+    const abilityIcons = { boost: '⚡', shield: '🛡️', emp: '💥', nuke: '☢️', stealth: '👻' };
+    pushTimelineEvent('ability', abilityIcons[abilityName] || '✨', `Used ${abilityName}`);
 
     switch (abilityName) {
         case 'boost':
             ab.active = true;
-            ab.activeTime = ab.duration;
+            ab.activeTime = ab.duration + upgradeModifiers.boostDurationBonus;
             ab.cooldown = ab.maxCooldown;
             showFloatText(W / 2, H / 2, '⚡ BOOST ACTIVATED!', '#ff0');
             break;
@@ -5057,12 +5763,12 @@ function useAbilityOnTarget(planet) {
                 return;
             }
             planet.shielded = true;
-            planet.shieldTime = ab.duration;
+            planet.shieldTime = ab.duration + upgradeModifiers.shieldDurationBonus;
             ab.targetPlanet = planet;
             ab.cooldown = ab.maxCooldown;
             showFloatText(planet.x, planet.y, '🛡️ SHIELDED!', '#4af');
             break;
-            
+
         case 'emp':
             if (!isEnemyTeamOwner(planet.owner)) {
                 showFloatText(planet.x, planet.y, 'Must target enemy!', '#f44');
@@ -5070,7 +5776,7 @@ function useAbilityOnTarget(planet) {
             }
             for (const p of planets) {
                 if (isEnemyTeamOwner(p.owner)) {
-                    p.empTime = ab.duration;
+                    p.empTime = ab.duration + upgradeModifiers.empDurationBonus;
                 }
             }
             ab.cooldown = ab.maxCooldown;
@@ -5085,7 +5791,7 @@ function useAbilityOnTarget(planet) {
             }
             const destroyed = Math.floor(planet.units * 0.5);
             planet.units -= destroyed;
-            ab.cooldown = ab.maxCooldown;
+            ab.cooldown = Math.max(5, ab.maxCooldown - upgradeModifiers.nukeCooldownReduction);
             effects.push(new Effect('explosion', planet.x, planet.y, { duration: 0.6 }));
             showFloatText(planet.x, planet.y, `☢️ -${destroyed}`, '#f84');
             break;
@@ -5116,6 +5822,11 @@ function checkWinCondition() {
 
 function endGame(victory) {
     game.state = 'ended';
+    stopUnitTracking();
+
+    // Hide minimap and rally hint
+    document.getElementById('minimapCanvas').classList.add('hidden');
+    document.getElementById('rallyHint').classList.add('hidden');
 
     // Update game stats
     currentGameStats.gameTime = (Date.now() - currentGameStats.startTime) / 1000;
@@ -5208,6 +5919,9 @@ function endGame(victory) {
         text.textContent = 'The enemy has conquered the galaxy...';
     }
 
+    // Render post-game timeline
+    renderTimeline();
+
     screen.classList.remove('hidden');
 }
 
@@ -5240,10 +5954,15 @@ ${streakEmoji} ${playerStats.currentStreak} win streak!
 
 function goToMenu() {
     document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('upgradeScreen').classList.add('hidden');
     document.getElementById('menu').classList.remove('hidden');
     document.getElementById('pauseBtn').classList.add('hidden');
+    document.getElementById('minimapCanvas').classList.add('hidden');
+    document.getElementById('rallyHint').classList.add('hidden');
     game.state = 'menu';
     stopMusic();
+    stopUnitTracking();
+    resetUpgrades();
 }
 
 function startGame(difficulty) {
@@ -5254,6 +5973,9 @@ function startGame(difficulty) {
     game.paused = false;
     playerHarvested = 0;
     enemyHarvested = 0;
+
+    // Reset upgrades for new campaign
+    resetUpgrades();
 
     playSound('click');
     initAudio();
@@ -5571,8 +6293,25 @@ function animate(time) {
                 updateAI(dt);
             }
             updateAbilities(realDt);
+            // Rally point auto-send
+            updateRallyAutoSend(dt);
             checkWinCondition();
             updateStats();
+
+            // Unit milestone timeline events
+            {
+                let pUnits = 0;
+                for (const p of planets) { if (p.owner === PLAYER) pUnits += Math.floor(p.units); }
+                pUnits += flyingParticles.filter(p => p.owner === PLAYER).length;
+                if (!game._lastMilestone) game._lastMilestone = 0;
+                const milestones = [50, 100, 200, 500];
+                for (const m of milestones) {
+                    if (pUnits >= m && game._lastMilestone < m) {
+                        game._lastMilestone = m;
+                        pushTimelineEvent('milestone', '📈', `${m}+ total units`);
+                    }
+                }
+            }
         }
 
         // Always draw
@@ -5585,6 +6324,9 @@ function animate(time) {
         // Draw comets
         for (const c of comets) c.draw();
 
+        // Draw rally point arrows
+        drawRallyPoints();
+
         // Attack preview lines when planets are selected and mouse is moving
         if (game.selectedPlanets.length > 0 && currentTouch && !game.paused) {
             drawAttackPreviewLines(currentTouch.x, currentTouch.y);
@@ -5592,6 +6334,9 @@ function animate(time) {
 
         // Draw fog of war on top
         drawFogOfWar();
+
+        // Draw minimap
+        drawMinimap();
 
         // Draw pause overlay hint
         if (game.paused) {
@@ -5717,14 +6462,134 @@ function handleMove(x, y) {
 }
 
 // Mouse
-canvas.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+canvas.addEventListener('mousedown', e => {
+    if (e.button === 0) handleStart(e.clientX, e.clientY);
+});
 canvas.addEventListener('mouseup', e => handleEnd(e.clientX, e.clientY));
 canvas.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
 
-// Touch
-canvas.addEventListener('touchstart', e => { e.preventDefault(); if (e.touches.length === 0) return; handleStart(e.touches[0].clientX, e.touches[0].clientY); });
-canvas.addEventListener('touchend', e => { e.preventDefault(); if (e.changedTouches.length) handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); });
-canvas.addEventListener('touchmove', e => { e.preventDefault(); if (e.touches.length === 0) return; handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+// Right-click for rally points
+canvas.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    if (game.state !== 'playing' || game.paused) return;
+    const x = e.clientX, y = e.clientY;
+
+    // Find clicked planet
+    for (let i = 0; i < planets.length; i++) {
+        const planet = planets[i];
+        if (planet.containsPoint(x, y)) {
+            if (isMyPlanet(planet)) {
+                if (e.shiftKey) {
+                    // Shift+right-click: clear rally for this planet
+                    rallyPoints.delete(i);
+                    showFloatText(planet.x, planet.y, 'Rally cleared', '#888');
+                    playSound('click');
+                } else {
+                    // Right-click on own planet: start setting rally (need second click for target)
+                    game._rallySource = i;
+                    document.getElementById('gameStatus').textContent = 'Right-click target planet for rally point';
+                    showFloatText(planet.x, planet.y, 'Select rally target...', '#0fc');
+                    playSound('select');
+                }
+            } else if (game._rallySource !== undefined) {
+                // Right-click on another planet: set as rally target
+                rallyPoints.set(game._rallySource, i);
+                showFloatText(planet.x, planet.y, 'Rally set!', '#0fc');
+                playSound('click');
+                document.getElementById('gameStatus').textContent = 'Rally point set! Auto-sending at 5+ units';
+                delete game._rallySource;
+            }
+            return;
+        }
+    }
+
+    // Right-click empty space while setting rally: cancel
+    if (game._rallySource !== undefined) {
+        delete game._rallySource;
+        document.getElementById('gameStatus').textContent = 'Rally cancelled';
+    }
+});
+
+// Touch with long-press for rally points
+let touchStartTime = 0;
+let touchStartPos = null;
+canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (e.touches.length === 0) return;
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    touchStartTime = Date.now();
+    touchStartPos = { x, y };
+
+    // Start long-press timer for rally points
+    if (game.state === 'playing' && !game.paused) {
+        longPressTimer = setTimeout(() => {
+            // Long press detected - check for planet
+            for (let i = 0; i < planets.length; i++) {
+                const planet = planets[i];
+                if (planet.containsPoint(x, y) && isMyPlanet(planet)) {
+                    if (game._rallySource !== undefined && game._rallySource !== i) {
+                        // Second long-press: set target
+                        rallyPoints.set(game._rallySource, i);
+                        showFloatText(planet.x, planet.y, 'Rally set!', '#0fc');
+                        playSound('click');
+                        delete game._rallySource;
+                    } else {
+                        // First long-press: set source (or long-press on non-own planet to set target)
+                        game._rallySource = i;
+                        showFloatText(planet.x, planet.y, 'Tap rally target...', '#0fc');
+                        playSound('select');
+                        haptics.medium();
+                    }
+                    longPressTarget = planet;
+                    return;
+                }
+                // Long press on non-own planet while rally source is set
+                if (planet.containsPoint(x, y) && game._rallySource !== undefined) {
+                    rallyPoints.set(game._rallySource, i);
+                    showFloatText(planet.x, planet.y, 'Rally set!', '#0fc');
+                    playSound('click');
+                    delete game._rallySource;
+                    longPressTarget = planet;
+                    return;
+                }
+            }
+            // Long-press empty space: clear all rallies
+            if (game._rallySource === undefined && rallyPoints.size > 0) {
+                rallyPoints.clear();
+                showFloatText(x, y, 'All rallies cleared', '#888');
+                playSound('click');
+            }
+        }, LONG_PRESS_DURATION);
+    }
+});
+canvas.addEventListener('touchend', e => {
+    e.preventDefault();
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+    const elapsed = Date.now() - touchStartTime;
+    if (elapsed < LONG_PRESS_DURATION && !longPressTarget) {
+        // Short tap: normal handling
+        if (e.changedTouches.length) {
+            handleStart(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        }
+    }
+    longPressTarget = null;
+    if (e.changedTouches.length) handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+});
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    // Cancel long-press if finger moves
+    if (longPressTimer && touchStartPos && e.touches.length > 0) {
+        const dx = e.touches[0].clientX - touchStartPos.x;
+        const dy = e.touches[0].clientY - touchStartPos.y;
+        if (Math.sqrt(dx*dx + dy*dy) > 15) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+        }
+    }
+    if (e.touches.length === 0) return;
+    handleMove(e.touches[0].clientX, e.touches[0].clientY);
+});
 
 // Keyboard shortcuts
 document.addEventListener('keydown', e => {
@@ -5762,6 +6627,14 @@ document.addEventListener('keydown', e => {
     if (e.key === '4') activateAbility('nuke');
     if (e.key === '5') activateAbility('stealth');
     if (e.key === 'a' || e.key === 'A') selectAllPlayerPlanets();
+    if (e.key === 'r' || e.key === 'R') {
+        // Clear all rally points
+        if (rallyPoints.size > 0) {
+            rallyPoints.clear();
+            showFloatText(W / 2, H / 2, 'All rallies cleared', '#888');
+            playSound('click');
+        }
+    }
 });
 
 // UI Events
@@ -5782,11 +6655,15 @@ document.querySelectorAll('.diff-btn').forEach(btn => {
 
 document.getElementById('playAgainBtn').addEventListener('click', () => {
     document.getElementById('resultScreen').classList.add('hidden');
-    playerHarvested = 0;
-    enemyHarvested = 0;
-    resetCurrentGameStats();
-    generateLevel();
-    startMusic();
+    // Check if player won - if so, show upgrade screen
+    const wasVictory = playerStats.currentStreak > 0 && game.level > 1;
+    if (wasVictory) {
+        showUpgradeScreen();
+    } else {
+        // Defeat: restart from level 1 with no upgrades
+        resetUpgrades();
+        proceedToNextLevel();
+    }
 });
 
 document.getElementById('shareBtn').addEventListener('click', shareScore);

@@ -30,6 +30,44 @@
             border-color: #8b5cf6; color: #c4b5fd;
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
         }
+
+        /* ===== WAVE BANNER ANIMATION ===== */
+        @keyframes waveBannerIn {
+            0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
+            50% { transform: scale(1.15) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes waveBannerOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .wave-banner-enter {
+            animation: waveBannerIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .wave-banner-exit {
+            animation: waveBannerOut 0.5s ease-in forwards;
+        }
+
+        /* ===== COMBO POP ANIMATION ===== */
+        @keyframes comboPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.6); }
+            100% { transform: scale(1); }
+        }
+        .combo-pop {
+            animation: comboPop 0.3s ease-out;
+        }
+
+        /* ===== SHOP STYLES ===== */
+        .shop-item {
+            transition: all 0.15s;
+        }
+        .shop-item:active {
+            transform: scale(0.97);
+        }
+        .shop-item:disabled {
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -42,12 +80,13 @@
     // ===== CONSTANTS =====
     const GAME_WIDTH = 400;
     const GAME_HEIGHT = 800;
-    const PLAYER_MAX_HP = 5;
-    const PLAYER_MAX_AMMO = 40;
-    const FIRE_RATE = 1000 / 12;
-    const RELOAD_TIME = 1200;
+    const BASE_MAX_HP = 5;
+    const BASE_MAX_AMMO = 40;
+    const BASE_FIRE_RATE = 1000 / 12;
+    const BASE_RELOAD_TIME = 1200;
     const WAVE_INTERVAL = 15000;
     const DANGER_LINE_Y = 720;
+    const BASE_DAMAGE = 1;
 
     const ENEMY_STATS = {
         BASIC:   { hp: 3, speed: 1.2, points: 100, radius: 25 },
@@ -67,7 +106,84 @@
     };
 
     const EnemyType = { BASIC: 'BASIC', CHUNKY: 'CHUNKY', THROWER: 'THROWER' };
-    const Screen = { HOME: 'HOME', GAME: 'GAME', GAMEOVER: 'GAMEOVER' };
+    const Screen = { HOME: 'HOME', GAME: 'GAME', GAMEOVER: 'GAMEOVER', SHOP: 'SHOP' };
+
+    // ===== POWER-UP TYPES =====
+    const PowerUpType = {
+        HEALTH:      'HEALTH',
+        RAPID_FIRE:  'RAPID_FIRE',
+        SPREAD_SHOT: 'SPREAD_SHOT',
+        FREEZE_BOMB: 'FREEZE_BOMB'
+    };
+
+    const POWER_UP_CONFIG = {
+        [PowerUpType.HEALTH]:      { color: '#2ecc71', symbol: 'heart',     label: '+HP',        duration: 0 },
+        [PowerUpType.RAPID_FIRE]:  { color: '#f1c40f', symbol: 'bolt',      label: 'RAPID FIRE', duration: 5000 },
+        [PowerUpType.SPREAD_SHOT]: { color: '#3498db', symbol: 'triple',    label: 'SPREAD',     duration: 5000 },
+        [PowerUpType.FREEZE_BOMB]: { color: '#00d2d3', symbol: 'snowflake', label: 'FREEZE',     duration: 3000 }
+    };
+
+    const POWER_UP_DROP_CHANCE = 0.15;
+    const POWER_UP_FALL_SPEED = 1.5;
+
+    // ===== COMBO THRESHOLDS =====
+    const COMBO_TIERS = [
+        { hits: 20, multiplier: 4 },
+        { hits: 12, multiplier: 3 },
+        { hits: 5,  multiplier: 2 },
+        { hits: 0,  multiplier: 1 }
+    ];
+
+    // ===== THEMED WAVE DEFINITIONS =====
+    const THEMED_WAVES = {
+        5:  { name: 'CHUNKY RUSH',   subtext: 'Heavy hitters incoming!', spawnBias: { CHUNKY: 0.7, BASIC: 0.2, THROWER: 0.1 } },
+        8:  { name: 'SNOWBALL STORM', subtext: 'Dodge the barrage!',     spawnBias: { THROWER: 0.6, BASIC: 0.3, CHUNKY: 0.1 } },
+        10: { name: 'FROZEN FURY',    subtext: 'Everything at once!',    spawnBias: { BASIC: 0.33, CHUNKY: 0.34, THROWER: 0.33 } },
+        15: { name: 'MEGA RUSH',      subtext: 'Survive the onslaught!', spawnBias: { CHUNKY: 0.5, THROWER: 0.4, BASIC: 0.1 } }
+    };
+
+    // ===== UPGRADE SHOP DEFINITIONS =====
+    const UPGRADE_DEFS = {
+        maxHp:        { name: 'Thick Walls',        desc: '+1 Max HP',             baseCost: 50,  costMult: 1.8, maxLevel: 5,  icon: '&#x2764;' },
+        maxAmmo:      { name: 'Ammo Belt',           desc: '+5 Ammo Capacity',      baseCost: 40,  costMult: 1.5, maxLevel: 6,  icon: '&#x1F4E6;' },
+        reloadSpeed:  { name: 'Quick Loader',        desc: '-15% Reload Time',      baseCost: 60,  costMult: 2.0, maxLevel: 4,  icon: '&#x26A1;' },
+        startWave:    { name: 'Wave Skip',           desc: 'Start at higher wave',  baseCost: 100, costMult: 2.5, maxLevel: 5,  icon: '&#x23E9;' },
+        damage:       { name: 'Hardened Snowballs',  desc: '+1 Launcher Damage',    baseCost: 120, costMult: 2.2, maxLevel: 3,  icon: '&#x1F4A5;' }
+    };
+
+    const getUpgradeCost = (key, level) => Math.floor(UPGRADE_DEFS[key].baseCost * Math.pow(UPGRADE_DEFS[key].costMult, level));
+
+    const loadUpgrades = () => {
+        try {
+            const saved = localStorage.getItem('snowman_siege_upgrades');
+            if (saved) return JSON.parse(saved);
+        } catch (e) {}
+        return { maxHp: 0, maxAmmo: 0, reloadSpeed: 0, startWave: 0, damage: 0 };
+    };
+
+    const saveUpgrades = (upgrades) => {
+        localStorage.setItem('snowman_siege_upgrades', JSON.stringify(upgrades));
+    };
+
+    const loadSnowflakes = () => {
+        try {
+            const saved = localStorage.getItem('snowman_siege_snowflakes');
+            if (saved) return parseInt(saved, 10);
+        } catch (e) {}
+        return 0;
+    };
+
+    const saveSnowflakes = (amount) => {
+        localStorage.setItem('snowman_siege_snowflakes', amount.toString());
+    };
+
+    const getEffectiveStats = (upgrades) => ({
+        maxHp:      BASE_MAX_HP + (upgrades.maxHp * 1),
+        maxAmmo:    BASE_MAX_AMMO + (upgrades.maxAmmo * 5),
+        reloadTime: Math.round(BASE_RELOAD_TIME * Math.pow(0.85, upgrades.reloadSpeed)),
+        startWave:  1 + upgrades.startWave,
+        damage:     BASE_DAMAGE + upgrades.damage
+    });
 
     // ===== AUDIO =====
     const playSound = (freq, type, duration, volume = 0.1) => {
@@ -87,28 +203,134 @@
         } catch (e) {}
     };
 
+    // ===== SHOP VIEW =====
+    const ShopView = ({ onBack, snowflakes, setSnowflakes, upgrades, setUpgrades }) => {
+        const handleBuy = (key) => {
+            const level = upgrades[key];
+            const def = UPGRADE_DEFS[key];
+            if (level >= def.maxLevel) return;
+            const cost = getUpgradeCost(key, level);
+            if (snowflakes < cost) return;
+            const newFlakes = snowflakes - cost;
+            const newUpgrades = { ...upgrades, [key]: level + 1 };
+            setSnowflakes(newFlakes);
+            setUpgrades(newUpgrades);
+            saveSnowflakes(newFlakes);
+            saveUpgrades(newUpgrades);
+            playSound(600, 'sine', 0.15, 0.06);
+        };
+
+        const stats = getEffectiveStats(upgrades);
+
+        return (
+            <div className="w-full h-full flex flex-col bg-gradient-to-b from-slate-800 to-slate-900 text-white overflow-y-auto">
+                <div className="p-4 flex items-center justify-between border-b border-white/10">
+                    <button
+                        onClick={onBack}
+                        className="bg-white/10 px-4 py-2 rounded-xl text-sm font-bold active:scale-95 transition-transform"
+                    >
+                        &#x2190; BACK
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <span className="text-cyan-300 text-lg">&#x2744;</span>
+                        <span className="text-xl font-mono font-bold text-cyan-300">{snowflakes.toLocaleString()}</span>
+                    </div>
+                </div>
+
+                <div className="p-4">
+                    <h2 className="text-2xl font-black tracking-tight mb-1">UPGRADE SHOP</h2>
+                    <p className="text-slate-400 text-xs mb-4">Spend snowflakes on permanent upgrades</p>
+
+                    <div className="bg-white/5 rounded-xl p-3 mb-4 text-[11px] text-slate-300 grid grid-cols-2 gap-1">
+                        <span>HP: {stats.maxHp}</span>
+                        <span>Ammo: {stats.maxAmmo}</span>
+                        <span>Reload: {stats.reloadTime}ms</span>
+                        <span>Start Wave: {stats.startWave}</span>
+                        <span>Damage: {stats.damage}</span>
+                    </div>
+
+                    <div className="space-y-3">
+                        {Object.entries(UPGRADE_DEFS).map(([key, def]) => {
+                            const level = upgrades[key];
+                            const maxed = level >= def.maxLevel;
+                            const cost = maxed ? 0 : getUpgradeCost(key, level);
+                            const canAfford = snowflakes >= cost;
+
+                            return (
+                                <button
+                                    key={key}
+                                    onClick={() => handleBuy(key)}
+                                    disabled={maxed || !canAfford}
+                                    className="shop-item w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl p-4 flex items-center gap-4 text-left"
+                                >
+                                    <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-2xl flex-shrink-0"
+                                         dangerouslySetInnerHTML={{ __html: def.icon }} />
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                            <span className="font-bold text-sm">{def.name}</span>
+                                            <span className="text-[10px] text-slate-400 font-mono">Lv.{level}/{def.maxLevel}</span>
+                                        </div>
+                                        <p className="text-[11px] text-slate-400">{def.desc}</p>
+                                        <div className="flex gap-0.5 mt-1.5">
+                                            {Array.from({ length: def.maxLevel }, (_, i) => (
+                                                <div key={i} className={`h-1 flex-1 rounded-full ${i < level ? 'bg-cyan-400' : 'bg-white/10'}`} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="flex-shrink-0 text-right">
+                                        {maxed ? (
+                                            <span className="text-xs font-bold text-emerald-400">MAX</span>
+                                        ) : (
+                                            <div className="flex items-center gap-1">
+                                                <span className="text-cyan-300 text-sm">&#x2744;</span>
+                                                <span className={`font-mono font-bold text-sm ${canAfford ? 'text-white' : 'text-red-400'}`}>{cost}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     // ===== HOME VIEW =====
-    const HomeView = ({ onPlay, bestScore }) => (
+    const HomeView = ({ onPlay, onShop, bestScore, snowflakes }) => (
         <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 to-slate-900 text-white p-8">
-            <div className="mb-12 text-center">
+            <div className="mb-10 text-center">
                 <h1 className="text-5xl font-black mb-2 tracking-tighter drop-shadow-lg">
                     SNOWMAN<br/>SIEGE
                 </h1>
                 <p className="text-slate-400 font-medium uppercase tracking-widest text-xs">Winter Arcade Defense</p>
             </div>
-            <div className="w-full space-y-6 flex flex-col items-center">
+            <div className="w-full space-y-4 flex flex-col items-center">
                 <button
                     onClick={onPlay}
                     className="w-48 bg-white text-slate-900 font-bold py-4 rounded-full text-xl shadow-xl active:scale-95 transition-transform"
                 >
                     PLAY
                 </button>
-                <div className="text-center">
-                    <p className="text-slate-500 text-xs font-bold uppercase mb-1">Best Score</p>
-                    <p className="text-2xl font-mono text-yellow-400">{bestScore.toLocaleString()}</p>
+                <button
+                    onClick={onShop}
+                    className="w-48 bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 font-bold py-3 rounded-full text-base shadow-lg active:scale-95 transition-transform"
+                >
+                    &#x2744; SHOP
+                </button>
+                <div className="flex items-center gap-4 mt-2">
+                    <div className="text-center">
+                        <p className="text-slate-500 text-xs font-bold uppercase mb-1">Best Score</p>
+                        <p className="text-2xl font-mono text-yellow-400">{bestScore.toLocaleString()}</p>
+                    </div>
+                    <div className="w-px h-8 bg-white/10" />
+                    <div className="text-center">
+                        <p className="text-slate-500 text-xs font-bold uppercase mb-1">Snowflakes</p>
+                        <p className="text-2xl font-mono text-cyan-300">&#x2744; {snowflakes.toLocaleString()}</p>
+                    </div>
                 </div>
             </div>
-            <div className="mt-24 text-center text-slate-500 text-[10px] leading-relaxed max-w-[200px]">
+            <div className="mt-16 text-center text-slate-500 text-[10px] leading-relaxed max-w-[200px]">
                 HOLD TO FIRE &bull; RELEASE TO RELOAD<br/>
                 DEFEND THE VILLAGE FROM THE FROZEN HORDE
             </div>
@@ -116,7 +338,7 @@
     );
 
     // ===== GAME OVER VIEW =====
-    const GameOverView = ({ score, bestScore, onRestart, onHome }) => (
+    const GameOverView = ({ score, bestScore, snowflakesEarned, onRestart, onHome }) => (
         <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-md flex flex-col items-center justify-center p-8 z-50">
             <div className="text-center mb-8">
                 <h2 className="text-red-500 text-5xl font-black italic tracking-tighter mb-2">GAME OVER</h2>
@@ -130,6 +352,10 @@
                 <div className="pt-2 border-t border-white/10">
                     <p className="text-white/40 text-[10px] uppercase font-bold">Best Record</p>
                     <p className="text-yellow-400 text-2xl font-mono font-bold">{bestScore.toLocaleString()}</p>
+                </div>
+                <div className="pt-2 border-t border-white/10">
+                    <p className="text-white/40 text-[10px] uppercase font-bold">Snowflakes Earned</p>
+                    <p className="text-cyan-300 text-2xl font-mono font-bold">&#x2744; +{snowflakesEarned.toLocaleString()}</p>
                 </div>
             </div>
             <div className="w-full flex flex-col gap-3">
@@ -151,13 +377,14 @@
 
     // ===== GAME HUD VIEW =====
     const GameHUDView = ({ status, onPause }) => {
-        const hpCores = Array.from({ length: 5 }, (_, i) => i < status.hp);
+        const hpCores = Array.from({ length: status.maxHp }, (_, i) => i < status.hp);
         return (
             <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
                 <div className="flex justify-between items-start pt-2">
                     <div className="flex flex-col">
                         <p className="text-white/50 text-[10px] font-bold uppercase tracking-widest">Score</p>
                         <p className="text-white text-2xl font-mono leading-none">{status.score.toLocaleString()}</p>
+                        <p className="text-slate-400 text-[10px] font-mono mt-0.5">Wave {status.wave}</p>
                     </div>
                     <button
                         onClick={onPause}
@@ -179,7 +406,7 @@
                         </div>
                     )}
                     <div className="flex justify-between items-end">
-                        <div className="flex gap-1.5">
+                        <div className="flex gap-1.5 flex-wrap" style={{ maxWidth: '180px' }}>
                             {hpCores.map((active, i) => (
                                 <div
                                     key={i}
@@ -197,46 +424,126 @@
                             </div>
                         </div>
                     </div>
+                    {/* Active power-up indicators */}
+                    <div className="flex gap-2 justify-center">
+                        {status.rapidFireActive && (
+                            <div className="bg-yellow-500/30 border border-yellow-400/50 rounded-lg px-2 py-0.5 text-[10px] font-bold text-yellow-300">RAPID</div>
+                        )}
+                        {status.spreadShotActive && (
+                            <div className="bg-blue-500/30 border border-blue-400/50 rounded-lg px-2 py-0.5 text-[10px] font-bold text-blue-300">SPREAD</div>
+                        )}
+                        {status.freezeActive && (
+                            <div className="bg-cyan-500/30 border border-cyan-400/50 rounded-lg px-2 py-0.5 text-[10px] font-bold text-cyan-300">FREEZE</div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // ===== WAVE BANNER OVERLAY =====
+    const WaveBannerOverlay = ({ waveBanner }) => {
+        if (!waveBanner || !waveBanner.text) return null;
+        const isExiting = waveBanner.phase === 'exit';
+        return (
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-30">
+                <div className={isExiting ? 'wave-banner-exit' : 'wave-banner-enter'}>
+                    <div className="text-center">
+                        <h2 className="text-white text-5xl font-black italic tracking-tighter drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+                            {waveBanner.text}
+                        </h2>
+                        {waveBanner.subtext && (
+                            <p className="text-white/60 text-sm font-bold uppercase tracking-widest mt-2">{waveBanner.subtext}</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // ===== COMBO DISPLAY OVERLAY =====
+    const ComboOverlay = ({ combo }) => {
+        if (!combo || combo.multiplier <= 1) return null;
+        return (
+            <div className="absolute pointer-events-none z-20"
+                 style={{ left: `${combo.screenX}%`, top: `${combo.screenY}%`, transform: 'translate(-50%, -130%)' }}>
+                <div className={combo.justIncreased ? 'combo-pop' : ''} key={combo.multiplier}>
+                    <span className="text-yellow-300 font-black text-2xl drop-shadow-[0_0_10px_rgba(253,224,71,0.6)]"
+                          style={{ WebkitTextStroke: '1px rgba(0,0,0,0.3)' }}>
+                        x{combo.multiplier}
+                    </span>
+                    <div className="text-center text-[9px] text-yellow-300/60 font-bold">{combo.hits} HITS</div>
                 </div>
             </div>
         );
     };
 
     // ===== GAME CONTAINER VIEW (CORE ENGINE) =====
-    const GameContainerView = ({ onGameOver }) => {
+    const GameContainerView = ({ onGameOver, upgrades }) => {
         const canvasRef = useRef(null);
+        const effectiveStats = getEffectiveStats(upgrades);
+
         const [status, setStatus] = useState({
             score: 0,
-            hp: PLAYER_MAX_HP,
-            ammo: PLAYER_MAX_AMMO,
-            maxAmmo: PLAYER_MAX_AMMO,
+            hp: effectiveStats.maxHp,
+            maxHp: effectiveStats.maxHp,
+            ammo: effectiveStats.maxAmmo,
+            maxAmmo: effectiveStats.maxAmmo,
             reloading: false,
             reloadProgress: 0,
-            wave: 1,
-            isPaused: false
+            wave: effectiveStats.startWave,
+            isPaused: false,
+            rapidFireActive: false,
+            spreadShotActive: false,
+            freezeActive: false
         });
 
+        const [waveBanner, setWaveBanner] = useState(null);
+        const [comboDisplay, setComboDisplay] = useState(null);
+
         const stateRef = useRef({
-            hp: PLAYER_MAX_HP,
+            hp: effectiveStats.maxHp,
+            maxHp: effectiveStats.maxHp,
             score: 0,
-            ammo: PLAYER_MAX_AMMO,
+            ammo: effectiveStats.maxAmmo,
+            maxAmmo: effectiveStats.maxAmmo,
             reloading: false,
             reloadStartTime: 0,
+            reloadTime: effectiveStats.reloadTime,
             lastFireTime: 0,
             lastSpawnTime: 0,
             lastWaveTime: Date.now(),
             isPaused: false,
             isMouseDown: false,
             mousePos: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 },
-            wave: 1,
+            wave: effectiveStats.startWave,
+            damage: effectiveStats.damage,
             enemies: [],
             projectiles: [],
             particles: [],
+            powerUps: [],
             screenShake: 0,
-            backgroundSnow: []
+            backgroundSnow: [],
+            // Combo system
+            comboHits: 0,
+            comboMultiplier: 1,
+            comboJustIncreased: false,
+            comboAnimTimer: 0,
+            // Power-up timers
+            rapidFireEndTime: 0,
+            spreadShotEndTime: 0,
+            freezeEndTime: 0,
+            // Wave system
+            waveTransitioning: false,
+            waveSpawnPauseEnd: 0,
+            waveBannerShown: false,
+            themedWave: null,
+            // Initial wave shown
+            initialBannerShown: false
         });
 
         const requestRef = useRef();
+        const waveBannerTimeoutRef = useRef();
 
         useEffect(() => {
             stateRef.current.backgroundSnow = Array.from({ length: 50 }, () => ({
@@ -244,7 +551,26 @@
                 y: Math.random() * GAME_HEIGHT,
                 s: 1 + Math.random() * 2
             }));
+            // Show initial wave banner
+            showWaveBanner(stateRef.current.wave);
         }, []);
+
+        const showWaveBanner = (waveNum) => {
+            const themed = THEMED_WAVES[waveNum];
+            const text = themed ? themed.name : `WAVE ${waveNum}`;
+            const subtext = themed ? themed.subtext : (waveNum > 1 ? 'Enemies grow stronger!' : 'Defend the village!');
+
+            setWaveBanner({ text, subtext, phase: 'enter' });
+
+            if (waveBannerTimeoutRef.current) clearTimeout(waveBannerTimeoutRef.current);
+
+            waveBannerTimeoutRef.current = setTimeout(() => {
+                setWaveBanner(prev => prev ? { ...prev, phase: 'exit' } : null);
+                waveBannerTimeoutRef.current = setTimeout(() => {
+                    setWaveBanner(null);
+                }, 500);
+            }, 2000);
+        };
 
         const updateMousePos = (e) => {
             if (!canvasRef.current) return;
@@ -261,13 +587,33 @@
             if (stateRef.current.isPaused) return;
             stateRef.current.isMouseDown = true;
             updateMousePos(e);
+
+            // Check power-up click collection
+            const s = stateRef.current;
+            const rect = canvasRef.current ? canvasRef.current.getBoundingClientRect() : null;
+            if (rect) {
+                const scaleX = GAME_WIDTH / rect.width;
+                const scaleY = GAME_HEIGHT / rect.height;
+                const clickX = (e.clientX - rect.left) * scaleX;
+                const clickY = (e.clientY - rect.top) * scaleY;
+                for (let i = s.powerUps.length - 1; i >= 0; i--) {
+                    const pu = s.powerUps[i];
+                    const dist = Math.sqrt((clickX - pu.x) ** 2 + (clickY - pu.y) ** 2);
+                    if (dist < 30) {
+                        collectPowerUp(pu);
+                        s.powerUps.splice(i, 1);
+                        break;
+                    }
+                }
+            }
         }, []);
 
         const handlePointerUp = useCallback(() => {
             stateRef.current.isMouseDown = false;
-            if (stateRef.current.ammo < PLAYER_MAX_AMMO && !stateRef.current.reloading) {
-                stateRef.current.reloading = true;
-                stateRef.current.reloadStartTime = Date.now();
+            const s = stateRef.current;
+            if (s.ammo < s.maxAmmo && !s.reloading) {
+                s.reloading = true;
+                s.reloadStartTime = Date.now();
                 playSound(200, 'sine', 0.5, 0.05);
             }
         }, []);
@@ -299,6 +645,71 @@
             if (window.navigator.vibrate) window.navigator.vibrate(Math.min(amount * 5, 100));
         };
 
+        const collectPowerUp = (pu) => {
+            const s = stateRef.current;
+            const now = Date.now();
+            const config = POWER_UP_CONFIG[pu.type];
+
+            playSound(700, 'sine', 0.15, 0.06);
+            spawnParticles(pu.x, pu.y, config.color, 8, 1.5);
+
+            switch (pu.type) {
+                case PowerUpType.HEALTH:
+                    s.hp = Math.min(s.hp + 1, s.maxHp);
+                    break;
+                case PowerUpType.RAPID_FIRE:
+                    s.rapidFireEndTime = now + config.duration;
+                    break;
+                case PowerUpType.SPREAD_SHOT:
+                    s.spreadShotEndTime = now + config.duration;
+                    break;
+                case PowerUpType.FREEZE_BOMB:
+                    s.freezeEndTime = now + config.duration;
+                    spawnParticles(GAME_WIDTH / 2, GAME_HEIGHT / 2, '#00d2d3', 25, 3);
+                    playSound(200, 'triangle', 0.4, 0.08);
+                    break;
+            }
+        };
+
+        const spawnPowerUp = (x, y) => {
+            if (Math.random() > POWER_UP_DROP_CHANCE) return;
+            const types = Object.values(PowerUpType);
+            const type = types[Math.floor(Math.random() * types.length)];
+            stateRef.current.powerUps.push({
+                id: Math.random().toString(),
+                type,
+                x,
+                y,
+                spawnTime: Date.now()
+            });
+        };
+
+        const getComboMultiplier = (hits) => {
+            for (const tier of COMBO_TIERS) {
+                if (hits >= tier.hits) return tier.multiplier;
+            }
+            return 1;
+        };
+
+        const resetCombo = () => {
+            const s = stateRef.current;
+            s.comboHits = 0;
+            s.comboMultiplier = 1;
+            s.comboJustIncreased = false;
+        };
+
+        const registerHit = () => {
+            const s = stateRef.current;
+            s.comboHits += 1;
+            const newMult = getComboMultiplier(s.comboHits);
+            if (newMult > s.comboMultiplier) {
+                s.comboJustIncreased = true;
+                s.comboAnimTimer = Date.now();
+                playSound(800 + newMult * 100, 'triangle', 0.15, 0.06);
+            }
+            s.comboMultiplier = newMult;
+        };
+
         const update = useCallback(() => {
             const s = stateRef.current;
             if (s.isPaused) {
@@ -308,11 +719,37 @@
 
             const now = Date.now();
 
+            // Combo animation timer reset
+            if (s.comboJustIncreased && now - s.comboAnimTimer > 300) {
+                s.comboJustIncreased = false;
+            }
+
+            // Power-up timer checks
+            const rapidFireActive = now < s.rapidFireEndTime;
+            const spreadShotActive = now < s.spreadShotEndTime;
+            const freezeActive = now < s.freezeEndTime;
+
+            // Effective fire rate (rapid fire = 2x speed)
+            const currentFireRate = rapidFireActive ? BASE_FIRE_RATE / 2 : BASE_FIRE_RATE;
+
             // Wave Progression
             if (now - s.lastWaveTime > WAVE_INTERVAL) {
                 s.wave += 1;
                 s.lastWaveTime = now;
+                s.waveTransitioning = true;
+                s.waveSpawnPauseEnd = now + 2500; // 2.5 second pause
                 playSound(400 + s.wave * 50, 'triangle', 0.3, 0.05);
+
+                // Check for themed wave
+                s.themedWave = THEMED_WAVES[s.wave] || null;
+
+                // Show wave banner
+                showWaveBanner(s.wave);
+            }
+
+            // Check if wave spawn pause is over
+            if (s.waveTransitioning && now >= s.waveSpawnPauseEnd) {
+                s.waveTransitioning = false;
             }
 
             // Background Snow Move
@@ -321,48 +758,95 @@
                 if (sn.y > GAME_HEIGHT) sn.y = -10;
             });
 
-            // Spawning
-            const spawnRate = Math.max(450, 2200 - s.wave * 180);
-            if (now - s.lastSpawnTime > spawnRate) {
-                const typeRoll = Math.random();
-                let type = EnemyType.BASIC;
-                if (s.wave >= 2 && typeRoll > 0.7) type = EnemyType.THROWER;
-                if (s.wave >= 3 && typeRoll > 0.85) type = EnemyType.CHUNKY;
+            // Spawning (respects wave pause)
+            if (!s.waveTransitioning) {
+                const spawnRate = Math.max(450, 2200 - s.wave * 180);
+                if (now - s.lastSpawnTime > spawnRate) {
+                    let type = EnemyType.BASIC;
 
-                const stats = ENEMY_STATS[type];
-                s.enemies.push({
-                    id: Math.random().toString(),
-                    type,
-                    x: stats.radius + Math.random() * (GAME_WIDTH - stats.radius * 2),
-                    y: -stats.radius * 2,
-                    hp: stats.hp,
-                    maxHp: stats.hp,
-                    speed: stats.speed + (s.wave * 0.08),
-                    lastThrowTime: now + Math.random() * 2000,
-                    points: stats.points,
-                    radius: stats.radius
-                });
-                s.lastSpawnTime = now;
+                    if (s.themedWave && s.themedWave.spawnBias) {
+                        // Themed wave spawn logic
+                        const roll = Math.random();
+                        const bias = s.themedWave.spawnBias;
+                        let cumulative = 0;
+                        for (const [etype, chance] of Object.entries(bias)) {
+                            cumulative += chance;
+                            if (roll <= cumulative) {
+                                type = EnemyType[etype];
+                                break;
+                            }
+                        }
+                    } else {
+                        // Normal spawn logic
+                        const typeRoll = Math.random();
+                        if (s.wave >= 2 && typeRoll > 0.7) type = EnemyType.THROWER;
+                        if (s.wave >= 3 && typeRoll > 0.85) type = EnemyType.CHUNKY;
+                    }
+
+                    const stats = ENEMY_STATS[type];
+                    s.enemies.push({
+                        id: Math.random().toString(),
+                        type,
+                        x: stats.radius + Math.random() * (GAME_WIDTH - stats.radius * 2),
+                        y: -stats.radius * 2,
+                        hp: stats.hp,
+                        maxHp: stats.hp,
+                        speed: stats.speed + (s.wave * 0.08),
+                        baseSpeed: stats.speed + (s.wave * 0.08),
+                        lastThrowTime: now + Math.random() * 2000,
+                        points: stats.points,
+                        radius: stats.radius,
+                        // Movement pattern data
+                        spawnTime: now,
+                        spawnX: stats.radius + Math.random() * (GAME_WIDTH - stats.radius * 2),
+                        sineAmplitude: 30 + Math.random() * 40,
+                        sineFrequency: 0.001 + Math.random() * 0.002,
+                        chargeTimer: now + 2000 + Math.random() * 3000,
+                        isCharging: false,
+                        chargeEndTime: 0,
+                        strafeDir: Math.random() > 0.5 ? 1 : -1,
+                        strafeTimer: now + 1000 + Math.random() * 2000
+                    });
+                    s.lastSpawnTime = now;
+                }
             }
 
             // Firing
             if (s.isMouseDown && !s.reloading && s.ammo > 0) {
-                if (now - s.lastFireTime > FIRE_RATE) {
+                if (now - s.lastFireTime > currentFireRate) {
                     const originX = GAME_WIDTH / 2;
                     const originY = GAME_HEIGHT - 60;
                     const dx = s.mousePos.x - originX;
                     const dy = s.mousePos.y - originY;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    const vx = (dx / dist) * 20;
-                    const vy = (dy / dist) * 20;
+                    const baseVx = (dx / dist) * 20;
+                    const baseVy = (dy / dist) * 20;
 
-                    s.projectiles.push({
-                        id: Math.random().toString(),
-                        x: originX, y: originY,
-                        vx, vy,
-                        isPlayerOwned: true,
-                        radius: 6
-                    });
+                    if (spreadShotActive) {
+                        // Fire 3 snowballs in a spread
+                        const spreadAngle = 0.15; // radians (~8.5 degrees)
+                        for (let k = -1; k <= 1; k++) {
+                            const angle = Math.atan2(baseVy, baseVx) + k * spreadAngle;
+                            s.projectiles.push({
+                                id: Math.random().toString(),
+                                x: originX, y: originY,
+                                vx: Math.cos(angle) * 20,
+                                vy: Math.sin(angle) * 20,
+                                isPlayerOwned: true,
+                                radius: 6,
+                                damage: s.damage
+                            });
+                        }
+                    } else {
+                        s.projectiles.push({
+                            id: Math.random().toString(),
+                            x: originX, y: originY,
+                            vx: baseVx, vy: baseVy,
+                            isPlayerOwned: true,
+                            radius: 6,
+                            damage: s.damage
+                        });
+                    }
 
                     playSound(800 + Math.random() * 100, 'square', 0.05, 0.03);
                     s.ammo -= 1;
@@ -378,21 +862,23 @@
             // Reloading
             if (s.reloading) {
                 const elapsed = now - s.reloadStartTime;
-                const progress = Math.min(1, elapsed / RELOAD_TIME);
+                const progress = Math.min(1, elapsed / s.reloadTime);
                 if (progress >= 1) {
-                    s.ammo = PLAYER_MAX_AMMO;
+                    s.ammo = s.maxAmmo;
                     s.reloading = false;
                     playSound(600, 'sine', 0.1, 0.05);
                 }
             }
 
             // Projectiles
+            let missedShot = false;
             for (let i = s.projectiles.length - 1; i >= 0; i--) {
                 const p = s.projectiles[i];
                 p.x += p.vx;
                 p.y += p.vy;
 
                 if (p.x < -100 || p.x > GAME_WIDTH + 100 || p.y < -100 || p.y > GAME_HEIGHT + 100) {
+                    if (p.isPlayerOwned) missedShot = true;
                     s.projectiles.splice(i, 1);
                     continue;
                 }
@@ -403,16 +889,21 @@
                         const e = s.enemies[j];
                         const dist = Math.sqrt((p.x - e.x) ** 2 + (p.y - e.y) ** 2);
                         if (dist < e.radius + p.radius) {
-                            e.hp -= 1;
+                            const dmg = p.damage || s.damage;
+                            e.hp -= dmg;
                             spawnParticles(p.x, p.y, COLORS.SNOW, 4);
                             playSound(300 + Math.random() * 200, 'sawtooth', 0.05, 0.04);
                             s.projectiles.splice(i, 1);
                             hit = true;
+                            registerHit();
                             if (e.hp <= 0) {
-                                s.score += e.points;
+                                const pointsEarned = e.points * s.comboMultiplier;
+                                s.score += pointsEarned;
                                 spawnParticles(e.x, e.y, COLORS.SNOW, 15, 2);
                                 shake(8);
                                 playSound(100, 'square', 0.2, 0.08);
+                                // Power-up drop chance
+                                spawnPowerUp(e.x, e.y);
                                 s.enemies.splice(j, 1);
                             }
                             break;
@@ -428,17 +919,62 @@
                         shake(20);
                         playSound(50, 'square', 0.3, 0.1);
                         s.projectiles.splice(i, 1);
+                        resetCombo(); // Reset combo on taking damage
                         if (s.hp <= 0) onGameOver(s.score);
                     }
                 }
             }
 
-            // Enemies
+            // Reset combo on miss (projectile left screen without hitting)
+            if (missedShot) {
+                resetCombo();
+            }
+
+            // Enemies movement & behavior
             for (let i = s.enemies.length - 1; i >= 0; i--) {
                 const e = s.enemies[i];
-                e.y += e.speed;
 
-                if (e.type === EnemyType.THROWER) {
+                // Freeze effect: slow all enemies
+                const freezeMult = freezeActive ? 0.3 : 1.0;
+
+                // === VARIED MOVEMENT PATTERNS ===
+                if (e.type === EnemyType.BASIC) {
+                    // Sine wave drift
+                    const elapsed = now - e.spawnTime;
+                    const sineOffset = Math.sin(elapsed * e.sineFrequency) * e.sineAmplitude;
+                    e.x = e.spawnX + sineOffset;
+                    // Clamp to bounds
+                    e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
+                    e.y += e.baseSpeed * freezeMult;
+
+                } else if (e.type === EnemyType.CHUNKY) {
+                    // March straight with periodic charge bursts
+                    if (!e.isCharging && now >= e.chargeTimer) {
+                        e.isCharging = true;
+                        e.chargeEndTime = now + 800; // charge for 0.8s
+                    }
+                    if (e.isCharging && now >= e.chargeEndTime) {
+                        e.isCharging = false;
+                        e.chargeTimer = now + 2000 + Math.random() * 2000;
+                    }
+                    const speedMult = e.isCharging ? 2.0 : 1.0;
+                    e.y += e.baseSpeed * speedMult * freezeMult;
+                    // Slight horizontal wobble
+                    e.x += Math.sin(now * 0.003 + e.spawnTime) * 0.5 * freezeMult;
+                    e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
+
+                } else if (e.type === EnemyType.THROWER) {
+                    // Lateral strafing while advancing slowly
+                    e.y += e.baseSpeed * 0.6 * freezeMult;
+                    // Strafe direction changes
+                    if (now >= e.strafeTimer) {
+                        e.strafeDir *= -1;
+                        e.strafeTimer = now + 800 + Math.random() * 1500;
+                    }
+                    e.x += e.strafeDir * 2.5 * freezeMult;
+                    e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
+
+                    // Throwing logic
                     const throwInterval = Math.max(1200, 3000 - s.wave * 100);
                     if (now - e.lastThrowTime > throwInterval) {
                         const dx = (GAME_WIDTH / 2) - e.x;
@@ -462,7 +998,26 @@
                     shake(30);
                     playSound(60, 'sawtooth', 0.4, 0.1);
                     s.enemies.splice(i, 1);
+                    resetCombo(); // Reset combo on damage
                     if (s.hp <= 0) onGameOver(s.score);
+                }
+            }
+
+            // Power-ups update
+            for (let i = s.powerUps.length - 1; i >= 0; i--) {
+                const pu = s.powerUps[i];
+                pu.y += POWER_UP_FALL_SPEED;
+
+                // Auto-collect when reaching launcher area
+                if (pu.y >= GAME_HEIGHT - 80) {
+                    collectPowerUp(pu);
+                    s.powerUps.splice(i, 1);
+                    continue;
+                }
+
+                // Remove if off screen
+                if (pu.y > GAME_HEIGHT + 50) {
+                    s.powerUps.splice(i, 1);
                 }
             }
 
@@ -479,23 +1034,46 @@
                 ...prev,
                 score: s.score,
                 hp: Math.max(0, s.hp),
+                maxHp: s.maxHp,
                 ammo: s.ammo,
+                maxAmmo: s.maxAmmo,
                 reloading: s.reloading,
-                reloadProgress: s.reloading ? (now - s.reloadStartTime) / RELOAD_TIME : 0,
-                wave: s.wave
+                reloadProgress: s.reloading ? (now - s.reloadStartTime) / s.reloadTime : 0,
+                wave: s.wave,
+                rapidFireActive,
+                spreadShotActive,
+                freezeActive
             }));
 
-            draw();
+            // Combo display update
+            if (s.comboMultiplier > 1) {
+                const canvasEl = canvasRef.current;
+                if (canvasEl) {
+                    const rect = canvasEl.getBoundingClientRect();
+                    setComboDisplay({
+                        multiplier: s.comboMultiplier,
+                        hits: s.comboHits,
+                        justIncreased: s.comboJustIncreased,
+                        screenX: (s.mousePos.x / GAME_WIDTH) * 100,
+                        screenY: (s.mousePos.y / GAME_HEIGHT) * 100
+                    });
+                }
+            } else {
+                setComboDisplay(null);
+            }
+
+            draw(freezeActive);
             requestRef.current = requestAnimationFrame(update);
         }, [onGameOver]);
 
-        const draw = () => {
+        const draw = (freezeActive) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
             const s = stateRef.current;
+            const now = Date.now();
             ctx.save();
 
             if (s.screenShake > 0) {
@@ -510,6 +1088,12 @@
             skyGrad.addColorStop(0.7, '#1a2a3a');
             ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // Freeze overlay tint
+            if (freezeActive) {
+                ctx.fillStyle = 'rgba(0, 210, 211, 0.06)';
+                ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            }
 
             // Distant Hills
             ctx.fillStyle = '#243444';
@@ -568,6 +1152,17 @@
                 ctx.save();
                 ctx.translate(e.x, e.y);
 
+                // Freeze tint on enemy
+                if (freezeActive) {
+                    ctx.globalAlpha = 0.85;
+                }
+
+                // Charging glow for chunky
+                if (e.type === EnemyType.CHUNKY && e.isCharging) {
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#e74c3c';
+                }
+
                 // Body Shadow
                 ctx.fillStyle = 'rgba(0,0,0,0.15)';
                 ctx.beginPath();
@@ -575,12 +1170,14 @@
                 ctx.fill();
 
                 // Body (3 parts)
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = freezeActive ? '#d0f0f0' : 'white';
                 ctx.beginPath();
                 ctx.arc(0, 0, r * 0.8, 0, Math.PI * 2);
                 ctx.arc(0, -r * 0.7, r * 0.6, 0, Math.PI * 2);
                 ctx.arc(0, -r * 1.3, r * 0.45, 0, Math.PI * 2);
                 ctx.fill();
+
+                ctx.shadowBlur = 0;
 
                 // Eyes
                 ctx.fillStyle = '#333';
@@ -616,6 +1213,57 @@
                 ctx.fillRect(-barWidth / 2, r + 5, barWidth, barHeight);
                 ctx.fillStyle = e.hp > e.maxHp * 0.5 ? '#2ecc71' : '#e74c3c';
                 ctx.fillRect(-barWidth / 2, r + 5, barWidth * (e.hp / e.maxHp), barHeight);
+
+                ctx.globalAlpha = 1.0;
+                ctx.restore();
+            });
+
+            // === POWER-UPS RENDERING ===
+            s.powerUps.forEach(pu => {
+                const config = POWER_UP_CONFIG[pu.type];
+                const bobble = Math.sin(now * 0.005 + pu.x) * 3;
+                const px = pu.x;
+                const py = pu.y + bobble;
+                const glowPulse = 0.5 + Math.sin(now * 0.008) * 0.3;
+
+                ctx.save();
+                ctx.translate(px, py);
+
+                // Glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = config.color;
+                ctx.globalAlpha = 0.4 + glowPulse * 0.3;
+
+                // Background circle
+                ctx.fillStyle = config.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.globalAlpha = 1.0;
+                ctx.shadowBlur = 0;
+
+                // Inner circle
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                ctx.beginPath();
+                ctx.arc(0, 0, 11, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Symbol
+                ctx.fillStyle = config.color;
+                ctx.font = 'bold 14px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                if (config.symbol === 'heart') {
+                    ctx.fillText('\u2665', 0, 0);
+                } else if (config.symbol === 'bolt') {
+                    ctx.fillText('\u26A1', 0, 0);
+                } else if (config.symbol === 'triple') {
+                    ctx.fillText('\u2261', 0, 0);
+                } else if (config.symbol === 'snowflake') {
+                    ctx.fillText('\u2744', 0, 0);
+                }
 
                 ctx.restore();
             });
@@ -662,6 +1310,17 @@
                 ctx.fillText('RELOADING', chX, chY + 40);
             }
 
+            // Combo display on canvas (backup for overlay)
+            if (s.comboMultiplier > 1) {
+                ctx.fillStyle = 'rgba(253, 224, 71, 0.9)';
+                ctx.font = 'bold 18px system-ui';
+                ctx.textAlign = 'center';
+                ctx.fillText(`x${s.comboMultiplier}`, chX, chY - 30);
+                ctx.font = '9px monospace';
+                ctx.fillStyle = 'rgba(253, 224, 71, 0.6)';
+                ctx.fillText(`${s.comboHits} hits`, chX, chY - 18);
+            }
+
             ctx.restore();
         };
 
@@ -669,6 +1328,7 @@
             requestRef.current = requestAnimationFrame(update);
             return () => {
                 if (requestRef.current) cancelAnimationFrame(requestRef.current);
+                if (waveBannerTimeoutRef.current) clearTimeout(waveBannerTimeoutRef.current);
             };
         }, [update]);
 
@@ -687,6 +1347,7 @@
                     className="w-full h-full object-contain bg-slate-900"
                 />
                 <GameHUDView status={status} onPause={togglePause} />
+                <WaveBannerOverlay waveBanner={waveBanner} />
 
                 {status.isPaused && (
                     <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center z-40">
@@ -708,10 +1369,14 @@
         const [currentScreen, setCurrentScreen] = useState(Screen.HOME);
         const [lastScore, setLastScore] = useState(0);
         const [bestScore, setBestScore] = useState(0);
+        const [snowflakes, setSnowflakes] = useState(0);
+        const [snowflakesEarned, setSnowflakesEarned] = useState(0);
+        const [upgrades, setUpgrades] = useState(loadUpgrades());
 
         useEffect(() => {
             const saved = localStorage.getItem('snowman_siege_best_score');
             if (saved) setBestScore(parseInt(saved, 10));
+            setSnowflakes(loadSnowflakes());
         }, []);
 
         const handleGameOver = useCallback((score) => {
@@ -720,23 +1385,45 @@
                 setBestScore(score);
                 localStorage.setItem('snowman_siege_best_score', score.toString());
             }
+            // Award snowflakes proportional to score (1 snowflake per 50 points)
+            const earned = Math.floor(score / 50);
+            setSnowflakesEarned(earned);
+            const newTotal = snowflakes + earned;
+            setSnowflakes(newTotal);
+            saveSnowflakes(newTotal);
             setCurrentScreen(Screen.GAMEOVER);
-        }, [bestScore]);
+        }, [bestScore, snowflakes]);
 
         const startGame = () => setCurrentScreen(Screen.GAME);
         const goToHome = () => setCurrentScreen(Screen.HOME);
+        const goToShop = () => setCurrentScreen(Screen.SHOP);
 
         return (
             <div className="w-full h-screen overflow-hidden bg-black flex items-center justify-center">
                 <div className="relative w-full max-w-[400px] h-full max-h-[800px] bg-slate-900 shadow-2xl overflow-hidden">
                     {currentScreen === Screen.HOME && (
-                        <HomeView onPlay={startGame} bestScore={bestScore} />
+                        <HomeView onPlay={startGame} onShop={goToShop} bestScore={bestScore} snowflakes={snowflakes} />
+                    )}
+                    {currentScreen === Screen.SHOP && (
+                        <ShopView
+                            onBack={goToHome}
+                            snowflakes={snowflakes}
+                            setSnowflakes={setSnowflakes}
+                            upgrades={upgrades}
+                            setUpgrades={setUpgrades}
+                        />
                     )}
                     {currentScreen === Screen.GAME && (
-                        <GameContainerView onGameOver={handleGameOver} />
+                        <GameContainerView onGameOver={handleGameOver} upgrades={upgrades} />
                     )}
                     {currentScreen === Screen.GAMEOVER && (
-                        <GameOverView score={lastScore} bestScore={bestScore} onRestart={startGame} onHome={goToHome} />
+                        <GameOverView
+                            score={lastScore}
+                            bestScore={bestScore}
+                            snowflakesEarned={snowflakesEarned}
+                            onRestart={startGame}
+                            onHome={goToHome}
+                        />
                     )}
                 </div>
             </div>

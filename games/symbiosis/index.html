@@ -174,12 +174,32 @@
 
         #levelComplete h2 {
             color: #9966ff;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             letter-spacing: 3px;
         }
 
+        #levelComplete .stars-display {
+            font-size: 36px;
+            margin: 10px 0;
+            letter-spacing: 8px;
+        }
+
+        #levelComplete .time-display {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin: 8px 0;
+            letter-spacing: 1px;
+        }
+
+        #levelComplete .best-time-display {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin: 4px 0 15px 0;
+            letter-spacing: 1px;
+        }
+
         #levelComplete button {
-            margin-top: 20px;
+            margin-top: 10px;
             padding: 12px 30px;
             min-height: 44px;
             background: linear-gradient(135deg, #ff6b35, #4a9eda);
@@ -189,6 +209,105 @@
             font-size: 12px;
             letter-spacing: 2px;
             cursor: pointer;
+        }
+
+        #levelIndicator {
+            position: absolute;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 500;
+            text-align: center;
+        }
+
+        #levelIndicator .level-stars {
+            font-size: 10px;
+            letter-spacing: 2px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        #timerDisplay {
+            position: absolute;
+            top: calc(30px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+            pointer-events: none;
+            z-index: 500;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #muteButton {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            right: calc(12px + env(safe-area-inset-right));
+            z-index: 9999;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        #muteButton:hover {
+            background: rgba(0,0,0,0.9);
+        }
+
+        #tutorialOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 800;
+            display: none;
+        }
+
+        #tutorialOverlay.active {
+            display: block;
+        }
+
+        #tutorialText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 16px 28px;
+            border-radius: 14px;
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-align: center;
+            border: 1px solid rgba(153, 102, 255, 0.4);
+            max-width: 80%;
+            line-height: 1.6;
+            transition: opacity 0.4s;
+        }
+
+        #tutorialText .tutorial-sub {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 6px;
+            display: block;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -206,12 +325,13 @@
     </style>
 </head>
 <body>
-  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
+  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#x1F3E0; Menu</a>
+  <button id="muteButton" aria-label="Toggle audio mute">&#x1F50A;</button>
     <div id="gameContainer">
         <div id="startScreen">
             <h1>SYMBIOSIS</h1>
             <p>Two souls. Two dimensions. One destiny.</p>
-            <p style="font-size: 12px; opacity: 0.7;">Touch to attract • Drag to guide</p>
+            <p style="font-size: 12px; opacity: 0.7;">Touch to attract &bull; Drag to guide</p>
             <button id="startButton">BEGIN</button>
         </div>
 
@@ -227,18 +347,378 @@
             <div id="lunaHint" class="ui-text">TOUCH TO ATTRACT LUNA</div>
         </div>
 
+        <div id="levelIndicator">LEVEL 1<span class="level-stars"></span></div>
+        <div id="timerDisplay">0:00.0</div>
         <div id="proximityIndicator">RESONANCE</div>
+
+        <div id="tutorialOverlay">
+            <div id="tutorialText"></div>
+        </div>
 
         <div id="levelComplete">
             <h2>HARMONIZED</h2>
+            <div class="stars-display" id="starsDisplay"></div>
+            <p class="time-display" id="completeTimeDisplay"></p>
+            <p class="best-time-display" id="bestTimeDisplay"></p>
             <p>Sol and Luna are reunited</p>
-            <button>PLAY AGAIN</button>
+            <button id="continueButton">CONTINUE</button>
         </div>
     </div>
 
     <script>
         // Fix 7: Reduced motion preference check
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ===== IMPROVEMENT 1: LEVEL DEFINITIONS =====
+        // Positions use fractions of screen width/height so they scale to any device.
+        // At runtime we multiply by actual CSS pixel dimensions.
+        const levelDefs = [
+            {
+                name: 'Awakening',
+                sol:  { startX: 0.12, startY: 0.35 },
+                luna: { startX: 0.12, startY: 0.35 },
+                chasm: { xFrac: 0.25, widthFrac: 0.45 },
+                windmill: { xFrac: 0.12, yFrac: 0.30 },
+                heatPlate: { xFrac: 0.85, yFrac: 0.50 },
+                iceWall: { xFrac: 0.78, widthPx: 40 },
+                exit: { xFrac: 0.92, yFrac: 0.12 },
+                movingPlatform: null,
+                starThresholds: [30, 50, 90]  // gold < 30s, silver < 50s, bronze < 90s
+            },
+            {
+                name: 'Crossing',
+                sol:  { startX: 0.08, startY: 0.70 },
+                luna: { startX: 0.08, startY: 0.70 },
+                chasm: { xFrac: 0.35, widthFrac: 0.30 },
+                windmill: { xFrac: 0.22, yFrac: 0.20 },
+                heatPlate: { xFrac: 0.80, yFrac: 0.30 },
+                iceWall: { xFrac: 0.70, widthPx: 50 },
+                exit: { xFrac: 0.90, yFrac: 0.85 },
+                movingPlatform: null,
+                starThresholds: [35, 60, 100]
+            },
+            {
+                name: 'Drift',
+                sol:  { startX: 0.50, startY: 0.85 },
+                luna: { startX: 0.50, startY: 0.85 },
+                chasm: { xFrac: 0.15, widthFrac: 0.55 },
+                windmill: { xFrac: 0.06, yFrac: 0.50 },
+                heatPlate: { xFrac: 0.88, yFrac: 0.65 },
+                iceWall: { xFrac: 0.82, widthPx: 45 },
+                exit: { xFrac: 0.93, yFrac: 0.15 },
+                movingPlatform: { xFrac: 0.42, yFrac: 0.50, rangeFrac: 0.30, speed: 0.4 },
+                starThresholds: [45, 75, 120]
+            },
+            {
+                name: 'Convergence',
+                sol:  { startX: 0.90, startY: 0.85 },
+                luna: { startX: 0.90, startY: 0.85 },
+                chasm: { xFrac: 0.20, widthFrac: 0.35 },
+                windmill: { xFrac: 0.10, yFrac: 0.15 },
+                heatPlate: { xFrac: 0.65, yFrac: 0.20 },
+                iceWall: { xFrac: 0.60, widthPx: 35 },
+                exit: { xFrac: 0.08, yFrac: 0.12 },
+                movingPlatform: { xFrac: 0.30, yFrac: 0.45, rangeFrac: 0.25, speed: 0.55 },
+                starThresholds: [50, 80, 130]
+            },
+            {
+                name: 'Reunion',
+                sol:  { startX: 0.06, startY: 0.90 },
+                luna: { startX: 0.94, startY: 0.90 },
+                chasm: { xFrac: 0.30, widthFrac: 0.40 },
+                windmill: { xFrac: 0.18, yFrac: 0.25 },
+                heatPlate: { xFrac: 0.78, yFrac: 0.45 },
+                iceWall: { xFrac: 0.72, widthPx: 55 },
+                exit: { xFrac: 0.50, yFrac: 0.10 },
+                movingPlatform: { xFrac: 0.45, yFrac: 0.50, rangeFrac: 0.35, speed: 0.65 },
+                starThresholds: [60, 100, 150]
+            }
+        ];
+
+        // Resolved pixel positions for the current level (set by loadLevel)
+        let lvl = {};
+
+        // ===== IMPROVEMENT 5: PERSISTENT BEST TIMES =====
+        function loadBestTimes() {
+            try {
+                return JSON.parse(localStorage.getItem('symbiosis_bestTimes') || '{}');
+            } catch(e) { return {}; }
+        }
+        function saveBestTime(levelIndex, time, stars) {
+            const data = loadBestTimes();
+            const key = 'level_' + levelIndex;
+            if (!data[key] || time < data[key].time) {
+                data[key] = { time: time, stars: stars };
+            }
+            localStorage.setItem('symbiosis_bestTimes', JSON.stringify(data));
+        }
+        function getBestForLevel(levelIndex) {
+            const data = loadBestTimes();
+            return data['level_' + levelIndex] || null;
+        }
+        function getStarsForTime(levelIndex, time) {
+            const t = levelDefs[levelIndex].starThresholds;
+            if (time <= t[0]) return 3;
+            if (time <= t[1]) return 2;
+            if (time <= t[2]) return 1;
+            return 1; // always at least 1 star for completing
+        }
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1);
+        }
+        function starsString(count) {
+            let s = '';
+            for (let i = 0; i < 3; i++) {
+                s += i < count ? '\u2605' : '\u2606';  // filled star : empty star
+            }
+            return s;
+        }
+
+        // ===== IMPROVEMENT 3: TUTORIAL SYSTEM =====
+        const tutorialSteps = [
+            {
+                text: 'DRAG SOL TO MOVE HER',
+                sub: 'Touch and drag in the top world',
+                check: function() { return Math.hypot(game.sol.x - game.sol.startX, game.sol.y - game.sol.startY) > 50; }
+            },
+            {
+                text: 'TOUCH LUNA\'S WORLD TO ATTRACT HER',
+                sub: 'Tap or drag in the bottom world',
+                check: function() { return Math.hypot(game.luna.x - game.luna.startX, game.luna.y - game.luna.startY) > 50; }
+            },
+            {
+                text: 'LUNA\'S MOVEMENT CREATES WIND',
+                sub: 'Move Luna quickly to spin the windmill and extend the bridge',
+                check: function() { return game.windPower > 3; }
+            },
+            {
+                text: 'MOVE SOL ONTO THE HEAT PLATE',
+                sub: 'The heat melts Luna\'s ice wall',
+                check: function() { return game.heatActive; }
+            }
+        ];
+        let tutorialActive = false;
+        let tutorialStep = 0;
+        function isTutorialDone() {
+            try { return localStorage.getItem('symbiosis_tutorial_done') === '1'; } catch(e) { return false; }
+        }
+        function markTutorialDone() {
+            try { localStorage.setItem('symbiosis_tutorial_done', '1'); } catch(e) {}
+        }
+        function showTutorial() {
+            if (isTutorialDone()) { tutorialActive = false; return; }
+            tutorialActive = true;
+            tutorialStep = 0;
+            const overlay = document.getElementById('tutorialOverlay');
+            overlay.classList.add('active');
+            renderTutorialStep();
+        }
+        function renderTutorialStep() {
+            const el = document.getElementById('tutorialText');
+            if (tutorialStep >= tutorialSteps.length) {
+                hideTutorial();
+                return;
+            }
+            const step = tutorialSteps[tutorialStep];
+            el.innerHTML = step.text + '<span class="tutorial-sub">' + step.sub + '</span>';
+            el.style.opacity = '1';
+        }
+        function hideTutorial() {
+            tutorialActive = false;
+            markTutorialDone();
+            const overlay = document.getElementById('tutorialOverlay');
+            overlay.classList.remove('active');
+        }
+        function updateTutorial() {
+            if (!tutorialActive) return;
+            if (tutorialStep >= tutorialSteps.length) { hideTutorial(); return; }
+            if (tutorialSteps[tutorialStep].check()) {
+                tutorialStep++;
+                if (tutorialStep >= tutorialSteps.length) {
+                    hideTutorial();
+                } else {
+                    // brief fade transition
+                    const el = document.getElementById('tutorialText');
+                    el.style.opacity = '0';
+                    setTimeout(renderTutorialStep, 400);
+                }
+            }
+        }
+
+        // ===== IMPROVEMENT 2: AUDIO SYSTEM =====
+        let audioCtx = null;
+        let masterGain = null;
+        let audioMuted = false;
+        let solDrone = null;
+        let lunaDrone = null;
+        let solDroneGain = null;
+        let lunaDroneGain = null;
+
+        function initAudio() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.3;
+                masterGain.connect(audioCtx.destination);
+
+                // Sol drone: warm A2 (110 Hz) sine
+                solDrone = audioCtx.createOscillator();
+                solDrone.type = 'sine';
+                solDrone.frequency.value = 110;
+                solDroneGain = audioCtx.createGain();
+                solDroneGain.gain.value = 0.08;
+                solDrone.connect(solDroneGain);
+                solDroneGain.connect(masterGain);
+                solDrone.start();
+
+                // Luna drone: cool E3 (164.81 Hz) sine
+                lunaDrone = audioCtx.createOscillator();
+                lunaDrone.type = 'sine';
+                lunaDrone.frequency.value = 164.81;
+                lunaDroneGain = audioCtx.createGain();
+                lunaDroneGain.gain.value = 0.06;
+                lunaDrone.connect(lunaDroneGain);
+                lunaDroneGain.connect(masterGain);
+                lunaDrone.start();
+            } catch(e) {
+                // Audio not available - game still works without it
+                audioCtx = null;
+            }
+        }
+
+        function updateAudioProximity() {
+            if (!audioCtx || !solDroneGain || !lunaDroneGain) return;
+            // As characters approach on X-axis, harmonize volumes
+            const xDist = Math.abs(game.sol.x - game.luna.x);
+            const maxDist = solCssWidth;
+            const proximity = 1 - Math.min(1, xDist / maxDist);
+            // Both drones swell when characters are close on X
+            const baseS = 0.05;
+            const baseL = 0.04;
+            const harmonyBoost = proximity * proximity * 0.12;
+            solDroneGain.gain.setTargetAtTime(baseS + harmonyBoost, audioCtx.currentTime, 0.1);
+            lunaDroneGain.gain.setTargetAtTime(baseL + harmonyBoost, audioCtx.currentTime, 0.1);
+        }
+
+        // Event sounds
+        function playIceCrackle() {
+            if (!audioCtx) return;
+            // Crackling: short burst of filtered noise
+            const dur = 0.15;
+            const bufSize = audioCtx.sampleRate * dur;
+            const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.3));
+            }
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const filt = audioCtx.createBiquadFilter();
+            filt.type = 'highpass';
+            filt.frequency.value = 2000;
+            const g = audioCtx.createGain();
+            g.gain.value = 0.15;
+            src.connect(filt);
+            filt.connect(g);
+            g.connect(masterGain);
+            src.start();
+            src.stop(audioCtx.currentTime + dur);
+        }
+
+        function playWindWhoosh() {
+            if (!audioCtx) return;
+            const dur = 0.3;
+            const bufSize = audioCtx.sampleRate * dur;
+            const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) {
+                const env = Math.sin(Math.PI * i / bufSize);
+                data[i] = (Math.random() * 2 - 1) * env;
+            }
+            const src = audioCtx.createBufferSource();
+            src.buffer = buf;
+            const filt = audioCtx.createBiquadFilter();
+            filt.type = 'bandpass';
+            filt.frequency.value = 800;
+            filt.Q.value = 2;
+            const g = audioCtx.createGain();
+            g.gain.value = 0.08;
+            src.connect(filt);
+            filt.connect(g);
+            g.connect(masterGain);
+            src.start();
+            src.stop(audioCtx.currentTime + dur);
+        }
+
+        function playResonanceChime() {
+            if (!audioCtx) return;
+            // Bell-like tone: two sine oscillators with exponential decay
+            const osc1 = audioCtx.createOscillator();
+            osc1.type = 'sine';
+            osc1.frequency.value = 523.25; // C5
+            const osc2 = audioCtx.createOscillator();
+            osc2.type = 'sine';
+            osc2.frequency.value = 659.25; // E5
+            const g = audioCtx.createGain();
+            g.gain.value = 0.15;
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
+            osc1.connect(g);
+            osc2.connect(g);
+            g.connect(masterGain);
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 1.0);
+            osc2.stop(audioCtx.currentTime + 1.0);
+        }
+
+        function playVictoryStinger() {
+            if (!audioCtx) return;
+            // Ascending arpeggio: C5 E5 G5 C6
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach(function(freq, i) {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                const g = audioCtx.createGain();
+                g.gain.value = 0;
+                g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.15);
+                g.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + i * 0.15 + 0.05);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.6);
+                osc.connect(g);
+                g.connect(masterGain);
+                osc.start(audioCtx.currentTime + i * 0.15);
+                osc.stop(audioCtx.currentTime + i * 0.15 + 0.7);
+            });
+        }
+
+        function playCollisionBuzz() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            osc.type = 'square';
+            osc.frequency.value = 80;
+            const g = audioCtx.createGain();
+            g.gain.value = 0.08;
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+            osc.connect(g);
+            g.connect(masterGain);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.12);
+        }
+
+        function toggleMute() {
+            audioMuted = !audioMuted;
+            if (masterGain) {
+                masterGain.gain.setTargetAtTime(audioMuted ? 0 : 0.3, audioCtx.currentTime, 0.05);
+            }
+            document.getElementById('muteButton').innerHTML = audioMuted ? '&#x1F507;' : '&#x1F50A;';
+        }
+
+        // Audio event tracking to avoid repeat-triggering
+        let lastIceCrackleAlpha = 1;
+        let lastResonanceTrigger = 0;
+        let windWhooshCooldown = 0;
 
         // Game state
         const game = {
@@ -252,7 +732,10 @@
                 targetY: 100,
                 scaleX: 1,
                 scaleY: 1,
-                trail: []
+                trail: [],
+                startX: 100,
+                startY: 100,
+                collisionFlash: 0
             },
             luna: {
                 x: 100,
@@ -265,8 +748,12 @@
                 scaleX: 1,
                 scaleY: 1,
                 trail: [],
-                frostPatterns: []
+                frostPatterns: [],
+                startX: 100,
+                startY: 100,
+                collisionFlash: 0
             },
+            currentLevel: 0,
             windPower: 0,
             windAngle: 0,
             windParticles: [],
@@ -276,6 +763,7 @@
             bridgeExtension: 0,
             windmillRotation: 0,
             gameStarted: false,
+            levelCompleted: false,
             animTime: 0,
             proximityPower: 0,
             screenShake: { x: 0, y: 0, power: 0 },
@@ -287,7 +775,13 @@
             },
             frameCount: 0,
             frameCountLuna: 0,
-            iceCracks: []
+            iceCracks: [],
+            // Timer (Improvement 5)
+            levelStartTime: 0,
+            levelElapsed: 0,
+            timerRunning: false,
+            // Moving platform state
+            movingPlatformOffset: 0
         };
 
         // Canvas references
@@ -313,6 +807,90 @@
             solDragging: false,
             lunaTouch: { x: -1, y: -1, active: false }
         };
+
+        // ===== LEVEL LOADING =====
+        function loadLevel(index) {
+            if (index >= levelDefs.length) {
+                // All levels complete - loop back to start or show final screen
+                index = 0;
+            }
+            game.currentLevel = index;
+            const def = levelDefs[index];
+            const w = solCssWidth || window.innerWidth;
+            const h = solCssHeight || (window.innerHeight / 2);
+
+            lvl = {
+                chasm: { x: def.chasm.xFrac * w, width: def.chasm.widthFrac * w },
+                windmill: { x: def.windmill.xFrac * w, y: def.windmill.yFrac * h },
+                heatPlate: { x: def.heatPlate.xFrac * w, y: def.heatPlate.yFrac * h },
+                iceWall: { x: def.iceWall.xFrac * w, width: def.iceWall.widthPx },
+                exit: { x: def.exit.xFrac * w, y: def.exit.yFrac * h },
+                movingPlatform: null
+            };
+            if (def.movingPlatform) {
+                lvl.movingPlatform = {
+                    x: def.movingPlatform.xFrac * w,
+                    y: def.movingPlatform.yFrac * h,
+                    range: def.movingPlatform.rangeFrac * h,
+                    speed: def.movingPlatform.speed
+                };
+            }
+
+            // Reset positions
+            game.sol.x = def.sol.startX * w;
+            game.sol.y = def.sol.startY * h;
+            game.sol.targetX = game.sol.x;
+            game.sol.targetY = game.sol.y;
+            game.sol.vx = 0;
+            game.sol.vy = 0;
+            game.sol.trail = [];
+            game.sol.startX = game.sol.x;
+            game.sol.startY = game.sol.y;
+            game.sol.collisionFlash = 0;
+
+            game.luna.x = def.luna.startX * w;
+            game.luna.y = def.luna.startY * h;
+            game.luna.targetX = game.luna.x;
+            game.luna.targetY = game.luna.y;
+            game.luna.vx = 0;
+            game.luna.vy = 0;
+            game.luna.trail = [];
+            game.luna.frostPatterns = [];
+            game.luna.startX = game.luna.x;
+            game.luna.startY = game.luna.y;
+            game.luna.collisionFlash = 0;
+
+            game.windPower = 0;
+            game.windParticles = [];
+            game.heatPower = 0;
+            game.heatActive = false;
+            game.iceAlpha = 1;
+            game.iceCracks = [];
+            game.bridgeExtension = 0;
+            game.windmillRotation = 0;
+            game.dimensionalTears = [];
+            game.levelCompleted = false;
+            game.movingPlatformOffset = 0;
+
+            // Timer
+            game.levelStartTime = performance.now();
+            game.levelElapsed = 0;
+            game.timerRunning = true;
+
+            // Audio tracking reset
+            lastIceCrackleAlpha = 1;
+            lastResonanceTrigger = 0;
+            windWhooshCooldown = 0;
+
+            // UI
+            const best = getBestForLevel(index);
+            const starStr = best ? starsString(best.stars) : '';
+            document.getElementById('levelIndicator').innerHTML =
+                'LEVEL ' + (index + 1) + ' - ' + def.name.toUpperCase() +
+                '<span class="level-stars">' + starStr + '</span>';
+            document.getElementById('timerDisplay').textContent = '0:00.0';
+            document.getElementById('levelComplete').classList.remove('show');
+        }
 
         // Fix 8: Canvas error handling
         function initCanvases() {
@@ -387,7 +965,15 @@
             initCanvases();
             initParallaxLayers();
             setupControls();
+            initAudio();
             game.gameStarted = true;
+            loadLevel(0);
+
+            // Tutorial for first level on first playthrough
+            if (!isTutorialDone()) {
+                showTutorial();
+            }
+
             requestAnimationFrame(gameLoop);
         }
 
@@ -454,6 +1040,25 @@
                 resizeTimeout = setTimeout(() => {
                     resizeCanvases();
                     initParallaxLayers();
+                    // Re-resolve level pixel positions on resize
+                    if (game.gameStarted) {
+                        const def = levelDefs[game.currentLevel];
+                        const w = solCssWidth;
+                        const h = solCssHeight;
+                        lvl.chasm = { x: def.chasm.xFrac * w, width: def.chasm.widthFrac * w };
+                        lvl.windmill = { x: def.windmill.xFrac * w, y: def.windmill.yFrac * h };
+                        lvl.heatPlate = { x: def.heatPlate.xFrac * w, y: def.heatPlate.yFrac * h };
+                        lvl.iceWall = { x: def.iceWall.xFrac * w, width: def.iceWall.widthPx };
+                        lvl.exit = { x: def.exit.xFrac * w, y: def.exit.yFrac * h };
+                        if (def.movingPlatform) {
+                            lvl.movingPlatform = {
+                                x: def.movingPlatform.xFrac * w,
+                                y: def.movingPlatform.yFrac * h,
+                                range: def.movingPlatform.rangeFrac * h,
+                                speed: def.movingPlatform.speed
+                            };
+                        }
+                    }
                 }, 200);
             });
         }
@@ -511,10 +1116,93 @@
             input.lunaTouch.active = false;
         }
 
+        // ===== IMPROVEMENT 4: COLLISION DETECTION =====
+        function checkSolCollisions(deltaTime) {
+            const r = game.sol.radius;
+            const chasmLeft = lvl.chasm.x;
+            const chasmRight = lvl.chasm.x + lvl.chasm.width;
+            const bridgeTop = solCssHeight / 2 - 20;
+            const bridgeBottom = solCssHeight / 2 + 20;
+            const bridgeRight = chasmLeft + lvl.chasm.width * game.bridgeExtension;
+
+            // Sol is inside the chasm horizontal range
+            if (game.sol.x + r > chasmLeft && game.sol.x - r < chasmRight) {
+                // Check if on the bridge
+                const onBridge = (game.sol.x - r < bridgeRight) &&
+                                 (game.sol.y + r > bridgeTop) &&
+                                 (game.sol.y - r < bridgeBottom);
+
+                // Check if on moving platform
+                let onPlatform = false;
+                if (lvl.movingPlatform) {
+                    const platY = lvl.movingPlatform.y + Math.sin(game.movingPlatformOffset) * lvl.movingPlatform.range;
+                    const platLeft = lvl.movingPlatform.x - 30;
+                    const platRight = lvl.movingPlatform.x + 30;
+                    const platTop = platY - 12;
+                    const platBottom = platY + 12;
+                    if (game.sol.x + r > platLeft && game.sol.x - r < platRight &&
+                        game.sol.y + r > platTop && game.sol.y - r < platBottom) {
+                        onPlatform = true;
+                    }
+                }
+
+                if (!onBridge && !onPlatform) {
+                    // Block: push Sol out of chasm
+                    const fromLeft = game.sol.x - chasmLeft;
+                    const fromRight = chasmRight - game.sol.x;
+                    if (fromLeft < fromRight) {
+                        game.sol.x = chasmLeft - r;
+                        game.sol.targetX = Math.min(game.sol.targetX, chasmLeft - r);
+                    } else {
+                        game.sol.x = chasmRight + r;
+                        game.sol.targetX = Math.max(game.sol.targetX, chasmRight + r);
+                    }
+                    if (Math.abs(game.sol.vx) > 0.5) {
+                        game.sol.collisionFlash = 0.3;
+                        playCollisionBuzz();
+                    }
+                    game.sol.vx = 0;
+                }
+            }
+        }
+
+        function checkLunaCollisions(deltaTime) {
+            const r = game.luna.radius;
+            // Ice wall collision: Luna cannot pass if iceAlpha > 0.15
+            if (game.iceAlpha > 0.15) {
+                const wallLeft = lvl.iceWall.x;
+                const wallRight = lvl.iceWall.x + lvl.iceWall.width;
+
+                if (game.luna.x + r > wallLeft && game.luna.x - r < wallRight) {
+                    const fromLeft = game.luna.x - wallLeft;
+                    const fromRight = wallRight - game.luna.x;
+                    if (fromLeft < fromRight) {
+                        game.luna.x = wallLeft - r;
+                    } else {
+                        game.luna.x = wallRight + r;
+                    }
+                    if (Math.abs(game.luna.vx) > 0.5) {
+                        game.luna.collisionFlash = 0.3;
+                        playCollisionBuzz();
+                    }
+                    game.luna.vx *= -0.3;
+                }
+            }
+        }
+
         function update(deltaTime) {
-            if (!game.gameStarted) return;
+            if (!game.gameStarted || game.levelCompleted) return;
 
             game.animTime += deltaTime;
+
+            // Update timer
+            if (game.timerRunning) {
+                game.levelElapsed = (performance.now() - game.levelStartTime) / 1000;
+                document.getElementById('timerDisplay').textContent = formatTime(game.levelElapsed);
+            }
+
+            // Update tutorial
+            updateTutorial();
 
             // Update Sol with momentum physics
             const solAccel = 0.5;
@@ -536,18 +1224,21 @@
             game.sol.x = Math.max(game.sol.radius, Math.min(solCssWidth - game.sol.radius, game.sol.x));
             game.sol.y = Math.max(game.sol.radius, Math.min(solCssHeight - game.sol.radius, game.sol.y));
 
+            // IMPROVEMENT 4: Sol collision with chasm
+            checkSolCollisions(deltaTime);
+
             // Update Luna with magnetic attraction
             if (input.lunaTouch.active) {
                 const lunaAccel = 0.3;
-                const dx = input.lunaTouch.x - game.luna.x;
-                const dy = input.lunaTouch.y - game.luna.y;
-                const dist = Math.hypot(dx, dy);
+                const ldx = input.lunaTouch.x - game.luna.x;
+                const ldy = input.lunaTouch.y - game.luna.y;
+                const dist = Math.hypot(ldx, ldy);
 
                 if (dist > 5) {
                     // Stronger attraction when farther away
                     const force = Math.min(1, dist / 200) * lunaAccel;
-                    game.luna.vx += (dx / dist) * force * deltaTime * 60;
-                    game.luna.vy += (dy / dist) * force * deltaTime * 60;
+                    game.luna.vx += (ldx / dist) * force * deltaTime * 60;
+                    game.luna.vy += (ldy / dist) * force * deltaTime * 60;
                 }
             }
 
@@ -569,6 +1260,13 @@
                 game.luna.vy *= -0.5;
                 game.luna.y = Math.max(game.luna.radius, Math.min(lunaCssHeight - game.luna.radius, game.luna.y));
             }
+
+            // IMPROVEMENT 4: Luna collision with ice wall
+            checkLunaCollisions(deltaTime);
+
+            // Collision flash decay
+            if (game.sol.collisionFlash > 0) game.sol.collisionFlash -= deltaTime * 2;
+            if (game.luna.collisionFlash > 0) game.luna.collisionFlash -= deltaTime * 2;
 
             // Update trails
             updateTrail(game.sol, deltaTime);
@@ -593,6 +1291,12 @@
                 // Show proximity indicator
                 document.getElementById('proximityIndicator').style.opacity = game.proximityPower;
 
+                // AUDIO: Resonance chime
+                if (game.proximityPower > 0.7 && game.animTime - lastResonanceTrigger > 2.0) {
+                    playResonanceChime();
+                    lastResonanceTrigger = game.animTime;
+                }
+
                 // Create dimensional tear
                 if (Math.random() < game.proximityPower * 0.1) {
                     game.dimensionalTears.push({
@@ -616,6 +1320,13 @@
             const lunaSpeed = Math.hypot(game.luna.vx, game.luna.vy);
             game.windPower = lunaSpeed * 2;
             game.windAngle = Math.atan2(game.luna.vy, game.luna.vx);
+
+            // AUDIO: Wind whoosh
+            if (game.windPower > 4 && windWhooshCooldown <= 0) {
+                playWindWhoosh();
+                windWhooshCooldown = 0.5;
+            }
+            if (windWhooshCooldown > 0) windWhooshCooldown -= deltaTime;
 
             // Create wind particles
             if (game.windPower > 1 && Math.random() < 0.3) {
@@ -652,9 +1363,14 @@
                 game.bridgeExtension = Math.max(0, game.bridgeExtension - deltaTime * 0.5);
             }
 
+            // Update moving platform
+            if (lvl.movingPlatform) {
+                game.movingPlatformOffset += lvl.movingPlatform.speed * deltaTime * 2;
+            }
+
             // Check heat plate collision
-            const heatPlateX = solCssWidth - 100;
-            const heatPlateY = solCssHeight / 2;
+            const heatPlateX = lvl.heatPlate.x;
+            const heatPlateY = lvl.heatPlate.y;
             const heatDist = Math.hypot(game.sol.x - heatPlateX, game.sol.y - heatPlateY);
             game.heatActive = heatDist < 60;
 
@@ -665,10 +1381,19 @@
             }
 
             // Melt ice based on heat
+            const prevIceAlpha = game.iceAlpha;
             if (game.heatPower > 0) {
                 game.iceAlpha = Math.max(0, game.iceAlpha - game.heatPower * deltaTime);
             } else {
                 game.iceAlpha = Math.min(1, game.iceAlpha + deltaTime * 0.3);
+            }
+
+            // AUDIO: Ice crackling when melting
+            if (game.iceAlpha < prevIceAlpha && prevIceAlpha - game.iceAlpha > 0.005) {
+                if (prevIceAlpha - lastIceCrackleAlpha > 0.08) {
+                    playIceCrackle();
+                    lastIceCrackleAlpha = game.iceAlpha;
+                }
             }
 
             // Add frost patterns where Luna touches
@@ -716,15 +1441,18 @@
                 }
             }
 
+            // Audio proximity update
+            updateAudioProximity();
+
             // Check win condition
-            const exitX = solCssWidth - 40;
-            const exitY = 40;
+            const exitX = lvl.exit.x;
+            const exitY = lvl.exit.y;
             const solAtExit = Math.hypot(game.sol.x - exitX, game.sol.y - exitY) < 30;
             const lunaAtExit = Math.hypot(game.luna.x - exitX, game.luna.y - exitY) < 30;
 
             // Fix 9: Feedback when at exit but ice not melted
             if (solAtExit && lunaAtExit && game.iceAlpha < 0.1) {
-                document.getElementById('levelComplete').classList.add('show');
+                completeLevel();
             } else if (solAtExit && lunaAtExit && game.iceAlpha >= 0.1) {
                 // Show hint about ice
                 document.getElementById('proximityIndicator').textContent = 'MELT THE ICE BARRIER';
@@ -733,6 +1461,36 @@
                 // Reset text when condition is no longer met
                 document.getElementById('proximityIndicator').textContent = 'RESONANCE';
             }
+        }
+
+        function completeLevel() {
+            game.levelCompleted = true;
+            game.timerRunning = false;
+            const elapsed = game.levelElapsed;
+            const stars = getStarsForTime(game.currentLevel, elapsed);
+
+            // Save best time
+            saveBestTime(game.currentLevel, elapsed, stars);
+
+            // Audio
+            playVictoryStinger();
+
+            // Update level complete screen
+            document.getElementById('starsDisplay').textContent = starsString(stars);
+            document.getElementById('completeTimeDisplay').textContent = 'TIME: ' + formatTime(elapsed);
+            const best = getBestForLevel(game.currentLevel);
+            document.getElementById('bestTimeDisplay').textContent =
+                best ? 'BEST: ' + formatTime(best.time) : '';
+
+            // Update button text
+            const btn = document.getElementById('continueButton');
+            if (game.currentLevel >= levelDefs.length - 1) {
+                btn.textContent = 'PLAY AGAIN';
+            } else {
+                btn.textContent = 'CONTINUE';
+            }
+
+            document.getElementById('levelComplete').classList.add('show');
         }
 
         function updateTrail(character, deltaTime) {
@@ -787,46 +1545,70 @@
                 });
             });
 
-            // Draw chasm
-            const gradient = ctx.createLinearGradient(200, 0, 600, 0);
+            // Draw chasm (using level-defined positions)
+            const chasmX = lvl.chasm.x;
+            const chasmW = lvl.chasm.width;
+            const gradient = ctx.createLinearGradient(chasmX, 0, chasmX + chasmW, 0);
             gradient.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
             gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.9)');
             gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
             ctx.fillStyle = gradient;
-            ctx.fillRect(200, 0, 400, height);
+            ctx.fillRect(chasmX, 0, chasmW, height);
 
             // Draw bridge with glow
             if (game.bridgeExtension > 0) {
-                const bridgeWidth = 400 * game.bridgeExtension;
+                const bridgeWidth = chasmW * game.bridgeExtension;
 
                 // Bridge glow
                 const glow = ctx.createRadialGradient(
-                    200 + bridgeWidth/2, height/2, 0,
-                    200 + bridgeWidth/2, height/2, bridgeWidth/2 + 40
+                    chasmX + bridgeWidth/2, height/2, 0,
+                    chasmX + bridgeWidth/2, height/2, bridgeWidth/2 + 40
                 );
                 glow.addColorStop(0, 'rgba(255, 150, 50, 0.4)');
                 glow.addColorStop(1, 'rgba(255, 107, 53, 0)');
                 ctx.fillStyle = glow;
-                ctx.fillRect(180, height/2 - 40, bridgeWidth + 40, 80);
+                ctx.fillRect(chasmX - 20, height/2 - 40, bridgeWidth + 40, 80);
 
                 // Bridge body
                 ctx.fillStyle = `rgba(255, 140, 60, ${0.6 + Math.sin(game.animTime * 5) * 0.1})`;
-                ctx.fillRect(200, height/2 - 20, bridgeWidth, 40);
+                ctx.fillRect(chasmX, height/2 - 20, bridgeWidth, 40);
 
                 // Energy lines
                 ctx.strokeStyle = '#ffaa55';
                 ctx.lineWidth = 2;
                 ctx.setLineDash([10, 5]);
                 ctx.beginPath();
-                ctx.moveTo(200, height/2);
-                ctx.lineTo(200 + bridgeWidth, height/2);
+                ctx.moveTo(chasmX, height/2);
+                ctx.lineTo(chasmX + bridgeWidth, height/2);
                 ctx.stroke();
                 ctx.setLineDash([]);
             }
 
-            // Draw windmill with dynamic rotation
+            // Draw moving platform
+            if (lvl.movingPlatform) {
+                const mp = lvl.movingPlatform;
+                const platY = mp.y + Math.sin(game.movingPlatformOffset) * mp.range;
+
+                // Platform glow
+                const platGlow = ctx.createRadialGradient(mp.x, platY, 0, mp.x, platY, 50);
+                platGlow.addColorStop(0, 'rgba(255, 200, 100, 0.3)');
+                platGlow.addColorStop(1, 'rgba(255, 150, 50, 0)');
+                ctx.fillStyle = platGlow;
+                ctx.fillRect(mp.x - 50, platY - 50, 100, 100);
+
+                // Platform body
+                ctx.fillStyle = `rgba(255, 170, 80, ${0.7 + Math.sin(game.animTime * 4) * 0.15})`;
+                ctx.fillRect(mp.x - 30, platY - 10, 60, 20);
+
+                // Platform edge lines
+                ctx.strokeStyle = 'rgba(255, 220, 150, 0.6)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(mp.x - 30, platY - 10, 60, 20);
+            }
+
+            // Draw windmill with dynamic rotation (using level-defined position)
             ctx.save();
-            ctx.translate(100, 100);
+            ctx.translate(lvl.windmill.x, lvl.windmill.y);
 
             // Windmill glow
             if (game.windPower > 0) {
@@ -851,9 +1633,9 @@
             }
             ctx.restore();
 
-            // Draw heat plate
-            const heatX = width - 100;
-            const heatY = height / 2;
+            // Draw heat plate (using level-defined position)
+            const heatX = lvl.heatPlate.x;
+            const heatY = lvl.heatPlate.y;
 
             if (game.heatPower > 0) {
                 // Heat waves
@@ -872,9 +1654,15 @@
                 'rgba(150, 50, 0, 0.3)';
             ctx.fillRect(heatX - 40, heatY - 30, 80, 60);
 
-            // Draw exit portal
-            const exitX = width - 40;
-            const exitY = 40;
+            // Heat plate label
+            ctx.fillStyle = 'rgba(255, 150, 80, 0.4)';
+            ctx.font = '9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('HEAT', heatX, heatY + 45);
+
+            // Draw exit portal (using level-defined position)
+            const exitX = lvl.exit.x;
+            const exitY = lvl.exit.y;
 
             ctx.strokeStyle = `rgba(255, 107, 53, ${0.5 + Math.sin(game.animTime * 3) * 0.3})`;
             ctx.lineWidth = 2;
@@ -882,17 +1670,23 @@
             ctx.arc(exitX, exitY, 25, game.animTime, game.animTime + Math.PI * 1.8);
             ctx.stroke();
 
+            // Sol collision flash overlay
+            if (game.sol.collisionFlash > 0) {
+                ctx.fillStyle = `rgba(255, 50, 50, ${game.sol.collisionFlash * 0.3})`;
+                ctx.fillRect(0, 0, width, height);
+            }
+
             // Draw Sol's burning trail
             ctx.lineCap = 'round';
             game.sol.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.sol.trail[index - 1];
 
-                const gradient = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
-                gradient.addColorStop(0, `rgba(255, 150, 50, ${prev.life * 0.5})`);
-                gradient.addColorStop(1, `rgba(255, 100, 0, ${point.life * 0.3})`);
+                const trailGrad = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
+                trailGrad.addColorStop(0, `rgba(255, 150, 50, ${prev.life * 0.5})`);
+                trailGrad.addColorStop(1, `rgba(255, 100, 0, ${point.life * 0.3})`);
 
-                ctx.strokeStyle = gradient;
+                ctx.strokeStyle = trailGrad;
                 ctx.lineWidth = point.life * 8;
                 ctx.beginPath();
                 ctx.moveTo(prev.x, prev.y);
@@ -1014,20 +1808,21 @@
                 ctx.restore();
             });
 
-            // Draw ice wall
+            // Draw ice wall (using level-defined position)
             if (game.iceAlpha > 0) {
-                const iceX = width - 120;
+                const iceX = lvl.iceWall.x;
+                const iceW = lvl.iceWall.width;
 
                 ctx.save();
                 ctx.globalAlpha = game.iceAlpha;
 
                 // Ice gradient
-                const iceGradient = ctx.createLinearGradient(iceX, 0, iceX + 40, 0);
+                const iceGradient = ctx.createLinearGradient(iceX, 0, iceX + iceW, 0);
                 iceGradient.addColorStop(0, 'rgba(150, 200, 255, 0.6)');
                 iceGradient.addColorStop(0.5, 'rgba(180, 220, 255, 0.8)');
                 iceGradient.addColorStop(1, 'rgba(150, 200, 255, 0.6)');
                 ctx.fillStyle = iceGradient;
-                ctx.fillRect(iceX, 0, 40, height);
+                ctx.fillRect(iceX, 0, iceW, height);
 
                 // Ice cracks when melting
                 if (game.iceAlpha < 0.8) {
@@ -1035,9 +1830,9 @@
                     if (game.iceCracks.length === 0) {
                         for (let i = 0; i < 5; i++) {
                             game.iceCracks.push({
-                                x1: Math.random() * 40,
+                                x1: Math.random() * iceW,
                                 y1: Math.random() * height,
-                                x2: Math.random() * 40,
+                                x2: Math.random() * iceW,
                                 y2: Math.random() * height
                             });
                         }
@@ -1080,9 +1875,9 @@
                 ctx.restore();
             });
 
-            // Draw exit portal
-            const exitX = width - 40;
-            const exitY = 40;
+            // Draw exit portal (using level-defined position)
+            const exitX = lvl.exit.x;
+            const exitY = lvl.exit.y;
 
             ctx.strokeStyle = `rgba(74, 158, 218, ${0.5 + Math.sin(game.animTime * 3 + Math.PI) * 0.3})`;
             ctx.lineWidth = 2;
@@ -1090,17 +1885,23 @@
             ctx.arc(exitX, exitY, 25, -game.animTime, -game.animTime + Math.PI * 1.8);
             ctx.stroke();
 
+            // Luna collision flash overlay
+            if (game.luna.collisionFlash > 0) {
+                ctx.fillStyle = `rgba(100, 150, 255, ${game.luna.collisionFlash * 0.3})`;
+                ctx.fillRect(0, 0, width, height);
+            }
+
             // Draw Luna's frost trail
             ctx.lineCap = 'round';
             game.luna.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.luna.trail[index - 1];
 
-                const gradient = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
-                gradient.addColorStop(0, `rgba(150, 200, 255, ${prev.life * 0.3})`);
-                gradient.addColorStop(1, `rgba(100, 180, 255, ${point.life * 0.2})`);
+                const trailGrad = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
+                trailGrad.addColorStop(0, `rgba(150, 200, 255, ${prev.life * 0.3})`);
+                trailGrad.addColorStop(1, `rgba(100, 180, 255, ${point.life * 0.2})`);
 
-                ctx.strokeStyle = gradient;
+                ctx.strokeStyle = trailGrad;
                 ctx.lineWidth = point.life * 6;
                 ctx.beginPath();
                 ctx.moveTo(prev.x, prev.y);
@@ -1182,36 +1983,19 @@
 
         function nextLevel() {
             document.getElementById('levelComplete').classList.remove('show');
-
-            // Reset positions
-            game.sol.x = 100;
-            game.sol.y = 100;
-            game.sol.targetX = 100;
-            game.sol.targetY = 100;
-            game.sol.vx = 0;
-            game.sol.vy = 0;
-            game.sol.trail = [];
-
-            game.luna.x = 100;
-            game.luna.y = 100;
-            game.luna.vx = 0;
-            game.luna.vy = 0;
-            game.luna.trail = [];
-            game.luna.frostPatterns = [];
-
-            game.windPower = 0;
-            game.windParticles = [];
-            game.heatPower = 0;
-            game.iceAlpha = 1;
-            game.iceCracks = [];
-            game.bridgeExtension = 0;
-            game.windmillRotation = 0;
-            game.dimensionalTears = [];
+            const nextIdx = game.currentLevel + 1;
+            if (nextIdx >= levelDefs.length) {
+                loadLevel(0); // Loop back
+            } else {
+                loadLevel(nextIdx);
+            }
+            // Tutorial only on first level, first playthrough
         }
 
         // Fix 6: addEventListener for buttons (in addition to existing onclick)
         document.getElementById('startButton').addEventListener('click', startGame);
-        document.getElementById('levelComplete').querySelector('button').addEventListener('click', nextLevel);
+        document.getElementById('continueButton').addEventListener('click', nextLevel);
+        document.getElementById('muteButton').addEventListener('click', toggleMute);
 
         let lastTime = 0;
         function gameLoop(currentTime) {

@@ -297,6 +297,34 @@
       .clash-pulse { animation: clashPulse 1s ease-in-out infinite; }
       .slide-in-left { animation: slideInLeft 0.4s ease-out forwards; }
       .slide-in-right { animation: slideInRight 0.4s ease-out forwards; }
+
+      /* Game Log Styles */
+      .game-log-panel {
+        max-height: 150px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,0.2) transparent;
+      }
+      .game-log-panel::-webkit-scrollbar {
+        width: 4px;
+      }
+      .game-log-panel::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .game-log-panel::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.2);
+        border-radius: 2px;
+      }
+      .game-log-entry {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        border-left: 2px solid rgba(255,255,255,0.15);
+        margin-bottom: 2px;
+      }
+      .game-log-entry:last-child {
+        border-left-color: #fbbf24;
+        background: rgba(251,191,36,0.08);
+      }
   </style>
 </head>
 <body>
@@ -319,6 +347,97 @@
         }
         return a;
     }
+
+    // ============ SOUND SYSTEM (Web Audio API) ============
+    const SoundSystem = (() => {
+      let ctx = null;
+      let muted = false;
+
+      const getCtx = () => {
+        if (!ctx) {
+          try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+          catch(e) { return null; }
+        }
+        if (ctx.state === 'suspended') ctx.resume();
+        return ctx;
+      };
+
+      const playTone = (freq, duration, type = 'square', volume = 0.12) => {
+        if (muted) return;
+        const ac = getCtx();
+        if (!ac) return;
+        const osc = ac.createOscillator();
+        const gain = ac.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ac.currentTime);
+        gain.gain.setValueAtTime(volume, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ac.destination);
+        osc.start();
+        osc.stop(ac.currentTime + duration);
+      };
+
+      const playNoise = (duration, volume = 0.06) => {
+        if (muted) return;
+        const ac = getCtx();
+        if (!ac) return;
+        const bufferSize = ac.sampleRate * duration;
+        const buffer = ac.createBuffer(1, bufferSize, ac.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const src = ac.createBufferSource();
+        const gain = ac.createGain();
+        src.buffer = buffer;
+        gain.gain.setValueAtTime(volume, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+        src.connect(gain);
+        gain.connect(ac.destination);
+        src.start();
+      };
+
+      return {
+        get muted() { return muted; },
+        toggleMute() { muted = !muted; return muted; },
+        setMuted(v) { muted = v; },
+
+        diceRoll() {
+          playNoise(0.15, 0.08);
+          setTimeout(() => playTone(300, 0.08, 'square', 0.08), 60);
+          setTimeout(() => playTone(400, 0.08, 'square', 0.08), 120);
+        },
+
+        conquest() {
+          playTone(523, 0.12, 'square', 0.1);
+          setTimeout(() => playTone(659, 0.12, 'square', 0.1), 120);
+          setTimeout(() => playTone(784, 0.2, 'square', 0.12), 240);
+        },
+
+        placeTroop() {
+          playTone(660, 0.08, 'sine', 0.07);
+        },
+
+        cardTrade() {
+          playTone(440, 0.1, 'triangle', 0.08);
+          setTimeout(() => playTone(554, 0.1, 'triangle', 0.08), 100);
+          setTimeout(() => playTone(660, 0.15, 'triangle', 0.1), 200);
+        },
+
+        gameOver() {
+          const notes = [523, 494, 440, 392, 349];
+          notes.forEach((f, i) => {
+            setTimeout(() => playTone(f, 0.3, 'sawtooth', 0.08), i * 200);
+          });
+        },
+
+        victory() {
+          const notes = [523, 659, 784, 1047];
+          notes.forEach((f, i) => {
+            setTimeout(() => playTone(f, 0.2, 'square', 0.1), i * 150);
+          });
+        },
+      };
+    })();
 
     // Animal Army Types with Colors
     const ANIMAL_ARMIES = {
@@ -1113,7 +1232,7 @@
     };
 
     // Battle Modal
-    const BattleModal = ({ attacker, defender, attackingFrom, defendingTo, onRoll, onRetreat, onClaimTerritory, battleResult, attackerDice, defenderDice, isRolling, isVictory, troopsToMove, setTroopsToMove, battlePhase, comparisons, pendingLosses }) => {
+    const BattleModal = ({ attacker, defender, attackingFrom, defendingTo, onRoll, onBlitz, onRetreat, onClaimTerritory, battleResult, attackerDice, defenderDice, isRolling, isVictory, troopsToMove, setTroopsToMove, battlePhase, comparisons, pendingLosses }) => {
       // Attacker must leave 1 behind - can only attack with (troops - 1)
       // This is the core Risk rule: you cannot empty a territory
       const attackingAnimals = Math.max(0, attacker.troops - 1);
@@ -1255,6 +1374,14 @@
                   🎲 Roll Dice!
                 </button>
                 <button
+                  onClick={onBlitz}
+                  disabled={buttonsDisabled}
+                  className="px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50 min-h-[44px]"
+                  title="Auto-roll until you win or can't attack"
+                >
+                  ⚡ Blitz!
+                </button>
+                <button
                   onClick={onRetreat}
                   disabled={buttonsDisabled}
                   className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-xl shadow-lg transition-all min-h-[44px] disabled:opacity-50"
@@ -1352,8 +1479,17 @@
       const [playerCards, setPlayerCards] = useState({});
       const [conqueredThisTurn, setConqueredThisTurn] = useState(false);
       const [earnedCardThisTurn, setEarnedCardThisTurn] = useState(false); // NEW: Track if card earned this turn
-      const [message, setMessage] = useState('Welcome to Zoo Conquest! 🦁');
+      const [message, setMessageRaw] = useState('Welcome to Zoo Conquest!');
+      const [gameLog, setGameLog] = useState([{ text: 'Welcome to Zoo Conquest!', time: Date.now() }]);
+      const [soundMuted, setSoundMuted] = useState(false);
+      const gameLogRef = React.useRef(null);
       const [aiThinking, setAiThinking] = useState(false);
+
+      // Wrapper: every setMessage also appends to the game log
+      const setMessage = useCallback((msg) => {
+        setMessageRaw(msg);
+        setGameLog(prev => [...prev, { text: msg, time: Date.now() }]);
+      }, []);
       const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
       const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
       const [tradeCount, setTradeCount] = useState(0); // NEW: Global trade count for escalating values
@@ -1407,6 +1543,7 @@
         setTurnPhase('reinforce');
         setCurrentPlayerIndex(0);
         setConqueredThisTurn(false);
+        setGameLog([{ text: 'Game started!', time: Date.now() }]);
         const initialTroops = calculateReinforcements(newPlayers[0], newTerritories);
         setTroopsToPlace(initialTroops);
         const firstPlayer = newPlayers[0];
@@ -1447,6 +1584,7 @@
       // Handle card trade
       const handleCardTrade = (selectedCards) => {
         if (!isValidTradeSet(selectedCards)) return;
+        SoundSystem.cardTrade();
 
         const army = currentPlayer.army;
         const bonusTroops = TRADE_IN_VALUES[Math.min(tradeCount, TRADE_IN_VALUES.length - 1)];
@@ -1511,15 +1649,31 @@
         );
       };
 
-      // Get valid fortify targets
+      // Get valid fortify targets - BFS through connected owned territories
       const getValidFortifyTargets = () => {
         if (!selectedTerritory || turnPhase !== 'fortify') return [];
-        const territory = TERRITORIES[selectedTerritory];
         const myArmy = gameState.territories[selectedTerritory]?.owner;
+        if (!myArmy) return [];
 
-        return territory.connections.filter(connId =>
-          gameState.territories[connId]?.owner === myArmy
-        );
+        // BFS: find all territories reachable through continuous chain of owned territories
+        const visited = new Set();
+        const queue = [selectedTerritory];
+        visited.add(selectedTerritory);
+
+        while (queue.length > 0) {
+          const current = queue.shift();
+          const connections = TERRITORIES[current].connections;
+          for (const connId of connections) {
+            if (!visited.has(connId) && gameState.territories[connId]?.owner === myArmy) {
+              visited.add(connId);
+              queue.push(connId);
+            }
+          }
+        }
+
+        // Remove the source territory itself from the results
+        visited.delete(selectedTerritory);
+        return Array.from(visited);
       };
 
       // Handle territory click - shift+click or double-click places all troops
@@ -1534,6 +1688,7 @@
         if (turnPhase === 'reinforce' && territory?.owner === currentPlayer?.army && troopsToPlace > 0) {
           // Place troops - if placeAll, place all remaining troops
           const toPlace = placeAll ? troopsToPlace : 1;
+          SoundSystem.placeTroop();
 
           setGameState(prev => ({
             ...prev,
@@ -1594,7 +1749,7 @@
                 }
               }));
               setSelectedTerritory(null);
-              setMessage(`Moved ${toMove} troops! You can fortify again or end turn.`);
+              setMessage(`Moved ${toMove} troops from ${TERRITORIES[selectedTerritory].name} to ${TERRITORIES[id].name}.`);
             }
           }
         }
@@ -1776,6 +1931,49 @@
           setAiThinking(true);
           const army = currentPlayer.army;
           const aiName = currentPlayer.name;
+
+          // Phase 0: AI Card Trading - trade cards before placing reinforcements
+          if (turnPhase === 'reinforce') {
+            const aiCards = playerCards[army] || [];
+            if (aiCards.length >= 5 || (aiCards.length >= 3 && canTradeCards(aiCards))) {
+              // Trade cards repeatedly if forced (5+) or if possible
+              let currentCards = [...aiCards];
+              let totalBonusTroops = 0;
+              let currentTradeCount = tradeCount;
+              let trades = 0;
+
+              while (currentCards.length >= 3 && canTradeCards(currentCards)) {
+                const tradeIndices = findValidTradeSet(currentCards);
+                if (!tradeIndices) break;
+
+                const bonusTroops = TRADE_IN_VALUES[Math.min(currentTradeCount, TRADE_IN_VALUES.length - 1)];
+                totalBonusTroops += bonusTroops;
+                currentTradeCount++;
+                trades++;
+
+                // Remove traded cards (in reverse index order to preserve indices)
+                const sortedIndices = [...tradeIndices].sort((a, b) => b - a);
+                for (const idx of sortedIndices) {
+                  currentCards.splice(idx, 1);
+                }
+
+                // If under 5 cards and not forced, stop trading (optional strategy)
+                if (currentCards.length < 5) break;
+              }
+
+              if (trades > 0) {
+                setPlayerCards(prev => ({
+                  ...prev,
+                  [army]: currentCards
+                }));
+                setTradeCount(currentTradeCount);
+                setTroopsToPlace(prev => prev + totalBonusTroops);
+                SoundSystem.cardTrade();
+                setMessage(`🤖 ${aiName} traded ${trades} card set${trades > 1 ? 's' : ''} for +${totalBonusTroops} animals!`);
+                await new Promise(r => setTimeout(r, 300));
+              }
+            }
+          }
 
           // Phase 1: Reinforce - place ALL troops at once (fast)
           if (turnPhase === 'reinforce' && troopsToPlace > 0) {
@@ -1969,6 +2167,13 @@
 
       // ============ END AI LOGIC ============
 
+      // Auto-scroll game log to bottom
+      useEffect(() => {
+        if (gameLogRef.current) {
+          gameLogRef.current.scrollTop = gameLogRef.current.scrollHeight;
+        }
+      }, [gameLog]);
+
       useEffect(() => {
         const handler = (e) => {
           if (gamePhase === 'play') {
@@ -2006,6 +2211,7 @@
 
         const attackerDice = Array.from({ length: attackerMax }, () => Math.floor(Math.random() * 6) + 1);
         const defenderDice = Array.from({ length: defenderMax }, () => Math.floor(Math.random() * 6) + 1);
+        SoundSystem.diceRoll();
 
         // Pre-compute comparison results for all phases
         const sortedAttacker = [...attackerDice].sort((a, b) => b - a);
@@ -2092,8 +2298,114 @@
         }, 1800);
       };
 
+      // Blitz Attack - auto-roll until attacker wins or is reduced to 1 troop
+      const blitzAttack = () => {
+        if (!battleState || battleState.isVictory) return;
+
+        const runBlitz = async () => {
+          let atkTroops = battleState.attackerTroops;
+          let defTroops = battleState.defenderTroops;
+          let totalAtkLosses = 0;
+          let totalDefLosses = 0;
+          let rounds = 0;
+          let lastAtkDice = [];
+          let lastDefDice = [];
+          let lastComparisons = [];
+
+          // Disable interaction during blitz
+          setBattleState(prev => ({
+            ...prev,
+            isRolling: true,
+            battlePhase: 'rolling',
+            result: 'Blitz in progress...',
+          }));
+
+          while (atkTroops > 1 && defTroops > 0) {
+            rounds++;
+            const attackerMax = Math.min(3, atkTroops - 1);
+            const defenderMax = Math.min(2, defTroops);
+
+            const atkDice = Array.from({ length: attackerMax }, () => Math.floor(Math.random() * 6) + 1);
+            const defDice = Array.from({ length: defenderMax }, () => Math.floor(Math.random() * 6) + 1);
+
+            const sortedAtk = [...atkDice].sort((a, b) => b - a);
+            const sortedDef = [...defDice].sort((a, b) => b - a);
+
+            let atkLoss = 0;
+            let defLoss = 0;
+            const comps = [];
+            const pairCount = Math.min(sortedAtk.length, sortedDef.length);
+            for (let i = 0; i < pairCount; i++) {
+              if (sortedAtk[i] > sortedDef[i]) {
+                defLoss++;
+                comps.push('attacker');
+              } else {
+                atkLoss++;
+                comps.push('defender');
+              }
+            }
+
+            atkTroops -= atkLoss;
+            defTroops -= defLoss;
+            totalAtkLosses += atkLoss;
+            totalDefLosses += defLoss;
+            lastAtkDice = atkDice;
+            lastDefDice = defDice;
+            lastComparisons = comps;
+
+            // Short delay for abbreviated animation feel
+            await new Promise(r => setTimeout(r, 50));
+          }
+
+          SoundSystem.diceRoll();
+
+          const isVictory = defTroops <= 0;
+          let result;
+          if (isVictory) {
+            result = `Blitz! ${rounds} rounds: You lost ${totalAtkLosses}, Defender lost ${totalDefLosses}. VICTORY!`;
+          } else {
+            result = `Blitz! ${rounds} rounds: You lost ${totalAtkLosses}, Defender lost ${totalDefLosses}. Out of troops!`;
+          }
+
+          // Apply final state
+          setBattleState(prev => ({
+            ...prev,
+            attackerTroops: atkTroops,
+            defenderTroops: defTroops,
+            attackerDice: lastAtkDice,
+            defenderDice: lastDefDice,
+            isRolling: false,
+            battlePhase: 'resolved',
+            comparisons: lastComparisons,
+            pendingLosses: null,
+            result,
+            isVictory,
+            troopsToMove: isVictory ? Math.max(1, atkTroops - 1) : 1,
+          }));
+
+          // Update game state for non-victory
+          if (!isVictory) {
+            setGameState(prev => {
+              const newTerritories = { ...prev.territories };
+              newTerritories[battleState.from] = {
+                ...newTerritories[battleState.from],
+                troops: atkTroops
+              };
+              newTerritories[battleState.to] = {
+                ...newTerritories[battleState.to],
+                troops: defTroops
+              };
+              return { ...prev, territories: newTerritories };
+            });
+          }
+        };
+
+        runBlitz();
+      };
+
       // Claim territory after victory
       const claimTerritory = (troopsToMove) => {
+        SoundSystem.conquest();
         const newAttackerTroops = battleState.attackerTroops;
         const defeatedArmy = gameState.territories[battleState.to]?.owner;
 
@@ -2261,6 +2573,16 @@
           setMessage(`Your turn, ${nextPlayer.name}! Place your ${newTroops} animals.`);
         }
       };
+
+      // Sound effect for game over
+      useEffect(() => {
+        if (gamePhase === 'gameOver') {
+          const winner = players.find(p =>
+            Object.values(gameState.territories).some(t => t.owner === p.army)
+          );
+          if (winner && !winner.isAI) SoundSystem.victory(); else SoundSystem.gameOver();
+        }
+      }, [gamePhase]);
 
       // Setup Screen
       const [setupHumans, setSetupHumans] = useState(1);
@@ -2669,13 +2991,35 @@
               ))}
             </div>
 
-            <button
-              onClick={() => { if (confirm('Return to setup? Current game will be lost.')) setGamePhase('setup'); }}
-              className="w-full py-2 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded-lg text-sm font-bold mt-auto"
-              aria-label="Return to game setup menu"
-            >
-              🏠 Return to Menu
-            </button>
+            {/* Game Log */}
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-white font-bold text-sm mb-2">Game Log</div>
+              <div className="game-log-panel" ref={gameLogRef}>
+                {gameLog.map((entry, i) => (
+                  <div key={i} className="game-log-entry text-gray-300">
+                    {entry.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sound Toggle + Menu */}
+            <div className="flex gap-2 mt-auto">
+              <button
+                onClick={() => { const m = SoundSystem.toggleMute(); setSoundMuted(m); }}
+                className={`flex-1 py-2 rounded-lg text-sm font-bold ${soundMuted ? 'bg-red-600 hover:bg-red-500 text-white' : 'bg-gray-600 hover:bg-gray-500 text-gray-300'}`}
+                aria-label={soundMuted ? 'Unmute sounds' : 'Mute sounds'}
+              >
+                {soundMuted ? '🔇 Muted' : '🔊 Sound'}
+              </button>
+              <button
+                onClick={() => { if (confirm('Return to setup? Current game will be lost.')) setGamePhase('setup'); }}
+                className="flex-1 py-2 bg-gray-600 hover:bg-gray-500 text-gray-300 rounded-lg text-sm font-bold"
+                aria-label="Return to game setup menu"
+              >
+                🏠 Menu
+              </button>
+            </div>
           </div>
 
           {/* Battle Modal */}
@@ -2686,6 +3030,7 @@
               attackingFrom={battleState.from}
               defendingTo={battleState.to}
               onRoll={rollDice}
+              onBlitz={blitzAttack}
               onRetreat={retreatBattle}
               onClaimTerritory={claimTerritory}
               battleResult={battleState.result}

@@ -223,6 +223,39 @@
 
         .player-config:hover { background: rgba(255,255,255,0.05); }
 
+        /* Emoji picker */
+        .emoji-picker {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .emoji-pick-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .emoji-pick-btn:hover {
+            border-color: rgba(255,251,125,0.4);
+            background: rgba(255,251,125,0.08);
+            transform: scale(1.15);
+        }
+        .emoji-pick-btn.active {
+            border-color: #fffb7d;
+            background: rgba(255,251,125,0.15);
+            box-shadow: 0 0 8px rgba(255,251,125,0.2);
+            transform: scale(1.15);
+        }
+
         .player-color-dot {
             width: 12px;
             height: 12px;
@@ -496,8 +529,29 @@
             box-shadow: 0 0 16px rgba(255,107,157,0.12);
         }
         .score-chip .dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 6px currentColor; }
+        .score-chip .savatar { font-size: 1rem; line-height: 1; }
         .score-chip .sname { font-weight: 600; color: rgba(255,255,255,0.85); }
         .score-chip .sval { color: #fffb7d; font-weight: 800; }
+
+        /* Streak / On Fire badge */
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.12);
+            border: 1px solid rgba(255,107,107,0.25);
+            border-radius: 8px;
+            padding: 2px 6px;
+            margin-left: 2px;
+            animation: streakGlow 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes streakGlow {
+            0% { box-shadow: 0 0 4px rgba(255,107,107,0.2); text-shadow: 0 0 4px rgba(255,107,107,0.3); }
+            100% { box-shadow: 0 0 12px rgba(255,107,107,0.5); text-shadow: 0 0 8px rgba(255,107,107,0.6); }
+        }
 
         /* Score finalize animation */
         .score-chip.score-finalized .sval {
@@ -518,11 +572,19 @@
             max-width: 680px;
             flex-wrap: wrap;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            perspective: 600px;
         }
 
         .box-area.transitioning {
             opacity: 0;
             transform: translateY(8px);
+        }
+
+        .tile-wrapper {
+            width: 48px;
+            height: 58px;
+            perspective: 400px;
+            position: relative;
         }
 
         .tile {
@@ -540,6 +602,33 @@
             background: rgba(255,255,255,0.06);
             color: rgba(255,255,255,0.9);
             position: relative;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .tile-back {
+            position: absolute;
+            top: 0; left: 0;
+            width: 48px;
+            height: 58px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #2a1a3e, #1a0e2e);
+            border: 1.5px solid rgba(255,255,255,0.06);
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tile-back::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.05);
+            transform: rotate(45deg);
         }
 
         .tile:hover:not(.shut):not(.disabled) {
@@ -578,27 +667,43 @@
         }
 
         .tile.closing {
-            animation: tileClose 0.45s ease-in forwards;
+            animation: tileFlipClose 0.55s ease-in-out forwards;
             pointer-events: none;
         }
 
-        @keyframes tileClose {
-            0% { transform: translateY(-5px) scale(1.05); opacity: 1; border-color: #6ee7a0; background: rgba(110,231,160,0.25); }
-            40% { transform: scale(1.12); opacity: 1; }
-            100% { transform: scale(0.85) translateY(2px); opacity: 0.4; border-color: rgba(255,255,255,0.04); background: rgba(255,255,255,0.015); }
+        @keyframes tileFlipClose {
+            0% { transform: rotateY(0deg) scale(1.05); border-color: #6ee7a0; background: rgba(110,231,160,0.25); }
+            40% { transform: rotateY(90deg) scale(1.08); }
+            100% { transform: rotateY(180deg) scale(0.95); opacity: 0.5; border-color: rgba(255,255,255,0.04); background: rgba(255,255,255,0.015); }
         }
 
         .tile.shut {
+            transform: rotateY(180deg) scale(0.95);
             background: rgba(255,255,255,0.015);
             border-color: rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0);
             cursor: default;
-            transform: scale(0.92);
+            opacity: 0.5;
         }
 
-        .tile.shut span { text-decoration: line-through; }
+        /* shut tile text hidden by color:transparent, no line-through needed */
 
         .tile.disabled { cursor: default; opacity: 0.45; }
+
+        /* Particle burst */
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 80;
+            animation: particleFly 0.7s ease-out forwards;
+        }
+        @keyframes particleFly {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.2); }
+        }
 
         /* Confetti canvas */
         #confetti-canvas {
@@ -618,6 +723,52 @@
             0% { transform: scale(0.3); opacity: 0; }
             60% { transform: scale(1.15); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Gold flash overlay for perfect Shut The Box */
+        .gold-flash {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255,215,0,0.5) 0%, rgba(255,180,50,0.2) 50%, transparent 80%);
+            z-index: 95;
+            pointer-events: none;
+            animation: goldFlash 1.2s ease-out forwards;
+        }
+        @keyframes goldFlash {
+            0% { opacity: 0; transform: scale(0.5); }
+            20% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        .stb-banner {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 96;
+            text-align: center;
+            pointer-events: none;
+            animation: stbBannerPop 0.8s 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes stbBannerPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            60% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .stb-banner-text {
+            font-size: 2.4rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffd700, #ffaa00, #fffb7d, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 16px rgba(255,215,0,0.5));
+            text-shadow: none;
+        }
+        .stb-banner-sub {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 6px;
+            font-weight: 600;
         }
 
         /* Dice total badge */
@@ -823,6 +974,28 @@
         .selection-info .target { color: #fffb7d; font-weight: 700; }
         .selection-info .match { color: #6ee7a0; font-weight: 700; font-size: 1em; }
 
+        /* Undo button */
+        .undo-btn {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 4px 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.6);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            vertical-align: middle;
+        }
+        .undo-btn:hover {
+            border-color: rgba(233,69,96,0.4);
+            color: #e94560;
+            background: rgba(233,69,96,0.08);
+        }
+
         .message-area {
             text-align: center;
             min-height: 2em;
@@ -910,7 +1083,7 @@
             box-shadow: 0 8px 32px rgba(233,69,96,0.4);
         }
 
-        .new-game-btn {
+        .new-game-btn, .rematch-btn {
             display: block; width: 100%; padding: 13px;
             border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px;
             background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.6);
@@ -918,10 +1091,20 @@
             cursor: pointer; transition: all 0.2s;
         }
 
-        .new-game-btn:hover {
+        .new-game-btn:hover, .rematch-btn:hover {
             border-color: rgba(255,107,157,0.4);
             color: #fff;
             background: rgba(255,107,157,0.06);
+        }
+
+        .rematch-btn {
+            margin-bottom: 8px;
+            border-color: rgba(72,219,251,0.2);
+        }
+        .rematch-btn:hover {
+            border-color: rgba(72,219,251,0.5);
+            background: rgba(72,219,251,0.06);
+            color: #48dbfb;
         }
 
         /* ====== Rounds selector ====== */
@@ -1075,6 +1258,86 @@
         .rules-panel ul { padding-left: 20px; margin-bottom: 10px; }
         .rules-panel li { margin-bottom: 4px; }
 
+        /* ====== Timer Bar ====== */
+        .timer-bar-container {
+            width: 100%;
+            max-width: 600px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.06);
+            margin: 8px auto 4px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .timer-bar-container.active { opacity: 1; }
+        .timer-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #48dbfb, #6ee7a0);
+            transition: width 0.1s linear;
+            width: 100%;
+        }
+        .timer-bar.warning { background: linear-gradient(90deg, #feca57, #ff6b6b); }
+        .timer-bar.critical { background: linear-gradient(90deg, #ff6b6b, #e94560); }
+
+        /* Speed mode toggle on setup */
+        .speed-mode-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+            margin-bottom: 4px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .speed-mode-row:hover { background: rgba(255,255,255,0.05); }
+        .speed-mode-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            flex: 1;
+        }
+        .speed-mode-label small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 2px;
+        }
+        .toggle-switch {
+            width: 40px;
+            height: 22px;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            transition: all 0.25s;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.25s;
+        }
+        .toggle-switch.on {
+            background: linear-gradient(135deg, #48dbfb, #27ae60);
+            border-color: rgba(72,219,251,0.4);
+        }
+        .toggle-switch.on::after {
+            left: 20px;
+            background: #fff;
+        }
+
         /* ====== AI thinking ====== */
         .ai-thinking {
             display: inline-flex; align-items: center; gap: 7px;
@@ -1098,7 +1361,9 @@
         @media (max-width: 520px) {
             .setup-title { font-size: 2rem; }
             .setup-box { padding: 22px 18px; }
+            .tile-wrapper { width: 42px; height: 50px; }
             .tile { width: 42px; height: 50px; font-size: 1.05rem; border-radius: 10px; }
+            .tile-back { width: 42px; height: 50px; border-radius: 10px; }
             .box-area { gap: 4px; }
             .dice-row { padding: 18px 24px; min-height: 100px; gap: 18px; }
             .die-scene { width: 58px; height: 58px; }
@@ -1119,7 +1384,9 @@
 
         @media (max-width: 380px) {
             .setup-title { font-size: 1.7rem; }
+            .tile-wrapper { width: 38px; height: 46px; }
             .tile { width: 38px; height: 46px; font-size: 0.95rem; }
+            .tile-back { width: 38px; height: 46px; }
             .game-header h1 { font-size: 1.3rem; }
         }
 
@@ -1142,6 +1409,210 @@
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
         }
 
+        /* ====== Theme Toggle Button ====== */
+        .theme-btn {
+            position: fixed;
+            top: 12px;
+            right: 58px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.6);
+            color: rgba(255,255,255,0.7);
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+        .theme-btn:hover {
+            border-color: rgba(255,107,157,0.4);
+            color: #fff;
+            background: rgba(255,107,157,0.1);
+        }
+
+        /* ====== Light Theme ====== */
+        body.light-theme {
+            background: #f5ead6;
+            color: #3a2a14;
+        }
+        body.light-theme::before {
+            background: radial-gradient(circle, rgba(200,160,100,0.15) 0%, transparent 70%);
+        }
+        body.light-theme::after {
+            background: radial-gradient(circle, rgba(180,120,60,0.1) 0%, transparent 70%);
+        }
+        body.light-theme .mute-btn,
+        body.light-theme .theme-btn {
+            background: rgba(255,255,255,0.7);
+            border-color: rgba(0,0,0,0.12);
+            color: #5a4a3a;
+        }
+        body.light-theme .back-btn {
+            background: rgba(255,255,255,0.7);
+            border-color: rgba(0,0,0,0.12);
+            color: #5a4a3a;
+        }
+        body.light-theme .setup-box,
+        body.light-theme .results-box,
+        body.light-theme .round-summary-box {
+            background: rgba(255,255,255,0.6);
+            border-color: rgba(0,0,0,0.08);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        body.light-theme .setup-title {
+            background: linear-gradient(135deg, #8b4513, #a0522d, #cd853f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: none;
+        }
+        body.light-theme .setup-subtitle { color: rgba(0,0,0,0.45); }
+        body.light-theme .player-count-label,
+        body.light-theme .rounds-label { color: rgba(0,0,0,0.5); }
+        body.light-theme .count-btn {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.03);
+            color: rgba(0,0,0,0.6);
+        }
+        body.light-theme .count-btn.active {
+            border-color: #8b4513;
+            background: linear-gradient(135deg, rgba(139,69,19,0.15), rgba(160,82,45,0.1));
+            color: #5a3010;
+        }
+        body.light-theme .player-config {
+            background: rgba(0,0,0,0.03);
+            border-color: rgba(0,0,0,0.06);
+        }
+        body.light-theme .player-config input[type="text"] {
+            background: rgba(255,255,255,0.7);
+            border-color: rgba(0,0,0,0.12);
+            color: #3a2a14;
+        }
+        body.light-theme .player-config input[type="text"]::placeholder { color: rgba(0,0,0,0.3); }
+        body.light-theme .type-toggle {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.03);
+        }
+        body.light-theme .type-toggle button {
+            color: rgba(0,0,0,0.4);
+        }
+        body.light-theme .tile {
+            background: linear-gradient(145deg, #e8d5b5, #d4bc96);
+            border-color: rgba(139,69,19,0.25);
+            color: #3a2a14;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        body.light-theme .tile-back {
+            background: linear-gradient(145deg, #8b6f4e, #6b5030);
+            border-color: rgba(0,0,0,0.15);
+        }
+        body.light-theme .tile-back::after {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            border-color: rgba(255,255,255,0.1);
+        }
+        body.light-theme .tile:hover:not(.shut):not(.disabled) {
+            border-color: rgba(139,69,19,0.5);
+            background: linear-gradient(145deg, #f0dfc0, #e0c8a0);
+            box-shadow: 0 6px 16px rgba(139,69,19,0.15);
+        }
+        body.light-theme .tile.selected {
+            border-color: #2980b9;
+            background: linear-gradient(135deg, rgba(41,128,185,0.15), rgba(41,128,185,0.08));
+            color: #2c3e50;
+        }
+        body.light-theme .tile.shut {
+            background: linear-gradient(145deg, #8b6f4e, #6b5030);
+            border-color: rgba(0,0,0,0.1);
+            color: transparent;
+            opacity: 0.6;
+        }
+        body.light-theme .game-header h1 {
+            background: linear-gradient(135deg, #8b4513, #a0522d, #cd853f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-theme .turn-indicator { color: rgba(0,0,0,0.5); }
+        body.light-theme .score-chip {
+            background: rgba(255,255,255,0.5);
+            border-color: rgba(0,0,0,0.08);
+        }
+        body.light-theme .score-chip .sname { color: #3a2a14; }
+        body.light-theme .score-chip .sval { color: #8b4513; }
+        body.light-theme .score-chip.active {
+            border-color: rgba(139,69,19,0.4);
+            background: rgba(255,248,230,0.8);
+        }
+        body.light-theme .selection-info { color: rgba(0,0,0,0.5); }
+        body.light-theme .message-area { color: #8b4513; }
+        body.light-theme .action-btn { color: #fff; }
+        body.light-theme .rules-panel {
+            background: rgba(255,255,255,0.5);
+            border-color: rgba(0,0,0,0.06);
+            color: rgba(0,0,0,0.6);
+        }
+        body.light-theme .rules-panel h3 { color: #8b4513; }
+        body.light-theme .turn-banner-inner {
+            background: rgba(255,255,255,0.9);
+            border-color: rgba(0,0,0,0.08);
+        }
+        body.light-theme .turn-banner-sub { color: rgba(0,0,0,0.4); }
+        body.light-theme .speed-mode-row {
+            background: rgba(0,0,0,0.03);
+            border-color: rgba(0,0,0,0.06);
+        }
+        body.light-theme .speed-mode-label { color: rgba(0,0,0,0.6); }
+        body.light-theme .speed-mode-label small { color: rgba(0,0,0,0.35); }
+        body.light-theme .timer-bar-container { background: rgba(0,0,0,0.08); }
+        body.light-theme .undo-btn {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.5);
+        }
+        body.light-theme .final-scores li {
+            background: rgba(0,0,0,0.03);
+            border-color: rgba(0,0,0,0.04);
+        }
+        body.light-theme .final-scores .fname { color: #3a2a14; }
+        body.light-theme .final-scores .rank { color: rgba(0,0,0,0.4); }
+        body.light-theme .final-scores .fscore { color: #8b4513; }
+        body.light-theme .new-game-btn {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.03);
+            color: rgba(0,0,0,0.6);
+        }
+        body.light-theme .round-table td { color: #3a2a14; border-bottom-color: rgba(0,0,0,0.04); }
+        body.light-theme .round-table th { color: rgba(0,0,0,0.45); border-bottom-color: rgba(0,0,0,0.08); }
+        body.light-theme .round-table .rt-total { color: #8b4513; }
+        body.light-theme .stats-panel { background: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.06); }
+        body.light-theme .stats-table td { color: rgba(0,0,0,0.6); border-bottom-color: rgba(0,0,0,0.04); }
+        body.light-theme .stats-table th { color: rgba(0,0,0,0.4); border-bottom-color: rgba(0,0,0,0.08); }
+        body.light-theme .results-box h2 {
+            background: linear-gradient(135deg, #8b4513, #a0522d, #cd853f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-theme .winner-name { color: #8b4513; }
+        body.light-theme .round-summary-box h2 {
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-theme .round-summary-box .rs-subtitle { color: rgba(0,0,0,0.4); }
+        body.light-theme .dice-total-badge {
+            background: linear-gradient(135deg, rgba(139,69,19,0.15), rgba(160,82,45,0.1));
+            border-color: rgba(139,69,19,0.4);
+            color: #8b4513;
+        }
+        body.light-theme .rematch-btn {
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.03);
+            color: rgba(0,0,0,0.6);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .die-cube, .die-shadow { transition: none !important; }
             .tile, .action-btn, .game-card, .count-btn, .start-btn { transition: none; }
@@ -1151,6 +1622,11 @@
 </head>
 <body>
 <a href="../" class="back-btn">&#x1F3E0; Menu</a>
+
+<!-- Theme Toggle -->
+<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <span id="theme-icon">&#x2600;&#xFE0F;</span>
+</button>
 
 <!-- Mute Toggle -->
 <button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Toggle sound">
@@ -1178,6 +1654,14 @@
 
         <div class="rounds-label">Number of Rounds</div>
         <div class="rounds-row" id="rounds-row"></div>
+
+        <div class="speed-mode-row" id="speed-mode-row" onclick="toggleSpeedMode()">
+            <div class="speed-mode-label">
+                Speed Mode
+                <small>15-second timer per move for humans</small>
+            </div>
+            <div class="toggle-switch" id="speed-mode-toggle"></div>
+        </div>
 
         <button class="start-btn" onclick="startGame()">Start Game</button>
     </div>
@@ -1214,6 +1698,9 @@
     </div>
 
     <div class="scoreboard" id="scoreboard"></div>
+    <div class="timer-bar-container" id="timer-bar-container">
+        <div class="timer-bar" id="timer-bar"></div>
+    </div>
     <div class="box-area" id="box-area"></div>
     <div class="selection-info" id="selection-info"></div>
 
@@ -1268,6 +1755,8 @@ const PLAYER_COLORS = ['#e94560', '#48dbfb', '#27ae60', '#feca57'];
 const AI_DELAY = 800;
 const THROW_DURATION = 1400;
 const ROUND_OPTIONS = [1, 3, 5, 7];
+const EMOJI_OPTIONS = ['\u2744\uFE0F', '\u2B50', '\uD83D\uDC51', '\u26A1', '\u2764\uFE0F', '\uD83D\uDD25'];
+let playerEmojis = {}; // index -> emoji
 
 const FACE_ROT = {
     1: { x: 0, y: 0 },    2: { x: -90, y: 0 },
@@ -1295,6 +1784,10 @@ let playerCount = 2;
 let rolling = false;
 let totalRounds = 1;
 let currentRound = 0;
+let speedMode = false;
+let turnTimerId = null;
+let turnTimerStart = 0;
+const TURN_TIMER_SECONDS = 15;
 
 /* =============== SOUND FX (Web Audio API) =============== */
 
@@ -1309,6 +1802,13 @@ function ensureAudioCtx() {
         audioCtx.resume();
     }
     return audioCtx;
+}
+
+let darkTheme = true;
+function toggleTheme() {
+    darkTheme = !darkTheme;
+    document.body.classList.toggle('light-theme', !darkTheme);
+    document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
 }
 
 function toggleMute() {
@@ -1436,6 +1936,67 @@ function playTurnChime() {
     gain.connect(ctx.destination);
     osc.start();
     osc.stop(ctx.currentTime + 0.3);
+}
+
+/* =============== SPEED MODE / TURN TIMER =============== */
+
+function toggleSpeedMode() {
+    speedMode = !speedMode;
+    document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
+}
+
+function startTurnTimer() {
+    clearTurnTimer();
+    const cp = players[currentPlayerIdx];
+    if (!speedMode || cp.isAI || phase === 'gameover') return;
+
+    const container = document.getElementById('timer-bar-container');
+    const bar = document.getElementById('timer-bar');
+    container.classList.add('active');
+    bar.style.width = '100%';
+    bar.className = 'timer-bar';
+
+    turnTimerStart = Date.now();
+    turnTimerId = setInterval(() => {
+        const elapsed = (Date.now() - turnTimerStart) / 1000;
+        const remaining = Math.max(0, TURN_TIMER_SECONDS - elapsed);
+        const pct = (remaining / TURN_TIMER_SECONDS) * 100;
+        bar.style.width = pct + '%';
+
+        if (pct < 20) bar.className = 'timer-bar critical';
+        else if (pct < 40) bar.className = 'timer-bar warning';
+        else bar.className = 'timer-bar';
+
+        if (remaining <= 0) {
+            clearTurnTimer();
+            timerExpired();
+        }
+    }, 50);
+}
+
+function clearTurnTimer() {
+    if (turnTimerId) {
+        clearInterval(turnTimerId);
+        turnTimerId = null;
+    }
+    const container = document.getElementById('timer-bar-container');
+    if (container) container.classList.remove('active');
+}
+
+function timerExpired() {
+    const cp = players[currentPlayerIdx];
+    if (cp.done || cp.isAI) return;
+    // Auto-end turn
+    cp.score = sumOpen(cp);
+    cp.done = true;
+    selectedTiles.clear();
+    validTileSet.clear();
+    playErrorTone();
+    setMessage(`Time's up! ${esc(cp.name)} scores <strong>${cp.score}</strong>.`);
+    renderScoreboard();
+    animateScoreFinalize(currentPlayerIdx);
+    updateButtons();
+    setTimeout(() => nextPlayer(), 1800);
 }
 
 /* =============== PERSISTENT GAME STATISTICS =============== */
@@ -1651,8 +2212,29 @@ function renderPlayerConfigs() {
             diffRow.classList.add('visible');
         };
 
+        // Emoji picker
+        const emojiPicker = document.createElement('div');
+        emojiPicker.className = 'emoji-picker';
+        emojiPicker.id = `emoji-picker-${i}`;
+        EMOJI_OPTIONS.forEach(em => {
+            const eb = document.createElement('button');
+            eb.className = 'emoji-pick-btn' + (playerEmojis[i] === em ? ' active' : '');
+            eb.textContent = em;
+            eb.type = 'button';
+            eb.onclick = () => {
+                if (playerEmojis[i] === em) {
+                    delete playerEmojis[i];
+                } else {
+                    playerEmojis[i] = em;
+                }
+                emojiPicker.querySelectorAll('.emoji-pick-btn').forEach(b => b.classList.remove('active'));
+                if (playerEmojis[i]) eb.classList.add('active');
+            };
+            emojiPicker.appendChild(eb);
+        });
+
         toggle.append(hBtn, aBtn);
-        div.append(dot, input, toggle, diffRow);
+        div.append(dot, input, emojiPicker, toggle, diffRow);
         c.appendChild(div);
     }
 }
@@ -1684,7 +2266,9 @@ function startGame() {
             name, isAI, color: PLAYER_COLORS[i],
             shutTiles: new Set(), score: null, done: false,
             roundScores: [],
-            aiDifficulty
+            aiDifficulty,
+            emoji: playerEmojis[i] || null,
+            turnStreak: 0
         });
     }
     currentRound = 0;
@@ -1749,9 +2333,15 @@ function renderScoreboard() {
             const total = prevTotal + (thisRound !== null ? thisRound : 0);
             display = thisRound !== null ? total : (prevTotal > 0 ? prevTotal : '--');
         }
+        const avatarHtml = p.emoji
+            ? `<span class="savatar">${p.emoji}</span>`
+            : `<div class="dot" style="background:${p.color}"></div>`;
+        const streakHtml = (p.turnStreak >= 3 && i === currentPlayerIdx && !p.done)
+            ? `<span class="streak-badge">On Fire!</span>`
+            : '';
         return `<div class="score-chip ${i === currentPlayerIdx ? 'active' : ''}" id="score-chip-${i}">
-            <div class="dot" style="background:${p.color}"></div>
-            <span class="sname">${esc(p.name)}</span>
+            ${avatarHtml}
+            <span class="sname">${esc(p.name)}${streakHtml}</span>
             <span class="sval">${display}</span></div>`;
     }).join('');
 }
@@ -1770,6 +2360,10 @@ function renderTiles() {
     const canSelect = phase === 'select' && !cp.isAI && !autoConfirming;
     area.innerHTML = '';
     for (let t = 1; t <= TILES; t++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'tile-wrapper';
+        wrapper.style.cssText = 'transform-style:preserve-3d;';
+
         const tile = document.createElement('div');
         const shut = cp.shutTiles.has(t);
         const sel = selectedTiles.has(t);
@@ -1779,7 +2373,12 @@ function renderTiles() {
             + (!canSelect || shut ? ' disabled' : '');
         tile.textContent = t;
         if (canSelect && !shut) tile.onclick = () => toggleTile(t);
-        area.appendChild(tile);
+
+        const back = document.createElement('div');
+        back.className = 'tile-back';
+
+        wrapper.append(tile, back);
+        area.appendChild(wrapper);
     }
 }
 
@@ -1927,15 +2526,23 @@ function updateButtons() {
     rollBtn.disabled = (phase !== 'roll' || rolling);
 }
 
+function undoTileSelection() {
+    if (phase !== 'select' || autoConfirming) return;
+    selectedTiles.clear();
+    renderTiles();
+    updateSelectionInfo();
+}
+
 function updateSelectionInfo() {
     const info = document.getElementById('selection-info');
     if (phase !== 'select' || players[currentPlayerIdx].isAI) { info.innerHTML = ''; return; }
 
     const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
+    const undoHtml = selectedTiles.size > 0 ? ` <button class="undo-btn" onclick="undoTileSelection()">Undo</button>` : '';
     if (selectedTiles.size === 0) {
         info.innerHTML = `Tap tiles that add up to <span class="dice-total-badge">${diceTotal}</span>`;
     } else if (selSum < diceTotal) {
-        info.innerHTML = `<span class="sum">${selSum}</span> / <span class="target">${diceTotal}</span>`;
+        info.innerHTML = `<span class="sum">${selSum}</span> / <span class="target">${diceTotal}</span>${undoHtml}`;
     }
 }
 
@@ -2010,15 +2617,100 @@ function launchConfetti(duration) {
     requestAnimationFrame(frame);
 }
 
+/* =============== SHUT THE BOX CELEBRATION =============== */
+
+function playPerfectFanfare() {
+    if (soundMuted) return;
+    const ctx = ensureAudioCtx();
+    // Triumphant ascending chord progression
+    const notes = [392, 440, 523.25, 659.25, 783.99, 1046.5]; // G4 A4 C5 E5 G5 C6
+    const startTimes = [0, 0.08, 0.16, 0.28, 0.40, 0.55];
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+
+        const noteGain = ctx.createGain();
+        noteGain.gain.setValueAtTime(0, ctx.currentTime + startTimes[i]);
+        noteGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTimes[i] + 0.04);
+        noteGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTimes[i] + 0.9);
+
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = freq * 2;
+        const osc2Gain = ctx.createGain();
+        osc2Gain.gain.setValueAtTime(0, ctx.currentTime + startTimes[i]);
+        osc2Gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + startTimes[i] + 0.04);
+        osc2Gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTimes[i] + 0.7);
+
+        osc.connect(noteGain);
+        noteGain.connect(gain);
+        osc.start(ctx.currentTime + startTimes[i]);
+        osc.stop(ctx.currentTime + startTimes[i] + 1.0);
+
+        osc2.connect(osc2Gain);
+        osc2Gain.connect(gain);
+        osc2.start(ctx.currentTime + startTimes[i]);
+        osc2.stop(ctx.currentTime + startTimes[i] + 0.8);
+    });
+}
+
+function triggerShutTheBoxCelebration() {
+    playPerfectFanfare();
+
+    // Gold flash overlay
+    const flash = document.createElement('div');
+    flash.className = 'gold-flash';
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 1300);
+
+    // Big STB banner
+    const banner = document.createElement('div');
+    banner.className = 'stb-banner';
+    banner.innerHTML = `<div class="stb-banner-text">SHUT THE BOX!</div>
+        <div class="stb-banner-sub">Perfect Round!</div>`;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 3000);
+
+    // Large confetti burst
+    launchConfetti(4000);
+
+    setMessage('');
+}
+
+/* =============== PARTICLE BURST =============== */
+
+function spawnParticleBurst(tileEl, color) {
+    const rect = tileEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const count = 12;
+
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
+        const dist = 30 + Math.random() * 40;
+        const px = Math.cos(angle) * dist;
+        const py = Math.sin(angle) * dist;
+        p.style.cssText = `left:${cx}px;top:${cy}px;background:${color};--px:${px}px;--py:${py}px;width:${4 + Math.random()*4}px;height:${4 + Math.random()*4}px;`;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 750);
+    }
+}
+
 /* =============== TURN BANNER (Animated Transition) =============== */
 
-function showTurnBanner(playerName, playerColor, subtitle) {
+function showTurnBanner(playerName, playerColor, subtitle, playerEmoji) {
     return new Promise(resolve => {
         const banner = document.getElementById('turn-banner');
         const nameEl = document.getElementById('turn-banner-name');
         const subEl = document.getElementById('turn-banner-sub');
 
-        nameEl.textContent = playerName;
+        nameEl.textContent = (playerEmoji ? playerEmoji + ' ' : '') + playerName;
         nameEl.style.color = playerColor;
         subEl.textContent = subtitle || "Your turn";
 
@@ -2093,6 +2785,7 @@ async function beginTurn() {
     selectedTiles.clear();
     validTileSet.clear();
     rolling = false;
+    cp.turnStreak = 0;
 
     // Play turn transition chime
     playTurnChime();
@@ -2103,10 +2796,10 @@ async function beginTurn() {
 
     // Show turn banner
     const subtitle = cp.isAI ? 'AI thinking...' : 'Your turn';
-    await showTurnBanner(cp.name, cp.color, subtitle);
+    await showTurnBanner(cp.name, cp.color, subtitle, cp.emoji);
 
     // Finish tile transition
-    setTurnIndicator(`<span class="player-name-highlight" style="color:${cp.color}">${esc(cp.name)}</span>'s turn`);
+    setTurnIndicator(`<span class="player-name-highlight" style="color:${cp.color}">${cp.emoji ? cp.emoji + ' ' : ''}${esc(cp.name)}</span>'s turn`);
     setMessage('');
     renderAll();
     area.offsetHeight;
@@ -2115,11 +2808,14 @@ async function beginTurn() {
     if (cp.isAI) {
         setMessage(`<span class="ai-thinking">${esc(cp.name)} is thinking<span class="dots"><span></span><span></span><span></span></span></span>`);
         setTimeout(() => aiRoll(), AI_DELAY);
+    } else {
+        startTurnTimer();
     }
 }
 
 async function rollDice() {
     if (phase !== 'roll' || rolling) return;
+    clearTurnTimer();
     rolling = true;
     updateButtons();
 
@@ -2161,6 +2857,7 @@ function afterRoll(cp) {
         renderTiles();
         updateButtons();
         updateSelectionInfo();
+        startTurnTimer();
     }
 }
 
@@ -2173,8 +2870,7 @@ function toggleTile(t) {
 
     if (selSum > diceTotal) {
         selectedTiles.delete(t);
-        const tiles = document.querySelectorAll('.tile');
-        const tileEl = tiles[t - 1];
+        const tileEl = getTileEl(t);
         if (tileEl) {
             tileEl.style.borderColor = 'rgba(233,69,96,0.6)';
             tileEl.style.boxShadow = '0 0 12px rgba(233,69,96,0.3)';
@@ -2187,8 +2883,13 @@ function toggleTile(t) {
     updateSelectionInfo();
 
     if (selSum === diceTotal && selectedTiles.size > 0) {
+        clearTurnTimer();
         autoConfirmSelection();
     }
+}
+
+function getTileEl(t) {
+    return document.querySelector(`.tile-wrapper:nth-child(${t}) .tile`);
 }
 
 function autoConfirmSelection() {
@@ -2197,9 +2898,8 @@ function autoConfirmSelection() {
     const tilesToClose = [...selectedTiles];
 
     // Show matched state briefly
-    const tileEls = document.querySelectorAll('.tile');
     tilesToClose.forEach(t => {
-        const el = tileEls[t - 1];
+        const el = getTileEl(t);
         if (el) {
             el.classList.remove('selected');
             el.classList.add('matched');
@@ -2211,10 +2911,12 @@ function autoConfirmSelection() {
     // After brief matched state, animate closing
     setTimeout(() => {
         tilesToClose.forEach(t => {
-            const el = tileEls[t - 1];
+            const el = getTileEl(t);
             if (el) {
                 el.classList.remove('matched');
                 el.classList.add('closing');
+                // Spawn particle burst from tile position
+                spawnParticleBurst(el, cp.color);
             }
         });
 
@@ -2222,6 +2924,10 @@ function autoConfirmSelection() {
         tilesToClose.forEach((t, i) => {
             setTimeout(() => playTileClack(), i * 60);
         });
+
+        // Track streak
+        if (!cp.turnStreak) cp.turnStreak = 0;
+        cp.turnStreak += tilesToClose.length;
 
         // After close animation, update game state
         setTimeout(() => {
@@ -2233,12 +2939,10 @@ function autoConfirmSelection() {
             if (cp.shutTiles.size === TILES) {
                 cp.score = 0;
                 cp.done = true;
-                playFanfare();
-                setMessage(`<span class="celebrate-text"><strong style="color:#fffb7d">SHUT THE BOX!</strong></span>`);
-                launchConfetti(3000);
+                triggerShutTheBoxCelebration();
                 renderAll();
                 animateScoreFinalize(currentPlayerIdx);
-                setTimeout(() => nextPlayer(), 2500);
+                setTimeout(() => nextPlayer(), 3200);
                 return;
             }
 
@@ -2248,11 +2952,13 @@ function autoConfirmSelection() {
             renderScoreboard();
             updateButtons();
             updateSelectionInfo();
+            startTurnTimer();
         }, 400);
     }, 250);
 }
 
 function nextPlayer() {
+    clearTurnTimer();
     if (players.every(p => p.done)) {
         endRound();
         return;
@@ -2395,7 +3101,7 @@ function showRoundSummary() {
         const total = p.roundScores.reduce((a, b) => a + b, 0);
         const isLeader = total === bestTotal;
         html += `<tr class="${isLeader ? 'rt-leader' : ''}">`;
-        html += `<td style="color:${p.color}">${esc(p.name)}</td>`;
+        html += `<td style="color:${p.color}">${p.emoji ? p.emoji + ' ' : ''}${esc(p.name)}</td>`;
         for (let r = 0; r <= currentRound; r++) {
             const s = p.roundScores[r];
             const isBest = s === bestThisRound && r === currentRound;
@@ -2443,9 +3149,9 @@ function endGame() {
     let html = `<h2>Game Over!</h2>`;
     if (isTie) {
         const tied = sorted.filter(p => p.total === winner.total);
-        html += `<div class="winner-name">Tie: ${tied.map(p => esc(p.name)).join(' & ')}</div>`;
+        html += `<div class="winner-name">Tie: ${tied.map(p => (p.emoji ? p.emoji + ' ' : '') + esc(p.name)).join(' & ')}</div>`;
     } else {
-        html += `<div class="winner-name" style="color:${winner.color}">${esc(winner.name)} Wins!</div>`;
+        html += `<div class="winner-name" style="color:${winner.color}">${winner.emoji ? winner.emoji + ' ' : ''}${esc(winner.name)} Wins!</div>`;
     }
 
     if (totalRounds > 1) {
@@ -2456,7 +3162,7 @@ function endGame() {
         sorted.forEach(p => {
             const isW = p.total === winner.total;
             html += `<tr class="${isW ? 'rt-leader' : ''}">`;
-            html += `<td style="color:${p.color}">${esc(p.name)}</td>`;
+            html += `<td style="color:${p.color}">${p.emoji ? p.emoji + ' ' : ''}${esc(p.name)}</td>`;
             for (let r = 0; r < totalRounds; r++) {
                 const s = p.roundScores[r];
                 html += `<td>${s}${s === 0 ? '!' : ''}</td>`;
@@ -2470,26 +3176,28 @@ function endGame() {
             const w = p.total === winner.total;
             html += `<li class="${w ? 'winner-row' : ''}">
                 <span class="rank">#${i + 1}</span>
-                <span class="fname" style="color:${p.color}">${esc(p.name)}</span>
+                <span class="fname" style="color:${p.color}">${p.emoji ? p.emoji + ' ' : ''}${esc(p.name)}</span>
                 <span class="fscore ${p.total === 0 ? 'perfect' : ''}">${p.total}${p.total === 0 ? ' (Perfect!)' : ''}</span></li>`;
         });
         html += `</ul>`;
     }
 
-    html += `<button class="play-again-btn" onclick="playAgain()">Play Again (Same Players)</button>
-             <button class="new-game-btn" onclick="newGame()">New Game</button>`;
+    html += `<button class="play-again-btn" onclick="rematch()">Rematch</button>
+             <button class="rematch-btn" onclick="newGame()">New Game (Setup)</button>`;
 
     document.getElementById('results-box').innerHTML = html;
     showScreen('game-over-screen');
     launchConfetti(2500);
 }
 
-function playAgain() {
+function rematch() {
+    // Restart with exact same players, settings, rounds
     players.forEach(p => {
         p.shutTiles = new Set();
         p.score = null;
         p.done = false;
         p.roundScores = [];
+        p.turnStreak = 0;
     });
     currentRound = 0;
     currentPlayerIdx = 0;
@@ -2499,11 +3207,15 @@ function playAgain() {
     selectedTiles.clear();
     validTileSet.clear();
     rolling = false;
+    clearTurnTimer();
 
     showScreen('game-screen');
     renderAll();
     beginTurn();
 }
+
+// Keep playAgain as alias for backward compatibility
+function playAgain() { rematch(); }
 
 function newGame() {
     showScreen('setup-screen');

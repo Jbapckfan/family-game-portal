@@ -1155,8 +1155,10 @@
                 <button class="btn btn-ability" id="ability3" title="Gold Rush (E)">💎<span class="hotkey">E</span></button>
                 <button class="btn btn-primary" id="buildBtn">🏗️ BUILD</button>
                 <button class="btn btn-success" id="startBtn">▶ START</button>
+                <button class="btn btn-success" id="earlySendBtn" style="display:none; background: linear-gradient(135deg, #8a6d00 0%, #c9a800 100%); border-color: var(--neon-yellow);">⏩ EARLY SEND</button>
                 <button class="btn btn-primary" id="speedBtn">⚡1X</button>
                 <button class="btn btn-pause" id="pauseBtn" title="Pause (P)">⏸️</button>
+                <button class="btn btn-mute" id="gridBtn" title="Toggle Grid (G)" style="border-color: var(--neon-green); color: var(--neon-green);">▦</button>
                 <button class="btn btn-mute" id="muteBtn" title="Toggle Sound (M)">🔊</button>
                 <div class="resource trophy">
                     <span class="icon">🏆</span>
@@ -1332,6 +1334,12 @@ const G = {
 };
 
 const mouse = { x: 0, y: 0, down: false };
+
+// Tower range preview state (for hovering over build menu cards)
+let hoverPreviewType = null;
+
+// Grid overlay toggle
+let showGrid = false;
 
 // Entity arrays
 let towers = [], enemies = [], projectiles = [], particles = [];
@@ -1730,6 +1738,79 @@ const SPECIALIZATIONS = {
     ]
 };
 
+// ═══════════════════════════════════════════════════════════════
+// TOWER SYNERGY DEFINITIONS
+// ═══════════════════════════════════════════════════════════════
+const SYNERGIES = [
+    { types: ['frost', 'pulse'], name: 'Cryo Boost', desc: '+20% fire rate', icon: '🧊⚡',
+      apply: (t) => { if (t.type === 'pulse') t.rate *= 1.2; if (t.type === 'frost') t.special.slowDur = Math.floor((t.special.slowDur || 120) * 1.3); },
+      unapply: (t) => { if (t.type === 'pulse') t.rate /= 1.2; if (t.type === 'frost') t.special.slowDur = Math.floor((t.special.slowDur || 156) / 1.3); }
+    },
+    { types: ['frost', 'flame'], name: 'Thermal Shock', desc: '+25% damage', icon: '❄️🔥',
+      apply: (t) => { t.dmg = Math.floor(t.dmg * 1.25); },
+      unapply: (t) => { t.dmg = Math.floor(t.dmg / 1.25); }
+    },
+    { types: ['laser', 'tesla'], name: 'Energy Link', desc: '+15% range', icon: '⚡🌩️',
+      apply: (t) => { t.range = Math.floor(t.range * 1.15); },
+      unapply: (t) => { t.range = Math.floor(t.range / 1.15); }
+    },
+    { types: ['missile', 'sniper'], name: 'Fire Control', desc: '+20% damage', icon: '🚀🎯',
+      apply: (t) => { t.dmg = Math.floor(t.dmg * 1.2); },
+      unapply: (t) => { t.dmg = Math.floor(t.dmg / 1.2); }
+    },
+    { types: ['plasma', 'vortex'], name: 'Singularity', desc: '+30% splash radius', icon: '💎🌀',
+      apply: (t) => { if (t.special.splash) t.special.splash = Math.floor(t.special.splash * 1.3); if (t.special.pull) t.special.pull *= 1.3; },
+      unapply: (t) => { if (t.special.splash) t.special.splash = Math.floor(t.special.splash / 1.3); if (t.special.pull) t.special.pull /= 1.3; }
+    },
+    { types: ['quantum', 'omega'], name: 'Quantum Omega', desc: '+15% crit chance', icon: '⚛️🔱',
+      apply: (t) => { t.special.critChance = (t.special.critChance || 0) + 0.15; },
+      unapply: (t) => { t.special.critChance = Math.max(0, (t.special.critChance || 0.15) - 0.15); }
+    },
+    { types: ['scatter', 'flame'], name: 'Firestorm', desc: '+30% fire rate', icon: '💥🔥',
+      apply: (t) => { t.rate *= 1.3; },
+      unapply: (t) => { t.rate /= 1.3; }
+    }
+];
+
+const SYNERGY_RANGE = 120; // Max distance for synergy to activate
+
+function checkSynergies() {
+    // Clear all existing synergy buffs
+    towers.forEach(t => {
+        if (t.activeSynergies) {
+            t.activeSynergies.forEach(syn => syn.unapply(t));
+        }
+        t.activeSynergies = [];
+        t.synergyNames = [];
+    });
+
+    // Re-apply synergies
+    for (const syn of SYNERGIES) {
+        const typeA = syn.types[0], typeB = syn.types[1];
+        const towersA = towers.filter(t => t.type === typeA);
+        const towersB = towers.filter(t => t.type === typeB);
+
+        for (const tA of towersA) {
+            for (const tB of towersB) {
+                const d = dist(tA.x, tA.y, tB.x, tB.y);
+                if (d <= SYNERGY_RANGE) {
+                    // Apply synergy to both if not already applied for this pair
+                    if (!tA.synergyNames.includes(syn.name)) {
+                        syn.apply(tA);
+                        tA.activeSynergies.push(syn);
+                        tA.synergyNames.push(syn.name);
+                    }
+                    if (!tB.synergyNames.includes(syn.name)) {
+                        syn.apply(tB);
+                        tB.activeSynergies.push(syn);
+                        tB.synergyNames.push(syn.name);
+                    }
+                }
+            }
+        }
+    }
+}
+
 let pendingSpecTower = null;
 
 function showSpecDialog(tower) {
@@ -1918,6 +1999,20 @@ const ENEMY_ABILITIES = {
     boss: 'Extreme HP, 30 nexus damage', swarm: 'Tiny but numerous'
 };
 
+// Enemy damage type traits (resistance/vulnerability indicators)
+const ENEMY_TRAITS = {
+    scout:    { },
+    runner:   { resist: 'slow', resistIcon: '💨', resistColor: '#87ceeb', resistLabel: 'Slow Resist' },
+    soldier:  { vuln: 'energy', vulnIcon: '⚡', vulnColor: '#ffff44', vulnLabel: 'Energy Weak' },
+    heavy:    { resist: 'fire', resistIcon: '🛡️', resistColor: '#4488ff', resistLabel: 'Fire Resist' },
+    speeder:  { resist: 'slow', resistIcon: '💨', resistColor: '#ff44ff', resistLabel: 'Slow Immune' },
+    tank:     { resist: 'fire', resistIcon: '🛡️', resistColor: '#4488ff', resistLabel: 'Fire Resist' },
+    healer:   { vuln: 'fire', vulnIcon: '🔥', vulnColor: '#ff4400', vulnLabel: 'Fire Weak' },
+    splitter: { vuln: 'energy', vulnIcon: '⚡', vulnColor: '#ffff44', vulnLabel: 'Energy Weak' },
+    boss:     { resist: 'all', resistIcon: '🛡️', resistColor: '#ff0000', resistLabel: 'Armored' },
+    swarm:    { vuln: 'splash', vulnIcon: '💥', vulnColor: '#ff6b35', vulnLabel: 'Splash Weak' }
+};
+
 function generateBestiary() {
     const grid = document.getElementById('bestiaryGrid');
     grid.innerHTML = '';
@@ -1925,6 +2020,11 @@ function generateBestiary() {
     Object.entries(ENEMIES).forEach(([key, e]) => {
         const card = document.createElement('div');
         card.className = 'bestiary-card';
+        const trait = ENEMY_TRAITS[key] || {};
+        let traitText = '';
+        if (trait.resist) traitText += `<div style="color:${trait.resistColor};">${trait.resistIcon} ${trait.resistLabel}</div>`;
+        if (trait.vuln) traitText += `<div style="color:${trait.vulnColor};">${trait.vulnIcon} ${trait.vulnLabel}</div>`;
+
         card.innerHTML = `
             <div class="enemy-header">
                 <div class="enemy-icon" style="background:${e.color}30; border: 1px solid ${e.color};">${ENEMY_ICONS[key]}</div>
@@ -1934,6 +2034,7 @@ function generateBestiary() {
                 <div>HP: <strong>${e.hp}</strong></div>
                 <div>Speed: <strong>${e.spd}</strong></div>
                 <div>Reward: <strong>${e.reward}g</strong></div>
+                ${traitText}
             </div>
             <div class="enemy-ability">${ENEMY_ABILITIES[key]}</div>
         `;
@@ -2102,6 +2203,8 @@ function generateTowerCards() {
             <div class="cost">💰 ${t.cost}</div>
         `;
         card.onclick = () => selectTowerType(key);
+        card.addEventListener('mouseenter', () => { hoverPreviewType = key; });
+        card.addEventListener('mouseleave', () => { hoverPreviewType = null; });
         grid.appendChild(card);
     });
 }
@@ -2187,7 +2290,9 @@ class Tower {
             target: null,
             targeting: 'first',
             special: { ...t },
-            pulsePhase: Math.random() * Math.PI * 2
+            pulsePhase: Math.random() * Math.PI * 2,
+            activeSynergies: [],
+            synergyNames: []
         });
     }
 
@@ -2449,6 +2554,18 @@ class Tower {
         } else {
             ctx.fillText(`T${this.tier}`, x, y - CFG.TOWER_RADIUS - 8);
         }
+
+        // Synergy indicator
+        if (this.synergyNames && this.synergyNames.length > 0) {
+            ctx.save();
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '8px Orbitron';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 6;
+            ctx.fillText('★ ' + this.synergyNames[0], x, y + CFG.TOWER_RADIUS + 24);
+            ctx.restore();
+        }
     }
 
     upgrade() {
@@ -2629,20 +2746,51 @@ class Enemy {
         ctx.fillStyle = 'rgba(255,255,255,0.3)';
         ctx.fill();
 
-        // Health bar
+        // Health bar with armor indicator
         const barW = Math.max(size * 2.2, 20);
-        const barH = 4;
-        const barY = y - size - 10;
+        const barH = 5;
+        const barY = y - size - 12;
         const hpPct = this.hp / this.maxHp;
 
+        // Background
         ctx.fillStyle = '#111';
         ctx.fillRect(x - barW/2 - 1, barY - 1, barW + 2, barH + 2);
         ctx.fillStyle = '#222';
         ctx.fillRect(x - barW/2, barY, barW, barH);
 
+        // Armor portion (heavy, tank, soldier, boss have effective armor shown as blue overlay)
+        const armorTypes = ['heavy', 'tank', 'soldier', 'boss'];
+        const hasArmor = armorTypes.includes(this.type);
+        const armorPct = hasArmor ? Math.min(0.35, 0.15 + (this.type === 'tank' ? 0.2 : this.type === 'boss' ? 0.15 : 0.05)) : 0;
+        const effectiveArmorPct = Math.min(armorPct, hpPct);
+
+        // Main HP fill
         const hpColor = hpPct > 0.6 ? '#00ff44' : hpPct > 0.3 ? '#ffff00' : '#ff3333';
         ctx.fillStyle = hpColor;
         ctx.fillRect(x - barW/2, barY, barW * hpPct, barH);
+
+        // Armor overlay (blue portion at the leading edge of the HP bar)
+        if (hasArmor && effectiveArmorPct > 0) {
+            ctx.fillStyle = 'rgba(100, 180, 255, 0.7)';
+            const armorStartX = x - barW/2 + barW * (hpPct - effectiveArmorPct);
+            ctx.fillRect(armorStartX, barY, barW * effectiveArmorPct, barH);
+        }
+
+        // Segmented lines (every 25% of max HP)
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.lineWidth = 1;
+        for (let seg = 0.25; seg < 1; seg += 0.25) {
+            const segX = x - barW/2 + barW * seg;
+            ctx.beginPath();
+            ctx.moveTo(segX, barY);
+            ctx.lineTo(segX, barY + barH);
+            ctx.stroke();
+        }
+
+        // Thin border
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(x - barW/2, barY, barW, barH);
 
         // Boss label
         if (this.boss) {
@@ -2657,6 +2805,34 @@ class Enemy {
             ctx.fillStyle = '#44ff44';
             ctx.font = '10px Arial';
             ctx.fillText('✚', x, y + 3);
+        }
+
+        // Damage type trait indicator (resistance/vulnerability)
+        const trait = ENEMY_TRAITS[this.type];
+        if (trait) {
+            const indicatorY = barY - 3;
+            if (trait.resist) {
+                // Resistance: small shield icon to the right of health bar
+                ctx.save();
+                ctx.font = '8px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillStyle = trait.resistColor;
+                ctx.shadowColor = trait.resistColor;
+                ctx.shadowBlur = 4;
+                ctx.fillText(trait.resistIcon, x + barW/2 + 2, indicatorY);
+                ctx.restore();
+            }
+            if (trait.vuln) {
+                // Vulnerability: small icon to the left of health bar
+                ctx.save();
+                ctx.font = '8px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = trait.vulnColor;
+                ctx.shadowColor = trait.vulnColor;
+                ctx.shadowBlur = 4;
+                ctx.fillText(trait.vulnIcon, x - barW/2 - 10, indicatorY);
+                ctx.restore();
+            }
         }
     }
 
@@ -2879,6 +3055,10 @@ function draw() {
     drawParticles();
 
     if (G.placing) drawPlacementPreview();
+    if (showGrid) drawGridOverlay();
+    if (hoverPreviewType && document.getElementById('buildMenu').classList.contains('open')) {
+        drawHoverRangePreview();
+    }
 }
 
 function drawPath(map) {
@@ -3158,6 +3338,68 @@ function drawPlacementPreview() {
     ctx.fillText(t.icon, x, y);
 }
 
+function drawGridOverlay() {
+    const gridSize = CFG.TOWER_SPACING;
+    ctx.save();
+    ctx.globalAlpha = 0.3;
+
+    for (let gx = gridSize / 2; gx < canvas.width; gx += gridSize) {
+        for (let gy = gridSize / 2; gy < canvas.height; gy += gridSize) {
+            let valid = true;
+            // Check path clearance
+            for (let i = 0; i < path.length - 1; i++) {
+                if (distToSegment(gx, gy, path[i], path[i+1]) < CFG.PATH_CLEARANCE) {
+                    valid = false;
+                    break;
+                }
+            }
+            // Check existing towers
+            if (valid) {
+                for (const tw of towers) {
+                    if (dist(gx, gy, tw.x, tw.y) < CFG.TOWER_SPACING) {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+
+            ctx.fillStyle = valid ? 'rgba(0, 255, 100, 0.15)' : 'rgba(255, 50, 50, 0.08)';
+            ctx.fillRect(gx - gridSize/2 + 1, gy - gridSize/2 + 1, gridSize - 2, gridSize - 2);
+
+            if (valid) {
+                ctx.strokeStyle = 'rgba(0, 255, 100, 0.2)';
+                ctx.lineWidth = 0.5;
+                ctx.strokeRect(gx - gridSize/2 + 1, gy - gridSize/2 + 1, gridSize - 2, gridSize - 2);
+            }
+        }
+    }
+
+    ctx.restore();
+}
+
+function drawHoverRangePreview() {
+    const t = TOWERS[hoverPreviewType];
+    if (!t) return;
+    const x = mouse.x, y = mouse.y;
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    ctx.arc(x, y, t.range, 0, Math.PI * 2);
+    ctx.fillStyle = t.color + '30';
+    ctx.fill();
+    ctx.strokeStyle = t.color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Tower footprint
+    ctx.beginPath();
+    ctx.arc(x, y, CFG.TOWER_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = t.color + '50';
+    ctx.fill();
+    ctx.restore();
+}
+
 // ═══════════════════════════════════════════════════════════════
 // BACKGROUND ANIMATION
 // ═══════════════════════════════════════════════════════════════
@@ -3260,6 +3502,23 @@ function getWaveComp() {
     }
 
     return comp;
+}
+
+function earlySendWave() {
+    if (!G.running) return; // Must be mid-wave
+    // Can't early send if already on last subwave
+    if (G.subWave >= G.maxSubWaves) return;
+
+    // Gold bonus for early send: base 50 + wave * 10
+    const bonus = 50 + G.wave * 10;
+    G.gold += bonus;
+    G.score += bonus;
+    showDamageNumber(canvas.width / 2, 80, `EARLY SEND +${bonus}g`, '#ffd700', true);
+    announce('⏩ EARLY SEND BONUS!', '#ffd700');
+
+    // Immediately trigger next subwave
+    spawnSubWave();
+    updateUI();
 }
 
 function checkWaveComplete() {
@@ -3402,11 +3661,14 @@ function placeTower(x, y) {
 
     G.placing = null;
     canvas.style.cursor = 'crosshair';
+    checkSynergies();
     updateUI();
 }
 
 function selectTower(x, y) {
     G.selected = null;
+    sellPendingConfirm = false;
+    if (sellUndoTimer) { clearTimeout(sellUndoTimer); sellUndoTimer = null; }
     for (const t of towers) {
         if (dist(x, y, t.x, t.y) < CFG.TOWER_RADIUS + 5) {
             G.selected = t;
@@ -3416,14 +3678,46 @@ function selectTower(x, y) {
     updateUI();
 }
 
+let sellUndoTimer = null;
+let sellUndoTower = null;
+let sellPendingConfirm = false;
+
 function sellTower() {
     if (!G.selected) return;
+
     const val = G.selected.getSellValue();
+    const isExpensive = G.selected.tier >= 3 && val >= 450;
+
+    // Expensive tower: require confirmation (click sell again within 2 seconds)
+    if (isExpensive && !sellPendingConfirm) {
+        sellPendingConfirm = true;
+        const sellBtn = document.getElementById('sellBtn');
+        sellBtn.textContent = '⚠️ CONFIRM SELL?';
+        sellBtn.style.boxShadow = '0 0 15px var(--neon-yellow)';
+        announce('Sell expensive tower? Click SELL again to confirm.', '#ffd700');
+
+        if (sellUndoTimer) clearTimeout(sellUndoTimer);
+        sellUndoTimer = setTimeout(() => {
+            sellPendingConfirm = false;
+            if (G.selected) {
+                document.getElementById('sellBtn').textContent = `💰 SELL (+${G.selected.getSellValue()})`;
+                document.getElementById('sellBtn').style.boxShadow = '';
+            }
+        }, 2000);
+        return;
+    }
+
+    // Clear confirmation state
+    sellPendingConfirm = false;
+    if (sellUndoTimer) { clearTimeout(sellUndoTimer); sellUndoTimer = null; }
+    document.getElementById('sellBtn').style.boxShadow = '';
+
     G.gold += val;
     showDamageNumber(G.selected.x, G.selected.y - 30, `+${val}`, '#00ff88');
     spawnParticles(G.selected.x, G.selected.y, 10, G.selected.color);
     towers = towers.filter(t => t !== G.selected);
     G.selected = null;
+    checkSynergies();
     updateUI();
 }
 
@@ -3442,6 +3736,11 @@ function updateUI() {
     const startBtn = document.getElementById('startBtn');
     startBtn.disabled = G.running;
     startBtn.textContent = G.running ? '⚔️ FIGHTING' : `▶ START W${G.wave}`;
+
+    // Early send button: show when wave is running and not on the final subwave
+    const earlySendBtn = document.getElementById('earlySendBtn');
+    const canEarlySend = G.running && G.subWave < G.maxSubWaves;
+    earlySendBtn.style.display = canEarlySend ? 'inline-block' : 'none';
 
     // Abilities
     updateAbilityBtn('ability1', abilities.meteor);
@@ -3471,7 +3770,26 @@ function updateUI() {
             document.getElementById('towerTitle').textContent = `${t.icon} ${t.specialization}`;
         }
 
-        document.getElementById('sellBtn').textContent = `💰 SELL (+${t.getSellValue()})`;
+        // Update sell button (respect pending confirm state)
+        if (!sellPendingConfirm) {
+            document.getElementById('sellBtn').textContent = `💰 SELL (+${t.getSellValue()})`;
+            document.getElementById('sellBtn').style.boxShadow = '';
+        }
+
+        // Synergy display in panel
+        let synergyEl = document.getElementById('synergyInfo');
+        if (!synergyEl) {
+            synergyEl = document.createElement('div');
+            synergyEl.id = 'synergyInfo';
+            synergyEl.style.cssText = 'font-size:10px; color:#ffd700; padding:4px 0; text-align:center; margin-bottom:8px;';
+            document.querySelector('.targeting-row').before(synergyEl);
+        }
+        if (t.synergyNames && t.synergyNames.length > 0) {
+            synergyEl.innerHTML = t.synergyNames.map(s => `★ ${s}`).join(' | ');
+            synergyEl.style.display = 'block';
+        } else {
+            synergyEl.style.display = 'none';
+        }
 
         // Targeting buttons
         document.querySelectorAll('.target-btn').forEach(btn => {
@@ -3610,6 +3928,13 @@ function bindEvents() {
         mouse.y = e.clientY - rect.top;
     });
 
+    // Also track mouse position globally for hover preview from build menu
+    document.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+    });
+
     canvas.addEventListener('click', e => {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -3652,6 +3977,11 @@ function bindEvents() {
         }
         if (key === 'p') togglePause();
         if (key === 'm') toggleMute();
+        if (key === 'g') {
+            showGrid = !showGrid;
+            document.getElementById('gridBtn').classList.toggle('muted', !showGrid);
+            document.getElementById('gridBtn').style.boxShadow = showGrid ? '0 0 10px var(--neon-green)' : '';
+        }
         if (gamePaused && key !== 'p' && key !== 'm' && key !== 'escape') {
             // While paused, still allow build/upgrade/sell/targeting keys
             if (key === 'u' && G.selected) { G.selected.upgrade(); return; }
@@ -3665,6 +3995,7 @@ function bindEvents() {
         if (key === 'u' && G.selected) G.selected.upgrade();
         if (key === 's' && G.selected) sellTower();
         if (key === ' ') { e.preventDefault(); startWave(); }
+        if (key === 'f') earlySendWave();
     });
 
     // UI buttons
@@ -3677,9 +4008,10 @@ function bindEvents() {
     };
 
     document.getElementById('startBtn').onclick = startWave;
+    document.getElementById('earlySendBtn').onclick = earlySendWave;
 
     document.getElementById('speedBtn').onclick = function() {
-        const speeds = [1, 2, 3];
+        const speeds = [1, 2, 3, 5];
         G.speed = speeds[(speeds.indexOf(G.speed) + 1) % speeds.length];
         this.textContent = `⚡${G.speed}X`;
     };
@@ -3701,6 +4033,11 @@ function bindEvents() {
 
     document.getElementById('pauseBtn').onclick = togglePause;
     document.getElementById('muteBtn').onclick = toggleMute;
+    document.getElementById('gridBtn').onclick = () => {
+        showGrid = !showGrid;
+        document.getElementById('gridBtn').classList.toggle('muted', !showGrid);
+        document.getElementById('gridBtn').style.boxShadow = showGrid ? '0 0 10px var(--neon-green)' : '';
+    };
     document.getElementById('bestiaryBtn').onclick = () => {
         document.getElementById('bestiaryPopup').classList.add('open');
     };

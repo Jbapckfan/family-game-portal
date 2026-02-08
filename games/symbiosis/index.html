@@ -310,6 +310,142 @@
             display: block;
         }
 
+        /* Level Select Overlay */
+        #levelSelectOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 28, 0.97);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+            transition: opacity 0.4s;
+        }
+
+        #levelSelectOverlay.show {
+            display: flex;
+        }
+
+        #levelSelectOverlay h2 {
+            font-size: 24px;
+            font-weight: 200;
+            letter-spacing: 6px;
+            margin-bottom: 30px;
+            color: #9966ff;
+        }
+
+        .level-select-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            max-width: 400px;
+        }
+
+        .level-select-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s;
+            font-family: inherit;
+        }
+
+        .level-select-btn:active {
+            transform: scale(0.93);
+        }
+
+        .level-select-btn.unlocked {
+            background: rgba(153, 102, 255, 0.15);
+            border-color: rgba(153, 102, 255, 0.4);
+        }
+
+        .level-select-btn.unlocked:hover {
+            background: rgba(153, 102, 255, 0.3);
+        }
+
+        .level-select-btn.locked {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .level-select-btn .ls-num {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .level-select-btn .ls-name {
+            font-size: 8px;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        .level-select-btn .ls-stars {
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-top: 4px;
+            color: #ffcc00;
+        }
+
+        .level-select-btn .ls-time {
+            font-size: 8px;
+            opacity: 0.5;
+            margin-top: 1px;
+        }
+
+        #levelSelectBack {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Reset Level Button */
+        #resetButton {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            left: calc(70px + env(safe-area-inset-left));
+            z-index: 9999;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            min-height: 44px;
+            min-width: 44px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        #resetButton:hover {
+            background: rgba(0,0,0,0.9);
+        }
+
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -327,12 +463,20 @@
 <body>
   <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#x1F3E0; Menu</a>
   <button id="muteButton" aria-label="Toggle audio mute">&#x1F50A;</button>
+  <button id="resetButton" aria-label="Restart level">&#x21BB;</button>
     <div id="gameContainer">
         <div id="startScreen">
             <h1>SYMBIOSIS</h1>
             <p>Two souls. Two dimensions. One destiny.</p>
             <p style="font-size: 12px; opacity: 0.7;">Touch to attract &bull; Drag to guide</p>
             <button id="startButton">BEGIN</button>
+            <button id="levelSelectButton" style="margin-top:14px;padding:10px 30px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:20px;font-size:11px;letter-spacing:2px;cursor:pointer;display:none;font-family:inherit;">LEVEL SELECT</button>
+        </div>
+
+        <div id="levelSelectOverlay">
+            <h2>SELECT LEVEL</h2>
+            <div class="level-select-grid" id="levelSelectGrid"></div>
+            <button id="levelSelectBack">BACK</button>
         </div>
 
         <div id="solWorld" class="world">
@@ -419,6 +563,9 @@
                 iceWall: { xFrac: 0.60, widthPx: 35 },
                 exit: { xFrac: 0.08, yFrac: 0.12 },
                 movingPlatform: { xFrac: 0.30, yFrac: 0.45, rangeFrac: 0.25, speed: 0.55 },
+                gravityWells: [
+                    { xFrac: 0.45, yFrac: 0.60, strength: 120, radius: 80 }
+                ],
                 starThresholds: [50, 80, 130]
             },
             {
@@ -431,6 +578,10 @@
                 iceWall: { xFrac: 0.72, widthPx: 55 },
                 exit: { xFrac: 0.50, yFrac: 0.10 },
                 movingPlatform: { xFrac: 0.45, yFrac: 0.50, rangeFrac: 0.35, speed: 0.65 },
+                gravityWells: [
+                    { xFrac: 0.35, yFrac: 0.40, strength: 100, radius: 70 },
+                    { xFrac: 0.65, yFrac: 0.70, strength: 130, radius: 90 }
+                ],
                 starThresholds: [60, 100, 150]
             }
         ];
@@ -781,7 +932,17 @@
             levelElapsed: 0,
             timerRunning: false,
             // Moving platform state
-            movingPlatformOffset: 0
+            movingPlatformOffset: 0,
+            // Idle animation tracking
+            solLastMoveTime: 0,
+            lunaLastMoveTime: 0,
+            solIdleParticles: [],
+            lunaIdleParticles: [],
+            // Ambient background particles
+            ambientSolParticles: [],
+            ambientLunaParticles: [],
+            // Gravity wells vortex rotation
+            gravityWellRotation: 0
         };
 
         // Canvas references
@@ -836,6 +997,19 @@
                 };
             }
 
+            // Gravity wells
+            lvl.gravityWells = [];
+            if (def.gravityWells) {
+                def.gravityWells.forEach(function(gw) {
+                    lvl.gravityWells.push({
+                        x: gw.xFrac * w,
+                        y: gw.yFrac * h,
+                        strength: gw.strength,
+                        radius: gw.radius
+                    });
+                });
+            }
+
             // Reset positions
             game.sol.x = def.sol.startX * w;
             game.sol.y = def.sol.startY * h;
@@ -871,6 +1045,13 @@
             game.dimensionalTears = [];
             game.levelCompleted = false;
             game.movingPlatformOffset = 0;
+            game.solLastMoveTime = 0;
+            game.lunaLastMoveTime = 0;
+            game.solIdleParticles = [];
+            game.lunaIdleParticles = [];
+            game.ambientSolParticles = [];
+            game.ambientLunaParticles = [];
+            game.gravityWellRotation = 0;
 
             // Timer
             game.levelStartTime = performance.now();
@@ -967,6 +1148,7 @@
             setupControls();
             initAudio();
             game.gameStarted = true;
+            document.getElementById('resetButton').style.display = 'flex';
             loadLevel(0);
 
             // Tutorial for first level on first playthrough
@@ -976,6 +1158,13 @@
 
             requestAnimationFrame(gameLoop);
         }
+
+        // Show level select button on start screen if any level has been completed
+        (function() {
+            if (hasAnyCompletedLevel()) {
+                document.getElementById('levelSelectButton').style.display = 'inline-block';
+            }
+        })();
 
         function initParallaxLayers() {
             // Reset layers before (re-)initializing
@@ -1057,6 +1246,17 @@
                                 range: def.movingPlatform.rangeFrac * h,
                                 speed: def.movingPlatform.speed
                             };
+                        }
+                        lvl.gravityWells = [];
+                        if (def.gravityWells) {
+                            def.gravityWells.forEach(function(gw) {
+                                lvl.gravityWells.push({
+                                    x: gw.xFrac * w,
+                                    y: gw.yFrac * h,
+                                    strength: gw.strength,
+                                    radius: gw.radius
+                                });
+                            });
                         }
                     }
                 }, 200);
@@ -1160,6 +1360,7 @@
                     if (Math.abs(game.sol.vx) > 0.5) {
                         game.sol.collisionFlash = 0.3;
                         playCollisionBuzz();
+                        hapticPulse(20);
                     }
                     game.sol.vx = 0;
                 }
@@ -1184,10 +1385,237 @@
                     if (Math.abs(game.luna.vx) > 0.5) {
                         game.luna.collisionFlash = 0.3;
                         playCollisionBuzz();
+                        hapticPulse(20);
                     }
                     game.luna.vx *= -0.3;
                 }
             }
+        }
+
+        // ===== FEATURE: LEVEL SELECT =====
+        function hasAnyCompletedLevel() {
+            const data = loadBestTimes();
+            for (let i = 0; i < levelDefs.length; i++) {
+                if (data['level_' + i]) return true;
+            }
+            return false;
+        }
+
+        function buildLevelSelectGrid() {
+            const grid = document.getElementById('levelSelectGrid');
+            grid.innerHTML = '';
+            const data = loadBestTimes();
+            // Level 0 is always unlocked; others require prior level beaten
+            for (let i = 0; i < levelDefs.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'level-select-btn';
+                const best = data['level_' + i] || null;
+                const prevBest = i === 0 ? true : !!data['level_' + (i - 1)];
+                const unlocked = (i === 0) || prevBest;
+
+                if (unlocked) {
+                    btn.classList.add('unlocked');
+                } else {
+                    btn.classList.add('locked');
+                }
+
+                let inner = '<span class="ls-num">' + (i + 1) + '</span>';
+                inner += '<span class="ls-name">' + levelDefs[i].name.toUpperCase() + '</span>';
+                if (best) {
+                    inner += '<span class="ls-stars">' + starsString(best.stars) + '</span>';
+                    inner += '<span class="ls-time">' + formatTime(best.time) + '</span>';
+                }
+                btn.innerHTML = inner;
+
+                if (unlocked) {
+                    (function(levelIdx) {
+                        btn.addEventListener('click', function() {
+                            closeLevelSelect();
+                            startGameFromLevel(levelIdx);
+                        });
+                    })(i);
+                }
+                grid.appendChild(btn);
+            }
+        }
+
+        function showLevelSelect() {
+            buildLevelSelectGrid();
+            document.getElementById('levelSelectOverlay').classList.add('show');
+        }
+
+        function closeLevelSelect() {
+            document.getElementById('levelSelectOverlay').classList.remove('show');
+        }
+
+        function startGameFromLevel(levelIdx) {
+            const startScreen = document.getElementById('startScreen');
+            startScreen.style.opacity = '0';
+            setTimeout(function() {
+                startScreen.style.display = 'none';
+            }, 500);
+
+            if (!game.gameStarted) {
+                initCanvases();
+                initParallaxLayers();
+                setupControls();
+                initAudio();
+                game.gameStarted = true;
+                requestAnimationFrame(gameLoop);
+            }
+            document.getElementById('resetButton').style.display = 'flex';
+            loadLevel(levelIdx);
+        }
+
+        // ===== FEATURE: RESET LEVEL =====
+        function resetCurrentLevel() {
+            if (!game.gameStarted) return;
+            document.getElementById('levelComplete').classList.remove('show');
+            loadLevel(game.currentLevel);
+        }
+
+        // ===== FEATURE: HAPTIC FEEDBACK =====
+        function hapticPulse(duration) {
+            try {
+                if (navigator.vibrate) navigator.vibrate(duration);
+            } catch(e) {}
+        }
+        function hapticPattern(pattern) {
+            try {
+                if (navigator.vibrate) navigator.vibrate(pattern);
+            } catch(e) {}
+        }
+
+        // ===== FEATURE: IDLE ANIMATION UPDATE =====
+        function updateIdleAnimations(deltaTime) {
+            var solSpeed = Math.hypot(game.sol.vx, game.sol.vy);
+            var lunaSpeed = Math.hypot(game.luna.vx, game.luna.vy);
+
+            // Track last move times
+            if (solSpeed > 0.5) game.solLastMoveTime = game.animTime;
+            if (lunaSpeed > 0.5) game.lunaLastMoveTime = game.animTime;
+
+            // Sol idle breathing + embers
+            var solIdleDur = game.animTime - game.solLastMoveTime;
+            if (solIdleDur > 2.0) {
+                // Breathing pulse
+                var breathPhase = Math.sin(game.animTime * 2.5);
+                game.sol.scaleX = 1 + breathPhase * 0.05;
+                game.sol.scaleY = 1 - breathPhase * 0.05;
+
+                // Emit passive ember particles
+                if (Math.random() < 0.08) {
+                    game.solIdleParticles.push({
+                        x: game.sol.x + (Math.random() - 0.5) * 20,
+                        y: game.sol.y + (Math.random() - 0.5) * 20,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: -Math.random() * 0.8 - 0.3,
+                        life: 1,
+                        size: 1.5 + Math.random() * 2,
+                        color: Math.random() > 0.5 ? '#ff9944' : '#ffcc66'
+                    });
+                }
+            }
+
+            // Luna idle breathing + snowflakes
+            var lunaIdleDur = game.animTime - game.lunaLastMoveTime;
+            if (lunaIdleDur > 2.0) {
+                var breathPhaseLuna = Math.sin(game.animTime * 2.5 + Math.PI * 0.5);
+                game.luna.scaleX = 1 + breathPhaseLuna * 0.05;
+                game.luna.scaleY = 1 - breathPhaseLuna * 0.05;
+
+                if (Math.random() < 0.08) {
+                    game.lunaIdleParticles.push({
+                        x: game.luna.x + (Math.random() - 0.5) * 20,
+                        y: game.luna.y + (Math.random() - 0.5) * 20,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        life: 1,
+                        size: 2 + Math.random() * 2,
+                        rotation: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Update idle particles
+            game.solIdleParticles = game.solIdleParticles.filter(function(p) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= deltaTime * 0.8;
+                return p.life > 0;
+            });
+            game.lunaIdleParticles = game.lunaIdleParticles.filter(function(p) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.rotation += deltaTime * 1.5;
+                p.life -= deltaTime * 0.8;
+                return p.life > 0;
+            });
+        }
+
+        // ===== FEATURE: AMBIENT BACKGROUND PARTICLES =====
+        function updateAmbientParticles(deltaTime) {
+            // Sol's world: falling embers (warm oranges drifting downward)
+            if (game.ambientSolParticles.length < 25 && Math.random() < 0.06) {
+                game.ambientSolParticles.push({
+                    x: Math.random() * solCssWidth,
+                    y: -5,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: 0.3 + Math.random() * 0.5,
+                    life: 1,
+                    size: 1 + Math.random() * 2.5,
+                    hue: 20 + Math.random() * 30,  // orange range
+                    flicker: Math.random() * Math.PI * 2
+                });
+            }
+
+            game.ambientSolParticles = game.ambientSolParticles.filter(function(p) {
+                p.x += p.vx + Math.sin(game.animTime * 0.5 + p.flicker) * 0.15;
+                p.y += p.vy;
+                p.flicker += deltaTime;
+                if (p.y > solCssHeight + 5) return false;
+                p.life -= deltaTime * 0.15;
+                return p.life > 0;
+            });
+
+            // Luna's world: rising ice crystals (cool blues drifting upward)
+            if (game.ambientLunaParticles.length < 25 && Math.random() < 0.06) {
+                game.ambientLunaParticles.push({
+                    x: Math.random() * lunaCssWidth,
+                    y: lunaCssHeight + 5,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: -(0.3 + Math.random() * 0.5),
+                    life: 1,
+                    size: 1 + Math.random() * 2,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 1.5
+                });
+            }
+
+            game.ambientLunaParticles = game.ambientLunaParticles.filter(function(p) {
+                p.x += p.vx + Math.sin(game.animTime * 0.4 + p.rotation) * 0.1;
+                p.y += p.vy;
+                p.rotation += p.rotSpeed * deltaTime;
+                if (p.y < -5) return false;
+                p.life -= deltaTime * 0.15;
+                return p.life > 0;
+            });
+        }
+
+        // ===== FEATURE: GRAVITY WELLS PHYSICS =====
+        function applyGravityWells(character, deltaTime) {
+            if (!lvl.gravityWells || lvl.gravityWells.length === 0) return;
+            lvl.gravityWells.forEach(function(gw) {
+                var dx = gw.x - character.x;
+                var dy = gw.y - character.y;
+                var dist = Math.hypot(dx, dy);
+                if (dist < gw.radius && dist > 5) {
+                    var force = (gw.strength / (dist * dist)) * deltaTime * 60;
+                    force = Math.min(force, 3); // cap force
+                    character.vx += (dx / dist) * force;
+                    character.vy += (dy / dist) * force;
+                }
+            });
         }
 
         function update(deltaTime) {
@@ -1263,6 +1691,11 @@
 
             // IMPROVEMENT 4: Luna collision with ice wall
             checkLunaCollisions(deltaTime);
+
+            // FEATURE: Gravity wells pull on both characters
+            applyGravityWells(game.sol, deltaTime);
+            applyGravityWells(game.luna, deltaTime);
+            game.gravityWellRotation += deltaTime * 3;
 
             // Collision flash decay
             if (game.sol.collisionFlash > 0) game.sol.collisionFlash -= deltaTime * 2;
@@ -1396,6 +1829,11 @@
                 }
             }
 
+            // HAPTIC: Ice wall shatter
+            if (prevIceAlpha >= 0.1 && game.iceAlpha < 0.1) {
+                hapticPulse(50);
+            }
+
             // Add frost patterns where Luna touches
             if (lunaSpeed < 1 && Math.random() < 0.05) {
                 game.luna.frostPatterns.push({
@@ -1444,6 +1882,12 @@
             // Audio proximity update
             updateAudioProximity();
 
+            // FEATURE: Idle animations
+            updateIdleAnimations(deltaTime);
+
+            // FEATURE: Ambient background particles
+            updateAmbientParticles(deltaTime);
+
             // Check win condition
             const exitX = lvl.exit.x;
             const exitY = lvl.exit.y;
@@ -1472,8 +1916,9 @@
             // Save best time
             saveBestTime(game.currentLevel, elapsed, stars);
 
-            // Audio
+            // Audio + Haptic
             playVictoryStinger();
+            hapticPattern([30, 60, 30, 60, 80]);
 
             // Update level complete screen
             document.getElementById('starsDisplay').textContent = starsString(stars);
@@ -1555,33 +2000,55 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(chasmX, 0, chasmW, height);
 
-            // Draw bridge with glow
+            // Draw bridge with glow + stability visual feedback
             if (game.bridgeExtension > 0) {
                 const bridgeWidth = chasmW * game.bridgeExtension;
+                const isUnstable = game.bridgeExtension < 1 && game.windPower <= 2;
+
+                // Wobble offset: vertical oscillation when unstable
+                var wobbleY = 0;
+                var bridgeOpacity = 1;
+                if (isUnstable) {
+                    wobbleY = Math.sin(game.animTime * 12) * 3 * (1 - game.bridgeExtension);
+                    bridgeOpacity = 0.5 + Math.sin(game.animTime * 8) * 0.25 + Math.sin(game.animTime * 13) * 0.15;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0.3, bridgeOpacity);
 
                 // Bridge glow
                 const glow = ctx.createRadialGradient(
-                    chasmX + bridgeWidth/2, height/2, 0,
-                    chasmX + bridgeWidth/2, height/2, bridgeWidth/2 + 40
+                    chasmX + bridgeWidth/2, height/2 + wobbleY, 0,
+                    chasmX + bridgeWidth/2, height/2 + wobbleY, bridgeWidth/2 + 40
                 );
                 glow.addColorStop(0, 'rgba(255, 150, 50, 0.4)');
                 glow.addColorStop(1, 'rgba(255, 107, 53, 0)');
                 ctx.fillStyle = glow;
-                ctx.fillRect(chasmX - 20, height/2 - 40, bridgeWidth + 40, 80);
+                ctx.fillRect(chasmX - 20, height/2 - 40 + wobbleY, bridgeWidth + 40, 80);
 
                 // Bridge body
-                ctx.fillStyle = `rgba(255, 140, 60, ${0.6 + Math.sin(game.animTime * 5) * 0.1})`;
-                ctx.fillRect(chasmX, height/2 - 20, bridgeWidth, 40);
+                ctx.fillStyle = 'rgba(255, 140, 60, ' + (0.6 + Math.sin(game.animTime * 5) * 0.1) + ')';
+                ctx.fillRect(chasmX, height/2 - 20 + wobbleY, bridgeWidth, 40);
 
                 // Energy lines
                 ctx.strokeStyle = '#ffaa55';
                 ctx.lineWidth = 2;
                 ctx.setLineDash([10, 5]);
                 ctx.beginPath();
-                ctx.moveTo(chasmX, height/2);
-                ctx.lineTo(chasmX + bridgeWidth, height/2);
+                ctx.moveTo(chasmX, height/2 + wobbleY);
+                ctx.lineTo(chasmX + bridgeWidth, height/2 + wobbleY);
                 ctx.stroke();
                 ctx.setLineDash([]);
+
+                // Instability warning sparks
+                if (isUnstable && Math.random() < 0.3) {
+                    ctx.fillStyle = 'rgba(255, 200, 100, 0.8)';
+                    var sparkX = chasmX + Math.random() * bridgeWidth;
+                    var sparkY = height/2 + wobbleY + (Math.random() - 0.5) * 30;
+                    ctx.fillRect(sparkX - 1, sparkY - 1, 2, 2);
+                }
+
+                ctx.restore();
             }
 
             // Draw moving platform
@@ -1660,14 +2127,40 @@
             ctx.textAlign = 'center';
             ctx.fillText('HEAT', heatX, heatY + 45);
 
-            // Draw exit portal (using level-defined position)
+            // Draw exit portal with pulsing beacon (using level-defined position)
             const exitX = lvl.exit.x;
             const exitY = lvl.exit.y;
 
+            // Vertical light beam (beacon)
+            var beamAlpha = 0.12 + Math.sin(game.animTime * 2) * 0.06;
+            var beamGrad = ctx.createLinearGradient(exitX, exitY - 8, exitX, Math.max(0, exitY - 120));
+            beamGrad.addColorStop(0, 'rgba(255, 150, 80, ' + beamAlpha + ')');
+            beamGrad.addColorStop(0.5, 'rgba(255, 107, 53, ' + (beamAlpha * 0.5) + ')');
+            beamGrad.addColorStop(1, 'rgba(255, 107, 53, 0)');
+            ctx.fillStyle = beamGrad;
+            var beamWidth = 8 + Math.sin(game.animTime * 3) * 2;
+            ctx.fillRect(exitX - beamWidth / 2, Math.max(0, exitY - 120), beamWidth, exitY - Math.max(0, exitY - 120));
+
+            // Wider subtle glow beam
+            var beamGrad2 = ctx.createLinearGradient(exitX, exitY - 5, exitX, Math.max(0, exitY - 80));
+            beamGrad2.addColorStop(0, 'rgba(255, 140, 70, ' + (beamAlpha * 0.4) + ')');
+            beamGrad2.addColorStop(1, 'rgba(255, 107, 53, 0)');
+            ctx.fillStyle = beamGrad2;
+            ctx.fillRect(exitX - 15, Math.max(0, exitY - 80), 30, exitY - Math.max(0, exitY - 80));
+
+            // Portal ring
             ctx.strokeStyle = `rgba(255, 107, 53, ${0.5 + Math.sin(game.animTime * 3) * 0.3})`;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(exitX, exitY, 25, game.animTime, game.animTime + Math.PI * 1.8);
+            ctx.stroke();
+
+            // Pulsing outer ring
+            var pulseRadius = 25 + Math.sin(game.animTime * 2) * 5;
+            ctx.strokeStyle = 'rgba(255, 107, 53, ' + (0.15 + Math.sin(game.animTime * 2.5) * 0.1) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(exitX, exitY, pulseRadius + 5, 0, Math.PI * 2);
             ctx.stroke();
 
             // Sol collision flash overlay
@@ -1676,18 +2169,25 @@
                 ctx.fillRect(0, 0, width, height);
             }
 
-            // Draw Sol's burning trail
+            // Draw Sol's burning trail (speed-based color gradient)
             ctx.lineCap = 'round';
+            var solSpeedNow = Math.hypot(game.sol.vx, game.sol.vy);
+            var solSpeedNorm = Math.min(1, solSpeedNow / 8); // 0=slow, 1=fast
             game.sol.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.sol.trail[index - 1];
 
+                // Slow: dim orange. Fast: bright orange->white gradient shift
+                var r1 = 255, g1 = Math.floor(100 + solSpeedNorm * 155), b1 = Math.floor(0 + solSpeedNorm * 200);
+                var r2 = 255, g2 = Math.floor(80 + solSpeedNorm * 120), b2 = Math.floor(0 + solSpeedNorm * 50);
+                var alphaBoost = 0.3 + solSpeedNorm * 0.5;
+
                 const trailGrad = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
-                trailGrad.addColorStop(0, `rgba(255, 150, 50, ${prev.life * 0.5})`);
-                trailGrad.addColorStop(1, `rgba(255, 100, 0, ${point.life * 0.3})`);
+                trailGrad.addColorStop(0, 'rgba(' + r1 + ',' + g1 + ',' + b1 + ',' + (prev.life * alphaBoost) + ')');
+                trailGrad.addColorStop(1, 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',' + (point.life * (alphaBoost * 0.7)) + ')');
 
                 ctx.strokeStyle = trailGrad;
-                ctx.lineWidth = point.life * 8;
+                ctx.lineWidth = point.life * (6 + solSpeedNorm * 6);
                 ctx.beginPath();
                 ctx.moveTo(prev.x, prev.y);
                 ctx.lineTo(point.x, point.y);
@@ -1717,6 +2217,72 @@
             ctx.fill();
 
             ctx.restore();
+
+            // Draw gravity wells as spinning vortices (Sol's world)
+            if (lvl.gravityWells) {
+                lvl.gravityWells.forEach(function(gw) {
+                    ctx.save();
+                    ctx.translate(gw.x, gw.y);
+
+                    // Dark radial gradient background
+                    var vortexGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, gw.radius);
+                    vortexGrad.addColorStop(0, 'rgba(20, 0, 40, 0.7)');
+                    vortexGrad.addColorStop(0.4, 'rgba(40, 0, 60, 0.3)');
+                    vortexGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = vortexGrad;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, gw.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Spinning spiral arms
+                    ctx.strokeStyle = 'rgba(100, 50, 150, 0.4)';
+                    ctx.lineWidth = 2;
+                    for (var arm = 0; arm < 3; arm++) {
+                        ctx.beginPath();
+                        var baseAngle = game.gravityWellRotation + (arm * Math.PI * 2 / 3);
+                        for (var t = 0; t < 1; t += 0.05) {
+                            var angle = baseAngle + t * Math.PI * 2;
+                            var r = t * gw.radius * 0.8;
+                            var px = Math.cos(angle) * r;
+                            var py = Math.sin(angle) * r;
+                            if (t === 0) ctx.moveTo(px, py);
+                            else ctx.lineTo(px, py);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Center dark point
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+                });
+            }
+
+            // Draw Sol's idle particles (embers)
+            game.solIdleParticles.forEach(function(p) {
+                ctx.save();
+                ctx.globalAlpha = p.life * 0.7;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // Draw ambient Sol particles (falling embers)
+            game.ambientSolParticles.forEach(function(p) {
+                ctx.save();
+                ctx.globalAlpha = p.life * 0.35;
+                var hsl = 'hsl(' + p.hue + ', 90%, ' + (50 + Math.sin(p.flicker * 3) * 15) + '%)';
+                ctx.fillStyle = hsl;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
 
             // Draw dimensional tears in Sol's world
             game.dimensionalTears.forEach(tear => {
@@ -1875,14 +2441,40 @@
                 ctx.restore();
             });
 
-            // Draw exit portal (using level-defined position)
+            // Draw exit portal with pulsing beacon (Luna world)
             const exitX = lvl.exit.x;
             const exitY = lvl.exit.y;
 
+            // Vertical light beam (beacon) - upward from portal
+            var lunaBeamAlpha = 0.12 + Math.sin(game.animTime * 2 + Math.PI) * 0.06;
+            var lunaBeamGrad = ctx.createLinearGradient(exitX, exitY - 8, exitX, Math.max(0, exitY - 120));
+            lunaBeamGrad.addColorStop(0, 'rgba(100, 180, 255, ' + lunaBeamAlpha + ')');
+            lunaBeamGrad.addColorStop(0.5, 'rgba(74, 158, 218, ' + (lunaBeamAlpha * 0.5) + ')');
+            lunaBeamGrad.addColorStop(1, 'rgba(74, 158, 218, 0)');
+            ctx.fillStyle = lunaBeamGrad;
+            var lunaBeamW = 8 + Math.sin(game.animTime * 3 + Math.PI) * 2;
+            ctx.fillRect(exitX - lunaBeamW / 2, Math.max(0, exitY - 120), lunaBeamW, exitY - Math.max(0, exitY - 120));
+
+            // Wider subtle glow beam
+            var lunaBeamGrad2 = ctx.createLinearGradient(exitX, exitY - 5, exitX, Math.max(0, exitY - 80));
+            lunaBeamGrad2.addColorStop(0, 'rgba(100, 180, 255, ' + (lunaBeamAlpha * 0.4) + ')');
+            lunaBeamGrad2.addColorStop(1, 'rgba(74, 158, 218, 0)');
+            ctx.fillStyle = lunaBeamGrad2;
+            ctx.fillRect(exitX - 15, Math.max(0, exitY - 80), 30, exitY - Math.max(0, exitY - 80));
+
+            // Portal ring
             ctx.strokeStyle = `rgba(74, 158, 218, ${0.5 + Math.sin(game.animTime * 3 + Math.PI) * 0.3})`;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(exitX, exitY, 25, -game.animTime, -game.animTime + Math.PI * 1.8);
+            ctx.stroke();
+
+            // Pulsing outer ring
+            var lunaPulseR = 25 + Math.sin(game.animTime * 2 + Math.PI) * 5;
+            ctx.strokeStyle = 'rgba(74, 158, 218, ' + (0.15 + Math.sin(game.animTime * 2.5 + Math.PI) * 0.1) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(exitX, exitY, lunaPulseR + 5, 0, Math.PI * 2);
             ctx.stroke();
 
             // Luna collision flash overlay
@@ -1891,18 +2483,25 @@
                 ctx.fillRect(0, 0, width, height);
             }
 
-            // Draw Luna's frost trail
+            // Draw Luna's frost trail (speed-based color gradient)
             ctx.lineCap = 'round';
+            var lunaSpeedNow = Math.hypot(game.luna.vx, game.luna.vy);
+            var lunaSpeedNorm = Math.min(1, lunaSpeedNow / 8);
             game.luna.trail.forEach((point, index) => {
                 if (index === 0) return;
                 const prev = game.luna.trail[index - 1];
 
+                // Slow: dim blue. Fast: bright blue->cyan shift
+                var r1 = Math.floor(100 + lunaSpeedNorm * 50), g1 = Math.floor(180 + lunaSpeedNorm * 75), b1 = 255;
+                var r2 = Math.floor(0 + lunaSpeedNorm * 100), g2 = Math.floor(200 + lunaSpeedNorm * 55), b2 = 255;
+                var alphaBoost = 0.2 + lunaSpeedNorm * 0.5;
+
                 const trailGrad = ctx.createLinearGradient(prev.x, prev.y, point.x, point.y);
-                trailGrad.addColorStop(0, `rgba(150, 200, 255, ${prev.life * 0.3})`);
-                trailGrad.addColorStop(1, `rgba(100, 180, 255, ${point.life * 0.2})`);
+                trailGrad.addColorStop(0, 'rgba(' + r1 + ',' + g1 + ',' + b1 + ',' + (prev.life * alphaBoost) + ')');
+                trailGrad.addColorStop(1, 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',' + (point.life * (alphaBoost * 0.7)) + ')');
 
                 ctx.strokeStyle = trailGrad;
-                ctx.lineWidth = point.life * 6;
+                ctx.lineWidth = point.life * (5 + lunaSpeedNorm * 5);
                 ctx.beginPath();
                 ctx.moveTo(prev.x, prev.y);
                 ctx.lineTo(point.x, point.y);
@@ -1960,6 +2559,87 @@
                 ctx.restore();
             }
 
+            // Draw gravity wells as spinning vortices (Luna's world)
+            if (lvl.gravityWells) {
+                lvl.gravityWells.forEach(function(gw) {
+                    ctx.save();
+                    ctx.translate(gw.x, gw.y);
+
+                    // Dark radial gradient background
+                    var vortexGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, gw.radius);
+                    vortexGrad.addColorStop(0, 'rgba(0, 10, 40, 0.7)');
+                    vortexGrad.addColorStop(0.4, 'rgba(0, 20, 60, 0.3)');
+                    vortexGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = vortexGrad;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, gw.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Spinning spiral arms (blue tint for Luna's world)
+                    ctx.strokeStyle = 'rgba(50, 80, 180, 0.4)';
+                    ctx.lineWidth = 2;
+                    for (var arm = 0; arm < 3; arm++) {
+                        ctx.beginPath();
+                        var baseAngle = -game.gravityWellRotation + (arm * Math.PI * 2 / 3);
+                        for (var t = 0; t < 1; t += 0.05) {
+                            var angle = baseAngle + t * Math.PI * 2;
+                            var r = t * gw.radius * 0.8;
+                            var px = Math.cos(angle) * r;
+                            var py = Math.sin(angle) * r;
+                            if (t === 0) ctx.moveTo(px, py);
+                            else ctx.lineTo(px, py);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Center dark point
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+                });
+            }
+
+            // Draw Luna's idle particles (snowflakes)
+            game.lunaIdleParticles.forEach(function(p) {
+                ctx.save();
+                ctx.globalAlpha = p.life * 0.6;
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation);
+                ctx.strokeStyle = '#aaddff';
+                ctx.lineWidth = 1;
+                // Simple snowflake: 6 lines from center
+                for (var i = 0; i < 6; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    var sx = Math.cos(i * Math.PI / 3) * p.size;
+                    var sy = Math.sin(i * Math.PI / 3) * p.size;
+                    ctx.lineTo(sx, sy);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
+
+            // Draw ambient Luna particles (rising ice crystals)
+            game.ambientLunaParticles.forEach(function(p) {
+                ctx.save();
+                ctx.globalAlpha = p.life * 0.3;
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation);
+                // Small diamond shape
+                ctx.fillStyle = 'rgba(150, 200, 255, 0.6)';
+                ctx.beginPath();
+                ctx.moveTo(0, -p.size);
+                ctx.lineTo(p.size * 0.5, 0);
+                ctx.lineTo(0, p.size);
+                ctx.lineTo(-p.size * 0.5, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            });
+
             // Draw dimensional tears in Luna's world
             game.dimensionalTears.forEach(tear => {
                 ctx.save();
@@ -1996,6 +2676,9 @@
         document.getElementById('startButton').addEventListener('click', startGame);
         document.getElementById('continueButton').addEventListener('click', nextLevel);
         document.getElementById('muteButton').addEventListener('click', toggleMute);
+        document.getElementById('resetButton').addEventListener('click', resetCurrentLevel);
+        document.getElementById('levelSelectButton').addEventListener('click', showLevelSelect);
+        document.getElementById('levelSelectBack').addEventListener('click', closeLevelSelect);
 
         let lastTime = 0;
         function gameLoop(currentTime) {

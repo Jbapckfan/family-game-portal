@@ -1708,6 +1708,146 @@
             height: 100%;
             border-radius: 4px;
         }
+
+        /* ============================================
+           POST-MATCH STATS DASHBOARD
+           ============================================ */
+        .post-match-dashboard {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .post-match-dashboard h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 12px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .dash-stat {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .dash-stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .dash-stat-value.cyan { color: #0ff; }
+        .dash-stat-value.red { color: #f44; }
+        .dash-stat-value.gold { color: #ffd700; }
+        .dash-stat-value.green { color: #4f4; }
+
+        .dash-stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .territory-graph-container {
+            position: relative;
+            height: 80px;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .territory-graph-container canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .territory-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 6px;
+            font-size: 10px;
+            color: #888;
+        }
+
+        .territory-legend span::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 3px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border-radius: 1px;
+        }
+
+        .territory-legend .tl-player::before { background: #0ff; }
+        .territory-legend .tl-enemy::before { background: #f44; }
+        .territory-legend .tl-neutral::before { background: #666; }
+
+        /* Adaptive AI indicator */
+        .adaptive-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #888;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        .adaptive-indicator .adapt-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .adaptive-indicator .adapt-dot.harder { background: #f44; }
+        .adaptive-indicator .adapt-dot.balanced { background: #4f4; }
+        .adaptive-indicator .adapt-dot.easier { background: #4af; }
+
+        .result-screen .post-match-dashboard {
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+
+        .result-screen .post-match-dashboard::-webkit-scrollbar {
+            width: 4px;
+        }
+        .result-screen .post-match-dashboard::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .result-screen .post-match-dashboard::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -1841,7 +1981,7 @@
         </div>
     </div>
 
-    <div class="level-info" id="levelInfo">Level 1</div>
+    <div class="level-info" id="levelInfo">Level 1<span class="adaptive-indicator hidden" id="adaptiveIndicator"><span class="adapt-dot balanced"></span> <span id="adaptiveLabel">Balanced</span></span></div>
 
     <div class="harvest-hud hidden" id="harvestHud">
         <div class="harvest-title">🌾 HARVEST PHASE</div>
@@ -2036,6 +2176,20 @@
                 <div class="result-stat-label">Streak</div>
             </div>
         </div>
+        <!-- Post-Match Stats Dashboard -->
+        <div class="post-match-dashboard" id="postMatchDashboard" style="display:none;">
+            <h3>Battle Statistics</h3>
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+            <div class="territory-graph-container">
+                <canvas id="territoryGraphCanvas"></canvas>
+            </div>
+            <div class="territory-legend">
+                <span class="tl-player">Your Planets</span>
+                <span class="tl-enemy">Enemy Planets</span>
+                <span class="tl-neutral">Neutral</span>
+            </div>
+        </div>
+
         <!-- Post-Game Timeline -->
         <div class="timeline-section" id="timelineSection" style="display:none;">
             <h3>Battle Timeline</h3>
@@ -2089,6 +2243,11 @@ const defaultStats = {
         stealth: false,
         comets: false,
         fog: false
+    },
+    // Adaptive AI: track recent game results for difficulty balancing
+    adaptiveAI: {
+        recentResults: [], // array of { won: bool, difficulty: string, timestamp: number } (last 20 games)
+        currentModifier: 0 // -1 to +1, negative = easier, positive = harder
     }
 };
 
@@ -2099,7 +2258,7 @@ function loadStats() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const parsed = JSON.parse(saved);
-            return { ...defaultStats, ...parsed, settings: { ...defaultStats.settings, ...parsed.settings }, features: { ...defaultStats.features, ...parsed.features } };
+            return { ...defaultStats, ...parsed, settings: { ...defaultStats.settings, ...parsed.settings }, features: { ...defaultStats.features, ...parsed.features }, adaptiveAI: { ...defaultStats.adaptiveAI, ...(parsed.adaptiveAI || {}) } };
         }
     } catch (e) { console.warn('Failed to load stats:', e); }
     return { ...defaultStats };
@@ -2465,10 +2624,162 @@ function resetCurrentGameStats() {
         abilitiesUsedTypes: new Set(),
         perfectWin: true,
         planetsLostThisGame: 0,
+        planetsConqueredThisGame: 0,
         harvested: 0,
         fogEnabled: game.features.fog,
-        nukesUsed: 0
+        nukesUsed: 0,
+        // Post-match dashboard stats
+        particlesProduced: 0,
+        particlesLost: 0,
+        particlesKilled: 0,
+        largestArmySent: 0,
+        attacksSent: 0,
+        lastEnemyActionTime: Date.now(),
+        responseTimes: [],
+        territoryHistory: [] // { time, playerPlanets, enemyPlanets, neutralPlanets }
     };
+    // Start territory tracking
+    startTerritoryTracking();
+}
+
+// ==================== TERRITORY TRACKING FOR POST-MATCH ====================
+let territoryTrackingInterval = null;
+
+function startTerritoryTracking() {
+    if (territoryTrackingInterval) clearInterval(territoryTrackingInterval);
+    if (!currentGameStats) return;
+    currentGameStats.territoryHistory = [];
+    territoryTrackingInterval = setInterval(() => {
+        if (game.state !== 'playing' && game.state !== 'harvest') return;
+        if (!currentGameStats) return;
+        const elapsed = (Date.now() - currentGameStats.startTime) / 1000;
+        let playerP = 0, enemyP = 0, neutralP = 0;
+        for (const p of planets) {
+            if (p.type === 'blackhole') continue;
+            if (p.owner === PLAYER) playerP++;
+            else if (p.owner === ENEMY) enemyP++;
+            else neutralP++;
+        }
+        currentGameStats.territoryHistory.push({
+            time: elapsed,
+            playerPlanets: playerP,
+            enemyPlanets: enemyP,
+            neutralPlanets: neutralP
+        });
+    }, 1500);
+}
+
+function stopTerritoryTracking() {
+    if (territoryTrackingInterval) { clearInterval(territoryTrackingInterval); territoryTrackingInterval = null; }
+}
+
+// ==================== DIFFICULTY-ADAPTIVE AI SYSTEM ====================
+// Tracks the player's win rate over recent games and auto-adjusts AI parameters
+// so the challenge stays balanced as the player improves.
+
+function updateAdaptiveAI(won) {
+    if (!playerStats.adaptiveAI) {
+        playerStats.adaptiveAI = { recentResults: [], currentModifier: 0 };
+    }
+
+    // Record this game result
+    playerStats.adaptiveAI.recentResults.push({
+        won: won,
+        difficulty: game.difficulty,
+        timestamp: Date.now()
+    });
+
+    // Keep only the last 20 results
+    if (playerStats.adaptiveAI.recentResults.length > 20) {
+        playerStats.adaptiveAI.recentResults = playerStats.adaptiveAI.recentResults.slice(-20);
+    }
+
+    // Calculate adaptive modifier based on recent performance
+    const results = playerStats.adaptiveAI.recentResults;
+    if (results.length < 3) {
+        playerStats.adaptiveAI.currentModifier = 0;
+        return;
+    }
+
+    // Weight recent games more heavily
+    let weightedWins = 0;
+    let totalWeight = 0;
+    for (let i = 0; i < results.length; i++) {
+        const weight = 1 + (i / results.length); // newer games weigh more
+        if (results[i].won) weightedWins += weight;
+        totalWeight += weight;
+    }
+    const weightedWinRate = weightedWins / totalWeight;
+
+    // Calculate streak factor - consecutive wins/losses have extra impact
+    let streak = 0;
+    for (let i = results.length - 1; i >= 0; i--) {
+        if (results[i].won === results[results.length - 1].won) {
+            streak++;
+        } else break;
+    }
+    const streakBonus = Math.min(streak * 0.05, 0.25); // up to 0.25 extra from streaks
+
+    // Target win rate is ~55% (slightly favoring player for fun)
+    // modifier ranges from -0.6 (much easier) to +0.6 (much harder)
+    let modifier = (weightedWinRate - 0.55) * 2;
+
+    // Apply streak bonus in the direction of the modifier
+    if (modifier > 0) modifier += streakBonus;
+    else if (modifier < 0) modifier -= streakBonus;
+
+    // Clamp to range
+    modifier = Math.max(-0.6, Math.min(0.6, modifier));
+
+    // Smooth transition - don't change too fast
+    const prevModifier = playerStats.adaptiveAI.currentModifier || 0;
+    playerStats.adaptiveAI.currentModifier = prevModifier * 0.3 + modifier * 0.7;
+}
+
+// Returns adjusted AI settings based on adaptive modifier
+function getAdaptiveAISettings() {
+    const baseDiff = DIFFICULTY[game.difficulty];
+    const mod = (playerStats.adaptiveAI && playerStats.adaptiveAI.currentModifier) || 0;
+
+    // If modifier is ~0, return base settings unchanged
+    if (Math.abs(mod) < 0.05) return baseDiff;
+
+    return {
+        aiSpeed: baseDiff.aiSpeed * (1 + mod * 0.5),          // +/- 30% speed
+        aiAggression: Math.max(0.1, Math.min(0.95, baseDiff.aiAggression + mod * 0.2)), // +/- 12% aggression
+        planets: baseDiff.planets,
+        startingUnits: Math.max(15, Math.round(baseDiff.startingUnits * (1 + mod * 0.3))), // +/- 18% starting units
+        specialPlanets: baseDiff.specialPlanets,
+        // Economy speed multiplier for enemy production
+        enemyProductionMult: 1 + mod * 0.35, // +/- 21% production
+        // AI decision quality: higher = smarter target selection
+        decisionQuality: Math.max(0.3, Math.min(1.0, 0.65 + mod * 0.5))
+    };
+}
+
+function getAdaptiveLabel() {
+    const mod = (playerStats.adaptiveAI && playerStats.adaptiveAI.currentModifier) || 0;
+    if (mod > 0.2) return { text: 'Harder', cls: 'harder' };
+    if (mod < -0.2) return { text: 'Easier', cls: 'easier' };
+    return { text: 'Balanced', cls: 'balanced' };
+}
+
+function updateAdaptiveIndicator() {
+    const indicator = document.getElementById('adaptiveIndicator');
+    const label = document.getElementById('adaptiveLabel');
+    const dot = indicator ? indicator.querySelector('.adapt-dot') : null;
+    if (!indicator || !label || !dot) return;
+
+    const results = playerStats.adaptiveAI ? playerStats.adaptiveAI.recentResults : [];
+    if (results.length < 3) {
+        indicator.classList.add('hidden');
+        return;
+    }
+
+    indicator.classList.remove('hidden');
+    const info = getAdaptiveLabel();
+    label.textContent = info.text;
+    dot.className = 'adapt-dot ' + info.cls;
 }
 
 function checkDailyChallenges() {
@@ -4231,6 +4542,154 @@ function renderTimeline() {
     }
 }
 
+// ==================== POST-MATCH STATISTICS DASHBOARD ====================
+function renderPostMatchDashboard() {
+    const dashboard = document.getElementById('postMatchDashboard');
+    const grid = document.getElementById('dashboardGrid');
+    if (!dashboard || !grid || !currentGameStats) return;
+
+    dashboard.style.display = 'block';
+
+    // Calculate derived stats
+    const gameTime = currentGameStats.gameTime || 1;
+    const mins = Math.floor(gameTime / 60);
+    const secs = Math.floor(gameTime % 60);
+    const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    const avgResponse = currentGameStats.responseTimes.length > 0
+        ? (currentGameStats.responseTimes.reduce((a, b) => a + b, 0) / currentGameStats.responseTimes.length).toFixed(1)
+        : '--';
+
+    const winRate = playerStats.gamesPlayed > 0
+        ? Math.round((playerStats.gamesWon / playerStats.gamesPlayed) * 100)
+        : 0;
+
+    // Build stats array
+    const stats = [
+        { value: Math.floor(currentGameStats.particlesProduced), label: 'Units Produced', colorClass: 'cyan' },
+        { value: currentGameStats.particlesKilled, label: 'Enemy Killed', colorClass: 'green' },
+        { value: currentGameStats.particlesLost, label: 'Units Lost', colorClass: 'red' },
+        { value: currentGameStats.planetsConqueredThisGame || 0, label: 'Planets Taken', colorClass: 'cyan' },
+        { value: currentGameStats.planetsLostThisGame || 0, label: 'Planets Lost', colorClass: 'red' },
+        { value: currentGameStats.largestArmySent || 0, label: 'Largest Army', colorClass: 'gold' },
+        { value: avgResponse !== '--' ? avgResponse + 's' : '--', label: 'Avg Response', colorClass: '' },
+        { value: currentGameStats.attacksSent || 0, label: 'Attacks Sent', colorClass: '' },
+        { value: winRate + '%', label: 'Win Rate', colorClass: winRate > 55 ? 'green' : (winRate < 45 ? 'red' : '') }
+    ];
+
+    grid.innerHTML = stats.map(s => `
+        <div class="dash-stat">
+            <div class="dash-stat-value ${s.colorClass}">${s.value}</div>
+            <div class="dash-stat-label">${s.label}</div>
+        </div>
+    `).join('');
+
+    // Render territory control graph
+    renderTerritoryGraph();
+}
+
+function renderTerritoryGraph() {
+    const canvas = document.getElementById('territoryGraphCanvas');
+    if (!canvas || !currentGameStats || !currentGameStats.territoryHistory) return;
+
+    const history = currentGameStats.territoryHistory;
+    if (history.length < 2) return;
+
+    const container = canvas.parentElement;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width || 580;
+    canvas.height = rect.height || 80;
+
+    const gc = canvas.getContext('2d');
+    gc.clearRect(0, 0, canvas.width, canvas.height);
+
+    const w = canvas.width;
+    const h = canvas.height;
+    const totalTime = currentGameStats.gameTime || 1;
+
+    // Find total planet count (excluding black holes)
+    const totalPlanets = planets.filter(p => p.type !== 'blackhole').length || 1;
+
+    // Draw stacked area chart
+    // Bottom: player (cyan), Middle: neutral (gray), Top: enemy (red)
+    gc.globalAlpha = 0.4;
+
+    // Player area (cyan, from bottom)
+    gc.fillStyle = '#0ff';
+    gc.beginPath();
+    gc.moveTo(0, h);
+    for (let i = 0; i < history.length; i++) {
+        const x = (history[i].time / totalTime) * w;
+        const playerH = (history[i].playerPlanets / totalPlanets) * h;
+        gc.lineTo(x, h - playerH);
+    }
+    gc.lineTo((history[history.length - 1].time / totalTime) * w, h);
+    gc.closePath();
+    gc.fill();
+
+    // Enemy area (red, from top)
+    gc.fillStyle = '#f44';
+    gc.beginPath();
+    gc.moveTo(0, 0);
+    for (let i = 0; i < history.length; i++) {
+        const x = (history[i].time / totalTime) * w;
+        const enemyH = (history[i].enemyPlanets / totalPlanets) * h;
+        gc.lineTo(x, enemyH);
+    }
+    gc.lineTo((history[history.length - 1].time / totalTime) * w, 0);
+    gc.closePath();
+    gc.fill();
+
+    gc.globalAlpha = 1;
+
+    // Draw player territory line
+    gc.strokeStyle = '#0ff';
+    gc.lineWidth = 2;
+    gc.beginPath();
+    for (let i = 0; i < history.length; i++) {
+        const x = (history[i].time / totalTime) * w;
+        const y = h - (history[i].playerPlanets / totalPlanets) * h;
+        if (i === 0) gc.moveTo(x, y);
+        else gc.lineTo(x, y);
+    }
+    gc.stroke();
+
+    // Draw enemy territory line
+    gc.strokeStyle = '#f44';
+    gc.lineWidth = 2;
+    gc.beginPath();
+    for (let i = 0; i < history.length; i++) {
+        const x = (history[i].time / totalTime) * w;
+        const y = (history[i].enemyPlanets / totalPlanets) * h;
+        if (i === 0) gc.moveTo(x, y);
+        else gc.lineTo(x, y);
+    }
+    gc.stroke();
+
+    // Time labels
+    gc.fillStyle = '#555';
+    gc.font = '9px system-ui';
+    gc.textAlign = 'left';
+    gc.fillText('0:00', 3, h - 3);
+    gc.textAlign = 'right';
+    const endMins = Math.floor(totalTime / 60);
+    const endSecs = Math.floor(totalTime % 60);
+    gc.fillText(`${endMins}:${endSecs.toString().padStart(2, '0')}`, w - 3, h - 3);
+
+    // Percentage labels at end
+    if (history.length > 0) {
+        const last = history[history.length - 1];
+        const playerPct = Math.round((last.playerPlanets / totalPlanets) * 100);
+        const enemyPct = Math.round((last.enemyPlanets / totalPlanets) * 100);
+        gc.textAlign = 'right';
+        gc.fillStyle = '#0ff';
+        gc.font = 'bold 10px system-ui';
+        gc.fillText(playerPct + '%', w - 3, h - 14);
+        gc.fillStyle = '#f44';
+        gc.fillText(enemyPct + '%', w - 3, 14);
+    }
+}
+
 // ==================== RALLY POINT DRAWING & AUTO-SEND ====================
 function drawRallyPoints() {
     for (const [srcIdx, tgtIdx] of rallyPoints) {
@@ -4445,6 +4904,13 @@ class Planet {
         if (isMine && upgradeModifiers.productionMult > 0) {
             rate *= (1 + upgradeModifiers.productionMult);
         }
+        // Adaptive AI: adjust enemy production rate based on player performance
+        if (isEnemy && !multiplayerActive) {
+            const adaptiveSettings = getAdaptiveAISettings();
+            if (adaptiveSettings.enemyProductionMult) {
+                rate *= adaptiveSettings.enemyProductionMult;
+            }
+        }
         return rate;
     }
 
@@ -4483,7 +4949,12 @@ class Planet {
         
         const isNeutral = multiplayerActive ? this.owner < 0 : this.owner === NEUTRAL;
         if (!isNeutral && this.units < this.effectiveMaxUnits && this.type !== 'blackhole') {
-            this.units += this.productionRate * dt;
+            const produced = this.productionRate * dt;
+            this.units += produced;
+            // Track production for post-match stats
+            if (currentGameStats && this.owner === PLAYER) {
+                currentGameStats.particlesProduced += produced;
+            }
         }
         
         if (this.type === 'blackhole') {
@@ -4791,7 +5262,19 @@ class FlyingParticle {
             } else {
                 const damage = 1 / this.target.defenseMult;
                 this.target.units -= damage;
-                
+
+                // Track particles killed/lost for post-match stats
+                if (currentGameStats) {
+                    if (this.owner === PLAYER) {
+                        // Player particle attacking enemy - enemy "loses" some defense
+                        currentGameStats.particlesKilled++;
+                        playerStats.unitsDestroyed++;
+                    } else if (this.target.owner === PLAYER) {
+                        // Enemy particle attacking player planet
+                        currentGameStats.particlesLost++;
+                    }
+                }
+
                 if (this.target.units <= 0) {
                     const prevOwner = this.target.owner;
                     this.target.owner = this.owner;
@@ -4807,6 +5290,7 @@ class FlyingParticle {
 
                     if (isMyTeam) {
                         playerStats.planetsConquered++;
+                        if (currentGameStats) currentGameStats.planetsConqueredThisGame++;
                         playSound('capture');
                         // Capture juice!
                         const teamColor = getOwnerColor(this.owner).main;
@@ -4827,6 +5311,8 @@ class FlyingParticle {
                         playerStats.planetsLost++;
                         currentGameStats.perfectWin = false;
                         currentGameStats.planetsLostThisGame++;
+                        // Track time of enemy action for response time calculation
+                        if (currentGameStats) currentGameStats.lastEnemyActionTime = Date.now();
                         playSound('lose');
                         // Lose planet juice
                         juice.shake(10, 150);
@@ -5230,7 +5716,7 @@ function togglePlanetSelection(planet) {
 }
 
 function generateLevel() {
-    const settings = DIFFICULTY[game.difficulty];
+    const settings = getAdaptiveAISettings();
     const numPlanets = settings.planets + Math.floor(game.level / 2);
 
     planets = [];
@@ -5371,6 +5857,7 @@ function generateLevel() {
     }
     
     document.getElementById('levelInfo').textContent = `Level ${game.level} • ${game.difficulty.toUpperCase()} • ${game.mode.toUpperCase()}`;
+    updateAdaptiveIndicator();
     updateSelectionIndicator();
 
     // Show minimap and rally hint
@@ -5408,7 +5895,7 @@ function updateHarvestUI() {
 }
 
 function updateHarvestAI(dt) {
-    const settings = DIFFICULTY[game.difficulty];
+    const settings = getAdaptiveAISettings();
     const now = Date.now();
     
     const grabInterval = 800 / settings.aiSpeed;
@@ -5454,22 +5941,31 @@ function checkHarvestComplete() {
 function sendUnits(from, to, percent) {
     const numToSend = Math.floor(from.units * (percent / 100));
     if (numToSend < 1) return;
-    
+
     from.units -= numToSend;
-    
+
+    // Track match stats for post-match dashboard
+    if (currentGameStats && from.owner === PLAYER) {
+        currentGameStats.attacksSent++;
+        if (numToSend > currentGameStats.largestArmySent) {
+            currentGameStats.largestArmySent = numToSend;
+        }
+        playerStats.unitsDeployed += numToSend;
+    }
+
     let spawnPlanet = from;
     if (from.type === 'wormhole' && from.wormholePartner) {
         spawnPlanet = from.wormholePartner;
         effects.push(new Effect('wormhole', from.x, from.y, { duration: 0.5 }));
         effects.push(new Effect('wormhole', spawnPlanet.x, spawnPlanet.y, { duration: 0.5 }));
     }
-    
+
     for (let i = 0; i < numToSend; i++) {
         const angle = Math.random() * Math.PI * 2;
         const dist = spawnPlanet.size + Math.random() * 15;
         const x = spawnPlanet.x + Math.cos(angle) * dist;
         const y = spawnPlanet.y + Math.sin(angle) * dist;
-        
+
         setTimeout(() => {
             flyingParticles.push(new FlyingParticle(x, y, to, from.owner));
         }, i * 25);
@@ -5490,6 +5986,14 @@ function sendUnifiedAttack(target, percent) {
         currentGameStats.firstAttackTime = (Date.now() - currentGameStats.startTime) / 1000;
         if (currentGameStats.firstAttackTime < 30) {
             currentGameStats.noEarlyAttack = false;
+        }
+    }
+
+    // Track response time: how fast player reacted after last enemy action
+    if (currentGameStats && currentGameStats.lastEnemyActionTime) {
+        const responseTime = (Date.now() - currentGameStats.lastEnemyActionTime) / 1000;
+        if (responseTime < 30) { // Only count if reasonably close to the event
+            currentGameStats.responseTimes.push(responseTime);
         }
     }
 
@@ -5520,7 +6024,7 @@ let lastAIReinforce = 0;
 let lastAIPincer = 0;
 
 function updateAI(dt) {
-    const settings = DIFFICULTY[game.difficulty];
+    const settings = getAdaptiveAISettings();
     const now = Date.now();
 
     // ---- Smarter AI: Reinforce threatened front-line planets ----
@@ -5546,7 +6050,16 @@ function updateAI(dt) {
 
     if (Math.random() > settings.aiAggression) return;
 
-    const source = aiPlanets[Math.floor(Math.random() * aiPlanets.length)];
+    // Adaptive: decision quality affects source selection
+    // Higher quality = pick strongest planet, lower = random
+    const quality = settings.decisionQuality || 0.65;
+    let source;
+    if (Math.random() < quality) {
+        // Smart: pick the planet with most units
+        source = aiPlanets.reduce((best, p) => p.units > best.units ? p : best, aiPlanets[0]);
+    } else {
+        source = aiPlanets[Math.floor(Math.random() * aiPlanets.length)];
+    }
 
     let bestTarget = null;
     let bestScore = -Infinity;
@@ -5561,15 +6074,24 @@ function updateAI(dt) {
             // (c) AVOID shielded planets entirely
             if (planet.shielded) continue;
             score = 100 - planet.units * planet.defenseMult - dist / 15;
+            // Adaptive: smarter targeting - prefer weaker planets more
+            if (quality > 0.7) {
+                score += (source.units - planet.units) * 0.5;
+            }
         } else if (planet.owner === NEUTRAL) {
             score = 60 - planet.units - dist / 8;
             if (planet.type === 'factory') score += 30;
             if (planet.type === 'fortress') score += 20;
+            // Adaptive: smarter AI prioritizes strategic planets more
+            if (quality > 0.7 && planet.type === 'factory') score += 15;
         } else {
             score = -100; // own planet
         }
 
         if (planet.type === 'wormhole' && planet.owner !== ENEMY) score += 25;
+
+        // Add randomness inversely proportional to decision quality
+        score += (Math.random() - 0.5) * (1 - quality) * 60;
 
         if (score > bestScore) {
             bestScore = score;
@@ -5581,6 +6103,12 @@ function updateAI(dt) {
         let percent = 50;
         if (bestTarget.owner === PLAYER && bestTarget.units < source.units * 0.4) percent = 80;
         if (bestTarget.owner === NEUTRAL) percent = Math.min(70, (bestTarget.units + 5) / source.units * 100);
+
+        // Adaptive: higher quality = send more appropriate army sizes
+        if (quality > 0.7 && bestTarget.owner === PLAYER) {
+            const needed = bestTarget.units * bestTarget.defenseMult + 5;
+            percent = Math.min(90, Math.max(40, (needed / source.units) * 100 + 10));
+        }
 
         sendUnits(source, bestTarget, percent);
     }
@@ -5633,6 +6161,7 @@ function aiReinforce(settings) {
 
 // (b) Coordinate multi-planet pincer attacks
 function aiPincerAttack(settings) {
+    const quality = settings.decisionQuality || 0.65;
     const aiPlanets = planets.filter(p => p.owner === ENEMY && p.units > 12);
     if (aiPlanets.length < 2) return;
 
@@ -5640,25 +6169,38 @@ function aiPincerAttack(settings) {
     const playerPlanets = planets.filter(p => p.owner === PLAYER && !p.shielded);
     if (playerPlanets.length === 0) return;
 
-    for (const target of playerPlanets) {
+    // Adaptive: sort targets by weakness (smarter AI picks better targets)
+    const sortedTargets = [...playerPlanets];
+    if (quality > 0.6) {
+        sortedTargets.sort((a, b) => (a.units * a.defenseMult) - (b.units * b.defenseMult));
+    }
+
+    for (const target of sortedTargets) {
         // Skip shielded planets entirely
         if (target.shielded) continue;
+
+        // Adaptive: higher quality AI uses wider search radius
+        const searchRadius = 350 + quality * 150;
 
         // Find 2-3 nearby AI planets that could attack together
         const nearby = aiPlanets.filter(ap => {
             const dist = Math.sqrt((ap.x - target.x)**2 + (ap.y - target.y)**2);
-            return dist < 450;
+            return dist < searchRadius;
         });
 
         if (nearby.length >= 2) {
             // Check if combined force can overwhelm the target
-            const totalForce = nearby.reduce((sum, p) => sum + Math.floor(p.units * 0.6), 0);
+            const sendPct = 0.5 + quality * 0.15; // higher quality = commit more units
+            const totalForce = nearby.reduce((sum, p) => sum + Math.floor(p.units * sendPct), 0);
             const targetDefense = target.units * target.defenseMult;
 
-            if (totalForce > targetDefense * 1.3) {
+            // Adaptive: smarter AI requires less overwhelming force
+            const forceMultiplier = 1.5 - quality * 0.4;
+            if (totalForce > targetDefense * forceMultiplier) {
                 // Execute pincer attack from all nearby planets simultaneously
+                const pct = Math.round(sendPct * 100);
                 for (const attacker of nearby.slice(0, 3)) {
-                    sendUnits(attacker, target, 60);
+                    sendUnits(attacker, target, pct);
                 }
                 return; // Only one pincer per tick
             }
@@ -5823,6 +6365,7 @@ function checkWinCondition() {
 function endGame(victory) {
     game.state = 'ended';
     stopUnitTracking();
+    stopTerritoryTracking();
 
     // Hide minimap and rally hint
     document.getElementById('minimapCanvas').classList.add('hidden');
@@ -5874,6 +6417,11 @@ function endGame(victory) {
         haptics.error();
     }
 
+    // Update adaptive AI difficulty based on result
+    if (!multiplayerActive) {
+        updateAdaptiveAI(victory);
+    }
+
     // Check achievements
     achievements.check();
 
@@ -5919,6 +6467,15 @@ function endGame(victory) {
         text.textContent = 'The enemy has conquered the galaxy...';
     }
 
+    // Show adaptive AI status in subtitle if active
+    if (!multiplayerActive && playerStats.adaptiveAI && playerStats.adaptiveAI.recentResults.length >= 3) {
+        const info = getAdaptiveLabel();
+        subtitle.textContent += ` | AI: ${info.text}`;
+    }
+
+    // Render post-match statistics dashboard
+    renderPostMatchDashboard();
+
     // Render post-game timeline
     renderTimeline();
 
@@ -5959,9 +6516,12 @@ function goToMenu() {
     document.getElementById('pauseBtn').classList.add('hidden');
     document.getElementById('minimapCanvas').classList.add('hidden');
     document.getElementById('rallyHint').classList.add('hidden');
+    const dashEl = document.getElementById('postMatchDashboard');
+    if (dashEl) dashEl.style.display = 'none';
     game.state = 'menu';
     stopMusic();
     stopUnitTracking();
+    stopTerritoryTracking();
     resetUpgrades();
 }
 
@@ -5985,6 +6545,9 @@ function startGame(difficulty) {
     document.getElementById('resultScreen').classList.add('hidden');
     document.getElementById('pauseMenu').classList.add('hidden');
     document.getElementById('pauseBtn').classList.remove('hidden');
+    // Reset post-match dashboard for next game
+    const dashEl = document.getElementById('postMatchDashboard');
+    if (dashEl) dashEl.style.display = 'none';
 
     resetCurrentGameStats();
     generateLevel();

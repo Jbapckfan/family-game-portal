@@ -29,6 +29,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --lo-primary: 34, 211, 238;
+            --lo-primary-hex: #22d3ee;
+            --lo-secondary: 96, 165, 250;
+            --lo-secondary-hex: #60a5fa;
+            --lo-accent: 168, 85, 247;
+            --lo-accent-hex: #a855f7;
+            --lo-glow: 34, 211, 238;
+            --lo-bg-via: 30, 58, 138;
+            --lo-text-primary: 207, 250, 254;
+            --lo-gradient-from: var(--lo-primary-hex);
+            --lo-gradient-to: var(--lo-secondary-hex);
+        }
+        [data-theme="green"] {
+            --lo-primary: 74, 222, 128;
+            --lo-primary-hex: #4ade80;
+            --lo-secondary: 34, 197, 94;
+            --lo-secondary-hex: #22c55e;
+            --lo-accent: 163, 230, 53;
+            --lo-accent-hex: #a3e635;
+            --lo-glow: 74, 222, 128;
+            --lo-bg-via: 20, 83, 45;
+            --lo-text-primary: 220, 252, 231;
+            --lo-gradient-from: #4ade80;
+            --lo-gradient-to: #22c55e;
+        }
+        [data-theme="amber"] {
+            --lo-primary: 251, 191, 36;
+            --lo-primary-hex: #fbbf24;
+            --lo-secondary: 245, 158, 11;
+            --lo-secondary-hex: #f59e0b;
+            --lo-accent: 252, 211, 77;
+            --lo-accent-hex: #fcd34d;
+            --lo-glow: 251, 191, 36;
+            --lo-bg-via: 120, 53, 15;
+            --lo-text-primary: 254, 243, 199;
+            --lo-gradient-from: #fbbf24;
+            --lo-gradient-to: #f59e0b;
+        }
+        [data-theme="purple"] {
+            --lo-primary: 192, 132, 252;
+            --lo-primary-hex: #c084fc;
+            --lo-secondary: 168, 85, 247;
+            --lo-secondary-hex: #a855f7;
+            --lo-accent: 232, 121, 249;
+            --lo-accent-hex: #e879f9;
+            --lo-glow: 192, 132, 252;
+            --lo-bg-via: 88, 28, 135;
+            --lo-text-primary: 243, 232, 255;
+            --lo-gradient-from: #c084fc;
+            --lo-gradient-to: #a855f7;
+        }
         html, body {
             background-color: #000;
         }
@@ -36,7 +88,7 @@
             font-family: 'Orbitron', sans-serif;
         }
         .text-shadow-neon {
-          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.5);
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(var(--lo-primary), 0.5), 0 0 20px rgba(var(--lo-primary), 0.5);
         }
         .scanline-animation {
           background-image: linear-gradient(
@@ -75,8 +127,63 @@
           border-color: rgb(250, 204, 21) !important;
           border-width: 3px !important;
         }
+        /* Toggle Pattern Indicator - adjacent cell highlight on hover */
+        .adjacent-highlight {
+            outline: 2px solid rgba(var(--lo-primary), 0.5);
+            outline-offset: -2px;
+            box-shadow: 0 0 10px rgba(var(--lo-primary), 0.3), inset 0 0 6px rgba(var(--lo-primary), 0.15) !important;
+            transition: outline 0.15s ease, box-shadow 0.15s ease;
+        }
+        /* Click Ripple Animation */
+        @keyframes cell-ripple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(var(--lo-primary), 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(var(--lo-primary), 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(var(--lo-primary), 0);
+            }
+        }
+        .ripple-center {
+            animation: cell-ripple 0.5s ease-out;
+        }
+        @keyframes cell-ripple-adjacent {
+            0% {
+                box-shadow: 0 0 0 0 rgba(var(--lo-primary), 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 8px rgba(var(--lo-primary), 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(var(--lo-primary), 0);
+            }
+        }
+        .ripple-adjacent {
+            animation: cell-ripple-adjacent 0.5s ease-out 0.1s;
+        }
+        /* Theme switcher dot active state */
+        .theme-dot {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .theme-dot:hover {
+            transform: scale(1.2);
+        }
+        .theme-dot.active {
+            box-shadow: 0 0 0 2px #000, 0 0 0 4px rgba(var(--lo-primary), 0.8);
+            transform: scale(1.15);
+        }
+        /* Countdown bar animation */
+        @keyframes countdown-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .countdown-urgent {
+            animation: countdown-pulse 0.5s ease-in-out infinite;
+        }
         button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
-            outline: 2px solid #00ffff;
+            outline: 2px solid rgba(var(--lo-primary), 1);
             outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
@@ -99,8 +206,12 @@
 
     <script type="text/babel">
         // --- CONFIGURATION ---
-        const LIGHT_COLOR_ON = 'rgb(34, 211, 238)';
-        const LIGHT_GLOW_ON = 'rgb(34, 211, 238)';
+        const getLightColorOn = () => {
+            const style = getComputedStyle(document.documentElement);
+            const rgb = style.getPropertyValue('--lo-primary').trim();
+            return `rgb(${rgb})`;
+        };
+        const getLightGlowOn = () => getLightColorOn();
         const LIGHT_COLOR_OFF = 'transparent';
 
         const DIFFICULTY_OPTIONS = [
@@ -110,6 +221,47 @@
         ];
 
         const HINTS_PER_GAME = 3;
+
+        // --- THEME CONFIGURATION ---
+        const THEMES = [
+            { id: 'cyan', label: 'Neon Cyan', color: '#22d3ee' },
+            { id: 'green', label: 'Matrix Green', color: '#4ade80' },
+            { id: 'amber', label: 'Warm Amber', color: '#fbbf24' },
+            { id: 'purple', label: 'Purple Haze', color: '#c084fc' },
+        ];
+        const STORAGE_KEY_THEME = 'lightsout_theme';
+
+        const loadTheme = () => {
+            try {
+                return localStorage.getItem(STORAGE_KEY_THEME) || 'cyan';
+            } catch { return 'cyan'; }
+        };
+
+        const saveTheme = (themeId) => {
+            try { localStorage.setItem(STORAGE_KEY_THEME, themeId); } catch {}
+        };
+
+        const applyTheme = (themeId) => {
+            if (themeId === 'cyan') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', themeId);
+            }
+        };
+
+        // Apply saved theme immediately on load
+        applyTheme(loadTheme());
+
+        // --- TIMED CHALLENGE CONFIGURATION ---
+        const TIME_LIMITS = {
+            3: 30,
+            5: 60,
+            7: 120,
+            9: 180,
+            11: 240,
+        };
+        const getTimeLimit = (size) => TIME_LIMITS[size] || Math.max(60, size * size * 2);
+        const BONUS_POINTS_PER_SECOND = 10;
 
         // --- HELPER FUNCTIONS ---
         const MAX_BOARD_GEN_ITERATIONS = 1000;
@@ -260,6 +412,7 @@
         // --- LOCALSTORAGE HELPERS ---
         const STORAGE_KEY_BEST_MOVES = 'lightsout_best_moves';
         const STORAGE_KEY_BEST_STARS = 'lightsout_best_stars';
+        const STORAGE_KEY_BEST_TIMED = 'lightsout_best_timed';
 
         const loadBestScores = () => {
             try {
@@ -297,6 +450,23 @@
                 try { localStorage.setItem(STORAGE_KEY_BEST_STARS, JSON.stringify(allStars)); } catch {}
             }
             return allStars;
+        };
+
+        const loadBestTimed = () => {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_BEST_TIMED);
+                return raw ? JSON.parse(raw) : {};
+            } catch { return {}; }
+        };
+
+        const saveBestTimed = (gridSize, score) => {
+            const scores = loadBestTimed();
+            const key = String(gridSize);
+            if (!scores[key] || score > scores[key]) {
+                scores[key] = score;
+                try { localStorage.setItem(STORAGE_KEY_BEST_TIMED, JSON.stringify(scores)); } catch {}
+            }
+            return scores;
         };
 
         // --- STAR RATING CALCULATION ---
@@ -380,41 +550,48 @@
                 >
                     <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
                     <div
-                        className="relative bg-gray-900 border border-cyan-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-cyan-500/20 animate-fade-in"
+                        className="relative bg-gray-900 rounded-2xl p-6 max-w-sm w-full animate-fade-in"
+                        style={{
+                            border: `1px solid rgba(var(--lo-primary), 0.4)`,
+                            boxShadow: `0 25px 50px rgba(var(--lo-primary), 0.15)`,
+                        }}
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button
                             ref={closeButtonRef}
                             onClick={handleClose}
-                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-cyan-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            style={{ color: `rgba(var(--lo-primary), 0.8)` }}
                             aria-label="Close instructions"
                         >
                             &times;
                         </button>
-                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-4">
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-clip-text text-transparent mb-4"
+                            style={{ backgroundImage: `linear-gradient(to right, var(--lo-gradient-from), var(--lo-gradient-to))` }}>
                             How to Play
                         </h2>
-                        <ul className="text-cyan-100/90 text-sm space-y-3 list-none">
+                        <ul className="text-sm space-y-3 list-none" style={{ color: `rgba(var(--lo-text-primary), 0.85)` }}>
                             <li className="flex gap-2">
-                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>Click any <strong className="text-cyan-300">light</strong> to toggle it and its <strong className="text-cyan-300">4 adjacent neighbors</strong> (up, down, left, right).</span>
+                                <span className="mt-0.5" style={{ color: `rgba(var(--lo-primary), 0.9)` }} aria-hidden="true">&#9654;</span>
+                                <span>Click any <strong style={{ color: `rgba(var(--lo-primary), 0.9)` }}>light</strong> to toggle it and its <strong style={{ color: `rgba(var(--lo-primary), 0.9)` }}>4 adjacent neighbors</strong> (up, down, left, right).</span>
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span className="mt-0.5" style={{ color: `rgba(var(--lo-primary), 0.9)` }} aria-hidden="true">&#9654;</span>
                                 <span>Your goal is to turn <strong className="text-yellow-300">ALL lights off</strong> to win the game.</span>
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>The <strong className="text-cyan-300">fewer moves</strong> you use, the better your score!</span>
+                                <span className="mt-0.5" style={{ color: `rgba(var(--lo-primary), 0.9)` }} aria-hidden="true">&#9654;</span>
+                                <span>The <strong style={{ color: `rgba(var(--lo-primary), 0.9)` }}>fewer moves</strong> you use, the better your score!</span>
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>Use <strong className="text-cyan-300">Undo</strong> to take back your last move, or <strong className="text-yellow-300">Hint</strong> (3 per game) for help.</span>
+                                <span className="mt-0.5" style={{ color: `rgba(var(--lo-primary), 0.9)` }} aria-hidden="true">&#9654;</span>
+                                <span>Use <strong style={{ color: `rgba(var(--lo-primary), 0.9)` }}>Undo</strong> to take back your last move, or <strong className="text-yellow-300">Hint</strong> (3 per game) for help.</span>
                             </li>
                         </ul>
                         <button
                             onClick={handleClose}
-                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all"
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black transition-all"
+                            style={{ backgroundImage: `linear-gradient(to right, var(--lo-gradient-from), var(--lo-gradient-to))` }}
                         >
                             Got it!
                         </button>
@@ -423,29 +600,113 @@
             );
         };
 
-        // --- DIFFICULTY SELECTOR ---
-        const DifficultySelector = ({ gridSize, onChange }) => {
+        // --- THEME SWITCHER ---
+        const ThemeSwitcher = ({ currentTheme, onThemeChange }) => {
             return (
-                <div className="flex gap-2 justify-center mb-4" role="radiogroup" aria-label="Difficulty">
-                    {DIFFICULTY_OPTIONS.map(opt => {
-                        const isActive = opt.size === gridSize;
-                        return (
-                            <button
-                                key={opt.size}
-                                role="radio"
-                                aria-checked={isActive}
-                                onClick={() => onChange(opt.size)}
-                                className={`px-3 py-1.5 min-h-[40px] rounded-lg text-xs font-bold transition-all border ${
-                                    isActive
-                                        ? 'bg-cyan-500/30 border-cyan-400 text-cyan-200 shadow-lg shadow-cyan-500/20'
-                                        : 'bg-black/40 border-cyan-500/20 text-cyan-400/60 hover:border-cyan-500/50 hover:text-cyan-300'
-                                }`}
-                            >
-                                <div>{opt.label}</div>
-                                <div className="text-[10px] opacity-70">{opt.sublabel}</div>
-                            </button>
-                        );
-                    })}
+                <div className="flex items-center justify-center gap-2 mb-3">
+                    <span className="text-xs" style={{ color: `rgba(var(--lo-text-primary), 0.6)` }}>Theme:</span>
+                    {THEMES.map(t => (
+                        <button
+                            key={t.id}
+                            onClick={() => onThemeChange(t.id)}
+                            className={`theme-dot w-6 h-6 rounded-full border-2 ${currentTheme === t.id ? 'active border-white/80' : 'border-white/20 hover:border-white/50'}`}
+                            style={{ backgroundColor: t.color }}
+                            aria-label={`${t.label} theme${currentTheme === t.id ? ' (active)' : ''}`}
+                            title={t.label}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // --- DIFFICULTY SELECTOR ---
+        const DifficultySelector = ({ gridSize, onChange, customSize, onCustomSizeChange }) => {
+            const isCustomActive = !DIFFICULTY_OPTIONS.some(opt => opt.size === gridSize);
+            const [customInput, setCustomInput] = React.useState(customSize || '');
+            const [customError, setCustomError] = React.useState('');
+
+            const handleCustomSubmit = () => {
+                const val = parseInt(customInput, 10);
+                if (isNaN(val) || val < 3 || val > 15) {
+                    setCustomError('3-15 only');
+                    return;
+                }
+                if (val % 2 === 0) {
+                    setCustomError('Must be odd');
+                    return;
+                }
+                setCustomError('');
+                onCustomSizeChange(val);
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter') handleCustomSubmit();
+            };
+
+            return (
+                <div className="flex flex-col items-center gap-2 mb-4">
+                    <div className="flex gap-2 justify-center flex-wrap" role="radiogroup" aria-label="Difficulty">
+                        {DIFFICULTY_OPTIONS.map(opt => {
+                            const isActive = opt.size === gridSize;
+                            return (
+                                <button
+                                    key={opt.size}
+                                    role="radio"
+                                    aria-checked={isActive}
+                                    onClick={() => { setCustomError(''); onChange(opt.size); }}
+                                    className={`px-3 py-1.5 min-h-[40px] rounded-lg text-xs font-bold transition-all border`}
+                                    style={{
+                                        backgroundColor: isActive ? `rgba(var(--lo-primary), 0.2)` : 'rgba(0,0,0,0.4)',
+                                        borderColor: isActive ? `rgba(var(--lo-primary), 0.8)` : `rgba(var(--lo-primary), 0.15)`,
+                                        color: isActive ? `rgba(var(--lo-text-primary), 0.9)` : `rgba(var(--lo-primary), 0.5)`,
+                                        boxShadow: isActive ? `0 4px 15px rgba(var(--lo-primary), 0.15)` : 'none',
+                                    }}
+                                >
+                                    <div>{opt.label}</div>
+                                    <div className="text-[10px] opacity-70">{opt.sublabel}</div>
+                                </button>
+                            );
+                        })}
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    min="3"
+                                    max="15"
+                                    step="2"
+                                    value={customInput}
+                                    onChange={(e) => { setCustomInput(e.target.value); setCustomError(''); }}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="NxN"
+                                    className="w-14 h-[40px] rounded-lg text-xs font-bold text-center border bg-black/40 focus:outline-none"
+                                    style={{
+                                        borderColor: isCustomActive ? `rgba(var(--lo-primary), 0.8)` : `rgba(var(--lo-primary), 0.15)`,
+                                        color: `rgba(var(--lo-text-primary), 0.9)`,
+                                        backgroundColor: isCustomActive ? `rgba(var(--lo-primary), 0.15)` : 'rgba(0,0,0,0.4)',
+                                    }}
+                                    aria-label="Custom grid size (odd number, 3-15)"
+                                />
+                                <button
+                                    onClick={handleCustomSubmit}
+                                    className="h-[40px] px-2 rounded-lg text-xs font-bold border transition-all"
+                                    style={{
+                                        borderColor: `rgba(var(--lo-primary), 0.4)`,
+                                        color: `rgba(var(--lo-primary), 0.9)`,
+                                        backgroundColor: 'rgba(0,0,0,0.3)',
+                                    }}
+                                    aria-label="Apply custom board size"
+                                >
+                                    Go
+                                </button>
+                            </div>
+                            {customError && (
+                                <div className="text-[10px] text-red-400 mt-0.5">{customError}</div>
+                            )}
+                            {isCustomActive && !customError && (
+                                <div className="text-[10px] mt-0.5" style={{ color: `rgba(var(--lo-primary), 0.6)` }}>Custom {gridSize}x{gridSize}</div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             );
         };
@@ -468,10 +729,11 @@
             );
         };
 
-        const LightCell = React.memo(({ isOn, onToggle, row, col, isHinted, cellSizeClass }) => {
+        const LightCell = React.memo(({ isOn, onToggle, row, col, isHinted, cellSizeClass, isAdjacentHighlight, rippleClass }) => {
             const style = React.useMemo(() => ({
-                backgroundColor: isOn ? LIGHT_COLOR_ON : LIGHT_COLOR_OFF,
-                boxShadow: isOn ? `0 0 15px ${LIGHT_GLOW_ON}, 0 0 25px ${LIGHT_GLOW_ON}60, inset 0 0 5px ${LIGHT_GLOW_ON}80` : 'inset 0 0 10px rgba(0,0,0,0.5)',
+                backgroundColor: isOn ? `rgb(var(--lo-primary))` : LIGHT_COLOR_OFF,
+                boxShadow: isOn ? `0 0 15px rgba(var(--lo-primary), 1), 0 0 25px rgba(var(--lo-primary), 0.38), inset 0 0 5px rgba(var(--lo-primary), 0.5)` : 'inset 0 0 10px rgba(0,0,0,0.5)',
+                borderColor: `rgba(var(--lo-primary), 0.3)`,
             }), [isOn]);
 
             const handleClick = React.useCallback(() => {
@@ -482,7 +744,7 @@
                 <button
                     onClick={handleClick}
                     role="gridcell"
-                    className={`${cellSizeClass} rounded-lg border-2 border-cyan-500/30 transition-all duration-200 ease-in-out transform hover:scale-105 hover:border-cyan-400 ${isHinted ? 'hint-highlight' : ''}`}
+                    className={`${cellSizeClass} rounded-lg border-2 transition-all duration-200 ease-in-out transform hover:scale-105 ${isHinted ? 'hint-highlight' : ''} ${isAdjacentHighlight ? 'adjacent-highlight' : ''} ${rippleClass || ''}`}
                     style={style}
                     aria-label={`Row ${row + 1}, Column ${col + 1}, light ${isOn ? 'on' : 'off'}${isHinted ? ', suggested move' : ''}`}
                     aria-pressed={isOn}
@@ -507,6 +769,101 @@
             const isWon = checkWinCondition(board);
             const prevIsWonRef = React.useRef(false);
 
+            // --- Feature: Color Theme Toggle ---
+            const [currentTheme, setCurrentTheme] = React.useState(() => loadTheme());
+
+            const handleThemeChange = React.useCallback((themeId) => {
+                setCurrentTheme(themeId);
+                applyTheme(themeId);
+                saveTheme(themeId);
+            }, []);
+
+            // --- Feature: Toggle Pattern Indicator (hover) ---
+            const [hoveredCell, setHoveredCell] = React.useState(null);
+
+            const getAdjacentCells = React.useCallback((r, c, size) => {
+                const adj = [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+                return adj.filter(([row, col]) => row >= 0 && row < size && col >= 0 && col < size);
+            }, []);
+
+            const handleCellHover = React.useCallback((r, c) => {
+                setHoveredCell({ row: r, col: c });
+            }, []);
+
+            const handleCellLeave = React.useCallback(() => {
+                setHoveredCell(null);
+            }, []);
+
+            const isAdjacentToHovered = React.useCallback((r, c) => {
+                if (!hoveredCell) return false;
+                const adj = getAdjacentCells(hoveredCell.row, hoveredCell.col, gridSize);
+                return adj.some(([ar, ac]) => ar === r && ac === c);
+            }, [hoveredCell, gridSize, getAdjacentCells]);
+
+            // --- Feature: Click Ripple Animation ---
+            const [rippleCells, setRippleCells] = React.useState({});
+
+            const triggerRipple = React.useCallback((r, c, size) => {
+                const centerKey = `${r}-${c}`;
+                const adjacents = [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]
+                    .filter(([row, col]) => row >= 0 && row < size && col >= 0 && col < size)
+                    .map(([row, col]) => `${row}-${col}`);
+
+                const newRipples = { [centerKey]: 'ripple-center' };
+                adjacents.forEach(key => { newRipples[key] = 'ripple-adjacent'; });
+                setRippleCells(newRipples);
+
+                // Clear ripple classes after animation completes
+                setTimeout(() => setRippleCells({}), 600);
+            }, []);
+
+            // --- Feature: Custom Board Size ---
+            const [customSize, setCustomSize] = React.useState(null);
+
+            const handleCustomSizeChange = React.useCallback((size) => {
+                setCustomSize(size);
+                setGridSize(size);
+                startNewGame(size);
+            }, []);
+
+            // --- Feature: Timed Challenge Mode ---
+            const [timedMode, setTimedMode] = React.useState(false);
+            const [timeRemaining, setTimeRemaining] = React.useState(0);
+            const [timerActive, setTimerActive] = React.useState(false);
+            const [timedScore, setTimedScore] = React.useState(null);
+            const [bestTimedScores, setBestTimedScores] = React.useState(() => loadBestTimed());
+            const timerRef = React.useRef(null);
+
+            // Timer countdown effect
+            React.useEffect(() => {
+                if (timerActive && timeRemaining > 0 && !isWon) {
+                    timerRef.current = setInterval(() => {
+                        setTimeRemaining(prev => {
+                            if (prev <= 1) {
+                                setTimerActive(false);
+                                clearInterval(timerRef.current);
+                                return 0;
+                            }
+                            return prev - 1;
+                        });
+                    }, 1000);
+                    return () => clearInterval(timerRef.current);
+                }
+                if (isWon && timerRef.current) {
+                    clearInterval(timerRef.current);
+                    setTimerActive(false);
+                }
+            }, [timerActive, isWon]);
+
+            const isTimedGameOver = timedMode && timeRemaining === 0 && timerActive === false && !isWon && moves > 0;
+
+            const toggleTimedMode = React.useCallback(() => {
+                setTimedMode(prev => {
+                    const newMode = !prev;
+                    return newMode;
+                });
+            }, []);
+
             // Compute minimum solution length when board changes (for new game)
             const computeMinSolution = React.useCallback((b) => {
                 const sol = solveLightsOut(b);
@@ -522,7 +879,9 @@
             const cellSizeClass = React.useMemo(() => {
                 if (gridSize <= 3) return 'w-20 h-20 md:w-24 md:h-24';
                 if (gridSize <= 5) return 'w-14 h-14 md:w-16 md:h-16';
-                return 'w-10 h-10 md:w-12 md:h-12';
+                if (gridSize <= 7) return 'w-10 h-10 md:w-12 md:h-12';
+                if (gridSize <= 9) return 'w-8 h-8 md:w-10 md:h-10';
+                return 'w-6 h-6 md:w-8 md:h-8';
             }, [gridSize]);
 
             // When the game is won, compute stars, save best scores
@@ -538,32 +897,53 @@
                     const updatedStars = saveBestStars(gridSize, stars);
                     setBestStarsMap(updatedStars);
 
+                    // Timed mode scoring
+                    if (timedMode && timeRemaining > 0) {
+                        const bonus = timeRemaining * BONUS_POINTS_PER_SECOND;
+                        const moveScore = Math.max(0, 1000 - (moves * 20));
+                        const totalScore = moveScore + bonus;
+                        setTimedScore(totalScore);
+                        const updatedTimed = saveBestTimed(gridSize, totalScore);
+                        setBestTimedScores(updatedTimed);
+                    }
+
                     if (resetButtonRef.current) {
                         resetButtonRef.current.focus();
                     }
                 }
                 prevIsWonRef.current = isWon;
-            }, [isWon, moves, gridSize, minSolution]);
+            }, [isWon, moves, gridSize, minSolution, timedMode, timeRemaining]);
 
             const handleLightClick = React.useCallback((r, c) => {
                 if (checkWinCondition(board)) return;
+                if (timedMode && timeRemaining === 0 && moves > 0) return; // Time's up
+
+                // Start timer on first move in timed mode
+                if (timedMode && moves === 0) {
+                    setTimeRemaining(getTimeLimit(gridSize));
+                    setTimerActive(true);
+                }
+
                 setMoveHistory(prev => [...prev, { row: r, col: c }]);
                 setBoard(prevBoard => toggleLights(prevBoard, r, c, gridSize));
                 setMoves(prevMoves => prevMoves + 1);
-                setHintCell(null); // Clear hint highlight on any click
-            }, [board, gridSize]);
+                setHintCell(null);
+                triggerRipple(r, c, gridSize);
+            }, [board, gridSize, timedMode, timeRemaining, moves, triggerRipple]);
 
             const handleUndo = React.useCallback(() => {
                 if (moveHistory.length === 0) return;
+                if (timedMode && timeRemaining === 0 && moves > 0) return;
                 const lastMove = moveHistory[moveHistory.length - 1];
                 setMoveHistory(prev => prev.slice(0, -1));
                 setBoard(prevBoard => toggleLights(prevBoard, lastMove.row, lastMove.col, gridSize));
                 setMoves(prevMoves => Math.max(0, prevMoves - 1));
                 setHintCell(null);
-            }, [moveHistory, gridSize]);
+            }, [moveHistory, gridSize, timedMode, timeRemaining, moves]);
 
             const handleHint = React.useCallback(() => {
                 if (hintsRemaining <= 0 || isWon) return;
+                if (timedMode && timeRemaining === 0 && moves > 0) return;
                 const solution = solveLightsOut(board);
                 if (!solution || solution.length === 0) {
                     setHintCell(null);
@@ -573,7 +953,7 @@
                 const target = solution[0];
                 setHintCell(target);
                 setHintsRemaining(prev => prev - 1);
-            }, [hintsRemaining, isWon, board]);
+            }, [hintsRemaining, isWon, board, timedMode, timeRemaining, moves]);
 
             const startNewGame = React.useCallback((size) => {
                 const newBoard = generateBoard(size);
@@ -583,11 +963,29 @@
                 setHintsRemaining(HINTS_PER_GAME);
                 setHintCell(null);
                 setWonStars(0);
+                setTimedScore(null);
+                setTimeRemaining(0);
+                setTimerActive(false);
+                setRippleCells({});
+                setHoveredCell(null);
+                if (timerRef.current) clearInterval(timerRef.current);
                 const sol = solveLightsOut(newBoard);
                 setMinSolution(sol ? sol.length : null);
             }, []);
 
+            // Fix: handleCustomSizeChange needs startNewGame, defined after it.
+            // We use a ref to avoid stale closure.
+            const startNewGameRef = React.useRef(startNewGame);
+            startNewGameRef.current = startNewGame;
+
+            const handleCustomSizeChangeStable = React.useCallback((size) => {
+                setCustomSize(size);
+                setGridSize(size);
+                startNewGameRef.current(size);
+            }, []);
+
             const handleSizeChange = React.useCallback((newSize) => {
+                setCustomSize(null);
                 setGridSize(newSize);
                 startNewGame(newSize);
             }, [startNewGame]);
@@ -610,60 +1008,137 @@
 
             const currentBestMoves = bestScores[String(gridSize)];
             const currentBestStars = bestStarsMap[String(gridSize)];
+            const currentBestTimed = bestTimedScores[String(gridSize)];
+
+            const formatTime = (seconds) => {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            };
+
+            const timeLimit = getTimeLimit(gridSize);
+            const timerPercent = timedMode && timeLimit > 0 ? (timeRemaining / timeLimit) * 100 : 100;
+            const timerUrgent = timedMode && timerActive && timeRemaining <= 10 && timeRemaining > 0;
+            const gameDisabled = isWon || isTimedGameOver;
 
             return (
                 <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-900/40 to-black" aria-hidden="true" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-black to-black" style={{ background: `linear-gradient(135deg, #000 0%, rgba(var(--lo-bg-via), 0.4) 50%, #000 100%)` }} aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 max-w-lg mx-auto text-center">
                         <header className="py-4">
                             <div className="flex items-center justify-center gap-3">
-                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent tracking-wider text-shadow-neon"
+                                    style={{ backgroundImage: `linear-gradient(to right, var(--lo-gradient-from), var(--lo-gradient-to), var(--lo-accent-hex))` }}>
                                     LIGHTS OUT
                                 </h1>
                                 <button
                                     ref={howToPlayTriggerRef}
                                     onClick={openHowToPlay}
-                                    className="min-w-[44px] min-h-[44px] rounded-full border border-cyan-500/50 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    className="min-w-[44px] min-h-[44px] rounded-full transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    style={{
+                                        borderColor: `rgba(var(--lo-primary), 0.4)`,
+                                        backgroundColor: `rgba(var(--lo-primary), 0.08)`,
+                                        color: `rgba(var(--lo-primary), 0.8)`,
+                                        border: `1px solid rgba(var(--lo-primary), 0.4)`,
+                                    }}
                                     aria-label="How to Play"
                                     title="How to Play"
                                 >
                                     &#10067;
                                 </button>
                             </div>
-                            <p className="text-cyan-300/80 mt-1 text-sm">Turn off all the lights!</p>
+                            <p className="mt-1 text-sm" style={{ color: `rgba(var(--lo-primary), 0.6)` }}>Turn off all the lights!</p>
                         </header>
 
-                        {/* Difficulty Selector */}
-                        <DifficultySelector gridSize={gridSize} onChange={handleSizeChange} />
+                        {/* Theme Switcher */}
+                        <ThemeSwitcher currentTheme={currentTheme} onThemeChange={handleThemeChange} />
+
+                        {/* Difficulty Selector with Custom Size */}
+                        <DifficultySelector gridSize={gridSize} onChange={handleSizeChange} customSize={customSize} onCustomSizeChange={handleCustomSizeChangeStable} />
+
+                        {/* Timed Challenge Mode Toggle */}
+                        <div className="flex items-center justify-center gap-3 mb-3">
+                            <button
+                                onClick={() => { toggleTimedMode(); resetGame(); }}
+                                className="flex items-center gap-2 px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-all border"
+                                style={{
+                                    borderColor: timedMode ? 'rgba(239, 68, 68, 0.6)' : `rgba(var(--lo-primary), 0.2)`,
+                                    backgroundColor: timedMode ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0,0,0,0.3)',
+                                    color: timedMode ? 'rgb(252, 165, 165)' : `rgba(var(--lo-primary), 0.5)`,
+                                }}
+                                aria-pressed={timedMode}
+                                aria-label={`Timed challenge mode: ${timedMode ? 'on' : 'off'}`}
+                            >
+                                <span aria-hidden="true">{timedMode ? '\u23F1' : '\u23F1'}</span>
+                                Timed {timedMode ? 'ON' : 'OFF'}
+                                {timedMode && <span className="text-[10px] opacity-70">({formatTime(getTimeLimit(gridSize))})</span>}
+                            </button>
+                        </div>
+
+                        {/* Timed Mode Timer Bar */}
+                        {timedMode && (timerActive || timeRemaining > 0 || isTimedGameOver) && (
+                            <div className="mb-3 px-2">
+                                <div className="flex items-center justify-between text-xs mb-1">
+                                    <span className={`font-bold ${timerUrgent ? 'text-red-400 countdown-urgent' : ''}`}
+                                        style={!timerUrgent ? { color: `rgba(var(--lo-primary), 0.8)` } : {}}>
+                                        {formatTime(timeRemaining)}
+                                    </span>
+                                    {timedMode && moves === 0 && !timerActive && (
+                                        <span className="text-gray-400 text-[10px]">Timer starts on first move</span>
+                                    )}
+                                </div>
+                                <div className="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-1000 ease-linear ${timerUrgent ? 'countdown-urgent' : ''}`}
+                                        style={{
+                                            width: `${timerPercent}%`,
+                                            backgroundColor: timerPercent > 50 ? `rgba(var(--lo-primary), 0.8)` :
+                                                timerPercent > 20 ? 'rgb(251, 191, 36)' : 'rgb(239, 68, 68)',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
-                        <main className="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
+                        <main className="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border shadow-2xl"
+                            style={{
+                                borderColor: `rgba(var(--lo-primary), 0.2)`,
+                                boxShadow: `0 25px 50px rgba(var(--lo-primary), 0.1)`,
+                            }}>
                             <div
                                 role="grid"
                                 aria-label={`Lights Out ${gridSize}x${gridSize} puzzle grid, ${lightsOnCount} lights remaining`}
                                 className="flex flex-col gap-1.5"
+                                onMouseLeave={handleCellLeave}
                             >
                                 {board.map((row, r) => (
                                     <div key={r} role="row" className="flex gap-1.5 justify-center">
                                         {row.map((isOn, c) => (
-                                            <LightCell
+                                            <div
                                                 key={`${r}-${c}`}
-                                                isOn={isOn}
-                                                row={r}
-                                                col={c}
-                                                onToggle={handleLightClick}
-                                                isHinted={hintCell !== null && hintCell.row === r && hintCell.col === c}
-                                                cellSizeClass={cellSizeClass}
-                                            />
+                                                onMouseEnter={() => !gameDisabled && handleCellHover(r, c)}
+                                            >
+                                                <LightCell
+                                                    isOn={isOn}
+                                                    row={r}
+                                                    col={c}
+                                                    onToggle={gameDisabled ? () => {} : handleLightClick}
+                                                    isHinted={hintCell !== null && hintCell.row === r && hintCell.col === c}
+                                                    cellSizeClass={cellSizeClass}
+                                                    isAdjacentHighlight={!gameDisabled && isAdjacentToHovered(r, c)}
+                                                    rippleClass={rippleCells[`${r}-${c}`] || ''}
+                                                />
+                                            </div>
                                         ))}
                                     </div>
                                 ))}
                             </div>
 
                             {/* Undo and Hint buttons */}
-                            {!isWon && (
+                            {!isWon && !isTimedGameOver && (
                                 <div className="flex gap-3 justify-center mt-4">
                                     <button
                                         onClick={handleUndo}
@@ -671,8 +1146,13 @@
                                         className={`px-4 py-2 min-h-[40px] rounded-lg text-sm font-bold transition-all border ${
                                             moveHistory.length === 0
                                                 ? 'border-gray-600/30 bg-gray-800/30 text-gray-600 cursor-not-allowed'
-                                                : 'border-cyan-500/40 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400'
+                                                : ''
                                         }`}
+                                        style={moveHistory.length > 0 ? {
+                                            borderColor: `rgba(var(--lo-primary), 0.35)`,
+                                            backgroundColor: `rgba(var(--lo-primary), 0.08)`,
+                                            color: `rgba(var(--lo-primary), 0.8)`,
+                                        } : {}}
                                         aria-label={`Undo last move${moveHistory.length === 0 ? ', no moves to undo' : ''}`}
                                     >
                                         &#8630; Undo
@@ -694,29 +1174,58 @@
                         </main>
 
                         <footer className="py-4">
+                            {/* Timed Game Over */}
+                            {isTimedGameOver && (
+                                <div className="animate-fade-in" role="alert">
+                                    <h2 className="text-3xl font-bold text-red-400 text-shadow-neon mb-2">
+                                        TIME'S UP!
+                                    </h2>
+                                    <p className="text-sm text-gray-300 mb-1">
+                                        You ran out of time after <span className="font-bold" style={{ color: `rgba(var(--lo-primary), 0.9)` }}>{moves}</span> moves.
+                                    </p>
+                                    <p className="text-xs text-gray-500 mb-3">
+                                        {lightsOnCount} light{lightsOnCount !== 1 ? 's' : ''} still on.
+                                    </p>
+                                </div>
+                            )}
                             {isWon ? (
                                 <div className="animate-fade-in" role="alert">
                                     <h2 className="text-3xl font-bold text-yellow-300 text-shadow-neon mb-2">
                                         YOU WON!
                                     </h2>
                                     <StarRating stars={wonStars} animated={true} className="mb-2" />
-                                    <p className="text-sm text-cyan-200/70 mb-1">
+                                    <p className="text-sm mb-1" style={{ color: `rgba(var(--lo-text-primary), 0.6)` }}>
                                         {wonStars === 3 ? 'Perfect!' : wonStars === 2 ? 'Great job!' : 'Solved!'}
                                         {minSolution !== null && (
                                             <span className="ml-1">(Optimal: {minSolution} moves)</span>
                                         )}
                                     </p>
-                                    <p className="text-lg text-white mb-3">
-                                        Solved in <span className="font-bold text-cyan-300">{moves}</span> moves.
+                                    <p className="text-lg text-white mb-1">
+                                        Solved in <span className="font-bold" style={{ color: `rgba(var(--lo-primary), 0.9)` }}>{moves}</span> moves.
                                     </p>
+                                    {timedMode && timedScore !== null && (
+                                        <div className="mb-2">
+                                            <p className="text-sm text-yellow-300">
+                                                Time bonus: +{timeRemaining * BONUS_POINTS_PER_SECOND} pts ({formatTime(timeRemaining)} remaining)
+                                            </p>
+                                            <p className="text-lg font-bold text-yellow-200">
+                                                Score: {timedScore}
+                                            </p>
+                                            {currentBestTimed && (
+                                                <p className="text-xs text-yellow-400/60">
+                                                    Best timed score: {currentBestTimed}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                            ) : (
+                            ) : !isTimedGameOver && (
                                 <div className="space-y-1">
                                     <div className="text-2xl text-white" aria-live="polite" aria-atomic="true">
-                                        Moves: <span className="font-bold text-cyan-300">{moves}</span>
+                                        Moves: <span className="font-bold" style={{ color: `rgba(var(--lo-primary), 0.9)` }}>{moves}</span>
                                     </div>
                                     {currentBestMoves !== undefined && (
-                                        <div className="text-sm text-cyan-400/60">
+                                        <div className="text-sm" style={{ color: `rgba(var(--lo-primary), 0.45)` }}>
                                             Best: <span className="font-bold">{currentBestMoves}</span> moves
                                             {currentBestStars > 0 && (
                                                 <span className="ml-2 text-yellow-400/70">
@@ -732,7 +1241,7 @@
                                 onClick={resetGame}
                                 className="mt-3 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-yellow-400 to-orange-500 hover:scale-105 shadow-lg shadow-yellow-500/50"
                             >
-                                {isWon ? 'Play Again' : 'Reset'}
+                                {isWon ? 'Play Again' : isTimedGameOver ? 'Try Again' : 'Reset'}
                             </button>
                         </footer>
                     </div>

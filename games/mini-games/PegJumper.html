@@ -62,6 +62,51 @@
             outline: 3px solid #00ffff;
             outline-offset: 2px;
         }
+        @keyframes hintPulseSource {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4), 0 0 12px rgba(251, 191, 36, 0.3); border-color: rgba(251, 191, 36, 0.7); }
+            50% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.9), 0 0 24px rgba(251, 191, 36, 0.6); border-color: rgba(251, 191, 36, 1); }
+        }
+        @keyframes hintPulseTarget {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.4), 0 0 12px rgba(74, 222, 128, 0.3); border-color: rgba(74, 222, 128, 0.7); background: rgba(74, 222, 128, 0.15); }
+            50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0.9), 0 0 24px rgba(74, 222, 128, 0.6); border-color: rgba(74, 222, 128, 1); background: rgba(74, 222, 128, 0.35); }
+        }
+        .hint-source-pulse > div {
+            animation: hintPulseSource 0.6s ease-in-out 3;
+            border-color: rgba(251, 191, 36, 0.7) !important;
+        }
+        .hint-target-pulse > div {
+            animation: hintPulseTarget 0.6s ease-in-out 3;
+            border-color: rgba(74, 222, 128, 0.7) !important;
+            background: rgba(74, 222, 128, 0.25) !important;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes badgeAppear {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes niceTryFade {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+        }
+        .golden-badge {
+            animation: badgeAppear 0.8s ease-out forwards;
+        }
+        .nice-try-anim {
+            animation: niceTryFade 0.6s ease-out forwards;
+        }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -168,16 +213,73 @@
 
         // --- HELPER & UI COMPONENTS ---
 
-        const Celebration = ({ show }) => {
+        // Feature 7: Enhanced Celebration with confetti for perfect solve, nice-try for 2-3 pegs
+        const Celebration = ({ show, pegsRemaining }) => {
             if (!show) return null;
+            const isPerfect = pegsRemaining === 1;
+            const isNiceTry = pegsRemaining >= 2 && pegsRemaining <= 3;
+
+            // Generate confetti pieces for perfect solve
+            const confettiColors = ['#fbbf24', '#f472b6', '#34d399', '#60a5fa', '#a78bfa', '#fb923c', '#f87171'];
+            const confettiPieces = isPerfect ? Array.from({ length: 50 }, (_, i) => ({
+                id: i,
+                left: Math.random() * 100,
+                color: confettiColors[i % confettiColors.length],
+                delay: Math.random() * 1.5,
+                duration: 2.5 + Math.random() * 2,
+                size: 6 + Math.random() * 8,
+                shape: Math.random() > 0.5 ? 'circle' : 'rect',
+            })) : [];
+
             return (
                 <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center"
                      role="status"
                      aria-live="assertive"
-                     aria-label="Congratulations, you won!"
+                     aria-label={isPerfect ? 'Perfect solve! Congratulations!' : isNiceTry ? 'Nice try! Almost perfect!' : 'Congratulations, you won!'}
                 >
-                    <div className="text-8xl animate-bounce" aria-hidden="true">&#x1F3C6;</div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse" aria-hidden="true"></div>
+                    {isPerfect && (
+                        <>
+                            {/* Confetti particles */}
+                            {confettiPieces.map(p => (
+                                <div
+                                    key={p.id}
+                                    className="confetti-piece"
+                                    aria-hidden="true"
+                                    style={{
+                                        left: `${p.left}%`,
+                                        width: p.size,
+                                        height: p.size,
+                                        backgroundColor: p.color,
+                                        borderRadius: p.shape === 'circle' ? '50%' : '2px',
+                                        animationDelay: `${p.delay}s`,
+                                        animationDuration: `${p.duration}s`,
+                                    }}
+                                />
+                            ))}
+                            {/* Golden badge */}
+                            <div className="golden-badge flex flex-col items-center gap-2" aria-hidden="true">
+                                <div className="text-8xl">&#x1F3C6;</div>
+                                <div className="px-6 py-2 bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500 rounded-full shadow-lg shadow-yellow-500/50">
+                                    <span className="text-xl font-black text-gray-900 tracking-wide">PERFECT SOLVE!</span>
+                                </div>
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse" aria-hidden="true"></div>
+                        </>
+                    )}
+                    {isNiceTry && (
+                        <div className="nice-try-anim flex flex-col items-center gap-2" aria-hidden="true">
+                            <div className="text-6xl">&#128079;</div>
+                            <div className="px-5 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg">
+                                <span className="text-lg font-bold text-white">Nice Try! {pegsRemaining} pegs left</span>
+                            </div>
+                        </div>
+                    )}
+                    {!isPerfect && !isNiceTry && (
+                        <>
+                            <div className="text-8xl animate-bounce" aria-hidden="true">&#x1F3C6;</div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-pink-400/20 to-purple-400/20 animate-pulse" aria-hidden="true"></div>
+                        </>
+                    )}
                 </div>
             );
         };
@@ -200,11 +302,13 @@
             </div>
         );
 
-        const Hole = ({ onClick, onKeyDown, rowIndex, colIndex, isValidTarget }) => (
+        const Hole = ({ onClick, onKeyDown, rowIndex, colIndex, isValidTarget, onMouseEnter, onMouseLeave }) => (
             <div
                 className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
                 onClick={onClick}
                 onKeyDown={onKeyDown}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
                 role="button"
                 tabIndex={0}
                 aria-label={`Empty hole at row ${rowIndex + 1}, column ${colIndex + 1}${isValidTarget ? ', valid move target' : ''}`}
@@ -357,6 +461,69 @@
             );
         };
 
+        // Feature 9: Difficulty computation per level
+        const getLevelDifficulty = (level) => {
+            // Count total pegs
+            let pegCount = 0;
+            level.layout.forEach(row => row.forEach(cell => { if (cell === 1) pegCount++; }));
+            const dirCount = level.directions.length;
+            // Heuristic: more pegs + fewer directions = harder
+            const complexity = pegCount - dirCount * 1.5;
+            if (complexity >= 20) return { label: 'Hard', color: 'text-red-400', dotColor: 'bg-red-400', bgColor: 'bg-red-400/10' };
+            if (complexity >= 10) return { label: 'Medium', color: 'text-yellow-400', dotColor: 'bg-yellow-400', bgColor: 'bg-yellow-400/10' };
+            return { label: 'Easy', color: 'text-green-400', dotColor: 'bg-green-400', bgColor: 'bg-green-400/10' };
+        };
+
+        // Feature 4: Ghost Trail SVG overlay component
+        const GhostTrail = ({ from, to, jumped, getCellPosition }) => {
+            const [positions, setPositions] = useState(null);
+
+            useEffect(() => {
+                const fromPos = getCellPosition(from.row, from.col);
+                const toPos = getCellPosition(to.row, to.col);
+                const jumpedPos = getCellPosition(jumped.row, jumped.col);
+                if (fromPos.x === 0 && fromPos.y === 0) return;
+                setPositions({ from: fromPos, to: toPos, jumped: jumpedPos });
+            }, [from, to, jumped, getCellPosition]);
+
+            if (!positions) return null;
+
+            const { from: fp, to: tp, jumped: jp } = positions;
+            // Compute a gentle arc: control point offset perpendicular to line
+            const midX = (fp.x + tp.x) / 2;
+            const midY = (fp.y + tp.y) / 2;
+            const dx = tp.x - fp.x;
+            const dy = tp.y - fp.y;
+            const len = Math.sqrt(dx * dx + dy * dy) || 1;
+            const arcHeight = len * 0.25;
+            const cpX = midX - (dy / len) * arcHeight;
+            const cpY = midY + (dx / len) * arcHeight;
+
+            return (
+                <svg className="absolute inset-0 pointer-events-none" style={{ width: '100%', height: '100%', zIndex: 50 }} aria-hidden="true">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="rgba(74, 222, 128, 0.7)" />
+                        </marker>
+                    </defs>
+                    {/* Dashed arc from source to target */}
+                    <path
+                        d={`M ${fp.x} ${fp.y} Q ${cpX} ${cpY} ${tp.x} ${tp.y}`}
+                        fill="none"
+                        stroke="rgba(74, 222, 128, 0.5)"
+                        strokeWidth="2.5"
+                        strokeDasharray="6 4"
+                        markerEnd="url(#arrowhead)"
+                    />
+                    {/* X mark on jumped peg */}
+                    <line x1={jp.x - 6} y1={jp.y - 6} x2={jp.x + 6} y2={jp.y + 6} stroke="rgba(239, 68, 68, 0.7)" strokeWidth="2.5" strokeLinecap="round" />
+                    <line x1={jp.x + 6} y1={jp.y - 6} x2={jp.x - 6} y2={jp.y + 6} stroke="rgba(239, 68, 68, 0.7)" strokeWidth="2.5" strokeLinecap="round" />
+                    {/* Ghost peg at destination */}
+                    <circle cx={tp.x} cy={tp.y} r="14" fill="rgba(34, 211, 238, 0.2)" stroke="rgba(34, 211, 238, 0.4)" strokeWidth="1.5" strokeDasharray="4 3" />
+                </svg>
+            );
+        };
+
         // --- MAIN PEG JUMPER GAME COMPONENT ---
         const PegJumperGame = () => {
             const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
@@ -392,6 +559,21 @@
             const [animatingMove, setAnimatingMove] = useState(null); // {from, to, jumped}
             const boardRef = useRef(null);
 
+            // Feature 3 (Hint System): hints remaining and active hint highlight
+            const HINTS_PER_GAME = 3;
+            const [hintsRemaining, setHintsRemaining] = useState(HINTS_PER_GAME);
+            const [hintHighlight, setHintHighlight] = useState(null); // { source: {row,col}, target: {row,col} }
+            const hintTimeoutRef = useRef(null);
+
+            // Feature 4 (Ghost Trail Preview): hovered valid target
+            const [hoveredTarget, setHoveredTarget] = useState(null); // {row, col}
+
+            // Feature 6 (Best Move Count per Level): fewest moves to 1-peg solve
+            const [bestMoves, setBestMoves] = useState({});
+
+            // Feature 8 (Pause/Resume): paused state
+            const [isPaused, setIsPaused] = useState(false);
+
             // Load high scores and solved levels from localStorage on mount
             useEffect(() => {
                 const saved = safeGetItem('pegJumperHighScores');
@@ -408,6 +590,15 @@
                         setSolvedLevels(JSON.parse(savedSolved));
                     } catch (e) {
                         console.warn('Could not parse solved levels:', e);
+                    }
+                }
+                // Feature 6: Load best move counts
+                const savedBestMoves = safeGetItem('pegJumperBestMoves');
+                if (savedBestMoves) {
+                    try {
+                        setBestMoves(JSON.parse(savedBestMoves));
+                    } catch (e) {
+                        console.warn('Could not parse best moves:', e);
                     }
                 }
             }, []);
@@ -502,6 +693,15 @@
                 setMoveCount(0);
                 setAnimatingMove(null);
 
+                // Reset hints and pause
+                setHintsRemaining(HINTS_PER_GAME);
+                setHintHighlight(null);
+                setIsPaused(false);
+                if (hintTimeoutRef.current) {
+                    clearTimeout(hintTimeoutRef.current);
+                    hintTimeoutRef.current = null;
+                }
+
             }, []);
 
             useEffect(() => {
@@ -559,6 +759,14 @@
                     const newSolved = {...solvedLevels, [currentLevelIndex]: true};
                     setSolvedLevels(newSolved);
                     safeSetItem('pegJumperSolvedLevels', JSON.stringify(newSolved));
+                    // Feature 6: Track best move count for this level (moveCount is pre-increment, so final = moveCount + 1)
+                    const finalMoveCount = moveCount + 1;
+                    const currentBest = bestMoves[currentLevelIndex];
+                    if (!currentBest || finalMoveCount < currentBest) {
+                        const newBestMoves = {...bestMoves, [currentLevelIndex]: finalMoveCount};
+                        setBestMoves(newBestMoves);
+                        safeSetItem('pegJumperBestMoves', JSON.stringify(newBestMoves));
+                    }
                 } else {
                     if (isRapidMove) {
                         setScore(s => s + RAPID_MOVE_BONUS);
@@ -566,17 +774,26 @@
                     if (checkForNoMoves(newBoard, currentLevelIndex)) {
                         setGameState(GameState.LOST);
                         setIsTimerRunning(false);
+                        // Feature 7: Show "nice try" animation for 2-3 pegs remaining
+                        if (newPegsRemaining >= 2 && newPegsRemaining <= 3) {
+                            setShowWin(true);
+                            winTimeoutRef.current = setTimeout(() => {
+                                setShowWin(false);
+                                winTimeoutRef.current = null;
+                            }, 3000);
+                        }
                     }
                 }
-            }, [pegsRemaining, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, solvedLevels]);
+            }, [pegsRemaining, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, solvedLevels, bestMoves, moveCount]);
 
             const handleCellClick = useCallback((row, col) => {
-                if (gameState !== GameState.PLAYING || animatingMove) return;
+                if (gameState !== GameState.PLAYING || animatingMove || isPaused) return;
 
                 const cell = board[row][col];
 
                 if (cell === true) { // A peg was clicked
                     setSelectedPeg(prev => (prev && prev.row === row && prev.col === col) ? null : { row, col });
+                    setHoveredTarget(null); // Clear ghost trail on peg selection change
                 } else if (cell === false) { // An empty hole was clicked
                     if (selectedPeg) {
                         const start = selectedPeg;
@@ -593,6 +810,9 @@
 
                         if (isValidJump && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
                             if (!isTimerRunning) setIsTimerRunning(true);
+                            // Clear any active hint highlight
+                            setHintHighlight(null);
+                            if (hintTimeoutRef.current) { clearTimeout(hintTimeoutRef.current); hintTimeoutRef.current = null; }
 
                             // Feature 2: Push current state to history before the move
                             setHistoryStack(prev => [...prev, {
@@ -623,7 +843,7 @@
                         }
                     }
                 }
-            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, animatingMove, moveCount, applyMove]);
+            }, [board, selectedPeg, gameState, pegsRemaining, isTimerRunning, score, highScores, currentLevelIndex, initialPegCount, checkForNoMoves, animatingMove, moveCount, applyMove, isPaused]);
 
             // Feature 2: Undo handler
             const handleUndo = useCallback(() => {
@@ -644,6 +864,50 @@
                     lastMoveTimestamp.current = 0;
                 }
             }, [historyStack, animatingMove]);
+
+            // Feature 8: Pause/Resume handler
+            const handlePause = useCallback(() => {
+                if (gameState !== GameState.PLAYING) return;
+                setIsPaused(true);
+                setIsTimerRunning(false);
+            }, [gameState]);
+
+            const handleResume = useCallback(() => {
+                setIsPaused(false);
+                if (historyStack.length > 0) {
+                    setIsTimerRunning(true);
+                }
+            }, [historyStack]);
+
+            // Feature 3: Hint handler - find a valid move and highlight it
+            const handleHint = useCallback(() => {
+                if (hintsRemaining <= 0 || gameState !== GameState.PLAYING || animatingMove || isPaused) return;
+                // Clear any existing hint
+                if (hintTimeoutRef.current) {
+                    clearTimeout(hintTimeoutRef.current);
+                }
+                // Find a valid move
+                const levelDirections = LEVELS[currentLevelIndex].directions;
+                for (let r = 0; r < board.length; r++) {
+                    for (let c = 0; c < board[r].length; c++) {
+                        if (board[r][c] === true) {
+                            for (const [dr, dc] of levelDirections) {
+                                const endR = r + dr, endC = c + dc;
+                                const midR = r + dr / 2, midC = c + dc / 2;
+                                if (board[endR] && board[endR][endC] === false && board[midR] && board[midR][midC] === true) {
+                                    setHintsRemaining(h => h - 1);
+                                    setHintHighlight({ source: { row: r, col: c }, target: { row: endR, col: endC } });
+                                    hintTimeoutRef.current = setTimeout(() => {
+                                        setHintHighlight(null);
+                                        hintTimeoutRef.current = null;
+                                    }, 1800);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }, [hintsRemaining, gameState, animatingMove, board, currentLevelIndex, isPaused]);
 
             // Keyboard handler for peg/hole interaction
             const handleCellKeyDown = useCallback((e, row, col) => {
@@ -712,17 +976,25 @@
                         <HowToPlayModal isOpen={showHowToPlay} onClose={() => setShowHowToPlay(false)} triggerRef={howToPlayTriggerRef} />
 
                         <nav aria-label="Level selection" className="flex flex-wrap justify-center gap-2 mb-4">
-                            {LEVELS.map((level, index) => (
-                                <button
-                                    key={level.name}
-                                    onClick={() => initializeBoard(index)}
-                                    aria-pressed={currentLevelIndex === index}
-                                    className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 min-h-[44px] relative ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'} ${solvedLevels[index] ? 'solved-level-btn' : ''}`}
-                                >
-                                    {solvedLevels[index] && <span className="absolute -top-1.5 -right-1.5 text-yellow-400 text-sm" aria-label="Solved">&#9733;</span>}
-                                    {level.name}
-                                </button>
-                            ))}
+                            {LEVELS.map((level, index) => {
+                                const difficulty = getLevelDifficulty(level);
+                                return (
+                                    <button
+                                        key={level.name}
+                                        onClick={() => initializeBoard(index)}
+                                        aria-pressed={currentLevelIndex === index}
+                                        aria-label={`${level.name} - ${difficulty.label} difficulty`}
+                                        className={`px-4 py-2 text-sm font-bold rounded-lg transition-all transform hover:scale-105 min-h-[44px] relative ${currentLevelIndex === index ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'} ${solvedLevels[index] ? 'solved-level-btn' : ''}`}
+                                    >
+                                        {solvedLevels[index] && <span className="absolute -top-1.5 -right-1.5 text-yellow-400 text-sm" aria-label="Solved">&#9733;</span>}
+                                        <span className="flex items-center gap-1.5">
+                                            {level.name}
+                                            <span className={`inline-block w-2 h-2 rounded-full ${difficulty.dotColor} flex-shrink-0`} title={difficulty.label} aria-hidden="true" />
+                                            <span className={`text-xs font-semibold ${difficulty.color}`}>{difficulty.label}</span>
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </nav>
 
                         <div className="w-full bg-black/20 p-3 rounded-lg mb-4" aria-label="Game statistics">
@@ -744,7 +1016,12 @@
                             <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/10 text-sm text-purple-200">
                                 <div>Moves: <span className="font-bold text-white">{moveCount}</span></div>
                                 <div>Pegs: <span className="font-bold text-white">{pegsRemaining}</span> / <span className="text-purple-300">{initialPegCount}</span></div>
-                                <div className="text-purple-400">Best possible: <span className="font-bold text-green-400">1 peg</span></div>
+                                <div className="text-purple-400">
+                                    {bestMoves[currentLevelIndex]
+                                        ? <>Best: <span className="font-bold text-green-400">{bestMoves[currentLevelIndex]} moves</span></>
+                                        : <>Best possible: <span className="font-bold text-green-400">1 peg</span></>
+                                    }
+                                </div>
                             </div>
                         </div>
 
@@ -774,8 +1051,12 @@
                                         const isAnimFrom = animatingMove && animatingMove.from.row === rowIndex && animatingMove.from.col === colIndex;
                                         const isAnimTo = animatingMove && animatingMove.to.row === rowIndex && animatingMove.to.col === colIndex;
 
+                                        // Feature 3: Hint highlight classes
+                                        const isHintSource = hintHighlight && hintHighlight.source.row === rowIndex && hintHighlight.source.col === colIndex;
+                                        const isHintTarget = hintHighlight && hintHighlight.target.row === rowIndex && hintHighlight.target.col === colIndex;
+
                                         return (
-                                            <div key={colIndex} role="gridcell">
+                                            <div key={colIndex} role="gridcell" className={isHintSource ? 'hint-source-pulse' : isHintTarget ? 'hint-target-pulse' : ''}>
                                                 {cell ? (
                                                     <Peg
                                                         isSelected={isSelected}
@@ -793,6 +1074,8 @@
                                                         rowIndex={rowIndex}
                                                         colIndex={colIndex}
                                                         isValidTarget={isValidTarget}
+                                                        onMouseEnter={() => isValidTarget ? setHoveredTarget({ row: rowIndex, col: colIndex }) : null}
+                                                        onMouseLeave={() => setHoveredTarget(null)}
                                                     />
                                                 )}
                                             </div>
@@ -801,9 +1084,48 @@
                                 </div>
                             ))}
                             {animatingMove && <FlyingPeg from={animatingMove.from} to={animatingMove.to} getCellPosition={getCellPosition} />}
+                            {/* Feature 8: Pause overlay */}
+                            {isPaused && (
+                                <div className="absolute inset-0 z-40 bg-gray-900/95 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center gap-4">
+                                    <div className="text-5xl" aria-hidden="true">&#9208;</div>
+                                    <div className="text-2xl font-black text-white">PAUSED</div>
+                                    <div className="text-purple-300 text-sm">Game board hidden</div>
+                                    <button
+                                        onClick={handleResume}
+                                        className="mt-2 px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 rounded-lg font-bold text-lg text-white transition-all transform hover:scale-105 min-h-[44px]"
+                                    >
+                                        &#9654; Resume
+                                    </button>
+                                </div>
+                            )}
+                            {/* Feature 4: Ghost Trail Preview */}
+                            {selectedPeg && hoveredTarget && validTargets.has(`${hoveredTarget.row},${hoveredTarget.col}`) && (() => {
+                                const dr = hoveredTarget.row - selectedPeg.row;
+                                const dc = hoveredTarget.col - selectedPeg.col;
+                                const jumpedRow = selectedPeg.row + dr / 2;
+                                const jumpedCol = selectedPeg.col + dc / 2;
+                                return <GhostTrail from={selectedPeg} to={hoveredTarget} jumped={{ row: jumpedRow, col: jumpedCol }} getCellPosition={getCellPosition} />;
+                            })()}
                         </div>
 
-                        <div className="mt-6 flex gap-3">
+                        <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                            {/* Feature 8: Pause/Resume button */}
+                            <button
+                                onClick={isPaused ? handleResume : handlePause}
+                                disabled={gameState !== GameState.PLAYING && !isPaused}
+                                className={`px-5 py-3 rounded-lg font-bold text-lg transition-all transform hover:scale-105 min-h-[44px] ${gameState !== GameState.PLAYING && !isPaused ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : isPaused ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white' : 'bg-gradient-to-r from-slate-500 to-gray-600 hover:from-slate-400 hover:to-gray-500 text-white'}`}
+                                aria-label={isPaused ? 'Resume game' : 'Pause game'}
+                            >
+                                {isPaused ? <><span aria-hidden="true">&#9654;</span> Resume</> : <><span aria-hidden="true">&#10074;&#10074;</span> Pause</>}
+                            </button>
+                            <button
+                                onClick={handleHint}
+                                disabled={hintsRemaining <= 0 || gameState !== GameState.PLAYING || !!animatingMove || isPaused}
+                                className={`px-5 py-3 rounded-lg font-bold text-lg transition-all transform hover:scale-105 min-h-[44px] ${hintsRemaining <= 0 || gameState !== GameState.PLAYING || animatingMove || isPaused ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-white'}`}
+                                aria-label={`Get hint. ${hintsRemaining} hints remaining`}
+                            >
+                                &#128161; Hint ({hintsRemaining})
+                            </button>
                             <button
                                 onClick={handleUndo}
                                 disabled={historyStack.length === 0 || !!animatingMove}
@@ -821,7 +1143,7 @@
                         </div>
                     </main>
 
-                    <Celebration show={showWin} />
+                    <Celebration show={showWin} pegsRemaining={pegsRemaining} />
                 </div>
             );
         };

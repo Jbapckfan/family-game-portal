@@ -539,6 +539,209 @@
             outline-offset: 2px;
         }
 
+        /* Snap-to-grid toggle button */
+        .game-button.snap-btn {
+            background: linear-gradient(135deg, rgba(0, 200, 150, 0.2) 0%, rgba(0, 200, 150, 0.1) 100%);
+            border-color: rgba(0, 200, 150, 0.3);
+            color: #00c896;
+            text-shadow: 0 0 8px rgba(0, 200, 150, 0.7);
+            font-size: 12px;
+            padding: 6px 12px;
+            min-height: 36px;
+        }
+
+        .game-button.snap-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 200, 150, 0.3) 0%, rgba(0, 200, 150, 0.15) 100%);
+            box-shadow: 0 4px 12px rgba(0, 200, 150, 0.3);
+        }
+
+        .game-button.snap-btn.active {
+            background: linear-gradient(135deg, rgba(0, 200, 150, 0.4) 0%, rgba(0, 200, 150, 0.25) 100%);
+            border-color: rgba(0, 200, 150, 0.7);
+            box-shadow: 0 0 12px rgba(0, 200, 150, 0.4);
+        }
+
+        /* Undo/Redo button styles */
+        .game-button.undo-btn,
+        .game-button.redo-btn {
+            background: linear-gradient(135deg, rgba(180, 160, 255, 0.2) 0%, rgba(180, 160, 255, 0.1) 100%);
+            border-color: rgba(180, 160, 255, 0.3);
+            color: #b4a0ff;
+            text-shadow: 0 0 8px rgba(180, 160, 255, 0.7);
+            font-size: 12px;
+            padding: 6px 12px;
+            min-height: 36px;
+        }
+
+        .game-button.undo-btn:hover,
+        .game-button.redo-btn:hover {
+            background: linear-gradient(135deg, rgba(180, 160, 255, 0.3) 0%, rgba(180, 160, 255, 0.15) 100%);
+            box-shadow: 0 4px 12px rgba(180, 160, 255, 0.3);
+        }
+
+        .game-button.undo-btn:disabled,
+        .game-button.redo-btn:disabled {
+            opacity: 0.3;
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Victory Modal Overlay */
+        .victory-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.88);
+            backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .victory-modal-overlay.active {
+            display: flex;
+        }
+
+        .victory-modal {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            border-radius: 24px;
+            padding: 36px 48px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 255, 204, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .victory-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.06), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .victory-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ffcc;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .victory-stars {
+            font-size: 48px;
+            margin: 12px 0;
+            letter-spacing: 8px;
+            color: #ffcc00;
+            text-shadow: 0 0 16px rgba(255, 204, 0, 0.6);
+        }
+
+        .victory-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 20px 0;
+        }
+
+        .victory-stat {
+            text-align: center;
+        }
+
+        .victory-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        }
+
+        .victory-stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .victory-par-comparison {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 8px 0 20px;
+        }
+
+        .victory-par-comparison.under-par {
+            color: #00ffcc;
+        }
+
+        .victory-par-comparison.at-par {
+            color: #ffcc00;
+        }
+
+        .victory-par-comparison.over-par {
+            color: #ff6b6b;
+        }
+
+        .victory-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .victory-btn {
+            border-radius: 14px;
+            padding: 12px 28px;
+            min-height: 48px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        .victory-btn-next {
+            background: linear-gradient(135deg, #00ffcc 0%, #00cc99 100%);
+            color: #050510;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.4);
+        }
+
+        .victory-btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(0, 255, 204, 0.6);
+        }
+
+        .victory-btn-retry {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .victory-btn-retry:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+        }
+
+        .victory-btn-levels {
+            background: linear-gradient(135deg, rgba(119, 153, 255, 0.2) 0%, rgba(119, 153, 255, 0.1) 100%);
+            color: #7799ff;
+            border: 1px solid rgba(119, 153, 255, 0.3);
+        }
+
+        .victory-btn-levels:hover {
+            background: linear-gradient(135deg, rgba(119, 153, 255, 0.3) 0%, rgba(119, 153, 255, 0.15) 100%);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -557,7 +760,7 @@
             <div class="move-counter" id="moveCounter">MOVES: 0 / PAR: 1</div>
             <div class="instruction-text">
                 Double-click/tap to place mirror &bull; Drag to reposition &bull; Delete key: return to storage<br>
-                <span style="opacity:0.7">Keyboard: Arrow keys cycle mirrors &bull; R/Space rotate &bull; Tab for UI</span>
+                <span style="opacity:0.7">Keyboard: Arrow keys cycle mirrors &bull; R/Space rotate &bull; Ctrl+Z undo &bull; Ctrl+Y redo</span>
             </div>
         </div>
 
@@ -571,6 +774,11 @@
                 <button class="game-button levels-btn" onclick="showLevelSelect()" aria-label="Level select">&#x1F4CB; LEVELS</button>
                 <button class="game-button hint-btn" id="hintBtn" onclick="useHint()" aria-label="Get hint">&#x1F4A1; HINT (2)</button>
             </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+                <button class="game-button undo-btn" id="undoBtn" onclick="undoAction()" aria-label="Undo" disabled>&#x21A9; UNDO</button>
+                <button class="game-button redo-btn" id="redoBtn" onclick="redoAction()" aria-label="Redo" disabled>&#x21AA; REDO</button>
+                <button class="game-button snap-btn" id="snapBtn" onclick="toggleSnapToGrid()" aria-label="Toggle snap to grid">&#x25A6; SNAP</button>
+            </div>
             <div class="score-text" id="modeIndicator" style="margin-top: 8px; font-size: 12px;">READY</div>
         </div>
 
@@ -578,6 +786,30 @@
             TARGET ACQUIRED!
             <span class="win-stars" id="winStars"></span>
             <span class="win-moves" id="winMoves"></span>
+        </div>
+
+        <!-- Victory Modal -->
+        <div class="victory-modal-overlay" id="victoryModalOverlay" aria-live="assertive">
+            <div class="victory-modal">
+                <div class="victory-title" id="victoryTitle">TARGET ACQUIRED!</div>
+                <div class="victory-stars" id="victoryStars"></div>
+                <div class="victory-stats">
+                    <div class="victory-stat">
+                        <div class="victory-stat-value" id="victoryMoves">0</div>
+                        <div class="victory-stat-label">Moves</div>
+                    </div>
+                    <div class="victory-stat">
+                        <div class="victory-stat-value" id="victoryPar">0</div>
+                        <div class="victory-stat-label">Par</div>
+                    </div>
+                </div>
+                <div class="victory-par-comparison" id="victoryParComparison"></div>
+                <div class="victory-buttons">
+                    <button class="victory-btn victory-btn-retry" id="victoryRetryBtn" onclick="victoryRetry()">RETRY</button>
+                    <button class="victory-btn victory-btn-next" id="victoryNextBtn" onclick="victoryNextLevel()">NEXT LEVEL &#x27A1;</button>
+                    <button class="victory-btn victory-btn-levels" id="victoryLevelsBtn" onclick="victoryShowLevels()">LEVELS</button>
+                </div>
+            </div>
         </div>
 
         <!-- Level Select Overlay -->
@@ -626,6 +858,24 @@
         // === IMPROVEMENT 3: Hint system ===
         let hintsRemaining = 2;
         let activeHint = null; // { x, y, startTime }
+
+        // === FEATURE: Undo/Redo system ===
+        let undoStack = []; // Array of action snapshots
+        let redoStack = [];
+
+        // === FEATURE: Snap-to-Grid ===
+        let snapToGridEnabled = false;
+        const GRID_SIZE = 40; // pixels between grid lines
+
+        // === FEATURE: Animated Laser Trace ===
+        let laserAnimating = false;
+        let laserAnimSegments = []; // full segments to animate
+        let laserAnimCurrentSegment = 0;
+        let laserAnimProgress = 0; // 0 to 1 within current segment
+        let laserAnimSpeed = 0.04; // progress per frame
+        let laserAnimPauseTimer = 0; // pause at reflection points
+        let laserAnimPauseDuration = 8; // frames to pause at each reflection
+        let laserAnimDone = false;
 
         // === IMPROVEMENT 5: Sound system ===
         let audioCtx = null;
@@ -795,6 +1045,41 @@
                     { angle: M_45, length: 55 },
                     { angle: M45, length: 55 }
                 ]
+            },
+            {
+                name: "SPLIT DECISION",
+                par: 2,
+                laser: { xPct: 0.05, yPct: 0.5, angle: 0 },
+                target: { xPct: 0.85, yPct: 0.15 },
+                obstacles: [
+                    { xPct: 0.55, yPct: 0.3, wPct: 0.04, hPct: 0.7 }
+                ],
+                splitters: [
+                    { xPct: 0.4, yPct: 0.5, angle: M_45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "PRISM MAZE",
+                par: 3,
+                laser: { xPct: 0.05, yPct: 0.3, angle: 0 },
+                target: { xPct: 0.9, yPct: 0.7 },
+                obstacles: [
+                    { xPct: 0.3, yPct: 0.45, wPct: 0.04, hPct: 0.55 },
+                    { xPct: 0.65, yPct: 0.0, wPct: 0.04, hPct: 0.45 }
+                ],
+                splitters: [
+                    { xPct: 0.2, yPct: 0.3, angle: M45, length: 55 },
+                    { xPct: 0.5, yPct: 0.7, angle: M_45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
             }
         ];
 
@@ -803,6 +1088,7 @@
             target: null,
             mirrors: [],
             obstacles: [],
+            splitters: [],
             selectedMirror: null,
             isDragging: false,
             mouse: { x: 0, y: 0 },
@@ -981,6 +1267,174 @@
             try {
                 localStorage.setItem('lasersMirrorsMuted', isMuted ? 'true' : 'false');
             } catch (e) {}
+        }
+
+        // ================================================================
+        // FEATURE: Undo/Redo System
+        // ================================================================
+        function captureGameSnapshot() {
+            // Capture the current state of all mirrors and inventory
+            return {
+                mirrors: gameState.mirrors.map(m => ({
+                    x: m.x, y: m.y, angle: m.angle, length: m.length,
+                    id: m.id, isPlaced: m.isPlaced, originalInventoryIndex: m.originalInventoryIndex,
+                    xPct: m.xPct, yPct: m.yPct
+                })),
+                inventory: gameState.mirrorInventory.map(inv => ({
+                    angle: inv.angle, length: inv.length, id: inv.id, used: inv.used
+                })),
+                moveCount: moveCount
+            };
+        }
+
+        function restoreGameSnapshot(snapshot) {
+            // Restore mirrors from snapshot
+            gameState.mirrors = snapshot.mirrors.map(ms => {
+                const m = new Mirror(ms.x, ms.y, ms.angle, ms.length, ms.id);
+                m.isPlaced = ms.isPlaced;
+                m.originalInventoryIndex = ms.originalInventoryIndex;
+                m.xPct = ms.xPct;
+                m.yPct = ms.yPct;
+                return m;
+            });
+
+            // Restore inventory
+            snapshot.inventory.forEach((inv, i) => {
+                if (gameState.mirrorInventory[i]) {
+                    gameState.mirrorInventory[i].used = inv.used;
+                }
+            });
+
+            moveCount = snapshot.moveCount;
+            updateMoveCounter();
+
+            gameState.selectedMirror = null;
+            gameState.isDragging = false;
+            gameState.laserBeam = new LaserBeam();
+            gameState.laserBeam.calculate();
+            updateMirrorStorageUI();
+            updateUndoRedoButtons();
+        }
+
+        function pushUndoState() {
+            undoStack.push(captureGameSnapshot());
+            redoStack = []; // clear redo on new action
+            updateUndoRedoButtons();
+        }
+
+        function undoAction() {
+            ensureAudio();
+            if (undoStack.length === 0) return;
+            // Save current state to redo
+            redoStack.push(captureGameSnapshot());
+            const snapshot = undoStack.pop();
+            restoreGameSnapshot(snapshot);
+        }
+
+        function redoAction() {
+            ensureAudio();
+            if (redoStack.length === 0) return;
+            // Save current state to undo
+            undoStack.push(captureGameSnapshot());
+            const snapshot = redoStack.pop();
+            restoreGameSnapshot(snapshot);
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+            if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+        }
+
+        // ================================================================
+        // FEATURE: Snap-to-Grid
+        // ================================================================
+        function toggleSnapToGrid() {
+            snapToGridEnabled = !snapToGridEnabled;
+            const snapBtn = document.getElementById('snapBtn');
+            if (snapBtn) {
+                if (snapToGridEnabled) {
+                    snapBtn.classList.add('active');
+                    snapBtn.textContent = '\u25A6 SNAP ON';
+                } else {
+                    snapBtn.classList.remove('active');
+                    snapBtn.textContent = '\u25A6 SNAP';
+                }
+            }
+            // If a mirror is currently selected and placed, snap it
+            if (snapToGridEnabled && gameState.selectedMirror && gameState.selectedMirror.isPlaced) {
+                gameState.selectedMirror.x = snapToGrid(gameState.selectedMirror.x);
+                gameState.selectedMirror.y = snapToGrid(gameState.selectedMirror.y);
+                gameState.selectedMirror.updatePercentage();
+                gameState.laserBeam.calculate();
+            }
+        }
+
+        function snapToGrid(value) {
+            return Math.round(value / GRID_SIZE) * GRID_SIZE;
+        }
+
+        function applySnapIfEnabled(mirror) {
+            if (snapToGridEnabled && mirror) {
+                mirror.x = snapToGrid(mirror.x);
+                mirror.y = snapToGrid(mirror.y);
+                mirror.updatePercentage();
+            }
+        }
+
+        // ================================================================
+        // FEATURE: Background Grid Lines
+        // ================================================================
+        function drawBackgroundGrid() {
+            ctx.save();
+            ctx.strokeStyle = 'rgba(119, 153, 255, 0.08)';
+            ctx.lineWidth = 1;
+
+            // Vertical lines
+            for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvasCSSHeight);
+                ctx.stroke();
+            }
+
+            // Horizontal lines
+            for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvasCSSWidth, y);
+                ctx.stroke();
+            }
+
+            // If snap is enabled, draw slightly brighter grid
+            if (snapToGridEnabled) {
+                ctx.strokeStyle = 'rgba(0, 200, 150, 0.12)';
+                for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvasCSSHeight);
+                    ctx.stroke();
+                }
+                for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvasCSSWidth, y);
+                    ctx.stroke();
+                }
+
+                // Draw small dots at intersections when snap is on
+                ctx.fillStyle = 'rgba(0, 200, 150, 0.2)';
+                for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                    for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            ctx.restore();
         }
 
         // ================================================================
@@ -1183,6 +1637,75 @@
             ctx.setLineDash([]);
 
             ctx.restore();
+        }
+
+        // ================================================================
+        // FEATURE: Victory Modal
+        // ================================================================
+        function showVictoryModal(levelIndex, stars, moves, par, hasNextLevel) {
+            const overlay = document.getElementById('victoryModalOverlay');
+            const titleEl = document.getElementById('victoryTitle');
+            const starsEl = document.getElementById('victoryStars');
+            const movesEl = document.getElementById('victoryMoves');
+            const parEl = document.getElementById('victoryPar');
+            const comparisonEl = document.getElementById('victoryParComparison');
+            const nextBtn = document.getElementById('victoryNextBtn');
+
+            titleEl.textContent = hasNextLevel ? 'TARGET ACQUIRED!' : 'ALL LEVELS COMPLETE!';
+            starsEl.textContent = getStarString(stars);
+            movesEl.textContent = moves;
+            parEl.textContent = par;
+
+            // Par comparison text
+            const diff = moves - par;
+            if (diff < 0) {
+                comparisonEl.textContent = `${Math.abs(diff)} under par - Excellent!`;
+                comparisonEl.className = 'victory-par-comparison under-par';
+            } else if (diff === 0) {
+                comparisonEl.textContent = 'Right on par - Well done!';
+                comparisonEl.className = 'victory-par-comparison at-par';
+            } else {
+                comparisonEl.textContent = `${diff} over par - Try again for better stars!`;
+                comparisonEl.className = 'victory-par-comparison over-par';
+            }
+
+            // Show/hide next level button
+            if (hasNextLevel) {
+                nextBtn.style.display = '';
+                nextBtn.textContent = 'NEXT LEVEL \u27A1';
+            } else {
+                nextBtn.style.display = 'none';
+            }
+
+            // Store the won level for button actions
+            overlay.dataset.wonLevel = levelIndex;
+            overlay.classList.add('active');
+        }
+
+        function hideVictoryModal() {
+            document.getElementById('victoryModalOverlay').classList.remove('active');
+        }
+
+        function victoryNextLevel() {
+            const overlay = document.getElementById('victoryModalOverlay');
+            const wonLevel = parseInt(overlay.dataset.wonLevel);
+            hideVictoryModal();
+            gameState.won = false;
+            loadLevel(wonLevel + 1);
+        }
+
+        function victoryRetry() {
+            const overlay = document.getElementById('victoryModalOverlay');
+            const wonLevel = parseInt(overlay.dataset.wonLevel);
+            hideVictoryModal();
+            gameState.won = false;
+            loadLevel(wonLevel);
+        }
+
+        function victoryShowLevels() {
+            hideVictoryModal();
+            gameState.won = false;
+            showLevelSelect();
         }
 
         // ================================================================
@@ -1611,6 +2134,136 @@
             }
         }
 
+        // BeamSplitter class -- sends laser in two directions (reflect + pass-through)
+        class BeamSplitter {
+            constructor(x, y, angle, length) {
+                this.x = x;
+                this.y = y;
+                this.angle = angle; // angle of the splitter surface
+                this.length = length || 55;
+                this.color = '#ff00ff'; // magenta/purple for splitters
+                this.isSplitter = true;
+            }
+
+            getEndpoints() {
+                const halfLength = this.length / 2;
+                return {
+                    x1: this.x - Math.cos(this.angle) * halfLength,
+                    y1: this.y - Math.sin(this.angle) * halfLength,
+                    x2: this.x + Math.cos(this.angle) * halfLength,
+                    y2: this.y + Math.sin(this.angle) * halfLength
+                };
+            }
+
+            reflect(rayAngle) {
+                const mirrorVecX = Math.cos(this.angle);
+                const mirrorVecY = Math.sin(this.angle);
+                const normalX = -mirrorVecY;
+                const normalY = mirrorVecX;
+                const incidentX = Math.cos(rayAngle);
+                const incidentY = Math.sin(rayAngle);
+                const dotProduct = incidentX * normalX + incidentY * normalY;
+                const reflectedX = incidentX - 2 * dotProduct * normalX;
+                const reflectedY = incidentY - 2 * dotProduct * normalY;
+                return Math.atan2(reflectedY, reflectedX);
+            }
+
+            intersectsRay(startX, startY, angle) {
+                const endpoints = this.getEndpoints();
+                const rayDx = Math.cos(angle);
+                const rayDy = Math.sin(angle);
+                const mirrorDx = endpoints.x2 - endpoints.x1;
+                const mirrorDy = endpoints.y2 - endpoints.y1;
+                const denominator = rayDx * mirrorDy - rayDy * mirrorDx;
+                if (Math.abs(denominator) < 0.000001) return null;
+                const toMirrorX = endpoints.x1 - startX;
+                const toMirrorY = endpoints.y1 - startY;
+                const t = (toMirrorX * mirrorDy - toMirrorY * mirrorDx) / denominator;
+                const u = (toMirrorX * rayDy - toMirrorY * rayDx) / denominator;
+                if (t > 0 && u >= 0 && u <= 1) {
+                    return {
+                        x: startX + t * rayDx,
+                        y: startY + t * rayDy,
+                        distance: t
+                    };
+                }
+                return null;
+            }
+
+            draw() {
+                const endpoints = this.getEndpoints();
+
+                // Draw splitter with dashed line to indicate it's different
+                ctx.save();
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 18;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.setLineDash([8, 4]);
+                ctx.beginPath();
+                ctx.moveTo(endpoints.x1, endpoints.y1);
+                ctx.lineTo(endpoints.x2, endpoints.y2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+
+                // White core
+                ctx.save();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.setLineDash([8, 4]);
+                ctx.beginPath();
+                ctx.moveTo(endpoints.x1, endpoints.y1);
+                ctx.lineTo(endpoints.x2, endpoints.y2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.restore();
+
+                // Draw a small diamond at center to denote splitter
+                const size = 6;
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y - size);
+                ctx.lineTo(this.x + size, this.y);
+                ctx.lineTo(this.x, this.y + size);
+                ctx.lineTo(this.x - size, this.y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+
+                // Draw split arrows
+                const normalX = -Math.sin(this.angle);
+                const normalY = Math.cos(this.angle);
+                for (let side = -1; side <= 1; side += 2) {
+                    const arrowEndX = this.x + normalX * 18 * side;
+                    const arrowEndY = this.y + normalY * 18 * side;
+                    ctx.save();
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 1.5;
+                    ctx.globalAlpha = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(arrowEndX, arrowEndY);
+                    ctx.stroke();
+                    // Arrowhead
+                    const arrowSize = 4;
+                    const arrowAngle = Math.atan2(arrowEndY - this.y, arrowEndX - this.x);
+                    ctx.beginPath();
+                    ctx.moveTo(arrowEndX, arrowEndY);
+                    ctx.lineTo(arrowEndX - arrowSize * Math.cos(arrowAngle - 0.5), arrowEndY - arrowSize * Math.sin(arrowAngle - 0.5));
+                    ctx.moveTo(arrowEndX, arrowEndY);
+                    ctx.lineTo(arrowEndX - arrowSize * Math.cos(arrowAngle + 0.5), arrowEndY - arrowSize * Math.sin(arrowAngle + 0.5));
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }
+
         // Laser Beam class
         class LaserBeam {
             constructor() {
@@ -1623,89 +2276,135 @@
                 this.segments = [];
                 this.hitObstacle = false;
 
-                let currentX = gameState.laserSource.x + Math.cos(gameState.laserSource.angle) * gameState.laserSource.radius;
-                let currentY = gameState.laserSource.y + Math.sin(gameState.laserSource.angle) * gameState.laserSource.radius;
-                let currentAngle = gameState.laserSource.angle;
-                let maxReflections = 20;
-                let reflectionCount = 0;
+                // Use a queue-based approach to handle beam splitting
+                const beamQueue = [{
+                    x: gameState.laserSource.x + Math.cos(gameState.laserSource.angle) * gameState.laserSource.radius,
+                    y: gameState.laserSource.y + Math.sin(gameState.laserSource.angle) * gameState.laserSource.radius,
+                    angle: gameState.laserSource.angle,
+                    reflections: 0,
+                    branch: 0
+                }];
 
-                while (reflectionCount < maxReflections) {
-                    let closestIntersection = null;
-                    let closestDistance = Infinity;
-                    let intersectedObject = null;
+                let totalSegments = 0;
+                const maxTotalSegments = 40; // safety cap
 
-                    const allObjects = [...gameState.mirrors.filter(m => m.isPlaced), ...gameState.obstacles];
+                while (beamQueue.length > 0 && totalSegments < maxTotalSegments) {
+                    const beam = beamQueue.shift();
+                    let currentX = beam.x;
+                    let currentY = beam.y;
+                    let currentAngle = beam.angle;
+                    let maxReflections = 20;
+                    let reflectionCount = beam.reflections;
 
-                    allObjects.forEach(obj => {
-                        const intersection = obj.intersectsRay(currentX, currentY, currentAngle);
-                        if (intersection && intersection.distance > 0.1 && intersection.distance < closestDistance) {
-                            closestDistance = intersection.distance;
-                            closestIntersection = intersection;
-                            intersectedObject = obj;
-                        }
-                    });
+                    while (reflectionCount < maxReflections && totalSegments < maxTotalSegments) {
+                        let closestIntersection = null;
+                        let closestDistance = Infinity;
+                        let intersectedObject = null;
 
-                    const boundaryIntersection = this.getBoundaryIntersection(currentX, currentY, currentAngle);
-                    if (boundaryIntersection && boundaryIntersection.distance > 0.1 && boundaryIntersection.distance < closestDistance) {
-                        closestDistance = boundaryIntersection.distance;
-                        closestIntersection = boundaryIntersection;
-                        intersectedObject = null;
-                    }
+                        const allObjects = [
+                            ...gameState.mirrors.filter(m => m.isPlaced),
+                            ...gameState.obstacles,
+                            ...gameState.splitters
+                        ];
 
-                    if (closestIntersection) {
-                        this.segments.push({
-                            startX: currentX,
-                            startY: currentY,
-                            endX: closestIntersection.x,
-                            endY: closestIntersection.y,
-                            angle: currentAngle
+                        allObjects.forEach(obj => {
+                            const intersection = obj.intersectsRay(currentX, currentY, currentAngle);
+                            if (intersection && intersection.distance > 0.1 && intersection.distance < closestDistance) {
+                                closestDistance = intersection.distance;
+                                closestIntersection = intersection;
+                                intersectedObject = obj;
+                            }
                         });
 
-                        if (this.checkTargetHitAlongBeam(currentX, currentY, closestIntersection.x, closestIntersection.y)) {
-                            this.winGame();
-                            break;
+                        const boundaryIntersection = this.getBoundaryIntersection(currentX, currentY, currentAngle);
+                        if (boundaryIntersection && boundaryIntersection.distance > 0.1 && boundaryIntersection.distance < closestDistance) {
+                            closestDistance = boundaryIntersection.distance;
+                            closestIntersection = boundaryIntersection;
+                            intersectedObject = null;
                         }
 
-                        if (!intersectedObject || intersectedObject instanceof Obstacle) {
-                            if (intersectedObject instanceof Obstacle) {
-                                this.hitObstacle = true;
+                        if (closestIntersection) {
+                            this.segments.push({
+                                startX: currentX,
+                                startY: currentY,
+                                endX: closestIntersection.x,
+                                endY: closestIntersection.y,
+                                angle: currentAngle,
+                                branch: beam.branch
+                            });
+                            totalSegments++;
+
+                            if (this.checkTargetHitAlongBeam(currentX, currentY, closestIntersection.x, closestIntersection.y)) {
+                                this.winGame();
+                                return; // stop all processing on win
+                            }
+
+                            if (!intersectedObject || intersectedObject instanceof Obstacle) {
+                                if (intersectedObject instanceof Obstacle) {
+                                    this.hitObstacle = true;
+                                }
+                                break;
+                            }
+
+                            if (intersectedObject instanceof BeamSplitter) {
+                                const offsetDistance = 1.0;
+                                const incomingAngle = currentAngle; // save before reflection
+                                const reflectedAngle = intersectedObject.reflect(incomingAngle);
+
+                                // Branch 1: Reflected beam (continues in this while loop)
+                                currentX = closestIntersection.x + Math.cos(reflectedAngle) * offsetDistance;
+                                currentY = closestIntersection.y + Math.sin(reflectedAngle) * offsetDistance;
+                                currentAngle = reflectedAngle;
+                                reflectionCount++;
+
+                                // Branch 2: Pass-through beam continues in original direction (queued)
+                                beamQueue.push({
+                                    x: closestIntersection.x + Math.cos(incomingAngle) * offsetDistance,
+                                    y: closestIntersection.y + Math.sin(incomingAngle) * offsetDistance,
+                                    angle: incomingAngle,
+                                    reflections: reflectionCount,
+                                    branch: beam.branch + 1
+                                });
+
+                                this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
+                                continue;
+                            }
+
+                            if (intersectedObject instanceof Mirror) {
+                                const reflectedAngle = intersectedObject.reflect(currentAngle);
+                                const offsetDistance = 1.0;
+                                const reflectedDirX = Math.cos(reflectedAngle);
+                                const reflectedDirY = Math.sin(reflectedAngle);
+
+                                currentX = closestIntersection.x + reflectedDirX * offsetDistance;
+                                currentY = closestIntersection.y + reflectedDirY * offsetDistance;
+                                currentAngle = reflectedAngle;
+                                reflectionCount++;
+
+                                this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
+                                continue;
+                            }
+                        } else {
+                            const maxDistance = Math.max(canvasCSSWidth, canvasCSSHeight) * 2;
+                            const endX = currentX + Math.cos(currentAngle) * maxDistance;
+                            const endY = currentY + Math.sin(currentAngle) * maxDistance;
+
+                            this.segments.push({
+                                startX: currentX,
+                                startY: currentY,
+                                endX: endX,
+                                endY: endY,
+                                angle: currentAngle,
+                                branch: beam.branch
+                            });
+                            totalSegments++;
+
+                            if (this.checkTargetHitAlongBeam(currentX, currentY, endX, endY)) {
+                                this.winGame();
+                                return;
                             }
                             break;
                         }
-
-                        if (intersectedObject instanceof Mirror) {
-                            const reflectedAngle = intersectedObject.reflect(currentAngle);
-
-                            const offsetDistance = 1.0;
-                            const reflectedDirX = Math.cos(reflectedAngle);
-                            const reflectedDirY = Math.sin(reflectedAngle);
-
-                            currentX = closestIntersection.x + reflectedDirX * offsetDistance;
-                            currentY = closestIntersection.y + reflectedDirY * offsetDistance;
-                            currentAngle = reflectedAngle;
-                            reflectionCount++;
-
-                            this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
-
-                            continue;
-                        }
-                    } else {
-                        const maxDistance = Math.max(canvasCSSWidth, canvasCSSHeight) * 2;
-                        const endX = currentX + Math.cos(currentAngle) * maxDistance;
-                        const endY = currentY + Math.sin(currentAngle) * maxDistance;
-
-                        this.segments.push({
-                            startX: currentX,
-                            startY: currentY,
-                            endX: endX,
-                            endY: endY,
-                            angle: currentAngle
-                        });
-
-                        if (this.checkTargetHitAlongBeam(currentX, currentY, endX, endY)) {
-                            this.winGame();
-                        }
-                        break;
                     }
                 }
             }
@@ -1803,7 +2502,6 @@
 
                 const wonLevel = currentLevel;
                 const hasNextLevel = wonLevel < LEVELS.length - 1;
-                const nextLevel = hasNextLevel ? wonLevel + 1 : 0;
                 const targetX = gameState.target.x;
                 const targetY = gameState.target.y;
 
@@ -1816,27 +2514,12 @@
                     levelStars[wonLevel] = stars;
                 }
 
-                if (hasNextLevel && nextLevel > highestUnlockedLevel) {
-                    highestUnlockedLevel = nextLevel;
+                if (hasNextLevel && (wonLevel + 1) > highestUnlockedLevel) {
+                    highestUnlockedLevel = wonLevel + 1;
                 }
                 saveProgress();
 
-                const winMsg = document.getElementById('winMessage');
-                const winStarsEl = document.getElementById('winStars');
-                const winMovesEl = document.getElementById('winMoves');
-
-                const mainText = hasNextLevel
-                    ? '\u2713 TARGET ACQUIRED!'
-                    : '\u{1F389} ALL LEVELS COMPLETE! \u{1F389}';
-
-                winMsg.childNodes[0].textContent = mainText + ' ';
-                winStarsEl.textContent = getStarString(stars);
-                winStarsEl.style.color = '#ffcc00';
-                winMovesEl.textContent = `${moveCount} move${moveCount !== 1 ? 's' : ''} (par: ${level.par})` +
-                    (hasNextLevel ? '  \u2192  Level ' + (wonLevel + 2) : '');
-
-                winMsg.classList.add('show');
-
+                // Spawn celebration particles
                 if (!prefersReducedMotion) {
                     for (let i = 0; i < 50; i++) {
                         setTimeout(() => {
@@ -1851,52 +2534,99 @@
                     }
                 }
 
+                // Show victory modal after a brief delay for the hit animation
                 setTimeout(() => {
-                    winMsg.classList.remove('show');
-                    gameState.won = false;
-                    loadLevel(nextLevel);
-                }, 2200);
+                    showVictoryModal(wonLevel, stars, moveCount, level.par, hasNextLevel);
+                }, 800);
+            }
+
+            drawSegment(segment, index, endProgress) {
+                // endProgress: 0-1, how much of this segment to draw (1 = full)
+                const colors = ['#ff1493', '#ff6b6b', '#ffaa00', '#00ff88', '#0088ff'];
+                const color = colors[index % colors.length];
+
+                const drawEndX = segment.startX + (segment.endX - segment.startX) * endProgress;
+                const drawEndY = segment.startY + (segment.endY - segment.startY) * endProgress;
+
+                ctx.save();
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 20;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.globalAlpha = 0.6;
+                ctx.beginPath();
+                ctx.moveTo(segment.startX, segment.startY);
+                ctx.lineTo(drawEndX, drawEndY);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.moveTo(segment.startX, segment.startY);
+                ctx.lineTo(drawEndX, drawEndY);
+                ctx.stroke();
+                ctx.restore();
+
+                if (!prefersReducedMotion && Math.random() < 0.3 && endProgress > 0.1) {
+                    const t = Math.random() * endProgress;
+                    const x = segment.startX + (segment.endX - segment.startX) * t;
+                    const y = segment.startY + (segment.endY - segment.startY) * t;
+                    gameState.particles.push(new Particle(x, y, color));
+                }
             }
 
             draw() {
-                this.segments.forEach((segment, index) => {
-                    ctx.save();
-
-                    const colors = ['#ff1493', '#ff6b6b', '#ffaa00', '#00ff88', '#0088ff'];
-                    const color = colors[index % colors.length];
-
-                    ctx.shadowColor = color;
-                    ctx.shadowBlur = 20;
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = 6;
-                    ctx.lineCap = 'round';
-                    ctx.globalAlpha = 0.6;
-                    ctx.beginPath();
-                    ctx.moveTo(segment.startX, segment.startY);
-                    ctx.lineTo(segment.endX, segment.endY);
-                    ctx.stroke();
-                    ctx.restore();
-
-                    ctx.save();
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 2;
-                    ctx.lineCap = 'round';
-                    ctx.shadowColor = color;
-                    ctx.shadowBlur = 10;
-                    ctx.beginPath();
-                    ctx.moveTo(segment.startX, segment.startY);
-                    ctx.lineTo(segment.endX, segment.endY);
-                    ctx.stroke();
-                    ctx.restore();
-
-                    if (!prefersReducedMotion && Math.random() < 0.3) {
-                        const t = Math.random();
-                        const x = segment.startX + (segment.endX - segment.startX) * t;
-                        const y = segment.startY + (segment.endY - segment.startY) * t;
-
-                        gameState.particles.push(new Particle(x, y, color));
+                // If laser animation is active, use animated drawing
+                if (laserAnimating && !laserAnimDone) {
+                    // Draw all completed segments fully
+                    for (let i = 0; i < laserAnimCurrentSegment && i < laserAnimSegments.length; i++) {
+                        this.drawSegment(laserAnimSegments[i], i, 1.0);
                     }
-                });
+                    // Draw current segment partially
+                    if (laserAnimCurrentSegment < laserAnimSegments.length) {
+                        this.drawSegment(laserAnimSegments[laserAnimCurrentSegment], laserAnimCurrentSegment, laserAnimProgress);
+                    }
+
+                    // Advance animation
+                    if (laserAnimPauseTimer > 0) {
+                        laserAnimPauseTimer--;
+                    } else {
+                        laserAnimProgress += laserAnimSpeed;
+                        if (laserAnimProgress >= 1.0) {
+                            laserAnimProgress = 0;
+                            laserAnimCurrentSegment++;
+                            if (laserAnimCurrentSegment >= laserAnimSegments.length) {
+                                laserAnimDone = true;
+                                laserAnimating = false;
+                            } else {
+                                // Pause at reflection point
+                                laserAnimPauseTimer = laserAnimPauseDuration;
+                                // Create extra particles at the reflection point
+                                const prevSeg = laserAnimSegments[laserAnimCurrentSegment - 1];
+                                if (prevSeg && !prefersReducedMotion) {
+                                    for (let i = 0; i < 5; i++) {
+                                        gameState.particles.push(new Particle(
+                                            prevSeg.endX + (Math.random() - 0.5) * 8,
+                                            prevSeg.endY + (Math.random() - 0.5) * 8,
+                                            '#ffffff'
+                                        ));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Normal (non-animated) drawing
+                    this.segments.forEach((segment, index) => {
+                        this.drawSegment(segment, index, 1.0);
+                    });
+                }
             }
         }
 
@@ -1952,6 +2682,21 @@
                 hintBtn.disabled = false;
             }
 
+            // FEATURE: Hide victory modal if showing
+            hideVictoryModal();
+
+            // FEATURE: Reset undo/redo
+            undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
+
+            // FEATURE: Reset laser animation state
+            laserAnimating = false;
+            laserAnimSegments = [];
+            laserAnimCurrentSegment = 0;
+            laserAnimProgress = 0;
+            laserAnimDone = false;
+
             saveProgress();
             const level = LEVELS[currentLevel];
 
@@ -1978,6 +2723,14 @@
                 canvasCSSHeight * o.yPct,
                 canvasCSSWidth * o.wPct,
                 canvasCSSHeight * o.hPct
+            ));
+
+            // FEATURE: Initialize beam splitters
+            gameState.splitters = (level.splitters || []).map(s => new BeamSplitter(
+                canvasCSSWidth * s.xPct,
+                canvasCSSHeight * s.yPct,
+                s.angle,
+                s.length || 55
             ));
 
             gameState.mirrorInventory = level.mirrors.map((m, i) => ({
@@ -2091,6 +2844,7 @@
         }
 
         function placeMirrorInCenter(inventoryIndex) {
+            pushUndoState(); // FEATURE: Track for undo
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
 
             const centerX = canvasCSSWidth / 2;
@@ -2124,6 +2878,7 @@
         }
 
         function startDragFromStorage(inventoryIndex, e, isTouch) {
+            pushUndoState(); // FEATURE: Track for undo
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
             const slotElement = e.currentTarget;
 
@@ -2349,6 +3104,18 @@
                 hintBtn.disabled = false;
             }
 
+            // FEATURE: Reset undo/redo
+            undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
+
+            // FEATURE: Reset laser animation
+            laserAnimating = false;
+            laserAnimSegments = [];
+            laserAnimCurrentSegment = 0;
+            laserAnimProgress = 0;
+            laserAnimDone = false;
+
             updateMirrorStorageUI();
         }
 
@@ -2363,6 +3130,16 @@
             // IMPROVEMENT 5: Play thud if hit obstacle
             if (gameState.laserBeam.hitObstacle) {
                 setTimeout(() => playThudSound(), 100);
+            }
+
+            // FEATURE: Start animated laser trace
+            if (!prefersReducedMotion && gameState.laserBeam.segments.length > 0) {
+                laserAnimating = true;
+                laserAnimSegments = [...gameState.laserBeam.segments];
+                laserAnimCurrentSegment = 0;
+                laserAnimProgress = 0;
+                laserAnimPauseTimer = 0;
+                laserAnimDone = false;
             }
         }
 
@@ -2397,6 +3174,7 @@
                 clickedMirror.isSelected = true;
                 gameState.isDragging = true;
                 dragWasReposition = true; // This is a reposition of an existing mirror
+                pushUndoState(); // FEATURE: Track for undo before repositioning
             } else {
                 if (gameState.selectedMirror) {
                     gameState.selectedMirror.isSelected = false;
@@ -2422,6 +3200,7 @@
         });
 
         function placeNextMirrorAt(inventoryIndex, x, y) {
+            pushUndoState(); // FEATURE: Track for undo
             const mirrorData = gameState.mirrorInventory[inventoryIndex];
 
             const mirror = new Mirror(
@@ -2434,6 +3213,7 @@
             mirror.originalInventoryIndex = inventoryIndex;
             mirror.isSelected = true;
             mirror.isPlaced = true;
+            applySnapIfEnabled(mirror); // FEATURE: Snap-to-Grid
             mirror.updatePercentage(); // IMPROVEMENT 4
 
             if (gameState.selectedMirror) {
@@ -2466,6 +3246,7 @@
             if (gameState.selectedMirror && gameState.isDragging) {
                 gameState.selectedMirror.x = x;
                 gameState.selectedMirror.y = y;
+                applySnapIfEnabled(gameState.selectedMirror); // FEATURE: Snap-to-Grid
                 gameState.selectedMirror.updatePercentage(); // IMPROVEMENT 4
 
                 gameState.laserBeam.calculate();
@@ -2530,8 +3311,21 @@
 
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
-            // Don't handle keyboard when level select is open
+            // Don't handle keyboard when level select is open or victory modal
             if (document.getElementById('levelSelectOverlay').classList.contains('active')) return;
+            if (document.getElementById('victoryModalOverlay').classList.contains('active')) return;
+
+            // FEATURE: Undo/Redo keyboard shortcuts
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                undoAction();
+                return;
+            }
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) {
+                e.preventDefault();
+                redoAction();
+                return;
+            }
 
             const placedMirrors = gameState.mirrors;
 
@@ -2557,6 +3351,7 @@
             if (e.key === 'r' || e.key === 'R' || e.key === ' ') {
                 if (gameState.selectedMirror) {
                     e.preventDefault();
+                    pushUndoState(); // FEATURE: Track rotation for undo
                     gameState.selectedMirror.angle += Math.PI / 4;
                     while (gameState.selectedMirror.angle >= Math.PI) {
                         gameState.selectedMirror.angle -= 2 * Math.PI;
@@ -2566,9 +3361,10 @@
                 return;
             }
 
-            // Escape closes level select
+            // Escape closes level select or victory modal
             if (e.key === 'Escape') {
                 hideLevelSelect();
+                hideVictoryModal();
                 return;
             }
 
@@ -2576,6 +3372,7 @@
                 switch(e.key) {
                     case 'Delete':
                     case 'Backspace':
+                        pushUndoState(); // FEATURE: Track deletion for undo
                         if (gameState.selectedMirror.originalInventoryIndex >= 0) {
                             gameState.mirrorInventory[gameState.selectedMirror.originalInventoryIndex].used = false;
                         }
@@ -2618,6 +3415,9 @@
 
             ctx.clearRect(0, 0, canvasCSSWidth, canvasCSSHeight);
 
+            // FEATURE: Draw background grid lines
+            drawBackgroundGrid();
+
             canvas.className = gameState.isDragging ? 'drag-mode' : '';
 
             const modeIndicator = document.getElementById('modeIndicator');
@@ -2635,6 +3435,8 @@
             });
 
             gameState.obstacles.forEach(obstacle => obstacle.draw());
+            // FEATURE: Draw beam splitters
+            gameState.splitters.forEach(splitter => splitter.draw());
             gameState.mirrors.forEach(mirror => mirror.draw());
             gameState.laserSource.draw();
             gameState.target.draw();
@@ -2687,6 +3489,15 @@
                     // IMPROVEMENT 4: Restore mirrors from percentage-based positions
                     gameState.mirrors.forEach(mirror => {
                         mirror.restoreFromPercentage(canvasCSSWidth, canvasCSSHeight);
+                    });
+
+                    // FEATURE: Restore splitter positions on resize
+                    const levelSplitters = level.splitters || [];
+                    gameState.splitters.forEach((spl, i) => {
+                        if (levelSplitters[i]) {
+                            spl.x = levelSplitters[i].xPct * canvasCSSWidth;
+                            spl.y = levelSplitters[i].yPct * canvasCSSHeight;
+                        }
                     });
 
                     gameState.laserBeam.calculate();

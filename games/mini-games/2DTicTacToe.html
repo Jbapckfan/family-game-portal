@@ -20,10 +20,69 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        /* === THEME CSS CUSTOM PROPERTIES === */
+        :root {
+            /* Neon Pink theme (default) */
+            --theme-bg: #0d0c1d;
+            --theme-bg-gradient: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
+            --theme-card-bg: rgba(0, 0, 0, 0.4);
+            --theme-card-border: rgba(29, 78, 216, 0.5);
+            --theme-cell-bg: rgba(255, 255, 255, 0.05);
+            --theme-cell-border: rgba(34, 211, 238, 0.3);
+            --theme-cell-hover: rgba(34, 211, 238, 0.1);
+            --theme-x-color: #FF007F;
+            --theme-x-glow: 0 0 10px #FF007F, 0 0 20px #FF007F;
+            --theme-o-color: #00FFFF;
+            --theme-o-glow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+            --theme-text-primary: #E0F7FA;
+            --theme-text-status: rgba(34, 211, 238, 0.8);
+            --theme-win-line: #FFFF00;
+            --theme-grid-bg: rgba(55, 65, 81, 0.3);
+            --theme-grid-border: rgba(75, 85, 99, 0.3);
+        }
+
+        [data-theme="classic"] {
+            --theme-bg: #1a1a1a;
+            --theme-bg-gradient: radial-gradient(circle at center, #2a2a2a 0%, #0a0a0a 100%);
+            --theme-card-bg: rgba(40, 40, 40, 0.6);
+            --theme-card-border: rgba(120, 120, 120, 0.5);
+            --theme-cell-bg: rgba(255, 255, 255, 0.08);
+            --theme-cell-border: rgba(180, 180, 180, 0.4);
+            --theme-cell-hover: rgba(255, 255, 255, 0.15);
+            --theme-x-color: #FFFFFF;
+            --theme-x-glow: 0 0 8px rgba(255,255,255,0.6);
+            --theme-o-color: #AAAAAA;
+            --theme-o-glow: 0 0 8px rgba(170,170,170,0.4);
+            --theme-text-primary: #E0E0E0;
+            --theme-text-status: rgba(200, 200, 200, 0.9);
+            --theme-win-line: #FFD700;
+            --theme-grid-bg: rgba(60, 60, 60, 0.4);
+            --theme-grid-border: rgba(100, 100, 100, 0.4);
+        }
+
+        [data-theme="retro-green"] {
+            --theme-bg: #0a0f0a;
+            --theme-bg-gradient: radial-gradient(circle at center, #0d1a0d 0%, #000000 100%);
+            --theme-card-bg: rgba(0, 20, 0, 0.5);
+            --theme-card-border: rgba(0, 200, 0, 0.3);
+            --theme-cell-bg: rgba(0, 255, 0, 0.03);
+            --theme-cell-border: rgba(0, 200, 0, 0.3);
+            --theme-cell-hover: rgba(0, 255, 0, 0.1);
+            --theme-x-color: #00FF00;
+            --theme-x-glow: 0 0 10px #00FF00, 0 0 20px #00AA00;
+            --theme-o-color: #00CC66;
+            --theme-o-glow: 0 0 10px #00CC66, 0 0 20px #009944;
+            --theme-text-primary: #00FF00;
+            --theme-text-status: rgba(0, 255, 0, 0.7);
+            --theme-win-line: #FFFF00;
+            --theme-grid-bg: rgba(0, 40, 0, 0.4);
+            --theme-grid-border: rgba(0, 150, 0, 0.3);
+        }
+
         body {
             font-family: 'Orbitron', sans-serif; /* Retro-futuristic font */
-            background-color: #0d0c1d; /* Very dark blue/purple background */
-            background-image: radial-gradient(circle at center, rgba(14, 1, 36, 0.8) 0%, rgba(0, 0, 0, 1) 100%);
+            background-color: var(--theme-bg);
+            background-image: var(--theme-bg-gradient);
             overflow-x: hidden; /* Prevent horizontal scroll but allow vertical scrolling on mobile */
         }
         .text-shadow-neon {
@@ -101,8 +160,8 @@
             width: 100%;
             padding-bottom: 100%; /* Makes cells square */
             position: relative;
-            background-color: rgba(255, 255, 255, 0.05); /* Subtle cell background */
-            border: 2px solid rgba(34, 211, 238, 0.3);
+            background-color: var(--theme-cell-bg);
+            border: 2px solid var(--theme-cell-border);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -114,7 +173,7 @@
             min-height: 44px; /* Touch target minimum */
         }
         .cell:hover {
-            background-color: rgba(34, 211, 238, 0.1); /* Hover glow */
+            background-color: var(--theme-cell-hover);
             transform: scale(1.02);
         }
         .cell.occupied {
@@ -153,12 +212,12 @@
             100% { transform: scale(1); }
         }
         .x-color {
-            color: #FF007F; /* Neon Pink for X */
-            text-shadow: 0 0 10px #FF007F, 0 0 20px #FF007F; /* Enhanced glow */
+            color: var(--theme-x-color);
+            text-shadow: var(--theme-x-glow);
         }
         .o-color {
-            color: #00FFFF; /* Cyan for O */
-            text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF; /* Enhanced glow */
+            color: var(--theme-o-color);
+            text-shadow: var(--theme-o-glow);
         }
 
         /* Win line SVG animation - pathLength normalises speed regardless of line length */
@@ -250,10 +309,12 @@
             font-size: 0.8rem;
             color: #94a3b8;
             margin-bottom: 0.5rem;
+            flex-wrap: wrap;
         }
         .stats-bar .stat-win { color: #4ade80; }
         .stats-bar .stat-loss { color: #f87171; }
         .stats-bar .stat-draw { color: #facc15; }
+        .stats-bar .stat-streak { color: #c084fc; }
         .stats-reset-btn {
             font-size: 0.65rem;
             padding: 0.15rem 0.5rem;
@@ -288,6 +349,97 @@
             transition: background 0.2s;
         }
         .mute-btn:hover { background: rgba(0,0,0,0.9); }
+
+        /* === BOARD ENTRANCE ANIMATION (Feature 2) === */
+        @keyframes cellEntrance {
+            0% { opacity: 0; transform: scale(0.3); }
+            60% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .cell-entrance {
+            opacity: 0;
+            animation: cellEntrance 0.35s ease-out forwards;
+        }
+
+        /* === CONFETTI CANVAS (Feature 8) === */
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* === THEME SELECTOR (Feature 7) === */
+        .theme-selector {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+        .theme-btn {
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.4rem;
+            font-size: 0.65rem;
+            font-weight: bold;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            min-height: 30px;
+            color: #fff;
+        }
+        .theme-btn.active {
+            transform: scale(1.05);
+        }
+        .theme-btn.neon-pink { background: #4a1942; border-color: #FF007F; }
+        .theme-btn.neon-pink.active { background: #FF007F; color: #000; box-shadow: 0 0 10px #FF007F; }
+        .theme-btn.classic { background: #333; border-color: #999; }
+        .theme-btn.classic.active { background: #999; color: #000; box-shadow: 0 0 10px #999; }
+        .theme-btn.retro-green { background: #0a2e0a; border-color: #00FF00; }
+        .theme-btn.retro-green.active { background: #00FF00; color: #000; box-shadow: 0 0 10px #00FF00; }
+
+        /* === NAME INPUT STYLING (Feature 6) === */
+        .name-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            color: #E0F7FA;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            width: 120px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .name-input:focus {
+            border-color: #00FFFF;
+            box-shadow: 0 0 8px rgba(0,255,255,0.3);
+        }
+        .name-input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* === FIRST-MOVE CHOOSER (Feature 3) === */
+        .first-move-chooser {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .first-move-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 44px;
+            font-size: 1rem;
+        }
+
         @media (max-width: 360px) {
             h1 { font-size: clamp(1.5rem, 8vw, 2.25rem) !important; }
         }
@@ -317,6 +469,17 @@
         const AI_THINK_DELAY = 800; // Milliseconds for AI to "think"
         const STATS_KEY_PVP = 'ttt-stats-pvp';
         const STATS_KEY_PVAI = 'ttt-stats-pvai';
+        const STREAK_KEY_PVP = 'ttt-streak-pvp';
+        const STREAK_KEY_PVAI = 'ttt-streak-pvai';
+        const THEME_KEY = 'ttt-theme';
+        const REPLAY_STEP_DELAY = 600; // ms between replay steps
+
+        // Theme definitions
+        const THEMES = [
+            { id: 'neon-pink', label: 'Neon Pink' },
+            { id: 'classic', label: 'Classic' },
+            { id: 'retro-green', label: 'Retro Green' },
+        ];
 
         // --- SOUND ENGINE (Web Audio API) ---
         const SoundEngine = (() => {
@@ -397,24 +560,50 @@
             } catch (e) {}
         };
 
+        // --- STREAK HELPERS (Feature 1) ---
+        const loadStreak = (key) => {
+            try {
+                const raw = localStorage.getItem(key);
+                if (raw) return parseInt(raw, 10) || 0;
+            } catch (e) {}
+            return 0;
+        };
+
+        const saveStreak = (key, val) => {
+            try {
+                localStorage.setItem(key, String(val));
+            } catch (e) {}
+        };
+
+        // --- THEME HELPERS (Feature 7) ---
+        const loadTheme = () => {
+            try {
+                return localStorage.getItem(THEME_KEY) || 'neon-pink';
+            } catch (e) {}
+            return 'neon-pink';
+        };
+
+        const saveTheme = (theme) => {
+            try {
+                localStorage.setItem(THEME_KEY, theme);
+            } catch (e) {}
+        };
+
         // --- HELPER FUNCTIONS ---
+
+        const WIN_LINES = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+        ];
 
         /**
          * Checks if there's a winner on the given board.
-         * @param {string[][]} board - The 3x3 game board.
-         * @param {string} player - The player ('X' or 'O') to check for.
-         * @returns {object|null} An object with winner and line coordinates if won, otherwise null.
          */
         const checkWinner = (board, player) => {
             const flatBoard = board.flat();
-            const lines = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                [0, 4, 8], [2, 4, 6]             // Diagonals
-            ];
-
-            for (let i = 0; i < lines.length; i++) {
-                const [a, b, c] = lines[i];
+            for (let i = 0; i < WIN_LINES.length; i++) {
+                const [a, b, c] = WIN_LINES[i];
                 if (flatBoard[a] === player && flatBoard[b] === player && flatBoard[c] === player) {
                     return { winner: player, line: [a, b, c] };
                 }
@@ -423,18 +612,38 @@
         };
 
         /**
-         * Checks if the game is a draw.
-         * @param {string[][]} board - The 3x3 game board.
-         * @returns {boolean} True if draw, false otherwise.
+         * Checks if the game is a draw (all cells filled).
          */
         const checkDraw = (board) => {
             return board.flat().every(cell => cell !== '');
         };
 
         /**
+         * Early draw detection (Feature 9): checks if any winning line
+         * can still be completed by either player. A line is dead if it
+         * contains both an X and an O.
+         */
+        const checkEarlyDraw = (board) => {
+            const flatBoard = board.flat();
+            // If the board is already full, use normal draw check
+            if (flatBoard.every(cell => cell !== '')) return false;
+
+            for (let i = 0; i < WIN_LINES.length; i++) {
+                const [a, b, c] = WIN_LINES[i];
+                const cells = [flatBoard[a], flatBoard[b], flatBoard[c]];
+                const hasX = cells.includes(PLAYERS.X);
+                const hasO = cells.includes(PLAYERS.O);
+                // If a line has only one player's marks (or empty), it's still winnable
+                if (!(hasX && hasO)) {
+                    return false; // At least one line is still viable
+                }
+            }
+            // All lines are blocked - early draw
+            return true;
+        };
+
+        /**
          * Converts a flat array back into a 3x3 board.
-         * @param {string[]} flat - A 9-element flat array.
-         * @returns {string[][]} A 3x3 board.
          */
         const unflatten = (flat) => {
             return [flat.slice(0, 3), flat.slice(3, 6), flat.slice(6, 9)];
@@ -442,14 +651,10 @@
 
         // --- AI LOGIC ---
 
-        /**
-         * True minimax with alpha-beta pruning for unbeatable AI.
-         */
         const minimax = (flatBoard, isMaximizing, aiPlayer, alpha, beta) => {
             const opponent = aiPlayer === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
             const board2d = unflatten(flatBoard);
 
-            // Terminal checks
             if (checkWinner(board2d, aiPlayer)) return 10;
             if (checkWinner(board2d, opponent)) return -10;
             if (flatBoard.every(cell => cell !== '')) return 0;
@@ -484,9 +689,6 @@
             }
         };
 
-        /**
-         * Get best move using minimax (Hard difficulty - unbeatable).
-         */
         const getAIMoveHard = (board, aiPlayer) => {
             const flatBoard = [...board.flat()];
             let bestScore = -Infinity;
@@ -506,54 +708,39 @@
             return bestMove;
         };
 
-        /**
-         * Random move (Easy difficulty).
-         */
         const getAIMoveEasy = (board) => {
             const flatBoard = board.flat();
             const emptyCells = flatBoard.map((cell, i) => cell === '' ? i : -1).filter(i => i !== -1);
             return emptyCells[Math.floor(Math.random() * emptyCells.length)];
         };
 
-        /**
-         * Medium AI - original heuristic (win/block/center/corner/side).
-         */
         const getAIMoveMedium = (board, aiPlayer) => {
             const opponent = aiPlayer === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
             const flatBoard = board.flat();
             const emptyCells = flatBoard.map((cell, index) => cell === '' ? index : -1).filter(index => index !== -1);
 
-            // 1. Check for winning move
             for (let i = 0; i < emptyCells.length; i++) {
                 const move = emptyCells[i];
                 const tempBoard = [...flatBoard];
                 tempBoard[move] = aiPlayer;
-                if (checkWinner(unflatten(tempBoard), aiPlayer)) {
-                    return move;
-                }
+                if (checkWinner(unflatten(tempBoard), aiPlayer)) return move;
             }
 
-            // 2. Check for blocking move
             for (let i = 0; i < emptyCells.length; i++) {
                 const move = emptyCells[i];
                 const tempBoard = [...flatBoard];
                 tempBoard[move] = opponent;
-                if (checkWinner(unflatten(tempBoard), opponent)) {
-                    return move;
-                }
+                if (checkWinner(unflatten(tempBoard), opponent)) return move;
             }
 
-            // 3. Take center if available
             if (emptyCells.includes(4)) return 4;
 
-            // 4. Take a corner if available
             const corners = [0, 2, 6, 8];
             const availableCorners = corners.filter(corner => emptyCells.includes(corner));
             if (availableCorners.length > 0) {
                 return availableCorners[Math.floor(Math.random() * availableCorners.length)];
             }
 
-            // 5. Take any available side
             const sides = [1, 3, 5, 7];
             const availableSides = sides.filter(side => emptyCells.includes(side));
             if (availableSides.length > 0) {
@@ -563,9 +750,6 @@
             return emptyCells[0];
         };
 
-        /**
-         * Dispatch AI move based on difficulty level.
-         */
         const getAIMove = (board, aiPlayer, difficulty) => {
             switch (difficulty) {
                 case DIFFICULTIES.EASY:
@@ -578,6 +762,105 @@
             }
         };
 
+        // --- CONFETTI ENGINE (Feature 8) ---
+        const ConfettiEngine = (() => {
+            let animFrame = null;
+            let particles = [];
+            let canvas = null;
+            let ctx = null;
+
+            const PARTICLE_COUNT = 80;
+            const COLORS = ['#FF007F', '#00FFFF', '#FFFF00', '#FF6600', '#00FF00', '#FF00FF', '#4488FF'];
+            const GRAVITY = 0.12;
+            const FRICTION = 0.99;
+
+            const createParticle = (canvasW, canvasH) => {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 4 + Math.random() * 8;
+                return {
+                    x: canvasW / 2 + (Math.random() - 0.5) * 100,
+                    y: canvasH / 2 - 50,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 4,
+                    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                    size: 3 + Math.random() * 5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10,
+                    life: 1,
+                    decay: 0.005 + Math.random() * 0.008,
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle',
+                };
+            };
+
+            const update = () => {
+                if (!canvas || !ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                let alive = false;
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    if (p.life <= 0) continue;
+                    alive = true;
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += GRAVITY;
+                    p.vx *= FRICTION;
+                    p.rotation += p.rotationSpeed;
+                    p.life -= p.decay;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = Math.max(0, p.life);
+                    ctx.fillStyle = p.color;
+
+                    if (p.shape === 'rect') {
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+
+                if (alive) {
+                    animFrame = requestAnimationFrame(update);
+                } else {
+                    stop();
+                }
+            };
+
+            const start = (canvasEl) => {
+                stop();
+                canvas = canvasEl;
+                if (!canvas) return;
+                ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(createParticle(canvas.width, canvas.height));
+                }
+                animFrame = requestAnimationFrame(update);
+            };
+
+            const stop = () => {
+                if (animFrame) {
+                    cancelAnimationFrame(animFrame);
+                    animFrame = null;
+                }
+                if (ctx && canvas) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                particles = [];
+            };
+
+            return { start, stop };
+        })();
+
 
         // --- COMPONENTS ---
 
@@ -588,20 +871,17 @@
             const closeRef = React.useRef(null);
             const modalRef = React.useRef(null);
 
-            // Focus the close button when modal opens
             React.useEffect(() => {
                 const prevFocus = document.activeElement;
                 if (closeRef.current) closeRef.current.focus();
 
                 return () => {
-                    // Restore focus when modal closes
                     if (prevFocus && typeof prevFocus.focus === 'function') {
                         prevFocus.focus();
                     }
                 };
             }, []);
 
-            // Escape key closes modal
             React.useEffect(() => {
                 const handleKeyDown = (e) => {
                     if (e.key === 'Escape') {
@@ -613,7 +893,6 @@
                 return () => document.removeEventListener('keydown', handleKeyDown);
             }, [onClose]);
 
-            // Focus trap: cycle focus within modal
             const handleModalKeyDown = (e) => {
                 if (e.key !== 'Tab') return;
                 const focusable = modalRef.current.querySelectorAll(
@@ -670,16 +949,28 @@
                                 <strong>Win Condition:</strong> The first player to get three of their marks in a horizontal, vertical, or diagonal row wins the game.
                             </li>
                             <li>
-                                <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw.
+                                <strong>Draw:</strong> If all 9 squares are filled and no player has achieved three in a row, the game is a draw. The game also detects early draws when no winning lines remain possible.
                             </li>
                             <li>
                                 <strong>Difficulty:</strong> In AI mode, choose <strong>Easy</strong> (random), <strong>Medium</strong> (heuristic), or <strong>Hard</strong> (unbeatable minimax).
                             </li>
                             <li>
+                                <strong>First Move:</strong> In AI mode, you can choose to play as X (go first) or O (go second).
+                            </li>
+                            <li>
                                 <strong>Undo:</strong> Click the <strong>"Undo"</strong> button to take back your last move. In AI mode, this undoes both your move and the AI's response.
                             </li>
                             <li>
+                                <strong>Replay:</strong> After a game ends, click <strong>"Replay"</strong> to step through the move history one move at a time.
+                            </li>
+                            <li>
                                 <strong>Pause/Resume:</strong> Click the <strong>"Pause"</strong> button to temporarily stop the game and blur the screen. Click <strong>"Resume"</strong> to continue.
+                            </li>
+                            <li>
+                                <strong>Custom Names:</strong> Enter nicknames on the start screen to personalise the game.
+                            </li>
+                            <li>
+                                <strong>Themes:</strong> Switch between Neon Pink, Classic, and Retro Green board themes.
                             </li>
                             <li>
                                 <strong>New Game:</strong> Click the "New Game" button to start over.
@@ -692,20 +983,22 @@
 
         /**
          * Represents a single cell on the Tic-Tac-Toe board.
-         * @param {object} props
-         * @param {string} props.value - 'X', 'O', or ''.
-         * @param {function} props.onClick - Click handler for the cell.
-         * @param {string} props.ghostMark - Mark to show as ghost preview.
-         * @param {boolean} props.canInteract - Whether cell can receive interactions.
          */
-        const Cell = ({ value, onClick, row, col, ghostMark, canInteract }) => {
+        const Cell = ({ value, onClick, row, col, ghostMark, canInteract, entranceDelay }) => {
             const [hovered, setHovered] = React.useState(false);
             const isOccupied = !!value;
             const showGhost = hovered && !isOccupied && canInteract && ghostMark;
 
+            const entranceStyle = entranceDelay !== undefined ? {
+                animationDelay: `${entranceDelay}ms`,
+            } : {};
+
+            const entranceClass = entranceDelay !== undefined ? 'cell-entrance' : '';
+
             return (
                 <div
-                    className={`cell rounded-lg transition-all duration-200 ${isOccupied ? 'occupied' : 'cursor-pointer'}`}
+                    className={`cell rounded-lg transition-all duration-200 ${isOccupied ? 'occupied' : 'cursor-pointer'} ${entranceClass}`}
+                    style={entranceStyle}
                     onClick={isOccupied ? undefined : onClick}
                     onKeyDown={isOccupied ? undefined : (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
                     onMouseEnter={() => setHovered(true)}
@@ -731,7 +1024,6 @@
 
         /**
          * SVG win line overlay using grid-relative coordinates.
-         * No DOM measurement needed - positions are calculated from cell indices.
          */
         const WinLineOverlay = ({ winningLine }) => {
             if (!winningLine) return null;
@@ -742,7 +1034,6 @@
             const row3 = Math.floor(c3 / 3);
             const col3 = c3 % 3;
 
-            // Map grid indices to SVG coordinates (0-3 viewBox, centers at 0.5, 1.5, 2.5)
             const x1 = col1 + 0.5;
             const y1 = row1 + 0.5;
             const x2 = col3 + 0.5;
@@ -767,7 +1058,7 @@
                     <line
                         x1={x1} y1={y1}
                         x2={x2} y2={y2}
-                        stroke="#FFFF00"
+                        stroke={getComputedStyle(document.documentElement).getPropertyValue('--theme-win-line').trim() || '#FFFF00'}
                         strokeWidth="0.12"
                         strokeLinecap="round"
                         pathLength="1"
@@ -788,7 +1079,7 @@
             const [gameMode, setGameMode] = React.useState(null); // null, 'PvP', 'PvAI'
             const [difficulty, setDifficulty] = React.useState(DIFFICULTIES.MEDIUM);
             const [winner, setWinner] = React.useState(null); // null, 'X', 'O', 'Draw'
-            const [winningLine, setWinningLine] = React.useState(null); // Array of indices for winning line
+            const [winningLine, setWinningLine] = React.useState(null);
             const [message, setMessage] = React.useState('');
             const [showRules, setShowRules] = React.useState(false);
             const [isPaused, setIsPaused] = React.useState(false);
@@ -798,21 +1089,63 @@
             // Move history for undo: array of { board, currentPlayer } snapshots
             const [moveHistory, setMoveHistory] = React.useState([]);
 
+            // Feature 1: Win streak
+            const [streakPvp, setStreakPvp] = React.useState(() => loadStreak(STREAK_KEY_PVP));
+            const [streakPvai, setStreakPvai] = React.useState(() => loadStreak(STREAK_KEY_PVAI));
+
+            // Feature 2: Board entrance animation key
+            const [boardKey, setBoardKey] = React.useState(0);
+
+            // Feature 3: First-move chooser for PvAI
+            const [humanPlayer, setHumanPlayer] = React.useState(PLAYERS.X);
+            const [aiPlayer, setAiPlayer] = React.useState(PLAYERS.O);
+            const [choosingFirstMove, setChoosingFirstMove] = React.useState(false);
+
+            // Feature 4: Game Replay
+            const [gameMoves, setGameMoves] = React.useState([]); // Array of { index, player } for replay
+            const [isReplaying, setIsReplaying] = React.useState(false);
+            const [replayStep, setReplayStep] = React.useState(0);
+            const replayTimeoutRef = React.useRef(null);
+
+            // Feature 6: Custom player names
+            const [nameX, setNameX] = React.useState('');
+            const [nameO, setNameO] = React.useState('');
+
+            // Feature 7: Board theme
+            const [theme, setTheme] = React.useState(() => loadTheme());
+
+            // Feature 8: Confetti canvas ref
+            const confettiCanvasRef = React.useRef(null);
+
+            // Feature 9: Early draw message
+            const [earlyDrawMessage, setEarlyDrawMessage] = React.useState('');
+
             // Stats
             const [statsPvp, setStatsPvp] = React.useState(() => loadStats(STATS_KEY_PVP));
             const [statsPvai, setStatsPvai] = React.useState(() => loadStats(STATS_KEY_PVAI));
 
             // Ref to hold AI timeout for proper cleanup
             const aiTimeoutRef = React.useRef(null);
-            // Ref to hold the latest board state so AI timeout closure is never stale
             const boardRef = React.useRef(board);
             React.useEffect(() => { boardRef.current = board; }, [board]);
-            // Ref for latest difficulty
             const difficultyRef = React.useRef(difficulty);
             React.useEffect(() => { difficultyRef.current = difficulty; }, [difficulty]);
-            // Refs for focus management
             const gridRef = React.useRef(null);
             const winButtonRef = React.useRef(null);
+
+            // Apply theme to document
+            React.useEffect(() => {
+                if (theme === 'neon-pink') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', theme);
+                }
+            }, [theme]);
+
+            const handleThemeChange = (newTheme) => {
+                setTheme(newTheme);
+                saveTheme(newTheme);
+            };
 
             // Clean up AI timeout on unmount
             React.useEffect(() => {
@@ -821,39 +1154,70 @@
                         clearTimeout(aiTimeoutRef.current);
                         aiTimeoutRef.current = null;
                     }
+                    if (replayTimeoutRef.current !== null) {
+                        clearTimeout(replayTimeoutRef.current);
+                        replayTimeoutRef.current = null;
+                    }
+                    ConfettiEngine.stop();
                 };
             }, []);
 
-            // Record outcome to stats
+            // Helper to get display name for a player mark
+            const getPlayerName = (mark) => {
+                if (mark === PLAYERS.X) {
+                    return nameX || 'Player X';
+                }
+                return nameO || 'Player O';
+            };
+
+            // Record outcome to stats and update streak (Feature 1)
             const recordOutcome = React.useCallback((outcome) => {
-                // outcome: 'X_wins', 'O_wins', 'draw'
                 if (!gameMode) return;
                 const key = gameMode === GAME_MODES.PVP ? STATS_KEY_PVP : STATS_KEY_PVAI;
+                const streakKey = gameMode === GAME_MODES.PVP ? STREAK_KEY_PVP : STREAK_KEY_PVAI;
                 const setter = gameMode === GAME_MODES.PVP ? setStatsPvp : setStatsPvai;
+                const streakSetter = gameMode === GAME_MODES.PVP ? setStreakPvp : setStreakPvai;
 
                 setter(prev => {
                     const next = { ...prev };
                     if (outcome === 'draw') {
                         next.draws += 1;
                     } else if (gameMode === GAME_MODES.PVP) {
-                        // In PvP, X winning = win, O winning = loss (from X's perspective)
                         if (outcome === 'X_wins') next.wins += 1;
                         else next.losses += 1;
                     } else {
-                        // PvAI: player is X, AI is O
-                        if (outcome === 'X_wins') next.wins += 1;
+                        // PvAI: determine win/loss from human player perspective
+                        const humanWon = (outcome === 'X_wins' && humanPlayer === PLAYERS.X) ||
+                                         (outcome === 'O_wins' && humanPlayer === PLAYERS.O);
+                        if (humanWon) next.wins += 1;
                         else next.losses += 1;
                     }
                     saveStats(key, next);
                     return next;
                 });
-            }, [gameMode]);
 
-            // Handle a player's move (stable callback - only uses setState functions which are stable)
+                // Update streak (Feature 1)
+                streakSetter(prev => {
+                    let isWin = false;
+                    if (outcome === 'draw') {
+                        // Draw doesn't change streak
+                        return prev;
+                    } else if (gameMode === GAME_MODES.PVP) {
+                        isWin = outcome === 'X_wins';
+                    } else {
+                        isWin = (outcome === 'X_wins' && humanPlayer === PLAYERS.X) ||
+                                (outcome === 'O_wins' && humanPlayer === PLAYERS.O);
+                    }
+                    const newStreak = isWin ? prev + 1 : 0;
+                    saveStreak(streakKey, newStreak);
+                    return newStreak;
+                });
+            }, [gameMode, humanPlayer]);
+
+            // Handle a player's move
             const handleMove = React.useCallback((newBoard, playerMoved, isAIMove) => {
                 setBoard(newBoard);
 
-                // Always play the placement sound first
                 if (isAIMove) {
                     SoundEngine.playAIMove();
                 } else if (playerMoved === PLAYERS.X) {
@@ -867,113 +1231,233 @@
                 if (winResult) {
                     setWinner(winResult.winner);
                     setWinningLine(winResult.line);
-                    setMessage(`${winResult.winner} WINS!`);
+                    setMessage(`${getPlayerName(winResult.winner)} WINS!`);
+                    setEarlyDrawMessage('');
                     SoundEngine.playVictory();
                     recordOutcome(winResult.winner === PLAYERS.X ? 'X_wins' : 'O_wins');
+                    // Feature 8: Trigger confetti
+                    if (confettiCanvasRef.current) {
+                        ConfettiEngine.start(confettiCanvasRef.current);
+                    }
                 } else if (checkDraw(newBoard)) {
                     setWinner('Draw');
                     setMessage("It's a DRAW!");
+                    setEarlyDrawMessage('');
+                    SoundEngine.playDraw();
+                    recordOutcome('draw');
+                } else if (checkEarlyDraw(newBoard)) {
+                    // Feature 9: Early draw detection
+                    setWinner('Draw');
+                    setMessage("Draw - No possible wins remaining.");
+                    setEarlyDrawMessage("Draw - No possible wins remaining.");
                     SoundEngine.playDraw();
                     recordOutcome('draw');
                 } else {
-                    setCurrentPlayer(playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X);
-                    setMessage(`Player ${playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X}'s turn`);
+                    const nextPlayer = playerMoved === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
+                    setCurrentPlayer(nextPlayer);
+                    setMessage(`${getPlayerName(nextPlayer)}'s turn`);
                 }
-            }, [recordOutcome]);
+            }, [recordOutcome, nameX, nameO]);
 
-            // Function to handle AI's move sequence
-            // Uses boardRef inside the timeout so the closure always reads the latest board
+            // AI move logic - now uses dynamic aiPlayer instead of hardcoded O
             const handleAIMove = React.useCallback(() => {
-                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused) {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === aiPlayer && !winner && !checkDraw(board) && !checkEarlyDraw(board) && !isPaused) {
                     setAiThinking(true);
                     setMessage("AI is thinking...");
                     aiTimeoutRef.current = setTimeout(() => {
                         aiTimeoutRef.current = null;
                         const latestBoard = boardRef.current;
-                        const moveIndex = getAIMove(latestBoard, PLAYERS.O, difficultyRef.current);
+                        const moveIndex = getAIMove(latestBoard, aiPlayer, difficultyRef.current);
+                        if (moveIndex === -1 || moveIndex === undefined) return;
                         const newBoardFlat = [...latestBoard.flat()];
-                        newBoardFlat[moveIndex] = PLAYERS.O;
+                        newBoardFlat[moveIndex] = aiPlayer;
                         const updatedBoard = unflatten(newBoardFlat);
 
                         // Save state before AI move for undo
-                        setMoveHistory(prev => [...prev, { board: latestBoard, currentPlayer: PLAYERS.O }]);
+                        setMoveHistory(prev => [...prev, { board: latestBoard, currentPlayer: aiPlayer }]);
 
-                        handleMove(updatedBoard, PLAYERS.O, true);
+                        // Record move for replay (Feature 4)
+                        setGameMoves(prev => [...prev, { index: moveIndex, player: aiPlayer }]);
+
+                        handleMove(updatedBoard, aiPlayer, true);
                         setAiThinking(false);
                     }, AI_THINK_DELAY);
                 }
-            }, [board, currentPlayer, gameMode, winner, isPaused, handleMove]);
+            }, [board, currentPlayer, gameMode, winner, isPaused, handleMove, aiPlayer]);
 
-            // Effect to trigger AI's turn when it's O's turn in PvAI mode
+            // Effect to trigger AI's turn
             React.useEffect(() => {
-                if (gameMode === GAME_MODES.PVAI && currentPlayer === PLAYERS.O && !winner && !checkDraw(board) && !isPaused && !aiThinking) {
+                if (gameMode === GAME_MODES.PVAI && currentPlayer === aiPlayer && !winner && !checkDraw(board) && !checkEarlyDraw(board) && !isPaused && !aiThinking && !isReplaying) {
                     handleAIMove();
                 }
-                // Cleanup: cancel pending AI move if dependencies change before it fires
                 return () => {
                     if (aiTimeoutRef.current !== null) {
                         clearTimeout(aiTimeoutRef.current);
                         aiTimeoutRef.current = null;
-                        // Only reset aiThinking if we actually cancelled a pending move
                         setAiThinking(false);
                     }
                 };
-            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove]);
+            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove, aiPlayer, isReplaying]);
 
-            // Handle cell click from UI (memoized)
+            // Handle cell click from UI
             const handleCellClick = React.useCallback((rowIndex, colIndex) => {
-                if (winner || isPaused || aiThinking || board[rowIndex][colIndex] !== '') {
-                    return; // Do nothing if game is over, paused, AI is thinking, or cell is occupied
+                if (winner || isPaused || aiThinking || isReplaying || board[rowIndex][colIndex] !== '') {
+                    return;
                 }
 
-                // Save current state for undo before making the move
+                // In PvAI, only allow human player to click
+                if (gameMode === GAME_MODES.PVAI && currentPlayer !== humanPlayer) {
+                    return;
+                }
+
                 setMoveHistory(prev => [...prev, { board: board, currentPlayer: currentPlayer }]);
+
+                // Record move for replay (Feature 4)
+                const flatIndex = rowIndex * 3 + colIndex;
+                setGameMoves(prev => [...prev, { index: flatIndex, player: currentPlayer }]);
 
                 const newBoard = board.map(row => [...row]);
                 newBoard[rowIndex][colIndex] = currentPlayer;
 
                 handleMove(newBoard, currentPlayer, false);
-            }, [winner, isPaused, aiThinking, board, currentPlayer, handleMove]);
+            }, [winner, isPaused, aiThinking, isReplaying, board, currentPlayer, handleMove, gameMode, humanPlayer]);
 
             // Undo handler
             const handleUndo = React.useCallback(() => {
-                if (moveHistory.length === 0 || winner || aiThinking || isPaused) return;
+                if (moveHistory.length === 0 || winner || aiThinking || isPaused || isReplaying) return;
 
                 if (gameMode === GAME_MODES.PVAI) {
-                    // In PvAI mode, undo both AI move and player move
-                    // The last entry is the AI's pre-move state, the one before is the player's pre-move state
                     if (moveHistory.length >= 2) {
                         const playerState = moveHistory[moveHistory.length - 2];
                         setBoard(playerState.board);
                         setCurrentPlayer(playerState.currentPlayer);
                         setMoveHistory(prev => prev.slice(0, -2));
-                        setMessage(`Player ${playerState.currentPlayer}'s turn`);
+                        setGameMoves(prev => prev.slice(0, -2));
+                        setMessage(`${getPlayerName(playerState.currentPlayer)}'s turn`);
                     } else if (moveHistory.length === 1) {
-                        // Only one entry (player moved but AI hasn't yet, or first move)
                         const prevState = moveHistory[moveHistory.length - 1];
                         setBoard(prevState.board);
                         setCurrentPlayer(prevState.currentPlayer);
                         setMoveHistory([]);
-                        setMessage(`Player ${prevState.currentPlayer}'s turn`);
+                        setGameMoves(prev => prev.slice(0, -1));
+                        setMessage(`${getPlayerName(prevState.currentPlayer)}'s turn`);
                     }
                 } else {
-                    // PvP: undo single move
                     const prevState = moveHistory[moveHistory.length - 1];
                     setBoard(prevState.board);
                     setCurrentPlayer(prevState.currentPlayer);
                     setMoveHistory(prev => prev.slice(0, -1));
-                    setMessage(`Player ${prevState.currentPlayer}'s turn`);
+                    setGameMoves(prev => prev.slice(0, -1));
+                    setMessage(`${getPlayerName(prevState.currentPlayer)}'s turn`);
                 }
-            }, [moveHistory, winner, aiThinking, isPaused, gameMode]);
+            }, [moveHistory, winner, aiThinking, isPaused, gameMode, isReplaying, nameX, nameO]);
 
-            const canUndo = moveHistory.length > 0 && !winner && !aiThinking && !isPaused;
+            const canUndo = moveHistory.length > 0 && !winner && !aiThinking && !isPaused && !isReplaying;
+
+            // --- Feature 4: Game Replay ---
+            const startReplay = React.useCallback(() => {
+                if (gameMoves.length === 0) return;
+                setIsReplaying(true);
+                setReplayStep(0);
+                setBoard(emptyBoard());
+                setWinner(null);
+                setWinningLine(null);
+                setEarlyDrawMessage('');
+                setMessage('Replaying...');
+            }, [gameMoves]);
+
+            // Replay stepper effect
+            React.useEffect(() => {
+                if (!isReplaying) return;
+
+                if (replayStep >= gameMoves.length) {
+                    // Replay finished - restore final state
+                    replayTimeoutRef.current = setTimeout(() => {
+                        // Rebuild final board from all moves
+                        const finalFlat = Array(9).fill('');
+                        gameMoves.forEach(m => { finalFlat[m.index] = m.player; });
+                        const finalBoard = unflatten(finalFlat);
+                        setBoard(finalBoard);
+
+                        // Check for winner on final board
+                        const winX = checkWinner(finalBoard, PLAYERS.X);
+                        const winO = checkWinner(finalBoard, PLAYERS.O);
+                        if (winX) {
+                            setWinner(winX.winner);
+                            setWinningLine(winX.line);
+                            setMessage(`${getPlayerName(winX.winner)} WINS!`);
+                            if (confettiCanvasRef.current) ConfettiEngine.start(confettiCanvasRef.current);
+                        } else if (winO) {
+                            setWinner(winO.winner);
+                            setWinningLine(winO.line);
+                            setMessage(`${getPlayerName(winO.winner)} WINS!`);
+                            if (confettiCanvasRef.current) ConfettiEngine.start(confettiCanvasRef.current);
+                        } else {
+                            setWinner('Draw');
+                            setMessage(earlyDrawMessage || "It's a DRAW!");
+                        }
+                        setIsReplaying(false);
+                    }, REPLAY_STEP_DELAY);
+                    return;
+                }
+
+                replayTimeoutRef.current = setTimeout(() => {
+                    const move = gameMoves[replayStep];
+                    setBoard(prevBoard => {
+                        const flat = [...prevBoard.flat()];
+                        flat[move.index] = move.player;
+                        return unflatten(flat);
+                    });
+                    setMessage(`Replaying... move ${replayStep + 1}/${gameMoves.length}`);
+                    setReplayStep(prev => prev + 1);
+                }, REPLAY_STEP_DELAY);
+
+                return () => {
+                    if (replayTimeoutRef.current) {
+                        clearTimeout(replayTimeoutRef.current);
+                        replayTimeoutRef.current = null;
+                    }
+                };
+            }, [isReplaying, replayStep, gameMoves, nameX, nameO]);
+
+            const stopReplay = React.useCallback(() => {
+                if (replayTimeoutRef.current) {
+                    clearTimeout(replayTimeoutRef.current);
+                    replayTimeoutRef.current = null;
+                }
+                // Restore final board state
+                const finalFlat = Array(9).fill('');
+                gameMoves.forEach(m => { finalFlat[m.index] = m.player; });
+                const finalBoard = unflatten(finalFlat);
+                setBoard(finalBoard);
+
+                const winX = checkWinner(finalBoard, PLAYERS.X);
+                const winO = checkWinner(finalBoard, PLAYERS.O);
+                if (winX) {
+                    setWinner(winX.winner);
+                    setWinningLine(winX.line);
+                    setMessage(`${getPlayerName(winX.winner)} WINS!`);
+                } else if (winO) {
+                    setWinner(winO.winner);
+                    setWinningLine(winO.line);
+                    setMessage(`${getPlayerName(winO.winner)} WINS!`);
+                } else {
+                    setWinner('Draw');
+                    setMessage(earlyDrawMessage || "It's a DRAW!");
+                }
+                setIsReplaying(false);
+            }, [gameMoves, nameX, nameO, earlyDrawMessage]);
 
             const resetGame = () => {
-                // Clear any pending AI timeout to prevent stale state updates
                 if (aiTimeoutRef.current !== null) {
                     clearTimeout(aiTimeoutRef.current);
                     aiTimeoutRef.current = null;
                 }
+                if (replayTimeoutRef.current !== null) {
+                    clearTimeout(replayTimeoutRef.current);
+                    replayTimeoutRef.current = null;
+                }
+                ConfettiEngine.stop();
                 setBoard(emptyBoard());
                 setCurrentPlayer(PLAYERS.X);
                 setWinner(null);
@@ -982,17 +1466,63 @@
                 setIsPaused(false);
                 setAiThinking(false);
                 setMoveHistory([]);
-                setGameMode(null); // Go back to mode selection
+                setGameMoves([]);
+                setIsReplaying(false);
+                setReplayStep(0);
+                setEarlyDrawMessage('');
+                setGameMode(null);
+                setChoosingFirstMove(false);
+                setHumanPlayer(PLAYERS.X);
+                setAiPlayer(PLAYERS.O);
+                // Increment boardKey so next game gets entrance animation
+                setBoardKey(prev => prev + 1);
+            };
+
+            const startNewGameSameMode = () => {
+                if (aiTimeoutRef.current !== null) {
+                    clearTimeout(aiTimeoutRef.current);
+                    aiTimeoutRef.current = null;
+                }
+                if (replayTimeoutRef.current !== null) {
+                    clearTimeout(replayTimeoutRef.current);
+                    replayTimeoutRef.current = null;
+                }
+                ConfettiEngine.stop();
+                setBoard(emptyBoard());
+                setCurrentPlayer(PLAYERS.X);
+                setWinner(null);
+                setWinningLine(null);
+                setIsPaused(false);
+                setAiThinking(false);
+                setMoveHistory([]);
+                setGameMoves([]);
+                setIsReplaying(false);
+                setReplayStep(0);
+                setEarlyDrawMessage('');
+                setBoardKey(prev => prev + 1);
+
+                if (gameMode === GAME_MODES.PVAI && humanPlayer === PLAYERS.O) {
+                    // AI goes first as X
+                    setMessage("AI is thinking...");
+                } else {
+                    setMessage(`${getPlayerName(PLAYERS.X)}'s turn`);
+                }
             };
 
             const resetStats = (key) => {
                 const empty = { wins: 0, losses: 0, draws: 0 };
                 saveStats(key, empty);
-                if (key === STATS_KEY_PVP) setStatsPvp(empty);
-                else setStatsPvai(empty);
+                if (key === STATS_KEY_PVP) {
+                    setStatsPvp(empty);
+                    setStreakPvp(0);
+                    saveStreak(STREAK_KEY_PVP, 0);
+                } else {
+                    setStatsPvai(empty);
+                    setStreakPvai(0);
+                    saveStreak(STREAK_KEY_PVAI, 0);
+                }
             };
 
-            // Mute toggle handler
             const handleMuteToggle = () => {
                 const nowMuted = SoundEngine.toggleMute();
                 setIsMuted(nowMuted);
@@ -1000,36 +1530,115 @@
 
             // Focus management: move focus to Play Again button when win/draw overlay appears
             React.useEffect(() => {
-                if (winner && winButtonRef.current) {
+                if (winner && !isReplaying && winButtonRef.current) {
                     winButtonRef.current.focus();
                 }
-            }, [winner]);
+            }, [winner, isReplaying]);
 
+            // Feature 3: Start game flow
             const startGame = (mode) => {
-                setGameMode(mode);
-                setMessage(`Player ${PLAYERS.X}'s turn`);
+                if (mode === GAME_MODES.PVAI) {
+                    setChoosingFirstMove(true);
+                    setGameMode(mode);
+                } else {
+                    setGameMode(mode);
+                    setMessage(`${getPlayerName(PLAYERS.X)}'s turn`);
+                    setMoveHistory([]);
+                    setGameMoves([]);
+                    setBoardKey(prev => prev + 1);
+                }
+            };
+
+            const chooseFirstMove = (playAs) => {
+                setHumanPlayer(playAs);
+                const ai = playAs === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
+                setAiPlayer(ai);
+                setChoosingFirstMove(false);
                 setMoveHistory([]);
+                setGameMoves([]);
+                setBoardKey(prev => prev + 1);
+
+                if (playAs === PLAYERS.O) {
+                    // AI goes first as X
+                    setCurrentPlayer(PLAYERS.X);
+                    setMessage("AI is thinking...");
+                } else {
+                    setCurrentPlayer(PLAYERS.X);
+                    setMessage(`${nameX || 'Player X'}'s turn`);
+                }
             };
 
             // Current stats based on game mode
             const currentStats = gameMode === GAME_MODES.PVP ? statsPvp : statsPvai;
             const currentStatsKey = gameMode === GAME_MODES.PVP ? STATS_KEY_PVP : STATS_KEY_PVAI;
+            const currentStreak = gameMode === GAME_MODES.PVP ? streakPvp : streakPvai;
 
-            // Whether cells can be interacted with (for ghost preview)
-            const cellsInteractive = !winner && !isPaused && !aiThinking;
+            // Whether cells can be interacted with
+            const cellsInteractive = !winner && !isPaused && !aiThinking && !isReplaying;
 
+            // Ghost mark: in PvAI show humanPlayer mark, in PvP show currentPlayer
+            const ghostMark = cellsInteractive
+                ? (gameMode === GAME_MODES.PVAI ? humanPlayer : currentPlayer)
+                : null;
+
+            // --- MODE SELECTION SCREEN ---
             if (!gameMode) {
                 return (
                     <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
                         <div className="scanline-overlay" aria-hidden="true"></div>
-                        {/* Mute toggle */}
                         <button className="mute-btn" onClick={handleMuteToggle} aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}>
                             {isMuted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
                         </button>
                         <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
-                            <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                                 TIC-TAC-TOE
                             </h1>
+
+                            {/* Feature 6: Custom Player Names */}
+                            <div className="mb-5">
+                                <p className="text-cyan-300/60 text-xs mb-2">Enter nicknames (optional):</p>
+                                <div className="flex justify-center gap-3 flex-wrap">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <label className="text-xs text-gray-400" htmlFor="name-x">Player X</label>
+                                        <input
+                                            id="name-x"
+                                            className="name-input"
+                                            type="text"
+                                            maxLength={12}
+                                            placeholder="Player X"
+                                            value={nameX}
+                                            onChange={(e) => setNameX(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex flex-col items-center gap-1">
+                                        <label className="text-xs text-gray-400" htmlFor="name-o">Player O</label>
+                                        <input
+                                            id="name-o"
+                                            className="name-input"
+                                            type="text"
+                                            maxLength={12}
+                                            placeholder="Player O"
+                                            value={nameO}
+                                            onChange={(e) => setNameO(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Feature 7: Theme selector */}
+                            <div className="theme-selector mb-5" role="group" aria-label="Board theme">
+                                {THEMES.map(t => (
+                                    <button
+                                        key={t.id}
+                                        className={`theme-btn ${t.id} ${theme === t.id ? 'active' : ''}`}
+                                        onClick={() => handleThemeChange(t.id)}
+                                        aria-pressed={theme === t.id}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
+                            </div>
+
                             <p className="text-cyan-300/80 mb-6 text-shadow-neon">Choose your challenge:</p>
                             <div className="flex flex-col space-y-4" role="group" aria-label="Game mode selection">
                                 <button
@@ -1057,6 +1666,44 @@
                 );
             }
 
+            // --- Feature 3: FIRST-MOVE CHOOSER SCREEN ---
+            if (choosingFirstMove) {
+                return (
+                    <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+                        <div className="scanline-overlay" aria-hidden="true"></div>
+                        <button className="mute-btn" onClick={handleMuteToggle} aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}>
+                            {isMuted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
+                        </button>
+                        <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
+                            <h1 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                CHOOSE YOUR SIDE
+                            </h1>
+                            <p className="text-cyan-300/80 mb-6 text-shadow-neon">Do you want to go first or second?</p>
+                            <div className="first-move-chooser">
+                                <button
+                                    onClick={() => chooseFirstMove(PLAYERS.X)}
+                                    className="first-move-btn action-btn py-3 px-8 bg-pink-700 hover:bg-pink-800 text-white font-bold rounded-lg shadow-lg shadow-pink-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-lg"
+                                >
+                                    Play as X (Go First)
+                                </button>
+                                <button
+                                    onClick={() => chooseFirstMove(PLAYERS.O)}
+                                    className="first-move-btn action-btn py-3 px-8 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg shadow-lg shadow-cyan-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 text-lg"
+                                >
+                                    Play as O (Go Second)
+                                </button>
+                                <button
+                                    onClick={resetGame}
+                                    className="action-btn mt-4 py-2 px-6 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm"
+                                >
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
             return (
                 <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
                     {/* Scanline overlay for retro CRT effect */}
@@ -1065,6 +1712,9 @@
                     <button className="mute-btn" onClick={handleMuteToggle} aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}>
                         {isMuted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
                     </button>
+
+                    {/* Feature 8: Confetti canvas */}
+                    <canvas ref={confettiCanvasRef} className="confetti-canvas" aria-hidden="true"></canvas>
 
                     <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40">
                         <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
@@ -1101,50 +1751,77 @@
                             </div>
                         )}
 
+                        {/* Feature 7: Theme selector */}
+                        <div className="theme-selector" role="group" aria-label="Board theme">
+                            {THEMES.map(t => (
+                                <button
+                                    key={t.id}
+                                    className={`theme-btn ${t.id} ${theme === t.id ? 'active' : ''}`}
+                                    onClick={() => handleThemeChange(t.id)}
+                                    aria-pressed={theme === t.id}
+                                >
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
+
                         <p
                             className="text-center text-cyan-300/80 mb-4 text-shadow-neon"
+                            style={{ color: 'var(--theme-text-status)' }}
                             role="status"
                             aria-live="polite"
                             aria-atomic="true"
                         >
-                            {message || `Player ${currentPlayer}'s turn`}
+                            {message || `${getPlayerName(currentPlayer)}'s turn`}
                             {aiThinking && <span className="ai-thinking-indicator ml-2" aria-hidden="true">. . .</span>}
                         </p>
 
-                        {/* Game Board */}
+                        {/* Game Board - key prop triggers re-mount for entrance animation */}
                         <div
-                            className="p-4 bg-gray-700/30 rounded-lg shadow-inner border border-gray-600/30 mb-4 relative"
+                            key={boardKey}
+                            className="p-4 rounded-lg shadow-inner mb-4 relative"
+                            style={{
+                                backgroundColor: 'var(--theme-grid-bg)',
+                                borderColor: 'var(--theme-grid-border)',
+                                borderWidth: '1px',
+                                borderStyle: 'solid',
+                            }}
                             role="grid"
                             aria-label="Tic-Tac-Toe board"
                             ref={gridRef}
                         >
                             {board.map((rowCells, rowIndex) => (
                                 <div key={`row-${rowIndex}`} role="row" className="grid grid-cols-3 gap-2" style={rowIndex < 2 ? { marginBottom: '0.5rem' } : undefined}>
-                                    {rowCells.map((cellValue, colIndex) => (
-                                        <Cell
-                                            key={`${rowIndex}-${colIndex}`}
-                                            value={cellValue}
-                                            row={rowIndex}
-                                            col={colIndex}
-                                            onClick={() => handleCellClick(rowIndex, colIndex)}
-                                            ghostMark={cellsInteractive ? currentPlayer : null}
-                                            canInteract={cellsInteractive}
-                                        />
-                                    ))}
+                                    {rowCells.map((cellValue, colIndex) => {
+                                        const flatIdx = rowIndex * 3 + colIndex;
+                                        return (
+                                            <Cell
+                                                key={`${rowIndex}-${colIndex}`}
+                                                value={cellValue}
+                                                row={rowIndex}
+                                                col={colIndex}
+                                                onClick={() => handleCellClick(rowIndex, colIndex)}
+                                                ghostMark={ghostMark}
+                                                canInteract={cellsInteractive}
+                                                entranceDelay={flatIdx * 50}
+                                            />
+                                        );
+                                    })}
                                 </div>
                             ))}
 
-                            {/* Win Line Overlay - positioned relative to grid */}
-                            {winner && winner !== 'Draw' && (
+                            {/* Win Line Overlay */}
+                            {winner && winner !== 'Draw' && !isReplaying && (
                                 <WinLineOverlay winningLine={winningLine} />
                             )}
                         </div>
 
-                        {/* Stats Bar */}
+                        {/* Stats Bar (Feature 1: includes streak) */}
                         <div className="stats-bar" aria-label="Game statistics">
                             <span className="stat-win" title="Wins">W: {currentStats.wins}</span>
                             <span className="stat-loss" title="Losses">L: {currentStats.losses}</span>
                             <span className="stat-draw" title="Draws">D: {currentStats.draws}</span>
+                            <span className="stat-streak" title="Win Streak">Streak: {currentStreak}</span>
                             <button
                                 className="stats-reset-btn"
                                 onClick={() => resetStats(currentStatsKey)}
@@ -1176,7 +1853,7 @@
                             <button
                                 onClick={() => setIsPaused(!isPaused)}
                                 className="action-btn py-2 px-4 bg-gray-700 hover:bg-gray-800 text-white font-bold rounded-lg shadow-lg shadow-gray-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
-                                disabled={winner !== null} /* Cannot pause if game is won/drawn */
+                                disabled={winner !== null || isReplaying}
                                 aria-label={isPaused ? 'Resume game' : 'Pause game'}
                             >
                                 {isPaused ? 'Resume' : 'Pause'}
@@ -1192,17 +1869,48 @@
                         </div>
 
                         {/* Win/Draw Overlay */}
-                        {winner && (
+                        {winner && !isReplaying && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 fade-in pointer-events-none rounded-xl" role="alert" aria-live="assertive">
                                 <h2 className={`text-5xl font-bold text-yellow-300 text-shadow-neon ${winner !== 'Draw' ? 'win-animation' : ''}`}>
-                                    {winner === 'Draw' ? "IT'S A DRAW!" : `${winner} WINS!`}
+                                    {winner === 'Draw'
+                                        ? (earlyDrawMessage || "IT'S A DRAW!")
+                                        : `${getPlayerName(winner)} WINS!`}
                                 </h2>
+                                <div className="flex gap-3 mt-6 flex-wrap justify-center">
+                                    <button
+                                        ref={winButtonRef}
+                                        onClick={startNewGameSameMode}
+                                        className="action-btn py-2 px-6 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                    >
+                                        Play Again
+                                    </button>
+                                    {/* Feature 4: Replay button */}
+                                    {gameMoves.length > 0 && (
+                                        <button
+                                            onClick={startReplay}
+                                            className="action-btn py-2 px-6 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-lg shadow-lg shadow-teal-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                        >
+                                            Replay
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={resetGame}
+                                        className="action-btn py-2 px-6 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-lg shadow-gray-600/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                    >
+                                        Menu
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Replay overlay indicator */}
+                        {isReplaying && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 pointer-events-none rounded-xl">
                                 <button
-                                    ref={winButtonRef}
-                                    onClick={resetGame}
-                                    className="action-btn mt-6 py-2 px-6 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-lg shadow-lg shadow-purple-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
+                                    onClick={stopReplay}
+                                    className="action-btn py-2 px-6 bg-red-700 hover:bg-red-800 text-white font-bold rounded-lg shadow-lg shadow-red-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95 pointer-events-auto"
                                 >
-                                    Play Again
+                                    Stop Replay
                                 </button>
                             </div>
                         )}

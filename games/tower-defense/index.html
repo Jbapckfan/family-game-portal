@@ -1349,6 +1349,17 @@ let path = [];
 // Background stars
 let stars = [];
 
+// Performance: UI update throttle
+let lastUIUpdate = 0;
+const UI_UPDATE_INTERVAL = 200; // ms
+
+// Performance: Grid overlay cache
+let cachedGridCells = null;
+let cachedGridKey = '';
+
+// Performance: Damage number throttle
+let lastDmgNumTime = 0;
+
 // Ability cooldowns
 const abilities = {
     meteor: { cost: 40, cooldown: 0, maxCd: 600 },
@@ -2244,12 +2255,9 @@ function drawMapPreview(i) {
 
     const pts = map.path.map(p => ({ x: 15 + p.x * 220, y: 10 + p.y * 100 }));
 
-    // Glow
-    cx.shadowColor = map.glow;
-    cx.shadowBlur = 10;
-
-    cx.strokeStyle = map.pathStroke;
-    cx.lineWidth = 8;
+    // Glow (wider translucent stroke instead of shadowBlur)
+    cx.strokeStyle = map.glow + '40';
+    cx.lineWidth = 14;
     cx.lineCap = 'round';
     cx.lineJoin = 'round';
     cx.beginPath();
@@ -2257,7 +2265,10 @@ function drawMapPreview(i) {
     pts.forEach(p => cx.lineTo(p.x, p.y));
     cx.stroke();
 
-    cx.shadowBlur = 0;
+    cx.strokeStyle = map.pathStroke;
+    cx.lineWidth = 8;
+    cx.stroke();
+
     cx.strokeStyle = map.pathFill;
     cx.lineWidth = 5;
     cx.stroke();
@@ -2489,17 +2500,28 @@ class Tower {
             ctx.fill();
         }
 
-        // Base glow
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15 + Math.sin(this.pulsePhase * 2) * 5;
+        // Base glow (layered circles with alpha instead of shadowBlur)
+        ctx.beginPath();
+        ctx.arc(x, y, CFG.TOWER_RADIUS * pulse + 6, 0, Math.PI * 2);
+        ctx.fillStyle = this.color + '18';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(x, y, CFG.TOWER_RADIUS * pulse + 3, 0, Math.PI * 2);
+        ctx.fillStyle = this.color + '25';
+        ctx.fill();
 
         // Platform
         ctx.beginPath();
         ctx.arc(x, y, CFG.TOWER_RADIUS * pulse, 0, Math.PI * 2);
-        const baseGrad = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, CFG.TOWER_RADIUS);
-        baseGrad.addColorStop(0, '#3a3a4a');
-        baseGrad.addColorStop(1, '#1a1a2a');
-        ctx.fillStyle = baseGrad;
+        if (!this._cachedBaseGrad || this._cachedBaseX !== x || this._cachedBaseY !== y) {
+            this._cachedBaseGrad = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, CFG.TOWER_RADIUS);
+            this._cachedBaseGrad.addColorStop(0, '#3a3a4a');
+            this._cachedBaseGrad.addColorStop(1, '#1a1a2a');
+            this._cachedBaseX = x;
+            this._cachedBaseY = y;
+        }
+        ctx.fillStyle = this._cachedBaseGrad;
         ctx.fill();
         ctx.strokeStyle = this.color;
         ctx.lineWidth = 2;
@@ -2517,11 +2539,15 @@ class Tower {
         ctx.translate(x, y);
         ctx.rotate(this.rotation);
 
-        const barrelGrad = ctx.createLinearGradient(0, -7, 0, 7);
-        barrelGrad.addColorStop(0, shadeColor(this.color, 20));
-        barrelGrad.addColorStop(0.5, this.color);
-        barrelGrad.addColorStop(1, shadeColor(this.color, -30));
-        ctx.fillStyle = barrelGrad;
+        if (!this._cachedBarrelGrad) {
+            this._cachedBarrelGrad = ctx.createLinearGradient(0, -7, 0, 7);
+            this._cachedShadeLight = shadeColor(this.color, 20);
+            this._cachedShadeDark = shadeColor(this.color, -30);
+            this._cachedBarrelGrad.addColorStop(0, this._cachedShadeLight);
+            this._cachedBarrelGrad.addColorStop(0.5, this.color);
+            this._cachedBarrelGrad.addColorStop(1, this._cachedShadeDark);
+        }
+        ctx.fillStyle = this._cachedBarrelGrad;
 
         // Barrel
         ctx.beginPath();
@@ -2536,6 +2562,7 @@ class Tower {
 
         ctx.restore();
         ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
 
         // Level indicator
         if (this.level > 1) {
@@ -2561,8 +2588,6 @@ class Tower {
             ctx.fillStyle = '#ffd700';
             ctx.font = '8px Orbitron';
             ctx.textAlign = 'center';
-            ctx.shadowColor = '#ffd700';
-            ctx.shadowBlur = 6;
             ctx.fillText('★ ' + this.synergyNames[0], x, y + CFG.TOWER_RADIUS + 24);
             ctx.restore();
         }
@@ -2694,8 +2719,11 @@ class Enemy {
         const sizeMult = 1 + Math.sin(this.pulse) * 0.08;
         const size = this.size * sizeMult;
 
-        ctx.shadowColor = this.glow;
-        ctx.shadowBlur = this.boss ? 25 : 12;
+        // Glow effect (layered circle with alpha instead of shadowBlur)
+        ctx.beginPath();
+        ctx.arc(x, y, size + (this.boss ? 8 : 4), 0, Math.PI * 2);
+        ctx.fillStyle = this.glow + '30';
+        ctx.fill();
 
         // Slow effect ring
         if (this.slowTimer > 0) {
@@ -2732,13 +2760,22 @@ class Enemy {
             ctx.arc(x, y, size, 0, Math.PI * 2);
         }
 
-        const grad = ctx.createRadialGradient(x - size/3, y - size/3, 0, x, y, size);
-        grad.addColorStop(0, shadeColor(this.color, 40));
-        grad.addColorStop(1, this.color);
-        ctx.fillStyle = grad;
+        if (!this._cachedGradSize || this._cachedGradSize !== size || this._cachedGradX !== x || this._cachedGradY !== y) {
+            this._cachedGrad = ctx.createRadialGradient(x - size/3, y - size/3, 0, x, y, size);
+            if (!this._cachedShadeColor) {
+                this._cachedShadeColor = shadeColor(this.color, 40);
+            }
+            this._cachedGrad.addColorStop(0, this._cachedShadeColor);
+            this._cachedGrad.addColorStop(1, this.color);
+            this._cachedGradSize = size;
+            this._cachedGradX = x;
+            this._cachedGradY = y;
+        }
+        ctx.fillStyle = this._cachedGrad;
         ctx.fill();
 
         ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
 
         // Eye/core
         ctx.beginPath();
@@ -2817,8 +2854,6 @@ class Enemy {
                 ctx.font = '8px Arial';
                 ctx.textAlign = 'right';
                 ctx.fillStyle = trait.resistColor;
-                ctx.shadowColor = trait.resistColor;
-                ctx.shadowBlur = 4;
                 ctx.fillText(trait.resistIcon, x + barW/2 + 2, indicatorY);
                 ctx.restore();
             }
@@ -2828,8 +2863,6 @@ class Enemy {
                 ctx.font = '8px Arial';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = trait.vulnColor;
-                ctx.shadowColor = trait.vulnColor;
-                ctx.shadowBlur = 4;
                 ctx.fillText(trait.vulnIcon, x - barW/2 - 10, indicatorY);
                 ctx.restore();
             }
@@ -3064,13 +3097,9 @@ function draw() {
 function drawPath(map) {
     if (path.length < 2) return;
 
-    // Glow
-    ctx.shadowColor = map.glow;
-    ctx.shadowBlur = 25;
-
-    // Outer stroke
-    ctx.strokeStyle = map.pathStroke;
-    ctx.lineWidth = CFG.PATH_WIDTH + 12;
+    // Glow (wider translucent stroke instead of shadowBlur)
+    ctx.strokeStyle = map.glow + '25';
+    ctx.lineWidth = CFG.PATH_WIDTH + 30;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
@@ -3078,7 +3107,13 @@ function drawPath(map) {
     path.forEach(p => ctx.lineTo(p.x, p.y));
     ctx.stroke();
 
-    ctx.shadowBlur = 0;
+    // Outer stroke
+    ctx.strokeStyle = map.pathStroke;
+    ctx.lineWidth = CFG.PATH_WIDTH + 12;
+    ctx.beginPath();
+    ctx.moveTo(path[0].x, path[0].y);
+    path.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.stroke();
 
     // Fill
     ctx.strokeStyle = map.pathFill;
@@ -3111,9 +3146,16 @@ function drawBase() {
 
     const pulse = 1 + Math.sin(G.time * 0.05) * 0.1;
 
-    // Glow
-    ctx.shadowColor = '#ff1493';
-    ctx.shadowBlur = 30 * pulse;
+    // Glow (layered circles with alpha instead of shadowBlur)
+    ctx.beginPath();
+    ctx.arc(x, y, 55 * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 20, 147, 0.08)';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, 50 * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 20, 147, 0.12)';
+    ctx.fill();
 
     // Outer ring
     ctx.strokeStyle = '#ff1493';
@@ -3149,6 +3191,7 @@ function drawBase() {
     ctx.fill();
 
     ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
 
     // HP bar under base
     const hpPct = G.hp / G.maxHp;
@@ -3179,9 +3222,12 @@ function drawProjectiles() {
             ctx.stroke();
         }
 
-        // Head
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
+        // Head (outer glow circle instead of shadowBlur)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size + 3, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + '40';
+        ctx.fill();
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
@@ -3192,7 +3238,6 @@ function drawProjectiles() {
         ctx.arc(p.x, p.y, p.size * 0.4, 0, Math.PI * 2);
         ctx.fillStyle = '#fff';
         ctx.fill();
-        ctx.shadowBlur = 0;
     });
 }
 
@@ -3200,10 +3245,17 @@ function drawBeams() {
     beams.forEach(b => {
         ctx.save();
         ctx.globalAlpha = b.life / 15;
-        ctx.shadowColor = b.color;
-        ctx.shadowBlur = 15;
 
-        // Outer glow
+        // Outer glow (wider translucent stroke instead of shadowBlur)
+        ctx.strokeStyle = b.color + '30';
+        ctx.lineWidth = b.width + 10;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(b.x1, b.y1);
+        ctx.lineTo(b.x2, b.y2);
+        ctx.stroke();
+
+        // Mid glow
         ctx.strokeStyle = b.color + '80';
         ctx.lineWidth = b.width + 4;
         ctx.lineCap = 'round';
@@ -3236,12 +3288,24 @@ function drawLightnings() {
         const dx = (l.x2 - l.x1) / segments;
         const dy = (l.y2 - l.y1) / segments;
 
-        ctx.strokeStyle = '#ffff44';
-        ctx.lineWidth = l.width;
+        // Wide translucent stroke for glow instead of shadowBlur
+        ctx.strokeStyle = 'rgba(255, 255, 0, 0.25)';
+        ctx.lineWidth = l.width + 8;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.shadowColor = '#ffff00';
-        ctx.shadowBlur = 15;
+
+        ctx.beginPath();
+        ctx.moveTo(l.x1, l.y1);
+        for (let i = 1; i < segments; i++) {
+            const jitter = (Math.random() - 0.5) * 20;
+            ctx.lineTo(l.x1 + dx * i + jitter, l.y1 + dy * i + jitter);
+        }
+        ctx.lineTo(l.x2, l.y2);
+        ctx.stroke();
+
+        // Main lightning stroke
+        ctx.strokeStyle = '#ffff44';
+        ctx.lineWidth = l.width;
 
         ctx.beginPath();
         ctx.moveTo(l.x1, l.y1);
@@ -3338,11 +3402,9 @@ function drawPlacementPreview() {
     ctx.fillText(t.icon, x, y);
 }
 
-function drawGridOverlay() {
+function computeGridCells() {
     const gridSize = CFG.TOWER_SPACING;
-    ctx.save();
-    ctx.globalAlpha = 0.3;
-
+    const cells = [];
     for (let gx = gridSize / 2; gx < canvas.width; gx += gridSize) {
         for (let gy = gridSize / 2; gy < canvas.height; gy += gridSize) {
             let valid = true;
@@ -3362,15 +3424,36 @@ function drawGridOverlay() {
                     }
                 }
             }
+            cells.push({ x: gx, y: gy, valid });
+        }
+    }
+    return cells;
+}
 
-            ctx.fillStyle = valid ? 'rgba(0, 255, 100, 0.15)' : 'rgba(255, 50, 50, 0.08)';
-            ctx.fillRect(gx - gridSize/2 + 1, gy - gridSize/2 + 1, gridSize - 2, gridSize - 2);
+function getGridCache() {
+    const key = towers.length + ':' + towers.map(t => `${t.x},${t.y}`).join('|');
+    if (key !== cachedGridKey) {
+        cachedGridKey = key;
+        cachedGridCells = computeGridCells();
+    }
+    return cachedGridCells;
+}
 
-            if (valid) {
-                ctx.strokeStyle = 'rgba(0, 255, 100, 0.2)';
-                ctx.lineWidth = 0.5;
-                ctx.strokeRect(gx - gridSize/2 + 1, gy - gridSize/2 + 1, gridSize - 2, gridSize - 2);
-            }
+function drawGridOverlay() {
+    const gridSize = CFG.TOWER_SPACING;
+    const cells = getGridCache();
+    ctx.save();
+    ctx.globalAlpha = 0.3;
+
+    for (let i = 0; i < cells.length; i++) {
+        const c = cells[i];
+        ctx.fillStyle = c.valid ? 'rgba(0, 255, 100, 0.15)' : 'rgba(255, 50, 50, 0.08)';
+        ctx.fillRect(c.x - gridSize/2 + 1, c.y - gridSize/2 + 1, gridSize - 2, gridSize - 2);
+
+        if (c.valid) {
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.2)';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(c.x - gridSize/2 + 1, c.y - gridSize/2 + 1, gridSize - 2, gridSize - 2);
         }
     }
 
@@ -3403,7 +3486,7 @@ function drawHoverRangePreview() {
 // ═══════════════════════════════════════════════════════════════
 // BACKGROUND ANIMATION
 // ═══════════════════════════════════════════════════════════════
-function animateBg() {
+function drawBgStars() {
     bgCtx.fillStyle = 'rgba(5, 5, 8, 0.15)';
     bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 
@@ -3420,8 +3503,16 @@ function animateBg() {
         bgCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         bgCtx.fill();
     });
+}
 
-    requestAnimationFrame(animateBg);
+// Keep animateBg for pre-game background animation (before gameLoop takes over)
+let gameLoopRunning = false;
+function animateBg() {
+    drawBgStars();
+    // Only run separate rAF loop before gameLoop starts (selectMap calls gameLoop which takes over)
+    if (!gameLoopRunning) {
+        requestAnimationFrame(animateBg);
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3857,6 +3948,11 @@ function spawnParticles(x, y, count, color) {
 }
 
 function showDamageNumber(x, y, text, color, isCrit = false) {
+    const now = performance.now();
+    // Throttle non-crit damage numbers to avoid DOM flooding at high game speeds
+    if (!isCrit && now - lastDmgNumTime < 100) return;
+    lastDmgNumTime = now;
+
     const el = document.createElement('div');
     el.className = 'dmg-num' + (isCrit ? ' crit' : '');
     el.textContent = text;
@@ -4077,6 +4173,9 @@ function bindEvents() {
 // GAME LOOP
 // ═══════════════════════════════════════════════════════════════
 function gameLoop() {
+    gameLoopRunning = true;
+    const now = performance.now();
+
     if (!gamePaused) {
         G.time++;
 
@@ -4102,7 +4201,15 @@ function gameLoop() {
 
     // Draw always (so player can see the state while paused)
     draw();
-    updateUI();
+
+    // Background animation (merged into main loop instead of separate rAF)
+    drawBgStars();
+
+    // Throttled UI update (every 200ms instead of every frame)
+    if (now - lastUIUpdate > UI_UPDATE_INTERVAL) {
+        updateUI();
+        lastUIUpdate = now;
+    }
 
     requestAnimationFrame(gameLoop);
 }

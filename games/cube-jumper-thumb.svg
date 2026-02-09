@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#08081a"/>
+      <stop offset="50%" stop-color="#0b0620"/>
+      <stop offset="100%" stop-color="#08081a"/>
+    </linearGradient>
+    <linearGradient id="cubeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="groundGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#12102a"/>
+      <stop offset="100%" stop-color="#0b0620"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b9d"/>
+      <stop offset="30%" stop-color="#c084fc"/>
+      <stop offset="60%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="25%" cy="40%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cubeGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="spikeGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+    <linearGradient id="trailGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="portalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="50%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <rect width="640" height="360" fill="url(#glow1)"/>
+
+  <!-- Stars -->
+  <circle cx="80" cy="60" r="0.8" fill="white" opacity="0.15"/>
+  <circle cx="195" cy="35" r="1" fill="white" opacity="0.2"/>
+  <circle cx="340" cy="80" r="0.6" fill="white" opacity="0.12"/>
+  <circle cx="450" cy="45" r="0.9" fill="white" opacity="0.18"/>
+  <circle cx="560" cy="70" r="0.7" fill="white" opacity="0.14"/>
+  <circle cx="150" cy="100" r="0.5" fill="white" opacity="0.1"/>
+  <circle cx="500" cy="110" r="0.8" fill="white" opacity="0.12"/>
+  <circle cx="50" cy="140" r="0.6" fill="white" opacity="0.08"/>
+  <circle cx="600" cy="130" r="1" fill="white" opacity="0.15"/>
+
+  <!-- Title -->
+  <text x="320" y="52" text-anchor="middle" fill="url(#titleGrad)" font-family="system-ui, sans-serif" font-size="32" font-weight="900" letter-spacing="4">CUBE JUMPER</text>
+  <text x="320" y="72" text-anchor="middle" fill="white" opacity="0.2" font-family="system-ui, sans-serif" font-size="11" font-weight="200" letter-spacing="5">A RHYTHM PLATFORMER</text>
+
+  <!-- Ground -->
+  <rect x="0" y="260" width="640" height="100" fill="url(#groundGrad)"/>
+  <line x1="0" y1="260" x2="640" y2="260" stroke="#818cf8" stroke-width="2" opacity="0.35"/>
+
+  <!-- Grid lines on ground -->
+  <line x1="40" y1="260" x2="15" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="100" y1="260" x2="75" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="160" y1="260" x2="135" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="220" y1="260" x2="195" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="280" y1="260" x2="255" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="340" y1="260" x2="315" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="400" y1="260" x2="375" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="460" y1="260" x2="435" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="520" y1="260" x2="495" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+  <line x1="580" y1="260" x2="555" y2="360" stroke="white" stroke-width="0.5" opacity="0.03"/>
+
+  <!-- Spike 1 -->
+  <polygon points="160,260 176,225 192,260" fill="url(#spikeGrad)"/>
+  <polygon points="168,259 176,237 184,259" fill="#818cf8" opacity="0.25"/>
+  <circle cx="176" cy="228" r="2" fill="white" opacity="0.15"/>
+
+  <!-- Block -->
+  <rect x="260" y="232" width="50" height="28" rx="2" fill="#4f46e5"/>
+  <rect x="260" y="232" width="50" height="2" fill="#818cf8" opacity="0.3"/>
+  <rect x="260.5" y="232.5" width="49" height="27" rx="2" stroke="#818cf8" stroke-width="0.5" fill="none" opacity="0.2"/>
+
+  <!-- Spike 2 -->
+  <polygon points="370,260 384,228 398,260" fill="url(#spikeGrad)"/>
+  <polygon points="377,259 384,240 391,259" fill="#818cf8" opacity="0.25"/>
+
+  <!-- Spike 3 -->
+  <polygon points="400,260 414,228 428,260" fill="url(#spikeGrad)"/>
+  <polygon points="407,259 414,240 421,259" fill="#818cf8" opacity="0.25"/>
+
+  <!-- Portal (gravity flip) -->
+  <ellipse cx="500" cy="240" rx="10" ry="25" fill="none" stroke="url(#portalGrad)" stroke-width="3" opacity="0.7"/>
+  <ellipse cx="500" cy="240" rx="6" ry="18" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Orb floating -->
+  <circle cx="340" cy="220" r="7" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="338" cy="218" r="2.5" fill="white" opacity="0.4"/>
+  <circle cx="340" cy="220" r="11" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.25"/>
+
+  <!-- Jump pad -->
+  <rect x="535" y="254" width="28" height="6" rx="3" fill="#fbbf24" opacity="0.8"/>
+  <polygon points="540,254 549,244 558,254" fill="#fbbf24" opacity="0.3"/>
+
+  <!-- Trail effect behind cube -->
+  <rect x="130" y="225" width="90" height="24" rx="4" fill="url(#trailGrad)" opacity="0.3"/>
+  <line x1="140" y1="237" x2="215" y2="237" stroke="#818cf8" stroke-width="3" stroke-linecap="round" opacity="0.15"/>
+  <line x1="155" y1="237" x2="215" y2="237" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+
+  <!-- Cube (player) - mid-jump, rotated slightly -->
+  <g transform="translate(224, 210)">
+    <!-- Glow -->
+    <circle cx="0" cy="0" r="30" fill="url(#cubeGlow)"/>
+    <!-- Cube rotated -->
+    <g transform="rotate(-25)">
+      <rect x="-14" y="-14" width="28" height="28" rx="2" fill="url(#cubeGrad)"/>
+      <!-- Highlight -->
+      <polygon points="-11,-11 11,-11 -11,3" fill="white" opacity="0.15"/>
+      <!-- Border -->
+      <rect x="-14" y="-14" width="28" height="28" rx="2" stroke="white" stroke-width="0.5" fill="none" opacity="0.15"/>
+      <!-- Eye -->
+      <circle cx="2" cy="-2" r="4.5" fill="white" opacity="0.8"/>
+      <circle cx="3" cy="-2" r="2.2" fill="#08081a"/>
+      <circle cx="1.2" cy="-3.2" r="1" fill="white" opacity="0.6"/>
+    </g>
+  </g>
+
+  <!-- Particle effects -->
+  <circle cx="205" cy="230" r="2" fill="#818cf8" opacity="0.4"/>
+  <circle cx="198" cy="222" r="1.5" fill="#60a5fa" opacity="0.3"/>
+  <circle cx="210" cy="215" r="1" fill="#a5b4fc" opacity="0.35"/>
+  <circle cx="195" cy="235" r="1.8" fill="#c084fc" opacity="0.25"/>
+  <rect x="200" y="225" width="3" height="3" fill="#818cf8" opacity="0.3" transform="rotate(30 201.5 226.5)"/>
+  <rect x="193" y="218" width="2" height="2" fill="#60a5fa" opacity="0.2" transform="rotate(45 194 219)"/>
+
+  <!-- Progress bar at top -->
+  <rect x="0" y="0" width="260" height="3" fill="url(#titleGrad)" opacity="0.7"/>
+  <rect x="260" y="0" width="380" height="3" fill="white" opacity="0.05"/>
+
+  <!-- HUD text -->
+  <text x="600" y="28" text-anchor="end" fill="white" opacity="0.3" font-family="monospace" font-size="14" letter-spacing="2">0420</text>
+  <text x="40" y="28" fill="white" opacity="0.2" font-family="system-ui, sans-serif" font-size="10" font-weight="600" letter-spacing="3">1 · AWAKENING</text>
+
+  <!-- Vignette -->
+  <rect width="640" height="360" fill="url(#cubeGlow)" opacity="0"/>
+</svg>

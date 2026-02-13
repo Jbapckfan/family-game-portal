@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cube Jumper</title>
+<title>Geometry Dash</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600;800&family=Space+Mono:wght@400;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -89,8 +89,8 @@
 
 <div class="screen" id="menu">
   <a class="home-link" href="../index.html">Home</a>
-  <div class="game-title">CUBE JUMPER</div>
-  <div class="subtitle">A rhythm platformer</div>
+  <div class="game-title">GEOMETRY DASH</div>
+  <div class="subtitle">A Geometry Dash recreation</div>
   <div class="section-label">Select Level</div>
   <div class="level-grid" id="level-grid"></div>
   <button class="btn" id="play-btn">Begin</button>
@@ -110,18 +110,21 @@
 
 <script>
 // ═══════════════════════════════════════════════════════
-// CUBE JUMPER — Enhanced Geometry Dash-style Engine
+// GEOMETRY DASH — Enhanced Geometry Dash-style Engine
 // ═══════════════════════════════════════════════════════
 
-const GRAVITY = 1400;
-const JUMP_FORCE = -520;
+const GRAVITY = 1650;
+const JUMP_FORCE = -560;
 const PLAYER_SIZE = 26;
 const PLAYER_SCREEN_X = 220;
-const JUMP_BUFFER_TIME = 0.12;
-const SHIP_UP_FORCE = -900;
-const SHIP_GRAVITY = 700;
-const WAVE_SPEED = 400;
-const BALL_FLIP_FORCE = -480;
+const JUMP_BUFFER_TIME = 0.08;
+const COYOTE_TIME = 0.055;
+const SHIP_UP_FORCE = -1850;
+const SHIP_GRAVITY = 1250;
+const SHIP_MAX_SPEED = 640;
+const WAVE_SPEED = 520;
+const BALL_FLIP_FORCE = -560;
+const SPEED_BPM_BASE = 130;
 
 // ── AUDIO ENGINE ──
 class AudioEngine {
@@ -136,6 +139,13 @@ class AudioEngine {
     this.rev.buffer=buf; this.revG=this.ctx.createGain(); this.revG.gain.value=0.12;
     this.rev.connect(this.revG); this.revG.connect(this.ctx.destination);
     this.on=true;
+  }
+  setBpm(bpm){
+    this.bpm = Math.max(95, Math.min(210, bpm));
+    this.beatInterval = 60 / this.bpm;
+  }
+  syncToSpeed(currentSpeed){
+    this.setBpm(SPEED_BPM_BASE * (currentSpeed / 240));
   }
   tone(freq,type,vol,dur,ramp=0){
     if(!this.ctx)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
@@ -170,7 +180,7 @@ class AudioEngine {
   }
   update(gt){
     if(!this.ctx)return;
-    if(gt-this.lastBeat>=this.beatInterval){this.lastBeat=gt;const i=Math.min(2,Math.floor(this.beatN/16));this.beat(i);this.beatN++;}
+    while(gt-this.lastBeat>=this.beatInterval){this.lastBeat+=this.beatInterval;const i=Math.min(2,Math.floor(this.beatN/16));this.beat(i);this.beatN++;}
   }
   reset(){ this.lastBeat=0; this.beatN=0; }
 }
@@ -228,6 +238,20 @@ const THEMES = [
 //   portal_gravity, portal_mode, portal_speed
 //   pad_yellow, pad_pink, pad_blue
 //   orb_yellow, orb_blue
+
+const LEVEL_LENGTH_SCALE = 1.9;
+
+function stretchLevel(level) {
+  const scaleX = x => Math.round(x * LEVEL_LENGTH_SCALE);
+  return {
+    ...level,
+    length: scaleX(level.length),
+    obstacles: level.obstacles.map(obs =>
+      typeof obs.x === "number" ? { ...obs, x: scaleX(obs.x) } : { ...obs }
+    ),
+    orbs: level.orbs.map(orb => ({ ...orb, x: scaleX(orb.x) }))
+  };
+}
 
 function buildLevels() {
   const levels = [];
@@ -579,7 +603,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const audio = new AudioEngine();
 const particles = new Particles();
-const LEVELS = buildLevels();
+const LEVELS = buildLevels().map(stretchLevel);
 
 let W, H, groundY, ceilingY;
 function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; groundY=H*0.73; ceilingY=H*0.12; }
@@ -607,6 +631,7 @@ let lastCheckpointX = 0;
 
 const player = { y:0, vy:0, grounded:false, dead:false, rotation:0, mode:'cube', gravFlipped:false, mini:false };
 let jumpBufferTimer = 0;
+let coyoteTimer = 0;
 const TRAIL_LENGTH = 28;
 const trail = [];
 let theme = THEMES[0];
@@ -633,7 +658,20 @@ canvas.addEventListener('mouseup', e => { onJumpUp(); });
 canvas.addEventListener('touchstart', e => { if(state==='playing'){e.preventDefault();onJumpDown();} }, {passive:false});
 canvas.addEventListener('touchend', e => { onJumpUp(); });
 
-const modeIcons = { cube:'\u25A0', ship:'\u25B6', wave:'\u2248', ball:'\u25CF' };
+const modeIcons = { cube:"\u25A0", ship:"\u25B6", wave:"\u2248", ball:"\u25CF" };
+
+function snapSpeedMult(mult) {
+  if (mult <= 0.9) return 0.75;
+  if (mult < 1.1) return 1.0;
+  if (mult < 1.3) return 1.2;
+  if (mult < 1.5) return 1.4;
+  return 1.6;
+}
+
+function formatSpeedMult(mult) {
+  const rounded = Math.round(mult * 10) / 10;
+  return Number.isInteger(rounded) ? rounded.toFixed(0) + "x" : rounded.toFixed(1) + "x";
+}
 
 function buildMenu() {
   const grid = document.getElementById('level-grid');
@@ -682,15 +720,16 @@ function startGame() {
   level = deepCloneLevel(lvDef);
   theme = THEMES[level.theme];
   baseSpeed = level.speed;
-  speedMult = 1;
-  speed = baseSpeed;
+  speedMult = snapSpeedMult(1);
+  speed = baseSpeed * speedMult;
+  audio.syncToSpeed(speed);
   player.y = groundY - PLAYER_SIZE;
   player.vy = 0; player.rotation = 0; player.grounded = true; player.dead = false;
   player.mode = level.startMode || 'cube';
   player.gravFlipped = false;
   player.mini = false;
   cameraX = 0; score = 0; gameTime = 0; deathFlash = 0; screenShake = 0;
-  jumpBufferTimer = 0; jumpPressed = false; jumpHeld = false;
+  jumpBufferTimer = 0; coyoteTimer = 0; jumpPressed = false; jumpHeld = false;
   particles.p = [];
   trail.length = 0;
   practiceCheckpoints = [];
@@ -795,6 +834,7 @@ function checkPortals(worldX) {
       obs._triggered = true;
       player.gravFlipped = !player.gravFlipped;
       player.vy = 0;
+      coyoteTimer = 0;
       audio.gravFlip();
       particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 15, {
         ang:0, spread:6.28, spd:80, spdV:100, life:0.4, lifeV:0.2,
@@ -805,6 +845,7 @@ function checkPortals(worldX) {
       obs._triggered = true;
       player.mode = obs.mode;
       player.vy = 0;
+      coyoteTimer = 0;
       if (obs.mode === 'ball') player.grounded = false;
       audio.modeSwitch();
       document.getElementById('mode-display').textContent = modeIcons[player.mode] + ' ' + player.mode.toUpperCase();
@@ -815,8 +856,9 @@ function checkPortals(worldX) {
     }
     if (obs.type === 'portal_speed') {
       obs._triggered = true;
-      speedMult = obs.speedMult;
+      speedMult = snapSpeedMult(obs.speedMult);
       speed = baseSpeed * speedMult;
+      audio.syncToSpeed(speed);
       audio.portal();
     }
   }
@@ -831,7 +873,7 @@ function checkPadsAndOrbs(worldX) {
     // Jump pads
     if (obs.type === 'pad_yellow' && dx > -10 && dx < 30 && player.grounded) {
       obs._triggered = true;
-      player.vy = player.gravFlipped ? 600 : -680;
+      player.vy = JUMP_FORCE * 1.35 * getGravDir();
       player.grounded = false;
       audio.pad();
       particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : player.y+ps, 8, {
@@ -841,7 +883,7 @@ function checkPadsAndOrbs(worldX) {
     }
     if (obs.type === 'pad_pink' && dx > -10 && dx < 30 && player.grounded) {
       obs._triggered = true;
-      player.vy = player.gravFlipped ? 400 : -450;
+      player.vy = JUMP_FORCE * 0.95 * getGravDir();
       player.grounded = false;
       audio.pad();
       particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : player.y+ps, 6, {
@@ -854,6 +896,7 @@ function checkPadsAndOrbs(worldX) {
       player.gravFlipped = !player.gravFlipped;
       player.vy = 0;
       player.grounded = false;
+      coyoteTimer = 0;
       audio.gravFlip();
       particles.emit(PLAYER_SCREEN_X, player.y+ps/2, 10, {
         ang:0, spread:6.28, spd:60, spdV:80, life:0.3, lifeV:0.15,
@@ -871,10 +914,11 @@ function checkPadsAndOrbs(worldX) {
       if (dist < 2500 && jumpPressed && !player.grounded) {
         obs._triggered = true;
         if (obs.type === 'orb_yellow') {
-          player.vy = player.gravFlipped ? 520 : -520;
+          player.vy = JUMP_FORCE * getGravDir();
         } else {
           player.gravFlipped = !player.gravFlipped;
           player.vy = 0;
+          coyoteTimer = 0;
         }
         audio.orbHit();
         particles.emit(ox, oy, 12, {
@@ -900,6 +944,7 @@ function die() {
     player.mode = cp.mode;
     player.gravFlipped = cp.gravFlipped;
     player.rotation = 0;
+    coyoteTimer = cp.coyoteTimer || 0;
     jumpPressed = false;
     jumpHeld = false;
     jumpBufferTimer = 0;
@@ -968,7 +1013,7 @@ function win() {
 let lastTime = performance.now();
 function update(now) {
   const rawDt = (now-lastTime)/1000;
-  const dt = Math.min(rawDt, 0.03);
+  const dt = Math.min(rawDt, 0.025);
   lastTime = now;
 
   if (state === 'playing') {
@@ -979,6 +1024,8 @@ function update(now) {
 
     if (jumpPressed) { jumpBufferTimer = JUMP_BUFFER_TIME; }
     if (jumpBufferTimer > 0) jumpBufferTimer -= dt;
+    if (player.grounded) coyoteTimer = COYOTE_TIME;
+    else coyoteTimer = Math.max(0, coyoteTimer - dt);
 
     const gd = getGravDir();
     const ps = PLAYER_SIZE;
@@ -989,7 +1036,7 @@ function update(now) {
       lastCheckpointX = cameraX;
       practiceCheckpoints.push({
         cameraX, playerY: player.y, grounded: player.grounded,
-        mode: player.mode, gravFlipped: player.gravFlipped
+        mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer
       });
       audio.checkpoint();
       particles.emit(PLAYER_SCREEN_X, player.y+ps/2, 8, {
@@ -1000,10 +1047,11 @@ function update(now) {
 
     // ── MODE-SPECIFIC PHYSICS ──
     if (player.mode === 'cube') {
-      if (jumpBufferTimer > 0 && player.grounded) {
+      if (jumpBufferTimer > 0 && (player.grounded || coyoteTimer > 0)) {
         player.vy = JUMP_FORCE * gd;
         player.grounded = false;
         jumpBufferTimer = 0;
+        coyoteTimer = 0;
         audio.jump();
         particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : groundY, 6, {
           ang: player.gravFlipped ? 1.57 : -1.57, spread:2, spd:50, spdV:60, life:0.25, lifeV:0.15,
@@ -1025,17 +1073,12 @@ function update(now) {
       if (!player.gravFlipped && player.y <= ceilingY - 5) { /* fine, in air */ }
       if (player.gravFlipped && player.y + ps >= groundY + 5) { /* fine, in air */ }
 
-      if (!player.grounded) player.rotation += 5.5 * dt * gd;
+      if (!player.grounded) player.rotation += 6.8 * dt * gd;
       else player.rotation = Math.round(player.rotation/(Math.PI/2))*(Math.PI/2);
     }
     else if (player.mode === 'ship') {
-      if (jumpHeld) {
-        player.vy += SHIP_UP_FORCE * gd * dt;
-      }
-      player.vy += SHIP_GRAVITY * gd * dt;
-      // Clamp velocity
-      const maxV = 500;
-      player.vy = Math.max(-maxV, Math.min(maxV, player.vy));
+      player.vy += (jumpHeld ? SHIP_UP_FORCE : SHIP_GRAVITY) * gd * dt;
+      player.vy = Math.max(-SHIP_MAX_SPEED, Math.min(SHIP_MAX_SPEED, player.vy));
       player.y += player.vy * dt;
 
       // Bounds
@@ -1044,8 +1087,8 @@ function update(now) {
       else { player.grounded = false; }
 
       // Ship tilts based on velocity
-      const tiltTarget = Math.max(-0.5, Math.min(0.5, player.vy * 0.001 * gd));
-      player.rotation += (tiltTarget - player.rotation) * 8 * dt;
+      const tiltTarget = Math.max(-0.75, Math.min(0.75, player.vy * 0.0012 * gd));
+      player.rotation += (tiltTarget - player.rotation) * 10 * dt;
     }
     else if (player.mode === 'wave') {
       const waveDir = jumpHeld ? -1 : 1;
@@ -1059,9 +1102,10 @@ function update(now) {
       player.rotation = jumpHeld ? -0.6 * gd : 0.6 * gd;
     }
     else if (player.mode === 'ball') {
-      if (jumpPressed && player.grounded) {
+      if (jumpPressed && (player.grounded || coyoteTimer > 0)) {
         player.gravFlipped = !player.gravFlipped;
         player.grounded = false;
+        coyoteTimer = 0;
         player.vy = BALL_FLIP_FORCE * getGravDir();
         audio.gravFlip();
       }
@@ -1086,7 +1130,7 @@ function update(now) {
     const bResult = blockCollisions(worldX);
     if (bResult === 'die') { die(); }
 
-    if (player.grounded && player.mode === 'cube') {
+    if (player.grounded && (player.mode === 'cube' || player.mode === 'ball')) {
       const floorCheck = player.gravFlipped
         ? player.y > ceilingY + 2
         : player.y < groundY - ps - 2;
@@ -1314,13 +1358,14 @@ function draw() {
       else if(obs.type==='portal_speed'){
         const py = groundY - 120;
         const pulse = 0.5 + Math.sin(gameTime*4+obs.x)*0.2;
-        const col = obs.speedMult > 1 ? '#fb923c' : '#60a5fa';
+        const speedTier = snapSpeedMult(obs.speedMult);
+        const col = speedTier > 1 ? '#fb923c' : '#60a5fa';
         ctx.save();
         ctx.globalAlpha = pulse;
         ctx.strokeStyle = col; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.ellipse(sx, py, 10, 40, 0, 0, 6.28); ctx.stroke();
         ctx.fillStyle = col; ctx.font = '12px monospace'; ctx.textAlign = 'center';
-        ctx.fillText(obs.speedMult + 'x', sx, py + 4);
+        ctx.fillText(formatSpeedMult(speedTier), sx, py + 4);
         ctx.restore();
       }
       // Jump pads

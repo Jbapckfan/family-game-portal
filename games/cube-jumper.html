@@ -20,12 +20,14 @@
 
   /* ── UI LAYER ── */
   #ui-layer { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10; }
-  #progress-bar { position:absolute; top:0; left:0; height:3px; background:linear-gradient(90deg,#ff6b9d,#c084fc,#60a5fa); transition:width 0.08s linear; box-shadow:0 0 14px rgba(192,132,252,0.4); width:0%; }
+  #progress-bar { position:absolute; top:0; left:0; height:6px; background:linear-gradient(90deg,#0f0,#0f0); transition:width 0.08s linear; box-shadow:0 0 8px rgba(0,255,0,0.3); width:0%; }
   #score-display { position:absolute; top:24px; right:32px; font-family:'Space Mono',monospace; font-size:17px; letter-spacing:3px; color:rgba(255,255,255,0.45); display:none; }
   #level-name-hud { position:absolute; top:24px; left:32px; font-size:13px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.25); display:none; }
-  #attempt-display { position:absolute; top:44px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.2); display:none; }
+  #attempt-display { position:absolute; top:44px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.2); display:none; opacity:0; animation:fadeInAtt 0.8s ease-out forwards; }
+  @keyframes fadeInAtt { 0%{opacity:0;transform:translateY(-6px)} 100%{opacity:1;transform:translateY(0)} }
   #mode-display { position:absolute; top:64px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.3); display:none; }
   #practice-indicator { position:absolute; top:44px; left:32px; font-size:11px; font-weight:600; letter-spacing:3px; color:#4ade80; display:none; }
+  #percent-display { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:13px; letter-spacing:3px; color:rgba(255,255,255,0.3); display:none; }
   #back-btn { position:absolute; top:16px; left:16px; z-index:30; pointer-events:all; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); font-family:'Outfit',sans-serif; font-size:13px; padding:8px 16px; border-radius:8px; cursor:pointer; backdrop-filter:blur(8px); transition:all 0.3s; display:none; }
   #back-btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); }
 
@@ -56,7 +58,7 @@
   .home-link:hover { color:rgba(255,255,255,0.6); }
 
   /* Level select */
-  .level-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:28px; max-width:480px; }
+  .level-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:28px; max-width:480px; max-height:330px; overflow-y:auto; }
   .lvl-card { width:86px; padding:12px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.35); font-family:'Space Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.3s; pointer-events:all; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
   .lvl-card:hover,.lvl-card.active { border-color:rgba(192,132,252,0.45); background:rgba(192,132,252,0.08); color:#c084fc; transform:translateY(-2px); box-shadow:0 4px 20px rgba(192,132,252,0.15); }
   .lvl-card.locked { opacity:0.25; pointer-events:none; }
@@ -72,7 +74,18 @@
   .death-title.win { color:rgba(52,211,153,0.9); }
   .death-score { font-family:'Space Mono',monospace; font-size:20px; letter-spacing:3px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
   .death-best { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:2.5px; color:rgba(192,132,252,0.45); margin-bottom:6px; }
-  .death-progress { font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; color:rgba(255,255,255,0.25); margin-bottom:40px; }
+  .death-progress { font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; color:rgba(255,255,255,0.25); margin-bottom:8px; }
+
+  /* Star ratings */
+  .star-rating { display:flex; gap:8px; margin-bottom:8px; justify-content:center; }
+  .star-rating .star { font-size:28px; transition:all 0.4s cubic-bezier(.34,1.56,.64,1); opacity:0.15; transform:scale(0.7); }
+  .star-rating .star.earned { opacity:1; transform:scale(1); filter:drop-shadow(0 0 6px rgba(251,191,36,0.5)); }
+  .star-rating .star.earned.pop { animation:starPop 0.5s ease-out; }
+  @keyframes starPop { 0%{transform:scale(0.3);opacity:0} 50%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
+  .orb-percent { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(251,191,36,0.5); margin-bottom:30px; }
+  .lvl-stars { font-size:10px; letter-spacing:1px; margin-top:1px; }
+  .lvl-stars .s-on { color:#fbbf24; }
+  .lvl-stars .s-off { color:rgba(255,255,255,0.1); }
 </style>
 </head>
 <body>
@@ -84,13 +97,14 @@
   <div id="attempt-display">ATT 1</div>
   <div id="mode-display"></div>
   <div id="practice-indicator">PRACTICE</div>
+  <div id="percent-display">0%</div>
 </div>
 <button id="back-btn" onclick="window.location.href='../index.html'">Menu</button>
 
 <div class="screen" id="menu">
   <a class="home-link" href="../index.html">Home</a>
   <div class="game-title">GEOMETRY DASH</div>
-  <div class="subtitle">A Geometry Dash recreation</div>
+  <div class="subtitle">15 Levels · 7 Modes · Endless Fun</div>
   <div class="section-label">Select Level</div>
   <div class="level-grid" id="level-grid"></div>
   <button class="btn" id="play-btn">Begin</button>
@@ -103,6 +117,12 @@
   <div class="death-score" id="final-score">0000</div>
   <div class="death-best" id="best-score">BEST: 0000</div>
   <div class="death-progress" id="death-progress">42%</div>
+  <div class="star-rating" id="star-rating">
+    <span class="star" id="star1">&#9733;</span>
+    <span class="star" id="star2">&#9733;</span>
+    <span class="star" id="star3">&#9733;</span>
+  </div>
+  <div class="orb-percent" id="orb-percent"></div>
   <button class="btn" id="retry-btn">Retry</button>
   <button class="btn btn-sm" id="next-btn" style="display:none">Next Level</button>
   <button class="btn btn-sm" id="menu-btn">Menu</button>
@@ -125,14 +145,25 @@ const SHIP_MAX_SPEED = 640;
 const WAVE_SPEED = 520;
 const BALL_FLIP_FORCE = -560;
 const SPEED_BPM_BASE = 130;
+const DASH_DURATION = 0.3;
+const DASH_SPEED_MULT = 1.8;
+const MINI_SCALE = 0.65;
+const MINI_JUMP_MULT = 0.82;
+
+// ── MUSIC SYSTEM ──
+// Minor pentatonic scale ratios from root
+const PENTA = [1, 1.189, 1.335, 1.498, 1.782];
+// Root frequencies per theme (bass octave)
+const MUSIC_ROOTS = [130.81, 146.83, 164.81, 196.00, 110.00, 174.61, 146.83, 123.47, 164.81, 130.81, 138.59, 155.56, 146.83, 116.54, 164.81];
 
 // ── AUDIO ENGINE ──
 class AudioEngine {
-  constructor() { this.ctx=null; this.on=false; this.bpm=130; this.beatInterval=60/this.bpm; this.lastBeat=0; this.beatN=0; }
+  constructor() { this.ctx=null; this.on=false; this.bpm=130; this.beatInterval=60/this.bpm; this.lastBeat=0; this.beatN=0; this.themeIdx=0; }
   init() {
     if(this.on) return;
     this.ctx=new(window.AudioContext||window.webkitAudioContext)();
-    this.master=this.ctx.createGain(); this.master.gain.value=0.25; this.master.connect(this.ctx.destination);
+    if(this.ctx.state==='suspended') this.ctx.resume();
+    this.master=this.ctx.createGain(); this.master.gain.value=0.45; this.master.connect(this.ctx.destination);
     this.rev=this.ctx.createConvolver();
     const r=this.ctx.sampleRate,len=r*1.2,buf=this.ctx.createBuffer(2,len,r);
     for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8);}
@@ -153,34 +184,74 @@ class AudioEngine {
     g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
     o.connect(g);g.connect(this.master);g.connect(this.rev);o.start(t);o.stop(t+dur+0.01);
   }
-  jump(){ this.tone(480,'sine',0.12,0.12,820); }
-  land(){ this.tone(200,'sine',0.06,0.08); }
+  jump(){ this.tone(480,'sine',0.22,0.12,820); this.tone(520,'triangle',0.08,0.08,700); }
+  land(){ this.tone(200,'sine',0.12,0.08); }
   die(){
     if(!this.ctx)return;const t=this.ctx.currentTime;
-    for(let i=0;i<4;i++){const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(260-i*35,t+i*0.04);o.frequency.exponentialRampToValueAtTime(35,t+i*0.04+0.25);g.gain.setValueAtTime(0.06,t+i*0.04);g.gain.exponentialRampToValueAtTime(0.001,t+i*0.04+0.25);o.connect(g);g.connect(this.master);o.start(t+i*0.04);o.stop(t+i*0.04+0.3);}
+    for(let i=0;i<5;i++){const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(280-i*40,t+i*0.04);o.frequency.exponentialRampToValueAtTime(30,t+i*0.04+0.3);g.gain.setValueAtTime(0.14,t+i*0.04);g.gain.exponentialRampToValueAtTime(0.001,t+i*0.04+0.3);o.connect(g);g.connect(this.master);o.start(t+i*0.04);o.stop(t+i*0.04+0.35);}
+    // Crunch noise
+    const n=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*0.15,this.ctx.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.5);n.buffer=b;const ng=this.ctx.createGain();ng.gain.setValueAtTime(0.12,t);ng.gain.exponentialRampToValueAtTime(0.001,t+0.15);n.connect(ng);ng.connect(this.master);n.start(t);
   }
-  collect(){ this.tone(660,'sine',0.08,0.1); setTimeout(()=>this.tone(990,'sine',0.06,0.1),60); }
-  win(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>this.tone(f,'triangle',0.08,0.4),i*100)); }
-  portal(){ this.tone(440,'sine',0.1,0.2,880); this.tone(660,'triangle',0.06,0.25,1320); }
-  pad(){ this.tone(350,'sine',0.12,0.15,700); }
-  orbHit(){ this.tone(550,'sine',0.1,0.12,1100); }
-  modeSwitch(){ this.tone(300,'triangle',0.08,0.3,600); setTimeout(()=>this.tone(600,'sine',0.06,0.2),80); }
-  gravFlip(){ this.tone(200,'sine',0.1,0.2,500); }
-  checkpoint(){ this.tone(523,'sine',0.08,0.15); setTimeout(()=>this.tone(659,'sine',0.06,0.12),80); }
+  collect(){ this.tone(880,'sine',0.15,0.08,1320); setTimeout(()=>this.tone(1100,'sine',0.12,0.08,1650),50); }
+  win(){ [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>this.tone(f,'triangle',0.15,0.5),i*90)); }
+  portal(){ this.tone(440,'sine',0.18,0.2,880); this.tone(660,'triangle',0.1,0.25,1320); }
+  pad(){ this.tone(350,'sine',0.2,0.15,700); this.tone(440,'triangle',0.08,0.1,880); }
+  orbHit(){ this.tone(550,'sine',0.18,0.12,1100); this.tone(700,'triangle',0.06,0.08); }
+  modeSwitch(){ this.tone(300,'triangle',0.15,0.3,600); setTimeout(()=>this.tone(600,'sine',0.12,0.2),80); }
+  gravFlip(){ this.tone(200,'sine',0.18,0.2,500); this.tone(300,'triangle',0.08,0.15,600); }
+  checkpoint(){ this.tone(523,'sine',0.15,0.15); setTimeout(()=>this.tone(659,'sine',0.12,0.12),80); }
+  dash(){ this.tone(400,'sawtooth',0.15,0.15,800); this.tone(600,'sine',0.12,0.1,1200); this.tone(800,'triangle',0.06,0.08); }
+  musicBeat(n){
+    if(!this.ctx)return;
+    const root=MUSIC_ROOTS[this.themeIdx]||130.81;
+    // Bass: every 4th beat, alternating root and 5th
+    if(n>=4 && n%4===0){
+      const bassF=root*(n%8<4?1:1.498);
+      this.tone(bassF,'sine',0.16,0.3);
+      this.tone(bassF*0.5,'sine',0.06,0.25); // sub bass
+    }
+    // Arp: every beat after beat 12, cycling pentatonic
+    if(n>=12){
+      const arpF=root*2*PENTA[n%5];
+      this.tone(arpF,'triangle',0.05,0.12);
+    }
+    // Melody: every 8th beat after beat 24
+    if(n>=24 && n%8===0){
+      const melF=root*4*PENTA[Math.floor(n/8)%5];
+      this.tone(melF,'sine',0.07,0.4);
+    }
+    // Chord stabs every 16 beats after beat 32
+    if(n>=32 && n%16===0){
+      [1,1.189,1.498].forEach(r=>this.tone(root*2*r,'triangle',0.03,0.45));
+    }
+    // Hi-hat pattern after beat 8
+    if(n>=8 && n%2===0){
+      if(!this.ctx)return;const t=this.ctx.currentTime;
+      const ns=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*0.02,this.ctx.sampleRate),d=b.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;ns.buffer=b;const hg=this.ctx.createGain();hg.gain.setValueAtTime(0.06,t);hg.gain.exponentialRampToValueAtTime(0.001,t+0.02);
+      const hp=this.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=8000;ns.connect(hp);hp.connect(hg);hg.connect(this.master);ns.start(t);
+    }
+  }
   beat(intensity){
     if(!this.ctx)return;const t=this.ctx.currentTime;
-    const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.setValueAtTime(100,t);o.frequency.exponentialRampToValueAtTime(28,t+0.1);
-    g.gain.setValueAtTime(0.15,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.12);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+0.13);
-    if(intensity>0&&this.beatN%2===0){
-      const n=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*0.04,this.ctx.sampleRate),d=b.getChannelData(0);
-      for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;n.buffer=b;const hg=this.ctx.createGain();hg.gain.setValueAtTime(0.04,t);hg.gain.exponentialRampToValueAtTime(0.001,t+0.03);
-      const hp=this.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=7500;n.connect(hp);hp.connect(hg);hg.connect(this.master);n.start(t);
+    // Kick drum
+    const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(25,t+0.12);
+    g.gain.setValueAtTime(0.25,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.15);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+0.16);
+    // Kick click
+    const o2=this.ctx.createOscillator(),g2=this.ctx.createGain();o2.type='triangle';o2.frequency.setValueAtTime(800,t);o2.frequency.exponentialRampToValueAtTime(100,t+0.02);
+    g2.gain.setValueAtTime(0.1,t);g2.gain.exponentialRampToValueAtTime(0.001,t+0.025);o2.connect(g2);g2.connect(this.master);o2.start(t);o2.stop(t+0.03);
+    // Snare on 2 and 4
+    if(intensity>0&&this.beatN%4===2){
+      const n=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*0.08,this.ctx.sampleRate),d=b.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.2);n.buffer=b;const sg=this.ctx.createGain();sg.gain.setValueAtTime(0.1,t);sg.gain.exponentialRampToValueAtTime(0.001,t+0.08);
+      n.connect(sg);sg.connect(this.master);n.start(t);
+      this.tone(200,'triangle',0.08,0.06);
     }
-    if(intensity>1&&this.beatN%4===0){[262,330,392].forEach(f=>this.tone(f,'triangle',0.02,0.35));}
   }
   update(gt){
     if(!this.ctx)return;
-    while(gt-this.lastBeat>=this.beatInterval){this.lastBeat+=this.beatInterval;const i=Math.min(2,Math.floor(this.beatN/16));this.beat(i);this.beatN++;}
+    while(gt-this.lastBeat>=this.beatInterval){this.lastBeat+=this.beatInterval;const i=Math.min(2,Math.floor(this.beatN/16));this.beat(i);this.musicBeat(this.beatN);beatPulse=1.0;this.beatN++;}
   }
   reset(){ this.lastBeat=0; this.beatN=0; }
 }
@@ -228,6 +299,11 @@ const THEMES = [
   { name:'Void',      bg1:'#06060e', bg2:'#04040a', accent:'#a78bfa', accent2:'#c084fc', accent3:'#e9d5ff', ground:'#10082a', obs:['#6d28d9','#5b21b6','#4c1d95'], glow:'#a78bfa' },
   { name:'Nova',      bg1:'#0a0608', bg2:'#0e060a', accent:'#f472b6', accent2:'#fb7185', accent3:'#fda4af', ground:'#1e0a18', obs:['#be185d','#9d174d','#831843'], glow:'#f472b6' },
   { name:'Ascension', bg1:'#04080a', bg2:'#060c0e', accent:'#2dd4bf', accent2:'#34d399', accent3:'#99f6e4', ground:'#061a18', obs:['#0d9488','#0f766e','#115e59'], glow:'#2dd4bf' },
+  { name:'Inferno',   bg1:'#120404', bg2:'#1a0606', accent:'#ef4444', accent2:'#f97316', accent3:'#fbbf24', ground:'#1a0a08', obs:['#dc2626','#b91c1c','#991b1b'], glow:'#ef4444' },
+  { name:'Glacier',   bg1:'#040a10', bg2:'#060e18', accent:'#22d3ee', accent2:'#67e8f9', accent3:'#a5f3fc', ground:'#081820', obs:['#0891b2','#0e7490','#155e75'], glow:'#22d3ee' },
+  { name:'Venom',     bg1:'#080a04', bg2:'#0c1006', accent:'#a3e635', accent2:'#84cc16', accent3:'#d9f99d', ground:'#101808', obs:['#65a30d','#4d7c0f','#3f6212'], glow:'#a3e635' },
+  { name:'Nebula',    bg1:'#0a0410', bg2:'#0e061a', accent:'#e879f9', accent2:'#d946ef', accent3:'#f0abfc', ground:'#180a22', obs:['#c026d3','#a21caf','#86198f'], glow:'#e879f9' },
+  { name:'Titanium',  bg1:'#080808', bg2:'#0c0c0e', accent:'#94a3b8', accent2:'#cbd5e1', accent3:'#e2e8f0', ground:'#121418', obs:['#475569','#334155','#1e293b'], glow:'#94a3b8' },
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -236,10 +312,10 @@ const THEMES = [
 // Element types:
 //   spike, block, saw, ceiling_spike, pillar
 //   portal_gravity, portal_mode, portal_speed
-//   pad_yellow, pad_pink, pad_blue
-//   orb_yellow, orb_blue
+//   pad_yellow, pad_pink, pad_blue, pad_red
+//   orb_yellow, orb_blue, orb_pink, orb_green
 
-const LEVEL_LENGTH_SCALE = 1.9;
+const LEVEL_LENGTH_SCALE = 3.0;
 
 function stretchLevel(level) {
   const scaleX = x => Math.round(x * LEVEL_LENGTH_SCALE);
@@ -272,7 +348,32 @@ function buildLevels() {
     orbs.push({x:2945,y:50,collected:false});
     obs.push({type:'spike',x:3500,y:0,w:32,h:30});
     orbs.push({x:3516,y:60,collected:false});
-    levels.push({obstacles:obs,orbs,length:3900,speed:240,name:'Awakening',theme:0,startMode:'cube'});
+    // ── New: Staircase up section ──
+    obs.push({type:'block',x:4200,y:0,w:70,h:28});
+    obs.push({type:'block',x:4310,y:0,w:70,h:52});
+    obs.push({type:'block',x:4420,y:0,w:70,h:76});
+    obs.push({type:'block',x:4530,y:0,w:70,h:100});
+    orbs.push({x:4565,y:120,collected:false});
+    // Staircase down
+    obs.push({type:'block',x:4640,y:0,w:70,h:76});
+    obs.push({type:'block',x:4750,y:0,w:70,h:52});
+    orbs.push({x:4675,y:95,collected:false});
+    // ── Platform gaps section ──
+    obs.push({type:'block',x:5200,y:0,w:80,h:28});
+    obs.push({type:'block',x:5380,y:0,w:80,h:28});
+    orbs.push({x:5340,y:50,collected:false});
+    obs.push({type:'block',x:5560,y:0,w:80,h:28});
+    orbs.push({x:5520,y:50,collected:false});
+    // ── Spike + orb ──
+    obs.push({type:'spike',x:5950,y:0,w:32,h:30});
+    orbs.push({x:5966,y:58,collected:false});
+    // ── Gentle staircase ──
+    obs.push({type:'block',x:6300,y:0,w:80,h:28});
+    obs.push({type:'block',x:6440,y:0,w:80,h:52});
+    orbs.push({x:6475,y:72,collected:false});
+    // ── Final spike ──
+    obs.push({type:'spike',x:6800,y:0,w:32,h:30});
+    levels.push({obstacles:obs,orbs,length:7200,speed:240,name:'Awakening',theme:0,startMode:'cube'});
   }
 
   // LEVEL 2: "Pulse" — Cube + jump pads intro
@@ -298,7 +399,36 @@ function buildLevels() {
     obs.push({type:'block',x:4920,y:0,w:120,h:50});
     orbs.push({x:4670,y:40,collected:false});
     orbs.push({x:4855,y:55,collected:false});
-    levels.push({obstacles:obs,orbs,length:5300,speed:260,name:'Pulse',theme:1,startMode:'cube'});
+    // ── New: Staircase up with orbs ──
+    obs.push({type:'block',x:5600,y:0,w:70,h:28});
+    orbs.push({x:5635,y:48,collected:false});
+    obs.push({type:'block',x:5710,y:0,w:70,h:52});
+    orbs.push({x:5745,y:72,collected:false});
+    obs.push({type:'block',x:5820,y:0,w:70,h:76});
+    obs.push({type:'block',x:5930,y:0,w:70,h:100});
+    orbs.push({x:5965,y:120,collected:false});
+    // ── Pad launch over triple spike ──
+    obs.push({type:'pad_yellow',x:6300,y:0,w:30,h:10});
+    obs.push({type:'spike',x:6500,y:0,w:30,h:32});
+    obs.push({type:'spike',x:6550,y:0,w:30,h:32});
+    obs.push({type:'spike',x:6600,y:0,w:30,h:32});
+    orbs.push({x:6565,y:110,collected:false});
+    // ── Platform gaps with pad ──
+    obs.push({type:'block',x:6900,y:0,w:80,h:28});
+    obs.push({type:'pad_pink',x:7000,y:0,w:30,h:10});
+    obs.push({type:'block',x:7150,y:0,w:80,h:40});
+    orbs.push({x:7110,y:60,collected:false});
+    obs.push({type:'block',x:7350,y:0,w:80,h:28});
+    // ── Staircase down ──
+    obs.push({type:'block',x:7700,y:0,w:70,h:76});
+    obs.push({type:'block',x:7810,y:0,w:70,h:52});
+    obs.push({type:'block',x:7920,y:0,w:70,h:28});
+    orbs.push({x:7845,y:72,collected:false});
+    // ── Double spike + orb ──
+    obs.push({type:'spike',x:8250,y:0,w:30,h:32});
+    obs.push({type:'spike',x:8305,y:0,w:30,h:32});
+    orbs.push({x:8282,y:68,collected:false});
+    levels.push({obstacles:obs,orbs,length:8800,speed:260,name:'Pulse',theme:1,startMode:'cube'});
   }
 
   // LEVEL 3: "Ember" — Jump pads + jump orbs intro
@@ -326,7 +456,40 @@ function buildLevels() {
     orbs.push({x:4540,y:72,collected:false});
     obs.push({type:'pad_pink',x:5000,y:0,w:30,h:10});
     obs.push({type:'spike',x:5400,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:5800,speed:280,name:'Ember',theme:2,startMode:'cube'});
+    // ── New: Staircase with orb_yellow on top ──
+    obs.push({type:'block',x:6000,y:0,w:70,h:28});
+    obs.push({type:'block',x:6110,y:0,w:70,h:52});
+    obs.push({type:'block',x:6220,y:0,w:70,h:76});
+    obs.push({type:'block',x:6330,y:0,w:70,h:100});
+    obs.push({type:'orb_yellow',x:6365,y:130});
+    orbs.push({x:6255,y:95,collected:false});
+    // ── Pad launch → orb mid-air → spike ──
+    obs.push({type:'pad_yellow',x:6700,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:6850,y:110});
+    orbs.push({x:6900,y:90,collected:false});
+    obs.push({type:'spike',x:7050,y:0,w:32,h:34});
+    // ── Platform gaps with orbs ──
+    obs.push({type:'block',x:7400,y:0,w:80,h:28});
+    orbs.push({x:7440,y:50,collected:false});
+    obs.push({type:'block',x:7600,y:0,w:80,h:36});
+    orbs.push({x:7640,y:58,collected:false});
+    obs.push({type:'block',x:7800,y:0,w:80,h:28});
+    // ── Triple spike with pad before ──
+    obs.push({type:'pad_pink',x:8100,y:0,w:30,h:10});
+    obs.push({type:'spike',x:8300,y:0,w:30,h:34});
+    obs.push({type:'spike',x:8350,y:0,w:30,h:34});
+    obs.push({type:'spike',x:8400,y:0,w:30,h:34});
+    orbs.push({x:8365,y:80,collected:false});
+    // ── Stairway to heaven + drop ──
+    obs.push({type:'block',x:8700,y:0,w:70,h:28});
+    obs.push({type:'block',x:8810,y:0,w:70,h:52});
+    obs.push({type:'block',x:8920,y:0,w:70,h:76});
+    obs.push({type:'block',x:9030,y:0,w:70,h:100});
+    orbs.push({x:9065,y:130,collected:false});
+    // Drop back down
+    obs.push({type:'block',x:9200,y:0,w:70,h:52});
+    orbs.push({x:9235,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:9500,speed:280,name:'Ember',theme:2,startMode:'cube'});
   }
 
   // LEVEL 4: "Radiance" — Ship mode intro
@@ -358,7 +521,38 @@ function buildLevels() {
     obs.push({type:'block',x:5680,y:0,w:120,h:50});
     orbs.push({x:5425,y:40,collected:false});
     obs.push({type:'spike',x:6200,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:6600,speed:280,name:'Radiance',theme:3,startMode:'cube'});
+    // ── New: Staircase section ──
+    obs.push({type:'block',x:6800,y:0,w:70,h:28});
+    obs.push({type:'block',x:6910,y:0,w:70,h:52});
+    obs.push({type:'block',x:7020,y:0,w:70,h:76});
+    obs.push({type:'block',x:7130,y:0,w:70,h:100});
+    orbs.push({x:7165,y:120,collected:false});
+    obs.push({type:'block',x:7240,y:0,w:70,h:76});
+    obs.push({type:'block',x:7350,y:0,w:70,h:52});
+    orbs.push({x:7275,y:95,collected:false});
+    // ── Pad into orb chain ──
+    obs.push({type:'pad_yellow',x:7700,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:7850,y:110});
+    orbs.push({x:7900,y:85,collected:false});
+    obs.push({type:'spike',x:8050,y:0,w:32,h:34});
+    // ── Brief ship mode segment ──
+    obs.push({type:'portal_mode',x:8400,y:0,mode:'ship'});
+    obs.push({type:'block',x:8600,y:0,w:150,h:55});
+    obs.push({type:'block',x:8900,y:185,w:150,h:40});
+    orbs.push({x:8750,y:110,collected:false});
+    obs.push({type:'block',x:9150,y:0,w:120,h:75});
+    obs.push({type:'block',x:9150,y:205,w:120,h:30});
+    orbs.push({x:9000,y:140,collected:false});
+    obs.push({type:'portal_mode',x:9500,y:0,mode:'cube'});
+    // ── Stairway to heaven + drop ──
+    obs.push({type:'block',x:9800,y:0,w:70,h:28});
+    obs.push({type:'block',x:9910,y:0,w:70,h:52});
+    obs.push({type:'block',x:10020,y:0,w:70,h:76});
+    obs.push({type:'block',x:10130,y:0,w:70,h:100});
+    orbs.push({x:10165,y:130,collected:false});
+    obs.push({type:'spike',x:10400,y:0,w:32,h:34});
+    orbs.push({x:10416,y:62,collected:false});
+    levels.push({obstacles:obs,orbs,length:10800,speed:280,name:'Radiance',theme:3,startMode:'cube'});
   }
 
   // LEVEL 5: "Fracture" — Gravity portals intro
@@ -387,7 +581,38 @@ function buildLevels() {
     obs.push({type:'block',x:5480,y:0,w:120,h:50});
     orbs.push({x:5225,y:40,collected:false});
     obs.push({type:'spike',x:5900,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:6300,speed:300,name:'Fracture',theme:4,startMode:'cube'});
+    // ── New: Staircase up ──
+    obs.push({type:'block',x:6500,y:0,w:70,h:28});
+    obs.push({type:'block',x:6610,y:0,w:70,h:52});
+    obs.push({type:'block',x:6720,y:0,w:70,h:76});
+    obs.push({type:'block',x:6830,y:0,w:70,h:100});
+    orbs.push({x:6865,y:120,collected:false});
+    obs.push({type:'block',x:6940,y:0,w:70,h:76});
+    obs.push({type:'block',x:7050,y:0,w:70,h:52});
+    orbs.push({x:6975,y:95,collected:false});
+    // ── Gravity flip section ──
+    obs.push({type:'portal_gravity',x:7400,y:0});
+    obs.push({type:'ceiling_spike',x:7650,y:0,w:30,h:30});
+    orbs.push({x:7800,y:180,collected:false});
+    obs.push({type:'ceiling_spike',x:7950,y:0,w:30,h:30});
+    obs.push({type:'portal_gravity',x:8250,y:0});
+    // ── Pad combo + orbs ──
+    obs.push({type:'pad_yellow',x:8600,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:8750,y:110});
+    orbs.push({x:8800,y:85,collected:false});
+    obs.push({type:'spike',x:8950,y:0,w:30,h:34});
+    obs.push({type:'spike',x:9008,y:0,w:30,h:34});
+    // ── Staircase down + orbs ──
+    obs.push({type:'block',x:9300,y:0,w:70,h:76});
+    orbs.push({x:9335,y:95,collected:false});
+    obs.push({type:'block',x:9410,y:0,w:70,h:52});
+    obs.push({type:'block',x:9520,y:0,w:70,h:28});
+    orbs.push({x:9445,y:72,collected:false});
+    // ── Final spike gauntlet ──
+    obs.push({type:'spike',x:9850,y:0,w:30,h:34});
+    obs.push({type:'spike',x:9910,y:0,w:30,h:34});
+    orbs.push({x:9895,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:10400,speed:300,name:'Fracture',theme:4,startMode:'cube'});
   }
 
   // LEVEL 6: "Zenith" — Mix of cube + ship + gravity
@@ -422,7 +647,43 @@ function buildLevels() {
     obs.push({type:'block',x:6200,y:0,w:40,h:45});
     obs.push({type:'spike',x:6250,y:0,w:28,h:32});
     obs.push({type:'spike',x:6700,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:7100,speed:310,name:'Zenith',theme:5,startMode:'cube'});
+    // ── New: Staircase section ──
+    obs.push({type:'block',x:7300,y:0,w:70,h:28});
+    obs.push({type:'block',x:7410,y:0,w:70,h:52});
+    obs.push({type:'block',x:7520,y:0,w:70,h:76});
+    obs.push({type:'block',x:7630,y:0,w:70,h:100});
+    orbs.push({x:7665,y:120,collected:false});
+    obs.push({type:'block',x:7740,y:0,w:70,h:76});
+    obs.push({type:'block',x:7850,y:0,w:70,h:52});
+    // ── Speed burst section with dash orb ──
+    obs.push({type:'portal_speed',x:8200,y:0,speedMult:1.4});
+    obs.push({type:'orb_dash',x:8300,y:90});
+    obs.push({type:'spike',x:8400,y:0,w:30,h:34});
+    obs.push({type:'spike',x:8520,y:0,w:30,h:34});
+    orbs.push({x:8460,y:55,collected:false});
+    obs.push({type:'pad_yellow',x:8700,y:0,w:30,h:10});
+    obs.push({type:'spike',x:8900,y:0,w:30,h:34});
+    obs.push({type:'portal_speed',x:9050,y:0,speedMult:1.0});
+    // ── Brief ship corridor ──
+    obs.push({type:'portal_mode',x:9300,y:0,mode:'ship'});
+    obs.push({type:'block',x:9500,y:0,w:150,h:55});
+    obs.push({type:'block',x:9800,y:185,w:150,h:40});
+    orbs.push({x:9650,y:110,collected:false});
+    obs.push({type:'block',x:10050,y:0,w:120,h:80});
+    obs.push({type:'block',x:10050,y:210,w:120,h:25});
+    orbs.push({x:9900,y:145,collected:false});
+    obs.push({type:'portal_mode',x:10400,y:0,mode:'cube'});
+    // ── Stairway to heaven + drop ──
+    obs.push({type:'block',x:10700,y:0,w:70,h:28});
+    obs.push({type:'block',x:10810,y:0,w:70,h:52});
+    obs.push({type:'block',x:10920,y:0,w:70,h:76});
+    obs.push({type:'block',x:11030,y:0,w:70,h:100});
+    orbs.push({x:11065,y:130,collected:false});
+    // ── Final gauntlet ──
+    obs.push({type:'spike',x:11400,y:0,w:30,h:34});
+    obs.push({type:'spike',x:11458,y:0,w:30,h:34});
+    orbs.push({x:11444,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:11800,speed:310,name:'Zenith',theme:5,startMode:'cube'});
   }
 
   // LEVEL 7: "Mirage" — Wave mode intro
@@ -457,7 +718,42 @@ function buildLevels() {
     orbs.push({x:5600,y:48,collected:false});
     obs.push({type:'block',x:6300,y:0,w:40,h:48});
     obs.push({type:'spike',x:6350,y:0,w:28,h:30});
-    levels.push({obstacles:obs,orbs,length:6800,speed:310,name:'Mirage',theme:6,startMode:'cube'});
+    // ── New: Staircase with orbs ──
+    obs.push({type:'block',x:7000,y:0,w:70,h:28});
+    orbs.push({x:7035,y:48,collected:false});
+    obs.push({type:'block',x:7110,y:0,w:70,h:52});
+    obs.push({type:'block',x:7220,y:0,w:70,h:76});
+    obs.push({type:'block',x:7330,y:0,w:70,h:100});
+    orbs.push({x:7365,y:120,collected:false});
+    obs.push({type:'block',x:7440,y:0,w:70,h:76});
+    obs.push({type:'block',x:7550,y:0,w:70,h:52});
+    orbs.push({x:7475,y:95,collected:false});
+    // ── Wave corridor section ──
+    obs.push({type:'portal_mode',x:7900,y:0,mode:'wave'});
+    obs.push({type:'block',x:8100,y:0,w:80,h:100});
+    obs.push({type:'block',x:8100,y:200,w:80,h:50});
+    obs.push({type:'block',x:8350,y:0,w:80,h:50});
+    obs.push({type:'block',x:8350,y:150,w:80,h:100});
+    orbs.push({x:8225,y:130,collected:false});
+    obs.push({type:'block',x:8600,y:0,w:80,h:90});
+    obs.push({type:'block',x:8600,y:195,w:80,h:55});
+    orbs.push({x:8475,y:140,collected:false});
+    obs.push({type:'portal_mode',x:8900,y:0,mode:'cube'});
+    // ── Pad combo ──
+    obs.push({type:'pad_yellow',x:9200,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:9350,y:110});
+    orbs.push({x:9400,y:85,collected:false});
+    obs.push({type:'spike',x:9550,y:0,w:30,h:34});
+    // ── Staircase + spike gauntlet ──
+    obs.push({type:'block',x:9900,y:0,w:70,h:28});
+    obs.push({type:'block',x:10010,y:0,w:70,h:52});
+    obs.push({type:'block',x:10120,y:0,w:70,h:76});
+    orbs.push({x:10055,y:72,collected:false});
+    obs.push({type:'orb_dash',x:10300,y:85});
+    obs.push({type:'spike',x:10400,y:0,w:30,h:34});
+    obs.push({type:'spike',x:10460,y:0,w:30,h:34});
+    orbs.push({x:10445,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:10900,speed:310,name:'Mirage',theme:6,startMode:'cube'});
   }
 
   // LEVEL 8: "Void" — Ball mode + speed changes
@@ -493,7 +789,44 @@ function buildLevels() {
     orbs.push({x:5525,y:40,collected:false});
     obs.push({type:'spike',x:6200,y:0,w:30,h:34});
     obs.push({type:'spike',x:6258,y:0,w:30,h:34});
-    levels.push({obstacles:obs,orbs,length:6700,speed:310,name:'Void',theme:7,startMode:'cube'});
+    // ── New: Staircase section ──
+    obs.push({type:'block',x:6900,y:0,w:70,h:28});
+    obs.push({type:'block',x:7010,y:0,w:70,h:52});
+    obs.push({type:'block',x:7120,y:0,w:70,h:76});
+    obs.push({type:'block',x:7230,y:0,w:70,h:100});
+    orbs.push({x:7265,y:120,collected:false});
+    obs.push({type:'block',x:7340,y:0,w:70,h:76});
+    obs.push({type:'block',x:7450,y:0,w:70,h:52});
+    orbs.push({x:7375,y:95,collected:false});
+    // ── Speed burst + rapid spikes ──
+    obs.push({type:'portal_speed',x:7800,y:0,speedMult:1.5});
+    obs.push({type:'orb_dash',x:7900,y:85});
+    obs.push({type:'spike',x:8000,y:0,w:30,h:34});
+    obs.push({type:'spike',x:8130,y:0,w:30,h:34});
+    orbs.push({x:8065,y:55,collected:false});
+    obs.push({type:'pad_yellow',x:8300,y:0,w:30,h:10});
+    obs.push({type:'spike',x:8500,y:0,w:30,h:34});
+    obs.push({type:'portal_speed',x:8650,y:0,speedMult:1.0});
+    // ── Ball mode section ──
+    obs.push({type:'portal_mode',x:8900,y:0,mode:'ball'});
+    obs.push({type:'spike',x:9100,y:0,w:30,h:30});
+    obs.push({type:'ceiling_spike',x:9350,y:0,w:30,h:30});
+    orbs.push({x:9225,y:120,collected:false});
+    obs.push({type:'spike',x:9600,y:0,w:30,h:30});
+    obs.push({type:'portal_mode',x:9850,y:0,mode:'cube'});
+    // ── Pad chain → orbs ──
+    obs.push({type:'pad_yellow',x:10100,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:10250,y:110});
+    orbs.push({x:10300,y:85,collected:false});
+    obs.push({type:'spike',x:10450,y:0,w:30,h:34});
+    // ── Stairway to heaven ──
+    obs.push({type:'block',x:10750,y:0,w:70,h:28});
+    obs.push({type:'block',x:10860,y:0,w:70,h:52});
+    obs.push({type:'block',x:10970,y:0,w:70,h:76});
+    obs.push({type:'block',x:11080,y:0,w:70,h:100});
+    orbs.push({x:11115,y:130,collected:false});
+    obs.push({type:'spike',x:11350,y:0,w:30,h:34});
+    levels.push({obstacles:obs,orbs,length:11700,speed:310,name:'Void',theme:7,startMode:'cube'});
   }
 
   // LEVEL 9: "Nova" — All modes mixed
@@ -538,7 +871,50 @@ function buildLevels() {
     obs.push({type:'spike',x:6896,y:0,w:28,h:34});
     orbs.push({x:6862,y:78,collected:false});
     obs.push({type:'spike',x:7300,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:7700,speed:320,name:'Nova',theme:8,startMode:'cube'});
+    // ── New: Staircase section ──
+    obs.push({type:'block',x:7800,y:0,w:70,h:28});
+    obs.push({type:'block',x:7910,y:0,w:70,h:52});
+    obs.push({type:'block',x:8020,y:0,w:70,h:76});
+    obs.push({type:'block',x:8130,y:0,w:70,h:100});
+    orbs.push({x:8165,y:120,collected:false});
+    obs.push({type:'block',x:8240,y:0,w:70,h:76});
+    obs.push({type:'block',x:8350,y:0,w:70,h:52});
+    orbs.push({x:8275,y:95,collected:false});
+    // ── Quick ship segment ──
+    obs.push({type:'portal_mode',x:8700,y:0,mode:'ship'});
+    obs.push({type:'portal_speed',x:8750,y:0,speedMult:1.3});
+    obs.push({type:'block',x:8950,y:0,w:120,h:60});
+    obs.push({type:'block',x:9200,y:190,w:120,h:35});
+    orbs.push({x:9075,y:110,collected:false});
+    obs.push({type:'block',x:9450,y:0,w:100,h:85});
+    obs.push({type:'block',x:9450,y:210,w:100,h:25});
+    orbs.push({x:9325,y:140,collected:false});
+    // ── Wave corridor ──
+    obs.push({type:'portal_mode',x:9800,y:0,mode:'wave'});
+    obs.push({type:'block',x:10000,y:0,w:80,h:100});
+    obs.push({type:'block',x:10000,y:200,w:80,h:50});
+    obs.push({type:'block',x:10250,y:0,w:80,h:50});
+    obs.push({type:'block',x:10250,y:150,w:80,h:100});
+    orbs.push({x:10125,y:130,collected:false});
+    obs.push({type:'portal_mode',x:10550,y:0,mode:'cube'});
+    obs.push({type:'portal_speed',x:10600,y:0,speedMult:1.0});
+    // ── Gravity gauntlet ──
+    obs.push({type:'orb_dash',x:10800,y:90});
+    obs.push({type:'portal_gravity',x:10900,y:0});
+    obs.push({type:'ceiling_spike',x:11100,y:0,w:30,h:30});
+    orbs.push({x:11250,y:180,collected:false});
+    obs.push({type:'ceiling_spike',x:11400,y:0,w:30,h:30});
+    obs.push({type:'portal_gravity',x:11700,y:0});
+    // ── Cube finale with stairway ──
+    obs.push({type:'block',x:12000,y:0,w:70,h:28});
+    obs.push({type:'block',x:12110,y:0,w:70,h:52});
+    obs.push({type:'block',x:12220,y:0,w:70,h:76});
+    obs.push({type:'block',x:12330,y:0,w:70,h:100});
+    orbs.push({x:12365,y:130,collected:false});
+    obs.push({type:'spike',x:12600,y:0,w:30,h:34});
+    obs.push({type:'spike',x:12658,y:0,w:30,h:34});
+    orbs.push({x:12644,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:13100,speed:320,name:'Nova',theme:8,startMode:'cube'});
   }
 
   // LEVEL 10: "Ascension" — Ultimate challenge
@@ -590,7 +966,431 @@ function buildLevels() {
     obs.push({type:'spike',x:7296,y:0,w:28,h:34});
     orbs.push({x:7262,y:80,collected:false});
     obs.push({type:'spike',x:7700,y:0,w:32,h:34});
-    levels.push({obstacles:obs,orbs,length:8100,speed:340,name:'Ascension',theme:9,startMode:'cube'});
+    // ── New: Staircase section ──
+    obs.push({type:'block',x:8300,y:0,w:70,h:28});
+    obs.push({type:'block',x:8410,y:0,w:70,h:52});
+    obs.push({type:'block',x:8520,y:0,w:70,h:76});
+    obs.push({type:'block',x:8630,y:0,w:70,h:100});
+    orbs.push({x:8665,y:120,collected:false});
+    obs.push({type:'block',x:8740,y:0,w:70,h:76});
+    obs.push({type:'block',x:8850,y:0,w:70,h:52});
+    orbs.push({x:8775,y:95,collected:false});
+    // ── Speed burst ship section ──
+    obs.push({type:'portal_mode',x:9200,y:0,mode:'ship'});
+    obs.push({type:'portal_speed',x:9250,y:0,speedMult:1.5});
+    obs.push({type:'block',x:9450,y:0,w:100,h:70});
+    obs.push({type:'block',x:9700,y:195,w:100,h:35});
+    orbs.push({x:9575,y:110,collected:false});
+    obs.push({type:'block',x:9950,y:0,w:80,h:95});
+    obs.push({type:'block',x:9950,y:215,w:80,h:20});
+    orbs.push({x:9825,y:140,collected:false});
+    obs.push({type:'portal_mode',x:10300,y:0,mode:'wave'});
+    obs.push({type:'portal_speed',x:10350,y:0,speedMult:1.2});
+    // ── Wave gauntlet ──
+    obs.push({type:'orb_dash',x:10450,y:100});
+    obs.push({type:'block',x:10550,y:0,w:70,h:90});
+    obs.push({type:'block',x:10550,y:195,w:70,h:55});
+    obs.push({type:'block',x:10750,y:0,w:70,h:55});
+    obs.push({type:'block',x:10750,y:155,w:70,h:95});
+    orbs.push({x:10650,y:130,collected:false});
+    obs.push({type:'block',x:10950,y:0,w:70,h:80});
+    obs.push({type:'block',x:10950,y:185,w:70,h:65});
+    orbs.push({x:10850,y:135,collected:false});
+    // ── Ball + gravity section ──
+    obs.push({type:'portal_mode',x:11250,y:0,mode:'ball'});
+    obs.push({type:'portal_gravity',x:11300,y:0});
+    obs.push({type:'portal_speed',x:11350,y:0,speedMult:1.0});
+    obs.push({type:'spike',x:11550,y:0,w:30,h:30});
+    obs.push({type:'ceiling_spike',x:11800,y:0,w:30,h:30});
+    orbs.push({x:11675,y:120,collected:false});
+    obs.push({type:'spike',x:12050,y:0,w:30,h:30});
+    obs.push({type:'portal_mode',x:12300,y:0,mode:'cube'});
+    obs.push({type:'portal_gravity',x:12350,y:0});
+    // ── Epic cube finale: stairway to heaven ──
+    obs.push({type:'pad_yellow',x:12600,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:12750,y:110});
+    obs.push({type:'block',x:12950,y:0,w:70,h:28});
+    obs.push({type:'block',x:13060,y:0,w:70,h:52});
+    obs.push({type:'block',x:13170,y:0,w:70,h:76});
+    obs.push({type:'block',x:13280,y:0,w:70,h:100});
+    orbs.push({x:13315,y:130,collected:false});
+    // ── Triple spike finale ──
+    obs.push({type:'orb_dash',x:13500,y:85});
+    obs.push({type:'spike',x:13600,y:0,w:28,h:34});
+    obs.push({type:'spike',x:13648,y:0,w:28,h:34});
+    obs.push({type:'spike',x:13696,y:0,w:28,h:34});
+    orbs.push({x:13662,y:80,collected:false});
+    levels.push({obstacles:obs,orbs,length:14200,speed:340,name:'Ascension',theme:9,startMode:'cube'});
+  }
+
+  // LEVEL 11: "Inferno" — UFO mode showcase + red pads
+  {
+    const obs=[], orbs=[];
+    obs.push({type:'spike',x:700,y:0,w:32,h:34});
+    obs.push({type:'spike',x:1100,y:0,w:30,h:34});
+    obs.push({type:'spike',x:1158,y:0,w:30,h:34});
+    orbs.push({x:900,y:50,collected:false});
+    obs.push({type:'pad_red',x:1500,y:0,w:30,h:10});
+    orbs.push({x:1515,y:130,collected:false});
+    obs.push({type:'block',x:1900,y:0,w:70,h:28});
+    obs.push({type:'block',x:2010,y:0,w:70,h:52});
+    obs.push({type:'block',x:2120,y:0,w:70,h:76});
+    orbs.push({x:2055,y:72,collected:false});
+    // UFO section — tight corridor hopping
+    obs.push({type:'portal_mode',x:2500,y:0,mode:'ufo'});
+    obs.push({type:'block',x:2750,y:0,w:120,h:80});
+    obs.push({type:'block',x:3000,y:180,w:120,h:55});
+    orbs.push({x:2875,y:120,collected:false});
+    obs.push({type:'block',x:3250,y:0,w:100,h:100});
+    obs.push({type:'block',x:3250,y:200,w:100,h:40});
+    orbs.push({x:3125,y:140,collected:false});
+    obs.push({type:'block',x:3500,y:160,w:120,h:70});
+    orbs.push({x:3375,y:100,collected:false});
+    // Back to cube with speed burst
+    obs.push({type:'portal_mode',x:3900,y:0,mode:'cube'});
+    obs.push({type:'portal_speed',x:3950,y:0,speedMult:1.4});
+    obs.push({type:'spike',x:4150,y:0,w:30,h:34});
+    obs.push({type:'spike',x:4300,y:0,w:30,h:34});
+    obs.push({type:'orb_yellow',x:4450,y:100});
+    orbs.push({x:4500,y:80,collected:false});
+    obs.push({type:'spike',x:4600,y:0,w:30,h:34});
+    obs.push({type:'spike',x:4660,y:0,w:30,h:34});
+    obs.push({type:'portal_speed',x:4850,y:0,speedMult:1.0});
+    // Red pad gauntlet
+    obs.push({type:'pad_red',x:5200,y:0,w:30,h:10});
+    obs.push({type:'orb_green',x:5350,y:130});
+    orbs.push({x:5400,y:110,collected:false});
+    obs.push({type:'spike',x:5550,y:0,w:30,h:34});
+    obs.push({type:'spike',x:5610,y:0,w:30,h:34});
+    // Gravity flip into UFO
+    obs.push({type:'portal_gravity',x:5900,y:0});
+    obs.push({type:'portal_mode',x:5950,y:0,mode:'ufo'});
+    obs.push({type:'block',x:6150,y:180,w:120,h:55});
+    obs.push({type:'block',x:6400,y:0,w:100,h:70});
+    orbs.push({x:6275,y:110,collected:false});
+    obs.push({type:'block',x:6650,y:160,w:120,h:70});
+    obs.push({type:'block',x:6650,y:0,w:120,h:40});
+    orbs.push({x:6525,y:100,collected:false});
+    obs.push({type:'portal_mode',x:7000,y:0,mode:'cube'});
+    obs.push({type:'portal_gravity',x:7050,y:0});
+    // Staircase with orbs
+    obs.push({type:'block',x:7400,y:0,w:70,h:28});
+    obs.push({type:'block',x:7510,y:0,w:70,h:52});
+    obs.push({type:'block',x:7620,y:0,w:70,h:76});
+    obs.push({type:'block',x:7730,y:0,w:70,h:100});
+    orbs.push({x:7665,y:95,collected:false});
+    orbs.push({x:7765,y:120,collected:false});
+    // Wave section
+    obs.push({type:'portal_mode',x:8100,y:0,mode:'wave'});
+    obs.push({type:'block',x:8300,y:0,w:80,h:100});
+    obs.push({type:'block',x:8300,y:200,w:80,h:50});
+    obs.push({type:'block',x:8550,y:0,w:80,h:50});
+    obs.push({type:'block',x:8550,y:150,w:80,h:100});
+    orbs.push({x:8425,y:130,collected:false});
+    obs.push({type:'portal_mode',x:8850,y:0,mode:'cube'});
+    // Finale: pad combo
+    obs.push({type:'pad_yellow',x:9100,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:9250,y:110});
+    obs.push({type:'spike',x:9400,y:0,w:30,h:34});
+    obs.push({type:'spike',x:9460,y:0,w:30,h:34});
+    orbs.push({x:9445,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:9900,speed:320,name:'Inferno',theme:10,startMode:'cube'});
+  }
+
+  // LEVEL 12: "Glacier" — Robot mode showcase + mini sections
+  {
+    const obs=[], orbs=[];
+    obs.push({type:'spike',x:700,y:0,w:32,h:34});
+    obs.push({type:'block',x:1100,y:0,w:55,h:36});
+    orbs.push({x:900,y:50,collected:false});
+    obs.push({type:'spike',x:1500,y:0,w:30,h:34});
+    obs.push({type:'spike',x:1558,y:0,w:30,h:34});
+    // Robot section — variable jump height test
+    obs.push({type:'portal_mode',x:2000,y:0,mode:'robot'});
+    obs.push({type:'block',x:2250,y:0,w:80,h:28});
+    obs.push({type:'block',x:2450,y:0,w:80,h:60});
+    orbs.push({x:2385,y:50,collected:false});
+    obs.push({type:'block',x:2650,y:0,w:80,h:95});
+    orbs.push({x:2685,y:115,collected:false});
+    obs.push({type:'spike',x:2850,y:0,w:30,h:34});
+    obs.push({type:'block',x:3050,y:0,w:80,h:45});
+    obs.push({type:'block',x:3250,y:0,w:80,h:28});
+    // Back to cube, enter mini mode
+    obs.push({type:'portal_mode',x:3600,y:0,mode:'cube'});
+    obs.push({type:'portal_size',x:3650,y:0});
+    // Mini cube section — tight, fast-feeling
+    obs.push({type:'spike',x:3900,y:0,w:24,h:26});
+    obs.push({type:'spike',x:4050,y:0,w:24,h:26});
+    orbs.push({x:3975,y:40,collected:false});
+    obs.push({type:'block',x:4300,y:0,w:50,h:20});
+    obs.push({type:'block',x:4430,y:0,w:50,h:36});
+    orbs.push({x:4365,y:32,collected:false});
+    obs.push({type:'spike',x:4600,y:0,w:24,h:26});
+    obs.push({type:'pad_yellow',x:4800,y:0,w:25,h:8});
+    orbs.push({x:4815,y:75,collected:false});
+    // Back to normal size
+    obs.push({type:'portal_size',x:5100,y:0});
+    obs.push({type:'spike',x:5350,y:0,w:30,h:34});
+    obs.push({type:'spike',x:5410,y:0,w:30,h:34});
+    // Ship corridor
+    obs.push({type:'portal_mode',x:5700,y:0,mode:'ship'});
+    obs.push({type:'block',x:5950,y:0,w:150,h:55});
+    obs.push({type:'block',x:6250,y:185,w:150,h:40});
+    orbs.push({x:6100,y:110,collected:false});
+    obs.push({type:'block',x:6550,y:0,w:120,h:80});
+    obs.push({type:'block',x:6550,y:210,w:120,h:25});
+    orbs.push({x:6400,y:140,collected:false});
+    obs.push({type:'portal_mode',x:6900,y:0,mode:'cube'});
+    // Gravity + staircase
+    obs.push({type:'portal_gravity',x:7200,y:0});
+    obs.push({type:'ceiling_spike',x:7450,y:0,w:30,h:30});
+    orbs.push({x:7600,y:180,collected:false});
+    obs.push({type:'portal_gravity',x:7800,y:0});
+    // Robot finale
+    obs.push({type:'portal_mode',x:8100,y:0,mode:'robot'});
+    obs.push({type:'block',x:8300,y:0,w:70,h:40});
+    obs.push({type:'block',x:8480,y:0,w:70,h:70});
+    obs.push({type:'block',x:8660,y:0,w:70,h:100});
+    orbs.push({x:8595,y:90,collected:false});
+    orbs.push({x:8695,y:120,collected:false});
+    obs.push({type:'portal_mode',x:9000,y:0,mode:'cube'});
+    obs.push({type:'spike',x:9200,y:0,w:30,h:34});
+    obs.push({type:'spike',x:9260,y:0,w:30,h:34});
+    orbs.push({x:9245,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:9700,speed:300,name:'Glacier',theme:11,startMode:'cube'});
+  }
+
+  // LEVEL 13: "Venom" — Green orbs + all modes mixed fast
+  {
+    const obs=[], orbs=[];
+    obs.push({type:'spike',x:650,y:0,w:30,h:34});
+    obs.push({type:'spike',x:710,y:0,w:30,h:34});
+    obs.push({type:'pad_yellow',x:1000,y:0,w:30,h:10});
+    obs.push({type:'orb_green',x:1150,y:100});
+    orbs.push({x:850,y:55,collected:false});
+    // Gravity is now flipped from green orb — ceiling spikes
+    obs.push({type:'ceiling_spike',x:1400,y:0,w:30,h:30});
+    obs.push({type:'portal_gravity',x:1650,y:0});
+    obs.push({type:'spike',x:1900,y:0,w:30,h:34});
+    obs.push({type:'orb_pink',x:2100,y:85});
+    orbs.push({x:2200,y:55,collected:false});
+    // Speed up + wave
+    obs.push({type:'portal_speed',x:2500,y:0,speedMult:1.4});
+    obs.push({type:'portal_mode',x:2550,y:0,mode:'wave'});
+    obs.push({type:'block',x:2750,y:0,w:80,h:90});
+    obs.push({type:'block',x:2750,y:195,w:80,h:55});
+    obs.push({type:'block',x:2950,y:0,w:80,h:55});
+    obs.push({type:'block',x:2950,y:150,w:80,h:100});
+    orbs.push({x:2850,y:130,collected:false});
+    obs.push({type:'block',x:3150,y:0,w:80,h:80});
+    obs.push({type:'block',x:3150,y:185,w:80,h:65});
+    // UFO mode
+    obs.push({type:'portal_mode',x:3450,y:0,mode:'ufo'});
+    obs.push({type:'portal_speed',x:3500,y:0,speedMult:1.0});
+    obs.push({type:'block',x:3700,y:0,w:120,h:70});
+    obs.push({type:'block',x:3950,y:180,w:120,h:50});
+    orbs.push({x:3825,y:115,collected:false});
+    obs.push({type:'block',x:4200,y:0,w:100,h:90});
+    obs.push({type:'block',x:4200,y:200,w:100,h:40});
+    orbs.push({x:4075,y:140,collected:false});
+    // Robot mode + gravity flip
+    obs.push({type:'portal_mode',x:4550,y:0,mode:'robot'});
+    obs.push({type:'portal_gravity',x:4600,y:0});
+    obs.push({type:'block',x:4800,y:190,w:80,h:50});
+    obs.push({type:'block',x:5000,y:170,w:80,h:70});
+    orbs.push({x:4935,y:145,collected:false});
+    obs.push({type:'portal_gravity',x:5250,y:0});
+    obs.push({type:'portal_mode',x:5300,y:0,mode:'cube'});
+    // Green orb chain
+    obs.push({type:'pad_red',x:5600,y:0,w:30,h:10});
+    obs.push({type:'orb_green',x:5750,y:130});
+    obs.push({type:'orb_green',x:5900,y:100});
+    orbs.push({x:5825,y:120,collected:false});
+    obs.push({type:'portal_gravity',x:6100,y:0});
+    // Mini + ball section
+    obs.push({type:'portal_size',x:6350,y:0});
+    obs.push({type:'portal_mode',x:6400,y:0,mode:'ball'});
+    obs.push({type:'spike',x:6600,y:0,w:24,h:24});
+    obs.push({type:'ceiling_spike',x:6800,y:0,w:24,h:24});
+    orbs.push({x:6700,y:120,collected:false});
+    obs.push({type:'spike',x:7000,y:0,w:24,h:24});
+    obs.push({type:'portal_size',x:7200,y:0});
+    obs.push({type:'portal_mode',x:7250,y:0,mode:'cube'});
+    // Staircase finale
+    obs.push({type:'block',x:7550,y:0,w:70,h:28});
+    obs.push({type:'block',x:7660,y:0,w:70,h:52});
+    obs.push({type:'block',x:7770,y:0,w:70,h:76});
+    obs.push({type:'block',x:7880,y:0,w:70,h:100});
+    orbs.push({x:7815,y:95,collected:false});
+    orbs.push({x:7915,y:120,collected:false});
+    obs.push({type:'spike',x:8150,y:0,w:30,h:34});
+    obs.push({type:'spike',x:8210,y:0,w:30,h:34});
+    orbs.push({x:8195,y:72,collected:false});
+    levels.push({obstacles:obs,orbs,length:8700,speed:330,name:'Venom',theme:12,startMode:'cube'});
+  }
+
+  // LEVEL 14: "Nebula" — Epic multi-mode mashup
+  {
+    const obs=[], orbs=[];
+    // Fast start
+    obs.push({type:'portal_speed',x:400,y:0,speedMult:1.3});
+    obs.push({type:'spike',x:650,y:0,w:30,h:34});
+    obs.push({type:'spike',x:750,y:0,w:30,h:34});
+    obs.push({type:'spike',x:850,y:0,w:30,h:34});
+    orbs.push({x:800,y:65,collected:false});
+    obs.push({type:'pad_yellow',x:1100,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:1250,y:110});
+    obs.push({type:'portal_speed',x:1450,y:0,speedMult:1.0});
+    // Ship section with tight corridor
+    obs.push({type:'portal_mode',x:1700,y:0,mode:'ship'});
+    obs.push({type:'block',x:1950,y:0,w:100,h:70});
+    obs.push({type:'block',x:2150,y:200,w:100,h:35});
+    obs.push({type:'block',x:2350,y:0,w:80,h:100});
+    obs.push({type:'block',x:2350,y:210,w:80,h:25});
+    orbs.push({x:2050,y:110,collected:false});
+    orbs.push({x:2250,y:140,collected:false});
+    // Wave burst
+    obs.push({type:'portal_mode',x:2650,y:0,mode:'wave'});
+    obs.push({type:'portal_speed',x:2700,y:0,speedMult:1.3});
+    obs.push({type:'block',x:2900,y:0,w:70,h:85});
+    obs.push({type:'block',x:2900,y:190,w:70,h:60});
+    obs.push({type:'block',x:3100,y:0,w:70,h:55});
+    obs.push({type:'block',x:3100,y:155,w:70,h:95});
+    orbs.push({x:3000,y:130,collected:false});
+    // UFO section
+    obs.push({type:'portal_mode',x:3400,y:0,mode:'ufo'});
+    obs.push({type:'portal_speed',x:3450,y:0,speedMult:1.0});
+    obs.push({type:'block',x:3650,y:0,w:100,h:65});
+    obs.push({type:'block',x:3900,y:180,w:100,h:50});
+    obs.push({type:'block',x:4150,y:70,w:100,h:60});
+    orbs.push({x:3775,y:120,collected:false});
+    orbs.push({x:4025,y:100,collected:false});
+    // Mini robot section
+    obs.push({type:'portal_mode',x:4450,y:0,mode:'robot'});
+    obs.push({type:'portal_size',x:4500,y:0});
+    obs.push({type:'block',x:4700,y:0,w:60,h:30});
+    obs.push({type:'block',x:4850,y:0,w:60,h:55});
+    obs.push({type:'block',x:5000,y:0,w:60,h:80});
+    orbs.push({x:4785,y:48,collected:false});
+    orbs.push({x:4935,y:72,collected:false});
+    obs.push({type:'portal_size',x:5200,y:0});
+    obs.push({type:'portal_mode',x:5250,y:0,mode:'cube'});
+    // Ball + gravity chain
+    obs.push({type:'portal_mode',x:5550,y:0,mode:'ball'});
+    obs.push({type:'spike',x:5750,y:0,w:30,h:30});
+    obs.push({type:'ceiling_spike',x:5950,y:0,w:30,h:30});
+    obs.push({type:'spike',x:6150,y:0,w:30,h:30});
+    orbs.push({x:5850,y:120,collected:false});
+    orbs.push({x:6050,y:120,collected:false});
+    obs.push({type:'portal_mode',x:6400,y:0,mode:'cube'});
+    // Green orb combo
+    obs.push({type:'pad_red',x:6700,y:0,w:30,h:10});
+    obs.push({type:'orb_green',x:6850,y:130});
+    obs.push({type:'ceiling_spike',x:7050,y:0,w:30,h:30});
+    obs.push({type:'orb_green',x:7200,y:100});
+    orbs.push({x:7100,y:160,collected:false});
+    obs.push({type:'portal_gravity',x:7400,y:0});
+    // Speed finale
+    obs.push({type:'portal_speed',x:7600,y:0,speedMult:1.5});
+    obs.push({type:'spike',x:7800,y:0,w:28,h:34});
+    obs.push({type:'spike',x:7900,y:0,w:28,h:34});
+    obs.push({type:'orb_dash',x:8000,y:90});
+    obs.push({type:'spike',x:8100,y:0,w:28,h:34});
+    obs.push({type:'spike',x:8200,y:0,w:28,h:34});
+    obs.push({type:'spike',x:8300,y:0,w:28,h:34});
+    orbs.push({x:8150,y:60,collected:false});
+    orbs.push({x:8265,y:60,collected:false});
+    levels.push({obstacles:obs,orbs,length:8800,speed:340,name:'Nebula',theme:13,startMode:'cube'});
+  }
+
+  // LEVEL 15: "Titanium" — Ultimate challenge, every mechanic
+  {
+    const obs=[], orbs=[];
+    // Triple spike opening
+    obs.push({type:'spike',x:600,y:0,w:28,h:34});
+    obs.push({type:'spike',x:648,y:0,w:28,h:34});
+    obs.push({type:'spike',x:696,y:0,w:28,h:34});
+    orbs.push({x:662,y:80,collected:false});
+    obs.push({type:'block',x:1000,y:0,w:42,h:48});
+    obs.push({type:'spike',x:1052,y:0,w:28,h:30});
+    // Red pad launch into orb chain
+    obs.push({type:'pad_red',x:1400,y:0,w:30,h:10});
+    obs.push({type:'orb_yellow',x:1550,y:130});
+    obs.push({type:'orb_green',x:1700,y:110});
+    orbs.push({x:1625,y:120,collected:false});
+    // Now gravity-flipped from green orb
+    obs.push({type:'ceiling_spike',x:1950,y:0,w:30,h:30});
+    obs.push({type:'portal_gravity',x:2200,y:0});
+    // Fast ship section
+    obs.push({type:'portal_mode',x:2500,y:0,mode:'ship'});
+    obs.push({type:'portal_speed',x:2550,y:0,speedMult:1.5});
+    obs.push({type:'block',x:2750,y:0,w:80,h:80});
+    obs.push({type:'block',x:2950,y:200,w:80,h:35});
+    obs.push({type:'block',x:3150,y:0,w:70,h:100});
+    obs.push({type:'block',x:3150,y:215,w:70,h:20});
+    orbs.push({x:2850,y:120,collected:false});
+    orbs.push({x:3050,y:140,collected:false});
+    // Wave + gravity flip
+    obs.push({type:'portal_mode',x:3500,y:0,mode:'wave'});
+    obs.push({type:'portal_gravity',x:3550,y:0});
+    obs.push({type:'block',x:3750,y:0,w:60,h:80});
+    obs.push({type:'block',x:3750,y:170,w:60,h:80});
+    obs.push({type:'block',x:3950,y:0,w:60,h:50});
+    obs.push({type:'block',x:3950,y:200,w:60,h:50});
+    orbs.push({x:3850,y:130,collected:false});
+    // UFO corridor
+    obs.push({type:'portal_mode',x:4250,y:0,mode:'ufo'});
+    obs.push({type:'portal_gravity',x:4300,y:0});
+    obs.push({type:'portal_speed',x:4350,y:0,speedMult:1.0});
+    obs.push({type:'block',x:4550,y:0,w:100,h:60});
+    obs.push({type:'block',x:4800,y:185,w:100,h:45});
+    obs.push({type:'block',x:5050,y:70,w:100,h:50});
+    orbs.push({x:4675,y:110,collected:false});
+    orbs.push({x:4925,y:100,collected:false});
+    // Mini robot section
+    obs.push({type:'portal_mode',x:5350,y:0,mode:'robot'});
+    obs.push({type:'portal_size',x:5400,y:0});
+    obs.push({type:'block',x:5600,y:0,w:60,h:25});
+    obs.push({type:'block',x:5750,y:0,w:60,h:50});
+    obs.push({type:'block',x:5900,y:0,w:60,h:75});
+    obs.push({type:'block',x:6050,y:0,w:60,h:100});
+    orbs.push({x:5685,y:40,collected:false});
+    orbs.push({x:5835,y:65,collected:false});
+    orbs.push({x:5985,y:90,collected:false});
+    obs.push({type:'portal_size',x:6250,y:0});
+    obs.push({type:'portal_mode',x:6300,y:0,mode:'cube'});
+    // Ball section
+    obs.push({type:'portal_mode',x:6600,y:0,mode:'ball'});
+    obs.push({type:'portal_speed',x:6650,y:0,speedMult:1.3});
+    obs.push({type:'spike',x:6850,y:0,w:30,h:30});
+    obs.push({type:'ceiling_spike',x:7050,y:0,w:30,h:30});
+    obs.push({type:'spike',x:7250,y:0,w:30,h:30});
+    obs.push({type:'ceiling_spike',x:7450,y:0,w:30,h:30});
+    orbs.push({x:6950,y:120,collected:false});
+    orbs.push({x:7150,y:120,collected:false});
+    orbs.push({x:7350,y:120,collected:false});
+    obs.push({type:'portal_mode',x:7700,y:0,mode:'cube'});
+    obs.push({type:'portal_speed',x:7750,y:0,speedMult:1.0});
+    // Epic cube finale — everything
+    obs.push({type:'pad_red',x:8000,y:0,w:30,h:10});
+    obs.push({type:'orb_green',x:8150,y:130});
+    obs.push({type:'orb_yellow',x:8300,y:110});
+    orbs.push({x:8225,y:120,collected:false});
+    obs.push({type:'portal_gravity',x:8500,y:0});
+    obs.push({type:'spike',x:8700,y:0,w:28,h:34});
+    // Stairway to heaven
+    obs.push({type:'block',x:8900,y:0,w:70,h:28});
+    obs.push({type:'block',x:9010,y:0,w:70,h:52});
+    obs.push({type:'block',x:9120,y:0,w:70,h:76});
+    obs.push({type:'block',x:9230,y:0,w:70,h:100});
+    orbs.push({x:9265,y:130,collected:false});
+    // Final triple spike
+    obs.push({type:'orb_dash',x:9450,y:85});
+    obs.push({type:'spike',x:9550,y:0,w:28,h:34});
+    obs.push({type:'spike',x:9598,y:0,w:28,h:34});
+    obs.push({type:'spike',x:9646,y:0,w:28,h:34});
+    orbs.push({x:9612,y:80,collected:false});
+    levels.push({obstacles:obs,orbs,length:10100,speed:350,name:'Titanium',theme:14,startMode:'cube'});
   }
 
   return levels;
@@ -629,9 +1429,12 @@ let practiceMode = false;
 let practiceCheckpoints = [];
 let lastCheckpointX = 0;
 
-const player = { y:0, vy:0, grounded:false, dead:false, rotation:0, mode:'cube', gravFlipped:false, mini:false };
+const player = { y:0, vy:0, grounded:false, dead:false, rotation:0, mode:'cube', gravFlipped:false, mini:false, dashing:false, dashTimer:0, dashInvincible:false };
 let jumpBufferTimer = 0;
 let coyoteTimer = 0;
+let beatPulse = 0;
+let deathPositions = {};
+let starRatings = {};
 const TRAIL_LENGTH = 28;
 const trail = [];
 let theme = THEMES[0];
@@ -641,10 +1444,19 @@ try {
   unlockedLevels = saved.unlocked || 1;
   bestScores = saved.best || {};
   attempts = saved.attempts || {};
+  deathPositions = saved.deaths || {};
+  starRatings = saved.stars || {};
 } catch(e) {}
 
 function saveProgress() {
-  try { localStorage.setItem('cubejumper_save', JSON.stringify({ unlocked:unlockedLevels, best:bestScores, attempts })); } catch(e) {}
+  try { localStorage.setItem('cubejumper_save', JSON.stringify({ unlocked:unlockedLevels, best:bestScores, attempts, deaths:deathPositions, stars:starRatings })); } catch(e) {}
+}
+
+function getStarRating(orbPercent) {
+  if (orbPercent >= 90) return 3;
+  if (orbPercent >= 60) return 2;
+  if (orbPercent >= 25) return 1;
+  return 0;
 }
 
 let jumpPressed = false;
@@ -658,7 +1470,7 @@ canvas.addEventListener('mouseup', e => { onJumpUp(); });
 canvas.addEventListener('touchstart', e => { if(state==='playing'){e.preventDefault();onJumpDown();} }, {passive:false});
 canvas.addEventListener('touchend', e => { onJumpUp(); });
 
-const modeIcons = { cube:"\u25A0", ship:"\u25B6", wave:"\u2248", ball:"\u25CF" };
+const modeIcons = { cube:"\u25A0", ship:"\u25B6", wave:"\u2248", ball:"\u25CF", ufo:"\u25D2", robot:"\u2593", spider:"\u2726" };
 
 function snapSpeedMult(mult) {
   if (mult <= 0.9) return 0.75;
@@ -682,7 +1494,7 @@ function buildMenu() {
     const locked = i >= unlockedLevels;
     card.innerHTML = locked
       ? `<div class="lock-icon">&#x1f512;</div><div class="lvl-name">${lv.name}</div>`
-      : `<div class="lvl-num">${i+1}</div><div class="lvl-name">${lv.name}</div>${bestScores[i]!=null?`<div class="lvl-best">&#9733; ${String(bestScores[i]).padStart(4,'0')}</div>`:''}`;
+      : `<div class="lvl-num">${i+1}</div><div class="lvl-name">${lv.name}</div>${bestScores[i]!=null?`<div class="lvl-best">&#9733; ${String(bestScores[i]).padStart(4,'0')}</div>`:''}${starRatings[i]?`<div class="lvl-stars">${[1,2,3].map(s=>s<=starRatings[i]?'<span class="s-on">&#9733;</span>':'<span class="s-off">&#9733;</span>').join('')}</div>`:''}`;
     if (!locked) {
       card.onclick = () => { selectedLevel = i; buildMenu(); };
     }
@@ -699,7 +1511,8 @@ document.getElementById('retry-btn').onclick = startGame;
 document.getElementById('practice-btn').onclick = () => { practiceMode = !practiceMode; buildMenu(); };
 document.getElementById('menu-btn').onclick = () => {
   state='menu'; document.getElementById('death').classList.remove('visible'); document.getElementById('death').classList.add('hidden');
-  document.getElementById('menu').classList.remove('hidden'); document.getElementById('back-btn').style.display='none'; buildMenu();
+  document.getElementById('menu').classList.remove('hidden'); document.getElementById('back-btn').style.display='none';
+  document.getElementById('percent-display').style.display='none'; buildMenu();
 };
 document.getElementById('next-btn').onclick = () => {
   if (selectedLevel < LEVELS.length - 1) { selectedLevel++; startGame(); }
@@ -728,6 +1541,9 @@ function startGame() {
   player.mode = level.startMode || 'cube';
   player.gravFlipped = false;
   player.mini = false;
+  player.dashing = false; player.dashTimer = 0; player.dashInvincible = false; player._robotJumping = false;
+  audio.themeIdx = level.theme;
+  beatPulse = 0;
   cameraX = 0; score = 0; gameTime = 0; deathFlash = 0; screenShake = 0;
   jumpBufferTimer = 0; coyoteTimer = 0; jumpPressed = false; jumpHeld = false;
   particles.p = [];
@@ -741,21 +1557,26 @@ function startGame() {
   document.getElementById('score-display').style.display='block';
   document.getElementById('level-name-hud').style.display='block';
   document.getElementById('level-name-hud').textContent = `${selectedLevel+1} \u00b7 ${level.name}`;
-  document.getElementById('attempt-display').style.display='block';
-  document.getElementById('attempt-display').textContent = `ATT ${attempts[selectedLevel]}`;
+  const attEl=document.getElementById('attempt-display');
+  attEl.style.display='none'; attEl.offsetHeight; // force reflow to restart animation
+  attEl.style.display='block';
+  attEl.textContent = `ATT ${attempts[selectedLevel]}`;
   document.getElementById('mode-display').style.display='block';
   document.getElementById('mode-display').textContent = modeIcons[player.mode] + ' ' + player.mode.toUpperCase();
   document.getElementById('back-btn').style.display='block';
   document.getElementById('practice-indicator').style.display = practiceMode ? 'block' : 'none';
+  document.getElementById('percent-display').style.display = 'block';
+  document.getElementById('percent-display').textContent = '0%';
 }
 
 // ── COLLISION HELPERS ──
-function getFloorY() { return player.gravFlipped ? ceilingY + PLAYER_SIZE : groundY - PLAYER_SIZE; }
-function getCeilingY() { return player.gravFlipped ? groundY - PLAYER_SIZE : ceilingY + PLAYER_SIZE; }
+function getPS() { return PLAYER_SIZE * (player.mini ? MINI_SCALE : 1); }
+function getFloorY() { return player.gravFlipped ? ceilingY + getPS() : groundY - getPS(); }
+function getCeilingY() { return player.gravFlipped ? groundY - getPS() : ceilingY + getPS(); }
 function getGravDir() { return player.gravFlipped ? -1 : 1; }
 
 function spikeHit(px, py) {
-  const ps = PLAYER_SIZE;
+  const ps = PLAYER_SIZE * (player.mini ? MINI_SCALE : 1);
   for (const obs of level.obstacles) {
     if (obs.type !== 'spike' && obs.type !== 'ceiling_spike') continue;
     const sx = obs.x;
@@ -784,7 +1605,7 @@ function spikeHit(px, py) {
 }
 
 function blockCollisions(px) {
-  const ps = PLAYER_SIZE;
+  const ps = PLAYER_SIZE * (player.mini ? MINI_SCALE : 1);
   const pL=px-ps*0.38, pR=px+ps*0.38;
   const pT=player.y, pB=player.y+ps;
   const gd = getGravDir();
@@ -806,13 +1627,17 @@ function blockCollisions(px) {
       player.grounded = true;
       return 'land';
     }
+    // Sliding off the right edge of a block — let the player fall, don't kill
+    if (oRight <= oLeft && oRight <= oTop && oRight <= oBot) {
+      return 'none';
+    }
     return 'die';
   }
   return 'none';
 }
 
 function stillOnBlock(px) {
-  const ps = PLAYER_SIZE;
+  const ps = PLAYER_SIZE * (player.mini ? MINI_SCALE : 1);
   for (const obs of level.obstacles) {
     if (obs.type !== 'block') continue;
     const bx=obs.x, bR=bx+obs.w, bT=groundY-obs.y-obs.h, bB=groundY-obs.y;
@@ -836,6 +1661,7 @@ function checkPortals(worldX) {
       player.vy = 0;
       coyoteTimer = 0;
       audio.gravFlip();
+      deathFlash = 0.3; // portal flash
       particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 15, {
         ang:0, spread:6.28, spd:80, spdV:100, life:0.4, lifeV:0.2,
         colors:['#60a5fa','#38bdf8','#fff'], size:2, sizeV:3, shape:'diamond'
@@ -848,10 +1674,21 @@ function checkPortals(worldX) {
       coyoteTimer = 0;
       if (obs.mode === 'ball') player.grounded = false;
       audio.modeSwitch();
+      deathFlash = 0.25; // portal flash
       document.getElementById('mode-display').textContent = modeIcons[player.mode] + ' ' + player.mode.toUpperCase();
       particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 20, {
         ang:0, spread:6.28, spd:90, spdV:120, life:0.5, lifeV:0.2,
         colors:[theme.accent,theme.accent2,'#fff',theme.accent3], size:2, sizeV:4, shape:'circle'
+      });
+    }
+    if (obs.type === 'portal_size') {
+      obs._triggered = true;
+      player.mini = !player.mini;
+      audio.portal();
+      deathFlash = 0.2;
+      particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 12, {
+        ang:0, spread:6.28, spd:60, spdV:80, life:0.3, lifeV:0.15,
+        colors:[theme.accent,'#fff',theme.accent3], size:2, sizeV:3, shape:'circle'
       });
     }
     if (obs.type === 'portal_speed') {
@@ -860,6 +1697,13 @@ function checkPortals(worldX) {
       speed = baseSpeed * speedMult;
       audio.syncToSpeed(speed);
       audio.portal();
+      deathFlash = 0.2; // speed flash
+      // Speed change particles
+      const spCol = speedMult > 1 ? ['#fb923c','#f97316','#fff'] : ['#60a5fa','#38bdf8','#fff'];
+      particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 12, {
+        ang:3.14, spread:1, spd:120, spdV:80, life:0.3, lifeV:0.15,
+        colors:spCol, size:2, sizeV:3, shape:'diamond'
+      });
     }
   }
 }
@@ -891,6 +1735,16 @@ function checkPadsAndOrbs(worldX) {
         colors:['#f472b6','#ec4899','#fff'], size:2, sizeV:2, shape:'circle'
       });
     }
+    if (obs.type === 'pad_red' && dx > -10 && dx < 30 && player.grounded) {
+      obs._triggered = true;
+      player.vy = JUMP_FORCE * 1.7 * getGravDir();
+      player.grounded = false;
+      audio.pad();
+      particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : player.y+ps, 10, {
+        ang: player.gravFlipped ? 1.57 : -1.57, spread:1.5, spd:100, spdV:80, life:0.35, lifeV:0.15,
+        colors:['#ef4444','#dc2626','#fff'], size:3, sizeV:3, shape:'circle'
+      });
+    }
     if (obs.type === 'pad_blue' && dx > -10 && dx < 30 && player.grounded) {
       obs._triggered = true;
       player.gravFlipped = !player.gravFlipped;
@@ -904,8 +1758,28 @@ function checkPadsAndOrbs(worldX) {
       });
     }
 
+    // Dash orbs - activated on tap while near them
+    if (obs.type === 'orb_dash') {
+      const ox = obs.x - cameraX;
+      const oy = groundY - (obs.y || 100) + Math.sin(gameTime*3+obs.x*0.01)*6;
+      const pdx = PLAYER_SCREEN_X - ox;
+      const pdy = (player.y + ps/2) - oy;
+      const dist = pdx*pdx + pdy*pdy;
+      if (dist < 3000 && jumpPressed) {
+        obs._triggered = true;
+        player.dashing = true;
+        player.dashTimer = DASH_DURATION;
+        player.dashInvincible = true;
+        audio.dash();
+        particles.emit(ox, oy, 15, {
+          ang:0, spread:6.28, spd:100, spdV:120, life:0.4, lifeV:0.2,
+          colors:['#2dd4bf','#34d399','#fff','#99f6e4'], size:3, sizeV:4, shape:'diamond'
+        });
+      }
+    }
+
     // Jump orbs - activated on tap while near them
-    if (obs.type === 'orb_yellow' || obs.type === 'orb_blue') {
+    if (obs.type === 'orb_yellow' || obs.type === 'orb_blue' || obs.type === 'orb_pink' || obs.type === 'orb_green') {
       const ox = obs.x - cameraX;
       const oy = groundY - (obs.y || 100);
       const pdx = PLAYER_SCREEN_X - ox;
@@ -915,6 +1789,12 @@ function checkPadsAndOrbs(worldX) {
         obs._triggered = true;
         if (obs.type === 'orb_yellow') {
           player.vy = JUMP_FORCE * getGravDir();
+        } else if (obs.type === 'orb_pink') {
+          player.vy = JUMP_FORCE * 0.7 * getGravDir();
+        } else if (obs.type === 'orb_green') {
+          player.vy = JUMP_FORCE * getGravDir();
+          player.gravFlipped = !player.gravFlipped;
+          coyoteTimer = 0;
         } else {
           player.gravFlipped = !player.gravFlipped;
           player.vy = 0;
@@ -923,7 +1803,7 @@ function checkPadsAndOrbs(worldX) {
         audio.orbHit();
         particles.emit(ox, oy, 12, {
           ang:0, spread:6.28, spd:70, spdV:90, life:0.35, lifeV:0.15,
-          colors: obs.type === 'orb_yellow' ? ['#fbbf24','#f59e0b','#fff'] : ['#60a5fa','#38bdf8','#fff'],
+          colors: obs.type === 'orb_yellow' ? ['#fbbf24','#f59e0b','#fff'] : obs.type === 'orb_pink' ? ['#f472b6','#ec4899','#fff'] : obs.type === 'orb_green' ? ['#4ade80','#22c55e','#fff'] : ['#60a5fa','#38bdf8','#fff'],
           size:2, sizeV:3, shape:'diamond'
         });
       }
@@ -933,6 +1813,13 @@ function checkPadsAndOrbs(worldX) {
 
 function die() {
   if (player.dead) return;
+  if (player.dashInvincible) return;
+
+  // Record death position for heatmap
+  const deathProg = Math.min(1, cameraX / level.length);
+  if (!deathPositions[selectedLevel]) deathPositions[selectedLevel] = [];
+  if (deathPositions[selectedLevel].length < 200) deathPositions[selectedLevel].push(deathProg);
+  saveProgress();
 
   // Practice mode - respawn at checkpoint
   if (practiceMode && practiceCheckpoints.length > 0) {
@@ -957,26 +1844,20 @@ function die() {
     return;
   }
 
-  player.dead = true; state = 'dead'; deathFlash = 1; screenShake = 12;
+  player.dead = true; state = 'dead'; deathFlash = 1; screenShake = 16;
   audio.die();
-  particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 35, {
-    ang:0, spread:6.28, spd:120, spdV:200, life:0.7, lifeV:0.4,
-    colors:[theme.accent,theme.accent2,'#fff',theme.accent3], size:3, sizeV:5, shape:'square'
+  // Shatter particles
+  particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 30, {
+    ang:0, spread:6.28, spd:180, spdV:280, life:0.8, lifeV:0.5,
+    colors:[theme.accent,theme.accent2,theme.accent3], size:4, sizeV:6, shape:'square'
   });
-  const sc = score;
-  const prog = Math.floor(cameraX / level.length * 100);
-  setTimeout(() => {
-    const dt = document.getElementById('death-title');
-    dt.textContent='SHATTERED'; dt.className='death-title fail';
-    document.getElementById('final-score').textContent=`SCORE: ${String(sc).padStart(4,'0')}`;
-    const best = bestScores[selectedLevel]||0;
-    document.getElementById('best-score').textContent=`BEST: ${String(Math.max(best,sc)).padStart(4,'0')}`;
-    document.getElementById('death-progress').textContent = prog + '%';
-    document.getElementById('next-btn').style.display='none';
-    document.getElementById('death').classList.remove('hidden');
-    document.getElementById('death').classList.add('visible');
-  }, 500);
-  if (sc > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=sc; saveProgress(); }
+  particles.emit(PLAYER_SCREEN_X, player.y+PLAYER_SIZE/2, 20, {
+    ang:0, spread:6.28, spd:100, spdV:150, life:0.5, lifeV:0.3,
+    colors:['#fff','#fff',theme.glow], size:2, sizeV:3, shape:'diamond'
+  });
+  if (score > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=score; saveProgress(); }
+  // GD-style: auto-restart after brief pause (no popup)
+  setTimeout(() => startGame(), 800);
 }
 
 function win() {
@@ -984,27 +1865,63 @@ function win() {
   player.dead = true; state = 'dead';
   score += 500;
   audio.win();
-  particles.emit(PLAYER_SCREEN_X, player.y, 50, {
-    ang:-1.57, spread:3.14, spd:100, spdV:180, life:1, lifeV:0.5,
-    colors:['#fbbf24','#34d399','#60a5fa','#c084fc','#fff'], size:3, sizeV:5, shape:'diamond'
+  // Celebration burst — diamonds
+  particles.emit(PLAYER_SCREEN_X, player.y, 40, {
+    ang:-1.57, spread:3.14, spd:120, spdV:200, life:1.2, lifeV:0.6,
+    colors:['#fbbf24','#34d399','#60a5fa','#c084fc','#fff'], size:3, sizeV:6, shape:'diamond'
+  });
+  // Confetti squares
+  particles.emit(PLAYER_SCREEN_X, player.y, 25, {
+    ang:-1.57, spread:4, spd:80, spdV:150, life:1.5, lifeV:0.5,
+    colors:['#fbbf24','#f472b6','#60a5fa','#4ade80','#c084fc'], size:4, sizeV:4, shape:'square'
+  });
+  // Rising sparkles
+  particles.emit(PLAYER_SCREEN_X, player.y, 15, {
+    ang:-1.57, spread:1.5, spd:50, spdV:100, life:1.8, lifeV:0.4,
+    colors:['#fff','#fde68a','#fff'], size:1.5, sizeV:2, shape:'circle'
   });
   if (!practiceMode && selectedLevel + 1 >= unlockedLevels && selectedLevel + 1 < LEVELS.length) {
     unlockedLevels = selectedLevel + 2;
   }
   const sc = score;
+  const totalOrbs = level.orbs.length;
+  const collectedOrbs = level.orbs.filter(o => o.collected).length;
+  const orbPercent = totalOrbs > 0 ? Math.round(collectedOrbs / totalOrbs * 100) : 100;
+  const stars = getStarRating(orbPercent);
   if (!practiceMode && sc > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=sc; }
+  if (!practiceMode && stars > (starRatings[selectedLevel]||0)) { starRatings[selectedLevel]=stars; }
   saveProgress();
   setTimeout(() => {
     const dt = document.getElementById('death-title');
-    dt.textContent = practiceMode ? 'PRACTICE COMPLETE' : 'COMPLETE';
+    dt.textContent = practiceMode ? 'PRACTICE COMPLETE' : 'LEVEL COMPLETE';
     dt.className='death-title win';
     document.getElementById('final-score').textContent=`SCORE: ${String(sc).padStart(4,'0')}`;
     document.getElementById('best-score').textContent=`BEST: ${String(bestScores[selectedLevel]||sc).padStart(4,'0')}`;
-    document.getElementById('death-progress').textContent = '100%';
+    // Animated % counter (counts from 0 to 100)
+    const progEl = document.getElementById('death-progress');
+    progEl.textContent = '0%';
+    let pctCount = 0;
+    const pctInterval = setInterval(() => {
+      pctCount += 2;
+      if (pctCount >= 100) { pctCount = 100; clearInterval(pctInterval); }
+      progEl.textContent = pctCount + '%';
+    }, 16);
+    document.getElementById('orb-percent').textContent = `ORBS: ${collectedOrbs}/${totalOrbs} (${orbPercent}%)`;
+    document.getElementById('orb-percent').style.display = 'block';
+    // Star animation (delayed to match % counter)
+    const sr = document.getElementById('star-rating');
+    sr.style.display = 'flex';
+    for (let s=1;s<=3;s++) {
+      const el = document.getElementById('star'+s);
+      el.className = 'star';
+      if (s <= stars) {
+        setTimeout(()=>{ el.classList.add('earned','pop'); audio.collect(); }, 800 + s*250);
+      }
+    }
     document.getElementById('next-btn').style.display = selectedLevel < LEVELS.length-1 ? 'inline-block' : 'none';
     document.getElementById('death').classList.remove('hidden');
     document.getElementById('death').classList.add('visible');
-  }, 500);
+  }, 600);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1019,8 +1936,16 @@ function update(now) {
   if (state === 'playing') {
     gameTime += dt;
     audio.update(gameTime);
-    cameraX += speed * dt;
+    // Dash mechanic
+    if (player.dashing) {
+      player.dashTimer -= dt;
+      if (player.dashTimer <= 0) { player.dashing = false; player.dashInvincible = false; }
+    }
+    const dashMult = player.dashing ? DASH_SPEED_MULT : 1;
+    cameraX += speed * dashMult * dt;
     score = Math.floor(cameraX / 8);
+    // Beat pulse decay
+    beatPulse *= 0.85;
 
     if (jumpPressed) { jumpBufferTimer = JUMP_BUFFER_TIME; }
     if (jumpBufferTimer > 0) jumpBufferTimer -= dt;
@@ -1028,7 +1953,8 @@ function update(now) {
     else coyoteTimer = Math.max(0, coyoteTimer - dt);
 
     const gd = getGravDir();
-    const ps = PLAYER_SIZE;
+    const miniM = player.mini ? MINI_SCALE : 1;
+    const ps = PLAYER_SIZE * miniM;
     const worldX = cameraX + PLAYER_SCREEN_X;
 
     // Practice mode checkpoints
@@ -1048,7 +1974,7 @@ function update(now) {
     // ── MODE-SPECIFIC PHYSICS ──
     if (player.mode === 'cube') {
       if (jumpBufferTimer > 0 && (player.grounded || coyoteTimer > 0)) {
-        player.vy = JUMP_FORCE * gd;
+        player.vy = JUMP_FORCE * (player.mini ? MINI_JUMP_MULT : 1) * gd;
         player.grounded = false;
         jumpBufferTimer = 0;
         coyoteTimer = 0;
@@ -1062,11 +1988,17 @@ function update(now) {
       player.y += player.vy * dt;
 
       if (!player.gravFlipped && player.y >= groundY - ps) {
-        if (!player.grounded) audio.land();
+        if (!player.grounded) {
+          audio.land();
+          particles.emit(PLAYER_SCREEN_X, groundY, 6, { ang:-1.57, spread:2.2, spd:30, spdV:50, life:0.25, lifeV:0.1, colors:[theme.accent,'#fff'], size:2, sizeV:2, shape:'circle' });
+        }
         player.y = groundY - ps; player.vy = 0; player.grounded = true;
       }
       if (player.gravFlipped && player.y <= ceilingY) {
-        if (!player.grounded) audio.land();
+        if (!player.grounded) {
+          audio.land();
+          particles.emit(PLAYER_SCREEN_X, ceilingY, 6, { ang:1.57, spread:2.2, spd:30, spdV:50, life:0.25, lifeV:0.1, colors:[theme.accent,'#fff'], size:2, sizeV:2, shape:'circle' });
+        }
         player.y = ceilingY; player.vy = 0; player.grounded = true;
       }
       // Ceiling/floor kill
@@ -1123,6 +2055,84 @@ function update(now) {
 
       player.rotation += 4 * dt * getGravDir();
     }
+    else if (player.mode === 'ufo') {
+      // UFO: each tap gives a fixed hop, can tap repeatedly mid-air (Flappy Bird style)
+      if (jumpPressed) {
+        player.vy = JUMP_FORCE * 0.72 * gd;
+        player.grounded = false;
+        audio.jump();
+        particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : player.y+ps, 4, {
+          ang: player.gravFlipped ? 1.57 : -1.57, spread:1.8, spd:40, spdV:50, life:0.2, lifeV:0.1,
+          colors:[theme.accent,'rgba(255,255,255,0.4)'], size:2, sizeV:2, shape:'circle'
+        });
+      }
+      player.vy += GRAVITY * 0.85 * gd * dt;
+      player.y += player.vy * dt;
+
+      if (!player.gravFlipped && player.y >= groundY - ps) {
+        if (!player.grounded) audio.land();
+        player.y = groundY - ps; player.vy = 0; player.grounded = true;
+      } else if (player.gravFlipped && player.y <= ceilingY) {
+        if (!player.grounded) audio.land();
+        player.y = ceilingY; player.vy = 0; player.grounded = true;
+      } else {
+        player.grounded = false;
+      }
+
+      const tiltTarget = Math.max(-0.45, Math.min(0.45, player.vy * 0.0008 * gd));
+      player.rotation += (tiltTarget - player.rotation) * 8 * dt;
+    }
+    else if (player.mode === 'robot') {
+      // Robot: variable jump height — tap = short, hold = tall with rocket boost
+      if (jumpBufferTimer > 0 && (player.grounded || coyoteTimer > 0)) {
+        player.vy = JUMP_FORCE * 0.75 * gd;
+        player.grounded = false;
+        jumpBufferTimer = 0;
+        coyoteTimer = 0;
+        player._robotJumping = true;
+        audio.jump();
+        particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : groundY, 5, {
+          ang: player.gravFlipped ? 1.57 : -1.57, spread:2, spd:50, spdV:60, life:0.2, lifeV:0.1,
+          colors:[theme.accent,'rgba(255,255,255,0.4)'], size:2, sizeV:2, shape:'circle'
+        });
+      }
+      // Hold to boost higher
+      if (player._robotJumping && jumpHeld && !player.grounded) {
+        const boostDir = player.gravFlipped ? 1 : -1;
+        if (Math.abs(player.vy) < Math.abs(JUMP_FORCE * 1.5)) {
+          player.vy += boostDir * 1100 * dt;
+          // Rocket boost particles
+          if (Math.random() < 0.4) {
+            particles.emit(PLAYER_SCREEN_X, player.gravFlipped ? player.y : player.y+ps, 1, {
+              ang: player.gravFlipped ? -1.57 : 1.57, spread:0.8, spd:80, spdV:40, life:0.15, lifeV:0.08,
+              colors:['#fbbf24','#f97316','#fff'], size:2, sizeV:2, shape:'circle'
+            });
+          }
+        }
+      }
+      if (!jumpHeld || player.grounded) player._robotJumping = false;
+
+      player.vy += GRAVITY * gd * dt;
+      player.y += player.vy * dt;
+
+      if (!player.gravFlipped && player.y >= groundY - ps) {
+        if (!player.grounded) {
+          audio.land();
+          particles.emit(PLAYER_SCREEN_X, groundY, 6, { ang:-1.57, spread:2.2, spd:30, spdV:50, life:0.25, lifeV:0.1, colors:[theme.accent,'#fff'], size:2, sizeV:2, shape:'circle' });
+        }
+        player.y = groundY - ps; player.vy = 0; player.grounded = true;
+      }
+      if (player.gravFlipped && player.y <= ceilingY) {
+        if (!player.grounded) {
+          audio.land();
+          particles.emit(PLAYER_SCREEN_X, ceilingY, 6, { ang:1.57, spread:2.2, spd:30, spdV:50, life:0.25, lifeV:0.1, colors:[theme.accent,'#fff'], size:2, sizeV:2, shape:'circle' });
+        }
+        player.y = ceilingY; player.vy = 0; player.grounded = true;
+      }
+
+      if (!player.grounded) player.rotation += 6.8 * dt * gd;
+      else player.rotation = Math.round(player.rotation/(Math.PI/2))*(Math.PI/2);
+    }
 
     jumpPressed = false;
 
@@ -1158,10 +2168,18 @@ function update(now) {
         ang:3.14, spread:0.6, spd:20, spdV:35, life:0.4, lifeV:0.2,
         colors:tColors, size:2, sizeV:2, shape:'circle'
       });
-      if (player.mode === 'ship' && jumpHeld) {
-        particles.emit(PLAYER_SCREEN_X - ps*0.4, player.y + ps*0.8, 2, {
-          ang: player.gravFlipped ? -1.57 : 1.57, spread:0.8, spd:40, spdV:60, life:0.3, lifeV:0.15,
+      if (player.mode === 'ship') {
+        const flameSize = jumpHeld ? 3 : 1;
+        const flameSpd = jumpHeld ? 60 : 30;
+        particles.emit(PLAYER_SCREEN_X - ps*0.4, player.y + ps*0.5, flameSize, {
+          ang:3.14, spread:0.6, spd:flameSpd, spdV:40, life:0.3, lifeV:0.15,
           colors:['#fbbf24','#f97316','#fff'], size:2, sizeV:3, shape:'circle'
+        });
+      }
+      if (player.dashing) {
+        particles.emit(PLAYER_SCREEN_X - ps*0.5, player.y + ps*0.5, 3, {
+          ang:3.14, spread:0.4, spd:80, spdV:120, life:0.25, lifeV:0.1,
+          colors:['#2dd4bf','#34d399','#99f6e4','#fff'], size:3, sizeV:4, shape:'diamond'
         });
       }
     }
@@ -1179,7 +2197,11 @@ function update(now) {
 
     if (cameraX > level.length) win();
 
-    document.getElementById('progress-bar').style.width = Math.min(100,cameraX/level.length*100)+'%';
+    const pb=document.getElementById('progress-bar');
+    const pct=Math.min(100,Math.floor(cameraX/level.length*100));
+    pb.style.width = pct+'%';
+    pb.style.background = theme.accent;
+    document.getElementById('percent-display').textContent = pct+'%';
     document.getElementById('score-display').textContent = String(score).padStart(4,'0');
   }
 
@@ -1202,81 +2224,137 @@ function draw() {
   ctx.save();
   if (screenShake>0.5) ctx.translate((Math.random()-0.5)*screenShake,(Math.random()-0.5)*screenShake);
 
-  const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,theme.bg1); bg.addColorStop(1,theme.bg2);
+  // ── PREMIUM BACKGROUND ──
+  const bgRgb = hexToRgb(theme.accent);
+  const bg2Rgb = hexToRgb(theme.accent2);
+  const bg3Rgb = hexToRgb(theme.accent3);
+
+  // Rich multi-stop gradient sky
+  const bg=ctx.createLinearGradient(0,0,0,groundY);
+  bg.addColorStop(0,'#020208');
+  bg.addColorStop(0.3,theme.bg1);
+  bg.addColorStop(0.7,theme.bg2);
+  bg.addColorStop(1,theme.ground);
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
+  // Ambient color wash — two large overlapping radial glows
   if (state==='playing'||state==='dead') {
-    const rgb = hexToRgb(theme.accent);
-    const pulse = 0.03 + Math.sin(gameTime * 0.8) * 0.01;
-    const ng = ctx.createRadialGradient(W*0.3, groundY*0.4, 0, W*0.3, groundY*0.4, H*0.6);
-    ng.addColorStop(0, `rgba(${rgb},${pulse})`);
-    ng.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = ng; ctx.fillRect(0,0,W,H);
+    const bp = beatPulse * 0.03;
+    // Primary glow (accent color, left-center)
+    const g1=ctx.createRadialGradient(W*0.25,groundY*0.35,0,W*0.25,groundY*0.35,H*0.7);
+    g1.addColorStop(0,`rgba(${bgRgb},${0.06+bp})`);
+    g1.addColorStop(0.4,`rgba(${bgRgb},${0.025+bp*0.5})`);
+    g1.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
+    // Secondary glow (accent2, right-lower)
+    const g2=ctx.createRadialGradient(W*0.75,groundY*0.6,0,W*0.75,groundY*0.6,H*0.5);
+    g2.addColorStop(0,`rgba(${bg2Rgb},${0.035+bp})`);
+    g2.addColorStop(0.5,`rgba(${bg2Rgb},${0.012})`);
+    g2.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
+    // Horizon glow (warm band near ground)
+    const g3=ctx.createLinearGradient(0,groundY-80,0,groundY);
+    g3.addColorStop(0,'rgba(0,0,0,0)');
+    g3.addColorStop(1,`rgba(${bgRgb},0.04)`);
+    ctx.fillStyle=g3;ctx.fillRect(0,groundY-80,W,80);
+    // Beat flash overlay — subtle full-screen color pulse on beat
+    if (beatPulse > 0.3) {
+      ctx.fillStyle=`rgba(${bgRgb},${(beatPulse-0.3)*0.08})`;
+      ctx.fillRect(0,0,W,groundY);
+    }
   }
 
-  // Stars
-  for(let i=0;i<90;i++){
-    const parallax = (i%3===0) ? 0.02 : (i%3===1) ? 0.04 : 0.06;
-    const sx=((i*137.5+42)%W+(state==='playing'?-cameraX*parallax:gameTime*4))%(W+80)-40;
-    const sy=(i*97.3+84)%(groundY-40);
-    const twinkle = 0.1 + Math.sin(gameTime*2.2+i*1.7)*0.08 + Math.sin(gameTime*3.1+i*0.9)*0.04;
-    const sz = 0.6 + (i%4)*0.35;
-    ctx.fillStyle=`rgba(255,255,255,${twinkle})`;
-    ctx.beginPath();ctx.arc(sx,sy,sz,0,6.28);ctx.fill();
-  }
-
-  // Background waves
+  // Parallax background layers
   if(state==='playing'||state==='dead'){
-    [0.012,0.02,0.03].forEach((a,j)=>{
-      ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.beginPath();ctx.moveTo(0,groundY);
-      for(let x=0;x<=W;x+=3){
-        const off=cameraX*(0.05+j*0.04);
-        const amp = 35 + j*15;
-        const freq1 = 0.005 + j*0.002;
-        const freq2 = 0.011 + j*0.003;
-        const y=groundY-(40+j*25)-Math.sin((x+off)*freq1)*amp-Math.cos((x+off*0.7)*freq2)*(amp*0.5);
-        ctx.lineTo(x,y);
-      }
-      ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
-    });
+    // Layer 1 (far): Large mountain/pillar silhouettes
+    ctx.beginPath();ctx.moveTo(0,groundY);
+    const l1Scroll=cameraX*0.015;
+    for(let x=0;x<=W;x+=2){
+      const h1=Math.sin((x+l1Scroll)*0.004)*50+Math.sin((x+l1Scroll)*0.0017)*80+Math.sin((x+l1Scroll)*0.009)*20;
+      ctx.lineTo(x,groundY-60-Math.abs(h1));
+    }
+    ctx.lineTo(W,groundY);ctx.closePath();
+    ctx.fillStyle=`rgba(${bgRgb},0.025)`;ctx.fill();
+
+    // Layer 2 (mid): Sharper peaks
+    ctx.beginPath();ctx.moveTo(0,groundY);
+    const l2Scroll=cameraX*0.035;
+    for(let x=0;x<=W;x+=2){
+      const h2=Math.sin((x+l2Scroll)*0.006)*35+Math.sin((x+l2Scroll)*0.003)*55+Math.sin((x+l2Scroll)*0.013)*15;
+      ctx.lineTo(x,groundY-30-Math.abs(h2));
+    }
+    ctx.lineTo(W,groundY);ctx.closePath();
+    ctx.fillStyle=`rgba(${bgRgb},0.035)`;ctx.fill();
+
+    // Layer 3 (near): Low hills
+    ctx.beginPath();ctx.moveTo(0,groundY);
+    const l3Scroll=cameraX*0.06;
+    for(let x=0;x<=W;x+=3){
+      const h3=Math.sin((x+l3Scroll)*0.008)*20+Math.sin((x+l3Scroll)*0.005)*30;
+      ctx.lineTo(x,groundY-10-Math.abs(h3));
+    }
+    ctx.lineTo(W,groundY);ctx.closePath();
+    ctx.fillStyle=`rgba(${bgRgb},0.04)`;ctx.fill();
+
+    // Floating geometric accents (sparse, elegant)
+    for(let i=0;i<7;i++){
+      const gSize=20+((i*41)%35);
+      const gpx=((i*230+100)%(W+300)-150+(cameraX*-0.02-i*0.008*cameraX))%(W+300)-150;
+      const gpy=30+((i*89)%(groundY-120));
+      const gRot=gameTime*0.12*(i%2===0?1:-1)+i*1.1;
+      const gAlpha=0.03+Math.sin(gameTime*0.5+i*1.7)*0.01;
+      ctx.save();ctx.translate(gpx,gpy);ctx.rotate(gRot);ctx.globalAlpha=gAlpha;
+      ctx.strokeStyle=theme.accent;ctx.lineWidth=1;
+      if(i%3===0){ctx.strokeRect(-gSize/2,-gSize/2,gSize,gSize);}
+      else if(i%3===1){ctx.beginPath();ctx.moveTo(0,-gSize/2);ctx.lineTo(gSize/2,gSize/2);ctx.lineTo(-gSize/2,gSize/2);ctx.closePath();ctx.stroke();}
+      else{ctx.beginPath();ctx.moveTo(0,-gSize/2);ctx.lineTo(gSize/2,0);ctx.lineTo(0,gSize/2);ctx.lineTo(-gSize/2,0);ctx.closePath();ctx.stroke();}
+      ctx.globalAlpha=1;ctx.restore();
+    }
   }
 
-  // Ground
-  const gg=ctx.createLinearGradient(0,groundY,0,H);
-  gg.addColorStop(0,theme.ground); gg.addColorStop(1,theme.bg2);
-  ctx.fillStyle=gg; ctx.fillRect(0,groundY,W,H-groundY);
+  // Ground — GD-style solid color with checkerboard grid
+  const groundRgb = hexToRgb(theme.obs[2]);
+  ctx.fillStyle=theme.ground; ctx.fillRect(0,groundY,W,H-groundY);
 
+  // GD-style checkerboard ground grid
+  {
+    const gs=30; // cell size
+    const scrollOff=state==='playing'||state==='dead'?cameraX:gameTime*25;
+    const xOff=scrollOff%gs;
+    const gridRgb = hexToRgb(theme.accent);
+    // Vertical grid lines (scrolling)
+    ctx.strokeStyle=`rgba(${gridRgb},0.07)`;ctx.lineWidth=0.5;
+    for(let gx=-gs;gx<W+gs*2;gx+=gs){
+      const lx=gx-(xOff%gs);
+      ctx.beginPath();ctx.moveTo(lx,groundY);ctx.lineTo(lx,H);ctx.stroke();
+    }
+    // Horizontal grid lines (static, fade with depth)
+    for(let gy=groundY;gy<H;gy+=gs){
+      const fade=1-(gy-groundY)/(H-groundY);
+      ctx.strokeStyle=`rgba(${gridRgb},${0.07*fade})`;
+      ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
+    }
+  }
+
+  // Bold ground line (GD signature)
   ctx.save();
-  ctx.strokeStyle=theme.accent; ctx.lineWidth=2; ctx.globalAlpha=0.4;
+  ctx.strokeStyle=theme.accent; ctx.lineWidth=3; ctx.globalAlpha=0.8+beatPulse*0.2;
   ctx.beginPath();ctx.moveTo(0,groundY);ctx.lineTo(W,groundY);ctx.stroke();
+  // Glow line on top
+  ctx.strokeStyle=theme.glow; ctx.lineWidth=1; ctx.globalAlpha=0.4;
+  ctx.beginPath();ctx.moveTo(0,groundY-1);ctx.lineTo(W,groundY-1);ctx.stroke();
   ctx.globalAlpha=1;
   ctx.restore();
 
   // Ceiling
   if (state==='playing'||state==='dead') {
-    const cg=ctx.createLinearGradient(0,0,0,ceilingY);
-    cg.addColorStop(0,theme.bg2); cg.addColorStop(1,theme.ground);
-    ctx.fillStyle=cg; ctx.fillRect(0,0,W,ceilingY);
+    ctx.fillStyle=theme.ground; ctx.fillRect(0,0,W,ceilingY);
     ctx.save();
-    ctx.strokeStyle=theme.accent; ctx.lineWidth=2; ctx.globalAlpha=0.25;
+    ctx.strokeStyle=theme.accent; ctx.lineWidth=3; ctx.globalAlpha=0.6+beatPulse*0.2;
     ctx.beginPath();ctx.moveTo(0,ceilingY);ctx.lineTo(W,ceilingY);ctx.stroke();
     ctx.globalAlpha=1;
     ctx.restore();
   }
-
-  // Ground grid
-  ctx.strokeStyle='rgba(255,255,255,0.02)'; ctx.lineWidth=1;
-  const gs=55, go=state==='playing'||state==='dead'?cameraX%gs:gameTime*25%gs;
-  for(let gx=-gs;gx<W+gs;gx+=gs){
-    const sx2=gx-(go%gs);
-    ctx.beginPath();ctx.moveTo(sx2,groundY);ctx.lineTo(sx2-(H-groundY)*0.25,H);ctx.stroke();
-  }
-  for(let gy=groundY+35;gy<H;gy+=35){
-    ctx.globalAlpha = 0.015 * (1 - (gy-groundY)/(H-groundY));
-    ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();
-  }
-  ctx.globalAlpha=1;
 
   if(state==='playing'||state==='dead'){
     // Draw obstacles
@@ -1286,138 +2364,261 @@ function draw() {
 
       if(obs.type==='spike'){
         const sy=groundY;
-        const rgb = hexToRgb(theme.accent);
-        ctx.fillStyle=`rgba(${rgb},0.06)`;
-        ctx.beginPath();ctx.arc(sx+obs.w/2, sy, obs.w*0.8, 0, 6.28);ctx.fill();
-        ctx.fillStyle=theme.obs[0];
-        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+obs.w/2,sy-obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.fill();
-        ctx.fillStyle=theme.accent; ctx.globalAlpha=0.3;
-        ctx.beginPath();ctx.moveTo(sx+obs.w*0.28,sy-1);ctx.lineTo(sx+obs.w/2,sy-obs.h*0.55);ctx.lineTo(sx+obs.w*0.72,sy-1);ctx.closePath();ctx.fill();
-        ctx.fillStyle='#fff'; ctx.globalAlpha=0.15;
-        ctx.beginPath();ctx.arc(sx+obs.w/2, sy-obs.h+4, 2, 0, 6.28);ctx.fill();
+        const cx2=sx+obs.w/2;
+        // Solid GD spike — clean triangle, dark fill, accent border
+        ctx.fillStyle=theme.obs[1];
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(cx2,sy-obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.fill();
+        // Inner lighter triangle
+        ctx.fillStyle=theme.obs[0]; ctx.globalAlpha=0.5;
+        ctx.beginPath();ctx.moveTo(sx+obs.w*0.25,sy);ctx.lineTo(cx2,sy-obs.h*0.65);ctx.lineTo(sx+obs.w*0.75,sy);ctx.closePath();ctx.fill();
         ctx.globalAlpha=1;
+        // Crisp accent outline
+        ctx.strokeStyle=theme.accent;ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(cx2,sy-obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.stroke();
       }
       else if(obs.type==='ceiling_spike'){
         const sy=ceilingY;
-        const rgb = hexToRgb(theme.accent);
-        ctx.fillStyle=`rgba(${rgb},0.06)`;
-        ctx.beginPath();ctx.arc(sx+obs.w/2, sy, obs.w*0.8, 0, 6.28);ctx.fill();
-        ctx.fillStyle=theme.obs[0];
-        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+obs.w/2,sy+obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.fill();
-        ctx.fillStyle=theme.accent; ctx.globalAlpha=0.3;
-        ctx.beginPath();ctx.moveTo(sx+obs.w*0.28,sy+1);ctx.lineTo(sx+obs.w/2,sy+obs.h*0.55);ctx.lineTo(sx+obs.w*0.72,sy+1);ctx.closePath();ctx.fill();
+        const cx2=sx+obs.w/2;
+        ctx.fillStyle=theme.obs[1];
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(cx2,sy+obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.fill();
+        ctx.fillStyle=theme.obs[0]; ctx.globalAlpha=0.5;
+        ctx.beginPath();ctx.moveTo(sx+obs.w*0.25,sy);ctx.lineTo(cx2,sy+obs.h*0.65);ctx.lineTo(sx+obs.w*0.75,sy);ctx.closePath();ctx.fill();
         ctx.globalAlpha=1;
+        ctx.strokeStyle=theme.accent;ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(cx2,sy+obs.h);ctx.lineTo(sx+obs.w,sy);ctx.closePath();ctx.stroke();
       }
       else if(obs.type==='block'){
         const sy=groundY-obs.y-obs.h;
-        const rgb = hexToRgb(theme.accent);
-        ctx.fillStyle=`rgba(${rgb},0.04)`;
-        ctx.fillRect(sx-4, sy-4, obs.w+8, obs.h+8);
-        const bbg = ctx.createLinearGradient(sx, sy, sx, sy+obs.h);
-        bbg.addColorStop(0, theme.obs[0]); bbg.addColorStop(1, theme.obs[2]);
-        ctx.fillStyle=bbg;
+        // GD-style solid block — outer color, inner darker square, accent border
+        // Outer fill
+        ctx.fillStyle=theme.obs[0];
         ctx.fillRect(sx,sy,obs.w,obs.h);
-        ctx.fillStyle=theme.accent; ctx.globalAlpha=0.2;
-        ctx.fillRect(sx, sy, obs.w, 2);
-        ctx.strokeStyle=theme.accent; ctx.globalAlpha=0.2; ctx.lineWidth=1;
-        ctx.strokeRect(sx+0.5,sy+0.5,obs.w-1,obs.h-1);
-        ctx.globalAlpha=0.04;
-        for(let px=sx+3;px<sx+obs.w-3;px+=8)
-          for(let py=sy+3;py<sy+obs.h-3;py+=8)
-            ctx.fillRect(px,py,6,6);
+        // Inner darker square (GD signature look)
+        const inset=Math.min(4, obs.w*0.12, obs.h*0.12);
+        ctx.fillStyle=theme.obs[2];
+        ctx.fillRect(sx+inset,sy+inset,obs.w-inset*2,obs.h-inset*2);
+        // Top highlight bar
+        ctx.fillStyle='rgba(255,255,255,0.12)';
+        ctx.fillRect(sx,sy,obs.w,Math.max(2,obs.h*0.08));
+        // Left highlight bar
+        ctx.fillStyle='rgba(255,255,255,0.06)';
+        ctx.fillRect(sx,sy,Math.max(2,obs.w*0.08),obs.h);
+        // Accent border
+        ctx.strokeStyle=theme.accent;ctx.lineWidth=2;ctx.globalAlpha=0.6;
+        ctx.strokeRect(sx,sy,obs.w,obs.h);
         ctx.globalAlpha=1;
       }
-      // Portals
+      // Portals — GD-style vertical bars with glow
       else if(obs.type==='portal_gravity'){
         const py = groundY - 120;
-        const pulse = 0.6 + Math.sin(gameTime*3+obs.x)*0.2;
+        const pulse = 0.7 + Math.sin(gameTime*4+obs.x)*0.2;
+        const spin = gameTime*3;
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.strokeStyle = '#60a5fa'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.ellipse(sx, py, 12, 45, 0, 0, 6.28); ctx.stroke();
-        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.5; ctx.globalAlpha = pulse * 0.5;
-        ctx.beginPath(); ctx.ellipse(sx, py, 8, 35, 0, 0, 6.28); ctx.stroke();
+        // Vertical glow bar
+        const pg=ctx.createLinearGradient(sx,py-55,sx,py+55);
+        pg.addColorStop(0,'rgba(96,165,250,0)');pg.addColorStop(0.3,`rgba(96,165,250,${pulse*0.3})`);pg.addColorStop(0.5,`rgba(96,165,250,${pulse*0.5})`);pg.addColorStop(0.7,`rgba(96,165,250,${pulse*0.3})`);pg.addColorStop(1,'rgba(96,165,250,0)');
+        ctx.fillStyle=pg;ctx.fillRect(sx-18,py-55,36,110);
+        // Spinning ring particles
+        for(let i=0;i<4;i++){const a=spin+i*1.57;ctx.fillStyle=`rgba(96,165,250,${pulse*0.5})`;ctx.beginPath();ctx.arc(sx+Math.cos(a)*10,py+Math.sin(a)*40,2.5,0,6.28);ctx.fill();}
+        // Outer ring
+        ctx.globalAlpha=pulse;ctx.strokeStyle='#60a5fa';ctx.lineWidth=3;
+        ctx.beginPath();ctx.ellipse(sx,py,14,50,0,0,6.28);ctx.stroke();
+        // Inner ring
+        ctx.strokeStyle='#93c5fd';ctx.lineWidth=1.5;ctx.globalAlpha=pulse*0.6;
+        ctx.beginPath();ctx.ellipse(sx,py,8,38,0,0,6.28);ctx.stroke();
+        // Arrow icons
+        ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.7;ctx.font='bold 16px system-ui';ctx.textAlign='center';
+        ctx.fillText('\u2195',sx,py+5);
         ctx.restore();
       }
       else if(obs.type==='portal_mode'){
         const py = groundY - 120;
-        const pulse = 0.6 + Math.sin(gameTime*3+obs.x)*0.2;
-        const col = obs.mode==='ship' ? '#4ade80' : obs.mode==='wave' ? '#fbbf24' : obs.mode==='ball' ? '#f472b6' : '#818cf8';
+        const pulse = 0.7 + Math.sin(gameTime*4+obs.x)*0.2;
+        const spin = gameTime*3;
+        const col = obs.mode==='ship'?'#4ade80':obs.mode==='wave'?'#fbbf24':obs.mode==='ball'?'#f472b6':'#818cf8';
+        const colRgb = hexToRgb(col);
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.strokeStyle = col; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.ellipse(sx, py, 12, 45, 0, 0, 6.28); ctx.stroke();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.globalAlpha = pulse * 0.3;
-        ctx.beginPath(); ctx.ellipse(sx, py, 7, 30, 0, 0, 6.28); ctx.stroke();
-        // Mode icon
-        ctx.globalAlpha = pulse * 0.8;
-        ctx.fillStyle = col; ctx.font = '14px system-ui'; ctx.textAlign = 'center';
-        ctx.fillText(modeIcons[obs.mode], sx, py + 5);
+        // Vertical glow bar
+        const pg=ctx.createLinearGradient(sx,py-55,sx,py+55);
+        pg.addColorStop(0,`rgba(${colRgb},0)`);pg.addColorStop(0.3,`rgba(${colRgb},${pulse*0.3})`);pg.addColorStop(0.5,`rgba(${colRgb},${pulse*0.5})`);pg.addColorStop(0.7,`rgba(${colRgb},${pulse*0.3})`);pg.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=pg;ctx.fillRect(sx-18,py-55,36,110);
+        for(let i=0;i<4;i++){const a=spin+i*1.57;ctx.fillStyle=`rgba(${colRgb},${pulse*0.5})`;ctx.beginPath();ctx.arc(sx+Math.cos(a)*10,py+Math.sin(a)*40,2.5,0,6.28);ctx.fill();}
+        ctx.globalAlpha=pulse;ctx.strokeStyle=col;ctx.lineWidth=3;
+        ctx.beginPath();ctx.ellipse(sx,py,14,50,0,0,6.28);ctx.stroke();
+        ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.globalAlpha=pulse*0.4;
+        ctx.beginPath();ctx.ellipse(sx,py,8,38,0,0,6.28);ctx.stroke();
+        ctx.globalAlpha=pulse*0.9;ctx.fillStyle=col;ctx.font='bold 16px system-ui';ctx.textAlign='center';
+        ctx.fillText(modeIcons[obs.mode],sx,py+6);
         ctx.restore();
       }
       else if(obs.type==='portal_speed'){
         const py = groundY - 120;
-        const pulse = 0.5 + Math.sin(gameTime*4+obs.x)*0.2;
+        const pulse = 0.6 + Math.sin(gameTime*5+obs.x)*0.25;
         const speedTier = snapSpeedMult(obs.speedMult);
         const col = speedTier > 1 ? '#fb923c' : '#60a5fa';
+        const colRgb = hexToRgb(col);
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.strokeStyle = col; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.ellipse(sx, py, 10, 40, 0, 0, 6.28); ctx.stroke();
-        ctx.fillStyle = col; ctx.font = '12px monospace'; ctx.textAlign = 'center';
-        ctx.fillText(formatSpeedMult(speedTier), sx, py + 4);
+        const pg=ctx.createLinearGradient(sx,py-50,sx,py+50);
+        pg.addColorStop(0,`rgba(${colRgb},0)`);pg.addColorStop(0.5,`rgba(${colRgb},${pulse*0.35})`);pg.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=pg;ctx.fillRect(sx-15,py-50,30,100);
+        ctx.globalAlpha=pulse;ctx.strokeStyle=col;ctx.lineWidth=2.5;
+        ctx.beginPath();ctx.ellipse(sx,py,12,45,0,0,6.28);ctx.stroke();
+        ctx.fillStyle='#fff';ctx.font='bold 13px monospace';ctx.textAlign='center';ctx.globalAlpha=pulse*0.8;
+        ctx.fillText(formatSpeedMult(speedTier),sx,py+5);
         ctx.restore();
       }
-      // Jump pads
-      else if(obs.type==='pad_yellow'||obs.type==='pad_pink'||obs.type==='pad_blue'){
-        const py = groundY;
-        const col = obs.type==='pad_yellow' ? '#fbbf24' : obs.type==='pad_pink' ? '#f472b6' : '#60a5fa';
+      else if(obs.type==='portal_size'){
+        const py = groundY - 120;
         const pulse = 0.7 + Math.sin(gameTime*4+obs.x)*0.2;
+        const col = '#c084fc';
+        const colRgb = hexToRgb(col);
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.fillStyle = col;
-        ctx.fillRect(sx-2, py-8, 34, 8);
-        // Arrow
-        ctx.beginPath();ctx.moveTo(sx+3, py-8);ctx.lineTo(sx+15, py-20);ctx.lineTo(sx+27, py-8);ctx.closePath();
-        ctx.globalAlpha = pulse * 0.4;
-        ctx.fill();
+        const pg=ctx.createLinearGradient(sx,py-50,sx,py+50);
+        pg.addColorStop(0,`rgba(${colRgb},0)`);pg.addColorStop(0.5,`rgba(${colRgb},${pulse*0.35})`);pg.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=pg;ctx.fillRect(sx-15,py-50,30,100);
+        ctx.globalAlpha=pulse;ctx.strokeStyle=col;ctx.lineWidth=2.5;
+        ctx.beginPath();ctx.ellipse(sx,py,12,45,0,0,6.28);ctx.stroke();
+        // Size icon — big/small squares
+        ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.7;
+        ctx.fillRect(sx-7,py-6,8,8);
+        ctx.fillRect(sx+1,py,5,5);
         ctx.restore();
       }
-      // Jump orbs
-      else if(obs.type==='orb_yellow'||obs.type==='orb_blue'){
+      // Jump pads — GD-style wedge with glow
+      else if(obs.type==='pad_yellow'||obs.type==='pad_pink'||obs.type==='pad_blue'||obs.type==='pad_red'){
+        const py = groundY;
+        const col = obs.type==='pad_yellow' ? '#fbbf24' : obs.type==='pad_pink' ? '#f472b6' : obs.type==='pad_red' ? '#ef4444' : '#60a5fa';
+        const colRgb = hexToRgb(col);
+        const pulse = 0.7 + Math.sin(gameTime*5+obs.x)*0.25 + beatPulse*0.2;
+        const padW=38, padH=12;
+        const pcx=sx+padW/2;
+        ctx.save();
+        // Ground glow
+        const pgr=ctx.createRadialGradient(pcx,py,2,pcx,py,padW*1.2);
+        pgr.addColorStop(0,`rgba(${colRgb},${pulse*0.25})`);pgr.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=pgr;ctx.fillRect(pcx-padW*1.2,py-padW,padW*2.4,padW*1.5);
+        // Wedge body
+        const pdg=ctx.createLinearGradient(sx,py-padH,sx,py);
+        pdg.addColorStop(0,col);pdg.addColorStop(1,`rgba(${colRgb},0.4)`);
+        ctx.fillStyle=pdg;
+        ctx.beginPath();ctx.moveTo(sx-2,py);ctx.lineTo(sx+4,py-padH);ctx.lineTo(sx+padW-4,py-padH);ctx.lineTo(sx+padW+2,py);ctx.closePath();ctx.fill();
+        // Top shine
+        ctx.fillStyle='rgba(255,255,255,0.3)';
+        ctx.fillRect(sx+4,py-padH,padW-8,2);
+        // Border
+        ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.globalAlpha=0.6+beatPulse*0.3;
+        ctx.beginPath();ctx.moveTo(sx-2,py);ctx.lineTo(sx+4,py-padH);ctx.lineTo(sx+padW-4,py-padH);ctx.lineTo(sx+padW+2,py);ctx.closePath();ctx.stroke();
+        // Animated arrows (2 arrows floating up)
+        const arrOff1=(gameTime*80+obs.x)%30;
+        const arrOff2=((gameTime*80+obs.x)+15)%30;
+        [arrOff1,arrOff2].forEach((ao,ai)=>{
+          const aa=1-ao/30;
+          ctx.globalAlpha=aa*pulse*0.6;ctx.fillStyle=col;
+          ctx.beginPath();ctx.moveTo(pcx-5,py-padH-ao-2);ctx.lineTo(pcx,py-padH-ao-9);ctx.lineTo(pcx+5,py-padH-ao-2);ctx.closePath();ctx.fill();
+        });
+        ctx.restore();
+      }
+      // Dash orbs
+      else if(obs.type==='orb_dash'){
+        const ox = sx;
+        const oy = groundY - (obs.y || 100) + Math.sin(gameTime*3+obs.x*0.01)*6;
+        if (obs._triggered) return;
+        const pulse = 0.6 + Math.sin(gameTime*4+obs.x)*0.25;
+        ctx.save();
+        // Outer glow
+        const dg = ctx.createRadialGradient(ox,oy,6,ox,oy,28);
+        dg.addColorStop(0,`rgba(45,212,191,${pulse*0.2})`); dg.addColorStop(1,'rgba(45,212,191,0)');
+        ctx.fillStyle=dg; ctx.fillRect(ox-28,oy-28,56,56);
+        // Double ring
+        ctx.globalAlpha = pulse;
+        ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(ox, oy, 16, 0, 6.28); ctx.stroke();
+        ctx.strokeStyle = '#99f6e4'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(ox, oy, 11, 0, 6.28); ctx.stroke();
+        // Arrow icon
+        ctx.fillStyle = '#2dd4bf'; ctx.globalAlpha = pulse * 0.7;
+        ctx.beginPath(); ctx.moveTo(ox-5,oy+4); ctx.lineTo(ox+7,oy); ctx.lineTo(ox-5,oy-4); ctx.closePath(); ctx.fill();
+        // Shine
+        ctx.fillStyle = '#fff'; ctx.globalAlpha = pulse * 0.4;
+        ctx.beginPath(); ctx.arc(ox-4, oy-5, 2.5, 0, 6.28); ctx.fill();
+        ctx.restore();
+      }
+      // Jump orbs — GD-style with spinning rings and core glow
+      else if(obs.type==='orb_yellow'||obs.type==='orb_blue'||obs.type==='orb_pink'||obs.type==='orb_green'){
         const ox = sx;
         const oy = groundY - (obs.y || 100) + Math.sin(gameTime*2.5+obs.x*0.01)*6;
         if (obs._triggered) return;
-        const col = obs.type==='orb_yellow' ? '#fbbf24' : '#60a5fa';
-        const pulse = 0.6 + Math.sin(gameTime*3+obs.x)*0.2;
+        const col = obs.type==='orb_yellow' ? '#fbbf24' : obs.type==='orb_pink' ? '#f472b6' : obs.type==='orb_green' ? '#4ade80' : '#60a5fa';
+        const colRgb = hexToRgb(col);
+        const pulse = 0.6 + Math.sin(gameTime*3+obs.x)*0.2 + beatPulse*0.15;
+        const spin = gameTime*2.5 + obs.x*0.01;
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.strokeStyle = col; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.arc(ox, oy, 14, 0, 6.28); ctx.stroke();
-        ctx.fillStyle = col; ctx.globalAlpha = pulse * 0.3;
-        ctx.beginPath(); ctx.arc(ox, oy, 10, 0, 6.28); ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.globalAlpha = pulse * 0.5;
-        ctx.beginPath(); ctx.arc(ox-3, oy-3, 3, 0, 6.28); ctx.fill();
+        // Outer glow
+        const og=ctx.createRadialGradient(ox,oy,4,ox,oy,30);
+        og.addColorStop(0,`rgba(${colRgb},${pulse*0.2})`);og.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=og;ctx.fillRect(ox-30,oy-30,60,60);
+        // Outer spinning ring
+        ctx.save();ctx.translate(ox,oy);ctx.rotate(spin);
+        ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.globalAlpha=pulse*0.7;
+        ctx.beginPath();ctx.arc(0,0,16,0,4.2);ctx.stroke();
+        ctx.beginPath();ctx.arc(0,0,16,4.7,6.28);ctx.stroke();
+        ctx.restore();
+        // Inner ring (counter-rotating)
+        ctx.save();ctx.translate(ox,oy);ctx.rotate(-spin*1.3);
+        ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.globalAlpha=pulse*0.45;
+        ctx.beginPath();ctx.arc(0,0,11,0,3.5);ctx.stroke();
+        ctx.beginPath();ctx.arc(0,0,11,4,6.28);ctx.stroke();
+        ctx.restore();
+        // Inner core glow
+        const icg=ctx.createRadialGradient(ox,oy,0,ox,oy,9);
+        icg.addColorStop(0,`rgba(255,255,255,${pulse*0.5})`);icg.addColorStop(0.4,`rgba(${colRgb},${pulse*0.6})`);icg.addColorStop(1,`rgba(${colRgb},0)`);
+        ctx.fillStyle=icg;ctx.globalAlpha=1;
+        ctx.beginPath();ctx.arc(ox,oy,9,0,6.28);ctx.fill();
+        // Core dot
+        ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.7;
+        ctx.beginPath();ctx.arc(ox,oy,3,0,6.28);ctx.fill();
+        // Shine highlight
+        ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.4;
+        ctx.beginPath();ctx.arc(ox-4,oy-4,2,0,6.28);ctx.fill();
         ctx.restore();
       }
     });
 
-    // Collectible orbs
+    // Collectible orbs — GD-style spinning gem with glow
     level.orbs.forEach(orb=>{
       if(orb.collected)return;
       const ox=orb.x-cameraX;if(ox<-40||ox>W+40)return;
       const oy=groundY-orb.y+Math.sin(gameTime*2.8+orb.x*0.008)*5;
-      const pulse = 0.7 + Math.sin(gameTime*4+orb.x*0.01)*0.15;
-      const og = ctx.createRadialGradient(ox,oy,2,ox,oy,18);
-      og.addColorStop(0,'rgba(251,191,36,0.15)'); og.addColorStop(1,'rgba(251,191,36,0)');
-      ctx.fillStyle=og; ctx.fillRect(ox-18,oy-18,36,36);
-      ctx.fillStyle='#fbbf24';ctx.globalAlpha=pulse;
-      ctx.beginPath();ctx.arc(ox,oy,6.5,0,6.28);ctx.fill();
-      ctx.fillStyle='#fff'; ctx.globalAlpha=0.4;
-      ctx.beginPath();ctx.arc(ox-1.5,oy-1.5,2.5,0,6.28);ctx.fill();
-      ctx.strokeStyle='#fbbf24';ctx.globalAlpha=0.2;ctx.lineWidth=1;
-      const rr=11+Math.sin(gameTime*3.5+orb.x)*2.5;
-      ctx.beginPath();ctx.arc(ox,oy,rr,0,6.28);ctx.stroke();
+      const pulse = 0.7 + Math.sin(gameTime*4+orb.x*0.01)*0.15 + beatPulse*0.1;
+      const spin = gameTime*3 + orb.x*0.005;
+      // Outer glow
+      const og = ctx.createRadialGradient(ox,oy,2,ox,oy,22);
+      og.addColorStop(0,'rgba(251,191,36,0.2)'); og.addColorStop(0.5,'rgba(251,191,36,0.06)'); og.addColorStop(1,'rgba(251,191,36,0)');
+      ctx.fillStyle=og; ctx.fillRect(ox-22,oy-22,44,44);
+      // Spinning outer ring
+      ctx.save();ctx.translate(ox,oy);ctx.rotate(spin);
+      ctx.strokeStyle='rgba(251,191,36,0.25)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(0,0,12,0,3.8);ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,12,4.2,6.28);ctx.stroke();
+      ctx.restore();
+      // Main orb body with gradient
+      const obg=ctx.createRadialGradient(ox-1,oy-1,0,ox,oy,7);
+      obg.addColorStop(0,'#fff');obg.addColorStop(0.3,'#fde68a');obg.addColorStop(1,'#f59e0b');
+      ctx.fillStyle=obg;ctx.globalAlpha=pulse;
+      ctx.beginPath();ctx.arc(ox,oy,7,0,6.28);ctx.fill();
+      // Outer stroke
+      ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.5;ctx.globalAlpha=pulse*0.6;
+      ctx.beginPath();ctx.arc(ox,oy,7,0,6.28);ctx.stroke();
+      // Shine
+      ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.55;
+      ctx.beginPath();ctx.arc(ox-2,oy-2,2,0,6.28);ctx.fill();
+      // Sparkle particles (4 tiny dots orbiting)
+      for(let sp=0;sp<4;sp++){
+        const sa=spin*1.5+sp*1.57;
+        const sr=10+Math.sin(gameTime*5+sp)*2;
+        ctx.fillStyle='#fde68a';ctx.globalAlpha=0.4+Math.sin(gameTime*6+sp*2)*0.2;
+        ctx.beginPath();ctx.arc(ox+Math.cos(sa)*sr,oy+Math.sin(sa)*sr,1.2,0,6.28);ctx.fill();
+      }
       ctx.globalAlpha=1;
     });
 
@@ -1436,101 +2637,324 @@ function draw() {
       });
     }
 
-    // Trail
+    // Trail — GD-style: smooth ribbon for cube/ball, sharp line for wave
     if(!player.dead && trail.length > 2){
       const ps = PLAYER_SIZE;
       const rgb = hexToRgb(theme.accent);
-      const rgb2 = hexToRgb(theme.accent2);
-      for(let i=0; i<trail.length-1; i+=4){
-        const t = trail[i];
-        const alpha = (i / trail.length) * 0.12;
-        const scale = 0.5 + (i / trail.length) * 0.5;
-        ctx.save();
-        ctx.translate(t.x, t.y); ctx.rotate(t.rot); ctx.scale(scale, scale);
-        ctx.fillStyle = `rgba(${rgb},${alpha})`;
-        if (t.mode === 'ship') {
-          ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.fill();
-        } else if (t.mode === 'wave') {
-          ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2,0);ctx.closePath();ctx.fill();
-        } else if (t.mode === 'ball') {
-          ctx.beginPath();ctx.arc(0,0,ps/2,0,6.28);ctx.fill();
-        } else {
-          ctx.fillRect(-ps/2,-ps/2,ps,ps);
-        }
-        ctx.restore();
-      }
       ctx.save();
+
+      // Wave mode: sharp angular trail (GD signature)
+      if (player.mode === 'wave') {
+        ctx.lineJoin = 'miter'; ctx.lineCap = 'butt';
+        // Glow
+        ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
+        for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.strokeStyle=`rgba(${rgb},0.15)`;ctx.lineWidth=ps*0.8;ctx.stroke();
+        // Core
+        ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
+        for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.strokeStyle=`rgba(${rgb},0.5)`;ctx.lineWidth=2.5;ctx.stroke();
+        // Bright center
+        ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
+        for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.strokeStyle=`rgba(255,255,255,0.3)`;ctx.lineWidth=1;ctx.stroke();
+        ctx.restore();
+      } else {
+
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      for(let w = 0; w < 3; w++) {
-        const width = [ps*0.8, ps*0.5, ps*0.2][w];
-        const alphaBase = [0.08, 0.12, 0.18][w];
-        const color = player.mode === 'ship' ? hexToRgb('#fbbf24') : (w < 2 ? rgb : rgb2);
-        ctx.beginPath();
-        ctx.moveTo(trail[0].x, trail[0].y);
-        for(let i=1;i<trail.length;i++){
-          const prev = trail[i-1], curr = trail[i];
-          const mx = (prev.x+curr.x)/2, my = (prev.y+curr.y)/2;
-          ctx.quadraticCurveTo(prev.x, prev.y, mx, my);
-        }
-        const last = trail[trail.length-1];
-        ctx.lineTo(last.x, last.y);
-        ctx.strokeStyle = `rgba(${color},${alphaBase})`;
-        ctx.lineWidth = width;
-        ctx.stroke();
+      // Main trail ribbon
+      ctx.beginPath();
+      ctx.moveTo(trail[0].x, trail[0].y);
+      for(let i=1;i<trail.length;i++){
+        const prev = trail[i-1], curr = trail[i];
+        ctx.quadraticCurveTo(prev.x, prev.y, (prev.x+curr.x)/2, (prev.y+curr.y)/2);
       }
+      ctx.lineTo(trail[trail.length-1].x, trail[trail.length-1].y);
+      // Outer glow
+      ctx.strokeStyle = `rgba(${rgb},0.12)`;
+      ctx.lineWidth = ps*0.9;
+      ctx.stroke();
+      // Core
+      ctx.strokeStyle = `rgba(${rgb},0.3)`;
+      ctx.lineWidth = ps*0.4;
+      ctx.stroke();
+      // Bright center
+      ctx.strokeStyle = `rgba(${rgb},0.5)`;
+      ctx.lineWidth = ps*0.12;
+      ctx.stroke();
       ctx.restore();
+      } // end else (non-wave trail)
     }
 
-    // ── DRAW PLAYER ──
+    // ── DRAW PLAYER ── Clean GD-style
     if(!player.dead){
-      const px=PLAYER_SCREEN_X, py=player.y, ps=PLAYER_SIZE;
-      const rgb = hexToRgb(theme.glow);
-      const pg2 = ctx.createRadialGradient(px, py+ps/2, ps*0.3, px, py+ps/2, ps*2);
-      pg2.addColorStop(0, `rgba(${rgb},0.12)`);
-      pg2.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle=pg2; ctx.fillRect(px-ps*2,py-ps*1.5,ps*4,ps*4);
+      const px=PLAYER_SCREEN_X, py=player.y, ps=PLAYER_SIZE*(player.mini?MINI_SCALE:1);
 
       ctx.save(); ctx.translate(px,py+ps/2); ctx.rotate(player.rotation);
 
-      const pg=ctx.createLinearGradient(-ps/2,-ps/2,ps/2,ps/2);
-      pg.addColorStop(0,theme.accent); pg.addColorStop(1,theme.accent2);
-      ctx.fillStyle=pg;
+      // Base color
+      ctx.fillStyle=theme.accent;
 
       if (player.mode === 'cube') {
+        // Outer square
         ctx.fillRect(-ps/2,-ps/2,ps,ps);
-        ctx.fillStyle='rgba(255,255,255,0.2)';
-        ctx.beginPath();ctx.moveTo(-ps/2+3,-ps/2+3);ctx.lineTo(ps/2-3,-ps/2+3);ctx.lineTo(-ps/2+3,0);ctx.closePath();ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1;
+        // Inner darker square (GD signature two-tone)
+        const inner=ps*0.55;
+        ctx.fillStyle=theme.accent2;
+        ctx.fillRect(-inner/2,-inner/2,inner,inner);
+        // Top-left highlight (subtle 3D)
+        ctx.fillStyle='rgba(255,255,255,0.15)';
+        ctx.fillRect(-ps/2,-ps/2,ps,3);
+        ctx.fillRect(-ps/2,-ps/2,3,ps);
+        // Bottom-right shadow
+        ctx.fillStyle='rgba(0,0,0,0.15)';
+        ctx.fillRect(-ps/2,ps/2-3,ps,3);
+        ctx.fillRect(ps/2-3,-ps/2,3,ps);
+        // Crisp border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=2;
         ctx.strokeRect(-ps/2,-ps/2,ps,ps);
       }
       else if (player.mode === 'ship') {
-        ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.fill();
-        ctx.fillStyle='rgba(255,255,255,0.2)';
-        ctx.beginPath();ctx.moveTo(-ps/2+4,-ps/2+6);ctx.lineTo(ps/4,0);ctx.lineTo(-ps/2+4,0);ctx.closePath();ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1;
-        ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.stroke();
+        // Ship body
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2+3,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.fill();
+        // Wing highlight
+        ctx.fillStyle='rgba(255,255,255,0.15)';
+        ctx.beginPath();ctx.moveTo(-ps/2+3,-ps/2+3);ctx.lineTo(ps/4,0);ctx.lineTo(-ps/2+3,0);ctx.closePath();ctx.fill();
+        // Border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2+3,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.stroke();
+        // Engine flame
+        const flicker = 0.7+Math.random()*0.3;
+        ctx.fillStyle=`rgba(251,191,36,${0.6*flicker})`;
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/4);ctx.lineTo(-ps/2-8-Math.random()*6,0);ctx.lineTo(-ps/2,-ps/4);ctx.closePath();ctx.fill();
+        ctx.fillStyle=`rgba(255,255,255,${0.35*flicker})`;
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/6);ctx.lineTo(-ps/2-4-Math.random()*4,0);ctx.lineTo(-ps/2,-ps/6);ctx.closePath();ctx.fill();
       }
       else if (player.mode === 'wave') {
-        ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2,0);ctx.closePath();ctx.fill();
-        ctx.fillStyle='rgba(255,255,255,0.2)';
-        ctx.beginPath();ctx.moveTo(0,-ps/2+4);ctx.lineTo(ps/4,0);ctx.lineTo(0,0);ctx.lineTo(-ps/4,0);ctx.closePath();ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1;
-        ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2,0);ctx.closePath();ctx.stroke();
+        ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2+2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2-2,0);ctx.closePath();ctx.fill();
+        // Inner diamond
+        ctx.fillStyle=theme.accent2;
+        const wI=ps*0.35;
+        ctx.beginPath();ctx.moveTo(0,-wI);ctx.lineTo(wI,0);ctx.lineTo(0,wI);ctx.lineTo(-wI,0);ctx.closePath();ctx.fill();
+        // Border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2+2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2-2,0);ctx.closePath();ctx.stroke();
       }
       else if (player.mode === 'ball') {
+        // Outer circle
         ctx.beginPath();ctx.arc(0,0,ps/2,0,6.28);ctx.fill();
-        ctx.fillStyle='rgba(255,255,255,0.15)';
-        ctx.beginPath();ctx.arc(0,0,ps/2,0,6.28);ctx.fill();
-        ctx.fillStyle=theme.accent;
+        // Inner ring
+        ctx.fillStyle=theme.accent2;
         ctx.beginPath();ctx.arc(0,0,ps/2-3,0,6.28);ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1;
+        // Cross lines (GD ball signature)
+        ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(-ps/2+3,0);ctx.lineTo(ps/2-3,0);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(0,-ps/2+3);ctx.lineTo(0,ps/2-3);ctx.stroke();
+        // Border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=2;
         ctx.beginPath();ctx.arc(0,0,ps/2,0,6.28);ctx.stroke();
       }
+      else if (player.mode === 'ufo') {
+        // UFO — dome shape with flat bottom
+        ctx.beginPath();
+        ctx.ellipse(0, 2, ps/2+3, ps/2-2, 0, Math.PI, 0); // top dome
+        ctx.lineTo(ps/2+3, 2);
+        ctx.lineTo(ps/2+5, ps/2-2);
+        ctx.lineTo(-ps/2-5, ps/2-2);
+        ctx.lineTo(-ps/2-3, 2);
+        ctx.closePath();
+        ctx.fill();
+        // Glass dome highlight
+        ctx.fillStyle='rgba(255,255,255,0.12)';
+        ctx.beginPath();
+        ctx.ellipse(0, -1, ps/2-2, ps/2-6, 0, Math.PI+0.3, -0.3);
+        ctx.fill();
+        // Bottom rim
+        ctx.fillStyle=theme.accent2;
+        ctx.fillRect(-ps/2-4, 1, ps+8, 4);
+        // Beam lights (3 dots under the bottom)
+        const beamPulse = 0.5 + Math.sin(gameTime*6)*0.3;
+        ctx.fillStyle=theme.glow; ctx.globalAlpha = beamPulse;
+        ctx.beginPath(); ctx.arc(-6, ps/2, 2, 0, 6.28); ctx.fill();
+        ctx.beginPath(); ctx.arc(0, ps/2+1, 2.5, 0, 6.28); ctx.fill();
+        ctx.beginPath(); ctx.arc(6, ps/2, 2, 0, 6.28); ctx.fill();
+        ctx.globalAlpha = 1;
+        // Border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=1.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 2, ps/2+3, ps/2-2, 0, Math.PI, 0);
+        ctx.lineTo(ps/2+3, 2);
+        ctx.lineTo(ps/2+5, ps/2-2);
+        ctx.lineTo(-ps/2-5, ps/2-2);
+        ctx.lineTo(-ps/2-3, 2);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      else if (player.mode === 'robot') {
+        // Robot — rectangular body with legs
+        const bw = ps*0.85, bh = ps*0.7;
+        ctx.fillRect(-bw/2, -bh/2-2, bw, bh);
+        // Inner panel
+        ctx.fillStyle=theme.accent2;
+        ctx.fillRect(-bw/2+3, -bh/2+1, bw-6, bh-4);
+        // Head antenna
+        ctx.fillStyle=theme.glow;
+        ctx.fillRect(-1, -bh/2-6, 2, 6);
+        ctx.beginPath(); ctx.arc(0, -bh/2-7, 2.5, 0, 6.28); ctx.fill();
+        // Legs (2 short rectangles)
+        ctx.fillStyle=theme.accent;
+        const legPhase = player.grounded ? 0 : Math.sin(gameTime*12)*0.15;
+        ctx.save(); ctx.rotate(legPhase);
+        ctx.fillRect(-bw/3-2, bh/2-4, 5, 8);
+        ctx.restore();
+        ctx.save(); ctx.rotate(-legPhase);
+        ctx.fillRect(bw/3-3, bh/2-4, 5, 8);
+        ctx.restore();
+        // Rocket boost glow when jumping and holding
+        if (player._robotJumping && jumpHeld) {
+          const fk = 0.7+Math.random()*0.3;
+          ctx.fillStyle=`rgba(251,191,36,${0.6*fk})`;
+          const flameDir = player.gravFlipped ? -1 : 1;
+          ctx.beginPath();
+          ctx.moveTo(-bw/4, (bh/2+3)*flameDir);
+          ctx.lineTo(0, (bh/2+12+Math.random()*8)*flameDir);
+          ctx.lineTo(bw/4, (bh/2+3)*flameDir);
+          ctx.closePath(); ctx.fill();
+          ctx.fillStyle=`rgba(255,255,255,${0.35*fk})`;
+          ctx.beginPath();
+          ctx.moveTo(-bw/6, (bh/2+3)*flameDir);
+          ctx.lineTo(0, (bh/2+7+Math.random()*5)*flameDir);
+          ctx.lineTo(bw/6, (bh/2+3)*flameDir);
+          ctx.closePath(); ctx.fill();
+        }
+        // Border
+        ctx.strokeStyle=theme.glow;ctx.lineWidth=1.5;
+        ctx.strokeRect(-bw/2, -bh/2-2, bw, bh);
+      }
 
-      // Eye (for all modes)
-      ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.beginPath();ctx.arc(2,-1,4.5,0,6.28);ctx.fill();
-      ctx.fillStyle=theme.bg1; ctx.beginPath();ctx.arc(3,-1,2.2,0,6.28);ctx.fill();
-      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.beginPath();ctx.arc(1.2,-2.2,1,0,6.28);ctx.fill();
+      // Eye — alive, curious, looks around, natural blinks
+      {
+        const eyeFlip = player.gravFlipped ? 1 : -1;
+        const eyeCX = 2, eyeCY = eyeFlip * 1;
+
+        // ── Idle gaze: pupil wanders around on its own using layered sine waves ──
+        const gazeX = Math.sin(gameTime*0.9)*1.2 + Math.sin(gameTime*1.7)*0.6 + Math.cos(gameTime*0.4)*0.4;
+        const gazeY = Math.cos(gameTime*0.7)*0.8 + Math.sin(gameTime*1.3)*0.5;
+
+        // ── Reactive look: velocity shifts pupil ──
+        const velLookX = player.dashing ? 2.5 : 0.8;
+        const velLookY = Math.max(-2.5, Math.min(2.5, player.vy / 200)) * (player.gravFlipped ? -1 : 1);
+
+        // Combine idle gaze + velocity reaction (velocity dominates when moving fast)
+        const velWeight = Math.min(1, Math.abs(player.vy) / 300);
+        const finalLookX = gazeX * (1 - velWeight*0.5) + velLookX;
+        const finalLookY = gazeY * (1 - velWeight) + velLookY * velWeight;
+
+        // ── Natural blink system: irregular double-blinks ──
+        // Use multiple sine waves so blinks feel random, not metronomic
+        const blinkSignal = Math.sin(gameTime*0.8) + Math.sin(gameTime*1.3) + Math.sin(gameTime*2.1);
+        const isBlink1 = blinkSignal > 2.65; // primary blink
+        const isBlink2 = Math.sin(gameTime*0.8+0.25) + Math.sin(gameTime*1.3+0.25) + Math.sin(gameTime*2.1+0.25) > 2.75; // occasional double-blink
+        const isBlinking = isBlink1 || isBlink2;
+
+        // Smooth eyelid position (0=open, 1=closed) for fluid animation
+        const blinkTarget = isBlinking ? 1 : 0;
+        if (typeof player._eyeLid === 'undefined') player._eyeLid = 0;
+        player._eyeLid += (blinkTarget - player._eyeLid) * 0.35; // smooth interpolation
+        const lid = player._eyeLid;
+        const squish = Math.max(0.05, 1 - lid * 0.95);
+
+        // Widen when surprised (airborne or dashing)
+        const surprise = player.dashing ? 1.2 : (!player.grounded ? 1.08 : 1.0);
+        const eyeR = 5.2 * surprise;
+        const pupilR = 2.6 * surprise;
+
+        // Clamp pupil inside sclera
+        const maxOff = eyeR - pupilR - 0.8;
+        const rawPX = eyeCX + finalLookX;
+        const rawPY = eyeCY + finalLookY;
+        const dist = Math.sqrt((rawPX-eyeCX)**2 + (rawPY-eyeCY)**2);
+        const clamp = dist > maxOff ? maxOff/dist : 1;
+        const pupilX = eyeCX + (rawPX-eyeCX)*clamp + (player.dashing?Math.sin(gameTime*22)*0.4:0);
+        const pupilY = eyeCY + (rawPY-eyeCY)*clamp;
+
+        ctx.save();
+
+        // Sclera
+        ctx.fillStyle = 'rgba(255,255,255,0.93)';
+        ctx.beginPath();
+        ctx.ellipse(eyeCX, eyeCY, eyeR, eyeR * squish, 0, 0, 6.28);
+        ctx.fill();
+
+        if (lid < 0.85) {
+          // Iris ring
+          ctx.fillStyle = theme.accent; ctx.globalAlpha = 0.25;
+          ctx.beginPath();
+          ctx.ellipse(pupilX, pupilY, pupilR+1, (pupilR+1)*squish, 0, 0, 6.28);
+          ctx.fill(); ctx.globalAlpha = 1;
+
+          // Pupil
+          ctx.fillStyle = '#0a0a12';
+          ctx.beginPath();
+          ctx.ellipse(pupilX, pupilY, pupilR, pupilR*squish, 0, 0, 6.28);
+          ctx.fill();
+
+          // Big specular highlight (tracks opposite of look direction for realism)
+          ctx.fillStyle = 'rgba(255,255,255,0.8)';
+          ctx.beginPath();
+          ctx.arc(pupilX - finalLookX*0.3 - 0.8, pupilY - 1.5, 1.4, 0, 6.28);
+          ctx.fill();
+
+          // Small secondary highlight
+          ctx.fillStyle = 'rgba(255,255,255,0.35)';
+          ctx.beginPath();
+          ctx.arc(pupilX + 1.5, pupilY + 1, 0.6, 0, 6.28);
+          ctx.fill();
+        }
+
+        // Top eyelid (closes from above, like a real blink)
+        if (lid > 0.05) {
+          const lidY = eyeCY - eyeR*squish + eyeR*2*squish*lid*0.55;
+          ctx.fillStyle = theme.accent;
+          ctx.globalAlpha = 0.25 * lid;
+          ctx.beginPath();
+          ctx.ellipse(eyeCX, eyeCY - eyeR*squish*0.1, eyeR*1.1, eyeR*squish*0.65, 0, Math.PI+0.3, Math.PI*2-0.3);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.restore();
+      }
+
+      ctx.restore();
+
+      // Dash glow + speed lines
+      if (player.dashing) {
+        const dAlpha = Math.min(1, player.dashTimer / DASH_DURATION);
+        const dgr = ctx.createRadialGradient(px, py+ps/2, ps*0.3, px, py+ps/2, ps*3);
+        dgr.addColorStop(0, `rgba(45,212,191,${0.25*dAlpha})`);
+        dgr.addColorStop(1, 'rgba(45,212,191,0)');
+        ctx.fillStyle=dgr; ctx.fillRect(px-ps*3,py-ps*2.5,ps*6,ps*6);
+        // Speed lines
+        ctx.strokeStyle=`rgba(45,212,191,${0.4*dAlpha})`; ctx.lineWidth=2;
+        for(let sl=0;sl<6;sl++){
+          const slx=px-30-sl*18-Math.random()*10;
+          const sly=py+ps/2+(sl-2.5)*8;
+          ctx.beginPath();ctx.moveTo(slx,sly);ctx.lineTo(slx-25-Math.random()*15,sly);ctx.stroke();
+        }
+      }
+    }
+
+    // ── Death heatmap ticks ──
+    if (deathPositions[selectedLevel] && deathPositions[selectedLevel].length > 0) {
+      ctx.save();
+      deathPositions[selectedLevel].forEach(p => {
+        const tx = p * W;
+        ctx.fillStyle = 'rgba(255,70,70,0.45)';
+        ctx.fillRect(tx-0.5, 0, 1.5, 5);
+        ctx.fillStyle = 'rgba(255,70,70,0.15)';
+        ctx.fillRect(tx-0.5, 5, 1.5, 3);
+      });
       ctx.restore();
     }
   }
@@ -1538,16 +2962,20 @@ function draw() {
   particles.draw(ctx);
 
   if(deathFlash>0.01){
-    ctx.fillStyle=`rgba(255,100,150,${deathFlash*0.35})`;
+    // Red flash with radial white center
+    const dfRgb = hexToRgb(theme.accent);
+    ctx.fillStyle=`rgba(${dfRgb},${deathFlash*0.3})`;
     ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=`rgba(255,255,255,${deathFlash*0.15})`;
+    const dfg=ctx.createRadialGradient(PLAYER_SCREEN_X,player.y+PLAYER_SIZE/2,0,PLAYER_SCREEN_X,player.y+PLAYER_SIZE/2,H*0.4);
+    dfg.addColorStop(0,`rgba(255,255,255,${deathFlash*0.3})`);dfg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=dfg;ctx.fillRect(0,0,W,H);
   }
 
-  const vg=ctx.createRadialGradient(W/2,H/2,H*0.25,W/2,H/2,H*0.9);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.5)');
+  // Subtle vignette only (no scanlines — GD doesn't have them)
+  const vg=ctx.createRadialGradient(W/2,H/2,H*0.35,W/2,H/2,H*0.95);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.25)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
-
-  ctx.fillStyle='rgba(0,0,0,0.03)';
-  for(let y=0;y<H;y+=3) ctx.fillRect(0,y,W,1);
 
   ctx.restore();
 }

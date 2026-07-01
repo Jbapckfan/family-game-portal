@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Memory Match - Flip cards and find all the matching animal pairs in this classic concentration game.">
+    <meta name="theme-color" content="#180611">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Memory Match">
+    <meta property="og:description" content="Flip cards and find all the matching animal pairs in this classic concentration game.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Memory Match</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #000;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-neon {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(244, 63, 94, 0.5), 0 0 24px rgba(219, 39, 119, 0.4);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        .card-flip-outer {
+          perspective: 800px;
+        }
+        .card-flip-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transition: transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
+          transform-style: preserve-3d;
+        }
+        .card-flip-inner.is-flipped {
+          transform: rotateY(180deg);
+        }
+        @keyframes match-pulse {
+          0% { transform: rotateY(180deg) scale(1); }
+          45% { transform: rotateY(180deg) scale(1.1); }
+          100% { transform: rotateY(180deg) scale(1); }
+        }
+        .card-flip-inner.card-pulse {
+          animation: match-pulse 0.45s ease-out;
+        }
+        .card-face {
+          position: absolute;
+          inset: 0;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          border-radius: 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .card-back {
+          background: linear-gradient(135deg, #4c0519, #9d174d);
+          border: 2px solid rgba(251, 113, 133, 0.4);
+        }
+        .card-front {
+          transform: rotateY(180deg);
+          background: linear-gradient(135deg, #fff1f2, #fbcfe8);
+          border: 2px solid rgba(219, 39, 119, 0.5);
+        }
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid #fb7185;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fb7185;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play Memory Match. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const ANIMALS = [
+            { emoji: '\u{1F436}', name: 'Dog' },
+            { emoji: '\u{1F431}', name: 'Cat' },
+            { emoji: '\u{1F42D}', name: 'Mouse' },
+            { emoji: '\u{1F439}', name: 'Hamster' },
+            { emoji: '\u{1F98A}', name: 'Fox' },
+            { emoji: '\u{1F43B}', name: 'Bear' },
+            { emoji: '\u{1F43C}', name: 'Panda' },
+            { emoji: '\u{1F428}', name: 'Koala' },
+        ];
+        const BEST_MOVES_KEY = 'familyPortalMemoryMatchBestMoves';
+        const MISMATCH_DELAY_MS = 800;
+        const MATCH_RESOLVE_MS = 450;
+
+        // --- HELPER FUNCTIONS ---
+        const shuffle = (arr) => {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        };
+
+        const createShuffledDeck = () => {
+            const pairs = [...ANIMALS, ...ANIMALS];
+            return shuffle(pairs).map((animal, index) => ({
+                id: index,
+                emoji: animal.emoji,
+                name: animal.name,
+            }));
+        };
+
+        const chunkIntoRows = (arr, size) => {
+            const rows = [];
+            for (let i = 0; i < arr.length; i += size) {
+                rows.push(arr.slice(i, i + size));
+            }
+            return rows;
+        };
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        handleClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, handleClose]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-rose-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-rose-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-rose-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-rose-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Tap any <strong className="text-rose-300">face-down card</strong> to flip it over and reveal the animal underneath.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Flip <strong className="text-rose-300">two cards</strong> to check for a match. Matching pairs stay face-up!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>If they don't match, they'll <strong className="text-rose-300">flip back</strong> after a moment &mdash; remember where they were!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Find all <strong className="text-pink-300">8 pairs</strong> in as few moves as possible to win.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Try to beat your <strong className="text-rose-300">best move count</strong>, saved right here on this device.</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-300 hover:to-pink-400 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const MemoryCard = React.memo(({ card, isFaceUp, isMatched, justMatched, onFlip, disabled }) => {
+            const handleClick = React.useCallback(() => {
+                onFlip(card.id);
+            }, [onFlip, card.id]);
+
+            let label;
+            if (isMatched) {
+                label = `Card, matched pair, ${card.name}`;
+            } else if (isFaceUp) {
+                label = `Card, showing ${card.name}`;
+            } else {
+                label = 'Card, face down, tap to flip';
+            }
+
+            return (
+                <button
+                    type="button"
+                    onClick={handleClick}
+                    disabled={disabled || isFaceUp || isMatched}
+                    role="gridcell"
+                    aria-pressed={isFaceUp || isMatched}
+                    aria-label={label}
+                    className="card-flip-outer w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl disabled:cursor-default"
+                >
+                    <div className={`card-flip-inner ${(isFaceUp || isMatched) ? 'is-flipped' : ''} ${justMatched ? 'card-pulse' : ''}`}>
+                        <div className="card-face card-back" aria-hidden="true">
+                            <span className="text-2xl sm:text-3xl opacity-70">&#x1F43E;</span>
+                        </div>
+                        <div className="card-face card-front text-3xl sm:text-4xl md:text-5xl" aria-hidden="true">
+                            {card.emoji}
+                        </div>
+                    </div>
+                </button>
+            );
+        });
+
+        const MemoryMatchGame = () => {
+            const [deck, setDeck] = React.useState(() => createShuffledDeck());
+            const [selected, setSelected] = React.useState([]);
+            const [matched, setMatched] = React.useState(() => new Set());
+            const [justMatchedIds, setJustMatchedIds] = React.useState(() => new Set());
+            const [moves, setMoves] = React.useState(0);
+            const [bestMoves, setBestMoves] = React.useState(null);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+
+            const busyRef = React.useRef(false);
+            const resolveTimeoutRef = React.useRef(null);
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+            const prevIsWonRef = React.useRef(false);
+
+            const matchedPairs = matched.size / 2;
+            const totalPairs = ANIMALS.length;
+            const isWon = matchedPairs === totalPairs;
+
+            React.useEffect(() => {
+                const stored = Number(localStorage.getItem(BEST_MOVES_KEY));
+                if (!Number.isNaN(stored) && stored > 0) setBestMoves(stored);
+            }, []);
+
+            React.useEffect(() => {
+                if (isWon && (bestMoves === null || moves < bestMoves)) {
+                    localStorage.setItem(BEST_MOVES_KEY, String(moves));
+                    setBestMoves(moves);
+                }
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+            }, [isWon]);
+
+            React.useEffect(() => {
+                if (isWon && !prevIsWonRef.current && newGameButtonRef.current) {
+                    newGameButtonRef.current.focus();
+                }
+                prevIsWonRef.current = isWon;
+            }, [isWon]);
+
+            React.useEffect(() => () => {
+                if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
+            }, []);
+
+            const handleFlip = React.useCallback((id) => {
+                if (busyRef.current) return;
+                if (matched.has(id)) return;
+                if (selected.includes(id)) return;
+
+                if (selected.length === 0) {
+                    setSelected([id]);
+                    return;
+                }
+
+                const pair = [selected[0], id];
+                setSelected(pair);
+                busyRef.current = true;
+                setMoves((m) => m + 1);
+
+                const firstCard = deck.find((c) => c.id === pair[0]);
+                const secondCard = deck.find((c) => c.id === pair[1]);
+                const isMatch = firstCard && secondCard && firstCard.emoji === secondCard.emoji;
+
+                if (isMatch) {
+                    resolveTimeoutRef.current = setTimeout(() => {
+                        setMatched((prev) => {
+                            const next = new Set(prev);
+                            next.add(pair[0]);
+                            next.add(pair[1]);
+                            return next;
+                        });
+                        setJustMatchedIds(new Set(pair));
+                        setSelected([]);
+                        busyRef.current = false;
+                        resolveTimeoutRef.current = setTimeout(() => {
+                            setJustMatchedIds(new Set());
+                        }, MATCH_RESOLVE_MS);
+                    }, 150);
+                } else {
+                    resolveTimeoutRef.current = setTimeout(() => {
+                        setSelected([]);
+                        busyRef.current = false;
+                    }, MISMATCH_DELAY_MS);
+                }
+            }, [selected, matched, deck]);
+
+            const startNewGame = React.useCallback(() => {
+                if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
+                busyRef.current = false;
+                setDeck(createShuffledDeck());
+                setSelected([]);
+                setMatched(new Set());
+                setJustMatchedIds(new Set());
+                setMoves(0);
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const rows = React.useMemo(() => chunkIntoRows(deck, 4), [deck]);
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-rose-950/30 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 w-full max-w-md mx-auto text-center">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-rose-300 via-pink-400 to-rose-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    MEMORY MATCH
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-rose-400/50 bg-rose-400/10 text-rose-200 hover:bg-rose-400/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-rose-200/80 mt-2">Flip cards and find all the pairs!</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex items-center justify-center gap-3 mb-4" aria-live="polite" aria-atomic="true">
+                            <div className="bg-black/40 border border-rose-400/30 rounded-xl px-5 py-2 min-w-[90px]">
+                                <div className="text-xs uppercase tracking-widest text-rose-300/70">Moves</div>
+                                <div className="text-2xl font-bold text-rose-100">{moves}</div>
+                            </div>
+                            <div className="bg-black/40 border border-rose-400/30 rounded-xl px-5 py-2 min-w-[90px]">
+                                <div className="text-xs uppercase tracking-widest text-rose-300/70">Pairs</div>
+                                <div className="text-2xl font-bold text-rose-100">{matchedPairs}/{totalPairs}</div>
+                            </div>
+                            <div className="bg-black/40 border border-rose-400/30 rounded-xl px-5 py-2 min-w-[90px]">
+                                <div className="text-xs uppercase tracking-widest text-rose-300/70">Best</div>
+                                <div className="text-2xl font-bold text-rose-100">{bestMoves === null ? '–' : bestMoves}</div>
+                            </div>
+                        </div>
+
+                        <main className="relative bg-black/30 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-rose-400/30 shadow-2xl shadow-rose-500/10">
+                            <div
+                                role="grid"
+                                aria-label={`Memory match board, ${matchedPairs} of ${totalPairs} pairs matched`}
+                                className="flex flex-col gap-2 sm:gap-3 items-center"
+                            >
+                                {rows.map((row, r) => (
+                                    <div key={r} role="row" className="flex gap-2 sm:gap-3 justify-center">
+                                        {row.map((card) => (
+                                            <MemoryCard
+                                                key={card.id}
+                                                card={card}
+                                                isFaceUp={selected.includes(card.id)}
+                                                isMatched={matched.has(card.id)}
+                                                justMatched={justMatchedIds.has(card.id)}
+                                                onFlip={handleFlip}
+                                                disabled={showHowToPlay}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {isWon && (
+                                <div
+                                    className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in"
+                                    role="alert"
+                                >
+                                    <h2 className="text-3xl font-black text-pink-300 text-shadow-neon">
+                                        YOU WIN!
+                                    </h2>
+                                    <p className="text-rose-100">
+                                        You matched all {totalPairs} pairs in {moves} moves.
+                                    </p>
+                                    {bestMoves === moves && (
+                                        <p className="text-yellow-200 text-sm font-bold">New best score!</p>
+                                    )}
+                                    <button
+                                        ref={newGameButtonRef}
+                                        onClick={startNewGame}
+                                        className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-rose-400 to-pink-500 hover:scale-105 transition-all"
+                                    >
+                                        New Game
+                                    </button>
+                                </div>
+                            )}
+                        </main>
+
+                        <footer className="py-6">
+                            <button
+                                onClick={startNewGame}
+                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-rose-400 to-pink-500 hover:scale-105 shadow-lg shadow-rose-500/40"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<MemoryMatchGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

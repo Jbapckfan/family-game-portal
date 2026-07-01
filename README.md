@@ -31,6 +31,11 @@ docker compose up -d
 | 🔦 **Lasers & Mirrors** | Mini | Reflect lasers to hit targets |
 | 💡 **Lights Out** | Mini | Turn off all the lights |
 | 🔘 **Peg Jumper** | Mini | Peg solitaire puzzle |
+| 🔢 **2048** | Mini | Slide and merge tiles to reach 2048 |
+| 🔴 **Connect Four** | Mini | 2-player pass-and-play, connect 4 in a row |
+| 🐍 **Snake** | Mini | Classic arcade snake |
+| 💣 **Minesweeper** | Mini | Clear the minefield without detonating a mine |
+| 🃏 **Memory Match** | Mini | Flip cards and find the matching pairs |
 
 ---
 

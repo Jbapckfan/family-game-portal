@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="2048 - Slide and merge matching tiles to build your way up to the 2048 tile.">
+    <meta name="theme-color" content="#0b0a14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="2048">
+    <meta property="og:description" content="Slide and merge matching tiles to build your way up to the 2048 tile.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>2048</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #000;
+            overscroll-behavior: none;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-neon {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(251, 191, 36, 0.5), 0 0 24px rgba(251, 191, 36, 0.4);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        @keyframes tile-pop {
+          0% { transform: scale(0.3); opacity: 0; }
+          70% { transform: scale(1.08); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes tile-merge {
+          0% { transform: scale(1); }
+          35% { transform: scale(1.18); }
+          100% { transform: scale(1); }
+        }
+        .tile-face {
+          animation: tile-pop 0.16s ease-out;
+        }
+        .tile-face.tile-merged {
+          animation: tile-merge 0.18s ease-out;
+        }
+        .tile-slot {
+          transition: top 0.1s ease-in-out, left 0.1s ease-in-out;
+        }
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid #fbbf24;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fbbf24;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play 2048. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const GRID_SIZE = 4;
+        const BEST_SCORE_KEY = 'familyPortal2048BestScore';
+        const WIN_VALUE = 2048;
+
+        const TILE_STYLES = {
+            2:    { bg: '#0f2942', text: '#a5f3fc' },
+            4:    { bg: '#0e3b5c', text: '#7dd3fc' },
+            8:    { bg: '#1e3a8a', text: '#93c5fd' },
+            16:   { bg: '#3730a3', text: '#a5b4fc' },
+            32:   { bg: '#5b21b6', text: '#c4b5fd' },
+            64:   { bg: '#7e22ce', text: '#e9d5ff' },
+            128:  { bg: '#a21caf', text: '#f5d0fe' },
+            256:  { bg: '#be185d', text: '#fbcfe8' },
+            512:  { bg: '#c2410c', text: '#fed7aa' },
+            1024: { bg: '#b45309', text: '#fde68a' },
+            2048: { bg: '#a16207', text: '#fef3c7' },
+        };
+        const SUPER_TILE_STYLE = { bg: '#111827', text: '#fef08a' };
+
+        const getTileStyle = (value) => TILE_STYLES[value] || SUPER_TILE_STYLE;
+        const getTileFontSizeClass = (value) => {
+            if (value >= 10000) return 'text-lg md:text-xl';
+            if (value >= 1000) return 'text-2xl md:text-3xl';
+            return 'text-3xl md:text-4xl';
+        };
+
+        // --- BOARD HELPERS ---
+        let idCounter = 1;
+        const nextTileId = () => idCounter++;
+
+        const emptyCells = (tiles) => {
+            const occupied = new Set(tiles.map(t => `${t.row},${t.col}`));
+            const cells = [];
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (!occupied.has(`${r},${c}`)) cells.push({ row: r, col: c });
+                }
+            }
+            return cells;
+        };
+
+        const spawnRandomTile = (tiles) => {
+            const cells = emptyCells(tiles);
+            if (cells.length === 0) return tiles;
+            const cell = cells[Math.floor(Math.random() * cells.length)];
+            const value = Math.random() < 0.9 ? 2 : 4;
+            return [...tiles, { id: nextTileId(), value, row: cell.row, col: cell.col }];
+        };
+
+        const createInitialTiles = () => {
+            idCounter = 1;
+            let tiles = [];
+            tiles = spawnRandomTile(tiles);
+            tiles = spawnRandomTile(tiles);
+            return tiles;
+        };
+
+        // Build the 4 "lines" (rows or columns) to process for a given move direction.
+        // Each line is an array of 4 slots ordered so slot 0 is the edge tiles compress toward.
+        const buildLineCoords = (direction) => {
+            const lines = [];
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const line = [];
+                for (let s = 0; s < GRID_SIZE; s++) {
+                    if (direction === 'left') line.push({ row: i, col: s });
+                    else if (direction === 'right') line.push({ row: i, col: GRID_SIZE - 1 - s });
+                    else if (direction === 'up') line.push({ row: s, col: i });
+                    else line.push({ row: GRID_SIZE - 1 - s, col: i });
+                }
+                lines.push(line);
+            }
+            return lines;
+        };
+
+        const compressLine = (lineTiles) => {
+            const present = lineTiles.filter(Boolean);
+            const result = [];
+            let scoreGained = 0;
+            const mergedIds = [];
+            let i = 0;
+            while (i < present.length) {
+                const cur = present[i];
+                const next = present[i + 1];
+                if (next && next.value === cur.value) {
+                    const mergedValue = cur.value * 2;
+                    result.push({ id: cur.id, value: mergedValue });
+                    scoreGained += mergedValue;
+                    mergedIds.push(cur.id);
+                    i += 2;
+                } else {
+                    result.push({ id: cur.id, value: cur.value });
+                    i += 1;
+                }
+            }
+            while (result.length < GRID_SIZE) result.push(null);
+            return { result, scoreGained, mergedIds };
+        };
+
+        // Returns null if the move is illegal (nothing moves or merges).
+        const applyMove = (tiles, direction) => {
+            const grid = {};
+            tiles.forEach(t => { grid[`${t.row},${t.col}`] = t; });
+
+            const lineCoords = buildLineCoords(direction);
+            const newTiles = [];
+            let scoreGained = 0;
+            const mergedIds = [];
+            let moved = false;
+
+            lineCoords.forEach((coords) => {
+                const lineTiles = coords.map(({ row, col }) => grid[`${row},${col}`] || null);
+                const { result, scoreGained: gained, mergedIds: merged } = compressLine(lineTiles);
+                scoreGained += gained;
+                mergedIds.push(...merged);
+
+                result.forEach((entry, slot) => {
+                    if (!entry) return;
+                    const { row, col } = coords[slot];
+                    const original = tiles.find(t => t.id === entry.id);
+                    if (original && (original.row !== row || original.col !== col)) moved = true;
+                    newTiles.push({ id: entry.id, value: entry.value, row, col });
+                });
+            });
+
+            if (newTiles.length !== tiles.length) moved = true;
+            if (!moved) return null;
+
+            return { tiles: newTiles, scoreGained, mergedIds };
+        };
+
+        const boardIsFull = (tiles) => tiles.length === GRID_SIZE * GRID_SIZE;
+
+        const hasAnyMoves = (tiles) => {
+            if (!boardIsFull(tiles)) return true;
+            const grid = {};
+            tiles.forEach(t => { grid[`${t.row},${t.col}`] = t.value; });
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const value = grid[`${r},${c}`];
+                    const right = grid[`${r},${c + 1}`];
+                    const down = grid[`${r + 1},${c}`];
+                    if (right === value || down === value) return true;
+                }
+            }
+            return false;
+        };
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        handleClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, handleClose]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-amber-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-amber-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-amber-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Use <strong className="text-amber-300">arrow keys, WASD, or swipe</strong> to slide every tile in one direction.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>When two tiles with the <strong className="text-amber-300">same number</strong> touch, they merge into one!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Build your way up to the <strong className="text-yellow-300">2048 tile</strong> to win. Keep going after that for a high score!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Game ends when the board is full and <strong className="text-amber-300">no more merges</strong> are possible.</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const Tile = React.memo(({ tile, justMerged }) => {
+            const style = getTileStyle(tile.value);
+            const cellPercent = 100 / GRID_SIZE;
+            return (
+                <div
+                    className="tile-slot absolute p-1.5 md:p-2"
+                    style={{
+                        width: `${cellPercent}%`,
+                        height: `${cellPercent}%`,
+                        left: `${tile.col * cellPercent}%`,
+                        top: `${tile.row * cellPercent}%`,
+                    }}
+                >
+                    <div
+                        className={`tile-face w-full h-full rounded-lg flex items-center justify-center font-bold shadow-lg ${getTileFontSizeClass(tile.value)} ${justMerged ? 'tile-merged' : ''}`}
+                        style={{
+                            backgroundColor: style.bg,
+                            color: style.text,
+                            boxShadow: `0 0 16px ${style.bg}aa, inset 0 0 8px rgba(0,0,0,0.35)`,
+                        }}
+                    >
+                        {tile.value}
+                    </div>
+                </div>
+            );
+        });
+
+        const Game2048 = () => {
+            const [tiles, setTiles] = React.useState(() => createInitialTiles());
+            const [score, setScore] = React.useState(0);
+            const [best, setBest] = React.useState(0);
+            const [mergedIds, setMergedIds] = React.useState(() => new Set());
+            const [won, setWon] = React.useState(false);
+            const [continuedAfterWin, setContinuedAfterWin] = React.useState(false);
+            const [gameOver, setGameOver] = React.useState(false);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+
+            const tilesRef = React.useRef(tiles);
+            const busyRef = React.useRef(false);
+            const mergeTimeoutRef = React.useRef(null);
+            const touchStartRef = React.useRef(null);
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+
+            React.useEffect(() => { tilesRef.current = tiles; }, [tiles]);
+
+            React.useEffect(() => {
+                const stored = Number(localStorage.getItem(BEST_SCORE_KEY) || 0);
+                if (!Number.isNaN(stored)) setBest(stored);
+            }, []);
+
+            React.useEffect(() => {
+                if (score > best) {
+                    setBest(score);
+                    localStorage.setItem(BEST_SCORE_KEY, String(score));
+                }
+            }, [score, best]);
+
+            React.useEffect(() => () => {
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+            }, []);
+
+            const performMove = React.useCallback((direction) => {
+                if (busyRef.current || showHowToPlay || gameOver || (won && !continuedAfterWin)) return;
+
+                const outcome = applyMove(tilesRef.current, direction);
+                if (!outcome) return;
+
+                busyRef.current = true;
+                const withNewTile = spawnRandomTile(outcome.tiles);
+                setTiles(withNewTile);
+                setScore(s => s + outcome.scoreGained);
+                setMergedIds(new Set(outcome.mergedIds));
+
+                if (!won && withNewTile.some(t => t.value >= WIN_VALUE)) {
+                    setWon(true);
+                }
+                if (!hasAnyMoves(withNewTile)) {
+                    setGameOver(true);
+                }
+
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                mergeTimeoutRef.current = setTimeout(() => {
+                    setMergedIds(new Set());
+                    busyRef.current = false;
+                }, 160);
+            }, [showHowToPlay, gameOver, won, continuedAfterWin]);
+
+            React.useEffect(() => {
+                const KEY_DIRECTIONS = {
+                    ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
+                    a: 'left', d: 'right', w: 'up', s: 'down',
+                    A: 'left', D: 'right', W: 'up', S: 'down',
+                };
+                const handleKeyDown = (e) => {
+                    const direction = KEY_DIRECTIONS[e.key];
+                    if (!direction) return;
+                    e.preventDefault();
+                    performMove(direction);
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [performMove]);
+
+            const handleTouchStart = React.useCallback((e) => {
+                const t = e.touches[0];
+                touchStartRef.current = { x: t.clientX, y: t.clientY };
+            }, []);
+
+            const handleTouchEnd = React.useCallback((e) => {
+                if (!touchStartRef.current) return;
+                const t = e.changedTouches[0];
+                const dx = t.clientX - touchStartRef.current.x;
+                const dy = t.clientY - touchStartRef.current.y;
+                touchStartRef.current = null;
+
+                const SWIPE_THRESHOLD = 24;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_THRESHOLD) return;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    performMove(dx > 0 ? 'right' : 'left');
+                } else {
+                    performMove(dy > 0 ? 'down' : 'up');
+                }
+            }, [performMove]);
+
+            const startNewGame = React.useCallback(() => {
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                busyRef.current = false;
+                setTiles(createInitialTiles());
+                setScore(0);
+                setMergedIds(new Set());
+                setWon(false);
+                setContinuedAfterWin(false);
+                setGameOver(false);
+            }, []);
+
+            const keepPlaying = React.useCallback(() => {
+                setContinuedAfterWin(true);
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const showWinOverlay = won && !continuedAfterWin;
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-amber-950/30 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 w-full max-w-md mx-auto text-center">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    2048
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-amber-500/50 bg-amber-500/10 text-amber-300 hover:bg-amber-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-amber-300/80 mt-2">Slide and merge to reach 2048!</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex items-center justify-center gap-3 mb-4" aria-live="polite" aria-atomic="true">
+                            <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                <div className="text-xs uppercase tracking-widest text-amber-300/70">Score</div>
+                                <div className="text-2xl font-bold text-amber-200">{score}</div>
+                            </div>
+                            <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                <div className="text-xs uppercase tracking-widest text-amber-300/70">Best</div>
+                                <div className="text-2xl font-bold text-amber-200">{best}</div>
+                            </div>
+                        </div>
+
+                        <main
+                            className="relative bg-black/30 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-amber-500/30 shadow-2xl shadow-amber-500/20 select-none"
+                            style={{ touchAction: 'none' }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                            role="grid"
+                            aria-label={`2048 board, current score ${score}`}
+                        >
+                            <div className="relative w-full aspect-square grid grid-cols-4 grid-rows-4 gap-1.5 md:gap-2">
+                                {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
+                                    <div key={i} className="rounded-lg bg-white/5" aria-hidden="true" />
+                                ))}
+                                <div className="absolute inset-0">
+                                    {tiles.map(tile => (
+                                        <Tile key={tile.id} tile={tile} justMerged={mergedIds.has(tile.id)} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {(showWinOverlay || gameOver) && (
+                                <div
+                                    className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in"
+                                    role="alert"
+                                >
+                                    <h2 className={`text-3xl font-black text-shadow-neon ${showWinOverlay ? 'text-yellow-300' : 'text-red-300'}`}>
+                                        {showWinOverlay ? 'YOU WIN!' : 'GAME OVER'}
+                                    </h2>
+                                    <p className="text-amber-100">
+                                        {showWinOverlay ? `You reached ${WIN_VALUE}!` : `Final score: ${score}`}
+                                    </p>
+                                    <div className="flex gap-3">
+                                        {showWinOverlay && (
+                                            <button
+                                                onClick={keepPlaying}
+                                                className="py-2 px-5 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 to-orange-500 hover:scale-105 transition-all"
+                                            >
+                                                Keep Going
+                                            </button>
+                                        )}
+                                        <button
+                                            ref={newGameButtonRef}
+                                            onClick={startNewGame}
+                                            className="py-2 px-5 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-yellow-300 to-amber-400 hover:scale-105 transition-all"
+                                        >
+                                            New Game
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </main>
+
+                        <footer className="py-6">
+                            <button
+                                onClick={startNewGame}
+                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-amber-400 to-orange-500 hover:scale-105 shadow-lg shadow-amber-500/50"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<Game2048 />, document.getElementById('root'));
+    </script>
+</body>
+</html>

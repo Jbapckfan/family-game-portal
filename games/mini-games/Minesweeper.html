@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Minesweeper - Clear the 9x9 minefield without detonating any of the 10 hidden mines.">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Minesweeper">
+    <meta property="og:description" content="Clear the 9x9 minefield without detonating any of the 10 hidden mines.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Minesweeper</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #000;
+            overscroll-behavior: none;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-steel {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(239, 68, 68, 0.45), 0 0 24px rgba(239, 68, 68, 0.3);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        @keyframes cell-pop {
+          0% { transform: scale(0.75); opacity: 0.4; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .cell-reveal {
+          animation: cell-pop 0.14s ease-out;
+        }
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid #f87171;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#f87171;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play Minesweeper. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const GRID_SIZE = 9;
+        const MINE_COUNT = 10;
+        const BEST_TIME_KEY = 'familyPortalMinesweeperBestTime';
+
+        const NUMBER_COLORS = {
+            1: '#60a5fa', // blue
+            2: '#4ade80', // green
+            3: '#f87171', // red
+            4: '#c084fc', // purple
+            5: '#fb7185', // maroon-ish
+            6: '#22d3ee', // turquoise
+            7: '#e2e8f0', // near-white
+            8: '#94a3b8', // gray
+        };
+
+        // --- BOARD HELPERS ---
+        const createEmptyBoard = () => Array.from({ length: GRID_SIZE }, (_, r) =>
+            Array.from({ length: GRID_SIZE }, (_, c) => ({
+                row: r, col: c, mine: false, revealed: false, flagged: false, adjacent: 0,
+            }))
+        );
+
+        const cloneBoard = (board) => board.map(row => row.map(cell => ({ ...cell })));
+
+        const getNeighbors = (r, c) => {
+            const neighbors = [];
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    if (dr === 0 && dc === 0) continue;
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) neighbors.push([nr, nc]);
+                }
+            }
+            return neighbors;
+        };
+
+        // Places mines only once the first cell is known, guaranteeing the opening
+        // click (and its immediate neighbors) are always safe.
+        const placeMines = (board, safeRow, safeCol) => {
+            const newBoard = cloneBoard(board);
+            const safeSet = new Set([`${safeRow},${safeCol}`]);
+            getNeighbors(safeRow, safeCol).forEach(([r, c]) => safeSet.add(`${r},${c}`));
+
+            let placed = 0;
+            while (placed < MINE_COUNT) {
+                const r = Math.floor(Math.random() * GRID_SIZE);
+                const c = Math.floor(Math.random() * GRID_SIZE);
+                if (safeSet.has(`${r},${c}`) || newBoard[r][c].mine) continue;
+                newBoard[r][c].mine = true;
+                placed++;
+            }
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (newBoard[r][c].mine) { newBoard[r][c].adjacent = -1; continue; }
+                    let count = 0;
+                    getNeighbors(r, c).forEach(([nr, nc]) => { if (newBoard[nr][nc].mine) count++; });
+                    newBoard[r][c].adjacent = count;
+                }
+            }
+            return newBoard;
+        };
+
+        // Breadth-first flood fill: reveals the clicked cell, and if it has zero
+        // adjacent mines, cascades outward to reveal all contiguous zero-cells
+        // plus their bordering numbered cells.
+        const revealFloodFill = (board, startRow, startCol) => {
+            const newBoard = cloneBoard(board);
+            const queue = [[startRow, startCol]];
+            const visited = new Set();
+            while (queue.length) {
+                const [r, c] = queue.shift();
+                const key = `${r},${c}`;
+                if (visited.has(key)) continue;
+                visited.add(key);
+                const cell = newBoard[r][c];
+                if (cell.revealed || cell.flagged) continue;
+                cell.revealed = true;
+                if (cell.adjacent === 0 && !cell.mine) {
+                    getNeighbors(r, c).forEach(([nr, nc]) => {
+                        if (!newBoard[nr][nc].revealed && !newBoard[nr][nc].flagged) {
+                            queue.push([nr, nc]);
+                        }
+                    });
+                }
+            }
+            return newBoard;
+        };
+
+        const revealAllMines = (board) => board.map(row => row.map(cell => (
+            cell.mine ? { ...cell, revealed: true } : { ...cell }
+        )));
+
+        const checkWin = (board) => {
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (!board[r][c].mine && !board[r][c].revealed) return false;
+                }
+            }
+            return true;
+        };
+
+        const formatMineCounter = (n) => {
+            const clamped = Math.max(-99, Math.min(999, n));
+            if (clamped < 0) return '-' + String(Math.abs(clamped)).padStart(2, '0');
+            return String(clamped).padStart(3, '0');
+        };
+
+        const formatTimeCounter = (n) => String(Math.max(0, Math.min(999, n))).padStart(3, '0');
+
+        const formatBestTime = (n) => {
+            if (n === null || n === undefined) return '--:--';
+            const mins = Math.floor(n / 60);
+            const secs = n % 60;
+            return `${mins}:${String(secs).padStart(2, '0')}`;
+        };
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        handleClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, handleClose]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-slate-900 border border-slate-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-black/50 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-slate-200 to-red-300 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-slate-200/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-red-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Tap a <strong className="text-slate-100">hidden cell</strong> to reveal it. Numbers show how many mines hide among its 8 neighbors.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-red-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Reveal a <strong className="text-red-300">mine</strong> and it's game over &mdash; but your very first tap is always guaranteed safe.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-red-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Turn on <strong className="text-slate-100">Flag Mode &#128681;</strong> to mark suspected mines (tap again to unmark), or right-click on a computer.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-red-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Uncover <strong className="text-slate-100">every safe cell</strong> to win &mdash; flagging every mine isn't required.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-red-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Your <strong className="text-slate-100">best time</strong> is saved automatically. Try to beat it!</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-white bg-gradient-to-r from-slate-500 to-slate-700 hover:from-slate-400 hover:to-slate-600 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const cellAriaLabel = (cell, gameState) => {
+            const pos = `Row ${cell.row + 1}, column ${cell.col + 1}`;
+            if (cell.flagged && !cell.revealed) {
+                if (gameState === 'lost' && !cell.mine) return `${pos}, incorrectly flagged`;
+                return `${pos}, flagged`;
+            }
+            if (!cell.revealed) return `${pos}, hidden`;
+            if (cell.mine) return `${pos}, mine`;
+            if (cell.adjacent === 0) return `${pos}, empty, no adjacent mines`;
+            return `${pos}, ${cell.adjacent} adjacent mine${cell.adjacent === 1 ? '' : 's'}`;
+        };
+
+        const Cell = React.memo(({ cell, isExploded, gameState, onActivate, onContextMenu }) => {
+            const isDisabled = cell.revealed || gameState !== 'playing';
+
+            const handleClick = React.useCallback(() => {
+                onActivate(cell.row, cell.col);
+            }, [onActivate, cell.row, cell.col]);
+
+            const handleContext = React.useCallback((e) => {
+                e.preventDefault();
+                onContextMenu(cell.row, cell.col);
+            }, [onContextMenu, cell.row, cell.col]);
+
+            let content = null;
+            let contentColor = undefined;
+            if (cell.flagged && !cell.revealed) {
+                content = (gameState === 'lost' && !cell.mine) ? '❌' : '🚩';
+            } else if (cell.revealed) {
+                if (cell.mine) {
+                    content = '💣';
+                } else if (cell.adjacent > 0) {
+                    content = cell.adjacent;
+                    contentColor = NUMBER_COLORS[cell.adjacent];
+                }
+            }
+
+            let bgStyle;
+            if (cell.revealed) {
+                if (cell.mine) {
+                    bgStyle = {
+                        backgroundColor: isExploded ? '#dc2626' : '#450a0a',
+                        boxShadow: 'inset 1px 1px 3px rgba(0,0,0,0.6)',
+                    };
+                } else {
+                    bgStyle = {
+                        backgroundColor: '#1e293b',
+                        boxShadow: 'inset 1px 1px 4px rgba(0,0,0,0.65)',
+                    };
+                }
+            } else {
+                bgStyle = {
+                    backgroundColor: '#475569',
+                    boxShadow: 'inset 2px 2px 0 rgba(255,255,255,0.3), inset -2px -2px 0 rgba(0,0,0,0.45)',
+                };
+            }
+
+            return (
+                <button
+                    role="gridcell"
+                    onClick={handleClick}
+                    onContextMenu={handleContext}
+                    disabled={isDisabled}
+                    aria-label={cellAriaLabel(cell, gameState)}
+                    aria-pressed={cell.revealed ? undefined : cell.flagged}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 rounded-[4px] flex items-center justify-center text-sm sm:text-base font-bold select-none transition-transform duration-100 ${cell.revealed ? 'cell-reveal' : 'hover:brightness-110 active:scale-95'}`}
+                    style={{ ...bgStyle, color: contentColor, cursor: isDisabled ? 'default' : 'pointer' }}
+                >
+                    {content}
+                </button>
+            );
+        });
+
+        const MinesweeperGame = () => {
+            const [board, setBoard] = React.useState(() => createEmptyBoard());
+            const [minesPlaced, setMinesPlaced] = React.useState(false);
+            const [flagMode, setFlagMode] = React.useState(false);
+            const [gameState, setGameState] = React.useState('playing'); // playing | won | lost
+            const [explodedCell, setExplodedCell] = React.useState(null);
+            const [elapsed, setElapsed] = React.useState(0);
+            const [bestTime, setBestTime] = React.useState(null);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+
+            const timerRef = React.useRef(null);
+            const elapsedRef = React.useRef(0);
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+            const prevStateRef = React.useRef('playing');
+
+            React.useEffect(() => {
+                const stored = Number(localStorage.getItem(BEST_TIME_KEY));
+                if (!Number.isNaN(stored) && stored > 0) setBestTime(stored);
+            }, []);
+
+            React.useEffect(() => () => {
+                if (timerRef.current) clearInterval(timerRef.current);
+            }, []);
+
+            React.useEffect(() => {
+                if (gameState !== 'playing' && prevStateRef.current === 'playing' && newGameButtonRef.current) {
+                    newGameButtonRef.current.focus();
+                }
+                prevStateRef.current = gameState;
+            }, [gameState]);
+
+            const startTimer = React.useCallback(() => {
+                if (timerRef.current !== null) return;
+                timerRef.current = window.setInterval(() => {
+                    elapsedRef.current += 1;
+                    setElapsed(elapsedRef.current);
+                }, 1000);
+            }, []);
+
+            const stopTimer = React.useCallback(() => {
+                if (timerRef.current !== null) {
+                    clearInterval(timerRef.current);
+                    timerRef.current = null;
+                }
+            }, []);
+
+            const flagCount = React.useMemo(() => {
+                let count = 0;
+                board.forEach(row => row.forEach(cell => { if (cell.flagged) count++; }));
+                return count;
+            }, [board]);
+
+            const minesRemaining = MINE_COUNT - flagCount;
+
+            const revealCell = React.useCallback((r, c) => {
+                if (gameState !== 'playing') return;
+                const existing = board[r][c];
+                if (existing.flagged || existing.revealed) return;
+
+                let workingBoard = board;
+                if (!minesPlaced) {
+                    workingBoard = placeMines(board, r, c);
+                    setMinesPlaced(true);
+                    startTimer();
+                }
+
+                const target = workingBoard[r][c];
+                if (target.mine) {
+                    setExplodedCell({ row: r, col: c });
+                    setBoard(revealAllMines(workingBoard));
+                    setGameState('lost');
+                    stopTimer();
+                    return;
+                }
+
+                const newBoard = revealFloodFill(workingBoard, r, c);
+                setBoard(newBoard);
+
+                if (checkWin(newBoard)) {
+                    setGameState('won');
+                    stopTimer();
+                    const finalTime = elapsedRef.current;
+                    setBestTime(prevBest => {
+                        if (prevBest === null || finalTime < prevBest) {
+                            localStorage.setItem(BEST_TIME_KEY, String(finalTime));
+                            return finalTime;
+                        }
+                        return prevBest;
+                    });
+                }
+            }, [board, gameState, minesPlaced, startTimer, stopTimer]);
+
+            const toggleFlag = React.useCallback((r, c) => {
+                if (gameState !== 'playing') return;
+                const cell = board[r][c];
+                if (cell.revealed) return;
+                const newBoard = cloneBoard(board);
+                newBoard[r][c].flagged = !newBoard[r][c].flagged;
+                setBoard(newBoard);
+            }, [board, gameState]);
+
+            const handleCellActivate = React.useCallback((r, c) => {
+                if (flagMode) {
+                    toggleFlag(r, c);
+                } else {
+                    revealCell(r, c);
+                }
+            }, [flagMode, toggleFlag, revealCell]);
+
+            const handleCellContextMenu = React.useCallback((r, c) => {
+                toggleFlag(r, c);
+            }, [toggleFlag]);
+
+            const startNewGame = React.useCallback(() => {
+                stopTimer();
+                elapsedRef.current = 0;
+                setElapsed(0);
+                setBoard(createEmptyBoard());
+                setMinesPlaced(false);
+                setGameState('playing');
+                setExplodedCell(null);
+                setFlagMode(false);
+            }, [stopTimer]);
+
+            const toggleFlagMode = React.useCallback(() => {
+                setFlagMode(f => !f);
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const faceEmoji = gameState === 'won' ? '😎' : gameState === 'lost' ? '😵' : '🙂';
+            const isOver = gameState !== 'playing';
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-800/40 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 w-full max-w-md mx-auto text-center">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-slate-200 via-slate-300 to-red-300 bg-clip-text text-transparent tracking-wider text-shadow-steel">
+                                    MINESWEEPER
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-slate-400/50 bg-slate-500/10 text-slate-200 hover:bg-slate-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-slate-300/80 mt-2">Clear the field. Don't trip a mine.</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex items-center justify-center gap-3 mb-4">
+                            <div
+                                className="bg-black/60 border border-slate-500/40 rounded-lg px-3 py-2 min-w-[76px]"
+                                aria-live="polite"
+                                aria-atomic="true"
+                            >
+                                <div className="text-[10px] uppercase tracking-widest text-slate-400">Mines</div>
+                                <div className="text-2xl font-bold text-red-400 tabular-nums" style={{ fontFamily: 'monospace' }}>
+                                    {formatMineCounter(minesRemaining)}
+                                </div>
+                            </div>
+
+                            <button
+                                ref={newGameButtonRef}
+                                onClick={startNewGame}
+                                className="min-w-[44px] min-h-[44px] w-14 h-14 rounded-xl border border-slate-400/50 bg-gradient-to-b from-slate-400 to-slate-600 text-2xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/40"
+                                aria-label="New game"
+                                title="New Game"
+                            >
+                                <span aria-hidden="true">{faceEmoji}</span>
+                            </button>
+
+                            <div
+                                className="bg-black/60 border border-slate-500/40 rounded-lg px-3 py-2 min-w-[76px]"
+                                aria-live="polite"
+                                aria-atomic="true"
+                            >
+                                <div className="text-[10px] uppercase tracking-widest text-slate-400">Time</div>
+                                <div className="text-2xl font-bold text-red-400 tabular-nums" style={{ fontFamily: 'monospace' }}>
+                                    {formatTimeCounter(elapsed)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-center mb-4">
+                            <button
+                                onClick={toggleFlagMode}
+                                aria-pressed={flagMode}
+                                className={`min-h-[44px] px-5 rounded-xl border font-bold transition-all flex items-center gap-2 ${flagMode ? 'bg-red-500/30 border-red-400 text-red-200' : 'bg-slate-500/10 border-slate-400/50 text-slate-200 hover:bg-slate-500/20'}`}
+                            >
+                                <span aria-hidden="true">&#128681;</span>
+                                Flag Mode {flagMode ? 'On' : 'Off'}
+                            </button>
+                        </div>
+
+                        <main className="relative inline-block bg-black/30 backdrop-blur-sm rounded-2xl p-2 sm:p-3 border border-slate-500/30 shadow-2xl shadow-black/50">
+                            <div
+                                role="grid"
+                                aria-label={`Minesweeper board, 9 by 9, ${minesRemaining} mines remaining`}
+                                className="flex flex-col gap-1"
+                            >
+                                {board.map((row, r) => (
+                                    <div key={r} role="row" className="flex gap-1 justify-center">
+                                        {row.map((cell) => (
+                                            <Cell
+                                                key={`${cell.row}-${cell.col}`}
+                                                cell={cell}
+                                                gameState={gameState}
+                                                isExploded={!!explodedCell && explodedCell.row === cell.row && explodedCell.col === cell.col}
+                                                onActivate={handleCellActivate}
+                                                onContextMenu={handleCellContextMenu}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {isOver && (
+                                <div
+                                    className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 animate-fade-in"
+                                    role="alert"
+                                >
+                                    <h2 className={`text-3xl font-black text-shadow-steel ${gameState === 'won' ? 'text-emerald-300' : 'text-red-400'}`}>
+                                        {gameState === 'won' ? 'YOU WIN!' : 'GAME OVER'}
+                                    </h2>
+                                    <p className="text-slate-200">
+                                        {gameState === 'won' ? `Cleared in ${elapsed}s` : 'You hit a mine.'}
+                                    </p>
+                                    <button
+                                        onClick={startNewGame}
+                                        className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-white bg-gradient-to-r from-slate-500 to-slate-700 hover:scale-105 transition-all"
+                                    >
+                                        New Game
+                                    </button>
+                                </div>
+                            )}
+                        </main>
+
+                        <footer className="py-6">
+                            <p className="text-slate-300/80 text-sm mb-3">
+                                Best time: <span className="font-bold text-slate-100">{formatBestTime(bestTime)}</span>
+                            </p>
+                            <button
+                                onClick={startNewGame}
+                                className="py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-white transition-all duration-200 bg-gradient-to-r from-slate-500 to-slate-700 hover:scale-105 shadow-lg shadow-black/50"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<MinesweeperGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

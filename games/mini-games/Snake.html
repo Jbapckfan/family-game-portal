@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Snake - Guide the snake to eat food, grow longer, and avoid crashing into walls or your own tail.">
+    <meta name="theme-color" content="#03110a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Snake">
+    <meta property="og:description" content="Guide the snake to eat food, grow longer, and avoid crashing into walls or your own tail.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Snake</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #000;
+            overscroll-behavior: none;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-neon {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(34, 197, 94, 0.55), 0 0 24px rgba(34, 197, 94, 0.4);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid #22c55e;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#4ade80;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play Snake. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const GRID_SIZE = 17;
+        const MID = Math.floor(GRID_SIZE / 2);
+        const TICK_MS = 150;
+        const BEST_SCORE_KEY = 'familyPortalSnakeBestScore';
+        const POINTS_PER_FOOD = 10;
+
+        const DIR_UP = { row: -1, col: 0 };
+        const DIR_DOWN = { row: 1, col: 0 };
+        const DIR_LEFT = { row: 0, col: -1 };
+        const DIR_RIGHT = { row: 0, col: 1 };
+
+        const HEAD_COLOR = '#4ade80';
+        const HEAD_GLOW = 'rgba(74, 222, 128, 0.85)';
+        const BODY_COLOR = '#16a34a';
+        const FOOD_COLOR = '#ef4444';
+        const FOOD_GLOW = 'rgba(249, 115, 22, 0.9)';
+        const CELL_A = '#071c0d';
+        const CELL_B = '#05140a';
+
+        // --- BOARD HELPERS ---
+        const createInitialSnake = () => ([
+            { row: MID, col: MID },
+            { row: MID, col: MID - 1 },
+            { row: MID, col: MID - 2 },
+        ]);
+
+        const pickRandomEmptyCell = (snake) => {
+            const occupied = new Set(snake.map(s => `${s.row},${s.col}`));
+            const empties = [];
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (!occupied.has(`${r},${c}`)) empties.push({ row: r, col: c });
+                }
+            }
+            if (empties.length === 0) return null;
+            return empties[Math.floor(Math.random() * empties.length)];
+        };
+
+        const isOpposite = (a, b) => a.row === -b.row && a.col === -b.col;
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        onClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, onClose]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-green-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-green-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-green-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-green-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Use <strong className="text-green-300">arrow keys, WASD, or swipe</strong> to steer the snake up, down, left, or right.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Eat the <strong className="text-orange-300">red dot</strong> to grow longer and score {POINTS_PER_FOOD} points.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Don't run into a <strong className="text-green-300">wall</strong> or your <strong className="text-green-300">own tail</strong> - that ends the game!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Press <strong className="text-green-300">Space</strong> or tap the pause button to pause anytime.</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-300 hover:to-emerald-400 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const SnakeGame = () => {
+            const [snake, setSnake] = React.useState(createInitialSnake);
+            const [food, setFood] = React.useState(() => pickRandomEmptyCell(createInitialSnake()));
+            const [score, setScore] = React.useState(0);
+            const [best, setBest] = React.useState(0);
+            const [gameOver, setGameOver] = React.useState(false);
+            const [paused, setPaused] = React.useState(false);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+
+            const snakeRef = React.useRef(snake);
+            const foodRef = React.useRef(food);
+            const gameOverRef = React.useRef(false);
+            const pausedRef = React.useRef(false);
+            const showHowToPlayRef = React.useRef(false);
+            const currentDirectionRef = React.useRef(DIR_RIGHT);
+            const pendingDirectionRef = React.useRef(null);
+            const touchStartRef = React.useRef(null);
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+            const prevGameOverRef = React.useRef(false);
+
+            React.useEffect(() => { snakeRef.current = snake; }, [snake]);
+            React.useEffect(() => { foodRef.current = food; }, [food]);
+            React.useEffect(() => { showHowToPlayRef.current = showHowToPlay; }, [showHowToPlay]);
+
+            React.useEffect(() => {
+                const stored = Number(localStorage.getItem(BEST_SCORE_KEY) || 0);
+                if (!Number.isNaN(stored)) setBest(stored);
+            }, []);
+
+            React.useEffect(() => {
+                if (score > best) {
+                    setBest(score);
+                    localStorage.setItem(BEST_SCORE_KEY, String(score));
+                }
+            }, [score, best]);
+
+            React.useEffect(() => {
+                if (gameOver && !prevGameOverRef.current && newGameButtonRef.current) {
+                    newGameButtonRef.current.focus();
+                }
+                prevGameOverRef.current = gameOver;
+            }, [gameOver]);
+
+            const endGame = React.useCallback(() => {
+                gameOverRef.current = true;
+                setGameOver(true);
+            }, []);
+
+            // Fixed-tick game loop: advances the snake exactly one cell per tick.
+            const tick = React.useCallback(() => {
+                if (gameOverRef.current || pausedRef.current || showHowToPlayRef.current) return;
+
+                if (pendingDirectionRef.current) {
+                    currentDirectionRef.current = pendingDirectionRef.current;
+                    pendingDirectionRef.current = null;
+                }
+                const dir = currentDirectionRef.current;
+                const currentSnake = snakeRef.current;
+                const head = currentSnake[0];
+                const newHead = { row: head.row + dir.row, col: head.col + dir.col };
+
+                if (newHead.row < 0 || newHead.row >= GRID_SIZE || newHead.col < 0 || newHead.col >= GRID_SIZE) {
+                    endGame();
+                    return;
+                }
+
+                const currentFood = foodRef.current;
+                const willEat = !!currentFood && newHead.row === currentFood.row && newHead.col === currentFood.col;
+                // If not growing, the tail cell vacates this tick, so it's safe to move into it.
+                const bodyToCheck = willEat ? currentSnake : currentSnake.slice(0, -1);
+                const hitSelf = bodyToCheck.some(seg => seg.row === newHead.row && seg.col === newHead.col);
+                if (hitSelf) {
+                    endGame();
+                    return;
+                }
+
+                const newSnake = [newHead, ...currentSnake];
+                if (!willEat) newSnake.pop();
+                snakeRef.current = newSnake;
+                setSnake(newSnake);
+
+                if (willEat) {
+                    setScore(s => s + POINTS_PER_FOOD);
+                    const nextFood = pickRandomEmptyCell(newSnake);
+                    foodRef.current = nextFood;
+                    setFood(nextFood);
+                }
+            }, [endGame]);
+
+            React.useEffect(() => {
+                const id = setInterval(tick, TICK_MS);
+                return () => clearInterval(id);
+            }, [tick]);
+
+            const setPendingDirectionSafe = React.useCallback((dir) => {
+                if (gameOverRef.current) return;
+                const cur = currentDirectionRef.current;
+                if (isOpposite(dir, cur)) return;
+                pendingDirectionRef.current = dir;
+            }, []);
+
+            const togglePause = React.useCallback(() => {
+                if (gameOverRef.current) return;
+                pausedRef.current = !pausedRef.current;
+                setPaused(pausedRef.current);
+            }, []);
+
+            const startNewGame = React.useCallback(() => {
+                const initialSnake = createInitialSnake();
+                const initialFood = pickRandomEmptyCell(initialSnake);
+                snakeRef.current = initialSnake;
+                foodRef.current = initialFood;
+                currentDirectionRef.current = DIR_RIGHT;
+                pendingDirectionRef.current = null;
+                gameOverRef.current = false;
+                pausedRef.current = false;
+                setSnake(initialSnake);
+                setFood(initialFood);
+                setScore(0);
+                setGameOver(false);
+                setPaused(false);
+            }, []);
+
+            React.useEffect(() => {
+                const KEY_DIRECTIONS = {
+                    ArrowUp: DIR_UP, ArrowDown: DIR_DOWN, ArrowLeft: DIR_LEFT, ArrowRight: DIR_RIGHT,
+                    w: DIR_UP, s: DIR_DOWN, a: DIR_LEFT, d: DIR_RIGHT,
+                    W: DIR_UP, S: DIR_DOWN, A: DIR_LEFT, D: DIR_RIGHT,
+                };
+                const handleKeyDown = (e) => {
+                    if (e.key === ' ' || e.code === 'Space' || e.key === 'Spacebar') {
+                        e.preventDefault();
+                        togglePause();
+                        return;
+                    }
+                    const dir = KEY_DIRECTIONS[e.key];
+                    if (!dir) return;
+                    e.preventDefault();
+                    setPendingDirectionSafe(dir);
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [togglePause, setPendingDirectionSafe]);
+
+            const handleTouchStart = React.useCallback((e) => {
+                const t = e.touches[0];
+                touchStartRef.current = { x: t.clientX, y: t.clientY };
+            }, []);
+
+            const handleTouchEnd = React.useCallback((e) => {
+                if (!touchStartRef.current) return;
+                const t = e.changedTouches[0];
+                const dx = t.clientX - touchStartRef.current.x;
+                const dy = t.clientY - touchStartRef.current.y;
+                touchStartRef.current = null;
+
+                const SWIPE_THRESHOLD = 24;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_THRESHOLD) return;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    setPendingDirectionSafe(dx > 0 ? DIR_RIGHT : DIR_LEFT);
+                } else {
+                    setPendingDirectionSafe(dy > 0 ? DIR_DOWN : DIR_UP);
+                }
+            }, [setPendingDirectionSafe]);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const snakeIndexByCell = React.useMemo(() => {
+                const map = new Map();
+                snake.forEach((seg, i) => map.set(`${seg.row},${seg.col}`, i));
+                return map;
+            }, [snake]);
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-green-950/30 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 w-full max-w-md mx-auto text-center">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-green-300 via-emerald-400 to-green-500 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    SNAKE
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-green-500/50 bg-green-500/10 text-green-300 hover:bg-green-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-green-300/80 mt-2">Eat, grow, don't crash!</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex items-center justify-center gap-3 mb-4">
+                            <div aria-live="polite" aria-atomic="true" className="flex items-center gap-3">
+                                <div className="bg-black/40 border border-green-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                    <div className="text-xs uppercase tracking-widest text-green-300/70">Score</div>
+                                    <div className="text-2xl font-bold text-green-200">{score}</div>
+                                </div>
+                                <div className="bg-black/40 border border-green-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                    <div className="text-xs uppercase tracking-widest text-green-300/70">Best</div>
+                                    <div className="text-2xl font-bold text-green-200">{best}</div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={togglePause}
+                                disabled={gameOver}
+                                aria-pressed={paused}
+                                aria-label={paused ? 'Resume game' : 'Pause game'}
+                                title={paused ? 'Resume' : 'Pause'}
+                                className="min-w-[44px] min-h-[44px] rounded-full border border-green-500/50 bg-green-500/10 text-green-300 hover:bg-green-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+                            >
+                                {paused ? '▶' : '⏸'}
+                            </button>
+                        </div>
+
+                        <main
+                            className="relative bg-black/30 backdrop-blur-sm rounded-2xl p-2 md:p-3 border border-green-500/30 shadow-2xl shadow-green-500/20 select-none"
+                            style={{ touchAction: 'none' }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                        >
+                            <div
+                                role="grid"
+                                aria-label={`Snake board, ${GRID_SIZE} by ${GRID_SIZE}, score ${score}${gameOver ? ', game over' : paused ? ', paused' : ''}`}
+                                className="relative w-full aspect-square flex flex-col gap-[1px] bg-black rounded-lg overflow-hidden"
+                            >
+                                {Array.from({ length: GRID_SIZE }).map((_, r) => (
+                                    <div key={r} role="row" className="flex flex-1 gap-[1px]">
+                                        {Array.from({ length: GRID_SIZE }).map((_, c) => {
+                                            const idx = snakeIndexByCell.get(`${r},${c}`);
+                                            const isHead = idx === 0;
+                                            const isBody = idx !== undefined && idx > 0;
+                                            const isFood = !!food && food.row === r && food.col === c;
+                                            const base = (r + c) % 2 === 0 ? CELL_A : CELL_B;
+                                            let bg = base;
+                                            let boxShadow = 'none';
+                                            if (isHead) { bg = HEAD_COLOR; boxShadow = `0 0 6px ${HEAD_GLOW}`; }
+                                            else if (isBody) { bg = BODY_COLOR; }
+
+                                            return (
+                                                <div
+                                                    key={c}
+                                                    role="gridcell"
+                                                    aria-hidden="true"
+                                                    className="flex-1 rounded-[2px] flex items-center justify-center"
+                                                    style={{ backgroundColor: bg, boxShadow }}
+                                                >
+                                                    {isFood && (
+                                                        <div
+                                                            className="rounded-full"
+                                                            style={{
+                                                                width: '55%',
+                                                                height: '55%',
+                                                                backgroundColor: FOOD_COLOR,
+                                                                boxShadow: `0 0 6px ${FOOD_GLOW}`,
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {paused && !gameOver && (
+                                <div className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in" role="status">
+                                    <h2 className="text-3xl font-black text-green-300 text-shadow-neon">PAUSED</h2>
+                                    <button
+                                        onClick={togglePause}
+                                        className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:scale-105 transition-all"
+                                    >
+                                        Resume
+                                    </button>
+                                </div>
+                            )}
+
+                            {gameOver && (
+                                <div className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in" role="alert">
+                                    <h2 className="text-3xl font-black text-red-400 text-shadow-neon">GAME OVER</h2>
+                                    <p className="text-green-100">Final score: {score}</p>
+                                    <button
+                                        ref={newGameButtonRef}
+                                        onClick={startNewGame}
+                                        className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:scale-105 transition-all"
+                                    >
+                                        New Game
+                                    </button>
+                                </div>
+                            )}
+                        </main>
+
+                        <footer className="py-6">
+                            <button
+                                onClick={startNewGame}
+                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-green-400 to-emerald-500 hover:scale-105 shadow-lg shadow-green-500/50"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<SnakeGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

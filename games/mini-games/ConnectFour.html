@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Connect Four - Drop discs and be the first to connect 4 in a row in this classic 2-player pass-and-play game.">
+    <meta name="theme-color" content="#0b1226">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Connect Four">
+    <meta property="og:description" content="Drop discs and be the first to connect 4 in a row in this classic 2-player pass-and-play game.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Connect Four</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel to transpile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #000;
+            overscroll-behavior: none;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .text-shadow-neon {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(96, 165, 250, 0.5), 0 0 24px rgba(96, 165, 250, 0.4);
+        }
+        .scanline-animation {
+          background-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+          );
+          background-size: 100% 4px;
+          animation: scanlines 5s linear infinite;
+        }
+        @keyframes scanlines {
+          from { background-position: 0 0; }
+          to { background-position: 0 -4px; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        .disc-slot {
+          transition: top 0.28s cubic-bezier(0.5, 0.05, 0.6, 0.95);
+        }
+        @keyframes win-pulse {
+          0%, 100% { box-shadow: 0 0 10px 2px currentColor, inset 0 0 10px rgba(255,255,255,0.3); transform: scale(1); }
+          50% { box-shadow: 0 0 22px 8px currentColor, inset 0 0 14px rgba(255,255,255,0.5); transform: scale(1.06); }
+        }
+        .disc-winner {
+          animation: win-pulse 0.9s ease-in-out infinite;
+        }
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid #60a5fa;
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+  <noscript>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#60a5fa;font-family:sans-serif;text-align:center;padding:2rem;">
+      <p>JavaScript is required to play Connect Four. Please enable JavaScript in your browser settings.</p>
+    </div>
+  </noscript>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONFIGURATION ---
+        const COLS = 7;
+        const ROWS = 6;
+        const PLAYERS = {
+            1: { label: 'Player 1', name: 'Red', bg: '#ef4444', ring: '#dc2626', text: '#fecaca' },
+            2: { label: 'Player 2', name: 'Yellow', bg: '#facc15', ring: '#eab308', text: '#422006' },
+        };
+
+        // --- BOARD HELPERS ---
+        // Board is stored as a flat array of length COLS*ROWS, index = row * COLS + col.
+        // row 0 = top row, row (ROWS-1) = bottom row.
+        const createEmptyBoard = () => Array(COLS * ROWS).fill(null);
+        const cellIndex = (row, col) => row * COLS + col;
+
+        // Find the lowest empty row in a column (gravity). Returns -1 if column is full.
+        const lowestEmptyRow = (board, col) => {
+            for (let row = ROWS - 1; row >= 0; row--) {
+                if (!board[cellIndex(row, col)]) return row;
+            }
+            return -1;
+        };
+
+        const DIRECTIONS = [
+            { dr: 0, dc: 1 },   // horizontal
+            { dr: 1, dc: 0 },   // vertical
+            { dr: 1, dc: 1 },   // diagonal down-right
+            { dr: 1, dc: -1 },  // diagonal down-left
+        ];
+
+        // Check for a 4-in-a-row that passes through (row, col). Returns the winning
+        // cell indices (length 4) or null if there's no win through that cell.
+        const findWinThroughCell = (board, row, col) => {
+            const player = board[cellIndex(row, col)];
+            if (!player) return null;
+
+            for (const { dr, dc } of DIRECTIONS) {
+                const cells = [[row, col]];
+
+                // walk forward
+                let r = row + dr, c = col + dc;
+                while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[cellIndex(r, c)] === player) {
+                    cells.push([r, c]);
+                    r += dr; c += dc;
+                }
+                // walk backward
+                r = row - dr; c = col - dc;
+                while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[cellIndex(r, c)] === player) {
+                    cells.push([r, c]);
+                    r -= dr; c -= dc;
+                }
+
+                if (cells.length >= 4) {
+                    return cells.slice(0, 4).map(([rr, cc]) => cellIndex(rr, cc));
+                }
+            }
+            return null;
+        };
+
+        const boardIsFull = (board) => board.every(cell => cell !== null);
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        onClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, onClose]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-blue-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-blue-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-blue-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-red-400 to-yellow-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-blue-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-blue-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>This is a <strong className="text-blue-300">2-player, pass-and-play</strong> game. Player 1 is <strong className="text-red-400">Red</strong>, Player 2 is <strong className="text-yellow-300">Yellow</strong>.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-blue-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Click or tap a <strong className="text-blue-300">column</strong> to drop your disc — it falls to the lowest empty spot.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-blue-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Or press <strong className="text-blue-300">number keys 1-7</strong> to drop into that column.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-blue-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>First to connect <strong className="text-blue-300">4 in a row</strong> — horizontally, vertically, or diagonally — wins!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-blue-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>If the board fills up with no winner, it's a <strong className="text-blue-300">Draw</strong>.</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-red-400 to-yellow-400 hover:from-red-300 hover:to-yellow-300 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const Disc = React.memo(({ player, row, isWinning }) => {
+            const cellPercent = 100 / ROWS;
+            const info = PLAYERS[player];
+            return (
+                <div
+                    className="disc-slot absolute p-1 md:p-1.5"
+                    style={{
+                        width: '100%',
+                        height: `${cellPercent}%`,
+                        top: `${row * cellPercent}%`,
+                        left: 0,
+                    }}
+                >
+                    <div
+                        className={`w-full h-full rounded-full ${isWinning ? 'disc-winner' : ''}`}
+                        style={{
+                            backgroundColor: info.bg,
+                            color: info.ring,
+                            boxShadow: `0 0 8px 1px ${info.ring}aa, inset 0 0 6px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.3)`,
+                        }}
+                    />
+                </div>
+            );
+        });
+
+        const Column = React.memo(({ col, board, onDrop, disabled, currentPlayer, winningSet }) => {
+            const discs = [];
+            for (let row = 0; row < ROWS; row++) {
+                const player = board[cellIndex(row, col)];
+                if (player) {
+                    discs.push(
+                        <Disc
+                            key={row}
+                            player={player}
+                            row={row}
+                            isWinning={winningSet.has(cellIndex(row, col))}
+                        />
+                    );
+                }
+            }
+            const isFull = lowestEmptyRow(board, col) === -1;
+            const info = PLAYERS[currentPlayer];
+
+            return (
+                <button
+                    onClick={() => onDrop(col)}
+                    disabled={disabled || isFull}
+                    role="gridcell"
+                    aria-label={`Column ${col + 1}${isFull ? ', full' : `, drop ${info.name} disc here`}`}
+                    className="relative flex-1 h-full disabled:cursor-not-allowed group"
+                    style={{ minWidth: '44px' }}
+                >
+                    <div className="relative w-full h-full">
+                        {/* Column hole mask so discs appear to sit inside the blue chassis */}
+                        <div className="absolute inset-0 grid pointer-events-none" style={{ gridTemplateRows: `repeat(${ROWS}, 1fr)` }} aria-hidden="true">
+                            {Array.from({ length: ROWS }).map((_, r) => (
+                                <div key={r} className="p-1 md:p-1.5">
+                                    <div className="w-full h-full rounded-full bg-black/40" style={{ boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.6)' }} />
+                                </div>
+                            ))}
+                        </div>
+                        {!disabled && !isFull && (
+                            <div className="absolute inset-x-0 top-0 h-full opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity pointer-events-none" aria-hidden="true">
+                                <div
+                                    className="w-full rounded-full mx-auto"
+                                    style={{
+                                        aspectRatio: '1 / 1',
+                                        backgroundColor: info.bg,
+                                        opacity: 0.35,
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {discs}
+                    </div>
+                </button>
+            );
+        });
+
+        const ConnectFourGame = () => {
+            const [board, setBoard] = React.useState(() => createEmptyBoard());
+            const [currentPlayer, setCurrentPlayer] = React.useState(1);
+            const [winner, setWinner] = React.useState(null); // 1 | 2 | 'draw' | null
+            const [winningCells, setWinningCells] = React.useState([]);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+            const overlayButtonRef = React.useRef(null);
+
+            // Refs mirror the latest state so the keyboard handler (attached via a plain
+            // document listener, outside React's synthetic/batched event system) always
+            // reads fresh values instead of a stale closure.
+            const boardRef = React.useRef(board);
+            const currentPlayerRef = React.useRef(currentPlayer);
+            const gameOverRef = React.useRef(false);
+            const showHowToPlayRef = React.useRef(showHowToPlay);
+
+            React.useEffect(() => { boardRef.current = board; }, [board]);
+            React.useEffect(() => { currentPlayerRef.current = currentPlayer; }, [currentPlayer]);
+            React.useEffect(() => { showHowToPlayRef.current = showHowToPlay; }, [showHowToPlay]);
+
+            const winningSet = React.useMemo(() => new Set(winningCells), [winningCells]);
+
+            const gameOver = winner !== null;
+            React.useEffect(() => { gameOverRef.current = gameOver; }, [gameOver]);
+
+            React.useEffect(() => {
+                if (gameOver && overlayButtonRef.current) {
+                    overlayButtonRef.current.focus();
+                }
+            }, [gameOver]);
+
+            // Computes the drop synchronously from the refs, then issues plain sibling
+            // setState calls (never nested inside another setState's updater) so the
+            // update behaves identically whether triggered by a mouse click (React's
+            // batched synthetic event) or a keydown (unbatched native event).
+            const dropDisc = React.useCallback((col) => {
+                if (gameOverRef.current || showHowToPlayRef.current) return;
+
+                const prevBoard = boardRef.current;
+                const row = lowestEmptyRow(prevBoard, col);
+                if (row === -1) return;
+
+                const player = currentPlayerRef.current;
+                const newBoard = prevBoard.slice();
+                newBoard[cellIndex(row, col)] = player;
+                boardRef.current = newBoard;
+                setBoard(newBoard);
+
+                const win = findWinThroughCell(newBoard, row, col);
+                if (win) {
+                    gameOverRef.current = true;
+                    setWinningCells(win);
+                    setWinner(player);
+                } else if (boardIsFull(newBoard)) {
+                    gameOverRef.current = true;
+                    setWinner('draw');
+                } else {
+                    const nextPlayer = player === 1 ? 2 : 1;
+                    currentPlayerRef.current = nextPlayer;
+                    setCurrentPlayer(nextPlayer);
+                }
+            }, []);
+
+            React.useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (showHowToPlayRef.current) return;
+                    const num = Number(e.key);
+                    if (Number.isInteger(num) && num >= 1 && num <= COLS) {
+                        e.preventDefault();
+                        dropDisc(num - 1);
+                    }
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [dropDisc]);
+
+            const startNewGame = React.useCallback(() => {
+                const freshBoard = createEmptyBoard();
+                boardRef.current = freshBoard;
+                currentPlayerRef.current = 1;
+                gameOverRef.current = false;
+                setBoard(freshBoard);
+                setCurrentPlayer(1);
+                setWinner(null);
+                setWinningCells([]);
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const turnInfo = PLAYERS[currentPlayer];
+
+            let statusText;
+            if (winner === 'draw') {
+                statusText = "It's a Draw!";
+            } else if (winner) {
+                statusText = `${PLAYERS[winner].label} (${PLAYERS[winner].name}) Wins!`;
+            } else {
+                statusText = `${turnInfo.label}'s Turn (${turnInfo.name})`;
+            }
+
+            return (
+                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950/50 to-black" aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 w-full max-w-lg mx-auto text-center">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-400 via-blue-300 to-yellow-300 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    CONNECT FOUR
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-blue-500/50 bg-blue-500/10 text-blue-300 hover:bg-blue-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-blue-300/80 mt-2">2-player pass-and-play. Get 4 in a row!</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div
+                            className="flex items-center justify-center gap-3 mb-4"
+                            aria-live="polite"
+                            aria-atomic="true"
+                        >
+                            <div
+                                className="bg-black/40 border border-blue-500/30 rounded-xl px-5 py-2 flex items-center gap-3"
+                            >
+                                <span
+                                    className="inline-block w-6 h-6 rounded-full flex-shrink-0"
+                                    style={{
+                                        backgroundColor: winner === 'draw' ? '#64748b' : turnInfo.bg,
+                                        boxShadow: `0 0 8px ${winner === 'draw' ? '#64748b' : turnInfo.ring}`,
+                                    }}
+                                    aria-hidden="true"
+                                />
+                                <span className="text-lg font-bold text-blue-100">{statusText}</span>
+                            </div>
+                        </div>
+
+                        <main
+                            className="relative rounded-2xl p-3 md:p-4 shadow-2xl select-none"
+                            style={{
+                                background: 'linear-gradient(180deg, #1e40af 0%, #1e3a8a 100%)',
+                                boxShadow: '0 10px 40px rgba(30, 58, 138, 0.6), inset 0 2px 4px rgba(255,255,255,0.15)',
+                            }}
+                        >
+                            <div
+                                role="grid"
+                                aria-label={`Connect Four board, 7 columns by 6 rows. ${statusText}`}
+                                className="relative w-full aspect-[7/6] flex gap-1 md:gap-1.5"
+                            >
+                                {Array.from({ length: COLS }).map((_, col) => (
+                                    <Column
+                                        key={col}
+                                        col={col}
+                                        board={board}
+                                        onDrop={dropDisc}
+                                        disabled={gameOver}
+                                        currentPlayer={currentPlayer}
+                                        winningSet={winningSet}
+                                    />
+                                ))}
+                            </div>
+
+                            {gameOver && (
+                                <div
+                                    className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in"
+                                    role="alert"
+                                >
+                                    <h2 className="text-3xl font-black text-shadow-neon text-yellow-300">
+                                        {winner === 'draw' ? 'DRAW!' : `${PLAYERS[winner].label} WINS!`}
+                                    </h2>
+                                    <p className="text-blue-100">
+                                        {winner === 'draw' ? 'The board is full. No winner this time.' : `${PLAYERS[winner].name} connected four in a row.`}
+                                    </p>
+                                    <button
+                                        ref={overlayButtonRef}
+                                        onClick={startNewGame}
+                                        className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-yellow-300 to-amber-400 hover:scale-105 transition-all"
+                                    >
+                                        New Game
+                                    </button>
+                                </div>
+                            )}
+                        </main>
+
+                        <footer className="py-6">
+                            <button
+                                ref={newGameButtonRef}
+                                onClick={startNewGame}
+                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-blue-800 hover:scale-105 shadow-lg shadow-blue-800/50 border border-blue-400/30"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<ConnectFourGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>

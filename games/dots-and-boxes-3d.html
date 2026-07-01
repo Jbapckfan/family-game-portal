@@ -152,7 +152,12 @@
 
         #leftPanel {
             position: absolute;
-            top: max(20px, env(safe-area-inset-top));
+            /* Header is in normal flow above this panel and can grow up to
+               ~117px tall (wrapped nav-button text on narrow widths, or the
+               scaled-up game-title on wide widths). Clear it with a fixed
+               floor instead of the old 20px, which let this panel paint on
+               top of the header and swallow clicks on the Main Menu link. */
+            top: max(130px, env(safe-area-inset-top));
             left: max(15px, env(safe-area-inset-left));
             z-index: 100;
             width: 200px;

@@ -888,6 +888,49 @@
             border: 2px solid rgba(255,255,255,0.3);
         }
 
+        /* Fill the viewport behind the header (header has z-index: 100) so
+           frames aren't clipped offscreen and the cube sits centered.
+           Raycasting uses getBoundingClientRect, so it stays correct. */
+        #gameContainer canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Compact phone-portrait layout: below ~500px the full HUD overlaps
+           itself, so hide the non-essential blocks and slim the rest. */
+        @media (max-width: 500px) {
+            .layer-controls,
+            #gameStats {
+                display: none;
+            }
+
+            .header {
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+
+            .nav-button {
+                white-space: nowrap;
+                padding: 12px 14px;
+            }
+
+            #leftPanel {
+                width: 150px;
+            }
+
+            .score-section {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            /* Stack the rotation controls above the help button so they
+               don't collide with anything along the bottom edge. */
+            .rotation-controls {
+                right: max(15px, env(safe-area-inset-right));
+                bottom: calc(max(15px, env(safe-area-inset-bottom)) + 56px);
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -1167,6 +1210,8 @@
                 // === FEATURE: Camera Fly-To ===
                 this.isCameraFlying = false;
                 this.cameraFlyQueue = [];
+                this._flyToken = 0; // bumped to invalidate in-flight fly animations
+                this._flySaved = null;
 
                 // === FEATURE: Layer Toggle ===
                 this.layerVisibility = [];
@@ -1239,7 +1284,6 @@
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
                 this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 this.renderer.setClearColor(0x000000, 0);
-                this.renderer.shadowMap.enabled = true;
                 document.getElementById('gameContainer').appendChild(this.renderer.domElement);
                 
                 // Camera setup
@@ -1257,7 +1301,13 @@
                 // Create groups
                 this.edgeGroup = new THREE.Group();
                 this.scene.add(this.edgeGroup);
-                
+
+                // Invisible fat hit-proxies: the visual edges are only ~5 CSS
+                // px thick on screen, far too small for fingers. Raycasting is
+                // done against these instead (see handleClick).
+                this.hitGroup = new THREE.Group();
+                this.scene.add(this.hitGroup);
+
                 this.faceGroup = new THREE.Group();
                 this.scene.add(this.faceGroup);
                 
@@ -1383,6 +1433,19 @@
                     transparent: true,
                     opacity: 0.3
                 });
+                // Shared material/geometries for the invisible hit-proxies
+                // (0.6 world-unit cross-section ≈ 30px tap zone vs ~5px for
+                // the 0.1-unit visual edges)
+                this.hitProxyMaterial = new THREE.MeshBasicMaterial({ visible: false });
+                this.hitGeometryX = new THREE.BoxGeometry(1.8, 0.6, 0.6);
+                this.hitGeometryY = new THREE.BoxGeometry(0.6, 1.8, 0.6);
+                this.hitGeometryZ = new THREE.BoxGeometry(0.6, 0.6, 1.8);
+                const addHitProxy = (edge, geometry) => {
+                    const proxy = new THREE.Mesh(geometry, this.hitProxyMaterial);
+                    proxy.position.copy(edge.position);
+                    proxy.userData = { edge };
+                    this.hitGroup.add(proxy);
+                };
                 // X-direction edges - store shared geometry for disposal
                 this.edgeGeometryX = new THREE.BoxGeometry(1.8, 0.1, 0.1);
                 for (let x = 0; x < this.gridSize - 1; x++) {
@@ -1395,6 +1458,7 @@
                             this.edgeGroup.add(edge);
                             this.edges.push(edge);
                             this.edgeMap.set(key, edge);
+                            addHitProxy(edge, this.hitGeometryX);
                         }
                     }
                 }
@@ -1411,6 +1475,7 @@
                             this.edgeGroup.add(edge);
                             this.edges.push(edge);
                             this.edgeMap.set(key, edge);
+                            addHitProxy(edge, this.hitGeometryY);
                         }
                     }
                 }
@@ -1427,6 +1492,7 @@
                             this.edgeGroup.add(edge);
                             this.edges.push(edge);
                             this.edgeMap.set(key, edge);
+                            addHitProxy(edge, this.hitGeometryZ);
                         }
                     }
                 }
@@ -1438,7 +1504,6 @@
                 
                 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
                 directionalLight.position.set(10, 10, 5);
-                directionalLight.castShadow = true;
                 this.scene.add(directionalLight);
                 
                 const pointLight = new THREE.PointLight(0x06b6d4, 0.5, 20);
@@ -1467,6 +1532,10 @@
                 // Store bound event handlers for cleanup (Issue 3)
                 this._onMouseDown = (e) => {
                     if (e.button !== 0) return;
+
+                    // Interacting during a camera fly cancels it immediately
+                    // instead of dropping the input
+                    this.cancelCameraFly();
 
                     this.mouseDownTime = Date.now();
                     this.mouseDownX = e.clientX;
@@ -1504,10 +1573,11 @@
                 };
 
                 this._onMouseUp = (e) => {
-                    const timeDiff = Date.now() - this.mouseDownTime;
                     const moveDiff = Math.abs(e.clientX - this.mouseDownX) + Math.abs(e.clientY - this.mouseDownY);
 
-                    if (timeDiff < 200 && moveDiff < 5) {
+                    // Movement (not duration) distinguishes clicks from drags,
+                    // so slow deliberate presses still register
+                    if (moveDiff < 5) {
                         this.handleClick(e);
                     }
 
@@ -1515,6 +1585,10 @@
                 };
 
                 this._onTouchStart = (e) => {
+                    // Interacting during a camera fly cancels it immediately
+                    // instead of dropping the input
+                    this.cancelCameraFly();
+
                     if (e.touches.length === 1) {
                         this._touchStart = {
                             x: e.touches[0].clientX,
@@ -1573,17 +1647,20 @@
 
                 this._onTouchEnd = (e) => {
                     if (this._touchStart && e.changedTouches.length > 0 && !this.isPinching) {
-                        const timeDiff = Date.now() - this._touchStart.time;
-                        if (timeDiff < 200) {
-                            const moveDiff = Math.abs(e.changedTouches[0].clientX - this._touchStart.x) +
-                                           Math.abs(e.changedTouches[0].clientY - this._touchStart.y);
-                            if (moveDiff < 10) {
-                                this.handleClick({
-                                    clientX: e.changedTouches[0].clientX,
-                                    clientY: e.changedTouches[0].clientY,
-                                    preventDefault: () => {}
-                                });
-                            }
+                        // Movement (not duration) distinguishes taps from
+                        // drags, so slow deliberate presses still register
+                        const moveDiff = Math.abs(e.changedTouches[0].clientX - this._touchStart.x) +
+                                       Math.abs(e.changedTouches[0].clientY - this._touchStart.y);
+                        if (moveDiff < 10) {
+                            // Suppress the browser's compatibility mouse
+                            // events, which would re-run handleClick and
+                            // complete a SECOND edge behind the first
+                            e.preventDefault();
+                            this.handleClick({
+                                clientX: e.changedTouches[0].clientX,
+                                clientY: e.changedTouches[0].clientY,
+                                preventDefault: () => {}
+                            });
                         }
                         this._touchStart = null;
                     }
@@ -1715,11 +1792,16 @@
                 this.mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
                 
                 this.raycaster.setFromCamera(this.mouse, this.camera);
-                const intersects = this.raycaster.intersectObjects(this.edgeGroup.children, true);
-                
-                if (intersects.length > 0) {
-                    const edge = intersects[0].object;
-                    this.completeEdge(edge);
+                const intersects = this.raycaster.intersectObjects(this.hitGroup.children, true);
+
+                // Pick the first UNCOMPLETED, visible edge (skip completed
+                // edges in front and edges hidden by the layer toggle)
+                for (const hit of intersects) {
+                    const edge = hit.object.userData.edge;
+                    if (edge && edge.visible && !edge.userData.completed) {
+                        this.completeEdge(edge);
+                        break;
+                    }
                 }
             }
 
@@ -1822,8 +1904,12 @@
                     this.restartMoveTimer();
                 }
 
-                // Camera fly-to for new face completions
-                if (newFaces.length > 0 && !prefersReducedMotion) {
+                // Camera fly-to for new face completions. Only fly for AI
+                // moves or cube completions -- when the human just scored
+                // they keep the turn and want to tap again immediately.
+                const moverIsAI = this.gameMode === 'ai-vs-ai' ||
+                    (this.gameMode === 'human-vs-ai' && prevPlayer === 1);
+                if (newFaces.length > 0 && !prefersReducedMotion && (moverIsAI || newCubes.length > 0)) {
                     this.queueCameraFlyTo(newFaces);
                 }
 
@@ -2772,8 +2858,10 @@
                 this.gameEnded = false;
 
                 // Reset camera fly state
+                this._flyToken++;
                 this.isCameraFlying = false;
                 this.cameraFlyQueue = [];
+                this._flySaved = null;
 
                 // Reset timer
                 if (this.timerEnabled) {
@@ -3104,13 +3192,14 @@
                 this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
                 this.raycaster.setFromCamera(this.mouse, this.camera);
-                const intersects = this.raycaster.intersectObjects(this.edgeGroup.children, true);
+                const intersects = this.raycaster.intersectObjects(this.hitGroup.children, true);
 
-                // Find first uncompleted edge
+                // Find first uncompleted, visible edge
                 let targetEdge = null;
                 for (const hit of intersects) {
-                    if (hit.object.userData && !hit.object.userData.completed) {
-                        targetEdge = hit.object;
+                    const edge = hit.object.userData.edge;
+                    if (edge && edge.visible && !edge.userData.completed) {
+                        targetEdge = edge;
                         break;
                     }
                 }
@@ -3623,6 +3712,22 @@
                 }
             }
 
+            // Cancel an in-progress camera fly and restore the saved camera
+            // state, so player input is never locked out by the animation
+            cancelCameraFly() {
+                if (!this.isCameraFlying) return;
+                this._flyToken++;
+                this.cameraFlyQueue = [];
+                if (this._flySaved) {
+                    this.cameraTarget.copy(this._flySaved.target);
+                    this.spherical.copy(this._flySaved.spherical);
+                    this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
+                    this.camera.lookAt(this.cameraTarget);
+                    this._flySaved = null;
+                }
+                this.isCameraFlying = false;
+            }
+
             processCameraFlyQueue() {
                 if (this.cameraFlyQueue.length === 0) {
                     this.isCameraFlying = false;
@@ -3630,6 +3735,7 @@
                 }
 
                 this.isCameraFlying = true;
+                const flyToken = ++this._flyToken;
                 const faceIndex = this.cameraFlyQueue.shift();
                 const face = this.faces[faceIndex];
                 if (!face) {
@@ -3637,9 +3743,10 @@
                     return;
                 }
 
-                // Save current camera state
+                // Save current camera state (also used by cancelCameraFly)
                 const savedSpherical = this.spherical.clone();
                 const savedTarget = this.cameraTarget.clone();
+                this._flySaved = { spherical: savedSpherical, target: savedTarget };
 
                 // Calculate target position: fly to look at the face
                 const faceCenter = face.center.clone();
@@ -3649,8 +3756,8 @@
                 const flyTarget = faceCenter.clone();
                 const flyPosition = faceCenter.clone().add(faceNormal.multiplyScalar(5));
 
-                const duration = 600; // ms for each direction
-                const holdTime = 400; // ms to hold at face
+                const duration = 300; // ms for each direction
+                const holdTime = 150; // ms to hold at face
                 const startTime = Date.now();
                 const startPos = this.camera.position.clone();
                 const startTarget = this.cameraTarget.clone();
@@ -3659,6 +3766,7 @@
 
                 // Phase 1: Fly to face
                 const flyToFace = () => {
+                    if (flyToken !== this._flyToken) return;
                     const elapsed = Date.now() - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     const eased = easeInOut(progress);
@@ -3672,11 +3780,13 @@
                     } else {
                         // Phase 2: Hold
                         setTimeout(() => {
+                            if (flyToken !== this._flyToken) return;
                             // Phase 3: Fly back
                             const returnStart = Date.now();
                             const retStartPos = this.camera.position.clone();
 
                             const flyBack = () => {
+                                if (flyToken !== this._flyToken) return;
                                 const retElapsed = Date.now() - returnStart;
                                 const retProgress = Math.min(retElapsed / duration, 1);
                                 const retEased = easeInOut(retProgress);
@@ -3693,9 +3803,13 @@
                                     this.spherical.copy(savedSpherical);
                                     this.camera.position.setFromSpherical(this.spherical).add(this.cameraTarget);
                                     this.camera.lookAt(this.cameraTarget);
+                                    this._flySaved = null;
 
                                     // Process next in queue
-                                    setTimeout(() => this.processCameraFlyQueue(), 100);
+                                    setTimeout(() => {
+                                        if (flyToken !== this._flyToken) return;
+                                        this.processCameraFlyQueue();
+                                    }, 100);
                                 }
                             };
 
@@ -3890,6 +4004,10 @@
                 if (this.edgeGeometryX) { this.edgeGeometryX.dispose(); this.edgeGeometryX = null; }
                 if (this.edgeGeometryY) { this.edgeGeometryY.dispose(); this.edgeGeometryY = null; }
                 if (this.edgeGeometryZ) { this.edgeGeometryZ.dispose(); this.edgeGeometryZ = null; }
+                if (this.hitGeometryX) { this.hitGeometryX.dispose(); this.hitGeometryX = null; }
+                if (this.hitGeometryY) { this.hitGeometryY.dispose(); this.hitGeometryY = null; }
+                if (this.hitGeometryZ) { this.hitGeometryZ.dispose(); this.hitGeometryZ = null; }
+                if (this.hitProxyMaterial) { this.hitProxyMaterial.dispose(); this.hitProxyMaterial = null; }
 
                 // Dispose cloned edge materials
                 if (this.edges) {
@@ -3901,6 +4019,11 @@
                 // Clear edge group
                 while (this.edgeGroup.children.length > 0) {
                     this.edgeGroup.remove(this.edgeGroup.children[0]);
+                }
+
+                // Clear hit-proxy group
+                while (this.hitGroup.children.length > 0) {
+                    this.hitGroup.remove(this.hitGroup.children[0]);
                 }
 
                 // Clear face group
@@ -3968,6 +4091,10 @@
                 if (this.edgeGeometryY) this.edgeGeometryY.dispose();
                 if (this.edgeGeometryZ) this.edgeGeometryZ.dispose();
                 if (this.edgeMaterial) this.edgeMaterial.dispose();
+                if (this.hitGeometryX) this.hitGeometryX.dispose();
+                if (this.hitGeometryY) this.hitGeometryY.dispose();
+                if (this.hitGeometryZ) this.hitGeometryZ.dispose();
+                if (this.hitProxyMaterial) this.hitProxyMaterial.dispose();
 
                 // Dispose cloned edge materials
                 if (this.edges) {
@@ -4024,14 +4151,22 @@
         });
 
         window.addEventListener('beforeunload', (e) => {
-            // Dispose Three.js resources on page unload (Issue 1)
-            if (game) {
-                game.dispose();
-            }
-            // Warn about unsaved game in progress (Issue 6: modern pattern)
+            // Warn about unsaved game in progress (Issue 6: modern pattern).
+            // No side effects here: if the user cancels the dialog the game
+            // must stay fully playable.
             if (game && game.moveCount > 0 && !game.gameEnded) {
                 e.preventDefault();
                 return '';
+            }
+        });
+
+        window.addEventListener('pagehide', (e) => {
+            // Dispose Three.js resources only when the page is actually
+            // unloading (pagehide, unlike beforeunload, also fires reliably
+            // on iPad Safari). Skip when entering the back/forward cache so
+            // a swipe-back restore gets a live game.
+            if (game && !e.persisted) {
+                game.dispose();
             }
         });
     </script>

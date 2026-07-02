@@ -222,6 +222,10 @@
 
         const HINTS_PER_GAME = 3;
 
+        // Hover pattern indicator is for real pointers only: on touch devices a tap
+        // fires mouseenter but never mouseleave, so the highlight would stick.
+        const CAN_HOVER = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
         // --- THEME CONFIGURATION ---
         const THEMES = [
             { id: 'cyan', label: 'Neon Cyan', color: '#22d3ee' },
@@ -627,8 +631,8 @@
 
             const handleCustomSubmit = () => {
                 const val = parseInt(customInput, 10);
-                if (isNaN(val) || val < 3 || val > 15) {
-                    setCustomError('3-15 only');
+                if (isNaN(val) || val < 3 || val > 11) {
+                    setCustomError('3-11 only');
                     return;
                 }
                 if (val % 2 === 0) {
@@ -672,7 +676,7 @@
                                 <input
                                     type="number"
                                     min="3"
-                                    max="15"
+                                    max="11"
                                     step="2"
                                     value={customInput}
                                     onChange={(e) => { setCustomInput(e.target.value); setCustomError(''); }}
@@ -684,7 +688,7 @@
                                         color: `rgba(var(--lo-text-primary), 0.9)`,
                                         backgroundColor: isCustomActive ? `rgba(var(--lo-primary), 0.15)` : 'rgba(0,0,0,0.4)',
                                     }}
-                                    aria-label="Custom grid size (odd number, 3-15)"
+                                    aria-label="Custom grid size (odd number, 3-11)"
                                 />
                                 <button
                                     onClick={handleCustomSubmit}
@@ -729,7 +733,7 @@
             );
         };
 
-        const LightCell = React.memo(({ isOn, onToggle, row, col, isHinted, cellSizeClass, isAdjacentHighlight, rippleClass }) => {
+        const LightCell = React.memo(({ isOn, onToggle, onHover, row, col, isHinted, cellSizeClass, isAdjacentHighlight, rippleClass }) => {
             const style = React.useMemo(() => ({
                 backgroundColor: isOn ? `rgb(var(--lo-primary))` : LIGHT_COLOR_OFF,
                 boxShadow: isOn ? `0 0 15px rgba(var(--lo-primary), 1), 0 0 25px rgba(var(--lo-primary), 0.38), inset 0 0 5px rgba(var(--lo-primary), 0.5)` : 'inset 0 0 10px rgba(0,0,0,0.5)',
@@ -740,9 +744,14 @@
                 onToggle(row, col);
             }, [onToggle, row, col]);
 
+            const handleMouseEnter = React.useCallback(() => {
+                onHover(row, col);
+            }, [onHover, row, col]);
+
             return (
                 <button
                     onClick={handleClick}
+                    onMouseEnter={handleMouseEnter}
                     role="gridcell"
                     className={`${cellSizeClass} rounded-lg border-2 transition-all duration-200 ease-in-out transform hover:scale-105 ${isHinted ? 'hint-highlight' : ''} ${isAdjacentHighlight ? 'adjacent-highlight' : ''} ${rippleClass || ''}`}
                     style={style}
@@ -787,6 +796,7 @@
             }, []);
 
             const handleCellHover = React.useCallback((r, c) => {
+                if (!CAN_HOVER) return;
                 setHoveredCell({ row: r, col: c });
             }, []);
 
@@ -794,10 +804,11 @@
                 setHoveredCell(null);
             }, []);
 
-            const isAdjacentToHovered = React.useCallback((r, c) => {
-                if (!hoveredCell) return false;
+            // Compute the highlighted set once per hover so only affected cells' props change.
+            const adjacentHighlightSet = React.useMemo(() => {
+                if (!hoveredCell) return null;
                 const adj = getAdjacentCells(hoveredCell.row, hoveredCell.col, gridSize);
-                return adj.some(([ar, ac]) => ar === r && ac === c);
+                return new Set(adj.map(([ar, ac]) => `${ar}-${ac}`));
             }, [hoveredCell, gridSize, getAdjacentCells]);
 
             // --- Feature: Click Ripple Animation ---
@@ -819,12 +830,6 @@
 
             // --- Feature: Custom Board Size ---
             const [customSize, setCustomSize] = React.useState(null);
-
-            const handleCustomSizeChange = React.useCallback((size) => {
-                setCustomSize(size);
-                setGridSize(size);
-                startNewGame(size);
-            }, []);
 
             // --- Feature: Timed Challenge Mode ---
             const [timedMode, setTimedMode] = React.useState(false);
@@ -881,7 +886,7 @@
                 if (gridSize <= 5) return 'w-14 h-14 md:w-16 md:h-16';
                 if (gridSize <= 7) return 'w-10 h-10 md:w-12 md:h-12';
                 if (gridSize <= 9) return 'w-8 h-8 md:w-10 md:h-10';
-                return 'w-6 h-6 md:w-8 md:h-8';
+                return 'w-7 h-7 md:w-10 md:h-10';
             }, [gridSize]);
 
             // When the game is won, compute stars, save best scores
@@ -928,6 +933,7 @@
                 setBoard(prevBoard => toggleLights(prevBoard, r, c, gridSize));
                 setMoves(prevMoves => prevMoves + 1);
                 setHintCell(null);
+                setHoveredCell(null); // Clear hover highlight so touch taps never leave it stuck
                 triggerRipple(r, c, gridSize);
             }, [board, gridSize, timedMode, timeRemaining, moves, triggerRipple]);
 
@@ -973,8 +979,6 @@
                 setMinSolution(sol ? sol.length : null);
             }, []);
 
-            // Fix: handleCustomSizeChange needs startNewGame, defined after it.
-            // We use a ref to avoid stale closure.
             const startNewGameRef = React.useRef(startNewGame);
             startNewGameRef.current = startNewGame;
 
@@ -1117,21 +1121,18 @@
                                 {board.map((row, r) => (
                                     <div key={r} role="row" className="flex gap-1.5 justify-center">
                                         {row.map((isOn, c) => (
-                                            <div
+                                            <LightCell
                                                 key={`${r}-${c}`}
-                                                onMouseEnter={() => !gameDisabled && handleCellHover(r, c)}
-                                            >
-                                                <LightCell
-                                                    isOn={isOn}
-                                                    row={r}
-                                                    col={c}
-                                                    onToggle={gameDisabled ? () => {} : handleLightClick}
-                                                    isHinted={hintCell !== null && hintCell.row === r && hintCell.col === c}
-                                                    cellSizeClass={cellSizeClass}
-                                                    isAdjacentHighlight={!gameDisabled && isAdjacentToHovered(r, c)}
-                                                    rippleClass={rippleCells[`${r}-${c}`] || ''}
-                                                />
-                                            </div>
+                                                isOn={isOn}
+                                                row={r}
+                                                col={c}
+                                                onToggle={handleLightClick}
+                                                onHover={handleCellHover}
+                                                isHinted={hintCell !== null && hintCell.row === r && hintCell.col === c}
+                                                cellSizeClass={cellSizeClass}
+                                                isAdjacentHighlight={!gameDisabled && adjacentHighlightSet !== null && adjacentHighlightSet.has(`${r}-${c}`)}
+                                                rippleClass={rippleCells[`${r}-${c}`] || ''}
+                                            />
                                         ))}
                                     </div>
                                 ))}

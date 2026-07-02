@@ -193,6 +193,11 @@
         const RAPID_MOVE_BONUS = 50;
         const RAPID_MOVE_THRESHOLD_MS = 2500;
 
+        // Touch-primary devices (e.g. iPad) have no hover, so the ghost trail
+        // preview is shown on peg selection instead of on mouse hover.
+        const IS_TOUCH_PRIMARY = (window.matchMedia && window.matchMedia('(hover: none)').matches) ||
+            (navigator.maxTouchPoints || 0) > 0;
+
         // --- SAFE LOCALSTORAGE HELPERS ---
         function safeGetItem(key) {
             try {
@@ -209,6 +214,29 @@
             } catch (e) {
                 console.warn('localStorage write failed:', e);
             }
+        }
+
+        // Shared jump-validation logic: returns every valid move on the board as
+        // { from: {row,col}, to: {row,col}, jumped: {row,col} }.
+        // Pass fromRow/fromCol to restrict the search to a single source peg.
+        function findMoves(board, levelIndex, fromRow, fromCol) {
+            const moves = [];
+            const directions = LEVELS[levelIndex].directions;
+            for (let r = 0; r < board.length; r++) {
+                for (let c = 0; c < board[r].length; c++) {
+                    if (fromRow !== undefined && (r !== fromRow || c !== fromCol)) continue;
+                    if (board[r][c] !== true) continue; // Not a peg
+                    for (const [dr, dc] of directions) {
+                        const endR = r + dr, endC = c + dc;
+                        const midR = r + dr / 2, midC = c + dc / 2;
+                        if (board[endR] && board[endR][endC] === false &&
+                            board[midR] && board[midR][midC] === true) {
+                            moves.push({ from: { row: r, col: c }, to: { row: endR, col: endC }, jumped: { row: midR, col: midC } });
+                        }
+                    }
+                }
+            }
+            return moves;
         }
 
         // --- HELPER & UI COMPONENTS ---
@@ -286,7 +314,7 @@
 
         const Peg = ({ onClick, onKeyDown, isSelected, rowIndex, colIndex, animClass, hidden }) => (
             <div
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                className="min-w-[38px] min-h-[38px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center cursor-pointer"
                 onClick={onClick}
                 onKeyDown={onKeyDown}
                 role="button"
@@ -304,7 +332,7 @@
 
         const Hole = ({ onClick, onKeyDown, rowIndex, colIndex, isValidTarget, onMouseEnter, onMouseLeave }) => (
             <div
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+                className="min-w-[38px] min-h-[38px] sm:min-w-[44px] sm:min-h-[44px] flex items-center justify-center cursor-pointer"
                 onClick={onClick}
                 onKeyDown={onKeyDown}
                 onMouseEnter={onMouseEnter}
@@ -475,7 +503,7 @@
         };
 
         // Feature 4: Ghost Trail SVG overlay component
-        const GhostTrail = ({ from, to, jumped, getCellPosition }) => {
+        const GhostTrail = ({ from, to, jumped, getCellPosition, faint }) => {
             const [positions, setPositions] = useState(null);
 
             useEffect(() => {
@@ -500,7 +528,7 @@
             const cpY = midY + (dx / len) * arcHeight;
 
             return (
-                <svg className="absolute inset-0 pointer-events-none" style={{ width: '100%', height: '100%', zIndex: 50 }} aria-hidden="true">
+                <svg className="absolute inset-0 pointer-events-none" style={{ width: '100%', height: '100%', zIndex: 50, opacity: faint ? 0.55 : 1 }} aria-hidden="true">
                     <defs>
                         <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
                             <polygon points="0 0, 8 3, 0 6" fill="rgba(74, 222, 128, 0.7)" />
@@ -607,15 +635,8 @@
             const getValidTargets = useCallback((currentBoard, selected, levelIndex) => {
                 const targets = new Set();
                 if (!selected || !currentBoard.length) return targets;
-                const levelDirections = LEVELS[levelIndex].directions;
-                const { row, col } = selected;
-                for (const [dr, dc] of levelDirections) {
-                    const endR = row + dr, endC = col + dc;
-                    const midR = row + dr / 2, midC = col + dc / 2;
-                    if (currentBoard[endR] && currentBoard[endR][endC] === false &&
-                        currentBoard[midR] && currentBoard[midR][midC] === true) {
-                        targets.add(`${endR},${endC}`);
-                    }
+                for (const move of findMoves(currentBoard, levelIndex, selected.row, selected.col)) {
+                    targets.add(`${move.to.row},${move.to.col}`);
                 }
                 return targets;
             }, []);
@@ -711,21 +732,7 @@
             // --- Game Logic ---
 
             const checkForNoMoves = useCallback((currentBoard, levelIndex) => {
-                const levelDirections = LEVELS[levelIndex].directions;
-                for (let r = 0; r < currentBoard.length; r++) {
-                    for (let c = 0; c < currentBoard[r].length; c++) {
-                        if (currentBoard[r][c] === true) { // It's a peg
-                             for (const [dr, dc] of levelDirections) {
-                                const endR = r + dr, endC = c + dc;
-                                const midR = r + dr / 2, midC = c + dc / 2;
-                                if (currentBoard[endR] && currentBoard[endR][endC] === false && currentBoard[midR] && currentBoard[midR][midC] === true) {
-                                    return false; // Found a possible move
-                                }
-                            }
-                        }
-                    }
-                }
-                return true; // No moves found
+                return findMoves(currentBoard, levelIndex).length === 0;
             }, []);
 
             // Feature 5: Apply board changes after animation completes
@@ -799,16 +806,12 @@
                         const start = selectedPeg;
                         const end = { row, col };
 
-                        const dr = end.row - start.row;
-                        const dc = end.col - start.col;
+                        const move = findMoves(board, currentLevelIndex, start.row, start.col)
+                            .find(m => m.to.row === end.row && m.to.col === end.col);
 
-                        const jumpedRow = start.row + dr / 2;
-                        const jumpedCol = start.col + dc / 2;
-
-                        const levelDirections = LEVELS[currentLevelIndex].directions;
-                        const isValidJump = levelDirections.some(([jdr, jdc]) => dr === jdr && dc === jdc);
-
-                        if (isValidJump && board[jumpedRow] && board[jumpedRow][jumpedCol] === true) {
+                        if (move) {
+                            const jumpedRow = move.jumped.row;
+                            const jumpedCol = move.jumped.col;
                             if (!isTimerRunning) setIsTimerRunning(true);
                             // Clear any active hint highlight
                             setHintHighlight(null);
@@ -858,6 +861,12 @@
                 timeRef.current = prevState.time;
                 setSelectedPeg(null);
                 setGameState(GameState.PLAYING);
+                // Undoing out of a win/nice-try: stop the celebration overlay
+                setShowWin(false);
+                if (winTimeoutRef.current) {
+                    clearTimeout(winTimeoutRef.current);
+                    winTimeoutRef.current = null;
+                }
                 if (historyStack.length === 1) {
                     // Undoing the very first move, stop timer
                     setIsTimerRunning(false);
@@ -887,26 +896,14 @@
                     clearTimeout(hintTimeoutRef.current);
                 }
                 // Find a valid move
-                const levelDirections = LEVELS[currentLevelIndex].directions;
-                for (let r = 0; r < board.length; r++) {
-                    for (let c = 0; c < board[r].length; c++) {
-                        if (board[r][c] === true) {
-                            for (const [dr, dc] of levelDirections) {
-                                const endR = r + dr, endC = c + dc;
-                                const midR = r + dr / 2, midC = c + dc / 2;
-                                if (board[endR] && board[endR][endC] === false && board[midR] && board[midR][midC] === true) {
-                                    setHintsRemaining(h => h - 1);
-                                    setHintHighlight({ source: { row: r, col: c }, target: { row: endR, col: endC } });
-                                    hintTimeoutRef.current = setTimeout(() => {
-                                        setHintHighlight(null);
-                                        hintTimeoutRef.current = null;
-                                    }, 1800);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
+                const move = findMoves(board, currentLevelIndex)[0];
+                if (!move) return;
+                setHintsRemaining(h => h - 1);
+                setHintHighlight({ source: move.from, target: move.to });
+                hintTimeoutRef.current = setTimeout(() => {
+                    setHintHighlight(null);
+                    hintTimeoutRef.current = null;
+                }, 1800);
             }, [hintsRemaining, gameState, animatingMove, board, currentLevelIndex, isPaused]);
 
             // Keyboard handler for peg/hole interaction
@@ -952,7 +949,7 @@
             }, []);
 
             return (
-                <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden flex flex-col items-center justify-center p-4">
+                <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white relative overflow-hidden flex flex-col items-center justify-center p-4 pt-16 sm:pt-4">
                     <div className="absolute inset-0" aria-hidden="true">
                         <div className="absolute top-20 left-20 w-32 h-32 bg-purple-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
                         <div className="absolute top-40 right-32 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
@@ -1027,14 +1024,14 @@
 
                         <div
                             ref={boardRef}
-                            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center relative"
+                            className="bg-black/40 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-cyan-400/30 shadow-2xl min-h-[320px] flex flex-col justify-center items-center relative"
                             role="grid"
                             aria-label={`${LEVELS[currentLevelIndex].name} game board`}
                         >
                             {board.map((row, rowIndex) => (
                                 <div key={rowIndex} className="flex justify-center" role="row">
                                     {row.map((cell, colIndex) => {
-                                        if (cell === null) return <div key={colIndex} className="min-w-[44px] min-h-[44px]" role="gridcell" aria-hidden="true" />;
+                                        if (cell === null) return <div key={colIndex} className="min-w-[38px] min-h-[38px] sm:min-w-[44px] sm:min-h-[44px]" role="gridcell" aria-hidden="true" />;
                                         const isSelected = selectedPeg && selectedPeg.row === rowIndex && selectedPeg.col === colIndex;
                                         const isValidTarget = cell === false && validTargets.has(`${rowIndex},${colIndex}`);
 
@@ -1106,6 +1103,13 @@
                                 const jumpedCol = selectedPeg.col + dc / 2;
                                 return <GhostTrail from={selectedPeg} to={hoveredTarget} jumped={{ row: jumpedRow, col: jumpedCol }} getCellPosition={getCellPosition} />;
                             })()}
+                            {/* Feature 4 (touch): no hover on iPad, so show fainter trails to every valid target while a peg is selected */}
+                            {IS_TOUCH_PRIMARY && selectedPeg && !hoveredTarget && !isPaused && Array.from(validTargets).map(key => {
+                                const [tRow, tCol] = key.split(',').map(Number);
+                                const jumpedRow = selectedPeg.row + (tRow - selectedPeg.row) / 2;
+                                const jumpedCol = selectedPeg.col + (tCol - selectedPeg.col) / 2;
+                                return <GhostTrail key={key} faint from={selectedPeg} to={{ row: tRow, col: tCol }} jumped={{ row: jumpedRow, col: jumpedCol }} getCellPosition={getCellPosition} />;
+                            })}
                         </div>
 
                         <div className="mt-6 flex flex-wrap gap-3 justify-center">

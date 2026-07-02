@@ -10,10 +10,13 @@ Follows NYT Spelling Bee rules:
   - S and X never used as center letter
   - 1-3 vowels in letter set
   - Minimum 25 words per puzzle
-  - Dictionary: system dict filtered by word frequency (top 100K most common)
+  - Dictionary: ENABLE word list (validity — no proper nouns) filtered for
+    common-ness by a frequency list, plus a name/brand blacklist
 
 Usage:
-  # First time: download frequency data
+  # First time: download word/frequency data
+  curl -sL "https://norvig.com/ngrams/enable1.txt" -o /tmp/enable1.txt
+  curl -sL "https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt" -o /tmp/common_20k.txt
   curl -sL "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_full.txt" -o /tmp/freq_full.txt
 
   # Generate puzzles
@@ -33,59 +36,98 @@ MAX_WORDS = 80
 MIN_VOWELS_IN_SET = 1
 MAX_VOWELS_IN_SET = 3
 TARGET_PUZZLE_COUNT = 350
-FREQ_CUTOFF = 100000  # Use top 100K most frequent English words
+
+# Words 6+ letters long may qualify via the broad subtitle-frequency list
+# (real vocabulary like 'connive'/'evince' that misses the top-20K cut);
+# 4-5 letter words must be in the strict top-20K list (short obscure junk
+# like 'vill'/'lieve'/'levin' otherwise sneaks in).
+EXTENDED_MIN_LENGTH = 6
+EXTENDED_MIN_COUNT = 10  # min subtitle occurrences for the extended tier
+
+# Proper nouns, first names, and brands. ENABLE excludes most proper nouns,
+# but some double as dictionary words ('anna', 'billy') and the frequency
+# lists are full of names — none of these belong in a kids' word puzzle.
+NAME_BRAND_BLACKLIST = {
+    'alan', 'anna', 'benny', 'beth', 'betty', 'billie', 'billy', 'bobbie',
+    'bobby', 'carl', 'cathy', 'china', 'cleve', 'clive', 'danny', 'donna',
+    'eddie', 'ellen', 'ellie', 'elle', 'emma', 'fanny', 'gerry', 'hank',
+    'harry', 'hulu', 'jenny', 'jerry', 'jimmy', 'johnny', 'kelly', 'lupe',
+    'levin', 'maria', 'micky', 'molly', 'nelly', 'peele', 'polly', 'randy',
+    'rita', 'ronnie', 'ruth', 'taft', 'terry', 'timmy', 'tommy', 'tony',
+    'vera', 'vinny', 'willy',
+    # legacy junk from the old /usr/share/dict source (not in ENABLE, but
+    # keep them banned in case the validity source ever changes)
+    'botong', 'nito', 'ululu', 'tatta', 'hele', 'holl', 'ivin', 'veen',
+    'vill', 'nevel', 'lieve', 'veve',
+}
+
+ENABLE_PATH = os.environ.get('ENABLE_PATH', '/tmp/enable1.txt')
+FREQ20K_PATH = os.environ.get('FREQ20K_PATH', '/tmp/common_20k.txt')
+FREQ_FULL_PATH = os.environ.get('FREQ_FULL_PATH', '/tmp/freq_full.txt')
 
 
 def load_curated_dictionary():
     """
-    Build a curated ~15K word dictionary by intersecting:
-    - System dictionary (ensures proper spelling)
-    - Top 100K most frequent English words (ensures recognizability)
+    Build a curated word dictionary:
+    - ENABLE word list is the validity source (public domain Scrabble list,
+      lowercase real words only — no proper nouns, no brands)
+    - Common-ness filter: word is in the top-20K frequency list, OR is 6+
+      letters with a modest presence in the full subtitle-frequency list
+    - Explicit name/brand blacklist on top
     Then apply Spelling Bee filters (no S, 4+ letters, etc.)
     """
-    freq_path = '/tmp/freq_full.txt'
-    dict_path = '/usr/share/dict/words'
+    for path, url in [
+        (ENABLE_PATH, 'https://norvig.com/ngrams/enable1.txt'),
+        (FREQ20K_PATH, 'https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt'),
+        (FREQ_FULL_PATH, 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_full.txt'),
+    ]:
+        if not os.path.exists(path):
+            print(f"ERROR: Word data not found at {path}")
+            print(f'Download it first:\n  curl -sL "{url}" -o {path}')
+            exit(1)
 
-    if not os.path.exists(freq_path):
-        print(f"ERROR: Frequency data not found at {freq_path}")
-        print("Download it first:")
-        print('  curl -sL "https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_full.txt" -o /tmp/freq_full.txt')
-        exit(1)
-
-    # Load top N most frequent English words
-    freq_words = set()
-    with open(freq_path) as f:
-        for i, line in enumerate(f):
-            if i >= FREQ_CUTOFF:
-                break
-            parts = line.strip().split()
-            if parts:
-                freq_words.add(parts[0].lower())
-
-    # Load system dictionary (only lowercase = no proper nouns)
-    dict_words = set()
-    with open(dict_path) as f:
+    # Validity source: ENABLE (no proper nouns by construction)
+    enable_words = set()
+    with open(ENABLE_PATH) as f:
         for line in f:
-            w = line.strip()
-            if w and w[0].islower() and w.isalpha():
-                dict_words.add(w.lower())
+            w = line.strip().lower()
+            if w and w.isalpha():
+                enable_words.add(w)
 
-    # Intersection: common AND properly spelled
-    common = freq_words & dict_words
+    # Strict common-ness: top-20K most frequent English words
+    freq_common = set()
+    with open(FREQ20K_PATH) as f:
+        for line in f:
+            w = line.strip().lower()
+            if w:
+                freq_common.add(w)
 
-    # Apply Spelling Bee filters
+    # Broad common-ness: subtitle frequency counts (only trusted for 6+ letter
+    # ENABLE words — short entries in this list are riddled with names/junk)
+    freq_counts = {}
+    with open(FREQ_FULL_PATH) as f:
+        for line in f:
+            parts = line.strip().split()
+            if len(parts) == 2 and parts[1].isdigit():
+                freq_counts[parts[0].lower()] = int(parts[1])
+
+    # Apply common-ness + Spelling Bee filters
     words = set()
-    for w in common:
+    for w in enable_words:
         if len(w) < MIN_WORD_LENGTH:
             continue
         if 's' in w:  # NYT excludes S entirely
             continue
-        if not w.isalpha():
+        if w in NAME_BRAND_BLACKLIST:
             continue
-        words.add(w)
+        if w in freq_common:
+            words.add(w)
+        elif len(w) >= EXTENDED_MIN_LENGTH and freq_counts.get(w, 0) >= EXTENDED_MIN_COUNT:
+            words.add(w)
 
     print(f"Curated dictionary: {len(words)} words")
-    print(f"  (from {len(freq_words)} frequent + {len(dict_words)} dict = {len(common)} intersection)")
+    print(f"  (ENABLE {len(enable_words)}, top-20K {len(freq_common)}, "
+          f"extended tier {EXTENDED_MIN_LENGTH}+ letters with count >= {EXTENDED_MIN_COUNT})")
     return words
 
 

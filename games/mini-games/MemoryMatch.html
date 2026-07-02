@@ -39,6 +39,13 @@
           text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(244, 63, 94, 0.5), 0 0 24px rgba(219, 39, 119, 0.4);
         }
         .scanline-animation {
+          overflow: hidden;
+        }
+        .scanline-animation::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          height: calc(100% + 4px);
           background-image: linear-gradient(
             to bottom,
             rgba(0, 0, 0, 0) 50%,
@@ -46,10 +53,11 @@
           );
           background-size: 100% 4px;
           animation: scanlines 5s linear infinite;
+          will-change: transform;
         }
         @keyframes scanlines {
-          from { background-position: 0 0; }
-          to { background-position: 0 -4px; }
+          from { transform: translateY(0); }
+          to { transform: translateY(-4px); }
         }
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
@@ -294,24 +302,25 @@
             }
 
             return (
-                <button
-                    type="button"
-                    onClick={handleClick}
-                    disabled={disabled || isFaceUp || isMatched}
-                    role="gridcell"
-                    aria-pressed={isFaceUp || isMatched}
-                    aria-label={label}
-                    className="card-flip-outer w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl disabled:cursor-default"
-                >
-                    <div className={`card-flip-inner ${(isFaceUp || isMatched) ? 'is-flipped' : ''} ${justMatched ? 'card-pulse' : ''}`}>
-                        <div className="card-face card-back" aria-hidden="true">
-                            <span className="text-2xl sm:text-3xl opacity-70">&#x1F43E;</span>
+                <div role="gridcell">
+                    <button
+                        type="button"
+                        onClick={handleClick}
+                        disabled={disabled || isFaceUp || isMatched}
+                        aria-pressed={isFaceUp || isMatched}
+                        aria-label={label}
+                        className="card-flip-outer w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl disabled:cursor-default"
+                    >
+                        <div className={`card-flip-inner ${(isFaceUp || isMatched) ? 'is-flipped' : ''} ${justMatched ? 'card-pulse' : ''}`}>
+                            <div className="card-face card-back" aria-hidden="true">
+                                <span className="text-2xl sm:text-3xl opacity-70">&#x1F43E;</span>
+                            </div>
+                            <div className="card-face card-front text-3xl sm:text-4xl md:text-5xl" aria-hidden="true">
+                                {card.emoji}
+                            </div>
                         </div>
-                        <div className="card-face card-front text-3xl sm:text-4xl md:text-5xl" aria-hidden="true">
-                            {card.emoji}
-                        </div>
-                    </div>
-                </button>
+                    </button>
+                </div>
             );
         });
 
@@ -326,6 +335,7 @@
 
             const busyRef = React.useRef(false);
             const resolveTimeoutRef = React.useRef(null);
+            const pulseTimeoutRef = React.useRef(null);
             const howToPlayTriggerRef = React.useRef(null);
             const newGameButtonRef = React.useRef(null);
             const prevIsWonRef = React.useRef(false);
@@ -344,8 +354,7 @@
                     localStorage.setItem(BEST_MOVES_KEY, String(moves));
                     setBestMoves(moves);
                 }
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-            }, [isWon]);
+            }, [isWon, moves, bestMoves]);
 
             React.useEffect(() => {
                 if (isWon && !prevIsWonRef.current && newGameButtonRef.current) {
@@ -356,6 +365,7 @@
 
             React.useEffect(() => () => {
                 if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
+                if (pulseTimeoutRef.current) clearTimeout(pulseTimeoutRef.current);
             }, []);
 
             const handleFlip = React.useCallback((id) => {
@@ -388,7 +398,7 @@
                         setJustMatchedIds(new Set(pair));
                         setSelected([]);
                         busyRef.current = false;
-                        resolveTimeoutRef.current = setTimeout(() => {
+                        pulseTimeoutRef.current = setTimeout(() => {
                             setJustMatchedIds(new Set());
                         }, MATCH_RESOLVE_MS);
                     }, 150);
@@ -402,6 +412,7 @@
 
             const startNewGame = React.useCallback(() => {
                 if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
+                if (pulseTimeoutRef.current) clearTimeout(pulseTimeoutRef.current);
                 busyRef.current = false;
                 setDeck(createShuffledDeck());
                 setSelected([]);
@@ -455,7 +466,7 @@
                             </div>
                         </div>
 
-                        <main className="relative bg-black/30 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-rose-400/30 shadow-2xl shadow-rose-500/10">
+                        <main className="relative bg-black/30 rounded-2xl p-3 md:p-4 border border-rose-400/30 shadow-2xl shadow-rose-500/10">
                             <div
                                 role="grid"
                                 aria-label={`Memory match board, ${matchedPairs} of ${totalPairs} pairs matched`}
@@ -504,12 +515,14 @@
                         </main>
 
                         <footer className="py-6">
-                            <button
-                                onClick={startNewGame}
-                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-rose-400 to-pink-500 hover:scale-105 shadow-lg shadow-rose-500/40"
-                            >
-                                New Game
-                            </button>
+                            {!isWon && (
+                                <button
+                                    onClick={startNewGame}
+                                    className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-rose-400 to-pink-500 hover:scale-105 shadow-lg shadow-rose-500/40"
+                                >
+                                    New Game
+                                </button>
+                            )}
                         </footer>
                     </div>
                 </div>

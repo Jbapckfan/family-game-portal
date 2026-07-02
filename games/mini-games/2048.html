@@ -15,6 +15,9 @@
 
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ["'Orbitron'", 'sans-serif'] } } } };
+    </script>
 
     <!-- React Libraries -->
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
@@ -46,11 +49,6 @@
             rgba(0, 0, 0, 0.25) 50%
           );
           background-size: 100% 4px;
-          animation: scanlines 5s linear infinite;
-        }
-        @keyframes scanlines {
-          from { background-position: 0 0; }
-          to { background-position: 0 -4px; }
         }
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
@@ -401,6 +399,7 @@
             const tilesRef = React.useRef(tiles);
             const busyRef = React.useRef(false);
             const mergeTimeoutRef = React.useRef(null);
+            const busyTimeoutRef = React.useRef(null);
             const touchStartRef = React.useRef(null);
             const howToPlayTriggerRef = React.useRef(null);
             const newGameButtonRef = React.useRef(null);
@@ -421,6 +420,7 @@
 
             React.useEffect(() => () => {
                 if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
             }, []);
 
             const performMove = React.useCallback((direction) => {
@@ -443,10 +443,13 @@
                 }
 
                 if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
                 mergeTimeoutRef.current = setTimeout(() => {
                     setMergedIds(new Set());
-                    busyRef.current = false;
                 }, 160);
+                busyTimeoutRef.current = setTimeout(() => {
+                    busyRef.current = false;
+                }, 100);
             }, [showHowToPlay, gameOver, won, continuedAfterWin]);
 
             React.useEffect(() => {
@@ -489,6 +492,7 @@
 
             const startNewGame = React.useCallback(() => {
                 if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
                 busyRef.current = false;
                 setTiles(createInitialTiles());
                 setScore(0);
@@ -532,10 +536,10 @@
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
-                        <div className="flex items-center justify-center gap-3 mb-4" aria-live="polite" aria-atomic="true">
+                        <div className="flex items-center justify-center gap-3 mb-4">
                             <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
                                 <div className="text-xs uppercase tracking-widest text-amber-300/70">Score</div>
-                                <div className="text-2xl font-bold text-amber-200">{score}</div>
+                                <div className="text-2xl font-bold text-amber-200" aria-live="polite" aria-atomic="true">{score}</div>
                             </div>
                             <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
                                 <div className="text-xs uppercase tracking-widest text-amber-300/70">Best</div>
@@ -548,7 +552,7 @@
                             style={{ touchAction: 'none' }}
                             onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
-                            role="grid"
+                            role="application"
                             aria-label={`2048 board, current score ${score}`}
                         >
                             <div className="relative w-full aspect-square grid grid-cols-4 grid-rows-4 gap-1.5 md:gap-2">

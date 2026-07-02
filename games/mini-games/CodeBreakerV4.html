@@ -257,6 +257,38 @@
                 min-height: 36px;
             }
         }
+        /* Reclaim fixed chrome on short viewports (landscape iPad / small phones)
+           so the past-guesses list keeps its minimum height */
+        @media (max-height: 750px) {
+            .game-title {
+                font-size: 1.5rem !important;
+                line-height: 2rem !important;
+                margin-bottom: 4px !important;
+            }
+            .stats-box {
+                padding: 4px 8px;
+            }
+            .stats-value {
+                font-size: 0.9rem;
+            }
+            .action-btn {
+                font-size: 0.75rem !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+            .secondary-action-btn {
+                order: 2;
+                min-height: 36px;
+                font-size: 0.7rem !important;
+                padding-top: 2px !important;
+                padding-bottom: 2px !important;
+            }
+            /* If chrome still doesn't fit (small phones), let the panel scroll
+               instead of clipping the action buttons */
+            .game-panel {
+                overflow-y: auto !important;
+            }
+        }
         /* === FEATURE: Animated Feedback Reveal === */
         @keyframes feedbackPop {
             0% { transform: scale(0) rotate(180deg); opacity: 0; }
@@ -696,7 +728,7 @@
         };
 
         // --- Feature 2 helper: determine which colors to auto-eliminate ---
-        const computeAutoEliminations = (guesses, availableColors) => {
+        const computeAutoEliminations = (guesses) => {
             // For each guess that got ALL empty feedback (0 black, 0 white),
             // all colors in that guess can be eliminated.
             // Additionally, track across multiple guesses for smarter elimination.
@@ -812,10 +844,39 @@
             );
         };
 
+        // Shared modal keyboard handling: Escape closes, Tab is trapped inside containerRef
+        const useModalKeys = (containerRef, onClose) => {
+            React.useEffect(() => {
+                const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        onClose();
+                        return;
+                    }
+                    if (e.key !== 'Tab' || !containerRef.current) return;
+                    const focusableElements = containerRef.current.querySelectorAll(focusableSelector);
+                    if (focusableElements.length === 0) return;
+                    const first = focusableElements[0];
+                    const last = focusableElements[focusableElements.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [containerRef, onClose]);
+        };
+
         // === FEATURE 5: Animated Tutorial Component ===
         const TutorialOverlay = ({ onClose, availableColors, codeLength }) => {
             const [step, setStep] = React.useState(0);
             const [animPhase, setAnimPhase] = React.useState(0);
+            const cardRef = React.useRef(null);
+            const nextBtnRef = React.useRef(null);
             const totalSteps = 5;
 
             // Sample colors for the tutorial demo
@@ -854,6 +915,14 @@
                 try { localStorage.setItem('neonBreakerTutorialSeen', 'true'); } catch(e) {}
                 onClose();
             };
+
+            // Escape closes and Tab is trapped, matching the rules modal
+            useModalKeys(cardRef, handleFinish);
+
+            // Move focus into the dialog on open
+            React.useEffect(() => {
+                if (nextBtnRef.current) nextBtnRef.current.focus();
+            }, []);
 
             const renderStep = () => {
                 switch(step) {
@@ -1005,7 +1074,7 @@
 
             return (
                 <div className="tutorial-overlay" role="dialog" aria-modal="true" aria-label="Game tutorial">
-                    <div className="tutorial-card">
+                    <div className="tutorial-card" ref={cardRef}>
                         <div className="tutorial-step-indicator">
                             {Array.from({length: totalSteps}).map((_, i) => (
                                 <div key={i} className={`tutorial-dot ${i === step ? 'active' : i < step ? 'completed' : ''}`} />
@@ -1016,7 +1085,7 @@
                             <button onClick={handleFinish} className="tutorial-nav-btn secondary" aria-label="Skip tutorial">
                                 Skip
                             </button>
-                            <button onClick={handleNext} className="tutorial-nav-btn primary" aria-label={step < totalSteps - 1 ? 'Next step' : 'Start playing'}>
+                            <button ref={nextBtnRef} onClick={handleNext} className="tutorial-nav-btn primary" aria-label={step < totalSteps - 1 ? 'Next step' : 'Start playing'}>
                                 {step < totalSteps - 1 ? 'Next' : "Let's Go!"}
                             </button>
                         </div>
@@ -1068,7 +1137,7 @@
             const totalCombos = maxCombo;
 
             return (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-80 fade-in rounded-xl z-50 p-4 overflow-y-auto"
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-80 backdrop-blur-md fade-in rounded-xl z-50 p-4 overflow-y-auto"
                      role="dialog" aria-modal="true" aria-labelledby="summary-heading">
                     <div className="max-w-sm w-full">
                         <h2 id="summary-heading"
@@ -1167,19 +1236,15 @@
         const GameHistoryModal = ({ onClose }) => {
             const [history, setHistory] = React.useState([]);
             const closeRef = React.useRef(null);
+            const modalRef = React.useRef(null);
 
             React.useEffect(() => {
                 setHistory(loadGameHistory());
                 if (closeRef.current) closeRef.current.focus();
             }, []);
 
-            React.useEffect(() => {
-                const handleEscape = (e) => {
-                    if (e.key === 'Escape') onClose();
-                };
-                document.addEventListener('keydown', handleEscape);
-                return () => document.removeEventListener('keydown', handleEscape);
-            }, [onClose]);
+            // Escape closes and Tab is trapped, matching the rules modal
+            useModalKeys(modalRef, onClose);
 
             const clearHistory = () => {
                 try { localStorage.removeItem(HISTORY_STORAGE_KEY); } catch(e) {}
@@ -1188,7 +1253,7 @@
 
             return (
                 <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="history-heading">
-                    <div className="modal-content" style={{maxWidth: '440px', width: '95%'}}>
+                    <div className="modal-content" ref={modalRef} style={{maxWidth: '440px', width: '95%'}}>
                         <button ref={closeRef} onClick={onClose} className="modal-close-button" aria-label="Close history">
                             &times;
                         </button>
@@ -1363,7 +1428,7 @@
                         });
                     } else if (newGuesses.length >= state.gameConfig.maxGuesses) {
                         newGameStatus = 'lost';
-                        newMessage = `Game Over! The code was revealed below.`;
+                        newMessage = 'Game Over!';
                         AudioSystem.play(220, 0.3, 'sawtooth');
                         newStats = {
                             ...newStats,
@@ -1384,7 +1449,7 @@
                     }
 
                     // Feature 2: auto-eliminate colors after guess
-                    const autoEliminated = computeAutoEliminations(newGuesses, state.gameConfig.availableColors);
+                    const autoEliminated = computeAutoEliminations(newGuesses);
                     const mergedEliminations = [...new Set([...state.eliminatedColors, ...autoEliminated])];
 
                     // Feature 3: save undo snapshot (previous state before this guess)
@@ -1434,10 +1499,6 @@
                     newGuessWithHint[randomSlot] = state.secretCode[randomSlot];
                     AudioSystem.play(600);
                     return { ...state, currentGuess: newGuessWithHint, hintsRemaining: state.hintsRemaining - 1 };
-
-                case 'TOGGLE_DUPLICATES':
-                    if (state.gameStatus !== 'playing' || state.guesses.length > 0) return state;
-                    return { ...state, allowDuplicates: !state.allowDuplicates };
 
                 case 'SET_DIFFICULTY':
                     return gameReducer(state, { type: 'RESET_GAME', preset: action.preset, allowDuplicates: state.allowDuplicates });
@@ -1569,10 +1630,8 @@
             // Track previous guess for auto-advance detection
             const prevGuessRef = React.useRef(currentGuess);
 
-            // Initialize game on component mount
+            // Feature 5: re-check tutorial flag on mount (lazyInit already built a fresh game)
             React.useEffect(() => {
-                dispatch({ type: 'RESET_GAME', preset: 'medium', allowDuplicates: false });
-                // Feature 5: re-check tutorial flag after reset
                 let tutorialSeen = false;
                 try { tutorialSeen = localStorage.getItem('neonBreakerTutorialSeen') === 'true'; } catch(e) {}
                 if (!tutorialSeen) {
@@ -1580,16 +1639,16 @@
                 }
             }, []);
 
-            // Timer effect
+            // Timer effect (paused while any full-screen overlay/modal is open)
             React.useEffect(() => {
-                if (gameStatus !== 'playing') return;
+                if (gameStatus !== 'playing' || showTutorial || showRules || showHistory) return;
 
                 const timer = setInterval(() => {
                     dispatch({ type: 'INCREMENT_TIME' });
                 }, 1000);
 
                 return () => clearInterval(timer);
-            }, [gameStatus]);
+            }, [gameStatus, showTutorial, showRules, showHistory]);
 
             // Auto-scroll to latest guess
             React.useEffect(() => {
@@ -1784,8 +1843,8 @@
                         />
                     )}
 
-                    <div className="relative z-10 bg-black/60 rounded-xl shadow-2xl p-4 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 flex flex-col flex-1 min-h-0 overflow-hidden">
-                        <h1 className="text-3xl md:text-4xl font-bold text-center mb-2 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                    <div className="game-panel relative z-10 bg-black/60 rounded-xl shadow-2xl p-4 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 flex flex-col flex-1 min-h-0 overflow-hidden">
+                        <h1 className="game-title text-3xl md:text-4xl font-bold text-center mb-2 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                             NEON BREAKER
                         </h1>
 
@@ -1842,15 +1901,8 @@
                             {message}
                         </p>
 
-                        {/* Secret Code Display (revealed on win/loss) with animated flip reveal */}
-                        {gameStatus !== 'playing' && (
-                            <div className="flex justify-center mb-1" role="status" aria-live="polite">
-                                <SecretCodeReveal secretCode={secretCode} codeLength={gameConfig.codeLength} />
-                            </div>
-                        )}
-
                         {/* Past Guesses and Feedback */}
-                        <div ref={guessListRef} className="flex-1 min-h-0 overflow-y-auto mb-2 p-1 rounded-md bg-gray-700/30 border border-gray-600/30" role="list" aria-label="Past guesses and feedback">
+                        <div ref={guessListRef} className="flex-1 min-h-[140px] overflow-y-auto mb-2 p-1 rounded-md bg-gray-700/30 border border-gray-600/30" role="list" aria-label="Past guesses and feedback">
                             {guesses.map((g, index) => (
                                 <GuessRow key={index} guess={g.code} feedback={g.feedback} codeLength={gameConfig.codeLength} rowNumber={index + 1} isLatest={index === guesses.length - 1} />
                             ))}
@@ -1949,7 +2001,7 @@
 
                             <button
                                 onClick={() => dispatch({ type: 'SHOW_RULES', show: true })}
-                                className="action-btn py-1.5 px-3 text-sm bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn secondary-action-btn py-1.5 px-3 text-sm bg-yellow-700 hover:bg-yellow-800 text-white font-bold rounded-lg shadow-lg shadow-yellow-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 aria-label="Show game rules"
                             >
                                 Rules
@@ -1996,7 +2048,7 @@
                             {/* Feature 5: Tutorial button */}
                             <button
                                 onClick={() => dispatch({ type: 'SHOW_TUTORIAL', show: true })}
-                                className="action-btn py-1.5 px-3 text-sm bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-lg shadow-lg shadow-teal-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn secondary-action-btn py-1.5 px-3 text-sm bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-lg shadow-lg shadow-teal-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 aria-label="Show tutorial"
                             >
                                 Tutorial
@@ -2005,7 +2057,7 @@
                             {/* Game History button */}
                             <button
                                 onClick={() => dispatch({ type: 'SHOW_HISTORY', show: true })}
-                                className="action-btn py-1.5 px-3 text-sm bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-lg shadow-lg shadow-indigo-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                                className="action-btn secondary-action-btn py-1.5 px-3 text-sm bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-lg shadow-lg shadow-indigo-700/50 transition-all duration-200 transform hover:scale-105 active:scale-95"
                                 aria-label="View game history"
                             >
                                 History

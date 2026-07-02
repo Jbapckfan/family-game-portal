@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Shut the Box - Alford Family Game Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -231,12 +231,12 @@
             flex-shrink: 0;
         }
         .emoji-pick-btn {
-            width: 30px;
-            height: 30px;
+            width: 38px;
+            height: 38px;
             border-radius: 8px;
             border: 1.5px solid rgba(255,255,255,0.08);
             background: rgba(255,255,255,0.03);
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -594,6 +594,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
+            font-family: inherit;
             font-size: 1.2rem;
             font-weight: 800;
             cursor: pointer;
@@ -978,13 +980,13 @@
         .undo-btn {
             display: inline-block;
             margin-left: 8px;
-            padding: 4px 12px;
+            padding: 8px 14px;
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 8px;
             background: rgba(255,255,255,0.05);
             color: rgba(255,255,255,0.6);
             font-family: 'Inter', sans-serif;
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -1393,7 +1395,7 @@
         /* ====== Back Button ====== */
         .back-btn {
             position: fixed; top: 12px; left: 12px;
-            padding: 6px 14px;
+            padding: 10px 16px;
             background: rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 8px;
@@ -1549,6 +1551,16 @@
         body.light-theme .selection-info { color: rgba(0,0,0,0.5); }
         body.light-theme .message-area { color: #8b4513; }
         body.light-theme .action-btn { color: #fff; }
+        body.light-theme .rules-toggle button {
+            color: rgba(0,0,0,0.5);
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.03);
+        }
+        body.light-theme .rules-toggle button:hover {
+            border-color: rgba(139,69,19,0.35);
+            color: rgba(0,0,0,0.7);
+            background: rgba(139,69,19,0.06);
+        }
         body.light-theme .rules-panel {
             background: rgba(255,255,255,0.5);
             border-color: rgba(0,0,0,0.06);
@@ -1987,6 +1999,7 @@ function timerExpired() {
     const cp = players[currentPlayerIdx];
     if (cp.done || cp.isAI) return;
     // Auto-end turn
+    phase = 'turnend';
     cp.score = sumOpen(cp);
     cp.done = true;
     selectedTiles.clear();
@@ -1995,7 +2008,9 @@ function timerExpired() {
     setMessage(`Time's up! ${esc(cp.name)} scores <strong>${cp.score}</strong>.`);
     renderScoreboard();
     animateScoreFinalize(currentPlayerIdx);
+    renderTiles();
     updateButtons();
+    updateSelectionInfo();
     setTimeout(() => nextPlayer(), 1800);
 }
 
@@ -2331,7 +2346,7 @@ function renderScoreboard() {
             display = thisRound !== null ? thisRound : '--';
         } else {
             const total = prevTotal + (thisRound !== null ? thisRound : 0);
-            display = thisRound !== null ? total : (prevTotal > 0 ? prevTotal : '--');
+            display = thisRound !== null ? total : (p.roundScores.length > 0 ? prevTotal : '--');
         }
         const avatarHtml = p.emoji
             ? `<span class="savatar">${p.emoji}</span>`
@@ -2364,7 +2379,8 @@ function renderTiles() {
         wrapper.className = 'tile-wrapper';
         wrapper.style.cssText = 'transform-style:preserve-3d;';
 
-        const tile = document.createElement('div');
+        const tile = document.createElement('button');
+        tile.type = 'button';
         const shut = cp.shutTiles.has(t);
         const sel = selectedTiles.has(t);
         const isValid = validTileSet.has(t);
@@ -2372,6 +2388,8 @@ function renderTiles() {
             + (isValid && !shut && !sel && phase === 'select' ? ' valid-hint' : '')
             + (!canSelect || shut ? ' disabled' : '');
         tile.textContent = t;
+        tile.disabled = !canSelect || shut;
+        tile.setAttribute('aria-pressed', sel ? 'true' : 'false');
         if (canSelect && !shut) tile.onclick = () => toggleTile(t);
 
         const back = document.createElement('div');
@@ -2395,14 +2413,8 @@ function buildCubeHTML() {
     return h;
 }
 
-function renderDice() {
+function buildDiceScenes({ thrown }) {
     const row = document.getElementById('dice-row');
-
-    if (diceValues.length === 0) {
-        row.innerHTML = '';
-        return;
-    }
-
     const cp = players[currentPlayerIdx];
     const useOne = sumOpen(cp) <= 6;
     const count = useOne ? 1 : 2;
@@ -2415,11 +2427,12 @@ function renderDice() {
             scene.className = 'die-scene';
 
             const shadow = document.createElement('div');
-            shadow.className = 'die-shadow';
+            shadow.className = 'die-shadow' + (thrown ? ' thrown' : '');
 
             const cube = document.createElement('div');
             cube.className = 'die-cube';
             cube.innerHTML = buildCubeHTML();
+            if (thrown) cube.style.transition = 'none';
             cube.style.transform = 'translateY(-200px) scale(0)';
 
             scene.append(cube, shadow);
@@ -2428,32 +2441,16 @@ function renderDice() {
     }
 }
 
-function ensureDiceInDOM() {
-    const row = document.getElementById('dice-row');
-    const cp = players[currentPlayerIdx];
-    const useOne = sumOpen(cp) <= 6;
-    const count = useOne ? 1 : 2;
-
-    const scenes = row.querySelectorAll('.die-scene');
-    if (scenes.length !== count) {
-        row.innerHTML = '';
-        for (let i = 0; i < count; i++) {
-            const scene = document.createElement('div');
-            scene.className = 'die-scene';
-
-            const shadow = document.createElement('div');
-            shadow.className = 'die-shadow thrown';
-
-            const cube = document.createElement('div');
-            cube.className = 'die-cube';
-            cube.innerHTML = buildCubeHTML();
-            cube.style.transition = 'none';
-            cube.style.transform = 'translateY(-200px) scale(0)';
-
-            scene.append(cube, shadow);
-            row.appendChild(scene);
-        }
+function renderDice() {
+    if (diceValues.length === 0) {
+        document.getElementById('dice-row').innerHTML = '';
+        return;
     }
+    buildDiceScenes({ thrown: false });
+}
+
+function ensureDiceInDOM() {
+    buildDiceScenes({ thrown: true });
 }
 
 function animateThrow(targetValues) {
@@ -2815,6 +2812,7 @@ async function beginTurn() {
 
 async function rollDice() {
     if (phase !== 'roll' || rolling) return;
+    if (players[currentPlayerIdx].done) return;
     clearTurnTimer();
     rolling = true;
     updateButtons();
@@ -2838,7 +2836,7 @@ function afterRoll(cp) {
     const combos = findCombinations(openTiles, diceTotal);
 
     if (combos.length === 0) {
-        phase = 'roll';
+        phase = 'turnend';
         cp.score = sumOpen(cp);
         cp.done = true;
         validTileSet.clear();
@@ -2863,6 +2861,7 @@ function afterRoll(cp) {
 
 function toggleTile(t) {
     if (phase !== 'select' || autoConfirming) return;
+    if (players[currentPlayerIdx].done) return;
     if (selectedTiles.has(t)) selectedTiles.delete(t);
     else selectedTiles.add(t);
 
@@ -2893,68 +2892,73 @@ function getTileEl(t) {
 }
 
 function autoConfirmSelection() {
-    autoConfirming = true;
-    const cp = players[currentPlayerIdx];
-    const tilesToClose = [...selectedTiles];
+    if (players[currentPlayerIdx].done) return Promise.resolve();
+    return new Promise(resolve => {
+        autoConfirming = true;
+        const cp = players[currentPlayerIdx];
+        const tilesToClose = [...selectedTiles];
 
-    // Show matched state briefly
-    tilesToClose.forEach(t => {
-        const el = getTileEl(t);
-        if (el) {
-            el.classList.remove('selected');
-            el.classList.add('matched');
-        }
-    });
-
-    document.getElementById('selection-info').innerHTML = `<span class="match">&#10003; Closing ${tilesToClose.join(' + ')}!</span>`;
-
-    // After brief matched state, animate closing
-    setTimeout(() => {
+        // Show matched state briefly
         tilesToClose.forEach(t => {
             const el = getTileEl(t);
             if (el) {
-                el.classList.remove('matched');
-                el.classList.add('closing');
-                // Spawn particle burst from tile position
-                spawnParticleBurst(el, cp.color);
+                el.classList.remove('selected');
+                el.classList.add('matched');
             }
         });
 
-        // Play wooden clack sound for each tile (slightly staggered)
-        tilesToClose.forEach((t, i) => {
-            setTimeout(() => playTileClack(), i * 60);
-        });
+        document.getElementById('selection-info').innerHTML = `<span class="match">&#10003; Closing ${tilesToClose.join(' + ')}!</span>`;
 
-        // Track streak
-        if (!cp.turnStreak) cp.turnStreak = 0;
-        cp.turnStreak += tilesToClose.length;
-
-        // After close animation, update game state
+        // After brief matched state, animate closing
         setTimeout(() => {
-            tilesToClose.forEach(t => cp.shutTiles.add(t));
-            selectedTiles.clear();
-            validTileSet.clear();
-            autoConfirming = false;
+            tilesToClose.forEach(t => {
+                const el = getTileEl(t);
+                if (el) {
+                    el.classList.remove('matched');
+                    el.classList.add('closing');
+                    // Spawn particle burst from tile position
+                    spawnParticleBurst(el, cp.color);
+                }
+            });
 
-            if (cp.shutTiles.size === TILES) {
-                cp.score = 0;
-                cp.done = true;
-                triggerShutTheBoxCelebration();
-                renderAll();
-                animateScoreFinalize(currentPlayerIdx);
-                setTimeout(() => nextPlayer(), 3200);
-                return;
-            }
+            // Play wooden clack sound for each tile (slightly staggered)
+            tilesToClose.forEach((t, i) => {
+                setTimeout(() => playTileClack(), i * 60);
+            });
 
-            phase = 'roll';
-            setMessage('');
-            renderTiles();
-            renderScoreboard();
-            updateButtons();
-            updateSelectionInfo();
-            startTurnTimer();
-        }, 400);
-    }, 250);
+            // Track streak
+            if (!cp.turnStreak) cp.turnStreak = 0;
+            cp.turnStreak += tilesToClose.length;
+
+            // After close animation, update game state
+            setTimeout(() => {
+                tilesToClose.forEach(t => cp.shutTiles.add(t));
+                selectedTiles.clear();
+                validTileSet.clear();
+                autoConfirming = false;
+
+                if (cp.shutTiles.size === TILES) {
+                    cp.score = 0;
+                    cp.done = true;
+                    triggerShutTheBoxCelebration();
+                    renderAll();
+                    animateScoreFinalize(currentPlayerIdx);
+                    setTimeout(() => nextPlayer(), 3200);
+                    resolve();
+                    return;
+                }
+
+                phase = 'roll';
+                setMessage('');
+                renderTiles();
+                renderScoreboard();
+                updateButtons();
+                updateSelectionInfo();
+                startTurnTimer();
+                resolve();
+            }, 400);
+        }, 250);
+    });
 }
 
 function nextPlayer() {
@@ -2976,7 +2980,7 @@ function nextPlayer() {
 
 async function aiRoll() {
     const cp = players[currentPlayerIdx];
-    if (cp.done) { nextPlayer(); return; }
+    if (cp.done) return;
 
     const useOne = sumOpen(cp) <= 6;
     const d1 = Math.floor(Math.random() * 6) + 1;
@@ -3014,21 +3018,14 @@ async function aiRoll() {
             updateSelectionInfo();
 
             // Use autoConfirmSelection for matched/closing animation + sound
-            setTimeout(() => {
-                autoConfirmSelection();
-
-                // After autoConfirmSelection finishes, continue AI turn or end
-                // autoConfirmSelection sets autoConfirming=false when done and handles shut-the-box
-                // We need to wait for it to complete, then either continue rolling or it already called nextPlayer
-                const waitForConfirm = setInterval(() => {
-                    if (!autoConfirming) {
-                        clearInterval(waitForConfirm);
-                        // If the player is not done and phase is 'roll', continue AI rolling
-                        if (!cp.done && phase === 'roll') {
-                            setTimeout(() => aiRoll(), AI_DELAY);
-                        }
-                    }
-                }, 100);
+            setTimeout(async () => {
+                // autoConfirmSelection resolves once state is committed
+                // (it handles shut-the-box and calls nextPlayer itself)
+                await autoConfirmSelection();
+                // If the player is not done and phase is 'roll', continue AI rolling
+                if (!cp.done && phase === 'roll') {
+                    setTimeout(() => aiRoll(), AI_DELAY);
+                }
             }, 400);
         }, AI_DELAY);
     }
@@ -3046,7 +3043,7 @@ function pickBestCombo(combos, difficulty) {
         // Prefer combos with more tiles (closing more tiles keeps options open)
         combos.sort((a, b) => {
             if (b.length !== a.length) return b.length - a.length;
-            // Tie-break: prefer lower max tile
+            // Tie-break: prefer the combo whose smallest tile is lowest
             return Math.min(...a) - Math.min(...b);
         });
         return combos[0];

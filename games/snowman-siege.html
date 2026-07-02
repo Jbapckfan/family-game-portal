@@ -80,6 +80,7 @@
     // ===== CONSTANTS =====
     const GAME_WIDTH = 400;
     const GAME_HEIGHT = 800;
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
     const BASE_MAX_HP = 5;
     const BASE_MAX_AMMO = 40;
     const BASE_FIRE_RATE = 1000 / 12;
@@ -186,20 +187,31 @@
     });
 
     // ===== AUDIO =====
+    // One shared AudioContext, created/resumed inside a real user gesture
+    // (iOS Safari requires this, and caps concurrent contexts).
+    let audioCtx = null;
+    const initAudio = () => {
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        } catch (e) {}
+    };
+
     const playSound = (freq, type, duration, volume = 0.1) => {
         try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            const ctx = audioCtx;
+            if (!ctx || ctx.state !== 'running') return;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
             osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq / 2, audioCtx.currentTime + duration);
-            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq / 2, ctx.currentTime + duration);
+            gain.gain.setValueAtTime(volume, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            gain.connect(ctx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            osc.stop(ctx.currentTime + duration);
         } catch (e) {}
     };
 
@@ -217,6 +229,7 @@
             setUpgrades(newUpgrades);
             saveSnowflakes(newFlakes);
             saveUpgrades(newUpgrades);
+            initAudio();
             playSound(600, 'sine', 0.15, 0.06);
         };
 
@@ -419,7 +432,7 @@
         return (
             <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
                 <div className="flex justify-between items-start pt-2">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col max-[400px]:pt-10">
                         <p className="text-white/50 text-[10px] font-bold uppercase tracking-widest">Score</p>
                         <p className="text-white text-2xl font-mono leading-none">{status.score.toLocaleString()}</p>
                         <p className="text-slate-400 text-[10px] font-mono mt-0.5">Wave {status.wave}</p>
@@ -549,10 +562,13 @@
             reloadStartTime: 0,
             reloadTime: effectiveStats.reloadTime,
             lastFireTime: 0,
+            lastFrameTime: Date.now(),
             lastSpawnTime: 0,
             lastWaveTime: Date.now(),
             isPaused: false,
+            pausedAt: 0,
             isMouseDown: false,
+            activePointerId: null,
             mousePos: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 },
             wave: effectiveStats.startWave,
             damage: effectiveStats.damage,
@@ -598,6 +614,7 @@
 
         const requestRef = useRef();
         const waveBannerTimeoutRef = useRef();
+        const lastStatusRef = useRef({});
 
         useEffect(() => {
             stateRef.current.backgroundSnow = Array.from({ length: 50 }, () => ({
@@ -663,33 +680,41 @@
             }, 2000);
         };
 
-        const updateMousePos = (e) => {
-            if (!canvasRef.current) return;
+        const getGamePos = (e) => {
+            if (!canvasRef.current) return null;
             const rect = canvasRef.current.getBoundingClientRect();
-            const scaleX = GAME_WIDTH / rect.width;
-            const scaleY = GAME_HEIGHT / rect.height;
-            stateRef.current.mousePos = {
-                x: (e.clientX - rect.left) * scaleX,
-                y: (e.clientY - rect.top) * scaleY
+            // Account for object-contain letterboxing: map into the actual
+            // rendered content box, not the element box.
+            const scale = Math.min(rect.width / GAME_WIDTH, rect.height / GAME_HEIGHT);
+            const offX = (rect.width - GAME_WIDTH * scale) / 2;
+            const offY = (rect.height - GAME_HEIGHT * scale) / 2;
+            return {
+                x: (e.clientX - rect.left - offX) / scale,
+                y: (e.clientY - rect.top - offY) / scale
             };
         };
 
+        const updateMousePos = (e) => {
+            const pos = getGamePos(e);
+            if (pos) stateRef.current.mousePos = pos;
+        };
+
         const handlePointerDown = useCallback((e) => {
-            if (stateRef.current.isPaused) return;
-            stateRef.current.isMouseDown = true;
+            initAudio();
+            const s = stateRef.current;
+            if (s.isPaused) return;
+            // Only track one finger: ignore extra touches while one is held
+            if (s.activePointerId != null && e.pointerId !== s.activePointerId) return;
+            s.activePointerId = e.pointerId;
+            s.isMouseDown = true;
             updateMousePos(e);
 
             // Check power-up click collection
-            const s = stateRef.current;
-            const rect = canvasRef.current ? canvasRef.current.getBoundingClientRect() : null;
-            if (rect) {
-                const scaleX = GAME_WIDTH / rect.width;
-                const scaleY = GAME_HEIGHT / rect.height;
-                const clickX = (e.clientX - rect.left) * scaleX;
-                const clickY = (e.clientY - rect.top) * scaleY;
+            const pos = getGamePos(e);
+            if (pos) {
                 for (let i = s.powerUps.length - 1; i >= 0; i--) {
                     const pu = s.powerUps[i];
-                    const dist = Math.sqrt((clickX - pu.x) ** 2 + (clickY - pu.y) ** 2);
+                    const dist = Math.sqrt((pos.x - pu.x) ** 2 + (pos.y - pu.y) ** 2);
                     if (dist < 30) {
                         collectPowerUp(pu);
                         s.powerUps.splice(i, 1);
@@ -699,9 +724,11 @@
             }
         }, []);
 
-        const handlePointerUp = useCallback(() => {
-            stateRef.current.isMouseDown = false;
+        const handlePointerUp = useCallback((e) => {
             const s = stateRef.current;
+            if (s.activePointerId != null && e.pointerId !== s.activePointerId) return;
+            s.activePointerId = null;
+            s.isMouseDown = false;
             if (s.ammo < s.maxAmmo && !s.reloading) {
                 s.reloading = true;
                 s.reloadStartTime = Date.now();
@@ -710,12 +737,46 @@
         }, []);
 
         const handlePointerMove = useCallback((e) => {
+            const s = stateRef.current;
+            if (s.activePointerId != null && e.pointerId !== s.activePointerId) return;
             updateMousePos(e);
         }, []);
 
         const togglePause = useCallback(() => {
-            stateRef.current.isPaused = !stateRef.current.isPaused;
-            setStatus(prev => ({ ...prev, isPaused: stateRef.current.isPaused }));
+            const s = stateRef.current;
+            const now = Date.now();
+            if (!s.isPaused) {
+                // Pausing: remember when, so clocks can be shifted on resume
+                s.pausedAt = now;
+            } else {
+                // Resuming: shift every stored timestamp forward by the pause
+                // duration so waves/reloads/power-ups don't advance while paused
+                const delta = now - (s.pausedAt || now);
+                s.lastWaveTime += delta;
+                s.lastSpawnTime += delta;
+                s.lastFireTime += delta;
+                s.lastFrameTime += delta;
+                s.reloadStartTime += delta;
+                s.rapidFireEndTime += delta;
+                s.spreadShotEndTime += delta;
+                s.freezeEndTime += delta;
+                s.waveSpawnPauseEnd += delta;
+                s.comboAnimTimer += delta;
+                s.enemies.forEach(en => {
+                    en.spawnTime += delta;
+                    en.chargeTimer += delta;
+                    en.chargeEndTime += delta;
+                    en.strafeTimer += delta;
+                    en.lastThrowTime += delta;
+                    if (en.critFlashTime) en.critFlashTime += delta;
+                });
+                s.pendingSpawns.forEach(ps => { ps.warnTime += delta; ps.spawnTime += delta; });
+                s.powerUps.forEach(pu => { pu.spawnTime += delta; });
+                s.meltingEnemies.forEach(me => { me.meltStart += delta; });
+                s.snowPuddles.forEach(pd => { pd.spawnTime += delta; });
+            }
+            s.isPaused = !s.isPaused;
+            setStatus(prev => ({ ...prev, isPaused: s.isPaused }));
         }, []);
 
         const spawnParticles = (x, y, color, count, velocityMult = 1) => {
@@ -812,6 +873,12 @@
 
             const now = Date.now();
 
+            // Delta-time normalization: dt = 1 at 60fps, so per-frame motion
+            // stays the same wall-clock speed at 30Hz or 120Hz displays.
+            // The 50ms clamp prevents teleporting after tab-switch.
+            const dt = Math.min(50, now - s.lastFrameTime) / (1000 / 60);
+            s.lastFrameTime = now;
+
             // Combo animation timer reset
             if (s.comboJustIncreased && now - s.comboAnimTimer > 300) {
                 s.comboJustIncreased = false;
@@ -847,7 +914,7 @@
 
             // Background Snow Move
             s.backgroundSnow.forEach(sn => {
-                sn.y += sn.s;
+                sn.y += sn.s * dt;
                 if (sn.y > GAME_HEIGHT) sn.y = -10;
             });
 
@@ -986,8 +1053,9 @@
             let missedShot = false;
             for (let i = s.projectiles.length - 1; i >= 0; i--) {
                 const p = s.projectiles[i];
-                p.x += p.vx;
-                p.y += p.vy;
+                if (!p) continue;
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
 
                 if (p.x < -100 || p.x > GAME_WIDTH + 100 || p.y < -100 || p.y > GAME_HEIGHT + 100) {
                     if (p.isPlayerOwned) missedShot = true;
@@ -1043,6 +1111,26 @@
                         }
                     }
                     if (hit) continue;
+
+                    // Intercept incoming enemy snowballs (skill-based defense)
+                    let intercepted = false;
+                    for (let j = s.projectiles.length - 1; j >= 0; j--) {
+                        const ep = s.projectiles[j];
+                        if (ep === p || ep.isPlayerOwned) continue;
+                        const epDist = Math.sqrt((p.x - ep.x) ** 2 + (p.y - ep.y) ** 2);
+                        if (epDist < p.radius + ep.radius) {
+                            s.score += 25;
+                            spawnParticles(ep.x, ep.y, COLORS.ENEMY_PROJECTILE, 6, 1.5);
+                            playSound(500, 'triangle', 0.08, 0.05);
+                            s.projectiles.splice(j, 1);
+                            const pi = s.projectiles.indexOf(p);
+                            if (pi !== -1) s.projectiles.splice(pi, 1);
+                            if (j < i) i--; // removed an element below i; keep outer index aligned
+                            intercepted = true;
+                            break;
+                        }
+                    }
+                    if (intercepted) continue;
                 } else {
                     const playerX = GAME_WIDTH / 2;
                     const playerY = GAME_HEIGHT - 60;
@@ -1085,7 +1173,7 @@
                     e.x = e.spawnX + sineOffset;
                     // Clamp to bounds
                     e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
-                    e.y += e.baseSpeed * freezeMult;
+                    e.y += e.baseSpeed * freezeMult * dt;
 
                 } else if (e.type === EnemyType.CHUNKY) {
                     // March straight with periodic charge bursts
@@ -1098,26 +1186,27 @@
                         e.chargeTimer = now + 2000 + Math.random() * 2000;
                     }
                     const speedMult = e.isCharging ? 2.0 : 1.0;
-                    e.y += e.baseSpeed * speedMult * freezeMult;
+                    e.y += e.baseSpeed * speedMult * freezeMult * dt;
                     // Slight horizontal wobble
-                    e.x += Math.sin(now * 0.003 + e.spawnTime) * 0.5 * freezeMult;
+                    e.x += Math.sin(now * 0.003 + e.spawnTime) * 0.5 * freezeMult * dt;
                     e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
 
                 } else if (e.type === EnemyType.THROWER) {
                     // Lateral strafing while advancing slowly
-                    e.y += e.baseSpeed * 0.6 * freezeMult;
+                    e.y += e.baseSpeed * 0.6 * freezeMult * dt;
                     // Strafe direction changes
                     if (now >= e.strafeTimer) {
                         e.strafeDir *= -1;
                         e.strafeTimer = now + 800 + Math.random() * 1500;
                     }
-                    e.x += e.strafeDir * 2.5 * freezeMult;
+                    e.x += e.strafeDir * 2.5 * freezeMult * dt;
                     e.x = Math.max(e.radius, Math.min(GAME_WIDTH - e.radius, e.x));
 
                     // Throwing logic
                     const throwInterval = Math.max(1200, 3000 - s.wave * 100);
                     if (now - e.lastThrowTime > throwInterval) {
-                        const dx = (GAME_WIDTH / 2) - e.x;
+                        // Aim scatter (+/-30px) so some throws sail wide
+                        const dx = (GAME_WIDTH / 2) + (Math.random() - 0.5) * 60 - e.x;
                         const dy = (GAME_HEIGHT - 60) - e.y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
                         s.projectiles.push({
@@ -1153,7 +1242,7 @@
             // Power-ups update
             for (let i = s.powerUps.length - 1; i >= 0; i--) {
                 const pu = s.powerUps[i];
-                pu.y += POWER_UP_FALL_SPEED;
+                pu.y += POWER_UP_FALL_SPEED * dt;
 
                 // Auto-collect when reaching launcher area
                 if (pu.y >= GAME_HEIGHT - 80) {
@@ -1171,9 +1260,9 @@
             // Particles
             for (let i = s.particles.length - 1; i >= 0; i--) {
                 const p = s.particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= 0.03;
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.life -= 0.03 * dt;
                 if (p.life <= 0) s.particles.splice(i, 1);
             }
 
@@ -1206,23 +1295,37 @@
             const cycleIndex = Math.floor((s.wave - 1) / 5);
             const isNight = cycleIndex % 2 === 1;
             const targetNight = isNight ? 1 : 0;
-            // Smoothly transition
-            s.nightCycleTransition += (targetNight - s.nightCycleTransition) * 0.02;
+            // Smoothly transition (frame-rate independent easing)
+            s.nightCycleTransition += (targetNight - s.nightCycleTransition) * (1 - Math.pow(0.98, dt));
 
-            setStatus(prev => ({
-                ...prev,
-                score: s.score,
-                hp: Math.max(0, s.hp),
-                maxHp: s.maxHp,
-                ammo: s.ammo,
-                maxAmmo: s.maxAmmo,
-                reloading: s.reloading,
-                reloadProgress: s.reloading ? (now - s.reloadStartTime) / s.reloadTime : 0,
-                wave: s.wave,
-                rapidFireActive,
-                spreadShotActive,
-                freezeActive
-            }));
+            // Only re-render the React HUD when something visible changed
+            // (reloadProgress quantized to 20 steps so it isn't every frame)
+            const hpNow = Math.max(0, s.hp);
+            const reloadProgress = s.reloading
+                ? Math.min(1, Math.round(((now - s.reloadStartTime) / s.reloadTime) * 20) / 20)
+                : 0;
+            const ls = lastStatusRef.current;
+            if (ls.score !== s.score || ls.hp !== hpNow || ls.maxHp !== s.maxHp ||
+                ls.ammo !== s.ammo || ls.maxAmmo !== s.maxAmmo ||
+                ls.reloading !== s.reloading || ls.reloadProgress !== reloadProgress ||
+                ls.wave !== s.wave || ls.rapidFireActive !== rapidFireActive ||
+                ls.spreadShotActive !== spreadShotActive || ls.freezeActive !== freezeActive) {
+                const nextStatus = {
+                    score: s.score,
+                    hp: hpNow,
+                    maxHp: s.maxHp,
+                    ammo: s.ammo,
+                    maxAmmo: s.maxAmmo,
+                    reloading: s.reloading,
+                    reloadProgress,
+                    wave: s.wave,
+                    rapidFireActive,
+                    spreadShotActive,
+                    freezeActive
+                };
+                lastStatusRef.current = nextStatus;
+                setStatus(prev => ({ ...prev, ...nextStatus }));
+            }
 
             // Combo display update
             if (s.comboMultiplier > 1) {
@@ -1241,11 +1344,11 @@
                 setComboDisplay(null);
             }
 
-            draw(freezeActive);
+            draw(freezeActive, dt);
             requestRef.current = requestAnimationFrame(update);
         }, [onGameOver]);
 
-        const draw = (freezeActive) => {
+        const draw = (freezeActive, dt = 1) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -1253,11 +1356,13 @@
 
             const s = stateRef.current;
             const now = Date.now();
+            // Retina backing store: draw in game coordinates scaled by DPR
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
             ctx.save();
 
             if (s.screenShake > 0) {
                 ctx.translate((Math.random() - 0.5) * s.screenShake, (Math.random() - 0.5) * s.screenShake);
-                s.screenShake *= 0.88;
+                s.screenShake *= Math.pow(0.88, dt);
             }
 
             // Background Gradient with Night/Day Cycle
@@ -1859,17 +1964,6 @@
                 ctx.fillText('RELOADING', chX, chY + 40);
             }
 
-            // Combo display on canvas (backup for overlay)
-            if (s.comboMultiplier > 1) {
-                ctx.fillStyle = 'rgba(253, 224, 71, 0.9)';
-                ctx.font = 'bold 18px system-ui';
-                ctx.textAlign = 'center';
-                ctx.fillText(`x${s.comboMultiplier}`, chX, chY - 30);
-                ctx.font = '9px monospace';
-                ctx.fillStyle = 'rgba(253, 224, 71, 0.6)';
-                ctx.fillText(`${s.comboHits} hits`, chX, chY - 18);
-            }
-
             ctx.restore();
         };
 
@@ -1888,15 +1982,17 @@
                 onPointerUp={handlePointerUp}
                 onPointerMove={handlePointerMove}
                 onPointerLeave={handlePointerUp}
+                onPointerCancel={handlePointerUp}
             >
                 <canvas
                     ref={canvasRef}
-                    width={GAME_WIDTH}
-                    height={GAME_HEIGHT}
+                    width={GAME_WIDTH * DPR}
+                    height={GAME_HEIGHT * DPR}
                     className="w-full h-full object-contain bg-slate-900"
                 />
                 <GameHUDView status={status} onPause={togglePause} />
                 <WaveBannerOverlay waveBanner={waveBanner} />
+                <ComboOverlay combo={comboDisplay} />
 
                 {status.isPaused && (
                     <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center z-40">

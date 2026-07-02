@@ -288,7 +288,7 @@
             border: 2px solid transparent;
             transition: all 0.2s;
             cursor: pointer;
-            min-height: 36px;
+            min-height: 44px;
         }
         .difficulty-btn.active {
             transform: scale(1.05);
@@ -324,6 +324,11 @@
             border-radius: 0.25rem;
             cursor: pointer;
             transition: background 0.2s;
+            min-height: 44px;
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .stats-reset-btn:hover { background: rgba(255,255,255,0.2); }
         /* Mute toggle */
@@ -387,7 +392,7 @@
             border: 2px solid transparent;
             transition: all 0.2s;
             cursor: pointer;
-            min-height: 30px;
+            min-height: 44px;
             color: #fff;
         }
         .theme-btn.active {
@@ -651,12 +656,13 @@
 
         // --- AI LOGIC ---
 
-        const minimax = (flatBoard, isMaximizing, aiPlayer, alpha, beta) => {
+        const minimax = (flatBoard, isMaximizing, aiPlayer, alpha, beta, depth) => {
             const opponent = aiPlayer === PLAYERS.X ? PLAYERS.O : PLAYERS.X;
             const board2d = unflatten(flatBoard);
 
-            if (checkWinner(board2d, aiPlayer)) return 10;
-            if (checkWinner(board2d, opponent)) return -10;
+            // Depth-adjusted scores: prefer the fastest win and the slowest loss
+            if (checkWinner(board2d, aiPlayer)) return 10 - depth;
+            if (checkWinner(board2d, opponent)) return depth - 10;
             if (flatBoard.every(cell => cell !== '')) return 0;
 
             const emptyCells = [];
@@ -668,7 +674,7 @@
                 let best = -Infinity;
                 for (const idx of emptyCells) {
                     flatBoard[idx] = aiPlayer;
-                    const score = minimax(flatBoard, false, aiPlayer, alpha, beta);
+                    const score = minimax(flatBoard, false, aiPlayer, alpha, beta, depth + 1);
                     flatBoard[idx] = '';
                     best = Math.max(best, score);
                     alpha = Math.max(alpha, best);
@@ -679,7 +685,7 @@
                 let best = Infinity;
                 for (const idx of emptyCells) {
                     flatBoard[idx] = opponent;
-                    const score = minimax(flatBoard, true, aiPlayer, alpha, beta);
+                    const score = minimax(flatBoard, true, aiPlayer, alpha, beta, depth + 1);
                     flatBoard[idx] = '';
                     best = Math.min(best, score);
                     beta = Math.min(beta, best);
@@ -697,7 +703,7 @@
             for (let i = 0; i < 9; i++) {
                 if (flatBoard[i] === '') {
                     flatBoard[i] = aiPlayer;
-                    const score = minimax(flatBoard, false, aiPlayer, -Infinity, Infinity);
+                    const score = minimax(flatBoard, false, aiPlayer, -Infinity, Infinity, 1);
                     flatBoard[i] = '';
                     if (score > bestScore) {
                         bestScore = score;
@@ -768,6 +774,8 @@
             let particles = [];
             let canvas = null;
             let ctx = null;
+            let cssW = 0;
+            let cssH = 0;
 
             const PARTICLE_COUNT = 80;
             const COLORS = ['#FF007F', '#00FFFF', '#FFFF00', '#FF6600', '#00FF00', '#FF00FF', '#4488FF'];
@@ -794,7 +802,7 @@
 
             const update = () => {
                 if (!canvas || !ctx) return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, cssW, cssH);
 
                 let alive = false;
                 for (let i = 0; i < particles.length; i++) {
@@ -837,12 +845,19 @@
                 canvas = canvasEl;
                 if (!canvas) return;
                 ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                // Size the backing store for the device pixel ratio so confetti is
+                // crisp on Retina displays. Dimensions are re-read on every burst,
+                // so a rotation before the next win is picked up automatically.
+                const dpr = window.devicePixelRatio || 1;
+                cssW = window.innerWidth;
+                cssH = window.innerHeight;
+                canvas.width = cssW * dpr;
+                canvas.height = cssH * dpr;
+                ctx.scale(dpr, dpr);
 
                 particles = [];
                 for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    particles.push(createParticle(canvas.width, canvas.height));
+                    particles.push(createParticle(cssW, cssH));
                 }
                 animFrame = requestAnimationFrame(update);
             };
@@ -1124,6 +1139,10 @@
             const [statsPvp, setStatsPvp] = React.useState(() => loadStats(STATS_KEY_PVP));
             const [statsPvai, setStatsPvai] = React.useState(() => loadStats(STATS_KEY_PVAI));
 
+            // Two-tap confirm for the destructive stats Reset button
+            const [confirmingStatsReset, setConfirmingStatsReset] = React.useState(false);
+            const statsResetTimeoutRef = React.useRef(null);
+
             // Ref to hold AI timeout for proper cleanup
             const aiTimeoutRef = React.useRef(null);
             const boardRef = React.useRef(board);
@@ -1157,6 +1176,10 @@
                     if (replayTimeoutRef.current !== null) {
                         clearTimeout(replayTimeoutRef.current);
                         replayTimeoutRef.current = null;
+                    }
+                    if (statsResetTimeoutRef.current !== null) {
+                        clearTimeout(statsResetTimeoutRef.current);
+                        statsResetTimeoutRef.current = null;
                     }
                     ConfettiEngine.stop();
                 };
@@ -1297,7 +1320,7 @@
                         setAiThinking(false);
                     }
                 };
-            }, [board, currentPlayer, gameMode, winner, isPaused, aiThinking, handleAIMove, aiPlayer, isReplaying]);
+            }, [board, currentPlayer, gameMode, winner, isPaused, handleAIMove, aiPlayer, isReplaying]);
 
             // Handle cell click from UI
             const handleCellClick = React.useCallback((rowIndex, colIndex) => {
@@ -1325,23 +1348,17 @@
             // Undo handler
             const handleUndo = React.useCallback(() => {
                 if (moveHistory.length === 0 || winner || aiThinking || isPaused || isReplaying) return;
+                // In PvAI the human must have actually moved: with only the AI's
+                // opening move in history there is nothing of the human's to undo.
+                if (gameMode === GAME_MODES.PVAI && moveHistory.length < 2 && humanPlayer !== PLAYERS.X) return;
 
-                if (gameMode === GAME_MODES.PVAI) {
-                    if (moveHistory.length >= 2) {
-                        const playerState = moveHistory[moveHistory.length - 2];
-                        setBoard(playerState.board);
-                        setCurrentPlayer(playerState.currentPlayer);
-                        setMoveHistory(prev => prev.slice(0, -2));
-                        setGameMoves(prev => prev.slice(0, -2));
-                        setMessage(`${getPlayerName(playerState.currentPlayer)}'s turn`);
-                    } else if (moveHistory.length === 1) {
-                        const prevState = moveHistory[moveHistory.length - 1];
-                        setBoard(prevState.board);
-                        setCurrentPlayer(prevState.currentPlayer);
-                        setMoveHistory([]);
-                        setGameMoves(prev => prev.slice(0, -1));
-                        setMessage(`${getPlayerName(prevState.currentPlayer)}'s turn`);
-                    }
+                if (gameMode === GAME_MODES.PVAI && moveHistory.length >= 2) {
+                    const playerState = moveHistory[moveHistory.length - 2];
+                    setBoard(playerState.board);
+                    setCurrentPlayer(playerState.currentPlayer);
+                    setMoveHistory(prev => prev.slice(0, -2));
+                    setGameMoves(prev => prev.slice(0, -2));
+                    setMessage(`${getPlayerName(playerState.currentPlayer)}'s turn`);
                 } else {
                     const prevState = moveHistory[moveHistory.length - 1];
                     setBoard(prevState.board);
@@ -1350,9 +1367,10 @@
                     setGameMoves(prev => prev.slice(0, -1));
                     setMessage(`${getPlayerName(prevState.currentPlayer)}'s turn`);
                 }
-            }, [moveHistory, winner, aiThinking, isPaused, gameMode, isReplaying, nameX, nameO]);
+            }, [moveHistory, winner, aiThinking, isPaused, gameMode, isReplaying, humanPlayer, nameX, nameO]);
 
-            const canUndo = moveHistory.length > 0 && !winner && !aiThinking && !isPaused && !isReplaying;
+            const canUndo = moveHistory.length > 0 && !winner && !aiThinking && !isPaused && !isReplaying &&
+                (gameMode !== GAME_MODES.PVAI || moveHistory.length >= 2 || humanPlayer === PLAYERS.X);
 
             // --- Feature 4: Game Replay ---
             const startReplay = React.useCallback(() => {
@@ -1520,6 +1538,25 @@
                     setStatsPvai(empty);
                     setStreakPvai(0);
                     saveStreak(STREAK_KEY_PVAI, 0);
+                }
+            };
+
+            // Stats Reset is destructive (wipes W/L/D and streak) - require a
+            // second tap within 3 seconds to confirm.
+            const handleStatsResetClick = () => {
+                if (confirmingStatsReset) {
+                    if (statsResetTimeoutRef.current !== null) {
+                        clearTimeout(statsResetTimeoutRef.current);
+                        statsResetTimeoutRef.current = null;
+                    }
+                    setConfirmingStatsReset(false);
+                    resetStats(currentStatsKey);
+                } else {
+                    setConfirmingStatsReset(true);
+                    statsResetTimeoutRef.current = setTimeout(() => {
+                        statsResetTimeoutRef.current = null;
+                        setConfirmingStatsReset(false);
+                    }, 3000);
                 }
             };
 
@@ -1818,17 +1855,26 @@
 
                         {/* Stats Bar (Feature 1: includes streak) */}
                         <div className="stats-bar" aria-label="Game statistics">
-                            <span className="stat-win" title="Wins">W: {currentStats.wins}</span>
-                            <span className="stat-loss" title="Losses">L: {currentStats.losses}</span>
+                            {gameMode === GAME_MODES.PVP ? (
+                                <React.Fragment>
+                                    <span className="stat-win" title={`${getPlayerName(PLAYERS.X)} wins`}>{getPlayerName(PLAYERS.X)}: {currentStats.wins}</span>
+                                    <span className="stat-loss" title={`${getPlayerName(PLAYERS.O)} wins`}>{getPlayerName(PLAYERS.O)}: {currentStats.losses}</span>
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <span className="stat-win" title="Wins">W: {currentStats.wins}</span>
+                                    <span className="stat-loss" title="Losses">L: {currentStats.losses}</span>
+                                </React.Fragment>
+                            )}
                             <span className="stat-draw" title="Draws">D: {currentStats.draws}</span>
                             <span className="stat-streak" title="Win Streak">Streak: {currentStreak}</span>
                             <button
                                 className="stats-reset-btn"
-                                onClick={() => resetStats(currentStatsKey)}
-                                aria-label="Reset statistics"
+                                onClick={handleStatsResetClick}
+                                aria-label={confirmingStatsReset ? 'Tap again to confirm resetting statistics' : 'Reset statistics'}
                                 title="Reset stats"
                             >
-                                Reset
+                                {confirmingStatsReset ? 'Sure?' : 'Reset'}
                             </button>
                         </div>
 

@@ -69,6 +69,16 @@
         .disc-winner {
           animation: win-pulse 0.9s ease-in-out infinite;
         }
+        /* Drop-preview ghost disc: only show on hover for hover-capable pointers,
+           so it never sticks after a touch tap on iPad. */
+        .col-preview {
+          opacity: 0;
+        }
+        @media (hover: hover) and (pointer: fine) {
+          .group:hover .col-preview {
+            opacity: 1;
+          }
+        }
         button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
             outline: 2px solid #60a5fa;
             outline-offset: 2px;
@@ -315,7 +325,6 @@
                 <button
                     onClick={() => onDrop(col)}
                     disabled={disabled || isFull}
-                    role="gridcell"
                     aria-label={`Column ${col + 1}${isFull ? ', full' : `, drop ${info.name} disc here`}`}
                     className="relative flex-1 h-full disabled:cursor-not-allowed group"
                     style={{ minWidth: '44px' }}
@@ -330,7 +339,7 @@
                             ))}
                         </div>
                         {!disabled && !isFull && (
-                            <div className="absolute inset-x-0 top-0 h-full opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity pointer-events-none" aria-hidden="true">
+                            <div className="absolute inset-x-0 top-0 h-full col-preview group-focus-visible:opacity-100 transition-opacity pointer-events-none" aria-hidden="true">
                                 <div
                                     className="w-full rounded-full mx-auto"
                                     style={{
@@ -456,7 +465,7 @@
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950/50 to-black" aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 w-full max-w-lg mx-auto text-center">
-                        <header className="py-6">
+                        <header className="pt-16 pb-6 sm:py-6">
                             <div className="flex items-center justify-center gap-3">
                                 <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-400 via-blue-300 to-yellow-300 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                                     CONNECT FOUR
@@ -504,7 +513,7 @@
                             }}
                         >
                             <div
-                                role="grid"
+                                role="group"
                                 aria-label={`Connect Four board, 7 columns by 6 rows. ${statusText}`}
                                 className="relative w-full aspect-[7/6] flex gap-1 md:gap-1.5"
                             >

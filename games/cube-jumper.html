@@ -20,9 +20,9 @@
 
   /* ── UI LAYER ── */
   #ui-layer { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10; }
-  #progress-bar { position:absolute; top:0; left:0; height:6px; background:linear-gradient(90deg,#0f0,#0f0); transition:width 0.08s linear; box-shadow:0 0 8px rgba(0,255,0,0.3); width:0%; }
+  #progress-bar { position:absolute; top:0; left:0; height:6px; background:linear-gradient(90deg,#0f0,#0f0); width:0%; }
   #score-display { position:absolute; top:24px; right:32px; font-family:'Space Mono',monospace; font-size:17px; letter-spacing:3px; color:rgba(255,255,255,0.45); display:none; }
-  #level-name-hud { position:absolute; top:24px; left:32px; font-size:13px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.25); display:none; }
+  #level-name-hud { position:absolute; top:24px; left:96px; font-size:13px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.25); display:none; }
   #attempt-display { position:absolute; top:44px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.2); display:none; opacity:0; animation:fadeInAtt 0.8s ease-out forwards; }
   @keyframes fadeInAtt { 0%{opacity:0;transform:translateY(-6px)} 100%{opacity:1;transform:translateY(0)} }
   #mode-display { position:absolute; top:64px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.3); display:none; }
@@ -58,8 +58,8 @@
   .home-link:hover { color:rgba(255,255,255,0.6); }
 
   /* Level select */
-  .level-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:28px; max-width:480px; max-height:330px; overflow-y:auto; }
-  .lvl-card { width:86px; padding:12px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.35); font-family:'Space Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.3s; pointer-events:all; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(72px,1fr)); gap:8px; margin-bottom:28px; width:min(480px,92vw); max-width:480px; max-height:330px; overflow-y:auto; }
+  .lvl-card { padding:12px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.35); font-family:'Space Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.3s; pointer-events:all; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
   .lvl-card:hover,.lvl-card.active { border-color:rgba(192,132,252,0.45); background:rgba(192,132,252,0.08); color:#c084fc; transform:translateY(-2px); box-shadow:0 4px 20px rgba(192,132,252,0.15); }
   .lvl-card.locked { opacity:0.25; pointer-events:none; }
   .lvl-num { font-size:20px; font-weight:700; }
@@ -1406,7 +1406,19 @@ const particles = new Particles();
 const LEVELS = buildLevels().map(stretchLevel);
 
 let W, H, groundY, ceilingY;
-function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; groundY=H*0.73; ceilingY=H*0.12; }
+// Cached static render layers (sky, vignette, parallax tiles) — rebuilt on resize/theme change
+const staticCache = { key:'', sky:null, vignette:null, parallax:null };
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  groundY = H * 0.73;
+  // Fixed-height gameplay arena: don't let tall viewports open free air above corridor obstacles
+  ceilingY = Math.max(H * 0.05, groundY - 300);
+  staticCache.key = '';
+}
 resize();
 window.addEventListener('resize', resize);
 
@@ -1461,7 +1473,7 @@ function getStarRating(orbPercent) {
 
 let jumpPressed = false;
 let jumpHeld = false;
-function onJumpDown() { jumpPressed = true; jumpHeld = true; }
+function onJumpDown() { if (audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume(); jumpPressed = true; jumpHeld = true; }
 function onJumpUp() { jumpHeld = false; }
 window.addEventListener('keydown', e => { if((e.code==='Space'||e.code==='ArrowUp')&&!e.repeat){e.preventDefault();onJumpDown();} });
 window.addEventListener('keyup', e => { if(e.code==='Space'||e.code==='ArrowUp'){onJumpUp();} });
@@ -1469,6 +1481,8 @@ canvas.addEventListener('mousedown', e => { if(state==='playing')onJumpDown(); }
 canvas.addEventListener('mouseup', e => { onJumpUp(); });
 canvas.addEventListener('touchstart', e => { if(state==='playing'){e.preventDefault();onJumpDown();} }, {passive:false});
 canvas.addEventListener('touchend', e => { onJumpUp(); });
+// Recover audio after iPadOS suspends the AudioContext (app switch, screen lock, etc.)
+document.addEventListener('visibilitychange', () => { if (!document.hidden && audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume(); });
 
 const modeIcons = { cube:"\u25A0", ship:"\u25B6", wave:"\u2248", ball:"\u25CF", ufo:"\u25D2", robot:"\u2593", spider:"\u2726" };
 
@@ -1528,6 +1542,7 @@ function deepCloneLevel(lv) {
 
 function startGame() {
   audio.init(); audio.reset();
+  if (audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume();
   state = 'playing';
   const lvDef = LEVELS[selectedLevel];
   level = deepCloneLevel(lvDef);
@@ -1546,6 +1561,7 @@ function startGame() {
   beatPulse = 0;
   cameraX = 0; score = 0; gameTime = 0; deathFlash = 0; screenShake = 0;
   jumpBufferTimer = 0; coyoteTimer = 0; jumpPressed = false; jumpHeld = false;
+  physicsAccum = 0; hudPct = -1; hudScore = -1;
   particles.p = [];
   trail.length = 0;
   practiceCheckpoints = [];
@@ -1830,6 +1846,11 @@ function die() {
     player.grounded = cp.grounded;
     player.mode = cp.mode;
     player.gravFlipped = cp.gravFlipped;
+    player.mini = cp.mini;
+    speedMult = cp.speedMult;
+    speed = baseSpeed * speedMult;
+    audio.syncToSpeed(speed);
+    player.dashing = false; player.dashTimer = 0; player.dashInvincible = false;
     player.rotation = 0;
     coyoteTimer = cp.coyoteTimer || 0;
     jumpPressed = false;
@@ -1928,12 +1949,49 @@ function win() {
 // GAME LOOP
 // ═══════════════════════════════════════════════════════
 let lastTime = performance.now();
+let physicsAccum = 0;
+const PHYSICS_DT = 1/120; // fixed physics timestep — identical jump height/timing at any refresh rate or load
 function update(now) {
-  const rawDt = (now-lastTime)/1000;
-  const dt = Math.min(rawDt, 0.025);
+  const rawDt = Math.min((now-lastTime)/1000, 0.1);
   lastTime = now;
 
   if (state === 'playing') {
+    physicsAccum += rawDt;
+    while (physicsAccum >= PHYSICS_DT) {
+      physicsAccum -= PHYSICS_DT;
+      stepPhysics(PHYSICS_DT);
+      if (state !== 'playing') { physicsAccum = 0; break; }
+    }
+    if (state === 'playing') updateHud();
+  }
+
+  if (screenShake>0) screenShake*=0.88;
+  if (deathFlash>0) deathFlash*=0.9;
+  particles.update(Math.min(rawDt, 0.025));
+  draw();
+  requestAnimationFrame(update);
+}
+
+let hudPct = -1, hudScore = -1, hudColor = '';
+function updateHud() {
+  const pct = Math.min(100, Math.floor(cameraX/level.length*100));
+  if (pct !== hudPct) {
+    hudPct = pct;
+    document.getElementById('progress-bar').style.width = pct+'%';
+    document.getElementById('percent-display').textContent = pct+'%';
+  }
+  if (theme.accent !== hudColor) {
+    hudColor = theme.accent;
+    document.getElementById('progress-bar').style.background = theme.accent;
+  }
+  if (score !== hudScore) {
+    hudScore = score;
+    document.getElementById('score-display').textContent = String(score).padStart(4,'0');
+  }
+}
+
+function stepPhysics(dt) {
+  {
     gameTime += dt;
     audio.update(gameTime);
     // Dash mechanic
@@ -1962,7 +2020,8 @@ function update(now) {
       lastCheckpointX = cameraX;
       practiceCheckpoints.push({
         cameraX, playerY: player.y, grounded: player.grounded,
-        mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer
+        mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer,
+        mini: player.mini, speedMult
       });
       audio.checkpoint();
       particles.emit(PLAYER_SCREEN_X, player.y+ps/2, 8, {
@@ -2028,8 +2087,9 @@ function update(now) {
       player.y += player.vy * dt;
       player.grounded = false;
 
-      if (player.y >= groundY - ps) { die(); }
-      if (player.y <= ceilingY) { die(); }
+      // Arena floor/ceiling are non-lethal in wave mode (like real GD) — clamp instead of die
+      if (player.y >= groundY - ps) { player.y = groundY - ps; }
+      if (player.y <= ceilingY) { player.y = ceilingY; }
 
       player.rotation = jumpHeld ? -0.6 * gd : 0.6 * gd;
     }
@@ -2134,8 +2194,6 @@ function update(now) {
       else player.rotation = Math.round(player.rotation/(Math.PI/2))*(Math.PI/2);
     }
 
-    jumpPressed = false;
-
     // Block collisions
     const bResult = blockCollisions(worldX);
     if (bResult === 'die') { die(); }
@@ -2150,11 +2208,12 @@ function update(now) {
     // Spike/ceiling spike collisions
     if (!player.dead && spikeHit(worldX, player.y + ps/2)) die();
 
-    // Check portals, pads, orbs
+    // Check portals, pads, orbs (jumpPressed must still be set here so taps can fire orbs)
     if (!player.dead) {
       checkPortals(worldX);
       checkPadsAndOrbs(worldX);
     }
+    jumpPressed = false;
 
     // Trail
     trail.push({ x: PLAYER_SCREEN_X, y: player.y + ps/2, rot: player.rotation, t: gameTime, mode: player.mode });
@@ -2196,20 +2255,7 @@ function update(now) {
     });
 
     if (cameraX > level.length) win();
-
-    const pb=document.getElementById('progress-bar');
-    const pct=Math.min(100,Math.floor(cameraX/level.length*100));
-    pb.style.width = pct+'%';
-    pb.style.background = theme.accent;
-    document.getElementById('percent-display').textContent = pct+'%';
-    document.getElementById('score-display').textContent = String(score).padStart(4,'0');
   }
-
-  if (screenShake>0) screenShake*=0.88;
-  if (deathFlash>0) deathFlash*=0.9;
-  particles.update(dt);
-  draw();
-  requestAnimationFrame(update);
 }
 
 function hexToRgb(hex) {
@@ -2220,7 +2266,60 @@ function hexToRgb(hex) {
 // ═══════════════════════════════════════════════════════
 // DRAWING
 // ═══════════════════════════════════════════════════════
+// Pre-rendered static layers: sky gradient, vignette, parallax silhouette tiles.
+// Sine frequencies are quantized to whole cycles per tile so the tiles wrap seamlessly.
+const PARALLAX_TILE = 4096;
+const PARALLAX_LAYERS = [
+  { base:60, waves:[[0.004,50],[0.0017,80],[0.009,20]], step:2, alpha:0.025, scroll:0.015 },
+  { base:30, waves:[[0.006,35],[0.003,55],[0.013,15]], step:2, alpha:0.035, scroll:0.035 },
+  { base:10, waves:[[0.008,20],[0.005,30]], step:3, alpha:0.04, scroll:0.06 },
+];
+function ensureStaticLayers() {
+  const key = theme.name + '|' + W + 'x' + H;
+  if (staticCache.key === key) return;
+  staticCache.key = key;
+  // Sky gradient (vertical only — 2px wide, stretched on blit)
+  const sky = document.createElement('canvas');
+  sky.width = 2; sky.height = Math.max(2, Math.round(H));
+  const sctx = sky.getContext('2d');
+  const bg = sctx.createLinearGradient(0,0,0,groundY);
+  bg.addColorStop(0,'#020208');
+  bg.addColorStop(0.3,theme.bg1);
+  bg.addColorStop(0.7,theme.bg2);
+  bg.addColorStop(1,theme.ground);
+  sctx.fillStyle = bg; sctx.fillRect(0,0,2,sky.height);
+  staticCache.sky = sky;
+  // Vignette
+  const vig = document.createElement('canvas');
+  vig.width = Math.max(2, Math.round(W)); vig.height = Math.max(2, Math.round(H));
+  const vctx = vig.getContext('2d');
+  const vg = vctx.createRadialGradient(W/2,H/2,H*0.35,W/2,H/2,H*0.95);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.25)');
+  vctx.fillStyle = vg; vctx.fillRect(0,0,vig.width,vig.height);
+  staticCache.vignette = vig;
+  // Parallax silhouette tiles
+  const rgb = hexToRgb(theme.accent);
+  staticCache.parallax = PARALLAX_LAYERS.map(layer => {
+    const T = PARALLAX_TILE;
+    const qWaves = layer.waves.map(([k,amp]) => [Math.max(1,Math.round(k*T/(2*Math.PI)))*2*Math.PI/T, amp]);
+    const maxH = layer.base + layer.waves.reduce((s,w)=>s+w[1],0);
+    const tile = document.createElement('canvas');
+    tile.width = T; tile.height = maxH + 2;
+    const tctx = tile.getContext('2d');
+    tctx.beginPath(); tctx.moveTo(0, tile.height);
+    for (let x=0; x<=T; x+=layer.step) {
+      let h = 0;
+      for (const [k,amp] of qWaves) h += Math.sin(x*k)*amp;
+      tctx.lineTo(x, tile.height - layer.base - Math.abs(h));
+    }
+    tctx.lineTo(T, tile.height); tctx.closePath();
+    tctx.fillStyle = `rgba(${rgb},${layer.alpha})`; tctx.fill();
+    return { canvas: tile, scroll: layer.scroll };
+  });
+}
+
 function draw() {
+  ensureStaticLayers();
   ctx.save();
   if (screenShake>0.5) ctx.translate((Math.random()-0.5)*screenShake,(Math.random()-0.5)*screenShake);
 
@@ -2229,13 +2328,8 @@ function draw() {
   const bg2Rgb = hexToRgb(theme.accent2);
   const bg3Rgb = hexToRgb(theme.accent3);
 
-  // Rich multi-stop gradient sky
-  const bg=ctx.createLinearGradient(0,0,0,groundY);
-  bg.addColorStop(0,'#020208');
-  bg.addColorStop(0.3,theme.bg1);
-  bg.addColorStop(0.7,theme.bg2);
-  bg.addColorStop(1,theme.ground);
-  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  // Rich multi-stop gradient sky (cached offscreen, stretched to viewport)
+  ctx.drawImage(staticCache.sky, 0, 0, W, H);
 
   // Ambient color wash — two large overlapping radial glows
   if (state==='playing'||state==='dead') {
@@ -2264,37 +2358,13 @@ function draw() {
     }
   }
 
-  // Parallax background layers
+  // Parallax background layers (cached tiles, blitted with scroll offsets)
   if(state==='playing'||state==='dead'){
-    // Layer 1 (far): Large mountain/pillar silhouettes
-    ctx.beginPath();ctx.moveTo(0,groundY);
-    const l1Scroll=cameraX*0.015;
-    for(let x=0;x<=W;x+=2){
-      const h1=Math.sin((x+l1Scroll)*0.004)*50+Math.sin((x+l1Scroll)*0.0017)*80+Math.sin((x+l1Scroll)*0.009)*20;
-      ctx.lineTo(x,groundY-60-Math.abs(h1));
+    for (const pl of staticCache.parallax) {
+      const off = -((cameraX*pl.scroll) % PARALLAX_TILE);
+      const y0 = groundY - pl.canvas.height;
+      for (let dx = off; dx < W; dx += PARALLAX_TILE) ctx.drawImage(pl.canvas, dx, y0);
     }
-    ctx.lineTo(W,groundY);ctx.closePath();
-    ctx.fillStyle=`rgba(${bgRgb},0.025)`;ctx.fill();
-
-    // Layer 2 (mid): Sharper peaks
-    ctx.beginPath();ctx.moveTo(0,groundY);
-    const l2Scroll=cameraX*0.035;
-    for(let x=0;x<=W;x+=2){
-      const h2=Math.sin((x+l2Scroll)*0.006)*35+Math.sin((x+l2Scroll)*0.003)*55+Math.sin((x+l2Scroll)*0.013)*15;
-      ctx.lineTo(x,groundY-30-Math.abs(h2));
-    }
-    ctx.lineTo(W,groundY);ctx.closePath();
-    ctx.fillStyle=`rgba(${bgRgb},0.035)`;ctx.fill();
-
-    // Layer 3 (near): Low hills
-    ctx.beginPath();ctx.moveTo(0,groundY);
-    const l3Scroll=cameraX*0.06;
-    for(let x=0;x<=W;x+=3){
-      const h3=Math.sin((x+l3Scroll)*0.008)*20+Math.sin((x+l3Scroll)*0.005)*30;
-      ctx.lineTo(x,groundY-10-Math.abs(h3));
-    }
-    ctx.lineTo(W,groundY);ctx.closePath();
-    ctx.fillStyle=`rgba(${bgRgb},0.04)`;ctx.fill();
 
     // Floating geometric accents (sparse, elegant)
     for(let i=0;i<7;i++){
@@ -2972,10 +3042,8 @@ function draw() {
     ctx.fillStyle=dfg;ctx.fillRect(0,0,W,H);
   }
 
-  // Subtle vignette only (no scanlines — GD doesn't have them)
-  const vg=ctx.createRadialGradient(W/2,H/2,H*0.35,W/2,H/2,H*0.95);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.25)');
-  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+  // Subtle vignette only (no scanlines — GD doesn't have them; cached offscreen)
+  ctx.drawImage(staticCache.vignette, 0, 0, W, H);
 
   ctx.restore();
 }

@@ -2209,6 +2209,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let W, H;
+let DPR = 1; // devicePixelRatio scale so canvas text/shapes are crisp on retina iPads
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -3321,6 +3322,7 @@ function startClientGame(data) {
     // Recreate planets from host data
     planets = [];
     flyingParticles = [];
+    pendingSends = [];
     effects = [];
     comets = [];
 
@@ -3419,18 +3421,15 @@ function spawnAttackParticles(sourceIdx, targetIdx, units, team) {
     const target = planets[targetIdx];
     if (!source || !target) return;
 
-    for (let i = 0; i < units; i++) {
-        setTimeout(() => {
-            const angle = Math.random() * Math.PI * 2;
-            const dist = source.size + 5;
-            flyingParticles.push(new FlyingParticle(
-                source.x + Math.cos(angle) * dist,
-                source.y + Math.sin(angle) * dist,
-                target,
-                team
-            ));
-        }, i * 25);
-    }
+    // Queue the spawns in the game loop (no setTimeout leaks across restarts)
+    pendingSends.push({
+        spawnPlanet: source,
+        target,
+        owner: team,
+        remaining: units,
+        unitsPerParticle: units > 50 ? 5 : 1,
+        nextSpawnIn: 0
+    });
 }
 
 function executePlayerCommand(peerId, data) {
@@ -4072,6 +4071,8 @@ const tutorial = {
         if (!this.shouldShow()) return;
         this.active = true;
         this.currentStep = 0;
+        // Freeze the sim (and the AI) while first-timers read the tutorial
+        game.paused = true;
         this.createOverlay();
         this.showStep();
     },
@@ -4145,6 +4146,7 @@ const tutorial = {
 
     end() {
         this.active = false;
+        game.paused = false;
         playerStats.tutorialComplete = true;
         saveStats();
         if (this.overlay) {
@@ -4245,6 +4247,8 @@ function getTeamLabel(owner) {
 
 let planets = [];
 let flyingParticles = [];
+let pendingSends = []; // queued unit spawns, processed in the game loop (cleared on level gen, frozen while paused)
+let blackHolePlanets = []; // refreshed once per frame so particles skip the planet scan when no black holes exist
 let bgParticles = [];
 let effects = [];
 let wormholePairs = [];
@@ -4277,8 +4281,10 @@ function startUnitTracking() {
             if (p.owner === PLAYER) pUnits += Math.floor(p.units);
             if (p.owner === ENEMY) eUnits += Math.floor(p.units);
         }
-        pUnits += flyingParticles.filter(p => p.owner === PLAYER).length;
-        eUnits += flyingParticles.filter(p => p.owner === ENEMY).length;
+        for (const p of flyingParticles) {
+            if (p.owner === PLAYER) pUnits += p.units;
+            else if (p.owner === ENEMY) eUnits += p.units;
+        }
         const elapsed = (Date.now() - (currentGameStats.startTime || Date.now())) / 1000;
         unitCountHistory.push({ time: elapsed, player: pUnits, enemy: eUnits });
     }, 2000);
@@ -4752,8 +4758,22 @@ function updateRallyAutoSend(dt) {
 }
 
 function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    // Minimap keeps its 140px CSS size but gets a crisp backing store
+    minimapCanvas.width = MINIMAP_SIZE * DPR;
+    minimapCanvas.height = MINIMAP_SIZE * DPR;
+    minimapCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    // Force fog canvas re-init at the new size
+    fogCanvas = null;
 }
 
 // Effects system
@@ -5195,13 +5215,15 @@ class Planet {
 
 // Flying particle
 class FlyingParticle {
-    constructor(x, y, targetPlanet, owner) {
+    constructor(x, y, targetPlanet, owner, units = 1) {
         this.x = x;
         this.y = y;
         this.target = targetPlanet;
         this.owner = owner;
+        this.units = units; // squad size: large sends travel as multi-unit particles
         this.baseSpeed = 150;
         this.trail = [];
+        this.trailIndex = 0; // ring-buffer write position
         this.stealthTime = 0; // Time remaining in stealth
     }
     
@@ -5227,23 +5249,22 @@ class FlyingParticle {
         let targetX = this.target.x;
         let targetY = this.target.y;
 
-        // Check for black hole pull
-        for (const planet of planets) {
-            if (planet.type === 'blackhole') {
-                const dx = planet.x - this.x;
-                const dy = planet.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 200) {
-                    const pullForce = (200 - dist) / 200 * 2;
-                    this.x += (dx / dist) * pullForce;
-                    this.y += (dy / dist) * pullForce;
-                }
-                
-                if (dist < planet.size) {
-                    effects.push(new Effect('explosion', this.x, this.y, { duration: 0.3 }));
-                    return false;
-                }
+        // Check for black hole pull (blackHolePlanets is refreshed once per frame in animate)
+        for (let bi = 0; bi < blackHolePlanets.length; bi++) {
+            const planet = blackHolePlanets[bi];
+            const dx = planet.x - this.x;
+            const dy = planet.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 200) {
+                const pullForce = (200 - dist) / 200 * 2;
+                this.x += (dx / dist) * pullForce;
+                this.y += (dy / dist) * pullForce;
+            }
+
+            if (dist < planet.size) {
+                effects.push(new Effect('explosion', this.x, this.y, { duration: 0.3 }));
+                return false;
             }
         }
         
@@ -5258,27 +5279,29 @@ class FlyingParticle {
             }
             
             if (this.target.owner === this.owner) {
-                this.target.units += 1;
+                this.target.units += this.units;
             } else {
-                const damage = 1 / this.target.defenseMult;
+                const damage = this.units / this.target.defenseMult;
                 this.target.units -= damage;
 
                 // Track particles killed/lost for post-match stats
                 if (currentGameStats) {
                     if (this.owner === PLAYER) {
                         // Player particle attacking enemy - enemy "loses" some defense
-                        currentGameStats.particlesKilled++;
-                        playerStats.unitsDestroyed++;
+                        currentGameStats.particlesKilled += this.units;
+                        playerStats.unitsDestroyed += this.units;
                     } else if (this.target.owner === PLAYER) {
                         // Enemy particle attacking player planet
-                        currentGameStats.particlesLost++;
+                        currentGameStats.particlesLost += this.units;
                     }
                 }
 
                 if (this.target.units <= 0) {
+                    // Squad units left over after breaking the defense become the garrison
+                    const leftover = -this.target.units * this.target.defenseMult;
                     const prevOwner = this.target.owner;
                     this.target.owner = this.owner;
-                    this.target.units = 1;
+                    this.target.units = Math.max(1, leftover);
 
                     // Track capture stats and play sounds
                     const isMyTeam = multiplayerActive
@@ -5335,10 +5358,18 @@ class FlyingParticle {
             return false;
         }
         
-        this.trail.push({ x: this.x, y: this.y, age: 0 });
-        if (this.trail.length > 10) this.trail.shift();
+        // Trail: 5-point ring buffer, reuses point objects (no per-frame allocation)
+        if (this.trail.length < 5) {
+            this.trail.push({ x: this.x, y: this.y, age: 0 });
+        } else {
+            const tp = this.trail[this.trailIndex];
+            tp.x = this.x;
+            tp.y = this.y;
+            tp.age = 0;
+            this.trailIndex = (this.trailIndex + 1) % 5;
+        }
         for (const t of this.trail) t.age += dt;
-        
+
         this.x += (dx / dist) * this.speed * dt;
         this.y += (dy / dist) * this.speed * dt;
         
@@ -5373,9 +5404,11 @@ class FlyingParticle {
         // If stealthed, draw with ghostly effect
         const stealthAlpha = isStealthed ? 0.3 : 1;
 
-        for (let i = 0; i < this.trail.length; i++) {
-            const t = this.trail[i];
-            const alpha = (1 - i / this.trail.length) * 0.5 * stealthAlpha;
+        const trailLen = this.trail.length;
+        for (let i = 0; i < trailLen; i++) {
+            // Ring buffer: trailIndex points at the oldest entry once full
+            const t = this.trail[(this.trailIndex + i) % trailLen];
+            const alpha = (1 - i / trailLen) * 0.5 * stealthAlpha;
             ctx.fillStyle = hexToRgba(color.particle, alpha);
             ctx.beginPath();
             ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
@@ -5397,14 +5430,16 @@ class FlyingParticle {
             ctx.fill();
         }
 
+        // Squads (multi-unit particles) draw slightly larger to convey their mass
+        const coreRadius = this.units > 1 ? 5.5 : 4;
         ctx.fillStyle = hexToRgba(color.particle, stealthAlpha);
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, coreRadius, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = hexToRgba(color.particle, 0.25 * stealthAlpha);
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, coreRadius * 2, 0, Math.PI * 2);
         ctx.fill();
     }
 }
@@ -5721,6 +5756,7 @@ function generateLevel() {
 
     planets = [];
     flyingParticles = [];
+    pendingSends = [];
     harvestParticles = [];
     effects = [];
     wormholePairs = [];
@@ -5960,15 +5996,35 @@ function sendUnits(from, to, percent) {
         effects.push(new Effect('wormhole', spawnPlanet.x, spawnPlanet.y, { duration: 0.5 }));
     }
 
-    for (let i = 0; i < numToSend; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = spawnPlanet.size + Math.random() * 15;
-        const x = spawnPlanet.x + Math.cos(angle) * dist;
-        const y = spawnPlanet.y + Math.sin(angle) * dist;
+    // Queue the spawns: the game loop spawns them on schedule, so streams
+    // freeze while paused and die with the level (no setTimeout leaks).
+    // Large sends travel as squads of 5 so the particle count stays bounded.
+    pendingSends.push({
+        spawnPlanet,
+        target: to,
+        owner: from.owner,
+        remaining: numToSend,
+        unitsPerParticle: numToSend > 50 ? 5 : 1,
+        nextSpawnIn: 0
+    });
+}
 
-        setTimeout(() => {
-            flyingParticles.push(new FlyingParticle(x, y, to, from.owner));
-        }, i * 25);
+// Spawn queued sends: one particle per 25ms per stream (matches the old stagger)
+function processPendingSends(dt) {
+    for (let i = pendingSends.length - 1; i >= 0; i--) {
+        const send = pendingSends[i];
+        send.nextSpawnIn -= dt;
+        while (send.nextSpawnIn <= 0 && send.remaining > 0) {
+            const squadUnits = Math.min(send.unitsPerParticle, send.remaining);
+            const angle = Math.random() * Math.PI * 2;
+            const dist = send.spawnPlanet.size + Math.random() * 15;
+            const x = send.spawnPlanet.x + Math.cos(angle) * dist;
+            const y = send.spawnPlanet.y + Math.sin(angle) * dist;
+            flyingParticles.push(new FlyingParticle(x, y, send.target, send.owner, squadUnits));
+            send.remaining -= squadUnits;
+            send.nextSpawnIn += 0.025;
+        }
+        if (send.remaining <= 0) pendingSends.splice(i, 1);
     }
 }
 
@@ -6350,10 +6406,22 @@ function checkWinCondition() {
         return;
     }
 
-    const playerPlanets = planets.filter(p => p.owner === PLAYER).length;
-    const enemyPlanets = planets.filter(p => p.owner === ENEMY).length;
-    const playerFlying = flyingParticles.filter(p => p.owner === PLAYER).length;
-    const enemyFlying = flyingParticles.filter(p => p.owner === ENEMY).length;
+    // Single-pass counts (no per-frame filter allocations)
+    let playerPlanets = 0, enemyPlanets = 0;
+    for (const p of planets) {
+        if (p.owner === PLAYER) playerPlanets++;
+        else if (p.owner === ENEMY) enemyPlanets++;
+    }
+    let playerFlying = 0, enemyFlying = 0;
+    for (const p of flyingParticles) {
+        if (p.owner === PLAYER) playerFlying++;
+        else if (p.owner === ENEMY) enemyFlying++;
+    }
+    // Queued-but-unspawned sends still count as forces in flight
+    for (const s of pendingSends) {
+        if (s.owner === PLAYER) playerFlying += s.remaining;
+        else if (s.owner === ENEMY) enemyFlying += s.remaining;
+    }
 
     if (enemyPlanets === 0 && enemyFlying === 0) {
         endGame(true);
@@ -6619,9 +6687,16 @@ function updateStats() {
         if (p.owner === ENEMY) enemyUnits += Math.floor(p.units);
     }
     
-    playerUnits += flyingParticles.filter(p => p.owner === PLAYER).length;
-    enemyUnits += flyingParticles.filter(p => p.owner === ENEMY).length;
-    
+    for (const p of flyingParticles) {
+        if (p.owner === PLAYER) playerUnits += p.units;
+        else if (p.owner === ENEMY) enemyUnits += p.units;
+    }
+    // Include queued sends so units don't visibly vanish during a big send
+    for (const s of pendingSends) {
+        if (s.owner === PLAYER) playerUnits += s.remaining;
+        else if (s.owner === ENEMY) enemyUnits += s.remaining;
+    }
+
     document.getElementById('playerStats').textContent = playerUnits;
     document.getElementById('enemyStats').textContent = enemyUnits;
 }
@@ -6680,17 +6755,44 @@ let fogCtx = null;
 
 function initFogCanvas() {
     fogCanvas = document.createElement('canvas');
-    fogCanvas.width = W;
-    fogCanvas.height = H;
+    fogCanvas.width = canvas.width;
+    fogCanvas.height = canvas.height;
     fogCtx = fogCanvas.getContext('2d');
+    fogCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+
+// Pre-rendered radial-gradient reveal sprites: drawn scaled per planet/particle,
+// so no gradient objects are allocated per frame (iPad fill-rate friendly)
+let planetRevealSprite = null;
+let particleRevealSprite = null;
+
+function makeRevealSprite(innerFrac, midStop, midAlpha) {
+    const size = 128;
+    const half = size / 2;
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    const g = c.getContext('2d');
+    const grad = g.createRadialGradient(half, half, half * innerFrac, half, half, half);
+    grad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+    grad.addColorStop(midStop, `rgba(0, 0, 0, ${midAlpha})`);
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, size, size);
+    return c;
 }
 
 function drawFogOfWar() {
     if (!game.features.fog) return;
 
     // Initialize fog canvas if needed
-    if (!fogCanvas || fogCanvas.width !== W || fogCanvas.height !== H) {
+    if (!fogCanvas || fogCanvas.width !== canvas.width || fogCanvas.height !== canvas.height) {
         initFogCanvas();
+    }
+
+    if (!planetRevealSprite) {
+        planetRevealSprite = makeRevealSprite(0.08, 0.6, 1);
+        particleRevealSprite = makeRevealSprite(0.06, 0.5, 0.8);
     }
 
     // Clear fog canvas and fill with dark fog (0.7 opacity allows some visibility of enemy positions)
@@ -6702,74 +6804,95 @@ function drawFogOfWar() {
     fogCtx.globalCompositeOperation = 'destination-out';
 
     // Cut visibility around player planets
+    const myPlanets = [];
     for (const planet of planets) {
         if (isMyPlanet(planet)) {
+            myPlanets.push(planet);
             const visRadius = planet.size * 6;
-            const gradient = fogCtx.createRadialGradient(
-                planet.x, planet.y, planet.size * 0.5,
-                planet.x, planet.y, visRadius
-            );
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(0.6, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            fogCtx.fillStyle = gradient;
-            fogCtx.beginPath();
-            fogCtx.arc(planet.x, planet.y, visRadius, 0, Math.PI * 2);
-            fogCtx.fill();
+            fogCtx.drawImage(planetRevealSprite,
+                planet.x - visRadius, planet.y - visRadius,
+                visRadius * 2, visRadius * 2);
         }
     }
 
     // Also reveal around player's flying particles
+    // (skip particles already deep inside a planet's revealed area)
     const myTeam = getMyTeam();
     for (const p of flyingParticles) {
-        if (p.owner === myTeam) {
-            const visRadius = 80;
-            const gradient = fogCtx.createRadialGradient(
-                p.x, p.y, 5,
-                p.x, p.y, visRadius
-            );
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.8)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            fogCtx.fillStyle = gradient;
-            fogCtx.beginPath();
-            fogCtx.arc(p.x, p.y, visRadius, 0, Math.PI * 2);
-            fogCtx.fill();
+        if (p.owner !== myTeam) continue;
+        let covered = false;
+        for (const planet of myPlanets) {
+            const inner = planet.size * 6 - 80;
+            if (inner <= 0) continue;
+            const dx = p.x - planet.x;
+            const dy = p.y - planet.y;
+            if (dx * dx + dy * dy < inner * inner) { covered = true; break; }
         }
+        if (covered) continue;
+        fogCtx.drawImage(particleRevealSprite, p.x - 80, p.y - 80, 160, 160);
     }
 
     // Reset composite operation
     fogCtx.globalCompositeOperation = 'source-over';
 
     // Draw the fog layer onto the main canvas
-    ctx.drawImage(fogCanvas, 0, 0);
+    ctx.drawImage(fogCanvas, 0, 0, W, H);
+}
+
+// Coarse visibility grid for fog-of-war queries: rebuilt at most once per frame,
+// answers isVisibleToPlayer in O(1) instead of O(planets + particles) per call
+const FOG_CELL = 40;
+let fogGrid = null;
+let fogGridW = 0;
+let fogGridH = 0;
+let fogGridFrame = -1;
+let animFrame = 0; // incremented each animate() frame
+
+function markFogCircle(x, y, r) {
+    const pad = r + FOG_CELL * 0.71; // conservative: mark any cell the circle touches
+    const minCX = Math.max(0, Math.floor((x - pad) / FOG_CELL));
+    const maxCX = Math.min(fogGridW - 1, Math.floor((x + pad) / FOG_CELL));
+    const minCY = Math.max(0, Math.floor((y - pad) / FOG_CELL));
+    const maxCY = Math.min(fogGridH - 1, Math.floor((y + pad) / FOG_CELL));
+    const maxDistSq = pad * pad;
+    for (let cy = minCY; cy <= maxCY; cy++) {
+        for (let cx = minCX; cx <= maxCX; cx++) {
+            const dx = (cx + 0.5) * FOG_CELL - x;
+            const dy = (cy + 0.5) * FOG_CELL - y;
+            if (dx * dx + dy * dy <= maxDistSq) fogGrid[cy * fogGridW + cx] = 1;
+        }
+    }
+}
+
+function rebuildFogGrid() {
+    fogGridW = Math.max(1, Math.ceil(W / FOG_CELL));
+    fogGridH = Math.max(1, Math.ceil(H / FOG_CELL));
+    const size = fogGridW * fogGridH;
+    if (!fogGrid || fogGrid.length !== size) fogGrid = new Uint8Array(size);
+    else fogGrid.fill(0);
+
+    for (const planet of planets) {
+        if (isMyPlanet(planet)) markFogCircle(planet.x, planet.y, planet.size * 6);
+    }
+    const myTeam = getMyTeam();
+    for (const p of flyingParticles) {
+        if (p.owner === myTeam) markFogCircle(p.x, p.y, 80);
+    }
 }
 
 // Check if a point is visible to the player (for fog of war)
 function isVisibleToPlayer(x, y) {
     if (!game.features.fog) return true;
 
-    const myTeam = getMyTeam();
-
-    for (const planet of planets) {
-        if (isMyPlanet(planet)) {
-            const dx = x - planet.x;
-            const dy = y - planet.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < planet.size * 6) return true;
-        }
+    if (fogGridFrame !== animFrame) {
+        rebuildFogGrid();
+        fogGridFrame = animFrame;
     }
 
-    for (const p of flyingParticles) {
-        if (p.owner === myTeam) {
-            const dx = x - p.x;
-            const dy = y - p.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 80) return true;
-        }
-    }
-
-    return false;
+    const cx = Math.floor(x / FOG_CELL);
+    const cy = Math.floor(y / FOG_CELL);
+    if (cx < 0 || cy < 0 || cx >= fogGridW || cy >= fogGridH) return false;
+    return fogGrid[cy * fogGridW + cx] === 1;
 }
 
 // Game loop
@@ -6781,6 +6904,7 @@ function animate(time) {
     const realDt = Math.min((time - lastTime) / 1000, 0.1);
     const dt = realDt * game.speed * juice.getTimeScale();
     lastTime = time;
+    animFrame++;
 
     // Update juice system
     juice.update(realDt);
@@ -6832,6 +6956,16 @@ function animate(time) {
     if (game.state === 'playing') {
         // Only update if not paused
         if (!game.paused) {
+            // Refresh black hole list once per frame so particle updates can
+            // skip the planet scan entirely when there are no black holes
+            blackHolePlanets.length = 0;
+            for (const p of planets) {
+                if (p.type === 'blackhole') blackHolePlanets.push(p);
+            }
+
+            // Spawn queued unit sends (frozen while paused, cleared on level gen)
+            processPendingSends(dt);
+
             for (const planet of planets) planet.update(dt);
             flyingParticles = flyingParticles.filter(p => p.update(dt));
             effects = effects.filter(e => e.update(dt));
@@ -6865,7 +6999,7 @@ function animate(time) {
             {
                 let pUnits = 0;
                 for (const p of planets) { if (p.owner === PLAYER) pUnits += Math.floor(p.units); }
-                pUnits += flyingParticles.filter(p => p.owner === PLAYER).length;
+                for (const p of flyingParticles) { if (p.owner === PLAYER) pUnits += p.units; }
                 if (!game._lastMilestone) game._lastMilestone = 0;
                 const milestones = [50, 100, 200, 500];
                 for (const m of milestones) {
@@ -6932,8 +7066,9 @@ function animate(time) {
 
 // Input handling with double-click detection
 function handleStart(x, y) {
-    // Ignore input when paused
-    if (game.paused) return;
+    // Ignore input when paused (except during the tutorial, which pauses the
+    // sim but still needs real taps for its select/attack steps)
+    if (game.paused && !tutorial.active) return;
 
     const now = Date.now();
 
@@ -7584,6 +7719,11 @@ initDailyChallenges();
 updateDailyChallengesUI();
 loadSavedSettings();
 achievements.load();
+
+// Touch devices (iPad) use long-press for rally points, not right-click
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    document.getElementById('rallyHint').innerHTML = 'Long-press your planet: set rally<br>Long-press empty space: clear all';
+}
 
 // Generate icons and register SW
 generateAppIcons();

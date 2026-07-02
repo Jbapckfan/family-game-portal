@@ -32,6 +32,10 @@
         html, body {
             background-color: #000;
             overscroll-behavior: none;
+            touch-action: manipulation;
+        }
+        button, a {
+            touch-action: manipulation;
         }
         body {
             font-family: 'Orbitron', sans-serif;
@@ -46,11 +50,6 @@
             rgba(0, 0, 0, 0.25) 50%
           );
           background-size: 100% 4px;
-          animation: scanlines 5s linear infinite;
-        }
-        @keyframes scanlines {
-          from { background-position: 0 0; }
-          to { background-position: 0 -4px; }
         }
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
@@ -157,7 +156,9 @@
         // adjacent mines, cascades outward to reveal all contiguous zero-cells
         // plus their bordering numbered cells.
         const revealFloodFill = (board, startRow, startCol) => {
-            const newBoard = cloneBoard(board);
+            // Copies rows but keeps untouched cell objects so React.memo on Cell
+            // can skip re-rendering cells that did not change.
+            const newBoard = board.map(row => row.slice());
             const queue = [[startRow, startCol]];
             const visited = new Set();
             while (queue.length) {
@@ -165,9 +166,10 @@
                 const key = `${r},${c}`;
                 if (visited.has(key)) continue;
                 visited.add(key);
-                const cell = newBoard[r][c];
+                let cell = newBoard[r][c];
                 if (cell.revealed || cell.flagged) continue;
-                cell.revealed = true;
+                cell = { ...cell, revealed: true };
+                newBoard[r][c] = cell;
                 if (cell.adjacent === 0 && !cell.mine) {
                     getNeighbors(r, c).forEach(([nr, nc]) => {
                         if (!newBoard[nr][nc].revealed && !newBoard[nr][nc].flagged) {
@@ -180,7 +182,7 @@
         };
 
         const revealAllMines = (board) => board.map(row => row.map(cell => (
-            cell.mine ? { ...cell, revealed: true } : { ...cell }
+            cell.mine ? { ...cell, revealed: true } : cell
         )));
 
         const checkWin = (board) => {
@@ -388,7 +390,7 @@
                     disabled={isDisabled}
                     aria-label={cellAriaLabel(cell, gameState)}
                     aria-pressed={cell.revealed ? undefined : cell.flagged}
-                    className={`w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 rounded-[4px] flex items-center justify-center text-sm sm:text-base font-bold select-none transition-transform duration-100 ${cell.revealed ? 'cell-reveal' : 'hover:brightness-110 active:scale-95'}`}
+                    className={`w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 rounded-[4px] flex items-center justify-center text-sm sm:text-base font-bold select-none transition-transform duration-100 ${cell.revealed ? 'cell-reveal' : 'hover:brightness-110 active:scale-95'}`}
                     style={{ ...bgStyle, color: contentColor, cursor: isDisabled ? 'default' : 'pointer' }}
                 >
                     {content}
@@ -408,9 +410,22 @@
 
             const timerRef = React.useRef(null);
             const elapsedRef = React.useRef(0);
+            const startTimeRef = React.useRef(null);
+            const pausedAtRef = React.useRef(null);
+            const boardRef = React.useRef(board);
+            const gameStateRef = React.useRef('playing');
+            const minesPlacedRef = React.useRef(false);
+            const flagModeRef = React.useRef(false);
             const howToPlayTriggerRef = React.useRef(null);
             const newGameButtonRef = React.useRef(null);
             const prevStateRef = React.useRef('playing');
+
+            // Keeps boardRef in sync so cell handlers can stay referentially
+            // stable (letting React.memo on Cell actually skip re-renders).
+            const commitBoard = React.useCallback((b) => {
+                boardRef.current = b;
+                setBoard(b);
+            }, []);
 
             React.useEffect(() => {
                 const stored = Number(localStorage.getItem(BEST_TIME_KEY));
@@ -428,12 +443,16 @@
                 prevStateRef.current = gameState;
             }, [gameState]);
 
+            // Elapsed time is derived from a start timestamp so Safari timer
+            // throttling (backgrounded tab, locked iPad) can't undercount it;
+            // the interval only refreshes the display.
             const startTimer = React.useCallback(() => {
                 if (timerRef.current !== null) return;
+                if (startTimeRef.current === null) startTimeRef.current = Date.now();
                 timerRef.current = window.setInterval(() => {
-                    elapsedRef.current += 1;
+                    elapsedRef.current = Math.floor((Date.now() - startTimeRef.current) / 1000);
                     setElapsed(elapsedRef.current);
-                }, 1000);
+                }, 500);
             }, []);
 
             const stopTimer = React.useCallback(() => {
@@ -442,6 +461,21 @@
                     timerRef.current = null;
                 }
             }, []);
+
+            // Pause the clock while the How to Play modal is open by shifting
+            // the start timestamp forward when it closes.
+            React.useEffect(() => {
+                if (showHowToPlay) {
+                    if (timerRef.current !== null && startTimeRef.current !== null) {
+                        pausedAtRef.current = Date.now();
+                        stopTimer();
+                    }
+                } else if (pausedAtRef.current !== null) {
+                    startTimeRef.current += Date.now() - pausedAtRef.current;
+                    pausedAtRef.current = null;
+                    startTimer();
+                }
+            }, [showHowToPlay, startTimer, stopTimer]);
 
             const flagCount = React.useMemo(() => {
                 let count = 0;
@@ -452,13 +486,14 @@
             const minesRemaining = MINE_COUNT - flagCount;
 
             const revealCell = React.useCallback((r, c) => {
-                if (gameState !== 'playing') return;
-                const existing = board[r][c];
+                if (gameStateRef.current !== 'playing') return;
+                const existing = boardRef.current[r][c];
                 if (existing.flagged || existing.revealed) return;
 
-                let workingBoard = board;
-                if (!minesPlaced) {
-                    workingBoard = placeMines(board, r, c);
+                let workingBoard = boardRef.current;
+                if (!minesPlacedRef.current) {
+                    workingBoard = placeMines(workingBoard, r, c);
+                    minesPlacedRef.current = true;
                     setMinesPlaced(true);
                     startTimer();
                 }
@@ -466,18 +501,24 @@
                 const target = workingBoard[r][c];
                 if (target.mine) {
                     setExplodedCell({ row: r, col: c });
-                    setBoard(revealAllMines(workingBoard));
+                    commitBoard(revealAllMines(workingBoard));
+                    gameStateRef.current = 'lost';
                     setGameState('lost');
                     stopTimer();
                     return;
                 }
 
                 const newBoard = revealFloodFill(workingBoard, r, c);
-                setBoard(newBoard);
+                commitBoard(newBoard);
 
                 if (checkWin(newBoard)) {
+                    gameStateRef.current = 'won';
                     setGameState('won');
                     stopTimer();
+                    if (startTimeRef.current !== null) {
+                        elapsedRef.current = Math.floor((Date.now() - startTimeRef.current) / 1000);
+                        setElapsed(elapsedRef.current);
+                    }
                     const finalTime = elapsedRef.current;
                     setBestTime(prevBest => {
                         if (prevBest === null || finalTime < prevBest) {
@@ -487,24 +528,24 @@
                         return prevBest;
                     });
                 }
-            }, [board, gameState, minesPlaced, startTimer, stopTimer]);
+            }, [commitBoard, startTimer, stopTimer]);
 
             const toggleFlag = React.useCallback((r, c) => {
-                if (gameState !== 'playing') return;
-                const cell = board[r][c];
+                if (gameStateRef.current !== 'playing') return;
+                const cell = boardRef.current[r][c];
                 if (cell.revealed) return;
-                const newBoard = cloneBoard(board);
-                newBoard[r][c].flagged = !newBoard[r][c].flagged;
-                setBoard(newBoard);
-            }, [board, gameState]);
+                const newBoard = boardRef.current.map(row => row.slice());
+                newBoard[r][c] = { ...cell, flagged: !cell.flagged };
+                commitBoard(newBoard);
+            }, [commitBoard]);
 
             const handleCellActivate = React.useCallback((r, c) => {
-                if (flagMode) {
+                if (flagModeRef.current) {
                     toggleFlag(r, c);
                 } else {
                     revealCell(r, c);
                 }
-            }, [flagMode, toggleFlag, revealCell]);
+            }, [toggleFlag, revealCell]);
 
             const handleCellContextMenu = React.useCallback((r, c) => {
                 toggleFlag(r, c);
@@ -513,16 +554,22 @@
             const startNewGame = React.useCallback(() => {
                 stopTimer();
                 elapsedRef.current = 0;
+                startTimeRef.current = null;
+                pausedAtRef.current = null;
                 setElapsed(0);
-                setBoard(createEmptyBoard());
+                commitBoard(createEmptyBoard());
+                minesPlacedRef.current = false;
                 setMinesPlaced(false);
+                gameStateRef.current = 'playing';
                 setGameState('playing');
                 setExplodedCell(null);
+                flagModeRef.current = false;
                 setFlagMode(false);
-            }, [stopTimer]);
+            }, [commitBoard, stopTimer]);
 
             const toggleFlagMode = React.useCallback(() => {
-                setFlagMode(f => !f);
+                flagModeRef.current = !flagModeRef.current;
+                setFlagMode(flagModeRef.current);
             }, []);
 
             const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
@@ -601,7 +648,7 @@
                             </button>
                         </div>
 
-                        <main className="relative inline-block bg-black/30 backdrop-blur-sm rounded-2xl p-2 sm:p-3 border border-slate-500/30 shadow-2xl shadow-black/50">
+                        <main className="relative inline-block bg-black/30 backdrop-blur-sm rounded-2xl p-2 border border-slate-500/30 shadow-2xl shadow-black/50">
                             <div
                                 role="grid"
                                 aria-label={`Minesweeper board, 9 by 9, ${minesRemaining} mines remaining`}

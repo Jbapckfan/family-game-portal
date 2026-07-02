@@ -99,16 +99,18 @@
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 50%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            will-change: transform;
             animation: resourceShine 4s ease-in-out infinite;
         }
 
         @keyframes resourceShine {
-            0%, 100% { left: -100%; }
-            50% { left: 150%; }
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(300%); }
         }
 
         .resource .icon { font-size: 16px; }
@@ -374,6 +376,27 @@
         .close-x:hover {
             background: rgba(255, 50, 80, 0.4);
             transform: rotate(90deg);
+        }
+
+        /* Cancel chip shown while placing a tower (touch has no right-click/Escape) */
+        #cancelPlaceBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 600;
+            display: none;
+            min-height: 44px;
+            padding: 10px 20px;
+            background: rgba(255, 50, 80, 0.25);
+            border-color: rgba(255, 50, 80, 0.6);
+            color: #ff8098;
+            font-size: 13px;
+        }
+
+        #cancelPlaceBtn.visible {
+            display: flex;
+            align-items: center;
         }
 
         /* Build Menu */
@@ -1120,6 +1143,13 @@
             .tower-card { padding: 10px; }
             .tower-card .icon { font-size: 32px; }
         }
+
+        /* Larger touch targets on touch devices (44pt minimum) */
+        @media (pointer: coarse) {
+            .btn { min-height: 44px; padding: 10px 16px; font-size: 13px; }
+            .close-x { width: 40px; height: 40px; }
+            .target-btn { padding: 12px 6px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
@@ -1177,6 +1207,8 @@
         <div id="waveAnnounce"></div>
 
         <div id="damageNumbers"></div>
+
+        <button class="btn" id="cancelPlaceBtn">✕ CANCEL</button>
 
         <div id="towerPanel">
             <div class="panel-head">
@@ -1335,6 +1367,14 @@ const G = {
 };
 
 const mouse = { x: 0, y: 0, down: false };
+
+// Canvas sizes in CSS pixels (backing stores are scaled by devicePixelRatio)
+let viewW = 0, viewH = 0;
+let bgViewW = 0, bgViewH = 0;
+let canvasRect = null;
+
+// Touch placement ghost position (two-tap confirm flow on touch devices)
+let touchPlaceGhost = null;
 
 // Tower range preview state (for hovering over build menu cards)
 let hoverPreviewType = null;
@@ -1667,6 +1707,20 @@ function playSound(type) {
                     osc.start(st);
                     osc.stop(st + 0.12);
                 }
+                break;
+            }
+            case 'invalid': {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(140, t);
+                osc.frequency.setValueAtTime(110, t + 0.08);
+                gain.gain.setValueAtTime(0.1, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+                osc.start(t);
+                osc.stop(t + 0.18);
                 break;
             }
             case 'nexusDamage': {
@@ -2154,18 +2208,46 @@ function init() {
 function resize() {
     const hud = document.getElementById('hud');
     const h = hud.offsetHeight;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - h;
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const oldW = viewW, oldH = viewH;
+
+    // Render at device resolution (crisp on retina), keep all game coords in CSS pixels
+    viewW = window.innerWidth;
+    viewH = window.innerHeight - h;
+    canvas.width = Math.round(viewW * dpr);
+    canvas.height = Math.round(viewH * dpr);
+    canvas.style.width = viewW + 'px';
+    canvas.style.height = viewH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    bgViewW = window.innerWidth;
+    bgViewH = window.innerHeight;
+    bgCanvas.width = Math.round(bgViewW * dpr);
+    bgCanvas.height = Math.round(bgViewH * dpr);
+    bgCanvas.style.width = bgViewW + 'px';
+    bgCanvas.style.height = bgViewH + 'px';
+    bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    canvasRect = canvas.getBoundingClientRect();
+
+    // Rescale an active map + towers after rotation / viewport change
+    const m = 50;
+    if (path.length && (oldW !== viewW || oldH !== viewH) && oldW > m * 2 && oldH > m * 2) {
+        scalePath(MAPS[G.mapIdx].path);
+        towers.forEach(t => {
+            t.x = m + (t.x - m) / (oldW - m * 2) * (viewW - m * 2);
+            t.y = m + (t.y - m) / (oldH - m * 2) * (viewH - m * 2);
+        });
+        cachedGridKey = ''; // force grid overlay recompute for the new layout
+    }
 }
 
 function initStars() {
     stars = [];
     for (let i = 0; i < 150; i++) {
         stars.push({
-            x: Math.random() * bgCanvas.width,
-            y: Math.random() * bgCanvas.height,
+            x: Math.random() * bgViewW,
+            y: Math.random() * bgViewH,
             size: Math.random() * 2 + 0.5,
             speed: Math.random() * 0.3 + 0.1,
             brightness: Math.random()
@@ -2178,6 +2260,8 @@ function selectMap(idx) {
     const map = MAPS[idx];
     scalePath(map.path);
     document.getElementById('mapSelect').classList.add('hidden');
+    // Starfield is fully covered by the opaque map background during play
+    bgCanvas.style.display = 'none';
     ensureAudio();
     generateWavePreview();
     gameLoop();
@@ -2185,8 +2269,8 @@ function selectMap(idx) {
 
 function scalePath(template) {
     const m = 50;
-    const w = canvas.width - m * 2;
-    const h = canvas.height - m * 2;
+    const w = viewW - m * 2;
+    const h = viewH - m * 2;
     path = template.map(p => ({ x: m + p.x * w, y: m + p.y * h }));
 }
 
@@ -2385,9 +2469,9 @@ class Tower {
                 const hits = [];
                 enemies.forEach(e => {
                     if (e.dead || hits.length >= s.pierce) return;
-                    const d = distToLine(e.x, e.y, this.x, this.y,
-                        this.x + Math.cos(angle) * this.range,
-                        this.y + Math.sin(angle) * this.range);
+                    const d = distToSegment(e.x, e.y, { x: this.x, y: this.y },
+                        { x: this.x + Math.cos(angle) * this.range,
+                          y: this.y + Math.sin(angle) * this.range });
                     if (d < 20) {
                         e.takeDamage(dmg, this, isCrit);
                         hits.push(e);
@@ -2709,7 +2793,7 @@ class Enemy {
             playSound('nexusDamage');
             document.getElementById('app').classList.add('shake');
             setTimeout(() => document.getElementById('app').classList.remove('shake'), 400);
-            showDamageNumber(canvas.width / 2, canvas.height / 2, `-${dmg} HP`, '#ff0000', true);
+            showDamageNumber(viewW / 2, viewH / 2, `-${dmg} HP`, '#ff0000', true);
         }
 
         this.pulse += 0.08 * G.speed;
@@ -3074,7 +3158,7 @@ function draw() {
     const map = MAPS[G.mapIdx];
 
     ctx.fillStyle = map.bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, viewW, viewH);
 
     drawPath(map);
     drawBase();
@@ -3361,7 +3445,9 @@ function drawParticles() {
 }
 
 function drawPlacementPreview() {
-    const x = mouse.x, y = mouse.y;
+    // On touch, the ghost sits where the first tap landed (two-tap confirm flow)
+    const x = touchPlaceGhost ? touchPlaceGhost.x : mouse.x;
+    const y = touchPlaceGhost ? touchPlaceGhost.y : mouse.y;
     const t = TOWERS[G.placing];
 
     let valid = true;
@@ -3406,8 +3492,8 @@ function drawPlacementPreview() {
 function computeGridCells() {
     const gridSize = CFG.TOWER_SPACING;
     const cells = [];
-    for (let gx = gridSize / 2; gx < canvas.width; gx += gridSize) {
-        for (let gy = gridSize / 2; gy < canvas.height; gy += gridSize) {
+    for (let gx = gridSize / 2; gx < viewW; gx += gridSize) {
+        for (let gy = gridSize / 2; gy < viewH; gy += gridSize) {
             let valid = true;
             // Check path clearance
             for (let i = 0; i < path.length - 1; i++) {
@@ -3489,13 +3575,13 @@ function drawHoverRangePreview() {
 // ═══════════════════════════════════════════════════════════════
 function drawBgStars() {
     bgCtx.fillStyle = 'rgba(5, 5, 8, 0.15)';
-    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.fillRect(0, 0, bgViewW, bgViewH);
 
     stars.forEach(s => {
         s.y += s.speed;
-        if (s.y > bgCanvas.height) {
+        if (s.y > bgViewH) {
             s.y = 0;
-            s.x = Math.random() * bgCanvas.width;
+            s.x = Math.random() * bgViewW;
         }
 
         s.brightness = 0.3 + Math.sin(G.time * 0.02 + s.x) * 0.3;
@@ -3605,7 +3691,7 @@ function earlySendWave() {
     const bonus = 50 + G.wave * 10;
     G.gold += bonus;
     G.score += bonus;
-    showDamageNumber(canvas.width / 2, 80, `EARLY SEND +${bonus}g`, '#ffd700', true);
+    showDamageNumber(viewW / 2, 80, `EARLY SEND +${bonus}g`, '#ffd700', true);
     announce('⏩ EARLY SEND BONUS!', '#ffd700');
 
     // Immediately trigger next subwave
@@ -3613,11 +3699,16 @@ function earlySendWave() {
     updateUI();
 }
 
+let subWavePending = false; // guard: checkWaveComplete runs every frame, only queue one sub-wave
 function checkWaveComplete() {
-    if (!G.running || G.spawning) return;
+    if (!G.running || G.spawning || subWavePending) return;
     if (enemies.length === 0) {
         if (G.subWave < G.maxSubWaves) {
-            setTimeout(spawnSubWave, 1500);
+            subWavePending = true;
+            setTimeout(() => {
+                subWavePending = false;
+                if (G.running && !G.spawning) spawnSubWave();
+            }, 1500);
         } else {
             completeWave();
         }
@@ -3638,7 +3729,7 @@ function completeWave() {
     recordBestScore(G.mapIdx, G.score);
 
     announce(`WAVE ${G.wave} COMPLETE!`, '#00ff88');
-    showDamageNumber(canvas.width / 2, canvas.height / 2 + 50, `+${bonus} GOLD`, '#ffd700', true);
+    showDamageNumber(viewW / 2, viewH / 2 + 50, `+${bonus} GOLD`, '#ffd700', true);
 
     G.wave++;
 
@@ -3713,7 +3804,7 @@ function useAbility(type) {
         // Double gold from kills for a short time
         const bonus = 100 + G.wave * 5;
         G.gold += bonus;
-        showDamageNumber(canvas.width / 2, 100, `+${bonus} GOLD`, '#ffd700', true);
+        showDamageNumber(viewW / 2, 100, `+${bonus} GOLD`, '#ffd700', true);
         announce('💎 GOLD RUSH!', '#ffd700');
     }
 
@@ -3726,8 +3817,26 @@ function useAbility(type) {
 function selectTowerType(type) {
     if (G.gold < TOWERS[type].cost) return;
     G.placing = type;
+    touchPlaceGhost = null;
     document.getElementById('buildMenu').classList.remove('open');
     canvas.style.cursor = 'none';
+    updatePlacementUI();
+}
+
+function updatePlacementUI() {
+    document.getElementById('cancelPlaceBtn').classList.toggle('visible', !!G.placing);
+}
+
+function cancelPlacement() {
+    G.placing = null;
+    touchPlaceGhost = null;
+    canvas.style.cursor = 'crosshair';
+    updatePlacementUI();
+}
+
+function invalidPlacement() {
+    announce("Can't build there!", '#ff5050');
+    playSound('invalid');
 }
 
 function placeTower(x, y) {
@@ -3736,10 +3845,10 @@ function placeTower(x, y) {
 
     // Validate
     for (let i = 0; i < path.length - 1; i++) {
-        if (distToSegment(x, y, path[i], path[i+1]) < CFG.PATH_CLEARANCE) return;
+        if (distToSegment(x, y, path[i], path[i+1]) < CFG.PATH_CLEARANCE) { invalidPlacement(); return; }
     }
     for (const tw of towers) {
-        if (dist(x, y, tw.x, tw.y) < CFG.TOWER_SPACING) return;
+        if (dist(x, y, tw.x, tw.y) < CFG.TOWER_SPACING) { invalidPlacement(); return; }
     }
 
     G.gold -= t.cost;
@@ -3752,7 +3861,9 @@ function placeTower(x, y) {
     showDamageNumber(x, y - 30, `-${t.cost}`, '#ff6666');
 
     G.placing = null;
+    touchPlaceGhost = null;
     canvas.style.cursor = 'crosshair';
+    updatePlacementUI();
     checkSynergies();
     updateUI();
 }
@@ -3994,14 +4105,6 @@ function distToSegment(px, py, p1, p2) {
     return dist(px, py, p1.x + t * dx, p1.y + t * dy);
 }
 
-function distToLine(px, py, x1, y1, x2, y2) {
-    const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
-    const dot = A * C + B * D;
-    const len2 = C * C + D * D;
-    const t = Math.max(0, Math.min(1, dot / len2));
-    return dist(px, py, x1 + t * C, y1 + t * D);
-}
-
 function lerpAngle(a, b, t) {
     const diff = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI;
     return a + diff * t;
@@ -4019,26 +4122,38 @@ function shadeColor(color, amt) {
 // EVENTS
 // ═══════════════════════════════════════════════════════════════
 function bindEvents() {
-    canvas.addEventListener('mousemove', e => {
-        const rect = canvas.getBoundingClientRect();
+    // Track mouse position globally (canvas + hover preview from build menu);
+    // rect is cached in resize() instead of queried per event
+    document.addEventListener('mousemove', e => {
+        const rect = canvasRect || canvas.getBoundingClientRect();
         mouse.x = e.clientX - rect.left;
         mouse.y = e.clientY - rect.top;
     });
 
-    // Also track mouse position globally for hover preview from build menu
-    document.addEventListener('mousemove', e => {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-    });
+    // Distinguish touch taps from real mouse clicks (iOS synthesizes click after touch)
+    let lastTouchTime = 0;
+    canvas.addEventListener('touchstart', () => {
+        lastTouchTime = performance.now();
+    }, { passive: true });
 
     canvas.addEventListener('click', e => {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+        const isTouch = performance.now() - lastTouchTime < 700;
 
         if (G.placing) {
-            placeTower(x, y);
+            if (isTouch) {
+                // Touch flow: first tap positions the ghost, second tap nearby confirms,
+                // a tap far away moves the ghost instead
+                if (touchPlaceGhost && dist(x, y, touchPlaceGhost.x, touchPlaceGhost.y) < 30) {
+                    placeTower(touchPlaceGhost.x, touchPlaceGhost.y);
+                } else {
+                    touchPlaceGhost = { x, y };
+                }
+            } else {
+                placeTower(x, y);
+            }
         } else {
             selectTower(x, y);
         }
@@ -4046,9 +4161,8 @@ function bindEvents() {
 
     canvas.addEventListener('contextmenu', e => {
         e.preventDefault();
-        G.placing = null;
+        cancelPlacement();
         G.selected = null;
-        canvas.style.cursor = 'crosshair';
         updateUI();
     });
 
@@ -4066,10 +4180,9 @@ function bindEvents() {
                 document.getElementById('bestiaryPopup').classList.remove('open');
                 return;
             }
-            G.placing = null;
+            cancelPlacement();
             G.selected = null;
             document.getElementById('buildMenu').classList.remove('open');
-            canvas.style.cursor = 'crosshair';
             updateUI();
         }
         if (key === 'p') togglePause();
@@ -4103,6 +4216,8 @@ function bindEvents() {
     document.getElementById('closeBuild').onclick = () => {
         document.getElementById('buildMenu').classList.remove('open');
     };
+
+    document.getElementById('cancelPlaceBtn').onclick = cancelPlacement;
 
     document.getElementById('startBtn').onclick = startWave;
     document.getElementById('earlySendBtn').onclick = earlySendWave;
@@ -4173,23 +4288,39 @@ function bindEvents() {
 // ═══════════════════════════════════════════════════════════════
 // GAME LOOP
 // ═══════════════════════════════════════════════════════════════
+// Fixed-timestep simulation: one updateStep() = 1/60s of game time, so game
+// speed is identical at 30/60/120Hz refresh rates (all per-tick constants unchanged)
+const STEP_MS = 1000 / 60;
+let lastFrameTime = 0;
+let stepAccumulator = 0;
+
+function updateStep() {
+    G.time++;
+
+    // Update
+    towers.forEach(t => t.update());
+
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        enemies[i].update();
+        if (enemies[i].dead) enemies.splice(i, 1);
+    }
+
+    updateProjectiles();
+    updateEffects();
+}
+
 function gameLoop() {
     gameLoopRunning = true;
     const now = performance.now();
+    const dt = Math.min(lastFrameTime ? now - lastFrameTime : STEP_MS, 100);
+    lastFrameTime = now;
 
     if (!gamePaused) {
-        G.time++;
-
-        // Update
-        towers.forEach(t => t.update());
-
-        for (let i = enemies.length - 1; i >= 0; i--) {
-            enemies[i].update();
-            if (enemies[i].dead) enemies.splice(i, 1);
+        stepAccumulator += dt;
+        while (stepAccumulator >= STEP_MS) {
+            updateStep();
+            stepAccumulator -= STEP_MS;
         }
-
-        updateProjectiles();
-        updateEffects();
 
         // Check game over
         if (G.hp <= 0) {
@@ -4202,9 +4333,6 @@ function gameLoop() {
 
     // Draw always (so player can see the state while paused)
     draw();
-
-    // Background animation (merged into main loop instead of separate rAF)
-    drawBgStars();
 
     // Throttled UI update (every 200ms instead of every frame)
     if (now - lastUIUpdate > UI_UPDATE_INTERVAL) {

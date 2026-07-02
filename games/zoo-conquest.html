@@ -28,6 +28,11 @@
       overflow: hidden;
     }
 
+    /* Disable double-tap zoom (keeps pinch-zoom) and remove tap delay on iOS Safari */
+    body, svg, button {
+      touch-action: manipulation;
+    }
+
     .map-container {
       width: 100%;
       height: calc(100vh - 60px);
@@ -135,8 +140,8 @@
         }
       }
 
-      /* Mobile: sidebar becomes a slide-in overlay */
-      @media (max-width: 767px) {
+      /* Mobile + portrait tablets: sidebar becomes a slide-in overlay so the board can use the full width */
+      @media (max-width: 767px), (orientation: portrait) and (max-width: 1024px) {
         .game-sidebar {
           position: fixed !important;
           top: 0;
@@ -189,9 +194,18 @@
           padding: 6px !important;
         }
       }
-      @media (min-width: 768px) {
+      @media (min-width: 768px) and (orientation: landscape), (min-width: 1025px) {
         .sidebar-backdrop { display: none !important; }
         .mobile-toggle-btn { display: none !important; }
+      }
+      /* Portrait tablets: show the compact phase bar (Tailwind md:hidden would hide it) */
+      @media (orientation: portrait) and (min-width: 768px) and (max-width: 1024px) {
+        .mobile-phase-bar { display: flex !important; }
+      }
+      /* Reserve space so the fixed Menu pill never covers the message text */
+      .game-message-bar {
+        padding-left: 100px !important;
+        padding-right: 100px !important;
       }
 
       /* Battle animation keyframes */
@@ -401,6 +415,9 @@
     </div>
   <script type="text/babel">
     const { useState, useEffect, useCallback } = React;
+
+    // Touch devices never fire mouseleave, so gate hover tooltips to hover-capable devices
+    const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
 
     // Fisher-Yates shuffle for unbiased randomization
     function shuffleArray(arr) {
@@ -706,7 +723,9 @@
 
     // Battle probability estimation via Monte Carlo simulation
     const estimateBattleProbability = (attackerTroops, defenderTroops) => {
-      const SIMULATIONS = 2000;
+      // Lopsided big battles are near-certain wins - skip the expensive simulation
+      if (defenderTroops >= 5 && attackerTroops >= defenderTroops * 3) return 98;
+      const SIMULATIONS = 500;
       let attackerWins = 0;
 
       for (let sim = 0; sim < SIMULATIONS; sim++) {
@@ -930,6 +949,9 @@
           onMouseEnter={(e) => onHover && onHover(id, e)}
           onMouseLeave={() => onHoverEnd && onHoverEnd()}
         >
+          {/* Invisible enlarged hit target for touch */}
+          <circle cx={data.x} cy={data.y} r="32" fill="transparent" />
+
           {/* Outer glow for selected/valid */}
           {(isSelected || isValidTarget) && (
             <circle
@@ -981,7 +1003,7 @@
           <circle
             cx={data.x + 15}
             cy={data.y + 15}
-            r="10"
+            r="12"
             fill="#000"
             stroke="#fff"
             strokeWidth="1.5"
@@ -991,7 +1013,7 @@
           </text>
 
           {/* Territory name below */}
-          <text x={data.x} y={data.y + 36} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold"
+          <text x={data.x} y={data.y + 36} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold"
                 style={{ textShadow: '1px 1px 2px rgba(0,0,0,1)' }}>
             {data.name}
           </text>
@@ -1782,10 +1804,10 @@
       const gameLogRef = React.useRef(null);
       const [aiThinking, setAiThinking] = useState(false);
 
-      // Wrapper: every setMessage also appends to the game log
+      // Wrapper: every setMessage also appends to the game log (capped at 50 entries)
       const setMessage = useCallback((msg) => {
         setMessageRaw(msg);
-        setGameLog(prev => [...prev, { text: msg, time: Date.now() }]);
+        setGameLog(prev => [...prev.slice(-49), { text: msg, time: Date.now() }]);
       }, []);
       const [showCardTrade, setShowCardTrade] = useState(false); // NEW: Show card trade modal
       const [mustTradeCards, setMustTradeCards] = useState(false); // Force trade when > 6 cards
@@ -1892,7 +1914,9 @@
 
       // Calculate reinforcements
       const calculateReinforcements = (player, territories) => {
-        let troops = Math.max(3, Math.floor(player.territories / 3));
+        // Count from the passed-in territories map - player.territories can be stale after AI conquests
+        const count = Object.values(territories).filter(t => t.owner === player.army).length;
+        let troops = Math.max(3, Math.floor(count / 3));
 
         // Region bonuses
         Object.entries(REGIONS).forEach(([name, region]) => {
@@ -1906,8 +1930,9 @@
       // Draw a card from the deck
       const drawCard = () => {
         if (cardDeck.length === 0) {
-          // Reshuffle if deck is empty
-          const reshuffled = shuffleArray(CARD_DECK);
+          // Reshuffle if deck is empty - exclude cards still held by players to avoid duplicate ids
+          const held = new Set(Object.values(playerCards).flat().map(c => c.id));
+          const reshuffled = shuffleArray(CARD_DECK.filter(c => !held.has(c.id)));
           const card = reshuffled[0];
           setCardDeck(reshuffled.slice(1));
           return card;
@@ -2015,6 +2040,7 @@
 
       // Tooltip hover handlers
       const handleTerritoryHover = useCallback((id, e) => {
+        if (!CAN_HOVER) return;
         const svgEl = e.target.closest('svg');
         if (!svgEl) return;
         const rect = svgEl.getBoundingClientRect();
@@ -2074,12 +2100,23 @@
         }));
       }, []);
 
-      // Handle territory click - shift+click or double-click places all troops
+      // Handle territory click - shift+click or double-click/double-tap places all troops
+      const lastTapRef = React.useRef({ id: null, time: 0 });
       const handleTerritoryClick = (id, placeAll = false) => {
+        // Dismiss any lingering tooltip (touch devices never fire mouseleave)
+        setTooltipInfo(null);
+
         // Block clicks during AI turn
         if (currentPlayer?.isAI) {
           return;
         }
+
+        // Manual double-tap detection - iPad Safari doesn't reliably fire dblclick on SVG
+        const now = Date.now();
+        if (!placeAll && lastTapRef.current.id === id && now - lastTapRef.current.time < 300) {
+          placeAll = true;
+        }
+        lastTapRef.current = { id, time: now };
 
         const territory = gameState.territories[id];
 
@@ -3007,6 +3044,7 @@
         const nextPlayerCards = playerCards[nextPlayer.army] || [];
         if (nextPlayerCards.length >= 5 && canTradeCards(nextPlayerCards) && !nextPlayer.isAI) {
           setMessage(`Your turn! You have ${nextPlayerCards.length} cards - you MUST trade first!`);
+          setMustTradeCards(true);
           setShowCardTrade(true);
         } else if (nextPlayer.isAI) {
           setMessage(`🤖 ${nextPlayer.name} is taking their turn...`);
@@ -3372,8 +3410,8 @@
                 {message}
               </span>
             </div>
-            {/* Mobile-only compact phase bar */}
-            <div className="mb-2 flex gap-1 items-center md:hidden">
+            {/* Mobile-only compact phase bar (also shown on portrait tablets via .mobile-phase-bar) */}
+            <div className="mobile-phase-bar mb-2 flex gap-1 items-center md:hidden">
               <div className="flex gap-0.5 flex-1">
                 <div className={`flex-1 text-center py-1 rounded font-bold text-xs ${turnPhase === 'reinforce' ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-500'}`}>
                   Place{troopsToPlace > 0 && ` (${troopsToPlace})`}

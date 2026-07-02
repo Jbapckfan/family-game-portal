@@ -124,12 +124,53 @@
             left: 20px;
             z-index: 10;
             padding: 12px 16px;
+            max-width: calc(100vw - 420px);
         }
 
         .controls-panel {
             top: max(10px, env(safe-area-inset-top));
             right: 20px;
             z-index: 10;
+        }
+
+        /* Below 900px the two-line keyboard hint no longer fits beside the controls */
+        @media (max-width: 900px) {
+            .instruction-text span {
+                display: none;
+            }
+        }
+
+        /* Narrow screens: stack the controls panel below the level panel */
+        @media (max-width: 700px) {
+            .level-panel {
+                max-width: none;
+                right: 20px;
+            }
+
+            .controls-panel {
+                top: calc(max(10px, env(safe-area-inset-top)) + 158px);
+            }
+        }
+
+        /* Floating rotate/remove controls for touch devices */
+        .mirror-touch-controls {
+            position: absolute;
+            display: none;
+            gap: 8px;
+            z-index: 15;
+        }
+
+        .mirror-touch-controls button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(119, 153, 255, 0.5);
+            background: rgba(15, 21, 71, 0.88);
+            color: #7799ff;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
         }
 
         .score-text {
@@ -821,6 +862,12 @@
 
         <canvas id="gameCanvas" role="application" aria-label="Lasers and Mirrors interactive game board" tabindex="0"></canvas>
 
+        <!-- Floating rotate/remove buttons for the selected mirror (touch devices) -->
+        <div class="mirror-touch-controls" id="mirrorTouchControls">
+            <button id="rotateMirrorBtn" aria-label="Rotate mirror">&#x21BB;</button>
+            <button id="removeMirrorBtn" aria-label="Return mirror to storage">&#x2715;</button>
+        </div>
+
         <!-- Bottom horizontal mirror toolbar -->
         <div class="mirror-toolbar" role="toolbar" aria-label="Mirror inventory">
             <div id="mirrorSlots" class="mirror-slots-row">
@@ -832,6 +879,7 @@
     <script>
         // Game variables
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -1098,6 +1146,15 @@
             laserBeam: null,
             mirrorInventory: []
         };
+
+        // Hard cap on canvas particles (drop oldest when full)
+        const MAX_PARTICLES = 120;
+        function addParticle(particle) {
+            if (gameState.particles.length >= MAX_PARTICLES) {
+                gameState.particles.shift();
+            }
+            gameState.particles.push(particle);
+        }
 
         // ================================================================
         // IMPROVEMENT 5: Web Audio API Sound Effects
@@ -1386,55 +1443,64 @@
         // ================================================================
         // FEATURE: Background Grid Lines
         // ================================================================
+        // The grid is static between resizes/snap toggles, so render it once to an
+        // offscreen canvas and drawImage it each frame instead of ~70+ stroke calls.
+        let gridCacheCanvas = null;
+        let gridCacheKey = '';
         function drawBackgroundGrid() {
-            ctx.save();
-            ctx.strokeStyle = 'rgba(119, 153, 255, 0.08)';
-            ctx.lineWidth = 1;
+            const gridDpr = window.devicePixelRatio || 1;
+            const key = canvasCSSWidth + 'x' + canvasCSSHeight + '@' + gridDpr + ':' + snapToGridEnabled;
+            if (gridCacheKey !== key) {
+                gridCacheKey = key;
+                gridCacheCanvas = document.createElement('canvas');
+                gridCacheCanvas.width = Math.max(1, Math.round(canvasCSSWidth * gridDpr));
+                gridCacheCanvas.height = Math.max(1, Math.round(canvasCSSHeight * gridDpr));
+                const gctx = gridCacheCanvas.getContext('2d');
+                gctx.setTransform(gridDpr, 0, 0, gridDpr, 0, 0);
 
-            // Vertical lines
-            for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvasCSSHeight);
-                ctx.stroke();
-            }
+                gctx.strokeStyle = 'rgba(119, 153, 255, 0.08)';
+                gctx.lineWidth = 1;
 
-            // Horizontal lines
-            for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvasCSSWidth, y);
-                ctx.stroke();
-            }
-
-            // If snap is enabled, draw slightly brighter grid
-            if (snapToGridEnabled) {
-                ctx.strokeStyle = 'rgba(0, 200, 150, 0.12)';
+                // Vertical lines
+                gctx.beginPath();
                 for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvasCSSHeight);
-                    ctx.stroke();
+                    gctx.moveTo(x, 0);
+                    gctx.lineTo(x, canvasCSSHeight);
                 }
+                // Horizontal lines
                 for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvasCSSWidth, y);
-                    ctx.stroke();
+                    gctx.moveTo(0, y);
+                    gctx.lineTo(canvasCSSWidth, y);
                 }
+                gctx.stroke();
 
-                // Draw small dots at intersections when snap is on
-                ctx.fillStyle = 'rgba(0, 200, 150, 0.2)';
-                for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                // If snap is enabled, draw slightly brighter grid
+                if (snapToGridEnabled) {
+                    gctx.strokeStyle = 'rgba(0, 200, 150, 0.12)';
+                    gctx.beginPath();
+                    for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                        gctx.moveTo(x, 0);
+                        gctx.lineTo(x, canvasCSSHeight);
+                    }
                     for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
-                        ctx.beginPath();
-                        ctx.arc(x, y, 1.5, 0, Math.PI * 2);
-                        ctx.fill();
+                        gctx.moveTo(0, y);
+                        gctx.lineTo(canvasCSSWidth, y);
+                    }
+                    gctx.stroke();
+
+                    // Draw small dots at intersections when snap is on
+                    gctx.fillStyle = 'rgba(0, 200, 150, 0.2)';
+                    for (let x = GRID_SIZE; x < canvasCSSWidth; x += GRID_SIZE) {
+                        for (let y = GRID_SIZE; y < canvasCSSHeight; y += GRID_SIZE) {
+                            gctx.beginPath();
+                            gctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                            gctx.fill();
+                        }
                     }
                 }
             }
 
-            ctx.restore();
+            ctx.drawImage(gridCacheCanvas, 0, 0, canvasCSSWidth, canvasCSSHeight);
         }
 
         // ================================================================
@@ -2272,7 +2338,7 @@
                 this.hitObstacle = false; // Track if laser hit an obstacle
             }
 
-            calculate() {
+            calculate(spawnSparks) {
                 this.segments = [];
                 this.hitObstacle = false;
 
@@ -2366,7 +2432,7 @@
                                     branch: beam.branch + 1
                                 });
 
-                                this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
+                                if (spawnSparks) this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
                                 continue;
                             }
 
@@ -2381,7 +2447,7 @@
                                 currentAngle = reflectedAngle;
                                 reflectionCount++;
 
-                                this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
+                                if (spawnSparks) this.createReflectionParticles(closestIntersection.x, closestIntersection.y);
                                 continue;
                             }
                         } else {
@@ -2483,7 +2549,7 @@
             createReflectionParticles(x, y) {
                 if (prefersReducedMotion) return;
                 for (let i = 0; i < 8; i++) {
-                    gameState.particles.push(new Particle(
+                    addParticle(new Particle(
                         x + (Math.random() - 0.5) * 10,
                         y + (Math.random() - 0.5) * 10,
                         '#7799ff'
@@ -2524,7 +2590,7 @@
                     for (let i = 0; i < 50; i++) {
                         setTimeout(() => {
                             if (gameState.particles) {
-                                gameState.particles.push(new Particle(
+                                addParticle(new Particle(
                                     targetX + (Math.random() - 0.5) * 80,
                                     targetY + (Math.random() - 0.5) * 80,
                                     ['#00ffcc', '#ff1493', '#7799ff', '#ffcc00'][Math.floor(Math.random() * 4)]
@@ -2548,36 +2614,43 @@
                 const drawEndX = segment.startX + (segment.endX - segment.startX) * endProgress;
                 const drawEndY = segment.startY + (segment.endY - segment.startY) * endProgress;
 
+                // Layered strokes fake the glow -- shadowBlur is far too expensive
+                // on iOS Safari to use per segment per frame.
                 ctx.save();
-                ctx.shadowColor = color;
-                ctx.shadowBlur = 20;
+                ctx.lineCap = 'round';
+
+                // Outer glow halo
                 ctx.strokeStyle = color;
-                ctx.lineWidth = 6;
-                ctx.lineCap = 'round';
+                ctx.globalAlpha = 0.18;
+                ctx.lineWidth = 16;
+                ctx.beginPath();
+                ctx.moveTo(segment.startX, segment.startY);
+                ctx.lineTo(drawEndX, drawEndY);
+                ctx.stroke();
+
+                // Main colored beam
                 ctx.globalAlpha = 0.6;
+                ctx.lineWidth = 6;
                 ctx.beginPath();
                 ctx.moveTo(segment.startX, segment.startY);
                 ctx.lineTo(drawEndX, drawEndY);
                 ctx.stroke();
-                ctx.restore();
 
-                ctx.save();
+                // White core
                 ctx.strokeStyle = '#ffffff';
+                ctx.globalAlpha = 0.9;
                 ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.shadowColor = color;
-                ctx.shadowBlur = 10;
                 ctx.beginPath();
                 ctx.moveTo(segment.startX, segment.startY);
                 ctx.lineTo(drawEndX, drawEndY);
                 ctx.stroke();
                 ctx.restore();
 
-                if (!prefersReducedMotion && Math.random() < 0.3 && endProgress > 0.1) {
+                if (!prefersReducedMotion && Math.random() < 0.08 && endProgress > 0.1) {
                     const t = Math.random() * endProgress;
                     const x = segment.startX + (segment.endX - segment.startX) * t;
                     const y = segment.startY + (segment.endY - segment.startY) * t;
-                    gameState.particles.push(new Particle(x, y, color));
+                    addParticle(new Particle(x, y, color));
                 }
             }
 
@@ -2611,7 +2684,7 @@
                                 const prevSeg = laserAnimSegments[laserAnimCurrentSegment - 1];
                                 if (prevSeg && !prefersReducedMotion) {
                                     for (let i = 0; i < 5; i++) {
-                                        gameState.particles.push(new Particle(
+                                        addParticle(new Particle(
                                             prevSeg.endX + (Math.random() - 0.5) * 8,
                                             prevSeg.endY + (Math.random() - 0.5) * 8,
                                             '#ffffff'
@@ -2628,6 +2701,31 @@
                     });
                 }
             }
+        }
+
+        // Pre-rendered glow sprites keyed by color -- one radial-gradient sprite
+        // drawn via drawImage replaces per-particle shadowBlur (expensive on iOS).
+        const particleSpriteCache = {};
+        const PARTICLE_SPRITE_SIZE = 32;
+        function getParticleSprite(color) {
+            let sprite = particleSpriteCache[color];
+            if (!sprite) {
+                sprite = document.createElement('canvas');
+                sprite.width = PARTICLE_SPRITE_SIZE;
+                sprite.height = PARTICLE_SPRITE_SIZE;
+                const sctx = sprite.getContext('2d');
+                const half = PARTICLE_SPRITE_SIZE / 2;
+                const gradient = sctx.createRadialGradient(half, half, 0, half, half, half);
+                gradient.addColorStop(0, '#ffffff');
+                gradient.addColorStop(0.3, color);
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                sctx.fillStyle = gradient;
+                sctx.beginPath();
+                sctx.arc(half, half, half, 0, Math.PI * 2);
+                sctx.fill();
+                particleSpriteCache[color] = sprite;
+            }
+            return sprite;
         }
 
         // Particle class
@@ -2653,15 +2751,10 @@
 
             draw() {
                 const alpha = this.life / this.maxLife;
-                ctx.save();
+                const radius = this.size * alpha + 3; // extra margin for the sprite glow
                 ctx.globalAlpha = alpha;
-                ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 5;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * alpha, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+                ctx.drawImage(getParticleSprite(this.color), this.x - radius, this.y - radius, radius * 2, radius * 2);
+                ctx.globalAlpha = 1;
             }
         }
 
@@ -2837,6 +2930,17 @@
                     }
                 });
 
+                // Keyboard operability: slots are role=button, so Enter/Space must work
+                slotElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (!mirrorData.used) {
+                            ensureAudio();
+                            placeMirrorInCenter(index);
+                        }
+                    }
+                });
+
                 slotsContainer.appendChild(slotElement);
             });
 
@@ -2872,7 +2976,7 @@
             // IMPROVEMENT 5: Play clink sound
             playClinkSound();
 
-            gameState.laserBeam.calculate();
+            gameState.laserBeam.calculate(true); // reflection sparks on placement
 
             updateMirrorStorageUI();
         }
@@ -2945,7 +3049,7 @@
                 gameState.laserBeam.calculate();
             };
 
-            const handleMouseUp = () => {
+            const handleDragEnd = () => {
                 if (dragGhost && dragGhost.parentNode) {
                     dragGhost.parentNode.removeChild(dragGhost);
                 }
@@ -2955,34 +3059,24 @@
                 gameState.isDragging = false;
                 mirror.updatePercentage(); // IMPROVEMENT 4: finalize percentage
 
+                // Remove BOTH mouse and touch listeners no matter which input
+                // path ended the drag -- a leaked mouse pair lets iOS Safari's
+                // synthesized mouse events teleport the mirror later.
                 document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-
-                updateMirrorStorageUI();
-                updateUI();
-            };
-
-            const handleTouchEnd = () => {
-                if (dragGhost && dragGhost.parentNode) {
-                    dragGhost.parentNode.removeChild(dragGhost);
-                }
-
-                slotElement.classList.remove('dragging');
-
-                gameState.isDragging = false;
-                mirror.updatePercentage(); // IMPROVEMENT 4: finalize percentage
-
+                document.removeEventListener('mouseup', handleDragEnd);
                 document.removeEventListener('touchmove', handleTouchMove);
-                document.removeEventListener('touchend', handleTouchEnd);
+                document.removeEventListener('touchend', handleDragEnd);
+
+                gameState.laserBeam.calculate(true); // reflection sparks on drop
 
                 updateMirrorStorageUI();
                 updateUI();
             };
 
             document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('mouseup', handleDragEnd);
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            document.addEventListener('touchend', handleTouchEnd);
+            document.addEventListener('touchend', handleDragEnd);
 
             e.preventDefault();
         }
@@ -3121,7 +3215,7 @@
 
         function fireLaser() {
             ensureAudio();
-            gameState.laserBeam.calculate();
+            gameState.laserBeam.calculate(true); // reflection sparks on FIRE
 
             // IMPROVEMENT 5: Play laser sound
             const segCount = gameState.laserBeam.segments.length;
@@ -3146,8 +3240,14 @@
         // Event handlers
         let lastTapTime = 0;
 
-        // Track if a mirror was repositioned (dragged after already placed) for move counting
+        // Track if a mirror was repositioned (dragged after already placed) for move counting.
+        // A plain tap/click on a mirror only selects it -- the move, clink and undo
+        // snapshot are committed on mouseup only if the pointer moved beyond a threshold.
         let dragWasReposition = false;
+        let dragStartPos = null;
+        let dragMovedBeyondThreshold = false;
+        let pendingUndoSnapshot = null;
+        const DRAG_MOVE_THRESHOLD = 6; // px
 
         canvas.addEventListener('mousedown', (e) => {
             ensureAudio();
@@ -3174,7 +3274,9 @@
                 clickedMirror.isSelected = true;
                 gameState.isDragging = true;
                 dragWasReposition = true; // This is a reposition of an existing mirror
-                pushUndoState(); // FEATURE: Track for undo before repositioning
+                dragStartPos = { x: x, y: y };
+                dragMovedBeyondThreshold = false;
+                pendingUndoSnapshot = captureGameSnapshot(); // pushed only if the mirror actually moves
             } else {
                 if (gameState.selectedMirror) {
                     gameState.selectedMirror.isSelected = false;
@@ -3182,6 +3284,9 @@
                     gameState.isDragging = false;
                 }
                 dragWasReposition = false;
+                dragStartPos = null;
+                dragMovedBeyondThreshold = false;
+                pendingUndoSnapshot = null;
             }
         });
 
@@ -3230,7 +3335,7 @@
             // IMPROVEMENT 5: Play clink sound
             playClinkSound();
 
-            gameState.laserBeam.calculate();
+            gameState.laserBeam.calculate(true); // reflection sparks on placement
 
             updateMirrorStorageUI();
         }
@@ -3244,6 +3349,16 @@
             gameState.mouse.y = y;
 
             if (gameState.selectedMirror && gameState.isDragging) {
+                // Repositioning only starts once the pointer moves beyond the
+                // threshold -- a stationary tap must not move the mirror.
+                if (dragWasReposition && !dragMovedBeyondThreshold) {
+                    if (!dragStartPos) return;
+                    const dx = x - dragStartPos.x;
+                    const dy = y - dragStartPos.y;
+                    if (Math.sqrt(dx * dx + dy * dy) <= DRAG_MOVE_THRESHOLD) return;
+                    dragMovedBeyondThreshold = true;
+                }
+
                 gameState.selectedMirror.x = x;
                 gameState.selectedMirror.y = y;
                 applySnapIfEnabled(gameState.selectedMirror); // FEATURE: Snap-to-Grid
@@ -3254,15 +3369,25 @@
         });
 
         canvas.addEventListener('mouseup', () => {
-            if (gameState.isDragging && dragWasReposition && gameState.selectedMirror) {
+            if (gameState.isDragging && dragWasReposition && dragMovedBeyondThreshold && gameState.selectedMirror) {
+                // FEATURE: Track for undo (snapshot captured before the move)
+                if (pendingUndoSnapshot) {
+                    undoStack.push(pendingUndoSnapshot);
+                    redoStack = [];
+                    updateUndoRedoButtons();
+                }
                 // IMPROVEMENT 1: Count repositioning as a move
                 incrementMoveCount();
                 // IMPROVEMENT 5: Play clink sound for repositioning
                 playClinkSound();
                 gameState.selectedMirror.updatePercentage(); // IMPROVEMENT 4: finalize
+                gameState.laserBeam.calculate(true); // reflection sparks on drop
             }
             gameState.isDragging = false;
             dragWasReposition = false;
+            dragStartPos = null;
+            dragMovedBeyondThreshold = false;
+            pendingUndoSnapshot = null;
         });
 
         // Touch events for mobile with double-tap support
@@ -3351,12 +3476,7 @@
             if (e.key === 'r' || e.key === 'R' || e.key === ' ') {
                 if (gameState.selectedMirror) {
                     e.preventDefault();
-                    pushUndoState(); // FEATURE: Track rotation for undo
-                    gameState.selectedMirror.angle += Math.PI / 4;
-                    while (gameState.selectedMirror.angle >= Math.PI) {
-                        gameState.selectedMirror.angle -= 2 * Math.PI;
-                    }
-                    gameState.laserBeam.calculate();
+                    rotateSelectedMirror();
                 }
                 return;
             }
@@ -3372,26 +3492,96 @@
                 switch(e.key) {
                     case 'Delete':
                     case 'Backspace':
-                        pushUndoState(); // FEATURE: Track deletion for undo
-                        if (gameState.selectedMirror.originalInventoryIndex >= 0) {
-                            gameState.mirrorInventory[gameState.selectedMirror.originalInventoryIndex].used = false;
-                        }
-
-                        const index = gameState.mirrors.indexOf(gameState.selectedMirror);
-                        if (index > -1) {
-                            gameState.mirrors.splice(index, 1);
-                            gameState.selectedMirror = null;
-                            gameState.isDragging = false;
-                            keyboardMirrorIndex = -1;
-
-                            gameState.laserBeam.calculate();
-
-                            updateMirrorStorageUI();
-                        }
+                        returnSelectedMirrorToStorage();
                         break;
                 }
             }
         });
+
+        // Shared by the R/Space key and the on-canvas touch rotate button
+        function rotateSelectedMirror() {
+            if (!gameState.selectedMirror) return;
+            pushUndoState(); // FEATURE: Track rotation for undo
+            gameState.selectedMirror.angle += Math.PI / 4;
+            while (gameState.selectedMirror.angle >= Math.PI) {
+                gameState.selectedMirror.angle -= 2 * Math.PI;
+            }
+            gameState.laserBeam.calculate();
+        }
+
+        // Shared by the Delete/Backspace keys and the on-canvas touch remove button
+        function returnSelectedMirrorToStorage() {
+            if (!gameState.selectedMirror) return;
+            pushUndoState(); // FEATURE: Track deletion for undo
+            if (gameState.selectedMirror.originalInventoryIndex >= 0) {
+                gameState.mirrorInventory[gameState.selectedMirror.originalInventoryIndex].used = false;
+            }
+
+            const index = gameState.mirrors.indexOf(gameState.selectedMirror);
+            if (index > -1) {
+                gameState.mirrors.splice(index, 1);
+                gameState.selectedMirror = null;
+                gameState.isDragging = false;
+                keyboardMirrorIndex = -1;
+
+                gameState.laserBeam.calculate();
+
+                updateMirrorStorageUI();
+            }
+        }
+
+        // FEATURE: Floating rotate/remove buttons for touch devices, positioned
+        // near the selected mirror (keyboard R/Delete don't exist on an iPad).
+        const mirrorTouchControls = document.getElementById('mirrorTouchControls');
+        let touchControlsVisible = false;
+        let touchControlsX = -1;
+        let touchControlsY = -1;
+
+        document.getElementById('rotateMirrorBtn').addEventListener('click', () => {
+            ensureAudio();
+            rotateSelectedMirror();
+        });
+
+        document.getElementById('removeMirrorBtn').addEventListener('click', () => {
+            ensureAudio();
+            returnSelectedMirrorToStorage();
+        });
+
+        function updateMirrorTouchControls() {
+            const mirror = gameState.selectedMirror;
+            const shouldShow = isTouchDevice && !!mirror && mirror.isPlaced &&
+                !gameState.isDragging && !gameState.won;
+
+            if (!shouldShow) {
+                if (touchControlsVisible) {
+                    touchControlsVisible = false;
+                    mirrorTouchControls.style.display = 'none';
+                }
+                return;
+            }
+
+            const left = Math.round(Math.max(8, Math.min(canvasCSSWidth - 104, mirror.x - 48)));
+            const top = Math.round(Math.max(8, Math.min(canvasCSSHeight - 52, mirror.y - mirror.length / 2 - 58)));
+
+            if (!touchControlsVisible) {
+                touchControlsVisible = true;
+                mirrorTouchControls.style.display = 'flex';
+            }
+            if (left !== touchControlsX || top !== touchControlsY) {
+                touchControlsX = left;
+                touchControlsY = top;
+                mirrorTouchControls.style.left = left + 'px';
+                mirrorTouchControls.style.top = top + 'px';
+            }
+        }
+
+        // Touch devices get touch-appropriate instructions instead of keyboard hints
+        if (isTouchDevice) {
+            const instrEl = document.querySelector('.instruction-text');
+            if (instrEl) {
+                instrEl.innerHTML = 'Double-tap to place mirror &bull; Drag to move &bull; Tap a mirror for rotate &amp; remove buttons';
+            }
+        }
 
         function selectMirrorByKeyboard(idx) {
             if (gameState.selectedMirror) {
@@ -3408,6 +3598,8 @@
 
         // Game loop
         let lastFrameTime = performance.now();
+        let lastCanvasClass = null;
+        let lastModeText = null;
         function gameLoop(now) {
             const dt = Math.min(now - lastFrameTime, 100);
             lastFrameTime = now;
@@ -3418,16 +3610,24 @@
             // FEATURE: Draw background grid lines
             drawBackgroundGrid();
 
-            canvas.className = gameState.isDragging ? 'drag-mode' : '';
-
-            const modeIndicator = document.getElementById('modeIndicator');
-            if (gameState.selectedMirror) {
-                modeIndicator.textContent = gameState.isDragging ? 'POSITIONING' : 'SELECTED';
-                modeIndicator.style.color = '#7799ff';
-            } else {
-                modeIndicator.textContent = 'READY';
-                modeIndicator.style.color = '#ffffff';
+            // Only touch the DOM when the values actually change
+            const desiredCanvasClass = gameState.isDragging ? 'drag-mode' : '';
+            if (desiredCanvasClass !== lastCanvasClass) {
+                lastCanvasClass = desiredCanvasClass;
+                canvas.className = desiredCanvasClass;
             }
+
+            const modeText = gameState.selectedMirror
+                ? (gameState.isDragging ? 'POSITIONING' : 'SELECTED')
+                : 'READY';
+            if (modeText !== lastModeText) {
+                lastModeText = modeText;
+                const modeIndicator = document.getElementById('modeIndicator');
+                modeIndicator.textContent = modeText;
+                modeIndicator.style.color = gameState.selectedMirror ? '#7799ff' : '#ffffff';
+            }
+
+            updateMirrorTouchControls();
 
             gameState.particles = gameState.particles.filter(particle => {
                 particle.update(dt60);

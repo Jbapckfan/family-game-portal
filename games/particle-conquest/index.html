@@ -184,6 +184,7 @@
         
         .percent-btn {
             padding: 8px 16px;
+            min-height: 44px;
             font-size: 13px;
             background: #222;
             border: 1px solid #444;
@@ -371,15 +372,34 @@
         
         .instructions {
             max-width: 380px;
+            width: min(380px, 92vw);
             text-align: left;
             color: #666;
             font-size: 12px;
             line-height: 1.5;
-            padding: 15px;
             border: 1px solid #333;
             border-radius: 10px;
             background: rgba(255,255,255,0.02);
+            overflow: hidden;
         }
+
+        .instructions summary {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            color: #0ff;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .instructions summary::-webkit-details-marker { display: none; }
+        .instructions summary::after { content: '＋'; margin-left: 10px; color: #777; }
+        .instructions[open] summary::after { content: '−'; }
+        .instructions-body { padding: 0 15px 15px; max-height: 42vh; overflow-y: auto; }
         
         .instructions h4 {
             color: #888;
@@ -1179,6 +1199,7 @@
 
         .menu-action-btn {
             padding: 10px 20px;
+            min-height: 44px;
             font-size: 13px;
             background: #111;
             border: 1px solid #444;
@@ -2091,6 +2112,7 @@
                 <button class="diff-btn hard" data-diff="hard">🔴 Hard</button>
                 <button class="diff-btn brutal" data-diff="brutal">💀 Brutal</button>
             </div>
+            <p style="color:#777;font-size:11px;margin-top:10px;">Tap a difficulty to launch · Easy is best for your first battle</p>
         </div>
 
         <div class="menu-section">
@@ -2114,7 +2136,9 @@
             </div>
         </div>
 
-        <div class="instructions">
+        <details class="instructions">
+            <summary>How to Play &amp; Special Rules</summary>
+            <div class="instructions-body">
             <h4>How to Play</h4>
             <div id="classicInstructions">
                 <strong>Tap your planet</strong> → <strong>Tap target</strong> to attack<br>
@@ -2143,7 +2167,8 @@
             👻 <strong>Stealth Attack</strong> — Your particles invisible to AI<br>
             ☄️ <strong>Comet Showers</strong> — Destroys flying particles<br>
             🌫️ <strong>Fog of War</strong> — Limited visibility
-        </div>
+            </div>
+        </details>
 
         <!-- Daily Challenges -->
         <div class="daily-panel" id="dailyPanel">

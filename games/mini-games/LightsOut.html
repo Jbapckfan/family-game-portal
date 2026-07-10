@@ -87,6 +87,11 @@
         body {
             font-family: 'Orbitron', sans-serif;
         }
+        button {
+            min-width: 44px;
+            min-height: 44px;
+            touch-action: manipulation;
+        }
         .text-shadow-neon {
           text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(var(--lo-primary), 0.5), 0 0 20px rgba(var(--lo-primary), 0.5);
         }
@@ -658,7 +663,7 @@
                                     role="radio"
                                     aria-checked={isActive}
                                     onClick={() => { setCustomError(''); onChange(opt.size); }}
-                                    className={`px-3 py-1.5 min-h-[40px] rounded-lg text-xs font-bold transition-all border`}
+                                    className={`px-3 py-1.5 min-h-[44px] rounded-lg text-xs font-bold transition-all border`}
                                     style={{
                                         backgroundColor: isActive ? `rgba(var(--lo-primary), 0.2)` : 'rgba(0,0,0,0.4)',
                                         borderColor: isActive ? `rgba(var(--lo-primary), 0.8)` : `rgba(var(--lo-primary), 0.15)`,
@@ -682,7 +687,7 @@
                                     onChange={(e) => { setCustomInput(e.target.value); setCustomError(''); }}
                                     onKeyDown={handleKeyDown}
                                     placeholder="NxN"
-                                    className="w-14 h-[40px] rounded-lg text-xs font-bold text-center border bg-black/40 focus:outline-none"
+                                    className="w-14 h-[44px] rounded-lg text-xs font-bold text-center border bg-black/40 focus:outline-none"
                                     style={{
                                         borderColor: isCustomActive ? `rgba(var(--lo-primary), 0.8)` : `rgba(var(--lo-primary), 0.15)`,
                                         color: `rgba(var(--lo-text-primary), 0.9)`,
@@ -692,7 +697,7 @@
                                 />
                                 <button
                                     onClick={handleCustomSubmit}
-                                    className="h-[40px] px-2 rounded-lg text-xs font-bold border transition-all"
+                                    className="h-[44px] px-2 rounded-lg text-xs font-bold border transition-all"
                                     style={{
                                         borderColor: `rgba(var(--lo-primary), 0.4)`,
                                         color: `rgba(var(--lo-primary), 0.9)`,
@@ -1065,7 +1070,7 @@
                         <div className="flex items-center justify-center gap-3 mb-3">
                             <button
                                 onClick={() => { toggleTimedMode(); resetGame(); }}
-                                className="flex items-center gap-2 px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-all border"
+                                className="flex items-center gap-2 px-3 py-1.5 min-h-[44px] rounded-lg text-xs font-bold transition-all border"
                                 style={{
                                     borderColor: timedMode ? 'rgba(239, 68, 68, 0.6)' : `rgba(var(--lo-primary), 0.2)`,
                                     backgroundColor: timedMode ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0,0,0,0.3)',
@@ -1144,7 +1149,7 @@
                                     <button
                                         onClick={handleUndo}
                                         disabled={moveHistory.length === 0}
-                                        className={`px-4 py-2 min-h-[40px] rounded-lg text-sm font-bold transition-all border ${
+                                        className={`px-4 py-2 min-h-[44px] rounded-lg text-sm font-bold transition-all border ${
                                             moveHistory.length === 0
                                                 ? 'border-gray-600/30 bg-gray-800/30 text-gray-600 cursor-not-allowed'
                                                 : ''
@@ -1161,7 +1166,7 @@
                                     <button
                                         onClick={handleHint}
                                         disabled={hintsRemaining <= 0}
-                                        className={`px-4 py-2 min-h-[40px] rounded-lg text-sm font-bold transition-all border ${
+                                        className={`px-4 py-2 min-h-[44px] rounded-lg text-sm font-bold transition-all border ${
                                             hintsRemaining <= 0
                                                 ? 'border-gray-600/30 bg-gray-800/30 text-gray-600 cursor-not-allowed'
                                                 : 'border-yellow-500/40 bg-yellow-500/10 text-yellow-300 hover:bg-yellow-500/20 hover:border-yellow-400'

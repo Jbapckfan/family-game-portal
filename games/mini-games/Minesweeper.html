@@ -74,6 +74,13 @@
           font-size: calc(var(--ms-cell) * 0.5);
           line-height: 1;
         }
+        @media (orientation: landscape) and (max-height: 850px) {
+            .mines-shell { align-items: flex-start !important; overflow-y: auto !important; padding-top: 0 !important; }
+            .game-header { padding: 0.4rem 0 !important; }
+            .game-header p { margin-top: 0.15rem !important; }
+            .game-stats { margin-bottom: 0.45rem !important; }
+            .game-footer { display: none !important; }
+        }
         button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
             outline: 2px solid #f87171;
             outline-offset: 2px;
@@ -588,11 +595,11 @@
             const isOver = gameState !== 'playing';
 
             return (
-                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                <div className="mines-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-800/40 to-black" aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 w-full max-w-md md:max-w-2xl mx-auto text-center">
-                        <header className="py-6">
+                        <header className="game-header py-6">
                             <div className="flex items-center justify-center gap-3">
                                 <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-slate-200 via-slate-300 to-red-300 bg-clip-text text-transparent tracking-wider text-shadow-steel">
                                     MINESWEEPER
@@ -612,7 +619,7 @@
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
-                        <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="game-stats flex items-center justify-center gap-3 mb-4">
                             <div
                                 className="bg-black/60 border border-slate-500/40 rounded-lg px-3 py-2 min-w-[76px]"
                                 aria-live="polite"
@@ -700,7 +707,7 @@
                             )}
                         </main>
 
-                        <footer className="py-6">
+                        <footer className="game-footer py-6">
                             <p className="text-slate-300/80 text-sm mb-3">
                                 Best time: <span className="font-bold text-slate-100">{formatBestTime(bestTime)}</span>
                             </p>

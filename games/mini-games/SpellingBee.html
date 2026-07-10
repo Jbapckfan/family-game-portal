@@ -514,6 +514,9 @@
             text-decoration: none; font-size: 14px; font-weight: 600;
             z-index: 600; backdrop-filter: blur(10px);
             transition: all 0.2s;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
         .back-btn:hover {
             border-color: var(--accent-purple); color: var(--text-primary);
@@ -555,6 +558,7 @@
         }
         .mode-btn {
             padding: 7px 18px; font-size: 13px; font-weight: 700;
+            min-height: 44px;
             cursor: pointer; border: none; background: transparent;
             color: var(--text-muted); font-family: 'Rajdhani', sans-serif;
             text-transform: uppercase; letter-spacing: 1px;
@@ -732,7 +736,7 @@
 
         /* ===== THEME TOGGLE ===== */
         .theme-toggle-btn {
-            width: 32px; height: 32px; border-radius: 50%;
+            width: 44px; height: 44px; border-radius: 50%;
             border: 1px solid var(--accent-purple-border);
             background: var(--accent-purple-bg); color: var(--word-filter-color);
             cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
@@ -742,7 +746,7 @@
 
         /* ===== MUTE TOGGLE ===== */
         .mute-toggle-btn {
-            width: 32px; height: 32px; border-radius: 50%;
+            width: 44px; height: 44px; border-radius: 50%;
             border: 1px solid var(--accent-purple-border);
             background: var(--accent-purple-bg); color: var(--word-filter-color);
             cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
@@ -793,6 +797,7 @@
         }
         .practice-toggle-btn {
             padding: 5px 14px; font-size: 11px; font-weight: 700;
+            min-height: 44px;
             cursor: pointer; border: none; background: transparent;
             color: var(--text-muted); font-family: 'Rajdhani', sans-serif;
             text-transform: uppercase; letter-spacing: 0.5px;
@@ -2199,8 +2204,8 @@
                             Sprint
                         </button>
                     </div>
-                    <button onClick={() => setShowRules(true)}
-                            style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--accent-purple-border)',
+                    <button onClick={() => setShowRules(true)} aria-label="How to play"
+                            style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--accent-purple-border)',
                                      background: 'var(--accent-purple-bg)', color: 'var(--word-filter-color)', cursor: 'pointer',
                                      fontSize: 17, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
                                      fontFamily: 'serif', transition: 'all 0.2s' }}>

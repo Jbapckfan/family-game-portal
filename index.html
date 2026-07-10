@@ -50,6 +50,38 @@
             font-size: 1.1rem;
         }
 
+        .portal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .portal-action {
+            min-height: 48px;
+            padding: 12px 22px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 999px;
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .portal-action.primary {
+            color: #1a1a2e;
+            background: linear-gradient(135deg, #feca57, #ff8b57);
+            border-color: transparent;
+            box-shadow: 0 8px 26px rgba(254,202,87,0.22);
+        }
+
+        .portal-action:hover { transform: translateY(-2px); border-color: #feca57; }
+        .portal-action:active { transform: translateY(1px) scale(0.98); }
+        .portal-action[hidden] { display: none; }
+
         .game-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -161,6 +193,10 @@
         <header>
             <h1>Alford Family Game Portal</h1>
             <p class="subtitle">Dad's experimental games - test at your own risk!</p>
+            <div class="portal-actions" aria-label="Quick game choices">
+                <button class="portal-action primary" id="surprise-game" type="button">🎲 Surprise Me</button>
+                <button class="portal-action" id="continue-game" type="button" hidden>▶ Continue Last Game</button>
+            </div>
         </header>
 
         <section class="category" aria-labelledby="featured-games">
@@ -227,7 +263,7 @@
                 <a href="./games/cube-jumper.html" class="game-card">
                     <img src="./games/cube-jumper-thumb.svg" alt="Geometry Dash gameplay" class="game-thumb" />
                     <div class="game-title">Geometry Dash</div>
-                    <div class="game-desc">Geometry Dash recreation — jump, fly, and flip gravity across 10 levels.</div>
+                    <div class="game-desc">Geometry Dash recreation — jump, fly, and flip gravity across 15 levels and 7 modes.</div>
                     <span class="badge badge-new">New</span>
                 </a>
             </div>
@@ -314,5 +350,45 @@
             <p>Built with love by Dad | Experimental games — feedback welcome!</p>
         </footer>
     </main>
+    <script>
+        (() => {
+            const cards = [...document.querySelectorAll('.game-card')]
+                .filter(card => !card.getAttribute('href').includes('velocity-marble-run'));
+            const continueButton = document.getElementById('continue-game');
+            const surpriseButton = document.getElementById('surprise-game');
+            const storageKey = 'familyPortalLastGame';
+
+            const remember = card => {
+                const href = card.getAttribute('href');
+                const title = card.querySelector('.game-title')?.textContent?.trim() || 'Last Game';
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify({ href, title }));
+                } catch (_) {
+                    // Restricted storage should never block play.
+                }
+            };
+
+            cards.forEach(card => card.addEventListener('click', () => remember(card)));
+
+            try {
+                const last = JSON.parse(localStorage.getItem(storageKey) || 'null');
+                if (last?.href && cards.some(card => card.getAttribute('href') === last.href)) {
+                    continueButton.hidden = false;
+                    continueButton.textContent = `▶ Continue ${last.title}`;
+                    continueButton.addEventListener('click', () => { location.href = last.href; });
+                }
+            } catch (_) {
+                try { localStorage.removeItem(storageKey); } catch (_) {}
+            }
+
+            surpriseButton.addEventListener('click', () => {
+                if (!cards.length) return;
+                const card = cards[Math.floor(Math.random() * cards.length)];
+                remember(card);
+                surpriseButton.textContent = '⚡ Choosing…';
+                setTimeout(() => { location.href = card.getAttribute('href'); }, 180);
+            });
+        })();
+    </script>
 </body>
 </html>

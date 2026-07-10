@@ -1,0 +1,13 @@
+{
+  "name": "Reflex Riot",
+  "short_name": "Reflex Riot",
+  "description": "A lightning-fast reflex arcade game.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080b18",
+  "theme_color": "#0b0f20",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

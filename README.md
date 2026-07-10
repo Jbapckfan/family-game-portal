@@ -21,6 +21,7 @@ docker compose up -d
 
 | Game | Type | Description |
 |------|------|-------------|
+| ⚡ **Reflex Riot** | Arcade | Escalating catch, smash, swipe, and freeze reflex challenges for 1–2 players |
 | 🦁 **Zoo Conquest** | Strategy | Risk-style board game with animal armies |
 | 🎯 **Particle Conquest Pro** | Strategy | Real-time particle territory control |
 | 🔮 **Symbiosis** | Puzzle | Cooperative puzzle adventure |

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0f20" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Reflex Riot" />
+    <meta name="description" content="A lightning-fast reflex arcade game for everyone." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Reflex Riot</title>
+  </head>
+  <body>
+    <main id="app" aria-label="Reflex Riot arcade game">
+      <canvas id="game" aria-label="Game area"></canvas>
+
+      <section id="hud" class="hud hidden" aria-live="polite">
+        <div class="hud-pill score-wrap"><span class="hud-label">SCORE</span><strong id="score">0</strong></div>
+        <div id="mode-chip" class="mode-chip">STICK SNATCH</div>
+        <div class="hud-pill time-wrap"><span class="hud-label">TIME</span><strong id="time">60</strong></div>
+        <div class="combo-wrap"><span id="combo">x1</span><div class="fever-track"><div id="fever-fill"></div></div></div>
+        <div id="hearts" class="hearts" aria-label="3 shields">● ● ●</div>
+      </section>
+
+      <section id="menu" class="screen menu-screen">
+        <div class="logo" aria-label="Reflex Riot">
+          <span class="logo-top">REFLEX</span>
+          <span class="logo-bottom">RIOT!</span>
+        </div>
+        <p class="tagline">Catch. Smash. Swipe. Survive.</p>
+        <div class="menu-actions">
+          <button id="play-button" class="arcade-button primary"><span>⚡</span> SOLO RIOT</button>
+          <button id="duel-button" class="arcade-button secondary"><span>👥</span> PASS &amp; CLASH</button>
+          <button id="how-button" class="arcade-button ghost"><span>?</span> HOW TO PLAY</button>
+        </div>
+        <div class="best-row"><span>🏆 BEST</span><strong id="best-score">0</strong><span id="sound-state">🔊</span></div>
+        <p class="microcopy">No ads · Works offline · Made for quick hands</p>
+      </section>
+
+      <section id="how" class="screen hidden">
+        <div class="panel how-panel">
+          <button class="close-button" data-close aria-label="Close">×</button>
+          <h1>THE RIOT RULES</h1>
+          <div class="rule-grid">
+            <article><span>🟡</span><h2>SNATCH</h2><p>Tap falling sticks before they escape.</p></article>
+            <article><span>💥</span><h2>SMASH</h2><p>Hit bright sparks. Never tap bombs.</p></article>
+            <article><span>👆</span><h2>SWIPE</h2><p>Swipe in the arrow's direction.</p></article>
+            <article><span>🟢</span><h2>GO / FREEZE</h2><p>Tap on green. Freeze on red.</p></article>
+          </div>
+          <p class="tip">Build combos to trigger FEVER. Three misses and the riot is over!</p>
+          <button class="arcade-button primary" data-close>LET'S GO!</button>
+        </div>
+      </section>
+
+      <section id="countdown" class="screen hidden" aria-live="assertive">
+        <div id="round-label" class="round-label"></div>
+        <div id="countdown-number" class="countdown-number">3</div>
+        <div id="countdown-tip" class="countdown-tip">GET READY</div>
+      </section>
+
+      <section id="results" class="screen hidden">
+        <div class="panel results-panel">
+          <p id="result-kicker" class="result-kicker">RIOT COMPLETE</p>
+          <h1 id="result-score">0</h1>
+          <p id="result-rank" class="result-rank">QUICK HANDS!</p>
+          <div class="stats-grid">
+            <div><strong id="stat-best-combo">0</strong><span>BEST COMBO</span></div>
+            <div><strong id="stat-accuracy">0%</strong><span>ACCURACY</span></div>
+            <div><strong id="stat-best">0</strong><span>HIGH SCORE</span></div>
+          </div>
+          <div id="duel-result" class="duel-result hidden"></div>
+          <button id="again-button" class="arcade-button primary">↻ RIOT AGAIN</button>
+          <button id="menu-button" class="arcade-button ghost">BACK TO MENU</button>
+        </div>
+      </section>
+
+      <div id="toast" class="toast hidden" aria-live="assertive"></div>
+      <button id="sound-button" class="sound-button" aria-label="Toggle sound">🔊</button>
+    </main>
+    <script src="game.js" defer></script>
+  </body>
+</html>

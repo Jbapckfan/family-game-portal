@@ -397,7 +397,7 @@
       ctx.strokeStyle="rgba(255,255,255,.22)";ctx.lineWidth=5;ctx.beginPath();ctx.arc(0,0,e.r*(1.3+age*.65),0,Math.PI*2);ctx.stroke();
     }
     if(e.kind==="swipe"){
-      const age=(now-e.born)/e.ttl;const angle=[-Math.PI/2,0,Math.PI/2,Math.PI][e.dir];ctx.translate(e.x,e.y);ctx.rotate(angle);ctx.scale(1+Math.sin(now*.012)*.06,1+Math.sin(now*.012)*.06);
+      const age=(now-e.born)/e.ttl;const angle=[0,Math.PI/2,Math.PI,-Math.PI/2][e.dir];ctx.translate(e.x,e.y);ctx.rotate(angle);ctx.scale(1+Math.sin(now*.012)*.06,1+Math.sin(now*.012)*.06);
       ctx.shadowColor=e.color;ctx.shadowBlur=25;ctx.fillStyle=e.color;ctx.beginPath();ctx.moveTo(0,-e.size*.64);ctx.lineTo(e.size*.57,0);ctx.lineTo(e.size*.2,0);ctx.lineTo(e.size*.2,e.size*.6);ctx.lineTo(-e.size*.2,e.size*.6);ctx.lineTo(-e.size*.2,0);ctx.lineTo(-e.size*.57,0);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
       ctx.strokeStyle=`rgba(255,255,255,${.65-age*.35})`;ctx.lineWidth=5;ctx.stroke();drawFace(0,e.size*.18,e.size*.55,"happy");
     }
@@ -430,6 +430,7 @@
   document.addEventListener("contextmenu",event=>event.preventDefault());
 
   resize(); updateSound(); ui.best.textContent=bestScore().toLocaleString();
+  if (location.protocol === "file:") $("#exit-button").classList.add("hidden");
   if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("./sw.js").catch(()=>{});
   cancelAnimationFrame(animationId); animationId=requestAnimationFrame(loop);
 })();

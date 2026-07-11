@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Alford Family Game Portal</title>
-    <meta name="description" content="Alford Family Game Portal - A collection of 20 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta name="description" content="Alford Family Game Portal - A collection of 21 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Game Portal">
     <meta property="og:title" content="Alford Family Game Portal">
-    <meta property="og:description" content="A collection of 20 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta property="og:description" content="A collection of 21 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="manifest" href="manifest.json">
@@ -120,6 +120,38 @@
             object-fit: cover;
         }
 
+        .socktopus-thumb {
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            position: relative;
+            background:
+                radial-gradient(circle at 20% 22%, rgba(255,255,255,.18) 0 3%, transparent 3.5%),
+                radial-gradient(circle at 84% 18%, rgba(255,209,102,.3) 0 4%, transparent 4.5%),
+                linear-gradient(145deg, #4b2c68, #182b4d);
+            border: 1px solid rgba(255,255,255,.18);
+        }
+
+        .socktopus-thumb::before {
+            content: "🐙🧦  ⚔️  🫧👖";
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            filter: drop-shadow(0 7px 4px rgba(0,0,0,.35));
+            transform: rotate(-3deg);
+        }
+
+        .socktopus-thumb::after {
+            content: "SOCKTOPUS";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 10px;
+            text-align: center;
+            font-weight: 1000;
+            letter-spacing: .14em;
+            color: #ffd166;
+            text-shadow: 0 3px 0 #5f1d58;
+        }
+
         .game-title {
             font-size: 1.3rem;
             font-weight: 600;
@@ -202,6 +234,14 @@
         <section class="category" aria-labelledby="featured-games">
             <h2 id="featured-games">Featured Games</h2>
             <div class="game-grid">
+                <a href="./games/socktopus/" class="game-card">
+                    <div class="game-thumb socktopus-thumb" role="img" aria-label="Socktopus laundry battlefield"></div>
+                    <div class="game-title">Socktopus: Laundry Basket Tactics</div>
+                    <div class="game-desc">Outsmart an evil washing machine in a hilarious, fast three-lane strategy battle. Read forecasts, counter troops, and upgrade your sock army!</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Strategy</span>
+                </a>
+
                 <a href="./games/reflex-riot/" class="game-card">
                     <img src="./games/reflex-riot-thumb.jpg" alt="Reflex Riot gameplay" class="game-thumb" />
                     <div class="game-title">Reflex Riot</div>

@@ -53,6 +53,11 @@
     .card:hover,.card:focus-visible,.power:hover,.power:focus-visible{transform:translateY(-2px);outline:2px solid var(--yellow);outline-offset:2px}
     .card.selected,.power.selected{background:linear-gradient(#49385f,#49385f) padding-box,linear-gradient(145deg,var(--yellow),var(--pink)) border-box;box-shadow:0 0 20px rgba(255,209,102,.28)}
     .card.disabled{filter:saturate(.2);opacity:.46;cursor:not-allowed;transform:none}
+    .portrait,.forecast-face,.art-face{display:block;background-repeat:no-repeat;background-size:500% auto;background-image:url("./assets/heroes.webp");background-position-y:center;filter:drop-shadow(0 3px 2px rgba(0,0,0,.45))}
+    .portrait{width:42px;height:40px;margin-top:-2px}
+    .forecast-face{width:24px;height:22px;margin:-3px 0}
+    .unit-sock{background-position-x:0}.unit-hamster{background-position-x:25%}.unit-wizard{background-position-x:50%}.unit-troll{background-position-x:75%}.unit-bunnies{background-position-x:100%}
+    .enemy-portrait{background-image:url("./assets/enemies.webp")}
     .card .emoji,.power .emoji{font-size:25px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.4))}
     .card .name,.power .name{font-size:clamp(9px,1.25vw,12px);font-weight:950;margin-top:4px;text-align:center;line-height:1.05}
     .cost{position:absolute;right:4px;top:4px;background:var(--yellow);color:#2a2031;border-radius:10px;min-width:20px;padding:3px 5px;font-weight:1000;font-size:11px}
@@ -65,7 +70,10 @@
     .overlay{position:absolute;inset:0;background:rgba(10,9,24,.78);backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;z-index:10}
     .overlay.hidden{display:none}
     .modal{width:min(680px,100%);max-height:96%;overflow:auto;border:1px solid rgba(255,255,255,.22);background:linear-gradient(160deg,#30284f,#1d1a35);border-radius:26px;padding:clamp(18px,4vw,34px);box-shadow:0 25px 80px rgba(0,0,0,.5);text-align:center}
-    .mascot{font-size:64px;animation:bob 2.1s ease-in-out infinite}
+    .title-art{height:72px;display:flex;align-items:center;justify-content:center;gap:7px;animation:bob 2.1s ease-in-out infinite}
+    .art-face{width:70px;height:72px}.art-face.enemy-portrait{transform:scaleX(-1)}
+    .versus{font-weight:1000;font-size:13px;color:var(--yellow);background:#18142b;border:1px solid rgba(255,255,255,.18);padding:6px;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+    .end-seal{display:inline-grid;place-items:center;min-width:110px;min-height:40px;padding:8px 14px;border:2px solid var(--yellow);border-radius:999px;color:var(--yellow);font-weight:1000;letter-spacing:.1em;font-size:12px;background:#211a39}
     @keyframes bob{50%{transform:translateY(-6px) rotate(3deg)}}
     .modal h1,.modal h2{margin:5px 0 6px;font-size:clamp(28px,6vw,48px);line-height:.9;letter-spacing:-.045em}
     .modal h1 em{font-style:normal;color:var(--yellow)}
@@ -87,7 +95,7 @@
     .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-20px);z-index:30;background:#fff4c8;color:#33243b;border-radius:999px;padding:10px 18px;font-weight:1000;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 7px 25px rgba(0,0,0,.3)}
     .toast.show{opacity:1;transform:translate(-50%,0)}
     @media(max-width:760px){
-      .shell{gap:6px}.topbar{grid-template-columns:minmax(0,1fr) auto}.roundbox{display:none}.brand{font-size:21px;overflow:hidden}.status{grid-template-columns:1fr 1fr}.ticker{grid-column:1/-1;grid-row:2;min-height:28px}.battle-wrap{min-height:285px}.forecast{top:5px}.lane-hint{display:none}.hud{grid-template-columns:1fr}.lintbox{padding:6px 10px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center}.lintbox .meter{margin:0}.tip{display:none}.cards{gap:4px}.card,.power{min-height:69px;border-radius:13px;padding:5px 2px}.card .emoji,.power .emoji{font-size:21px}.counter{display:none}.key{display:none}.overlay{padding:7px}.modal{padding:12px;max-height:100%}.mascot{font-size:36px}.modal h1,.modal h2{font-size:30px}.subtitle{font-size:12px;margin:6px auto 9px}.rules{grid-template-columns:1fr;gap:4px;margin:7px 0}.rule{font-size:10px;padding:7px 9px}.difficulty{gap:4px;margin:7px 0}.difficulty button{font-size:11px;padding:7px 9px}.bigbtn{font-size:14px;padding:10px 16px}.upgrade-grid{grid-template-columns:1fr;gap:5px;margin-top:8px}.upgrade{min-height:0;padding:8px}.upgrade .uemoji{font-size:25px}.base-status>span:first-child{display:none}
+      .shell{gap:6px}.topbar{grid-template-columns:minmax(0,1fr) auto}.roundbox{display:none}.brand{font-size:21px;overflow:hidden}.status{grid-template-columns:1fr 1fr}.ticker{grid-column:1/-1;grid-row:2;min-height:28px}.battle-wrap{min-height:285px}.forecast{top:5px}.lane-hint{display:none}.hud{grid-template-columns:1fr}.lintbox{padding:6px 10px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center}.lintbox .meter{margin:0}.tip{display:none}.cards{gap:4px}.card,.power{min-height:69px;border-radius:13px;padding:5px 2px}.portrait{width:35px;height:33px}.card .emoji,.power .emoji{font-size:21px}.counter{display:none}.key{display:none}.overlay{padding:7px}.modal{padding:12px;max-height:100%}.title-art{height:48px}.art-face{width:48px;height:48px}.modal h1,.modal h2{font-size:30px}.subtitle{font-size:12px;margin:6px auto 9px}.rules{grid-template-columns:1fr;gap:4px;margin:7px 0}.rule{font-size:10px;padding:7px 9px}.difficulty{gap:4px;margin:7px 0}.difficulty button{font-size:11px;padding:7px 9px}.bigbtn{font-size:14px;padding:10px 16px}.upgrade-grid{grid-template-columns:1fr;gap:5px;margin-top:8px}.upgrade{min-height:0;padding:8px}.upgrade .uemoji{font-size:25px}.base-status>span:first-child{display:none}
     }
     @media(max-width:430px){.cards{grid-template-columns:repeat(3,1fr)}.power{grid-column:3}.battle-wrap{min-height:265px}.forecast-item:nth-child(3){display:none}.hearts{gap:2px}.heart{width:22px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
@@ -116,7 +124,7 @@
       <div class="lane-hint" aria-hidden="true"><span>Q</span><span>W</span><span>E</span></div>
       <section class="overlay" id="startOverlay">
         <div class="modal">
-          <div class="mascot">🐙🧦</div>
+          <div class="title-art" aria-hidden="true"><span class="art-face unit-sock"></span><span class="versus">VS</span><span class="art-face enemy-portrait unit-troll"></span></div>
           <h1>SOCK<em>TOPUS</em></h1>
           <p class="subtitle">The washing machine became evil, grew a mustache, and declared itself Emperor of Pants. Command the sock drawer. Save laundry.</p>
           <div class="rules">
@@ -136,7 +144,7 @@
         <div class="modal"><div class="mascot">🧺</div><h2 id="upgradeTitle">WAVE SURVIVED!</h2><p class="subtitle">Choose one completely legitimate laundry technology.</p><div class="upgrade-grid" id="upgradeGrid"></div></div>
       </section>
       <section class="overlay hidden" id="endOverlay">
-        <div class="modal"><div class="mascot" id="endMascot">🏆🧦</div><h2 id="endTitle">LAUNDRY LIBERATED!</h2><p class="subtitle" id="endCopy"></p><div class="scoreline"><span>Score <b id="scoreText">0</b></span><span>Best <b id="bestText">0</b></span></div><button class="bigbtn" id="againBtn">PLAY AGAIN</button></div>
+        <div class="modal"><div class="end-seal" id="endMascot">VICTORY</div><h2 id="endTitle">LAUNDRY LIBERATED!</h2><p class="subtitle" id="endCopy"></p><div class="scoreline"><span>Score <b id="scoreText">0</b></span><span>Best <b id="bestText">0</b></span></div><button class="bigbtn" id="againBtn">PLAY AGAIN</button></div>
       </section>
       <section class="overlay hidden" id="pauseOverlay">
         <div class="modal"><div class="mascot">🧦💤</div><h2>PAUSED</h2><p class="subtitle">Even heroic socks need to air out.</p><button class="bigbtn" id="resumeBtn">BACK TO BATTLE</button></div>
@@ -156,7 +164,7 @@
   const canvas = document.getElementById('battle');
   const ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id);
-  const W = 960, H = 430, laneY = [92, 215, 338];
+  const W = 960, H = 430, laneY = [122, 266, 397];
   const unitDefs = {
     sock:{name:'Sock Squire',emoji:'🧦',cost:2,hp:58,damage:11,speed:43,range:31,rate:.72,size:23,role:'balanced',counter:'Reliable & cheap'},
     hamster:{name:'Hamster Rogue',emoji:'🐹',cost:3,hp:43,damage:17,speed:64,range:29,rate:.62,size:22,role:'rogue',counter:'2× vs ranged'},
@@ -165,6 +173,9 @@
     bunnies:{name:'Dust Bunnies',emoji:'🐇',cost:3,hp:22,damage:7,speed:52,range:25,rate:.52,size:16,role:'swarm',counter:'3 units · 2× tanks'}
   };
   const enemyEmoji = {sock:'🧦',hamster:'🦝',wizard:'🫧',troll:'👖',bunnies:'🦠'};
+  const unitIndex = {sock:0,hamster:1,wizard:2,troll:3,bunnies:4};
+  const art = { battlefield:new Image(), heroes:new Image(), enemies:new Image() };
+  art.battlefield.src='./assets/battlefield.webp'; art.heroes.src='./assets/heroes.webp'; art.enemies.src='./assets/enemies.webp';
   const enemyNames = {sock:'Stink Sock',hamster:'Raccoon Rogue',wizard:'Soap Sorcerer',troll:'Pants Golem',bunnies:'Lint Gremlins'};
   const messages = [
     'A sock has filed a formal complaint against gravity.',
@@ -201,8 +212,8 @@
   }}
 
   function setupCards(){
-    $('cards').innerHTML = Object.entries(unitDefs).map(([id,u],i)=>`<button class="card ${i===0?'selected':''}" data-unit="${id}" aria-label="${u.name}, costs ${u.cost} lint. ${u.counter}"><span class="key">${i+1}</span><span class="cost">${u.cost}</span><span class="emoji">${u.emoji}</span><span class="name">${u.name}</span><span class="counter">${u.counter}</span></button>`).join('') +
-      `<button class="power" id="powerCard" aria-label="Use Mom Voice to freeze all enemies once this wave"><span class="key">SPACE</span><span class="emoji">📣</span><span class="name">MOM VOICE</span><span class="counter">Freeze 3 seconds</span></button>`;
+    $('cards').innerHTML = Object.entries(unitDefs).map(([id,u],i)=>`<button class="card ${i===0?'selected':''}" data-unit="${id}" aria-label="${u.name}, costs ${u.cost} lint. ${u.counter}"><span class="key">${i+1}</span><span class="cost">${u.cost}</span><span class="portrait unit-${id}"></span><span class="name">${u.name}</span><span class="counter">${u.counter}</span></button>`).join('') +
+      `<button class="power" id="powerCard" aria-label="Use Mom Voice to freeze all enemies once this wave"><span class="key">SPACE</span><span class="emoji">M!</span><span class="name">MOM VOICE</span><span class="counter">Freeze 3 seconds</span></button>`;
     document.querySelectorAll('.card').forEach(b=>b.addEventListener('click',()=>selectUnit(b.dataset.unit)));
     $('powerCard').addEventListener('click',usePower);
   }
@@ -311,7 +322,7 @@
         if(!allyAhead)u.x+=dir*u.speed*dt;
       }
     }
-    state.effects.forEach(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt});
+    state.effects.forEach(p=>{p.life-=dt;if(p.kind!=='strike'){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=60*dt}});
     state.effects=state.effects.filter(p=>p.life>0);
     state.units=state.units.filter(u=>!u.dead&&u.x>-40&&u.x<W+40);
     checkOutcome(); updateHUD();
@@ -319,7 +330,7 @@
 
   function attack(a,b){
     let mult=counterMultiplier(a,b); let dmg=a.damage*mult;
-    b.hp-=dmg;b.flash=.11;
+    b.hp-=dmg;b.flash=.11;state.effects.push({kind:'strike',x1:a.x,y1:a.y-8,x2:b.x,y2:b.y-8,life:.14,max:.14,color:a.side==='player'?'#ffd166':'#72dfff'});
     if(a.role==='ranged'){burst(b.x,b.y,a.side==='player'?'#d78cff':'#7be0ff',4);const nearby=state.units.filter(v=>!v.dead&&v.side===b.side&&v.lane===b.lane&&v.id!==b.id&&Math.abs(v.x-b.x)<48);nearby.forEach(v=>{v.hp-=dmg*.38;v.flash=.08;if(v.hp<=0)killUnit(v,a)})}
     else burst(b.x,b.y,mult>1?'#ffd166':'#ffffff',3);
     if(a.role==='tank')b.x+=(a.side==='player'?1:-1)*8;
@@ -387,7 +398,7 @@
   function endGame(win){
     state.mode='ended';state.score+=Math.round(state.playerBases.reduce((a,b)=>a+b,0)*3)+(win?700:0);
     const best=Math.max(Number(localStorage.getItem('socktopusBest')||0),state.score);localStorage.setItem('socktopusBest',best);
-    $('endMascot').textContent=win?'🏆🧦':'🫧👖';$('endTitle').textContent=win?'LAUNDRY LIBERATED!':'THE WASHER WON... FOR NOW';
+    $('endMascot').textContent=win?'VICTORY':'RELOAD';$('endTitle').textContent=win?'LAUNDRY LIBERATED!':'THE WASHER WON... FOR NOW';
     $('endCopy').textContent=win?'The Emperor of Pants has been demoted to “appliance.” Every sock gets a tiny medal.':`You defeated ${state.kills} laundry weirdos. Next time: watch the forecast, use counters, and pressure two lanes.`;
     $('scoreText').textContent=state.score.toLocaleString();$('bestText').textContent=best.toLocaleString();$('endOverlay').classList.remove('hidden');sfx(win?660:105,.7,win?'triangle':'sawtooth',.05);
   }
@@ -397,44 +408,39 @@
     $('roundText').textContent=`${state.wave} / 3`;$('timerText').textContent=`0:${Math.max(0,Math.ceil(state.timeLeft)).toString().padStart(2,'0')}`;
     $('playerHearts').innerHTML=state.playerBases.map(v=>`<span class="heart"><i style="width:${v}%"></i></span>`).join('');
     $('enemyHearts').innerHTML=state.enemyBases.map(v=>`<span class="heart"><i style="width:${v}%"></i></span>`).join('');
-    $('forecast').innerHTML=state.forecast.slice(0,3).map(f=>`<span class="forecast-item">${enemyEmoji[f.type]} <strong>${Math.max(0,Math.ceil(f.at))}s</strong> → L${f.lane+1}</span>`).join('');
+    $('forecast').innerHTML=state.forecast.slice(0,3).map(f=>`<span class="forecast-item"><i class="forecast-face enemy-portrait unit-${f.type}"></i><strong>${Math.max(0,Math.ceil(f.at))}s</strong> → L${f.lane+1}</span>`).join('');
     document.querySelectorAll('.card').forEach(b=>b.classList.toggle('disabled',state.lint<unitDefs[b.dataset.unit].cost));
   }
 
   function draw(){
     ctx.clearRect(0,0,W,H);
-    const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#312c4e');bg.addColorStop(.5,'#26253f');bg.addColorStop(1,'#25364d');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    if(art.battlefield.complete&&art.battlefield.naturalWidth){const iw=art.battlefield.naturalWidth,ih=art.battlefield.naturalHeight,scale=Math.max(W/iw,H/ih),sw=W/scale,sh=H/scale;ctx.drawImage(art.battlefield,(iw-sw)/2,(ih-sh)/2,sw,sh,0,0,W,H)}else{const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#312c4e');bg.addColorStop(.5,'#26253f');bg.addColorStop(1,'#25364d');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H)}
     for(let i=0;i<3;i++){
-      ctx.fillStyle=i%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.055)';ctx.fillRect(0,i*H/3,W,H/3);
-      ctx.strokeStyle='rgba(255,255,255,.10)';ctx.setLineDash([8,9]);ctx.beginPath();ctx.moveTo(0,(i+1)*H/3);ctx.lineTo(W,(i+1)*H/3);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=i%2?'rgba(82,79,166,.04)':'rgba(15,11,38,.035)';ctx.fillRect(0,i*H/3,W,H/3);
       drawBase(58,laneY[i],state.playerBases[i],false,i);drawBase(902,laneY[i],state.enemyBases[i],true,i);
     }
-    ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(W/2-2,0,4,H);
     state.units.sort((a,b)=>a.y-b.y).forEach(drawUnit);
-    state.effects.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1});
+    state.effects.forEach(p=>{const alpha=Math.max(0,p.life/p.max);ctx.globalAlpha=alpha;if(p.kind==='strike'){ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.shadowColor=p.color;ctx.shadowBlur=12;ctx.beginPath();ctx.moveTo(p.x1,p.y1);ctx.lineTo(p.x2,p.y2);ctx.stroke();ctx.shadowBlur=0}else{ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=7;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}ctx.globalAlpha=1});
     if(state.freeze>0){ctx.fillStyle='rgba(255,124,207,.06)';ctx.fillRect(W/2,0,W/2,H)}
   }
 
   function drawBase(x,y,hp,enemy,lane){
-    ctx.save();ctx.translate(x,y);ctx.globalAlpha=hp>0?1:.28;
-    ctx.fillStyle=enemy?'#4557a7':'#a9476d';roundRect(-35,-42,70,84,15,true);
-    ctx.fillStyle=enemy?'#8ca6ff':'#ff91ad';roundRect(-27,-34,54,68,11,true);
-    ctx.fillStyle='#24213b';roundRect(-20,-19,40,38,9,true);
-    ctx.font='27px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(enemy?'🫧':'🧺',0,1);
-    ctx.fillStyle='rgba(0,0,0,.45)';roundRect(-28,47,56,7,5,true);ctx.fillStyle=enemy?'#6ecbff':'#ff718d';roundRect(-28,47,56*Math.max(0,hp)/100,7,5,true);
-    ctx.fillStyle='#fff';ctx.font='900 10px system-ui';ctx.fillText(`L${lane+1}`,0,-51);ctx.restore();
+    ctx.save();ctx.translate(x,y);ctx.globalAlpha=hp>0?1:.4;ctx.shadowColor=enemy?'#2ed9ff':'#ff6d6d';ctx.shadowBlur=9;
+    const barY=lane===2?-38:42;ctx.fillStyle='rgba(10,8,27,.78)';roundRect(-31,barY,62,11,6,true);ctx.fillStyle=enemy?'#53ddff':'#ff796f';roundRect(-28,barY+3,56*Math.max(0,hp)/100,5,4,true);ctx.shadowBlur=0;
+    ctx.fillStyle='#fff4d8';ctx.font='1000 9px system-ui';ctx.textAlign='center';ctx.fillText(`LANE ${lane+1}`,0,lane===2?-48:-48);ctx.restore();
   }
 
   function drawUnit(u){
-    ctx.save();ctx.translate(u.x,u.y);if(u.flash>0){ctx.shadowColor='#fff';ctx.shadowBlur=24}
+    ctx.save();const bob=Math.sin(performance.now()*.006+u.id)*2;ctx.translate(u.x,u.y+bob);if(u.flash>0){ctx.shadowColor='#fff';ctx.shadowBlur=24}
     ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,u.size*.65,u.size*.68,u.size*.22,0,0,Math.PI*2);ctx.fill();
     if(u.boss){ctx.fillStyle='#ffd166';ctx.font='900 10px system-ui';ctx.textAlign='center';ctx.fillText('BOSS',0,-u.size-13)}
-    ctx.font=`${u.size*1.55}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';if(u.side==='enemy'){ctx.scale(-1,1)}ctx.fillText(u.side==='player'?unitDefs[u.type].emoji:enemyEmoji[u.type],0,0);if(u.side==='enemy')ctx.scale(-1,1);
-    const bw=Math.max(28,u.size*1.7);ctx.fillStyle='rgba(0,0,0,.5)';roundRect(-bw/2,-u.size-8,bw,5,4,true);ctx.fillStyle=u.side==='player'?'#55e6b7':'#6ecbff';roundRect(-bw/2,-u.size-8,bw*Math.max(0,u.hp/u.maxHp),5,4,true);
+    const sheet=u.side==='player'?art.heroes:art.enemies;const spriteH=u.size*(u.boss?3.7:4.05),spriteW=spriteH*.66;
+    if(sheet.complete&&sheet.naturalWidth){const sw=sheet.naturalWidth/5,sy=sheet.naturalHeight*.08,sh=sheet.naturalHeight*.84;ctx.drawImage(sheet,unitIndex[u.type]*sw,sy,sw,sh,-spriteW/2,-spriteH*.78,spriteW,spriteH)}else{ctx.fillStyle=u.side==='player'?'#ffd166':'#6ecbff';ctx.beginPath();ctx.arc(0,-8,u.size,0,Math.PI*2);ctx.fill()}
+    const bw=Math.max(32,u.size*2.05);ctx.shadowBlur=0;ctx.fillStyle='rgba(5,4,18,.72)';roundRect(-bw/2,-spriteH*.67,bw,6,4,true);ctx.fillStyle=u.side==='player'?'#61f1bd':'#64dcff';roundRect(-bw/2+1,-spriteH*.67+1,(bw-2)*Math.max(0,u.hp/u.maxHp),4,3,true);
     if(u.stun>0||state.freeze>0&&u.side==='enemy'){ctx.font='14px system-ui';ctx.fillText('★',u.size*.6,-u.size*.6)}ctx.restore();
   }
   function roundRect(x,y,w,h,r,fill){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill)ctx.fill()}
-  function burst(x,y,color,n){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=30+Math.random()*80;state.effects.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life:.35+Math.random()*.35,max:.7,r:2+Math.random()*3,color})}}
+  function burst(x,y,color,n){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=30+Math.random()*80;state.effects.push({kind:'particle',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life:.35+Math.random()*.35,max:.7,r:2+Math.random()*3,color})}}
   function announce(text){$('ticker').textContent=text}
   function showToast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),1500)}
 

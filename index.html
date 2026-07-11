@@ -125,18 +125,15 @@
             place-items: center;
             overflow: hidden;
             position: relative;
-            background:
-                radial-gradient(circle at 20% 22%, rgba(255,255,255,.18) 0 3%, transparent 3.5%),
-                radial-gradient(circle at 84% 18%, rgba(255,209,102,.3) 0 4%, transparent 4.5%),
-                linear-gradient(145deg, #4b2c68, #182b4d);
+            background: #241a3e url("./games/socktopus/assets/battlefield.webp") center / cover no-repeat;
             border: 1px solid rgba(255,255,255,.18);
         }
 
         .socktopus-thumb::before {
-            content: "🐙🧦  ⚔️  🫧👖";
-            font-size: clamp(2rem, 5vw, 3.6rem);
-            filter: drop-shadow(0 7px 4px rgba(0,0,0,.35));
-            transform: rotate(-3deg);
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 30%, rgba(14,8,31,.88));
         }
 
         .socktopus-thumb::after {

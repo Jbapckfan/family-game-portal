@@ -77,6 +77,7 @@
     .overlay{position:absolute;inset:0;background:rgba(10,9,24,.78);backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;z-index:10}
     .overlay.hidden{display:none}
     .modal{width:min(680px,100%);max-height:96%;overflow:auto;border:1px solid rgba(255,255,255,.22);background:linear-gradient(160deg,#30284f,#1d1a35);border-radius:26px;padding:clamp(18px,3vw,25px);box-shadow:0 25px 80px rgba(0,0,0,.5);text-align:center}
+    #startOverlay .modal{padding:13px 22px}#startOverlay .title-art{height:48px}#startOverlay .art-face{width:50px;height:50px}#startOverlay .subtitle{margin:3px auto 6px}#startOverlay .mission-picker{margin:6px 0 5px}#startOverlay .difficulty{margin:7px 0}#startOverlay .bigbtn{font-size:16px;padding:10px 22px}
     .title-art{height:64px;display:flex;align-items:center;justify-content:center;gap:7px;animation:bob 2.1s ease-in-out infinite}
     .art-face{width:64px;height:64px}.art-face.enemy-portrait{transform:scaleX(-1)}
     .versus{font-weight:1000;font-size:13px;color:var(--yellow);background:#18142b;border:1px solid rgba(255,255,255,.18);padding:6px;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.4)}
@@ -101,6 +102,10 @@
     .mission-tags span{font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.13);padding:4px 7px}
     .mission-status{color:var(--mint);font-size:10px;font-weight:950;margin-top:7px;letter-spacing:.06em}
     .mission-card.locked .mission-status{color:#ff9cb5}
+    .mission-objectives{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:7px}
+    .mission-objectives span{min-width:0;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(0,0,0,.2);padding:4px 5px;color:#c9c1dd;font-size:8px;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mission-objectives span.earned{color:var(--yellow);border-color:rgba(255,209,102,.42)}
+    .mission-objectives b{color:var(--yellow);margin-right:3px}
     .howto{border:1px solid rgba(255,255,255,.13);border-radius:13px;background:rgba(0,0,0,.16);padding:7px 10px;margin:8px 0}
     .howto summary{cursor:pointer;font-size:11px;font-weight:950;color:#e8e1f5}
     .howto .rules{margin:8px 0 2px}
@@ -112,6 +117,18 @@
     .bigbtn:disabled{filter:grayscale(.8);opacity:.55;cursor:not-allowed;transform:none;box-shadow:0 4px 0 #322d43}
     .secondarybtn{border:1px solid rgba(255,255,255,.22);border-radius:13px;background:rgba(255,255,255,.08);padding:11px 16px;font-weight:900;cursor:pointer;margin:8px 0 0 7px}
     .secondarybtn:hover,.secondarybtn:focus-visible{border-color:var(--yellow);outline:2px solid var(--yellow);outline-offset:2px}
+    .menu-actions{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}.menu-actions .secondarybtn{margin:6px 0 0}
+    .end-stars{font-size:34px;line-height:1;color:#39314f;letter-spacing:.08em;text-shadow:0 2px 0 rgba(0,0,0,.35);margin:10px 0 5px}.end-stars .on{color:var(--yellow)}
+    .result-objectives{display:grid;gap:5px;max-width:470px;margin:10px auto;text-align:left}
+    .result-objectives span{border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:7px 10px;background:rgba(0,0,0,.18);color:#aaa3bd;font-size:11px;font-weight:850}
+    .result-objectives span.done{color:var(--mint);border-color:rgba(85,230,183,.35)}
+    .collection-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+    .collectible{border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(255,255,255,.06);padding:10px 7px;color:#d7d0e8;cursor:pointer;min-height:112px}
+    .collectible.locked{filter:grayscale(1);opacity:.48;cursor:not-allowed}.collectible.active{border-color:var(--yellow);background:rgba(255,209,102,.12);box-shadow:0 0 18px rgba(255,209,102,.16)}
+    .collectible .collect-face{display:block;width:54px;height:50px;margin:auto;background-image:url("./assets/heroes.webp");background-size:500% auto;background-position:left center;background-repeat:no-repeat;filter:var(--look-filter,none) drop-shadow(0 3px 2px rgba(0,0,0,.45))}
+    .collectible b{display:block;font-size:11px;margin-top:4px}.collectible small{display:block;color:var(--yellow);font-size:9px;margin-top:3px}
+    .counter-visuals{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:7px}.counter-visuals span{font-size:9px;font-weight:900;color:#d8d1e9;display:flex;align-items:center;gap:3px}.counter-dot{width:22px;height:21px;background-size:500% auto;background-position-y:center;background-repeat:no-repeat}.counter-dot.hero{background-image:url("./assets/heroes.webp")}.counter-dot.foe{background-image:url("./assets/enemies.webp")}
+    .coach button{display:flex;align-items:center;gap:4px}.coach-face{width:19px;height:18px;background-image:url("./assets/heroes.webp");background-size:500% auto;background-position-y:center;background-repeat:no-repeat}
     .upgrade-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}
     .upgrade{border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(255,255,255,.07);padding:16px 10px;cursor:pointer;min-height:150px}
     .upgrade:hover,.upgrade:focus-visible{background:rgba(255,209,102,.13);border-color:var(--yellow);outline:none;transform:translateY(-3px)}
@@ -121,12 +138,12 @@
     .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-20px);z-index:30;background:#fff4c8;color:#33243b;border-radius:999px;padding:10px 18px;font-weight:1000;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 7px 25px rgba(0,0,0,.3)}
     .toast.show{opacity:1;transform:translate(-50%,0)}
     @media(max-width:760px){
-      .shell{gap:6px;min-height:100dvh}.topbar{grid-template-columns:minmax(0,1fr) auto}.roundbox{display:none}.brand{font-size:21px;overflow:hidden}.status{grid-template-columns:1fr 1fr}.ticker{grid-column:1/-1;grid-row:2;min-height:28px}.battle-wrap{flex:none;min-height:0;aspect-ratio:2/1}.forecast{top:5px}.lane-hint{display:none}.hud{grid-template-columns:1fr}.lintbox{padding:6px 10px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center}.lintbox .meter{margin:0}.tip{display:none}.coach{display:grid}.cards{gap:4px}.card,.power{min-height:69px;border-radius:13px;padding:5px 2px}.portrait{width:35px;height:33px}.card .emoji,.power .emoji{font-size:21px}.counter{display:none}.key{display:none}.overlay{position:fixed;inset:0;padding:max(9px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(9px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left));z-index:100}.modal{padding:12px;max-height:100%;overscroll-behavior:contain}.title-art{height:48px}.art-face{width:48px;height:48px}.modal h1,.modal h2{font-size:30px}.subtitle{font-size:12px;margin:6px auto 9px}.mission-picker{grid-template-columns:36px 1fr 36px;gap:5px;margin:7px 0}.mission-card{min-height:102px;padding:8px}.mission-card h3{font-size:18px}.mission-card p{font-size:10px}.mission-tags{margin-top:5px}.mission-status{margin-top:5px}.rules{grid-template-columns:1fr;gap:4px;margin:7px 0}.rule{font-size:10px;padding:7px 9px}.howto{padding:5px 8px;margin:5px 0}.difficulty{gap:4px;margin:6px 0}.difficulty button{font-size:11px;padding:7px 9px}.bigbtn{font-size:14px;padding:10px 16px}.secondarybtn{font-size:12px;padding:9px 12px}.upgrade-grid{grid-template-columns:1fr;gap:5px;margin-top:8px}.upgrade{min-height:0;padding:8px}.upgrade .uemoji{font-size:25px}.base-status>span:first-child{display:none}
+      .shell{gap:6px;min-height:100dvh}.topbar{grid-template-columns:minmax(0,1fr) auto}.roundbox{display:none}.brand{font-size:21px;overflow:hidden}.status{grid-template-columns:1fr 1fr}.ticker{grid-column:1/-1;grid-row:2;min-height:28px}.battle-wrap{flex:none;min-height:0;aspect-ratio:2/1}.forecast{top:5px}.lane-hint{display:none}.hud{grid-template-columns:1fr}.lintbox{padding:6px 10px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center}.lintbox .meter{margin:0}.tip{display:none}.coach{display:grid}.cards{gap:4px}.card,.power{min-height:69px;border-radius:13px;padding:5px 2px}.portrait{width:35px;height:33px}.card .emoji,.power .emoji{font-size:21px}.counter{display:none}.key{display:none}.overlay{position:fixed;inset:0;padding:max(9px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(9px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left));z-index:100}.modal{padding:12px;max-height:100%;overscroll-behavior:contain}.title-art{height:48px}.art-face{width:48px;height:48px}.modal h1,.modal h2{font-size:30px}.subtitle{font-size:12px;margin:6px auto 9px}.mission-picker{grid-template-columns:36px 1fr 36px;gap:5px;margin:7px 0}.mission-card{min-height:102px;padding:8px}.mission-card h3{font-size:18px}.mission-card p{font-size:10px}.mission-tags{margin-top:5px}.mission-status{margin-top:5px}.mission-objectives{margin-top:4px}.mission-objectives span{font-size:7px;padding:3px}.rules{grid-template-columns:1fr;gap:4px;margin:7px 0}.rule{font-size:10px;padding:7px 9px}.howto{padding:5px 8px;margin:5px 0}.difficulty{gap:4px;margin:6px 0}.difficulty button{font-size:11px;padding:7px 9px}.bigbtn{font-size:14px;padding:10px 16px}.secondarybtn{font-size:12px;padding:9px 12px}.collection-grid{grid-template-columns:repeat(2,1fr)}.collectible{min-height:95px;padding:7px}.upgrade-grid{grid-template-columns:1fr;gap:5px;margin-top:8px}.upgrade{min-height:0;padding:8px}.upgrade .uemoji{font-size:25px}.base-status>span:first-child{display:none}
     }
     @media(max-width:430px){.cards{grid-template-columns:repeat(3,1fr)}.power{grid-column:3}.battle-wrap{min-height:0;aspect-ratio:2/1}.forecast-item:nth-child(3){display:none}.hearts{gap:2px}.heart{width:22px}}
     @media(pointer:coarse){.lane-hint{display:none}}
     @media(orientation:landscape) and (max-height:500px){
-      html,body{height:100%;overflow:hidden}.shell{width:100%;height:100dvh;min-height:0;padding:max(5px,env(safe-area-inset-top)) max(7px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));display:grid;grid-template-columns:minmax(0,1fr) 238px;grid-template-rows:46px 36px minmax(0,1fr);gap:5px}.topbar{grid-column:1;grid-row:1}.brand{font-size:20px}.brand span{margin-top:3px}.roundbox{padding:4px 10px;border-radius:11px;font-size:12px}.roundbox small{font-size:8px}.iconbtn{width:35px;height:35px;border-radius:11px;font-size:11px}.status{grid-column:1;grid-row:2;grid-template-columns:auto minmax(180px,1fr) auto;gap:5px}.base-status{font-size:9px}.heart{width:22px;height:9px}.ticker{min-height:30px;font-size:11px;padding:3px 8px}.battle-wrap{grid-column:1;grid-row:3;min-height:0;width:100%;height:100%;aspect-ratio:auto;border-radius:15px}.hud{grid-column:2;grid-row:1/4;min-width:0;display:grid;grid-template-columns:1fr;grid-template-rows:52px 35px minmax(0,1fr);gap:5px}.lintbox{padding:5px 8px;border-radius:13px}.lintrow b{font-size:19px}.tip{display:none}.coach{display:grid;padding:3px 7px;border-radius:11px}.coach-copy small{font-size:7px;margin-bottom:1px}.coach-copy b{font-size:9px}.coach button{font-size:8px;padding:5px 6px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:4px}.card,.power{min-height:0;border-radius:11px;padding:3px 2px}.portrait{width:34px;height:31px}.card .name,.power .name{font-size:9px}.counter{display:none}.key{display:none}.cost{font-size:9px;min-width:17px;padding:2px 4px}.power .emoji{font-size:18px}.forecast{top:3px}.forecast-item{font-size:9px;padding:2px 6px}.forecast-face{width:20px;height:18px}.overlay{position:fixed;inset:0;z-index:100;padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.modal{max-height:100%;padding:8px 16px}.title-art{height:36px}.art-face{width:40px;height:36px}.modal h1,.modal h2{font-size:26px}.subtitle{font-size:10px;margin:3px auto 5px}.mission-picker{grid-template-columns:34px 1fr 34px;margin:4px 0}.mission-card{min-height:78px;padding:6px 10px}.mission-card h3{font-size:16px;margin:2px 0}.mission-card p{font-size:9px;line-height:1.15}.mission-tags{margin-top:3px}.mission-tags span{font-size:8px;padding:2px 5px}.mission-status{font-size:8px;margin-top:3px}.howto{margin:4px 0;padding:4px 8px}.howto[open]{position:absolute;left:4%;right:4%;top:3%;z-index:4;background:#211c3b;box-shadow:0 20px 60px #000}.rules{margin:6px 0;gap:5px}.rule{font-size:9px;padding:6px}.difficulty{margin:4px 0}.difficulty button{padding:5px 8px;font-size:9px}.bigbtn{font-size:12px;padding:7px 14px}.secondarybtn{font-size:10px;padding:7px 10px}.upgrade-grid{grid-template-columns:repeat(3,1fr);gap:6px}.upgrade{min-height:105px;padding:8px}.upgrade .uemoji{font-size:24px}
+      html,body{height:100%;overflow:hidden}.shell{width:100%;height:100dvh;min-height:0;padding:max(5px,env(safe-area-inset-top)) max(7px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));display:grid;grid-template-columns:minmax(0,1fr) 238px;grid-template-rows:46px 36px minmax(0,1fr);gap:5px}.topbar{grid-column:1;grid-row:1}.brand{font-size:20px}.brand span{margin-top:3px}.roundbox{padding:4px 10px;border-radius:11px;font-size:12px}.roundbox small{font-size:8px}.iconbtn{width:35px;height:35px;border-radius:11px;font-size:11px}.status{grid-column:1;grid-row:2;grid-template-columns:auto minmax(180px,1fr) auto;gap:5px}.base-status{font-size:9px}.heart{width:22px;height:9px}.ticker{min-height:30px;font-size:11px;padding:3px 8px}.battle-wrap{grid-column:1;grid-row:3;min-height:0;width:100%;height:100%;aspect-ratio:auto;border-radius:15px}.hud{grid-column:2;grid-row:1/4;min-width:0;display:grid;grid-template-columns:1fr;grid-template-rows:52px 35px minmax(0,1fr);gap:5px}.lintbox{padding:5px 8px;border-radius:13px}.lintrow b{font-size:19px}.tip{display:none}.coach{display:grid;padding:3px 7px;border-radius:11px}.coach-copy small{font-size:7px;margin-bottom:1px}.coach-copy b{font-size:9px}.coach button{font-size:8px;padding:5px 6px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:4px}.card,.power{min-height:0;border-radius:11px;padding:3px 2px}.portrait{width:34px;height:31px}.card .name,.power .name{font-size:9px}.counter{display:none}.key{display:none}.cost{font-size:9px;min-width:17px;padding:2px 4px}.power .emoji{font-size:18px}.forecast{top:3px}.forecast-item{font-size:9px;padding:2px 6px}.forecast-face{width:20px;height:18px}.overlay{position:fixed;inset:0;z-index:100;padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.modal{max-height:100%;padding:8px 16px}.title-art{height:36px}.art-face{width:40px;height:36px}.modal h1,.modal h2{font-size:26px}.subtitle{font-size:10px;margin:3px auto 5px}.mission-picker{grid-template-columns:34px 1fr 34px;margin:4px 0}.mission-card{min-height:78px;padding:6px 10px}.mission-card h3{font-size:16px;margin:2px 0}.mission-card p{font-size:9px;line-height:1.15}.mission-tags{margin-top:3px}.mission-tags span{font-size:8px;padding:2px 5px}.mission-status{font-size:8px;margin-top:3px}.mission-objectives{margin-top:2px}.mission-objectives span{font-size:6px;padding:2px}.howto{margin:4px 0;padding:4px 8px}.howto[open]{position:absolute;left:4%;right:4%;top:3%;z-index:4;background:#211c3b;box-shadow:0 20px 60px #000}.rules{margin:6px 0;gap:5px}.rule{font-size:9px;padding:6px}.difficulty{margin:4px 0}.difficulty button{padding:5px 8px;font-size:9px}.bigbtn{font-size:12px;padding:7px 14px}.secondarybtn{font-size:10px;padding:7px 10px}.menu-actions .secondarybtn{margin-top:3px}.upgrade-grid{grid-template-columns:repeat(3,1fr);gap:6px}.upgrade{min-height:105px;padding:8px}.upgrade .uemoji{font-size:24px}
     }
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
   </style>
@@ -156,15 +173,16 @@
         <div class="modal">
           <div class="title-art" aria-hidden="true"><span class="art-face unit-sock"></span><span class="versus">VS</span><span class="art-face enemy-portrait unit-troll"></span></div>
           <h1>SOCK<em>TOPUS</em></h1>
-          <p class="subtitle">Eight absurd missions stand between your sock drawer and the mustachioed Emperor of Pants.</p>
+          <p class="subtitle">Twelve absurd missions stand between your sock drawer and the mustachioed Emperor of Pants.</p>
           <div class="mission-picker" aria-label="Choose campaign mission">
             <button class="mission-nav" id="prevLevel" aria-label="Previous mission">‹</button>
             <div class="mission-card" id="missionCard">
-              <div class="mission-kicker" id="missionKicker">Mission 1 of 8</div>
+              <div class="mission-kicker" id="missionKicker">Mission 1 of 12</div>
               <h3 id="missionName">Drawer Boot Camp</h3>
               <p id="missionCopy"></p>
               <div class="mission-tags" id="missionTags"></div>
               <div class="mission-status" id="missionStatus"></div>
+              <div class="mission-objectives" id="missionObjectives" aria-label="Mission star goals"></div>
             </div>
             <button class="mission-nav" id="nextLevel" aria-label="Next mission">›</button>
           </div>
@@ -172,6 +190,11 @@
             <div class="rule"><b>Read the forecast</b>See what arrives and where. Smart counters deal bonus damage.</div>
             <div class="rule"><b>Spend lint wisely</b>Pick a unit, then tap a lane. Break the mission's target drawers.</div>
             <div class="rule"><b>Adapt between waves</b>Choose upgrades. MOM VOICE freezes enemies—unless a mission disables it.</div>
+          </div><div class="counter-visuals" aria-label="Counter guide">
+            <span><i class="counter-dot hero unit-hamster"></i> beats <i class="counter-dot foe unit-wizard"></i></span>
+            <span><i class="counter-dot hero unit-bunnies"></i> beats <i class="counter-dot foe unit-troll"></i></span>
+            <span><i class="counter-dot hero unit-wizard"></i> beats <i class="counter-dot foe unit-bunnies"></i></span>
+            <span><i class="counter-dot hero unit-troll"></i> beats <i class="counter-dot foe unit-hamster"></i></span>
           </div></details>
           <div class="difficulty" aria-label="Choose difficulty">
             <button data-difficulty="0.82">Snack Break</button>
@@ -179,13 +202,17 @@
             <button data-difficulty="1.22">Laundry Legend</button>
           </div>
           <button class="bigbtn" id="startBtn">DEFEND THE DRAWER</button>
+          <div class="menu-actions"><button class="secondarybtn" id="collectionBtn">SOCK DRAWER · 0★</button><button class="secondarybtn" id="briefBtn">VOICE: OFF</button></div>
         </div>
       </section>
       <section class="overlay hidden" id="upgradeOverlay">
         <div class="modal"><div class="mascot">🧺</div><h2 id="upgradeTitle">WAVE SURVIVED!</h2><p class="subtitle">Choose one completely legitimate laundry technology.</p><div class="upgrade-grid" id="upgradeGrid"></div></div>
       </section>
       <section class="overlay hidden" id="endOverlay">
-        <div class="modal"><div class="end-seal" id="endMascot">VICTORY</div><h2 id="endTitle">LAUNDRY LIBERATED!</h2><p class="subtitle" id="endCopy"></p><div class="scoreline"><span>Score <b id="scoreText">0</b></span><span>Mission best <b id="bestText">0</b></span></div><button class="bigbtn" id="againBtn">PLAY AGAIN</button><button class="secondarybtn" id="mapBtn">MISSION MAP</button></div>
+        <div class="modal"><div class="end-seal" id="endMascot">VICTORY</div><h2 id="endTitle">LAUNDRY LIBERATED!</h2><div class="end-stars" id="endStars" aria-label="Stars earned">★★★</div><p class="subtitle" id="endCopy"></p><div class="result-objectives" id="resultObjectives"></div><div class="scoreline"><span>Score <b id="scoreText">0</b></span><span>Mission best <b id="bestText">0</b></span></div><button class="bigbtn" id="againBtn">PLAY AGAIN</button><button class="secondarybtn" id="mapBtn">MISSION MAP</button><button class="secondarybtn" id="drawerEndBtn">SOCK DRAWER</button></div>
+      </section>
+      <section class="overlay hidden" id="collectionOverlay">
+        <div class="modal"><div class="mascot">🧦✨</div><h2>THE SOCK DRAWER</h2><p class="subtitle">Earn mission stars to unlock laundry looks for your whole army. Tap an unlocked look to wear it.</p><div class="mission-status" id="collectionTotal">0 of 36 stars</div><div class="collection-grid" id="collectionGrid"></div><button class="bigbtn" id="closeCollectionBtn">BACK TO MISSIONS</button></div>
       </section>
       <section class="overlay hidden" id="pauseOverlay">
         <div class="modal"><div class="mascot">🧦💤</div><h2>PAUSED</h2><p class="subtitle">Even heroic socks need to air out.</p><button class="bigbtn" id="resumeBtn">BACK TO BATTLE</button><button class="secondarybtn" id="restartBtn">RESTART MISSION</button><button class="secondarybtn" id="pauseMapBtn">MISSION MAP</button></div>
@@ -230,14 +257,27 @@
     'Tactical forecast: probably too many underpants.'
   ];
   const levels = [
-    {name:'Drawer Boot Camp',copy:'A suspiciously friendly opening skirmish. Learn the lanes before the hamper notices.',waves:2,times:[34,40],gap:4.1,hazard:22,enemyPower:.82,lint:5,regen:.9,target:2,forecast:3,tags:['2 waves','rookie socks'],rosters:[['sock','sock','hamster'],['sock','hamster','bunnies']]},
-    {name:'Gremlin Picnic',copy:'Lint Gremlins arrive in threes. Splash damage turns the swarm into extremely rude confetti.',waves:3,times:[36,40,45],gap:3.55,hazard:16,enemyPower:.9,lint:5,regen:.86,target:2,forecast:3,tags:['swarm attack','splash counters'],rosters:[['sock','bunnies','bunnies'],['bunnies','hamster','sock'],['bunnies','wizard','hamster']]},
-    {name:'Bubble Trouble',copy:'Soap Sorcerers bombard the drawer from range. Fast rogues are the answer—probably.',waves:3,times:[38,42,47],gap:3.35,hazard:14,enemyPower:.98,lint:5,regen:.82,target:2,forecast:3,tags:['ranged siege','rogue counters'],rosters:[['sock','wizard','wizard'],['wizard','bunnies','hamster'],['wizard','troll','bunnies']]},
-    {name:'Parade of Pants',copy:'Armored Pants Golems march in formation, followed by one pair with pockets inside pockets.',waves:3,times:[40,44,52],gap:3.18,hazard:13,enemyPower:1.05,lint:5,regen:.82,target:2,forecast:3,bossWave:3,bossAt:39,bossFactor:1,tags:['tank pressure','boss battle'],rosters:[['sock','troll','hamster'],['troll','wizard','bunnies'],['troll','troll','wizard','bunnies']]},
-    {name:'Static Storm',copy:'The dryer is throwing lightning tantrums. Hazards strike twice as often and sometimes steal lint.',waves:4,times:[36,40,44,49],gap:3.05,hazard:7.5,hazardMode:'storm',enemyPower:1.06,lint:5,regen:.82,target:3,forecast:3,tags:['4 waves','rapid hazards','3 targets'],rosters:[['sock','hamster','bunnies'],['wizard','bunnies','hamster'],['troll','wizard','sock'],['troll','bunnies','wizard','hamster']]},
-    {name:'Raccoon Heist',copy:'Raccoon Rogues stole part of the forecast. You only see two threats ahead, and they arrive fast.',waves:4,times:[38,42,46,51],gap:2.82,hazard:11,enemyPower:1.1,lint:5,regen:.84,target:3,forecast:2,tags:['short forecast','fast attacks','3 targets'],rosters:[['hamster','sock','hamster'],['hamster','wizard','bunnies'],['hamster','troll','wizard'],['hamster','bunnies','troll','wizard']]},
-    {name:'One Drawer Standing',copy:'Two drawers are already toast. Defend the last one while destroying every washer compartment.',waves:4,times:[40,44,48,54],gap:2.78,hazard:10,enemyPower:1.13,lint:6,regen:.88,target:3,loseAt:3,forecast:2,noPower:true,startBases:[0,100,0],tags:['last drawer','no Mom Voice','3 targets'],rosters:[['sock','hamster','bunnies'],['wizard','hamster','bunnies'],['troll','wizard','hamster'],['troll','bunnies','wizard','hamster']]},
-    {name:'Emperor Spin Cycle',copy:'Five waves. Two-step forecasts. Maximum nonsense. Defeat the Emperor’s royal Pants Golem.',waves:5,times:[38,42,46,50,58],gap:2.65,hazard:8.5,hazardMode:'storm',enemyPower:1.18,lint:6,regen:.87,target:3,forecast:2,bossWave:5,bossAt:45,bossFactor:1.38,tags:['5 waves','final boss','everything hurts'],rosters:[['sock','hamster','bunnies'],['wizard','bunnies','hamster'],['troll','wizard','sock'],['troll','bunnies','wizard','hamster'],['troll','wizard','bunnies','hamster','sock']]}
+    {name:'Drawer Boot Camp',copy:'A friendly opening skirmish. Learn the lanes before the hamper notices.',brief:'Break two washer doors. Watch the forecast and send the right counter.',waves:2,times:[34,40],gap:4.1,hazard:22,enemyPower:.82,lint:5,regen:.9,target:2,forecast:3,bonus:{type:'counter',target:3,text:'Land 3 smart counters'},tags:['2 waves','rookie socks'],rosters:[['sock','sock','hamster'],['sock','hamster','bunnies']]},
+    {name:'Gremlin Picnic',copy:'Lint Gremlins arrive in threes. Splash damage turns the swarm into rude confetti.',brief:'The gremlins travel in packs. Underpants Wizards splash whole groups.',waves:3,times:[36,40,45],gap:3.55,hazard:16,enemyPower:.9,lint:5,regen:.86,target:2,forecast:3,bonus:{type:'killType',unit:'bunnies',target:12,text:'Dust 12 gremlins'},tags:['swarm attack','splash counters'],rosters:[['sock','bunnies','bunnies'],['bunnies','hamster','sock'],['bunnies','wizard','hamster']]},
+    {name:'Bubble Trouble',copy:'Soap Sorcerers bombard the drawer from range. Fast rogues are the answer.',brief:'Soap Sorcerers attack from far away. Hamster Rogues race past their bubbles.',waves:3,times:[38,42,47],gap:3.35,hazard:14,enemyPower:.98,lint:5,regen:.82,target:2,forecast:3,bonus:{type:'counterVictim',unit:'wizard',target:5,text:'Counter 5 sorcerers'},tags:['ranged siege','rogue counters'],rosters:[['sock','wizard','wizard'],['wizard','bunnies','hamster'],['wizard','troll','bunnies']]},
+    {name:'Parade of Pants',copy:'Armored Pants Golems march in formation, followed by one pair with pockets inside pockets.',brief:'Dust Bunnies chew through Pants Golems. Defeat the giant golem too.',waves:3,times:[40,44,52],gap:3.18,hazard:13,enemyPower:1.05,lint:5,regen:.82,target:2,forecast:3,bossWave:3,bossAt:39,bossType:'troll',bossName:'THE PANTS GOLEM',bossAbility:'stomp',bossFactor:1,bonus:{type:'boss',target:1,text:'Flatten the boss'},tags:['tank pressure','boss battle'],rosters:[['sock','troll','hamster'],['troll','wizard','bunnies'],['troll','troll','wizard','bunnies']]},
+    {name:'Static Storm',copy:'The dryer is throwing lightning tantrums. Hazards strike twice as often and steal lint.',brief:'Static storms strike quickly. Keep moving and save a little lint.',waves:4,times:[36,40,44,49],gap:3.05,hazard:7.5,hazardMode:'storm',enemyPower:1.06,lint:5,regen:.82,target:3,forecast:3,bonus:{type:'surviveHazards',target:4,text:'Weather 4 hazards'},tags:['4 waves','rapid hazards','3 targets'],rosters:[['sock','hamster','bunnies'],['wizard','bunnies','hamster'],['troll','wizard','sock'],['troll','bunnies','wizard','hamster']]},
+    {name:'Raccoon Heist',copy:'Raccoon Rogues stole part of the forecast. You only see two threats ahead, and they arrive fast.',brief:'The forecast is short and the raccoons are fast. Build quick counter combos.',waves:4,times:[38,42,46,51],gap:2.82,hazard:11,enemyPower:1.1,lint:5,regen:.84,target:3,forecast:2,bonus:{type:'combo',target:6,text:'Reach a 6-hit combo'},tags:['short forecast','fast attacks','3 targets'],rosters:[['hamster','sock','hamster'],['hamster','wizard','bunnies'],['hamster','troll','wizard'],['hamster','bunnies','troll','wizard']]},
+    {name:'One Drawer Standing',copy:'Two drawers are already toast. Defend the last one while destroying every washer compartment.',brief:'Only the middle drawer remains. Protect it, and Mom Voice is jammed.',waves:4,times:[40,44,48,54],gap:2.78,hazard:10,enemyPower:1.13,lint:6,regen:.88,target:3,loseAt:3,forecast:2,noPower:true,startBases:[0,100,0],bonus:{type:'hp',lane:1,target:50,text:'Finish above 50% health'},tags:['last drawer','no Mom Voice','3 targets'],rosters:[['sock','hamster','bunnies'],['wizard','hamster','bunnies'],['troll','wizard','hamster'],['troll','bunnies','wizard','hamster']]},
+    {name:'Emperor Spin Cycle',copy:'Five waves. Two-step forecasts. Maximum nonsense. Survive the royal Pants Golem.',brief:'This was the old final battle. Beat its five waves without calling Mom.',waves:5,times:[38,42,46,50,58],gap:2.65,hazard:8.5,hazardMode:'storm',enemyPower:1.18,lint:6,regen:.87,target:3,forecast:2,bossWave:5,bossAt:45,bossType:'troll',bossName:'THE ROYAL PANTS GOLEM',bossAbility:'stomp',bossFactor:1.38,bonus:{type:'noPower',target:1,text:'Win without Mom Voice'},tags:['5 waves','royal boss','everything hurts'],rosters:[['sock','hamster','bunnies'],['wizard','bunnies','hamster'],['troll','wizard','sock'],['troll','bunnies','wizard','hamster'],['troll','wizard','bunnies','hamster','sock']]},
+    {name:'Wrong-Sock Sorting Day',copy:'The washer jams one lane at a time while the Static Queen throws stunning bubbles.',brief:'A red sock jam closes one lane at a time. Wait for it to clear, then counterattack.',waves:4,times:[38,42,46,53],gap:2.75,hazard:9,hazardMode:'locks',enemyPower:1.12,lint:6,regen:.88,target:3,forecast:3,bossWave:4,bossAt:40,bossType:'wizard',bossName:'THE STATIC QUEEN',bossAbility:'bubbles',bossFactor:1.3,bonus:{type:'counter',target:7,text:'Land 7 smart counters'},tags:['lane jams','new boss','3 targets'],rosters:[['sock','wizard','bunnies'],['wizard','hamster','bunnies'],['troll','wizard','sock'],['wizard','troll','bunnies','hamster']]},
+    {name:'Tiny Loads Only',copy:'Sock Squires are banned and the lanes keep swapping. The Laundry Baron steals lint.',brief:'No Sock Squires today. Static swaps the lanes, and the boss steals lint.',waves:4,times:[40,44,48,55],gap:2.68,hazard:8.5,hazardMode:'shuffle',enemyPower:1.16,lint:6,regen:.9,target:3,forecast:2,disabledUnits:['sock'],bossWave:4,bossAt:42,bossType:'hamster',bossName:'THE LAUNDRY BARON',bossAbility:'steal',bossFactor:1.5,bonus:{type:'noPower',target:1,text:'Win without Mom Voice'},tags:['no squires','lane shuffle','new boss'],rosters:[['hamster','wizard','bunnies'],['hamster','bunnies','troll'],['wizard','hamster','bunnies'],['hamster','troll','wizard','bunnies']]},
+    {name:'Hamper Escort',copy:'Guide Captain Hamper down the only open lane and into the washer. Keep the courier alive.',brief:'Escort Captain Hamper through the middle lane. Clear enemies so the captain can enter the washer.',waves:1,times:[82],gap:3.05,hazard:11,hazardMode:'storm',enemyPower:1.2,lint:7,regen:.95,target:1,forecast:3,escort:true,activeLanes:[1],startEnemyBases:[0,100,0],bossWave:1,bossAt:50,bossType:'bunnies',bossName:'THE GREMLIN TRIPLETS',bossAbility:'swarm',bossFactor:1.45,bonus:{type:'courier',target:60,text:'Courier above 60% health'},tags:['escort mission','one open lane','new boss'],rosters:[['sock','hamster','wizard','bunnies','troll']]},
+    {name:'Final Final Spin',copy:'Every hazard. Every trick. The Emperor of Pants waits behind three washer doors.',brief:'The true finale has every trick. Break all three doors and dethrone the Emperor.',waves:5,times:[40,44,48,53,62],gap:2.5,hazard:7.5,hazardMode:'royal',enemyPower:1.23,lint:7,regen:.92,target:3,forecast:2,bossWave:5,bossAt:48,bossType:'troll',bossName:'THE EMPEROR OF PANTS',bossAbility:'royal',bossFactor:1.65,bonus:{type:'boss',target:1,text:'De-lint the Emperor'},tags:['true finale','all hazards','final boss'],rosters:[['sock','hamster','bunnies'],['wizard','bunnies','hamster'],['troll','wizard','sock'],['troll','bunnies','wizard','hamster'],['troll','wizard','bunnies','hamster','sock']]}
+  ];
+  const skins = [
+    {id:'classic',name:'Classic Crew',stars:0,filter:'none',icon:'★'},
+    {id:'lemon',name:'Lemon Pop',stars:3,filter:'sepia(.35) saturate(1.8) hue-rotate(345deg)',icon:'☀'},
+    {id:'mint',name:'Mint Condition',stars:7,filter:'hue-rotate(75deg) saturate(1.25)',icon:'✦'},
+    {id:'bubblegum',name:'Bubblegum',stars:12,filter:'hue-rotate(285deg) saturate(1.4)',icon:'♥'},
+    {id:'midnight',name:'Midnight Wash',stars:18,filter:'hue-rotate(185deg) brightness(.75) saturate(1.5)',icon:'☾'},
+    {id:'royal',name:'Royal Gold',stars:25,filter:'sepia(.75) saturate(2.2)',icon:'♛'},
+    {id:'emperor',name:'Emperor Clean',stars:32,filter:'hue-rotate(220deg) saturate(1.8) brightness(1.08)',icon:'♕'}
   ];
   const upgrades = [
     {id:'hp',emoji:'🛡️',name:'Industrial Starch',desc:'+22% health for every future unit.',apply:()=>state.hpMult*=1.22},
@@ -252,6 +292,8 @@
   let selectedLevel = unlocked-1;
   let selected = 'sock';
   let audioOn = true;
+  let voiceOn = readStore('socktopusVoice','false')==='true';
+  let activeSkin = readStore('socktopusSkin','classic');
   let audioCtx;
   let last = performance.now();
   let raf = 0;
@@ -262,24 +304,41 @@
   function readStore(key,fallback){try{return localStorage.getItem(key)??fallback}catch(e){return fallback}}
   function writeStore(key,value){try{localStorage.setItem(key,value)}catch(e){}}
   function currentLevel(){return levels[selectedLevel]}
+  function starFlags(i){const raw=readStore(`socktopusLevelStarMask${i}`,null);if(raw!==null){const mask=Number(raw)||0;return [1,2,4].map(bit=>!!(mask&bit))}const legacy=Number(readStore(`socktopusLevelStars${i}`,0))||0;return [0,1,2].map(n=>n<legacy)}
+  function totalStars(){return levels.reduce((sum,_,i)=>sum+starFlags(i).filter(Boolean).length,0)}
+  function objectiveTexts(cfg=currentLevel()){return ['Complete the mission','Keep every starting drawer',cfg.bonus.text]}
+  function haptic(pattern){try{if(navigator.vibrate)navigator.vibrate(pattern)}catch(e){}}
+  function speak(text){if(!voiceOn||!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const line=new SpeechSynthesisUtterance(text);line.rate=.94;line.pitch=1.08;speechSynthesis.speak(line)}catch(e){}}
 
   function freshState(){ const cfg=currentLevel(),bases=[...(cfg.startBases||[100,100,100])]; return {
     mode:'menu',paused:false,level:selectedLevel,wave:1,waveTarget:cfg.waves,waveTime:cfg.times[0],timeLeft:cfg.times[0],lint:cfg.lint,maxLint:10,regen:cfg.regen,
-    playerBases:bases,enemyBases:[100,100,100],units:[],effects:[],forecast:[],
+    playerBases:bases,startingBases:[...bases],enemyBases:[...(cfg.startEnemyBases||[100,100,100])],units:[],effects:[],forecast:[],
     nextSpawn:1.8,selected:'sock',powerUsed:false,score:0,kills:0,combo:0,comboClock:0,
     hpMult:1,damageMult:1,speedMult:1,refund:0,freeze:0,hazardClock:16,messageClock:8,
-    waveBoss:false,destroyedPlayer:bases.filter(v=>v<=0).length,destroyedEnemy:0,winClock:0,lastWin:false
+    waveBoss:false,destroyedPlayer:bases.filter(v=>v<=0).length,destroyedEnemy:(cfg.startEnemyBases||[]).filter(v=>v<=0).length,winClock:0,lastWin:false,
+    counterKills:0,counterVictims:{},killsByType:{},maxCombo:0,hazardsSurvived:0,bossKilled:false,powerUsedEver:false,
+    blockedLane:-1,blockClock:0,escortAlive:!cfg.escort,escortDelivered:false,escortFinishHp:0
   }}
 
   function renderLevelPicker(){
-    const cfg=currentLevel(),locked=selectedLevel>=unlocked,best=Number(readStore(`socktopusLevelBest${selectedLevel}`,0))||0;
+    const cfg=currentLevel(),locked=selectedLevel>=unlocked,best=Number(readStore(`socktopusLevelBest${selectedLevel}`,0))||0,earned=starFlags(selectedLevel);
     $('missionKicker').textContent=`Mission ${selectedLevel+1} of ${levels.length}`;
     $('missionName').textContent=cfg.name;$('missionCopy').textContent=cfg.copy;
     $('missionTags').innerHTML=cfg.tags.map(tag=>`<span>${tag}</span>`).join('');
-    $('missionStatus').textContent=locked?`LOCKED — BEAT MISSION ${selectedLevel}`:best?`COMPLETE · BEST ${best.toLocaleString()}`:'READY FOR BATTLE';
+    $('missionStatus').textContent=locked?`LOCKED — BEAT MISSION ${selectedLevel}`:earned[0]?`COMPLETE · BEST ${best.toLocaleString()}`:best?`ATTEMPTED · BEST ${best.toLocaleString()}`:'READY FOR BATTLE';
+    $('missionObjectives').innerHTML=objectiveTexts(cfg).map((text,i)=>`<span class="${earned[i]?'earned':''}" title="${text}"><b>${earned[i]?'★':'☆'}</b>${text}</span>`).join('');
     $('missionCard').classList.toggle('locked',locked);$('prevLevel').disabled=selectedLevel===0;$('nextLevel').disabled=selectedLevel===levels.length-1;
     $('startBtn').disabled=locked;$('startBtn').textContent=locked?'MISSION LOCKED':selectedLevel===levels.length-1?'FACE THE EMPEROR':'START MISSION';
+    $('collectionBtn').textContent=`SOCK DRAWER · ${totalStars()}★`;$('briefBtn').textContent=`VOICE: ${voiceOn?'ON':'OFF'}`;
   }
+
+  function renderCollection(){
+    const stars=totalStars();if(!skins.some(s=>s.id===activeSkin&&stars>=s.stars)){activeSkin='classic';writeStore('socktopusSkin',activeSkin)}
+    $('collectionTotal').textContent=`${stars} OF ${levels.length*3} STARS COLLECTED`;
+    $('collectionGrid').innerHTML=skins.map(s=>{const unlockedLook=stars>=s.stars;return `<button class="collectible ${unlockedLook?'':'locked'} ${activeSkin===s.id?'active':''}" data-skin="${s.id}" ${unlockedLook?'':'disabled'} style="--look-filter:${s.filter}"><span class="collect-face"></span><b>${s.icon} ${s.name}</b><small>${unlockedLook?(activeSkin===s.id?'WORN BY ARMY':'TAP TO WEAR'):`NEEDS ${s.stars}★`}</small></button>`}).join('');
+    document.querySelectorAll('.collectible:not(.locked)').forEach(b=>b.addEventListener('click',()=>{activeSkin=b.dataset.skin;writeStore('socktopusSkin',activeSkin);renderCollection();showToast(`${skins.find(s=>s.id===activeSkin).name} equipped!`);sfx(720,.12,'triangle',.04)}));
+  }
+  function openCollection(){renderCollection();$('collectionOverlay').classList.remove('hidden')}
 
   function chooseLevel(delta){selectedLevel=Math.max(0,Math.min(levels.length-1,selectedLevel+delta));renderLevelPicker();sfx(360,.04)}
 
@@ -292,6 +351,7 @@
 
   function selectUnit(id){
     if(state.mode!=='battle') return;
+    if((currentLevel().disabledUnits||[]).includes(id)){announce(`${unitDefs[id].name} sits this mission out.`);haptic(25);return}
     selected=id; state.selected=id;
     document.querySelectorAll('.card').forEach(b=>b.classList.toggle('selected',b.dataset.unit===id));
     $('powerCard').classList.remove('selected');
@@ -300,23 +360,23 @@
 
   function startGame(){
     if(selectedLevel>=unlocked)return;
-    state=freshState(); selected='sock'; state.mode='battle';
-    $('startOverlay').classList.add('hidden'); $('endOverlay').classList.add('hidden'); $('pauseOverlay').classList.add('hidden'); $('upgradeOverlay').classList.add('hidden');
-    document.querySelectorAll('.card').forEach(b=>b.classList.toggle('selected',b.dataset.unit==='sock'));
-    beginWave(1); ensureAudio(); announce(`Mission ${selectedLevel+1}: ${currentLevel().name}. Read the forecast!`);
+    const cfg=currentLevel(),available=Object.keys(unitDefs).find(id=>!(cfg.disabledUnits||[]).includes(id))||'sock';state=freshState();selected=available;state.selected=available;state.mode='battle';
+    $('startOverlay').classList.add('hidden');$('endOverlay').classList.add('hidden');$('pauseOverlay').classList.add('hidden');$('upgradeOverlay').classList.add('hidden');$('collectionOverlay').classList.add('hidden');
+    document.querySelectorAll('.card').forEach(b=>b.classList.toggle('selected',b.dataset.unit===available));
+    beginWave(1);ensureAudio();announce(`Mission ${selectedLevel+1}: ${cfg.name}. ${cfg.brief}`);speak(`Mission ${selectedLevel+1}. ${cfg.name}. ${cfg.brief}`);
   }
 
   function beginWave(n){
     const cfg=currentLevel();state.wave=n;state.waveTime=cfg.times[n-1]||cfg.times[cfg.times.length-1];state.timeLeft=state.waveTime;
     state.powerUsed=!!cfg.noPower;state.freeze=0;state.nextSpawn=1.35;state.hazardClock=cfg.hazard;
-    state.waveBoss=false; fillForecast(); updateHUD();
+    state.waveBoss=false;fillForecast();if(cfg.escort&&n===1)spawnCourier();updateHUD();
     $('powerCard').classList.toggle('used',!!cfg.noPower);$('powerCard').setAttribute('aria-disabled',cfg.noPower?'true':'false');
   }
 
-  function fillForecast(){ const cfg=currentLevel(); while(state.forecast.length<cfg.forecast){
+  function fillForecast(){ const cfg=currentLevel(),lanes=cfg.activeLanes||[0,1,2]; while(state.forecast.length<cfg.forecast){
     const types=cfg.rosters[Math.min(state.wave-1,cfg.rosters.length-1)];
     let type=types[Math.floor(Math.random()*types.length)];
-    let lane=Math.floor(Math.random()*3);
+    let lane=lanes[Math.floor(Math.random()*lanes.length)];
     if(state.playerBases[lane]<=0) lane=state.playerBases.findIndex(x=>x>0);
     const gap=(cfg.gap-Math.min(.5,(state.wave-1)*.1))*(.84+Math.random()*.32)/difficulty;
     const base=state.forecast.length?state.forecast[state.forecast.length-1].at:state.nextSpawn;
@@ -327,6 +387,9 @@
     const d=unitDefs[type];
     if(side==='player'){
       if(state.mode!=='battle'||state.paused||state.playerBases[lane]<=0) return false;
+      if((currentLevel().activeLanes||[0,1,2]).indexOf(lane)<0){announce('That lane is closed this mission. Follow the glowing lane!');haptic(30);return false}
+      if(state.blockedLane===lane){announce(`Lane ${lane+1} is jammed! Wait for the red warning to clear.`);sfx(95,.12,'square',.03);haptic([35,40,35]);return false}
+      if((currentLevel().disabledUnits||[]).includes(type)){announce(`${d.name} sits this mission out.`);return false}
       if(state.lint<d.cost){announce('Not enough pocket lint. Check the couch!');sfx(100,.12,'sawtooth',.025);return false}
       state.lint-=d.cost;
     }
@@ -337,11 +400,17 @@
       state.units.push({id:++unitId,type,side,lane,x:(side==='player'?83:877)-variance*(side==='player'?1:-1),y:laneY[lane]+variance*.16,
         hp:d.hp*(side==='player'?state.hpMult:enemyBoost),maxHp:d.hp*(side==='player'?state.hpMult:enemyBoost),
         damage:d.damage*(side==='player'?state.damageMult:enemyBoost),speed:d.speed*(side==='player'?state.speedMult:1),
-        range:d.range,rate:d.rate,attackClock:.15+Math.random()*.25,size:d.size,role:d.role,dead:false,flash:0,stun:0});
+        range:d.range,rate:d.rate,attackClock:.15+Math.random()*.25,attackAnim:0,size:d.size,role:d.role,dead:false,flash:0,stun:0});
     }
     burst(side==='player'?95:865,laneY[lane],side==='player'?'#ffd166':'#6ecbff',7);
-    sfx(side==='player'?250:170,.08,'triangle',.035);
+    sfx(side==='player'?250:170,.08,'triangle',.035);if(side==='player')haptic(18);
     return true;
+  }
+
+  function spawnCourier(){
+    if(state.units.some(u=>u.courier&&!u.dead))return;const d=unitDefs.troll;state.escortAlive=true;
+    state.units.push({id:++unitId,type:'troll',side:'player',lane:1,x:108,y:laneY[1],hp:260,maxHp:260,damage:0,speed:24,range:20,rate:1,attackClock:0,attackAnim:0,size:34,role:'courier',dead:false,flash:0,stun:0,courier:true});
+    announce('CAPTAIN HAMPER is moving! Clear the middle lane.');speak('Captain Hamper is moving. Clear the middle lane!');haptic([30,40,30]);
   }
 
   function canvasPoint(e){
@@ -353,10 +422,10 @@
   function usePower(){
     if(currentLevel().noPower){announce('MOM VOICE is jammed by the Emperor’s noise-canceling underpants.');return}
     if(state.mode!=='battle'||state.paused||state.powerUsed) return;
-    state.powerUsed=true; state.freeze=3.2; $('powerCard').classList.add('used');
+    state.powerUsed=true;state.powerUsedEver=true;state.freeze=3.2;$('powerCard').classList.add('used');
     announce('MOM VOICE: “WHO LEFT THESE SOCKS HERE?” Everything freezes.');
     state.units.filter(u=>u.side==='enemy').forEach(u=>{u.stun=Math.max(u.stun,3.2);burst(u.x,u.y,'#ff8dcc',4)});
-    sfx(160,.35,'sawtooth',.05); setTimeout(()=>sfx(90,.4,'square',.035),80);
+    sfx(160,.35,'sawtooth',.05);setTimeout(()=>sfx(90,.4,'square',.035),80);haptic([45,35,70]);
   }
 
   function counterMultiplier(a,b){
@@ -369,7 +438,7 @@
 
   function update(dt){
     if(state.mode!=='battle'||state.paused) return;
-    state.timeLeft-=dt; state.lint=Math.min(state.maxLint,state.lint+state.regen*dt); state.freeze=Math.max(0,state.freeze-dt);state.winClock=Math.max(0,state.winClock-dt);
+    state.timeLeft-=dt;state.lint=Math.min(state.maxLint,state.lint+state.regen*dt);state.freeze=Math.max(0,state.freeze-dt);state.winClock=Math.max(0,state.winClock-dt);state.blockClock=Math.max(0,state.blockClock-dt);if(state.blockClock<=0)state.blockedLane=-1;
     state.comboClock-=dt;if(state.comboClock<=0)state.combo=0;
     state.messageClock-=dt;if(state.messageClock<=0){state.messageClock=8+Math.random()*5;announce(messages[Math.floor(Math.random()*messages.length)])}
     state.hazardClock-=dt;
@@ -380,14 +449,16 @@
 
     for(const u of state.units){
       if(u.dead)continue;
-      if(u.entering){u.enterClock-=dt;const t=Math.min(1,1-u.enterClock/u.enterDuration),ease=1-Math.pow(1-t,3);u.x=u.enterStartX+(washerX-u.enterStartX)*ease;u.y=u.enterStartY+(washerY[u.lane]-u.enterStartY)*ease;if(u.enterClock<=0){u.dead=true;burst(washerX,washerY[u.lane],'#73d7ff',10)}continue}
-      u.flash=Math.max(0,u.flash-dt);u.stun=Math.max(0,u.stun-dt);u.attackClock-=dt;
+      if(u.entering){u.enterClock-=dt;const t=Math.min(1,1-u.enterClock/u.enterDuration),ease=1-Math.pow(1-t,3);u.x=u.enterStartX+(washerX-u.enterStartX)*ease;u.y=u.enterStartY+(washerY[u.lane]-u.enterStartY)*ease;if(u.enterClock<=0){u.dead=true;burst(washerX,washerY[u.lane],'#73d7ff',10);if(u.courier){state.escortDelivered=true;state.escortFinishHp=u.hp/u.maxHp*100;state.winClock=.7;announce('CAPTAIN HAMPER MADE IT INSIDE!');speak('Captain Hamper made it inside!')}}continue}
+      u.flash=Math.max(0,u.flash-dt);u.stun=Math.max(0,u.stun-dt);u.attackClock-=dt;u.attackAnim=Math.max(0,(u.attackAnim||0)-dt);
       if(u.stun>0||(u.side==='enemy'&&state.freeze>0))continue;
+      if(u.boss){u.abilityClock-=dt;if(u.abilityClock<=0)useBossAbility(u)}
       const dir=u.side==='player'?1:-1;
       let enemies=state.units.filter(v=>!v.dead&&v.side!==u.side&&v.lane===u.lane&&((v.x-u.x)*dir)>-5);
       enemies.sort((a,b)=>Math.abs(a.x-u.x)-Math.abs(b.x-u.x));
-      const target=enemies[0]; const dist=target?Math.abs(target.x-u.x):999;
+      const target=enemies[0];const dist=target?Math.abs(target.x-u.x):999;
       const enemyBase=u.side==='player'?state.enemyBases[u.lane]:state.playerBases[u.lane];
+      if(u.courier){if(target&&dist<115)continue;if(enemyBase<=0&&u.x>=washerX-44){startWasherEntry(u);continue}u.x+=u.speed*dt;continue}
       if(u.side==='player'&&enemyBase<=0){if(u.x>=washerX-42)startWasherEntry(u);else u.x+=u.speed*dt;continue}
       const baseX=u.side==='player'?washerX:85; const baseDist=Math.abs(baseX-u.x);
       if(target&&dist<=u.range+target.size*.45){
@@ -407,7 +478,7 @@
 
   function attack(a,b){
     let mult=counterMultiplier(a,b); let dmg=a.damage*mult;
-    b.hp-=dmg;b.flash=.11;state.effects.push({kind:'strike',x1:a.x,y1:a.y-8,x2:b.x,y2:b.y-8,life:.14,max:.14,color:a.side==='player'?'#ffd166':'#72dfff'});
+    a.attackAnim=.16;b.hp-=dmg;b.flash=.11;state.effects.push({kind:'strike',x1:a.x,y1:a.y-8,x2:b.x,y2:b.y-8,life:.14,max:.14,color:a.side==='player'?'#ffd166':'#72dfff'});
     if(a.role==='ranged'){burst(b.x,b.y,a.side==='player'?'#d78cff':'#7be0ff',4);const nearby=state.units.filter(v=>!v.dead&&v.side===b.side&&v.lane===b.lane&&v.id!==b.id&&Math.abs(v.x-b.x)<48);nearby.forEach(v=>{v.hp-=dmg*.38;v.flash=.08;if(v.hp<=0)killUnit(v,a)})}
     else burst(b.x,b.y,mult>1?'#ffd166':'#ffffff',3);
     if(a.role==='tank')b.x+=(a.side==='player'?1:-1)*8;
@@ -417,7 +488,8 @@
 
   function killUnit(v,killer){
     if(v.dead)return;v.dead=true;burst(v.x,v.y,v.side==='enemy'?'#73d7ff':'#ff718d',10);
-    if(v.side==='enemy'){state.kills++;state.combo++;state.comboClock=2.6;state.score+=10+Math.min(40,state.combo*3);if(state.combo===5)announce('FIVE-FOLD SOCK COMBO! The hamper is impressed.')}
+    if(v.side==='enemy'){state.kills++;state.killsByType[v.type]=(state.killsByType[v.type]||0)+1;state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo);state.comboClock=2.6;state.score+=10+Math.min(40,state.combo*3);const mult=killer?counterMultiplier(killer,v):1;if(mult>1){state.counterKills++;state.counterVictims[v.type]=(state.counterVictims[v.type]||0)+1}if(v.boss){state.bossKilled=true;announce(`${v.bossName} has been de-linted!`);speak(`${v.bossName} has been de-linted!`);haptic([80,50,80])}if(state.combo===5)announce('FIVE-FOLD SOCK COMBO! The hamper is impressed.')}
+    else if(v.courier){state.escortAlive=false;announce('CAPTAIN HAMPER needs a reload!');speak('Captain Hamper needs a reload!');haptic([90,60,90])}
     else if(state.refund){state.lint=Math.min(state.maxLint,state.lint+state.refund)}
   }
 
@@ -429,24 +501,31 @@
   function attackBase(u){
     const bases=u.side==='player'?state.enemyBases:state.playerBases;
     if(bases[u.lane]<=0)return;
-    bases[u.lane]-=u.damage*.44;
+    u.attackAnim=.18;bases[u.lane]-=u.damage*.44;
     burst(u.side==='player'?washerX:75,u.side==='player'?washerY[u.lane]:laneY[u.lane],u.side==='player'?'#ffd166':'#ff6f78',5);
     if(bases[u.lane]<=0){bases[u.lane]=0;
       if(u.side==='player'){startWasherEntry(u);state.destroyedEnemy++;if(state.destroyedEnemy>=currentLevel().target)state.winClock=1.05;state.score+=250;announce(`Washer ${u.lane+1} is open—your troops dive inside!`)}
       else{u.dead=true;state.destroyedPlayer++;announce(`Drawer ${u.lane+1} fell! The socks are pretending this was planned.`)}
-      sfx(75,.55,'sawtooth',.06);for(let i=0;i<5;i++)setTimeout(()=>burst(u.side==='player'?washerX:80,u.side==='player'?washerY[u.lane]:laneY[u.lane],['#ffd166','#ff5f87','#55e6b7'][i%3],10),i*80);
+      sfx(75,.55,'sawtooth',.06);haptic([55,30,85]);for(let i=0;i<5;i++)setTimeout(()=>burst(u.side==='player'?washerX:80,u.side==='player'?washerY[u.lane]:laneY[u.lane],['#ffd166','#ff5f87','#55e6b7'][i%3],10),i*80);
     }
   }
 
   function laundryHazard(){
     const cfg=currentLevel();
-    const lane=Math.floor(Math.random()*3);
+    const lanes=cfg.activeLanes||[0,1,2],lane=lanes[Math.floor(Math.random()*lanes.length)];
     const roll=Math.random();
-    if(cfg.hazardMode==='storm'&&roll>.62){
+    state.hazardsSurvived++;
+    if(cfg.hazardMode==='locks'||cfg.hazardMode==='royal'&&roll<.34){
+      state.blockedLane=lane;state.blockClock=5.2;announce(`SOCK JAM in lane ${lane+1}! That lane is closed for five seconds.`);sfx(115,.28,'square',.045);haptic([35,45,35]);return;
+    }
+    if(cfg.hazardMode==='shuffle'||cfg.hazardMode==='royal'&&roll<.67){
+      const movers=state.units.filter(u=>!u.dead&&!u.entering&&!u.courier);movers.forEach(u=>{const choices=lanes.filter(x=>x!==u.lane);if(choices.length&&Math.random()<.7){u.lane=choices[Math.floor(Math.random()*choices.length)];u.y=laneY[u.lane];burst(u.x,u.y,'#d8c5ff',4)}});announce('LANE SHUFFLE! Static swapped everybody around.');sfx(390,.24,'sine',.04);return;
+    }
+    if((cfg.hazardMode==='storm'||cfg.hazardMode==='royal')&&roll>.62){
       const stolen=Math.min(2,Math.floor(state.lint));state.lint-=stolen;
       announce(`DRYER LIGHTNING ate ${stolen} lint! The dryer refuses to apologize.`);
       state.units.filter(u=>u.side==='player').forEach(u=>{u.stun=Math.max(u.stun,.65);burst(u.x,u.y,'#d8c5ff',3)});
-    }else if(roll<.52||cfg.hazardMode==='storm'){
+    }else if(roll<.52||cfg.hazardMode==='storm'||cfg.hazardMode==='royal'){
       announce(`STATIC CLING in lane ${lane+1}! Everybody scoots together.`);
       state.units.filter(u=>u.lane===lane).forEach(u=>{u.x+=(u.side==='player'?1:-1)*28;burst(u.x,u.y,'#e8e2ff',3)});
     }else{
@@ -457,23 +536,49 @@
 
   function spawnBoss(){
     const cfg=currentLevel(),bossPower=difficulty*cfg.enemyPower*(cfg.bossFactor||1);
-    let lane=state.enemyBases.indexOf(Math.max(...state.enemyBases));if(lane<0)lane=1;
-    const d=unitDefs.troll;
-    state.units.push({id:++unitId,type:'troll',side:'enemy',lane,x:850,y:laneY[lane],hp:430*bossPower,maxHp:430*bossPower,damage:27*bossPower,speed:18,range:42,rate:.82,size:43,role:'boss',dead:false,flash:0,stun:0,boss:true});
-    announce(`BOSS ALERT: ${selectedLevel===levels.length-1?'THE EMPEROR OF PANTS':'THE PANTS GOLEM'} enters lane ${lane+1}. It has pockets WITHIN pockets.`);sfx(62,.8,'sawtooth',.07);
+    const lanes=cfg.activeLanes||[0,1,2];let lane=lanes.find(l=>state.enemyBases[l]===Math.max(...lanes.map(x=>state.enemyBases[x])));if(lane===undefined)lane=lanes[0];
+    const type=cfg.bossType||'troll',d=unitDefs[type],name=cfg.bossName||'THE PANTS GOLEM',bossHp=(type==='troll'?430:315)*bossPower;
+    state.units.push({id:++unitId,type,side:'enemy',lane,x:850,y:laneY[lane],hp:bossHp,maxHp:bossHp,damage:d.damage*1.55*bossPower,speed:d.speed*.7,range:d.range,rate:d.rate*.8,attackClock:.3,attackAnim:0,size:d.size*1.48,role:d.role,dead:false,flash:0,stun:0,boss:true,bossName:name,ability:cfg.bossAbility||'stomp',abilityClock:4.5});
+    announce(`BOSS ALERT: ${name} enters lane ${lane+1}!`);speak(`Boss alert! ${name} enters lane ${lane+1}.`);sfx(62,.8,'sawtooth',.07);haptic([70,45,70]);
+  }
+
+  function useBossAbility(u){
+    if(u.dead)return;u.abilityClock=5.8+Math.random()*2.2;
+    if(u.ability==='bubbles'){state.units.filter(v=>v.side==='player'&&v.lane===u.lane).forEach(v=>{v.stun=Math.max(v.stun,1.25);burst(v.x,v.y,'#7be0ff',5)});announce('STATIC QUEEN: bubble stun!');sfx(520,.25,'sine',.04)}
+    else if(u.ability==='steal'){const stolen=Math.min(2,Math.floor(state.lint));state.lint-=stolen;announce(`LAUNDRY BARON stole ${stolen} lint!`);sfx(180,.25,'sawtooth',.04)}
+    else if(u.ability==='swarm'){deploy('bunnies',u.lane,'enemy');announce('GREMLIN TRIPLETS called a lint swarm!');sfx(260,.2,'square',.04)}
+    else if(u.ability==='royal'){state.units.filter(v=>v.side==='player').forEach(v=>{v.stun=Math.max(v.stun,.8);burst(v.x,v.y,'#ffd166',3)});announce('ROYAL SPIN! Your whole army is dizzy.');sfx(90,.45,'sawtooth',.05)}
+    else{state.units.filter(v=>v.side==='player'&&v.lane===u.lane&&Math.abs(v.x-u.x)<150).forEach(v=>{v.stun=Math.max(v.stun,.7);v.x-=18});announce('BOSS STOMP! The lane wobbles.');sfx(72,.35,'square',.05)}
+    haptic([45,30,45]);
   }
 
   function checkOutcome(){
-    const cfg=currentLevel();if(state.destroyedEnemy>=cfg.target){if(state.winClock>0)return;endGame(true);return} if(state.destroyedPlayer>=(cfg.loseAt||2)){endGame(false);return}
+    const cfg=currentLevel();if(cfg.escort){if(!state.escortAlive&&!state.escortDelivered){endGame(false);return}if(state.escortDelivered){if(state.winClock>0)return;endGame(true);return}}
+    else if(state.destroyedEnemy>=cfg.target){if(state.winClock>0)return;endGame(true);return}if(state.destroyedPlayer>=(cfg.loseAt||2)){endGame(false);return}
     if(state.timeLeft<=0){
       if(state.wave<state.waveTarget){state.mode='upgrade';showUpgrades()}
       else{
         const p=state.playerBases.reduce((a,b)=>a+b,0),e=state.enemyBases.reduce((a,b)=>a+b,0);
         if(p===e){state.timeLeft=15;announce('SUDDEN DEATH! Lint generation has gone completely bananas.');state.regen*=2;return}
-        endGame(p>e);
+        endGame(cfg.escort?state.escortDelivered:p>e);
       }
     }
   }
+
+  function bonusComplete(cfg){
+    const b=cfg.bonus;if(!b)return false;
+    if(b.type==='counter')return state.counterKills>=b.target;
+    if(b.type==='counterVictim')return (state.counterVictims[b.unit]||0)>=b.target;
+    if(b.type==='killType')return (state.killsByType[b.unit]||0)>=b.target;
+    if(b.type==='combo')return state.maxCombo>=b.target;
+    if(b.type==='surviveHazards')return state.hazardsSurvived>=b.target;
+    if(b.type==='hp')return state.playerBases[b.lane]>=b.target;
+    if(b.type==='noPower')return !state.powerUsedEver;
+    if(b.type==='boss')return state.bossKilled;
+    if(b.type==='courier')return state.escortFinishHp>=b.target;
+    return false;
+  }
+  function starResults(win){const cfg=currentLevel(),intact=state.startingBases.every((hp,i)=>hp<=0||state.playerBases[i]>0);return [win,win&&intact,win&&bonusComplete(cfg)]}
 
   function showUpgrades(){
     $('upgradeTitle').textContent=`WAVE ${state.wave} SURVIVED!`;
@@ -485,13 +590,16 @@
 
   function endGame(win){
     state.mode='ended';state.lastWin=win;state.score+=Math.round(state.playerBases.reduce((a,b)=>a+b,0)*3)+(win?700+selectedLevel*125:0);
+    const results=starResults(win),earned=results.filter(Boolean).length,oldTotal=totalStars(),previous=starFlags(selectedLevel),combined=results.map((done,i)=>done||previous[i]),mask=combined.reduce((value,done,i)=>value+(done?1<<i:0),0);writeStore(`socktopusLevelStarMask${selectedLevel}`,mask);writeStore(`socktopusLevelStars${selectedLevel}`,combined.filter(Boolean).length);const newTotal=totalStars();
     const best=Math.max(Number(readStore(`socktopusLevelBest${selectedLevel}`,0))||0,state.score);writeStore(`socktopusLevelBest${selectedLevel}`,best);
     const allBest=Math.max(Number(readStore('socktopusBest',0))||0,state.score);writeStore('socktopusBest',allBest);
     if(win&&selectedLevel===unlocked-1&&unlocked<levels.length){unlocked++;writeStore('socktopusUnlocked',unlocked)}
     $('endMascot').textContent=win?'VICTORY':'RELOAD';$('endTitle').textContent=win?(selectedLevel===levels.length-1?'EMPEROR DE-LINTED!':'MISSION COMPLETE!'):'THE WASHER WON... FOR NOW';
-    $('endCopy').textContent=win?(selectedLevel===levels.length-1?'The Emperor of Pants has been demoted to “appliance.” The entire campaign is conquered.':`${currentLevel().name} is clean. Mission ${selectedLevel+2} is now unlocked.`):`You defeated ${state.kills} laundry weirdos. Read the forecast, exploit counters, and guard your remaining drawers.`;
+    const newLook=skins.find(s=>s.stars>oldTotal&&s.stars<=newTotal);$('endCopy').textContent=win?(selectedLevel===levels.length-1?'The Emperor of Pants has been demoted to “appliance.” The whole campaign is clean!':`${currentLevel().name} is clean.${newLook?` New Sock Drawer look: ${newLook.name}!`:selectedLevel<levels.length-1?` Mission ${selectedLevel+2} is unlocked.`:''}`):`You defeated ${state.kills} laundry weirdos. Read the forecast, pick the pictured counter, and guard your drawers.`;
+    $('endStars').innerHTML=results.map(done=>`<span class="${done?'on':''}">★</span>`).join('');$('endStars').setAttribute('aria-label',`${earned} of 3 stars earned`);
+    $('resultObjectives').innerHTML=objectiveTexts().map((text,i)=>`<span class="${results[i]?'done':''}">${results[i]?'★':'☆'} ${text}</span>`).join('');
     $('againBtn').textContent=win&&selectedLevel<levels.length-1?'NEXT MISSION':'TRY AGAIN';
-    $('scoreText').textContent=state.score.toLocaleString();$('bestText').textContent=best.toLocaleString();$('endOverlay').classList.remove('hidden');sfx(win?660:105,.7,win?'triangle':'sawtooth',.05);
+    $('scoreText').textContent=state.score.toLocaleString();$('bestText').textContent=best.toLocaleString();$('endOverlay').classList.remove('hidden');sfx(win?660:105,.7,win?'triangle':'sawtooth',.05);if(win){speak(`${earned} stars! ${$('endCopy').textContent}`);haptic([45,40,45,40,90])}
   }
 
   function updateHUD(){
@@ -502,18 +610,19 @@
     $('forecast').innerHTML=state.forecast.slice(0,currentLevel().forecast).map(f=>{const counter=unitDefs[counters[f.type]].name;return `<span class="forecast-item" title="${enemyNames[f.type]} — counter with ${counter}" aria-label="${enemyNames[f.type]} arrives in ${Math.max(0,Math.ceil(f.at))} seconds in lane ${f.lane+1}. Counter with ${counter}."><i class="forecast-face enemy-portrait unit-${f.type}"></i><strong>${Math.max(0,Math.ceil(f.at))}s</strong> → L${f.lane+1}</span>`}).join('');
     const next=state.forecast[0],recommended=next?counters[next.type]:null;
     $('coachThreat').textContent=next?`${enemyNames[next.type]} · Lane ${next.lane+1}`:'Waiting for enemy intel…';
-    $('counterBtn').disabled=!recommended;$('counterBtn').dataset.unit=recommended||'';$('counterBtn').textContent=recommended?`${selected===recommended?'READY':'PICK'} ${unitDefs[recommended].name.toUpperCase()}`:'PICK A COUNTER';$('counterBtn').classList.toggle('ready',selected===recommended);
+    $('counterBtn').disabled=!recommended;$('counterBtn').dataset.unit=recommended||'';$('counterBtn').innerHTML=recommended?`<i class="coach-face unit-${recommended}"></i>${selected===recommended?'READY':'PICK'} ${unitDefs[recommended].name.toUpperCase()}`:'PICK A COUNTER';$('counterBtn').classList.toggle('ready',selected===recommended);
     $('coach').setAttribute('aria-label',next?`Next threat: ${enemyNames[next.type]}, lane ${next.lane+1}. Recommended counter: ${unitDefs[recommended].name}.`:'Waiting for enemy intel.');
-    document.querySelectorAll('.card').forEach(b=>{b.classList.toggle('disabled',state.lint<unitDefs[b.dataset.unit].cost);b.classList.toggle('recommended',b.dataset.unit===recommended)});
+    document.querySelectorAll('.card').forEach(b=>{const disabled=(currentLevel().disabledUnits||[]).includes(b.dataset.unit)||state.lint<unitDefs[b.dataset.unit].cost;b.classList.toggle('disabled',disabled);b.classList.toggle('recommended',b.dataset.unit===recommended&&!disabled);b.setAttribute('aria-disabled',disabled?'true':'false')});
   }
 
   function draw(){
     ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     if(art.battlefield.complete&&art.battlefield.naturalWidth){const iw=art.battlefield.naturalWidth,ih=art.battlefield.naturalHeight,scale=Math.max(W/iw,H/ih),sw=W/scale,sh=H/scale;ctx.drawImage(art.battlefield,(iw-sw)/2,(ih-sh)/2,sw,sh,0,0,W,H)}else{const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#312c4e');bg.addColorStop(.5,'#26253f');bg.addColorStop(1,'#25364d');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H)}
     for(let i=0;i<3;i++){
-      ctx.fillStyle=i%2?'rgba(82,79,166,.04)':'rgba(15,11,38,.035)';ctx.fillRect(0,i*H/3,W,H/3);
+      const active=(currentLevel().activeLanes||[0,1,2]).includes(i);ctx.fillStyle=active?(i%2?'rgba(82,79,166,.04)':'rgba(15,11,38,.035)'):'rgba(8,6,20,.56)';ctx.fillRect(0,i*H/3,W,H/3);
       drawBase(58,laneY[i],state.playerBases[i],false,i);drawBase(902,laneY[i],state.enemyBases[i],true,i);
     }
+    if(state.blockedLane>=0){ctx.fillStyle='rgba(255,60,79,.18)';ctx.fillRect(0,state.blockedLane*H/3,W,H/3);ctx.fillStyle='#fff4d8';ctx.font='1000 18px system-ui';ctx.textAlign='center';ctx.fillText(`⛔ SOCK JAM · ${Math.ceil(state.blockClock)}s`,W/2,laneY[state.blockedLane]-42)}
     state.units.sort((a,b)=>a.y-b.y).forEach(drawUnit);
     state.effects.forEach(p=>{const alpha=Math.max(0,p.life/p.max);ctx.globalAlpha=alpha;if(p.kind==='strike'){ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.shadowColor=p.color;ctx.shadowBlur=12;ctx.beginPath();ctx.moveTo(p.x1,p.y1);ctx.lineTo(p.x2,p.y2);ctx.stroke();ctx.shadowBlur=0}else if(p.kind==='ring'){ctx.strokeStyle=p.color;ctx.lineWidth=3;ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(p.x,p.y,p.r+(1-alpha)*24,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0}else{ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=7;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}ctx.globalAlpha=1});
     if(state.freeze>0){ctx.fillStyle='rgba(255,124,207,.06)';ctx.fillRect(W/2,0,W/2,H)}
@@ -527,11 +636,11 @@
   }
 
   function drawUnit(u){
-    ctx.save();const bob=Math.sin(performance.now()*.006+u.id)*2,entryT=u.entering?Math.min(1,1-u.enterClock/u.enterDuration):0,entryScale=1-entryT*.72;ctx.globalAlpha=1-entryT*.82;ctx.translate(u.x,u.y+bob);ctx.scale(entryScale,entryScale);if(u.flash>0){ctx.shadowColor='#fff';ctx.shadowBlur=24}
+    ctx.save();const bob=Math.sin(performance.now()*.006+u.id)*2,entryT=u.entering?Math.min(1,1-u.enterClock/u.enterDuration):0,entryScale=1-entryT*.72,lunge=(u.attackAnim||0)/.16;ctx.globalAlpha=1-entryT*.82;ctx.translate(u.x+(u.side==='player'?1:-1)*lunge*7,u.y+bob);ctx.rotate((u.side==='player'?1:-1)*lunge*.09);ctx.scale(entryScale,entryScale);if(u.flash>0){ctx.shadowColor='#fff';ctx.shadowBlur=24}
     ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,u.size*.65,u.size*.68,u.size*.22,0,0,Math.PI*2);ctx.fill();
-    if(u.boss){ctx.fillStyle='#ffd166';ctx.font='900 10px system-ui';ctx.textAlign='center';ctx.fillText('BOSS',0,-u.size-13)}
+    if(u.boss||u.courier){ctx.fillStyle=u.boss?'#ffd166':'#55e6b7';ctx.font='900 10px system-ui';ctx.textAlign='center';ctx.fillText(u.boss?'BOSS':'CAPTAIN',0,-u.size-13)}
     const sheet=u.side==='player'?art.heroes:art.enemies;const spriteH=u.size*(u.boss?3.7:4.05)*portraitArtBoost,spriteW=spriteH*.66;
-    if(sheet.complete&&sheet.naturalWidth){const sw=sheet.naturalWidth/5,sy=sheet.naturalHeight*.08,sh=sheet.naturalHeight*.84,flip=u.side==='player'&&u.type==='sock';if(flip){ctx.save();ctx.scale(-1,1)}ctx.drawImage(sheet,unitIndex[u.type]*sw,sy,sw,sh,-spriteW/2,-spriteH*.78,spriteW,spriteH);if(flip)ctx.restore()}else{ctx.fillStyle=u.side==='player'?'#ffd166':'#6ecbff';ctx.beginPath();ctx.arc(0,-8,u.size,0,Math.PI*2);ctx.fill()}
+    if(sheet.complete&&sheet.naturalWidth){const sw=sheet.naturalWidth/5,sy=sheet.naturalHeight*.08,sh=sheet.naturalHeight*.84,flip=u.side==='player'&&u.type==='sock',look=skins.find(s=>s.id===activeSkin)||skins[0];if(u.side==='player')ctx.filter=look.filter;if(flip){ctx.save();ctx.scale(-1,1)}ctx.drawImage(sheet,unitIndex[u.type]*sw,sy,sw,sh,-spriteW/2,-spriteH*.78,spriteW,spriteH);if(flip)ctx.restore();ctx.filter='none';if(u.side==='player'&&activeSkin!=='classic'){ctx.fillStyle='#fff4d8';ctx.font=`900 ${Math.max(10,u.size*.48)}px system-ui`;ctx.textAlign='center';ctx.fillText(look.icon,u.size*.62,-u.size*.62)}}else{ctx.fillStyle=u.side==='player'?'#ffd166':'#6ecbff';ctx.beginPath();ctx.arc(0,-8,u.size,0,Math.PI*2);ctx.fill()}
     const bw=Math.max(32,u.size*2.05);ctx.shadowBlur=0;ctx.fillStyle='rgba(5,4,18,.72)';roundRect(-bw/2,-spriteH*.67,bw,6,4,true);ctx.fillStyle=u.side==='player'?'#61f1bd':'#64dcff';roundRect(-bw/2+1,-spriteH*.67+1,(bw-2)*Math.max(0,u.hp/u.maxHp),4,3,true);
     if(u.stun>0||state.freeze>0&&u.side==='enemy'){ctx.font='14px system-ui';ctx.fillText('★',u.size*.6,-u.size*.6)}ctx.restore();
   }
@@ -544,10 +653,12 @@
   function sfx(freq,duration,type='sine',volume=.03){if(!audioOn)return;ensureAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(40,freq*.72),audioCtx.currentTime+duration);g.gain.setValueAtTime(volume,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration)}
 
   function togglePause(force){if(state.mode!=='battle')return;state.paused=typeof force==='boolean'?force:!state.paused;$('pauseOverlay').classList.toggle('hidden',!state.paused)}
-  function showLevelMap(){state.mode='menu';$('endOverlay').classList.add('hidden');$('pauseOverlay').classList.add('hidden');$('startOverlay').classList.remove('hidden');renderLevelPicker()}
+  function showLevelMap(){state.mode='menu';$('endOverlay').classList.add('hidden');$('pauseOverlay').classList.add('hidden');$('collectionOverlay').classList.add('hidden');$('startOverlay').classList.remove('hidden');renderLevelPicker()}
   $('pauseBtn').addEventListener('click',()=>togglePause());$('resumeBtn').addEventListener('click',()=>togglePause(false));$('restartBtn').addEventListener('click',startGame);$('pauseMapBtn').addEventListener('click',showLevelMap);
   $('soundBtn').addEventListener('click',()=>{audioOn=!audioOn;$('soundBtn').textContent=audioOn?'SFX':'OFF';showToast(audioOn?'Sound on':'Sound off');if(audioOn)sfx(440,.08)});
   $('startBtn').addEventListener('click',startGame);$('prevLevel').addEventListener('click',()=>chooseLevel(-1));$('nextLevel').addEventListener('click',()=>chooseLevel(1));$('mapBtn').addEventListener('click',showLevelMap);
+  $('collectionBtn').addEventListener('click',openCollection);$('drawerEndBtn').addEventListener('click',openCollection);$('closeCollectionBtn').addEventListener('click',()=>{$('collectionOverlay').classList.add('hidden');renderLevelPicker()});
+  $('briefBtn').addEventListener('click',()=>{voiceOn=!voiceOn;writeStore('socktopusVoice',voiceOn);renderLevelPicker();showToast(voiceOn?'Spoken mission briefings on':'Spoken mission briefings off');if(voiceOn)speak(`${currentLevel().name}. ${currentLevel().brief}`);else if('speechSynthesis'in window)speechSynthesis.cancel()});
   $('counterBtn').addEventListener('click',()=>{const id=$('counterBtn').dataset.unit;if(id){selectUnit(id);const next=state.forecast[0];if(next)announce(`${unitDefs[id].name} ready. Tap lane ${next.lane+1} to intercept ${enemyNames[next.type]}!`)}});
   $('againBtn').addEventListener('click',()=>{if(state.lastWin&&selectedLevel<levels.length-1)selectedLevel++;startGame()});
   document.querySelectorAll('[data-difficulty]').forEach(b=>b.addEventListener('click',()=>{difficulty=Number(b.dataset.difficulty);document.querySelectorAll('[data-difficulty]').forEach(x=>x.classList.toggle('active',x===b));sfx(380,.05)}));
@@ -563,7 +674,7 @@
   if('ResizeObserver'in window)new ResizeObserver(resizeCanvas).observe($('battleWrap'));else window.addEventListener('resize',resizeCanvas);
 
   function loop(now){const dt=Math.min(.035,(now-last)/1000);last=now;update(dt);draw();raf=requestAnimationFrame(loop)}
-  setupCards();renderLevelPicker();updateHUD();resizeCanvas();draw();raf=requestAnimationFrame(loop);
+  setupCards();renderLevelPicker();renderCollection();updateHUD();resizeCanvas();draw();raf=requestAnimationFrame(loop);
 })();
 </script>
 </body>

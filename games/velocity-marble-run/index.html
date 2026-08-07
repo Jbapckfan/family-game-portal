@@ -216,10 +216,39 @@
           transition-duration: 0.01ms !important;
         }
       }
+      @media (max-width: 600px) {
+        #fullscreen-btn {
+          top: 12px;
+          bottom: auto;
+        }
+        .velocity-hud {
+          padding: 72px 16px 16px !important;
+        }
+        .velocity-checkpoints {
+          top: 118px !important;
+          left: 16px !important;
+        }
+        .velocity-speed {
+          position: absolute;
+          bottom: 150px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .velocity-speed .text-6xl {
+          font-size: 2.25rem;
+          line-height: 2.5rem;
+        }
+        .velocity-speed .w-64 {
+          width: 180px;
+        }
+        .velocity-instructions {
+          display: none;
+        }
+      }
     </style>
-    <link rel="modulepreload" href="./assets/index-CsjiDm7H.js">
+    <link rel="modulepreload" href="./assets/index-velocity-v2.js">
     <link rel="manifest" href="./manifest.json">
-    <script type="module" crossorigin src="./assets/index-CsjiDm7H.js"></script>
+    <script type="module" crossorigin src="./assets/index-velocity-v2.js"></script>
   </head>
   <body>
 

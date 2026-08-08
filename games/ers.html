@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#12091f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ERS | Slap Battle</title>
+  <meta name="description" content="ERS is a fast pile-slapping card battle against one or two computer opponents.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #fffaf0;
+      --muted: #c6b8d6;
+      --gold: #ffd166;
+      --orange: #ff8a45;
+      --magenta: #f553a5;
+      --violet: #8d63ff;
+      --cyan: #4ee7e0;
+      --danger: #ff586f;
+      --card-w: clamp(78px, 23vw, 136px);
+      --card-h: calc(var(--card-w) * 1.4);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 50% 48%, rgba(245,83,165,.17), transparent 28%),
+        radial-gradient(circle at 10% 10%, rgba(141,99,255,.17), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(255,209,102,.1), transparent 32%),
+        linear-gradient(155deg, #10071d 0%, #1b0c2e 45%, #080b1b 100%);
+      font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    button, a { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+
+    .app {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: max(9px, env(safe-area-inset-top)) max(11px, env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(11px, env(safe-area-inset-left));
+      overflow: auto;
+      isolation: isolate;
+    }
+
+    .app::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: .24;
+      background:
+        linear-gradient(30deg, transparent 48%, rgba(255,209,102,.09) 49% 51%, transparent 52%) 0 0 / 70px 70px,
+        linear-gradient(-30deg, transparent 48%, rgba(141,99,255,.1) 49% 51%, transparent 52%) 0 0 / 70px 70px;
+      mask-image: radial-gradient(circle at center, black, transparent 78%);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 9px;
+      width: min(100%, 1060px);
+      min-height: 46px;
+      margin: 0 auto;
+    }
+
+    .top-actions { display: flex; align-items: center; gap: 7px; }
+    .top-actions:last-child { justify-content: flex-end; }
+
+    .icon-button, .home-button {
+      display: inline-grid;
+      grid-auto-flow: column;
+      place-items: center;
+      gap: 7px;
+      min-width: 43px;
+      min-height: 43px;
+      padding: 8px 11px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 14px;
+      background: rgba(14,7,28,.78);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    }
+
+    .icon-button:hover, .home-button:hover { background: rgba(64,31,91,.82); }
+
+    .logo {
+      margin: 0;
+      font-size: clamp(1.6rem, 7vw, 2.5rem);
+      font-weight: 1000;
+      font-style: italic;
+      letter-spacing: .12em;
+      line-height: 1;
+      text-transform: uppercase;
+      background: linear-gradient(100deg, var(--gold), #fff 44%, var(--magenta));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 13px rgba(255,209,102,.24));
+    }
+
+    .table {
+      display: grid;
+      grid-template-rows: minmax(100px, .8fr) minmax(250px, 1.6fr) minmax(106px, .8fr);
+      align-items: center;
+      gap: 6px;
+      width: min(100%, 1040px);
+      min-height: 0;
+      margin: 0 auto;
+      padding: 4px 0;
+    }
+
+    .opponents {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(20px, 9vw, 100px);
+    }
+
+    .player-seat {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      min-width: 118px;
+    }
+
+    .seat-name {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: clamp(.68rem, 2.7vw, .86rem);
+      font-weight: 950;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .player-seat.current .seat-name { color: var(--gold); text-shadow: 0 0 12px rgba(255,209,102,.45); }
+    .player-seat.out .seat-name { opacity: .6; }
+
+    .card-count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 34px;
+      height: 26px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+
+    .mini-deck, .human-deck {
+      position: relative;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(255,255,255,.88);
+      background:
+        radial-gradient(circle, transparent 0 20%, rgba(255,255,255,.15) 21% 24%, transparent 25%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0 5px, transparent 5px 11px),
+        linear-gradient(145deg, #9a43e4, #5428a8 50%, #1f67c9);
+      box-shadow: inset 0 0 0 4px rgba(10,5,24,.35), 0 9px 25px rgba(0,0,0,.32);
+    }
+
+    .mini-deck { width: clamp(54px, 13vw, 78px); aspect-ratio: .72; border-radius: 11px; }
+    .mini-deck::before, .human-deck::before { content: "ERS"; font-weight: 1000; font-style: italic; letter-spacing: .08em; color: rgba(255,255,255,.78); transform: rotate(-12deg); }
+    .mini-deck.empty, .human-deck.empty { opacity: .22; background: rgba(255,255,255,.04); border-style: dashed; }
+
+    .play-area {
+      display: grid;
+      grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr);
+      align-items: center;
+      justify-items: center;
+      gap: clamp(8px, 3vw, 24px);
+    }
+
+    .challenge-panel, .slap-coach {
+      display: grid;
+      place-items: center;
+      width: min(100%, 190px);
+      min-height: 76px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      background: rgba(10,7,25,.48);
+      color: var(--muted);
+      text-align: center;
+      font-size: clamp(.64rem, 2.4vw, .78rem);
+      font-weight: 850;
+      line-height: 1.35;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .challenge-panel strong { display: block; color: var(--orange); font-size: clamp(1rem, 4vw, 1.35rem); letter-spacing: .03em; }
+    .slap-coach strong { display: block; color: var(--cyan); font-size: clamp(.9rem, 3.5vw, 1.2rem); letter-spacing: .03em; }
+
+    .pile-wrap { position: relative; display: grid; place-items: center; width: calc(var(--card-w) + 38px); height: calc(var(--card-h) + 40px); }
+    .pile-button { position: absolute; inset: 0; z-index: 5; padding: 0; border: 0; border-radius: 25px; background: transparent; cursor: pointer; }
+    .pile-button:focus-visible { outline-offset: 0; }
+
+    .playing-card {
+      position: absolute;
+      width: var(--card-w);
+      height: var(--card-h);
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,.8);
+      border-radius: clamp(10px, 2.8vw, 17px);
+      background: linear-gradient(145deg, #fffdf7, #e9edf5);
+      color: #131827;
+      box-shadow: 0 12px 34px rgba(0,0,0,.43), inset 0 0 0 1px rgba(0,0,0,.07);
+    }
+
+    .playing-card.red { color: #df2149; }
+    .playing-card.layer-0 { transform: translate(-7px, 4px) rotate(-6deg); opacity: .68; }
+    .playing-card.layer-1 { transform: translate(6px, 2px) rotate(5deg); opacity: .82; }
+    .playing-card.layer-2 { z-index: 3; animation: cardDrop .2s cubic-bezier(.16,.85,.3,1.2); }
+
+    .pile-empty {
+      width: var(--card-w);
+      height: var(--card-h);
+      border: 2px dashed rgba(255,255,255,.2);
+      border-radius: 17px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .corner { position: absolute; top: 7%; left: 10%; display: grid; justify-items: center; font-weight: 1000; font-size: clamp(1rem, 5vw, 1.65rem); line-height: .82; }
+    .corner.bottom { inset: auto 10% 7% auto; transform: rotate(180deg); }
+    .corner .suit { margin-top: 5px; font-size: .84em; }
+    .big-suit { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(2.5rem, 12vw, 5.5rem); }
+
+    .pile-count { position: absolute; right: -1px; bottom: 0; z-index: 6; min-width: 34px; padding: 5px 8px; border-radius: 999px; background: #0c1021; color: var(--gold); border: 1px solid rgba(255,255,255,.16); font-weight: 950; text-align: center; }
+
+    .slappable .playing-card.layer-2 { border-color: var(--cyan); box-shadow: 0 0 0 4px rgba(78,231,224,.18), 0 0 34px rgba(78,231,224,.42), 0 12px 34px rgba(0,0,0,.43); animation: slapPulse .55s ease-in-out infinite alternate; }
+
+    .human-zone { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; justify-items: center; gap: clamp(10px, 4vw, 28px); }
+    .human-deck { width: clamp(66px, 18vw, 98px); aspect-ratio: .72; border-radius: 14px; color: #fff; cursor: pointer; transition: transform .1s ease, filter .15s ease, opacity .15s ease; }
+    .human-deck:hover:not(:disabled) { transform: translateY(-4px); }
+    .human-deck:active:not(:disabled) { transform: translateY(1px) scale(.96); }
+    .human-deck:disabled { cursor: default; filter: saturate(.5) brightness(.7); }
+    .human-deck.ready { box-shadow: inset 0 0 0 4px rgba(10,5,24,.35), 0 0 0 4px rgba(255,209,102,.18), 0 0 28px rgba(255,209,102,.35); animation: deckReady .8s ease-in-out infinite alternate; }
+
+    .play-caption { color: var(--muted); font-size: .7rem; font-weight: 900; letter-spacing: .09em; text-align: center; text-transform: uppercase; }
+    .play-caption strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 1.08rem; }
+
+    .slap-button {
+      width: clamp(112px, 31vw, 180px);
+      aspect-ratio: 1.7;
+      border: 2px solid #fff0bf;
+      border-radius: 50%;
+      color: #241007;
+      background: radial-gradient(circle at 50% 30%, #fff5c7, var(--gold) 35%, var(--orange) 72%, #d9483c);
+      box-shadow: inset 0 -8px 0 rgba(135,37,36,.3), 0 9px 0 #7a2733, 0 16px 35px rgba(0,0,0,.38), 0 0 28px rgba(255,138,69,.22);
+      font-size: clamp(1.25rem, 6vw, 2.05rem);
+      font-style: italic;
+      font-weight: 1000;
+      letter-spacing: .06em;
+      cursor: pointer;
+      transform: translateY(-4px);
+      transition: transform .07s ease, box-shadow .07s ease;
+    }
+
+    .slap-button:active:not(:disabled) { transform: translateY(5px) scale(.97); box-shadow: inset 0 -3px 0 rgba(135,37,36,.3), 0 2px 0 #7a2733, 0 7px 15px rgba(0,0,0,.35); }
+    .slap-button.hot { animation: slapButtonHot .45s ease-in-out infinite alternate; }
+    .slap-button:disabled { opacity: .5; cursor: default; }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      width: min(100%, 1040px);
+      min-height: 44px;
+      margin: 0 auto;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 15px;
+      background: rgba(9,5,21,.74);
+      font-size: clamp(.68rem, 2.5vw, .84rem);
+      font-weight: 850;
+    }
+
+    .status-message { max-width: 55vw; overflow: hidden; color: var(--muted); text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+    .timer { color: var(--gold); font-variant-numeric: tabular-nums; }
+    .slap-streak { color: var(--cyan); text-align: right; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      overflow: auto;
+      background: rgba(6,3,15,.84);
+      backdrop-filter: blur(15px);
+    }
+
+    .overlay.open { display: grid; }
+
+    .panel {
+      width: min(100%, 590px);
+      padding: clamp(22px, 6vw, 38px);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 0, rgba(255,209,102,.14), transparent 38%),
+        linear-gradient(155deg, rgba(50,21,70,.98), rgba(10,6,25,.99));
+      box-shadow: 0 30px 90px rgba(0,0,0,.55), inset 0 1px rgba(255,255,255,.1);
+      text-align: center;
+    }
+
+    .eyebrow { margin: 0 0 6px; color: var(--gold); font-size: .72rem; font-weight: 1000; letter-spacing: .24em; text-transform: uppercase; }
+    .hero-title { margin: 0; font-size: clamp(4rem, 22vw, 7.8rem); font-weight: 1000; font-style: italic; line-height: .84; letter-spacing: -.04em; background: linear-gradient(105deg, var(--gold), #fff 47%, var(--magenta)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 24px rgba(245,83,165,.2)); }
+    .tagline { max-width: 440px; margin: 15px auto 20px; color: var(--muted); line-height: 1.5; }
+    .option-label { display: block; margin: 13px 0 8px; color: #f1e8fa; font-size: .74rem; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+    .option-row { display: grid; gap: 8px; }
+    .option-row.three { grid-template-columns: repeat(3, 1fr); }
+    .option-row.two { grid-template-columns: repeat(2, 1fr); }
+
+    .option-button {
+      min-height: 50px;
+      padding: 8px 5px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: clamp(.68rem, 2.8vw, .82rem);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .option-button small { display: block; margin-top: 3px; opacity: .66; font-size: .62rem; }
+    .option-button.selected { border-color: var(--gold); color: #fff; background: rgba(255,209,102,.12); box-shadow: 0 0 20px rgba(255,209,102,.1); }
+
+    .primary-button, .secondary-button { width: 100%; min-height: 52px; margin-top: 16px; padding: 11px 16px; border-radius: 16px; font-weight: 1000; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+    .primary-button { border: 0; color: #211006; background: linear-gradient(100deg, var(--gold), var(--orange)); box-shadow: 0 12px 30px rgba(255,138,69,.2); }
+    .secondary-button { border: 1px solid rgba(255,255,255,.16); color: #fff; background: rgba(255,255,255,.06); }
+    .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+    .stat { padding: 9px 5px; border-radius: 13px; background: rgba(255,255,255,.045); color: var(--muted); font-size: .65rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .stat strong { display: block; margin-bottom: 2px; color: #fff; font-size: 1.05rem; letter-spacing: 0; }
+
+    .rules { margin: 10px 0 0; padding-left: 22px; color: #e1d7eb; text-align: left; line-height: 1.5; }
+    .rules li + li { margin-top: 7px; }
+    .rule-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 14px 0; }
+    .rule-chip { padding: 6px 9px; border-radius: 999px; color: #251009; background: var(--gold); font-size: .7rem; font-weight: 950; }
+
+    .countdown { position: fixed; inset: 0; z-index: 16; display: none; place-items: center; pointer-events: none; color: #fff; font-size: clamp(6rem, 32vw, 15rem); font-style: italic; font-weight: 1000; text-shadow: 0 0 38px var(--magenta), 0 10px 0 rgba(0,0,0,.25); }
+    .countdown.show { display: grid; animation: countdownPop .5s ease both; }
+    .end-title { margin: 5px 0 8px; font-size: clamp(2.3rem, 11vw, 4rem); font-style: italic; font-weight: 1000; }
+    .end-title.win { color: var(--gold); }
+    .end-title.loss { color: var(--magenta); }
+
+    .burst { position: fixed; inset: 0; z-index: 19; pointer-events: none; overflow: hidden; }
+    .burst-piece { position: absolute; top: -20px; width: 10px; height: 17px; border-radius: 3px; animation: burstFall 1.8s ease-in forwards; }
+
+    @keyframes cardDrop { from { transform: translateY(-40px) rotate(8deg) scale(1.12); filter: brightness(1.5); } }
+    @keyframes slapPulse { to { transform: scale(1.035) rotate(1deg); } }
+    @keyframes deckReady { to { transform: translateY(-3px); filter: brightness(1.15); } }
+    @keyframes slapButtonHot { to { filter: brightness(1.16); transform: translateY(-7px) scale(1.025); box-shadow: inset 0 -8px 0 rgba(135,37,36,.3), 0 9px 0 #7a2733, 0 18px 42px rgba(0,0,0,.38), 0 0 38px rgba(78,231,224,.44); } }
+    @keyframes countdownPop { from { opacity: 0; transform: scale(1.55); } to { opacity: 1; transform: scale(1); } }
+    @keyframes burstFall { to { transform: translate3d(var(--drift), 110vh, 0) rotate(760deg); opacity: .1; } }
+
+    @media (max-width: 600px) {
+      .home-button span { display: none; }
+      .play-area { grid-template-columns: 64px auto 64px; }
+      .challenge-panel, .slap-coach { min-height: 68px; padding: 7px 4px; font-size: .6rem; }
+      .human-zone { grid-template-columns: 76px auto 76px; }
+      .play-caption { font-size: .61rem; }
+      .status-message { max-width: 48vw; }
+    }
+
+    @media (max-height: 560px) and (orientation: landscape) {
+      :root { --card-w: clamp(68px, 10.5vw, 84px); }
+      .topbar { min-height: 40px; }
+      .icon-button, .home-button { min-width: 39px; min-height: 37px; padding: 5px 9px; }
+      .table { grid-template: 1fr / minmax(125px, .85fr) minmax(340px, 1.6fr) minmax(160px, .9fr); gap: 7px; }
+      .opponents { grid-column: 1; display: grid; gap: 7px; }
+      .play-area { grid-column: 2; grid-template-columns: 80px auto 80px; }
+      .human-zone { grid-column: 3; grid-template-columns: 1fr; gap: 7px; }
+      .human-deck { width: 66px; }
+      .slap-button { width: 120px; }
+      .play-caption { display: none; }
+      .pile-wrap { height: calc(var(--card-h) + 18px); }
+      .challenge-panel, .slap-coach { min-height: 60px; }
+      .status-bar { min-height: 37px; padding: 4px 10px; }
+      .panel { max-width: 680px; padding: 16px 24px; }
+      .hero-title { font-size: 4.2rem; }
+      .tagline { margin: 7px auto 10px; }
+      .option-label { margin: 8px 0 5px; }
+      .option-button { min-height: 42px; }
+      .primary-button, .secondary-button { min-height: 43px; margin-top: 9px; }
+      .stats-row { margin-top: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="top-actions"><a class="home-button" href="../index.html" aria-label="Back to Alford Family Game Portal">⌂ <span>Games</span></a></div>
+      <h1 class="logo">ERS</h1>
+      <div class="top-actions">
+        <button class="icon-button" id="help-button" type="button" aria-label="How to play">?</button>
+        <button class="icon-button" id="sound-button" type="button" aria-label="Turn sound off" aria-pressed="true">♪</button>
+        <button class="icon-button" id="pause-button" type="button" aria-label="Pause game">Ⅱ</button>
+      </div>
+    </header>
+
+    <section class="table" aria-label="ERS card table">
+      <div class="opponents" id="opponents" aria-label="Computer opponents"></div>
+
+      <div class="play-area">
+        <div class="challenge-panel" id="challenge-panel"><span>Face challenge</span><strong>None</strong></div>
+        <div class="pile-wrap" id="pile-wrap">
+          <div id="pile-cards" aria-label="Center pile"></div>
+          <button class="pile-button" id="pile-button" type="button" aria-label="Slap the center pile"></button>
+          <span class="pile-count" id="pile-count">0</span>
+        </div>
+        <div class="slap-coach" id="slap-coach"><span>Slap radar</span><strong>Watching…</strong></div>
+      </div>
+
+      <div class="human-zone">
+        <button class="human-deck" id="play-button" type="button" aria-label="Play your top card"></button>
+        <button class="slap-button" id="slap-button" type="button">SLAP!</button>
+        <div class="play-caption"><strong id="human-count">26 cards</strong><span id="turn-caption">Wait for your turn</span></div>
+      </div>
+    </section>
+
+    <footer class="status-bar">
+      <span class="timer" id="timer">0:00</span>
+      <span class="status-message" id="status-message" role="status" aria-live="polite">Choose your match</span>
+      <span class="slap-streak" id="slap-streak">Slaps ×0</span>
+    </footer>
+  </main>
+
+  <div class="countdown" id="countdown" aria-live="assertive"></div>
+  <div class="burst" id="burst" aria-hidden="true"></div>
+
+  <section class="overlay open" id="menu-overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+    <div class="panel">
+      <p class="eyebrow">Fast hands · Sharp eyes</p>
+      <h2 class="hero-title" id="menu-title">ERS</h2>
+      <p class="tagline">Flip cards, survive face-card challenges, and slap special patterns before the bots steal the pile.</p>
+
+      <span class="option-label">Opponent reflexes</span>
+      <div class="option-row three" id="difficulty-options">
+        <button class="option-button" type="button" data-difficulty="rookie">Rookie<small>Big slap window</small></button>
+        <button class="option-button selected" type="button" data-difficulty="quick">Quick<small>Fast & fair</small></button>
+        <button class="option-button" type="button" data-difficulty="razor">Razor<small>No mercy</small></button>
+      </div>
+
+      <span class="option-label">Table</span>
+      <div class="option-row two" id="bot-options">
+        <button class="option-button selected" type="button" data-bots="1">Duel<small>1 bot</small></button>
+        <button class="option-button" type="button" data-bots="2">Three-way<small>2 bots</small></button>
+      </div>
+
+      <span class="option-label">Match</span>
+      <div class="option-row two" id="match-options">
+        <button class="option-button selected" type="button" data-match="quick">Quick Clash<small>First to 30 cards</small></button>
+        <button class="option-button" type="button" data-match="full">Full Deck<small>Capture all 52</small></button>
+      </div>
+
+      <button class="primary-button" id="start-button" type="button">Deal the cards</button>
+      <button class="secondary-button" id="menu-rules-button" type="button">Learn the slap rules</button>
+      <div class="stats-row">
+        <div class="stat"><strong id="stat-wins">0</strong>Wins</div>
+        <div class="stat"><strong id="stat-streak">0</strong>Streak</div>
+        <div class="stat"><strong id="stat-slaps">0</strong>Good slaps</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay" id="rules-overlay" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+    <div class="panel">
+      <p class="eyebrow">House rules</p>
+      <h2 id="rules-title">How to play ERS</h2>
+      <ol class="rules">
+        <li>On your turn, tap your face-down deck to flip one card onto the center pile.</li>
+        <li>Slap a valid pattern first to capture the whole pile—even if you ran out of cards.</li>
+        <li>A bad slap burns up to two of your cards into the prize pile.</li>
+        <li>Face cards start challenges: Jack gives 1 chance, Queen 2, King 3, and Ace 4. Reveal another face card to pass the challenge; otherwise the challenger captures the pile.</li>
+        <li>Keyboard: Space or Enter flips your card, S slaps, P pauses.</li>
+      </ol>
+      <div class="rule-chips" aria-label="Active slap patterns">
+        <span class="rule-chip">Double</span><span class="rule-chip">Sandwich</span><span class="rule-chip">Marriage</span><span class="rule-chip">Makes 10</span><span class="rule-chip">Top–Bottom</span><span class="rule-chip">4-card Run</span>
+      </div>
+      <button class="primary-button" id="close-rules-button" type="button">Ready to slap</button>
+    </div>
+  </section>
+
+  <section class="overlay" id="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+    <div class="panel">
+      <p class="eyebrow">Hands off the pile</p>
+      <h2 id="pause-title">Paused</h2>
+      <p class="tagline">Every bot is frozen. Your cards are safe for now.</p>
+      <button class="primary-button" id="resume-button" type="button">Resume</button>
+      <div class="button-row">
+        <button class="secondary-button" id="restart-button" type="button">Restart</button>
+        <button class="secondary-button" id="quit-button" type="button">Game menu</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay" id="end-overlay" role="dialog" aria-modal="true" aria-labelledby="end-title">
+    <div class="panel">
+      <p class="eyebrow" id="end-eyebrow">Pile secured</p>
+      <h2 class="end-title" id="end-title">You win!</h2>
+      <p class="tagline" id="end-summary">Fastest hand at the table.</p>
+      <div class="stats-row">
+        <div class="stat"><strong id="end-time">0:00</strong>Time</div>
+        <div class="stat"><strong id="end-slaps">0</strong>Good slaps</div>
+        <div class="stat"><strong id="end-largest">0</strong>Biggest pile</div>
+      </div>
+      <button class="primary-button" id="play-again-button" type="button">Play again</button>
+      <button class="secondary-button" id="end-menu-button" type="button">Change match</button>
+    </div>
+  </section>
+
+  <script>
+    // ENGINE START — pure rules kept separate for repeatable game simulation.
+    const SUITS = [
+      { symbol: '♠', name: 'spades', color: 'black' },
+      { symbol: '♥', name: 'hearts', color: 'red' },
+      { symbol: '♦', name: 'diamonds', color: 'red' },
+      { symbol: '♣', name: 'clubs', color: 'black' },
+    ];
+    const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    const FACE_CHANCES = { J: 1, Q: 2, K: 3, A: 4 };
+
+    function createDeck() {
+      const cards = [];
+      SUITS.forEach((suit, suitIndex) => {
+        RANKS.forEach((rank, rankIndex) => cards.push({
+          id: `${rank}-${suit.symbol}`,
+          rank,
+          rankIndex,
+          suitIndex,
+          numeric: rank === 'A' ? 1 : Number(rank) || 0,
+          ...suit,
+        }));
+      });
+      return cards;
+    }
+
+    function shuffleInPlace(cards, random = Math.random) {
+      for (let index = cards.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(random() * (index + 1));
+        [cards[index], cards[swapIndex]] = [cards[swapIndex], cards[index]];
+      }
+      return cards;
+    }
+
+    function getSlapReasons(pile) {
+      const reasons = [];
+      const length = pile.length;
+      if (length >= 2) {
+        const top = pile[length - 1];
+        const prior = pile[length - 2];
+        if (top.rank === prior.rank) reasons.push('Double');
+        if ((top.rank === 'K' && prior.rank === 'Q') || (top.rank === 'Q' && prior.rank === 'K')) reasons.push('Marriage');
+        if (top.numeric && prior.numeric && top.numeric + prior.numeric === 10) reasons.push('Makes 10');
+      }
+      if (length >= 3 && pile[length - 1].rank === pile[length - 3].rank) reasons.push('Sandwich');
+      if (length >= 3 && pile[0].rank === pile[length - 1].rank) reasons.push('Top–Bottom');
+      if (length >= 4) {
+        const recent = pile.slice(-4).map(card => card.rankIndex);
+        const ascending = recent.every((rank, index) => index === 0 || rank - recent[index - 1] === 1);
+        const descending = recent.every((rank, index) => index === 0 || rank - recent[index - 1] === -1);
+        if (ascending || descending) reasons.push('4-card Run');
+      }
+      return reasons;
+    }
+
+    function nextPlayerWithCards(state, fromIndex) {
+      for (let offset = 1; offset <= state.players.length; offset += 1) {
+        const index = (fromIndex + offset) % state.players.length;
+        if (state.players[index].deck.length) return index;
+      }
+      return fromIndex;
+    }
+
+    function createGame(botCount = 1, target = 30, random = Math.random) {
+      const players = [{ id: 'human', name: 'You', deck: [], pilesWon: 0 }];
+      for (let index = 0; index < botCount; index += 1) {
+        players.push({ id: `bot-${index + 1}`, name: botCount === 1 ? 'Bot' : `Bot ${index + 1}`, deck: [], pilesWon: 0 });
+      }
+      const deck = shuffleInPlace(createDeck(), random);
+      deck.forEach((card, index) => players[index % players.length].deck.push(card));
+      return {
+        players,
+        pile: [],
+        burn: [],
+        turnIndex: 0,
+        challenge: null,
+        pendingAward: null,
+        target,
+        plays: 0,
+        lastCard: null,
+      };
+    }
+
+    function totalCards(state) {
+      return state.players.reduce((sum, player) => sum + player.deck.length, 0) + state.pile.length + state.burn.length;
+    }
+
+    function playCard(state, playerIndex) {
+      if (state.pendingAward !== null || state.turnIndex !== playerIndex) return { ok: false, reason: 'not-turn' };
+      const player = state.players[playerIndex];
+      if (!player.deck.length) {
+        state.turnIndex = nextPlayerWithCards(state, playerIndex);
+        return { ok: false, reason: 'empty' };
+      }
+
+      const card = player.deck.pop();
+      state.pile.push(card);
+      state.lastCard = card;
+      state.plays += 1;
+      const allowance = FACE_CHANCES[card.rank] || 0;
+
+      if (allowance) {
+        const responderIndex = nextPlayerWithCards(state, playerIndex);
+        if (responderIndex === playerIndex) {
+          state.challenge = null;
+          state.pendingAward = playerIndex;
+        } else {
+          state.challenge = {
+            challengerIndex: playerIndex,
+            responderIndex,
+            attemptsLeft: allowance,
+            faceRank: card.rank,
+          };
+          state.turnIndex = responderIndex;
+        }
+      } else if (state.challenge) {
+        state.challenge.attemptsLeft -= 1;
+        if (state.challenge.attemptsLeft <= 0 || !player.deck.length) {
+          state.pendingAward = state.challenge.challengerIndex;
+          state.challenge = null;
+        } else {
+          state.turnIndex = playerIndex;
+        }
+      } else {
+        state.turnIndex = nextPlayerWithCards(state, playerIndex);
+      }
+
+      return { ok: true, card, allowance };
+    }
+
+    function awardPile(state, winnerIndex) {
+      const captured = [...state.burn, ...state.pile];
+      state.players[winnerIndex].deck.unshift(...captured);
+      state.players[winnerIndex].pilesWon += 1;
+      state.pile = [];
+      state.burn = [];
+      state.challenge = null;
+      state.pendingAward = null;
+      state.turnIndex = winnerIndex;
+      state.lastCard = null;
+      return captured.length;
+    }
+
+    function slapPile(state, playerIndex) {
+      const reasons = getSlapReasons(state.pile);
+      if (reasons.length) {
+        const captured = awardPile(state, playerIndex);
+        return { valid: true, reasons, captured };
+      }
+      const penalty = [];
+      for (let count = 0; count < 2 && state.players[playerIndex].deck.length; count += 1) {
+        penalty.push(state.players[playerIndex].deck.pop());
+      }
+      state.burn.push(...penalty);
+      return { valid: false, reasons: [], penalty: penalty.length };
+    }
+
+    function getWinnerIndex(state) {
+      return state.players.findIndex(player => player.deck.length >= state.target);
+    }
+    // ENGINE END
+
+    const DIFFICULTIES = {
+      rookie: { label: 'Rookie bots', playMin: 920, playMax: 1250, slapMin: 1250, slapMax: 1700 },
+      quick: { label: 'Quick bots', playMin: 620, playMax: 850, slapMin: 720, slapMax: 1010 },
+      razor: { label: 'Razor bots', playMin: 400, playMax: 570, slapMin: 360, slapMax: 540 },
+    };
+
+    const STORAGE_KEY = 'alford-ers-game';
+    let saved = { wins: 0, losses: 0, streak: 0, goodSlaps: 0, difficulty: 'quick', bots: 1, match: 'quick', sound: true };
+    try { saved = { ...saved, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; } catch (_) {}
+
+    let difficulty = DIFFICULTIES[saved.difficulty] ? saved.difficulty : 'quick';
+    let botCount = Number(saved.bots) === 2 ? 2 : 1;
+    let matchType = saved.match === 'full' ? 'full' : 'quick';
+    let state = null;
+    let phase = 'menu';
+    let startedAt = 0;
+    let elapsedBeforePause = 0;
+    let goodSlaps = 0;
+    let badSlaps = 0;
+    let largestPile = 0;
+    let slapStreak = 0;
+    let slapLockedUntil = 0;
+    let revision = 0;
+    let playTimer = 0;
+    let slapTimer = 0;
+    let claimTimer = 0;
+    let clockTimer = 0;
+    let countdownTimers = [];
+    let audioContext = null;
+
+    const elements = {
+      opponents: document.getElementById('opponents'),
+      pileWrap: document.getElementById('pile-wrap'),
+      pileCards: document.getElementById('pile-cards'),
+      pileCount: document.getElementById('pile-count'),
+      play: document.getElementById('play-button'),
+      slap: document.getElementById('slap-button'),
+      humanCount: document.getElementById('human-count'),
+      turnCaption: document.getElementById('turn-caption'),
+      challenge: document.getElementById('challenge-panel'),
+      coach: document.getElementById('slap-coach'),
+      status: document.getElementById('status-message'),
+      timer: document.getElementById('timer'),
+      slapStreak: document.getElementById('slap-streak'),
+      countdown: document.getElementById('countdown'),
+      menu: document.getElementById('menu-overlay'),
+      rules: document.getElementById('rules-overlay'),
+      pause: document.getElementById('pause-overlay'),
+      end: document.getElementById('end-overlay'),
+      sound: document.getElementById('sound-button'),
+      burst: document.getElementById('burst'),
+    };
+
+    function persist() {
+      saved.difficulty = difficulty;
+      saved.bots = botCount;
+      saved.match = matchType;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch (_) {}
+    }
+
+    function tone(frequency, duration = .06, type = 'sine', volume = .055) {
+      if (!saved.sound) return;
+      try {
+        audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        gain.gain.setValueAtTime(volume, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, audioContext.currentTime + duration);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (_) {}
+    }
+
+    function unlockAudio() {
+      if (!saved.sound) return;
+      try {
+        audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') audioContext.resume();
+      } catch (_) {}
+    }
+
+    function vibrate(pattern) { if (navigator.vibrate) navigator.vibrate(pattern); }
+    function setStatus(message) { elements.status.textContent = message; }
+
+    function formatTime(milliseconds) {
+      const seconds = Math.max(0, Math.floor(milliseconds / 1000));
+      return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    }
+
+    function elapsedTime() { return elapsedBeforePause + (phase === 'playing' ? performance.now() - startedAt : 0); }
+
+    function cardMarkup(card, layer) {
+      return `<div class="playing-card ${card.color === 'red' ? 'red' : ''} layer-${layer}" role="img" aria-label="${card.rank} of ${card.name}">
+        <span class="corner"><span>${card.rank}</span><span class="suit">${card.symbol}</span></span>
+        <span class="big-suit" aria-hidden="true">${card.symbol}</span>
+        <span class="corner bottom"><span>${card.rank}</span><span class="suit">${card.symbol}</span></span>
+      </div>`;
+    }
+
+    function renderOptions() {
+      document.querySelectorAll('[data-difficulty]').forEach(button => {
+        const selected = button.dataset.difficulty === difficulty;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.querySelectorAll('[data-bots]').forEach(button => {
+        const selected = Number(button.dataset.bots) === botCount;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.querySelectorAll('[data-match]').forEach(button => {
+        const selected = button.dataset.match === matchType;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.getElementById('stat-wins').textContent = saved.wins;
+      document.getElementById('stat-streak').textContent = saved.streak;
+      document.getElementById('stat-slaps').textContent = saved.goodSlaps;
+    }
+
+    function render() {
+      if (!state) return;
+      const reasons = getSlapReasons(state.pile);
+      elements.opponents.innerHTML = state.players.slice(1).map((player, offset) => {
+        const index = offset + 1;
+        const classes = ['player-seat'];
+        if (state.turnIndex === index && phase === 'playing') classes.push('current');
+        if (!player.deck.length) classes.push('out');
+        return `<div class="${classes.join(' ')}">
+          <div class="seat-name"><span>${player.name}</span><span class="card-count">${player.deck.length}</span></div>
+          <div class="mini-deck ${player.deck.length ? '' : 'empty'}" role="img" aria-label="${player.name} face-down deck"></div>
+        </div>`;
+      }).join('');
+
+      const visiblePile = state.pile.slice(-3);
+      elements.pileCards.innerHTML = visiblePile.length
+        ? visiblePile.map((card, index) => cardMarkup(card, index + 3 - visiblePile.length)).join('')
+        : '<div class="pile-empty" aria-label="Empty center pile"></div>';
+      elements.pileCount.textContent = state.pile.length + state.burn.length;
+      elements.pileWrap.classList.toggle('slappable', reasons.length > 0 && phase === 'playing');
+
+      const humanCards = state.players[0].deck.length;
+      const canPlay = phase === 'playing' && state.turnIndex === 0 && state.pendingAward === null && !reasons.length && humanCards > 0;
+      elements.play.disabled = !canPlay;
+      elements.play.classList.toggle('ready', canPlay);
+      elements.play.classList.toggle('empty', !humanCards);
+      elements.slap.disabled = phase !== 'playing';
+      elements.slap.classList.toggle('hot', reasons.length > 0 && phase === 'playing');
+      elements.humanCount.textContent = `${humanCards} card${humanCards === 1 ? '' : 's'}`;
+      elements.turnCaption.textContent = !humanCards
+        ? 'Slap back in!'
+        : canPlay ? 'Tap deck to flip' : 'Watch the pile';
+      elements.slapStreak.textContent = `Slaps ×${goodSlaps}`;
+
+      if (state.challenge) {
+        const challenger = state.players[state.challenge.challengerIndex].name;
+        elements.challenge.innerHTML = `<span>${state.challenge.faceRank} challenge by ${challenger}</span><strong>${state.challenge.attemptsLeft} chance${state.challenge.attemptsLeft === 1 ? '' : 's'}</strong>`;
+      } else if (state.pendingAward !== null) {
+        elements.challenge.innerHTML = `<span>Challenge won</span><strong>${state.players[state.pendingAward].name} claims</strong>`;
+      } else {
+        elements.challenge.innerHTML = '<span>Face challenge</span><strong>None</strong>';
+      }
+
+      elements.coach.innerHTML = reasons.length
+        ? `<span>Slap now!</span><strong>${reasons.join(' + ')}</strong>`
+        : '<span>Slap radar</span><strong>Watching…</strong>';
+    }
+
+    function clearActionTimers() {
+      clearTimeout(playTimer);
+      clearTimeout(slapTimer);
+      clearTimeout(claimTimer);
+      playTimer = 0;
+      slapTimer = 0;
+      claimTimer = 0;
+    }
+
+    function clearAllTimers() {
+      clearActionTimers();
+      clearTimeout(clockTimer);
+      clockTimer = 0;
+      countdownTimers.forEach(clearTimeout);
+      countdownTimers = [];
+    }
+
+    function scheduleClock() {
+      clearTimeout(clockTimer);
+      if (phase !== 'playing') return;
+      elements.timer.textContent = formatTime(elapsedTime());
+      clockTimer = setTimeout(scheduleClock, 250);
+    }
+
+    function randomBetween(minimum, maximum) { return minimum + Math.random() * (maximum - minimum); }
+
+    function announceCard(player, card) {
+      const allowance = FACE_CHANCES[card.rank];
+      setStatus(allowance
+        ? `${player.name} flipped ${card.rank}—${allowance} chance${allowance === 1 ? '' : 's'}!`
+        : `${player.name} flipped ${card.rank} of ${card.symbol}`);
+    }
+
+    function orchestrate() {
+      if (phase !== 'playing') return;
+      clearActionTimers();
+      revision += 1;
+      const currentRevision = revision;
+      render();
+
+      const winnerIndex = getWinnerIndex(state);
+      if (winnerIndex >= 0) {
+        finishGame(winnerIndex);
+        return;
+      }
+
+      const reasons = getSlapReasons(state.pile);
+      if (reasons.length) {
+        setStatus(`SLAP! ${reasons.join(' + ')}`);
+        const settings = DIFFICULTIES[difficulty];
+        let fastest = null;
+        state.players.slice(1).forEach((_, offset) => {
+          const delay = randomBetween(settings.slapMin, settings.slapMax) + offset * 35 + Math.random() * 80;
+          if (!fastest || delay < fastest.delay) fastest = { playerIndex: offset + 1, delay };
+        });
+        slapTimer = setTimeout(() => {
+          if (phase !== 'playing' || currentRevision !== revision || !getSlapReasons(state.pile).length) return;
+          const result = slapPile(state, fastest.playerIndex);
+          largestPile = Math.max(largestPile, result.captured);
+          slapStreak = 0;
+          tone(185, .11, 'square', .055);
+          vibrate([18, 24, 18]);
+          setStatus(`${state.players[fastest.playerIndex].name} slapped ${result.reasons.join(' + ')} and grabbed ${result.captured}!`);
+          orchestrate();
+        }, fastest.delay);
+        return;
+      }
+
+      if (state.pendingAward !== null) {
+        const winnerIndex = state.pendingAward;
+        setStatus(`${state.players[winnerIndex].name} survived the challenge…`);
+        claimTimer = setTimeout(() => {
+          if (phase !== 'playing' || currentRevision !== revision || state.pendingAward !== winnerIndex) return;
+          const captured = awardPile(state, winnerIndex);
+          largestPile = Math.max(largestPile, captured);
+          tone(285, .09, 'triangle', .045);
+          setStatus(`${state.players[winnerIndex].name} collected ${captured} cards`);
+          orchestrate();
+        }, 720);
+        return;
+      }
+
+      const current = state.players[state.turnIndex];
+      if (!current.deck.length) {
+        state.turnIndex = nextPlayerWithCards(state, state.turnIndex);
+        orchestrate();
+        return;
+      }
+      if (state.turnIndex === 0) {
+        setStatus(state.challenge ? `Your challenge: ${state.challenge.attemptsLeft} chance${state.challenge.attemptsLeft === 1 ? '' : 's'}` : 'Your turn—flip one card');
+        return;
+      }
+
+      const settings = DIFFICULTIES[difficulty];
+      playTimer = setTimeout(() => {
+        if (phase !== 'playing' || currentRevision !== revision) return;
+        const playerIndex = state.turnIndex;
+        const result = playCard(state, playerIndex);
+        if (result.ok) {
+          tone(205, .045, 'triangle', .028);
+          announceCard(state.players[playerIndex], result.card);
+        }
+        orchestrate();
+      }, randomBetween(settings.playMin, settings.playMax));
+    }
+
+    function humanPlay() {
+      if (phase !== 'playing' || !state || state.turnIndex !== 0 || state.pendingAward !== null || getSlapReasons(state.pile).length) return;
+      const result = playCard(state, 0);
+      if (!result.ok) return;
+      tone(330, .055, 'triangle', .04);
+      announceCard(state.players[0], result.card);
+      orchestrate();
+    }
+
+    function humanSlap() {
+      if (phase !== 'playing' || !state) return;
+      if (performance.now() < slapLockedUntil) return;
+      const result = slapPile(state, 0);
+      if (result.valid) {
+        slapLockedUntil = performance.now() + 140;
+        goodSlaps += 1;
+        slapStreak += 1;
+        largestPile = Math.max(largestPile, result.captured);
+        tone(720 + Math.min(slapStreak, 5) * 60, .11, 'square', .07);
+        vibrate(24);
+        setStatus(`Great slap—${result.reasons.join(' + ')}! You grabbed ${result.captured} cards`);
+      } else {
+        // One deliberate penalty per beat: this prevents repeated touch events
+        // from draining a deck or endlessly delaying a finished challenge.
+        slapLockedUntil = performance.now() + 800;
+        badSlaps += 1;
+        slapStreak = 0;
+        tone(95, .18, 'sawtooth', .045);
+        vibrate([35, 35, 35]);
+        setStatus(result.penalty ? `Bad slap—${result.penalty} card penalty` : 'Bad slap—no cards left to burn');
+      }
+      orchestrate();
+    }
+
+    function launchBurst() {
+      const colors = ['#ffd166', '#ff8a45', '#f553a5', '#8d63ff', '#4ee7e0', '#ffffff'];
+      elements.burst.innerHTML = Array.from({ length: 54 }, (_, index) =>
+        `<i class="burst-piece" style="left:${(index * 41) % 100}%;background:${colors[index % colors.length]};--drift:${(index % 2 ? 1 : -1) * (28 + index % 76)}px;animation-delay:${(index % 10) * .04}s"></i>`
+      ).join('');
+      setTimeout(() => { elements.burst.innerHTML = ''; }, 2300);
+    }
+
+    function finishGame(winnerIndex) {
+      elapsedBeforePause = elapsedTime();
+      phase = 'over';
+      clearAllTimers();
+      const humanWon = winnerIndex === 0;
+      if (humanWon) {
+        saved.wins += 1;
+        saved.streak += 1;
+        saved.goodSlaps += goodSlaps;
+        tone(660, .15, 'sine', .08);
+        setTimeout(() => tone(880, .19, 'sine', .07), 120);
+        launchBurst();
+      } else {
+        saved.losses += 1;
+        saved.streak = 0;
+        saved.goodSlaps += goodSlaps;
+        tone(150, .22, 'sawtooth', .045);
+      }
+      persist();
+      renderOptions();
+      const title = document.getElementById('end-title');
+      title.textContent = humanWon ? 'Pile boss!' : `${state.players[winnerIndex].name} wins`;
+      title.className = `end-title ${humanWon ? 'win' : 'loss'}`;
+      document.getElementById('end-eyebrow').textContent = humanWon ? `Win streak · ${saved.streak}` : 'Rematch ready';
+      document.getElementById('end-summary').textContent = humanWon
+        ? 'You owned the slaps and captured the target pile.'
+        : `You finished with ${state.players[0].deck.length} cards. One faster slap can change everything.`;
+      document.getElementById('end-time').textContent = formatTime(elapsedBeforePause);
+      document.getElementById('end-slaps').textContent = goodSlaps;
+      document.getElementById('end-largest').textContent = largestPile;
+      elements.timer.textContent = formatTime(elapsedBeforePause);
+      setTimeout(() => elements.end.classList.add('open'), 400);
+    }
+
+    function beginCountdown() {
+      clearAllTimers();
+      phase = 'countdown';
+      render();
+      ['3', '2', '1', 'FLIP!'].forEach((beat, index) => {
+        countdownTimers.push(setTimeout(() => {
+          elements.countdown.textContent = beat;
+          elements.countdown.classList.remove('show');
+          void elements.countdown.offsetWidth;
+          elements.countdown.classList.add('show');
+          tone(beat === 'FLIP!' ? 700 : 320 + index * 80, beat === 'FLIP!' ? .15 : .07, 'square', .045);
+          if (beat === 'FLIP!') {
+            phase = 'playing';
+            startedAt = performance.now();
+            render();
+            scheduleClock();
+            orchestrate();
+            countdownTimers.push(setTimeout(() => elements.countdown.classList.remove('show'), 520));
+          }
+        }, index * 610));
+      });
+    }
+
+    function startGame() {
+      unlockAudio();
+      elements.menu.classList.remove('open');
+      elements.pause.classList.remove('open');
+      elements.end.classList.remove('open');
+      elements.rules.classList.remove('open');
+      state = createGame(botCount, matchType === 'full' ? 52 : 30, Math.random);
+      elapsedBeforePause = 0;
+      goodSlaps = 0;
+      badSlaps = 0;
+      largestPile = 0;
+      slapStreak = 0;
+      slapLockedUntil = 0;
+      revision = 0;
+      elements.timer.textContent = '0:00';
+      setStatus('Hands ready…');
+      persist();
+      beginCountdown();
+    }
+
+    function pauseGame() {
+      if (phase !== 'playing') return;
+      elapsedBeforePause = elapsedTime();
+      phase = 'paused';
+      revision += 1;
+      clearAllTimers();
+      elements.pause.classList.add('open');
+      setStatus('Paused');
+      render();
+    }
+
+    function resumeGame() {
+      if (phase !== 'paused') return;
+      phase = 'playing';
+      startedAt = performance.now();
+      elements.pause.classList.remove('open');
+      setStatus('Back at the table');
+      scheduleClock();
+      orchestrate();
+    }
+
+    function showMenu() {
+      clearAllTimers();
+      revision += 1;
+      phase = 'menu';
+      state = null;
+      elements.pause.classList.remove('open');
+      elements.end.classList.remove('open');
+      elements.menu.classList.add('open');
+      setStatus('Choose your match');
+      renderOptions();
+    }
+
+    function openRules() {
+      if (phase === 'playing') pauseGame();
+      elements.rules.classList.add('open');
+    }
+    function closeRules() { elements.rules.classList.remove('open'); }
+
+    document.getElementById('difficulty-options').addEventListener('click', event => {
+      const button = event.target.closest('[data-difficulty]');
+      if (!button) return;
+      difficulty = button.dataset.difficulty;
+      persist(); renderOptions(); tone(330, .04, 'sine', .03);
+    });
+    document.getElementById('bot-options').addEventListener('click', event => {
+      const button = event.target.closest('[data-bots]');
+      if (!button) return;
+      botCount = Number(button.dataset.bots);
+      persist(); renderOptions(); tone(360, .04, 'sine', .03);
+    });
+    document.getElementById('match-options').addEventListener('click', event => {
+      const button = event.target.closest('[data-match]');
+      if (!button) return;
+      matchType = button.dataset.match;
+      persist(); renderOptions(); tone(390, .04, 'sine', .03);
+    });
+
+    elements.play.addEventListener('click', humanPlay);
+    elements.slap.addEventListener('click', humanSlap);
+    document.getElementById('pile-button').addEventListener('click', humanSlap);
+    document.getElementById('start-button').addEventListener('click', startGame);
+    document.getElementById('play-again-button').addEventListener('click', startGame);
+    document.getElementById('restart-button').addEventListener('click', startGame);
+    document.getElementById('resume-button').addEventListener('click', resumeGame);
+    document.getElementById('quit-button').addEventListener('click', showMenu);
+    document.getElementById('end-menu-button').addEventListener('click', showMenu);
+    document.getElementById('pause-button').addEventListener('click', () => phase === 'paused' ? resumeGame() : pauseGame());
+    document.getElementById('help-button').addEventListener('click', openRules);
+    document.getElementById('menu-rules-button').addEventListener('click', openRules);
+    document.getElementById('close-rules-button').addEventListener('click', closeRules);
+    elements.rules.addEventListener('click', event => { if (event.target === elements.rules) closeRules(); });
+
+    elements.sound.addEventListener('click', () => {
+      saved.sound = !saved.sound;
+      elements.sound.textContent = saved.sound ? '♪' : '×';
+      elements.sound.setAttribute('aria-pressed', String(saved.sound));
+      elements.sound.setAttribute('aria-label', saved.sound ? 'Turn sound off' : 'Turn sound on');
+      persist();
+      if (saved.sound) { unlockAudio(); tone(520, .07, 'sine'); }
+    });
+
+    window.addEventListener('keydown', event => {
+      if (event.code === 'Space' || event.key === 'Enter') {
+        event.preventDefault(); humanPlay();
+      } else if (event.key.toLowerCase() === 's') {
+        event.preventDefault(); humanSlap();
+      } else if (event.key.toLowerCase() === 'p') {
+        event.preventDefault(); phase === 'paused' ? resumeGame() : pauseGame();
+      } else if (event.key === 'Escape') {
+        if (elements.rules.classList.contains('open')) closeRules();
+        else if (phase === 'playing') pauseGame();
+        else if (phase === 'paused') resumeGame();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && phase === 'playing') pauseGame();
+    });
+
+    elements.sound.textContent = saved.sound ? '♪' : '×';
+    elements.sound.setAttribute('aria-pressed', String(saved.sound));
+    elements.sound.setAttribute('aria-label', saved.sound ? 'Turn sound off' : 'Turn sound on');
+    renderOptions();
+  </script>
+</body>
+</html>

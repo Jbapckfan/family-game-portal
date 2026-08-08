@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Alford Family Game Portal</title>
-    <meta name="description" content="Alford Family Game Portal - A collection of 22 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta name="description" content="Alford Family Game Portal - A collection of 23 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Game Portal">
     <meta property="og:title" content="Alford Family Game Portal">
-    <meta property="og:description" content="A collection of 22 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta property="og:description" content="A collection of 23 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="manifest" href="manifest.json">
@@ -193,6 +193,48 @@
 
         .speed-mini-card.red { color: #df2149; transform: translateY(-7px) rotate(8deg); }
 
+        .ers-thumb {
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(255,209,102,.22), transparent 34%),
+                linear-gradient(145deg, #16091f, #482060 55%, #141a3d);
+            border: 1px solid rgba(255,255,255,.18);
+        }
+
+        .ers-thumb::before,
+        .ers-thumb::after {
+            position: absolute;
+            display: grid;
+            place-items: center;
+            width: 58px;
+            aspect-ratio: .72;
+            border: 3px solid #fff;
+            border-radius: 8px;
+            background: #f9f7ff;
+            font-size: 1.25rem;
+            font-weight: 1000;
+            box-shadow: 0 12px 28px rgba(0,0,0,.4);
+        }
+
+        .ers-thumb::before { content: "8♣"; color: #162039; transform: translate(-28px,-5px) rotate(-10deg); }
+        .ers-thumb::after { content: "8♥"; color: #df2149; transform: translate(28px,-5px) rotate(10deg); }
+
+        .ers-thumb-title {
+            position: absolute;
+            inset: auto 0 10px;
+            z-index: 2;
+            color: #ffd166;
+            font-size: clamp(1.7rem, 5vw, 2.5rem);
+            font-style: italic;
+            font-weight: 1000;
+            letter-spacing: .16em;
+            text-align: center;
+            text-shadow: 0 0 18px #f553a5, 0 3px 0 #20102c;
+        }
+
         .game-title {
             font-size: 1.3rem;
             font-weight: 600;
@@ -275,6 +317,16 @@
         <section class="category" aria-labelledby="featured-games">
             <h2 id="featured-games">Featured Games</h2>
             <div class="game-grid">
+                <a href="./games/ers.html" class="game-card">
+                    <div class="game-thumb ers-thumb" role="img" aria-label="Matching eights ready to slap on an ERS card pile">
+                        <span class="ers-thumb-title">ERS</span>
+                    </div>
+                    <div class="game-title">ERS</div>
+                    <div class="game-desc">Flip fast and slap doubles, sandwiches, runs, and more before one or two computer rivals steal the pile!</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-multiplayer">1 vs AI</span>
+                </a>
+
                 <a href="./games/speed-card-game.html" class="game-card">
                     <div class="game-thumb speed-thumb" role="img" aria-label="Speed card game with an Ace and King racing across the table">
                         <span class="speed-mini-card">A♠</span>

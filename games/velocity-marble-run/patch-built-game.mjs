@@ -190,6 +190,19 @@ const refinements = [
     '',
   ],
   ['count:1200', 'count:600'],
+
+  // Pro feel: steer gently toward the next checkpoint and let the camera show what's coming.
+  [
+    'n.position.copy(C.current);return}if(t===Kn.PLAYING){const nextCheckpoint=tu[r+1];nextCheckpoint&&Math.hypot(f-nextCheckpoint[0],A-nextCheckpoint[1],b-nextCheckpoint[2])<26&&Qi.getState().setLastCheckpoint(r+1);const k=',
+    'n.position.copy(C.current);return}if(t===Kn.PLAYING){const nextCheckpoint=tu[r+1],currentCheckpoint=tu[r]||tu[0];if(nextCheckpoint){const lineX=nextCheckpoint[0]-currentCheckpoint[0],lineZ=nextCheckpoint[2]-currentCheckpoint[2],lineLength=lineX*lineX+lineZ*lineZ||1,projection=Math.max(0,Math.min(1,((f-currentCheckpoint[0])*lineX+(b-currentCheckpoint[2])*lineZ)/lineLength)),centerX=currentCheckpoint[0]+lineX*projection,centerZ=currentCheckpoint[2]+lineZ*projection,assistX=centerX-f,assistZ=centerZ-b,assistDistance=Math.hypot(assistX,assistZ);assistDistance>5&&p.applyImpulse([assistX/(assistDistance||1)*Math.min((assistDistance-5)*1.2,22)*Math.min(delta,.033),0,assistZ/(assistDistance||1)*Math.min((assistDistance-5)*1.2,22)*Math.min(delta,.033)],[0,0,0])}nextCheckpoint&&Math.hypot(f-nextCheckpoint[0],A-nextCheckpoint[1],b-nextCheckpoint[2])<26&&Qi.getState().setLastCheckpoint(r+1);const k='
+  ],
+  ['d.current.lerp(new Q(f,A,b),.1)', 'd.current.lerp(new Q(f+v*.35,A+B*.12,b+Z*.35),.14)'],
+  ['Date.now()+250', 'Date.now()+900'],
+  [
+    'S=Math.sqrt(v*v+B*B+Z*Z);if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+    'S=Math.sqrt(v*v+B*B+Z*Z);window.__velocityProState||(window.__velocityProState={}),Object.assign(window.__velocityProState,{gameState:t,speed:S,position:[f,A,b],velocity:[v,B,Z],checkpoint:Qi.getState().lastCheckpoint,score:Qi.getState().score,isVictory:Qi.getState().isVictory,marbleId:Qi.getState().selectedMarbleId,recovering:Date.now()<respawnLock.current,finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+  ],
+  ['!s&&i===Kn.PLAYING&&(r(!0),t(!0),setTimeout(()=>e(Kn.FINISHED),500))', '!s&&i===Kn.PLAYING&&(r(!0),t(!0),window.__velocityFinishPulse=Date.now(),setTimeout(()=>e(Kn.FINISHED),1500))'],
 ];
 
 for (const [before, after] of refinements) {

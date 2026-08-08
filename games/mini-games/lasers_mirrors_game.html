@@ -133,22 +133,91 @@
             z-index: 10;
         }
 
-        /* Below 900px the two-line keyboard hint no longer fits beside the controls */
-        @media (max-width: 900px) {
-            .instruction-text span {
-                display: none;
-            }
+        .controls-toggle {
+            display: none;
         }
 
-        /* Narrow screens: stack the controls panel below the level panel */
-        @media (max-width: 700px) {
+        /* Narrow screens: keep the board clear until the player opens Tools. */
+        @media (max-width: 900px) {
             .level-panel {
+                left: 80px !important;
+                right: 82px;
                 max-width: none;
-                right: 20px;
+                padding: 9px 12px;
+                border-radius: 12px;
+            }
+
+            .level-panel .level-text {
+                margin-bottom: 3px;
+                font-size: 14px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .level-panel .level-progress {
+                margin-bottom: 1px !important;
+            }
+
+            .level-panel .move-counter {
+                margin: 2px 0 0;
+                font-size: 11px;
+            }
+
+            .level-panel .instruction-text {
+                display: none;
+            }
+
+            .controls-toggle {
+                position: fixed;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                top: max(10px, env(safe-area-inset-top));
+                right: 12px;
+                z-index: 12;
+                min-width: 58px;
+                min-height: 46px;
+                padding: 0 9px;
+                border: 1px solid rgba(0, 255, 204, 0.45);
+                border-radius: 12px;
+                background: rgba(15, 21, 71, 0.9);
+                color: #00ffcc;
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 0.6px;
+                box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(12px);
+                cursor: pointer;
             }
 
             .controls-panel {
-                top: calc(max(10px, env(safe-area-inset-top)) + 158px);
+                position: fixed;
+                top: calc(max(10px, env(safe-area-inset-top)) + 72px);
+                right: 12px;
+                width: min(340px, calc(100vw - 24px));
+                max-height: calc(100vh - 180px);
+                max-height: calc(100dvh - 180px);
+                padding: 10px 12px;
+                overflow-y: auto;
+                transform-origin: top right;
+                transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+            }
+
+            .controls-panel > div {
+                justify-content: center;
+            }
+
+            .controls-panel .score-text {
+                text-align: center;
+                margin-bottom: 0;
+            }
+
+            .controls-panel.mobile-collapsed {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transform: translateY(-8px) scale(0.96);
             }
         }
 
@@ -822,20 +891,22 @@
             </div>
         </div>
 
-        <div class="ui-panel controls-panel">
+        <button type="button" class="controls-toggle" id="controlsToggle" aria-controls="controlsPanel" aria-expanded="false" onclick="toggleControlsPanel()">&#x2699; TOOLS</button>
+
+        <div class="ui-panel controls-panel mobile-collapsed" id="controlsPanel" aria-hidden="true">
             <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
-                <button class="game-button" onclick="resetGame()" aria-label="Reset level">&#x21BA; RESET</button>
-                <button class="game-button" onclick="fireLaser()" aria-label="Fire laser">&#x26A1; FIRE</button>
-                <button class="mute-btn" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound">&#x1F50A;</button>
+                <button class="game-button" onclick="resetGame(); closeControlsPanelOnMobile()" aria-label="Reset level">&#x21BA; RESET</button>
+                <button class="game-button" onclick="fireLaser(); closeControlsPanelOnMobile()" aria-label="Fire laser">&#x26A1; FIRE</button>
+                <button class="mute-btn" id="muteBtn" onclick="toggleMute(); closeControlsPanelOnMobile()" aria-label="Toggle sound">&#x1F50A;</button>
             </div>
             <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
-                <button class="game-button levels-btn" onclick="showLevelSelect()" aria-label="Level select">&#x1F4CB; LEVELS</button>
-                <button class="game-button hint-btn" id="hintBtn" onclick="useHint()" aria-label="Get hint">&#x1F4A1; HINT (2)</button>
+                <button class="game-button levels-btn" onclick="showLevelSelect(); closeControlsPanelOnMobile()" aria-label="Level select">&#x1F4CB; LEVELS</button>
+                <button class="game-button hint-btn" id="hintBtn" onclick="useHint(); closeControlsPanelOnMobile()" aria-label="Get hint">&#x1F4A1; HINT (2)</button>
             </div>
             <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
                 <button class="game-button undo-btn" id="undoBtn" onclick="undoAction()" aria-label="Undo" disabled>&#x21A9; UNDO</button>
                 <button class="game-button redo-btn" id="redoBtn" onclick="redoAction()" aria-label="Redo" disabled>&#x21AA; REDO</button>
-                <button class="game-button snap-btn" id="snapBtn" onclick="toggleSnapToGrid()" aria-label="Toggle snap to grid">&#x25A6; SNAP</button>
+                <button class="game-button snap-btn" id="snapBtn" onclick="toggleSnapToGrid(); closeControlsPanelOnMobile()" aria-label="Toggle snap to grid">&#x25A6; SNAP</button>
             </div>
             <div class="score-text" id="modeIndicator" style="margin-top: 8px; font-size: 12px;">READY</div>
         </div>
@@ -915,6 +986,44 @@
         let highestUnlockedLevel = 0;
         let keyboardMirrorIndex = -1; // Index into gameState.mirrors for keyboard focus
         let backgroundParticleInterval = null;
+
+        // Compact mobile controls: desktop stays open; narrow screens start collapsed.
+        const controlsMediaQuery = window.matchMedia('(max-width: 900px)');
+
+        function setControlsPanelOpen(open) {
+            const panel = document.getElementById('controlsPanel');
+            const toggle = document.getElementById('controlsToggle');
+            if (!panel || !toggle) return;
+
+            const shouldOpen = controlsMediaQuery.matches ? open : true;
+            panel.classList.toggle('mobile-collapsed', !shouldOpen);
+            panel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+            toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+            toggle.innerHTML = shouldOpen ? '&#x2715; CLOSE' : '&#x2699; TOOLS';
+            toggle.setAttribute('aria-label', shouldOpen ? 'Close game controls' : 'Open game controls');
+        }
+
+        function toggleControlsPanel() {
+            const panel = document.getElementById('controlsPanel');
+            if (!panel) return;
+            setControlsPanelOpen(panel.classList.contains('mobile-collapsed'));
+        }
+
+        function closeControlsPanelOnMobile() {
+            if (controlsMediaQuery.matches) setControlsPanelOpen(false);
+        }
+
+        function syncControlsPanelForViewport() {
+            setControlsPanelOpen(!controlsMediaQuery.matches);
+        }
+
+        syncControlsPanelForViewport();
+        if (controlsMediaQuery.addEventListener) {
+            controlsMediaQuery.addEventListener('change', syncControlsPanelForViewport);
+        } else {
+            controlsMediaQuery.addListener(syncControlsPanelForViewport);
+        }
+        canvas.addEventListener('pointerdown', closeControlsPanelOnMobile, { passive: true });
 
         // === IMPROVEMENT 1: Move counter & star ratings ===
         let moveCount = 0;
@@ -3574,6 +3683,7 @@
 
             // Escape closes level select or victory modal
             if (e.key === 'Escape') {
+                closeControlsPanelOnMobile();
                 hideLevelSelect();
                 hideVictoryModal();
                 return;

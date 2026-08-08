@@ -9,7 +9,6 @@ const required = [
   ['guardrail component defaults to a 2 × 8 body', 'size:t=[2,8,30]', 1],
   ['both curve rails use 2 × 9 bodies', 'size:[2,9,e*Math.abs(i-t)/g*1.18]', 2],
   ['both straight rails use 2 × 8 bodies', 'size:[2,8,g+2]', 2],
-  ['both starting-runway rails use 2 × 9 bodies', 'size:[2,9,72]', 2],
   ['curve rail centers are raised to 3', 'b+Math.sin(Z)*(o/2)+3', 1],
   ['opposite curve rail center is raised to 3', 'b-Math.sin(Z)*(o/2)+3', 1],
   ['straight rail centers are raised to 2.5', 'c+Math.sin(i)*(t/2)+2.5', 1],
@@ -33,19 +32,69 @@ if (!bundle.includes('O.jsx("boxGeometry",{args:t})')) {
 if (!patcher.includes('Raise the visible and physical guardrails together')) {
   throw new Error('The repeatable bundle patch is missing its guardrail upgrade.');
 }
-if ((html.match(/index-velocity-v2\.js\?rails=high/g) || []).length !== 2) {
-  throw new Error('The page is not cache-busting both the preload and game module for the taller rails.');
+if ((html.match(/index-velocity-v2\.js\?flow=halfpipe-orbit-v1/g) || []).length !== 2) {
+  throw new Error('The page is not cache-busting both the preload and game module for the flowing track.');
+}
+
+const flowRequirements = [
+  ['pitched curve surface', 'rotation:[P,v,Z]', 1],
+  ['outward-canted first curve wall', 'rotation:[P,v,Z-T]', 1],
+  ['outward-canted opposite curve wall', 'rotation:[P,v,Z+T]', 1],
+  ['outward-canted first straight wall', 'rotation:[h,d,i-T]', 1],
+  ['outward-canted opposite straight wall', 'rotation:[h,d,i+T]', 1],
+  ['gently downhill starting runway', 'O.jsx(da,{start:[0,13,40],end:[0,12,-30],width:16})', 1],
+  ['manual camera orbit integration', 'const orbit=window.__velocityCameraOrbit', 1],
+];
+
+for (const [description, fragment, expected] of flowRequirements) {
+  const actual = count(fragment);
+  if (actual !== expected) throw new Error(`Expected ${description} ${expected} time(s), found ${actual}.`);
+}
+
+if (!patcher.includes('genuinely downhill surfaces') || !patcher.includes('drag/swipe orbit')) {
+  throw new Error('The repeatable patch does not preserve the flow and camera upgrades.');
+}
+
+const proPolish = await readFile(new URL('./pro-polish.js', import.meta.url), 'utf8');
+for (const fragment of ['pointerdown', 'pointermove', 'DOUBLE-TAP RESET', 'cameraOrbit.pitch']) {
+  if (!proPolish.includes(fragment)) throw new Error(`Camera control is missing: ${fragment}`);
+}
+if (!html.includes('pro-polish.js?flow=halfpipe-orbit-v1')) {
+  throw new Error('The camera gesture script is not cache-busted.');
+}
+
+const courseStart = bundle.indexOf('yD=()=>');
+const courseEnd = bundle.indexOf(',GD=', courseStart);
+if (courseStart < 0 || courseEnd < 0) throw new Error('Could not isolate the authored course.');
+const course = bundle.slice(courseStart, courseEnd);
+
+const straightGrades = [...course.matchAll(/O\.jsx\(da,\{start:\[([^\]]+)\],end:\[([^\]]+)\]/g)];
+if (straightGrades.length < 7) throw new Error(`Expected at least seven downhill straights, found ${straightGrades.length}.`);
+for (const match of straightGrades) {
+  const start = match[1].split(',').map(Number);
+  const end = match[2].split(',').map(Number);
+  if (!start.every(Number.isFinite) || !end.every(Number.isFinite)) {
+    throw new Error(`Could not parse straight grade: ${match[0]}`);
+  }
+  if (end[1] > start[1]) throw new Error(`Uphill straight remains: ${match[0]}`);
+}
+
+const curveGrades = [...course.matchAll(/heightStart:(-?\d+(?:\.\d+)?),heightEnd:(-?\d+(?:\.\d+)?)/g)];
+if (curveGrades.length < 5) throw new Error(`Expected five downhill curves, found ${curveGrades.length}.`);
+for (const match of curveGrades) {
+  if (Number(match[2]) > Number(match[1])) throw new Error(`Uphill curve remains: ${match[0]}`);
 }
 
 const marbleDiameter = 1;
 const trackHalfThickness = 0.5;
-const straightClearance = 2.5 + 8 / 2 - trackHalfThickness;
-const curveClearance = 3 + 9 / 2 - trackHalfThickness;
-if (straightClearance < marbleDiameter * 6 || curveClearance < marbleDiameter * 7) {
-  throw new Error('Guardrails do not provide the intended six-to-seven marble diameters of containment.');
+const troughTilt = 0.42;
+const straightClearance = 2.5 + (8 / 2) * Math.cos(troughTilt) - trackHalfThickness;
+const curveClearance = 3 + (9 / 2) * Math.cos(troughTilt) - trackHalfThickness;
+if (straightClearance < marbleDiameter * 5.5 || curveClearance < marbleDiameter * 6.5) {
+  throw new Error('Canted guardrails do not retain the intended containment height.');
 }
 
 console.log(
-  `Velocity rails validated: straight walls ${straightClearance.toFixed(1)} marble diameters above the track, ` +
-  `curve walls ${curveClearance.toFixed(1)}, 2-unit collision thickness, visible and physical geometry share dimensions.`,
+  `Velocity flow validated: ${straightGrades.length} straights and ${curveGrades.length} curves never climb; ` +
+  `canted walls retain ${straightClearance.toFixed(1)}–${curveClearance.toFixed(1)} marble diameters of height; manual orbit is wired.`,
 );

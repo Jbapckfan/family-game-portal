@@ -27,6 +27,8 @@
     #velocity-pro-ghost { bottom:155px; left:50%; transform:translateX(-50%); color:#d7a8ff; border-color:rgba(215,168,255,.45); text-shadow:0 0 8px #9b5cff; white-space:nowrap; }
     #velocity-pro-shield { bottom:205px; left:50%; transform:translateX(-50%) translateY(5px); color:#bff; border-color:#00eaff; }
     #velocity-pro-shield.show { transform:translateX(-50%); }
+    #velocity-pro-camera { top:112px; left:50%; transform:translateX(-50%) translateY(-5px); white-space:nowrap; }
+    #velocity-pro-camera.show { transform:translateX(-50%); }
     #velocity-pro-speedlines { position:absolute; inset:0; opacity:0; background:radial-gradient(ellipse at center,transparent 35%,rgba(0,220,255,.08) 60%,transparent 75%); mix-blend-mode:screen; transition:opacity .12s; }
     #velocity-pro-finish { position:absolute; inset:0; display:grid; place-items:center; opacity:0; transition:opacity .25s; background:radial-gradient(circle,rgba(0,255,200,.22),transparent 60%); }
     #velocity-pro-finish.show { opacity:1; }
@@ -41,6 +43,7 @@
       #velocity-pro-trait { top:154px; left:16px; }
       #velocity-pro-ghost { bottom:150px; }
       #velocity-pro-shield { bottom:215px; }
+      #velocity-pro-camera { top:198px; }
     }
   `;
   document.head.appendChild(style);
@@ -54,6 +57,7 @@
     <div id="velocity-pro-trait" class="pro-chip"></div>
     <div id="velocity-pro-ghost" class="pro-chip"></div>
     <div id="velocity-pro-shield" class="pro-chip">CHECKPOINT SHIELD</div>
+    <div id="velocity-pro-camera" class="pro-chip show">DRAG VIEW · DOUBLE-TAP RESET</div>
     <div id="velocity-pro-finish"><div><strong>FINISH!</strong><span id="velocity-pro-medal"></span></div><div id="velocity-pro-confetti"></div></div>
   `;
   document.body.appendChild(layer);
@@ -64,6 +68,7 @@
     trait: document.getElementById("velocity-pro-trait"),
     ghost: document.getElementById("velocity-pro-ghost"),
     shield: document.getElementById("velocity-pro-shield"),
+    camera: document.getElementById("velocity-pro-camera"),
     speedlines: document.getElementById("velocity-pro-speedlines"),
     finish: document.getElementById("velocity-pro-finish"),
     medal: document.getElementById("velocity-pro-medal"),
@@ -79,6 +84,67 @@
   let lastFinish = 0;
   let lastShield = 0;
   let lastBlip = 0;
+
+  const cameraOrbit = window.__velocityCameraOrbit = window.__velocityCameraOrbit || {
+    yaw: 0,
+    pitch: 0,
+    dragging: false,
+  };
+  let cameraPointer = null;
+  let cameraX = 0;
+  let cameraY = 0;
+
+  function resetCameraOrbit() {
+    cameraOrbit.yaw = 0;
+    cameraOrbit.pitch = 0;
+    cameraOrbit.dragging = false;
+    show(ui.camera, "CAMERA CENTERED", 1000);
+  }
+
+  function isCameraSurface(event) {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest("canvas")) return false;
+    if (window.__velocityProState?.gameState !== "PLAYING") return false;
+    if (event.pointerType === "touch" && event.clientY > innerHeight * .58) {
+      if (event.clientX < innerWidth * .43 || event.clientX > innerWidth * .64) return false;
+    }
+    return true;
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!isCameraSurface(event) || cameraPointer !== null) return;
+    cameraPointer = event.pointerId;
+    cameraX = event.clientX;
+    cameraY = event.clientY;
+    cameraOrbit.dragging = true;
+  }, { passive: true });
+
+  document.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== cameraPointer) return;
+    const deltaX = event.clientX - cameraX;
+    const deltaY = event.clientY - cameraY;
+    cameraX = event.clientX;
+    cameraY = event.clientY;
+    if (Math.abs(deltaX) + Math.abs(deltaY) < 1) return;
+    cameraOrbit.yaw -= deltaX * .006;
+    cameraOrbit.pitch = Math.max(-.45, Math.min(.55, cameraOrbit.pitch - deltaY * .005));
+    show(ui.camera, "ORBIT CAMERA · DOUBLE-TAP RESET", 800);
+    event.preventDefault();
+  }, { passive: false });
+
+  function endCameraDrag(event) {
+    if (event.pointerId !== cameraPointer) return;
+    cameraPointer = null;
+    cameraOrbit.dragging = false;
+  }
+
+  document.addEventListener("pointerup", endCameraDrag, { passive: true });
+  document.addEventListener("pointercancel", endCameraDrag, { passive: true });
+  document.addEventListener("dblclick", (event) => {
+    if (event.target instanceof Element && event.target.closest("canvas")) resetCameraOrbit();
+  }, { passive: true });
+
+  setTimeout(() => ui.camera.classList.remove("show"), 5000);
 
   function startAudio() {
     if (audio) return;
@@ -108,6 +174,7 @@
 
   window.addEventListener("keydown", (event) => {
     if (event.code === "Space") blip(520, .09, .035);
+    if (event.code === "KeyC") resetCameraOrbit();
   }, { passive: true });
 
   function show(chip, text, duration = 1200) {

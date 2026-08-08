@@ -273,6 +273,56 @@ const refinements = [
     'O.jsx(Hc,{position:[8,14,5],size:[1.5,5,72]}),O.jsx(Hc,{position:[-8,14,5],size:[1.5,5,72]})',
     'O.jsx(Hc,{position:[8,16,5],size:[2,9,72]}),O.jsx(Hc,{position:[-8,16,5],size:[2,9,72]})',
   ],
+
+  // Turn the stepped curves into genuinely downhill surfaces. Each curved
+  // chord now follows its authored elevation change instead of remaining
+  // level and presenting the marble with a lip at every segment boundary.
+  [
+    'b=s+(d+.5)*c,v=-y,B=i>t?1:-1,Z=a*B;return',
+    'b=s+(d+.5)*c,v=-y,B=i>t?1:-1,Z=a*B,P=Math.atan2(-c*B,e*Math.abs(i-t)/g*1.18),T=.42;return',
+  ],
+  [
+    'O.jsx(ni,{position:[n[0]+f,b,n[2]+A],rotation:[0,v,Z],size:',
+    'O.jsx(ni,{position:[n[0]+f,b,n[2]+A],rotation:[P,v,Z],size:',
+  ],
+  [
+    'n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+    'n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z-T],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+  ],
+  [
+    'n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+    'n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z+T],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+  ],
+
+  // Cant both straight and curved walls away from the center line. Their
+  // buried lower edges form a forgiving half-pipe shoulder while the tall
+  // outer edges retain the upgraded containment.
+  [
+    'd=Math.atan2(s,o),h=Math.atan2(-r,a);return',
+    'd=Math.atan2(s,o),h=Math.atan2(-r,a),T=.42;return',
+  ],
+  [
+    'C-Math.sin(d)*(t/2)],rotation:[h,d,i],size:[2,8,g+2]',
+    'C-Math.sin(d)*(t/2)],rotation:[h,d,i-T],size:[2,8,g+2]',
+  ],
+  [
+    'C+Math.sin(d)*(t/2)],rotation:[h,d,i],size:[2,8,g+2]',
+    'C+Math.sin(d)*(t/2)],rotation:[h,d,i+T],size:[2,8,g+2]',
+  ],
+
+  // The old starting runway was flat. A shallow grade now starts the roll
+  // immediately and meets the first curve at exactly the same elevation.
+  [
+    'O.jsx(ni,{position:[0,12,5],size:[16,1,70]}),O.jsx(Hc,{position:[8,16,5],size:[2,9,72]}),O.jsx(Hc,{position:[-8,16,5],size:[2,9,72]})',
+    'O.jsx(da,{start:[0,13,40],end:[0,12,-30],width:16})',
+  ],
+
+  // Apply the player's drag/swipe orbit after the automatic chase-camera
+  // placement, preserving the speed-aware distance and look-ahead behavior.
+  [
+    'V.set(f+H,A+g0+W*8,b+q)}C.current.lerp(V,ZD)',
+    'V.set(f+H,A+g0+W*8,b+q)}const orbit=window.__velocityCameraOrbit;if(orbit&&(orbit.yaw||orbit.pitch)){const targetY=A+2,offsetX=V.x-f,offsetY=V.y-targetY,offsetZ=V.z-b,distance=Math.max(1,Math.hypot(offsetX,offsetY,offsetZ)),basePitch=Math.asin(Math.max(-1,Math.min(1,offsetY/distance))),cameraPitch=Math.max(-.12,Math.min(1.25,basePitch+orbit.pitch)),cameraYaw=Math.atan2(offsetX,offsetZ)+orbit.yaw,flatDistance=distance*Math.cos(cameraPitch);V.set(f+Math.sin(cameraYaw)*flatDistance,targetY+Math.sin(cameraPitch)*distance,b+Math.cos(cameraYaw)*flatDistance)}C.current.lerp(V,ZD)',
+  ],
 ];
 
 for (const [before, after] of refinements) {

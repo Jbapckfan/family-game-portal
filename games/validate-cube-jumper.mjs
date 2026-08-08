@@ -7,6 +7,35 @@ const inlineScript = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
 if (!inlineScript) throw new Error('Geometry Dash inline script was not found.');
 new Function(inlineScript);
 
+const skinsStart = html.indexOf('const CUBE_SKINS =');
+const skinsEnd = html.indexOf('// ── MUSIC SYSTEM', skinsStart);
+if (skinsStart < 0 || skinsEnd < 0) throw new Error('Could not isolate the cube skins.');
+const skinDefinitions = html.slice(skinsStart, skinsEnd);
+const skins = new Function(`${skinDefinitions}; return CUBE_SKINS;`)();
+const skinIds = new Set(skins.map(skin => skin.id));
+const skinPatterns = new Set(skins.map(skin => skin.pattern));
+
+if (skins.length < 8 || skinIds.size !== skins.length) {
+  throw new Error(`Expected at least 8 uniquely identified cube skins, found ${skinIds.size}.`);
+}
+if (skinPatterns.size !== skins.length) {
+  throw new Error('Every cube skin should have its own visible pattern.');
+}
+for (const skin of skins) {
+  for (const color of [skin.primary, skin.secondary, skin.detail]) {
+    if (!/^#[0-9a-f]{6}$/i.test(color)) throw new Error(`${skin.name} has an invalid color: ${color}.`);
+  }
+  if (!html.includes(`skin.pattern === '${skin.pattern}'`)) {
+    throw new Error(`${skin.name} does not have a gameplay renderer for its ${skin.pattern} pattern.`);
+  }
+}
+if (!html.includes('id="skin-picker"') || !html.includes('aria-label="Choose cube skin"')) {
+  throw new Error('The accessible cube skin picker is missing.');
+}
+if (!html.includes('skin:selectedCubeSkin') || !html.includes('drawCubeSkin(ctx, ps, getSelectedCubeSkin())')) {
+  throw new Error('Cube skin persistence or gameplay rendering is not connected.');
+}
+
 const definitionsStart = html.indexOf('const LEVEL_DISTANCE_SCALE');
 const definitionsEnd = html.indexOf(
   '// ═══════════════════════════════════════════════════════\n// GAME ENGINE',
@@ -89,6 +118,6 @@ const p90Gap = gaps[Math.floor(gaps.length * 0.9)];
 const speeds = levels.map(level => level.speed);
 
 console.log(
-  `Geometry Dash validated: ${levels.length} levels, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
+  `Geometry Dash validated: ${levels.length} levels, ${skins.length} persistent cube skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
   `${rapidTapRings} rapid-tap rings, median gap ${medianGap}px, 90th-percentile gap ${p90Gap}px, zoom ${zoom}×.`,
 );

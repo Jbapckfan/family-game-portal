@@ -65,7 +65,7 @@
   .home-link:hover { color:#fff; border-color:rgba(192,132,252,0.45); background:rgba(192,132,252,0.12); }
 
   /* Level select */
-  .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(72px,1fr)); gap:8px; margin-bottom:28px; width:min(480px,92vw); max-width:480px; max-height:330px; overflow-y:auto; }
+  .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(72px,1fr)); gap:8px; margin-bottom:18px; width:min(480px,92vw); max-width:480px; max-height:300px; overflow-y:auto; }
   .lvl-card { padding:12px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.035); color:rgba(255,255,255,0.6); font-family:'Space Mono',monospace; font-size:12px; cursor:pointer; transition:all 0.3s; pointer-events:all; text-align:center; display:flex; flex-direction:column; align-items:center; gap:3px; }
   .lvl-card:hover,.lvl-card.active { border-color:rgba(192,132,252,0.45); background:rgba(192,132,252,0.08); color:#c084fc; transform:translateY(-2px); box-shadow:0 4px 20px rgba(192,132,252,0.15); }
   .lvl-card.locked { opacity:0.4; pointer-events:none; }
@@ -74,6 +74,23 @@
   .lvl-best { font-size:8px; opacity:0.4; margin-top:2px; }
   .lvl-card .lock-icon { font-size:16px; opacity:0.3; }
   .section-label { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:14px; }
+  .skin-label { margin-bottom:9px; }
+  .skin-picker { width:min(552px,92vw); display:flex; gap:8px; overflow-x:auto; padding:3px 3px 8px; margin-bottom:10px; scrollbar-width:none; scroll-snap-type:x proximity; }
+  .skin-picker::-webkit-scrollbar { display:none; }
+  .skin-card { flex:0 0 62px; min-height:72px; padding:7px 4px 6px; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(255,255,255,.035); color:rgba(255,255,255,.48); font-family:'Outfit',sans-serif; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; scroll-snap-align:center; transition:transform .2s,border-color .2s,background .2s,color .2s; }
+  .skin-card:hover,.skin-card.selected { transform:translateY(-2px); border-color:var(--skin-a); background:rgba(255,255,255,.09); color:#fff; box-shadow:0 5px 18px rgba(192,132,252,.22); }
+  .skin-card:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+  .skin-swatch { position:relative; display:block; width:36px; height:36px; border:2px solid var(--skin-detail); background:var(--skin-a); box-shadow:0 0 12px var(--skin-a),inset -4px -4px 0 rgba(0,0,0,.16); overflow:hidden; }
+  .skin-swatch::before { content:''; position:absolute; inset:8px; background:var(--skin-b); }
+  .skin-swatch[data-pattern="diamond"]::before { transform:rotate(45deg); }
+  .skin-swatch[data-pattern="eyes"]::before { inset:10px 6px 13px; background:linear-gradient(90deg,var(--skin-detail) 0 32%,transparent 32% 68%,var(--skin-detail) 68%); }
+  .skin-swatch[data-pattern="checker"]::before { inset:0; background:conic-gradient(from 90deg,var(--skin-b) 0 25%,transparent 0 50%,var(--skin-b) 0 75%,transparent 0); }
+  .skin-swatch[data-pattern="bolt"]::before { inset:5px 10px; background:var(--skin-detail); transform:skew(-20deg); }
+  .skin-swatch[data-pattern="rings"]::before { inset:6px; background:var(--skin-b); border:3px solid var(--skin-detail); border-radius:50%; }
+  .skin-swatch[data-pattern="split"]::before { inset:0; background:linear-gradient(135deg,transparent 0 48%,var(--skin-b) 49% 100%); }
+  .skin-swatch[data-pattern="cross"]::before { inset:7px; background:linear-gradient(90deg,transparent 34%,var(--skin-detail) 34% 66%,transparent 66%),linear-gradient(transparent 34%,var(--skin-detail) 34% 66%,transparent 66%); }
+  .skin-swatch[data-pattern="star"]::before { inset:7px; background:var(--skin-detail); transform:rotate(45deg); box-shadow:0 0 7px var(--skin-detail); }
+  .skin-name { font-size:9px; line-height:1; letter-spacing:.7px; text-transform:uppercase; white-space:nowrap; }
 
   /* Death screen */
   .death-title { font-size:clamp(30px,4.5vw,52px); font-weight:800; letter-spacing:7px; margin-bottom:10px; }
@@ -100,6 +117,15 @@
     #level-name-hud { top:76px; left:16px; }
     #practice-indicator { top:98px; left:16px; }
     .controls-hint { bottom:max(20px,env(safe-area-inset-bottom)); padding:0 18px; text-align:center; line-height:1.5; }
+    .skin-picker { width:92vw; }
+  }
+  @media (max-height:760px) {
+    #menu { justify-content:flex-start; overflow-y:auto; padding:72px 14px 88px; }
+    .game-title { font-size:clamp(38px,7vw,58px); }
+    .subtitle { margin-bottom:20px; }
+    .level-grid { max-height:190px; margin-bottom:12px; }
+    .section-label { margin-bottom:8px; }
+    .skin-picker { margin-bottom:5px; }
   }
   @media (prefers-reduced-motion:reduce) {
     .game-title,.star,.lvl-card,.btn { animation:none!important; transition-duration:.01ms!important; }
@@ -127,6 +153,8 @@
   <div class="subtitle">18 Levels · 7 Modes · Endless Fun</div>
   <div class="section-label">Select Level</div>
   <div class="level-grid" id="level-grid"></div>
+  <div class="section-label skin-label" id="skin-label">Cube Skin</div>
+  <div class="skin-picker" id="skin-picker" role="group" aria-label="Choose cube skin"></div>
   <button class="btn" id="play-btn">Begin</button>
   <button class="btn btn-practice" id="practice-btn">Practice Mode</button>
   <div class="controls-hint">Space / Click / Tap · Hold for ship mode · Timing is everything</div>
@@ -178,6 +206,17 @@ const DASH_DURATION = 0.3;
 const DASH_SPEED_MULT = 1.8;
 const MINI_SCALE = 0.65;
 const MINI_JUMP_MULT = 0.82;
+
+const CUBE_SKINS = [
+  { id:'prism', name:'Prism', primary:'#c084fc', secondary:'#60a5fa', detail:'#f5d0fe', pattern:'diamond' },
+  { id:'inferno', name:'Inferno', primary:'#ef4444', secondary:'#f97316', detail:'#fef3c7', pattern:'bolt' },
+  { id:'slime', name:'Slime', primary:'#84cc16', secondary:'#166534', detail:'#ecfccb', pattern:'eyes' },
+  { id:'glacier', name:'Glacier', primary:'#22d3ee', secondary:'#2563eb', detail:'#cffafe', pattern:'rings' },
+  { id:'gold', name:'Gold', primary:'#fbbf24', secondary:'#f97316', detail:'#fffbeb', pattern:'split' },
+  { id:'bubble', name:'Bubble', primary:'#f472b6', secondary:'#a855f7', detail:'#fce7f3', pattern:'checker' },
+  { id:'shadow', name:'Shadow', primary:'#334155', secondary:'#020617', detail:'#cbd5e1', pattern:'cross' },
+  { id:'nova', name:'Nova', primary:'#4f46e5', secondary:'#db2777', detail:'#ffffff', pattern:'star' },
+];
 
 // ── MUSIC SYSTEM ──
 // Minor pentatonic scale ratios from root
@@ -1525,6 +1564,7 @@ let coyoteTimer = 0;
 let beatPulse = 0;
 let deathPositions = {};
 let starRatings = {};
+let selectedCubeSkin = CUBE_SKINS[0].id;
 const TRAIL_LENGTH = 28;
 const trail = [];
 let theme = THEMES[0];
@@ -1536,10 +1576,15 @@ try {
   attempts = saved.attempts || {};
   deathPositions = saved.deaths || {};
   starRatings = saved.stars || {};
+  if (CUBE_SKINS.some(skin => skin.id === saved.skin)) selectedCubeSkin = saved.skin;
 } catch(e) {}
 
 function saveProgress() {
-  try { localStorage.setItem('cubejumper_save', JSON.stringify({ unlocked:unlockedLevels, best:bestScores, attempts, deaths:deathPositions, stars:starRatings })); } catch(e) {}
+  try { localStorage.setItem('cubejumper_save', JSON.stringify({ unlocked:unlockedLevels, best:bestScores, attempts, deaths:deathPositions, stars:starRatings, skin:selectedCubeSkin })); } catch(e) {}
+}
+
+function getSelectedCubeSkin() {
+  return CUBE_SKINS.find(skin => skin.id === selectedCubeSkin) || CUBE_SKINS[0];
 }
 
 function getStarRating(orbPercent) {
@@ -1619,6 +1664,31 @@ function formatSpeedMult(mult) {
   return Number.isInteger(rounded) ? rounded.toFixed(0) + "x" : rounded.toFixed(1) + "x";
 }
 
+function buildSkinPicker() {
+  const picker = document.getElementById('skin-picker');
+  const label = document.getElementById('skin-label');
+  const equipped = getSelectedCubeSkin();
+  picker.innerHTML = '';
+  label.textContent = `Cube Skin · ${equipped.name}`;
+  CUBE_SKINS.forEach(skin => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'skin-card' + (skin.id === selectedCubeSkin ? ' selected' : '');
+    button.style.setProperty('--skin-a', skin.primary);
+    button.style.setProperty('--skin-b', skin.secondary);
+    button.style.setProperty('--skin-detail', skin.detail);
+    button.setAttribute('aria-label', `Equip ${skin.name} cube skin`);
+    button.setAttribute('aria-pressed', skin.id === selectedCubeSkin ? 'true' : 'false');
+    button.innerHTML = `<span class="skin-swatch" data-pattern="${skin.pattern}" aria-hidden="true"></span><span class="skin-name">${skin.name}</span>`;
+    button.onclick = () => {
+      selectedCubeSkin = skin.id;
+      saveProgress();
+      buildSkinPicker();
+    };
+    picker.appendChild(button);
+  });
+}
+
 function buildMenu() {
   const grid = document.getElementById('level-grid');
   grid.innerHTML = '';
@@ -1637,6 +1707,7 @@ function buildMenu() {
   const pb = document.getElementById('practice-btn');
   pb.className = 'btn btn-practice' + (practiceMode ? ' active' : '');
   pb.textContent = practiceMode ? 'Practice: ON' : 'Practice Mode';
+  buildSkinPicker();
 }
 buildMenu();
 
@@ -2385,6 +2456,110 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
+function drawCubeSkin(renderContext, size, skin) {
+  const half = size / 2;
+  const inner = size * 0.56;
+  renderContext.fillStyle = skin.primary;
+  renderContext.fillRect(-half, -half, size, size);
+
+  if (skin.pattern === 'diamond') {
+    renderContext.save();
+    renderContext.rotate(Math.PI / 4);
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner * 0.35, -inner * 0.35, inner * 0.7, inner * 0.7);
+    renderContext.restore();
+  } else if (skin.pattern === 'bolt') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner / 2, -inner / 2, inner, inner);
+    renderContext.fillStyle = skin.detail;
+    renderContext.beginPath();
+    renderContext.moveTo(2, -half * 0.72);
+    renderContext.lineTo(-half * 0.35, 1);
+    renderContext.lineTo(0, 1);
+    renderContext.lineTo(-2, half * 0.72);
+    renderContext.lineTo(half * 0.42, -2);
+    renderContext.lineTo(half * 0.08, -2);
+    renderContext.closePath();
+    renderContext.fill();
+  } else if (skin.pattern === 'eyes') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner / 2, -inner * 0.34, inner, inner * 0.68);
+    const eye = size * 0.17;
+    renderContext.fillStyle = skin.detail;
+    renderContext.fillRect(-size * 0.3, -eye / 2, eye, eye);
+    renderContext.fillRect(size * 0.13, -eye / 2, eye, eye);
+    renderContext.fillStyle = '#0f172a';
+    renderContext.fillRect(-size * 0.24, -eye * 0.12, eye * 0.38, eye * 0.55);
+    renderContext.fillRect(size * 0.19, -eye * 0.12, eye * 0.38, eye * 0.55);
+  } else if (skin.pattern === 'rings') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner / 2, -inner / 2, inner, inner);
+    renderContext.strokeStyle = skin.detail;
+    renderContext.lineWidth = Math.max(1.5, size * 0.07);
+    renderContext.beginPath();
+    renderContext.arc(0, 0, size * 0.27, 0, Math.PI * 2);
+    renderContext.stroke();
+    renderContext.beginPath();
+    renderContext.arc(0, 0, size * 0.1, 0, Math.PI * 2);
+    renderContext.stroke();
+  } else if (skin.pattern === 'split') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.beginPath();
+    renderContext.moveTo(half, -half);
+    renderContext.lineTo(half, half);
+    renderContext.lineTo(-half, half);
+    renderContext.closePath();
+    renderContext.fill();
+    renderContext.strokeStyle = skin.detail;
+    renderContext.lineWidth = Math.max(1.5, size * 0.07);
+    renderContext.beginPath();
+    renderContext.moveTo(-half * 0.65, half * 0.65);
+    renderContext.lineTo(half * 0.65, -half * 0.65);
+    renderContext.stroke();
+  } else if (skin.pattern === 'checker') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-half, -half, half, half);
+    renderContext.fillRect(0, 0, half, half);
+    renderContext.fillStyle = skin.detail;
+    renderContext.globalAlpha = 0.35;
+    renderContext.fillRect(0, -half, half, half);
+    renderContext.fillRect(-half, 0, half, half);
+    renderContext.globalAlpha = 1;
+  } else if (skin.pattern === 'cross') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner / 2, -inner / 2, inner, inner);
+    renderContext.fillStyle = skin.detail;
+    const bar = size * 0.14;
+    renderContext.fillRect(-bar / 2, -inner / 2, bar, inner);
+    renderContext.fillRect(-inner / 2, -bar / 2, inner, bar);
+  } else if (skin.pattern === 'star') {
+    renderContext.fillStyle = skin.secondary;
+    renderContext.fillRect(-inner / 2, -inner / 2, inner, inner);
+    renderContext.fillStyle = skin.detail;
+    renderContext.beginPath();
+    for (let point = 0; point < 10; point += 1) {
+      const radius = point % 2 === 0 ? size * 0.31 : size * 0.14;
+      const angle = -Math.PI / 2 + point * Math.PI / 5;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (point === 0) renderContext.moveTo(x, y);
+      else renderContext.lineTo(x, y);
+    }
+    renderContext.closePath();
+    renderContext.fill();
+  }
+
+  renderContext.fillStyle = 'rgba(255,255,255,0.17)';
+  renderContext.fillRect(-half, -half, size, Math.max(2, size * 0.1));
+  renderContext.fillRect(-half, -half, Math.max(2, size * 0.1), size);
+  renderContext.fillStyle = 'rgba(0,0,0,0.18)';
+  renderContext.fillRect(-half, half - Math.max(2, size * 0.1), size, Math.max(2, size * 0.1));
+  renderContext.fillRect(half - Math.max(2, size * 0.1), -half, Math.max(2, size * 0.1), size);
+  renderContext.strokeStyle = skin.detail;
+  renderContext.lineWidth = 2;
+  renderContext.strokeRect(-half, -half, size, size);
+}
+
 // ═══════════════════════════════════════════════════════
 // DRAWING
 // ═══════════════════════════════════════════════════════
@@ -2846,7 +3021,8 @@ function draw() {
     // Trail — GD-style: smooth ribbon for cube/ball, sharp line for wave
     if(!player.dead && trail.length > 2){
       const ps = PLAYER_SIZE;
-      const rgb = hexToRgb(theme.accent);
+      const trailColor = player.mode === 'cube' ? getSelectedCubeSkin().primary : theme.accent;
+      const rgb = hexToRgb(trailColor);
       ctx.save();
 
       // Wave mode: sharp angular trail (GD signature)
@@ -2902,23 +3078,7 @@ function draw() {
       ctx.fillStyle=theme.accent;
 
       if (player.mode === 'cube') {
-        // Outer square
-        ctx.fillRect(-ps/2,-ps/2,ps,ps);
-        // Inner darker square (GD signature two-tone)
-        const inner=ps*0.55;
-        ctx.fillStyle=theme.accent2;
-        ctx.fillRect(-inner/2,-inner/2,inner,inner);
-        // Top-left highlight (subtle 3D)
-        ctx.fillStyle='rgba(255,255,255,0.15)';
-        ctx.fillRect(-ps/2,-ps/2,ps,3);
-        ctx.fillRect(-ps/2,-ps/2,3,ps);
-        // Bottom-right shadow
-        ctx.fillStyle='rgba(0,0,0,0.15)';
-        ctx.fillRect(-ps/2,ps/2-3,ps,3);
-        ctx.fillRect(ps/2-3,-ps/2,3,ps);
-        // Crisp border
-        ctx.strokeStyle=theme.glow;ctx.lineWidth=2;
-        ctx.strokeRect(-ps/2,-ps/2,ps,ps);
+        drawCubeSkin(ctx, ps, getSelectedCubeSkin());
       }
       else if (player.mode === 'ship') {
         // Ship body

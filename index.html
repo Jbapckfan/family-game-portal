@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Alford Family Game Portal</title>
-    <meta name="description" content="Alford Family Game Portal - A collection of 21 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta name="description" content="Alford Family Game Portal - A collection of 22 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Game Portal">
     <meta property="og:title" content="Alford Family Game Portal">
-    <meta property="og:description" content="A collection of 21 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
+    <meta property="og:description" content="A collection of 22 browser-based games including arcade, strategy, puzzle, tower defense, and more.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="manifest" href="manifest.json">
@@ -149,6 +149,50 @@
             text-shadow: 0 3px 0 #5f1d58;
         }
 
+        .speed-thumb {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(55,221,255,.22), transparent 38%),
+                linear-gradient(145deg, #07111f, #132d58 54%, #3a1450);
+            border: 1px solid rgba(255,255,255,.18);
+        }
+
+        .speed-thumb::before {
+            content: "SPEED";
+            position: absolute;
+            inset: auto 0 11px;
+            z-index: 2;
+            color: #fff;
+            font-size: clamp(1.35rem, 4vw, 2rem);
+            font-style: italic;
+            font-weight: 1000;
+            letter-spacing: .12em;
+            text-align: center;
+            text-shadow: 0 0 18px #37ddff, 0 3px 0 #10182b;
+        }
+
+        .speed-mini-card {
+            display: grid;
+            place-items: center;
+            width: 54px;
+            aspect-ratio: .72;
+            border: 3px solid #fff;
+            border-radius: 8px;
+            background: #f7f9ff;
+            color: #15203a;
+            font-size: 1.25rem;
+            font-weight: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,.35);
+            transform: translateY(-7px) rotate(-8deg);
+        }
+
+        .speed-mini-card.red { color: #df2149; transform: translateY(-7px) rotate(8deg); }
+
         .game-title {
             font-size: 1.3rem;
             font-weight: 600;
@@ -231,6 +275,17 @@
         <section class="category" aria-labelledby="featured-games">
             <h2 id="featured-games">Featured Games</h2>
             <div class="game-grid">
+                <a href="./games/speed-card-game.html" class="game-card">
+                    <div class="game-thumb speed-thumb" role="img" aria-label="Speed card game with an Ace and King racing across the table">
+                        <span class="speed-mini-card">A♠</span>
+                        <span class="speed-mini-card red">K♥</span>
+                    </div>
+                    <div class="game-title">Speed: Beat the Bot</div>
+                    <div class="game-desc">Race a quick-thinking AI in the frantic card game Speed. No turns—tap fast and empty your deck first!</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-multiplayer">1 vs AI</span>
+                </a>
+
                 <a href="./games/socktopus/" class="game-card">
                     <div class="game-thumb socktopus-thumb" role="img" aria-label="Revenge of the Missing Sock laundry battlefield"></div>
                     <div class="game-title">Revenge of the Missing Sock</div>

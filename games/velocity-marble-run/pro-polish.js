@@ -173,7 +173,7 @@
         blip(360 + state.checkpoint * 90, .12, .04);
       }
       const trait = TRAITS[state.marbleId] || "BALANCED";
-      show(ui.trait, `${String(state.marbleId || "opal").replaceAll("_", " ").toUpperCase()} · ${trait}`, 900);
+      show(ui.trait, `${String(state.marbleId || "opal").replace(/_/g, " ").toUpperCase()} · ${trait}`, 900);
       const best = Number(localStorage.getItem(BEST_KEY) || 0);
       if (best > 0) show(ui.ghost, `GHOST ${formatTime(elapsed - best)} · BEST ${formatTime(best)}`, 1000);
       if (state.recovering && now - lastShield > 500) {

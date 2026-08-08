@@ -11,6 +11,48 @@ const replacements = [
   ['size:[1,3,2*Math.PI*e*Math.abs(i-t)/g*1.05]}),O.jsx(Hc', 'size:[1,4,2*Math.PI*e*Math.abs(i-t)/g*1.05]}),O.jsx(Hc'],
   ['size:[1,3,2*Math.PI*e*Math.abs(i-t)/g*1.05]})]},d)', 'size:[1,4,2*Math.PI*e*Math.abs(i-t)/g*1.05]})]},d)'],
 
+  // Fix the actual curve chord length. The original multiplied radians by 2π,
+  // producing rail colliders more than six times too long and badly overlapping.
+  ['b=s+d*c,v=-y', 'b=s+(d+.5)*c,v=-y'],
+  ['2*Math.PI*e*Math.abs(i-t)/g*1.05', 'e*Math.abs(i-t)/g*1.18', 3],
+  ['size:t=[1,4,30]', 'size:t=[1.5,5,30]'],
+  ['size:[1,4,e*Math.abs(i-t)/g*1.18]', 'size:[1.5,5,e*Math.abs(i-t)/g*1.18]', 2],
+  ['size:[1,4,g]', 'size:[1.5,5,g+2]', 2],
+  ['size:[1,4,70]', 'size:[1.5,5,72]', 2],
+
+  // Remove an overlapping false ramp and join both S-curves endpoint-to-endpoint.
+  ['O.jsx(da,{start:[0,12,-7.5],end:[0,5,-30],width:16}),', ''],
+  [
+    'position:[-20,-65,-130],radius:30,angleStart:0,angleEnd:-Math.PI*.5,heightStart:-65,heightEnd:-75',
+    'position:[-20,-65,-145],radius:15,angleStart:Math.PI*.5,angleEnd:-Math.PI*.5,heightStart:-65,heightEnd:-75',
+  ],
+  [
+    'position:[-20+Math.cos(-Math.PI/4)*38,-68,-130+Math.sin(-Math.PI/4)*38],rotation:[0,Math.PI/4+Math.PI/2,Math.PI/3]',
+    'position:[-5,-70,-145],rotation:[0,Math.PI/2,Math.PI/3]',
+  ],
+
+  // Keep startup self-contained and make the WebGL workload fit older iPads.
+  ['O.jsx(CM,{preset:"sunset",background:!1}),', ''],
+  [
+    ',O.jsx(FE,{position:[0,2,0],fontSize:1,color:"white",anchorX:"center",anchorY:"middle",children:a})',
+    '',
+  ],
+  [
+    'gl:{antialias:!0,powerPreference:"high-performance",stencil:!1,depth:!0,toneMapping:4}',
+    'gl:{antialias:!window.__velocityLiteMode,powerPreference:window.__velocityLiteMode?"default":"high-performance",stencil:!1,depth:!0,toneMapping:4}',
+  ],
+  ['gl:{alpha:!0,antialias:!0}', 'gl:{alpha:!0,antialias:!window.__velocityLiteMode}'],
+  ['count:600', 'count:window.__velocityLiteMode?220:600'],
+  [
+    'iterations:8,maxSubSteps:4,stepSize:1/120',
+    'iterations:window.__velocityLiteMode?6:8,maxSubSteps:window.__velocityLiteMode?3:4,stepSize:1/120',
+  ],
+  [
+    'args:[.5,32,32]',
+    'args:[.5,window.__velocityLiteMode?20:32,window.__velocityLiteMode?20:32]',
+    4,
+  ],
+
   // Keep the track visually smooth while cutting hundreds of redundant bodies/draw calls.
   ['segments:s=48', 'segments:s=24'],
   ['bankingAngle:.4,segments:32', 'bankingAngle:.4,segments:16', 2],

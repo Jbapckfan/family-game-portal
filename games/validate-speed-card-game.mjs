@@ -115,6 +115,12 @@ if (!html.includes('if (stallTimer) return;') || !html.includes('stallTimer = 0;
 if (!html.includes('touch-action: manipulation') || !html.includes('prefers-reduced-motion')) {
   throw new Error('Touch or reduced-motion support is missing.');
 }
+if (!html.includes('data-pile-index') || !html.includes("addEventListener('pointermove'") || !html.includes('playCardOnPile(sideKey, cardId, pileIndex)')) {
+  throw new Error('Speed needs explicit tap-to-pile and drag-to-pile controls.');
+}
+if (html.includes('function chooseHumanPile') || html.includes("classes.push(playable ? 'playable' : 'blocked')")) {
+  throw new Error('Player cards must not reveal or automatically choose a legal center pile.');
+}
 if (/https?:\/\//.test(html)) throw new Error('The game should not require external runtime assets.');
 if (!portal.includes('href="./games/speed-card-game.html"') || !portal.includes('Speed: Beat the Bot')) {
   throw new Error('The family portal is missing the Speed game card.');

@@ -192,22 +192,19 @@
       transform: translateY(0);
     }
 
-    button.playing-card { cursor: pointer; transition: transform .1s ease, filter .1s ease, box-shadow .1s ease, opacity .15s ease; }
+    button.playing-card { cursor: pointer; touch-action: none; transition: transform .1s ease, filter .1s ease, box-shadow .1s ease, opacity .15s ease; }
     button.playing-card:hover:not(:disabled) { transform: translateY(-6px); }
     button.playing-card:active:not(:disabled) { transform: translateY(1px) scale(.96); }
     button.playing-card:disabled { cursor: default; }
 
     .playing-card.red { color: #df2149; }
 
-    .playing-card.playable {
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 3px rgba(55,221,255,.17), 0 0 24px rgba(55,221,255,.32), 0 9px 24px rgba(0,0,0,.34);
-      animation: readyPulse 1.15s ease-in-out infinite;
-    }
-
-    .playing-card.blocked { opacity: .56; filter: saturate(.55) brightness(.8); }
-
+    .playing-card.selected-card { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(255,209,102,.2), 0 0 26px rgba(255,209,102,.38), 0 9px 24px rgba(0,0,0,.34); transform: translateY(-7px); }
     .playing-card.bad-pick { animation: badPick .25s ease; }
+    .center-card.drop-hover { box-shadow: 0 0 0 5px rgba(255,255,255,.18), 0 0 28px rgba(55,221,255,.45), 0 9px 24px rgba(0,0,0,.34); transform: scale(1.04); }
+    .center-card.invalid-drop { animation: badPick .25s ease; border-color: var(--danger); }
+    .drag-card-ghost { position: fixed; z-index: 50; margin: 0; pointer-events: none; opacity: .9; transform: translate(-50%,-56%) rotate(-3deg) scale(.92); filter: drop-shadow(0 18px 22px rgba(0,0,0,.5)); }
+    .drag-card-ghost.p2-drag { transform: translate(-50%,-44%) rotate(177deg) scale(.92); }
 
     .corner {
       position: absolute;
@@ -392,6 +389,18 @@
 
     .difficulty-button small { display: block; margin-top: 3px; opacity: .65; font-size: .64rem; }
     .difficulty-button.selected { border-color: var(--cyan); color: #fff; background: rgba(55,221,255,.13); box-shadow: 0 0 22px rgba(55,221,255,.12); }
+    .choice-label { display: block; margin: 14px 0 7px; color: #dce9fa; font-size: .67rem; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+    .choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+    .choice-grid.modes { grid-template-columns: repeat(2, 1fr); }
+    .choice-button { min-height: 42px; padding: 6px 5px; border: 1px solid rgba(255,255,255,.13); border-radius: 12px; background: rgba(255,255,255,.045); color: #9eacc1; font-size: .65rem; font-weight: 950; cursor: pointer; }
+    .choice-button small { display: block; margin-top: 2px; opacity: .66; font-size: .56rem; }
+    .choice-button.selected { border-color: var(--pink); color: #fff; background: rgba(255,79,163,.15); box-shadow: 0 0 18px rgba(255,79,163,.12); }
+    .campaign-strip { margin: 10px 0 0; padding: 8px 10px; border-radius: 12px; color: var(--cyan); background: rgba(55,221,255,.07); font-size: .72rem; font-weight: 900; }
+
+    body[data-skin="sunset"] { --cyan: #ffbd59; --pink: #ff5f87; --green: #ffe66d; }
+    body[data-skin="arcade"] { --cyan: #88ff66; --pink: #ff4df0; --green: #fff35a; }
+    .local-duel .opponent-zone { transform: rotate(180deg); }
+    .local-duel .opponent-zone .playing-card { cursor: pointer; }
 
     .primary-button, .secondary-button {
       width: 100%;
@@ -535,12 +544,33 @@
       <p class="eyebrow">Lightning card duel</p>
       <h2 class="hero-title" id="menu-title">Speed</h2>
       <p class="tagline">No turns. No waiting. Play one rank higher or lower than either center card and empty your deck before the bot.</p>
+      <span class="choice-label">Race mode</span>
+      <div class="choice-grid modes" id="mode-row">
+        <button class="choice-button" type="button" data-mode="ai">Bot Race<small>Adaptive rival</small></button>
+        <button class="choice-button" type="button" data-mode="local">2 Players<small>Face-to-face</small></button>
+        <button class="choice-button" type="button" data-mode="tournament">Tournament<small>5-rival cup</small></button>
+        <button class="choice-button" type="button" data-mode="daily">Daily Race<small>Same shuffle</small></button>
+      </div>
       <span class="difficulty-label">Choose bot speed</span>
       <div class="difficulty-row" id="difficulty-row">
         <button class="difficulty-button" type="button" data-difficulty="chill">Chill<small>Learning pace</small></button>
         <button class="difficulty-button selected" type="button" data-difficulty="quick">Quick<small>Fair & fast</small></button>
         <button class="difficulty-button" type="button" data-difficulty="turbo">Turbo<small>Seriously speedy</small></button>
       </div>
+      <span class="choice-label">Optional variants</span>
+      <div class="choice-grid" id="variant-row">
+        <button class="choice-button" type="button" data-variant="wild">Wilds</button>
+        <button class="choice-button" type="button" data-variant="doubles">Doubles</button>
+        <button class="choice-button" type="button" data-variant="three">3 Piles</button>
+        <button class="choice-button" type="button" data-variant="sudden">Sudden</button>
+      </div>
+      <span class="choice-label">Table look</span>
+      <div class="difficulty-row" id="skin-row">
+        <button class="choice-button" type="button" data-skin="neon">Neon</button>
+        <button class="choice-button" type="button" data-skin="sunset">Sunset</button>
+        <button class="choice-button" type="button" data-skin="arcade">Arcade</button>
+      </div>
+      <div class="campaign-strip" id="campaign-strip">Adaptive bot · learns your pace</div>
       <button class="primary-button" id="start-button" type="button">Deal the cards</button>
       <button class="secondary-button" id="menu-rules-button" type="button">How to play</button>
       <div class="stats-row" aria-label="Your saved record">
@@ -556,11 +586,13 @@
       <p class="eyebrow">Rules</p>
       <h2 id="rules-title">How to play Speed</h2>
       <ol class="rules">
-        <li>Tap any glowing card that is exactly one rank higher or lower than either center card.</li>
+        <li>Choose a card, then choose the exact center pile where you want to play it. Or drag the card directly onto that pile.</li>
         <li>Aces connect both ways: King ↔ Ace ↔ 2. Suits do not matter.</li>
         <li>Your hand refills automatically. There are no turns—the bot plays at the same time.</li>
         <li>If nobody can move, new center cards flip automatically. First player with zero cards wins.</li>
-        <li>Keyboard: use 1–5 for your cards, P to pause, and R to restart.</li>
+        <li>In 2 Player, the top player plays from the opposite side or uses Q–T; Player 1 uses 1–5.</li>
+        <li>Variants can add wild stars, same-rank doubles, a third center pile, or shorter sudden-death decks.</li>
+        <li>Keyboard: choose a card with 1–5 or Q–T, then choose a pile with A/S/D. P pauses and R restarts.</li>
       </ol>
       <button class="primary-button" id="close-rules-button" type="button">Got it</button>
     </div>
@@ -622,8 +654,10 @@
       return cards;
     }
 
-    function isPlayable(card, topCard) {
+    function isPlayable(card, topCard, variants = {}) {
       if (!card || !topCard) return false;
+      if (variants.wild && (card.wild || topCard.wild)) return true;
+      if (variants.doubles && card.rankIndex === topCard.rankIndex) return true;
       const difference = (card.rankIndex - topCard.rankIndex + RANKS.length) % RANKS.length;
       return difference === 1 || difference === RANKS.length - 1;
     }
@@ -632,21 +666,28 @@
       while (side.hand.length < 5 && side.stock.length) side.hand.push(side.stock.pop());
     }
 
-    function dealGame(random = Math.random) {
+    function dealGame(random = Math.random, variants = {}) {
       const deck = shuffleInPlace(createDeck(), random);
+      if (variants.wild) deck.push(
+        { id: 'wild-1', rank: '★', rankIndex: -1, symbol: '★', name: 'wild card', color: 'red', wild: true },
+        { id: 'wild-2', rank: '★', rankIndex: -1, symbol: '★', name: 'wild card', color: 'black', wild: true },
+      );
+      shuffleInPlace(deck, random);
+      const stockCount = variants.sudden ? 7 : 15;
+      const centerCount = variants.three ? 3 : 2;
       const state = {
         human: { hand: [], stock: [] },
         ai: { hand: [], stock: [] },
-        centers: [[], []],
+        centers: Array.from({ length: centerCount }, () => []),
         reserve: [],
         plays: { human: 0, ai: 0 },
+        variants: { ...variants },
       };
       state.human.hand = deck.splice(0, 5);
-      state.human.stock = deck.splice(0, 15);
+      state.human.stock = deck.splice(0, stockCount);
       state.ai.hand = deck.splice(0, 5);
-      state.ai.stock = deck.splice(0, 15);
-      state.centers[0].push(deck.pop());
-      state.centers[1].push(deck.pop());
+      state.ai.stock = deck.splice(0, stockCount);
+      state.centers.forEach(pile => pile.push(deck.pop()));
       state.reserve = deck;
       return state;
     }
@@ -660,7 +701,7 @@
       const moves = [];
       state[sideKey].hand.forEach((card, handIndex) => {
         tops.forEach((topCard, pileIndex) => {
-          if (isPlayable(card, topCard)) moves.push({ handIndex, pileIndex, card });
+          if (isPlayable(card, topCard, state.variants)) moves.push({ handIndex, pileIndex, card });
         });
       });
       return moves;
@@ -674,7 +715,7 @@
       const side = state[sideKey];
       const card = side.hand[handIndex];
       const topCard = topCards(state)[pileIndex];
-      if (!isPlayable(card, topCard)) return null;
+      if (!isPlayable(card, topCard, state.variants)) return null;
       side.hand.splice(handIndex, 1);
       state.centers[pileIndex].push(card);
       state.plays[sideKey] += 1;
@@ -694,9 +735,9 @@
     }
 
     function dealCenterCards(state, random = Math.random) {
-      if (state.reserve.length < 2) recycleCenters(state, random);
+      if (state.reserve.length < state.centers.length) recycleCenters(state, random);
       let dealt = 0;
-      [0, 1].forEach(pileIndex => {
+      state.centers.forEach((_, pileIndex) => {
         if (state.reserve.length) {
           state.centers[pileIndex].push(state.reserve.pop());
           dealt += 1;
@@ -711,7 +752,7 @@
       const tops = topCards(state);
       tops[move.pileIndex] = move.card;
       return remainingHand.reduce((score, card) =>
-        score + tops.reduce((sum, topCard) => sum + (isPlayable(card, topCard) ? 1 : 0), 0), 0);
+        score + tops.reduce((sum, topCard) => sum + (isPlayable(card, topCard, state.variants) ? 1 : 0), 0), 0);
     }
 
     function chooseStrategicMove(state, sideKey, random = Math.random, aggression = 0.5) {
@@ -723,7 +764,7 @@
         const tops = topCards(state);
         tops[move.pileIndex] = move.card;
         const opponentOptions = opponentHand.reduce((count, card) =>
-          count + tops.reduce((sum, topCard) => sum + (isPlayable(card, topCard) ? 1 : 0), 0), 0);
+          count + tops.reduce((sum, topCard) => sum + (isPlayable(card, topCard, state.variants) ? 1 : 0), 0), 0);
         return {
           move,
           score: futureMoveScore(state, sideKey, move) - opponentOptions * aggression + random() * 0.2,
@@ -761,10 +802,19 @@
     };
 
     const STORAGE_KEY = 'alford-speed-card-game';
-    let saved = { wins: 0, losses: 0, streak: 0, bestTime: 0, difficulty: 'quick', sound: true };
+    let saved = {
+      wins: 0, losses: 0, streak: 0, bestTime: 0, difficulty: 'quick', sound: true,
+      mode: 'ai', skin: 'neon', tournamentStage: 1, adaptive: 0,
+      variants: { wild: false, doubles: false, three: false, sudden: false }, daily: {},
+    };
     try { saved = { ...saved, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; } catch (_) {}
+    saved.variants = { wild: false, doubles: false, three: false, sudden: false, ...(saved.variants || {}) };
+    saved.daily = saved.daily || {};
 
     let difficulty = DIFFICULTIES[saved.difficulty] ? saved.difficulty : 'quick';
+    let gameMode = ['ai', 'local', 'tournament', 'daily'].includes(saved.mode) ? saved.mode : 'ai';
+    let skin = ['neon', 'sunset', 'arcade'].includes(saved.skin) ? saved.skin : 'neon';
+    let gameRandom = Math.random;
     let game = null;
     let phase = 'menu';
     let aiTimer = 0;
@@ -777,11 +827,35 @@
     let combo = 0;
     let bestCombo = 0;
     let lastPlayedPile = -1;
+    let selectedPlay = null;
+    let dragState = null;
     let audioContext = null;
 
     function persist() {
       saved.difficulty = difficulty;
+      saved.mode = gameMode;
+      saved.skin = skin;
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch (_) {}
+    }
+
+    function dateKey() {
+      const today = new Date();
+      return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    }
+    function seededRandom(seedText) {
+      let seed = Array.from(seedText).reduce((value, character) => Math.imul(value ^ character.charCodeAt(0), 2654435761), 2166136261) >>> 0;
+      return () => {
+        seed += 0x6D2B79F5;
+        let value = seed;
+        value = Math.imul(value ^ value >>> 15, value | 1);
+        value ^= value + Math.imul(value ^ value >>> 7, value | 61);
+        return ((value ^ value >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function effectiveDifficulty() {
+      if (gameMode === 'tournament') return ['chill', 'chill', 'quick', 'quick', 'turbo'][Math.max(0, Math.min(4, saved.tournamentStage - 1))];
+      return difficulty;
     }
 
     function formatTime(milliseconds) {
@@ -824,13 +898,17 @@
     }
 
     function cardMarkup(card, options = {}) {
-      const tag = options.button ? 'button' : 'div';
-      const playable = Boolean(options.playable);
+      const centerCard = Number.isInteger(options.pileIndex);
+      const tag = options.button || centerCard ? 'button' : 'div';
       const classes = ['playing-card', card.color === 'red' ? 'red' : 'black'];
-      if (options.button) classes.push(playable ? 'playable' : 'blocked');
+      if (options.selected) classes.push('selected-card');
+      if (centerCard) classes.push('center-card');
       if (options.justPlayed) classes.push('just-played');
-      const attributes = options.button
-        ? `type="button" data-card-id="${card.id}" aria-label="${card.rank} of ${card.name}, ${playable ? 'playable' : 'not playable'}" ${phase === 'playing' ? '' : 'disabled'}`
+      const dataAttribute = options.side === 'ai' ? 'data-p2-card-id' : 'data-card-id';
+      const attributes = centerCard
+        ? `type="button" data-pile-index="${options.pileIndex}" aria-label="Center pile ${options.pileIndex + 1}, ${card.rank} of ${card.name}. Play selected card here" ${phase === 'playing' ? '' : 'disabled'}`
+        : options.button
+        ? `type="button" ${dataAttribute}="${card.id}" aria-label="Select ${card.rank} of ${card.name}" aria-pressed="${Boolean(options.selected)}" ${phase === 'playing' ? '' : 'disabled'}`
         : `role="img" aria-label="${card.rank} of ${card.name}"`;
       const slot = options.slot ? `<span class="slot-number" aria-hidden="true">${options.slot}</span>` : '';
       return `<${tag} class="${classes.join(' ')}" ${attributes}>
@@ -850,29 +928,58 @@
         button.classList.toggle('selected', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
+      document.querySelectorAll('[data-mode]').forEach(button => {
+        const selected = button.dataset.mode === gameMode;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.querySelectorAll('[data-variant]').forEach(button => {
+        const selected = Boolean(saved.variants[button.dataset.variant]);
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.querySelectorAll('[data-skin]').forEach(button => {
+        const selected = button.dataset.skin === skin;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.body.dataset.skin = skin;
+      const daily = saved.daily[dateKey()];
+      document.getElementById('campaign-strip').textContent = gameMode === 'tournament'
+        ? `Tournament rival ${saved.tournamentStage} of 5 · ${['Scout', 'Spark', 'Dash', 'Blaze', 'The Flash'][saved.tournamentStage - 1]}`
+        : gameMode === 'daily'
+          ? `Daily ${dateKey()} · ${daily ? `best ${formatTime(daily)}` : 'set the first ghost'}`
+          : gameMode === 'local' ? 'Player 2 uses the top side · Q W E R T' : `Adaptive bot · pace ${saved.adaptive > .2 ? 'hot' : saved.adaptive < -.2 ? 'friendly' : 'balanced'}`;
     }
 
     function render() {
       if (!game) return;
-      const playableIds = new Set(availableMoves(game, 'human').map(move => move.card.id));
       elements.playerHand.innerHTML = game.human.hand.map((card, index) => cardMarkup(card, {
         button: true,
-        playable: playableIds.has(card.id) && phase === 'playing',
+        selected: selectedPlay?.sideKey === 'human' && selectedPlay.cardId === card.id,
         slot: index + 1,
       })).join('');
-      elements.aiHand.innerHTML = game.ai.hand.map((_, index) =>
-        `<div class="playing-card card-back" role="img" aria-label="Hidden bot card ${index + 1}"></div>`
-      ).join('');
+      elements.aiHand.innerHTML = gameMode === 'local'
+        ? game.ai.hand.map((card, index) => cardMarkup(card, {
+            button: true, side: 'ai', selected: selectedPlay?.sideKey === 'ai' && selectedPlay.cardId === card.id, slot: ['Q', 'W', 'E', 'R', 'T'][index],
+          })).join('')
+        : game.ai.hand.map((_, index) => `<div class="playing-card card-back" role="img" aria-label="Hidden bot card ${index + 1}"></div>`).join('');
       elements.centers.innerHTML = topCards(game).map((card, index) =>
-        cardMarkup(card, { justPlayed: index === lastPlayedPile })
+        cardMarkup(card, { pileIndex: index, justPlayed: index === lastPlayedPile })
       ).join('');
       elements.playerCount.textContent = remainingCards(game, 'human');
       elements.aiCount.textContent = remainingCards(game, 'ai');
       elements.reserveCount.textContent = game.reserve.length;
       elements.combo.textContent = `Combo ×${combo}`;
-      elements.aiMood.textContent = phase === 'playing'
-        ? (availableMoves(game, 'ai').length ? 'BOT SCANNING' : 'BOT STUCK')
-        : DIFFICULTIES[difficulty].label;
+      elements.aiMood.textContent = gameMode === 'local' ? 'PLAYER 2' : phase === 'playing'
+        ? (availableMoves(game, 'ai').length ? 'RIVAL SCANNING' : 'RIVAL STUCK')
+        : DIFFICULTIES[effectiveDifficulty()].label;
+      document.getElementById('app').classList.toggle('local-duel', gameMode === 'local');
+      if (gameMode === 'daily' && saved.daily[dateKey()] && phase === 'playing') {
+        const raceCards = saved.variants.sudden ? 12 : 20;
+        const expected = Math.min(raceCards, Math.floor(elapsedTime() / saved.daily[dateKey()] * raceCards));
+        elements.combo.textContent = `Ghost ${game.plays.human - expected >= 0 ? '+' : ''}${game.plays.human - expected}`;
+      }
       lastPlayedPile = -1;
     }
 
@@ -897,18 +1004,19 @@
     }
 
     function aiDelay() {
-      const settings = DIFFICULTIES[difficulty];
+      const settings = DIFFICULTIES[effectiveDifficulty()];
       const pace = settings.minDelay + Math.random() * (settings.maxDelay - settings.minDelay);
-      return Math.max(180, pace - Math.min(game.plays.ai, 12) * 7);
+      const adaptiveMultiplier = gameMode === 'ai' ? 1 - Math.max(-.22, Math.min(.22, saved.adaptive * .14)) : 1;
+      return Math.max(180, pace * adaptiveMultiplier - Math.min(game.plays.ai, 12) * 7);
     }
 
     function scheduleAi() {
       clearTimeout(aiTimer);
-      if (phase !== 'playing') return;
+      if (phase !== 'playing' || gameMode === 'local') return;
       aiTimer = setTimeout(() => {
         if (phase !== 'playing') return;
-        const settings = DIFFICULTIES[difficulty];
-        const move = chooseStrategicMove(game, 'ai', Math.random, settings.aggression);
+        const settings = DIFFICULTIES[effectiveDifficulty()];
+        const move = chooseStrategicMove(game, 'ai', gameRandom, settings.aggression);
         if (move) {
           applyMove(game, 'ai', move.handIndex, move.pileIndex);
           lastPlayedPile = move.pileIndex;
@@ -940,7 +1048,7 @@
       stallTimer = setTimeout(() => {
         stallTimer = 0;
         if (phase !== 'playing') return;
-        const dealt = dealCenterCards(game, Math.random);
+        const dealt = dealCenterCards(game, gameRandom);
         if (!dealt) {
           setStatus('Shuffling the race back into motion…');
           return;
@@ -954,42 +1062,133 @@
       }, 620);
     }
 
-    function chooseHumanPile(handIndex) {
-      const legal = availableMoves(game, 'human').filter(move => move.handIndex === handIndex);
-      if (!legal.length) return null;
-      if (legal.length === 1) return legal[0];
-      legal.sort((a, b) => futureMoveScore(game, 'human', b) - futureMoveScore(game, 'human', a));
-      return legal[0];
+    function selectCard(sideKey, handIndex) {
+      if (phase !== 'playing' || !game?.[sideKey]?.hand[handIndex]) return;
+      if (sideKey === 'ai' && gameMode !== 'local') return;
+      const card = game[sideKey].hand[handIndex];
+      if (selectedPlay?.sideKey === sideKey && selectedPlay.cardId === card.id) {
+        selectedPlay = null;
+        setStatus('Card released—pick another when ready');
+      } else {
+        selectedPlay = { sideKey, cardId: card.id };
+        setStatus(`${sideKey === 'ai' ? 'Player 2' : 'Player 1'} selected ${card.rank}—choose a center pile`);
+        tone(sideKey === 'ai' ? 280 : 360, .035, 'triangle', .025);
+      }
+      render();
     }
 
-    function playHumanCard(handIndex) {
-      if (phase !== 'playing' || !game.human.hand[handIndex]) return;
-      const move = chooseHumanPile(handIndex);
-      if (!move) {
-        const cardButton = elements.playerHand.children[handIndex];
-        if (cardButton) {
-          cardButton.classList.remove('bad-pick');
-          void cardButton.offsetWidth;
-          cardButton.classList.add('bad-pick');
-        }
-        tone(105, .1, 'sawtooth', .035);
+    function flashInvalidPile(pileIndex) {
+      const pile = elements.centers.querySelector(`[data-pile-index="${pileIndex}"]`);
+      if (!pile) return;
+      pile.classList.remove('invalid-drop');
+      void pile.offsetWidth;
+      pile.classList.add('invalid-drop');
+      setTimeout(() => pile.classList.remove('invalid-drop'), 280);
+    }
+
+    function playCardOnPile(sideKey, cardId, pileIndex) {
+      if (phase !== 'playing' || !game || !Number.isInteger(pileIndex)) return false;
+      if (sideKey === 'ai' && gameMode !== 'local') return false;
+      const handIndex = game[sideKey].hand.findIndex(card => card.id === cardId);
+      if (handIndex < 0) { selectedPlay = null; render(); return false; }
+      const played = applyMove(game, sideKey, handIndex, pileIndex);
+      if (!played) {
+        flashInvalidPile(pileIndex);
+        tone(sideKey === 'ai' ? 120 : 105, .1, 'sawtooth', .035);
         vibrate(20);
-        setStatus('That card must be one rank higher or lower');
-        return;
+        setStatus(`That card does not fit center pile ${pileIndex + 1}`);
+        return false;
       }
 
-      const now = performance.now();
-      combo = now - lastHumanPlay < 1050 ? combo + 1 : 1;
-      bestCombo = Math.max(bestCombo, combo);
-      lastHumanPlay = now;
-      applyMove(game, 'human', move.handIndex, move.pileIndex);
-      lastPlayedPile = move.pileIndex;
-      tone(440 + Math.min(combo, 8) * 38, .055, combo > 3 ? 'square' : 'sine');
-      if (combo === 4 || combo === 7) vibrate(16);
-      setStatus(combo >= 4 ? `Hot streak! ${combo} cards in rhythm` : 'Nice—keep moving!');
+      selectedPlay = null;
+      lastPlayedPile = pileIndex;
+      if (sideKey === 'human') {
+        const playedAt = performance.now();
+        combo = playedAt - lastHumanPlay < 1300 ? combo + 1 : 1;
+        bestCombo = Math.max(bestCombo, combo);
+        lastHumanPlay = playedAt;
+        tone(440 + Math.min(combo, 8) * 38, .055, combo > 3 ? 'square' : 'sine');
+        if (combo === 4 || combo === 7) vibrate(16);
+        setStatus(combo >= 4 ? `Hot streak! ${combo} precise plays` : 'Placed—pick your next card and pile!');
+      } else {
+        tone(260, .05, 'triangle', .035);
+        setStatus('Player 2 placed a card!');
+      }
       render();
-      if (checkWinner()) return;
+      if (checkWinner()) return true;
       scheduleStallCheck();
+      return true;
+    }
+
+    function playSelectedOnPile(pileIndex) {
+      if (!selectedPlay) {
+        tone(150, .045, 'triangle', .02);
+        setStatus('Pick a card first, then choose its center pile');
+        return;
+      }
+      playCardOnPile(selectedPlay.sideKey, selectedPlay.cardId, pileIndex);
+    }
+
+    function clearDrag() {
+      if (!dragState) return;
+      dragState.ghost?.remove();
+      dragState = null;
+      elements.centers.querySelectorAll('.drop-hover').forEach(pile => pile.classList.remove('drop-hover'));
+    }
+
+    function cardFromPointer(event) {
+      const button = event.target.closest('[data-card-id], [data-p2-card-id]');
+      if (!button || phase !== 'playing' || !game) return null;
+      const sideKey = button.hasAttribute('data-p2-card-id') ? 'ai' : 'human';
+      if (sideKey === 'ai' && gameMode !== 'local') return null;
+      return { button, sideKey, cardId: button.dataset.p2CardId || button.dataset.cardId };
+    }
+
+    function onCardPointerDown(event) {
+      const card = cardFromPointer(event);
+      if (!card) return;
+      event.preventDefault();
+      card.button.setPointerCapture?.(event.pointerId);
+      dragState = { ...card, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, dragging: false, ghost: null };
+    }
+
+    function onCardPointerMove(event) {
+      if (!dragState || dragState.pointerId !== event.pointerId) return;
+      const distance = Math.hypot(event.clientX - dragState.startX, event.clientY - dragState.startY);
+      if (!dragState.dragging && distance > 10) {
+        dragState.dragging = true;
+        const ghost = dragState.button.cloneNode(true);
+        ghost.removeAttribute('data-card-id');
+        ghost.removeAttribute('data-p2-card-id');
+        ghost.removeAttribute('aria-pressed');
+        ghost.classList.remove('selected-card');
+        ghost.classList.add('drag-card-ghost');
+        if (dragState.sideKey === 'ai') ghost.classList.add('p2-drag');
+        ghost.disabled = true;
+        document.body.appendChild(ghost);
+        dragState.ghost = ghost;
+      }
+      if (!dragState.dragging) return;
+      event.preventDefault();
+      dragState.ghost.style.left = `${event.clientX}px`;
+      dragState.ghost.style.top = `${event.clientY}px`;
+      elements.centers.querySelectorAll('.drop-hover').forEach(pile => pile.classList.remove('drop-hover'));
+      document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-pile-index]')?.classList.add('drop-hover');
+    }
+
+    function onCardPointerUp(event) {
+      if (!dragState || dragState.pointerId !== event.pointerId) return;
+      const pending = dragState;
+      if (pending.dragging) {
+        const pile = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-pile-index]');
+        clearDrag();
+        if (pile) playCardOnPile(pending.sideKey, pending.cardId, Number(pile.dataset.pileIndex));
+        else setStatus('Drop the card directly onto a center pile');
+      } else {
+        clearDrag();
+        const handIndex = game[pending.sideKey].hand.findIndex(card => card.id === pending.cardId);
+        if (handIndex >= 0) selectCard(pending.sideKey, handIndex);
+      }
     }
 
     function checkWinner() {
@@ -1017,27 +1216,38 @@
       phase = 'over';
       clearGameTimers();
       elements.timer.textContent = formatTime(elapsedBeforePause);
+      const wonTournament = humanWon && gameMode === 'tournament' && saved.tournamentStage >= 5;
       if (humanWon) {
         saved.wins += 1;
         saved.streak += 1;
         if (!saved.bestTime || elapsedBeforePause < saved.bestTime) saved.bestTime = Math.round(elapsedBeforePause);
+        if (gameMode === 'daily') {
+          const today = dateKey();
+          if (!saved.daily[today] || elapsedBeforePause < saved.daily[today]) saved.daily[today] = Math.round(elapsedBeforePause);
+        }
+        if (gameMode === 'tournament') saved.tournamentStage = saved.tournamentStage >= 5 ? 1 : saved.tournamentStage + 1;
+        if (gameMode === 'ai') saved.adaptive = Math.min(1.5, saved.adaptive + .18);
         tone(660, .14, 'sine', .08);
         setTimeout(() => tone(880, .18, 'sine', .07), 120);
         launchConfetti();
       } else {
         saved.losses += 1;
         saved.streak = 0;
+        if (gameMode === 'tournament') saved.tournamentStage = Math.max(1, saved.tournamentStage - 1);
+        if (gameMode === 'ai') saved.adaptive = Math.max(-1.5, saved.adaptive - .14);
         tone(170, .22, 'sawtooth', .045);
       }
       persist();
       renderStats();
       const title = document.getElementById('end-title');
-      title.textContent = humanWon ? 'You smoked the bot!' : 'Bot wins this dash';
+      title.textContent = gameMode === 'local'
+        ? (humanWon ? 'Player 1 wins!' : 'Player 2 wins!')
+        : humanWon ? (wonTournament ? 'Tournament champion!' : 'You smoked the rival!') : 'Rival wins this dash';
       title.className = `end-title ${humanWon ? 'win' : 'loss'}`;
       document.getElementById('end-eyebrow').textContent = humanWon ? `Win streak · ${saved.streak}` : 'Rematch ready';
       document.getElementById('end-summary').textContent = humanWon
-        ? 'Every card is gone. That was seriously fast.'
-        : 'The bot hit zero first. Your rematch is already shuffled.';
+        ? (gameMode === 'tournament' ? (wonTournament ? 'All five rivals beaten. The Speed Cup is yours!' : `Next rival unlocked · stage ${saved.tournamentStage} of 5`) : 'Every card is gone. That was seriously fast.')
+        : (gameMode === 'local' ? 'Player 2 hit zero first. Swap sides and race again.' : 'The rival hit zero first. Your rematch is already shuffled.');
       document.getElementById('end-time').textContent = formatTime(elapsedBeforePause);
       document.getElementById('end-combo').textContent = bestCombo;
       document.getElementById('end-record').textContent = `${saved.wins}–${saved.losses}`;
@@ -1061,7 +1271,7 @@
             startedAt = performance.now();
             elements.countdown.setAttribute('aria-label', 'Go');
             render();
-            setStatus('GO! Tap a glowing card');
+            setStatus(gameMode === 'local' ? 'GO! Pick a card and its pile—or drag it' : 'GO! Pick a card and its pile—or drag it');
             scheduleClock();
             scheduleAi();
             scheduleStallCheck();
@@ -1077,7 +1287,10 @@
       elements.pause.classList.remove('open');
       elements.end.classList.remove('open');
       elements.rules.classList.remove('open');
-      game = dealGame(Math.random);
+      gameRandom = gameMode === 'daily' ? seededRandom(`speed-${dateKey()}`) : Math.random;
+      game = dealGame(gameRandom, saved.variants);
+      clearDrag();
+      selectedPlay = null;
       elapsedBeforePause = 0;
       lastHumanPlay = 0;
       combo = 0;
@@ -1091,6 +1304,7 @@
 
     function pauseGame() {
       if (phase !== 'playing') return;
+      clearDrag();
       elapsedBeforePause = elapsedTime();
       phase = 'paused';
       clearGameTimers();
@@ -1113,6 +1327,8 @@
 
     function showMenu() {
       clearGameTimers();
+      clearDrag();
+      selectedPlay = null;
       phase = 'menu';
       game = null;
       elements.pause.classList.remove('open');
@@ -1128,11 +1344,14 @@
     }
     function closeRules() { elements.rules.classList.remove('open'); }
 
-    elements.playerHand.addEventListener('click', event => {
-      const button = event.target.closest('[data-card-id]');
-      if (!button || !game) return;
-      const handIndex = game.human.hand.findIndex(card => card.id === button.dataset.cardId);
-      if (handIndex >= 0) playHumanCard(handIndex);
+    elements.playerHand.addEventListener('pointerdown', onCardPointerDown);
+    elements.aiHand.addEventListener('pointerdown', onCardPointerDown);
+    document.addEventListener('pointermove', onCardPointerMove, { passive: false });
+    document.addEventListener('pointerup', onCardPointerUp);
+    document.addEventListener('pointercancel', clearDrag);
+    elements.centers.addEventListener('click', event => {
+      const pile = event.target.closest('[data-pile-index]');
+      if (pile) playSelectedOnPile(Number(pile.dataset.pileIndex));
     });
 
     document.getElementById('difficulty-row').addEventListener('click', event => {
@@ -1142,6 +1361,24 @@
       persist();
       renderStats();
       tone(310, .04, 'sine', .035);
+    });
+    document.getElementById('mode-row').addEventListener('click', event => {
+      const button = event.target.closest('[data-mode]');
+      if (!button) return;
+      gameMode = button.dataset.mode;
+      persist(); renderStats(); tone(380, .04, 'sine', .035);
+    });
+    document.getElementById('variant-row').addEventListener('click', event => {
+      const button = event.target.closest('[data-variant]');
+      if (!button) return;
+      saved.variants[button.dataset.variant] = !saved.variants[button.dataset.variant];
+      persist(); renderStats(); tone(saved.variants[button.dataset.variant] ? 520 : 220, .04, 'sine', .03);
+    });
+    document.getElementById('skin-row').addEventListener('click', event => {
+      const button = event.target.closest('[data-skin]');
+      if (!button) return;
+      skin = button.dataset.skin;
+      persist(); renderStats(); tone(600, .045, 'triangle', .035);
     });
 
     document.getElementById('start-button').addEventListener('click', startGame);
@@ -1168,7 +1405,14 @@
     window.addEventListener('keydown', event => {
       if (event.key >= '1' && event.key <= '5') {
         event.preventDefault();
-        playHumanCard(Number(event.key) - 1);
+        selectCard('human', Number(event.key) - 1);
+      } else if (gameMode === 'local' && ['q', 'w', 'e', 'r', 't'].includes(event.key.toLowerCase())) {
+        event.preventDefault();
+        selectCard('ai', ['q', 'w', 'e', 'r', 't'].indexOf(event.key.toLowerCase()));
+      } else if (phase === 'playing' && ['a', 's', 'd'].includes(event.key.toLowerCase())) {
+        event.preventDefault();
+        const pileIndex = ['a', 's', 'd'].indexOf(event.key.toLowerCase());
+        if (pileIndex < game.centers.length) playSelectedOnPile(pileIndex);
       } else if (event.key.toLowerCase() === 'p') {
         event.preventDefault();
         phase === 'paused' ? resumeGame() : pauseGame();

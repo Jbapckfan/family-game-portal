@@ -245,6 +245,34 @@ const refinements = [
     'S=Math.sqrt(v*v+B*B+Z*Z);window.__velocityProState||(window.__velocityProState={}),Object.assign(window.__velocityProState,{gameState:t,speed:S,position:[f,A,b],velocity:[v,B,Z],checkpoint:Qi.getState().lastCheckpoint,score:Qi.getState().score,isVictory:Qi.getState().isVictory,marbleId:Qi.getState().selectedMarbleId,recovering:Date.now()<respawnLock.current,finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
   ],
   ['!s&&i===Kn.PLAYING&&(r(!0),t(!0),setTimeout(()=>e(Kn.FINISHED),500))', '!s&&i===Kn.PLAYING&&(r(!0),t(!0),window.__velocityFinishPulse=Date.now(),setTimeout(()=>e(Kn.FINISHED),1500))'],
+
+  // Raise the visible and physical guardrails together. The rail centers move
+  // upward by half the added height, leaving their lower edge buried in the
+  // track while curves receive extra containment for lateral speed.
+  [
+    'Hc=({position:n,rotation:e=[0,0,0],size:t=[1.5,5,30]',
+    'Hc=({position:n,rotation:e=[0,0,0],size:t=[2,8,30]',
+  ],
+  [
+    'position:[n[0]+f+Math.cos(y)*(o/2)*Math.cos(Z)-Math.sin(Z)*1,b+Math.sin(Z)*(o/2)+1,n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[1.5,5,e*Math.abs(i-t)/g*1.18]',
+    'position:[n[0]+f+Math.cos(y)*(o/2)*Math.cos(Z)-Math.sin(Z)*1,b+Math.sin(Z)*(o/2)+3,n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+  ],
+  [
+    'position:[n[0]+f-Math.cos(y)*(o/2)*Math.cos(Z)+Math.sin(Z)*1,b-Math.sin(Z)*(o/2)+1,n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[1.5,5,e*Math.abs(i-t)/g*1.18]',
+    'position:[n[0]+f-Math.cos(y)*(o/2)*Math.cos(Z)+Math.sin(Z)*1,b-Math.sin(Z)*(o/2)+3,n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[0,v,Z],size:[2,9,e*Math.abs(i-t)/g*1.18]',
+  ],
+  [
+    'position:[l+Math.cos(d)*(t/2),c+Math.sin(i)*(t/2)+1,C-Math.sin(d)*(t/2)],rotation:[h,d,i],size:[1.5,5,g+2]',
+    'position:[l+Math.cos(d)*(t/2),c+Math.sin(i)*(t/2)+2.5,C-Math.sin(d)*(t/2)],rotation:[h,d,i],size:[2,8,g+2]',
+  ],
+  [
+    'position:[l-Math.cos(d)*(t/2),c-Math.sin(i)*(t/2)+1,C+Math.sin(d)*(t/2)],rotation:[h,d,i],size:[1.5,5,g+2]',
+    'position:[l-Math.cos(d)*(t/2),c-Math.sin(i)*(t/2)+2.5,C+Math.sin(d)*(t/2)],rotation:[h,d,i],size:[2,8,g+2]',
+  ],
+  [
+    'O.jsx(Hc,{position:[8,14,5],size:[1.5,5,72]}),O.jsx(Hc,{position:[-8,14,5],size:[1.5,5,72]})',
+    'O.jsx(Hc,{position:[8,16,5],size:[2,9,72]}),O.jsx(Hc,{position:[-8,16,5],size:[2,9,72]})',
+  ],
 ];
 
 for (const [before, after] of refinements) {

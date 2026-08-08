@@ -164,7 +164,8 @@
 const GRAVITY = 1650;
 const JUMP_FORCE = -560;
 const PLAYER_SIZE = 26;
-const PLAYER_SCREEN_X = 220;
+let PLAYER_SCREEN_X = 180;
+const GAMEPLAY_ZOOM = 1.2;
 const JUMP_BUFFER_TIME = 0.08;
 const COYOTE_TIME = 0.055;
 const SHIP_UP_FORCE = -1850;
@@ -344,13 +345,17 @@ const THEMES = [
 //   pad_yellow, pad_pink, pad_blue, pad_red
 //   orb_yellow, orb_blue, orb_pink, orb_green
 
-const LEVEL_LENGTH_SCALE = 3.0;
+// The old 3× stretch turned designed rhythms into long empty runs. Keep the
+// authored patterns compact, then add enough speed for a crisp arcade pace.
+const LEVEL_DISTANCE_SCALE = 0.82;
+const LEVEL_SPEED_SCALE = 1.2;
 
-function stretchLevel(level) {
-  const scaleX = x => Math.round(x * LEVEL_LENGTH_SCALE);
+function paceLevel(level) {
+  const scaleX = x => Math.round(x * LEVEL_DISTANCE_SCALE);
   return {
     ...level,
     length: scaleX(level.length),
+    speed: Math.round(level.speed * LEVEL_SPEED_SCALE),
     obstacles: level.obstacles.map(obs =>
       typeof obs.x === "number" ? { ...obs, x: scaleX(obs.x) } : { ...obs }
     ),
@@ -1422,12 +1427,37 @@ function buildLevels() {
     levels.push({obstacles:obs,orbs,length:10100,speed:350,name:'Titanium',theme:14,startMode:'cube'});
   }
 
-  // Mastery remixes revisit the most popular mechanics with longer spacing,
-  // higher speed, and fresh visual themes after the original campaign.
+  // Extra two-tap chains turn safe cube stretches into short rhythm bursts.
+  // Pink pads launch to step 1; the numbered rings cue two quick mid-air taps.
   [
-    { source: 2, name: 'Aftershock', theme: 14, speed: 330, stretch: 1.08 },
-    { source: 7, name: 'Event Horizon', theme: 8, speed: 350, stretch: 1.1 },
-    { source: 14, name: 'Victory Lap', theme: 5, speed: 370, stretch: 1.12 },
+    { level: 0, padX: 3650, steps: [[3800, 90, 'orb_pink'], [3990, 75, 'orb_yellow']] },
+    { level: 1, padX: 1600, steps: [[1750, 180, 'orb_pink'], [1900, 210, 'orb_yellow']] },
+    { level: 2, padX: 5600, steps: [[5750, 90, 'orb_pink'], [5890, 140, 'orb_yellow']] },
+    { level: 3, padX: 6350, steps: [[6500, 90, 'orb_pink'], [6650, 140, 'orb_yellow']] },
+    { level: 4, padX: 6050, steps: [[6200, 90, 'orb_pink'], [6350, 140, 'orb_yellow']] },
+    { level: 6, padX: 6500, steps: [[6650, 90, 'orb_pink'], [6820, 140, 'orb_yellow']] },
+    { level: 7, padX: 6400, steps: [[6550, 90, 'orb_pink'], [6720, 140, 'orb_yellow']] },
+    { level: 9, padX: 7850, steps: [[8000, 90, 'orb_pink'], [8150, 140, 'orb_yellow']] },
+  ].forEach(chain => {
+    const target = levels[chain.level];
+    const existingPad = target.obstacles.some(obstacle =>
+      obstacle.x === chain.padX && obstacle.type.startsWith('pad_')
+    );
+    if (!existingPad) {
+      target.obstacles.push({ type: 'pad_pink', x: chain.padX, y: 0, w: 30, h: 10, rapidTap: true });
+    }
+    chain.steps.forEach(([x, y, type], index) => {
+      target.obstacles.push({ type, x, y, rapidTap: true, rapidTapStep: index + 1 });
+    });
+    target.obstacles.sort((a, b) => a.x - b.x);
+  });
+
+  // Mastery remixes revisit the most popular mechanics at higher speed with
+  // slightly denser timing and fresh visual themes after the original campaign.
+  [
+    { source: 2, name: 'Aftershock', theme: 14, speed: 330, stretch: 0.95 },
+    { source: 7, name: 'Event Horizon', theme: 8, speed: 350, stretch: 0.96 },
+    { source: 14, name: 'Victory Lap', theme: 5, speed: 370, stretch: 0.98 },
   ].forEach(({ source, name, theme, speed, stretch }) => {
     const original = levels[source];
     levels.push({
@@ -1450,7 +1480,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const audio = new AudioEngine();
 const particles = new Particles();
-const LEVELS = buildLevels().map(stretchLevel);
+const LEVELS = buildLevels().map(paceLevel);
 
 let W, H, groundY, ceilingY;
 // Cached static render layers (sky, vignette, parallax tiles) — rebuilt on resize/theme change
@@ -1458,6 +1488,7 @@ const staticCache = { key:'', sky:null, vignette:null, parallax:null };
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = window.innerWidth; H = window.innerHeight;
+  PLAYER_SCREEN_X = Math.min(200, Math.max(118, W * 0.28));
   canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -2413,6 +2444,13 @@ function draw() {
   ensureStaticLayers();
   ctx.save();
   if (screenShake>0.5) ctx.translate((Math.random()-0.5)*screenShake,(Math.random()-0.5)*screenShake);
+  const zoomGameplay = state === 'playing' || state === 'dead';
+  if (zoomGameplay) {
+    ctx.save();
+    ctx.translate(PLAYER_SCREEN_X, groundY);
+    ctx.scale(GAMEPLAY_ZOOM, GAMEPLAY_ZOOM);
+    ctx.translate(-PLAYER_SCREEN_X, -groundY);
+  }
 
   // ── PREMIUM BACKGROUND ──
   const bgRgb = hexToRgb(theme.accent);
@@ -2741,6 +2779,13 @@ function draw() {
         // Shine highlight
         ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.4;
         ctx.beginPath();ctx.arc(ox-4,oy-4,2,0,6.28);ctx.fill();
+        if (obs.rapidTapStep) {
+          ctx.globalAlpha = 0.9;
+          ctx.fillStyle = '#fff';
+          ctx.font = "700 9px 'Space Mono', monospace";
+          ctx.textAlign = 'center';
+          ctx.fillText(`TAP ${obs.rapidTapStep}`, ox, oy - 24);
+        }
         ctx.restore();
       }
     });
@@ -3121,6 +3166,8 @@ function draw() {
   }
 
   particles.draw(ctx);
+
+  if (zoomGameplay) ctx.restore();
 
   if(deathFlash>0.01){
     // Red flash with radial white center

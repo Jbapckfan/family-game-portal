@@ -1491,6 +1491,33 @@ function buildLevels() {
     target.obstacles.sort((a, b) => a.x - b.x);
   });
 
+  // Curated gravity lanes bring ceiling-running into the early campaign.
+  // Each lane has a deterministic up/down gate, a generous surface-transition
+  // runway, then ceiling hazards that use the same jump rhythm as ground spikes.
+  [
+    { level: 0, id: 'awakening-flip', entryX: 4920, exitX: 5680, spikes: [5300, 5500] },
+    { level: 1, id: 'pulse-flip', entryX: 5200, exitX: 6000, spikes: [5500, 5800] },
+    { level: 3, id: 'radiance-flip', entryX: 6750, exitX: 7600, spikes: [7150, 7400] },
+    { level: 6, id: 'mirage-flip', entryX: 4300, exitX: 5200, spikes: [4700, 5000] },
+  ].forEach(section => {
+    const target = levels[section.level];
+    target.obstacles.push(
+      {
+        type: 'portal_gravity', x: section.entryX, y: 0,
+        gravitySection: section.id, gravityGate: 'up',
+      },
+      ...section.spikes.map(x => ({
+        type: 'ceiling_spike', x, y: 0, w: 30, h: 30,
+        gravitySection: section.id,
+      })),
+      {
+        type: 'portal_gravity', x: section.exitX, y: 0,
+        gravitySection: section.id, gravityGate: 'down',
+      },
+    );
+    target.obstacles.sort((a, b) => a.x - b.x);
+  });
+
   // Mastery remixes revisit the most popular mechanics at higher speed with
   // slightly denser timing and fresh visual themes after the original campaign.
   [
@@ -1866,7 +1893,11 @@ function checkPortals(worldX) {
 
     if (obs.type === 'portal_gravity') {
       obs._triggered = true;
-      player.gravFlipped = !player.gravFlipped;
+      // Labeled campaign gates are directional so they always leave the player
+      // on the intended surface. Legacy gates retain their toggle behavior.
+      player.gravFlipped = obs.gravityGate
+        ? obs.gravityGate === 'up'
+        : !player.gravFlipped;
       player.vy = 0;
       coyoteTimer = 0;
       audio.gravFlip();
@@ -2802,7 +2833,14 @@ function draw() {
         ctx.beginPath();ctx.ellipse(sx,py,8,38,0,0,6.28);ctx.stroke();
         // Arrow icons
         ctx.fillStyle='#fff';ctx.globalAlpha=pulse*0.7;ctx.font='bold 16px system-ui';ctx.textAlign='center';
-        ctx.fillText('\u2195',sx,py+5);
+        ctx.fillText(obs.gravityGate==='up'?'\u2191':obs.gravityGate==='down'?'\u2193':'\u2195',sx,py+5);
+        if(obs.gravityGate){
+          ctx.globalAlpha=Math.min(1,pulse+0.15);
+          ctx.fillStyle='rgba(5,8,22,0.82)';
+          ctx.fillRect(sx-34,py-70,68,18);
+          ctx.fillStyle='#dbeafe';ctx.font='800 10px system-ui';ctx.letterSpacing='1px';
+          ctx.fillText(obs.gravityGate==='up'?'FLIP UP':'FLIP DOWN',sx,py-57);
+        }
         ctx.restore();
       }
       else if(obs.type==='portal_mode'){

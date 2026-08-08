@@ -55,7 +55,10 @@ if (!(zoom >= 1.15 && zoom <= 1.3)) throw new Error(`Gameplay zoom ${zoom} is ou
 const gaps = [];
 let rapidTapRings = 0;
 let widestGap = 0;
+const gravityLaneIds = new Set();
 const gravity = 1650;
+const cubeSize = 26;
+const arenaHeight = 300;
 
 for (const level of levels) {
   if (!Number.isFinite(level.speed) || level.speed < 285) {
@@ -71,6 +74,59 @@ for (const level of levels) {
     const gap = Math.max(0, obstacles[index].x - (previous.x + (previous.w || 0)));
     gaps.push(gap);
     widestGap = Math.max(widestGap, gap);
+  }
+
+  const laneIds = new Set(
+    obstacles.filter(obstacle => obstacle.gravitySection).map(obstacle => obstacle.gravitySection),
+  );
+  for (const laneId of laneIds) {
+    if (gravityLaneIds.has(laneId)) throw new Error(`Gravity lane ${laneId} is duplicated.`);
+    gravityLaneIds.add(laneId);
+
+    const laneObjects = obstacles.filter(obstacle => obstacle.gravitySection === laneId);
+    const gates = laneObjects.filter(obstacle => obstacle.type === 'portal_gravity');
+    const ceilingSpikes = laneObjects.filter(obstacle => obstacle.type === 'ceiling_spike');
+    if (gates.length !== 2 || gates[0].gravityGate !== 'up' || gates[1].gravityGate !== 'down') {
+      throw new Error(`${level.name} ${laneId} needs one FLIP UP gate followed by one FLIP DOWN gate.`);
+    }
+    if (ceilingSpikes.length < 2 || ceilingSpikes.some(spike => spike.x <= gates[0].x || spike.x >= gates[1].x)) {
+      throw new Error(`${level.name} ${laneId} needs at least two ceiling spikes between its gates.`);
+    }
+
+    let modeAtEntry = level.startMode || 'cube';
+    let flippedAtEntry = false;
+    for (const obstacle of obstacles) {
+      if (obstacle.x >= gates[0].x) break;
+      if (obstacle.type === 'portal_mode') modeAtEntry = obstacle.mode;
+      if (obstacle.type === 'portal_gravity') {
+        flippedAtEntry = obstacle.gravityGate
+          ? obstacle.gravityGate === 'up'
+          : !flippedAtEntry;
+      }
+    }
+    if (modeAtEntry !== 'cube' || flippedAtEntry) {
+      throw new Error(`${level.name} ${laneId} must begin in a normal upright cube section.`);
+    }
+
+    const surfaceTravelTime = Math.sqrt((2 * (arenaHeight - cubeSize)) / gravity);
+    const firstSpike = ceilingSpikes[0];
+    const entryRunwayTime = (firstSpike.x - gates[0].x - cubeSize) / level.speed;
+    if (entryRunwayTime < surfaceTravelTime + 0.08) {
+      throw new Error(`${level.name} ${laneId} does not leave enough time to reach the ceiling.`);
+    }
+
+    const nextGroundSpike = obstacles.find(obstacle =>
+      obstacle.type === 'spike' && obstacle.x > gates[1].x
+    );
+    if (nextGroundSpike) {
+      const recoveryTime = (nextGroundSpike.x - gates[1].x - cubeSize) / level.speed;
+      if (recoveryTime < surfaceTravelTime) {
+        const clearance = arenaHeight - cubeSize - 0.5 * gravity * recoveryTime ** 2;
+        if (clearance <= nextGroundSpike.h + 12) {
+          throw new Error(`${level.name} ${laneId} drops the cube into its next ground spike.`);
+        }
+      }
+    }
   }
 
   const rapidSteps = obstacles.filter(obstacle => obstacle.rapidTapStep);
@@ -111,6 +167,10 @@ for (const level of levels) {
 
 if (widestGap > 500) throw new Error(`Obstacle gap ${widestGap}px is still too wide.`);
 if (rapidTapRings < 20) throw new Error(`Expected at least 20 rapid-tap rings, found ${rapidTapRings}.`);
+if (gravityLaneIds.size < 4) throw new Error(`Expected at least 4 curated gravity lanes, found ${gravityLaneIds.size}.`);
+if (!html.includes("obs.gravityGate==='up'?'FLIP UP':'FLIP DOWN'")) {
+  throw new Error('Gravity gates are missing their directional labels.');
+}
 
 gaps.sort((a, b) => a - b);
 const medianGap = gaps[Math.floor(gaps.length * 0.5)];
@@ -119,5 +179,5 @@ const speeds = levels.map(level => level.speed);
 
 console.log(
   `Geometry Dash validated: ${levels.length} levels, ${skins.length} persistent cube skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
-  `${rapidTapRings} rapid-tap rings, median gap ${medianGap}px, 90th-percentile gap ${p90Gap}px, zoom ${zoom}×.`,
+  `${rapidTapRings} rapid-tap rings, ${gravityLaneIds.size} gravity lanes, median gap ${medianGap}px, 90th-percentile gap ${p90Gap}px, zoom ${zoom}×.`,
 );

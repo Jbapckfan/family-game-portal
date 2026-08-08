@@ -550,6 +550,23 @@
             animation: slotPulse 1.5s ease-in-out infinite;
         }
 
+        /* Keep all six late-game mirrors visible without horizontal clipping. */
+        @media (max-width: 500px) {
+            .mirror-toolbar {
+                padding-inline: 6px;
+            }
+
+            .mirror-slots-row {
+                width: 100%;
+                gap: 4px;
+                justify-content: center;
+            }
+
+            .mirror-slot {
+                width: clamp(46px, calc((100vw - 44px) / 6), 60px);
+            }
+        }
+
         @keyframes slotPulse {
             0%, 100% { box-shadow: 0 0 12px rgba(0, 255, 204, 0.4), inset 0 0 8px rgba(0, 255, 204, 0.1); }
             50% { box-shadow: 0 0 20px rgba(0, 255, 204, 0.6), inset 0 0 12px rgba(0, 255, 204, 0.2); }
@@ -1045,7 +1062,7 @@
             },
             {
                 name: "ZIGZAG",
-                par: 3,
+                par: 4,
                 laser: { xPct: 0.05, yPct: 0.2, angle: 0 },
                 target: { xPct: 0.85, yPct: 0.2 },
                 obstacles: [
@@ -1055,6 +1072,7 @@
                 mirrors: [
                     { angle: M45, length: 55 },
                     { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
                     { angle: M_45, length: 55 }
                 ]
             },
@@ -1064,9 +1082,9 @@
                 laser: { xPct: 0.05, yPct: 0.7, angle: 0 },
                 target: { xPct: 0.92, yPct: 0.7 },
                 obstacles: [
-                    { xPct: 0.22, yPct: 0.35, wPct: 0.04, hPct: 0.65 },
-                    { xPct: 0.48, yPct: 0.0, wPct: 0.04, hPct: 0.55 },
-                    { xPct: 0.74, yPct: 0.35, wPct: 0.04, hPct: 0.65 }
+                    { xPct: 0.22, yPct: 0.56, wPct: 0.04, hPct: 0.44 },
+                    { xPct: 0.48, yPct: 0.46, wPct: 0.04, hPct: 0.54 },
+                    { xPct: 0.74, yPct: 0.36, wPct: 0.04, hPct: 0.64 }
                 ],
                 mirrors: [
                     { angle: M_45, length: 55 },
@@ -1082,8 +1100,8 @@
                 target: { xPct: 0.92, yPct: 0.85 },
                 obstacles: [
                     { xPct: 0.18, yPct: 0.0, wPct: 0.04, hPct: 0.5 },
-                    { xPct: 0.36, yPct: 0.5, wPct: 0.04, hPct: 0.5 },
-                    { xPct: 0.54, yPct: 0.0, wPct: 0.04, hPct: 0.5 },
+                    { xPct: 0.36, yPct: 0.0, wPct: 0.04, hPct: 0.5 },
+                    { xPct: 0.58, yPct: 0.5, wPct: 0.04, hPct: 0.5 },
                     { xPct: 0.72, yPct: 0.5, wPct: 0.04, hPct: 0.5 }
                 ],
                 mirrors: [
@@ -1151,7 +1169,7 @@
                 target: { xPct: 0.12, yPct: 0.15 },
                 obstacles: [
                     { xPct: 0.0, yPct: 0.42, wPct: 0.58, hPct: 0.05 },
-                    { xPct: 0.62, yPct: 0.18, wPct: 0.04, hPct: 0.62 }
+                    { xPct: 0.62, yPct: 0.25, wPct: 0.04, hPct: 0.5 }
                 ],
                 mirrors: [
                     { angle: M_45, length: 55 },
@@ -1185,10 +1203,10 @@
                 laser: { xPct: 0.05, yPct: 0.82, angle: 0 },
                 target: { xPct: 0.94, yPct: 0.12 },
                 obstacles: [
-                    { xPct: 0.2, yPct: 0.0, wPct: 0.04, hPct: 0.62 },
-                    { xPct: 0.4, yPct: 0.38, wPct: 0.04, hPct: 0.62 },
-                    { xPct: 0.6, yPct: 0.0, wPct: 0.04, hPct: 0.62 },
-                    { xPct: 0.8, yPct: 0.38, wPct: 0.04, hPct: 0.62 }
+                    { xPct: 0.18, yPct: 0.0, wPct: 0.03, hPct: 0.62 },
+                    { xPct: 0.38, yPct: 0.38, wPct: 0.03, hPct: 0.62 },
+                    { xPct: 0.58, yPct: 0.0, wPct: 0.03, hPct: 0.62 },
+                    { xPct: 0.78, yPct: 0.38, wPct: 0.03, hPct: 0.62 }
                 ],
                 splitters: [
                     { xPct: 0.5, yPct: 0.22, angle: M45, length: 55 }

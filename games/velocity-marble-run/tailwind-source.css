@@ -1,0 +1,8 @@
+/*
+ * Compile with Tailwind 3.4.17 against index.html, pro-polish.js, and the
+ * production game bundle. The generated stylesheet is checked in so the game
+ * never depends on the runtime CDN for its layout.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -445,8 +445,10 @@
             z-index: 100;
             display: none;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             flex-direction: column;
+            overflow-y: auto;
+            padding: max(28px, env(safe-area-inset-top)) 0 max(28px, env(safe-area-inset-bottom));
         }
 
         .level-select-overlay.active {
@@ -466,7 +468,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 16px;
-            max-width: 560px;
+            width: min(100%, 560px);
             padding: 0 20px;
         }
 
@@ -475,6 +477,7 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
             }
+
         }
 
         .level-select-card {
@@ -490,6 +493,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
+        }
+
+        @media (max-width: 500px) {
+            .level-select-card {
+                width: 100%;
+                height: 94px;
+            }
         }
 
         .level-select-card:hover:not(.locked) {
@@ -1326,6 +1336,131 @@
                     { angle: M45, length: 55 },
                     { angle: M45, length: 55 },
                     { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 }
+                ]
+            },
+            {
+                name: "DOUBLE TROUBLE",
+                par: 4,
+                minimumMirrors: 4,
+                laser: { xPct: 0.05, yPct: 0.18, angle: 0 },
+                target: { xPct: 0.92, yPct: 0.18 },
+                obstacles: [
+                    { xPct: 0.28, yPct: 0.0, wPct: 0.04, hPct: 0.58 },
+                    { xPct: 0.62, yPct: 0.42, wPct: 0.04, hPct: 0.58 }
+                ],
+                mirrors: [
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "NEEDLE THREAD",
+                par: 5,
+                minimumMirrors: 5,
+                laser: { xPct: 0.05, yPct: 0.82, angle: 0 },
+                target: { xPct: 0.92, yPct: 0.18 },
+                obstacles: [
+                    { xPct: 0.26, yPct: 0.42, wPct: 0.04, hPct: 0.58 },
+                    { xPct: 0.62, yPct: 0.0, wPct: 0.04, hPct: 0.58 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "TRIPLE WEAVE",
+                par: 6,
+                minimumMirrors: 6,
+                laser: { xPct: 0.05, yPct: 0.15, angle: 0 },
+                target: { xPct: 0.94, yPct: 0.85 },
+                obstacles: [
+                    { xPct: 0.22, yPct: 0.0, wPct: 0.04, hPct: 0.56 },
+                    { xPct: 0.5, yPct: 0.44, wPct: 0.04, hPct: 0.56 },
+                    { xPct: 0.78, yPct: 0.0, wPct: 0.04, hPct: 0.56 }
+                ],
+                mirrors: [
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 }
+                ]
+            },
+            {
+                name: "PRISM RELAY",
+                par: 6,
+                minimumMirrors: 6,
+                laser: { xPct: 0.05, yPct: 0.85, angle: 0 },
+                target: { xPct: 0.94, yPct: 0.15 },
+                obstacles: [
+                    { xPct: 0.22, yPct: 0.44, wPct: 0.04, hPct: 0.56 },
+                    { xPct: 0.5, yPct: 0.0, wPct: 0.04, hPct: 0.56 },
+                    { xPct: 0.78, yPct: 0.44, wPct: 0.04, hPct: 0.56 }
+                ],
+                splitters: [
+                    { xPct: 0.36, yPct: 0.18, angle: M45, length: 55 },
+                    { xPct: 0.66, yPct: 0.82, angle: M_45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "SWITCHBACK",
+                par: 6,
+                minimumMirrors: 6,
+                laser: { xPct: 0.05, yPct: 0.86, angle: 0 },
+                target: { xPct: 0.1, yPct: 0.08 },
+                obstacles: [
+                    { xPct: 0.0, yPct: 0.68, wPct: 0.58, hPct: 0.04 },
+                    { xPct: 0.32, yPct: 0.42, wPct: 0.68, hPct: 0.04 },
+                    { xPct: 0.0, yPct: 0.16, wPct: 0.58, hPct: 0.04 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 }
+                ]
+            },
+            {
+                name: "MASTER WEAVE",
+                par: 6,
+                minimumMirrors: 6,
+                laser: { xPct: 0.05, yPct: 0.12, angle: 0 },
+                target: { xPct: 0.95, yPct: 0.86 },
+                obstacles: [
+                    { xPct: 0.18, yPct: 0.0, wPct: 0.03, hPct: 0.56 },
+                    { xPct: 0.3, yPct: 0.0, wPct: 0.03, hPct: 0.56 },
+                    { xPct: 0.58, yPct: 0.44, wPct: 0.03, hPct: 0.56 },
+                    { xPct: 0.68, yPct: 0.44, wPct: 0.03, hPct: 0.56 },
+                    { xPct: 0.9, yPct: 0.0, wPct: 0.03, hPct: 0.56 }
+                ],
+                splitters: [
+                    { xPct: 0.4, yPct: 0.82, angle: M_45, length: 55 },
+                    { xPct: 0.73, yPct: 0.18, angle: M45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
                     { angle: M45, length: 55 }
                 ]
             }

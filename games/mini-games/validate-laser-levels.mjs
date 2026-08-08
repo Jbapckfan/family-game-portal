@@ -149,6 +149,16 @@ levels.forEach((level, index) => {
     console.error(`FAIL ${index + 1}. ${level.name}: ${diagnostics.join(', ')}`);
     return;
   }
+  if (level.minimumMirrors) {
+    const easierLayouts = viewports.filter(viewport =>
+      solveLevel(level, viewport.width, viewport.height, level.minimumMirrors - 1)
+    );
+    if (easierLayouts.length) {
+      failures += 1;
+      console.error(`FAIL ${index + 1}. ${level.name}: easier than its ${level.minimumMirrors}-mirror challenge on ${easierLayouts.map(viewport => viewport.name).join(', ')}`);
+      return;
+    }
+  }
   const desktopPath = results[0].path;
   const turns = Math.max(0, desktopPath.length - 2);
   const route = desktopPath.map(point => `(${Math.round(point.x)},${Math.round(point.y)})`).join(' -> ');

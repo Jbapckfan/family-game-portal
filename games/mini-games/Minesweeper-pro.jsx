@@ -11,6 +11,9 @@ const MQ_MISSIONS = [
   { name: 'Raptor Nest', story: 'Protect every dinosaur egg', size: 10, mines: 14, medals: [115, 180] },
   { name: 'Meteor Storm', story: 'Defuse the crater field', size: 11, mines: 18, medals: [145, 220] },
   { name: 'Final Frontier', story: 'Clear the ultimate danger zone', size: 12, mines: 24, medals: [190, 290] },
+  { name: 'Neon Caverns', story: 'Reignite the underground grid', size: 12, mines: 26, medals: [205, 310] },
+  { name: 'Laundry Blackout', story: 'Rescue socks from the dark cycle', size: 13, mines: 30, medals: [240, 360] },
+  { name: 'Master Grid', story: 'Complete the grand logic gauntlet', size: 14, mines: 36, medals: [300, 450] },
 ];
 
 const MQ_THEMES = {

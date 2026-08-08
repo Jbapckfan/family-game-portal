@@ -1128,6 +1128,79 @@
                     { angle: M45, length: 55 },
                     { angle: M_45, length: 55 }
                 ]
+            },
+            {
+                name: "CROSS CURRENT",
+                par: 4,
+                laser: { xPct: 0.05, yPct: 0.5, angle: 0 },
+                target: { xPct: 0.92, yPct: 0.5 },
+                obstacles: [
+                    { xPct: 0.43, yPct: 0.22, wPct: 0.05, hPct: 0.58 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "U-TURN",
+                par: 3,
+                laser: { xPct: 0.05, yPct: 0.86, angle: 0 },
+                target: { xPct: 0.12, yPct: 0.15 },
+                obstacles: [
+                    { xPct: 0.0, yPct: 0.42, wPct: 0.58, hPct: 0.05 },
+                    { xPct: 0.62, yPct: 0.18, wPct: 0.04, hPct: 0.62 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "TWIN PRISM",
+                par: 4,
+                laser: { xPct: 0.05, yPct: 0.28, angle: 0 },
+                target: { xPct: 0.9, yPct: 0.78 },
+                obstacles: [
+                    { xPct: 0.36, yPct: 0.4, wPct: 0.05, hPct: 0.6 },
+                    { xPct: 0.7, yPct: 0.0, wPct: 0.05, hPct: 0.55 }
+                ],
+                splitters: [
+                    { xPct: 0.24, yPct: 0.28, angle: M45, length: 55 },
+                    { xPct: 0.57, yPct: 0.72, angle: M_45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 }
+                ]
+            },
+            {
+                name: "FINAL CIRCUIT",
+                par: 6,
+                laser: { xPct: 0.05, yPct: 0.82, angle: 0 },
+                target: { xPct: 0.94, yPct: 0.12 },
+                obstacles: [
+                    { xPct: 0.2, yPct: 0.0, wPct: 0.04, hPct: 0.62 },
+                    { xPct: 0.4, yPct: 0.38, wPct: 0.04, hPct: 0.62 },
+                    { xPct: 0.6, yPct: 0.0, wPct: 0.04, hPct: 0.62 },
+                    { xPct: 0.8, yPct: 0.38, wPct: 0.04, hPct: 0.62 }
+                ],
+                splitters: [
+                    { xPct: 0.5, yPct: 0.22, angle: M45, length: 55 }
+                ],
+                mirrors: [
+                    { angle: M_45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M45, length: 55 },
+                    { angle: M_45, length: 55 },
+                    { angle: M45, length: 55 }
+                ]
             }
         ];
 

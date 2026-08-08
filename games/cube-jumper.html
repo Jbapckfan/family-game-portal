@@ -124,7 +124,7 @@
 <div class="screen" id="menu">
   <a class="home-link" href="../index.html">Home</a>
   <div class="game-title">GEOMETRY DASH</div>
-  <div class="subtitle">15 Levels · 7 Modes · Endless Fun</div>
+  <div class="subtitle">18 Levels · 7 Modes · Endless Fun</div>
   <div class="section-label">Select Level</div>
   <div class="level-grid" id="level-grid"></div>
   <button class="btn" id="play-btn">Begin</button>
@@ -1422,6 +1422,24 @@ function buildLevels() {
     levels.push({obstacles:obs,orbs,length:10100,speed:350,name:'Titanium',theme:14,startMode:'cube'});
   }
 
+  // Mastery remixes revisit the most popular mechanics with longer spacing,
+  // higher speed, and fresh visual themes after the original campaign.
+  [
+    { source: 2, name: 'Aftershock', theme: 14, speed: 330, stretch: 1.08 },
+    { source: 7, name: 'Event Horizon', theme: 8, speed: 350, stretch: 1.1 },
+    { source: 14, name: 'Victory Lap', theme: 5, speed: 370, stretch: 1.12 },
+  ].forEach(({ source, name, theme, speed, stretch }) => {
+    const original = levels[source];
+    levels.push({
+      obstacles: original.obstacles.map(obstacle => ({ ...obstacle, x: obstacle.x * stretch })),
+      orbs: original.orbs.map(orb => ({ ...orb, x: orb.x * stretch, collected: false })),
+      length: original.length * stretch,
+      speed,
+      name,
+      theme,
+      startMode: original.startMode,
+    });
+  });
   return levels;
 }
 

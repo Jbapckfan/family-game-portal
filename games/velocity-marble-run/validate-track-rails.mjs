@@ -32,7 +32,7 @@ if (!bundle.includes('O.jsx("boxGeometry",{args:t})')) {
 if (!patcher.includes('Raise the visible and physical guardrails together')) {
   throw new Error('The repeatable bundle patch is missing its guardrail upgrade.');
 }
-if ((html.match(/index-velocity-v2\.js\?flow=halfpipe-orbit-v1/g) || []).length !== 2) {
+if ((html.match(/index-velocity-v2\.js\?finish=guaranteed-v1/g) || []).length !== 2) {
   throw new Error('The page is not cache-busting both the preload and game module for the flowing track.');
 }
 
@@ -59,8 +59,27 @@ const proPolish = await readFile(new URL('./pro-polish.js', import.meta.url), 'u
 for (const fragment of ['pointerdown', 'pointermove', 'DOUBLE-TAP RESET', 'cameraOrbit.pitch']) {
   if (!proPolish.includes(fragment)) throw new Error(`Camera control is missing: ${fragment}`);
 }
-if (!html.includes('pro-polish.js?flow=halfpipe-orbit-v1')) {
+if (!html.includes('pro-polish.js?finish=guaranteed-v1')) {
   throw new Error('The camera gesture script is not cache-busted.');
+}
+
+const finishRequirements = [
+  ['live-state finish callback', 'const state=Qi.getState();return state.gameState!==Kn.PLAYING', 1],
+  ['one-shot finish lock', 'window.__velocityFinishLocked=!0', 1],
+  ['checkpoint completion', 'state.setLastCheckpoint(4)', 1],
+  ['victory assignment', 'state.setVictory(!0)', 1],
+  ['upright enlarged finish trigger', 'type:"Static",args:[12],position:n,isTrigger:!0,onCollide:finishRun', 1],
+  ['visible upright finish gate', 'O.jsx(vD,{position:[0,-135,-455]})', 1],
+  ['high-speed finish fallback', 'b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()', 1],
+  ['new-run finish reset', 'window.__velocityFinishLocked=!1,window.__velocityFinishPulse=0', 1],
+];
+
+for (const [description, fragment, expected] of finishRequirements) {
+  const actual = count(fragment);
+  if (actual !== expected) throw new Error(`Expected ${description} ${expected} time(s), found ${actual}.`);
+}
+if (!proPolish.includes('runStarted = 0;')) {
+  throw new Error('The finish celebration does not reset before replay.');
 }
 
 const courseStart = bundle.indexOf('yD=()=>');
@@ -96,5 +115,6 @@ if (straightClearance < marbleDiameter * 5.5 || curveClearance < marbleDiameter 
 
 console.log(
   `Velocity flow validated: ${straightGrades.length} straights and ${curveGrades.length} curves never climb; ` +
-  `canted walls retain ${straightClearance.toFixed(1)}–${curveClearance.toFixed(1)} marble diameters of height; manual orbit is wired.`,
+  `canted walls retain ${straightClearance.toFixed(1)}–${curveClearance.toFixed(1)} marble diameters of height; ` +
+  `manual orbit and redundant finish detection are wired.`,
 );

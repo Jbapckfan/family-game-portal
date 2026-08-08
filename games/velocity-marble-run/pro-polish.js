@@ -266,6 +266,7 @@
       }
     } else if (state.gameState === "FINISHED") {
       ui.speedlines.style.opacity = "0";
+      runStarted = 0;
     } else if (state.gameState === "MENU") {
       runStarted = 0;
       ui.finish.classList.remove("show");

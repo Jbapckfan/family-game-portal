@@ -323,6 +323,35 @@ const refinements = [
     'V.set(f+H,A+g0+W*8,b+q)}C.current.lerp(V,ZD)',
     'V.set(f+H,A+g0+W*8,b+q)}const orbit=window.__velocityCameraOrbit;if(orbit&&(orbit.yaw||orbit.pitch)){const targetY=A+2,offsetX=V.x-f,offsetY=V.y-targetY,offsetZ=V.z-b,distance=Math.max(1,Math.hypot(offsetX,offsetY,offsetZ)),basePitch=Math.asin(Math.max(-1,Math.min(1,offsetY/distance))),cameraPitch=Math.max(-.12,Math.min(1.25,basePitch+orbit.pitch)),cameraYaw=Math.atan2(offsetX,offsetZ)+orbit.yaw,flatDistance=distance*Math.cos(cameraPitch);V.set(f+Math.sin(cameraYaw)*flatDistance,targetY+Math.sin(cameraPitch)*distance,b+Math.cos(cameraYaw)*flatDistance)}C.current.lerp(V,ZD)',
   ],
+
+  // The finish collider used to capture MENU when the course first mounted,
+  // so it ignored every later collision. Read the live store at impact time,
+  // lock the sequence against duplicate rewards, and show the result quickly.
+  [
+    'vD=({position:n})=>{const e=Qi(a=>a.setGameState),t=Qi(a=>a.setVictory),i=Qi(a=>a.gameState),[s,r]=ao.useState(!1),[o]=yC(()=>({type:"Static",args:[8],position:n,isTrigger:!0,onCollide:()=>{!s&&i===Kn.PLAYING&&(r(!0),t(!0),window.__velocityFinishPulse=Date.now(),setTimeout(()=>e(Kn.FINISHED),1500))}}));return O.jsxs("mesh",{ref:o,position:n,rotation:[Math.PI/2,0,0],children:[O.jsx("torusGeometry",{args:[10,1,12,32]}),O.jsx("meshStandardMaterial",{color:s?"#00ff00":"#00ff88",emissive:s?"#00ff00":"#00ff44",emissiveIntensity:s?5:2,metalness:.9,roughness:.1})]})}',
+    'vD=({position:n})=>{const[s,r]=ao.useState(!1),finishRun=()=>{const state=Qi.getState();return state.gameState!==Kn.PLAYING||window.__velocityFinishLocked?!1:(window.__velocityFinishLocked=!0,r(!0),state.setLastCheckpoint(4),state.setVictory(!0),window.__velocityFinishPulse=Date.now(),setTimeout(()=>Qi.getState().setGameState(Kn.FINISHED),900),!0)};window.__velocityCompleteRun=finishRun;const[o]=yC(()=>({type:"Static",args:[12],position:n,isTrigger:!0,onCollide:finishRun}));return O.jsxs("mesh",{ref:o,position:n,children:[O.jsx("torusGeometry",{args:[10,1,12,32]}),O.jsx("meshStandardMaterial",{color:s?"#00ff00":"#00ff88",emissive:s?"#00ff00":"#00ff44",emissiveIntensity:s?5:2,metalness:.9,roughness:.1})]})}',
+  ],
+  [
+    'O.jsx(vD,{position:[0,-142,-460]})',
+    'O.jsx(vD,{position:[0,-135,-455]})',
+  ],
+
+  // Reset the one-shot finish lock for each new run.
+  [
+    'if(t===Kn.PLAYING){const f=tu[r]||[0,13,8];',
+    'if(t===Kn.PLAYING){window.__velocityFinishLocked=!1,window.__velocityFinishPulse=0;const f=tu[r]||[0,13,8];',
+  ],
+
+  // A fast marble can cross a physics trigger between simulation steps on an
+  // older iPad. Crossing the final platform now completes the run as a backup.
+  [
+    'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+    'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()){p.velocity.set(0,0,0),l.current=[0,0,0];return}if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+  ],
+  [
+    'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&r>=4&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()){p.velocity.set(0,0,0),l.current=[0,0,0];return}if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+    'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()){p.velocity.set(0,0,0),l.current=[0,0,0];return}if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
+  ],
 ];
 
 for (const [before, after] of refinements) {

@@ -1,0 +1,75 @@
+.minequest-shell {
+  --accent: #fb7185;
+  --accent-soft: rgba(251, 113, 133, .18);
+  --panel: rgba(8, 15, 30, .86);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 50% 15%, var(--accent-soft), transparent 34rem),
+    linear-gradient(145deg, #020617 0%, #111827 52%, #020617 100%);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+}
+.minequest-shell.theme-space { --accent:#67e8f9; --accent-soft:rgba(34,211,238,.16); }
+.minequest-shell.theme-laundry { --accent:#c4b5fd; --accent-soft:rgba(167,139,250,.18); }
+.minequest-shell.theme-dino { --accent:#bef264; --accent-soft:rgba(132,204,22,.17); }
+.mq-wrap { width:min(96vw, 760px); margin:0 auto; padding:70px 12px 28px; text-align:center; }
+.mq-title { margin:0; font-size:clamp(1.65rem,6vw,3.3rem); font-weight:900; letter-spacing:.1em; color:var(--accent); text-shadow:0 0 22px var(--accent-soft); }
+.mq-subtitle { margin:.35rem 0 1rem; color:#cbd5e1; font:600 clamp(.68rem,2.5vw,.85rem)/1.4 system-ui,sans-serif; }
+.mq-tabs,.mq-difficulties,.mq-themes,.mq-powers { display:flex; flex-wrap:wrap; justify-content:center; gap:7px; margin:9px 0; }
+.mq-button { min-height:42px; padding:8px 13px; border:1px solid rgba(148,163,184,.38); border-radius:12px; background:rgba(30,41,59,.68); color:#e2e8f0; font:700 .68rem/1 'Orbitron',sans-serif; letter-spacing:.035em; cursor:pointer; transition:transform .12s,background .12s,border-color .12s; }
+.mq-button:hover:not(:disabled),.mq-button:focus-visible { transform:translateY(-1px); border-color:var(--accent); background:var(--accent-soft); }
+.mq-button.active { color:#fff; border-color:var(--accent); background:var(--accent-soft); box-shadow:0 0 16px var(--accent-soft); }
+.mq-button:disabled { opacity:.42; cursor:not-allowed; }
+.mq-theme { min-width:42px; padding:7px 10px; }
+.mq-mission-strip { display:flex; gap:7px; overflow-x:auto; padding:4px 2px 8px; scrollbar-width:thin; }
+.mq-mission { flex:0 0 auto; min-width:116px; text-align:left; }
+.mq-mission small { display:block; margin-top:4px; color:#94a3b8; font:600 .62rem system-ui,sans-serif; }
+.mq-status { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; margin:12px auto 9px; max-width:620px; }
+.mq-stat { min-width:0; padding:8px 4px; border:1px solid rgba(148,163,184,.25); border-radius:11px; background:var(--panel); }
+.mq-stat small { display:block; color:#94a3b8; font:700 .52rem/1.2 'Orbitron',sans-serif; letter-spacing:.06em; }
+.mq-stat strong { display:block; margin-top:4px; color:var(--accent); font:800 clamp(.8rem,3vw,1.2rem)/1 monospace; white-space:nowrap; }
+.mq-face { border-color:var(--accent); font-size:1.25rem; }
+.mq-objective { min-height:30px; margin:7px 0; color:#dbeafe; font:650 .76rem/1.4 system-ui,sans-serif; }
+.mq-board-frame { position:relative; width:min(94vw,590px); margin:10px auto; padding:7px; border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); border-radius:17px; background:rgba(0,0,0,.5); box-shadow:0 20px 55px rgba(0,0,0,.45),0 0 24px var(--accent-soft); }
+.mq-board { display:grid; grid-template-columns:repeat(var(--grid-size),minmax(0,1fr)); gap:4px; width:100%; }
+.mq-cell { position:relative; aspect-ratio:1; min-width:0; border:0; border-radius:5px; display:grid; place-items:center; background:linear-gradient(145deg,#64748b,#334155); box-shadow:inset 2px 2px rgba(255,255,255,.18),inset -2px -2px rgba(0,0,0,.35); color:#fff; font:900 clamp(.72rem,3vw,1.45rem)/1 system-ui,sans-serif; cursor:pointer; user-select:none; touch-action:manipulation; transition:transform .09s,filter .09s; }
+.mq-cell:hover:not(:disabled) { filter:brightness(1.16); }
+.mq-cell:active:not(:disabled) { transform:scale(.9); }
+.mq-cell.revealed { background:#1e293b; box-shadow:inset 0 0 9px rgba(0,0,0,.48); animation:mq-reveal .18s cubic-bezier(.2,.8,.2,1); }
+.mq-cell.mine { background:#7f1d1d; animation:mq-blast .38s ease-out; }
+.mq-cell.radar { box-shadow:inset 0 0 0 2px #facc15,0 0 12px rgba(250,204,21,.65); animation:mq-radar .8s ease-in-out infinite alternate; }
+.mq-cell.flagged { background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 60%,#334155),#334155); }
+.mq-overlay { position:absolute; inset:7px; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:20px; border-radius:11px; background:rgba(2,6,23,.88); backdrop-filter:blur(7px); animation:mq-reveal .25s ease-out; }
+.mq-overlay h2 { margin:0; color:var(--accent); font-size:clamp(1.7rem,7vw,3rem); text-shadow:0 0 24px var(--accent-soft); }
+.mq-overlay p { margin:0; color:#e2e8f0; font:650 .85rem/1.4 system-ui,sans-serif; }
+.mq-medal { font-size:2.6rem; }
+.mq-power { position:relative; padding:8px 10px; }
+.mq-power span { display:block; font-size:1.15rem; margin-bottom:3px; }
+.mq-power small { color:#a7f3d0; font:700 .58rem system-ui,sans-serif; }
+.mq-power.armed { border-color:#22d3ee; box-shadow:0 0 16px rgba(34,211,238,.4); }
+.mq-message { min-height:22px; margin:4px auto; color:var(--accent); font:800 .72rem/1.3 'Orbitron',sans-serif; }
+.mq-combo { animation:mq-combo .35s ease-out; }
+.mq-progress { margin:12px auto 4px; color:#94a3b8; font:600 .72rem/1.4 system-ui,sans-serif; }
+.mq-particles { position:fixed; inset:0; z-index:20; pointer-events:none; overflow:hidden; }
+.mq-particle { position:absolute; left:var(--px); top:var(--py); width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent); animation:mq-particle .75s ease-out forwards; }
+.mq-shake { animation:mq-shake .35s linear; }
+@keyframes mq-reveal { from { transform:scale(.72); opacity:.35 } to { transform:scale(1); opacity:1 } }
+@keyframes mq-blast { 0% { transform:scale(.75) } 45% { transform:scale(1.28);filter:brightness(2) } 100% { transform:scale(1) } }
+@keyframes mq-radar { to { filter:brightness(1.35) } }
+@keyframes mq-combo { 50% { transform:scale(1.18);filter:brightness(1.5) } }
+@keyframes mq-particle { to { transform:translate(var(--dx),var(--dy)) scale(0);opacity:0 } }
+@keyframes mq-shake { 20%,60% { transform:translateX(-6px) } 40%,80% { transform:translateX(6px) } }
+@media (max-width:520px) {
+  .mq-wrap { padding-top:66px; }
+  .mq-status { gap:4px; }
+  .mq-stat { padding:7px 2px; }
+  .mq-stat small { font-size:.43rem; }
+  .mq-board { gap:3px; }
+  .mq-board-frame { padding:5px; }
+  .mq-cell { border-radius:4px; font-size:clamp(.62rem,4.6vw,1.18rem); }
+  .mq-button { padding:8px 10px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .minequest-shell * { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+}

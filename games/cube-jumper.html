@@ -30,6 +30,13 @@
   #percent-display { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:13px; letter-spacing:3px; color:rgba(255,255,255,0.3); display:none; }
   #back-btn { position:absolute; top:16px; left:16px; z-index:30; pointer-events:all; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); font-family:'Outfit',sans-serif; font-size:13px; padding:8px 16px; border-radius:8px; cursor:pointer; backdrop-filter:blur(8px); transition:all 0.3s; display:none; }
   #back-btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); }
+  #pause-btn,#sound-btn { position:absolute; top:16px; z-index:31; pointer-events:all; width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.55); color:#fff; font-size:17px; cursor:pointer; backdrop-filter:blur(8px); display:none; }
+  #pause-btn { right:68px; }
+  #sound-btn { right:16px; }
+  #pause-btn:hover,#sound-btn:hover { border-color:rgba(192,132,252,.5); background:rgba(192,132,252,.15); }
+  #pause-screen { background:radial-gradient(ellipse at 50% 45%,rgba(34,18,58,.9),rgba(7,7,12,.97)); backdrop-filter:blur(10px); }
+  .pause-title { font-size:clamp(36px,8vw,72px); letter-spacing:9px; font-weight:800; color:#c084fc; text-shadow:0 0 28px rgba(192,132,252,.38); margin-bottom:8px; }
+  .pause-copy { color:rgba(255,255,255,.5); letter-spacing:3px; font-size:12px; margin-bottom:26px; }
 
   /* ── SCREENS ── */
   .screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20; pointer-events:all; transition:opacity 0.5s ease; }
@@ -86,6 +93,17 @@
   .lvl-stars { font-size:10px; letter-spacing:1px; margin-top:1px; }
   .lvl-stars .s-on { color:#fbbf24; }
   .lvl-stars .s-off { color:rgba(255,255,255,0.1); }
+  @media (max-width:600px) {
+    #score-display { top:72px; right:16px; }
+    #attempt-display { top:94px; right:16px; }
+    #mode-display { top:114px; right:16px; }
+    #level-name-hud { top:76px; left:16px; }
+    #practice-indicator { top:98px; left:16px; }
+    .controls-hint { bottom:max(20px,env(safe-area-inset-bottom)); padding:0 18px; text-align:center; line-height:1.5; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .game-title,.star,.lvl-card,.btn { animation:none!important; transition-duration:.01ms!important; }
+  }
 </style>
 </head>
 <body>
@@ -100,6 +118,8 @@
   <div id="percent-display">0%</div>
 </div>
 <button id="back-btn" onclick="window.location.href='../index.html'">Menu</button>
+<button id="pause-btn" aria-label="Pause game">Ⅱ</button>
+<button id="sound-btn" aria-label="Toggle sound">🔊</button>
 
 <div class="screen" id="menu">
   <a class="home-link" href="../index.html">Home</a>
@@ -126,6 +146,14 @@
   <button class="btn" id="retry-btn">Retry</button>
   <button class="btn btn-sm" id="next-btn" style="display:none">Next Level</button>
   <button class="btn btn-sm" id="menu-btn">Menu</button>
+</div>
+
+<div class="screen hidden" id="pause-screen">
+  <div class="pause-title">PAUSED</div>
+  <div class="pause-copy">Your run is frozen exactly where you left it.</div>
+  <button class="btn" id="resume-btn">Resume</button>
+  <button class="btn btn-sm" id="restart-btn">Restart Level</button>
+  <button class="btn btn-sm" id="pause-menu-btn">Level Select</button>
 </div>
 
 <script>
@@ -157,13 +185,14 @@ const PENTA = [1, 1.189, 1.335, 1.498, 1.782];
 const MUSIC_ROOTS = [130.81, 146.83, 164.81, 196.00, 110.00, 174.61, 146.83, 123.47, 164.81, 130.81, 138.59, 155.56, 146.83, 116.54, 164.81];
 
 // ── AUDIO ENGINE ──
+let gameMuted = localStorage.getItem('cubejumper_muted') === '1';
 class AudioEngine {
   constructor() { this.ctx=null; this.on=false; this.bpm=130; this.beatInterval=60/this.bpm; this.lastBeat=0; this.beatN=0; this.themeIdx=0; }
   init() {
     if(this.on) return;
     this.ctx=new(window.AudioContext||window.webkitAudioContext)();
     if(this.ctx.state==='suspended') this.ctx.resume();
-    this.master=this.ctx.createGain(); this.master.gain.value=0.45; this.master.connect(this.ctx.destination);
+    this.master=this.ctx.createGain(); this.master.gain.value=gameMuted?0:0.45; this.master.connect(this.ctx.destination);
     this.rev=this.ctx.createConvolver();
     const r=this.ctx.sampleRate,len=r*1.2,buf=this.ctx.createBuffer(2,len,r);
     for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8);}
@@ -179,7 +208,7 @@ class AudioEngine {
     this.setBpm(SPEED_BPM_BASE * (currentSpeed / 240));
   }
   tone(freq,type,vol,dur,ramp=0){
-    if(!this.ctx)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    if(!this.ctx||gameMuted)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
     o.type=type;o.frequency.setValueAtTime(freq,t);if(ramp)o.frequency.exponentialRampToValueAtTime(ramp,t+dur*0.8);
     g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
     o.connect(g);g.connect(this.master);g.connect(this.rev);o.start(t);o.stop(t+dur+0.01);
@@ -1481,8 +1510,50 @@ canvas.addEventListener('mousedown', e => { if(state==='playing')onJumpDown(); }
 canvas.addEventListener('mouseup', e => { onJumpUp(); });
 canvas.addEventListener('touchstart', e => { if(state==='playing'){e.preventDefault();onJumpDown();} }, {passive:false});
 canvas.addEventListener('touchend', e => { onJumpUp(); });
-// Recover audio after iPadOS suspends the AudioContext (app switch, screen lock, etc.)
-document.addEventListener('visibilitychange', () => { if (!document.hidden && audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume(); });
+
+function setGameButtons(visible) {
+  document.getElementById('pause-btn').style.display = visible ? 'block' : 'none';
+  document.getElementById('sound-btn').style.display = visible ? 'block' : 'none';
+}
+function syncSoundButton() {
+  document.getElementById('sound-btn').textContent = gameMuted ? '🔇' : '🔊';
+  document.getElementById('sound-btn').setAttribute('aria-pressed', gameMuted ? 'true' : 'false');
+}
+function toggleGameSound() {
+  gameMuted = !gameMuted;
+  localStorage.setItem('cubejumper_muted', gameMuted ? '1' : '0');
+  if (audio.master) audio.master.gain.value = gameMuted ? 0 : .45;
+  syncSoundButton();
+}
+function pauseGame(forcePause=false) {
+  if (state === 'playing') {
+    state = 'paused'; jumpHeld = false; jumpPressed = false;
+    document.getElementById('pause-screen').classList.remove('hidden');
+    if (audio.ctx && audio.ctx.state === 'running') audio.ctx.suspend();
+  } else if (state === 'paused' && !forcePause) {
+    state = 'playing'; physicsAccum = 0; lastTime = performance.now();
+    document.getElementById('pause-screen').classList.add('hidden');
+    if (!gameMuted && audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume();
+  }
+}
+document.getElementById('pause-btn').onclick = () => pauseGame();
+document.getElementById('sound-btn').onclick = toggleGameSound;
+document.getElementById('resume-btn').onclick = () => pauseGame();
+document.getElementById('restart-btn').onclick = startGame;
+document.getElementById('pause-menu-btn').onclick = () => {
+  state='menu'; document.getElementById('pause-screen').classList.add('hidden'); document.getElementById('menu').classList.remove('hidden');
+  setGameButtons(false); document.getElementById('back-btn').style.display='none'; document.getElementById('percent-display').style.display='none'; buildMenu();
+};
+window.addEventListener('keydown', e => {
+  if ((e.code === 'Escape' || e.code === 'KeyP') && (state === 'playing' || state === 'paused')) { e.preventDefault(); pauseGame(); }
+  if (e.code === 'KeyM') toggleGameSound();
+});
+syncSoundButton();
+// Auto-pause when a phone, tablet, or browser tab leaves the foreground.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && state === 'playing') pauseGame(true);
+  else if (!document.hidden && state === 'playing' && !gameMuted && audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume();
+});
 
 const modeIcons = { cube:"\u25A0", ship:"\u25B6", wave:"\u2248", ball:"\u25CF", ufo:"\u25D2", robot:"\u2593", spider:"\u2726" };
 
@@ -1526,7 +1597,7 @@ document.getElementById('practice-btn').onclick = () => { practiceMode = !practi
 document.getElementById('menu-btn').onclick = () => {
   state='menu'; document.getElementById('death').classList.remove('visible'); document.getElementById('death').classList.add('hidden');
   document.getElementById('menu').classList.remove('hidden'); document.getElementById('back-btn').style.display='none';
-  document.getElementById('percent-display').style.display='none'; buildMenu();
+  setGameButtons(false); document.getElementById('percent-display').style.display='none'; buildMenu();
 };
 document.getElementById('next-btn').onclick = () => {
   if (selectedLevel < LEVELS.length - 1) { selectedLevel++; startGame(); }
@@ -1569,6 +1640,7 @@ function startGame() {
   attempts[selectedLevel] = (attempts[selectedLevel]||0) + 1;
   saveProgress();
   document.getElementById('menu').classList.add('hidden');
+  document.getElementById('pause-screen').classList.add('hidden');
   document.getElementById('death').classList.remove('visible'); document.getElementById('death').classList.add('hidden');
   document.getElementById('score-display').style.display='block';
   document.getElementById('level-name-hud').style.display='block';
@@ -1580,6 +1652,7 @@ function startGame() {
   document.getElementById('mode-display').style.display='block';
   document.getElementById('mode-display').textContent = modeIcons[player.mode] + ' ' + player.mode.toUpperCase();
   document.getElementById('back-btn').style.display='block';
+  setGameButtons(true); syncSoundButton();
   document.getElementById('practice-indicator').style.display = practiceMode ? 'block' : 'none';
   document.getElementById('percent-display').style.display = 'block';
   document.getElementById('percent-display').textContent = '0%';

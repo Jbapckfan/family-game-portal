@@ -659,6 +659,12 @@
             box-shadow: 0 0 10px rgba(255,251,125,0.1);
             animation: validPulse 1.8s ease-in-out infinite;
         }
+        .tile.coach-hint:not(.shut):not(.selected) {
+            border-color: #6ee7a0;
+            background: linear-gradient(135deg, rgba(110,231,160,.2), rgba(72,219,251,.08));
+            box-shadow: 0 0 20px rgba(110,231,160,.34);
+            transform: translateY(-4px);
+        }
 
         @keyframes validPulse {
             0%, 100% { border-color: rgba(255,251,125,0.35); box-shadow: 0 0 10px rgba(255,251,125,0.1); }
@@ -960,6 +966,14 @@
         }
         .btn-roll:active:not(:disabled) { transform: translateY(0); animation: none; }
         .btn-roll:disabled { animation: none; }
+        .btn-coach {
+            display:none;
+            color:#d1fae5;
+            border:1px solid rgba(110,231,160,.4);
+            background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(6,182,212,.16));
+            box-shadow:0 3px 16px rgba(16,185,129,.12);
+        }
+        .btn-coach:hover { transform:translateY(-2px); box-shadow:0 7px 24px rgba(16,185,129,.25); }
 
         .btn-row {
             display: flex;
@@ -1733,6 +1747,7 @@
         </div>
         <div class="btn-row">
             <button class="action-btn btn-roll" id="btn-roll" onclick="rollDice()">Roll Dice</button>
+            <button class="action-btn btn-coach" id="btn-coach" onclick="showStrategyCoach()">Best Move</button>
         </div>
     </div>
 
@@ -1800,6 +1815,7 @@ let diceValues = [];
 let diceTotal = 0;
 let selectedTiles = new Set();
 let validTileSet = new Set();
+let recommendedTiles = new Set();
 let phase = 'roll';
 let playerCount = 2;
 let rolling = false;
@@ -1809,6 +1825,7 @@ let speedMode = false;
 let turnTimerId = null;
 let turnTimerStart = 0;
 const TURN_TIMER_SECONDS = 15;
+const SETTINGS_KEY = 'shutTheBox_settings';
 
 /* =============== SOUND FX (Web Audio API) =============== */
 
@@ -1825,11 +1842,16 @@ function ensureAudioCtx() {
     return audioCtx;
 }
 
-let darkTheme = true;
+let storedSettings = {};
+try { storedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) {}
+soundMuted = storedSettings.soundMuted === true;
+speedMode = storedSettings.speedMode === true;
+let darkTheme = storedSettings.darkTheme !== false;
 function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('light-theme', !darkTheme);
     document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
 }
 
 function toggleMute() {
@@ -1838,6 +1860,7 @@ function toggleMute() {
     btn.classList.toggle('muted', soundMuted);
     document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
     document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
 }
 
 function playDiceRattle() {
@@ -1964,6 +1987,7 @@ function playTurnChime() {
 function toggleSpeedMode() {
     speedMode = !speedMode;
     document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
 }
 
 function startTurnTimer() {
@@ -2133,6 +2157,12 @@ function clearStats() {
 /* =============== SETUP =============== */
 
 function initSetup() {
+    document.body.classList.toggle('light-theme', !darkTheme);
+    document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    document.getElementById('mute-btn').classList.toggle('muted', soundMuted);
+    document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
+    document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
+    document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
     // Player count buttons
     const row = document.getElementById('count-row');
     row.innerHTML = '';
@@ -2315,8 +2345,10 @@ function startNextRound() {
         p.shutTiles = new Set();
         p.score = null;
         p.done = false;
+        p.turnStreak = 0;
     });
-    currentPlayerIdx = 0;
+    // Rotate the opening player so multi-round matches do not favor Player 1.
+    currentPlayerIdx = currentRound % players.length;
     phase = 'roll';
     diceValues = [];
     diceTotal = 0;
@@ -2395,6 +2427,7 @@ function renderTiles() {
         const isValid = validTileSet.has(t);
         tile.className = 'tile' + (shut ? ' shut' : '') + (sel ? ' selected' : '')
             + (isValid && !shut && !sel && phase === 'select' ? ' valid-hint' : '')
+            + (recommendedTiles.has(t) && !shut && !sel ? ' coach-hint' : '')
             + (!canSelect || shut ? ' disabled' : '');
         tile.textContent = t;
         tile.disabled = !canSelect || shut;
@@ -2522,14 +2555,17 @@ let autoConfirming = false;
 function updateButtons() {
     const cp = players[currentPlayerIdx];
     const rollBtn = document.getElementById('btn-roll');
+    const coachBtn = document.getElementById('btn-coach');
 
     if (cp.isAI) {
         rollBtn.style.display = 'none';
+        coachBtn.style.display = 'none';
         return;
     }
 
     rollBtn.style.display = (phase === 'roll') ? '' : 'none';
     rollBtn.disabled = (phase !== 'roll' || rolling);
+    coachBtn.style.display = phase === 'select' ? '' : 'none';
 }
 
 function undoTileSelection() {
@@ -2537,6 +2573,36 @@ function undoTileSelection() {
     selectedTiles.clear();
     renderTiles();
     updateSelectionInfo();
+}
+
+function futureRollCoverage(remainingTiles) {
+    const oneDie = remainingTiles.reduce((a, b) => a + b, 0) <= 6;
+    let covered = 0;
+    for (let roll = 1; roll <= (oneDie ? 6 : 12); roll++) {
+        const ways = oneDie ? 1 : (roll <= 7 ? roll - 1 : 13 - roll);
+        if (findCombinations(remainingTiles, roll).length) covered += ways;
+    }
+    return covered / (oneDie ? 6 : 36);
+}
+
+function rankStrategicCombo(combo, openTiles) {
+    const remaining = openTiles.filter(t => !combo.includes(t));
+    if (remaining.length === 0) return 1000000;
+    return futureRollCoverage(remaining) * 1000 + combo.reduce((a, b) => a + b, 0) * 4 + combo.length;
+}
+
+function showStrategyCoach() {
+    if (phase !== 'select' || players[currentPlayerIdx].isAI) return;
+    const openTiles = getOpenTiles(players[currentPlayerIdx]);
+    const combos = findCombinations(openTiles, diceTotal);
+    if (!combos.length) return;
+    const best = [...combos].sort((a, b) => rankStrategicCombo(b, openTiles) - rankStrategicCombo(a, openTiles))[0];
+    recommendedTiles = new Set(best);
+    renderTiles();
+    const remaining = openTiles.filter(t => !best.includes(t));
+    const coverage = Math.round(futureRollCoverage(remaining) * 100);
+    document.getElementById('selection-info').innerHTML = `<span class="match">Coach: ${best.join(' + ')} keeps about ${coverage}% of future rolls alive.</span>`;
+    setTimeout(() => { recommendedTiles.clear(); if (phase === 'select') { renderTiles(); updateSelectionInfo(); } }, 3200);
 }
 
 function updateSelectionInfo() {
@@ -2776,6 +2842,7 @@ function computeValidTiles(cp) {
     const openTiles = getOpenTiles(cp);
     const combos = findCombinations(openTiles, diceTotal);
     validTileSet.clear();
+    recommendedTiles.clear();
     combos.forEach(combo => {
         combo.forEach(t => validTileSet.add(t));
     });
@@ -2790,6 +2857,7 @@ async function beginTurn() {
     diceTotal = 0;
     selectedTiles.clear();
     validTileSet.clear();
+    recommendedTiles.clear();
     rolling = false;
     cp.turnStreak = 0;
 
@@ -3058,12 +3126,9 @@ function pickBestCombo(combos, difficulty) {
         return combos[0];
     }
 
-    // Hard: highest-first greedy (original strategy)
-    combos.sort((a, b) => {
-        const maxA = Math.max(...a), maxB = Math.max(...b);
-        if (maxB !== maxA) return maxB - maxA;
-        return a.length - b.length;
-    });
+    // Hard: preserve the greatest probability of having a playable next roll.
+    const openTiles = getOpenTiles(players[currentPlayerIdx]);
+    combos.sort((a, b) => rankStrategicCombo(b, openTiles) - rankStrategicCombo(a, openTiles));
     return combos[0];
 }
 
@@ -3245,6 +3310,11 @@ function showScreen(id) {
 }
 
 /* =============== INIT =============== */
+document.addEventListener('keydown', (event) => {
+    if (event.target && /input|textarea/i.test(event.target.tagName)) return;
+    if (event.code === 'KeyR' && phase === 'roll') { event.preventDefault(); rollDice(); }
+    if (event.code === 'KeyH' && phase === 'select') { event.preventDefault(); showStrategyCoach(); }
+});
 initSetup();
 </script>
 </body>

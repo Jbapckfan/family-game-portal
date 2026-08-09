@@ -310,11 +310,47 @@ const refinements = [
     'C+Math.sin(d)*(t/2)],rotation:[h,d,i+T],size:[2,8,g+2]',
   ],
 
+  // Replace the visible slab walls with a continuous cylindrical trough. The
+  // existing canted boxes remain as invisible Cannon containment, while the
+  // rendered shell has a genuinely round 22-segment half-pipe cross-section.
+  [
+    'Hc=({position:n,rotation:e=[0,0,0],size:t=[2,8,30],visible:i=!0,color:s="#00ffff"})=>{const[r]=qy(()=>({type:"Static",position:n,rotation:e,args:t,material:{friction:0,restitution:.05}}));return i?O.jsxs("mesh",{ref:r,position:n,rotation:e,children:[O.jsx("boxGeometry",{args:t}),O.jsx("meshBasicMaterial",{color:s,transparent:!0,opacity:.42})]}):null},JI=',
+    'Hc=({position:n,rotation:e=[0,0,0],size:t=[2,8,30],visible:i=!0,color:s="#00ffff"})=>{const[r]=qy(()=>({type:"Static",position:n,rotation:e,args:t,material:{friction:0,restitution:.05}}));return O.jsx("group",{ref:r,position:n,rotation:e,children:i?O.jsxs("mesh",{children:[O.jsx("boxGeometry",{args:t}),O.jsx("meshBasicMaterial",{color:s,transparent:!0,opacity:.12})]}):null})},vHP=({position:n,rotation:e=[0,0,0],length:t,width:i=14,color:s="#172640"})=>{const r=i*.56,a=1.12;return O.jsx("group",{position:n,rotation:e,children:O.jsxs("mesh",{position:[0,r+.52,0],rotation:[Math.PI/2,0,0],receiveShadow:!0,children:[O.jsx("cylinderGeometry",{args:[r,r,t*1.04,window.__velocityLiteMode?14:22,1,!0,-a,a*2]}),O.jsx("meshStandardMaterial",{color:s,emissive:"#00d9ff",emissiveIntensity:.1,metalness:.5,roughness:.24,side:2})]})})},JI=',
+  ],
+  [
+    'JI=({position:n,radius:e,angleStart:t,angleEnd:i,heightStart:s,heightEnd:r,width:o=14,bankingAngle:a=.3,segments:g=24})=>{const l=(i-t)/g,c=(r-s)/g;return O.jsx("group",{children:Array.from({length:g}).map((C,d)=>{const h=t+d*l,p=t+(d+1)*l,y=(h+p)/2,f=Math.cos(y)*e,A=Math.sin(y)*e,b=s+(d+.5)*c,v=-y,B=i>t?1:-1,Z=a*B,P=Math.atan2(-c*B,e*Math.abs(i-t)/g*1.18),T=.42;return O.jsxs(ao.Fragment,{children:[O.jsx(ni,{position:[n[0]+f,b,n[2]+A],rotation:[P,v,Z],size:[o,1,e*Math.abs(i-t)/g*1.18],color:d%2===0?"#1a1a2e":"#232342"}),O.jsx(Hc,{position:[n[0]+f+Math.cos(y)*(o/2)*Math.cos(Z)-Math.sin(Z)*1,b+Math.sin(Z)*(o/2)+3,n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z-T],size:[2,9,e*Math.abs(i-t)/g*1.18]}),O.jsx(Hc,{position:[n[0]+f-Math.cos(y)*(o/2)*Math.cos(Z)+Math.sin(Z)*1,b-Math.sin(Z)*(o/2)+3,n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z+T],size:[2,9,e*Math.abs(i-t)/g*1.18]})]},d)})})}',
+    'JI=({position:n,radius:e,angleStart:t,angleEnd:i,heightStart:s,heightEnd:r,width:o=14,bankingAngle:a=.3,segments:g=24})=>{const l=(i-t)/g,c=(r-s)/g;return O.jsx("group",{children:Array.from({length:g}).map((C,d)=>{const h=t+d*l,p=t+(d+1)*l,y=(h+p)/2,f=Math.cos(y)*e,A=Math.sin(y)*e,b=s+(d+.5)*c,v=-y,B=i>t?1:-1,Z=a*B,P=Math.atan2(-c*B,e*Math.abs(i-t)/g*1.18),T=.42,L=e*Math.abs(i-t)/g*1.18,k=d%2===0?"#14243d":"#192b48";return O.jsxs(ao.Fragment,{children:[O.jsx(ni,{position:[n[0]+f,b,n[2]+A],rotation:[P,v,Z],size:[o,1,L],color:k}),O.jsx(vHP,{position:[n[0]+f,b,n[2]+A],rotation:[P,v,Z],length:L,width:o,color:k}),O.jsx(Hc,{visible:!1,position:[n[0]+f+Math.cos(y)*(o/2)*Math.cos(Z)-Math.sin(Z)*1,b+Math.sin(Z)*(o/2)+3,n[2]+A+Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z-T],size:[2,9,L]}),O.jsx(Hc,{visible:!1,position:[n[0]+f-Math.cos(y)*(o/2)*Math.cos(Z)+Math.sin(Z)*1,b-Math.sin(Z)*(o/2)+3,n[2]+A-Math.sin(y)*(o/2)*Math.cos(Z)],rotation:[P,v,Z+T],size:[2,9,L]})]},d)})})}',
+  ],
+  [
+    'da=({start:n,end:e,width:t=14,bank:i=0})=>{const s=e[0]-n[0],r=e[1]-n[1],o=e[2]-n[2],a=Math.sqrt(s*s+o*o),g=Math.sqrt(s*s+r*r+o*o),l=(n[0]+e[0])/2,c=(n[1]+e[1])/2,C=(n[2]+e[2])/2,d=Math.atan2(s,o),h=Math.atan2(-r,a),T=.42;return O.jsxs("group",{children:[O.jsx(ni,{position:[l,c,C],rotation:[h,d,i],size:[t,1,g],color:"#1a1a2e"}),O.jsx(Hc,{position:[l+Math.cos(d)*(t/2),c+Math.sin(i)*(t/2)+2.5,C-Math.sin(d)*(t/2)],rotation:[h,d,i-T],size:[2,8,g+2]}),O.jsx(Hc,{position:[l-Math.cos(d)*(t/2),c-Math.sin(i)*(t/2)+2.5,C+Math.sin(d)*(t/2)],rotation:[h,d,i+T],size:[2,8,g+2]})]})}',
+    'da=({start:n,end:e,width:t=14,bank:i=0})=>{const s=e[0]-n[0],r=e[1]-n[1],o=e[2]-n[2],a=Math.sqrt(s*s+o*o),g=Math.sqrt(s*s+r*r+o*o),l=(n[0]+e[0])/2,c=(n[1]+e[1])/2,C=(n[2]+e[2])/2,d=Math.atan2(s,o),h=Math.atan2(-r,a),T=.42;return O.jsxs("group",{children:[O.jsx(ni,{position:[l,c,C],rotation:[h,d,i],size:[t,1,g],color:"#14243d"}),O.jsx(vHP,{position:[l,c,C],rotation:[h,d,i],length:g,width:t}),O.jsx(Hc,{visible:!1,position:[l+Math.cos(d)*(t/2),c+Math.sin(i)*(t/2)+2.5,C-Math.sin(d)*(t/2)],rotation:[h,d,i-T],size:[2,8,g+2]}),O.jsx(Hc,{visible:!1,position:[l-Math.cos(d)*(t/2),c-Math.sin(i)*(t/2)+2.5,C+Math.sin(d)*(t/2)],rotation:[h,d,i+T],size:[2,8,g+2]})]})}',
+  ],
+  [
+    'T=.42,L=e*Math.abs(i-t)/g*1.18,k=d%2===0?"#14243d":"#192b48"',
+    'T=.62,L=e*Math.abs(i-t)/g*1.18,k="#14243d"',
+  ],
+  [
+    'd=Math.atan2(s,o),h=Math.atan2(-r,a),T=.42;return O.jsxs("group",{children:[O.jsx(ni,{position:[l,c,C],rotation:[h,d,i],size:[t,1,g],color:"#14243d"})',
+    'd=Math.atan2(s,o),h=Math.atan2(-r,a),T=.62;return O.jsxs("group",{children:[O.jsx(ni,{position:[l,c,C],rotation:[h,d,i],size:[t,1,g],color:"#14243d"})',
+  ],
+  // qH is already a Three.js shader identifier in this minified build. Keep
+  // the half-pipe component name unique so the shipped module remains valid.
+  ['},qH=({position:n,rotation:e=[0,0,0],length:t,width:i=14', '},vHP=({position:n,rotation:e=[0,0,0],length:t,width:i=14'],
+  ['O.jsx(qH,{position:[n[0]+f,b,n[2]+A]', 'O.jsx(vHP,{position:[n[0]+f,b,n[2]+A]'],
+  ['O.jsx(qH,{position:[l,c,C]', 'O.jsx(vHP,{position:[l,c,C]'],
+
+  // Victory is valid only after reaching the final recovery sector.
+  ['lastCheckpoint>=4', 'lastCheckpoint>=7'],
+
   // The old starting runway was flat. A shallow grade now starts the roll
   // immediately and meets the first curve at exactly the same elevation.
   [
     'O.jsx(ni,{position:[0,12,5],size:[16,1,70]}),O.jsx(Hc,{position:[8,16,5],size:[2,9,72]}),O.jsx(Hc,{position:[-8,16,5],size:[2,9,72]})',
     'O.jsx(da,{start:[0,13,40],end:[0,12,-30],width:16})',
+  ],
+  [
+    'tu=[[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345]]',
+    'tu=[[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345],[175,-190,-520],[-120,-275,-465],[-180,-320,-700]]',
   ],
 
   // Apply the player's drag/swipe orbit after the automatic chase-camera
@@ -335,6 +371,9 @@ const refinements = [
     'O.jsx(vD,{position:[0,-142,-460]})',
     'O.jsx(vD,{position:[0,-135,-455]})',
   ],
+  ['state.setLastCheckpoint(4)', 'state.setLastCheckpoint(7)'],
+  ['[1,2,3,4].map', 'Array.from({length:7},(n,e)=>e+1).map'],
+  ['s,"/4):"', 's,"/7):"'],
 
   // Reset the one-shot finish lock for each new run.
   [
@@ -361,6 +400,10 @@ const refinements = [
   [
     'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.())',
     'finishPulse:window.__velocityFinishPulse||0}),window.__velocityStartPractice=checkpoint=>{const index=Math.max(0,Math.min(tu.length-1,Number(checkpoint)||0)),spot=tu[index];spot&&(p.position.set(spot[0],spot[1]+2,spot[2]),p.velocity.set(0,0,0),p.angularVelocity.set(0,0,0),g.current=[spot[0],spot[1]+2,spot[2]],l.current=[0,0,0],Qi.getState().setLastCheckpoint(index),respawnLock.current=Date.now()+700)};if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.())',
+  ],
+  [
+    'b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()',
+    'b<-980&&Math.abs(f-140)<18&&A>-438&&window.__velocityCompleteRun?.()',
   ],
 ];
 
@@ -389,6 +432,17 @@ if (source.includes(complexStart)) {
   source = source.slice(0, start) + simpleComplex + source.slice(end + complexEnd.length);
 } else if (!source.includes(simpleComplex)) {
   throw new Error('Expected original or simplified complex track components.');
+}
+
+// The original and preset-shortened course could be completed in a handful of
+// seconds. Continue from its former finish into a long grand-prix back half:
+// broad sweepers, a descending hairpin, two switchbacks, and a final canyon.
+// Every added piece joins endpoint-to-endpoint and remains downhill.
+const shortCourse = 'yD=()=>O.jsxs("group",{children:[O.jsx(da,{start:[0,13,40],end:[0,12,-30],width:16}),O.jsx(JI,{position:[40,0,-30],radius:40,angleStart:Math.PI,angleEnd:Math.PI*1.5,heightStart:12,heightEnd:-15,bankingAngle:.4,segments:16}),O.jsx(Fh,{position:tu[1],index:1,rotation:[0,Math.PI/2,0]}),O.jsx(da,{start:[40,-15,-70],end:[70,-20,-70],bank:.1}),O.jsx(JI,{position:[70,-30,-100],radius:30,angleStart:Math.PI/2,angleEnd:-Math.PI,heightStart:-20,heightEnd:-50,bankingAngle:-.5,segments:16}),O.jsx(Fh,{position:tu[2],index:2}),O.jsx(da,{start:[40,-50,-100],end:[40,-55,-130]}),O.jsx(ZS,{position:[10,-55,-130],radius:30,angleStart:0,angleEnd:Math.PI,heightStart:-55,heightEnd:-65,width:20,depth:8,segments:12}),O.jsx("group",{position:[10,-58,-95],rotation:[0,0,-Math.PI/3],children:O.jsx(Xh,{position:[0,0,0],rotation:[0,Math.PI,0]})}),O.jsx(ZS,{position:[-20,-65,-145],radius:15,angleStart:Math.PI*.5,angleEnd:-Math.PI*.5,heightStart:-65,heightEnd:-75,width:20,depth:8,segments:12}),O.jsx("group",{position:[-5,-70,-145],rotation:[0,Math.PI/2,Math.PI/3],children:O.jsx(Xh,{position:[0,0,0]})}),O.jsx(Fh,{position:tu[3],index:3}),O.jsx(JI,{position:[-20,-75,-190],radius:30,angleStart:Math.PI/2,angleEnd:Math.PI,heightStart:-75,heightEnd:-90,bankingAngle:-.3,segments:10}),O.jsx(da,{start:[-50,-90,-190],end:[-50,-100,-220],width:14,bank:0}),O.jsx(Xh,{position:[-50,-95,-205]}),O.jsx(wS,{position:[-50,-92,-200],type:"SPEED_BOOST"}),O.jsx(bD,{position:[-50,-100,-220],radius:20,entryRotation:0,width:20,depth:8}),O.jsx(da,{start:[-50,-100,-220],end:[-50,-120,-300],width:14}),O.jsx(a0,{position:[-50,-105,-240],axis:"x",range:6,speed:2}),O.jsx(a0,{position:[-50,-110,-260],axis:"x",range:6,speed:3}),O.jsx(a0,{position:[-50,-115,-280],axis:"x",range:6,speed:4}),O.jsx(wS,{position:[-50,-118,-290],type:"JUMP_BOOST"}),O.jsx(da,{start:[-50,-120,-300],end:[0,-130,-330]}),O.jsx(Fh,{position:tu[4],index:4}),O.jsx(da,{start:[0,-130,-330],end:[0,-132,-360]}),O.jsx(da,{start:[0,-132,-360],end:[0,-145,-425],width:14}),O.jsx(ni,{position:[0,-145,-450],size:[30,1,50],color:"#00ff44"}),O.jsx(vD,{position:[0,-135,-455]}),O.jsx(yg,{position:[20,-5,-45]}),O.jsx(yg,{position:[50,-18,-80]}),O.jsx(yg,{position:[75,-35,-90]}),O.jsx(yg,{position:[40,-48,-105]}),O.jsx(yg,{position:[-5,-60,-125]}),O.jsx(yg,{position:[-30,-75,-135]}),O.jsx(yg,{position:[-50,-100,-230]}),[[0,0,-50],[40,-20,-100],[0,-80,-200],[-50,-100,-250]].map((n,e)=>O.jsx(Xp,{speed:2,rotationIntensity:.5,floatIntensity:2,children:O.jsxs("mesh",{position:n,rotation:[0,0,Math.PI/4],children:[O.jsx("torusGeometry",{args:[40,.5,16,100]}),O.jsx("meshBasicMaterial",{color:"#4466ff",transparent:!0,opacity:.2})]})},e))]})';
+const grandPrixCourse = 'yD=()=>O.jsxs("group",{children:[O.jsx(da,{start:[0,13,40],end:[0,12,-30],width:16}),O.jsx(JI,{position:[40,0,-30],radius:40,angleStart:Math.PI,angleEnd:Math.PI*1.5,heightStart:12,heightEnd:-15,bankingAngle:.4,segments:16}),O.jsx(Fh,{position:tu[1],index:1,rotation:[0,Math.PI/2,0]}),O.jsx(da,{start:[40,-15,-70],end:[70,-20,-70],bank:.1}),O.jsx(JI,{position:[70,-30,-100],radius:30,angleStart:Math.PI/2,angleEnd:-Math.PI,heightStart:-20,heightEnd:-50,bankingAngle:-.5,segments:24}),O.jsx(Fh,{position:tu[2],index:2}),O.jsx(da,{start:[40,-50,-100],end:[40,-55,-130]}),O.jsx(ZS,{position:[10,-55,-130],radius:30,angleStart:0,angleEnd:Math.PI,heightStart:-55,heightEnd:-65,width:20,depth:8,segments:18}),O.jsx("group",{position:[10,-58,-95],rotation:[0,0,-Math.PI/3],children:O.jsx(Xh,{position:[0,0,0],rotation:[0,Math.PI,0]})}),O.jsx(ZS,{position:[-20,-65,-145],radius:15,angleStart:Math.PI*.5,angleEnd:-Math.PI*.5,heightStart:-65,heightEnd:-75,width:20,depth:8,segments:18}),O.jsx("group",{position:[-5,-70,-145],rotation:[0,Math.PI/2,Math.PI/3],children:O.jsx(Xh,{position:[0,0,0]})}),O.jsx(Fh,{position:tu[3],index:3}),O.jsx(JI,{position:[-20,-75,-190],radius:30,angleStart:Math.PI/2,angleEnd:Math.PI,heightStart:-75,heightEnd:-90,bankingAngle:-.3,segments:12}),O.jsx(da,{start:[-50,-90,-190],end:[-50,-100,-220],width:14,bank:0}),O.jsx(Xh,{position:[-50,-95,-205]}),O.jsx(wS,{position:[-50,-92,-200],type:"SPEED_BOOST"}),O.jsx(bD,{position:[-50,-100,-220],radius:20,entryRotation:0,width:20,depth:8}),O.jsx(da,{start:[-50,-100,-220],end:[-50,-120,-300],width:14}),O.jsx(a0,{position:[-50,-105,-240],axis:"x",range:6,speed:2}),O.jsx(a0,{position:[-50,-110,-260],axis:"x",range:6,speed:3}),O.jsx(a0,{position:[-50,-115,-280],axis:"x",range:6,speed:4}),O.jsx(wS,{position:[-50,-118,-290],type:"JUMP_BOOST"}),O.jsx(da,{start:[-50,-120,-300],end:[0,-130,-330]}),O.jsx(Fh,{position:tu[4],index:4}),O.jsx(da,{start:[0,-130,-330],end:[0,-132,-360]}),O.jsx(da,{start:[0,-132,-360],end:[0,-145,-425],width:14}),O.jsx(JI,{position:[45,-145,-425],radius:45,angleStart:Math.PI,angleEnd:Math.PI*1.5,heightStart:-145,heightEnd:-155,bankingAngle:.45,segments:16}),O.jsx(da,{start:[45,-155,-470],end:[125,-170,-470],width:18,bank:.12}),O.jsx(JI,{position:[125,-170,-520],radius:50,angleStart:Math.PI/2,angleEnd:0,heightStart:-170,heightEnd:-190,bankingAngle:-.5,segments:16}),O.jsx(Fh,{position:tu[5],index:5}),O.jsx(da,{start:[175,-190,-520],end:[175,-205,-620],width:16}),O.jsx(Xh,{position:[175,-198,-570]}),O.jsx(wS,{position:[175,-195,-560],type:"SPEED_BOOST"}),O.jsx(JI,{position:[115,-205,-620],radius:60,angleStart:0,angleEnd:-Math.PI,heightStart:-205,heightEnd:-225,bankingAngle:-.55,segments:24}),O.jsx(da,{start:[55,-225,-620],end:[55,-240,-520],width:16,bank:.1}),O.jsx(JI,{position:[0,-240,-520],radius:55,angleStart:0,angleEnd:Math.PI/2,heightStart:-240,heightEnd:-255,bankingAngle:.45,segments:16}),O.jsx(da,{start:[0,-255,-465],end:[-120,-275,-465],width:18,bank:-.12}),O.jsx(Fh,{position:tu[6],index:6,rotation:[0,Math.PI/2,0]}),O.jsx(JI,{position:[-120,-275,-525],radius:60,angleStart:Math.PI/2,angleEnd:Math.PI,heightStart:-275,heightEnd:-295,bankingAngle:-.5,segments:16}),O.jsx(da,{start:[-180,-295,-525],end:[-180,-320,-700],width:16}),O.jsx(a0,{position:[-180,-305,-585],axis:"x",range:5,speed:2.4}),O.jsx(wS,{position:[-180,-312,-650],type:"JUMP_BOOST"}),O.jsx(Fh,{position:tu[7],index:7}),O.jsx(JI,{position:[-100,-320,-700],radius:80,angleStart:Math.PI,angleEnd:Math.PI*1.5,heightStart:-320,heightEnd:-345,bankingAngle:.55,segments:18}),O.jsx(da,{start:[-100,-345,-780],end:[80,-370,-780],width:18,bank:.1}),O.jsx(JI,{position:[80,-370,-840],radius:60,angleStart:Math.PI/2,angleEnd:0,heightStart:-370,heightEnd:-390,bankingAngle:-.45,segments:16}),O.jsx(da,{start:[140,-390,-840],end:[140,-420,-960],width:16}),O.jsx(ni,{position:[140,-420,-985],size:[30,1,50],color:"#00ff44"}),O.jsx(vD,{position:[140,-410,-990]}),O.jsx(yg,{position:[20,-5,-45]}),O.jsx(yg,{position:[50,-18,-80]}),O.jsx(yg,{position:[75,-35,-90]}),O.jsx(yg,{position:[40,-48,-105]}),O.jsx(yg,{position:[-5,-60,-125]}),O.jsx(yg,{position:[-30,-75,-135]}),O.jsx(yg,{position:[-50,-100,-230]}),O.jsx(yg,{position:[75,-160,-470]}),O.jsx(yg,{position:[175,-198,-585]}),O.jsx(yg,{position:[20,-248,-480]}),O.jsx(yg,{position:[-180,-310,-610]}),O.jsx(yg,{position:[20,-360,-780]}),O.jsx(yg,{position:[140,-400,-900]}),[[0,0,-50],[40,-20,-100],[0,-80,-200],[-50,-100,-250],[100,-180,-500],[-120,-280,-550],[-100,-350,-760],[140,-395,-880]].map((n,e)=>O.jsx(Xp,{speed:2,rotationIntensity:.5,floatIntensity:2,children:O.jsxs("mesh",{position:n,rotation:[0,0,Math.PI/4],children:[O.jsx("torusGeometry",{args:[40,.5,16,100]}),O.jsx("meshBasicMaterial",{color:"#4466ff",transparent:!0,opacity:.2})]})},e))]})';
+if (source.includes(shortCourse)) source = source.replace(shortCourse, grandPrixCourse);
+else if (!source.includes('O.jsx(vD,{position:[140,-410,-990]})')) {
+  throw new Error('Expected the original or extended Velocity course.');
 }
 
 await writeFile(bundlePath, source);

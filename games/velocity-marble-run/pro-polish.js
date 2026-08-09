@@ -1,5 +1,5 @@
 (() => {
-  const BEST_KEY = "velocity-marble-pro-best";
+  const BEST_KEY = "velocity-marble-pro-best-v3";
   const TRAITS = {
     opal: "BALANCED",
     black_bone: "HEAVY ROLLER",
@@ -15,19 +15,19 @@
     smoky_quartz: "DRIFT KING",
   };
   const CIRCUITS = [
-    { id:"kitchen", icon:"🍴", name:"Kitchen Counter", accent:"#ffdd66", medals:[12,16,22], handling:1.08, start:0, end:2, label:"runway + counter curves" },
-    { id:"space", icon:"🪐", name:"Space Station", accent:"#b78cff", medals:[13,18,24], handling:.92, start:1, end:3, label:"mid-course low-control sprint" },
-    { id:"volcano", icon:"🌋", name:"Volcano Run", accent:"#ff633d", medals:[13,17,23], handling:1, start:2, end:4, label:"steep final-sector attack" },
-    { id:"toyroom", icon:"🧸", name:"Toy Room", accent:"#ff72ca", medals:[18,24,31], handling:1.15, start:0, end:3, label:"long precision course" },
-    { id:"jungle", icon:"🌿", name:"Jungle Temple", accent:"#4dff9a", medals:[19,25,32], handling:.98, start:1, end:4, label:"airtime route to the temple" },
-    { id:"laundry", icon:"🧺", name:"Washer Factory", accent:"#4ddfff", medals:[27,35,46], handling:1.04, start:0, end:5, label:"complete factory grand prix" },
+    { id:"kitchen", icon:"🍴", name:"Kitchen Counter", accent:"#ffdd66", medals:[58,72,92], handling:1.08, start:0, end:8, label:"full grand prix · friendly grip" },
+    { id:"space", icon:"🪐", name:"Space Station", accent:"#b78cff", medals:[61,77,98], handling:.92, start:0, end:8, label:"full grand prix · low control" },
+    { id:"volcano", icon:"🌋", name:"Volcano Run", accent:"#ff633d", medals:[59,74,94], handling:1, start:0, end:8, label:"full grand prix · raw speed" },
+    { id:"toyroom", icon:"🧸", name:"Toy Room", accent:"#ff72ca", medals:[62,78,100], handling:1.15, start:0, end:8, label:"full grand prix · precision" },
+    { id:"jungle", icon:"🌿", name:"Jungle Temple", accent:"#4dff9a", medals:[60,75,96], handling:.98, start:0, end:8, label:"full grand prix · drift lines" },
+    { id:"laundry", icon:"🧺", name:"Washer Factory", accent:"#4ddfff", medals:[57,70,90], handling:1.04, start:0, end:8, label:"full factory grand prix" },
   ];
   let circuitId = localStorage.getItem("velocity-circuit") || "kitchen";
   let profile = localStorage.getItem("velocity-profile") || "Family";
   let practiceCheckpoint = Number(localStorage.getItem("velocity-practice") || 0);
   const circuit = () => CIRCUITS.find(item => item.id === circuitId) || CIRCUITS[0];
-  const ghostKey = () => `velocity-ghost-v2:${profile}:${circuitId}`;
-  const recordsKey = "velocity-family-records-v2";
+  const ghostKey = () => `velocity-ghost-v3:${profile}:${circuitId}`;
+  const recordsKey = "velocity-family-records-v3";
 
   const style = document.createElement("style");
   style.textContent = `
@@ -91,7 +91,7 @@
     <div id="velocity-pro-camera" class="pro-chip show">DRAG VIEW · DOUBLE-TAP RESET</div>
     <div id="velocity-pro-score" class="pro-chip"></div>
     <canvas id="velocity-pro-map" width="380" height="280" aria-label="Live position ghost map"></canvas>
-    <div id="velocity-pro-setup"><div class="velocity-circuits" id="velocity-circuits"></div><div class="velocity-setup-row"><label>RACER</label><input id="velocity-profile" maxlength="14"><label>PRACTICE</label><select id="velocity-practice"><option value="0">Full run</option><option value="1">Sector 2</option><option value="2">Sector 3</option><option value="3">Sector 4</option><option value="4">Final sector</option></select><span id="velocity-pro-records"></span></div></div>
+    <div id="velocity-pro-setup"><div class="velocity-circuits" id="velocity-circuits"></div><div class="velocity-setup-row"><label>RACER</label><input id="velocity-profile" maxlength="14"><label>PRACTICE</label><select id="velocity-practice"><option value="0">Full run</option><option value="1">Sector 2</option><option value="2">Sector 3</option><option value="3">Sector 4</option><option value="4">Sector 5</option><option value="5">Sector 6</option><option value="6">Sector 7</option><option value="7">Final sector</option></select><span id="velocity-pro-records"></span></div></div>
     <div id="velocity-pro-finish"><div><strong>FINISH!</strong><span id="velocity-pro-medal"></span></div><div id="velocity-pro-confetti"></div></div>
   `;
   document.body.appendChild(layer);
@@ -303,7 +303,7 @@
     return { gameState: "PLAYING", speed: Math.hypot(...diagnostics.velocity.current), checkpoint: diagnostics.checkpoint(), marbleId: "opal" };
   }
 
-  const CHECKPOINTS = [[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345]];
+  const CHECKPOINTS = [[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345],[175,-190,-520],[-120,-275,-465],[-180,-320,-700]];
   let ghostCursor = 0;
 
   function scoreEvent(label, points) {
@@ -340,7 +340,7 @@
   function drawGhostMap(state, elapsed) {
     const canvas=ui.map,context=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
     context.clearRect(0,0,w,h);context.fillStyle="rgba(2,10,22,.82)";context.fillRect(0,0,w,h);
-    const map=pos=>[w*.5+pos[0]*1.35,18+(-pos[2]+8)*.54];
+    const map=pos=>[w*.5+pos[0]*.85,18+(-pos[2]+8)*.24];
     context.strokeStyle="rgba(70,220,255,.32)";context.lineWidth=10;context.lineCap="round";context.beginPath();
     CHECKPOINTS.forEach((point,i)=>{const [x,y]=map(point);i?context.lineTo(x,y):context.moveTo(x,y)});context.stroke();
     context.strokeStyle=circuit().accent;context.lineWidth=2;context.stroke();
@@ -399,7 +399,7 @@
         show(ui.section, `SECTOR ${state.checkpoint + 1} CLEAR`, 1600);
         if(sectorTime<7.4+state.checkpoint*.7){eventCounts.shortcut++;scoreEvent("SHORTCUT LINE",250)}
         blip(360 + state.checkpoint * 90, .12, .04);
-        if (practiceCheckpoint === 0 && circuit().end < 5 && state.checkpoint >= circuit().end && !circuitFinishRequested) {
+        if (practiceCheckpoint === 0 && circuit().end < 8 && state.checkpoint >= circuit().end && !circuitFinishRequested) {
           circuitFinishRequested = true;
           scoreEvent("CIRCUIT GATE", 600);
           setTimeout(() => window.__velocityCompleteRun?.(), 220);

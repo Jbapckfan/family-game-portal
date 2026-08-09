@@ -35,6 +35,8 @@
         <div class="menu-actions">
           <button id="play-button" class="arcade-button primary"><span>⚡</span> SOLO RIOT</button>
           <button id="duel-button" class="arcade-button secondary"><span>👥</span> PASS &amp; CLASH</button>
+          <button id="reaction-button" class="arcade-button reaction"><span>🎯</span> ONE-TAP REACTION</button>
+          <div class="mini-actions"><button id="leaderboard-button" class="arcade-button ghost">🏆 RECORDS</button><button id="settings-button" class="arcade-button ghost">⚙ SETTINGS</button></div>
           <button id="how-button" class="arcade-button ghost"><span>?</span> HOW TO PLAY</button>
         </div>
         <div class="best-row"><span>🏆 BEST</span><strong id="best-score">0</strong><span id="sound-state">🔊</span></div>
@@ -50,8 +52,12 @@
             <article><span>💥</span><h2>SMASH</h2><p>Hit bright sparks. Never tap bombs.</p></article>
             <article><span>👆</span><h2>SWIPE</h2><p>Swipe in the arrow's direction.</p></article>
             <article><span>🟢</span><h2>GO / FREEZE</h2><p>Tap on green. Freeze on red.</p></article>
+            <article><span>🎨</span><h2>COLOR MATCH</h2><p>Tap only when the word matches its color.</p></article>
+            <article><span>🔢</span><h2>NUMBER ORDER</h2><p>Tap 1, 2, 3 in order.</p></article>
+            <article><span>⏱</span><h2>PERFECT HOLD</h2><p>Hold the button until its ring turns green.</p></article>
+            <article><span>⭐</span><h2>STAR HUNT</h2><p>Find the star hiding among the decoys.</p></article>
           </div>
-          <p class="tip">Build combos to trigger FEVER. Three misses and the riot is over!</p>
+          <p class="tip">Build combos to trigger FEVER. Run out of shields and the riot is over!</p>
           <button class="arcade-button primary" data-close>LET'S GO!</button>
         </div>
       </section>
@@ -73,9 +79,18 @@
             <div><strong id="stat-best">0</strong><span>HIGH SCORE</span></div>
           </div>
           <div id="duel-result" class="duel-result hidden"></div>
+          <div id="name-entry" class="name-entry hidden"><label for="record-name">NEW RECORD—WHO DID IT?</label><div><input id="record-name" maxlength="18" autocomplete="nickname" placeholder="Player name" /><button id="save-record-button">SAVE</button></div></div>
           <button id="again-button" class="arcade-button primary">↻ RIOT AGAIN</button>
           <button id="menu-button" class="arcade-button ghost">BACK TO MENU</button>
         </div>
+      </section>
+
+      <section id="leaderboard" class="screen hidden">
+        <div class="panel records-panel"><button class="close-button" data-close aria-label="Close">×</button><h1>FAMILY RECORDS</h1><div class="records-grid"><div><h2>RIOT SCORE</h2><ol id="score-records"></ol></div><div><h2>REACTION</h2><ol id="reaction-records"></ol></div></div><p class="tip">Records are saved for every player on this device.</p></div>
+      </section>
+
+      <section id="settings" class="screen hidden">
+        <div class="panel settings-panel"><button class="close-button" data-close aria-label="Close">×</button><h1>RIOT LAB</h1><h2>DIFFICULTY</h2><div class="setting-buttons" id="difficulty-settings"><button data-level="kid">KID</button><button data-level="normal">NORMAL</button><button data-level="riot">RIOT</button></div><h2>UNLOCKED LOOK</h2><div class="setting-buttons" id="skin-settings"><button data-riot-skin="neon">NEON</button><button data-riot-skin="candy">CANDY</button><button data-riot-skin="space">SPACE</button><button data-riot-skin="gold">GOLD</button></div><h2>ACCESSIBILITY</h2><div class="toggle-grid"><label><input type="checkbox" id="reduce-flash" /> Reduce flashes</label><label><input type="checkbox" id="large-targets" /> Larger targets</label><label><input type="checkbox" id="symbol-cues" /> Symbol cues</label><label><input type="checkbox" id="one-hand" /> One-hand zone</label></div><button id="calibrate-button" class="arcade-button secondary">CALIBRATE REACTION</button><p class="tip" id="calibration-copy">No calibration saved yet.</p></div>
       </section>
 
       <div id="toast" class="toast hidden" aria-live="assertive"></div>

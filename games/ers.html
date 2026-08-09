@@ -353,6 +353,10 @@
     .option-button small { display: block; margin-top: 3px; opacity: .66; font-size: .62rem; }
     .option-button.selected { border-color: var(--gold); color: #fff; background: rgba(255,209,102,.12); box-shadow: 0 0 20px rgba(255,209,102,.1); }
 
+    .rule-toggles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .rule-toggle { min-height: 40px; padding: 7px 5px; border: 1px solid rgba(255,255,255,.13); border-radius: 12px; background: rgba(255,255,255,.04); color: #9e92ac; font-size: .67rem; font-weight: 950; cursor: pointer; }
+    .rule-toggle.selected { border-color: var(--mint); color: #141024; background: var(--mint); box-shadow: 0 0 18px rgba(78,231,224,.17); }
+
     .primary-button, .secondary-button { width: 100%; min-height: 52px; margin-top: 16px; padding: 11px 16px; border-radius: 16px; font-weight: 1000; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
     .primary-button { border: 0; color: #211006; background: linear-gradient(100deg, var(--gold), var(--orange)); box-shadow: 0 12px 30px rgba(255,138,69,.2); }
     .secondary-button { border: 1px solid rgba(255,255,255,.16); color: #fff; background: rgba(255,255,255,.06); }
@@ -487,6 +491,16 @@
         <button class="option-button" type="button" data-match="full">Full Deck<small>Capture all 52</small></button>
       </div>
 
+      <span class="option-label">Slap patterns · tap to toggle</span>
+      <div class="rule-toggles" id="rule-options" aria-label="Slap pattern settings">
+        <button class="rule-toggle" type="button" data-rule="Double">Double</button>
+        <button class="rule-toggle" type="button" data-rule="Sandwich">Sandwich</button>
+        <button class="rule-toggle" type="button" data-rule="Marriage">Marriage</button>
+        <button class="rule-toggle" type="button" data-rule="Makes 10">Makes 10</button>
+        <button class="rule-toggle" type="button" data-rule="Top–Bottom">Top–Bottom</button>
+        <button class="rule-toggle" type="button" data-rule="4-card Run">4-card Run</button>
+      </div>
+
       <button class="primary-button" id="start-button" type="button">Deal the cards</button>
       <button class="secondary-button" id="menu-rules-button" type="button">Learn the slap rules</button>
       <div class="stats-row">
@@ -508,7 +522,7 @@
         <li>Face cards start challenges: Jack gives 1 chance, Queen 2, King 3, and Ace 4. Reveal another face card to pass the challenge; otherwise the challenger captures the pile.</li>
         <li>Keyboard: Space or Enter flips your card, S slaps, P pauses.</li>
       </ol>
-      <div class="rule-chips" aria-label="Active slap patterns">
+      <div class="rule-chips" id="active-rule-chips" aria-label="Active slap patterns">
         <span class="rule-chip">Double</span><span class="rule-chip">Sandwich</span><span class="rule-chip">Marriage</span><span class="rule-chip">Makes 10</span><span class="rule-chip">Top–Bottom</span><span class="rule-chip">4-card Run</span>
       </div>
       <button class="primary-button" id="close-rules-button" type="button">Ready to slap</button>
@@ -553,6 +567,8 @@
     ];
     const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const FACE_CHANCES = { J: 1, Q: 2, K: 3, A: 4 };
+    const SLAP_RULES = ['Double', 'Sandwich', 'Marriage', 'Makes 10', 'Top–Bottom', '4-card Run'];
+    const DEFAULT_RULES = Object.fromEntries(SLAP_RULES.map(rule => [rule, true]));
 
     function createDeck() {
       const cards = [];
@@ -577,19 +593,19 @@
       return cards;
     }
 
-    function getSlapReasons(pile) {
+    function getSlapReasons(pile, enabledRules = DEFAULT_RULES) {
       const reasons = [];
       const length = pile.length;
       if (length >= 2) {
         const top = pile[length - 1];
         const prior = pile[length - 2];
-        if (top.rank === prior.rank) reasons.push('Double');
-        if ((top.rank === 'K' && prior.rank === 'Q') || (top.rank === 'Q' && prior.rank === 'K')) reasons.push('Marriage');
-        if (top.numeric && prior.numeric && top.numeric + prior.numeric === 10) reasons.push('Makes 10');
+        if (enabledRules.Double && top.rank === prior.rank) reasons.push('Double');
+        if (enabledRules.Marriage && ((top.rank === 'K' && prior.rank === 'Q') || (top.rank === 'Q' && prior.rank === 'K'))) reasons.push('Marriage');
+        if (enabledRules['Makes 10'] && top.numeric && prior.numeric && top.numeric + prior.numeric === 10) reasons.push('Makes 10');
       }
-      if (length >= 3 && pile[length - 1].rank === pile[length - 3].rank) reasons.push('Sandwich');
-      if (length >= 3 && pile[0].rank === pile[length - 1].rank) reasons.push('Top–Bottom');
-      if (length >= 4) {
+      if (enabledRules.Sandwich && length >= 3 && pile[length - 1].rank === pile[length - 3].rank) reasons.push('Sandwich');
+      if (enabledRules['Top–Bottom'] && length >= 3 && pile[0].rank === pile[length - 1].rank) reasons.push('Top–Bottom');
+      if (enabledRules['4-card Run'] && length >= 4) {
         const recent = pile.slice(-4).map(card => card.rankIndex);
         const ascending = recent.every((rank, index) => index === 0 || rank - recent[index - 1] === 1);
         const descending = recent.every((rank, index) => index === 0 || rank - recent[index - 1] === -1);
@@ -606,7 +622,7 @@
       return fromIndex;
     }
 
-    function createGame(botCount = 1, target = 30, random = Math.random) {
+    function createGame(botCount = 1, target = 30, random = Math.random, rules = DEFAULT_RULES) {
       const players = [{ id: 'human', name: 'You', deck: [], pilesWon: 0 }];
       for (let index = 0; index < botCount; index += 1) {
         players.push({ id: `bot-${index + 1}`, name: botCount === 1 ? 'Bot' : `Bot ${index + 1}`, deck: [], pilesWon: 0 });
@@ -623,6 +639,7 @@
         target,
         plays: 0,
         lastCard: null,
+        rules: { ...rules },
       };
     }
 
@@ -687,7 +704,7 @@
     }
 
     function slapPile(state, playerIndex) {
-      const reasons = getSlapReasons(state.pile);
+      const reasons = getSlapReasons(state.pile, state.rules);
       if (reasons.length) {
         const captured = awardPile(state, playerIndex);
         return { valid: true, reasons, captured };
@@ -712,8 +729,9 @@
     };
 
     const STORAGE_KEY = 'alford-ers-game';
-    let saved = { wins: 0, losses: 0, streak: 0, goodSlaps: 0, difficulty: 'quick', bots: 1, match: 'quick', sound: true };
+    let saved = { wins: 0, losses: 0, streak: 0, goodSlaps: 0, difficulty: 'quick', bots: 1, match: 'quick', sound: true, rules: { ...DEFAULT_RULES } };
     try { saved = { ...saved, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; } catch (_) {}
+    saved.rules = { ...DEFAULT_RULES, ...(saved.rules || {}) };
 
     let difficulty = DIFFICULTIES[saved.difficulty] ? saved.difficulty : 'quick';
     let botCount = Number(saved.bots) === 2 ? 2 : 1;
@@ -762,6 +780,7 @@
       saved.difficulty = difficulty;
       saved.bots = botCount;
       saved.match = matchType;
+      saved.rules = { ...saved.rules };
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); } catch (_) {}
     }
 
@@ -823,6 +842,14 @@
         button.classList.toggle('selected', selected);
         button.setAttribute('aria-pressed', String(selected));
       });
+      document.querySelectorAll('[data-rule]').forEach(button => {
+        const selected = saved.rules[button.dataset.rule] !== false;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      document.getElementById('active-rule-chips').innerHTML = SLAP_RULES
+        .filter(rule => saved.rules[rule] !== false)
+        .map(rule => `<span class="rule-chip">${rule}</span>`).join('') || '<span class="rule-chip">No slap patterns</span>';
       document.getElementById('stat-wins').textContent = saved.wins;
       document.getElementById('stat-streak').textContent = saved.streak;
       document.getElementById('stat-slaps').textContent = saved.goodSlaps;
@@ -830,7 +857,7 @@
 
     function render() {
       if (!state) return;
-      const reasons = getSlapReasons(state.pile);
+      const reasons = getSlapReasons(state.pile, state.rules);
       elements.opponents.innerHTML = state.players.slice(1).map((player, offset) => {
         const index = offset + 1;
         const classes = ['player-seat'];
@@ -922,7 +949,7 @@
         return;
       }
 
-      const reasons = getSlapReasons(state.pile);
+      const reasons = getSlapReasons(state.pile, state.rules);
       if (reasons.length) {
         setStatus(`SLAP! ${reasons.join(' + ')}`);
         const settings = DIFFICULTIES[difficulty];
@@ -932,7 +959,7 @@
           if (!fastest || delay < fastest.delay) fastest = { playerIndex: offset + 1, delay };
         });
         slapTimer = setTimeout(() => {
-          if (phase !== 'playing' || currentRevision !== revision || !getSlapReasons(state.pile).length) return;
+          if (phase !== 'playing' || currentRevision !== revision || !getSlapReasons(state.pile, state.rules).length) return;
           const result = slapPile(state, fastest.playerIndex);
           largestPile = Math.max(largestPile, result.captured);
           slapStreak = 0;
@@ -983,7 +1010,7 @@
     }
 
     function humanPlay() {
-      if (phase !== 'playing' || !state || state.turnIndex !== 0 || state.pendingAward !== null || getSlapReasons(state.pile).length) return;
+      if (phase !== 'playing' || !state || state.turnIndex !== 0 || state.pendingAward !== null || getSlapReasons(state.pile, state.rules).length) return;
       const result = playCard(state, 0);
       if (!result.ok) return;
       tone(330, .055, 'triangle', .04);
@@ -1087,7 +1114,7 @@
       elements.pause.classList.remove('open');
       elements.end.classList.remove('open');
       elements.rules.classList.remove('open');
-      state = createGame(botCount, matchType === 'full' ? 52 : 30, Math.random);
+      state = createGame(botCount, matchType === 'full' ? 52 : 30, Math.random, saved.rules);
       elapsedBeforePause = 0;
       goodSlaps = 0;
       badSlaps = 0;
@@ -1157,6 +1184,13 @@
       if (!button) return;
       matchType = button.dataset.match;
       persist(); renderOptions(); tone(390, .04, 'sine', .03);
+    });
+    document.getElementById('rule-options').addEventListener('click', event => {
+      const button = event.target.closest('[data-rule]');
+      if (!button) return;
+      const rule = button.dataset.rule;
+      saved.rules[rule] = saved.rules[rule] === false;
+      persist(); renderOptions(); tone(saved.rules[rule] ? 520 : 230, .045, 'sine', .03);
     });
 
     elements.play.addEventListener('click', humanPlay);

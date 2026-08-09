@@ -105,6 +105,8 @@
         // --- CONFIGURATION ---
         const COLS = 7;
         const ROWS = 6;
+        let CONNECT_TARGET = 4;
+        let GRAVITY_UP = false;
         const PLAYERS = {
             1: { label: 'Player 1', name: 'Red', bg: '#ef4444', ring: '#dc2626', text: '#fecaca' },
             2: { label: 'Player 2', name: 'Yellow', bg: '#facc15', ring: '#eab308', text: '#422006' },
@@ -118,7 +120,8 @@
 
         // Find the lowest empty row in a column (gravity). Returns -1 if column is full.
         const lowestEmptyRow = (board, col) => {
-            for (let row = ROWS - 1; row >= 0; row--) {
+            for (let step = 0; step < ROWS; step++) {
+                const row = GRAVITY_UP ? step : ROWS - 1 - step;
                 if (!board[cellIndex(row, col)]) return row;
             }
             return -1;
@@ -153,14 +156,38 @@
                     r -= dr; c -= dc;
                 }
 
-                if (cells.length >= 4) {
-                    return cells.slice(0, 4).map(([rr, cc]) => cellIndex(rr, cc));
+                if (cells.length >= CONNECT_TARGET) {
+                    return cells.slice(0, CONNECT_TARGET).map(([rr, cc]) => cellIndex(rr, cc));
                 }
             }
             return null;
         };
 
         const boardIsFull = (board) => board.every(cell => cell !== null);
+
+        const legalColumns = board => Array.from({length:COLS},(_,col)=>col).filter(col=>lowestEmptyRow(board,col)>=0);
+        const simulateDrop = (board,col,player) => {
+            const row=lowestEmptyRow(board,col); if(row<0)return null;
+            const next=[...board];next[cellIndex(row,col)]=player;return {board:next,row};
+        };
+        const allWins = (board,player) => {
+            for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(board[cellIndex(r,c)]===player&&findWinThroughCell(board,r,c))return true;
+            return false;
+        };
+        const scoreBoard = board => {
+            if(allWins(board,2))return 100000;if(allWins(board,1))return -100000;
+            let score=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const v=board[cellIndex(r,c)];if(v===2)score+=3-Math.abs(3-c);if(v===1)score-=3-Math.abs(3-c);}return score;
+        };
+        const chooseAIMove = (board,difficulty) => {
+            const legal=legalColumns(board);if(!legal.length)return -1;
+            if(difficulty==='easy')return legal[Math.floor(Math.random()*legal.length)];
+            for(const col of legal){const sim=simulateDrop(board,col,2);if(findWinThroughCell(sim.board,sim.row,col))return col;}
+            for(const col of legal){const sim=simulateDrop(board,col,1);if(findWinThroughCell(sim.board,sim.row,col))return col;}
+            if(difficulty==='smart')return [...legal].sort((a,b)=>Math.abs(3-a)-Math.abs(3-b))[0];
+            const memo=new Map();
+            const minimax=(position,depth,maximizing,alpha,beta)=>{const key=position.join('')+depth+maximizing;if(memo.has(key))return memo.get(key);if(depth===0||allWins(position,1)||allWins(position,2))return scoreBoard(position);const moves=legalColumns(position);if(!moves.length)return 0;let best=maximizing?-Infinity:Infinity;for(const col of moves){const sim=simulateDrop(position,col,maximizing?2:1);const value=minimax(sim.board,depth-1,!maximizing,alpha,beta);best=maximizing?Math.max(best,value):Math.min(best,value);if(maximizing)alpha=Math.max(alpha,best);else beta=Math.min(beta,best);if(beta<=alpha)break;}memo.set(key,best);return best;};
+            return legal.map(col=>({col,value:minimax(simulateDrop(board,col,2).board,6,false,-Infinity,Infinity)})).sort((a,b)=>b.value-a.value||Math.abs(3-a.col)-Math.abs(3-b.col))[0].col;
+        };
 
         // --- COMPONENTS ---
         const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
@@ -280,7 +307,7 @@
 
         const Disc = React.memo(({ player, row, isWinning }) => {
             const cellPercent = 100 / ROWS;
-            const info = PLAYERS[player];
+            const info = player === 3 ? {bg:'#334155',ring:'#94a3b8'} : PLAYERS[player];
             return (
                 <div
                     className="disc-slot absolute p-1 md:p-1.5"
@@ -298,7 +325,7 @@
                             color: info.ring,
                             boxShadow: `0 0 8px 1px ${info.ring}aa, inset 0 0 6px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.3)`,
                         }}
-                    />
+                    >{player === 3 && <span className="flex items-center justify-center h-full text-slate-200 text-xl">✦</span>}</div>
                 </div>
             );
         });
@@ -357,6 +384,16 @@
         });
 
         const ConnectFourGame = () => {
+            const [variant, setVariant] = React.useState('classic');
+            const [vsAI, setVsAI] = React.useState(false);
+            const [difficulty, setDifficulty] = React.useState('smart');
+            const [names, setNames] = React.useState(() => { try{return JSON.parse(localStorage.getItem('connect4-names'))||['Player 1','Player 2'];}catch{return ['Player 1','Player 2'];} });
+            const [seriesLength, setSeriesLength] = React.useState(3);
+            const [matchScore, setMatchScore] = React.useState([0,0]);
+            const [starter, setStarter] = React.useState(1);
+            const [moveNumber, setMoveNumber] = React.useState(0);
+            const [rotation, setRotation] = React.useState(0);
+            const [records, setRecords] = React.useState(() => {try{return JSON.parse(localStorage.getItem('connect4-family-records'))||{};}catch{return{};}});
             const [board, setBoard] = React.useState(() => createEmptyBoard());
             const [currentPlayer, setCurrentPlayer] = React.useState(1);
             const [winner, setWinner] = React.useState(null); // 1 | 2 | 'draw' | null
@@ -374,10 +411,12 @@
             const currentPlayerRef = React.useRef(currentPlayer);
             const gameOverRef = React.useRef(false);
             const showHowToPlayRef = React.useRef(showHowToPlay);
+            const vsAIRef = React.useRef(vsAI);
 
             React.useEffect(() => { boardRef.current = board; }, [board]);
             React.useEffect(() => { currentPlayerRef.current = currentPlayer; }, [currentPlayer]);
             React.useEffect(() => { showHowToPlayRef.current = showHowToPlay; }, [showHowToPlay]);
+            React.useEffect(() => { vsAIRef.current = vsAI; }, [vsAI]);
 
             const winningSet = React.useMemo(() => new Set(winningCells), [winningCells]);
 
@@ -394,20 +433,33 @@
             // setState calls (never nested inside another setState's updater) so the
             // update behaves identically whether triggered by a mouse click (React's
             // batched synthetic event) or a keydown (unbatched native event).
-            const dropDisc = React.useCallback((col) => {
+            const dropDisc = React.useCallback((col, fromAI = false) => {
                 if (gameOverRef.current || showHowToPlayRef.current) return;
+                if (vsAIRef.current && currentPlayerRef.current === 2 && !fromAI) return;
 
                 const prevBoard = boardRef.current;
                 const row = lowestEmptyRow(prevBoard, col);
                 if (row === -1) return;
 
                 const player = currentPlayerRef.current;
-                const newBoard = prevBoard.slice();
+                let newBoard = prevBoard.slice();
                 newBoard[cellIndex(row, col)] = player;
+                const nextMoveNumber = moveNumber + 1;
+                if (variant === 'rotate' && nextMoveNumber % 4 === 0) {
+                    const nextGravityUp = !GRAVITY_UP;
+                    const settled = createEmptyBoard();
+                    for(let c=0;c<COLS;c++){
+                        const pieces=[];for(let r=0;r<ROWS;r++){const value=newBoard[cellIndex(r,c)];if(value===1||value===2)pieces.push(value);}
+                        pieces.forEach((value,i)=>{const targetRow=nextGravityUp?i:ROWS-1-i;settled[cellIndex(targetRow,c)]=value;});
+                    }
+                    newBoard=settled;GRAVITY_UP=nextGravityUp;setRotation(value=>value+180);
+                }
                 boardRef.current = newBoard;
                 setBoard(newBoard);
+                setMoveNumber(nextMoveNumber);
 
-                const win = findWinThroughCell(newBoard, row, col);
+                let win = null;
+                for(let rr=0;rr<ROWS&&!win;rr++)for(let cc=0;cc<COLS&&!win;cc++)win=findWinThroughCell(newBoard,rr,cc);
                 if (win) {
                     gameOverRef.current = true;
                     setWinningCells(win);
@@ -420,7 +472,23 @@
                     currentPlayerRef.current = nextPlayer;
                     setCurrentPlayer(nextPlayer);
                 }
-            }, []);
+            }, [moveNumber, variant]);
+
+            React.useEffect(() => {
+                if (!vsAI || currentPlayer !== 2 || gameOver || showHowToPlay) return;
+                const timer=setTimeout(()=>{const col=chooseAIMove(boardRef.current,difficulty);if(col>=0)dropDisc(col,true);},420);
+                return ()=>clearTimeout(timer);
+            }, [vsAI,currentPlayer,gameOver,showHowToPlay,difficulty,dropDisc]);
+
+            const matchTarget=Math.ceil(seriesLength/2);
+            const outcomeRecordedRef=React.useRef(null);
+            React.useEffect(()=>{
+                if(!winner||outcomeRecordedRef.current===winner)return;
+                outcomeRecordedRef.current=winner;
+                if(winner!== 'draw')setMatchScore(score=>score.map((value,index)=>index===winner-1?value+1:value));
+                const key=[names[0]||'Player 1',vsAI?`Bot (${difficulty})`:names[1]||'Player 2'].join(' vs ');
+                setRecords(previous=>{const row={p1:0,p2:0,draws:0,...previous[key]};if(winner==='draw')row.draws++;else if(winner===1)row.p1++;else row.p2++;const next={...previous,[key]:row};localStorage.setItem('connect4-family-records',JSON.stringify(next));return next;});
+            },[winner,names,vsAI,difficulty]);
 
             React.useEffect(() => {
                 const handleKeyDown = (e) => {
@@ -435,16 +503,44 @@
                 return () => document.removeEventListener('keydown', handleKeyDown);
             }, [dropDisc]);
 
+            const freshVariantBoard = React.useCallback(() => {
+                const fresh=createEmptyBoard();
+                if(variant==='obstacle')[[2,2],[3,4],[1,5]].forEach(([r,c])=>fresh[cellIndex(r,c)]=3);
+                return fresh;
+            },[variant]);
+
             const startNewGame = React.useCallback(() => {
-                const freshBoard = createEmptyBoard();
+                const freshBoard = freshVariantBoard();
+                const nextStarter=starter===1?2:1;
                 boardRef.current = freshBoard;
-                currentPlayerRef.current = 1;
+                currentPlayerRef.current = nextStarter;
                 gameOverRef.current = false;
                 setBoard(freshBoard);
-                setCurrentPlayer(1);
+                setCurrentPlayer(nextStarter);
+                setStarter(nextStarter);
                 setWinner(null);
                 setWinningCells([]);
-            }, []);
+                setMoveNumber(0);setRotation(0);GRAVITY_UP=false;outcomeRecordedRef.current=null;
+            }, [freshVariantBoard,starter]);
+
+            const changeVariant = next => {
+                setVariant(next);CONNECT_TARGET=next==='five'?5:4;GRAVITY_UP=false;setRotation(0);setMoveNumber(0);setMatchScore([0,0]);
+                const fresh=createEmptyBoard();if(next==='obstacle')[[2,2],[3,4],[1,5]].forEach(([r,c])=>fresh[cellIndex(r,c)]=3);
+                boardRef.current=fresh;currentPlayerRef.current=1;gameOverRef.current=false;setBoard(fresh);setCurrentPlayer(1);setStarter(1);setWinner(null);setWinningCells([]);outcomeRecordedRef.current=null;
+            };
+
+            const popDisc = col => {
+                if(variant!=='pop'||gameOverRef.current)return;const player=currentPlayerRef.current;const bottom=cellIndex(ROWS-1,col);if(boardRef.current[bottom]!==player)return;
+                const next=[...boardRef.current];for(let r=ROWS-1;r>0;r--)next[cellIndex(r,col)]=next[cellIndex(r-1,col)];next[cellIndex(0,col)]=null;boardRef.current=next;setBoard(next);setMoveNumber(n=>n+1);
+                let winning=null,winningPlayer=null;for(let r=0;r<ROWS&&!winning;r++)for(let c=0;c<COLS&&!winning;c++){const found=findWinThroughCell(next,r,c);if(found){winning=found;winningPlayer=next[cellIndex(r,c)];}}
+                if(winning){gameOverRef.current=true;setWinningCells(winning);setWinner(winningPlayer);return;}
+                const other=player===1?2:1;currentPlayerRef.current=other;setCurrentPlayer(other);
+            };
+
+            const newRoundOrMatch = () => {
+                if(matchScore.some(value=>value>=matchTarget))setMatchScore([0,0]);
+                startNewGame();
+            };
 
             const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
             const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
@@ -455,9 +551,9 @@
             if (winner === 'draw') {
                 statusText = "It's a Draw!";
             } else if (winner) {
-                statusText = `${PLAYERS[winner].label} (${PLAYERS[winner].name}) Wins!`;
+                statusText = `${winner===1?(names[0]||'Player 1'):(vsAI?`Bot (${difficulty})`:(names[1]||'Player 2'))} Wins!`;
             } else {
-                statusText = `${turnInfo.label}'s Turn (${turnInfo.name})`;
+                statusText = `${currentPlayer===1?(names[0]||'Player 1'):(vsAI?`Bot (${difficulty})`:(names[1]||'Player 2'))}'s Turn (${turnInfo.name})`;
             }
 
             return (
@@ -484,6 +580,11 @@
                         </header>
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="grid grid-cols-2 gap-2 mb-2"><input value={names[0]} onChange={e=>{const next=[e.target.value,names[1]];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" className="bg-gray-900 border border-red-500 rounded px-2 py-1 text-center" aria-label="Red player name"/><input value={names[1]} onChange={e=>{const next=[names[0],e.target.value];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" disabled={vsAI} className="bg-gray-900 border border-yellow-500 rounded px-2 py-1 text-center disabled:opacity-40" aria-label="Yellow player name"/></div>
+                        <div className="flex flex-wrap justify-center gap-1 mb-2"><button onClick={()=>setVsAI(false)} className={`px-2 py-1 rounded border text-xs ${!vsAI?'bg-blue-600':'bg-gray-900'}`}>2 Players</button>{['easy','smart','perfect'].map(level=><button key={level} onClick={()=>{setVsAI(true);setDifficulty(level);}} className={`px-2 py-1 rounded border text-xs capitalize ${vsAI&&difficulty===level?'bg-purple-600':'bg-gray-900'}`}>AI {level}</button>)}<select value={seriesLength} onChange={e=>{setSeriesLength(Number(e.target.value));setMatchScore([0,0]);}} className="bg-gray-900 border rounded px-2 text-xs"><option value="3">Best of 3</option><option value="5">Best of 5</option></select></div>
+                        <div className="flex gap-1 overflow-x-auto mb-3">{[['classic','Classic'],['pop','Pop Out'],['five','Five in Row'],['obstacle','Obstacles'],['rotate','Rotating']].map(([id,label])=><button key={id} onClick={()=>changeVariant(id)} className={`shrink-0 px-2 py-1 rounded border text-xs ${variant===id?'bg-cyan-600':'bg-gray-900'}`}>{label}</button>)}</div>
+                        <div className="mb-2 text-sm text-blue-100">Series: <b className="text-red-300">{names[0]||'Player 1'} {matchScore[0]}</b> – <b className="text-yellow-200">{vsAI?'Bot':names[1]||'Player 2'} {matchScore[1]}</b> · first to {matchTarget}</div>
 
                         <div
                             className="flex items-center justify-center gap-3 mb-4"
@@ -515,7 +616,8 @@
                             <div
                                 role="group"
                                 aria-label={`Connect Four board, 7 columns by 6 rows. ${statusText}`}
-                                className="relative w-full aspect-[7/6] flex gap-1 md:gap-1.5"
+                                className="relative w-full aspect-[7/6] flex gap-1 md:gap-1.5 transition-transform duration-700"
+                                style={{transform:variant==='rotate'?`rotate(${rotation}deg)`:'none'}}
                             >
                                 {Array.from({ length: COLS }).map((_, col) => (
                                     <Column
@@ -529,6 +631,7 @@
                                     />
                                 ))}
                             </div>
+                            {variant==='pop' && <div className="grid grid-cols-7 gap-1 mt-2">{Array.from({length:COLS},(_,col)=><button key={col} onClick={()=>popDisc(col)} className="rounded bg-blue-950 border border-blue-400 text-xs min-h-[32px]" aria-label={`Pop bottom disc from column ${col+1}`}>POP</button>)}</div>}
 
                             {gameOver && (
                                 <div
@@ -536,29 +639,31 @@
                                     role="alert"
                                 >
                                     <h2 className="text-3xl font-black text-shadow-neon text-yellow-300">
-                                        {winner === 'draw' ? 'DRAW!' : `${PLAYERS[winner].label} WINS!`}
+                                        {winner === 'draw' ? 'DRAW!' : `${winner===1?(names[0]||'Player 1'):(vsAI?'Bot':names[1]||'Player 2')} WINS!`}
                                     </h2>
                                     <p className="text-blue-100">
                                         {winner === 'draw' ? 'The board is full. No winner this time.' : `${PLAYERS[winner].name} connected four in a row.`}
                                     </p>
                                     <button
                                         ref={overlayButtonRef}
-                                        onClick={startNewGame}
+                                        onClick={newRoundOrMatch}
                                         className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-yellow-300 to-amber-400 hover:scale-105 transition-all"
                                     >
-                                        New Game
+                                        {matchScore.some(value=>value>=matchTarget)?'New Match':'Next Round'}
                                     </button>
                                 </div>
                             )}
                         </main>
 
+                        <div className="mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100"><b>Family records:</b> {Object.entries(records).slice(-3).reverse().map(([key,row])=><div key={key}>{key}: {row.p1}-{row.p2} ({row.draws} draws)</div>)}</div>
+
                         <footer className="py-6">
                             <button
                                 ref={newGameButtonRef}
-                                onClick={startNewGame}
+                                onClick={newRoundOrMatch}
                                 className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-blue-800 hover:scale-105 shadow-lg shadow-blue-800/50 border border-blue-400/30"
                             >
-                                New Game
+                                {matchScore.some(value=>value>=matchTarget)?'New Match':'New Round'}
                             </button>
                         </footer>
                     </div>

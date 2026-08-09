@@ -1681,6 +1681,8 @@
     function App() {
         const [loading, setLoading] = useState(true);
         const [mode, setMode] = useState('daily');
+        const [gradeBand, setGradeBand] = useState(() => { try { return localStorage.getItem('sb-grade-band') || 'family'; } catch { return 'family'; } });
+        const [adaptiveSkill, setAdaptiveSkill] = useState(() => { try { return Number(localStorage.getItem('sb-adaptive-skill') || 2); } catch { return 2; } });
         const [randomIdx, setRandomIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
         const [sprintIdx, setSprintIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
 
@@ -1692,12 +1694,23 @@
         const sprintTimerRef = useRef(null);
 
         const pidx = mode === 'daily' ? getDailyIdx() : mode === 'sprint' ? sprintIdx : randomIdx;
-        const puzzle = PUZZLES[pidx];
+        const basePuzzle = PUZZLES[pidx];
+        const puzzle = useMemo(() => {
+            if (!basePuzzle || gradeBand === 'family' || mode === 'sprint') return basePuzzle;
+            const baseMax = { k2: 5, g34: 7, g56: 9 }[gradeBand] || 7;
+            const maxLength = baseMax + Math.floor(adaptiveSkill / 4);
+            let words = basePuzzle.words.filter(word => word.length <= maxLength);
+            if (words.length < 8) words = [...basePuzzle.words].sort((a,b)=>a.length-b.length).slice(0, Math.min(12, basePuzzle.words.length));
+            const pangrams = basePuzzle.pangrams.filter(word => words.includes(word));
+            const maxScore = words.reduce((total, word) => total + scoreWord(word, [...basePuzzle.letters, basePuzzle.center]).pts, 0);
+            return { ...basePuzzle, words, pangrams, wordCount: words.length, maxScore, adaptiveMaxLength: maxLength };
+        }, [basePuzzle, gradeBand, adaptiveSkill, mode]);
+        const progressMode = gradeBand === 'family' || mode === 'sprint' ? mode : `${mode}-kids-${gradeBand}`;
         const allLetters = useMemo(() => puzzle ? [...puzzle.letters, puzzle.center] : [], [pidx]);
         const letterSet = useMemo(() => new Set(allLetters), [allLetters]);
 
         const [word, setWord] = useState('');
-        const [found, setFound] = useState(() => loadSave(pidx, mode));
+        const [found, setFound] = useState(() => loadSave(pidx, progressMode));
         // Guards against the save effects firing with stale `found`/`practiceFound`
         // before the reload effects have loaded the new puzzle's save
         const loadedKeyRef = useRef(null);
@@ -1790,7 +1803,7 @@
             if (puzzle) {
                 practiceWordsRef.current = getPracticeWords(puzzle);
             }
-        }, [pidx]);
+        }, [pidx, gradeBand, adaptiveSkill]);
 
         // Load practice save when puzzle or practice mode changes
         useEffect(() => {
@@ -1824,19 +1837,19 @@
         // Save (not in sprint mode; only after this puzzle's save has been loaded,
         // so a stale `found` from the previous puzzle/mode never overwrites the new key)
         useEffect(() => {
-            if (mode !== 'sprint' && loadedKeyRef.current === mode + '-' + pidx) {
-                writeSave(pidx, mode, found);
+            if (mode !== 'sprint' && loadedKeyRef.current === progressMode + '-' + pidx) {
+                writeSave(pidx, progressMode, found);
             }
-        }, [found, pidx, mode]);
+        }, [found, pidx, mode, progressMode]);
 
         // Reload on puzzle change
         useEffect(() => {
             if (mode === 'sprint') {
                 setFound([]);
             } else {
-                setFound(loadSave(pidx, mode));
+                setFound(loadSave(pidx, progressMode));
             }
-            loadedKeyRef.current = mode + '-' + pidx;
+            loadedKeyRef.current = progressMode + '-' + pidx;
             setWord('');
             setToast(null);
             setLatestWord('');
@@ -1847,11 +1860,11 @@
             setPracticeFound(loadSave(pidx, 'practice'));
             practiceLoadedKeyRef.current = 'practice-' + pidx;
             streakRecordedRef.current = false;
-        }, [pidx, mode]);
+        }, [pidx, mode, progressMode]);
 
         // Check if daily puzzle already has Genius rank on load (for streak tracking)
         useEffect(() => {
-            if (mode === 'daily' && !streakRecordedRef.current && puzzle) {
+            if (mode === 'daily' && gradeBand === 'family' && !streakRecordedRef.current && puzzle) {
                 const loadedFound = loadSave(pidx, 'daily');
                 let loadedScore = 0;
                 for (const w of loadedFound) { loadedScore += scoreWord(w, allLetters).pts; }
@@ -1862,7 +1875,7 @@
                     setStreakData(newStreakData);
                 }
             }
-        }, [mode, pidx, loading]);
+        }, [mode, pidx, loading, gradeBand]);
 
         // Sprint timer
         useEffect(() => {
@@ -1940,6 +1953,21 @@
             SoundManager.play('reject');
         }
 
+        function updateAdaptiveSkill(delta) {
+            if (gradeBand === 'family' || mode === 'sprint') return;
+            setAdaptiveSkill(previous => {
+                const next = Math.max(0, Math.min(11, previous + delta));
+                try { localStorage.setItem('sb-adaptive-skill', String(next)); } catch {}
+                return next;
+            });
+        }
+
+        function chooseGradeBand(nextBand) {
+            setGradeBand(nextBand);
+            try { localStorage.setItem('sb-grade-band', nextBand); } catch {}
+            setWord(''); setToast(null); setPracticeMode(false);
+        }
+
         function showMsg(message, type) { setToast({ message, type, id: Date.now() }); }
 
         function submitWord() {
@@ -1992,7 +2020,10 @@
             }
             if ([...w].some(l => !letterSet.has(l))) { showMsg('Invalid letter!', 'error'); triggerShake(); return; }
             if (found.includes(w)) { showMsg('Already found!', 'error'); triggerShake(); return; }
-            if (!puzzle.words.includes(w)) { showMsg('Not in word list', 'error'); triggerShake(); return; }
+            if (!puzzle.words.includes(w)) {
+                showMsg(gradeBand === 'family' ? 'Not in word list' : `Not in this grade-level list yet (adaptive max: ${puzzle.adaptiveMaxLength} letters)`, 'error');
+                updateAdaptiveSkill(-0.35); triggerShake(); return;
+            }
 
             // Valid!
             const { pts, isPangram } = scoreWord(w, allLetters);
@@ -2019,6 +2050,7 @@
 
             const newFound = [...found, w].sort();
             setFound(newFound);
+            updateAdaptiveSkill(w.length >= (puzzle.adaptiveMaxLength || 99) - 1 ? 0.7 : 0.2);
             setLatestWord(w);
             setTimeout(() => setLatestWord(''), 2000);
 
@@ -2222,6 +2254,19 @@
                         {'\u{1F4CA}'}
                     </button>
                 </div>
+
+                {mode !== 'sprint' && <div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+                    <label htmlFor="grade-band" style={{fontSize:12,color:'var(--text-muted)',fontWeight:700}}>Vocabulary:</label>
+                    <select id="grade-band" value={gradeBand} onChange={event=>chooseGradeBand(event.target.value)} style={{background:'var(--panel-bg)',color:'var(--text-primary)',border:'1px solid var(--accent-purple-border)',borderRadius:8,padding:'7px 9px',fontWeight:700}}>
+                        <option value="family">Family / All Words</option>
+                        <option value="k2">Grades K–2</option>
+                        <option value="g34">Grades 3–4</option>
+                        <option value="g56">Grades 5–6</option>
+                    </select>
+                    {gradeBand !== 'family' && <span style={{fontSize:11,color:'#34d399',background:'rgba(16,185,129,.12)',border:'1px solid rgba(52,211,153,.3)',borderRadius:999,padding:'5px 9px'}}>
+                        Adaptive level {Math.floor(adaptiveSkill)+1} · words up to {puzzle.adaptiveMaxLength} letters
+                    </span>}
+                </div>}
 
                 {/* Practice Mode Toggle + Streak Badge Row */}
                 {mode !== 'sprint' && (

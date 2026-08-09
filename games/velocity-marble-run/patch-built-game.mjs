@@ -352,6 +352,16 @@ const refinements = [
     'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&r>=4&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()){p.velocity.set(0,0,0),l.current=[0,0,0];return}if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
     'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()){p.velocity.set(0,0,0),l.current=[0,0,0];return}if(t===Kn.PLAYING&&Date.now()<respawnLock.current)',
   ],
+
+  // Circuit handling and checkpoint-practice hooks consumed by pro-polish.js.
+  [
+    'impulseScale=L*Math.min(delta,.033),forceX=(forwardX/forwardLength*te-forwardZ/forwardLength*j)*impulseScale',
+    'impulseScale=L*Math.min(delta,.033)*(window.__velocityHandling||1),forceX=(forwardX/forwardLength*te-forwardZ/forwardLength*j)*impulseScale',
+  ],
+  [
+    'finishPulse:window.__velocityFinishPulse||0});if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.())',
+    'finishPulse:window.__velocityFinishPulse||0}),window.__velocityStartPractice=checkpoint=>{const index=Math.max(0,Math.min(tu.length-1,Number(checkpoint)||0)),spot=tu[index];spot&&(p.position.set(spot[0],spot[1]+2,spot[2]),p.velocity.set(0,0,0),p.angularVelocity.set(0,0,0),g.current=[spot[0],spot[1]+2,spot[2]],l.current=[0,0,0],Qi.getState().setLastCheckpoint(index),respawnLock.current=Date.now()+700)};if(t===Kn.PLAYING&&b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.())',
+  ],
 ];
 
 for (const [before, after] of refinements) {

@@ -145,9 +145,9 @@ function mqWon(board) {
 
 function mqLoadProfile() {
   try {
-    return { wins: 0, completed: 0, theme: 'classic', ...JSON.parse(localStorage.getItem(MQ_PROFILE_KEY) || '{}') };
+    return { wins: 0, completed: 0, theme: 'classic', achievements: {}, longestLogicStreak: 0, ...JSON.parse(localStorage.getItem(MQ_PROFILE_KEY) || '{}') };
   } catch (_) {
-    return { wins: 0, completed: 0, theme: 'classic' };
+    return { wins: 0, completed: 0, theme: 'classic', achievements: {}, longestLogicStreak: 0 };
   }
 }
 
@@ -161,7 +161,7 @@ const MQCell = React.memo(({ cell, theme, disabled, highlighted, exploded, onOpe
     <button
       className={`mq-cell ${cell.revealed ? 'revealed' : ''} ${cell.flagged ? 'flagged' : ''} ${cell.revealed && cell.mine ? 'mine' : ''} ${highlighted ? 'radar' : ''}`}
       style={{ color: cell.revealed && !cell.mine ? numberColors[cell.adjacent] : undefined }}
-      disabled={disabled || cell.revealed}
+      disabled={disabled || (cell.revealed && cell.adjacent === 0)}
       onClick={() => onOpen(cell.row, cell.col)}
       onContextMenu={(event) => { event.preventDefault(); onFlag(cell.row, cell.col); }}
       aria-label={`Row ${cell.row + 1}, column ${cell.col + 1}${cell.revealed ? cell.mine ? ', hazard' : `, ${cell.adjacent} nearby` : cell.flagged ? ', marked' : ', hidden'}`}
@@ -193,6 +193,8 @@ function MineQuestGame() {
   const [medal, setMedal] = React.useState('');
   const [particles, setParticles] = React.useState([]);
   const [shaking, setShaking] = React.useState(false);
+  const [everFlagged, setEverFlagged] = React.useState(false);
+  const [powersUsed, setPowersUsed] = React.useState(false);
   const startRef = React.useRef(null);
   const timerRef = React.useRef(null);
   const audioRef = React.useRef(null);
@@ -201,6 +203,9 @@ function MineQuestGame() {
   const placedRef = React.useRef(placed);
   const shieldRef = React.useRef(shield);
   const energyRef = React.useRef(energy);
+  const everFlaggedRef = React.useRef(false);
+  const powersUsedRef = React.useRef(false);
+  const comboRef = React.useRef(0);
   const theme = MQ_THEMES[themeId] || MQ_THEMES.classic;
 
   const saveProfile = React.useCallback((next) => {
@@ -266,6 +271,8 @@ function MineQuestGame() {
     setActiveMines(current.mines); setRadarCells(new Set()); setMedal('');
     setMessage(mode === 'adventure' ? current.story : 'Every board can be solved without guessing.');
     setShaking(false); startRef.current = null;
+    setEverFlagged(false); everFlaggedRef.current = false;
+    setPowersUsed(false); powersUsedRef.current = false; comboRef.current = 0;
   }, [mode, difficulty, mission, commitBoard, stopTimer]);
 
   React.useEffect(() => { reset(); }, [mode, difficulty, mission]);
@@ -289,6 +296,14 @@ function MineQuestGame() {
       wins: profile.wins + 1,
       completed: mode === 'adventure' ? Math.max(profile.completed, mission + 1) : profile.completed,
       theme: themeId,
+      longestLogicStreak: Math.max(profile.longestLogicStreak || 0, comboRef.current),
+      achievements: {
+        ...(profile.achievements || {}),
+        noFlags: (profile.achievements || {}).noFlags || !everFlaggedRef.current,
+        noPowers: (profile.achievements || {}).noPowers || !powersUsedRef.current,
+        perfectMarking: (profile.achievements || {}).perfectMarking || (wonBoard.flat().filter((cell) => cell.flagged).length === activeMines && wonBoard.flat().every((cell) => !cell.flagged || cell.mine)),
+        logicStreak: (profile.achievements || {}).logicStreak || comboRef.current >= 10,
+      },
     };
     saveProfile(nextProfile);
     commitBoard(wonBoard.map((row) => row.map((cell) => cell.mine ? { ...cell, flagged: true } : cell)));
@@ -299,7 +314,7 @@ function MineQuestGame() {
     if (flagMode) {
       const next = boardRef.current.map((line) => line.slice());
       const cell = next[row][col];
-      if (!cell.revealed) next[row][col] = { ...cell, flagged: !cell.flagged };
+      if (!cell.revealed) { next[row][col] = { ...cell, flagged: !cell.flagged }; setEverFlagged(true); everFlaggedRef.current = true; }
       commitBoard(next); tone(cell.flagged ? 230 : 320); return;
     }
     let working = boardRef.current;
@@ -309,18 +324,43 @@ function MineQuestGame() {
       placedRef.current = true; setPlaced(true); commitBoard(working); startTimer();
     }
     const target = working[row][col];
-    if (target.flagged || target.revealed) return;
+    if (target.flagged) return;
+    if (target.revealed) {
+      if (target.adjacent <= 0) return;
+      const neighbors = mqNeighbors(working.length, row, col);
+      const marked = neighbors.filter(([nr, nc]) => working[nr][nc].flagged).length;
+      if (marked !== target.adjacent) {
+        setMessage(`Chord needs ${target.adjacent} matching mark${target.adjacent === 1 ? '' : 's'}; this number has ${marked}.`);
+        tone(150, .09); return;
+      }
+      const hidden = neighbors.filter(([nr, nc]) => !working[nr][nc].revealed && !working[nr][nc].flagged);
+      if (hidden.some(([nr, nc]) => working[nr][nc].mine)) {
+        const lost = working.map((line) => line.map((cell) => cell.mine ? { ...cell, revealed: true } : cell));
+        commitBoard(lost); setState('lost'); stateRef.current = 'lost'; stopTimer(); setCombo(0); comboRef.current = 0;
+        setMessage('Chord hit a hazard: one neighboring mark was wrong.'); setShaking(true); tone(75, .35, .07); burst(22);
+        window.setTimeout(() => setShaking(false), 450); return;
+      }
+      let chordBoard = working;
+      let opened = 0;
+      hidden.forEach(([nr, nc]) => { const result = mqReveal(chordBoard, nr, nc); chordBoard = result.board; opened += result.count; });
+      commitBoard(chordBoard);
+      const chordCombo = comboRef.current + 1; comboRef.current = chordCombo; setCombo(chordCombo);
+      setScore((value) => value + opened * 125 * (1 + Math.floor(chordCombo / 4)));
+      setMessage(`Chord cascade opened ${opened} safe tile${opened === 1 ? '' : 's'}!`); tone(690, .12); if (opened >= 4) burst(Math.min(18, opened));
+      if (mqWon(chordBoard)) finishWin(chordBoard);
+      return;
+    }
     if (target.mine) {
       if (shieldRef.current) {
         const protectedBoard = working.map((line) => line.slice());
         protectedBoard[row][col] = { ...target, flagged: true };
         commitBoard(protectedBoard); setShield(false); shieldRef.current = false;
-        setCombo(0); setMessage('Shield saved the run! Hazard marked.'); tone(180, .2, .045); burst(10);
+        setCombo(0); comboRef.current = 0; setMessage('Shield saved the run! Hazard marked.'); tone(180, .2, .045); burst(10);
         if (navigator.vibrate) navigator.vibrate(45);
         return;
       }
       const lost = working.map((line) => line.map((cell) => cell.mine ? { ...cell, revealed: true } : cell));
-      commitBoard(lost); setState('lost'); stateRef.current = 'lost'; stopTimer(); setCombo(0);
+      commitBoard(lost); setState('lost'); stateRef.current = 'lost'; stopTimer(); setCombo(0); comboRef.current = 0;
       setMessage('Boom! The field has been reset for another try.'); setShaking(true); tone(75, .35, .07); burst(22);
       if (navigator.vibrate) navigator.vibrate([90, 40, 120]);
       window.setTimeout(() => setShaking(false), 450);
@@ -330,6 +370,7 @@ function MineQuestGame() {
     commitBoard(result.board);
     const nextCombo = combo + 1;
     setCombo(nextCombo);
+    comboRef.current = nextCombo;
     const multiplier = 1 + Math.floor(nextCombo / 4);
     setScore((value) => value + result.count * 100 * multiplier);
     if (mode === 'adventure') {
@@ -349,6 +390,7 @@ function MineQuestGame() {
     const cell = next[row][col];
     if (cell.revealed) return;
     next[row][col] = { ...cell, flagged: !cell.flagged };
+    setEverFlagged(true); everFlaggedRef.current = true;
     commitBoard(next); tone(cell.flagged ? 220 : 330);
   }, [commitBoard, tone]);
 
@@ -360,6 +402,7 @@ function MineQuestGame() {
   const scanner = React.useCallback(() => {
     if (!placedRef.current) { setMessage('Open one tile before using the scanner.'); return; }
     if (!spend(12)) return;
+    setPowersUsed(true); powersUsedRef.current = true;
     const safe = boardRef.current.flat().filter((cell) => !cell.mine && !cell.revealed && !cell.flagged);
     if (!safe.length) return;
     const cell = safe[Math.floor(Math.random() * safe.length)];
@@ -371,12 +414,14 @@ function MineQuestGame() {
   const armShield = React.useCallback(() => {
     if (shieldRef.current) { setMessage('Shield is already armed.'); return; }
     if (!spend(16)) return;
+    setPowersUsed(true); powersUsedRef.current = true;
     shieldRef.current = true; setShield(true); setMessage('Shield armed: one hazard hit is protected.'); tone(520, .18); burst(8);
   }, [spend, tone, burst]);
 
   const radar = React.useCallback(() => {
     if (!placedRef.current) { setMessage('Open one tile before using radar.'); return; }
     if (!spend(10)) return;
+    setPowersUsed(true); powersUsedRef.current = true;
     const size = boardRef.current.length;
     const centerR = 1 + Math.floor(Math.random() * Math.max(1, size - 2));
     const centerC = 1 + Math.floor(Math.random() * Math.max(1, size - 2));
@@ -391,6 +436,7 @@ function MineQuestGame() {
   const defuse = React.useCallback(() => {
     if (!placedRef.current) { setMessage('Open one tile before using the defuser.'); return; }
     if (!spend(22)) return;
+    setPowersUsed(true); powersUsedRef.current = true;
     const hazards = boardRef.current.flat().filter((cell) => cell.mine && !cell.revealed && !cell.flagged);
     if (!hazards.length) { setMessage('No unmarked hazard is available.'); return; }
     const target = hazards[Math.floor(Math.random() * hazards.length)];
@@ -467,6 +513,13 @@ function MineQuestGame() {
         )}
 
         <div className="mq-objective">{mode === 'adventure' ? `Mission ${mission + 1}: ${config.story}` : `${config.label} field · ${config.mines} hazards`} · Best {best ? `${best}s` : '—'}</div>
+        <div className="mq-progress">Tap a revealed number to chord when its neighboring marks match.</div>
+        <div className="mq-tabs" aria-label="Tactical achievements">
+          {[
+            ['noFlags','🚩','No Flags'],['noPowers','⚡','No Powers'],['perfectMarking','🎯','Perfect Marking'],['logicStreak','🧠','10 Logic Streak']
+          ].map(([id,icon,label]) => <span key={id} className={`mq-button ${(profile.achievements || {})[id] ? 'active' : ''}`} title={(profile.achievements || {})[id] ? 'Unlocked' : 'Not unlocked yet'}>{(profile.achievements || {})[id] ? icon : '🔒'} {label}</span>)}
+          <span className="mq-button">Best streak ×{profile.longestLogicStreak || 0}</span>
+        </div>
         <div className="mq-message" role="status" aria-live="polite">{message}</div>
 
         <main className="mq-board-frame">

@@ -1503,6 +1503,23 @@
                 case 'SET_DIFFICULTY':
                     return gameReducer(state, { type: 'RESET_GAME', preset: action.preset, allowDuplicates: state.allowDuplicates });
 
+                case 'RESET_WITH_SECRET': {
+                    const customConfig = GAME_PRESETS[action.preset || 'medium'];
+                    return {
+                        ...state,
+                        gameConfig: customConfig,
+                        currentPreset: action.preset || 'medium',
+                        secretCode: action.secretCode.slice(0, customConfig.codeLength),
+                        guesses: [], currentGuess: Array(customConfig.codeLength).fill(null),
+                        gameStatus: 'playing', message: action.message || 'Guess the secret code!',
+                        selectedColorFromPalette: null, elapsedTime: 0,
+                        hintsRemaining: action.disableHints ? 0 : customConfig.initialHints,
+                        allowDuplicates: true, currentBlackPegStreak: 0, comboMessage: '',
+                        eliminatedColors: [], notepadOpen: false, undoUsed: false,
+                        undoSnapshot: null, maxCombo: 0
+                    };
+                }
+
                 case 'SHOW_RULES':
                     return { ...state, showRules: action.show };
 
@@ -1611,6 +1628,9 @@
             };
 
             const [state, dispatch] = React.useReducer(gameReducer, null, lazyInit);
+            const [specialMode, setSpecialMode] = React.useState('classic');
+            const [makerDraft, setMakerDraft] = React.useState([]);
+            const [notebookMarks, setNotebookMarks] = React.useState({});
 
             const {
                 gameConfig, secretCode, guesses, currentGuess, gameStatus, message,
@@ -1810,12 +1830,57 @@
 
             // Reset the game to its initial state
             const handleNewGame = () => {
+                if (specialMode === 'daily') {
+                    dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${new Date().toISOString().slice(0,10)} — same puzzle for everyone` });
+                    return;
+                }
+                if (specialMode.startsWith('maker')) {
+                    setSpecialMode('maker'); setMakerDraft([]);
+                    dispatch({ type: 'SET_MESSAGE', message: 'Code Maker: choose 4 colors, then lock the secret.' });
+                    return;
+                }
                 dispatch({ type: 'RESET_GAME', preset: currentPreset, allowDuplicates: allowDuplicates });
             };
 
             const handleToggleDuplicates = () => {
                 if (guesses.length > 0 || gameStatus !== 'playing') return;
                 dispatch({ type: 'RESET_GAME', preset: currentPreset, allowDuplicates: !allowDuplicates });
+            };
+
+            const seededDailySecret = () => {
+                const day = new Date().toISOString().slice(0, 10);
+                let seed = [...day].reduce((n, ch) => ((n * 31) + ch.charCodeAt(0)) >>> 0, 2166136261);
+                const colors = GAME_PRESETS.medium.availableColors;
+                const result = [];
+                for (let i = 0; i < GAME_PRESETS.medium.codeLength; i++) {
+                    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+                    result.push(colors[seed % colors.length]);
+                }
+                return result;
+            };
+
+            const startDaily = () => {
+                setSpecialMode('daily'); setMakerDraft([]); setNotebookMarks({});
+                dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${new Date().toISOString().slice(0,10)} — same puzzle for everyone` });
+            };
+
+            const startCodeMaker = () => {
+                setSpecialMode('maker'); setMakerDraft([]); setNotebookMarks({});
+                dispatch({ type: 'SET_MESSAGE', message: 'Code Maker: choose 4 colors, then lock the secret.' });
+            };
+
+            const lockMakerCode = () => {
+                if (makerDraft.length !== GAME_PRESETS.medium.codeLength) return;
+                dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: makerDraft, disableHints: true, message: 'Code locked. Pass the device to the Code Breaker!' });
+                setMakerDraft([]); setSpecialMode('maker-playing');
+            };
+
+            const cycleNotebookMark = (color) => {
+                const order = ['possible', 'impossible', 'confirmed'];
+                setNotebookMarks(prev => {
+                    const current = prev[color] || (eliminatedColors.includes(color) ? 'impossible' : 'possible');
+                    return { ...prev, [color]: order[(order.indexOf(current) + 1) % order.length] };
+                });
             };
 
             // Format time for display
@@ -1867,13 +1932,24 @@
                         </div>
 
                         {/* Game mode and difficulty toggle */}
+                        <div className="flex justify-center gap-2 mb-2 flex-wrap">
+                            <button onClick={() => { setSpecialMode('classic'); setMakerDraft([]); setNotebookMarks({}); dispatch({ type: 'RESET_GAME', preset: currentPreset, allowDuplicates }); }} className={`px-2 py-1 rounded border ${specialMode === 'classic' ? 'bg-cyan-700 border-cyan-300' : 'bg-gray-800 border-gray-600'}`}>Classic</button>
+                            <button onClick={startDaily} className={`px-2 py-1 rounded border ${specialMode === 'daily' ? 'bg-cyan-700 border-cyan-300' : 'bg-gray-800 border-gray-600'}`}>Daily Code</button>
+                            <button onClick={startCodeMaker} className={`px-2 py-1 rounded border ${specialMode.startsWith('maker') ? 'bg-purple-700 border-purple-300' : 'bg-gray-800 border-gray-600'}`}>2P Code Maker</button>
+                        </div>
+                        {specialMode === 'maker' && <div className="mb-2 p-2 rounded-lg bg-purple-950/80 border border-purple-500">
+                            <p className="text-xs text-center text-purple-200 mb-2">Maker only: tap four colors. Duplicates are allowed.</p>
+                            <div className="flex justify-center gap-2 mb-2">{makerDraft.map((color, i) => <button key={i} onClick={() => setMakerDraft(d => d.filter((_, j) => j !== i))} className="w-8 h-8 rounded-full border-2 border-white" style={{backgroundColor: color}} aria-label="Remove maker color" />)}</div>
+                            <div className="flex justify-center gap-2">{GAME_PRESETS.medium.availableColors.map(color => <button key={color} onClick={() => makerDraft.length < 4 && setMakerDraft(d => [...d, color])} className="w-8 h-8 rounded-full" style={{backgroundColor: color}} aria-label={`Add ${COLOR_NAMES[color]}`} />)}</div>
+                            <button onClick={lockMakerCode} disabled={makerDraft.length !== 4} className="mt-2 w-full py-2 rounded bg-purple-600 font-bold disabled:opacity-40">Lock Secret &amp; Pass Device</button>
+                        </div>}
                         <div className="flex items-center justify-center mb-2 flex-wrap gap-1 text-sm">
                              <span className="mr-2 text-cyan-300">Difficulty:</span>
                              <select
                                 className="bg-gray-800 text-white rounded p-1 touch-select"
                                 value={currentPreset}
                                 onChange={(e) => dispatch({ type: 'SET_DIFFICULTY', preset: e.target.value })}
-                                disabled={gameStatus !== 'playing' || guesses.length > 0}
+                                disabled={gameStatus !== 'playing' || guesses.length > 0 || specialMode !== 'classic'}
                                 aria-label="Select difficulty level"
                              >
                                  {Object.keys(GAME_PRESETS).map(presetKey => (
@@ -1888,7 +1964,7 @@
                                     type="checkbox"
                                     checked={allowDuplicates}
                                     onChange={handleToggleDuplicates}
-                                    disabled={gameStatus !== 'playing' || guesses.length > 0}
+                                    disabled={gameStatus !== 'playing' || guesses.length > 0 || specialMode !== 'classic'}
                                     aria-label="Toggle duplicate colors"
                                 />
                                 <span className="slider"></span>
@@ -1957,28 +2033,29 @@
                         <div id="notepad-panel" className={`notepad-panel ${notepadOpen ? 'expanded' : 'collapsed'}`} aria-label="Color elimination notepad">
                             {notepadOpen && (
                                 <div>
-                                    <p className="text-xs text-cyan-300/70 mb-2 text-center">Click to mark/unmark colors. Auto-strikes colors with all-empty feedback.</p>
+                                    <p className="text-xs text-cyan-300/70 mb-2 text-center">Tap each color to cycle Possible → Impossible → Confirmed. All-empty feedback auto-marks impossible.</p>
                                     <div className="flex flex-wrap justify-center gap-3">
                                         {gameConfig.availableColors.map(color => {
-                                            const isElim = eliminatedColors.includes(color);
+                                            const mark = notebookMarks[color] || (eliminatedColors.includes(color) ? 'impossible' : 'possible');
+                                            const isElim = mark === 'impossible';
+                                            const isConfirmed = mark === 'confirmed';
                                             return (
                                                 <button
                                                     key={color}
-                                                    onClick={() => dispatch({ type: 'TOGGLE_ELIMINATE_COLOR', color })}
+                                                    onClick={() => cycleNotebookMark(color)}
                                                     className={`notepad-color relative flex flex-col items-center gap-1 ${isElim ? 'eliminated' : ''}`}
-                                                    aria-label={`${COLOR_NAMES[color] || color}: ${isElim ? 'eliminated' : 'available'}. Click to toggle.`}
-                                                    aria-pressed={isElim}
+                                                    aria-label={`${COLOR_NAMES[color] || color}: ${mark}. Click to cycle note.`}
                                                 >
                                                     <div
                                                         className="w-8 h-8 rounded-full border-2 transition-all"
                                                         style={{
                                                             backgroundColor: color,
-                                                            borderColor: isElim ? '#ff4444' : 'rgba(255,255,255,0.2)',
-                                                            boxShadow: isElim ? 'none' : `0 0 6px ${color}`
+                                                            borderColor: isElim ? '#ff4444' : (isConfirmed ? '#22c55e' : 'rgba(255,255,255,0.2)'),
+                                                            boxShadow: isConfirmed ? '0 0 12px #22c55e' : (isElim ? 'none' : `0 0 6px ${color}`)
                                                         }}
                                                     />
-                                                    <span className={`text-xs ${isElim ? 'line-through text-red-400' : 'text-gray-400'}`}>
-                                                        {COLOR_NAMES[color] || '?'}
+                                                    <span className={`text-xs ${isElim ? 'line-through text-red-400' : (isConfirmed ? 'text-green-300 font-bold' : 'text-gray-400')}`}>
+                                                        {isConfirmed ? '✓ ' : ''}{COLOR_NAMES[color] || '?'}
                                                     </span>
                                                 </button>
                                             );

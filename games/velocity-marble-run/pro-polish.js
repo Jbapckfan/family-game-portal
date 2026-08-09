@@ -14,6 +14,20 @@
     green_aventurine: "SPRINTER",
     smoky_quartz: "DRIFT KING",
   };
+  const CIRCUITS = [
+    { id:"kitchen", icon:"🍴", name:"Kitchen Counter", accent:"#ffdd66", medals:[12,16,22], handling:1.08, start:0, end:2, label:"runway + counter curves" },
+    { id:"space", icon:"🪐", name:"Space Station", accent:"#b78cff", medals:[13,18,24], handling:.92, start:1, end:3, label:"mid-course low-control sprint" },
+    { id:"volcano", icon:"🌋", name:"Volcano Run", accent:"#ff633d", medals:[13,17,23], handling:1, start:2, end:4, label:"steep final-sector attack" },
+    { id:"toyroom", icon:"🧸", name:"Toy Room", accent:"#ff72ca", medals:[18,24,31], handling:1.15, start:0, end:3, label:"long precision course" },
+    { id:"jungle", icon:"🌿", name:"Jungle Temple", accent:"#4dff9a", medals:[19,25,32], handling:.98, start:1, end:4, label:"airtime route to the temple" },
+    { id:"laundry", icon:"🧺", name:"Washer Factory", accent:"#4ddfff", medals:[27,35,46], handling:1.04, start:0, end:5, label:"complete factory grand prix" },
+  ];
+  let circuitId = localStorage.getItem("velocity-circuit") || "kitchen";
+  let profile = localStorage.getItem("velocity-profile") || "Family";
+  let practiceCheckpoint = Number(localStorage.getItem("velocity-practice") || 0);
+  const circuit = () => CIRCUITS.find(item => item.id === circuitId) || CIRCUITS[0];
+  const ghostKey = () => `velocity-ghost-v2:${profile}:${circuitId}`;
+  const recordsKey = "velocity-family-records-v2";
 
   const style = document.createElement("style");
   style.textContent = `
@@ -29,6 +43,19 @@
     #velocity-pro-shield.show { transform:translateX(-50%); }
     #velocity-pro-camera { top:112px; left:50%; transform:translateX(-50%) translateY(-5px); white-space:nowrap; }
     #velocity-pro-camera.show { transform:translateX(-50%); }
+    #velocity-pro-score { top:148px; right:24px; color:#ffe477; border-color:rgba(255,228,119,.4); }
+    #velocity-pro-map { position:absolute; left:18px; bottom:154px; width:190px; height:140px; border:1px solid rgba(0,240,255,.32); border-radius:16px; background:rgba(0,10,22,.58); opacity:0; transition:opacity .2s; }
+    #velocity-pro-map.show { opacity:1; }
+    #velocity-pro-setup { position:absolute; left:50%; bottom:max(18px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(980px,94vw); pointer-events:auto; display:none; padding:12px; border:1px solid rgba(0,240,255,.28); border-radius:18px; background:rgba(1,8,18,.9); backdrop-filter:blur(14px); }
+    #velocity-pro-setup.show { display:block; }
+    .velocity-circuits { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px; }
+    .velocity-circuit { border:1px solid rgba(255,255,255,.12); border-radius:11px; padding:7px 4px; color:#aaa; background:rgba(255,255,255,.04); font:700 9px Orbitron,sans-serif; cursor:pointer; min-height:48px; }
+    .velocity-circuit.active { border-color:var(--circuit); color:#fff; box-shadow:0 0 16px color-mix(in srgb,var(--circuit) 35%,transparent); }
+    .velocity-circuit b,.velocity-circuit small { display:block; }.velocity-circuit b{font-size:10px}.velocity-circuit small{font:600 8px Rajdhani,sans-serif;color:#777;margin-top:2px}
+    .velocity-setup-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
+    .velocity-setup-row label { color:#8ffaff; font:700 9px Orbitron,sans-serif; }
+    .velocity-setup-row input,.velocity-setup-row select { min-width:0; border:1px solid rgba(255,255,255,.14); border-radius:8px; background:#09111d; color:#fff; padding:7px 9px; font:700 10px Orbitron,sans-serif; }
+    #velocity-pro-records { margin-left:auto; color:#ffe477; font:700 9px Orbitron,sans-serif; white-space:nowrap; }
     #velocity-pro-speedlines { position:absolute; inset:0; opacity:0; background:radial-gradient(ellipse at center,transparent 35%,rgba(0,220,255,.08) 60%,transparent 75%); mix-blend-mode:screen; transition:opacity .12s; }
     #velocity-pro-finish { position:absolute; inset:0; display:grid; place-items:center; opacity:0; transition:opacity .25s; background:radial-gradient(circle,rgba(0,255,200,.22),transparent 60%); }
     #velocity-pro-finish.show { opacity:1; }
@@ -44,6 +71,10 @@
       #velocity-pro-ghost { bottom:150px; }
       #velocity-pro-shield { bottom:215px; }
       #velocity-pro-camera { top:198px; }
+      #velocity-pro-score { top:190px; right:16px; }
+      #velocity-pro-map { width:132px; height:105px; left:10px; bottom:160px; }
+      .velocity-circuits { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      #velocity-pro-setup { max-height:38vh; overflow:auto; }
     }
   `;
   document.head.appendChild(style);
@@ -58,6 +89,9 @@
     <div id="velocity-pro-ghost" class="pro-chip"></div>
     <div id="velocity-pro-shield" class="pro-chip">CHECKPOINT SHIELD</div>
     <div id="velocity-pro-camera" class="pro-chip show">DRAG VIEW · DOUBLE-TAP RESET</div>
+    <div id="velocity-pro-score" class="pro-chip"></div>
+    <canvas id="velocity-pro-map" width="380" height="280" aria-label="Live position ghost map"></canvas>
+    <div id="velocity-pro-setup"><div class="velocity-circuits" id="velocity-circuits"></div><div class="velocity-setup-row"><label>RACER</label><input id="velocity-profile" maxlength="14"><label>PRACTICE</label><select id="velocity-practice"><option value="0">Full run</option><option value="1">Sector 2</option><option value="2">Sector 3</option><option value="3">Sector 4</option><option value="4">Final sector</option></select><span id="velocity-pro-records"></span></div></div>
     <div id="velocity-pro-finish"><div><strong>FINISH!</strong><span id="velocity-pro-medal"></span></div><div id="velocity-pro-confetti"></div></div>
   `;
   document.body.appendChild(layer);
@@ -69,6 +103,10 @@
     ghost: document.getElementById("velocity-pro-ghost"),
     shield: document.getElementById("velocity-pro-shield"),
     camera: document.getElementById("velocity-pro-camera"),
+    score: document.getElementById("velocity-pro-score"),
+    map: document.getElementById("velocity-pro-map"),
+    setup: document.getElementById("velocity-pro-setup"),
+    records: document.getElementById("velocity-pro-records"),
     speedlines: document.getElementById("velocity-pro-speedlines"),
     finish: document.getElementById("velocity-pro-finish"),
     medal: document.getElementById("velocity-pro-medal"),
@@ -84,6 +122,63 @@
   let lastFinish = 0;
   let lastShield = 0;
   let lastBlip = 0;
+  let runScore = 0;
+  let eventCounts = { drift:0, airtime:0, edge:0, landing:0, shortcut:0 };
+  let airStarted = 0;
+  let lastGrounded = 0;
+  let lastSample = 0;
+  let runSamples = [];
+  let savedGhost = [];
+  let sectorStarted = 0;
+  let activeBest = null;
+  let circuitFinishRequested = false;
+
+  function loadRecords() {
+    try { return JSON.parse(localStorage.getItem(recordsKey) || "[]"); } catch { return []; }
+  }
+
+  function loadGhost() {
+    try { return JSON.parse(localStorage.getItem(ghostKey()) || "[]"); } catch { return []; }
+  }
+
+  function saveRun(time) {
+    if (practiceCheckpoint > 0) return;
+    const records = loadRecords();
+    const previous = records.filter(r => r.profile===profile && r.circuit===circuitId).sort((a,b)=>a.time-b.time)[0];
+    records.push({ profile, circuit:circuitId, time, score:Math.round(runScore), at:Date.now() });
+    records.sort((a,b) => a.time-b.time || b.score-a.score);
+    localStorage.setItem(recordsKey, JSON.stringify(records.slice(0,60)));
+    if (!previous || time <= previous.time) localStorage.setItem(ghostKey(), JSON.stringify(runSamples));
+    renderSetup();
+  }
+
+  function renderSetup() {
+    const holder = document.getElementById("velocity-circuits");
+    holder.innerHTML = CIRCUITS.map(item => `<button class="velocity-circuit ${item.id===circuitId?"active":""}" data-circuit="${item.id}" style="--circuit:${item.accent}"><b>${item.icon} ${item.name}</b><small>${item.label}</small></button>`).join("");
+    holder.querySelectorAll("[data-circuit]").forEach(button => button.onclick = () => {
+      circuitId = button.dataset.circuit;
+      localStorage.setItem("velocity-circuit", circuitId);
+      window.__velocityHandling = circuit().handling;
+      savedGhost = loadGhost();
+      practiceCheckpoint = 0;
+      localStorage.setItem("velocity-practice", "0");
+      renderSetup();
+      blip(540,.07,.03);
+    });
+    const input = document.getElementById("velocity-profile");
+    input.value = profile;
+    input.onchange = () => { profile=input.value.trim().slice(0,14)||"Family";localStorage.setItem("velocity-profile",profile);savedGhost=loadGhost();renderSetup(); };
+    const practice = document.getElementById("velocity-practice");
+    practice.value = String(practiceCheckpoint);
+    practice.onchange = () => { practiceCheckpoint=Number(practice.value)||0;localStorage.setItem("velocity-practice",String(practiceCheckpoint));renderSetup(); };
+    const best = loadRecords().filter(r=>r.profile===profile&&r.circuit===circuitId).sort((a,b)=>a.time-b.time)[0];
+    activeBest = best || null;
+    ui.records.textContent = `${circuit().icon} ${best?`BEST ${formatTime(best.time)} · ${best.score.toLocaleString()} PTS`:"NO RECORD YET"}`;
+  }
+
+  window.__velocityHandling = circuit().handling;
+  savedGhost = loadGhost();
+  renderSetup();
 
   const cameraOrbit = window.__velocityCameraOrbit = window.__velocityCameraOrbit || {
     yaw: 0,
@@ -208,6 +303,55 @@
     return { gameState: "PLAYING", speed: Math.hypot(...diagnostics.velocity.current), checkpoint: diagnostics.checkpoint(), marbleId: "opal" };
   }
 
+  const CHECKPOINTS = [[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345]];
+  let ghostCursor = 0;
+
+  function scoreEvent(label, points) {
+    runScore += points;
+    show(ui.score, `${label} +${points} · ${Math.round(runScore).toLocaleString()} PTS`, 900);
+    blip(620 + Math.min(240, points), .06, .02);
+  }
+
+  function distanceFromSectorLine(position, checkpoint) {
+    const a=CHECKPOINTS[Math.min(checkpoint,CHECKPOINTS.length-1)],b=CHECKPOINTS[Math.min(checkpoint+1,CHECKPOINTS.length-1)]||a;
+    const dx=b[0]-a[0],dz=b[2]-a[2],len=dx*dx+dz*dz||1;
+    const t=Math.max(0,Math.min(1,((position[0]-a[0])*dx+(position[2]-a[2])*dz)/len));
+    return Math.hypot(position[0]-(a[0]+dx*t),position[2]-(a[2]+dz*t));
+  }
+
+  function updateStyleScore(state, now, elapsed) {
+    const position=state.position||[0,0,0],velocity=state.velocity||[0,0,0],speed=state.speed||0;
+    const cp=Math.min(Number(state.checkpoint)||0,CHECKPOINTS.length-1),a=CHECKPOINTS[cp],b=CHECKPOINTS[Math.min(cp+1,CHECKPOINTS.length-1)]||a;
+    const pathX=b[0]-a[0],pathZ=b[2]-a[2],pathLen=Math.hypot(pathX,pathZ)||1;
+    const lateral=Math.abs(velocity[0]*(-pathZ/pathLen)+velocity[2]*(pathX/pathLen));
+    if(speed>20&&lateral/speed>.46&&now-(eventCounts.drift||0)>620){eventCounts.drift=now;scoreEvent("DRIFT",90)}
+    const airborne=Math.abs(velocity[1])>5.2;
+    if(airborne&&!airStarted){airStarted=now;scoreEvent("AIRTIME",75)}
+    if(!airborne&&airStarted){
+      const airTime=now-airStarted;
+      if(airTime>330&&Math.abs(velocity[1])<2.2){scoreEvent("PERFECT LANDING",180);eventCounts.landing++}
+      airStarted=0;lastGrounded=now;
+    }
+    const edgeDistance=distanceFromSectorLine(position,cp);
+    if(edgeDistance>9&&edgeDistance<18&&!state.recovering&&now-(eventCounts.edge||0)>1200){eventCounts.edge=now;scoreEvent("NEAR EDGE",120)}
+    if(now-lastSample>85){runSamples.push({t:Number(elapsed.toFixed(3)),p:position.map(v=>Number(v.toFixed(2))),c:cp});lastSample=now}
+  }
+
+  function drawGhostMap(state, elapsed) {
+    const canvas=ui.map,context=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+    context.clearRect(0,0,w,h);context.fillStyle="rgba(2,10,22,.82)";context.fillRect(0,0,w,h);
+    const map=pos=>[w*.5+pos[0]*1.35,18+(-pos[2]+8)*.54];
+    context.strokeStyle="rgba(70,220,255,.32)";context.lineWidth=10;context.lineCap="round";context.beginPath();
+    CHECKPOINTS.forEach((point,i)=>{const [x,y]=map(point);i?context.lineTo(x,y):context.moveTo(x,y)});context.stroke();
+    context.strokeStyle=circuit().accent;context.lineWidth=2;context.stroke();
+    while(ghostCursor+1<savedGhost.length&&savedGhost[ghostCursor+1].t<=elapsed)ghostCursor++;
+    const ghost=savedGhost[ghostCursor];
+    if(ghost?.p){const [x,y]=map(ghost.p);context.fillStyle="rgba(210,160,255,.38)";context.beginPath();context.arc(x,y,12,0,Math.PI*2);context.fill();context.strokeStyle="#d8a7ff";context.lineWidth=2;context.stroke()}
+    if(state.position){const [x,y]=map(state.position);context.fillStyle="#fff";context.shadowBlur=16;context.shadowColor=circuit().accent;context.beginPath();context.arc(x,y,8,0,Math.PI*2);context.fill();context.shadowBlur=0}
+    context.fillStyle="#8ffaff";context.font="700 19px Orbitron, sans-serif";context.fillText(`${circuit().icon} ${circuit().name.toUpperCase()}`,14,25);
+    context.fillStyle="#a88dbe";context.font="700 15px Rajdhani, sans-serif";context.fillText(ghost?"TRANSLUCENT POSITION GHOST":"SET A TIME TO RECORD A GHOST",14,h-13);
+  }
+
   function tick(now) {
     const state = readState();
     if (!state) {
@@ -219,10 +363,24 @@
         runStarted = now;
         combo = 0;
         lastCheckpoint = state.checkpoint || 0;
+        runScore = 0;
+        eventCounts = { drift:0, airtime:0, edge:0, landing:0, shortcut:0 };
+        airStarted = 0;
+        lastGrounded = now;
+        lastSample = 0;
+        runSamples = [];
+        savedGhost = loadGhost();
+        ghostCursor = 0;
+        sectorStarted = now;
+        circuitFinishRequested = false;
+        const courseStart = practiceCheckpoint > 0 ? practiceCheckpoint : circuit().start;
+        if(courseStart>0) setTimeout(()=>window.__velocityStartPractice?.(courseStart),120);
         ui.finish.classList.remove("show");
       }
       const speed = state.speed || 0;
       const elapsed = (now - runStarted) / 1000;
+      ui.setup.classList.remove("show");
+      ui.map.classList.add("show");
       const normalized = Math.min(speed / 60, 1);
       ui.speedlines.style.opacity = `${normalized * .55}`;
       if (speed > 16) {
@@ -234,15 +392,23 @@
         ui.combo.classList.remove("show");
       }
       if (state.checkpoint > lastCheckpoint) {
+        const sectorTime=(now-sectorStarted)/1000;
         lastCheckpoint = state.checkpoint;
+        sectorStarted=now;
         combo += 3;
         show(ui.section, `SECTOR ${state.checkpoint + 1} CLEAR`, 1600);
+        if(sectorTime<7.4+state.checkpoint*.7){eventCounts.shortcut++;scoreEvent("SHORTCUT LINE",250)}
         blip(360 + state.checkpoint * 90, .12, .04);
+        if (practiceCheckpoint === 0 && circuit().end < 5 && state.checkpoint >= circuit().end && !circuitFinishRequested) {
+          circuitFinishRequested = true;
+          scoreEvent("CIRCUIT GATE", 600);
+          setTimeout(() => window.__velocityCompleteRun?.(), 220);
+        }
       }
       const trait = TRAITS[state.marbleId] || "BALANCED";
       show(ui.trait, `${String(state.marbleId || "opal").replace(/_/g, " ").toUpperCase()} · ${trait}`, 900);
-      const best = Number(localStorage.getItem(BEST_KEY) || 0);
-      if (best > 0) show(ui.ghost, `GHOST ${formatTime(elapsed - best)} · BEST ${formatTime(best)}`, 1000);
+      const bestRecord = activeBest;
+      if (bestRecord) show(ui.ghost, `GHOST ${elapsed>=bestRecord.time?"+":"−"}${formatTime(Math.abs(elapsed - bestRecord.time))} · ${profile.toUpperCase()}`, 1000);
       if (state.recovering && now - lastShield > 500) {
         lastShield = now;
         show(ui.shield, "CHECKPOINT SHIELD", 850);
@@ -253,22 +419,29 @@
         blip(180 + speed * 5, .045, .012);
       }
       lastSpeed = speed;
+      updateStyleScore(state,now,elapsed);
+      drawGhostMap(state,elapsed);
       if (state.finishPulse && state.finishPulse !== lastFinish) {
         lastFinish = state.finishPulse;
         const time = elapsed;
         const previous = Number(localStorage.getItem(BEST_KEY) || 0);
         if (!previous || time < previous) localStorage.setItem(BEST_KEY, String(time));
-        const medal = time < 22 ? "GOLD" : time < 34 ? "SILVER" : "BRONZE";
-        ui.medal.textContent = `${medal} MEDAL · ${formatTime(time)}`;
+        const targets=circuit().medals,medal = time < targets[0] ? "GOLD" : time < targets[1] ? "SILVER" : time < targets[2] ? "BRONZE" : "FINISHER";
+        scoreEvent("FINISH",1000+Math.round(Math.max(0,targets[2]-time)*80));
+        saveRun(time);
+        ui.medal.textContent = `${circuit().icon} ${medal} · ${formatTime(time)} · ${Math.round(runScore).toLocaleString()} PTS`;
         confetti();
         ui.finish.classList.add("show");
         blip(880, .28, .06);
       }
     } else if (state.gameState === "FINISHED") {
       ui.speedlines.style.opacity = "0";
+      ui.map.classList.remove("show");
       runStarted = 0;
     } else if (state.gameState === "MENU") {
       runStarted = 0;
+      ui.setup.classList.add("show");
+      ui.map.classList.remove("show");
       ui.finish.classList.remove("show");
       ui.speedlines.style.opacity = "0";
     }

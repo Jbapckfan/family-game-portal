@@ -331,12 +331,13 @@
 
         .targeting-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 12px;
         }
 
         .target-btn {
-            flex: 1;
+            flex: 1 1 29%;
             padding: 6px;
             font-size: 9px;
             background: rgba(0,0,0,0.4);
@@ -571,10 +572,11 @@
             background: rgba(0, 0, 0, 0.98);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             z-index: 2000;
             padding: 20px;
+            overflow-y: auto;
         }
 
         #mapSelect.hidden { display: none; }
@@ -622,6 +624,18 @@
             transform: scale(1.03);
             box-shadow: 0 10px 40px rgba(255, 20, 147, 0.3);
         }
+
+        .map-card.locked { opacity: .48; cursor: not-allowed; filter: grayscale(.65); }
+        .map-card.locked:hover { transform: none; border-color: var(--panel-border); box-shadow: none; }
+        .campaign-strip { width:min(1100px,100%); display:grid; grid-template-columns:1fr minmax(270px,.8fr); gap:14px; margin:0 0 18px; }
+        .campaign-card { background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:12px; padding:12px 16px; }
+        .campaign-card h3 { font:700 12px Orbitron; color:var(--neon-cyan); margin-bottom:8px; }
+        .campaign-card p { color:#aaa; font-size:11px; line-height:1.55; }
+        .family-name { width:100%; margin-top:8px; border:1px solid var(--panel-border); background:#080812; color:#fff; border-radius:8px; padding:9px; font:700 11px Orbitron; }
+        .family-board { display:grid; gap:4px; max-height:86px; overflow:auto; }
+        .family-row { display:grid; grid-template-columns:22px 1fr auto; gap:6px; color:#bbb; font-size:10px; }
+        .family-row strong { color:var(--neon-yellow); }
+        .campaign-stars { color:var(--neon-yellow); font:700 11px Orbitron; margin-top:4px; }
 
         .map-preview {
             height: 120px;
@@ -1142,6 +1156,7 @@
             .towers-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
             .tower-card { padding: 10px; }
             .tower-card .icon { font-size: 32px; }
+            .campaign-strip { grid-template-columns:1fr; }
         }
 
         /* Larger touch targets on touch devices (44pt minimum) */
@@ -1229,6 +1244,8 @@
                     <button class="target-btn" data-target="last">LAST</button>
                     <button class="target-btn" data-target="strong">STRONG</button>
                     <button class="target-btn" data-target="weak">WEAK</button>
+                    <button class="target-btn" data-target="flying">FLYING</button>
+                    <button class="target-btn" data-target="progress">PROGRESS</button>
                 </div>
                 <div class="action-row">
                     <button class="btn btn-success" id="upgradeBtn">⬆️ UPGRADE</button>
@@ -1255,7 +1272,11 @@
 
         <div id="mapSelect">
             <h1 class="map-title">NEXUS DEFENSE</h1>
-            <p class="map-subtitle">Choose your battlefield</p>
+            <p class="map-subtitle">Commander campaign · conquer each battlefield to unlock the next</p>
+            <div class="campaign-strip">
+                <div class="campaign-card"><h3>COMMANDER PERKS</h3><p id="campaignSummary"></p><input class="family-name" id="familyCommanderName" maxlength="18" aria-label="Family commander name" placeholder="Commander name"></div>
+                <div class="campaign-card"><h3>FAMILY HIGH SCORES · THIS DEVICE</h3><div class="family-board" id="familyLeaderboard"></div></div>
+            </div>
             <div class="maps-grid" id="mapsGrid"></div>
         </div>
 
@@ -1499,12 +1520,12 @@ const ENEMIES = {
     runner:   { hp: 35, spd: 3.2, reward: 10, size: 9, color: '#ffff44', glow: '#ffaa00' },
     soldier:  { hp: 70, spd: 1.6, reward: 15, size: 14, color: '#4488ff', glow: '#0066ff' },
     heavy:    { hp: 150, spd: 1.0, reward: 25, size: 20, color: '#888888', glow: '#aaaaaa' },
-    speeder:  { hp: 40, spd: 4.0, reward: 20, size: 8, color: '#ff44ff', glow: '#ff00ff' },
+    speeder:  { hp: 40, spd: 4.0, reward: 20, size: 8, color: '#ff44ff', glow: '#ff00ff', flying: true },
     tank:     { hp: 400, spd: 0.6, reward: 50, size: 28, color: '#666666', glow: '#999999' },
     healer:   { hp: 80, spd: 1.4, reward: 30, size: 14, color: '#44ff44', glow: '#00ff88', healer: true },
     splitter: { hp: 100, spd: 1.5, reward: 25, size: 16, color: '#ff8844', glow: '#ffaa00', splits: 2 },
     boss:     { hp: 2500, spd: 0.4, reward: 400, size: 50, color: '#ff0000', glow: '#ff4444', boss: true },
-    swarm:    { hp: 12, spd: 3.5, reward: 4, size: 6, color: '#aaffaa', glow: '#88ff88' }
+    swarm:    { hp: 12, spd: 3.5, reward: 4, size: 6, color: '#aaffaa', glow: '#88ff88', flying: true }
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -1989,7 +2010,10 @@ function loadPersistentData() {
     return {
         bestScores: {},
         stats: { enemiesKilled: 0, goldEarned: 0, towersBuilt: 0 },
-        achievements: []
+        achievements: [],
+        campaign: { unlocked: 0, stars: {} },
+        familyScores: [],
+        commanderName: ''
     };
 }
 
@@ -2003,7 +2027,15 @@ function getPersistentData() {
     if (!window._persistData) {
         window._persistData = loadPersistentData();
     }
-    return window._persistData;
+    const data = window._persistData;
+    data.bestScores ||= {};
+    data.stats ||= { enemiesKilled: 0, goldEarned: 0, towersBuilt: 0 };
+    data.achievements ||= [];
+    data.campaign ||= { unlocked: 0, stars: {} };
+    data.campaign.stars ||= {};
+    data.familyScores ||= [];
+    data.commanderName ||= '';
+    return data;
 }
 
 function recordBestScore(mapIdx, score) {
@@ -2037,6 +2069,58 @@ function getBestScore(mapIdx) {
 function getTotalAchievements() {
     const data = getPersistentData();
     return data.achievements.length;
+}
+
+function totalCampaignStars() {
+    return Object.values(getPersistentData().campaign.stars).reduce((sum, value) => sum + Number(value || 0), 0);
+}
+
+function missionWaveTarget(mapIdx = G.mapIdx) {
+    return 10 + mapIdx * 2;
+}
+
+function commanderPerks() {
+    const stars = totalCampaignStars();
+    return {
+        gold: Math.min(150, stars * 10),
+        hp: Math.min(24, Math.floor(stars / 2) * 2)
+    };
+}
+
+function recordCampaignVictory() {
+    const data = getPersistentData();
+    const stars = 1 + (G.hp >= G.maxHp * .5 ? 1 : 0) + (G.hp === G.maxHp ? 1 : 0);
+    data.campaign.stars['map_' + G.mapIdx] = Math.max(data.campaign.stars['map_' + G.mapIdx] || 0, stars);
+    data.campaign.unlocked = Math.max(data.campaign.unlocked || 0, Math.min(MAPS.length - 1, G.mapIdx + 1));
+    savePersistentData(data);
+    return stars;
+}
+
+function recordFamilyScore(won) {
+    const data = getPersistentData();
+    const nameInput = document.getElementById('familyCommanderName');
+    const name = (nameInput?.value || data.commanderName || 'Commander').trim().slice(0, 18) || 'Commander';
+    data.commanderName = name;
+    data.familyScores.push({ name, score: G.score, map: G.mapIdx, wave: G.wave, won, at: Date.now() });
+    data.familyScores.sort((a, b) => b.score - a.score || b.wave - a.wave);
+    data.familyScores = data.familyScores.slice(0, 20);
+    savePersistentData(data);
+}
+
+function renderCampaignMeta() {
+    const data = getPersistentData();
+    const perks = commanderPerks();
+    const input = document.getElementById('familyCommanderName');
+    if (input) {
+        input.value = data.commanderName;
+        input.onchange = () => { data.commanderName = input.value.trim().slice(0, 18); savePersistentData(data); };
+    }
+    const summary = document.getElementById('campaignSummary');
+    if (summary) summary.innerHTML = `<strong>${totalCampaignStars()} campaign stars</strong><br>Persistent perk: +${perks.gold} starting gold and +${perks.hp} nexus HP. Perks stay helpful, never overpowering.`;
+    const board = document.getElementById('familyLeaderboard');
+    if (board) board.innerHTML = data.familyScores.length
+        ? data.familyScores.slice(0, 8).map((entry, i) => `<div class="family-row"><span>${i + 1}</span><span>${entry.name} · ${MAPS[entry.map]?.name || 'Map'} W${entry.wave}</span><strong>${entry.score.toLocaleString()}</strong></div>`).join('')
+        : '<p>No family scores yet. Pick a commander name and defend the nexus!</p>';
 }
 
 function updateTrophyCounter() {
@@ -2191,6 +2275,7 @@ function init() {
     initStars();
     generateTowerCards();
     generateMapCards();
+    renderCampaignMeta();
     generateBestiary();
     bindEvents();
     updateTrophyCounter();
@@ -2256,7 +2341,13 @@ function initStars() {
 }
 
 function selectMap(idx) {
+    const data = getPersistentData();
+    if (idx > (data.campaign.unlocked || 0)) return;
     G.mapIdx = idx;
+    const perks = commanderPerks();
+    G.gold = 600 + perks.gold;
+    G.maxHp = 100 + perks.hp;
+    G.hp = G.maxHp;
     const map = MAPS[idx];
     scalePath(map.path);
     document.getElementById('mapSelect').classList.add('hidden');
@@ -2311,7 +2402,10 @@ function generateMapCards() {
 
     MAPS.forEach((map, i) => {
         const card = document.createElement('div');
-        card.className = 'map-card';
+        const data = getPersistentData();
+        const locked = i > (data.campaign.unlocked || 0);
+        const stars = Number(data.campaign.stars['map_' + i] || 0);
+        card.className = 'map-card' + (locked ? ' locked' : '');
         const best = getBestScore(i);
         card.innerHTML = `
             <div class="map-preview"><canvas id="mp${i}" width="250" height="120"></canvas></div>
@@ -2319,6 +2413,7 @@ function generateMapCards() {
                 <h3 style="color: ${map.pathStroke}">${map.name}</h3>
                 <p>${map.desc}</p>
                 <div class="difficulty">Difficulty: <span class="stars">${'★'.repeat(map.difficulty)}${'☆'.repeat(4 - map.difficulty)}</span></div>
+                <div class="campaign-stars">${locked ? '🔒 Complete the previous mission' : `${'★'.repeat(stars)}${'☆'.repeat(3 - stars)} · ${missionWaveTarget(i)} waves`}</div>
                 ${best > 0 ? `<div class="map-best-score">Best: ${best}</div>` : ''}
             </div>
         `;
@@ -2434,13 +2529,20 @@ class Tower {
 
         switch (this.targeting) {
             case 'first':
-                return candidates.reduce((a, b) => a.pathProgress > b.pathProgress ? a : b);
+                return candidates.reduce((a, b) => (a.pathIdx + a.pathProgress) > (b.pathIdx + b.pathProgress) ? a : b);
             case 'last':
-                return candidates.reduce((a, b) => a.pathProgress < b.pathProgress ? a : b);
+                return candidates.reduce((a, b) => (a.pathIdx + a.pathProgress) < (b.pathIdx + b.pathProgress) ? a : b);
             case 'strong':
                 return candidates.reduce((a, b) => a.hp > b.hp ? a : b);
             case 'weak':
                 return candidates.reduce((a, b) => a.hp < b.hp ? a : b);
+            case 'flying': {
+                const flyers = candidates.filter(e => e.flying);
+                const pool = flyers.length ? flyers : candidates;
+                return pool.reduce((a, b) => (a.pathIdx + a.pathProgress) > (b.pathIdx + b.pathProgress) ? a : b);
+            }
+            case 'progress':
+                return candidates.reduce((a, b) => (a.pathIdx + a.pathProgress) > (b.pathIdx + b.pathProgress) ? a : b);
             default:
                 return candidates[0];
         }
@@ -2726,6 +2828,7 @@ class Enemy {
             boss: e.boss,
             healer: e.healer,
             splits: e.splits,
+            flying: !!e.flying,
             pathIdx: pathIdx,
             pathProgress: pathProg,
             slowTimer: 0,
@@ -3733,7 +3836,7 @@ function completeWave() {
 
     G.wave++;
 
-    if (G.wave > CFG.MAX_LEVEL) {
+    if (G.wave > missionWaveTarget()) {
         victory();
     } else {
         // Show wave preview for next wave
@@ -3752,12 +3855,16 @@ function announce(text, color = '#fff') {
 
 function victory() {
     recordBestScore(G.mapIdx, G.score);
+    const stars = recordCampaignVictory();
+    recordFamilyScore(true);
     document.getElementById('victoryScore').textContent = G.score;
+    document.querySelector('#victoryOverlay .overlay-box p').textContent = `${stars}/3 mission stars · Map ${G.mapIdx + 1} complete`;
     document.getElementById('victoryOverlay').classList.add('open');
 }
 
 function defeat() {
     recordBestScore(G.mapIdx, G.score);
+    recordFamilyScore(false);
     document.getElementById('defeatScore').textContent = G.score;
     document.getElementById('defeatOverlay').classList.add('open');
 }

@@ -100,7 +100,8 @@
 
     <script type="text/babel">
         // --- CONFIGURATION ---
-        const GRID_SIZE = 4;
+        let GRID_SIZE = 4;
+        let ACTIVE_VARIANT = 'classic';
         const BEST_SCORE_KEY = 'familyPortal2048BestScore';
         const WIN_VALUE = 2048;
 
@@ -145,7 +146,9 @@
             const cells = emptyCells(tiles);
             if (cells.length === 0) return tiles;
             const cell = cells[Math.floor(Math.random() * cells.length)];
-            const value = Math.random() < 0.9 ? 2 : 4;
+            const value = ACTIVE_VARIANT === 'fibonacci' ? (Math.random() < .75 ? 1 : 2)
+                : ACTIVE_VARIANT === 'threes' ? (Math.random() < .45 ? 1 : Math.random() < .82 ? 2 : 3)
+                : (Math.random() < 0.9 ? 2 : 4);
             return [...tiles, { id: nextTileId(), value, row: cell.row, col: cell.col }];
         };
 
@@ -154,6 +157,13 @@
             let tiles = [];
             tiles = spawnRandomTile(tiles);
             tiles = spawnRandomTile(tiles);
+            if (ACTIVE_VARIANT === 'obstacles') {
+                const centerA = Math.floor(GRID_SIZE / 2) - 1;
+                const occupied = new Set(tiles.map(t=>`${t.row},${t.col}`));
+                [[centerA,centerA],[centerA+1,centerA+1]].forEach(([row,col])=>{
+                    if(!occupied.has(`${row},${col}`)) tiles.push({id:nextTileId(),value:-1,row,col,obstacle:true});
+                });
+            }
             return tiles;
         };
 
@@ -174,6 +184,16 @@
             return lines;
         };
 
+        const valuesCanMerge = (a, b) => {
+            if (ACTIVE_VARIANT === 'fibonacci') {
+                if (a === 1 && b === 1) return true;
+                const fib = [1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181];
+                return Math.abs(fib.indexOf(a) - fib.indexOf(b)) === 1;
+            }
+            if (ACTIVE_VARIANT === 'threes') return (a + b === 3) || (a >= 3 && a === b);
+            return a === b;
+        };
+
         const compressLine = (lineTiles) => {
             const present = lineTiles.filter(Boolean);
             const result = [];
@@ -183,8 +203,8 @@
             while (i < present.length) {
                 const cur = present[i];
                 const next = present[i + 1];
-                if (next && next.value === cur.value) {
-                    const mergedValue = cur.value * 2;
+                if (next && valuesCanMerge(cur.value, next.value)) {
+                    const mergedValue = ACTIVE_VARIANT === 'threes' && cur.value >= 3 ? cur.value * 2 : cur.value + next.value;
                     result.push({ id: cur.id, value: mergedValue });
                     scoreGained += mergedValue;
                     mergedIds.push(cur.id);
@@ -194,7 +214,7 @@
                     i += 1;
                 }
             }
-            while (result.length < GRID_SIZE) result.push(null);
+            while (result.length < lineTiles.length) result.push(null);
             return { result, scoreGained, mergedIds };
         };
 
@@ -211,16 +231,25 @@
 
             lineCoords.forEach((coords) => {
                 const lineTiles = coords.map(({ row, col }) => grid[`${row},${col}`] || null);
-                const { result, scoreGained: gained, mergedIds: merged } = compressLine(lineTiles);
-                scoreGained += gained;
-                mergedIds.push(...merged);
+                const result = Array(GRID_SIZE).fill(null);
+                let segmentStart = 0;
+                for (let barrier = 0; barrier <= GRID_SIZE; barrier++) {
+                    const isBarrier = barrier === GRID_SIZE || (lineTiles[barrier] && lineTiles[barrier].obstacle);
+                    if (!isBarrier) continue;
+                    const compressed = compressLine(lineTiles.slice(segmentStart, barrier));
+                    compressed.result.forEach((entry,i)=>{ result[segmentStart+i]=entry; });
+                    scoreGained += compressed.scoreGained;
+                    mergedIds.push(...compressed.mergedIds);
+                    if (barrier < GRID_SIZE) result[barrier] = lineTiles[barrier];
+                    segmentStart = barrier + 1;
+                }
 
                 result.forEach((entry, slot) => {
                     if (!entry) return;
                     const { row, col } = coords[slot];
                     const original = tiles.find(t => t.id === entry.id);
                     if (original && (original.row !== row || original.col !== col)) moved = true;
-                    newTiles.push({ id: entry.id, value: entry.value, row, col });
+                    newTiles.push({ id: entry.id, value: entry.value, row, col, obstacle: !!entry.obstacle });
                 });
             });
 
@@ -239,9 +268,10 @@
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
                     const value = grid[`${r},${c}`];
+                    if (value === -1) continue;
                     const right = grid[`${r},${c + 1}`];
                     const down = grid[`${r + 1},${c}`];
-                    if (right === value || down === value) return true;
+                    if ((right !== -1 && valuesCanMerge(value,right)) || (down !== -1 && valuesCanMerge(value,down))) return true;
                 }
             }
             return false;
@@ -359,8 +389,13 @@
             );
         };
 
-        const Tile = React.memo(({ tile, justMerged }) => {
-            const style = getTileStyle(tile.value);
+        const Tile = React.memo(({ tile, justMerged, theme }) => {
+            let style = tile.obstacle ? {bg:'#334155',text:'#94a3b8'} : getTileStyle(tile.value);
+            if (!tile.obstacle && theme === 'candy') {
+                const hue=(Math.log2(Math.max(2,tile.value))*37)%360;style={bg:`hsl(${hue} 72% 42%)`,text:'#fff7ed'};
+            } else if (!tile.obstacle && theme === 'classic') {
+                const light=Math.max(28,76-Math.log2(Math.max(2,tile.value))*5);style={bg:`hsl(32 55% ${light}%)`,text:light>50?'#422006':'#fef3c7'};
+            }
             const cellPercent = 100 / GRID_SIZE;
             return (
                 <div
@@ -380,13 +415,21 @@
                             boxShadow: `0 0 16px ${style.bg}aa, inset 0 0 8px rgba(0,0,0,0.35)`,
                         }}
                     >
-                        {tile.value}
+                        {tile.obstacle ? '✦' : tile.value}
                     </div>
                 </div>
             );
         });
 
         const Game2048 = () => {
+            const MODES_2048 = [
+                {id:'classic',label:'Classic 4×4',size:4},{id:'mini',label:'Quick 3×3',size:3},
+                {id:'giant',label:'Giant 5×5',size:5},{id:'fibonacci',label:'Fibonacci',size:4},
+                {id:'threes',label:'Threes Style',size:4},{id:'obstacles',label:'Obstacles',size:4}
+            ];
+            const [variant, setVariant] = React.useState('classic');
+            const [gridSize, setGridSize] = React.useState(4);
+            GRID_SIZE = gridSize; ACTIVE_VARIANT = variant;
             const [tiles, setTiles] = React.useState(() => createInitialTiles());
             const [score, setScore] = React.useState(0);
             const [best, setBest] = React.useState(0);
@@ -395,6 +438,11 @@
             const [continuedAfterWin, setContinuedAfterWin] = React.useState(false);
             const [gameOver, setGameOver] = React.useState(false);
             const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+            const [undoSnapshot, setUndoSnapshot] = React.useState(null);
+            const [undosLeft, setUndosLeft] = React.useState(3);
+            const [theme, setTheme] = React.useState(() => localStorage.getItem('familyPortal2048Theme') || 'neon');
+            const [records, setRecords] = React.useState(() => { try { return JSON.parse(localStorage.getItem('familyPortal2048Records')) || {games:0,moves:0,highest:0,variants:[]}; } catch { return {games:0,moves:0,highest:0,variants:[]}; } });
+            const [moveTotal, setMoveTotal] = React.useState(0);
 
             const tilesRef = React.useRef(tiles);
             const busyRef = React.useRef(false);
@@ -430,10 +478,17 @@
                 if (!outcome) return;
 
                 busyRef.current = true;
+                setUndoSnapshot({ tiles: tilesRef.current.map(tile=>({...tile})), score, won, continuedAfterWin, gameOver });
                 const withNewTile = spawnRandomTile(outcome.tiles);
                 setTiles(withNewTile);
                 setScore(s => s + outcome.scoreGained);
                 setMergedIds(new Set(outcome.mergedIds));
+                setMoveTotal(total=>total+1);
+                const highTile = Math.max(0,...withNewTile.filter(t=>!t.obstacle).map(t=>t.value));
+                setRecords(previous => {
+                    const next={...previous,moves:(previous.moves||0)+1,highest:Math.max(previous.highest||0,highTile),variants:[...new Set([...(previous.variants||[]),variant])]};
+                    localStorage.setItem('familyPortal2048Records',JSON.stringify(next)); return next;
+                });
 
                 if (!won && withNewTile.some(t => t.value >= WIN_VALUE)) {
                     setWon(true);
@@ -450,7 +505,7 @@
                 busyTimeoutRef.current = setTimeout(() => {
                     busyRef.current = false;
                 }, 100);
-            }, [showHowToPlay, gameOver, won, continuedAfterWin]);
+            }, [showHowToPlay, gameOver, won, continuedAfterWin, score, variant]);
 
             React.useEffect(() => {
                 const KEY_DIRECTIONS = {
@@ -500,7 +555,27 @@
                 setWon(false);
                 setContinuedAfterWin(false);
                 setGameOver(false);
+                setUndoSnapshot(null); setUndosLeft(3); setMoveTotal(0);
+                setRecords(previous=>{const next={...previous,games:(previous.games||0)+1};localStorage.setItem('familyPortal2048Records',JSON.stringify(next));return next;});
             }, []);
+
+            const chooseVariant = React.useCallback((mode) => {
+                GRID_SIZE=mode.size; ACTIVE_VARIANT=mode.id;
+                setVariant(mode.id); setGridSize(mode.size);
+                busyRef.current=false; setTiles(createInitialTiles()); setScore(0); setWon(false); setContinuedAfterWin(false); setGameOver(false); setUndoSnapshot(null); setUndosLeft(3); setMoveTotal(0);
+            }, []);
+
+            const undoMove = () => {
+                if(!undoSnapshot||undosLeft<=0)return;
+                setTiles(undoSnapshot.tiles); setScore(undoSnapshot.score); setWon(undoSnapshot.won); setContinuedAfterWin(undoSnapshot.continuedAfterWin);setGameOver(undoSnapshot.gameOver);
+                setUndoSnapshot(null);setUndosLeft(n=>n-1);busyRef.current=false;
+            };
+
+            const themeBackground = {neon:'from-black via-amber-950/30 to-black',candy:'from-pink-950 via-purple-950 to-cyan-950',classic:'from-stone-900 via-stone-700 to-stone-950'}[theme];
+            const achievements = [
+                [records.moves>=1,'First Merge'],[records.highest>=128,'128 Builder'],[records.highest>=512,'Tile Titan'],
+                [records.highest>=2048,'2048 Legend'],[(records.variants||[]).length>=6,'Variant Voyager'],[best>=10000,'10K Club']
+            ];
 
             const keepPlaying = React.useCallback(() => {
                 setContinuedAfterWin(true);
@@ -513,7 +588,7 @@
 
             return (
                 <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black via-amber-950/30 to-black" aria-hidden="true" />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${themeBackground}`} aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 w-full max-w-md mx-auto text-center">
                         <header className="py-6">
@@ -536,6 +611,9 @@
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
+                        <div className="flex gap-1 overflow-x-auto pb-2 mb-2">{MODES_2048.map(mode=><button key={mode.id} onClick={()=>chooseVariant(mode)} className={`shrink-0 px-2 py-1 rounded-lg border text-xs font-bold ${variant===mode.id?'bg-amber-400 text-black border-yellow-200':'bg-black/50 border-amber-700 text-amber-200'}`}>{mode.label}</button>)}</div>
+                        <div className="flex justify-center gap-2 mb-3"><select value={theme} onChange={event=>{setTheme(event.target.value);localStorage.setItem('familyPortal2048Theme',event.target.value);}} className="bg-gray-900 border border-amber-600 rounded px-2 py-1 text-sm"><option value="neon">Neon Tiles</option><option value="candy">Candy Tiles</option><option value="classic">Classic Wood</option></select><button onClick={undoMove} disabled={!undoSnapshot||undosLeft<=0} className="px-3 py-1 rounded bg-indigo-700 font-bold disabled:opacity-40">↶ Undo ({undosLeft})</button></div>
+
                         <div className="flex items-center justify-center gap-3 mb-4">
                             <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
                                 <div className="text-xs uppercase tracking-widest text-amber-300/70">Score</div>
@@ -555,13 +633,13 @@
                             role="application"
                             aria-label={`2048 board, current score ${score}`}
                         >
-                            <div className="relative w-full aspect-square grid grid-cols-4 grid-rows-4 gap-1.5 md:gap-2">
+                            <div className="relative w-full aspect-square grid gap-1.5 md:gap-2" style={{gridTemplateColumns:`repeat(${gridSize}, minmax(0,1fr))`,gridTemplateRows:`repeat(${gridSize}, minmax(0,1fr))`}}>
                                 {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
                                     <div key={i} className="rounded-lg bg-white/5" aria-hidden="true" />
                                 ))}
                                 <div className="absolute inset-0">
                                     {tiles.map(tile => (
-                                        <Tile key={tile.id} tile={tile} justMerged={mergedIds.has(tile.id)} />
+                                        <Tile key={tile.id} tile={tile} justMerged={mergedIds.has(tile.id)} theme={theme} />
                                     ))}
                                 </div>
                             </div>
@@ -597,6 +675,11 @@
                                 </div>
                             )}
                         </main>
+
+                        <div className="mt-3 bg-black/40 border border-amber-700/40 rounded-xl p-3 text-xs text-amber-100">
+                            <div className="flex justify-around mb-2"><span>Highest tile: <b>{records.highest||0}</b></span><span>Moves: <b>{records.moves||0}</b></span><span>Variants: <b>{(records.variants||[]).length}/6</b></span></div>
+                            <div className="flex flex-wrap justify-center gap-1">{achievements.map(([open,label])=><span key={label} className={`px-2 py-1 rounded-full border ${open?'bg-yellow-500/20 border-yellow-400 text-yellow-200':'bg-gray-900 border-gray-700 text-gray-600'}`}>{open?'★':'🔒'} {label}</span>)}</div>
+                        </div>
 
                         <footer className="py-6">
                             <button

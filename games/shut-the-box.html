@@ -1690,6 +1690,14 @@
         <div class="rounds-label">Number of Rounds</div>
         <div class="rounds-row" id="rounds-row"></div>
 
+        <div class="rounds-label">Rule Variant</div>
+        <div class="rounds-row" id="variant-row">
+            <button class="count-btn" data-variant="traditional">Traditional 1–9</button>
+            <button class="count-btn active" data-variant="modern">Modern 1–12</button>
+            <button class="count-btn" data-variant="double">Double Box</button>
+            <button class="count-btn" data-variant="lasttile">Last Tile</button>
+        </div>
+
         <div class="speed-mode-row" id="speed-mode-row" onclick="toggleSpeedMode()">
             <div class="speed-mode-label">
                 Speed Mode
@@ -1787,6 +1795,12 @@
    ====================================================== */
 
 const TILES = 12;
+const VARIANTS = {
+    traditional: { name:'Traditional 1–9', ids:()=>Array.from({length:9},(_,i)=>i+1) },
+    modern: { name:'Modern 1–12', ids:()=>Array.from({length:12},(_,i)=>i+1) },
+    double: { name:'Double Box', ids:()=>[...Array.from({length:9},(_,i)=>i+1),...Array.from({length:9},(_,i)=>101+i)] },
+    lasttile: { name:'Last Tile', ids:()=>Array.from({length:9},(_,i)=>i+1) }
+};
 const PLAYER_COLORS = ['#e94560', '#48dbfb', '#27ae60', '#feca57'];
 const AI_DELAY = 800;
 const THROW_DURATION = 1400;
@@ -1822,6 +1836,7 @@ let rolling = false;
 let totalRounds = 1;
 let currentRound = 0;
 let speedMode = false;
+let activeVariant = 'modern';
 let turnTimerId = null;
 let turnTimerStart = 0;
 const TURN_TIMER_SECONDS = 15;
@@ -1844,6 +1859,11 @@ function ensureAudioCtx() {
 
 let storedSettings = {};
 try { storedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) {}
+activeVariant = ['traditional','modern','double','lasttile'].includes(storedSettings.variant) ? storedSettings.variant : 'modern';
+function variantTileIds() { return VARIANTS[activeVariant].ids(); }
+function tileValue(id) { return id >= 100 ? id - 100 : id; }
+function tileLabel(id) { return id >= 100 ? `${id - 100}B` : String(id); }
+function usesOneDie(player) { return activeVariant !== 'double' && sumOpen(player) <= 6; }
 soundMuted = storedSettings.soundMuted === true;
 speedMode = storedSettings.speedMode === true;
 let darkTheme = storedSettings.darkTheme !== false;
@@ -1851,7 +1871,7 @@ function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('light-theme', !darkTheme);
     document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
 }
 
 function toggleMute() {
@@ -1860,7 +1880,7 @@ function toggleMute() {
     btn.classList.toggle('muted', soundMuted);
     document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
     document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
 }
 
 function playDiceRattle() {
@@ -1987,7 +2007,7 @@ function playTurnChime() {
 function toggleSpeedMode() {
     speedMode = !speedMode;
     document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
 }
 
 function startTurnTimer() {
@@ -2050,6 +2070,25 @@ function timerExpired() {
 /* =============== PERSISTENT GAME STATISTICS =============== */
 
 const STATS_KEY = 'shutTheBox_stats';
+const CHAMPIONS_KEY = 'shutTheBox_championships';
+
+function loadChampionships() { try { return JSON.parse(localStorage.getItem(CHAMPIONS_KEY) || '{}'); } catch { return {}; } }
+function recordChampionship(playerResults) {
+    const ledger = loadChampionships();
+    const bestTotal = Math.min(...playerResults.map(p => p.total));
+    const firstRoundBest = Math.min(...playerResults.map(p => p.roundScores[0] ?? 999));
+    const awards = [];
+    playerResults.forEach(result => {
+        const key=result.name.toLowerCase().trim();
+        ledger[key] ||= { displayName:result.name, championships:0, comebacks:0, perfectTrophies:0 };
+        const row=ledger[key];row.displayName=result.name;
+        if (totalRounds>=3 && result.total===bestTotal) { row.championships++; awards.push(`🏆 ${result.name}: Family Champion`); }
+        if (totalRounds>=3 && result.total===bestTotal && result.roundScores[0]>firstRoundBest) { row.comebacks++; awards.push(`🔥 ${result.name}: Comeback Crown`); }
+        if (result.perfectRoundCount) { row.perfectTrophies+=result.perfectRoundCount; awards.push(`✨ ${result.name}: ${result.perfectRoundCount} Perfect-Round Troph${result.perfectRoundCount===1?'y':'ies'}`); }
+    });
+    localStorage.setItem(CHAMPIONS_KEY,JSON.stringify(ledger));
+    return awards;
+}
 
 function loadStats() {
     try {
@@ -2135,6 +2174,8 @@ function renderStatsPanel() {
     });
 
     html += '</tbody></table>';
+    const champions=Object.values(loadChampionships()).sort((a,b)=>b.championships-a.championships||b.perfectTrophies-a.perfectTrophies);
+    if(champions.length){html+='<h3 style="margin-top:18px">Family Championship</h3><table class="stats-table"><thead><tr><th>Player</th><th>Titles</th><th>Comebacks</th><th>Perfects</th></tr></thead><tbody>'+champions.map(c=>`<tr><td>${esc(c.displayName)}</td><td class="stat-wins">${c.championships}</td><td>${c.comebacks}</td><td class="stat-perfect">${c.perfectTrophies}</td></tr>`).join('')+'</tbody></table>'}
     html += '<div style="text-align:right"><button class="stats-clear-btn" onclick="clearStats()">Clear All Stats</button></div>';
 
     panel.innerHTML = html;
@@ -2150,6 +2191,7 @@ function toggleStats() {
 function clearStats() {
     if (confirm('Clear all player statistics?')) {
         localStorage.removeItem(STATS_KEY);
+        localStorage.removeItem(CHAMPIONS_KEY);
         renderStatsPanel();
     }
 }
@@ -2163,6 +2205,11 @@ function initSetup() {
     document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
     document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
     document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
+    document.querySelectorAll('[data-variant]').forEach(button => {
+        button.classList.toggle('active', button.dataset.variant === activeVariant);
+        button.onclick = () => setVariant(button.dataset.variant);
+    });
+    updateVariantRules();
     // Player count buttons
     const row = document.getElementById('count-row');
     row.innerHTML = '';
@@ -2185,6 +2232,27 @@ function initSetup() {
     });
     renderPlayerConfigs();
     renderStatsPanel();
+}
+
+function setVariant(variant) {
+    if (!VARIANTS[variant]) return;
+    activeVariant = variant;
+    document.querySelectorAll('[data-variant]').forEach(button => button.classList.toggle('active', button.dataset.variant === variant));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
+    updateVariantRules();
+}
+
+function updateVariantRules() {
+    const details = {
+        traditional:'Tiles 1–9. Roll one die when the open total is 6 or less.',
+        modern:'Tiles 1–12. Roll one die when the open total is 6 or less.',
+        double:'Two separate rows of 1–9 tiles. Always roll both dice; either copy of a number may be closed.',
+        lasttile:'Tiles 1–9. If a turn ends with exactly one tile open, that final tile counts double.'
+    };
+    ['setup-rules','game-rules'].forEach(id => {
+        const panel=document.getElementById(id);if(!panel)return;
+        panel.innerHTML=`<h3>${VARIANTS[activeVariant].name}</h3><ul><li>${details[activeVariant]}</li><li>Roll, then close any combination whose values add up to the dice total.</li><li>If no combination works, the turn ends and open tiles become the score.</li><li>Lowest total wins; closing every tile earns a perfect zero.</li><li>Three or more rounds form a tournament with championship, comeback, and perfect-round awards.</li></ul>`;
+    });
 }
 
 function setPlayerCount(n) {
@@ -2374,8 +2442,7 @@ function renderAll() {
 
 function renderRoundIndicator() {
     const el = document.getElementById('round-indicator');
-    if (totalRounds <= 1) { el.innerHTML = ''; return; }
-    el.innerHTML = `<span class="round-badge">Round <span class="rb-current">${currentRound + 1}</span> of ${totalRounds}</span>`;
+    el.innerHTML = `<span class="round-badge">${VARIANTS[activeVariant].name}${totalRounds>1?` · ${totalRounds>=3?'Tournament ':''}Round <span class="rb-current">${currentRound + 1}</span> of ${totalRounds}`:''}</span>`;
 }
 
 function renderScoreboard() {
@@ -2415,7 +2482,7 @@ function renderTiles() {
     const area = document.getElementById('box-area');
     const canSelect = phase === 'select' && !cp.isAI && !autoConfirming;
     area.innerHTML = '';
-    for (let t = 1; t <= TILES; t++) {
+    variantTileIds().forEach((t, tileIndex) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'tile-wrapper';
         wrapper.style.cssText = 'transform-style:preserve-3d;';
@@ -2429,7 +2496,8 @@ function renderTiles() {
             + (isValid && !shut && !sel && phase === 'select' ? ' valid-hint' : '')
             + (recommendedTiles.has(t) && !shut && !sel ? ' coach-hint' : '')
             + (!canSelect || shut ? ' disabled' : '');
-        tile.textContent = t;
+        tile.textContent = tileLabel(t);
+        wrapper.dataset.tileId = t;
         tile.disabled = !canSelect || shut;
         tile.setAttribute('aria-pressed', sel ? 'true' : 'false');
         if (canSelect && !shut) tile.onclick = () => toggleTile(t);
@@ -2439,7 +2507,7 @@ function renderTiles() {
 
         wrapper.append(tile, back);
         area.appendChild(wrapper);
-    }
+    });
 }
 
 /* =============== 3D DICE =============== */
@@ -2458,7 +2526,7 @@ function buildCubeHTML() {
 function buildDiceScenes({ thrown }) {
     const row = document.getElementById('dice-row');
     const cp = players[currentPlayerIdx];
-    const useOne = sumOpen(cp) <= 6;
+    const useOne = usesOneDie(cp);
     const count = useOne ? 1 : 2;
 
     const scenes = row.querySelectorAll('.die-scene');
@@ -2576,7 +2644,7 @@ function undoTileSelection() {
 }
 
 function futureRollCoverage(remainingTiles) {
-    const oneDie = remainingTiles.reduce((a, b) => a + b, 0) <= 6;
+    const oneDie = activeVariant !== 'double' && remainingTiles.reduce((sum, tile) => sum + tileValue(tile), 0) <= 6;
     let covered = 0;
     for (let roll = 1; roll <= (oneDie ? 6 : 12); roll++) {
         const ways = oneDie ? 1 : (roll <= 7 ? roll - 1 : 13 - roll);
@@ -2588,7 +2656,7 @@ function futureRollCoverage(remainingTiles) {
 function rankStrategicCombo(combo, openTiles) {
     const remaining = openTiles.filter(t => !combo.includes(t));
     if (remaining.length === 0) return 1000000;
-    return futureRollCoverage(remaining) * 1000 + combo.reduce((a, b) => a + b, 0) * 4 + combo.length;
+    return futureRollCoverage(remaining) * 1000 + combo.reduce((sum, tile) => sum + tileValue(tile), 0) * 4 + combo.length;
 }
 
 function showStrategyCoach() {
@@ -2609,7 +2677,7 @@ function updateSelectionInfo() {
     const info = document.getElementById('selection-info');
     if (phase !== 'select' || players[currentPlayerIdx].isAI) { info.innerHTML = ''; return; }
 
-    const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
+    const selSum = [...selectedTiles].reduce((sum, tile) => sum + tileValue(tile), 0);
     const undoHtml = selectedTiles.size > 0 ? ` <button class="undo-btn" onclick="undoTileSelection()">Undo</button>` : '';
     if (selectedTiles.size === 0) {
         info.innerHTML = `Tap tiles that add up to <span class="dice-total-badge">${diceTotal}</span>`;
@@ -2812,29 +2880,27 @@ function transitionTileArea() {
 /* =============== GAME LOGIC =============== */
 
 function sumOpen(p) {
-    let s = 0;
-    for (let t = 1; t <= TILES; t++) if (!p.shutTiles.has(t)) s += t;
-    return s;
+    const values = variantTileIds().filter(t => !p.shutTiles.has(t)).map(tileValue);
+    if (activeVariant === 'lasttile' && values.length === 1) return values[0] * 2;
+    return values.reduce((sum, value) => sum + value, 0);
 }
 
 function getOpenTiles(p) {
-    const open = [];
-    for (let t = 1; t <= TILES; t++) if (!p.shutTiles.has(t)) open.push(t);
-    return open;
+    return variantTileIds().filter(t => !p.shutTiles.has(t));
 }
 
 function findCombinations(openTiles, target) {
     const results = [];
-    const n = openTiles.length;
-    for (let mask = 1; mask < (1 << n); mask++) {
-        let sum = 0;
-        const combo = [];
-        for (let i = 0; i < n; i++) {
-            if (mask & (1 << i)) { sum += openTiles[i]; combo.push(openTiles[i]); }
-            if (sum > target) break;
+    function search(index, sum, combo) {
+        if (sum === target) { results.push([...combo]); return; }
+        if (sum > target || index >= openTiles.length) return;
+        for (let i = index; i < openTiles.length; i++) {
+            const tile = openTiles[i], value = tileValue(tile);
+            if (sum + value > target) continue;
+            combo.push(tile); search(i + 1, sum + value, combo); combo.pop();
         }
-        if (sum === target) results.push(combo);
     }
+    search(0, 0, []);
     return results;
 }
 
@@ -2895,7 +2961,7 @@ async function rollDice() {
     updateButtons();
 
     const cp = players[currentPlayerIdx];
-    const useOne = sumOpen(cp) <= 6;
+    const useOne = usesOneDie(cp);
     const d1 = Math.floor(Math.random() * 6) + 1;
     const d2 = useOne ? 0 : Math.floor(Math.random() * 6) + 1;
     diceValues = useOne ? [d1] : [d1, d2];
@@ -2942,7 +3008,7 @@ function toggleTile(t) {
     if (selectedTiles.has(t)) selectedTiles.delete(t);
     else selectedTiles.add(t);
 
-    const selSum = [...selectedTiles].reduce((a, b) => a + b, 0);
+    const selSum = [...selectedTiles].reduce((sum, tile) => sum + tileValue(tile), 0);
 
     if (selSum > diceTotal) {
         selectedTiles.delete(t);
@@ -2965,7 +3031,7 @@ function toggleTile(t) {
 }
 
 function getTileEl(t) {
-    return document.querySelector(`.tile-wrapper:nth-child(${t}) .tile`);
+    return document.querySelector(`.tile-wrapper[data-tile-id="${t}"] .tile`);
 }
 
 function autoConfirmSelection() {
@@ -2984,7 +3050,7 @@ function autoConfirmSelection() {
             }
         });
 
-        document.getElementById('selection-info').innerHTML = `<span class="match">&#10003; Closing ${tilesToClose.join(' + ')}!</span>`;
+        document.getElementById('selection-info').innerHTML = `<span class="match">&#10003; Closing ${tilesToClose.map(tileLabel).join(' + ')}!</span>`;
 
         // After brief matched state, animate closing
         setTimeout(() => {
@@ -3014,7 +3080,7 @@ function autoConfirmSelection() {
                 validTileSet.clear();
                 autoConfirming = false;
 
-                if (cp.shutTiles.size === TILES) {
+                if (cp.shutTiles.size === variantTileIds().length) {
                     cp.score = 0;
                     cp.done = true;
                     triggerShutTheBoxCelebration();
@@ -3059,7 +3125,7 @@ async function aiRoll() {
     const cp = players[currentPlayerIdx];
     if (cp.done) return;
 
-    const useOne = sumOpen(cp) <= 6;
+    const useOne = usesOneDie(cp);
     const d1 = Math.floor(Math.random() * 6) + 1;
     const d2 = useOne ? 0 : Math.floor(Math.random() * 6) + 1;
     diceValues = useOne ? [d1] : [d1, d2];
@@ -3121,7 +3187,7 @@ function pickBestCombo(combos, difficulty) {
         combos.sort((a, b) => {
             if (b.length !== a.length) return b.length - a.length;
             // Tie-break: prefer the combo whose smallest tile is lowest
-            return Math.min(...a) - Math.min(...b);
+            return Math.min(...a.map(tileValue)) - Math.min(...b.map(tileValue));
         });
         return combos[0];
     }
@@ -3216,6 +3282,7 @@ function endGame() {
         };
     });
     recordGameStats(playerResults);
+    const awards = recordChampionship(playerResults);
 
     let html = `<h2>Game Over!</h2>`;
     if (isTie) {
@@ -3252,6 +3319,8 @@ function endGame() {
         });
         html += `</ul>`;
     }
+
+    if(awards.length) html+=`<div style="margin:12px 0 18px;padding:12px;border-radius:12px;background:rgba(255,251,125,.07);color:#fffb7d;font-size:.86rem">${awards.map(award=>`<div>${esc(award)}</div>`).join('')}</div>`;
 
     html += `<button class="play-again-btn" onclick="rematch()">Rematch</button>
              <button class="rematch-btn" onclick="newGame()">New Game (Setup)</button>`;

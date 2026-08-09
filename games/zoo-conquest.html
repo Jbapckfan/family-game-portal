@@ -1803,6 +1803,17 @@
       const [soundMuted, setSoundMuted] = useState(false);
       const gameLogRef = React.useRef(null);
       const [aiThinking, setAiThinking] = useState(false);
+      const SAVE_KEY = 'zoo-conquest-save-v2';
+      const [setupLength, setSetupLength] = useState('30');
+      const [setupScenario, setSetupScenario] = useState('open');
+      const [activeLength, setActiveLength] = useState('30');
+      const [activeScenario, setActiveScenario] = useState('open');
+      const [gameDeadline, setGameDeadline] = useState(0);
+      const [timeRemaining, setTimeRemaining] = useState(30 * 60);
+      const [winnerArmy, setWinnerArmy] = useState(null);
+      const [hasSavedGame, setHasSavedGame] = useState(() => {
+        try { return Boolean(localStorage.getItem(SAVE_KEY)); } catch (_) { return false; }
+      });
 
       // Wrapper: every setMessage also appends to the game log (capped at 50 entries)
       const setMessage = useCallback((msg) => {
@@ -1832,6 +1843,7 @@
         const totalPlayers = numHumans + numAI;
         const allArmyKeys = Object.keys(ANIMAL_ARMIES);
         const aiNames = ['Captain Claw', 'Baron Beak', 'Duke Fang', 'Lady Paw', 'Sir Scales'];
+        const personalities = ['Aggressive', 'Fortress', 'Opportunist', 'Balanced', 'Trickster'];
 
         // Build army assignments: humans get their picks, AI gets the rest
         const chosenByHumans = [];
@@ -1860,19 +1872,24 @@
             army,
             territories: 0,
             isAI: !isHuman,
+            personality: isHuman ? null : personalities[aiIndex % personalities.length],
           };
         });
 
         // Distribute territories randomly
         const territoryIds = Object.keys(TERRITORIES);
-        const shuffled = shuffleArray(territoryIds);
+        const shuffled = setupScenario === 'regions'
+          ? Object.values(REGIONS).flatMap(region => region.territories)
+          : shuffleArray(territoryIds);
         const newTerritories = {};
 
         shuffled.forEach((id, i) => {
-          const playerIdx = i % totalPlayers;
+          const playerIdx = setupScenario === 'regions'
+            ? Math.floor(i / Math.max(1, Math.ceil(shuffled.length / totalPlayers))) % totalPlayers
+            : i % totalPlayers;
           newTerritories[id] = {
             owner: armies[playerIdx],
-            troops: 1,
+            troops: setupScenario === 'laststand' ? (playerIdx === 0 ? 3 : 2) : 1,
           };
         });
 
@@ -1889,6 +1906,7 @@
         setGameState({ territories: newTerritories });
         setPlayerCards(cards);
         setGamePhase('play');
+        setActiveLength(setupLength);setActiveScenario(setupScenario);const deadline=Date.now()+Number(setupLength)*60*1000;setGameDeadline(deadline);setTimeRemaining(Number(setupLength)*60);setWinnerArmy(null);
         setTurnPhase('reinforce');
         setCurrentPlayerIndex(0);
         setConqueredThisTurn(false);
@@ -2221,6 +2239,7 @@
 
       // AI: Find best territory to reinforce (border territories with enemies nearby)
       const aiFindBestReinforceTarget = (army, territories) => {
+        const personality = players.find(player => player.army === army)?.personality || 'Balanced';
         const myTerritories = Object.entries(territories)
           .filter(([id, t]) => t.owner === army)
           .map(([id, t]) => ({ id, ...t }));
@@ -2233,7 +2252,8 @@
             connId => territories[connId]?.owner !== army
           ).length;
           // Prefer territories with more enemy neighbors and fewer troops
-          const score = enemyNeighbors * 10 - territory.troops;
+          const borderWeight = personality === 'Fortress' ? 16 : personality === 'Aggressive' ? 8 : 10;
+          const score = enemyNeighbors * borderWeight - territory.troops + (personality === 'Opportunist' ? connections.length : 0);
           if (score > bestScore) {
             bestScore = score;
             bestTarget = territory.id;
@@ -2244,6 +2264,7 @@
 
       // AI: Find best attack opportunity
       const aiFindBestAttack = (army) => {
+        const personality = players.find(player => player.army === army)?.personality || 'Balanced';
         const myTerritories = getPlayerTerritories(army);
         let bestAttack = null;
         let bestScore = -1;
@@ -2262,8 +2283,10 @@
             const advantage = myAttackers - theirDefenders;
 
             // Only attack if we have advantage or are desperate
-            if (advantage >= 0 || (myAttackers >= 3 && theirDefenders <= 2)) {
-              const score = advantage + (myAttackers * 2);
+            const threshold = personality === 'Aggressive' ? -1 : personality === 'Fortress' ? 2 : 0;
+            if (advantage >= threshold || (myAttackers >= 3 && theirDefenders <= 2)) {
+              const regionPressure = Object.values(REGIONS).some(region => region.territories.includes(targetId) && region.territories.filter(id => gameState.territories[id]?.owner === army).length === region.territories.length - 1) ? 5 : 0;
+              const score = advantage + (myAttackers * 2) + (personality === 'Opportunist' ? regionPressure : 0) + (personality === 'Trickster' ? Math.random() * 4 : 0);
               if (score > bestScore) {
                 bestScore = score;
                 bestAttack = { from: territory.id, to: targetId };
@@ -2277,6 +2300,7 @@
 
       // AI: Find best fortify move
       const aiFindBestFortify = (army) => {
+        const personality = players.find(player => player.army === army)?.personality || 'Balanced';
         const myTerritories = getPlayerTerritories(army);
         let bestMove = null;
         let bestScore = -1;
@@ -2304,7 +2328,7 @@
                 const score = toEnemyNeighbors * 10 + (from.troops - 1);
                 if (score > bestScore) {
                   bestScore = score;
-                  bestMove = { from: from.id, to: toId, troops: from.troops - 1 };
+                  bestMove = { from: from.id, to: toId, troops: personality === 'Fortress' ? Math.max(1, Math.floor((from.troops - 1) / 2)) : from.troops - 1 };
                 }
               }
             });
@@ -2627,6 +2651,38 @@
         window.addEventListener('beforeunload', handler);
         return () => window.removeEventListener('beforeunload', handler);
       }, [gamePhase]);
+
+      // Timed rule sets: quick games end at a territory target or when the clock expires.
+      useEffect(() => {
+        if (gamePhase !== 'play' || !gameDeadline) return;
+        const tick = () => {
+          const seconds = Math.max(0, Math.ceil((gameDeadline - Date.now()) / 1000));
+          setTimeRemaining(seconds);
+          if (seconds <= 0) {
+            const counts = players.map(player => ({ army: player.army, count: Object.values(gameState.territories).filter(t => t.owner === player.army).length }));
+            counts.sort((a, b) => b.count - a.count);setWinnerArmy(counts[0]?.army || null);setGamePhase('gameOver');
+          }
+        };
+        tick();const timer = setInterval(tick, 1000);return () => clearInterval(timer);
+      }, [gamePhase, gameDeadline, players, gameState.territories]);
+
+      useEffect(() => {
+        if (gamePhase !== 'play') return;
+        const startingShare = Math.ceil(Object.keys(TERRITORIES).length / Math.max(2, players.length));
+        const target = activeLength === '15' ? startingShare + 5 : activeLength === '30' ? startingShare + 10 : Object.keys(TERRITORIES).length;
+        const leader = players.find(player => Object.values(gameState.territories).filter(t => t.owner === player.army).length >= target);
+        if (leader) { setWinnerArmy(leader.army); setMessage(`🏆 ${leader.name} completed the ${activeLength}-minute objective!`); setGamePhase('gameOver'); }
+      }, [gamePhase, gameState.territories, activeLength, players]);
+
+      // Autosave every meaningful turn-state change so long games can resume safely.
+      useEffect(() => {
+        if (gamePhase !== 'play') return;
+        const timer = setTimeout(() => {
+          const snapshot = { version:2, savedAt:Date.now(), players,currentPlayerIndex,gameState,selectedTerritory,troopsToPlace,turnPhase,battleState,cardReward,playerCards,conqueredThisTurn,earnedCardThisTurn,message,gameLog,tradeCount,cardDeck,gameStats,activeLength,activeScenario,gameDeadline,timeRemaining,winnerArmy };
+          try { localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot)); setHasSavedGame(true); } catch (_) {}
+        }, 250);
+        return () => clearTimeout(timer);
+      }, [gamePhase, players, currentPlayerIndex, gameState, selectedTerritory, troopsToPlace, turnPhase, battleState, cardReward, playerCards, conqueredThisTurn, earnedCardThisTurn, message, gameLog, tradeCount, cardDeck, gameStats, activeLength, activeScenario, gameDeadline, timeRemaining, winnerArmy]);
 
       // Roll dice (Risk rules) - 3-phase animated battle
       // CRITICAL: Attacker must leave 1 troop behind, so max dice = troops - 1 (capped at 3)
@@ -3056,17 +3112,26 @@
       // Sound effect for game over
       useEffect(() => {
         if (gamePhase === 'gameOver') {
-          const winner = players.find(p =>
-            Object.values(gameState.territories).some(t => t.owner === p.army)
-          );
+          try { localStorage.removeItem(SAVE_KEY); setHasSavedGame(false); } catch (_) {}
+          const winner = players.find(p => p.army === winnerArmy) || [...players].sort((a, b) =>
+            Object.values(gameState.territories).filter(t => t.owner === b.army).length -
+            Object.values(gameState.territories).filter(t => t.owner === a.army).length
+          )[0];
           if (winner && !winner.isAI) SoundSystem.victory(); else SoundSystem.gameOver();
         }
-      }, [gamePhase]);
+      }, [gamePhase, winnerArmy]);
 
       // Setup Screen
       const [setupHumans, setSetupHumans] = useState(1);
       const [setupAIs, setSetupAIs] = useState(1);
       const [humanArmyChoices, setHumanArmyChoices] = useState({}); // { playerIndex: armyKey }
+
+      const resumeSavedGame = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');if (!saved?.players || !saved?.gameState?.territories) return;
+          setPlayers(saved.players);setCurrentPlayerIndex(saved.currentPlayerIndex || 0);setGameState(saved.gameState);setSelectedTerritory(saved.selectedTerritory || null);setTroopsToPlace(saved.troopsToPlace || 0);setTurnPhase(saved.turnPhase || 'reinforce');setBattleState(saved.battleState || null);setCardReward(saved.cardReward || null);setPlayerCards(saved.playerCards || {});setConqueredThisTurn(Boolean(saved.conqueredThisTurn));setEarnedCardThisTurn(Boolean(saved.earnedCardThisTurn));setMessageRaw(saved.message || 'Game resumed!');setGameLog([...(saved.gameLog || []),{text:'Game resumed from autosave.',time:Date.now()}]);setTradeCount(saved.tradeCount || 0);setCardDeck(saved.cardDeck?.length?saved.cardDeck:shuffleArray(CARD_DECK));setGameStats(saved.gameStats || gameStats);setActiveLength(saved.activeLength || '30');setActiveScenario(saved.activeScenario || 'open');const restoredDeadline=Date.now()+Math.max(1,saved.timeRemaining || 1800)*1000;setGameDeadline(restoredDeadline);setTimeRemaining(Math.max(1,saved.timeRemaining || 1800));setWinnerArmy(saved.winnerArmy || null);setGamePhase('play');
+        } catch (_) { try { localStorage.removeItem(SAVE_KEY); } catch (_) {} setHasSavedGame(false); }
+      };
 
       if (gamePhase === 'setup') {
         const aiNames = ['Captain Claw', 'Baron Beak', 'Duke Fang', 'Lady Paw', 'Sir Scales'];
@@ -3085,6 +3150,13 @@
             <div className="bg-white/90 backdrop-blur rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
               <h1 className="text-4xl mb-2 game-title text-amber-800">🦁 Zoo Conquest 🐘</h1>
               <p className="text-gray-600 mb-6">A Risk-style adventure at the Kansas City Zoo!</p>
+
+              {hasSavedGame && <button onClick={resumeSavedGame} className="w-full mb-4 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg">▶ Resume Saved Game</button>}
+
+              <div className="grid grid-cols-2 gap-3 mb-4 text-left">
+                <div className="bg-green-50 rounded-xl p-3"><div className="text-sm font-bold text-green-800 mb-2">⏱ Rule Set</div><div className="flex gap-1">{['15','30','60'].map(minutes => <button key={minutes} onClick={() => setSetupLength(minutes)} className={`flex-1 py-2 rounded-lg text-xs font-bold ${setupLength===minutes?'bg-green-600 text-white':'bg-white text-gray-700 border border-green-200'}`}>{minutes}m</button>)}</div><p className="text-xs text-gray-500 mt-2">{setupLength==='15'?'Sprint: gain 5 zones':setupLength==='30'?'Classic: gain 10 zones':'Epic: conquer the zoo'}</p></div>
+                <div className="bg-purple-50 rounded-xl p-3"><div className="text-sm font-bold text-purple-800 mb-2">🗺 Scenario</div><select value={setupScenario} onChange={event => setSetupScenario(event.target.value)} className="w-full p-2 rounded-lg border border-purple-200 text-sm text-gray-800"><option value="open">Open Zoo</option><option value="regions">Region Rush</option><option value="laststand">Last Stand</option></select><p className="text-xs text-gray-500 mt-2">{setupScenario==='regions'?'Armies begin in region clusters':setupScenario==='laststand'?'Fortified opening positions':'Classic shuffled territory map'}</p></div>
+              </div>
 
               {/* Player Selection */}
               <div className="mb-6 bg-gray-50 rounded-xl p-4">
@@ -3321,9 +3393,7 @@
 
       // Game Over Screen
       if (gamePhase === 'gameOver') {
-        const winner = players.find(p =>
-          Object.values(gameState.territories).some(t => t.owner === p.army)
-        );
+        const winner = players.find(p => p.army === winnerArmy) || [...players].sort((a,b) => Object.values(gameState.territories).filter(t => t.owner === b.army).length - Object.values(gameState.territories).filter(t => t.owner === a.army).length)[0];
         const playerWon = winner && !winner.isAI;
 
         return (
@@ -3334,7 +3404,7 @@
                   <h1 className="text-4xl mb-4 game-title text-amber-800">🏆 YOU WON! 🏆</h1>
                   <div className="text-6xl mb-4">{ANIMAL_ARMIES[winner.army].emoji}</div>
                   <div className="text-2xl font-bold text-gray-800 mb-2">Congratulations!</div>
-                  <div className="text-lg text-gray-600 mb-4">Your {ANIMAL_ARMIES[winner.army].name} have conquered the entire zoo!</div>
+                  <div className="text-lg text-gray-600 mb-4">Your {ANIMAL_ARMIES[winner.army].name} completed the {activeLength}-minute {activeScenario === 'open' ? 'Open Zoo' : activeScenario === 'regions' ? 'Region Rush' : 'Last Stand'} objective!</div>
                 </>
               ) : (
                 <>
@@ -3409,6 +3479,7 @@
                 {currentPlayer?.isAI && '🤖 '}
                 {message}
               </span>
+              <span className="ml-3 text-xs text-white/80">⏱ {Math.floor(timeRemaining/60)}:{String(timeRemaining%60).padStart(2,'0')} · {activeScenario === 'open' ? 'Open Zoo' : activeScenario === 'regions' ? 'Region Rush' : 'Last Stand'} {currentPlayer?.personality ? `· ${currentPlayer.personality} AI` : ''}</span>
             </div>
             {/* Mobile-only compact phase bar (also shown on portrait tablets via .mobile-phase-bar) */}
             <div className="mobile-phase-bar mb-2 flex gap-1 items-center md:hidden">

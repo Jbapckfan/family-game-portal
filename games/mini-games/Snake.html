@@ -109,8 +109,8 @@
             { row: MID, col: MID - 2 },
         ]);
 
-        const pickRandomEmptyCell = (snake) => {
-            const occupied = new Set(snake.map(s => `${s.row},${s.col}`));
+        const pickRandomEmptyCell = (snake, blocked = [], extra = []) => {
+            const occupied = new Set([...snake,...blocked,...extra].map(s => `${s.row},${s.col}`));
             const empties = [];
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
@@ -236,6 +236,26 @@
         };
 
         const SnakeGame = () => {
+            const MODES = {classic:'Classic',wrap:'Wraparound',maze:'Maze',zen:'Zen',time:'Time Attack'};
+            const SKINS = {
+                neon:{label:'Neon',unlock:0,head:'#4ade80',body:'#16a34a',bg:'via-green-950/30',food:'●'},
+                ocean:{label:'Ocean',unlock:50,head:'#22d3ee',body:'#2563eb',bg:'via-blue-950/50',food:'🐟'},
+                lava:{label:'Lava',unlock:120,head:'#fb923c',body:'#dc2626',bg:'via-red-950/50',food:'🔥'},
+                gold:{label:'Golden',unlock:250,head:'#fde047',body:'#ca8a04',bg:'via-amber-950/50',food:'⭐'}
+            };
+            const MISSIONS = [
+                {id:'free',label:'Free Run',goal:Infinity},{id:'snack',label:'Eat 10',goal:10},
+                {id:'score',label:'Score 150',goal:150},{id:'gauntlet',label:'Obstacle Gauntlet',goal:8}
+            ];
+            const [mode, setMode] = React.useState('classic');
+            const [mission, setMission] = React.useState('free');
+            const [obstacles, setObstacles] = React.useState([]);
+            const [bonusFood, setBonusFood] = React.useState(null);
+            const [effects, setEffects] = React.useState({shield:0,magnet:0,slow:0,multiplier:0});
+            const [foodsEaten, setFoodsEaten] = React.useState(0);
+            const [timeLeft, setTimeLeft] = React.useState(60);
+            const [missionComplete, setMissionComplete] = React.useState(false);
+            const [skin, setSkin] = React.useState(() => localStorage.getItem('snake-skin') || 'neon');
             const [snake, setSnake] = React.useState(createInitialSnake);
             const [food, setFood] = React.useState(() => pickRandomEmptyCell(createInitialSnake()));
             const [score, setScore] = React.useState(0);
@@ -257,10 +277,22 @@
             const howToPlayTriggerRef = React.useRef(null);
             const newGameButtonRef = React.useRef(null);
             const prevGameOverRef = React.useRef(false);
+            const modeRef = React.useRef(mode);
+            const obstaclesRef = React.useRef(obstacles);
+            const bonusFoodRef = React.useRef(bonusFood);
+            const effectsRef = React.useRef(effects);
+            const foodsEatenRef = React.useRef(foodsEaten);
+            const scoreRef = React.useRef(score);
 
             React.useEffect(() => { snakeRef.current = snake; }, [snake]);
             React.useEffect(() => { foodRef.current = food; }, [food]);
             React.useEffect(() => { showHowToPlayRef.current = showHowToPlay; }, [showHowToPlay]);
+            React.useEffect(() => { modeRef.current=mode; },[mode]);
+            React.useEffect(() => { obstaclesRef.current=obstacles; },[obstacles]);
+            React.useEffect(() => { bonusFoodRef.current=bonusFood; },[bonusFood]);
+            React.useEffect(() => { effectsRef.current=effects; },[effects]);
+            React.useEffect(() => { foodsEatenRef.current=foodsEaten; },[foodsEaten]);
+            React.useEffect(() => { scoreRef.current=score; },[score]);
 
             React.useEffect(() => {
                 const stored = Number(localStorage.getItem(BEST_SCORE_KEY) || 0);
@@ -286,6 +318,16 @@
                 setGameOver(true);
             }, []);
 
+            const createObstacles = React.useCallback((nextMode, nextMission) => {
+                if(nextMode!=='maze'&&nextMission!=='gauntlet')return [];
+                return [
+                    ...Array.from({length:7},(_,i)=>({row:3,col:i+5})),
+                    ...Array.from({length:7},(_,i)=>({row:13,col:i+5})),
+                    ...Array.from({length:5},(_,i)=>({row:i+6,col:4})),
+                    ...Array.from({length:5},(_,i)=>({row:i+6,col:12}))
+                ];
+            },[]);
+
             // Fixed-tick game loop: advances the snake exactly one cell per tick.
             const tick = React.useCallback(() => {
                 if (!isStartedRef.current || gameOverRef.current || pausedRef.current || showHowToPlayRef.current) return;
@@ -296,39 +338,67 @@
                 }
                 const dir = currentDirectionRef.current;
                 const currentSnake = snakeRef.current;
+                let movementSnake = currentSnake;
                 const head = currentSnake[0];
-                const newHead = { row: head.row + dir.row, col: head.col + dir.col };
+                let newHead = { row: head.row + dir.row, col: head.col + dir.col };
 
                 if (newHead.row < 0 || newHead.row >= GRID_SIZE || newHead.col < 0 || newHead.col >= GRID_SIZE) {
-                    endGame();
-                    return;
+                    if(modeRef.current==='wrap'||modeRef.current==='zen')newHead={row:(newHead.row+GRID_SIZE)%GRID_SIZE,col:(newHead.col+GRID_SIZE)%GRID_SIZE};
+                    else if(effectsRef.current.shield>0){setEffects(prev=>({...prev,shield:prev.shield-1}));newHead={row:(newHead.row+GRID_SIZE)%GRID_SIZE,col:(newHead.col+GRID_SIZE)%GRID_SIZE};}
+                    else {endGame();return;}
                 }
 
-                const currentFood = foodRef.current;
+                let currentFood = foodRef.current;
+                if(currentFood&&effectsRef.current.magnet>0){
+                    const distance=Math.abs(currentFood.row-newHead.row)+Math.abs(currentFood.col-newHead.col);
+                    if(distance<=4&&distance>0){
+                        const pulled={row:currentFood.row+Math.sign(newHead.row-currentFood.row),col:currentFood.col+Math.sign(newHead.col-currentFood.col)};
+                        if(!obstaclesRef.current.some(cell=>cell.row===pulled.row&&cell.col===pulled.col)){currentFood=pulled;foodRef.current=pulled;setFood(pulled);}
+                    }
+                }
                 const willEat = !!currentFood && newHead.row === currentFood.row && newHead.col === currentFood.col;
                 // If not growing, the tail cell vacates this tick, so it's safe to move into it.
                 const bodyToCheck = willEat ? currentSnake : currentSnake.slice(0, -1);
                 const hitSelf = bodyToCheck.some(seg => seg.row === newHead.row && seg.col === newHead.col);
-                if (hitSelf) {
-                    endGame();
-                    return;
+                const hitObstacle=obstaclesRef.current.some(cell=>cell.row===newHead.row&&cell.col===newHead.col);
+                if (hitSelf || hitObstacle) {
+                    if(modeRef.current==='zen'){newHead={row:(newHead.row+dir.row+GRID_SIZE)%GRID_SIZE,col:(newHead.col+dir.col+GRID_SIZE)%GRID_SIZE};}
+                    else if(effectsRef.current.shield>0){setEffects(prev=>({...prev,shield:prev.shield-1}));movementSnake=currentSnake.filter(seg=>seg.row!==newHead.row||seg.col!==newHead.col);}
+                    else {endGame();return;}
                 }
 
-                const newSnake = [newHead, ...currentSnake];
+                const newSnake = [newHead, ...movementSnake];
                 if (!willEat) newSnake.pop();
                 snakeRef.current = newSnake;
                 setSnake(newSnake);
 
                 if (willEat) {
-                    setScore(s => s + POINTS_PER_FOOD);
-                    const nextFood = pickRandomEmptyCell(newSnake);
+                    const points=POINTS_PER_FOOD*(effectsRef.current.multiplier>0?2:1);
+                    setScore(s => s + points);
+                    const eaten=foodsEatenRef.current+1;setFoodsEaten(eaten);
+                    const nextFood = pickRandomEmptyCell(newSnake,obstaclesRef.current,bonusFoodRef.current?[bonusFoodRef.current]:[]);
                     foodRef.current = nextFood;
                     setFood(nextFood);
+                    if(eaten%4===0&&!bonusFoodRef.current){const cell=pickRandomEmptyCell(newSnake,obstaclesRef.current,[nextFood]);const types=['shield','magnet','slow','multiplier'];setBonusFood(cell?{...cell,type:types[(eaten/4-1)%types.length]}:null);}
                 }
+                const bonus=bonusFoodRef.current;
+                if(bonus&&newHead.row===bonus.row&&newHead.col===bonus.col){setEffects(prev=>({...prev,[bonus.type]:bonus.type==='shield'?Math.min(2,prev.shield+1):45}));setBonusFood(null);}
+                setEffects(prev=>({...prev,magnet:Math.max(0,prev.magnet-1),slow:Math.max(0,prev.slow-1),multiplier:Math.max(0,prev.multiplier-1)}));
             }, [endGame]);
 
             // Speed ramps up gently as the snake grows, floored at 70ms per tick.
-            const tickMs = Math.max(70, TICK_MS - (snake.length - 3) * 3);
+            const tickMs = (effects.slow>0?1.45:1)*Math.max(70, TICK_MS - (snake.length - 3) * 3);
+
+            React.useEffect(()=>{
+                if(mode!=='time'||!isStarted||paused||gameOver)return;
+                const timer=setInterval(()=>setTimeLeft(value=>{if(value<=1){endGame();return 0;}return value-1;}),1000);
+                return()=>clearInterval(timer);
+            },[mode,isStarted,paused,gameOver,endGame]);
+
+            React.useEffect(()=>{
+                const target=MISSIONS.find(item=>item.id===mission);const progress=mission==='score'?score:foodsEaten;
+                if(target&&target.goal!==Infinity&&progress>=target.goal&&!missionComplete){setMissionComplete(true);pausedRef.current=true;setPaused(true);}
+            },[mission,score,foodsEaten,missionComplete]);
 
             React.useEffect(() => {
                 const id = setInterval(tick, tickMs);
@@ -357,7 +427,8 @@
 
             const startNewGame = React.useCallback(() => {
                 const initialSnake = createInitialSnake();
-                const initialFood = pickRandomEmptyCell(initialSnake);
+                const nextObstacles=createObstacles(modeRef.current,mission);
+                const initialFood = pickRandomEmptyCell(initialSnake,nextObstacles);
                 snakeRef.current = initialSnake;
                 foodRef.current = initialFood;
                 currentDirectionRef.current = DIR_RIGHT;
@@ -371,7 +442,11 @@
                 setGameOver(false);
                 setPaused(false);
                 setIsStarted(false);
-            }, []);
+                setObstacles(nextObstacles);setBonusFood(null);setEffects({shield:0,magnet:0,slow:0,multiplier:0});setFoodsEaten(0);setTimeLeft(60);setMissionComplete(false);
+            }, [createObstacles,mission]);
+
+            React.useEffect(()=>{modeRef.current=mode;startNewGame();},[mode,mission]);
+            const chooseMode = nextMode => { modeRef.current=nextMode; setMode(nextMode); };
 
             React.useEffect(() => {
                 const KEY_DIRECTIONS = {
@@ -424,10 +499,13 @@
                 snake.forEach((seg, i) => map.set(`${seg.row},${seg.col}`, i));
                 return map;
             }, [snake]);
+            const activeSkin=SKINS[skin]||SKINS.neon;
+            const missionData=MISSIONS.find(item=>item.id===mission);
+            const missionProgress=mission==='score'?score:foodsEaten;
 
             return (
                 <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black via-green-950/30 to-black" aria-hidden="true" />
+                    <div className={`absolute inset-0 bg-gradient-to-br from-black ${activeSkin.bg} to-black`} aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
                     <div className="relative z-10 w-full mx-auto text-center" style={{ maxWidth: 'min(46rem, calc(100dvh - 390px))' }}>
                         <header className="py-6 pt-14 sm:pt-6">
@@ -449,6 +527,11 @@
                         </header>
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex gap-1 overflow-x-auto mb-2">{Object.entries(MODES).map(([id,label])=><button key={id} onClick={()=>chooseMode(id)} className={`shrink-0 px-2 py-1 rounded border text-xs font-bold ${mode===id?'bg-green-500 text-black':'bg-black/60 border-green-800 text-green-200'}`}>{label}</button>)}</div>
+                        <div className="flex justify-center gap-2 mb-3 flex-wrap"><select value={mission} onChange={event=>setMission(event.target.value)} className="bg-gray-900 border border-purple-600 rounded px-2 py-1 text-xs">{MISSIONS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><select value={skin} onChange={event=>{const next=event.target.value;if(SKINS[next].unlock<=best){setSkin(next);localStorage.setItem('snake-skin',next);}}} className="bg-gray-900 border border-green-600 rounded px-2 py-1 text-xs">{Object.entries(SKINS).map(([id,item])=><option key={id} value={id} disabled={best<item.unlock}>{best<item.unlock?'🔒 ':''}{item.label}{item.unlock?` (${item.unlock})`:''}</option>)}</select>{mode==='time'&&<span className="px-2 py-1 rounded bg-red-900 border border-red-500 text-sm font-bold">⏱ {timeLeft}s</span>}</div>
+                        {mission!=='free'&&<div className="mb-2 text-xs text-purple-100">Mission: {missionData.label} · {Math.min(missionProgress,missionData.goal)}/{missionData.goal}</div>}
+                        <div className="flex justify-center gap-1 mb-2 text-xs">{effects.shield>0&&<span className="px-2 py-1 rounded bg-blue-900">🛡 {effects.shield}</span>}{effects.magnet>0&&<span className="px-2 py-1 rounded bg-purple-900">🧲 {effects.magnet}</span>}{effects.slow>0&&<span className="px-2 py-1 rounded bg-cyan-900">❄ {effects.slow}</span>}{effects.multiplier>0&&<span className="px-2 py-1 rounded bg-yellow-900">×2 {effects.multiplier}</span>}</div>
 
                         <div className="flex items-center justify-center gap-3 mb-4">
                             <div aria-live="polite" aria-atomic="true" className="flex items-center gap-3">
@@ -491,11 +574,14 @@
                                             const isHead = idx === 0;
                                             const isBody = idx !== undefined && idx > 0;
                                             const isFood = !!food && food.row === r && food.col === c;
+                                            const obstacle = obstacles.some(cell=>cell.row===r&&cell.col===c);
+                                            const special = bonusFood && bonusFood.row===r&&bonusFood.col===c ? bonusFood : null;
                                             const base = (r + c) % 2 === 0 ? CELL_A : CELL_B;
                                             let bg = base;
                                             let boxShadow = 'none';
-                                            if (isHead) { bg = HEAD_COLOR; boxShadow = `0 0 6px ${HEAD_GLOW}`; }
-                                            else if (isBody) { bg = BODY_COLOR; }
+                                            if(obstacle){bg='#475569';boxShadow='inset 0 0 8px #0f172a';}
+                                            else if (isHead) { bg = activeSkin.head; boxShadow = `0 0 9px ${activeSkin.head}`; }
+                                            else if (isBody) { bg = activeSkin.body; boxShadow=idx<5?`0 0 ${Math.max(1,6-idx)}px ${activeSkin.body}`:'none'; }
 
                                             return (
                                                 <div
@@ -514,8 +600,9 @@
                                                                 backgroundColor: FOOD_COLOR,
                                                                 boxShadow: `0 0 6px ${FOOD_GLOW}`,
                                                             }}
-                                                        />
+                                                        >{activeSkin.food!=='●'&&<span style={{fontSize:'clamp(8px,1.6vw,16px)'}}>{activeSkin.food}</span>}</div>
                                                     )}
+                                                    {special&&<span style={{fontSize:'clamp(9px,1.8vw,18px)'}}>{special.type==='shield'?'🛡':special.type==='magnet'?'🧲':special.type==='slow'?'❄':'×2'}</span>}
                                                 </div>
                                             );
                                         })}
@@ -540,6 +627,7 @@
                             {paused && !gameOver && (
                                 <div className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in" role="status">
                                     <h2 className="text-3xl font-black text-green-300 text-shadow-neon">PAUSED</h2>
+                                    {missionComplete&&<p className="text-yellow-300 text-xl font-black">MISSION COMPLETE!</p>}
                                     <button
                                         onClick={togglePause}
                                         className="py-2 px-6 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-green-400 to-emerald-500 hover:scale-105 transition-all"

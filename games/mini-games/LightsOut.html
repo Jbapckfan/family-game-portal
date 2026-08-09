@@ -226,6 +226,15 @@
         ];
 
         const HINTS_PER_GAME = 3;
+        const LIGHTS_CAMPAIGN = [
+            { name:'Little Cross', size:3, clicks:[[1,1]] },
+            { name:'Four Corners', size:3, clicks:[[0,0],[0,2],[2,0],[2,2]] },
+            { name:'Lightning Bolt', size:5, clicks:[[0,1],[1,2],[2,2],[3,3],[4,3]] },
+            { name:'Space Invader', size:5, clicks:[[0,0],[0,4],[1,1],[1,3],[2,2],[3,0],[3,4]] },
+            { name:'Twin Spirals', size:5, clicks:[[0,0],[0,4],[1,0],[1,3],[2,1],[2,3],[3,1],[4,0],[4,4]] },
+            { name:'Neon Crown', size:7, clicks:[[0,0],[0,3],[0,6],[1,1],[1,5],[2,2],[2,4],[3,3],[5,1],[5,5],[6,3]] }
+        ];
+        const campaignBoard = stage => stage.clicks.reduce((b,[r,c]) => toggleLights(b,r,c,stage.size), Array.from({length:stage.size},()=>Array(stage.size).fill(false)));
 
         // Hover pattern indicator is for real pointers only: on touch devices a tap
         // fires mouseenter but never mouseleave, so the highlight would stick.
@@ -610,20 +619,24 @@
         };
 
         // --- THEME SWITCHER ---
-        const ThemeSwitcher = ({ currentTheme, onThemeChange }) => {
+        const ThemeSwitcher = ({ currentTheme, onThemeChange, totalStars = 0 }) => {
             return (
                 <div className="flex items-center justify-center gap-2 mb-3">
                     <span className="text-xs" style={{ color: `rgba(var(--lo-text-primary), 0.6)` }}>Theme:</span>
-                    {THEMES.map(t => (
+                    {THEMES.map((t, index) => {
+                        const needed = index * 4;
+                        const locked = totalStars < needed;
+                        return (
                         <button
                             key={t.id}
                             onClick={() => onThemeChange(t.id)}
+                            disabled={locked}
                             className={`theme-dot w-6 h-6 rounded-full border-2 ${currentTheme === t.id ? 'active border-white/80' : 'border-white/20 hover:border-white/50'}`}
-                            style={{ backgroundColor: t.color }}
-                            aria-label={`${t.label} theme${currentTheme === t.id ? ' (active)' : ''}`}
-                            title={t.label}
+                            style={{ backgroundColor: t.color, opacity: locked ? .25 : 1 }}
+                            aria-label={`${t.label} theme${locked ? `, locked until ${needed} stars` : currentTheme === t.id ? ' (active)' : ''}`}
+                            title={locked ? `${needed} stars to unlock` : t.label}
                         />
-                    ))}
+                    )})}
                 </div>
             );
         };
@@ -778,6 +791,10 @@
             const [bestStarsMap, setBestStarsMap] = React.useState(() => loadBestStars());
             const [showHowToPlay, setShowHowToPlay] = React.useState(false);
             const [wonStars, setWonStars] = React.useState(0);
+            const [campaignMode, setCampaignMode] = React.useState(false);
+            const [campaignIndex, setCampaignIndex] = React.useState(0);
+            const [campaignUnlocked, setCampaignUnlocked] = React.useState(() => Number(localStorage.getItem('lightsout_campaign_unlocked') || 0));
+            const [hintExplanation, setHintExplanation] = React.useState('');
             const howToPlayTriggerRef = React.useRef(null);
             const resetButtonRef = React.useRef(null);
             const isWon = checkWinCondition(board);
@@ -906,6 +923,15 @@
                     setWonStars(stars);
                     const updatedStars = saveBestStars(gridSize, stars);
                     setBestStarsMap(updatedStars);
+                    if (campaignMode) {
+                        const unlocked = Math.min(LIGHTS_CAMPAIGN.length - 1, Math.max(campaignUnlocked, campaignIndex + 1));
+                        setCampaignUnlocked(unlocked);
+                        try { localStorage.setItem('lightsout_campaign_unlocked', String(unlocked)); } catch {}
+                    }
+                    try {
+                        const audio = new (window.AudioContext || window.webkitAudioContext)();
+                        [0,1,2].slice(0, stars).forEach((_,i) => { const o=audio.createOscillator(),g=audio.createGain(); o.connect(g);g.connect(audio.destination);o.frequency.value=[523,659,784][i] + THEMES.findIndex(t=>t.id===currentTheme)*25;g.gain.setValueAtTime(.06,audio.currentTime+i*.13);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+i*.13+.25);o.start(audio.currentTime+i*.13);o.stop(audio.currentTime+i*.13+.25); });
+                    } catch {}
 
                     // Timed mode scoring
                     if (timedMode && timeRemaining > 0) {
@@ -938,6 +964,7 @@
                 setBoard(prevBoard => toggleLights(prevBoard, r, c, gridSize));
                 setMoves(prevMoves => prevMoves + 1);
                 setHintCell(null);
+                setHintExplanation('');
                 setHoveredCell(null); // Clear hover highlight so touch taps never leave it stuck
                 triggerRipple(r, c, gridSize);
             }, [board, gridSize, timedMode, timeRemaining, moves, triggerRipple]);
@@ -963,8 +990,11 @@
                 // Pick the first cell from the optimal solution
                 const target = solution[0];
                 setHintCell(target);
+                const affected = [[target.row,target.col],[target.row-1,target.col],[target.row+1,target.col],[target.row,target.col-1],[target.row,target.col+1]].filter(([r,c])=>r>=0&&r<gridSize&&c>=0&&c<gridSize);
+                const lit = affected.filter(([r,c]) => board[r][c]).length;
+                setHintExplanation(`Choose row ${target.row + 1}, column ${target.col + 1}. It flips ${affected.length} cells, including ${lit} currently lit, and belongs to a complete shortest solution of ${solution.length} move${solution.length === 1 ? '' : 's'}.`);
                 setHintsRemaining(prev => prev - 1);
-            }, [hintsRemaining, isWon, board, timedMode, timeRemaining, moves]);
+            }, [hintsRemaining, isWon, board, timedMode, timeRemaining, moves, gridSize]);
 
             const startNewGame = React.useCallback((size) => {
                 const newBoard = generateBoard(size);
@@ -973,6 +1003,7 @@
                 setMoveHistory([]);
                 setHintsRemaining(HINTS_PER_GAME);
                 setHintCell(null);
+                setHintExplanation('');
                 setWonStars(0);
                 setTimedScore(null);
                 setTimeRemaining(0);
@@ -984,24 +1015,36 @@
                 setMinSolution(sol ? sol.length : null);
             }, []);
 
+            const startCampaignStage = React.useCallback((index) => {
+                const stage = LIGHTS_CAMPAIGN[index];
+                if (!stage || index > campaignUnlocked) return;
+                const next = campaignBoard(stage);
+                setCampaignMode(true); setCampaignIndex(index); setGridSize(stage.size); setCustomSize(null);
+                setBoard(next); setMoves(0); setMoveHistory([]); setHintsRemaining(HINTS_PER_GAME); setHintCell(null); setHintExplanation(''); setWonStars(0); setTimedMode(false); setTimerActive(false);
+                const solution=solveLightsOut(next); setMinSolution(solution ? solution.length : null);
+            }, [campaignUnlocked]);
+
             const startNewGameRef = React.useRef(startNewGame);
             startNewGameRef.current = startNewGame;
 
             const handleCustomSizeChangeStable = React.useCallback((size) => {
+                setCampaignMode(false);
                 setCustomSize(size);
                 setGridSize(size);
                 startNewGameRef.current(size);
             }, []);
 
             const handleSizeChange = React.useCallback((newSize) => {
+                setCampaignMode(false);
                 setCustomSize(null);
                 setGridSize(newSize);
                 startNewGame(newSize);
             }, [startNewGame]);
 
             const resetGame = React.useCallback(() => {
-                startNewGame(gridSize);
-            }, [gridSize, startNewGame]);
+                if (campaignMode) startCampaignStage(campaignIndex);
+                else startNewGame(gridSize);
+            }, [campaignMode, campaignIndex, startCampaignStage, gridSize, startNewGame]);
 
             const openHowToPlay = React.useCallback(() => {
                 setShowHowToPlay(true);
@@ -1015,6 +1058,7 @@
                 return board.reduce((total, row) => total + row.filter(Boolean).length, 0);
             }, [board]);
 
+            const totalStars = Object.values(bestStarsMap).reduce((sum, value) => sum + Number(value || 0), 0);
             const currentBestMoves = bestScores[String(gridSize)];
             const currentBestStars = bestStarsMap[String(gridSize)];
             const currentBestTimed = bestTimedScores[String(gridSize)];
@@ -1061,7 +1105,11 @@
                         </header>
 
                         {/* Theme Switcher */}
-                        <ThemeSwitcher currentTheme={currentTheme} onThemeChange={handleThemeChange} />
+                        <ThemeSwitcher currentTheme={currentTheme} onThemeChange={handleThemeChange} totalStars={totalStars} />
+
+                        <div className="flex gap-1 overflow-x-auto pb-2 mb-2" aria-label="Handcrafted campaign">
+                            {LIGHTS_CAMPAIGN.map((stage,index)=><button key={stage.name} disabled={index>campaignUnlocked} onClick={()=>startCampaignStage(index)} className={`shrink-0 px-2 py-1 rounded border text-xs ${campaignMode&&campaignIndex===index?'bg-yellow-500 text-black border-yellow-200':'bg-gray-900 border-gray-700'} disabled:opacity-30`}>{index>campaignUnlocked?'🔒 ':''}{index+1}. {stage.name}</button>)}
+                        </div>
 
                         {/* Difficulty Selector with Custom Size */}
                         <DifficultySelector gridSize={gridSize} onChange={handleSizeChange} customSize={customSize} onCustomSizeChange={handleCustomSizeChangeStable} />
@@ -1177,6 +1225,7 @@
                                     </button>
                                 </div>
                             )}
+                            {hintExplanation && !isWon && <div className="mt-3 p-2 rounded-lg bg-yellow-950/60 border border-yellow-600/40 text-xs text-yellow-100" role="status"><b>Why this move:</b> {hintExplanation}</div>}
                         </main>
 
                         <footer className="py-4">

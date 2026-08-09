@@ -151,6 +151,16 @@
             { emoji: '\u{1F43B}', name: 'Bear' },
             { emoji: '\u{1F43C}', name: 'Panda' },
             { emoji: '\u{1F428}', name: 'Koala' },
+            { emoji: '\u{1F981}', name: 'Lion' },
+            { emoji: '\u{1F438}', name: 'Frog' },
+            { emoji: '\u{1F419}', name: 'Octopus' },
+            { emoji: '\u{1F98B}', name: 'Butterfly' },
+            { emoji: '\u{1F989}', name: 'Owl' },
+            { emoji: '\u{1F422}', name: 'Turtle' },
+            { emoji: '\u{1F42C}', name: 'Dolphin' },
+            { emoji: '\u{1F996}', name: 'Dinosaur' },
+            { emoji: '\u{1F984}', name: 'Unicorn' },
+            { emoji: '\u{1F427}', name: 'Penguin' },
         ];
         const BEST_MOVES_KEY = 'familyPortalMemoryMatchBestMoves';
         const MISMATCH_DELAY_MS = 800;
@@ -166,8 +176,9 @@
             return a;
         };
 
-        const createShuffledDeck = () => {
-            const pairs = [...ANIMALS, ...ANIMALS];
+        const createShuffledDeck = (pairCount = 8) => {
+            const chosen = ANIMALS.slice(0, pairCount);
+            const pairs = [...chosen, ...chosen];
             return shuffle(pairs).map((animal, index) => ({
                 id: index,
                 emoji: animal.emoji,
@@ -281,11 +292,11 @@
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>Find all <strong className="text-pink-300">8 pairs</strong> in as few moves as possible to win.</span>
+                                <span>Find <strong className="text-pink-300">every pair</strong>. Board sizes range from Junior to a 36-card Huge challenge.</span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-rose-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>Try to beat your <strong className="text-rose-300">best move count</strong>, saved right here on this device.</span>
+                                <span>Choose Zen, Timed, Combo, or mistake-limited play—or compete with two players for pairs and extra turns.</span>
                             </li>
                         </ul>
                         <button
@@ -299,7 +310,7 @@
             );
         };
 
-        const MemoryCard = React.memo(({ card, isFaceUp, isMatched, justMatched, onFlip, disabled }) => {
+        const MemoryCard = React.memo(({ card, isFaceUp, isMatched, justMatched, onFlip, disabled, compact }) => {
             const handleClick = React.useCallback(() => {
                 onFlip(card.id);
             }, [onFlip, card.id]);
@@ -321,13 +332,13 @@
                         disabled={disabled || isFaceUp || isMatched}
                         aria-pressed={isFaceUp || isMatched}
                         aria-label={label}
-                        className="card-flip-outer w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-xl disabled:cursor-default"
+                        className={`card-flip-outer ${compact ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16' : 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24'} rounded-xl disabled:cursor-default`}
                     >
                         <div className={`card-flip-inner ${(isFaceUp || isMatched) ? 'is-flipped' : ''} ${justMatched ? 'card-pulse' : ''}`}>
                             <div className="card-face card-back" aria-hidden="true">
                                 <span className="text-2xl sm:text-3xl opacity-70">&#x1F43E;</span>
                             </div>
-                            <div className="card-face card-front text-3xl sm:text-4xl md:text-5xl" aria-hidden="true">
+                            <div className={`card-face card-front ${compact ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl md:text-5xl'}`} aria-hidden="true">
                                 {card.emoji}
                             </div>
                         </div>
@@ -337,13 +348,26 @@
         });
 
         const MemoryMatchGame = () => {
-            const [deck, setDeck] = React.useState(() => createShuffledDeck());
+            const SIZE_OPTIONS={junior:{label:'Junior',pairs:3,cols:3,time:45},standard:{label:'Standard',pairs:8,cols:4,time:90},expert:{label:'Expert',pairs:12,cols:6,time:120},huge:{label:'Huge',pairs:18,cols:6,time:180}};
+            const [sizeId,setSizeId]=React.useState('standard');
+            const [playMode,setPlayMode]=React.useState('relaxed');
+            const [twoPlayer,setTwoPlayer]=React.useState(false);
+            const sizeConfig=SIZE_OPTIONS[sizeId];
+            const [deck, setDeck] = React.useState(() => createShuffledDeck(8));
             const [selected, setSelected] = React.useState([]);
             const [matched, setMatched] = React.useState(() => new Set());
             const [justMatchedIds, setJustMatchedIds] = React.useState(() => new Set());
             const [moves, setMoves] = React.useState(0);
             const [bestMoves, setBestMoves] = React.useState(null);
             const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+            const [currentPlayer,setCurrentPlayer]=React.useState(0);
+            const [playerScores,setPlayerScores]=React.useState([0,0]);
+            const [combo,setCombo]=React.useState(0);
+            const [points,setPoints]=React.useState(0);
+            const [mistakes,setMistakes]=React.useState(0);
+            const [timeLeft,setTimeLeft]=React.useState(90);
+            const [started,setStarted]=React.useState(false);
+            const [failed,setFailed]=React.useState(false);
 
             const busyRef = React.useRef(false);
             const resolveTimeoutRef = React.useRef(null);
@@ -353,20 +377,28 @@
             const prevIsWonRef = React.useRef(false);
 
             const matchedPairs = matched.size / 2;
-            const totalPairs = ANIMALS.length;
+            const totalPairs = sizeConfig.pairs;
             const isWon = matchedPairs === totalPairs;
+            const gameEnded=isWon||failed;
 
             React.useEffect(() => {
-                const stored = Number(localStorage.getItem(BEST_MOVES_KEY));
+                const stored = Number(localStorage.getItem(`${BEST_MOVES_KEY}:${sizeId}:${playMode}`));
                 if (!Number.isNaN(stored) && stored > 0) setBestMoves(stored);
-            }, []);
+                else setBestMoves(null);
+            }, [sizeId,playMode]);
 
             React.useEffect(() => {
                 if (isWon && (bestMoves === null || moves < bestMoves)) {
-                    localStorage.setItem(BEST_MOVES_KEY, String(moves));
+                    localStorage.setItem(`${BEST_MOVES_KEY}:${sizeId}:${playMode}`, String(moves));
                     setBestMoves(moves);
                 }
-            }, [isWon, moves, bestMoves]);
+            }, [isWon, moves, bestMoves,sizeId,playMode]);
+
+            React.useEffect(()=>{
+                if(playMode!=='timed'||!started||gameEnded)return;
+                const timer=setInterval(()=>setTimeLeft(value=>{if(value<=1){setFailed(true);return 0;}return value-1;}),1000);
+                return()=>clearInterval(timer);
+            },[playMode,started,gameEnded]);
 
             React.useEffect(() => {
                 if (isWon && !prevIsWonRef.current && newGameButtonRef.current) {
@@ -381,7 +413,8 @@
             }, []);
 
             const handleFlip = React.useCallback((id) => {
-                if (busyRef.current) return;
+                if (busyRef.current||gameEnded) return;
+                setStarted(true);
                 if (matched.has(id)) return;
                 if (selected.includes(id)) return;
 
@@ -400,6 +433,7 @@
                 const isMatch = firstCard && secondCard && firstCard.emoji === secondCard.emoji;
 
                 if (isMatch) {
+                    const nextCombo=combo+1;setCombo(nextCombo);setPoints(value=>value+100*nextCombo);
                     resolveTimeoutRef.current = setTimeout(() => {
                         setMatched((prev) => {
                             const next = new Set(prev);
@@ -409,40 +443,46 @@
                         });
                         setJustMatchedIds(new Set(pair));
                         setSelected([]);
+                        if(twoPlayer)setPlayerScores(scores=>scores.map((value,index)=>index===currentPlayer?value+1:value));
                         busyRef.current = false;
                         pulseTimeoutRef.current = setTimeout(() => {
                             setJustMatchedIds(new Set());
                         }, MATCH_RESOLVE_MS);
                     }, 150);
                 } else {
+                    setCombo(0);setMistakes(value=>{const next=value+1;if(playMode==='limited'&&next>=8)setFailed(true);return next;});
                     resolveTimeoutRef.current = setTimeout(() => {
                         setSelected([]);
+                        if(twoPlayer)setCurrentPlayer(player=>player===0?1:0);
                         busyRef.current = false;
                     }, MISMATCH_DELAY_MS);
                 }
-            }, [selected, matched, deck]);
+            }, [selected, matched, deck,combo,twoPlayer,currentPlayer,playMode,gameEnded]);
 
             const startNewGame = React.useCallback(() => {
                 if (resolveTimeoutRef.current) clearTimeout(resolveTimeoutRef.current);
                 if (pulseTimeoutRef.current) clearTimeout(pulseTimeoutRef.current);
                 busyRef.current = false;
-                setDeck(createShuffledDeck());
+                setDeck(createShuffledDeck(sizeConfig.pairs));
                 setSelected([]);
                 setMatched(new Set());
                 setJustMatchedIds(new Set());
                 setMoves(0);
-            }, []);
+                setCurrentPlayer(0);setPlayerScores([0,0]);setCombo(0);setPoints(0);setMistakes(0);setTimeLeft(sizeConfig.time);setStarted(false);setFailed(false);
+            }, [sizeConfig]);
+
+            React.useEffect(()=>{startNewGame();},[sizeId,playMode,twoPlayer]);
 
             const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
             const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
 
-            const rows = React.useMemo(() => chunkIntoRows(deck, 4), [deck]);
+            const rows = React.useMemo(() => chunkIntoRows(deck, sizeConfig.cols), [deck,sizeConfig.cols]);
 
             return (
                 <div className="memory-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-rose-950/30 to-black" aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
-                    <div className="relative z-10 w-full max-w-md mx-auto text-center">
+                    <div className="relative z-10 w-full max-w-2xl mx-auto text-center">
                         <header className="game-header py-6">
                             <div className="flex items-center justify-center gap-3">
                                 <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-rose-300 via-pink-400 to-rose-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
@@ -462,6 +502,11 @@
                         </header>
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="flex gap-1 overflow-x-auto mb-2 justify-start sm:justify-center">{Object.entries(SIZE_OPTIONS).map(([id,item])=><button key={id} onClick={()=>setSizeId(id)} className={`shrink-0 px-2 py-1 rounded border text-xs ${sizeId===id?'bg-rose-500 text-black':'bg-gray-900 border-rose-800'}`}>{item.label} · {item.pairs} pairs</button>)}</div>
+                        <div className="flex flex-wrap justify-center gap-1 mb-3">{[['relaxed','Zen'],['timed','Timed'],['combo','Combo'],['limited','8 Mistakes']].map(([id,label])=><button key={id} onClick={()=>setPlayMode(id)} className={`px-2 py-1 rounded border text-xs ${playMode===id?'bg-purple-500 text-black':'bg-gray-900 border-purple-800'}`}>{label}</button>)}<button onClick={()=>setTwoPlayer(value=>!value)} className={`px-2 py-1 rounded border text-xs ${twoPlayer?'bg-cyan-500 text-black':'bg-gray-900 border-cyan-800'}`}>{twoPlayer?'2 Players':'Solo'}</button></div>
+                        {twoPlayer&&<div className="mb-2 text-sm"><b className={currentPlayer===0?'text-rose-300':'text-gray-500'}>Player 1: {playerScores[0]}</b> · <b className={currentPlayer===1?'text-cyan-300':'text-gray-500'}>Player 2: {playerScores[1]}</b> <span className="text-xs">(match = extra turn)</span></div>}
+                        <div className="mb-2 flex justify-center gap-3 text-xs text-rose-100">{playMode==='timed'&&<span>⏱ {timeLeft}s</span>}{(playMode==='combo'||combo>1)&&<span>🔥 Combo ×{combo} · {points} pts</span>}{playMode==='limited'&&<span>❌ {mistakes}/8 mistakes</span>}</div>
 
                         <div className="game-stats flex items-center justify-center gap-3 mb-4" aria-live="polite" aria-atomic="true">
                             <div className="bg-black/40 border border-rose-400/30 rounded-xl px-5 py-2 min-w-[90px]">
@@ -494,24 +539,26 @@
                                                 isMatched={matched.has(card.id)}
                                                 justMatched={justMatchedIds.has(card.id)}
                                                 onFlip={handleFlip}
-                                                disabled={showHowToPlay}
+                                                disabled={showHowToPlay||gameEnded}
+                                                compact={sizeConfig.cols>=6}
                                             />
                                         ))}
                                     </div>
                                 ))}
                             </div>
 
-                            {isWon && (
+                            {gameEnded && (
                                 <div
                                     className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in"
                                     role="alert"
                                 >
                                     <h2 className="text-3xl font-black text-pink-300 text-shadow-neon">
-                                        YOU WIN!
+                                        {isWon?'YOU WIN!':'ROUND OVER'}
                                     </h2>
                                     <p className="text-rose-100">
-                                        You matched all {totalPairs} pairs in {moves} moves.
+                                        {isWon?`You matched all ${totalPairs} pairs in ${moves} moves.`:playMode==='timed'?'Time ran out.':'You used all 8 mistakes.'}
                                     </p>
+                                    {twoPlayer&&<p className="text-cyan-200 font-bold">{playerScores[0]===playerScores[1]?'Tie game!':`${playerScores[0]>playerScores[1]?'Player 1':'Player 2'} wins ${Math.max(...playerScores)}–${Math.min(...playerScores)}!`}</p>}
                                     {bestMoves === moves && (
                                         <p className="text-yellow-200 text-sm font-bold">New best score!</p>
                                     )}

@@ -1083,6 +1083,155 @@
             );
         };
 
+        const PRO_VARIANTS = {
+            four: { title: '4 × 4', subtitle: 'Make four in a row on the larger board.' },
+            misere: { title: 'Misère', subtitle: 'Making three in a row loses.' },
+            ultimate: { title: 'Ultimate', subtitle: 'Your move sends the opponent to that matching mini-board.' },
+            puzzles: { title: 'Tactics Lab', subtitle: 'Win, block, and build forks from crafted positions.' },
+            coach: { title: 'Teaching AI', subtitle: 'Play the bot with live, plain-language strategy coaching.' }
+        };
+
+        const TACTICAL_PUZZLES = [
+            { title: 'Win in one', goal: 'Finish the row.', board: ['X','X','','O','O','','','',''], answers: [2] },
+            { title: 'Block the threat', goal: 'Stop O from winning.', board: ['O','','X','O','X','','','',''], answers: [6] },
+            { title: 'Build a fork', goal: 'Create two winning threats.', board: ['X','','','','O','','','','X'], answers: [2,6] },
+            { title: 'Force the draw', goal: 'Find the only safe square.', board: ['X','O','X','X','O','','O','X',''], answers: [8] }
+        ];
+
+        const lineResult = (cells, size, needed = size) => {
+            const lines = [];
+            for (let r = 0; r < size; r++) lines.push(Array.from({length: size}, (_, c) => r * size + c));
+            for (let c = 0; c < size; c++) lines.push(Array.from({length: size}, (_, r) => r * size + c));
+            lines.push(Array.from({length: size}, (_, i) => i * size + i));
+            lines.push(Array.from({length: size}, (_, i) => i * size + (size - 1 - i)));
+            for (const line of lines) {
+                for (let start = 0; start <= line.length - needed; start++) {
+                    const run = line.slice(start, start + needed);
+                    const mark = cells[run[0]];
+                    if (mark && run.every(i => cells[i] === mark)) return { mark, line: run };
+                }
+            }
+            return null;
+        };
+
+        const coachAdvice = (cells) => {
+            const empty = cells.map((v, i) => v ? -1 : i).filter(i => i >= 0);
+            for (const mark of ['X', 'O']) {
+                for (const i of empty) {
+                    const copy = [...cells]; copy[i] = mark;
+                    if (lineResult(copy, 3, 3)) return mark === 'X'
+                        ? `Winning move: square ${i + 1} completes your line.`
+                        : `Block square ${i + 1}—the bot can win there next.`;
+                }
+            }
+            if (!cells[4]) return 'Own the center: it belongs to four possible winning lines.';
+            const openCorners = [0,2,6,8].filter(i => !cells[i]);
+            if (openCorners.length) return `Try corner ${openCorners[0] + 1}. Corners create more fork chances than edges.`;
+            return 'Look for a fork: a move that creates two different winning squares.';
+        };
+
+        const ProTicTacToe = ({ kind, onExit }) => {
+            const isUltimate = kind === 'ultimate';
+            const isFour = kind === 'four';
+            const isPuzzle = kind === 'puzzles';
+            const isCoach = kind === 'coach';
+            const size = isFour ? 4 : 3;
+            const fresh = () => Array(isUltimate ? 81 : size * size).fill('');
+            const [cells, setCells] = React.useState(fresh);
+            const [turn, setTurn] = React.useState('X');
+            const [status, setStatus] = React.useState(PRO_VARIANTS[kind].subtitle);
+            const [over, setOver] = React.useState(false);
+            const [activeMini, setActiveMini] = React.useState(null);
+            const [miniWinners, setMiniWinners] = React.useState(Array(9).fill(''));
+            const [puzzleIndex, setPuzzleIndex] = React.useState(0);
+            const aiTimer = React.useRef(null);
+
+            const reset = React.useCallback((nextPuzzle = puzzleIndex) => {
+                const initial = isPuzzle ? [...TACTICAL_PUZZLES[nextPuzzle].board] : fresh();
+                setCells(initial); setTurn('X'); setOver(false); setActiveMini(null); setMiniWinners(Array(9).fill(''));
+                setStatus(isPuzzle ? TACTICAL_PUZZLES[nextPuzzle].goal : (isCoach ? coachAdvice(initial) : PRO_VARIANTS[kind].subtitle));
+            }, [kind, puzzleIndex]);
+
+            React.useEffect(() => { reset(puzzleIndex); return () => clearTimeout(aiTimer.current); }, [kind, puzzleIndex]);
+
+            const finishStandardMove = (next, mark, index) => {
+                if (isPuzzle) {
+                    if (TACTICAL_PUZZLES[puzzleIndex].answers.includes(index)) {
+                        setCells(next); setOver(true); setStatus('Solved! That is the key move.'); SoundEngine.playVictory();
+                    } else {
+                        setStatus('That move misses the tactic. Try another square.'); SoundEngine.playDraw();
+                    }
+                    return;
+                }
+                const result = lineResult(next, size, size);
+                if (result) {
+                    const winnerMark = kind === 'misere' ? (mark === 'X' ? 'O' : 'X') : mark;
+                    setCells(next); setOver(true);
+                    setStatus(kind === 'misere' ? `${mark} made a line—${winnerMark} wins!` : `${winnerMark} wins!`);
+                    SoundEngine.playVictory(); return;
+                }
+                if (next.every(Boolean)) { setCells(next); setOver(true); setStatus('Draw!'); return; }
+                setCells(next); setTurn(mark === 'X' ? 'O' : 'X');
+                setStatus(isCoach ? coachAdvice(next) : `${mark === 'X' ? 'O' : 'X'} to move`);
+            };
+
+            const makeMove = (index) => {
+                if (over || cells[index]) return;
+                if (isCoach && turn === 'O') return;
+                if (isUltimate) {
+                    const mini = Math.floor(index / 9);
+                    if (miniWinners[mini] || (activeMini !== null && mini !== activeMini)) return;
+                    const next = [...cells]; next[index] = turn;
+                    const local = next.slice(mini * 9, mini * 9 + 9);
+                    const localResult = lineResult(local, 3, 3);
+                    const winners = [...miniWinners];
+                    if (localResult) winners[mini] = turn;
+                    else if (local.every(Boolean)) winners[mini] = 'D';
+                    const globalResult = lineResult(winners.map(v => v === 'D' ? '' : v), 3, 3);
+                    const destination = index % 9;
+                    setCells(next); setMiniWinners(winners);
+                    if (globalResult) { setOver(true); setStatus(`${turn} conquers the Ultimate board!`); SoundEngine.playVictory(); return; }
+                    if (winners.every(Boolean)) { setOver(true); setStatus('Ultimate draw!'); return; }
+                    setActiveMini(winners[destination] ? null : destination);
+                    setTurn(turn === 'X' ? 'O' : 'X');
+                    setStatus(`${turn === 'X' ? 'O' : 'X'}: play ${winners[destination] ? 'on any open board' : `mini-board ${destination + 1}`}`);
+                    return;
+                }
+                const next = [...cells]; next[index] = turn;
+                finishStandardMove(next, turn, index);
+                if (isCoach && turn === 'X' && !lineResult(next, 3, 3) && next.some(v => !v)) {
+                    aiTimer.current = setTimeout(() => {
+                        const aiIndex = getAIMove(unflatten(next), 'O', DIFFICULTIES.MEDIUM);
+                        if (aiIndex >= 0) { const afterAI = [...next]; afterAI[aiIndex] = 'O'; finishStandardMove(afterAI, 'O', aiIndex); }
+                    }, 500);
+                }
+            };
+
+            const nextPuzzle = () => setPuzzleIndex(i => (i + 1) % TACTICAL_PUZZLES.length);
+            return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
+                <div className="w-full max-w-2xl bg-black/50 border border-cyan-700 rounded-2xl p-5 text-center shadow-2xl">
+                    <div className="flex justify-between items-center gap-3 mb-3">
+                        <button className="action-btn px-3 py-2 bg-gray-700 rounded-lg" onClick={onExit}>← Modes</button>
+                        <div><h1 className="text-3xl font-black text-cyan-300">{PRO_VARIANTS[kind].title}</h1>{isPuzzle && <b className="text-yellow-300">{TACTICAL_PUZZLES[puzzleIndex].title}</b>}</div>
+                        <button className="action-btn px-3 py-2 bg-purple-700 rounded-lg" onClick={() => reset()}>Reset</button>
+                    </div>
+                    <p className="min-h-[3rem] text-cyan-100 bg-cyan-950/60 rounded-lg p-3 mb-4" role="status">{status}</p>
+                    {isUltimate ? <div className="grid grid-cols-3 gap-2 max-w-[560px] mx-auto">
+                        {Array.from({length:9}, (_, mini) => <div key={mini} className={`relative grid grid-cols-3 gap-1 p-1 rounded-lg border-2 ${activeMini === null || activeMini === mini ? 'border-cyan-400' : 'border-gray-700 opacity-60'} ${miniWinners[mini] ? 'bg-purple-950' : 'bg-gray-800'}`}>
+                            {Array.from({length:9}, (_, local) => { const idx = mini * 9 + local; return <button key={local} onClick={() => makeMove(idx)} className="aspect-square rounded bg-gray-950 text-lg sm:text-2xl font-black hover:bg-cyan-950 disabled:opacity-50" disabled={!!cells[idx] || !!miniWinners[mini] || (activeMini !== null && activeMini !== mini)}>{cells[idx]}</button>; })}
+                            {miniWinners[mini] && <span className="absolute inset-0 flex items-center justify-center bg-black/70 text-6xl font-black text-yellow-300 pointer-events-none">{miniWinners[mini] === 'D' ? '•' : miniWinners[mini]}</span>}
+                        </div>)}
+                    </div> : <div className={`grid gap-2 mx-auto max-w-[480px] ${isFour ? 'grid-cols-4' : 'grid-cols-3'}`}>
+                        {cells.map((v,i) => <button key={i} onClick={() => makeMove(i)} disabled={!!v || over || (isCoach && turn === 'O')} aria-label={`Square ${i + 1}`} className="aspect-square rounded-xl border-2 border-cyan-700 bg-gray-950 text-4xl sm:text-6xl font-black hover:bg-cyan-950 disabled:cursor-default">{v}</button>)}
+                    </div>}
+                    <div className="mt-4 flex justify-center gap-3">
+                        {isPuzzle && <button onClick={nextPuzzle} className="action-btn px-5 py-2 rounded-lg bg-green-700">Next Puzzle</button>}
+                        {isCoach && <span className="text-sm text-gray-300">Squares are numbered left-to-right, top-to-bottom.</span>}
+                    </div>
+                </div>
+            </div>;
+        };
+
         /**
          * Main Tic-Tac-Toe game component.
          */
@@ -1100,6 +1249,7 @@
             const [isPaused, setIsPaused] = React.useState(false);
             const [aiThinking, setAiThinking] = React.useState(false);
             const [isMuted, setIsMuted] = React.useState(SoundEngine.isMuted());
+            const [proMode, setProMode] = React.useState(null);
 
             // Move history for undo: array of { board, currentPlayer } snapshots
             const [moveHistory, setMoveHistory] = React.useState([]);
@@ -1619,6 +1769,8 @@
                 : null;
 
             // --- MODE SELECTION SCREEN ---
+            if (proMode) return <ProTicTacToe kind={proMode} onExit={() => setProMode(null)} />;
+
             if (!gameMode) {
                 return (
                     <div className="min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
@@ -1690,6 +1842,13 @@
                                 >
                                     1 vs AI
                                 </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 mt-4" role="group" aria-label="Advanced modes">
+                                {Object.entries(PRO_VARIANTS).map(([id, info]) => (
+                                    <button key={id} onClick={() => setProMode(id)} className="action-btn py-2 px-2 bg-cyan-900 hover:bg-cyan-800 border border-cyan-500 text-white font-bold rounded-lg text-sm">
+                                        {info.title}
+                                    </button>
+                                ))}
                             </div>
                             <button
                                 onClick={() => setShowRules(true)}

@@ -886,6 +886,7 @@
                 transition-duration: 0.01ms !important;
             }
         }
+        .optics-lab-overlay{position:fixed;inset:0;z-index:12000;background:rgba(2,6,23,.97);display:none;flex-direction:column;padding:12px;color:#fff;font-family:Arial,sans-serif}.optics-lab-overlay.active{display:flex}.lab-head,.lab-tools{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.lab-head{justify-content:space-between}.lab-head h2{color:#67e8f9;margin:0}.lab-tools{padding:8px}.lab-tool{border:1px solid #22d3ee;background:#172554;color:#fff;border-radius:9px;padding:8px 10px;font-weight:700}.lab-tool.active{background:#0e7490;box-shadow:0 0 14px #22d3ee}.lab-canvas{width:100%;flex:1;min-height:300px;background:#020617;border:2px solid #164e63;border-radius:12px;touch-action:none}.lab-help{text-align:center;color:#a5f3fc;font-size:12px;margin:5px}.lab-close{background:#7f1d1d;color:#fff;border:1px solid #f87171;border-radius:9px;padding:9px 14px;font-weight:800}
     </style>
 </head>
 <body>
@@ -917,6 +918,7 @@
                 <button class="game-button undo-btn" id="undoBtn" onclick="undoAction()" aria-label="Undo" disabled>&#x21A9; UNDO</button>
                 <button class="game-button redo-btn" id="redoBtn" onclick="redoAction()" aria-label="Redo" disabled>&#x21AA; REDO</button>
                 <button class="game-button snap-btn" id="snapBtn" onclick="toggleSnapToGrid(); closeControlsPanelOnMobile()" aria-label="Toggle snap to grid">&#x25A6; SNAP</button>
+                <button class="game-button" onclick="openOpticsLab(); closeControlsPanelOnMobile()" aria-label="Open freeform optics lab">&#x1F52C; OPTICS LAB</button>
             </div>
             <div class="score-text" id="modeIndicator" style="margin-top: 8px; font-size: 12px;">READY</div>
         </div>
@@ -945,6 +947,7 @@
                 <div class="victory-par-comparison" id="victoryParComparison"></div>
                 <div class="victory-buttons">
                     <button class="victory-btn victory-btn-retry" id="victoryRetryBtn" onclick="victoryRetry()">RETRY</button>
+                    <button class="victory-btn" id="victoryReplayBtn" onclick="victoryReplaySolution()">&#x25B6; SOLUTION REPLAY</button>
                     <button class="victory-btn victory-btn-next" id="victoryNextBtn" onclick="victoryNextLevel()">NEXT LEVEL &#x27A1;</button>
                     <button class="victory-btn victory-btn-levels" id="victoryLevelsBtn" onclick="victoryShowLevels()">LEVELS</button>
                 </div>
@@ -974,6 +977,13 @@
         </div>
     </div>
 
+    <div class="optics-lab-overlay" id="opticsLab" aria-label="Freeform optics sandbox">
+        <div class="lab-head"><button class="lab-close" onclick="closeOpticsLab()">&#x2190; GAME</button><h2>FREEFORM OPTICS LAB</h2><button class="lab-close" onclick="clearOpticsLab()">CLEAR</button></div>
+        <div class="lab-tools" id="labTools"></div>
+        <div class="lab-help">Choose a part, then tap anywhere to place unlimited pieces. Tap an existing piece to rotate it. Portals pair automatically; shutters pulse open and closed.</div>
+        <canvas class="lab-canvas" id="labCanvas"></canvas>
+    </div>
+
     <script>
         // Game variables
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -996,6 +1006,7 @@
         let highestUnlockedLevel = 0;
         let keyboardMirrorIndex = -1; // Index into gameState.mirrors for keyboard focus
         let backgroundParticleInterval = null;
+        let lastWinningLayout = [];
 
         // Compact mobile controls: desktop stays open; narrow screens start collapsed.
         const controlsMediaQuery = window.matchMedia('(max-width: 900px)');
@@ -2109,6 +2120,30 @@
             showLevelSelect();
         }
 
+        function victoryReplaySolution() {
+            const overlay = document.getElementById('victoryModalOverlay');
+            const wonLevel = parseInt(overlay.dataset.wonLevel);
+            const layout = lastWinningLayout.map(m => ({ ...m }));
+            hideVictoryModal();
+            gameState.won = false;
+            loadLevel(wonLevel);
+            document.getElementById('modeIndicator').textContent = layout.length <= LEVELS[wonLevel].par ? 'IDEAL PAR SOLUTION REPLAY' : 'WINNING SOLUTION REPLAY';
+            layout.forEach((saved, i) => setTimeout(() => {
+                const inventory = gameState.mirrorInventory[saved.originalInventoryIndex] || gameState.mirrorInventory.find(item => !item.used);
+                if (!inventory) return;
+                const inventoryIndex = gameState.mirrorInventory.indexOf(inventory);
+                const mirror = new Mirror(saved.xPct * canvasCSSWidth, saved.yPct * canvasCSSHeight, saved.angle, saved.length, inventory.id);
+                mirror.originalInventoryIndex = inventoryIndex;
+                mirror.isPlaced = true;
+                mirror.updatePercentage();
+                gameState.mirrors.push(mirror);
+                inventory.used = true;
+                updateMirrorStorageUI();
+                gameState.laserBeam.calculate(true);
+                if (i === layout.length - 1) setTimeout(() => fireLaser(), 450);
+            }, 450 + i * 650));
+        }
+
         // ================================================================
         // Game Classes
         // ================================================================
@@ -2895,6 +2930,13 @@
             winGame() {
                 if (gameState.won) return;
                 gameState.won = true;
+                lastWinningLayout = gameState.mirrors.map(m => ({
+                    xPct: m.x / canvasCSSWidth,
+                    yPct: m.y / canvasCSSHeight,
+                    angle: m.angle,
+                    length: m.length,
+                    originalInventoryIndex: m.originalInventoryIndex
+                }));
 
                 gameState.target.hit = true;
 
@@ -4039,6 +4081,117 @@
                     gameState.laserBeam.calculate();
                 }
             }, 150);
+        });
+
+        // Freeform optics sandbox: unlimited parts and multiple lasers.
+        const LAB_PARTS = [
+            ['laser','Laser'],['mirror','Mirror'],['portal','Portal'],['filter','Color Filter'],
+            ['oneway','One-Way Mirror'],['prism','Rotating Prism'],['shutter','Timed Shutter']
+        ];
+        let labSelected = 'mirror';
+        let labParts = [{ type:'laser', x:80, y:220, angle:0, color:'#ff1493' }];
+        let labFrame = 0;
+        let labRunning = false;
+        const labCanvas = document.getElementById('labCanvas');
+        const labCtx = labCanvas.getContext('2d');
+
+        function buildLabTools() {
+            const bar = document.getElementById('labTools');
+            bar.innerHTML = LAB_PARTS.map(([id,label]) => `<button class="lab-tool ${id === labSelected ? 'active' : ''}" data-lab-tool="${id}">${label}</button>`).join('');
+            bar.querySelectorAll('button').forEach(button => button.onclick = () => {
+                labSelected = button.dataset.labTool; buildLabTools();
+            });
+        }
+
+        function sizeLabCanvas() {
+            const rect = labCanvas.getBoundingClientRect();
+            const ratio = window.devicePixelRatio || 1;
+            labCanvas.width = Math.max(1, rect.width * ratio); labCanvas.height = Math.max(1, rect.height * ratio);
+            labCtx.setTransform(ratio,0,0,ratio,0,0);
+        }
+
+        function openOpticsLab() {
+            document.getElementById('opticsLab').classList.add('active');
+            buildLabTools(); requestAnimationFrame(() => { sizeLabCanvas(); labRunning = true; drawOpticsLab(); });
+        }
+        function closeOpticsLab() { document.getElementById('opticsLab').classList.remove('active'); labRunning = false; }
+        function clearOpticsLab() { labParts = [{ type:'laser', x:80, y:Math.max(100,labCanvas.clientHeight/2), angle:0, color:'#ff1493' }]; }
+
+        function labReflect(angle, surface) {
+            const nx = -Math.sin(surface), ny = Math.cos(surface), ix = Math.cos(angle), iy = Math.sin(angle);
+            const dot = ix*nx + iy*ny;
+            return Math.atan2(iy - 2*dot*ny, ix - 2*dot*nx);
+        }
+
+        function pairedPortal(part) {
+            const portals = labParts.filter(p => p.type === 'portal');
+            const index = portals.indexOf(part);
+            if (index < 0 || portals.length < 2) return null;
+            return portals[index % 2 === 0 ? index + 1 : index - 1] || null;
+        }
+
+        function traceLabRay(source) {
+            const paths = [];
+            const queue = [{x:source.x,y:source.y,angle:source.angle,color:source.color || '#ff1493',depth:0,last:null}];
+            while (queue.length) {
+                let ray = queue.shift();
+                let segment = [{x:ray.x,y:ray.y,color:ray.color}];
+                for (let step=0; step<900 && ray.depth<18; step++) {
+                    ray.x += Math.cos(ray.angle)*3; ray.y += Math.sin(ray.angle)*3;
+                    if (ray.x<0||ray.y<0||ray.x>labCanvas.clientWidth||ray.y>labCanvas.clientHeight) break;
+                    let hit = labParts.find(p => p !== source && p !== ray.last && Math.hypot(p.x-ray.x,p.y-ray.y)<15);
+                    if (!hit) continue;
+                    segment.push({x:ray.x,y:ray.y,color:ray.color}); paths.push(segment); segment=[{x:ray.x,y:ray.y,color:ray.color}];
+                    if (hit.type === 'mirror') ray.angle = labReflect(ray.angle, hit.angle);
+                    if (hit.type === 'oneway') {
+                        const front = Math.cos(ray.angle)*(-Math.sin(hit.angle))+Math.sin(ray.angle)*Math.cos(hit.angle) < 0;
+                        if (front) ray.angle = labReflect(ray.angle, hit.angle);
+                    }
+                    if (hit.type === 'filter') ray.color = hit.color;
+                    if (hit.type === 'portal') { const pair=pairedPortal(hit); if(pair){ray.x=pair.x+Math.cos(ray.angle)*20;ray.y=pair.y+Math.sin(ray.angle)*20;hit=pair;} }
+                    if (hit.type === 'prism') {
+                        queue.push({...ray,angle:ray.angle-.32,color:'#22d3ee',depth:ray.depth+1,last:hit});
+                        ray.angle += .32; ray.color='#facc15';
+                    }
+                    if (hit.type === 'shutter' && Math.sin(labFrame/28 + hit.phase) < 0) break;
+                    ray.last=hit; ray.depth++; ray.x+=Math.cos(ray.angle)*18;ray.y+=Math.sin(ray.angle)*18;
+                }
+                segment.push({x:ray.x,y:ray.y,color:ray.color}); paths.push(segment);
+            }
+            return paths;
+        }
+
+        function drawLabPart(p, index) {
+            labCtx.save(); labCtx.translate(p.x,p.y); labCtx.rotate(p.type==='prism' ? p.angle+labFrame/100 : p.angle||0);
+            labCtx.shadowBlur=12; labCtx.shadowColor=p.color||'#67e8f9'; labCtx.strokeStyle=p.color||'#67e8f9'; labCtx.fillStyle=p.color||'#67e8f9'; labCtx.lineWidth=5;
+            if(p.type==='laser'){labCtx.beginPath();labCtx.arc(0,0,10,0,Math.PI*2);labCtx.fill();labCtx.beginPath();labCtx.moveTo(8,0);labCtx.lineTo(24,0);labCtx.stroke();}
+            if(p.type==='mirror'||p.type==='oneway'){labCtx.beginPath();labCtx.moveTo(-25,0);labCtx.lineTo(25,0);labCtx.stroke();if(p.type==='oneway'){labCtx.font='18px sans-serif';labCtx.fillText('›',-4,-8);}}
+            if(p.type==='portal'){labCtx.beginPath();labCtx.arc(0,0,18,0,Math.PI*2);labCtx.stroke();labCtx.font='12px sans-serif';labCtx.fillText(index%2?'B':'A',-4,4);}
+            if(p.type==='filter'){labCtx.globalAlpha=.55;labCtx.fillRect(-8,-28,16,56);labCtx.globalAlpha=1;}
+            if(p.type==='prism'){labCtx.beginPath();labCtx.moveTo(0,-22);labCtx.lineTo(20,16);labCtx.lineTo(-20,16);labCtx.closePath();labCtx.stroke();}
+            if(p.type==='shutter'){const open=Math.sin(labFrame/28+p.phase)>=0;labCtx.setLineDash(open?[5,8]:[]);labCtx.beginPath();labCtx.moveTo(0,-28);labCtx.lineTo(0,28);labCtx.stroke();}
+            labCtx.restore();
+        }
+
+        function drawOpticsLab() {
+            if(!labRunning) return;
+            labFrame++; const w=labCanvas.clientWidth,h=labCanvas.clientHeight;
+            labCtx.clearRect(0,0,w,h); labCtx.strokeStyle='rgba(34,211,238,.08)';labCtx.lineWidth=1;
+            for(let x=0;x<w;x+=40){labCtx.beginPath();labCtx.moveTo(x,0);labCtx.lineTo(x,h);labCtx.stroke();}
+            for(let y=0;y<h;y+=40){labCtx.beginPath();labCtx.moveTo(0,y);labCtx.lineTo(w,y);labCtx.stroke();}
+            labParts.filter(p=>p.type==='laser').forEach(source => traceLabRay(source).forEach(path => {
+                if(path.length<2)return;labCtx.beginPath();labCtx.moveTo(path[0].x,path[0].y);path.slice(1).forEach(pt=>labCtx.lineTo(pt.x,pt.y));
+                labCtx.strokeStyle=path[path.length-1].color;labCtx.lineWidth=3;labCtx.shadowColor=labCtx.strokeStyle;labCtx.shadowBlur=12;labCtx.stroke();labCtx.shadowBlur=0;
+            }));
+            labParts.forEach(drawLabPart); requestAnimationFrame(drawOpticsLab);
+        }
+
+        labCanvas.addEventListener('pointerdown', e => {
+            const rect=labCanvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+            const existing=labParts.find(p=>Math.hypot(p.x-x,p.y-y)<22);
+            if(existing){existing.angle=(existing.angle||0)+Math.PI/4;return;}
+            const palette=['#ef4444','#22c55e','#3b82f6','#facc15'];
+            labParts.push({type:labSelected,x,y,angle:labSelected==='laser'?0:Math.PI/4,color:palette[labParts.length%palette.length],phase:Math.random()*Math.PI*2});
         });
 
         // Start game

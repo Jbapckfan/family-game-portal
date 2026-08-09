@@ -2849,6 +2849,11 @@ let multiplayerActive = false;
 let roomCode = '';
 let myPlayerId = null;
 let myPlayerName = localStorage.getItem('playerName') || 'Player';
+let myPlayerKey = localStorage.getItem('pcpPlayerKey');
+if (!myPlayerKey) {
+    myPlayerKey = 'pilot-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem('pcpPlayerKey', myPlayerKey);
+}
 let mpGameMode = 'coop'; // 'coop' or 'pvp'
 
 // Connection management for multiple players
@@ -2867,6 +2872,26 @@ let syncInterval = null;
 let pingInterval = null;
 let lastPingTime = 0;
 let currentPing = 0;
+let reconnectTimer = null;
+let reconnectAttempts = 0;
+let intentionalDisconnect = false;
+
+function getMyLobbyPlayer() {
+    return lobby.players.find(p => p.key === myPlayerKey || p.id === myPlayerId);
+}
+
+function setConnectionQuality(ms, label) {
+    currentPing = Number.isFinite(ms) ? ms : currentPing;
+    const value = document.getElementById('pingValue');
+    const dot = document.querySelector('#connectionStatus .ping-dot');
+    if (value) value.textContent = Number.isFinite(ms) ? Math.round(ms) : '--';
+    if (dot) {
+        dot.classList.toggle('warning', Number.isFinite(ms) && ms >= 100 && ms < 220);
+        dot.classList.toggle('bad', !Number.isFinite(ms) || ms >= 220);
+    }
+    const status = document.getElementById('lobbyStatus');
+    if (status && label) status.textContent = label;
+}
 
 function generateRoomCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -2904,6 +2929,7 @@ async function hostGame() {
             // Add host to lobby
             lobby.players = [{
                 id: myPlayerId,
+                key: myPlayerKey,
                 name: myPlayerName,
                 team: 0,
                 isAI: false,
@@ -2928,14 +2954,6 @@ async function hostGame() {
 }
 
 function handleNewConnection(conn) {
-    if (lobby.players.filter(p => !p.isAI).length >= 8) {
-        conn.on('open', () => {
-            conn.send({ type: 'error', message: 'Room is full' });
-            conn.close();
-        });
-        return;
-    }
-
     conn.on('open', () => {
         connections.set(conn.peer, { conn, player: null });
 
@@ -2950,22 +2968,39 @@ function handleHostData(peerId, data) {
 
     switch(data.type) {
         case 'join':
-            // New player joining
-            const newPlayer = {
-                id: peerId,
-                name: data.name || 'Player',
-                team: getAutoTeam(),
-                isAI: false,
-                isHost: false,
-                ping: 0
-            };
-            lobby.players.push(newPlayer);
+            // Stable player keys let a dropped tablet reclaim its team and
+            // army without creating a duplicate lobby slot.
+            let newPlayer = lobby.players.find(p => data.key && p.key === data.key);
+            if (newPlayer) {
+                newPlayer.id = peerId;
+                newPlayer.name = data.name || newPlayer.name;
+                newPlayer.isAI = false;
+                newPlayer.disconnected = false;
+                newPlayer.ping = 0;
+            } else {
+                if (lobby.players.filter(p => !p.isAI).length >= lobby.maxPlayers) {
+                    connection.conn.send({ type: 'error', message: 'Room is full' });
+                    connection.conn.close();
+                    return;
+                }
+                newPlayer = {
+                    id: peerId,
+                    key: data.key || peerId,
+                    name: data.name || 'Player',
+                    team: getAutoTeam(),
+                    isAI: false,
+                    isHost: false,
+                    ping: 0
+                };
+                lobby.players.push(newPlayer);
+            }
             connection.player = newPlayer;
 
             playSound('click');
 
             // Send current lobby state to new player
             broadcastLobbyState();
+            if (lobby.started) sendCurrentGameTo(connection.conn);
             updateLobbyUI();
             break;
 
@@ -2989,6 +3024,9 @@ function handleHostData(peerId, data) {
             const pongPlayer = lobby.players.find(p => p.id === peerId);
             if (pongPlayer) {
                 pongPlayer.ping = Date.now() - data.t;
+                if (connection?.conn?.open) {
+                    connection.conn.send({ type: 'latency', ping: pongPlayer.ping });
+                }
             }
             break;
     }
@@ -3027,10 +3065,11 @@ function handlePlayerDisconnect(peerId) {
         const player = lobby.players[playerIdx];
 
         if (lobby.started) {
-            // During game: convert to AI
+            // During game: temporary AI takeover keeps the match moving. A
+            // reconnect with the same stable key takes control back.
             player.isAI = true;
-            player.name = '🤖 ' + player.name;
-            showFloatText(W / 2, 100, `${player.name} disconnected (AI takeover)`, '#fa0');
+            player.disconnected = true;
+            showFloatText(W / 2, 100, `${player.name} disconnected — autopilot active`, '#fa0');
         } else {
             // In lobby: remove player
             lobby.players.splice(playerIdx, 1);
@@ -3047,30 +3086,13 @@ async function joinGame(code) {
     try {
         await initPeerJS();
         roomCode = code.toUpperCase();
+        intentionalDisconnect = false;
+        reconnectAttempts = 0;
         peer = new Peer();
 
         peer.on('open', id => {
             myPlayerId = id;
-            hostConnection = peer.connect('pcp-' + roomCode);
-
-            hostConnection.on('open', () => {
-                // Send join request
-                hostConnection.send({
-                    type: 'join',
-                    name: myPlayerName
-                });
-
-                isHost = false;
-                showLobbyRoom();
-                playSound('click');
-            });
-
-            hostConnection.on('data', handleClientData);
-
-            hostConnection.on('close', () => {
-                showFloatText(W / 2, H / 2, 'Disconnected from host', '#f44');
-                endMultiplayerGame();
-            });
+            connectToRoomHost(false);
         });
 
         peer.on('error', err => {
@@ -3083,6 +3105,88 @@ async function joinGame(code) {
     }
 }
 
+function connectToRoomHost(isReconnect = true) {
+    if (!peer || peer.destroyed || isHost) return;
+    if (hostConnection) {
+        try { hostConnection.close(); } catch (e) {}
+    }
+    setConnectionQuality(NaN, isReconnect ? `Reconnecting… attempt ${reconnectAttempts + 1}` : 'Connecting…');
+    hostConnection = peer.connect('pcp-' + roomCode, { reliable: true });
+
+    hostConnection.on('open', () => {
+        reconnectAttempts = 0;
+        hostConnection.send({ type: 'join', name: myPlayerName, key: myPlayerKey });
+        isHost = false;
+        showLobbyRoom();
+        playSound('click');
+        setConnectionQuality(currentPing || 0, isReconnect ? 'Reconnected — army restored' : 'Connected!');
+    });
+    hostConnection.on('data', handleClientData);
+    hostConnection.on('close', () => {
+        if (!intentionalDisconnect && !isHost) handleHostDrop();
+    });
+    hostConnection.on('error', () => {
+        if (!intentionalDisconnect && !isHost) scheduleReconnect();
+    });
+}
+
+function handleHostDrop() {
+    if (!multiplayerActive && !lobby.players.length) return scheduleReconnect();
+    const humans = lobby.players.filter(p => !p.isAI || p.disconnected).sort((a, b) =>
+        String(a.key || a.id).localeCompare(String(b.key || b.id))
+    );
+    const elected = humans[0];
+    if (elected && elected.key === myPlayerKey) {
+        setConnectionQuality(NaN, 'Host left — transferring command…');
+        setTimeout(becomeMigrationHost, 900);
+    } else {
+        showFloatText(W / 2, 100, 'Host changed — reconnecting…', '#fa0');
+        scheduleReconnect(1200);
+    }
+}
+
+function scheduleReconnect(delay) {
+    if (intentionalDisconnect || isHost || reconnectTimer) return;
+    const wait = delay ?? Math.min(5000, 500 * Math.pow(1.55, reconnectAttempts));
+    reconnectTimer = setTimeout(() => {
+        reconnectTimer = null;
+        reconnectAttempts++;
+        connectToRoomHost(true);
+    }, wait);
+}
+
+function becomeMigrationHost() {
+    if (intentionalDisconnect || isHost) return;
+    try { hostConnection?.close(); } catch (e) {}
+    try { peer?.destroy(); } catch (e) {}
+    peer = new Peer('pcp-' + roomCode);
+    peer.on('open', id => {
+        isHost = true;
+        myPlayerId = id;
+        const me = getMyLobbyPlayer();
+        lobby.players.forEach(p => { p.isHost = false; });
+        if (me) {
+            me.id = id;
+            me.isHost = true;
+            me.isAI = false;
+            me.disconnected = false;
+        }
+        showLobbyRoom();
+        if (lobby.started) {
+            document.getElementById('multiplayerLobby').classList.add('hidden');
+            startGameTickLoop();
+        }
+        startPingLoop();
+        setConnectionQuality(0, 'You are the new host');
+        showFloatText(W / 2, 100, 'COMMAND TRANSFER COMPLETE', '#0ff');
+    });
+    peer.on('connection', handleNewConnection);
+    peer.on('error', () => {
+        isHost = false;
+        scheduleReconnect(1200);
+    });
+}
+
 function handleClientData(data) {
     switch(data.type) {
         case 'lobbyState':
@@ -3090,6 +3194,10 @@ function handleClientData(data) {
             mpGameMode = data.gameMode;
             roomCode = data.roomCode;
             updateLobbyUI();
+            break;
+
+        case 'latency':
+            setConnectionQuality(data.ping, data.ping < 100 ? 'Connection excellent' : data.ping < 220 ? 'Connection playable' : 'High latency');
             break;
 
         case 'gameStart':
@@ -3107,11 +3215,11 @@ function handleClientData(data) {
             break;
 
         case 'ping':
-            hostConnection.send({ type: 'pong', t: data.t });
+            if (hostConnection?.open) hostConnection.send({ type: 'pong', t: data.t });
             break;
 
         case 'gameEnd':
-            const myEndPlayer = lobby.players.find(p => p.id === myPlayerId);
+            const myEndPlayer = getMyLobbyPlayer();
             const myVictory = myEndPlayer && myEndPlayer.team === data.winningTeam;
             endGame(myVictory);
             break;
@@ -3161,12 +3269,13 @@ function updateLobbyUI() {
     for (const player of lobby.players) {
         const slot = document.createElement('div');
         slot.className = 'player-slot';
-        if (player.id === myPlayerId) slot.classList.add('is-you');
+        if (player.key === myPlayerKey || player.id === myPlayerId) slot.classList.add('is-you');
         if (player.isAI) slot.classList.add('is-ai');
 
         const icon = player.isAI ? '🤖' : (player.isHost ? '👑' : '👤');
         const pingText = player.isAI ? '' : `<span class="player-ping">${player.ping}ms</span>`;
-        const youBadge = player.id === myPlayerId ? ' <span style="color:#0ff;font-size:10px;">(You)</span>' : '';
+        const youBadge = (player.key === myPlayerKey || player.id === myPlayerId) ? ' <span style="color:#0ff;font-size:10px;">(You)</span>' : '';
+        const reconnectBadge = player.disconnected ? ' <span style="color:#fa0;font-size:10px;">(autopilot)</span>' : '';
 
         let removeBtn = '';
         if (isHost && (player.isAI || (!player.isHost && player.id !== myPlayerId))) {
@@ -3175,7 +3284,7 @@ function updateLobbyUI() {
 
         slot.innerHTML = `
             <span class="player-icon">${icon}</span>
-            <span class="player-name">${player.name}${youBadge}</span>
+            <span class="player-name">${player.name}${youBadge}${reconnectBadge}</span>
             ${pingText}
             ${removeBtn}
         `;
@@ -3258,7 +3367,7 @@ function removePlayer(playerId) {
 }
 
 function switchTeam() {
-    const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+    const myPlayer = getMyLobbyPlayer();
     if (!myPlayer || lobby.started) return;
 
     const newTeam = myPlayer.team === 0 ? 1 : 0;
@@ -3322,22 +3431,29 @@ function startMultiplayerGame() {
     game.state = 'playing';
 
     // Send game start to all clients
-    broadcast({
-        type: 'gameStart',
-        seed: gameSeed,
-        players: lobby.players,
-        gameMode: mpGameMode,
-        planets: planets.map(p => ({
-            x: p.x, y: p.y, size: p.size, type: p.type,
-            owner: p.owner, units: p.units
-        }))
-    });
+    broadcast(buildGameSnapshot(gameSeed));
 
     // Start game tick loop (host-authoritative)
     startGameTickLoop();
 
     // Update HUD
     updateMultiplayerHUD();
+}
+
+function buildGameSnapshot(seed = 0) {
+    return {
+        type: 'gameStart', seed, players: lobby.players,
+        gameMode: mpGameMode,
+        planets: planets.map(p => ({
+            x: p.x, y: p.y, size: p.size, type: p.type,
+            owner: p.owner, units: p.units, shielded: p.shielded
+        }))
+    };
+}
+
+function sendCurrentGame(conn) {
+    if (!conn?.open || !lobby.started) return;
+    conn.send(buildGameSnapshot());
 }
 
 function startClientGame(data) {
@@ -3371,7 +3487,7 @@ function startClientGame(data) {
 }
 
 function updateMultiplayerHUD() {
-    const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+    const myPlayer = getMyLobbyPlayer();
     const myTeam = myPlayer ? myPlayer.team : 0;
 
     // Count teams
@@ -3571,7 +3687,7 @@ function checkMultiplayerWinCondition() {
 }
 
 function broadcastGameEnd(winningTeam) {
-    const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+    const myPlayer = getMyLobbyPlayer();
     const victory = myPlayer && myPlayer.team === winningTeam;
 
     broadcast({ type: 'gameEnd', winningTeam, victory });
@@ -3648,7 +3764,7 @@ function sendMultiplayerCommand(cmd, data) {
 
     if (isHost) {
         // Host executes directly
-        const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+        const myPlayer = getMyLobbyPlayer();
         if (myPlayer) {
             executePlayerCommand(myPlayerId, { cmd, ...data });
         }
@@ -3661,6 +3777,7 @@ function sendMultiplayerCommand(cmd, data) {
 // ==================== CLEANUP ====================
 
 function endMultiplayerGame() {
+    intentionalDisconnect = true;
     multiplayerActive = false;
     lobby.started = false;
     lobby.players = [];
@@ -3672,6 +3789,10 @@ function endMultiplayerGame() {
     if (pingInterval) {
         clearInterval(pingInterval);
         pingInterval = null;
+    }
+    if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
     }
 
     connections.clear();
@@ -3705,7 +3826,7 @@ function isAlly(team1, team2) {
 // Check if planet is owned by my team
 function isMyPlanet(planet) {
     if (multiplayerActive) {
-        const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+        const myPlayer = getMyLobbyPlayer();
         return myPlayer && planet.owner === myPlayer.team;
     }
     return planet.owner === PLAYER;
@@ -3714,7 +3835,7 @@ function isMyPlanet(planet) {
 // Get my team number
 function getMyTeam() {
     if (multiplayerActive) {
-        const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+        const myPlayer = getMyLobbyPlayer();
         return myPlayer ? myPlayer.team : 0;
     }
     return PLAYER;
@@ -4216,8 +4337,30 @@ const PLANET_TYPES = {
     factory: { productionMult: 2, defenseMult: 1, color: '#44aa44', icon: '⚙️' },
     fortress: { productionMult: 0.7, defenseMult: 2, color: '#6666ff', icon: '🏰' },
     wormhole: { productionMult: 0.5, defenseMult: 1, color: '#aa44aa', icon: '🌀' },
-    blackhole: { productionMult: 0, defenseMult: 0, color: '#111111', icon: '⚫' }
+    blackhole: { productionMult: 0, defenseMult: 0, color: '#111111', icon: '⚫' },
+    generator: { productionMult: 1.25, defenseMult: 1.35, color: '#ff9f1c', icon: '🔋' },
+    mothership: { productionMult: 1.65, defenseMult: 1.7, color: '#ff3d8d', icon: '🛸' }
 };
+
+const bossState = {
+    active: false,
+    phase: 0,
+    mothership: null,
+    generators: [],
+    moveAngle: 0,
+    reinforcementClock: 0,
+    announcedShieldDown: false
+};
+
+function resetBossState() {
+    bossState.active = false;
+    bossState.phase = 0;
+    bossState.mothership = null;
+    bossState.generators = [];
+    bossState.moveAngle = 0;
+    bossState.reinforcementClock = 0;
+    bossState.announcedShieldDown = false;
+}
 
 // Owner constants
 const NEUTRAL = 0, PLAYER = 1, ENEMY = 2;
@@ -4261,7 +4404,7 @@ function getOwnerColor(owner) {
 // Get team label for display
 function getTeamLabel(owner) {
     if (multiplayerActive) {
-        const myPlayer = lobby.players.find(p => p.id === myPlayerId);
+        const myPlayer = getMyLobbyPlayer();
         if (myPlayer && myPlayer.team === owner) return 'YOU';
         return owner >= 0 ? `T${owner + 1}` : '';
     }
@@ -5255,7 +5398,7 @@ class FlyingParticle {
     get speed() {
         let spd = this.baseSpeed;
         const isMyTeam = multiplayerActive
-            ? lobby.players.find(p => p.id === myPlayerId)?.team === this.owner
+            ? getMyLobbyPlayer()?.team === this.owner
             : this.owner === PLAYER;
         if (isMyTeam && abilities.boost.active) spd *= 3;
         // Apply upgrade: particle speed bonus
@@ -5322,6 +5465,9 @@ class FlyingParticle {
                 }
 
                 if (this.target.units <= 0) {
+                    if (interceptBossCapture(this.target, this.owner)) {
+                        return false;
+                    }
                     // Squad units left over after breaking the defense become the garrison
                     const leftover = -this.target.units * this.target.defenseMult;
                     const prevOwner = this.target.owner;
@@ -5330,10 +5476,10 @@ class FlyingParticle {
 
                     // Track capture stats and play sounds
                     const isMyTeam = multiplayerActive
-                        ? lobby.players.find(p => p.id === myPlayerId)?.team === this.owner
+                        ? getMyLobbyPlayer()?.team === this.owner
                         : this.owner === PLAYER;
                     const wasMyTeam = multiplayerActive
-                        ? lobby.players.find(p => p.id === myPlayerId)?.team === prevOwner
+                        ? getMyLobbyPlayer()?.team === prevOwner
                         : prevOwner === PLAYER;
 
                     if (isMyTeam) {
@@ -5409,7 +5555,7 @@ class FlyingParticle {
         let isMyTeam = false;
         try {
             isMyTeam = multiplayerActive
-                ? lobby.players.find(p => p.id === myPlayerId)?.team === this.owner
+                ? getMyLobbyPlayer()?.team === this.owner
                 : this.owner === PLAYER;
         } catch (e) {
             isMyTeam = this.owner === PLAYER; // Fallback to single player check
@@ -5737,7 +5883,7 @@ function updateSelectionIndicator() {
 
 function selectAllPlayerPlanets() {
     const myTeam = multiplayerActive
-        ? lobby.players.find(p => p.id === myPlayerId)?.team
+        ? getMyLobbyPlayer()?.team
         : PLAYER;
     game.selectedPlanets = planets.filter(p => p.owner === myTeam && p.units >= 1);
     
@@ -5778,6 +5924,7 @@ function togglePlanetSelection(planet) {
 function generateLevel() {
     const settings = getAdaptiveAISettings();
     const numPlanets = settings.planets + Math.floor(game.level / 2);
+    resetBossState();
 
     planets = [];
     flyingParticles = [];
@@ -5875,6 +6022,13 @@ function generateLevel() {
         }
     }
 
+    // Every third campaign battle is a true multi-stage encounter: disable
+    // the shield generators, chase the moving mothership, then survive its
+    // enraged final phase. Later bosses also bend routes around a black hole.
+    if (game.mode === 'classic' && game.level % 3 === 0) {
+        configureBossEncounter(settings);
+    }
+
     // Apply upgrade: extra starting planets
     if (upgradeModifiers.extraStartPlanets > 0) {
         const neutralPlanets = planets.filter(p => p.owner === NEUTRAL && p.type !== 'blackhole');
@@ -5917,7 +6071,9 @@ function generateLevel() {
         document.getElementById('sendPercent').classList.remove('hidden');
     }
     
-    document.getElementById('levelInfo').textContent = `Level ${game.level} • ${game.difficulty.toUpperCase()} • ${game.mode.toUpperCase()}`;
+    document.getElementById('levelInfo').textContent = bossState.active
+        ? `BOSS ${Math.ceil(game.level / 3)} • PHASE 1 • BREAK THE GENERATORS`
+        : `Level ${game.level} • ${game.difficulty.toUpperCase()} • ${game.mode.toUpperCase()}`;
     updateAdaptiveIndicator();
     updateSelectionIndicator();
 
@@ -5930,6 +6086,113 @@ function generateLevel() {
     if (game.state === 'playing' && game.level === 1) {
         tutorial.start();
     }
+}
+
+function configureBossEncounter(settings) {
+    const mothership = [...planets].reverse().find(p => p.owner === ENEMY && p.type !== 'blackhole');
+    if (!mothership) return;
+
+    mothership.type = 'mothership';
+    mothership.typeData = PLANET_TYPES.mothership;
+    mothership.size = Math.max(58, mothership.size * 1.2);
+    mothership.maxUnits = Math.floor(mothership.size * 4.2);
+    mothership.units = Math.max(mothership.units, 70 + game.level * 7);
+    mothership.shielded = true;
+    mothership.shieldTime = Number.POSITIVE_INFINITY;
+
+    const candidates = planets
+        .filter(p => p !== mothership && p.owner === NEUTRAL && p.type !== 'blackhole')
+        .sort((a, b) => b.size - a.size)
+        .slice(0, 2);
+    for (const generator of candidates) {
+        generator.type = 'generator';
+        generator.typeData = PLANET_TYPES.generator;
+        generator.owner = ENEMY;
+        generator.units = Math.max(generator.units, 28 + game.level * 3);
+    }
+
+    if (game.level >= 6 && !planets.some(p => p.type === 'blackhole')) {
+        const hazard = planets.find(p => p.owner === NEUTRAL && p.type !== 'generator');
+        if (hazard) {
+            hazard.type = 'blackhole';
+            hazard.typeData = PLANET_TYPES.blackhole;
+            hazard.owner = NEUTRAL;
+            hazard.units = 0;
+        }
+    }
+
+    bossState.active = true;
+    bossState.phase = 1;
+    bossState.mothership = mothership;
+    bossState.generators = candidates;
+    bossState.moveAngle = Math.atan2(mothership.y - H / 2, mothership.x - W / 2);
+    bossState.reinforcementClock = 7;
+    document.getElementById('gameStatus').textContent = 'Capture both 🔋 generators to drop the mothership shield';
+}
+
+function updateBossEncounter(dt) {
+    if (!bossState.active || multiplayerActive || !bossState.mothership) return;
+    const ship = bossState.mothership;
+    const liveGenerators = bossState.generators.filter(p => p.owner === ENEMY);
+
+    if (bossState.phase === 1 && liveGenerators.length === 0) {
+        bossState.phase = 2;
+        ship.shielded = false;
+        ship.shieldTime = 0;
+        bossState.announcedShieldDown = true;
+        document.getElementById('levelInfo').textContent = `BOSS ${Math.ceil(game.level / 3)} • PHASE 2 • CHASE THE MOTHERSHIP`;
+        document.getElementById('gameStatus').textContent = 'Shield down! Attack the moving mothership';
+        showFloatText(W / 2, 110, 'SHIELD GRID DESTROYED!', '#ff0');
+        juice.shake(18, 350);
+        juice.burst(ship.x, ship.y, '#ff9f1c', 35, 180);
+    }
+
+    if (bossState.phase >= 2 && ship.owner === ENEMY) {
+        const speed = bossState.phase === 3 ? 0.42 : 0.26;
+        bossState.moveAngle += dt * speed;
+        const radiusX = Math.max(80, W * (bossState.phase === 3 ? 0.28 : 0.22));
+        const radiusY = Math.max(55, H * (bossState.phase === 3 ? 0.2 : 0.14));
+        const targetX = W / 2 + Math.cos(bossState.moveAngle) * radiusX;
+        const targetY = H / 2 + Math.sin(bossState.moveAngle * 1.35) * radiusY;
+        ship.x += (targetX - ship.x) * Math.min(1, dt * 1.8);
+        ship.y += (targetY - ship.y) * Math.min(1, dt * 1.8);
+
+        bossState.reinforcementClock -= dt;
+        if (bossState.reinforcementClock <= 0) {
+            bossState.reinforcementClock = bossState.phase === 3 ? 4.2 : 7;
+            ship.units = Math.min(ship.effectiveMaxUnits, ship.units + 8 + game.level);
+            const target = planets
+                .filter(p => p.owner === PLAYER && p.type !== 'blackhole')
+                .sort((a, b) => a.units - b.units)[0];
+            if (target && ship.units > 24) sendUnits(ship, target, bossState.phase === 3 ? 24 : 15);
+            showFloatText(ship.x, ship.y, bossState.phase === 3 ? 'DRONE SWARM!' : 'REINFORCEMENTS!', '#ff3d8d');
+        }
+    }
+}
+
+function interceptBossCapture(target, attacker) {
+    if (!bossState.active || target !== bossState.mothership || attacker !== PLAYER) return false;
+    if (bossState.phase === 1) {
+        target.units = Math.max(8, game.level * 2);
+        showFloatText(target.x, target.y, 'GENERATORS STILL ONLINE!', '#ff9f1c');
+        return true;
+    }
+    if (bossState.phase === 2) {
+        bossState.phase = 3;
+        target.owner = ENEMY;
+        target.units = 85 + game.level * 9;
+        target.size *= 1.08;
+        target.maxUnits = Math.floor(target.size * 4.5);
+        document.getElementById('levelInfo').textContent = `BOSS ${Math.ceil(game.level / 3)} • FINAL PHASE • CORE EXPOSED`;
+        document.getElementById('gameStatus').textContent = 'Final phase! Destroy the exposed command core';
+        showFloatText(W / 2, 110, 'CORE OVERLOAD — FINAL PHASE!', '#ff3d8d');
+        juice.flash('#ff3d8d', 0.45);
+        juice.shake(25, 500);
+        juice.burst(target.x, target.y, '#ff3d8d', 55, 240);
+        return true;
+    }
+    bossState.active = false;
+    return false;
 }
 
 function initBgParticles() {
@@ -6992,6 +7255,7 @@ function animate(time) {
             processPendingSends(dt);
 
             for (const planet of planets) planet.update(dt);
+            updateBossEncounter(dt);
             flyingParticles = flyingParticles.filter(p => p.update(dt));
             effects = effects.filter(e => e.update(dt));
 

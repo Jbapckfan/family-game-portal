@@ -16,7 +16,7 @@
     cursor: default;
     user-select: none; -webkit-user-select: none;
   }
-  canvas { display: block; position: absolute; top: 0; left: 0; }
+  canvas { display:block; position:absolute; top:0; left:0; transform:translateZ(0); will-change:transform; filter:saturate(1.24) contrast(1.08); }
 
   /* ── UI LAYER ── */
   #ui-layer { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10; }
@@ -211,7 +211,9 @@ const GRAVITY = 1650;
 const JUMP_FORCE = -560;
 const PLAYER_SIZE = 26;
 let PLAYER_SCREEN_X = 180;
-const GAMEPLAY_ZOOM = 1.2;
+// Close framing is part of the gameplay: a 26px physics cube reads at roughly
+// 40px on screen, matching the bold scale of a native rhythm platformer.
+const GAMEPLAY_ZOOM = 1.55;
 const JUMP_BUFFER_TIME = 0.08;
 const COYOTE_TIME = 0.055;
 const SHIP_UP_FORCE = -1850;
@@ -355,7 +357,8 @@ class Particle {
 class Particles {
   constructor(){this.p=[];}
   emit(x,y,n,cfg){
-    for(let i=0;i<n;i++){
+    const count=Math.min(n,Math.max(0,260-this.p.length));
+    for(let i=0;i<count;i++){
       const ang=cfg.ang+(Math.random()-0.5)*cfg.spread,spd=cfg.spd+Math.random()*cfg.spdV;
       this.p.push(new Particle(x+(Math.random()-0.5)*(cfg.area||0),y+(Math.random()-0.5)*(cfg.area||0),
         Math.cos(ang)*spd,Math.sin(ang)*spd,cfg.life+Math.random()*(cfg.lifeV||0),
@@ -1587,21 +1590,26 @@ function buildLevels() {
 // GAME ENGINE
 // ═══════════════════════════════════════════════════════
 const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d',{alpha:false,desynchronized:true});
 const audio = new AudioEngine();
 const particles = new Particles();
 const LEVELS = buildLevels().map(paceLevel);
 
 let W, H, groundY, ceilingY;
 // Cached static render layers (sky, vignette, parallax tiles) — rebuilt on resize/theme change
-const staticCache = { key:'', sky:null, vignette:null, parallax:null };
+const staticCache = { key:'', sky:null, lighting:null, vignette:null, parallax:null };
 function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = window.innerWidth; H = window.innerHeight;
+  // Retina 2x overdraw is the largest single cost on family iPads. 1.5x keeps
+  // edges crisp while cutting shaded pixels by 44%; large desktops use 1.75x.
+  const dprCap = W <= 1024 ? 1.5 : 1.75;
+  const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
   PLAYER_SCREEN_X = Math.min(200, Math.max(118, W * 0.28));
   canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'medium';
   groundY = H * 0.73;
   // Fixed-height gameplay arena: don't let tall viewports open free air above corridor obstacles
   ceilingY = Math.max(H * 0.05, groundY - 300);
@@ -1641,7 +1649,7 @@ const trail = [];
 let theme = THEMES[0];
 let currentWorld = WORLD_KITS.metro;
 let visualQuality = localStorage.getItem('cubejumper_fx') || 'full';
-let cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, targetY:0 };
+let cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, targetY:0, focusY:groundY, targetFocusY:groundY };
 let transitionFx = { amount:0, radius:0, color:'#ffffff', kind:'mode', direction:1 };
 let visualSection = -1;
 let sectionCue = 0;
@@ -1837,7 +1845,7 @@ function startGame() {
   audio.themeIdx = level.theme;
   beatPulse = 0;
   cameraX = 0; score = 0; gameTime = 0; deathFlash = 0; screenShake = 0;
-  cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, targetY:0 };
+  cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, targetY:0, focusY:groundY, targetFocusY:groundY };
   transitionFx = { amount:.82, radius:0, color:currentWorld.accent, kind:'start', direction:1 };
   visualSection = -1;
   sectionCue = 0;
@@ -2261,8 +2269,8 @@ function update(now) {
 
   if (state === 'playing' || state === 'dead') updateVisualDirector(rawDt);
 
-  if (screenShake>0) screenShake*=0.88;
-  if (deathFlash>0) deathFlash*=0.9;
+  if(screenShake>0)screenShake*=Math.exp(-rawDt*13);
+  if(deathFlash>0)deathFlash*=Math.exp(-rawDt*11);
   particles.update(Math.min(rawDt, 0.025));
   draw();
   requestAnimationFrame(update);
@@ -2298,8 +2306,8 @@ function stepPhysics(dt) {
     const dashMult = player.dashing ? DASH_SPEED_MULT : 1;
     cameraX += speed * dashMult * dt;
     score = Math.floor(cameraX / 8);
-    // Beat pulse decay
-    beatPulse *= 0.85;
+    // Time-based decay stays smooth and identical at every physics/render rate.
+    beatPulse *= Math.exp(-dt*8.5);
 
     if (jumpPressed) { jumpBufferTimer = JUMP_BUFFER_TIME; }
     if (jumpBufferTimer > 0) jumpBufferTimer -= dt;
@@ -2689,6 +2697,22 @@ function ensureStaticLayers() {
   bg.addColorStop(1,theme.ground);
   sctx.fillStyle = bg; sctx.fillRect(0,0,2,sky.height);
   staticCache.sky = sky;
+  // Expensive ambient gradients are rasterized once per world/viewport instead
+  // of being rebuilt every animation frame.
+  const lighting=document.createElement('canvas');
+  lighting.width=Math.max(2,Math.round(W));lighting.height=Math.max(2,Math.round(H));
+  const lctx=lighting.getContext('2d');
+  const lightRgb=hexToRgb(currentWorld.accent), lightRgb2=hexToRgb(currentWorld.secondary);
+  const lg1=lctx.createRadialGradient(W*.24,groundY*.34,0,W*.24,groundY*.34,H*.72);
+  lg1.addColorStop(0,`rgba(${lightRgb},.105)`);lg1.addColorStop(.42,`rgba(${lightRgb},.04)`);lg1.addColorStop(1,'rgba(0,0,0,0)');
+  lctx.fillStyle=lg1;lctx.fillRect(0,0,W,H);
+  const lg2=lctx.createRadialGradient(W*.78,groundY*.56,0,W*.78,groundY*.56,H*.58);
+  lg2.addColorStop(0,`rgba(${lightRgb2},.065)`);lg2.addColorStop(.5,`rgba(${lightRgb2},.018)`);lg2.addColorStop(1,'rgba(0,0,0,0)');
+  lctx.fillStyle=lg2;lctx.fillRect(0,0,W,H);
+  const horizon=lctx.createLinearGradient(0,groundY-105,0,groundY);
+  horizon.addColorStop(0,'rgba(0,0,0,0)');horizon.addColorStop(1,`rgba(${lightRgb},.09)`);
+  lctx.fillStyle=horizon;lctx.fillRect(0,groundY-105,W,105);
+  staticCache.lighting=lighting;
   // Vignette
   const vig = document.createElement('canvas');
   vig.width = Math.max(2, Math.round(W)); vig.height = Math.max(2, Math.round(H));
@@ -2876,9 +2900,10 @@ function drawWorldBackdrop(renderContext) {
       renderContext.fillRect(x,y,i%11===0?2.4:1.2,i%11===0?2.4:1.2);
     }
     const holeX=W*.79, holeY=groundY*.34, holeR=52+strongBeat*8;
-    const holeGlow=renderContext.createRadialGradient(holeX,holeY,holeR*.35,holeX,holeY,holeR*2.4);
-    holeGlow.addColorStop(0,'rgba(0,0,0,.98)');holeGlow.addColorStop(.3,'rgba(10,5,30,.98)');holeGlow.addColorStop(.52,'rgba(232,121,249,.2)');holeGlow.addColorStop(1,'rgba(0,0,0,0)');
-    renderContext.fillStyle=holeGlow;renderContext.globalAlpha=1;renderContext.fillRect(holeX-holeR*2.5,holeY-holeR*2.5,holeR*5,holeR*5);
+    renderContext.globalAlpha=1;
+    renderContext.fillStyle='rgba(232,121,249,.035)';renderContext.beginPath();renderContext.arc(holeX,holeY,holeR*2.4,0,Math.PI*2);renderContext.fill();
+    renderContext.fillStyle='rgba(96,165,250,.07)';renderContext.beginPath();renderContext.arc(holeX,holeY,holeR*1.72,0,Math.PI*2);renderContext.fill();
+    renderContext.fillStyle='rgba(7,4,19,.98)';renderContext.beginPath();renderContext.arc(holeX,holeY,holeR*.92,0,Math.PI*2);renderContext.fill();
     renderContext.save();renderContext.translate(holeX,holeY);renderContext.rotate(gameTime*.15);renderContext.scale(1,.34);renderContext.strokeStyle=`rgba(96,165,250,${.34+strongBeat*.2})`;renderContext.lineWidth=8;renderContext.beginPath();renderContext.arc(0,0,holeR*1.3,0,Math.PI*2);renderContext.stroke();renderContext.restore();
   } else {
     // Core Engine: layered panels, working pistons and the sleeping machine face.
@@ -2942,7 +2967,8 @@ function drawWorldSpike(renderContext, obs, sx, fromCeiling=false) {
   } else {
     renderContext.fillStyle='rgba(255,255,255,.16)';renderContext.beginPath();renderContext.moveTo(sx+obs.w*.28,base);renderContext.lineTo(mid,base+dir*obs.h*.72);renderContext.lineTo(mid+2,base);renderContext.closePath();renderContext.fill();
   }
-  renderContext.globalAlpha=.9;renderContext.strokeStyle=world.accent;renderContext.lineWidth=2;renderContext.beginPath();renderContext.moveTo(sx,base);renderContext.lineTo(mid,tipY);renderContext.lineTo(sx+obs.w,base);renderContext.closePath();renderContext.stroke();
+  renderContext.strokeStyle=world.accent;renderContext.lineWidth=7;renderContext.globalAlpha=.14;renderContext.beginPath();renderContext.moveTo(sx,base);renderContext.lineTo(mid,tipY);renderContext.lineTo(sx+obs.w,base);renderContext.closePath();renderContext.stroke();
+  renderContext.globalAlpha=.98;renderContext.lineWidth=2.25;renderContext.beginPath();renderContext.moveTo(sx,base);renderContext.lineTo(mid,tipY);renderContext.lineTo(sx+obs.w,base);renderContext.closePath();renderContext.stroke();
   renderContext.restore();
 }
 
@@ -2951,8 +2977,9 @@ function drawWorldBlock(renderContext, obs, sx) {
   renderContext.save();
   const grad=renderContext.createLinearGradient(sx,sy,sx+obs.w,sy+obs.h);
   grad.addColorStop(0,theme.obs[0]);grad.addColorStop(1,theme.obs[2]);renderContext.fillStyle=grad;renderContext.fillRect(sx,sy,obs.w,obs.h);
-  renderContext.fillStyle='rgba(3,5,12,.42)';renderContext.fillRect(sx+inset,sy+inset,obs.w-inset*2,obs.h-inset*2);
-  renderContext.strokeStyle=world.accent;renderContext.lineWidth=1.5;renderContext.globalAlpha=.72;renderContext.strokeRect(sx+.75,sy+.75,obs.w-1.5,obs.h-1.5);
+  renderContext.fillStyle='rgba(3,5,12,.28)';renderContext.fillRect(sx+inset,sy+inset,obs.w-inset*2,obs.h-inset*2);
+  renderContext.strokeStyle=world.accent;renderContext.lineWidth=7;renderContext.globalAlpha=.14;renderContext.strokeRect(sx+1,sy+1,obs.w-2,obs.h-2);
+  renderContext.lineWidth=2;renderContext.globalAlpha=.95;renderContext.strokeRect(sx+1,sy+1,obs.w-2,obs.h-2);
   if(world.material==='glass'){
     renderContext.fillStyle='rgba(255,255,255,.12)';renderContext.fillRect(sx+inset,sy+inset,Math.max(3,obs.w*.12),obs.h-inset*2);renderContext.fillStyle=world.secondary;renderContext.globalAlpha=.35+beatPulse*.28;renderContext.fillRect(sx+obs.w*.68,sy+inset,2,obs.h-inset*2);
   } else if(world.material==='steel'||world.material==='machine'){
@@ -3008,6 +3035,8 @@ function updateVisualDirector(dt) {
   cameraDirector.targetZoom=zoomShots[section]+beatPulse*.004-transitionFx.amount*.024;
   cameraDirector.targetRotation=rotationShots[section]*worldRotation+transitionFx.direction*transitionFx.amount*.009;
   cameraDirector.targetY=yShots[section]+Math.sin(gameTime*.45+section)*2;
+  const aerialMode=player.mode==='ship'||player.mode==='wave'||player.mode==='ufo';
+  cameraDirector.targetFocusY=aerialMode?(groundY+ceilingY)*.5:(player.gravFlipped?ceilingY:groundY);
   if(section!==visualSection){
     visualSection=section;
     if(section>0){sectionCue=1;screenShake=Math.max(screenShake,2.5);}
@@ -3016,6 +3045,7 @@ function updateVisualDirector(dt) {
   cameraDirector.zoom+=(cameraDirector.targetZoom-cameraDirector.zoom)*follow;
   cameraDirector.rotation+=(cameraDirector.targetRotation-cameraDirector.rotation)*follow;
   cameraDirector.y+=(cameraDirector.targetY-cameraDirector.y)*follow;
+  cameraDirector.focusY+=(cameraDirector.targetFocusY-cameraDirector.focusY)*(1-Math.exp(-dt*4.2));
   transitionFx.amount=Math.max(0,transitionFx.amount-dt*1.55);
   transitionFx.radius+=dt*(620+speed*.7);
   sectionCue=Math.max(0,sectionCue-dt*.72);
@@ -3038,7 +3068,7 @@ function drawPostEffects(renderContext) {
   if(world.id==='foundry'&&visualQuality==='full'){
     for(let i=0;i<5;i++){
       const y=groundY-35-i*28+Math.sin(gameTime*2+i)*6;
-      const hg=renderContext.createLinearGradient(0,y,0,y+20);hg.addColorStop(0,'rgba(249,115,22,0)');hg.addColorStop(.5,'rgba(249,115,22,.025)');hg.addColorStop(1,'rgba(249,115,22,0)');renderContext.fillStyle=hg;renderContext.fillRect(0,y,W,20);
+      renderContext.fillStyle=`rgba(249,115,22,${.009+i*.002})`;renderContext.fillRect(0,y,W,10);
     }
   }
   if((speedMult>1.05||player.dashing)&&visualQuality!=='low'){
@@ -3070,49 +3100,50 @@ function drawPostEffects(renderContext) {
 }
 
 function draw() {
+  // Render between fixed physics ticks instead of showing the last completed
+  // tick. This removes the tiny 120Hz stepping visible on 60/90/144Hz screens.
+  const physicsCameraX=cameraX, physicsPlayerY=player.y, physicsRotation=player.rotation, physicsGameTime=gameTime;
+  const renderLead=state==='playing'?Math.min(PHYSICS_DT,physicsAccum):0;
+  if(renderLead>0){
+    cameraX+=speed*(player.dashing?DASH_SPEED_MULT:1)*renderLead;
+    gameTime+=renderLead;
+    if(!player.grounded){
+      const ps=getPS();
+      player.y=Math.max(ceilingY,Math.min(groundY-ps,player.y+player.vy*renderLead));
+      if(player.mode==='cube'||player.mode==='robot')player.rotation+=6.8*renderLead*getGravDir();
+      else if(player.mode==='ball')player.rotation+=4*renderLead*getGravDir();
+      else if(player.mode==='ship'){
+        const target=Math.max(-.75,Math.min(.75,player.vy*.0012*getGravDir()));
+        player.rotation+=(target-player.rotation)*Math.min(1,10*renderLead);
+      }else if(player.mode==='ufo'){
+        const target=Math.max(-.45,Math.min(.45,player.vy*.0008*getGravDir()));
+        player.rotation+=(target-player.rotation)*Math.min(1,8*renderLead);
+      }
+    }
+  }
   ensureStaticLayers();
   ctx.save();
-  if (screenShake>0.5) ctx.translate((Math.random()-0.5)*screenShake,(Math.random()-0.5)*screenShake);
+  if(screenShake>0.5)ctx.translate(Math.sin(gameTime*61)*screenShake*.48,Math.cos(gameTime*47)*screenShake*.42);
   const zoomGameplay = state === 'playing' || state === 'dead';
   if (zoomGameplay) {
     ctx.save();
-    ctx.translate(PLAYER_SCREEN_X, groundY + cameraDirector.y);
+    ctx.translate(PLAYER_SCREEN_X, cameraDirector.focusY + cameraDirector.y);
     ctx.rotate(cameraDirector.rotation);
     ctx.scale(GAMEPLAY_ZOOM * cameraDirector.zoom, GAMEPLAY_ZOOM * cameraDirector.zoom);
-    ctx.translate(-PLAYER_SCREEN_X, -groundY);
+    ctx.translate(-PLAYER_SCREEN_X, -cameraDirector.focusY);
   }
 
   // ── PREMIUM BACKGROUND ──
   const bgRgb = hexToRgb(theme.accent);
-  const bg2Rgb = hexToRgb(theme.accent2);
-  const bg3Rgb = hexToRgb(theme.accent3);
 
   // Rich multi-stop gradient sky (cached offscreen, stretched to viewport)
   ctx.drawImage(staticCache.sky, 0, 0, W, H);
 
-  // Ambient color wash — two large overlapping radial glows
+  // Cached ambient lighting plus a cheap beat wash.
   if (state==='playing'||state==='dead') {
-    const bp = beatPulse * 0.03;
-    // Primary glow (accent color, left-center)
-    const g1=ctx.createRadialGradient(W*0.25,groundY*0.35,0,W*0.25,groundY*0.35,H*0.7);
-    g1.addColorStop(0,`rgba(${bgRgb},${0.06+bp})`);
-    g1.addColorStop(0.4,`rgba(${bgRgb},${0.025+bp*0.5})`);
-    g1.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
-    // Secondary glow (accent2, right-lower)
-    const g2=ctx.createRadialGradient(W*0.75,groundY*0.6,0,W*0.75,groundY*0.6,H*0.5);
-    g2.addColorStop(0,`rgba(${bg2Rgb},${0.035+bp})`);
-    g2.addColorStop(0.5,`rgba(${bg2Rgb},${0.012})`);
-    g2.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
-    // Horizon glow (warm band near ground)
-    const g3=ctx.createLinearGradient(0,groundY-80,0,groundY);
-    g3.addColorStop(0,'rgba(0,0,0,0)');
-    g3.addColorStop(1,`rgba(${bgRgb},0.04)`);
-    ctx.fillStyle=g3;ctx.fillRect(0,groundY-80,W,80);
-    // Beat flash overlay — subtle full-screen color pulse on beat
+    ctx.drawImage(staticCache.lighting,0,0,W,H);
     if (beatPulse > 0.3) {
-      ctx.fillStyle=`rgba(${bgRgb},${(beatPulse-0.3)*0.08})`;
+      ctx.fillStyle=`rgba(${bgRgb},${(beatPulse-0.3)*0.115})`;
       ctx.fillRect(0,0,W,groundY);
     }
   }
@@ -3135,7 +3166,9 @@ function draw() {
 
   // Bold ground line (GD signature)
   ctx.save();
-  ctx.strokeStyle=theme.accent; ctx.lineWidth=3; ctx.globalAlpha=0.8+beatPulse*0.2;
+  ctx.strokeStyle=theme.accent;ctx.lineWidth=12;ctx.globalAlpha=.12+beatPulse*.08;
+  ctx.beginPath();ctx.moveTo(0,groundY);ctx.lineTo(W,groundY);ctx.stroke();
+  ctx.strokeStyle=theme.accent; ctx.lineWidth=3.5; ctx.globalAlpha=0.9+beatPulse*0.1;
   ctx.beginPath();ctx.moveTo(0,groundY);ctx.lineTo(W,groundY);ctx.stroke();
   // Glow line on top
   ctx.strokeStyle=theme.glow; ctx.lineWidth=1; ctx.globalAlpha=0.4;
@@ -3426,14 +3459,17 @@ function draw() {
         // Glow
         ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
         for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.lineTo(PLAYER_SCREEN_X,player.y+ps/2);
         ctx.strokeStyle=`rgba(${rgb},0.15)`;ctx.lineWidth=ps*0.8;ctx.stroke();
         // Core
         ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
         for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.lineTo(PLAYER_SCREEN_X,player.y+ps/2);
         ctx.strokeStyle=`rgba(${rgb},0.5)`;ctx.lineWidth=2.5;ctx.stroke();
         // Bright center
         ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);
         for(let i=1;i<trail.length;i++) ctx.lineTo(trail[i].x,trail[i].y);
+        ctx.lineTo(PLAYER_SCREEN_X,player.y+ps/2);
         ctx.strokeStyle=`rgba(${trailRgb2},0.75)`;ctx.lineWidth=1.2;ctx.stroke();
         ctx.restore();
       } else {
@@ -3446,7 +3482,8 @@ function draw() {
         const prev = trail[i-1], curr = trail[i];
         ctx.quadraticCurveTo(prev.x, prev.y, (prev.x+curr.x)/2, (prev.y+curr.y)/2);
       }
-      ctx.lineTo(trail[trail.length-1].x, trail[trail.length-1].y);
+      const trailHead=trail[trail.length-1];
+      ctx.quadraticCurveTo(trailHead.x,trailHead.y,PLAYER_SCREEN_X,player.y+ps/2);
       // Outer glow
       ctx.strokeStyle = `rgba(${rgb},0.12)`;
       ctx.lineWidth = ps*0.9;
@@ -3498,11 +3535,12 @@ function draw() {
         ctx.strokeStyle=skin.detail;ctx.lineWidth=1.5;
         ctx.beginPath();ctx.moveTo(-ps/2,ps/2);ctx.lineTo(ps/2+3,0);ctx.lineTo(-ps/2,-ps/2);ctx.closePath();ctx.stroke();
         ctx.fillStyle='rgba(255,255,255,.16)';ctx.fillRect(-ps*.36,-ps*.28,ps*.09,ps*.42);
-        const flicker = 0.7+Math.random()*0.3;
+        const flicker = 0.82+Math.sin(gameTime*31)*0.18;
+        const flameLength = 10+Math.sin(gameTime*37+1.2)*3;
         ctx.fillStyle=`rgba(251,191,36,${0.6*flicker})`;
-        ctx.beginPath();ctx.moveTo(-ps/2,ps/4);ctx.lineTo(-ps/2-8-Math.random()*6,0);ctx.lineTo(-ps/2,-ps/4);ctx.closePath();ctx.fill();
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/4);ctx.lineTo(-ps/2-flameLength,0);ctx.lineTo(-ps/2,-ps/4);ctx.closePath();ctx.fill();
         ctx.fillStyle=`rgba(255,255,255,${0.35*flicker})`;
-        ctx.beginPath();ctx.moveTo(-ps/2,ps/6);ctx.lineTo(-ps/2-4-Math.random()*4,0);ctx.lineTo(-ps/2,-ps/6);ctx.closePath();ctx.fill();
+        ctx.beginPath();ctx.moveTo(-ps/2,ps/6);ctx.lineTo(-ps/2-flameLength*.56,0);ctx.lineTo(-ps/2,-ps/6);ctx.closePath();ctx.fill();
       }
       else if (player.mode === 'wave') {
         ctx.beginPath();ctx.moveTo(0,-ps/2);ctx.lineTo(ps/2+2,0);ctx.lineTo(0,ps/2);ctx.lineTo(-ps/2-2,0);ctx.closePath();ctx.fill();
@@ -3576,18 +3614,19 @@ function draw() {
         ctx.restore();
         // Rocket boost glow when jumping and holding
         if (player._robotJumping && jumpHeld) {
-          const fk = 0.7+Math.random()*0.3;
+          const fk = 0.82+Math.sin(gameTime*29)*0.18;
+          const boostLength = 15+Math.sin(gameTime*33+2)*4;
           ctx.fillStyle=`rgba(251,191,36,${0.6*fk})`;
           const flameDir = player.gravFlipped ? -1 : 1;
           ctx.beginPath();
           ctx.moveTo(-bw/4, (bh/2+3)*flameDir);
-          ctx.lineTo(0, (bh/2+12+Math.random()*8)*flameDir);
+          ctx.lineTo(0, (bh/2+boostLength)*flameDir);
           ctx.lineTo(bw/4, (bh/2+3)*flameDir);
           ctx.closePath(); ctx.fill();
           ctx.fillStyle=`rgba(255,255,255,${0.35*fk})`;
           ctx.beginPath();
           ctx.moveTo(-bw/6, (bh/2+3)*flameDir);
-          ctx.lineTo(0, (bh/2+7+Math.random()*5)*flameDir);
+          ctx.lineTo(0, (bh/2+boostLength*.6)*flameDir);
           ctx.lineTo(bw/6, (bh/2+3)*flameDir);
           ctx.closePath(); ctx.fill();
         }
@@ -3595,98 +3634,18 @@ function draw() {
         ctx.strokeRect(-bw/2, -bh/2-2, bw, bh);
       }
 
-      // Eye — alive, curious, looks around, natural blinks
-      {
-        const eyeFlip = player.gravFlipped ? 1 : -1;
-        const eyeCX = 2, eyeCY = eyeFlip * 1;
-
-        // ── Idle gaze: pupil wanders around on its own using layered sine waves ──
-        const gazeX = Math.sin(gameTime*0.9)*1.2 + Math.sin(gameTime*1.7)*0.6 + Math.cos(gameTime*0.4)*0.4;
-        const gazeY = Math.cos(gameTime*0.7)*0.8 + Math.sin(gameTime*1.3)*0.5;
-
-        // ── Reactive look: velocity shifts pupil ──
-        const velLookX = player.dashing ? 2.5 : 0.8;
-        const velLookY = Math.max(-2.5, Math.min(2.5, player.vy / 200)) * (player.gravFlipped ? -1 : 1);
-
-        // Combine idle gaze + velocity reaction (velocity dominates when moving fast)
-        const velWeight = Math.min(1, Math.abs(player.vy) / 300);
-        const finalLookX = gazeX * (1 - velWeight*0.5) + velLookX;
-        const finalLookY = gazeY * (1 - velWeight) + velLookY * velWeight;
-
-        // ── Natural blink system: irregular double-blinks ──
-        // Use multiple sine waves so blinks feel random, not metronomic
-        const blinkSignal = Math.sin(gameTime*0.8) + Math.sin(gameTime*1.3) + Math.sin(gameTime*2.1);
-        const isBlink1 = blinkSignal > 2.65; // primary blink
-        const isBlink2 = Math.sin(gameTime*0.8+0.25) + Math.sin(gameTime*1.3+0.25) + Math.sin(gameTime*2.1+0.25) > 2.75; // occasional double-blink
-        const isBlinking = isBlink1 || isBlink2;
-
-        // Smooth eyelid position (0=open, 1=closed) for fluid animation
-        const blinkTarget = isBlinking ? 1 : 0;
-        if (typeof player._eyeLid === 'undefined') player._eyeLid = 0;
-        player._eyeLid += (blinkTarget - player._eyeLid) * 0.35; // smooth interpolation
-        const lid = player._eyeLid;
-        const squish = Math.max(0.05, 1 - lid * 0.95);
-
-        // Widen when surprised (airborne or dashing)
-        const surprise = player.dashing ? 1.2 : (!player.grounded ? 1.08 : 1.0);
-        const eyeR = 5.2 * surprise;
-        const pupilR = 2.6 * surprise;
-
-        // Clamp pupil inside sclera
-        const maxOff = eyeR - pupilR - 0.8;
-        const rawPX = eyeCX + finalLookX;
-        const rawPY = eyeCY + finalLookY;
-        const dist = Math.sqrt((rawPX-eyeCX)**2 + (rawPY-eyeCY)**2);
-        const clamp = dist > maxOff ? maxOff/dist : 1;
-        const pupilX = eyeCX + (rawPX-eyeCX)*clamp + (player.dashing?Math.sin(gameTime*22)*0.4:0);
-        const pupilY = eyeCY + (rawPY-eyeCY)*clamp;
-
-        ctx.save();
-
-        // Sclera
-        ctx.fillStyle = 'rgba(255,255,255,0.93)';
-        ctx.beginPath();
-        ctx.ellipse(eyeCX, eyeCY, eyeR, eyeR * squish, 0, 0, 6.28);
-        ctx.fill();
-
-        if (lid < 0.85) {
-          // Iris ring
-          ctx.fillStyle = skin.primary; ctx.globalAlpha = 0.25;
-          ctx.beginPath();
-          ctx.ellipse(pupilX, pupilY, pupilR+1, (pupilR+1)*squish, 0, 0, 6.28);
-          ctx.fill(); ctx.globalAlpha = 1;
-
-          // Pupil
-          ctx.fillStyle = '#0a0a12';
-          ctx.beginPath();
-          ctx.ellipse(pupilX, pupilY, pupilR, pupilR*squish, 0, 0, 6.28);
-          ctx.fill();
-
-          // Big specular highlight (tracks opposite of look direction for realism)
-          ctx.fillStyle = 'rgba(255,255,255,0.8)';
-          ctx.beginPath();
-          ctx.arc(pupilX - finalLookX*0.3 - 0.8, pupilY - 1.5, 1.4, 0, 6.28);
-          ctx.fill();
-
-          // Small secondary highlight
-          ctx.fillStyle = 'rgba(255,255,255,0.35)';
-          ctx.beginPath();
-          ctx.arc(pupilX + 1.5, pupilY + 1, 0.6, 0, 6.28);
-          ctx.fill();
-        }
-
-        // Top eyelid (closes from above, like a real blink)
-        if (lid > 0.05) {
-          const lidY = eyeCY - eyeR*squish + eyeR*2*squish*lid*0.55;
-          ctx.fillStyle = skin.primary;
-          ctx.globalAlpha = 0.25 * lid;
-          ctx.beginPath();
-          ctx.ellipse(eyeCX, eyeCY - eyeR*squish*0.1, eyeR*1.1, eyeR*squish*0.65, 0, Math.PI+0.3, Math.PI*2-0.3);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-
-        ctx.restore();
+      // Crisp geometric faces read at speed; cockpit forms keep their own
+      // silhouettes instead of sharing the old cartoon eyeball overlay.
+      ctx.shadowBlur=0;
+      if(player.mode==='cube'&&skin.pattern!=='eyes'){
+        const eyeY=player.gravFlipped?2:-4;
+        ctx.fillStyle=skin.detail;
+        ctx.beginPath();ctx.moveTo(-8,eyeY-3);ctx.lineTo(-2,eyeY-2);ctx.lineTo(-3,eyeY+4);ctx.lineTo(-8,eyeY+3);ctx.closePath();ctx.fill();
+        ctx.beginPath();ctx.moveTo(2,eyeY-2);ctx.lineTo(8,eyeY-3);ctx.lineTo(8,eyeY+3);ctx.lineTo(3,eyeY+4);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#070912';ctx.fillRect(-5,eyeY-1,2,4);ctx.fillRect(4,eyeY-1,2,4);
+      }else if(player.mode==='robot'){
+        ctx.fillStyle=skin.detail;ctx.fillRect(-7,-4,5,3);ctx.fillRect(2,-4,5,3);
+        ctx.fillStyle='#070912';ctx.fillRect(-5,-4,2,3);ctx.fillRect(4,-4,2,3);
       }
 
       ctx.restore();
@@ -3701,9 +3660,10 @@ function draw() {
         // Speed lines
         ctx.strokeStyle=`rgba(45,212,191,${0.4*dAlpha})`; ctx.lineWidth=2;
         for(let sl=0;sl<6;sl++){
-          const slx=px-30-sl*18-Math.random()*10;
+          const slx=px-30-sl*18-Math.sin(gameTime*17+sl)*5;
           const sly=py+ps/2+(sl-2.5)*8;
-          ctx.beginPath();ctx.moveTo(slx,sly);ctx.lineTo(slx-25-Math.random()*15,sly);ctx.stroke();
+          const lineLength=31+Math.sin(gameTime*13+sl*1.7)*6;
+          ctx.beginPath();ctx.moveTo(slx,sly);ctx.lineTo(slx-lineLength,sly);ctx.stroke();
         }
       }
     }
@@ -3743,6 +3703,10 @@ function draw() {
   ctx.drawImage(staticCache.vignette, 0, 0, W, H);
 
   ctx.restore();
+  cameraX=physicsCameraX;
+  player.y=physicsPlayerY;
+  player.rotation=physicsRotation;
+  gameTime=physicsGameTime;
 }
 
 requestAnimationFrame(update);

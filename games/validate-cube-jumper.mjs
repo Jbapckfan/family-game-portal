@@ -85,7 +85,21 @@ const levels = new Function(`${definitions}; return buildLevels().map(paceLevel)
 const zoom = Number(html.match(/const GAMEPLAY_ZOOM = ([\d.]+);/)?.[1]);
 
 if (levels.length !== 18) throw new Error(`Expected 18 levels, found ${levels.length}.`);
-if (!(zoom >= 1.15 && zoom <= 1.3)) throw new Error(`Gameplay zoom ${zoom} is outside the safe range.`);
+if (!(zoom >= 1.45 && zoom <= 1.65)) throw new Error(`Gameplay zoom ${zoom} is not close enough for bold native-game framing.`);
+if (!html.includes("{alpha:false,desynchronized:true}") || !html.includes('const dprCap = W <= 1024 ? 1.5 : 1.75')) {
+  throw new Error('The low-latency canvas or adaptive Retina pixel budget is missing.');
+}
+if (!html.includes("const renderLead=state==='playing'?Math.min(PHYSICS_DT,physicsAccum):0") ||
+    !html.includes('cameraX+=speed*(player.dashing?DASH_SPEED_MULT:1)*renderLead')) {
+  throw new Error('Sub-frame camera/player interpolation is missing.');
+}
+if (!html.includes("cameraDirector.targetFocusY=aerialMode?(groundY+ceilingY)*.5") ||
+    !html.includes('cameraDirector.focusY + cameraDirector.y')) {
+  throw new Error('Close framing is missing its smooth gravity/aerial vertical camera follow.');
+}
+if (!html.includes('staticCache.lighting=lighting') || !html.includes('260-this.p.length')) {
+  throw new Error('Cached lighting or the particle performance ceiling is missing.');
+}
 const unmappedLevels = levels.filter(level => !worldByLevel[level.name]);
 if (unmappedLevels.length) {
   throw new Error(`Levels missing an authored visual world: ${unmappedLevels.map(level => level.name).join(', ')}.`);

@@ -36,6 +36,41 @@ if (!html.includes('skin:selectedCubeSkin') || !html.includes('drawCubeSkin(ctx,
   throw new Error('Cube skin persistence or gameplay rendering is not connected.');
 }
 
+const worldsStart = html.indexOf('const WORLD_KITS =');
+const worldsEnd = html.indexOf('const LEVEL_DIFFICULTY', worldsStart);
+if (worldsStart < 0 || worldsEnd < 0) throw new Error('Could not isolate the authored visual worlds.');
+const worldDefinitions = html.slice(worldsStart, worldsEnd);
+const { WORLD_KITS: visualWorlds, WORLD_BY_LEVEL: worldByLevel } = new Function(
+  `${worldDefinitions}; return { WORLD_KITS, WORLD_BY_LEVEL };`,
+)();
+const requiredWorlds = ['metro', 'foundry', 'glacier', 'jungle', 'rift', 'engine'];
+if (Object.keys(visualWorlds).length !== requiredWorlds.length || requiredWorlds.some(id => !visualWorlds[id])) {
+  throw new Error(`Expected the six authored visual worlds: ${requiredWorlds.join(', ')}.`);
+}
+for (const [id, world] of Object.entries(visualWorlds)) {
+  if (world.id !== id || !world.name || !world.tagline || !world.material) {
+    throw new Error(`Visual world ${id} is missing authored presentation data.`);
+  }
+  for (const color of [world.accent, world.secondary, world.deep, world.sky]) {
+    if (!/^#[0-9a-f]{6}$/i.test(color)) throw new Error(`${world.name} has an invalid color: ${color}.`);
+  }
+}
+
+const visualSystems = [
+  'drawWorldBackdrop', 'drawWorldGround', 'drawWorldSpike', 'drawWorldBlock',
+  'drawWorldSetPiece', 'updateVisualDirector', 'drawPostEffects',
+  'triggerVisualTransition', 'drawLevelIntro',
+];
+for (const system of visualSystems) {
+  if (!html.includes(`function ${system}(`)) throw new Error(`The ${system} visual system is missing.`);
+}
+for (const mode of ['ship', 'wave', 'ball', 'ufo', 'robot']) {
+  if (!html.includes(`player.mode === '${mode}'`)) throw new Error(`The upgraded ${mode} form is missing.`);
+}
+if (!html.includes('const skin=getSelectedCubeSkin()') || !html.includes('const trailSkin = getSelectedCubeSkin()')) {
+  throw new Error('Equipped skin colors are not connected across player forms and trails.');
+}
+
 const definitionsStart = html.indexOf('const LEVEL_DISTANCE_SCALE');
 const definitionsEnd = html.indexOf(
   '// ═══════════════════════════════════════════════════════\n// GAME ENGINE',
@@ -51,6 +86,12 @@ const zoom = Number(html.match(/const GAMEPLAY_ZOOM = ([\d.]+);/)?.[1]);
 
 if (levels.length !== 18) throw new Error(`Expected 18 levels, found ${levels.length}.`);
 if (!(zoom >= 1.15 && zoom <= 1.3)) throw new Error(`Gameplay zoom ${zoom} is outside the safe range.`);
+const unmappedLevels = levels.filter(level => !worldByLevel[level.name]);
+if (unmappedLevels.length) {
+  throw new Error(`Levels missing an authored visual world: ${unmappedLevels.map(level => level.name).join(', ')}.`);
+}
+const worldUsage = new Set(levels.map(level => worldByLevel[level.name]));
+if (requiredWorlds.some(id => !worldUsage.has(id))) throw new Error('Every authored visual world must be used by the campaign.');
 
 const gaps = [];
 let rapidTapRings = 0;
@@ -178,6 +219,6 @@ const p90Gap = gaps[Math.floor(gaps.length * 0.9)];
 const speeds = levels.map(level => level.speed);
 
 console.log(
-  `Geometry Dash validated: ${levels.length} levels, ${skins.length} persistent cube skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
+  `Geometry Dash validated: ${levels.length} levels across ${worldUsage.size} authored worlds, ${skins.length} persistent multi-form skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
   `${rapidTapRings} rapid-tap rings, ${gravityLaneIds.size} gravity lanes, median gap ${medianGap}px, 90th-percentile gap ${p90Gap}px, zoom ${zoom}×.`,
 );

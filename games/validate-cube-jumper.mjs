@@ -36,6 +36,48 @@ if (!html.includes('skin:selectedCubeSkin') || !html.includes('drawCubeSkin(ctx,
   throw new Error('Cube skin persistence or gameplay rendering is not connected.');
 }
 
+const songsStart = html.indexOf('const WORLD_SONGS =');
+const songsEnd = html.indexOf('const noteRatio', songsStart);
+if (songsStart < 0 || songsEnd < 0) throw new Error('Could not isolate the adaptive world scores.');
+const songDefinitions = html.slice(songsStart, songsEnd);
+const songs = new Function(`${songDefinitions}; return WORLD_SONGS;`)();
+const songTitles = new Set(Object.values(songs).map(song => song.title));
+if (Object.keys(songs).length !== 6 || songTitles.size !== 6) {
+  throw new Error('Expected six uniquely titled original world scores.');
+}
+for (const [worldId, song] of Object.entries(songs)) {
+  if (!(song.bpm >= 130 && song.bpm <= 170) || !Number.isFinite(song.root)) {
+    throw new Error(`${worldId} has an invalid tempo or root note.`);
+  }
+  if (song.bass.length !== 16 || song.lead.length !== 16 || song.chords.length < 4) {
+    throw new Error(`${song.title} needs full 16-step bass/lead arrangements and four chord changes.`);
+  }
+}
+if (!html.includes('getAdaptiveMusicEnergy()') || !html.includes('1+Math.floor(energy*3.99)') ||
+    !html.includes("player.mode==='ship'") || !html.includes('audio.seek(gameTime)')) {
+  throw new Error('Adaptive score layers, performance voices, or beat-accurate seeking are not connected.');
+}
+
+const coachingSystems = [
+  'captureRunCheckpoint', 'restoreRunCheckpoint', 'recordRunFrame', 'analyzeDeath',
+  'applyReplayFrame', 'beginDeathReplay', 'updateDeathReplay', 'drawReplayGuides',
+  'startFocusPractice', 'restartFocusSection', 'completeFocusPractice',
+];
+for (const system of coachingSystems) {
+  if (!html.includes(`function ${system}(`)) throw new Error(`The ${system} coaching system is missing.`);
+}
+if (!html.includes('while(runHistory.length>360)') || !html.includes("dt*.46/PHYSICS_DT") ||
+    !html.includes("fillText('IDEAL TAP'") || !html.includes("fillText('YOUR TAP'")) {
+  throw new Error('The bounded slow-motion coaching replay or its timing comparison is missing.');
+}
+if (!html.includes('triggered:level.obstacles.map') || !html.includes('collected:level.orbs.map') ||
+    !html.includes('Practice This Section') || !html.includes('Focus practice')) {
+  throw new Error('Exact-state one-tap section practice is not connected.');
+}
+if (html.includes('setTimeout(() => startGame(), 800)')) {
+  throw new Error('Normal deaths still auto-restart before the player can use the replay coach.');
+}
+
 const worldsStart = html.indexOf('const WORLD_KITS =');
 const worldsEnd = html.indexOf('const LEVEL_DIFFICULTY', worldsStart);
 if (worldsStart < 0 || worldsEnd < 0) throw new Error('Could not isolate the authored visual worlds.');
@@ -233,6 +275,6 @@ const p90Gap = gaps[Math.floor(gaps.length * 0.9)];
 const speeds = levels.map(level => level.speed);
 
 console.log(
-  `Geometry Dash validated: ${levels.length} levels across ${worldUsage.size} authored worlds, ${skins.length} persistent multi-form skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
+  `Geometry Dash validated: ${levels.length} levels across ${worldUsage.size} authored worlds, ${Object.keys(songs).length} adaptive scores, slow-motion replay coaching, exact-state focus practice, ${skins.length} persistent multi-form skins, speeds ${Math.min(...speeds)}–${Math.max(...speeds)}px/s, ` +
   `${rapidTapRings} rapid-tap rings, ${gravityLaneIds.size} gravity lanes, median gap ${medianGap}px, 90th-percentile gap ${p90Gap}px, zoom ${zoom}×.`,
 );

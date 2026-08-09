@@ -26,6 +26,7 @@
   #attempt-display { position:absolute; top:44px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.2); display:none; opacity:0; animation:fadeInAtt 0.8s ease-out forwards; }
   @keyframes fadeInAtt { 0%{opacity:0;transform:translateY(-6px)} 100%{opacity:1;transform:translateY(0)} }
   #mode-display { position:absolute; top:64px; right:32px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.3); display:none; }
+  #music-display { position:absolute; top:84px; right:32px; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; color:rgba(255,255,255,.3); display:none; text-align:right; }
   #practice-indicator { position:absolute; top:44px; left:32px; font-size:11px; font-weight:600; letter-spacing:3px; color:#4ade80; display:none; }
   #percent-display { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:13px; letter-spacing:3px; color:rgba(255,255,255,0.3); display:none; }
   #back-btn { position:absolute; top:16px; left:16px; z-index:30; pointer-events:all; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); font-family:'Outfit',sans-serif; font-size:13px; padding:8px 16px; border-radius:8px; cursor:pointer; backdrop-filter:blur(8px); transition:all 0.3s; display:none; }
@@ -35,6 +36,16 @@
   #sound-btn { right:16px; }
   #pause-btn:hover,#sound-btn:hover { border-color:rgba(192,132,252,.5); background:rgba(192,132,252,.15); }
   #pause-screen { background:radial-gradient(ellipse at 50% 45%,rgba(34,18,58,.9),rgba(7,7,12,.97)); backdrop-filter:blur(10px); }
+  #coach-panel { position:absolute; z-index:24; left:50%; bottom:max(28px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(620px,calc(100vw - 28px)); padding:20px 22px; border-radius:20px; border:1px solid color-mix(in srgb,var(--coach-accent,#60a5fa) 52%,transparent); background:linear-gradient(145deg,rgba(7,9,18,.96),color-mix(in srgb,var(--coach-accent,#60a5fa) 12%,rgba(7,9,18,.96))); box-shadow:0 24px 70px rgba(0,0,0,.52),0 0 32px color-mix(in srgb,var(--coach-accent,#60a5fa) 15%,transparent); backdrop-filter:blur(18px); pointer-events:all; }
+  #coach-panel.hidden { display:none; }
+  .coach-kicker { font:700 9px 'Space Mono',monospace; letter-spacing:3px; color:var(--coach-accent); text-transform:uppercase; margin-bottom:6px; }
+  .coach-title { font-size:clamp(22px,4vw,34px); font-weight:800; letter-spacing:2px; text-transform:uppercase; }
+  .coach-detail { margin-top:7px; color:rgba(255,255,255,.62); font-size:13px; letter-spacing:1px; line-height:1.45; }
+  .coach-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .coach-action { min-height:44px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.055); color:#fff; padding:10px 17px; font:700 10px 'Space Mono',monospace; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; }
+  .coach-action.primary { border-color:var(--coach-accent); background:color-mix(in srgb,var(--coach-accent) 18%,transparent); }
+  #replay-status { position:absolute; z-index:17; left:50%; top:78px; transform:translateX(-50%); display:none; color:#fff; font:700 10px 'Space Mono',monospace; letter-spacing:3px; text-transform:uppercase; text-shadow:0 2px 10px #000; pointer-events:none; }
+  #focus-status { position:absolute; z-index:17; left:50%; top:52px; transform:translateX(-50%); display:none; padding:7px 13px; border-radius:999px; border:1px solid rgba(74,222,128,.42); background:rgba(5,20,13,.78); color:#86efac; font:700 9px 'Space Mono',monospace; letter-spacing:2px; text-transform:uppercase; pointer-events:none; }
   .pause-title { font-size:clamp(36px,8vw,72px); letter-spacing:9px; font-weight:800; color:#c084fc; text-shadow:0 0 28px rgba(192,132,252,.38); margin-bottom:8px; }
   .pause-copy { color:rgba(255,255,255,.5); letter-spacing:3px; font-size:12px; margin-bottom:26px; }
 
@@ -128,6 +139,7 @@
     #score-display { top:72px; right:16px; }
     #attempt-display { top:94px; right:16px; }
     #mode-display { top:114px; right:16px; }
+    #music-display { top:134px; right:16px; max-width:190px; }
     #level-name-hud { top:76px; left:16px; }
     #practice-indicator { top:98px; left:16px; }
     .controls-hint { bottom:max(20px,env(safe-area-inset-bottom)); padding:0 18px; text-align:center; line-height:1.5; }
@@ -157,8 +169,21 @@
   <div id="score-display">0000</div>
   <div id="attempt-display">ATT 1</div>
   <div id="mode-display"></div>
+  <div id="music-display"></div>
   <div id="practice-indicator">PRACTICE</div>
   <div id="percent-display">0%</div>
+</div>
+<div id="replay-status">Slow-motion coaching replay</div>
+<div id="focus-status">Focus practice</div>
+<div id="coach-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="coach-title">
+  <div class="coach-kicker" id="coach-kicker">Run Coach</div>
+  <div class="coach-title" id="coach-title">Timing Review</div>
+  <div class="coach-detail" id="coach-detail"></div>
+  <div class="coach-actions">
+    <button class="coach-action primary" id="coach-practice">Practice This Section</button>
+    <button class="coach-action" id="coach-replay">Watch Again</button>
+    <button class="coach-action" id="coach-retry">Retry Level</button>
+  </div>
 </div>
 <button id="back-btn" onclick="window.location.href='../index.html'">Menu</button>
 <button id="pause-btn" aria-label="Pause game">Ⅱ</button>
@@ -239,15 +264,22 @@ const CUBE_SKINS = [
 ];
 
 // ── MUSIC SYSTEM ──
-// Minor pentatonic scale ratios from root
-const PENTA = [1, 1.189, 1.335, 1.498, 1.782];
-// Root frequencies per theme (bass octave)
-const MUSIC_ROOTS = [130.81, 146.83, 164.81, 196.00, 110.00, 174.61, 146.83, 123.47, 164.81, 130.81, 138.59, 155.56, 146.83, 116.54, 164.81];
+// Six original 16-step arrangements. Bass, lead and chord stems enter as the
+// run builds energy, while each player form adds its own performance voice.
+const WORLD_SONGS = {
+  metro:{title:'Midnight Circuit',bpm:148,root:110,bassWave:'sawtooth',leadWave:'square',bass:[0,null,0,null,7,null,3,null,0,null,10,null,7,null,3,null],lead:[12,15,19,15,17,15,12,10,12,15,22,19,17,15,12,7],chords:[[0,3,7],[5,8,12],[3,7,10],[7,10,14]]},
+  foundry:{title:'Pressure Hammer',bpm:142,root:98,bassWave:'square',leadWave:'sawtooth',bass:[0,null,0,1,3,null,0,null,7,null,6,null,3,1,0,null],lead:[12,12,15,17,12,10,8,7,12,15,19,17,15,12,10,8],chords:[[0,3,7],[1,5,8],[3,7,10],[6,10,13]]},
+  glacier:{title:'Aurora Fracture',bpm:136,root:123.47,bassWave:'triangle',leadWave:'sine',bass:[0,null,7,null,5,null,3,null,0,null,10,null,7,null,5,null],lead:[12,19,17,15,14,17,22,19,12,15,17,19,24,22,19,17],chords:[[0,4,7],[5,9,12],[3,7,10],[7,11,14]]},
+  jungle:{title:'Heartwood Pulse',bpm:150,root:110,bassWave:'triangle',leadWave:'square',bass:[0,null,3,0,7,null,5,3,0,null,10,7,5,null,3,0],lead:[12,15,17,19,17,15,12,10,12,17,19,22,19,17,15,12],chords:[[0,3,7],[3,7,10],[5,8,12],[7,10,14]]},
+  rift:{title:'Event Horizon',bpm:154,root:92.5,bassWave:'sawtooth',leadWave:'triangle',bass:[0,null,0,6,7,null,3,null,0,10,7,null,6,3,1,null],lead:[12,13,19,18,15,22,19,13,12,18,24,22,19,18,15,13],chords:[[0,1,7],[6,10,13],[3,7,13],[1,7,10]]},
+  engine:{title:'Maximum Torque',bpm:146,root:103.83,bassWave:'square',leadWave:'square',bass:[0,0,null,3,0,7,null,6,0,0,10,null,7,6,3,1],lead:[12,12,15,19,17,15,12,10,12,15,22,19,17,15,13,10],chords:[[0,3,7],[3,6,10],[5,8,12],[7,10,13]]},
+};
+const noteRatio=semitones=>Math.pow(2,semitones/12);
 
 // ── AUDIO ENGINE ──
 let gameMuted = localStorage.getItem('cubejumper_muted') === '1';
 class AudioEngine {
-  constructor() { this.ctx=null; this.on=false; this.bpm=130; this.beatInterval=60/this.bpm; this.lastBeat=0; this.beatN=0; this.themeIdx=0; }
+  constructor() { this.ctx=null; this.on=false; this.bpm=148; this.baseBpm=148; this.beatInterval=60/this.bpm; this.lastBeat=0; this.beatN=0; this.song=WORLD_SONGS.metro; }
   init() {
     if(this.on) return;
     this.ctx=new(window.AudioContext||window.webkitAudioContext)();
@@ -264,14 +296,26 @@ class AudioEngine {
     this.bpm = Math.max(95, Math.min(210, bpm));
     this.beatInterval = 60 / this.bpm;
   }
-  syncToSpeed(currentSpeed){
-    this.setBpm(SPEED_BPM_BASE * (currentSpeed / 240));
+  setSong(worldId,levelIndex=0){
+    this.song=WORLD_SONGS[worldId]||WORLD_SONGS.metro;
+    this.baseBpm=this.song.bpm+(levelIndex%3)*3;
+    this.setBpm(this.baseBpm);
+  }
+  syncToSpeed(currentSpeed,referenceSpeed=currentSpeed){
+    this.setBpm(this.baseBpm*(currentSpeed/Math.max(1,referenceSpeed)));
   }
   tone(freq,type,vol,dur,ramp=0){
     if(!this.ctx||gameMuted)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();
     o.type=type;o.frequency.setValueAtTime(freq,t);if(ramp)o.frequency.exponentialRampToValueAtTime(ramp,t+dur*0.8);
     g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
     o.connect(g);g.connect(this.master);g.connect(this.rev);o.start(t);o.stop(t+dur+0.01);
+  }
+  noise(vol=.04,dur=.025,cutoff=6500){
+    if(!this.ctx||gameMuted)return;const t=this.ctx.currentTime;
+    const source=this.ctx.createBufferSource(),buffer=this.ctx.createBuffer(1,Math.max(1,Math.floor(this.ctx.sampleRate*dur)),this.ctx.sampleRate),data=buffer.getChannelData(0);
+    for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.2);
+    source.buffer=buffer;const filter=this.ctx.createBiquadFilter(),gain=this.ctx.createGain();filter.type='highpass';filter.frequency.value=cutoff;gain.gain.setValueAtTime(vol,t);gain.gain.exponentialRampToValueAtTime(.001,t+dur);
+    source.connect(filter);filter.connect(gain);gain.connect(this.master);source.start(t);
   }
   jump(){ this.tone(480,'sine',0.22,0.12,820); this.tone(520,'triangle',0.08,0.08,700); }
   land(){ this.tone(200,'sine',0.12,0.08); }
@@ -293,34 +337,17 @@ class AudioEngine {
   dash(){ this.tone(400,'sawtooth',0.15,0.15,800); this.tone(600,'sine',0.12,0.1,1200); this.tone(800,'triangle',0.06,0.08); }
   musicBeat(n){
     if(!this.ctx)return;
-    const root=MUSIC_ROOTS[this.themeIdx]||130.81;
-    // Bass: every 4th beat, alternating root and 5th
-    if(n>=4 && n%4===0){
-      const bassF=root*(n%8<4?1:1.498);
-      this.tone(bassF,'sine',0.16,0.3);
-      this.tone(bassF*0.5,'sine',0.06,0.25); // sub bass
-    }
-    // Arp: every beat after beat 12, cycling pentatonic
-    if(n>=12){
-      const arpF=root*2*PENTA[n%5];
-      this.tone(arpF,'triangle',0.05,0.12);
-    }
-    // Melody: every 8th beat after beat 24
-    if(n>=24 && n%8===0){
-      const melF=root*4*PENTA[Math.floor(n/8)%5];
-      this.tone(melF,'sine',0.07,0.4);
-    }
-    // Chord stabs every 16 beats after beat 32
-    if(n>=32 && n%16===0){
-      [1,1.189,1.498].forEach(r=>this.tone(root*2*r,'triangle',0.03,0.45));
-    }
-    // Hi-hat pattern after beat 8
-    if(n>=8 && n%2===0){
-      if(!this.ctx)return;const t=this.ctx.currentTime;
-      const ns=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*0.02,this.ctx.sampleRate),d=b.getChannelData(0);
-      for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;ns.buffer=b;const hg=this.ctx.createGain();hg.gain.setValueAtTime(0.06,t);hg.gain.exponentialRampToValueAtTime(0.001,t+0.02);
-      const hp=this.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=8000;ns.connect(hp);hp.connect(hg);hg.connect(this.master);ns.start(t);
-    }
+    const song=this.song,step=n%16,energy=getAdaptiveMusicEnergy(),layer=1+Math.floor(energy*3.99);
+    const bassNote=song.bass[step];
+    if(bassNote!=null){this.tone(song.root*noteRatio(bassNote),song.bassWave,.07+layer*.012,.19);if(step%4===0)this.tone(song.root*.5*noteRatio(bassNote),'sine',.035,.24);}
+    if(layer>=2&&step%2===0)this.noise(.025+layer*.008,.018,7200);
+    if(layer>=3){const lead=song.lead[step];this.tone(song.root*2*noteRatio(lead),song.leadWave,.025+energy*.025,.11);}
+    if(layer>=4&&step%8===0){const chord=song.chords[Math.floor(n/8)%song.chords.length];chord.forEach(note=>this.tone(song.root*2*noteRatio(note),'triangle',.018,.5));}
+    if(player.mode==='ship'&&step%4===2)this.tone(song.root*4*noteRatio(song.lead[step]),'sine',.025,.16);
+    else if(player.mode==='wave'&&step%2===1)this.tone(song.root*4*noteRatio(song.lead[step]),'square',.018,.055);
+    else if(player.mode==='ball'&&step%4===0)this.tone(song.root*.5*noteRatio(song.bass[step]||0),'sine',.045,.25);
+    else if(player.mode==='ufo'&&step%4===1)this.tone(song.root*3*noteRatio(song.lead[step]),'triangle',.025,.13);
+    else if(player.mode==='robot'&&step%4===3)this.tone(song.root*2*noteRatio(song.lead[step]),'sawtooth',.022,.09);
   }
   beat(intensity){
     if(!this.ctx)return;const t=this.ctx.currentTime;
@@ -342,6 +369,7 @@ class AudioEngine {
     if(!this.ctx)return;
     while(gt-this.lastBeat>=this.beatInterval){this.lastBeat+=this.beatInterval;const i=Math.min(2,Math.floor(this.beatN/16));this.beat(i);this.musicBeat(this.beatN);beatPulse=1.0;this.beatN++;}
   }
+  seek(gameClock){this.lastBeat=gameClock;this.beatN=Math.max(0,Math.floor(gameClock/this.beatInterval));}
   reset(){ this.lastBeat=0; this.beatN=0; }
 }
 
@@ -1653,6 +1681,17 @@ let cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, 
 let transitionFx = { amount:0, radius:0, color:'#ffffff', kind:'mode', direction:1 };
 let visualSection = -1;
 let sectionCue = 0;
+let musicEnergy = 0;
+let runHistory = [];
+let runCheckpoints = [];
+let recordedObstacleState = [];
+let recordedOrbState = [];
+let checkpointCaptureTimer = 0;
+let lastJumpGameTime = -99;
+let lastJumpWorldX = -9999;
+let deathReplay = null;
+let deathCoach = null;
+let focusPractice = null;
 
 try {
   const saved = JSON.parse(localStorage.getItem('cubejumper_save') || '{}');
@@ -1679,9 +1718,20 @@ function getStarRating(orbPercent) {
   return 0;
 }
 
+function getAdaptiveMusicEnergy() {
+  if(!level)return 0;
+  const progress=Math.min(1,cameraX/Math.max(1,level.length));
+  const total=Math.max(1,level.orbs.length),collected=level.orbs.filter(orb=>orb.collected).length/total;
+  return Math.min(1,.12+progress*.44+collected*.24+musicEnergy*.2+(focusPractice?.active ? .08 : 0));
+}
+
 let jumpPressed = false;
 let jumpHeld = false;
-function onJumpDown() { if (audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume(); jumpPressed = true; jumpHeld = true; }
+function onJumpDown() {
+  if(audio.ctx&&audio.ctx.state==='suspended')audio.ctx.resume();
+  jumpPressed=true;jumpHeld=true;
+  if(state==='playing'){lastJumpGameTime=gameTime;lastJumpWorldX=cameraX+PLAYER_SCREEN_X;}
+}
 function onJumpUp() { jumpHeld = false; }
 window.addEventListener('keydown', e => { if((e.code==='Space'||e.code==='ArrowUp')&&!e.repeat){e.preventDefault();onJumpDown();} });
 window.addEventListener('keyup', e => { if(e.code==='Space'||e.code==='ArrowUp'){onJumpUp();} });
@@ -1721,6 +1771,7 @@ document.getElementById('resume-btn').onclick = () => pauseGame();
 document.getElementById('restart-btn').onclick = startGame;
 document.getElementById('pause-menu-btn').onclick = () => {
   state='menu'; document.getElementById('pause-screen').classList.add('hidden'); document.getElementById('menu').classList.remove('hidden');
+  hideCoachPanel();document.getElementById('replay-status').style.display='none';document.getElementById('focus-status').style.display='none';document.getElementById('music-display').style.display='none';
   setGameButtons(false); document.getElementById('back-btn').style.display='none'; document.getElementById('percent-display').style.display='none'; buildMenu();
 };
 window.addEventListener('keydown', e => {
@@ -1810,6 +1861,7 @@ document.getElementById('practice-btn').onclick = () => { practiceMode = !practi
 document.getElementById('menu-btn').onclick = () => {
   state='menu'; document.getElementById('death').classList.remove('visible'); document.getElementById('death').classList.add('hidden');
   document.getElementById('menu').classList.remove('hidden'); document.getElementById('back-btn').style.display='none';
+  hideCoachPanel();document.getElementById('replay-status').style.display='none';document.getElementById('focus-status').style.display='none';document.getElementById('music-display').style.display='none';
   setGameButtons(false); document.getElementById('percent-display').style.display='none'; buildMenu();
 };
 document.getElementById('next-btn').onclick = () => {
@@ -1835,15 +1887,16 @@ function startGame() {
   baseSpeed = level.speed;
   speedMult = snapSpeedMult(1);
   speed = baseSpeed * speedMult;
-  audio.syncToSpeed(speed);
+  audio.setSong(currentWorld.id,selectedLevel);
+  audio.syncToSpeed(speed,baseSpeed);
   player.y = groundY - PLAYER_SIZE;
   player.vy = 0; player.rotation = 0; player.grounded = true; player.dead = false;
   player.mode = level.startMode || 'cube';
   player.gravFlipped = false;
   player.mini = false;
   player.dashing = false; player.dashTimer = 0; player.dashInvincible = false; player._robotJumping = false;
-  audio.themeIdx = level.theme;
   beatPulse = 0;
+  musicEnergy = 0;
   cameraX = 0; score = 0; gameTime = 0; deathFlash = 0; screenShake = 0;
   cameraDirector = { zoom:1, targetZoom:1, rotation:0, targetRotation:0, y:0, targetY:0, focusY:groundY, targetFocusY:groundY };
   transitionFx = { amount:.82, radius:0, color:currentWorld.accent, kind:'start', direction:1 };
@@ -1851,11 +1904,19 @@ function startGame() {
   sectionCue = 0;
   staticCache.key = '';
   jumpBufferTimer = 0; coyoteTimer = 0; jumpPressed = false; jumpHeld = false;
-  physicsAccum = 0; hudPct = -1; hudScore = -1;
+  physicsAccum = 0; hudPct = -1; hudScore = -1; hudMusicLayer = -1; hudSong = '';
   particles.p = [];
   trail.length = 0;
   practiceCheckpoints = [];
   lastCheckpointX = 0;
+  runHistory=[];runCheckpoints=[];checkpointCaptureTimer=0;
+  recordedObstacleState=level.obstacles.map(obstacle=>!!obstacle._triggered);
+  recordedOrbState=level.orbs.map(orb=>!!orb.collected);
+  lastJumpGameTime=-99;lastJumpWorldX=-9999;
+  deathReplay=null;deathCoach=null;focusPractice=null;
+  hideCoachPanel();
+  document.getElementById('replay-status').style.display='none';
+  document.getElementById('focus-status').style.display='none';
   attempts[selectedLevel] = (attempts[selectedLevel]||0) + 1;
   saveProgress();
   document.getElementById('menu').classList.add('hidden');
@@ -1871,11 +1932,170 @@ function startGame() {
   document.getElementById('mode-display').style.display='block';
   document.getElementById('mode-display').textContent = modeIcons[player.mode] + ' ' + player.mode.toUpperCase();
   document.getElementById('back-btn').style.display='block';
+  document.getElementById('music-display').style.display='block';
+  document.getElementById('music-display').textContent=`♫ ${audio.song.title} · 1/4 STEMS`;
   setGameButtons(true); syncSoundButton();
   document.getElementById('practice-indicator').style.display = practiceMode ? 'block' : 'none';
   document.getElementById('percent-display').style.display = 'block';
   document.getElementById('percent-display').textContent = '0%';
+  runCheckpoints.push(captureRunCheckpoint());
 }
+
+function hideCoachPanel(){document.getElementById('coach-panel').classList.add('hidden');}
+
+function captureRunCheckpoint(){
+  return {
+    cameraX,gameTime,score,speedMult,
+    player:{y:player.y,vy:player.vy,grounded:player.grounded,rotation:player.rotation,mode:player.mode,gravFlipped:player.gravFlipped,mini:player.mini,dashing:player.dashing,dashTimer:player.dashTimer,dashInvincible:player.dashInvincible,_robotJumping:player._robotJumping},
+    coyoteTimer,jumpBufferTimer,musicEnergy,
+    triggered:level.obstacles.map(obstacle=>!!obstacle._triggered),
+    collected:level.orbs.map(orb=>!!orb.collected),
+  };
+}
+
+function restoreRunCheckpoint(checkpoint){
+  cameraX=checkpoint.cameraX;gameTime=checkpoint.gameTime;score=checkpoint.score;
+  speedMult=checkpoint.speedMult;speed=baseSpeed*speedMult;
+  Object.assign(player,checkpoint.player,{dead:false});
+  coyoteTimer=checkpoint.coyoteTimer||0;jumpBufferTimer=0;musicEnergy=checkpoint.musicEnergy||0;
+  level.obstacles.forEach((obstacle,index)=>{if(checkpoint.triggered[index])obstacle._triggered=true;else delete obstacle._triggered;});
+  level.orbs.forEach((orb,index)=>{orb.collected=!!checkpoint.collected[index];});
+  jumpPressed=false;jumpHeld=false;physicsAccum=0;lastTime=performance.now();
+  particles.p=[];trail.length=0;runHistory=[];runCheckpoints=[captureRunCheckpoint()];checkpointCaptureTimer=0;
+  recordedObstacleState=level.obstacles.map(obstacle=>!!obstacle._triggered);
+  recordedOrbState=level.orbs.map(orb=>!!orb.collected);
+  cameraDirector.focusY=player.mode==='ship'||player.mode==='wave'||player.mode==='ufo'?(groundY+ceilingY)*.5:(player.gravFlipped?ceilingY:groundY);
+  cameraDirector.targetFocusY=cameraDirector.focusY;transitionFx.amount=.35;transitionFx.radius=0;
+  audio.setSong(currentWorld.id,selectedLevel);audio.syncToSpeed(speed,baseSpeed);audio.seek(gameTime);
+  state='playing';hideCoachPanel();setGameButtons(true);
+  document.getElementById('replay-status').style.display='none';
+  const focus=document.getElementById('focus-status');
+  focus.style.display=focusPractice?.active?'block':'none';
+  if(focusPractice?.active)focus.textContent=`Focus practice · Try ${focusPractice.attempts}`;
+}
+
+function recordRunFrame(){
+  const events=[];
+  level.obstacles.forEach((obstacle,index)=>{const value=!!obstacle._triggered,before=recordedObstacleState[index];if(value!==before){events.push({kind:'obstacle',index,before,value});recordedObstacleState[index]=value;}});
+  level.orbs.forEach((orb,index)=>{const value=!!orb.collected,before=recordedOrbState[index];if(value!==before){events.push({kind:'orb',index,before,value});recordedOrbState[index]=value;}});
+  runHistory.push({cameraX,gameTime,y:player.y,vy:player.vy,rotation:player.rotation,mode:player.mode,gravFlipped:player.gravFlipped,mini:player.mini,grounded:player.grounded,speedMult,input:gameTime-lastJumpGameTime<PHYSICS_DT*1.4,events});
+  while(runHistory.length>360)runHistory.shift();
+  checkpointCaptureTimer+=PHYSICS_DT;
+  if(checkpointCaptureTimer>=.55){checkpointCaptureTimer=0;runCheckpoints.push(captureRunCheckpoint());while(runCheckpoints.length>20)runCheckpoints.shift();}
+}
+
+function analyzeDeath(){
+  const worldX=cameraX+PLAYER_SCREEN_X;
+  const hazards=level.obstacles.filter(obstacle=>obstacle.type==='spike'||obstacle.type==='ceiling_spike'||obstacle.type==='block');
+  const hazard=hazards.sort((a,b)=>Math.abs(a.x-worldX)-Math.abs(b.x-worldX))[0];
+  const aerial=player.mode==='ship'||player.mode==='wave'||player.mode==='ufo';
+  const leadSeconds=hazard?.type==='block'?.43:.37;
+  const idealWorldX=hazard?hazard.x-speed*leadSeconds:worldX-speed*.35;
+  const hasRecentInput=gameTime-lastJumpGameTime<1.15;
+  let title='Missed the Beat',detail='No jump was registered in the approach. Tap when the coaching marker reaches your character.',deltaMs=null;
+  if(aerial){
+    const mid=(groundY+ceilingY)*.5;
+    title=player.y+getPS()/2>mid?'Line Was Too Low':'Line Was Too High';
+    detail='Use shorter presses through this corridor. Focus Practice will restart just before the approach.';
+  }else if(hasRecentInput){
+    deltaMs=Math.round((lastJumpWorldX-idealWorldX)/Math.max(1,speed)*1000);
+    if(deltaMs>38){title=`${deltaMs} ms Late`;detail='Your jump began after the safe launch window. Tap as the cyan coaching marker reaches the player.';}
+    else if(deltaMs<-55){title=`${Math.abs(deltaMs)} ms Early`;detail='Your jump peaked before the hazard. Hold the rhythm and wait for the coaching marker.';}
+    else{title='Good Timing — Tight Landing';detail='The input was close. Repeat the section to stabilize the same timing at full speed.';}
+  }
+  const target=cameraX-speed*2.7;
+  const checkpoint=[...runCheckpoints].reverse().find(entry=>entry.cameraX<=target)||runCheckpoints[0]||captureRunCheckpoint();
+  return {title,detail,deltaMs,idealWorldX,deathCameraX:cameraX,checkpoint,hazardType:hazard?.type||'unknown'};
+}
+
+function applyReplayFrame(position){
+  const frames=deathReplay.frames,index=Math.min(frames.length-1,Math.floor(position)),next=Math.min(frames.length-1,index+1),mix=position-index,a=frames[index],b=frames[next];
+  cameraX=a.cameraX+(b.cameraX-a.cameraX)*mix;gameTime=a.gameTime+(b.gameTime-a.gameTime)*mix;
+  player.y=a.y+(b.y-a.y)*mix;player.vy=a.vy+(b.vy-a.vy)*mix;player.rotation=a.rotation+(b.rotation-a.rotation)*mix;
+  player.mode=a.mode;player.gravFlipped=a.gravFlipped;player.mini=a.mini;player.grounded=a.grounded;player.dead=false;
+  speedMult=a.speedMult;speed=baseSpeed*speedMult;
+  while(deathReplay.appliedFrame<index){
+    deathReplay.appliedFrame++;
+    for(const event of frames[deathReplay.appliedFrame].events){
+      if(event.kind==='obstacle')deathReplay.obstacleState[event.index]=event.value;
+      else deathReplay.orbState[event.index]=event.value;
+    }
+  }
+  level.obstacles.forEach((obstacle,obstacleIndex)=>{if(deathReplay.obstacleState[obstacleIndex])obstacle._triggered=true;else delete obstacle._triggered;});
+  level.orbs.forEach((orb,orbIndex)=>{orb.collected=!!deathReplay.orbState[orbIndex];});
+  trail.length=0;const begin=Math.max(0,index-26);for(let frame=begin;frame<=index;frame++)trail.push({x:PLAYER_SCREEN_X,y:frames[frame].y+PLAYER_SIZE*(frames[frame].mini?MINI_SCALE:1)/2,rot:frames[frame].rotation,t:frames[frame].gameTime,mode:frames[frame].mode});
+}
+
+function beginDeathReplay(){
+  if(!deathReplay?.frames?.length)return showDeathCoach();
+  deathReplay.phase='freeze';deathReplay.timer=0;deathReplay.cursor=0;deathReplay.idealCue=false;deathReplay.lastInputCue=-1;
+  deathReplay.obstacleState=level.obstacles.map(obstacle=>!!obstacle._triggered);
+  deathReplay.orbState=level.orbs.map(orb=>!!orb.collected);
+  for(let frameIndex=deathReplay.frames.length-1;frameIndex>=0;frameIndex--){
+    const events=deathReplay.frames[frameIndex].events;
+    for(let eventIndex=events.length-1;eventIndex>=0;eventIndex--){
+      const event=events[eventIndex];
+      if(event.kind==='obstacle')deathReplay.obstacleState[event.index]=event.before;
+      else deathReplay.orbState[event.index]=event.before;
+    }
+  }
+  deathReplay.appliedFrame=-1;
+  player.dead=true;state='dead';
+  hideCoachPanel();document.getElementById('replay-status').style.display='none';setGameButtons(false);
+}
+
+function updateDeathReplay(dt){
+  if(!deathReplay)return;
+  if(deathReplay.phase==='freeze'){
+    deathReplay.timer+=dt;
+    if(deathReplay.timer>=.28){deathReplay.phase='replay';deathReplay.cursor=0;particles.p=[];screenShake=0;deathFlash=0;document.getElementById('replay-status').style.display='block';}
+    return;
+  }
+  if(deathReplay.phase!=='replay')return;
+  deathReplay.cursor+=dt*.46/PHYSICS_DT;
+  if(deathReplay.cursor>=deathReplay.frames.length-1){deathReplay.phase='coach';player.dead=true;document.getElementById('replay-status').style.display='none';showDeathCoach();return;}
+  applyReplayFrame(deathReplay.cursor);
+  const frameIndex=Math.floor(deathReplay.cursor),frame=deathReplay.frames[frameIndex];
+  if(frame?.input&&!deathReplay.frames[Math.max(0,frameIndex-1)]?.input&&deathReplay.lastInputCue!==frameIndex){deathReplay.lastInputCue=frameIndex;audio.tone(740,'triangle',.09,.09,980);}
+  if(!deathReplay.idealCue&&cameraX+PLAYER_SCREEN_X>=deathCoach.idealWorldX){deathReplay.idealCue=true;audio.tone(1100,'sine',.12,.14,1480);}
+}
+
+function showDeathCoach(){
+  const panel=document.getElementById('coach-panel');panel.style.setProperty('--coach-accent',currentWorld.accent);
+  document.getElementById('coach-kicker').textContent=`Run Coach · ${audio.song.title}`;
+  document.getElementById('coach-title').textContent=deathCoach.title;
+  document.getElementById('coach-detail').textContent=deathCoach.detail;
+  const practice=document.getElementById('coach-practice'),replay=document.getElementById('coach-replay'),retry=document.getElementById('coach-retry');
+  practice.textContent='Practice This Section';replay.textContent='Watch Again';retry.textContent='Retry Level';
+  practice.onclick=startFocusPractice;replay.onclick=beginDeathReplay;retry.onclick=startGame;
+  panel.classList.remove('hidden');setGameButtons(false);requestAnimationFrame(()=>practice.focus());
+}
+
+function startFocusPractice(){
+  deathReplay=null;
+  focusPractice={active:true,checkpoint:deathCoach.checkpoint,endX:deathCoach.deathCameraX+baseSpeed*.9,attempts:1};
+  restoreRunCheckpoint(focusPractice.checkpoint);
+}
+
+function restartFocusSection(){focusPractice.attempts++;restoreRunCheckpoint(focusPractice.checkpoint);}
+
+function completeFocusPractice(){
+  if(!focusPractice?.active)return;
+  state='dead';jumpHeld=false;jumpPressed=false;audio.checkpoint();
+  const panel=document.getElementById('coach-panel');panel.style.setProperty('--coach-accent','#4ade80');
+  document.getElementById('coach-kicker').textContent='Focus Practice · Section Cleared';
+  document.getElementById('coach-title').textContent='Timing Locked In';
+  document.getElementById('coach-detail').textContent=`Cleared on try ${focusPractice.attempts}. Continue this run or repeat the section until it feels automatic.`;
+  const practice=document.getElementById('coach-practice'),replay=document.getElementById('coach-replay'),retry=document.getElementById('coach-retry');
+  practice.textContent='Continue Run';replay.textContent='Practice Again';retry.textContent='Restart Level';
+  practice.onclick=()=>{focusPractice=null;hideCoachPanel();document.getElementById('focus-status').style.display='none';state='playing';player.dead=false;physicsAccum=0;lastTime=performance.now();audio.seek(gameTime);setGameButtons(true);};
+  replay.onclick=restartFocusSection;retry.onclick=startGame;
+  panel.classList.remove('hidden');setGameButtons(false);requestAnimationFrame(()=>practice.focus());
+}
+
+document.getElementById('coach-practice').onclick=startFocusPractice;
+document.getElementById('coach-replay').onclick=beginDeathReplay;
+document.getElementById('coach-retry').onclick=startGame;
 
 // ── COLLISION HELPERS ──
 function getPS() { return PLAYER_SIZE * (player.mini ? MINI_SCALE : 1); }
@@ -1965,6 +2185,7 @@ function checkPortals(worldX) {
 
     if (obs.type === 'portal_gravity') {
       obs._triggered = true;
+      musicEnergy=Math.min(1,musicEnergy+.08);
       // Labeled campaign gates are directional so they always leave the player
       // on the intended surface. Legacy gates retain their toggle behavior.
       player.gravFlipped = obs.gravityGate
@@ -1982,6 +2203,7 @@ function checkPortals(worldX) {
     }
     if (obs.type === 'portal_mode') {
       obs._triggered = true;
+      musicEnergy=Math.min(1,musicEnergy+.1);
       player.mode = obs.mode;
       player.vy = 0;
       coyoteTimer = 0;
@@ -1998,6 +2220,7 @@ function checkPortals(worldX) {
     }
     if (obs.type === 'portal_size') {
       obs._triggered = true;
+      musicEnergy=Math.min(1,musicEnergy+.08);
       player.mini = !player.mini;
       audio.portal();
       deathFlash = 0.2;
@@ -2011,7 +2234,8 @@ function checkPortals(worldX) {
       obs._triggered = true;
       speedMult = snapSpeedMult(obs.speedMult);
       speed = baseSpeed * speedMult;
-      audio.syncToSpeed(speed);
+      audio.syncToSpeed(speed,baseSpeed);
+      musicEnergy=Math.min(1,musicEnergy+.12);
       audio.portal();
       deathFlash = 0.2; // speed flash
       // Speed change particles
@@ -2142,6 +2366,7 @@ function die() {
   if (practiceMode && practiceCheckpoints.length > 0) {
     const cp = practiceCheckpoints[practiceCheckpoints.length - 1];
     cameraX = cp.cameraX;
+    gameTime = cp.gameTime;
     player.y = cp.playerY;
     player.vy = 0;
     player.grounded = cp.grounded;
@@ -2150,7 +2375,8 @@ function die() {
     player.mini = cp.mini;
     speedMult = cp.speedMult;
     speed = baseSpeed * speedMult;
-    audio.syncToSpeed(speed);
+    audio.syncToSpeed(speed,baseSpeed);
+    audio.seek(gameTime);
     player.dashing = false; player.dashTimer = 0; player.dashInvincible = false;
     player.rotation = 0;
     coyoteTimer = cp.coyoteTimer || 0;
@@ -2166,6 +2392,7 @@ function die() {
     return;
   }
 
+  const coach = focusPractice?.active ? null : analyzeDeath();
   player.dead = true; state = 'dead'; deathFlash = 1; screenShake = 16;
   audio.die();
   // Skin-specific shatter particles make every equipped avatar feel physical.
@@ -2179,13 +2406,22 @@ function die() {
     colors:['#fff',deathSkin.detail,currentWorld.accent], size:2, sizeV:3, shape:deathSkin.pattern==='star'?'diamond':'circle'
   });
   if (score > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=score; saveProgress(); }
-  // GD-style: auto-restart after brief pause (no popup)
-  setTimeout(() => startGame(), 800);
+  if(focusPractice?.active){
+    setTimeout(()=>{if(focusPractice?.active)restartFocusSection();},520);
+    return;
+  }
+  deathCoach=coach;
+  const replayFrames=runHistory.slice(-Math.round(2.8/PHYSICS_DT));
+  deathReplay={frames:replayFrames,phase:'freeze',timer:0,cursor:0};
+  beginDeathReplay();
 }
 
 function win() {
   if (player.dead) return;
   player.dead = true; state = 'dead';
+  deathReplay=null;focusPractice=null;hideCoachPanel();
+  document.getElementById('replay-status').style.display='none';
+  document.getElementById('focus-status').style.display='none';
   score += 500;
   audio.win();
   // Celebration burst — diamonds
@@ -2266,6 +2502,7 @@ function update(now) {
     }
     if (state === 'playing') updateHud();
   }
+  if(state==='dead'&&deathReplay)updateDeathReplay(rawDt);
 
   if (state === 'playing' || state === 'dead') updateVisualDirector(rawDt);
 
@@ -2276,7 +2513,7 @@ function update(now) {
   requestAnimationFrame(update);
 }
 
-let hudPct = -1, hudScore = -1, hudColor = '';
+let hudPct = -1, hudScore = -1, hudColor = '', hudMusicLayer = -1, hudSong = '';
 function updateHud() {
   const pct = Math.min(100, Math.floor(cameraX/level.length*100));
   if (pct !== hudPct) {
@@ -2292,12 +2529,18 @@ function updateHud() {
     hudScore = score;
     document.getElementById('score-display').textContent = String(score).padStart(4,'0');
   }
+  const adaptiveLayer=1+Math.floor(getAdaptiveMusicEnergy()*3.99);
+  if(adaptiveLayer!==hudMusicLayer||audio.song.title!==hudSong){
+    hudMusicLayer=adaptiveLayer;hudSong=audio.song.title;
+    document.getElementById('music-display').textContent=`♫ ${hudSong} · ${hudMusicLayer}/4 STEMS`;
+  }
 }
 
 function stepPhysics(dt) {
   {
     gameTime += dt;
     audio.update(gameTime);
+    musicEnergy=Math.max(0,musicEnergy-dt*.016);
     // Dash mechanic
     if (player.dashing) {
       player.dashTimer -= dt;
@@ -2323,7 +2566,7 @@ function stepPhysics(dt) {
     if (practiceMode && cameraX - lastCheckpointX > 400) {
       lastCheckpointX = cameraX;
       practiceCheckpoints.push({
-        cameraX, playerY: player.y, grounded: player.grounded,
+        cameraX, gameTime, playerY: player.y, grounded: player.grounded,
         mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer,
         mini: player.mini, speedMult
       });
@@ -2512,6 +2755,8 @@ function stepPhysics(dt) {
     // Spike/ceiling spike collisions
     if (!player.dead && spikeHit(worldX, player.y + ps/2)) die();
 
+    if(player.dead){jumpPressed=false;return;}
+
     // Check portals, pads, orbs (jumpPressed must still be set here so taps can fire orbs)
     if (!player.dead) {
       checkPortals(worldX);
@@ -2553,11 +2798,13 @@ function stepPhysics(dt) {
       const ox=orb.x-cameraX, oy=groundY-orb.y;
       const dx=PLAYER_SCREEN_X-ox, dy=(player.y+ps/2)-oy;
       if (dx*dx+dy*dy < 900) {
-        orb.collected=true; score+=50; audio.collect();
+        orb.collected=true; score+=50; musicEnergy=Math.min(1,musicEnergy+.22); audio.collect();
         particles.emit(ox,oy,10,{ang:0,spread:6.28,spd:60,spdV:80,life:0.4,lifeV:0.2,colors:['#fbbf24','#f59e0b','#fff'],size:2,sizeV:3,shape:'diamond'});
       }
     });
 
+    recordRunFrame();
+    if(focusPractice?.active&&cameraX>=focusPractice.endX){completeFocusPractice();return;}
     if (cameraX > level.length) win();
   }
 }
@@ -2669,6 +2916,35 @@ function drawCubeSkin(renderContext, size, skin) {
   renderContext.strokeStyle = skin.detail;
   renderContext.lineWidth = 2;
   renderContext.strokeRect(-half, -half, size, size);
+}
+
+function drawReplayGuides(renderContext){
+  if(deathReplay?.phase!=='replay'||!deathCoach)return;
+  const markerX=deathCoach.idealWorldX-cameraX;
+  const nearScreen=markerX>-80&&markerX<W+80;
+  renderContext.save();
+  if(nearScreen){
+    const pulse=.7+Math.sin(performance.now()*.018)*.3;
+    const markerY=deathCoach.hazardType==='ceiling_spike'?ceilingY+18:groundY-18;
+    const direction=deathCoach.hazardType==='ceiling_spike'?1:-1;
+    renderContext.strokeStyle=`rgba(34,211,238,${.5+pulse*.35})`;
+    renderContext.lineWidth=2;
+    renderContext.setLineDash([6,5]);
+    renderContext.beginPath();renderContext.moveTo(markerX,ceilingY+5);renderContext.lineTo(markerX,groundY-5);renderContext.stroke();
+    renderContext.setLineDash([]);
+    renderContext.fillStyle='#22d3ee';renderContext.shadowColor='#22d3ee';renderContext.shadowBlur=12*pulse;
+    renderContext.beginPath();renderContext.moveTo(markerX,markerY);renderContext.lineTo(markerX-7,markerY+direction*9);renderContext.lineTo(markerX+7,markerY+direction*9);renderContext.closePath();renderContext.fill();
+    renderContext.shadowBlur=0;renderContext.textAlign='center';renderContext.font="700 8px 'Space Mono', monospace";renderContext.fillStyle='#cffafe';
+    renderContext.fillText('IDEAL TAP',markerX,markerY-direction*12);
+  }
+  const frame=deathReplay.frames[Math.min(deathReplay.frames.length-1,Math.floor(deathReplay.cursor))];
+  if(frame?.input){
+    const cx=PLAYER_SCREEN_X,cy=player.y+getPS()/2,radius=22+Math.sin(performance.now()*.025)*4;
+    renderContext.strokeStyle='rgba(251,191,36,.95)';renderContext.lineWidth=2.5;renderContext.shadowColor='#fbbf24';renderContext.shadowBlur=14;
+    renderContext.beginPath();renderContext.arc(cx,cy,radius,0,Math.PI*2);renderContext.stroke();
+    renderContext.shadowBlur=0;renderContext.textAlign='center';renderContext.font="700 8px 'Space Mono', monospace";renderContext.fillStyle='#fde68a';renderContext.fillText('YOUR TAP',cx,cy-radius-7);
+  }
+  renderContext.restore();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3667,6 +3943,8 @@ function draw() {
         }
       }
     }
+
+    drawReplayGuides(ctx);
 
     // ── Death heatmap ticks ──
     if (deathPositions[selectedLevel] && deathPositions[selectedLevel].length > 0) {

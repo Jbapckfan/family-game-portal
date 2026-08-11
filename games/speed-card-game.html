@@ -587,6 +587,7 @@
       <h2 id="rules-title">How to play Speed</h2>
       <ol class="rules">
         <li>Choose a card, then choose the exact center pile where you want to play it. Or drag the card directly onto that pile.</li>
+        <li>For a faster move, double-click the left or right half of a card to send it straight to the matching center pile.</li>
         <li>Aces connect both ways: King ↔ Ace ↔ 2. Suits do not matter.</li>
         <li>Your hand refills automatically. There are no turns—the bot plays at the same time.</li>
         <li>If nobody can move, new center cards flip automatically. First player with zero cards wins.</li>
@@ -829,6 +830,8 @@
     let lastPlayedPile = -1;
     let selectedPlay = null;
     let dragState = null;
+    let lastCardClick = null;
+    const DOUBLE_CLICK_WINDOW_MS = 500;
     let audioContext = null;
 
     function persist() {
@@ -908,7 +911,7 @@
       const attributes = centerCard
         ? `type="button" data-pile-index="${options.pileIndex}" aria-label="Center pile ${options.pileIndex + 1}, ${card.rank} of ${card.name}. Play selected card here" ${phase === 'playing' ? '' : 'disabled'}`
         : options.button
-        ? `type="button" ${dataAttribute}="${card.id}" aria-label="Select ${card.rank} of ${card.name}" aria-pressed="${Boolean(options.selected)}" ${phase === 'playing' ? '' : 'disabled'}`
+        ? `type="button" ${dataAttribute}="${card.id}" aria-label="Select ${card.rank} of ${card.name}. Double-click its left or right half to play to that side" aria-pressed="${Boolean(options.selected)}" ${phase === 'playing' ? '' : 'disabled'}`
         : `role="img" aria-label="${card.rank} of ${card.name}"`;
       const slot = options.slot ? `<span class="slot-number" aria-hidden="true">${options.slot}</span>` : '';
       return `<${tag} class="${classes.join(' ')}" ${attributes}>
@@ -992,6 +995,7 @@
       aiTimer = 0;
       stallTimer = 0;
       clockTimer = 0;
+      lastCardClick = null;
       countdownTimers.forEach(clearTimeout);
       countdownTimers = [];
     }
@@ -1144,7 +1148,14 @@
       return { button, sideKey, cardId: button.dataset.p2CardId || button.dataset.cardId };
     }
 
+    function pileIndexFromCardHalf(button, clientX) {
+      const bounds = button.getBoundingClientRect();
+      const clickedLeftHalf = clientX < bounds.left + bounds.width / 2;
+      return clickedLeftHalf ? 0 : game.centers.length - 1;
+    }
+
     function onCardPointerDown(event) {
+      if (event.button !== 0 || event.isPrimary === false) return;
       const card = cardFromPointer(event);
       if (!card) return;
       event.preventDefault();
@@ -1157,6 +1168,7 @@
       const distance = Math.hypot(event.clientX - dragState.startX, event.clientY - dragState.startY);
       if (!dragState.dragging && distance > 10) {
         dragState.dragging = true;
+        lastCardClick = null;
         const ghost = dragState.button.cloneNode(true);
         ghost.removeAttribute('data-card-id');
         ghost.removeAttribute('data-p2-card-id');
@@ -1186,8 +1198,19 @@
         else setStatus('Drop the card directly onto a center pile');
       } else {
         clearDrag();
-        const handIndex = game[pending.sideKey].hand.findIndex(card => card.id === pending.cardId);
-        if (handIndex >= 0) selectCard(pending.sideKey, handIndex);
+        const clickedAt = performance.now();
+        const isDoubleClick = lastCardClick
+          && lastCardClick.sideKey === pending.sideKey
+          && lastCardClick.cardId === pending.cardId
+          && clickedAt - lastCardClick.clickedAt <= DOUBLE_CLICK_WINDOW_MS;
+        if (isDoubleClick) {
+          lastCardClick = null;
+          playCardOnPile(pending.sideKey, pending.cardId, pileIndexFromCardHalf(pending.button, event.clientX));
+        } else {
+          lastCardClick = { sideKey: pending.sideKey, cardId: pending.cardId, clickedAt };
+          const handIndex = game[pending.sideKey].hand.findIndex(card => card.id === pending.cardId);
+          if (handIndex >= 0) selectCard(pending.sideKey, handIndex);
+        }
       }
     }
 
@@ -1271,7 +1294,7 @@
             startedAt = performance.now();
             elements.countdown.setAttribute('aria-label', 'Go');
             render();
-            setStatus(gameMode === 'local' ? 'GO! Pick a card and its pile—or drag it' : 'GO! Pick a card and its pile—or drag it');
+            setStatus('GO! Double-click a card side—or pick and place it');
             scheduleClock();
             scheduleAi();
             scheduleStallCheck();

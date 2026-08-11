@@ -118,6 +118,10 @@ if (!html.includes('touch-action: manipulation') || !html.includes('prefers-redu
 if (!html.includes('data-pile-index') || !html.includes("addEventListener('pointermove'") || !html.includes('playCardOnPile(sideKey, cardId, pileIndex)')) {
   throw new Error('Speed needs explicit tap-to-pile and drag-to-pile controls.');
 }
+if (!html.includes('DOUBLE_CLICK_WINDOW_MS') || !html.includes('pileIndexFromCardHalf') ||
+    !html.includes('bounds.left + bounds.width / 2') || !html.includes('game.centers.length - 1')) {
+  throw new Error('Speed needs left-half/right-half double-click targeting.');
+}
 if (html.includes('function chooseHumanPile') || html.includes("classes.push(playable ? 'playable' : 'blocked')")) {
   throw new Error('Player cards must not reveal or automatically choose a legal center pile.');
 }

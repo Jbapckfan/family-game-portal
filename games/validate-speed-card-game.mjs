@@ -20,7 +20,7 @@ if (engineStart < 0 || engineEnd < 0) throw new Error('Could not isolate the Spe
 const engineSource = inlineScript.slice(engineStart, engineEnd);
 const engine = new Function(`${engineSource}; return {
   SUITS, RANKS, createDeck, shuffleInPlace, isPlayable, dealGame, topCards,
-  availableMoves, remainingCards, applyMove, recycleCenters, dealCenterCards,
+  playablePileIndexes, availableMoves, remainingCards, applyMove, recycleCenters, dealCenterCards,
   chooseStrategicMove
 };`)();
 
@@ -46,6 +46,13 @@ if (!engine.isPlayable(ace, two) || !engine.isPlayable(two, ace) || !engine.isPl
 }
 if (engine.isPlayable(ace, ace) || engine.isPlayable(ace, three)) {
   throw new Error('Only adjacent ranks should be playable.');
+}
+const five = deck.find(card => card.rank === '5');
+const four = deck.find(card => card.rank === '4');
+const six = deck.find(card => card.rank === '6');
+const dualPileState = { centers: [[four], [six]], variants: {} };
+if (engine.playablePileIndexes(dualPileState, five).join(',') !== '0,1' || engine.playablePileIndexes(dualPileState, ace).length) {
+  throw new Error('Automatic card play must find every legal pile without marking cards in advance.');
 }
 
 let longestSimulation = 0;
@@ -129,12 +136,13 @@ if (!html.includes('touch-action: manipulation') || !html.includes('prefers-redu
 if (!html.includes('data-pile-index') || !html.includes("addEventListener('pointermove'") || !html.includes('playCardOnPile(sideKey, cardId, pileIndex)')) {
   throw new Error('Speed needs explicit tap-to-pile and drag-to-pile controls.');
 }
-if (!html.includes('DOUBLE_CLICK_WINDOW_MS') || !html.includes('pileIndexFromCardHalf') ||
-    !html.includes('bounds.left + bounds.width / 2') || !html.includes('game.centers.length - 1')) {
-  throw new Error('Speed needs left-half/right-half double-click targeting.');
+if (!html.includes('DOUBLE_CLICK_WINDOW_MS') || !html.includes('playCardOnAnyPile') ||
+    !html.includes('playCardOnPile(sideKey, cardId, legalPiles[0])')) {
+  throw new Error('Speed needs whole-card double-click play with deterministic legal-pile targeting.');
 }
-if (html.includes('function chooseHumanPile') || html.includes("classes.push(playable ? 'playable' : 'blocked')")) {
-  throw new Error('Player cards must not reveal or automatically choose a legal center pile.');
+if (html.includes("classes.push(playable ? 'playable' : 'blocked')") ||
+    /classList\.(?:add|toggle)\(['"](?:playable|blocked|legal-move|can-play)['"]/.test(html)) {
+  throw new Error('Player cards must not reveal legal moves visually.');
 }
 if (/https?:\/\//.test(html)) throw new Error('The game should not require external runtime assets.');
 if (!portal.includes('href="./games/speed-card-game.html"') || !portal.includes('Speed: Beat the Bot')) {

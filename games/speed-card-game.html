@@ -587,7 +587,7 @@
       <h2 id="rules-title">How to play Speed</h2>
       <ol class="rules">
         <li>Choose a card, then choose the exact center pile where you want to play it. Or drag the card directly onto that pile.</li>
-        <li>For a faster move, double-click the left or right half of a card to send it straight to the matching center pile.</li>
+        <li>For a faster move, double-click anywhere on a playable card. If it fits more than one center pile, the leftmost legal pile is used.</li>
         <li>Aces connect both ways: King ↔ Ace ↔ 2. Suits do not matter.</li>
         <li>Your hand refills automatically. There are no turns—the bot plays at the same time.</li>
         <li>If nobody can move, new center cards flip automatically. First player with zero cards wins.</li>
@@ -697,13 +697,17 @@
       return state.centers.map(pile => pile[pile.length - 1]);
     }
 
+    function playablePileIndexes(state, card) {
+      return topCards(state).reduce((pileIndexes, topCard, pileIndex) => {
+        if (isPlayable(card, topCard, state.variants)) pileIndexes.push(pileIndex);
+        return pileIndexes;
+      }, []);
+    }
+
     function availableMoves(state, sideKey) {
-      const tops = topCards(state);
       const moves = [];
       state[sideKey].hand.forEach((card, handIndex) => {
-        tops.forEach((topCard, pileIndex) => {
-          if (isPlayable(card, topCard, state.variants)) moves.push({ handIndex, pileIndex, card });
-        });
+        playablePileIndexes(state, card).forEach(pileIndex => moves.push({ handIndex, pileIndex, card }));
       });
       return moves;
     }
@@ -911,7 +915,7 @@
       const attributes = centerCard
         ? `type="button" data-pile-index="${options.pileIndex}" aria-label="Center pile ${options.pileIndex + 1}, ${card.rank} of ${card.name}. Play selected card here" ${phase === 'playing' ? '' : 'disabled'}`
         : options.button
-        ? `type="button" ${dataAttribute}="${card.id}" aria-label="Select ${card.rank} of ${card.name}. Double-click its left or right half to play to that side" aria-pressed="${Boolean(options.selected)}" ${phase === 'playing' ? '' : 'disabled'}`
+        ? `type="button" ${dataAttribute}="${card.id}" aria-label="Select ${card.rank} of ${card.name}. Double-click anywhere to try playing it" aria-pressed="${Boolean(options.selected)}" ${phase === 'playing' ? '' : 'disabled'}`
         : `role="img" aria-label="${card.rank} of ${card.name}"`;
       const slot = options.slot ? `<span class="slot-number" aria-hidden="true">${options.slot}</span>` : '';
       return `<${tag} class="${classes.join(' ')}" ${attributes}>
@@ -1097,6 +1101,16 @@
       setTimeout(() => pile.classList.remove('invalid-drop'), 280);
     }
 
+    function flashInvalidCard(sideKey, cardId) {
+      const attribute = sideKey === 'ai' ? 'data-p2-card-id' : 'data-card-id';
+      const card = document.querySelector(`[${attribute}="${cardId}"]`);
+      if (!card) return;
+      card.classList.remove('bad-pick');
+      void card.offsetWidth;
+      card.classList.add('bad-pick');
+      setTimeout(() => card.classList.remove('bad-pick'), 280);
+    }
+
     function playCardOnPile(sideKey, cardId, pileIndex) {
       if (phase !== 'playing' || !game || !Number.isInteger(pileIndex)) return false;
       if (sideKey === 'ai' && gameMode !== 'local') return false;
@@ -1120,7 +1134,7 @@
         lastHumanPlay = playedAt;
         tone(440 + Math.min(combo, 8) * 38, .055, combo > 3 ? 'square' : 'sine');
         if (combo === 4 || combo === 7) vibrate(16);
-        setStatus(combo >= 4 ? `Hot streak! ${combo} precise plays` : 'Placed—pick your next card and pile!');
+        setStatus(combo >= 4 ? `Hot streak! ${combo} precise plays` : 'Placed—find your next move!');
       } else {
         tone(260, .05, 'triangle', .035);
         setStatus('Player 2 placed a card!');
@@ -1140,6 +1154,23 @@
       playCardOnPile(selectedPlay.sideKey, selectedPlay.cardId, pileIndex);
     }
 
+    function playCardOnAnyPile(sideKey, cardId) {
+      if (phase !== 'playing' || !game) return false;
+      if (sideKey === 'ai' && gameMode !== 'local') return false;
+      const card = game[sideKey].hand.find(candidate => candidate.id === cardId);
+      const legalPiles = card ? playablePileIndexes(game, card) : [];
+      if (!legalPiles.length) {
+        selectedPlay = null;
+        render();
+        flashInvalidCard(sideKey, cardId);
+        tone(sideKey === 'ai' ? 120 : 105, .1, 'sawtooth', .035);
+        vibrate(20);
+        setStatus('That card cannot be played on a center pile');
+        return false;
+      }
+      return playCardOnPile(sideKey, cardId, legalPiles[0]);
+    }
+
     function clearDrag() {
       if (!dragState) return;
       dragState.ghost?.remove();
@@ -1153,12 +1184,6 @@
       const sideKey = button.hasAttribute('data-p2-card-id') ? 'ai' : 'human';
       if (sideKey === 'ai' && gameMode !== 'local') return null;
       return { button, sideKey, cardId: button.dataset.p2CardId || button.dataset.cardId };
-    }
-
-    function pileIndexFromCardHalf(button, clientX) {
-      const bounds = button.getBoundingClientRect();
-      const clickedLeftHalf = clientX < bounds.left + bounds.width / 2;
-      return clickedLeftHalf ? 0 : game.centers.length - 1;
     }
 
     function onCardPointerDown(event) {
@@ -1212,7 +1237,7 @@
           && clickedAt - lastCardClick.clickedAt <= DOUBLE_CLICK_WINDOW_MS;
         if (isDoubleClick) {
           lastCardClick = null;
-          playCardOnPile(pending.sideKey, pending.cardId, pileIndexFromCardHalf(pending.button, event.clientX));
+          playCardOnAnyPile(pending.sideKey, pending.cardId);
         } else {
           lastCardClick = { sideKey: pending.sideKey, cardId: pending.cardId, clickedAt };
           const handIndex = game[pending.sideKey].hand.findIndex(card => card.id === pending.cardId);
@@ -1301,7 +1326,7 @@
             startedAt = performance.now();
             elements.countdown.setAttribute('aria-label', 'Go');
             render();
-            setStatus('GO! Double-click a card side—or pick and place it');
+            setStatus('GO! Double-click a playable card—or pick and place it');
             scheduleClock();
             scheduleAi();
             scheduleStallCheck();

@@ -106,6 +106,17 @@ if (!html.includes('href="../index.html"') || !html.includes('Back to Alford Fam
 if (!html.includes('data-difficulty="chill"') || !html.includes('data-difficulty="quick"') || !html.includes('data-difficulty="turbo"')) {
   throw new Error('All three bot speeds must be available.');
 }
+const chillTiming = html.match(/chill:\s*\{[^}]*minDelay:\s*(\d+),\s*maxDelay:\s*(\d+)/);
+if (!chillTiming || Number(chillTiming[1]) < 2200 || Number(chillTiming[2]) < 2800) {
+  throw new Error('Chill must leave a genuinely relaxed interval between bot plays.');
+}
+if (!html.includes("difficultyKey === 'chill' ? Math.min(0, saved.adaptive)") ||
+    !html.includes("difficultyKey === 'chill' ? 0 : Math.min(game.plays.ai, 12) * 7")) {
+  throw new Error('Chill must not accelerate from adaptive wins or late-game momentum.');
+}
+if (!html.includes('Chill bot · fixed relaxed pace')) {
+  throw new Error('The menu must explain that Chill keeps a fixed relaxed pace.');
+}
 if (!html.includes("document.addEventListener('visibilitychange'") || !html.includes("localStorage.setItem(STORAGE_KEY")) {
   throw new Error('Automatic pause or local record persistence is missing.');
 }

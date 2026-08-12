@@ -553,7 +553,7 @@
       </div>
       <span class="difficulty-label">Choose bot speed</span>
       <div class="difficulty-row" id="difficulty-row">
-        <button class="difficulty-button" type="button" data-difficulty="chill">Chill<small>Learning pace</small></button>
+        <button class="difficulty-button" type="button" data-difficulty="chill">Chill<small>Relaxed learning pace</small></button>
         <button class="difficulty-button selected" type="button" data-difficulty="quick">Quick<small>Fair & fast</small></button>
         <button class="difficulty-button" type="button" data-difficulty="turbo">Turbo<small>Seriously speedy</small></button>
       </div>
@@ -777,7 +777,7 @@
     // ENGINE END
 
     const DIFFICULTIES = {
-      chill: { label: 'Chill Bot', minDelay: 980, maxDelay: 1380, aggression: 0.15 },
+      chill: { label: 'Chill Bot', minDelay: 2400, maxDelay: 3200, aggression: 0.15 },
       quick: { label: 'Quick Bot', minDelay: 590, maxDelay: 880, aggression: 0.55 },
       turbo: { label: 'Turbo Bot', minDelay: 300, maxDelay: 470, aggression: 0.9 },
     };
@@ -952,7 +952,9 @@
         ? `Tournament rival ${saved.tournamentStage} of 5 · ${['Scout', 'Spark', 'Dash', 'Blaze', 'The Flash'][saved.tournamentStage - 1]}`
         : gameMode === 'daily'
           ? `Daily ${dateKey()} · ${daily ? `best ${formatTime(daily)}` : 'set the first ghost'}`
-          : gameMode === 'local' ? 'Player 2 uses the top side · Q W E R T' : `Adaptive bot · pace ${saved.adaptive > .2 ? 'hot' : saved.adaptive < -.2 ? 'friendly' : 'balanced'}`;
+          : gameMode === 'local' ? 'Player 2 uses the top side · Q W E R T'
+            : difficulty === 'chill' ? 'Chill bot · fixed relaxed pace'
+              : `Adaptive bot · pace ${saved.adaptive > .2 ? 'hot' : saved.adaptive < -.2 ? 'friendly' : 'balanced'}`;
     }
 
     function render() {
@@ -1008,10 +1010,15 @@
     }
 
     function aiDelay() {
-      const settings = DIFFICULTIES[effectiveDifficulty()];
+      const difficultyKey = effectiveDifficulty();
+      const settings = DIFFICULTIES[difficultyKey];
       const pace = settings.minDelay + Math.random() * (settings.maxDelay - settings.minDelay);
-      const adaptiveMultiplier = gameMode === 'ai' ? 1 - Math.max(-.22, Math.min(.22, saved.adaptive * .14)) : 1;
-      return Math.max(180, pace * adaptiveMultiplier - Math.min(game.plays.ai, 12) * 7);
+      // Chill is a genuinely relaxed learning mode: it may ease off after losses,
+      // but wins and late-game momentum never make it faster behind the player's back.
+      const adaptiveSignal = difficultyKey === 'chill' ? Math.min(0, saved.adaptive) : saved.adaptive;
+      const adaptiveMultiplier = gameMode === 'ai' ? 1 - Math.max(-.22, Math.min(.22, adaptiveSignal * .14)) : 1;
+      const momentumBoost = difficultyKey === 'chill' ? 0 : Math.min(game.plays.ai, 12) * 7;
+      return Math.max(180, pace * adaptiveMultiplier - momentumBoost);
     }
 
     function scheduleAi() {

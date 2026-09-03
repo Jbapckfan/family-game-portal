@@ -125,3 +125,18 @@ Error handling: WebGL unavailable -> a visible message with a link back to the 2
 - All three pieces set the outgoing pitch (MIRROR levels, WEDGE climbs, DIP descends) instead of preserving it. A physically strict vertical mirror would preserve pitch, but that needs a fourth "leveling" piece and makes the tray harder to read. The renderer shows a physically plausible sloped face, so the rule reads as natural.
 - Pieces are one level tall, so beams can fly over them. That is deliberate hidden information.
 - Splitters, prisms, and portals from the 2D game are NOT in v1; the research step decides which twist pieces come next.
+
+## 10. Uniqueness (appended 2026-09-03 after the research workflow)
+
+Prior-art result (full report: `2026-09-03-lasers-3d-prior-art.md`): 79 distinct products swept across six modalities; the 12 that scored 45+ were each checked by two adversarial verifiers. **Nothing combines the disguised-3D reveal with a climbing mirror.** Best corrected similarity is 44 (Laser Quest!, Infinity Games: openly 3D, pre-placed pieces, no inventory) and 42 (Circuit: Laser Maze, Steam: free 3D camera, colour-mixing modules). The concept's two halves exist separately (rotate-to-reveal walking puzzles without lasers; openly 3D laser routers where vertical travel is a 90-degree shaft, never a per-cell climb), never together, and no product has a placed-mirror inventory with par plus a no-tilt star.
+
+### Twist additions adopted for v1 (small, do not change the frozen stepper)
+- **Altitude is a colour.** The beam's hue encodes its level: level 0, 1, 2, 3 each get a distinct colour from `theme.js` (Codex picks the hues). This is the primary fair tell in the flat view, on top of the width ramp. Targets are NOT tinted (their level stays hidden). Rationale: cheapest high-impact tell; "my laser changed colour" lands with a six-year-old.
+- **Stilt mirrors as a taught beat.** Rule 3.4 already lets a tray piece sit on a raised block and catch only beams at that level. Level 8 is built so the only solution puts a MIRROR on top of a wall to snatch a climbing beam out of the air. The level intro says so once.
+
+### Roadmap after v1 ships (each is a data or small-rule extension; judged scores in the report)
+1. Arches and windows: terrain cells with a per-level pass mask, identical from above (small).
+2. Skipping-stone floor mirrors: a flat floor mirror that flips pitch -1 to +1 and keeps heading (medium; needs DIP levels first).
+3. Tide dial: a water plane at height h that swallows beams and reveals contours (medium).
+4. Architect vs Solver pass-and-play: one kid builds heights in the tilted view, the other solves flat with limited tilts; needs the solver in the browser (medium-large).
+5. Shade targets: targets lit by the beam's shadow (medium).

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    <meta name="description" content="Lasers 3D - Place mirrors, wedges and dips to steer a laser across a board whose heights are hidden until you tilt it.">
+    <meta name="theme-color" content="#050817">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Lasers 3D (working title)">
+    <meta property="og:description" content="Steer a laser across a board whose heights are hidden until you tilt it.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Lasers 3D (working title)</title>
+    <style>
+        /* Static copy of LaserTheme.cssVariables(); ui.js re-injects the live copy into #lasers3d-theme at startup. */
+        :root {
+            --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-data: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+            --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
+            --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-pill: 999px;
+            --type-xs: 11px; --type-sm: 13px; --type-md: 15px; --type-lg: 18px; --type-xl: 24px; --type-2xl: 32px;
+            --line-tight: 1.15; --line-body: 1.45;
+            --color-bg: #050817; --color-floor: #172544;
+            --color-text: #F4F8FF; --color-text-muted: #A9B5CE;
+            --color-accent: #00FFCC; --color-emitter: #FF2F92; --color-danger: #FF5C70; --color-success: #69F0AE;
+            --color-mirror: #45E7FF; --color-wedge: #FFC857; --color-dip: #FF4FA3;
+            --color-star: #FFD75A; --color-star-empty: #65718E; --color-target-lit: #78FFD8;
+            --color-beam-0: #2CB5A8; --color-beam-1: #39D4C2; --color-beam-2: #64EFDA; --color-beam-3: #C4FFF5;
+            --color-panel: rgba(12, 20, 52, 0.78); --color-panel-strong: rgba(8, 14, 38, 0.94);
+            --color-panel-fallback: #0C1434; --color-panel-border: rgba(183, 226, 255, 0.22);
+            --color-backdrop: rgba(2, 5, 17, 0.74);
+            --touch-min: 44px;
+            --shadow-panel: 0 12px 32px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.13);
+            --shadow-raised: 0 6px 16px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            --shadow-focus: 0 0 0 3px rgba(0, 255, 204, 0.42);
+            --shadow-cyan-glow: 0 0 18px rgba(0, 255, 204, 0.30);
+            --shadow-pink-glow: 0 0 18px rgba(255, 47, 146, 0.34);
+            --z-hud: 100; --z-backdrop: 900; --z-modal: 910; --z-menu: 9999;
+            --page-bg: radial-gradient(circle at 20% 78%, rgba(0, 255, 204, 0.07), transparent 45%), radial-gradient(circle at 82% 20%, rgba(255, 47, 146, 0.07), transparent 42%), radial-gradient(circle at 50% 38%, #243F90 0%, #101A50 47%, #050817 100%);
+            --ease-camera: cubic-bezier(0.22, 1, 0.36, 1);
+            /* layout-only tokens (shell) */
+            --sa-t: env(safe-area-inset-top, 0px); --sa-r: env(safe-area-inset-right, 0px);
+            --sa-b: env(safe-area-inset-bottom, 0px); --sa-l: env(safe-area-inset-left, 0px);
+            --panel-w: 232px; --hud-left: 76px; /* ui.js raises --hud-left to clear the real Menu link width */
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        body {
+            background: var(--page-bg); background-color: var(--color-bg);
+            color: var(--color-text); font-family: var(--font-ui); font-size: var(--type-md); line-height: var(--line-body);
+            -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; overscroll-behavior: none;
+            position: fixed; inset: 0; width: 100%;
+        }
+        button { font: inherit; color: inherit; cursor: pointer; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
+        [hidden] { display: none !important; }
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+        /* ---- Menu link (house pattern): always first, always on top ---- */
+        .menu-link {
+            position: fixed; top: calc(12px + var(--sa-t)); left: calc(12px + var(--sa-l)); z-index: var(--z-menu);
+            min-width: 64px; min-height: 44px; height: 44px; padding: 0 12px; display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(0, 0, 0, 0.7); color: #fff; text-decoration: none; border-radius: 10px;
+            font-size: 14px; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+        }
+        .menu-link:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+        /* ---- Panels & buttons ---- */
+        .glass {
+            background: var(--color-panel-fallback); border: 1px solid var(--color-panel-border); box-shadow: var(--shadow-panel);
+            position: relative; overflow: hidden;
+        }
+        @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .glass { background: var(--color-panel); -webkit-backdrop-filter: blur(18px) saturate(145%); backdrop-filter: blur(18px) saturate(145%); }
+        }
+        .glass::before { /* static diagonal highlight, upper-left */
+            content: ""; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.0) 38%);
+        }
+        .btn {
+            min-width: var(--touch-min); min-height: var(--touch-min); padding: 0 var(--space-3);
+            display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1);
+            background: var(--color-panel-fallback); border: 1px solid rgba(255, 255, 255, 0.20); border-radius: var(--radius-md);
+            font-size: var(--type-md); font-weight: 700; line-height: var(--line-tight); letter-spacing: 0.02em;
+            box-shadow: var(--shadow-raised); transition: transform 90ms ease, box-shadow 120ms ease, background 120ms ease;
+            position: relative; flex: 0 0 auto;
+        }
+        @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .btn { background: var(--color-panel); } }
+        .btn:active { transform: translateY(1px) scale(0.97); }
+        .btn:focus-visible, .tray-card:focus-visible, .level-tile:focus-visible { outline: none; box-shadow: var(--shadow-focus), var(--shadow-raised); }
+        .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.38; box-shadow: none; transform: none; cursor: default; }
+        .btn-primary { background: rgba(255, 47, 146, 0.18); border-color: var(--color-emitter); color: var(--color-emitter); box-shadow: var(--shadow-pink-glow), var(--shadow-raised); }
+        .btn[aria-pressed="true"], .btn-selected { background: rgba(0, 255, 204, 0.16); border-color: var(--color-accent); color: var(--color-accent); box-shadow: var(--shadow-cyan-glow), var(--shadow-raised); }
+        .btn-success { background: rgba(105, 240, 174, 0.18); border-color: var(--color-success); color: var(--color-success); }
+        .btn-danger { color: var(--color-danger); border-color: rgba(255, 92, 112, 0.6); }
+        .btn-icon { width: var(--touch-min); padding: 0; font-size: var(--type-lg); }
+        .btn-icon .btn-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+        .btn .btn-key { font: 800 var(--type-xs) var(--font-data); color: var(--color-text-muted); }
+        @media (hover: hover) and (pointer: fine) {
+            .btn:not(:disabled):hover { transform: translateY(-1px); }
+            .btn-primary:not(:disabled):hover { box-shadow: 0 0 18px rgba(255, 47, 146, 0.45), var(--shadow-raised); }
+            .btn[aria-pressed="true"]:hover { box-shadow: 0 0 18px rgba(0, 255, 204, 0.45), var(--shadow-raised); }
+            .menu-link:hover { background: rgba(0, 0, 0, 0.9); }
+        }
+        .is-invalid { animation: l3d-shake 140ms linear 1; border-color: var(--color-danger) !important; box-shadow: 0 0 0 1px var(--color-danger) !important; }
+        @keyframes l3d-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-4px); } 100% { transform: translateX(0); } }
+
+        /* ---- App grid ---- */
+        #app { position: absolute; inset: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); grid-template-areas: "hud" "stage" "tray"; }
+        #hud {
+            grid-area: hud; z-index: var(--z-hud); position: relative; min-height: 52px;
+            margin: calc(10px + var(--sa-t)) 68px 0 var(--hud-left); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+            display: flex; flex-direction: column; justify-content: center; gap: 2px; max-width: 520px;
+        }
+        /* >= 600px: centred in its row when there is room, never under the Menu link (left) or the sound button (right) */
+        @media (min-width: 600px) { #hud { margin-left: max(var(--hud-left), calc(50% - 260px)); margin-right: max(68px, calc(50% - 260px)); width: auto; } }
+        .hud-line { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-width: 0; }
+        .hud-line + .hud-line { margin-top: 2px; }
+        .hud-num { font-size: var(--type-sm); font-weight: 600; color: var(--color-text-muted); white-space: nowrap; }
+        .hud-name { font-size: var(--type-lg); font-weight: 700; line-height: var(--line-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; }
+        .hud-pill { font: 800 var(--type-xs) var(--font-data); padding: 2px 8px; margin-left: auto; border-radius: var(--radius-pill); border: 1px solid var(--color-panel-border); color: var(--color-text-muted); white-space: nowrap; line-height: 1.3; }
+        .hud-pill[data-camera="tilt"] { color: var(--color-accent); border-color: var(--color-accent); }
+        .hud-pieces { font: 700 var(--type-xs) var(--font-data); color: var(--color-text-muted); letter-spacing: 0.04em; white-space: nowrap; }
+        .stars { display: inline-flex; gap: 2px; align-items: center; }
+        .star { width: 24px; height: 24px; display: block; }
+        .star[data-earned="true"] { filter: drop-shadow(0 0 4px rgba(255, 215, 90, 0.45)); }
+        #sound { position: fixed; top: calc(12px + var(--sa-t)); right: calc(12px + var(--sa-r)); z-index: var(--z-hud); width: 48px; min-width: 48px; height: 44px; padding: 0; }
+
+        #stage { grid-area: stage; position: relative; overflow: hidden; min-width: 0; min-height: 0; }
+        #board { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; touch-action: none; -webkit-user-select: none; user-select: none; }
+        #piece-controls { position: absolute; z-index: 120; display: flex; gap: var(--space-2); pointer-events: auto; }
+
+        /* ---- Tray (bottom dock, portrait phones) ---- */
+        #tray {
+            grid-area: tray; z-index: var(--z-hud); position: relative; margin: 0 auto; max-width: 100%;
+            padding: var(--space-3) var(--space-3) calc(var(--space-3) + var(--sa-b)); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            display: flex; flex-direction: column; gap: var(--space-2); align-items: center;
+        }
+        .tray-cards { display: flex; gap: var(--space-2); justify-content: center; }
+        /* Below 390 px the row overflows and scrolls (VISUAL-DIRECTION F). Auto margins on the end children centre it when
+         * there is room and collapse to 0 when there is not, so FIRE is never clipped at the left edge (justify-content:
+         * center on an overflowing flex row cuts BOTH ends off and the left end is unreachable by scrolling). */
+        .tray-actions { display: flex; gap: var(--space-2); align-items: center; justify-content: flex-start; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .tray-actions > :first-child { margin-left: auto; }
+        .tray-actions > :last-child { margin-right: auto; }
+        .tray-actions::-webkit-scrollbar { display: none; }
+        .tray-card {
+            width: 72px; height: 72px; min-width: 64px; min-height: 64px; padding: 0; border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.20); background: var(--color-panel-fallback); box-shadow: var(--shadow-raised);
+            display: flex; flex-direction: column; align-items: stretch; position: relative; overflow: hidden; flex: 0 0 auto;
+            transition: transform 120ms ease, box-shadow 120ms ease;
+        }
+        @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .tray-card { background: var(--color-panel); } }
+        .tray-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); opacity: 0.85; }
+        .tray-card[data-type="MIRROR"], .tray-glyph[data-type="MIRROR"] { --accent: var(--color-mirror); }
+        .tray-card[data-type="WEDGE"], .tray-glyph[data-type="WEDGE"] { --accent: var(--color-wedge); }
+        .tray-card[data-type="DIP"], .tray-glyph[data-type="DIP"] { --accent: var(--color-dip); }
+        .tray-card[aria-pressed="true"] { border: 2px solid var(--accent); transform: translateY(-3px); box-shadow: 0 0 18px var(--glow), var(--shadow-raised); }
+        .tray-card[data-type="MIRROR"] { --glow: rgba(69, 231, 255, 0.35); }
+        .tray-card[data-type="WEDGE"] { --glow: rgba(255, 200, 87, 0.35); }
+        .tray-card[data-type="DIP"] { --glow: rgba(255, 79, 163, 0.35); }
+        .tray-card:disabled { opacity: 0.38; pointer-events: none; transform: none; box-shadow: none; }
+        .tray-icon { height: 44px; display: flex; align-items: center; justify-content: center; }
+        .tray-icon img { width: 44px; height: 44px; display: block; }
+        .tray-glyph { width: 30px; height: 30px; position: relative; border-radius: 4px; background: linear-gradient(135deg, #A8C0CE, #7893A6 55%, #243647); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .tray-glyph::after { content: ""; position: absolute; left: 3px; right: 3px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--accent); transform: rotate(-45deg); box-shadow: 0 0 6px var(--accent); }
+        .tray-glyph[data-type="DIP"]::after { transform: rotate(45deg); }
+        .tray-meta { display: flex; justify-content: space-between; align-items: center; gap: 4px; padding: 0 5px 4px; min-width: 0; }
+        .tray-label { font-size: var(--type-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; color: var(--accent); overflow: hidden; text-overflow: clip; white-space: nowrap; }
+        .tray-count { font: 700 var(--type-xs) var(--font-data); color: var(--color-text); }
+        #btn-fire { width: 72px; height: 56px; min-width: 72px; }
+        #btn-tilt, #btn-reset, #btn-hint, #btn-fit { min-width: 56px; height: 44px; }
+        .btn[hidden] { display: none; } /* .btn sets display:inline-flex, which would otherwise beat the UA [hidden] rule */
+        #btn-hint.is-active { color: var(--color-accent); border-color: var(--color-accent); }
+        .tray-side-only { display: none; }
+
+        #tray { overflow: visible; } /* the MORE sheet sits above the tray (bottom: 100%); .glass would clip it */
+        #tray::before { border-radius: inherit; }
+
+        /* ---- Narrow screens (after the base HUD/tray rules so equal-specificity overrides win) ---- */
+        @media (max-width: 599px) {
+            #hud { padding: var(--space-2) 10px; }
+            .hud-line { flex-wrap: wrap; gap: 2px 6px; }
+            .hud-pill { padding: 2px 6px; }
+            .hud-pieces { letter-spacing: 0.02em; }
+        }
+        @media (max-width: 419px) { /* phones: 20 px stars and a tighter pill keep the second HUD line on one row */
+            #hud-stars .star { width: 20px; height: 20px; }
+            .hud-pill { font-size: 10px; padding: 1px 5px; }
+            .hud-name { font-size: 17px; } /* the two longest level names fit a 196 px row at 17 px, not at 18 px */
+        }
+        @media (max-width: 359px) { /* 320 CSS px phones (iPhone SE 1st gen / 5s): DESIGN.md 3.7 needs >= 320 px of stage height here */
+            .menu-link .menu-icon { display: none; }
+            #hud { padding: 6px 4px; }
+            .hud-line { gap: 2px 4px; }
+            .hud-line:first-child { flex-wrap: nowrap; } /* LEVEL n + name stay on one row; a long name ellipsizes */
+            .hud-num { font-size: var(--type-xs); }
+            .hud-name { font-size: var(--type-md); min-width: 0; }
+            .hud-pill { display: none; } /* the camera state is still shown by the TILT/FLAT button */
+            #tray { padding: var(--space-2) var(--space-2) calc(var(--space-2) + var(--sa-b)); }
+        }
+
+        /* MORE sheet (portrait phones) */
+        #more-sheet { position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); margin-bottom: var(--space-2); z-index: 130; padding: var(--space-2); border-radius: var(--radius-md); display: flex; gap: var(--space-2); }
+
+        /* ---- Side panel (landscape and tablets) ---- */
+        /* The HUD stays a grid row ABOVE the stage (never an overlay on it): the board is fit into the stage area between the
+         * HUD and the tray (VISUAL-DIRECTION E), so the HUD glass can never cover or swallow taps on the board's north row. */
+        @media (min-width: 700px), (orientation: landscape) and (min-width: 640px) {
+            :root { --panel-w: 264px; }
+            #app { grid-template-columns: minmax(0, 1fr) var(--panel-w); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "hud tray" "stage tray"; }
+            #sound { right: calc(var(--panel-w) + 12px); }
+            #tray { margin: 0; border-radius: var(--radius-lg) 0 0 var(--radius-lg); padding: var(--space-3) calc(var(--space-3) + var(--sa-r)) calc(var(--space-3) + var(--sa-b)) var(--space-3); justify-content: center; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+            .tray-cards { flex-wrap: wrap; }
+            .tray-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); overflow: visible; width: 100%; padding: 0; }
+            .tray-actions > :first-child, .tray-actions > :last-child { margin: 0; }
+            .tray-actions .btn { min-width: 0; width: auto; padding: 0 var(--space-2); }
+            #btn-fire { grid-column: 1 / -1; width: auto; }
+            .tray-side-only { display: inline-flex; }
+            #btn-more { display: none; }
+            #more-sheet { display: none !important; }
+        }
+        @media (min-width: 640px) and (max-height: 480px) { /* short landscape phones: everything must fit without scrolling */
+            #hud { padding: 6px var(--space-3); }
+            #hud-stars .star { width: 20px; height: 20px; }
+            .tray-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .tray-actions .btn { font-size: var(--type-sm); padding: 0 4px; }
+            #btn-fire { height: 52px; font-size: var(--type-md); }
+            #btn-help { grid-column: 1 / -1; }
+        }
+
+        /* ---- Toast ---- */
+        #toast { position: absolute; left: 50%; bottom: var(--space-4); transform: translateX(-50%) translateY(8px); z-index: 150; max-width: min(92%, 440px); padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: var(--type-sm); font-weight: 600; text-align: center; opacity: 0; transition: opacity 220ms ease, transform 220ms var(--ease-camera); pointer-events: none; }
+        #toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast[data-kind="danger"] { border-color: var(--color-danger); color: var(--color-danger); }
+        #toast[data-kind="success"] { border-color: var(--color-success); color: var(--color-success); }
+        #toast[data-kind="intro"] { border-color: var(--color-accent); }
+
+        /* ---- Modals ---- */
+        .backdrop { position: fixed; inset: 0; z-index: var(--z-backdrop); background: var(--color-backdrop); display: flex; align-items: center; justify-content: center; padding: var(--space-4); }
+        .modal { position: relative; z-index: var(--z-modal); width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-panel-strong); border: 1px solid var(--color-panel-border); box-shadow: var(--shadow-panel); }
+        .modal h2 { margin: 0 44px var(--space-3) 0; font-size: var(--type-xl); font-weight: 750; line-height: var(--line-tight); }
+        .modal p { margin: 0 0 var(--space-3); font-size: var(--type-md); line-height: var(--line-body); }
+        .modal .caption { font-size: var(--type-sm); color: var(--color-text-muted); }
+        .modal-close { position: absolute; top: var(--space-3); right: var(--space-3); width: 44px; height: 44px; padding: 0; font-size: 20px; }
+        .modal-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-4); }
+        .modal-actions .btn { flex: 1 1 auto; min-height: 48px; }
+        .help-row { display: flex; align-items: center; gap: var(--space-3); margin: 0 0 var(--space-2); }
+        .help-row .tray-glyph, .help-row img { flex: 0 0 auto; width: 44px; height: 44px; }
+        .help-row .tray-glyph { width: 32px; height: 32px; margin: 6px; }
+        .help-beams { display: flex; gap: var(--space-2); align-items: center; margin: var(--space-2) 0 var(--space-3); font: 800 var(--type-xs) var(--font-data); }
+        .help-beam { flex: 1; height: 0; border-top: var(--w) solid var(--c); box-shadow: 0 0 6px var(--c); border-radius: 2px; }
+        .help-beam-label { color: var(--c); }
+        .help-keys { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: var(--type-sm); color: var(--color-text-muted); }
+        @media (hover: none) and (pointer: coarse) { .help-keys { display: none; } }
+        .help-keys kbd { font: 700 var(--type-xs) var(--font-data); color: var(--color-text); border: 1px solid var(--color-panel-border); border-radius: 4px; padding: 1px 6px; }
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: var(--space-2); }
+        .level-tile { min-width: 64px; min-height: 64px; padding: 6px 4px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.20); background: var(--color-panel-fallback); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; position: relative; overflow: hidden; }
+        .level-tile .tile-num { font-size: var(--type-lg); font-weight: 800; line-height: 1; }
+        .level-tile .stars { transform: scale(0.6); transform-origin: center; height: 16px; margin: -4px 0; }
+        .level-tile[data-state="completed"]::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--color-accent); }
+        .level-tile[data-state="current"] { border: 2px solid var(--color-accent); }
+        .level-tile[data-state="locked"] { color: var(--color-star-empty); opacity: 0.45; cursor: default; }
+        .level-tile .lock { width: 16px; height: 16px; display: block; }
+        .victory-title { font-size: 28px; font-weight: 800; margin: 0 44px var(--space-2) 0; }
+        #modal-victory .modal { animation: l3d-rise 360ms var(--ease-camera) both; }
+        @keyframes l3d-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+        .victory-stars { display: flex; gap: var(--space-2); justify-content: center; margin: var(--space-3) 0; position: relative; }
+        .victory-stars .star { width: 40px; height: 40px; transform: scale(0.72); opacity: 0; }
+        .victory-stars .star.is-awarded { animation: l3d-star 420ms var(--ease-camera) forwards; }
+        .victory-stars .star[data-earned="false"] { opacity: 1; transform: scale(1); }
+        @keyframes l3d-star { 0% { transform: scale(0.72); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        .light-ring { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+        .light-ring::after { content: ""; position: absolute; top: -20%; bottom: -20%; width: 34%; left: -40%; background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.16), transparent); transform: skewX(-18deg); animation: l3d-ring 900ms ease-out 120ms 1 both; }
+        @keyframes l3d-ring { from { left: -40%; } to { left: 120%; } }
+        .victory-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font: 700 var(--type-sm) var(--font-data); color: var(--color-text-muted); margin: var(--space-2) 0; }
+        .victory-stats b { color: var(--color-text); }
+
+        /* ---- WebGL fallback ---- */
+        #webgl-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--space-5); text-align: center; z-index: 10; }
+        #webgl-fallback .glass { padding: var(--space-5); border-radius: var(--radius-lg); max-width: 420px; }
+        #webgl-fallback a.btn { text-decoration: none; margin-top: var(--space-3); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn, .tray-card, #toast, .modal { transition: none !important; }
+            #modal-victory .modal, .victory-stars .star.is-awarded, .light-ring::after, .is-invalid { animation-duration: 1ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <a class="menu-link" href="../../" aria-label="Back to the Alford Family Game Portal"><span class="menu-icon" aria-hidden="true">&#x1F3E0;</span> Menu</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="l3d-star-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A6"/><stop offset="1" stop-color="#FFD75A"/></linearGradient>
+        </defs>
+    </svg>
+    <div id="app">
+        <div id="hud" class="glass">
+            <div class="hud-line"><span class="hud-num" id="hud-level-num">LEVEL 1</span><span class="hud-name" id="hud-level-name">&nbsp;</span></div>
+            <div class="hud-line"><span class="stars" id="hud-stars" aria-label="Stars earned"></span><span class="hud-pill" id="hud-camera" data-camera="flat">FLAT</span><span class="hud-pieces" id="hud-pieces">PIECES 0/0</span></div>
+        </div>
+        <button id="sound" class="btn btn-icon" type="button" aria-label="Sound on" aria-pressed="true"><span aria-hidden="true">&#x1F50A;</span></button>
+        <div id="stage">
+            <canvas id="board" aria-label="Laser board" role="img"></canvas>
+            <div id="piece-controls" hidden>
+                <button id="btn-rotate" class="btn btn-icon" type="button" aria-label="Rotate piece"><span aria-hidden="true">&#x21BB;</span></button>
+                <button id="btn-remove" class="btn btn-icon btn-danger" type="button" aria-label="Remove piece"><span aria-hidden="true">&#x2715;</span></button>
+            </div>
+            <div id="toast" class="glass" role="status" aria-live="polite" data-kind="info"></div>
+            <div id="webgl-fallback" hidden>
+                <div class="glass"><h2 style="margin:0 0 8px;font-size:24px;font-weight:750">3D is not available here</h2>
+                    <p class="caption">This browser could not start WebGL. The classic 2D game works everywhere.</p>
+                    <a class="btn btn-selected" href="../mini-games/lasers_mirrors_game.html">Play Lasers and Mirrors (2D)</a></div>
+            </div>
+        </div>
+        <div id="tray" class="glass" aria-label="Piece tray and controls">
+            <div class="tray-cards" role="group" aria-label="Pieces">
+                <button class="tray-card" type="button" data-type="MIRROR" aria-pressed="false" aria-label="Mirror, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="MIRROR"></span></span><span class="tray-meta"><span class="tray-label">Mirror</span><span class="tray-count">0</span></span></button>
+                <button class="tray-card" type="button" data-type="WEDGE" aria-pressed="false" aria-label="Wedge, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="WEDGE"></span></span><span class="tray-meta"><span class="tray-label">Wedge</span><span class="tray-count">0</span></span></button>
+                <button class="tray-card" type="button" data-type="DIP" aria-pressed="false" aria-label="Dip, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="DIP"></span></span><span class="tray-meta"><span class="tray-label">Dip</span><span class="tray-count">0</span></span></button>
+            </div>
+            <div class="tray-actions" role="group" aria-label="Actions">
+                <button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button>
+                <button id="btn-tilt" class="btn" type="button" aria-label="Tilt the board" aria-pressed="false">TILT</button>
+                <button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button>
+                <button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button>
+                <button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button>
+                <button id="btn-undo" class="btn btn-icon tray-side-only" type="button" aria-label="Undo"><span aria-hidden="true">&#x21A9;</span><span class="btn-txt">Undo</span></button>
+                <button id="btn-redo" class="btn btn-icon tray-side-only" type="button" aria-label="Redo"><span aria-hidden="true">&#x21AA;</span><span class="btn-txt">Redo</span></button>
+                <button id="btn-levels" class="btn tray-side-only" type="button" aria-label="Choose a level">LEVELS</button>
+                <button id="btn-help" class="btn tray-side-only" type="button" aria-label="How to play">HELP</button>
+                <button id="btn-more" class="btn btn-icon" type="button" aria-label="More controls" aria-expanded="false" aria-controls="more-sheet"><span aria-hidden="true">&#x22EF;</span></button>
+            </div>
+            <div id="more-sheet" class="glass" hidden role="group" aria-label="More controls"></div>
+        </div>
+    </div>
+    <div id="modal-help" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title"><button class="btn btn-icon modal-close" type="button" aria-label="Close how to play">&#x2715;</button><h2 id="help-title">How to play</h2><div class="modal-body"></div></div></div>
+    <div id="modal-levels" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="levels-title"><button class="btn btn-icon modal-close" type="button" aria-label="Close level select">&#x2715;</button><h2 id="levels-title">Levels</h2><div class="level-grid"></div></div></div>
+    <div id="modal-victory" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="victory-title"><div class="light-ring" aria-hidden="true"></div><button class="btn btn-icon modal-close" type="button" aria-label="Close">&#x2715;</button><h2 id="victory-title" class="victory-title">Beam Connected</h2><div class="victory-stars"></div><div class="victory-stats"></div><div class="modal-actions"></div></div></div>
+
+    <script src="../src/pieces.js"></script>
+    <script src="../src/sim.js"></script>
+    <script src="../src/theme.js"></script>
+    <script src="../src/ui.js"></script>
+    <script>
+    /* Stub main: exercises LaserUI with a sample view model. No render, no input, no audio. */
+    (function () {
+      'use strict';
+      var level = LaserSim.parseLevel({
+        name: 'HIDDEN WALL', par: 2, size: { w: 7, d: 7 },
+        terrain: ['0000000', '0000000', '0001000', '0000000', '0002000', '0000000', '0000000'],
+        emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 5, y: 1 }],
+        fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }],
+        tray: ['MIRROR', 'MIRROR', 'WEDGE'], intro: 'One of these blocks is taller than it looks.'
+      });
+      var placed = [{ x: 2, y: 3, type: 'MIRROR', orient: '/' }];
+      var vm = {
+        levelIndex: 3, levelCount: 20, level: level, placed: placed,
+        trayRemaining: { MIRROR: 1, WEDGE: 1, DIP: 0 }, selectedTray: 'MIRROR', selectedCell: null, cursorCell: null,
+        fires: 1, tiltsUsed: 0, hintUsed: false, beamResult: LaserSim.trace(level, placed), status: 'placing',
+        stars: 2, attemptStars: 3, camera: 'flat', isFlat: true, muted: false, canUndo: true, canRedo: false, revealPlaying: false,
+        canFit: false
+      };
+      var log = [];
+      var events = {};
+      var handlers = {};
+      ['onTraySelect', 'onFire', 'onReset', 'onTiltToggle', 'onHint', 'onUndo', 'onRedo', 'onSoundToggle', 'onHelp', 'onLevels',
+       'onRotateSelected', 'onRemoveSelected', 'onSelectLevel', 'onNextLevel', 'onRetryLevel', 'onModalOpen', 'onModalClose', 'onStageResize', 'onFit'].forEach(function (n) {
+        handlers[n] = function (a) { log.push([n, a]); };
+      });
+      try { localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 3, highestUnlocked: 5, stars: { '0': 3, '1': 2, '2': 1, '3': 2 }, muted: false, seenHelp: true })); } catch (e) {}
+      var ui = LaserUI.create({ root: document.getElementById('app'), theme: LaserTheme, handlers: handlers, render: null, autoHelp: false });
+      ui.setState(vm);
+      ui.showToast(level.intro, { kind: 'intro', ms: 60000 });
+      window.__harness = { ui: ui, vm: vm, log: log, level: level,
+        setState: function (patch) { var k; for (k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) vm[k] = patch[k]; ui.setState(vm); return vm; } };
+    }());
+    </script>
+</body>
+</html>

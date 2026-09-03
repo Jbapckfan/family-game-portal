@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lasers 3D render harness</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #050817; overflow: hidden; }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="board"></canvas></div>
+<script src="../vendor/three.min.js"></script>
+<script src="../src/pieces.js"></script>
+<script src="../src/sim.js"></script>
+<script src="../src/theme.js"></script>
+<script src="../src/render-core.js"></script>
+<script src="../src/render-camera.js"></script>
+<script src="../src/render-terrain.js"></script>
+<script src="../src/render-pieces.js"></script>
+<script src="../src/render-beam.js"></script>
+<script src="../src/render.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- synthetic levels. `big` builds an NxN board with varied terrain (0..3), several pieces and a real beam,
+   * so the camera fit, the min-cell clamp, picking and the frame time are measured on the shipping sizes. ---- */
+  function bigLevel(n) {
+    var rows = [], x, y, h, row;
+    /* Deterministic pseudo-terrain: ridges, a plateau and scattered low walls, with four clear corridors
+     * (y = 1, y = n-2, x = 1, x = n-3) so the traced beam runs a full lap of the board. */
+    function clear(x2, y2) { return y2 === 1 || y2 === n - 2 || x2 === 1 || x2 === n - 3; }
+    for (y = 0; y < n; y++) {
+      row = '';
+      for (x = 0; x < n; x++) {
+        h = 0;
+        if ((x * 7 + y * 13) % 11 === 0) h = 1;
+        if ((x + y) % 9 === 0 && x > 1 && y > 1) h = 2;
+        if (x > n * 0.55 && x < n * 0.75 && y > n * 0.55 && y < n * 0.75) h = 3;
+        if (x % 5 === 2 && y % 6 === 4) h = 1;
+        if (clear(x, y)) h = 0;
+        row += String(h);
+      }
+      rows.push(row);
+    }
+    /* emitter (0,1) fires E -> fixed MIRROR '/' at (n-3,1) turns it N -> MIRROR '\\' at (n-3,n-2) turns it W
+     * -> MIRROR '/' at (1,n-2) turns it S -> straight down column x=1 into the target at (1,3). */
+    return {
+      raw: {
+        name: n + 'x' + n, par: 3, size: { w: n, d: n }, terrain: rows,
+        emitter: { x: 0, y: 1, dir: 'E' },
+        targets: [{ x: 1, y: 3 }],
+        fixed: [{ x: n - 3, y: 1, type: 'MIRROR', orient: '/', secret: false }],
+        tray: ['MIRROR', 'WEDGE', 'DIP']
+      },
+      placed: [
+        { x: n - 3, y: n - 2, type: 'MIRROR', orient: '\\' },
+        { x: 1, y: n - 2, type: 'MIRROR', orient: '/' },
+        { x: 4, y: 4, type: 'WEDGE', orient: '/' },
+        { x: 7, y: 7, type: 'DIP', orient: '\\' }
+      ]
+    };
+  }
+
+  var LEVELS = {
+    small: {
+      raw: {
+        name: 'HARNESS', par: 1, size: { w: 7, d: 7 },
+        terrain: ['0000000', '0000100', '0002220', '0000000', '0000030', '2002000', '1100010'],
+        emitter: { x: 0, y: 3, dir: 'E' },
+        targets: [{ x: 0, y: 5 }],
+        fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }],
+        tray: ['MIRROR', 'WEDGE', 'DIP']
+      },
+      placed: [{ x: 5, y: 1, type: 'DIP', orient: '\\' }, { x: 3, y: 5, type: 'MIRROR', orient: '\\' }]
+    },
+    big20: bigLevel(20),
+    big24: bigLevel(24),
+    /* the 6x6 board James measured (269x269 px flat, 260x195 tilt in a 393x614 canvas) */
+    six: {
+      raw: {
+        name: '6x6', par: 1, size: { w: 6, d: 6 },
+        terrain: ['000000', '000000', '001000', '000000', '000200', '000000'],
+        emitter: { x: 0, y: 2, dir: 'E' }, targets: [{ x: 4, y: 4 }],
+        fixed: [], tray: ['MIRROR']
+      },
+      placed: [{ x: 4, y: 2, type: 'MIRROR', orient: '/' }]
+    }
+  };
+
+  var canvas = document.getElementById('board');
+  var render = LaserRender.create({ canvas: canvas, theme: LaserTheme, sim: LaserSim });
+  var level = null, placed = [], result = null, name = 'small';
+
+  function fit() {
+    var w = document.documentElement.clientWidth, h = document.documentElement.clientHeight;
+    render.resize(w, h, window.devicePixelRatio || 1);
+  }
+  function load(which) {
+    var L = LEVELS[which] || LEVELS.small;
+    name = which;
+    level = LaserSim.parseLevel(L.raw);
+    placed = L.placed.slice();
+    render.setLevel(level);
+    render.setPlaced(placed);
+    result = LaserSim.trace(level, placed);
+    render.setBeam(result, { animate: false, fired: true });
+    render.frame(0.016);
+    return { w: level.size.w, d: level.size.d, segments: result.segments.length };
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  load('small');
+  render.setCameraPreset('flat', { animate: false });
+
+  var last = performance.now();
+  function loop(now) {
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    render.frame(dt);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* Count every drawable in the scene graph (the renderer's own info.render.calls is measured separately). */
+  function sceneObjects() {
+    var n = 0;
+    render._scene.traverse(function () { n++; });
+    return n;
+  }
+  /* Frame time over `frames` synchronous render.frame() calls, with a gl.finish() at the end so the GPU work is
+   * included rather than just the submission cost. The rAF loop keeps running around it. */
+  function frameTime(frames) {
+    var i, t0, gl = render._renderer.getContext();
+    for (i = 0; i < 10; i++) render.frame(0.016);          /* warm up shaders / uploads */
+    gl.finish();
+    t0 = performance.now();
+    for (i = 0; i < frames; i++) render.frame(0.016);
+    gl.finish();
+    return (performance.now() - t0) / frames;
+  }
+  function settle(ms) { var i, n = Math.ceil((ms || 600) / 16); for (i = 0; i < n; i++) render.frame(0.016); }
+
+  /* Reference picker: the per-cell invisible-box raycast the renderer used BEFORE the analytic version, kept here
+   * (test-only, never in the scene) as independent ground truth for render.pickCell. */
+  var refGroup = null, refRay = new THREE.Raycaster(), refFor = null;
+  function refBuild() {
+    if (refFor === level) return;
+    refFor = level;
+    if (refGroup) { refGroup.traverse(function (o) { if (o.geometry) o.geometry.dispose(); }); }
+    refGroup = new THREE.Group();
+    var mat = new THREE.MeshBasicMaterial({ visible: false }), cell = LaserTheme.terrain.cellTop, x, y, h;
+    for (y = 0; y < level.size.d; y++) for (x = 0; x < level.size.w; x++) {
+      h = level.t[y][x];
+      var g = new THREE.BoxGeometry(cell, h + 0.05, cell);
+      g.translate(x, (h + 0.05) / 2 - 0.05, -y);
+      var m = new THREE.Mesh(g, mat);
+      m.userData.cell = { x: x, y: y };
+      refGroup.add(m);
+    }
+    refGroup.updateMatrixWorld(true);
+  }
+  function refPick(clientX, clientY) {
+    refBuild();
+    var rect = render._renderer.domElement.getBoundingClientRect();
+    var nx = ((clientX - rect.left) / rect.width) * 2 - 1, ny = -((clientY - rect.top) / rect.height) * 2 + 1;
+    refRay.setFromCamera(new THREE.Vector2(nx, ny), render._camera);
+    var hits = refRay.intersectObjects(refGroup.children, false);
+    return hits.length ? { x: hits[0].object.userData.cell.x, y: hits[0].object.userData.cell.y } : null;
+  }
+
+  /* The PREVIOUS fit rule (theme.camera.presets[*].paddingCells / minPaddingCells / fitHeights), reimplemented here
+   * for the before/after measurement only. Nothing in src/ reads those tokens any more. */
+  function legacyFitZoom(presetName) {
+    var P = LaserTheme.camera.presets[presetName], DEG = Math.PI / 180;
+    var a = P.azimuthDeg * DEG, e = P.elevationDeg * DEG;
+    var dir = new THREE.Vector3(Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));
+    var up = new THREE.Vector3(-Math.sin(e) * Math.sin(a), Math.cos(e), -Math.sin(e) * Math.cos(a));
+    var right = new THREE.Vector3().crossVectors(dir.clone().negate(), up).normalize();
+    var w = level.size.w, d = level.size.d, cx = (w - 1) / 2, cz = -(d - 1) / 2, hw = 0, hh = 0;
+    var W = document.documentElement.clientWidth, H = document.documentElement.clientHeight;
+    [-0.5, w - 0.5].forEach(function (x) {
+      [-0.5, d - 0.5].forEach(function (y) {
+        P.fitHeights.forEach(function (h) {
+          var p = new THREE.Vector3(x - cx, h, -y - cz);
+          hw = Math.max(hw, Math.abs(p.dot(right))); hh = Math.max(hh, Math.abs(p.dot(up)));
+        });
+      });
+    });
+    var pad = P.paddingCells, minPad = P.minPaddingCells, minCell = LaserTheme.camera.minCellPx;
+    var z = Math.min(W / (2 * (hw + pad)), H / (2 * (hh + pad)));
+    if (typeof minPad === 'number' && minPad < pad && z < minCell) {
+      pad = Math.max(minPad, Math.min(pad, Math.min(W / (2 * minCell) - hw, H / (2 * minCell) - hh)));
+      z = Math.min(W / (2 * (hw + pad)), H / (2 * (hh + pad)));
+    }
+    return z;
+  }
+
+  window.__h = {
+    render: render, sim: LaserSim, theme: LaserTheme,
+    name: function () { return name; },
+    load: load, fit: fit, settle: settle, sceneObjects: sceneObjects, frameTime: frameTime, refPick: refPick,
+    view: function (n) { return render.setCameraPreset(n, { animate: false }); },
+    place: function (p) { placed = p; render.setPlaced(p); result = LaserSim.trace(level, p); render.setBeam(result, { animate: false, fired: true }); return result; },
+    fire: function () { render.setBeam(result, { animate: true, fired: true }); },
+    /* Fraction of the LIMITING canvas dimension the board's projected box fills (DESIGN.md 11.2).
+     * `pct` is what is actually on screen; `fitPct` removes the minimum-cell clamp, i.e. it is the pure
+     * bounding-box auto-fit that task 1 is measured on. */
+    fitPct: function () {
+      var b = render.getBoardScreenBox(), c = render.getCamera();
+      var w = document.documentElement.clientWidth, h = document.documentElement.clientHeight;
+      var k = c.effectiveZoom > 0 ? c.fitZoom / c.effectiveZoom : 1;
+      return { pct: Math.max(b.width / w, b.height / h), fitPct: Math.max(b.width * k / w, b.height * k / h),
+        box: b, canvas: { w: w, h: h } };
+    },
+    /* Same board box, measured under the OLD padding-based fit: the before number. */
+    legacyFitPct: function (presetName) {
+      var b = render.getBoardScreenBox(), c = render.getCamera(), lz = legacyFitZoom(presetName);
+      var w = document.documentElement.clientWidth, h = document.documentElement.clientHeight;
+      var k = c.effectiveZoom > 0 ? lz / c.effectiveZoom : 1;
+      return { pct: Math.max(b.width * k / w, b.height * k / h), cellPx: lz * (c.cellPx / c.effectiveZoom),
+        box: { width: b.width * k, height: b.height * k }, canvas: { w: w, h: h } };
+    }
+  };
+  /* live views of the currently loaded level (load() swaps them) */
+  Object.defineProperty(window.__h, 'level', { get: function () { return level; } });
+  Object.defineProperty(window.__h, 'placed', { get: function () { return placed; } });
+  Object.defineProperty(window.__h, 'result', { get: function () { return result; } });
+}());
+</script>
+</body>
+</html>

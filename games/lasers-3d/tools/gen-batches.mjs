@@ -8,7 +8,7 @@
 // The board-size curve (this is the whole point of the rebuild - a 6x6 board was far too small):
 //   levels 1-3   12x12   pure 2D, MIRROR only
 //   levels 4-6   14x14   hidden low wall, first WEDGE, wedge again
-//   levels 7-9   16x16   first DIP, the stilt beat, first secret fixed WEDGE
+//   levels 7-9   16x16   first DIP (as the climb-LEVELLER, spec 12), the stilt beat, secret WEDGE
 //   levels 10-12 18x18   mixed, mixed, first two-target
 //   levels 13-16 20x20
 //   levels 17-18 22x22
@@ -50,50 +50,57 @@ const SLOTS = [
 
   // 4 - the first hidden low wall. MIRROR-only tray, no fixed pieces: the ONLY new idea is height.
   { n: 4, name: 'OVER THE WALL', seed: 41,
-    intro: 'Some walls are lower than they look. A beam can fly right over a low wall. Tilt to see.',
+    intro: 'Some walls are lower than they look, and a beam can fly right over a low one. The beam gets wider and brighter the higher it climbs, and the readout after FIRE names every height. You can tilt the board to peek, but a no-tilt solve is what earns the third star.',
     spec: { w: 14, d: 14, plan: ['MIRROR', 'MIRROR'], emitterZ: 1, require: ['overflight'], forceRequire: true, wantUnique: false } },
 
-  // 5 - the WEDGE. It turns AND climbs.
+  // 5 - the WEDGE. It turns AND tilts the beam up, and a plain mirror after it KEEPS the climb
+  // (DESIGN.md section 12) - which is exactly what the second piece of this plan shows.
   { n: 5, name: 'UP THE STAIRS', seed: 51,
-    intro: 'A WEDGE turns the beam and sends it up one step every square.',
-    spec: { w: 14, d: 14, plan: ['WEDGE', 'MIRROR'], require: ['wedge'], forceRequire: true, wantUnique: false } },
+    intro: 'A WEDGE turns the beam and tilts it UP one step every square. A plain mirror turns it too, but it keeps the beam climbing - watch it grow brighter as it rises.',
+    // minRun/minPathLen are relaxed here on purpose: after the WEDGE the beam CLIMBS, and a mirror
+    // now KEEPS it climbing, so the last two legs share the 3 levels of sky between them and cannot
+    // both be long. This is the first level where the delta rule constrains the geometry.
+    spec: { w: 14, d: 14, plan: ['WEDGE', 'MIRROR'], require: ['wedge'], forceRequire: true, wantUnique: false, minRun: 3, minPathLen: 13 } },
 
   { n: 6, name: 'BEND THEN CLIMB', seed: 61,
     spec: { w: 14, d: 14, plan: ['MIRROR', 'WEDGE'], require: ['wedge'], forceRequire: true, wantUnique: false } },
 
-  // 7 - the DIP. Emitter starts on a tower so the beam has room to fall.
-  { n: 7, name: 'DOWN THE STEPS', seed: 71,
-    intro: 'A DIP turns the beam and sends it down one step every square.',
-    spec: { w: 16, d: 16, plan: ['MIRROR', 'DIP', 'MIRROR'], emitterZ: 2, require: ['dip'], forceRequire: true, wantUnique: false } },
+  // 7 - the DIP, introduced in the job only it can do: LEVELLING a climbing beam (spec 12.1).
+  // Plan WEDGE -> DIP -> MIRROR is the climb-then-level pattern the corrected rule is built around.
+  { n: 7, name: 'LEVEL OFF', seed: 71,
+    intro: 'A DIP turns the beam and tilts it DOWN one step. That makes it the only thing that can flatten a climbing beam: go UP with a wedge, then DIP to level off and fly straight.',
+    spec: { w: 16, d: 16, plan: ['WEDGE', 'DIP', 'MIRROR'], require: ['dip', 'climb-then-level'], forceRequire: true, wantUnique: false } },
 
   // 8 - the stilt beat: a mirror on top of a block, catching a climbing beam out of the air.
   { n: 8, name: 'ON STILTS', seed: 81,
-    intro: 'You can put a mirror on top of a block. Only a beam at that height will hit it.',
-    spec: { w: 16, d: 16, plan: ['WEDGE', 'MIRROR', 'MIRROR'], require: ['stilt'], forceRequire: true, allSolutionsStilt: true, wantUnique: false } },
+    intro: 'You can stand a piece on top of a block. Only a beam at that same height will hit it, and the readout after FIRE tells you what height your beam is flying at.',
+    spec: { w: 16, d: 16, plan: ['WEDGE', 'MIRROR', 'DIP'], require: ['stilt'], forceRequire: true, allSolutionsStilt: true, wantUnique: false } },
 
   // 9 - the first secret fixed WEDGE: from above it is a plain mirror.
   { n: 9, name: 'SECRET RAMP', seed: 91,
-    intro: 'That mirror is hiding something. Tilt the board to find out what it really is.',
-    spec: { w: 16, d: 16, plan: ['WEDGE', 'MIRROR', 'MIRROR', 'MIRROR'], fixedIdx: 0, secret: true, require: ['secret', 'wedge'], forceRequire: true, wantUnique: false } },
+    intro: 'One of these mirrors is not a mirror. Fire and watch the beam: if it turns and starts climbing, you have found the hidden wedge - and only a DIP can bring it back down to level.',
+    spec: { w: 16, d: 16, plan: ['WEDGE', 'DIP', 'MIRROR', 'MIRROR'], fixedIdx: 0, secret: true, require: ['secret', 'wedge'], forceRequire: true, wantUnique: false } },
 
   { n: 10, name: 'UP AND OVER', seed: 101,
     spec: { w: 18, d: 18, plan: ['MIRROR', 'WEDGE', 'MIRROR'], require: ['wedge', 'overflight'] } },
 
+  // 11 - the secret piece is a DIP this time. It drops the beam off the start tower and a WEDGE has
+  // to catch it and level it out again: the fall-then-level half of the delta rule.
   { n: 11, name: 'SECRET SLIDE', seed: 111,
-    spec: { w: 18, d: 18, plan: ['DIP', 'MIRROR', 'MIRROR', 'MIRROR'], emitterZ: 2, fixedIdx: 0, secret: true, require: ['secret', 'dip'] } },
+    spec: { w: 18, d: 18, plan: ['DIP', 'WEDGE', 'MIRROR', 'MIRROR'], emitterZ: 2, fixedIdx: 0, secret: true, require: ['secret', 'dip', 'fall-then-level'] } },
 
   // 12 - two orbs. The beam passes through a lit orb and carries on.
   { n: 12, name: 'TWO ORBS', seed: 121,
-    intro: 'Two orbs this time. One beam has to light them both.',
+    intro: 'Two orbs this time. One beam has to light them both - it passes straight through the first one and carries on to the second.',
     spec: { w: 18, d: 18, plan: ['?', '?', '?'], targets: 2, require: ['twotargets'] } },
 
-  // 13 - down then up: a WEDGE cannot follow a WEDGE (the second one would fire into the sky from
-  // level 3), so the zigzag is DIP down off the start tower, WEDGE back up, MIRROR to run it home.
+  // 13 - the other half of the delta rule: a DIP starts the beam falling and a WEDGE levels it again.
   { n: 13, name: 'ZIGZAG CLIMB', seed: 131,
-    spec: { w: 20, d: 20, plan: ['DIP', 'WEDGE', 'MIRROR'], emitterZ: 2, require: ['wedge', 'dip', 'overflight'] } },
+    spec: { w: 20, d: 20, plan: ['DIP', 'WEDGE', 'MIRROR'], emitterZ: 2, require: ['wedge', 'dip', 'fall-then-level'] } },
 
+  // 14 - climb, carry the climb through a mirror, then level off. The pattern, at par 4.
   { n: 14, name: 'FLY OVER', seed: 141,
-    spec: { w: 20, d: 20, plan: ['?', '?', '?', '?'], emitterZ: 1, require: ['overflight'] } },
+    spec: { w: 20, d: 20, plan: ['WEDGE', 'MIRROR', 'DIP', 'MIRROR'], require: ['climb-then-level', 'overflight'] } },
 
   { n: 15, name: 'TWO TOWERS', seed: 151,
     spec: { w: 20, d: 20, plan: ['?', '?', '?', '?'], targets: 2, require: ['twotargets', 'overflight'] } },
@@ -102,16 +109,16 @@ const SLOTS = [
     spec: { w: 20, d: 20, plan: ['WEDGE', '?', '?', '?', '?'], fixedIdx: 0, secret: true, require: ['secret', 'overflight'] } },
 
   { n: 17, name: 'SKY BRIDGE', seed: 171,
-    spec: { w: 22, d: 22, plan: ['?', '?', '?', '?'], require: ['overflight', 'stilt'] } },
+    spec: { w: 22, d: 22, plan: ['WEDGE', 'MIRROR', 'DIP', 'MIRROR'], require: ['climb-then-level', 'overflight', 'stilt'] } },
 
   { n: 18, name: 'HIGH ROAD LOW ROAD', seed: 181,
     spec: { w: 22, d: 22, plan: ['?', '?', '?', '?'], targets: 2, require: ['twotargets', 'overflight'] } },
 
   { n: 19, name: 'THE LONG WAY ROUND', seed: 191,
-    spec: { w: 24, d: 24, plan: ['?', '?', '?', '?', '?'], require: ['overflight'] } },
+    spec: { w: 24, d: 24, plan: ['MIRROR', 'WEDGE', 'MIRROR', 'DIP', 'MIRROR'], require: ['climb-then-level', 'overflight'] } },
 
   { n: 20, name: 'SUMMIT', seed: 201,
-    spec: { w: 24, d: 24, plan: ['?', '?', '?', '?', '?', '?'], fixedIdx: 0, secret: true, targets: 2, require: ['secret', 'twotargets', 'overflight'] } }
+    spec: { w: 24, d: 24, plan: ['WEDGE', 'MIRROR', 'DIP', '?', '?', '?'], fixedIdx: 0, secret: true, targets: 2, require: ['secret', 'twotargets', 'climb-then-level'] } }
 ];
 
 /* ---------- scoring: a big board should feel used, not empty ---------- */

@@ -407,52 +407,23 @@
     <div id="modal-levels" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="levels-title"><button class="btn btn-icon modal-close" type="button" aria-label="Close level select">&#x2715;</button><h2 id="levels-title">Levels</h2><div class="level-grid"></div></div></div>
     <div id="modal-victory" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="victory-title"><div class="light-ring" aria-hidden="true"></div><button class="btn btn-icon modal-close" type="button" aria-label="Close">&#x2715;</button><h2 id="victory-title" class="victory-title">Beam Connected</h2><div class="victory-stars"></div><div class="victory-stats"></div><div class="modal-actions"></div></div></div>
 
-    <script src="../src/pieces.js"></script>
-    <script src="../src/sim.js"></script>
-    <script src="../src/theme.js"></script>
-    <script src="../src/ui.js"></script>
-    <script>
-    /* Stub main: exercises LaserUI with a sample view model. No render, no input, no audio. */
-    (function () {
-      'use strict';
-      var level = LaserSim.parseLevel({
-        name: 'HIDDEN WALL', par: 2, size: { w: 7, d: 7 },
-        terrain: ['0000000', '0000000', '0001000', '0000000', '0002000', '0000000', '0000000'],
-        emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 5, y: 1 }],
-        fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }],
-        tray: ['MIRROR', 'MIRROR', 'WEDGE'], intro: 'One of these blocks is taller than it looks.'
-      });
-      var placed = [{ x: 2, y: 3, type: 'MIRROR', orient: '/' }];
-      var vm = {
-        levelIndex: 3, levelCount: 20, level: level, placed: placed,
-        trayRemaining: { MIRROR: 1, WEDGE: 1, DIP: 0 }, selectedTray: 'MIRROR', selectedCell: null, cursorCell: null,
-        fires: 1, tiltsUsed: 0, hintUsed: false, beamResult: LaserSim.trace(level, placed), status: 'placing',
-        /* Stars are per-criterion flags (DESIGN.md 3.6): solved + blind, par forfeited. The HUD must light stars
-         * ONE and THREE, never "the first two". */
-        stars: { solved: true, par: false, blind: true },
-        attemptStars: { solved: true, par: true, blind: true },
-        camera: 'flat', isFlat: true, muted: false, canUndo: true, canRedo: false, revealPlaying: false,
-        cameraBusy: false, canFit: false, viewToggle: null,
-        /* `pitch` is the climb the beam still had when it ended (DESIGN.md 12): the readout must add "it was still
-         * going up" in words, and the row must still cost the stage no more than two compact lines. */
-        readout: { kind: 'danger', message: 'The beam flew over the target.', pitch: 1,
-          altitude: { beamZ: 2, targetZ: 1, above: true }, progress: { lit: 0, total: 1 } }
-      };
-      var log = [];
-      var events = {};
-      var handlers = {};
-      ['onTraySelect', 'onFire', 'onReset', 'onTiltToggle', 'onHint', 'onUndo', 'onRedo', 'onSoundToggle', 'onHelp', 'onLevels',
-       'onRotateSelected', 'onRemoveSelected', 'onSelectLevel', 'onNextLevel', 'onRetryLevel', 'onModalOpen', 'onModalClose', 'onStageResize', 'onFit'].forEach(function (n) {
-        handlers[n] = function (a) { log.push([n, a]); };
-      });
-      /* Deliberately the OLD numeric schema: loadProgress() must migrate it to criterion flags without losing a star. */
-      try { localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 3, highestUnlocked: 5, stars: { '0': 3, '1': 2, '2': 1, '3': 2 }, muted: false, seenHelp: true })); } catch (e) {}
-      var ui = LaserUI.create({ root: document.getElementById('app'), theme: LaserTheme, handlers: handlers, render: null, autoHelp: false });
-      ui.setState(vm);
-      ui.showToast(level.intro, { kind: 'intro', ms: 60000 });
-      window.__harness = { ui: ui, vm: vm, log: log, level: level,
-        setState: function (patch) { var k; for (k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) vm[k] = patch[k]; ui.setState(vm); return vm; } };
-    }());
-    </script>
+    <script src="vendor/three.min.js"></script>
+    <script src="src/pieces.js"></script>
+    <script src="src/sim.js"></script>
+    <script src="src/theme.js"></script>
+    <script src="src/levels.js"></script>
+    <script src="src/audio.js"></script>
+    <script src="src/render-core.js"></script>
+    <script src="src/render-camera.js"></script>
+    <script src="src/render-terrain.js"></script>
+    <script src="src/render-pieces.js"></script>
+    <script src="src/render-beam.js"></script>
+    <script src="src/render.js"></script>
+    <script src="src/input.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/main-trace.js"></script>
+    <script src="src/main-camera.js"></script>
+    <script src="src/main.js"></script>
+    <script>LaserMain.start({ root: document.getElementById('app'), canvas: document.getElementById('board') });</script>
 </body>
 </html>

@@ -122,7 +122,7 @@ Error handling: WebGL unavailable -> a visible message with a link back to the 2
 ## 9. Decisions taken without asking (James is not watching; flagged here)
 - Builder split follows the Squish Shot precedent: Claude subagents for code under ultracode, Codex for the theme tokens and the thumbnail.
 - Camera rotation is free (drag) rather than a limited resource; the blind-solve star supplies the pressure without frustrating younger kids.
-- All three pieces set the outgoing pitch (MIRROR levels, WEDGE climbs, DIP descends) instead of preserving it. A physically strict vertical mirror would preserve pitch, but that needs a fourth "leveling" piece and makes the tray harder to read. The renderer shows a physically plausible sloped face, so the rule reads as natural.
+- ~~All three pieces set the outgoing pitch (MIRROR levels, WEDGE climbs, DIP descends) instead of preserving it.~~ **WRONG, and corrected in section 12.** James caught it on playing the build: a vertical mirror's normal is horizontal, so it turns the beam sideways and leaves the climb untouched. Pitch is a DELTA. The reasoning that a strict mirror "needs a fourth leveling piece" was itself the error: the DIP already levels a climbing beam, so no fourth piece is required and the tray stays three wide.
 - Pieces are one level tall, so beams can fly over them. That is deliberate hidden information.
 - Splitters, prisms, and portals from the 2D game are NOT in v1; the research step decides which twist pieces come next.
 
@@ -169,3 +169,30 @@ Measured on the 6x6 build at 393x852 with a 393x614 canvas: the board projected 
 
 ### 11.3 Generation had to change with the size
 Generate-then-solve does not scale to 20x20 (the 9x9 par-4 level already cost 345,693 solver nodes). Level generation is now CONSTRUCTIVE: walk a beam path first, place the target at its end, then paint terrain around the path (raising blocks the beam flies over, walling off alternative routes) re-tracing after every edit. The solver is then used only to prove MINIMALITY by an exhaustive search bounded to depth par-1, which is far cheaper than searching at depth par, plus the existing 3D-necessity test. A level whose par cannot be proven within budget does not ship.
+
+
+## 12. Pitch is a DELTA, not a set (amended 2026-09-03, James's correction; supersedes 3.3)
+
+James, on playing the build: "when the wedge angles the beam upward and then a regular mirror interacts with it next the beam should still be directed upward. If a wedge angles the beam up it needs to be angled down to become flat/parallel with the ground."
+
+He is right and section 3.3 was wrong. A vertical mirror's normal is horizontal, so reflecting off it rotates the beam's HORIZONTAL heading by 90 degrees and leaves its vertical component untouched. A climbing beam stays climbing. Only a sloped face can change the climb.
+
+### 12.1 The corrected rule (this replaces the pitch column of 3.3)
+Each piece turns the beam 90 degrees exactly as before. What changes is that a piece now applies a pitch DELTA to the incoming beam instead of setting an absolute pitch.
+
+| Piece  | Turn | Pitch effect | v_in -1 | v_in 0 | v_in +1 |
+|--------|------|--------------|---------|--------|---------|
+| MIRROR | `/` or `\` | v_out = v_in (preserved) | -1 | 0 | +1 |
+| WEDGE  | `/` or `\` | v_out = min(v_in + 1, +1) | 0 | +1 | +1 |
+| DIP    | `/` or `\` | v_out = max(v_in - 1, -1) | -1 | -1 | 0 |
+
+Consequences, all intended:
+- A MIRROR can no longer level a climbing beam. The ONLY way to level a climbing beam is a DIP, and the only way to level a descending beam is a WEDGE.
+- Altitude becomes a resource managed across several pieces rather than a property of the last piece hit. Climb with a WEDGE, travel, then DIP back to level to arrive at a target.
+- A level beam behaves exactly as it did before, so levels 1 to 3 are unaffected.
+
+### 12.2 The one approximation, stated plainly
+Physically, a face that adds +45 degrees to an already-climbing beam would send it straight up at +90 degrees. The grid represents only -45, 0 and +45, so the delta is CLAMPED: a WEDGE hit by an already-climbing beam leaves it climbing, and a DIP hit by an already-descending beam leaves it descending. This keeps every beam segment at 45 degrees or level, which is what makes the board readable from directly above.
+
+### 12.3 What this invalidates
+The pitch change is a rules change, so everything derived from the rules must be rebuilt, not patched: every level's par, stored solution and 3D-necessity verdict; the solver's search; the help text; and the level intros. No level ships without its par being re-proven under the new rule.

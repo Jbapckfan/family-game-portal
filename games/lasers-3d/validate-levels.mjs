@@ -12,10 +12,19 @@
 //   Every proof also asserts capHits === 0, i.e. no trace in the search ended on LaserSim's step cap,
 //   so the proof holds whatever MAX_STEPS is set to.
 //
+// PITCH IS A DELTA (DESIGN.md section 12). The rule change invalidated every stored par, solution and
+// 3D-necessity verdict, so this validator re-proves all three from scratch against the CURRENT engine.
+// The stored `solution` is checked twice over: it must still light every target when replayed now,
+// and every piece it hits must show an outgoing pitch equal to LaserPieces.applyPitch(type, vIn) -
+// which is what catches a solution left over from the old set-pitch rule rather than merely a
+// solution that happens to miss.
+//
 // Checks, per level:
 //   - LaserSim.parseLevel accepts it
 //   - par proven (both halves above); par <= tray.length <= par + 1
 //   - level.solution replays to allTargetsHit, has exactly par pieces drawn from the tray, all legal
+//   - level.solution replays under the DELTA pitch rule: every target lit, end 'target', and every
+//     piece hit obeys v_out = clamp(v_in + dPitch)
 //   - no trivial straight shot (nothing placed does not solve it)
 //   - index >= 3 (level 4 on): 3D-necessary (solver.needs3D), and the AIRTIGHT 'flat-unsolvable'
 //     verdict rather than the scoped one (see solver.mjs needs3D docs)
@@ -36,6 +45,7 @@ import { concepts } from './gen.mjs';
 
 const require = createRequire(import.meta.url);
 const Sim = require('./src/sim.js');
+const Pieces = require('./src/pieces.js');
 const Theme = require('./src/theme.js');
 const LEVELS = require(process.env.LASERS_LEVELS || './src/levels.js');
 
@@ -78,6 +88,8 @@ function parBand(i) {
 }
 
 const failures = [];
+const climbThenLevel = [];   // levels whose solution climbs with a WEDGE and then levels off with a DIP
+const fallThenLevel = [];    // levels whose solution falls with a DIP and then levels off with a WEDGE
 function fail(i, msg) { failures.push('level ' + (i + 1) + ': ' + msg); }
 function assert(i, cond, msg) { if (!cond) fail(i, msg); return !!cond; }
 
@@ -144,6 +156,25 @@ LEVELS.forEach((raw, i) => {
     const placedOk = sol.every((p, k) => Sim.canPlace(L, sol.slice(0, k), p.x, p.y));
     assert(i, placedOk, 'solution places a piece on an illegal cell');
     if (solTrace && solTrace.segments.length > longestBeam) { longestBeam = solTrace.segments.length; longestBeamAt = (i + 1) + ' ' + raw.name; }
+
+    // ---- THE PITCH-RULE CHECK (DESIGN.md section 12) ----
+    // The stored solution must still work under the DELTA rule, and must be internally consistent
+    // with it: a solution authored under the old "a piece SETS the pitch" rule would either miss
+    // outright or show a piece whose outgoing pitch is not clamp(v_in + dPitch).
+    if (solTrace) {
+      const lit = new Set(solTrace.hits);
+      assert(i, L.targets.every((tg, k) => lit.has(k)),
+        'solution does not light every target under the delta pitch rule (lit ' + solTrace.hits.length + ' of ' + L.targets.length + ')');
+      assert(i, solTrace.allTargetsHit && solTrace.end === 'target',
+        'solution replay ends with "' + solTrace.end + '", not "target"');
+      for (const e of solTrace.events) {
+        if (e.kind !== 'piece') continue;
+        const want = Pieces.applyPitch(e.type, e.vIn);
+        assert(i, e.vOut === want, 'piece ' + e.type + ' at (' + e.x + ',' + e.y + ') left pitch ' + e.vOut +
+          ' on an incoming pitch of ' + e.vIn + '; the delta rule says ' + want);
+        assert(i, e.dOut === Sim.TURN[e.orient][e.dIn], 'piece ' + e.type + ' at (' + e.x + ',' + e.y + ') turned the beam wrongly');
+      }
+    }
   }
 
   // ---- par lower bound: EXHAUSTIVE search at depth par-1 must find nothing ----
@@ -210,6 +241,12 @@ LEVELS.forEach((raw, i) => {
   if (i < 11) assert(i, L.targets.length === 1, 'one target before level 12');
   if (i >= 3) assert(i, cs.includes('overflight') || cs.includes('wedge') || cs.includes('dip'),
     'every level from 4 on needs a dramatic over-flight or climb in its solution');
+  // DESIGN.md section 12 is a teaching opportunity: from level 7 on the set must actually drill the
+  // WEDGE-then-DIP pattern (climb to clear something, then DIP to level off and arrive).
+  if (i === 6) assert(i, cs.includes('climb-then-level'),
+    'level 7 introduces the DIP as the climb-LEVELLER, so its solution must carry climb-then-level');
+  if (cs.includes('climb-then-level')) climbThenLevel.push(i + 1);
+  if (cs.includes('fall-then-level')) fallThenLevel.push(i + 1);
   if (TEACHING[i]) assert(i, L.intro.length > 0, 'teaching level needs an intro');
   if (raw.intro) assert(i, !/[^\x20-\x7e]/.test(raw.intro), 'intro must be plain ASCII (no emojis)');
 
@@ -223,15 +260,20 @@ LEVELS.forEach((raw, i) => {
 });
 
 if (bigBoards < 2) failures.push('level set: needs at least two 24x24 boards, found ' + bigBoards);
+if (climbThenLevel.filter(n => n >= 7).length < 5) {
+  failures.push('level set: the WEDGE-then-DIP pattern (climb-then-level) must be taught by several levels from 7 on; found '
+    + climbThenLevel.filter(n => n >= 7).length + ' (' + climbThenLevel.join(', ') + ')');
+}
 
 // table
+const conceptWidth = Math.max(8, ...rows.map(r => String(r.concepts).length));
 const cols = [['#', 3, true], ['name', 20], ['size', 7], ['par', 3, true], ['tray', 6], ['beam', 4, true],
-  ['fitpx', 5, true], ['@34px', 9], ['concepts', 54], ['needs3D', 24], ['nodes', 8, true]];
+  ['fitpx', 5, true], ['@34px', 9], ['concepts', conceptWidth], ['needs3D', 20], ['nodes', 8, true]];
 console.log(cols.map(c => pad(c[0], c[1], c[2])).join('  '));
 console.log(cols.map(c => '-'.repeat(c[1])).join('  '));
 for (const r of rows) {
   console.log([pad(r.i + 1, 3, true), pad(r.name, 20), pad(r.size, 7), pad(r.par, 3, true), pad(r.tray, 6),
-    pad(r.beam, 4, true), pad(r.fit, 5, true), pad(r.zoom, 9), pad(r.concepts, 54), pad(r.reason, 24), pad(r.nodes, 8, true)].join('  '));
+    pad(r.beam, 4, true), pad(r.fit, 5, true), pad(r.zoom, 9), pad(r.concepts, conceptWidth), pad(r.reason, 20), pad(r.nodes, 8, true)].join('  '));
 }
 console.log('');
 const zoomed = rows.filter(r => r.zoom !== 'fit');
@@ -239,6 +281,8 @@ console.log('fitpx = cell size in CSS px with the whole board contain-fit into a
 console.log('@34px = "fit" when the board fits above the ' + MIN_CELL_PX + ' px touch floor, otherwise how many of the');
 console.log('        board\'s cells are visible across once the view clamps to ' + MIN_CELL_PX + ' px per cell and pans. ' +
   (zoomed.length ? zoomed.length + ' level(s) START ZOOMED: ' + zoomed.map(r => r.i + 1).join(', ') : 'no level starts zoomed') + '.');
+console.log('climb-then-level (DESIGN.md 12: WEDGE up, then DIP to level off) is taught by level(s) ' + climbThenLevel.join(', ') + ';');
+console.log('        its mirror image fall-then-level (DIP down, then WEDGE to level off) by level(s) ' + (fallThenLevel.join(', ') || 'none') + '.');
 console.log('longest beam in a shipped solution: ' + longestBeam + ' steps (level ' + longestBeamAt + ').');
 const biggest = LEVELS.reduce((a, b) => (Math.max(b.size.w, b.size.d) > Math.max(a.size.w, a.size.d) ? b : a));
 const cap = typeof Sim.stepCap === 'function' ? Sim.stepCap(biggest) : Sim.MAX_STEPS;

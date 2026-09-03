@@ -4,10 +4,27 @@ Shipped files (all under `games/lasers-3d/`):
 
 - `src/pieces.js` — piece registry + turn tables (UMD: `window.LaserPieces` / `module.exports`)
 - `src/sim.js` — stepper + public API (UMD: `window.LaserSim` / `module.exports`; loads `pieces.js` itself)
-- `test/sim.test.mjs` — `node:test` suite, one or more per bullet of spec 3.2, 3.3, 3.4, plus the `events` stream and the derived step cap
+- `test/sim.test.mjs` — `node:test` suite, one or more per bullet of spec 3.2, 3.3, 3.4 and the corrected pitch rule of spec 12 (every cell of its table, all three clamp cases, and the owner's WEDGE-then-MIRROR scenario), plus the `events` stream and the derived step cap
 - `test/review-robustness.test.mjs`, `test/review-spec-conformance.test.mjs` — adversarial review suites (malformed levels, illegal placements, determinism, loop guard, derived cap, UMD wrapper)
 
-Implements DESIGN.md section 3 (FROZEN). Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
+Implements DESIGN.md section 3 **as corrected by section 12** (pitch is a DELTA, not a set). Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
+
+### PITCH IS A DELTA (DESIGN.md 12, supersedes the pitch column of 3.3)
+
+A piece turns the beam 90 degrees exactly as before, but its vertical effect is applied **to the
+incoming pitch**, then clamped to the three pitches the grid represents:
+
+| piece | turn | pitch effect | `v_in` -1 | `v_in` 0 | `v_in` +1 |
+|---|---|---|---|---|---|
+| MIRROR | `/` or `\\` | `v_out = v_in` (preserved) | -1 | 0 | +1 |
+| WEDGE  | `/` or `\\` | `v_out = min(v_in + 1, +1)` | 0 | +1 | **+1** |
+| DIP    | `/` or `\\` | `v_out = max(v_in - 1, -1)` | **-1** | -1 | 0 |
+
+A vertical mirror's normal is horizontal, so it cannot change the climb: **a MIRROR can no longer
+level a climbing beam.** The only way to level a climber is a DIP, and the only way to level a
+descender is a WEDGE. The bold cells are the clamp of spec 12.2 - the one deliberate approximation,
+which keeps every beam segment at 45 degrees or level. A level beam behaves exactly as it did
+before, so the pure-2D levels are unaffected.
 
 ---
 
@@ -57,7 +74,8 @@ LaserSim.H_MAX           // 4   (levels z in 0..3; arrival at z >= 4 is 'lost-sk
 LaserSim.MAX_STEPS       // 400 - the MINIMUM step cap, NOT the cap a trace actually uses.  [added]
                          //       See 2.1; the real cap is LaserSim.stepCap(level).
 LaserSim.ORIENTS         // ['/', '\\']                                                    [added]
-LaserSim.PIECES          // registry from pieces.js: { MIRROR:{pitch:0,...}, WEDGE:{pitch:1,...}, DIP:{pitch:-1,...} }
+LaserSim.PIECES          // registry from pieces.js: { MIRROR:{dPitch:0,...}, WEDGE:{dPitch:1,...}, DIP:{dPitch:-1,...} }
+                         //       `dPitch` is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12).
 LaserSim.TURN            // turn tables: TURN['/'] and TURN['\\'], each { E, N, W, S } -> outgoing dir  [added, same object as LaserPieces.TURN]
 
 LaserSim.stepCap(level)  // -> the DERIVED loop-guard cap for that level (see 2.1). Validates like parseLevel.  [added]
@@ -160,13 +178,14 @@ Notes:
   `filter(kind==='pitch'||kind==='end')` cells -> `altitudeMarks`.
 
 **Worked example.** Emitter on a `t=1` ridge at (0,3); the orb at (3,3) sits on `t=0`, so the
-outbound level-1 beam flies OVER it. A DIP on the `t=1` pedestal at (5,3) drops the beam to `z=0`,
-two mirrors walk it back west and south, and it enters (3,3) at `z=0` - the real hit.
+outbound level-1 beam flies OVER it. A DIP on the `t=1` pedestal at (5,3) starts the beam falling; a
+WEDGE at (5,4) catches it at `z=0` and LEVELS it (`-1 + 1 = 0`) - a MIRROR there would have left it
+falling into the floor. A MIRROR then walks the level beam south into (3,3) at `z=0` - the real hit.
 
 ```js
 level  = { size:{w:7,d:7}, terrain:['0000000','0000000','0000000','1000010','0000000','0000000','0000000'],
            emitter:{x:0,y:3,dir:'E'}, targets:[{x:3,y:3}], fixed:[], tray:[] }
-placed = [{x:5,y:3,type:'DIP',orient:'/'}, {x:5,y:4,type:'MIRROR',orient:'\\'}, {x:3,y:4,type:'MIRROR',orient:'/'}]
+placed = [{x:5,y:3,type:'DIP',orient:'/'}, {x:5,y:4,type:'WEDGE',orient:'\\'}, {x:3,y:4,type:'MIRROR',orient:'/'}]
 ```
 
 ```json
@@ -181,7 +200,7 @@ placed = [{x:5,y:3,type:'DIP',orient:'/'}, {x:5,y:4,type:'MIRROR',orient:'\\'}, 
     {"kind":"piece","step":4,"x":5,"y":3,"z":1,"type":"DIP","orient":"/","fixed":false,"dIn":"E","dOut":"N","vIn":0,"vOut":-1},
     {"kind":"pitch","step":4,"x":5,"y":3,"z":1,"from":0,"to":-1},
     {"kind":"enter","step":5,"x":5,"y":4,"z":0,"d":"N","v":-1},
-    {"kind":"piece","step":5,"x":5,"y":4,"z":0,"type":"MIRROR","orient":"\\","fixed":false,"dIn":"N","dOut":"W","vIn":-1,"vOut":0},
+    {"kind":"piece","step":5,"x":5,"y":4,"z":0,"type":"WEDGE","orient":"\\","fixed":false,"dIn":"N","dOut":"W","vIn":-1,"vOut":0},
     {"kind":"pitch","step":5,"x":5,"y":4,"z":0,"from":-1,"to":0},
     {"kind":"enter","step":6,"x":4,"y":4,"z":0,"d":"W","v":0},
     {"kind":"enter","step":7,"x":3,"y":4,"z":0,"d":"W","v":0},
@@ -195,22 +214,34 @@ placed = [{x:5,y:3,type:'DIP',orient:'/'}, {x:5,y:4,type:'MIRROR',orient:'\\'}, 
 
 Read it: `(3,3)` is entered TWICE - at `step 2` (`z:1`, the fly-over) and at `step 8` (`z:0`, the
 hit) - but there is exactly ONE `target` event, at `step 8`. The mirror at (3,4) turns the beam
-without changing its pitch, so it gets a `piece` event and no `pitch` event, exactly as it gets no
-`altitudeMarks` entry.
+without changing its pitch - a MIRROR never does - so it gets a `piece` event and no `pitch` event,
+exactly as it gets no `altitudeMarks` entry. The WEDGE at (5,4) does change it (`-1 -> 0`), so it
+gets both.
 
 ### 2.3 `src/pieces.js` (also exported, for the tray UI and future twist pieces)
 
 ```
 LaserPieces.TURN          // { '/': {E:'N',N:'E',W:'S',S:'W'}, '\\': {E:'S',S:'E',W:'N',N:'W'} }
 LaserPieces.ORIENTS       // ['/', '\\']
-LaserPieces.PIECES        // { MIRROR:{type,pitch:0,turn,label:'Mirror',tag:'',hint}, WEDGE:{pitch:1,label:'Wedge',tag:'^'}, DIP:{pitch:-1,label:'Dip',tag:'v'} }
+LaserPieces.PIECES        // { MIRROR:{type,dPitch:0,turn,label:'Mirror',tag:'',hint}, WEDGE:{dPitch:1,label:'Wedge',tag:'^'}, DIP:{dPitch:-1,label:'Dip',tag:'v'} }
+LaserPieces.V_MIN, V_MAX  // -1, +1 - the only pitches the grid represents (spec 12.2)
 LaserPieces.TYPES         // ['MIRROR','WEDGE','DIP']
 LaserPieces.isType(t), isOrient(o)
 LaserPieces.rotate(orient)             // '/' -> '\\' -> '/'
-LaserPieces.apply(type, orient, dir)   // -> { d: outgoingDir, v: outgoingPitch }
+LaserPieces.clampPitch(v)              // -> v clamped to -1..+1 (the central clamp, spec 12.2)
+LaserPieces.applyPitch(type, vIn)      // -> outgoing pitch alone: clampPitch(vIn + dPitch)
+LaserPieces.apply(type, orient, dir, vIn)  // -> { d: outgoingDir, v: outgoingPitch }
 ```
 
-A piece is data `{turn, pitch}`; the stepper never special-cases a type. A new twist piece = one more registry entry.
+**`apply` takes the INCOMING pitch.** It has to: under spec 12 the outgoing pitch is a function of
+the incoming one, so the old 3-argument `apply(type, orient, dir)` could not express the rule and is
+gone. `vIn` must be -1, 0 or +1.
+
+A piece is data `{turn, dPitch}`; the stepper never special-cases a type. `applyPitch` adds the
+entry's `dPitch` and applies the clamp centrally, and an entry may instead supply its own
+`applyPitch(vIn)` function for a future piece whose effect is not a plain delta (a floor mirror that
+flips -1 to +1, say) - the central clamp still applies. Either way a new twist piece is one more
+registry entry.
 
 ---
 
@@ -265,13 +296,13 @@ Step from state `(x,y,z,d,v)`: next cell `(x+dx, y+dy)`, arrival level `z' = z+v
 
 Target: lit when entered at `z' == t[cell]` (from any direction, any pitch). Above the orb the beam flies over it and it is NOT lit. **A lit orb passes the beam through unchanged; the beam stops (`end:'target'`) only when the LAST unlit target is lit** — *resolved ambiguity*: the spec says both "the beam stops at the target" and "multi-target levels require all targets lit" with no splitter in v1; pass-through is the only reading under which a two-target level (spec 3.7, level 12) is solvable. Single-target levels behave exactly as "the beam stops at the target".
 
-Piece: acts only when `z' == t[cell]`; sets `d = TURN[orient][d]` and `v = piece.pitch` (MIRROR 0, WEDGE +1, DIP -1). Above its level the beam passes over (`overflights`), keeping `d` and `v`. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
+Piece: acts only when `z' == t[cell]`; sets `d = TURN[orient][d]` and `v = clamp(v + piece.dPitch)` with the clamp to -1..+1 (MIRROR dPitch 0, WEDGE +1, DIP -1) - a DELTA on the incoming pitch, spec 12. Above its level the beam passes over (`overflights`), keeping `d` and `v`. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
 
-Loop guard: the start state is seeded; after each entered cell (post-piece) the state `(x,y,z,d,v)` is checked; a repeat -> `end:'loop'` with endPoint at that cell center. This state guard is what guarantees termination. There is also a step cap, but it is DERIVED per level (`LaserSim.stepCap`, section 2.1) so that it strictly exceeds the number of distinct states and can never fire first - `end:'loop'` therefore always means a genuine repeated state. `MAX_STEPS` (400) is only the cap's floor for tiny boards; it is NOT the cap in force on a 12x12..24x24 board, where a legal route may run to hundreds of steps. Note: in pure 2D, mirror dynamics are reversible so cycles cannot be entered; in 3D they can, because pieces RESET pitch (see the loop test for a constructed example).
+Loop guard: the start state is seeded; after each entered cell (post-piece) the state `(x,y,z,d,v)` is checked; a repeat -> `end:'loop'` with endPoint at that cell center. This state guard is what guarantees termination. There is also a step cap, but it is DERIVED per level (`LaserSim.stepCap`, section 2.1) so that it strictly exceeds the number of distinct states and can never fire first - `end:'loop'` therefore always means a genuine repeated state. `MAX_STEPS` (400) is only the cap's floor for tiny boards; it is NOT the cap in force on a 12x12..24x24 board, where a legal route may run to hundreds of steps. Note: in pure 2D, mirror dynamics are reversible so cycles cannot be entered; in 3D they can, because a beam can leave a cell at a different height than it entered the board at and because the pitch CLAMP is not injective - a WEDGE maps both `v=0` and `v=+1` to `+1`, so two different histories can merge into one state (see the loop test for a constructed example).
 
 canPlace: false off-grid, on the emitter, on any target, on a fixed piece, on a placed piece; true on any other cell, including raised terrain (`t` 1..3) — the piece then sits at that level and only a beam at that level meets it.
 
-altitudeMarks: a mark at every pitch change (`{x,y,z}` of the piece cell at the beam's level there) plus the endPoint. A MIRROR hit by a level beam changes nothing and gets no mark; a MIRROR that levels a climbing beam does.
+altitudeMarks: a mark at every pitch change (`{x,y,z}` of the piece cell at the beam's level there) plus the endPoint. A MIRROR never changes the pitch, so a MIRROR NEVER gets a mark. A WEDGE hit by an already-climbing beam and a DIP hit by an already-descending beam are clamped to no change, so they get no mark either; a DIP that levels a climber, and a WEDGE that levels a descender, do.
 
 ---
 
@@ -442,7 +473,7 @@ placed = [{"x":4,"y":2,"type":"MIRROR","orient":"/"}]
 }
 ```
 
-### Example C — HIDDEN RAMP (secret fixed WEDGE). From above, (3,2) looks like a plain fixed mirror; it is a wedge, so the beam turns north AND climbs 1,2,3 then is lost to the sky. A MIRROR on the t=2 cell (3,4) levels the beam at z=2 and sends it east to the plateau target at (5,4), t=2.
+### Example C — HIDDEN RAMP (secret fixed WEDGE). From above, (3,2) looks like a plain fixed mirror; it is a wedge, so the beam turns north AND climbs 1,2,3 then is lost to the sky. A **DIP** on the t=2 cell (3,4) levels the beam at z=2 (`+1 - 1 = 0`) and sends it east to the plateau target at (5,4), t=2. Under the corrected rule a MIRROR there would NOT work: it preserves the climb, so the beam would still fly off into the sky one cell later. Levelling a climber takes a DIP.
 
 ```json
 {
@@ -482,7 +513,7 @@ placed = [{"x":4,"y":2,"type":"MIRROR","orient":"/"}]
     }
   ],
   "tray": [
-    "MIRROR"
+    "DIP"
   ]
 }
 ```
@@ -520,10 +551,10 @@ placed = []
 }
 ```
 
-Solved (note the altitude marks: wedge at z=0, leveling mirror at z=2, end at z=2):
+Solved (note the altitude marks: wedge at z=0, levelling DIP at z=2, end at z=2):
 
 ```
-placed = [{"x":3,"y":4,"type":"MIRROR","orient":"/"}]
+placed = [{"x":3,"y":4,"type":"DIP","orient":"/"}]
 
 {
   "segments": [
@@ -549,7 +580,7 @@ placed = [{"x":3,"y":4,"type":"MIRROR","orient":"/"}]
   "end": "target",
   "endPoint": {"x":5,"y":4,"z":2},
   "altitudeMarks": [{"x":3,"y":2,"z":0},{"x":3,"y":4,"z":2},{"x":5,"y":4,"z":2}],
-  "pieceHits": [{"x":3,"y":2,"type":"WEDGE","orient":"/","fixed":true},{"x":3,"y":4,"type":"MIRROR","orient":"/","fixed":false}],
+  "pieceHits": [{"x":3,"y":2,"type":"WEDGE","orient":"/","fixed":true},{"x":3,"y":4,"type":"DIP","orient":"/","fixed":false}],
   "overflights": []
 }
 ```

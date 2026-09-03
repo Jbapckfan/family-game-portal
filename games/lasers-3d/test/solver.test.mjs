@@ -26,11 +26,14 @@ const WALLED = mk({
   emitter: { x: 0, y: 2, dir: 'E' }, targets: [{ x: 2, y: 4 }], tray: ['MIRROR', 'MIRROR']
 });
 
-// (3) Target in the middle of a 3x3 plateau (t=1). Needs WEDGE + 2 MIRRORs (par 3);
-// under flat rules the plateau is a solid block and the target is unreachable.
+// (3) Target in the middle of a 3x3 plateau (t=1). Needs WEDGE + DIP + MIRROR (par 3): the WEDGE
+// starts the climb, the DIP LEVELS it on the plateau top (under the corrected rule a MIRROR cannot -
+// spec 12.1 - so the old WEDGE + 2 MIRRORs tray no longer solves this at all), and the MIRROR steers
+// the level beam into the orb. Under flat rules the plateau is a solid block and the target is
+// unreachable, so this is also the flat-unsolvable fixture.
 const PLATEAU = mk({
   terrain: ['00000', '00000', '00111', '00111', '00111'],
-  emitter: { x: 0, y: 1, dir: 'E' }, targets: [{ x: 3, y: 3 }], tray: ['WEDGE', 'MIRROR', 'MIRROR']
+  emitter: { x: 0, y: 1, dir: 'E' }, targets: [{ x: 3, y: 3 }], tray: ['WEDGE', 'DIP', 'MIRROR']
 });
 
 // (4) Secret fixed WEDGE at (2,2). Flat: it is a mirror, a MIRROR at (2,4) finishes the shot.
@@ -77,12 +80,16 @@ describe('solve: known levels', () => {
     assert.equal(r.unique, true);
   });
 
-  test('(3) plateau level solvable in 3D with par 3', () => {
-    const r = solve(PLATEAU);
+  test('(3) plateau level solvable in 3D with par 3 (WEDGE climbs, DIP levels, MIRROR steers)', () => {
+    const r = solve(PLATEAU, { maxSolutions: Infinity });
     assert.equal(r.solvable, true);
     assert.equal(r.par, 3);
     assert.equal(replay(PLATEAU, r.solution).allTargetsHit, true);
     for (const s of r.solutions) assert.equal(replay(PLATEAU, s).allTargetsHit, true);
+    // every minimal solution uses the DIP: only a DIP can level the climb onto the plateau top
+    for (const s of r.solutions) assert.ok(s.some(p => p.type === 'DIP'), JSON.stringify(s));
+    // and the old set-pitch tray is now genuinely unsolvable
+    assert.equal(solve(PLATEAU, { tray: ['WEDGE', 'MIRROR', 'MIRROR'] }).solvable, false);
   });
 });
 
@@ -138,6 +145,36 @@ describe('flatten / needs3D', () => {
     const r = needs3D(lvl);
     assert.equal(r.reason, 'flat-routes-fail-in-3d');
     assert.equal(r.needs3D, true);
+  });
+
+  // Under the corrected rule (spec 12) MIRROR PRESERVES the pitch instead of zeroing it, so
+  // flatten()'s claim - "the CLASSIC 2D game" - has to be re-established rather than assumed.
+  // It still holds, and for a stronger reason than before: in the flat projection the emitter fires
+  // level, every t >= 1 cell is a full wall (nothing can climb onto one) and every piece is a MIRROR,
+  // which now preserves v. v starts at 0 and no piece can ever change it, so EVERY segment is level.
+  test('flatten really is 2D: every segment of every flat trace has v === 0 (spec 12 re-check)', () => {
+    const cases = [FIRST_BOUNCE, WALLED, PLATEAU, SECRET_WEDGE];
+    const r = rng(20260903);
+    for (let i = 0; i < 120; i++) cases.push(randomLevel(r));
+    for (const lvl of cases) {
+      const F = Sim.parseLevel(flatten(lvl));
+      // heights in the projection are only 0 or 3, and 3 is a full wall
+      assert.ok(F.terrain.join('').split('').every(c => c === '0' || c === '3'), F.terrain.join('|'));
+      assert.ok(F.tray.every(t => t === 'MIRROR'));
+      assert.ok(F.fixed.every(f => f.type === 'MIRROR' && F.t[f.y][f.x] === 0));
+      // every reachable flat trace, with any legal placement of any tray piece, stays level
+      const placements = [[]];
+      for (let y = 0; y < F.size.d; y++) for (let x = 0; x < F.size.w; x++) {
+        for (const o of Pieces.ORIENTS) if (Sim.canPlace(F, [], x, y)) placements.push([{ x, y, type: 'MIRROR', orient: o }]);
+      }
+      for (const placed of placements) {
+        const t = Sim.trace(F, placed);
+        assert.ok(t.segments.every(sg => sg.v === 0), 'a flat segment climbed');
+        assert.ok(t.visited.every(v => v.z === 0 && v.v === 0), 'a flat beam left level 0');
+        assert.deepEqual(t.events.filter(e => e.kind === 'pitch'), [], 'a flat trace changed pitch');
+        assert.deepEqual(t.overflights, [], 'nothing can be flown over in the flat game');
+      }
+    }
   });
 
   test('solve({flat:true}) equals solve(flatten(level))', () => {

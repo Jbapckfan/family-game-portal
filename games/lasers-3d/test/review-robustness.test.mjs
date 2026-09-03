@@ -43,6 +43,21 @@ const D = (x, y, orient = '/') => ({ x, y, type: 'DIP', orient });
 const rows = (...r) => r;
 const ENDS = new Set(['target', 'blocked', 'lost-edge', 'lost-floor', 'lost-sky', 'loop']);
 
+// THE canonical 3D cycle under the corrected rule (DESIGN.md section 12). Under the OLD set-pitch
+// rule almost any 3D shape could merge, because every piece threw the incoming pitch away. Now the
+// step map is injective EVERYWHERE EXCEPT the clamp (a WEDGE maps v_in 0 and +1 both to +1; a DIP
+// maps 0 and -1 both to -1), so a cycle has to be built ON the clamp - see the injectivity test in
+// 'robustness: loop guard'. This fixture does exactly that:
+//   emitter (0,3) on a t=1 ridge fires E at z=1, flying OVER the wedge at (2,3) which sits on t=0;
+//   WEDGE (3,3) on t=1 is hit LEVEL (0 -> +1) and turns it north, climbing;
+//   DIP (3,5) on t=3 levels it west, DIP (1,5) on t=3 turns it south falling to z=0,
+//   WEDGE (1,2) levels it east, MIRROR (2,2) turns it north, WEDGE (2,3) sends it east CLIMBING,
+//   so it re-enters (3,3) at z=1 heading E with v_in = +1 - and the clamp maps that to +1 again.
+//   The post-piece state (3,3,1,N,+1) repeats exactly.
+const LOOP_TERRAIN = rows('0000000', '0000000', '0000000', '1001000', '0000000', '0303000', '0000000');
+const loopLevel = (o) => mk(Object.assign({ terrain: LOOP_TERRAIN, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }] }, o || {}));
+const loopPieces = () => [W(3, 3, '/'), D(3, 5, '\\'), D(1, 5, '/'), W(1, 2, '\\'), M(2, 2, '/'), W(2, 3, '/')];
+
 // ---------------------------------------------------------------------------
 describe('robustness: malformed levels (INTERFACES 3 validation list)', () => {
   test('ragged terrain: a short row, a long row, and an extra row all throw naming terrain', () => {
@@ -333,34 +348,62 @@ describe('robustness: determinism and purity', () => {
 
 // ---------------------------------------------------------------------------
 describe('robustness: loop guard', () => {
-  // A 4-mirror square cycle at level 0 entered from above:
-  //   emitter (0,7) on a t=3 ridge faces E at z=3; DIP on t=3 at (3,7) '\' turns S descending.
-  //   (3,6) z2 (3,5) z1 flies OVER the corner mirror D, (3,4) z0 = corner A '/' S->W levels the beam.
-  //   Square: A(3,4) '/', B(0,4) '\', C(0,5) '/', D(3,5) '\'. Back at A the post-piece state repeats.
-  const squareTerrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '3003000');
-  const squareLevel = () => mk({ d: 8, terrain: squareTerrain, emitter: { x: 0, y: 7, dir: 'E' }, targets: [{ x: 6, y: 0 }] });
-  const squarePieces = () => [D(3, 7, '\\'), M(3, 4, '/'), M(0, 4, '\\'), M(0, 5, '/'), M(3, 5, '\\')];
-
-  test('4-mirror square cycle -> end loop at the first repeated state, well under the cap', () => {
-    const r = trace(squareLevel(), squarePieces());
+  test('THE ONLY source of a cycle is the pitch CLAMP: every other step is injective (spec 12.2)', () => {
+    // A cycle needs two different histories to reach one state. The turn tables are bijections and
+    // MIRROR preserves the pitch, so the only many-to-one map in the engine is the clamped delta.
+    for (const type of Pieces.TYPES) {
+      const preimages = {};
+      for (const vIn of [-1, 0, 1]) {
+        const vOut = Pieces.applyPitch(type, vIn);
+        (preimages[vOut] = preimages[vOut] || []).push(vIn);
+      }
+      const merged = Object.keys(preimages).filter(k => preimages[k].length > 1);
+      if (type === 'MIRROR') assert.deepEqual(merged, [], 'MIRROR preserves the pitch, so it merges nothing');
+      if (type === 'WEDGE') assert.deepEqual(merged, ['1'], 'WEDGE: v_in 0 and +1 both leave as +1');
+      if (type === 'DIP') assert.deepEqual(merged, ['-1'], 'DIP: v_in 0 and -1 both leave as -1');
+    }
+    // and every turn table is a bijection on the four directions, in both orientations
+    for (const o of Pieces.ORIENTS) {
+      const out = ['E', 'N', 'W', 'S'].map(d => Pieces.TURN[o][d]);
+      assert.equal(new Set(out).size, 4, 'orient ' + o);
+    }
+  });
+  test('a clamp cycle -> end loop at the first repeated state, well under the cap', () => {
+    const r = trace(loopLevel(), loopPieces());
     assert.equal(r.end, 'loop');
-    assert.ok(r.segments.length < CAP(squareLevel()), `segments ${r.segments.length} vs cap ${CAP(squareLevel())}`);
-    assert.deepEqual(r.endPoint, { x: 3, y: 4, z: 0 });
-    // The square's four corners each acted, corner A twice; D was overflown once on the way in.
-    assert.deepEqual(r.overflights, [{ x: 3, y: 5 }]);
-    const cornerHits = r.pieceHits.filter(p => p.type === 'MIRROR').map(p => `${p.x},${p.y}`);
-    assert.deepEqual(cornerHits, ['3,4', '0,4', '0,5', '3,5', '3,4']);
+    assert.ok(r.segments.length < CAP(loopLevel()), `segments ${r.segments.length} vs cap ${CAP(loopLevel())}`);
+    assert.equal(r.segments.length, 13);
+    assert.deepEqual(r.endPoint, { x: 3, y: 3, z: 1 });
+    // The wedge at (3,3) is the merge point: hit level on the way in, climbing on the way round.
+    const atWedge = r.events.filter(e => e.kind === 'piece' && e.x === 3 && e.y === 3);
+    assert.deepEqual(atWedge.map(e => [e.vIn, e.vOut]), [[0, 1], [1, 1]]);
+    // the outbound level-1 beam flew over the wedge sitting on the floor at (2,3)
+    assert.deepEqual(r.overflights, [{ x: 2, y: 3 }]);
+    assert.deepEqual(r.pieceHits.map(p => `${p.x},${p.y}`), ['3,3', '3,5', '1,5', '1,2', '2,2', '2,3', '3,3']);
     assert.deepEqual(r.hits, []);
     assert.equal(r.allTargetsHit, false);
     // endPoint equals the last segment's `to`, as documented
     assert.deepEqual(r.endPoint, r.segments[r.segments.length - 1].to);
-    // altitudeMarks: DIP (pitch change), A levels (pitch change), then the endPoint
-    assert.deepEqual(r.altitudeMarks, [{ x: 3, y: 7, z: 3 }, { x: 3, y: 4, z: 0 }, { x: 3, y: 4, z: 0 }]);
+    // altitudeMarks: every pitch CHANGE, then the endPoint. The second visit to the wedge is
+    // clamped to no change, so it adds no mark.
+    assert.deepEqual(r.altitudeMarks, [{ x: 3, y: 3, z: 1 }, { x: 3, y: 5, z: 3 }, { x: 1, y: 5, z: 3 },
+      { x: 1, y: 2, z: 0 }, { x: 2, y: 3, z: 0 }, { x: 3, y: 3, z: 1 }]);
   });
-  test('4-mirror square cycle is deterministic and idempotent across repeated calls', () => {
-    const L = parseLevel(squareLevel());
-    const a = trace(L, squarePieces()), b = trace(L, squarePieces());
+  test('the clamp cycle is deterministic and idempotent across repeated calls', () => {
+    const L = parseLevel(loopLevel());
+    const a = trace(L, loopPieces()), b = trace(L, loopPieces());
     assert.deepEqual(a, b);
+  });
+  test('a square of MIRRORs can no longer be entered: MIRROR preserves the pitch, so nothing merges', () => {
+    // This shape WAS a loop under the old set-pitch rule (a DIP dropped the beam into the square and
+    // the first corner mirror levelled it). Now the mirror keeps the descent, so the beam falls out
+    // of the square onto the floor instead of circling - a direct regression test for spec 12.1.
+    const squareTerrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '3003000');
+    const lvl = mk({ d: 8, terrain: squareTerrain, emitter: { x: 0, y: 7, dir: 'E' }, targets: [{ x: 6, y: 0 }] });
+    const r = trace(lvl, [D(3, 7, '\\'), M(3, 4, '/'), M(0, 4, '\\'), M(0, 5, '/'), M(3, 5, '\\')]);
+    assert.notEqual(r.end, 'loop');
+    assert.equal(r.end, 'lost-floor');
+    assert.ok(ENDS.has(r.end));
   });
   test('2-cell ping-pong is impossible under 3.3 (no piece reverses); adjacent opposing mirrors terminate', () => {
     // Every piece turns 90 degrees, so a beam can never return along its own segment. The closest
@@ -378,11 +421,8 @@ describe('robustness: loop guard', () => {
       assert.notEqual(Pieces.TURN[o][d], d);
     }
   });
-  test('the smallest real cycle: two cells revisited with a different level via WEDGE/DIP is caught', () => {
-    // Existing loop test shape reused as a regression: the guard fires on the first repeated (x,y,z,d,v).
-    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0220000', '0000000');
-    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
-    const r = trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed);
+  test('the smallest real cycle: one cell re-entered at the same level through the clamp is caught', () => {
+    const r = trace(loopLevel(), loopPieces());
     assert.equal(r.end, 'loop');
     const keys = r.visited.map(s => `${s.x},${s.y},${s.z},${s.d},${s.v}`);
     // visited records ENTRY states; the repeat is detected on the post-piece state so entries may all differ,
@@ -459,12 +499,11 @@ describe('robustness: the derived step cap (LaserSim.stepCap)', () => {
   test('the guard still fires on a 24x24 board: the documented 3D cycle ends loop far below the cap', () => {
     // Same construction as the documented 3D cycle, replayed on a 24x24 board: the state-repeat
     // guard - not the step cap - is what stops it, and it stops at the same place as on 7x7.
-    const big = Array.from({ length: 24 }, (_, y) => (y === 5 ? '0220' + '0'.repeat(20) : '0'.repeat(24)));
-    const lvl = mk({ w: 24, d: 24, terrain: big, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 23, y: 23 }], tray: [] });
-    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
-    const r = trace(lvl, placed);
+    const big = Array.from({ length: 24 }, (_, y) => (LOOP_TERRAIN[y] || '0000000') + '0'.repeat(17));
+    const lvl = mk({ w: 24, d: 24, terrain: big, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 23, y: 23 }], tray: [] });
+    const r = trace(lvl, loopPieces());
     assert.equal(r.end, 'loop');
-    assert.deepEqual(r.endPoint, { x: 1, y: 3, z: 0 });
+    assert.deepEqual(r.endPoint, { x: 3, y: 3, z: 1 });
     assert.ok(r.segments.length < CAP(lvl), `segments ${r.segments.length} vs cap ${CAP(lvl)}`);
     assert.ok(r.segments.length < MAX_STEPS, 'a real cycle is caught by the state guard, not the cap');
   });
@@ -599,7 +638,8 @@ describe('robustness: UMD wrapper', () => {
   });
   test('node require: module.exports is the factory result, not wrapped', () => {
     assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'parseLevel', 'stepCap', 'trace'].sort());
-    assert.deepEqual(Object.keys(Pieces).sort(), ['ORIENTS', 'PIECES', 'TURN', 'TYPES', 'apply', 'isOrient', 'isType', 'rotate'].sort());
+    assert.deepEqual(Object.keys(Pieces).sort(),
+      ['ORIENTS', 'PIECES', 'TURN', 'TYPES', 'V_MIN', 'V_MAX', 'apply', 'applyPitch', 'clampPitch', 'isOrient', 'isType', 'rotate'].sort());
   });
 
   function browserContext({ withSelf }) {
@@ -821,19 +861,20 @@ describe('robustness (pass 2): loop guard corner cases', () => {
     assert.notEqual(r.end, 'loop');
   });
   test('loop detection compares the POST-piece state: the loop endPoint is the cell where the state first repeats, and pieceHits records the repeat', () => {
-    // Reuse the documented 3D cycle from sim.test.mjs and check the repeated-state bookkeeping.
-    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0220000', '0000000');
-    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
-    const r = trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed);
+    // Reuse the documented clamp cycle and check the repeated-state bookkeeping.
+    const r = trace(loopLevel(), loopPieces());
     assert.equal(r.end, 'loop');
     const keys = r.visited.map(s => `${s.x},${s.y},${s.z},${s.d},${s.v}`);
     // the entry-state list may legitimately repeat only at the very last entry (that is what a loop is)
     const firstRepeatIdx = keys.findIndex((k, i) => keys.indexOf(k) !== i);
     assert.ok(firstRepeatIdx === -1 || firstRepeatIdx === keys.length - 1, 'a repeated ENTRY state should end the trace immediately');
-    assert.ok(r.segments.length < CAP(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] })));
+    // the ENTRY states at the wedge DIFFER (v_in 0 then +1); it is the POST-piece state that repeats
+    assert.deepEqual(r.visited.filter(v => v.x === 3 && v.y === 3).map(v => v.v), [0, 1]);
+    assert.deepEqual(r.pieceHits[r.pieceHits.length - 1], { x: 3, y: 3, type: 'WEDGE', orient: '/', fixed: false });
+    assert.ok(r.segments.length < CAP(loopLevel()));
     // the same trace repeated 50 times is identical (loop guard has no hidden state)
     const s = JSON.stringify(r);
-    for (let i = 0; i < 50; i++) assert.equal(JSON.stringify(trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed)), s);
+    for (let i = 0; i < 50; i++) assert.equal(JSON.stringify(trace(loopLevel(), loopPieces())), s);
   });
   test('a huge empty board runs to its natural terminal, never to the derived cap', () => {
     // Was: cut at exactly 400 with end 'loop'. The cap is now derived (1000*1*4*4*3+1 = 48001)

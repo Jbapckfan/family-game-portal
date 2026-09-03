@@ -11,10 +11,17 @@
 // to prove 3D-necessity. Terrain is also the repair tool: an unwanted solution is killed by raising
 // one cell of ITS beam that is not on the intended path, which can never touch the intended path.
 //
+// PITCH IS A DELTA (DESIGN.md section 12). walkPath tracks the beam's pitch as state and asks
+// LaserPieces.applyPitch(type, v) for the outgoing one, exactly as the stepper does; it can no longer
+// read an absolute pitch off the registry. The consequence for level DESIGN is the interesting part:
+// a climbing beam can only be levelled by a DIP, so the plan 'WEDGE ... DIP' is the shape that
+// teaches the corrected rule and the generator now scores it as its own concept (climb-then-level).
+//
 // PIPELINE (buildLevel):
 //   1. walkPath      emitter on an edge facing inward; alternate straight runs with piece placements,
-//                    tracking (x, y, z, d, v) exactly as LaserSim.trace would; z stays in 0..3, on-grid,
-//                    never revisiting a cell. The piece count on the path is the intended par.
+//                    tracking (x, y, z, d, v) exactly as LaserSim.trace would - including the pitch
+//                    DELTA and its clamp; z stays in 0..3, on-grid, never revisiting a cell. The piece
+//                    count on the path is the intended par.
 //   2. layTerrain    piece / emitter / target cells get t = the beam's level there (a plateau target when
 //                    that level is > 0); pass cells get raised into ridges and staircases the beam flies
 //                    OVER (t <= z) - the hidden-height reveals.
@@ -35,6 +42,7 @@ import { dirname } from 'node:path';
 import { solve, needs3D, replay, proveMinimal, flatten } from './solver.mjs';
 const require = createRequire(import.meta.url);
 const Sim = require('./src/sim.js');
+const Pieces = require('./src/pieces.js');
 
 const ALL_TYPES = Object.keys(Sim.PIECES);
 const ORIENTS = Sim.ORIENTS;
@@ -56,6 +64,10 @@ export function mulberry32(seed) {
 }
 function rint(r, n) { return Math.floor(r() * n); }
 function pick(r, arr) { return arr[rint(r, arr.length)]; }
+function shuffle(r, arr) {
+  for (let i = arr.length - 1; i > 0; i--) { const j = rint(r, i + 1); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+  return arr;
+}
 const key = (x, y) => x + ',' + y;
 
 /* ---------- 1. the beam walk ---------- */
@@ -87,9 +99,28 @@ function longRun(r, lo, hi) {
   return lo + Math.max(rint(r, n), rint(r, n));
 }
 
+// How many more cells a beam at level z with pitch v can travel before the sky or the floor stops it.
+function headroom(z, v) { return v > 0 ? (H_MAX - 1 - z) : v < 0 ? z : Infinity; }
+
 function runFloor(spec, z, v, isFinal) {
-  const cap = v > 0 ? (H_MAX - 1 - z) : v < 0 ? z : Infinity;
-  return Math.max(1, Math.min(isFinal ? spec.minFinalRun : spec.minRun, cap));
+  return Math.max(1, Math.min(isFinal ? spec.minFinalRun : spec.minRun, headroom(z, v)));
+}
+
+// THE DELTA RULE'S EFFECT ON PATH WALKING (DESIGN.md section 12).
+// A straight run at pitch v moves the beam's LEVEL, and the next piece's outgoing pitch depends on
+// the pitch it is hit with, so a run has to stop short of the ceiling (or the floor) or the leg after
+// it has nowhere to go. Under the old set-pitch rule this never bit: a MIRROR always reset v to 0, so
+// any run could be followed by a level leg. Now a climb carried through a MIRROR keeps climbing, and
+// a run that goes all the way to z=3 strands the beam.
+// Returns the LONGEST run length in [minLen, want] that leaves `wantRoom` cells for the next leg,
+// or null when no length does.
+function fitRun(z, v, vOut, want, minLen, wantRoom) {
+  for (let len = want; len >= minLen; len--) {
+    const zz = z + v * len;
+    if (zz < 0 || zz >= H_MAX) continue;
+    if (headroom(zz, vOut) >= wantRoom) return len;
+  }
+  return null;
 }
 
 function pickEmitter(r, w, h) {
@@ -132,26 +163,49 @@ function walkPath(r, spec) {
     // cell; the piece then goes ON the last cell of that run - the "mirror at the top of the ramp".
     const canReuse = path[path.length - 1].role === 'pass';
     if (room === 0 && !canReuse) return null;
-    advance(Math.min(longRun(r, spec.minRun, cap), room));
+    const minLen = canReuse ? 0 : 1;
+    const want = Math.min(longRun(r, spec.minRun, cap), room);
+
+    // A wildcard slot tries its candidate types in a shuffled order and keeps the first that leaves
+    // the beam somewhere to go. Under the delta rule a type's usefulness depends on the CURRENT
+    // pitch (a WEDGE on an already-climbing beam does nothing), so a single blind pick wastes seeds.
+    const wild = spec.plan[i] === '?';
+    const candidates = wild ? shuffle(r, spec.pool.slice()) : [spec.plan[i]];
+    const base = isLast ? spec.minFinalRun : spec.minRun;
+    let chosen = null, type = null, runLen = 0;
+    for (const cand of candidates) {
+      // THE DELTA (spec 12.1): the outgoing pitch depends on the incoming one, clamped to -1..+1.
+      const vOut = Pieces.applyPitch(cand, v);
+      // Stop the run short of the ceiling / floor so the leg AFTER this piece still has room.
+      let len = fitRun(z, v, vOut, want, minLen, Math.min(base, H_MAX - 1));
+      if (len === null) len = fitRun(z, v, vOut, want, minLen, 1);
+      if (len === null) continue;
+      // The piece would sit at (px, py, pz). A 90-degree turn always leaves this run's own line, so
+      // the perpendicular ray can be measured before the run's cells are added to `used`.
+      const px = x + DIRS[dir].dx * len, py = y + DIRS[dir].dy * len, pz = z + v * len;
+      const need = runFloor(spec, pz, vOut, isLast);
+      const options = [];
+      for (const o of ORIENTS) {
+        const nd = TURN[o][dir];
+        options.push({ o, nd, v: vOut, room: roomAhead(px, py, pz, nd, vOut, used, w, h, spec.maxRun + 4) });
+      }
+      const viable = options.filter(t => t.room >= need);
+      if (!viable.length) continue;
+      viable.sort((a, b) => b.room - a.room);
+      chosen = (viable.length > 1 && r() < 0.35) ? viable[1] : viable[0];
+      type = cand;
+      runLen = len;
+      break;
+    }
+    if (!chosen) return null;
+    advance(runLen);
 
     const cell = path[path.length - 1];
-    const type = spec.plan[i] === '?' ? pick(r, spec.pool) : spec.plan[i];
-    const pitch = Sim.PIECES[type].pitch;
-    const need = runFloor(spec, z, pitch, isLast);
-    const options = [];
-    for (const o of ORIENTS) {
-      const nd = TURN[o][dir];
-      options.push({ o, nd, room: roomAhead(x, y, z, nd, pitch, used, w, h, spec.maxRun + 4) });
-    }
-    const viable = options.filter(t => t.room >= need);
-    if (!viable.length) return null;
-    viable.sort((a, b) => b.room - a.room);
-    const chosen = (viable.length > 1 && r() < 0.35) ? viable[1] : viable[0];
     cell.role = 'piece';
     cell.type = type;
     cell.orient = chosen.o;
     dir = chosen.nd;
-    v = pitch;
+    v = chosen.v;
   }
 
   // final run to the target
@@ -284,7 +338,16 @@ function assemble(spec, walk, t) {
   };
 }
 
-/* ---------- concepts (unchanged contract; validate-levels.mjs imports this) ---------- */
+/* ---------- concepts (validate-levels.mjs imports this) ----------
+ * Tags added for the corrected pitch rule (DESIGN.md section 12):
+ *   climb-then-level  a piece sends the beam CLIMBING and a later piece brings it back to level.
+ *                     Under the delta rule that second piece can only be a DIP, so this tag marks
+ *                     exactly the WEDGE-then-DIP pattern the rule is built to teach: climb to clear
+ *                     something, then level off to arrive.
+ *   fall-then-level   the mirror image (DIP down, WEDGE back to level).
+ *   pitched-mirror    a MIRROR acted on a beam that was NOT level, and preserved its climb or fall.
+ *                     This is the beat that changed: a mirror used to flatten such a beam.
+ */
 
 export function concepts(level, solution) {
   const L = Sim.parseLevel(level);
@@ -297,6 +360,16 @@ export function concepts(level, solution) {
     if (h.type === 'DIP') out.add('dip');
     if (h.fixed && secretCells.has(h.x + ',' + h.y)) out.add('secret');
     if (!h.fixed && solCells.has(h.x + ',' + h.y) && L.t[h.y][h.x] >= 1) out.add('stilt');
+  }
+  // pitch history along the beam, in order: what each acting piece did to v
+  let climbing = false, falling = false;
+  for (const e of res.events) {
+    if (e.kind !== 'piece') continue;
+    if (e.type === 'MIRROR' && e.vIn !== 0) out.add('pitched-mirror');   // a MIRROR that kept a climb or a fall
+    if (e.vOut === 1) climbing = true;
+    if (e.vOut === -1) falling = true;
+    if (e.vIn === 1 && e.vOut === 0 && climbing) out.add('climb-then-level');
+    if (e.vIn === -1 && e.vOut === 0 && falling) out.add('fall-then-level');
   }
   for (const s of res.segments) {
     const x = s.to.x, y = s.to.y, z = s.to.z;

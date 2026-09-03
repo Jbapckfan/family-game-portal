@@ -1,4 +1,4 @@
-/* Lasers 3D - pure rules engine (DESIGN.md section 3, FROZEN).
+/* Lasers 3D - pure rules engine (DESIGN.md section 3, as corrected by section 12).
  * UMD: browser global `LaserSim`, CommonJS `module.exports`.
  * No DOM, no Three.js, no dependencies. ES2019 (Safari 15).
  *
@@ -241,7 +241,9 @@
       emit(out, 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
       return;
     }
-    var r = Pieces.apply(p.type, p.orient, ns.d);
+    /* Pitch is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12.1 / 12.2). The clamp
+     * lives in pieces.js so the registry stays the single place a piece's physics is written. */
+    var r = Pieces.apply(p.type, p.orient, ns.d, ns.v);
     out.pieceHits.push({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: p.fixed });
     emit(out, 'piece', step, ns.x, ns.y, ns.z,
          { type: p.type, orient: p.orient, fixed: p.fixed, dIn: ns.d, dOut: r.d, vIn: ns.v, vOut: r.v });

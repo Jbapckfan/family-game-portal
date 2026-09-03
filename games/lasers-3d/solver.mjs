@@ -2,6 +2,14 @@
 // Node tooling only (.mjs). Pure, deterministic, no dependencies beyond src/sim.js.
 // Row-order convention: terrain[y][x], y = 0 is the SOUTH row (INTERFACES.md section 0).
 //
+// PITCH IS A DELTA (DESIGN.md section 12). The search itself never reads a piece's pitch - it only
+// calls Sim.trace - so the corrected rule flows through unchanged. Two things about the search DO
+// depend on it and are worth stating:
+//   - The beam-order argument below is about WHERE a piece can be placed, not about what it does to
+//     the pitch, so it survives the rule change verbatim.
+//   - flatten() is the one place that rewrites piece semantics, and its claim had to be re-proven
+//     under the new rule; see its doc comment and the flatten test in test/solver.test.mjs.
+//
 // SEARCH (rewritten for the 12x12..24x24 level set)
 // Iterative deepening, but each round is a depth-limited DFS in BEAM ORDER instead of a BFS over every
 // distinct placed set. The canonical order kills the permutation blow-up that made big boards
@@ -259,6 +267,15 @@ export function replay(level, placed) {
  *   - every piece, fixed or in the tray, behaves as MIRROR (secret flags cleared).
  * Returns a fresh raw level; the input is not mutated. flatten only ever describes the FLAT game -
  * a candidate found in it is always replayed against the untouched 3D level.
+ *
+ * DOES THIS STILL MEAN "THE CLASSIC 2D GAME" UNDER SPEC 12? Yes, and the reason got simpler.
+ * Before, MIRROR forced v to 0, so flatness was imposed piece by piece. Now MIRROR PRESERVES v - so
+ * flatness has to come from the projection itself, and it does: the emitter fires with v = 0, every
+ * raised cell is a full-height wall that no beam can climb onto (arriving at z' > 0 anywhere would
+ * need a piece that adds pitch, and the only pieces left are MIRRORs), and a MIRROR maps v = 0 to
+ * v = 0. So v is 0 on the first step and preserved on every step after it: EVERY segment of EVERY
+ * flat trace is level, at z = 0, with no over-flights. That is exactly the 2D game, and it is
+ * asserted directly (over the fixtures and 120 random levels) in test/solver.test.mjs.
  */
 export function flatten(level) {
   const L = Sim.parseLevel(level);

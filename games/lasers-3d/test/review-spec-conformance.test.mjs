@@ -29,11 +29,16 @@ describe('3.2 step order and boundaries', () => {
     // level-0 beam arrives at a t=0 cell: enters. Climbing beam z'=1 arrives at t=1: enters, piece there acts.
     const terrain = rows('0000000', '0000000', '0000000', '0000000', '0100000', '0000000', '0000000');
     const r = trace(mk({ terrain, targets: far }), [W(1, 3, '/'), M(1, 4, '/')]);
-    // (1,3) wedge E->N v1; (1,4) z'=1 == t=1 -> mirror acts N->E level at z=1
+    // (1,3) wedge E->N v1; (1,4) z'=1 == t=1 -> the mirror ACTS (that is what this test proves),
+    // turning N->E while PRESERVING the climb (spec 12.1), so the next cell is one level higher.
     assert.deepEqual(r.visited[1], { x: 1, y: 4, z: 1, d: 'N', v: 1 });
     assert.equal(r.pieceHits.length, 2);
     assert.equal(r.pieceHits[1].type, 'MIRROR');
-    assert.deepEqual(r.visited[2], { x: 2, y: 4, z: 1, d: 'E', v: 0 });
+    assert.deepEqual(r.visited[2], { x: 2, y: 4, z: 2, d: 'E', v: 1 });
+    // the same cell with a DIP: it also acts at z'==t, and levels the climber
+    const lev = trace(mk({ terrain, targets: far }), [W(1, 3, '/'), D(1, 4, '/')]);
+    assert.equal(lev.pieceHits.length, 2);
+    assert.deepEqual(lev.visited[2], { x: 2, y: 4, z: 1, d: 'E', v: 0 });
   });
 
   test('descending beam arriving one below the terrain is blocked (z\' used, not z)', () => {
@@ -77,16 +82,22 @@ describe('3.2 step order and boundaries', () => {
     assert.deepEqual(up.altitudeMarks, [{ x: 3, y: 3, z: 3 }, { x: 3, y: 3.5, z: 3 }]);
   });
 
-  test('piece on terrain 3 catches a climbing beam that arrives at z=3 and levels it', () => {
-    // emitter (0,0) E; wedge (1,0) '/' N climbing: (1,1) z1, (1,2) z2, (1,3) z3 where t=3 -> mirror acts, E level at z3.
+  test('piece on terrain 3 catches a climbing beam that arrives at z=3 and a DIP levels it', () => {
+    // emitter (0,0) E; wedge (1,0) '/' N climbing: (1,1) z1, (1,2) z2, (1,3) z3 where t=3 -> a DIP acts,
+    // turning E and LEVELLING the climb at z=3 (a MIRROR there would preserve it and lose the beam to
+    // the sky on the very next step - spec 12.1).
     // target on t=3 at (6,3); cells between are t=0 (flown over at z=3).
     const terrain = rows('0000000', '0000000', '0000000', '0300003', '0000000', '0000000', '0000000');
-    const r = trace(mk({ terrain, emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 6, y: 3 }] }), [W(1, 0, '/'), M(1, 3, '/')]);
+    const r = trace(mk({ terrain, emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 6, y: 3 }] }), [W(1, 0, '/'), D(1, 3, '/')]);
     assert.equal(r.end, 'target');
     assert.deepEqual(r.hits, [0]);
     assert.deepEqual(r.visited.find(s => s.x === 1 && s.y === 3), { x: 1, y: 3, z: 3, d: 'N', v: 1 });
     assert.ok(r.visited.filter(s => s.y === 3 && s.x > 1).every(s => s.z === 3 && s.v === 0 && s.d === 'E'));
     assert.deepEqual(r.altitudeMarks, [{ x: 1, y: 0, z: 0 }, { x: 1, y: 3, z: 3 }, { x: 6, y: 3, z: 3 }]);
+    // the MIRROR version keeps climbing and is lost to the sky
+    const keepsClimbing = trace(mk({ terrain, emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 6, y: 3 }] }), [W(1, 0, '/'), M(1, 3, '/')]);
+    assert.equal(keepsClimbing.end, 'lost-sky');
+    assert.deepEqual(keepsClimbing.hits, []);
   });
 
   test('emitter on t=3 raised terrain emits level at z=3 and can be blocked by nothing but the sky rule', () => {
@@ -134,10 +145,11 @@ describe('3.2 step order and boundaries', () => {
   });
 
   test('beam re-entering the emitter cell ABOVE its level passes over (emitter body is one level tall)', () => {
-    // emitter (0,3) t=0 E; WEDGE (2,3) '/' N climbing: (2,4) z1, (2,5) z2 t=2 mirror '\\' N->W level;
-    // (1,5) z2, (0,5) z2 t=2 mirror '/' W->S; (0,4) z2; (0,3) z2 == emitter cell at t=0 -> pass over; (0,2)...(0,0); off-grid.
+    // emitter (0,3) t=0 E; WEDGE (2,3) '/' N climbing: (2,4) z1, (2,5) z2 t=2 DIP '\\' N->W LEVELS it
+    // (only a DIP can level a climber, spec 12.1); (1,5) z2, (0,5) z2 t=2 mirror '/' W->S keeps it level;
+    // (0,4) z2; (0,3) z2 == emitter cell at t=0 -> pass over; (0,2)...(0,0); off-grid.
     const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '2020000', '0000000');
-    const r = trace(mk({ terrain, targets: far }), [W(2, 3, '/'), M(2, 5, '\\'), M(0, 5, '/')]);
+    const r = trace(mk({ terrain, targets: far }), [W(2, 3, '/'), D(2, 5, '\\'), M(0, 5, '/')]);
     assert.equal(r.end, 'lost-edge');
     const back = r.visited.find(s => s.x === 0 && s.y === 3);
     assert.deepEqual(back, { x: 0, y: 3, z: 2, d: 'S', v: 0 });
@@ -145,9 +157,10 @@ describe('3.2 step order and boundaries', () => {
   });
 
   test('beam re-entering the emitter cell AT its level from a descending path is blocked', () => {
-    // emitter on t=0 (0,3) E; WEDGE (2,3) N v1: (2,4) z1 t1 mirror '\\' N->W v0: (1,4) z1, (0,4) z1 t1 DIP '/' W->S v-1: (0,3) z'=0 == emitter level -> blocked.
+    // emitter on t=0 (0,3) E; WEDGE (2,3) N v1: (2,4) z1 t1 DIP '\\' N->W LEVELS it (v0): (1,4) z1,
+    // (0,4) z1 t1 DIP '/' W->S v-1: (0,3) z'=0 == emitter level -> blocked.
     const terrain = rows('0000000', '0000000', '0000000', '0000000', '1010000', '0000000', '0000000');
-    const r = trace(mk({ terrain, targets: far }), [W(2, 3, '/'), M(2, 4, '\\'), D(0, 4, '/')]);
+    const r = trace(mk({ terrain, targets: far }), [W(2, 3, '/'), D(2, 4, '\\'), D(0, 4, '/')]);
     assert.equal(r.end, 'blocked');
     assert.deepEqual(r.endPoint, { x: 0, y: 3.5, z: 1 });
     assert.equal(r.visited.some(s => s.x === 0 && s.y === 3), false);
@@ -182,13 +195,19 @@ describe('3.2 step order and boundaries', () => {
   });
 
   test('loop guard: a repeated (x,y,z,d,v) state ends with loop and segments are finite', () => {
-    // Reuse the documented 3D cycle and check the visited list has a repeated post-piece state at the loop cell.
-    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0220000', '0000000');
-    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
-    const r = trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed);
+    // Under the corrected rule the ONLY way two histories can meet is the pitch CLAMP (spec 12.2):
+    // the WEDGE at (3,3) is hit level on the way out (0 -> +1) and climbing on the way round
+    // (+1 -> +1), so the post-piece state (3,3,1,N,+1) repeats exactly.
+    const terrain = rows('0000000', '0000000', '0000000', '1001000', '0000000', '0303000', '0000000');
+    const placed = [W(3, 3, '/'), D(3, 5, '\\'), D(1, 5, '/'), W(1, 2, '\\'), M(2, 2, '/'), W(2, 3, '/')];
+    const lvl = mk({ terrain, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }] });
+    const r = trace(lvl, placed);
     assert.equal(r.end, 'loop');
-    assert.ok(r.segments.length <= stepCap(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] })));
+    assert.deepEqual(r.endPoint, { x: 3, y: 3, z: 1 });
+    assert.ok(r.segments.length <= stepCap(lvl));
     assert.deepEqual(r.altitudeMarks[r.altitudeMarks.length - 1], r.endPoint);
+    assert.deepEqual(r.events.filter(e => e.kind === 'piece' && e.x === 3 && e.y === 3).map(e => [e.vIn, e.vOut]),
+      [[0, 1], [1, 1]]);
   });
 
   test('DESIGN 3.2 loop guard: the step cap is derived from the state space, MAX_STEPS is its floor', () => {
@@ -221,7 +240,8 @@ describe('3.3 pieces via trace (all four incoming directions, both orientations)
       assert.equal(after.v, 0);
     });
   }
-  test('WEDGE and DIP turn exactly like MIRROR and only differ in pitch', () => {
+  test('WEDGE and DIP turn exactly like MIRROR and only differ in the pitch DELTA they apply', () => {
+    // The beam arrives LEVEL here, so the deltas read as the old absolute pitches: 0 / +1 / -1.
     // emitter on a t=1 ridge so a DIP can descend to z=0 before the floor; the piece sits on a t=1 cell.
     const terrain = rows('0000000', '0000000', '0000000', '1001000', '0000000', '0000000', '0000000');
     for (const orient of ['/', '\\']) {
@@ -298,7 +318,7 @@ describe('INTERFACES 2.2 events stream (additive; consumers must not match on x,
 
   test('the stream is step-indexed onto segments and ends with exactly one terminal event', () => {
     const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0200002', '0000000');
-    const r = trace(mk({ terrain, targets: [{ x: 6, y: 5 }] }), [W(1, 3, '/'), M(1, 5, '/')]);
+    const r = trace(mk({ terrain, targets: [{ x: 6, y: 5 }] }), [W(1, 3, '/'), D(1, 5, '/')]);
     assert.equal(r.end, 'target');
     assert.ok(r.events.length > 0);
     const terminals = r.events.filter(e => e.kind === 'end');

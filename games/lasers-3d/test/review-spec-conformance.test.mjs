@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const Sim = require('../src/sim.js');
-const { trace, canPlace, parseLevel, H_MAX } = Sim;
+const { trace, canPlace, parseLevel, H_MAX, MAX_STEPS, stepCap } = Sim;
 
 function mk(o = {}) {
   const w = o.w || 7, d = o.d || 7;
@@ -187,8 +187,21 @@ describe('3.2 step order and boundaries', () => {
     const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
     const r = trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed);
     assert.equal(r.end, 'loop');
-    assert.ok(r.segments.length <= Sim.MAX_STEPS);
+    assert.ok(r.segments.length <= stepCap(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] })));
     assert.deepEqual(r.altitudeMarks[r.altitudeMarks.length - 1], r.endPoint);
+  });
+
+  test('DESIGN 3.2 loop guard: the step cap is derived from the state space, MAX_STEPS is its floor', () => {
+    // Section 11 grows boards to 24x24, where a legal route can exceed 400 steps. The repeat guard on
+    // (x,y,z,d,v) is what guarantees termination; the cap is a safety net that must never fire first.
+    assert.equal(MAX_STEPS, 400);
+    for (const [w, d] of [[6, 6], [12, 12], [14, 14], [16, 16], [18, 18], [20, 20], [22, 22], [24, 24]]) {
+      const lvl = mk({ w, d, terrain: Array.from({ length: d }, () => '0'.repeat(w)),
+        emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: w - 1, y: d - 1 }] });
+      const states = w * d * H_MAX * 4 * 3;
+      assert.equal(stepCap(lvl), Math.max(MAX_STEPS, states + 1), `${w}x${d}`);
+      assert.ok(stepCap(lvl) > states, `${w}x${d}: the cap must exceed the state space`);
+    }
   });
 });
 
@@ -262,6 +275,54 @@ describe('3.3 pieces via trace (all four incoming directions, both orientations)
     assert.throws(() => trace(mk(), [{ x: 2, y: 2, type: 'MIRROR', orient: '|' }]), /placed piece/);
     assert.throws(() => parseLevel(mk({ fixed: [{ x: 0, y: 3, type: 'MIRROR', orient: '/' }] })), /fixed/);
     assert.throws(() => parseLevel(mk({ fixed: [{ x: 2, y: 2, type: 'MIRROR', orient: '/' }, { x: 2, y: 2, type: 'DIP', orient: '/' }] })), /fixed/);
+  });
+});
+
+describe('INTERFACES 2.2 events stream (additive; consumers must not match on x,y)', () => {
+  test('every documented legacy field keeps its shape and `events` is the only addition', () => {
+    const r = trace(mk(), []);
+    assert.deepEqual(Object.keys(r).sort(),
+      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'pieceHits', 'segments', 'visited'].sort());
+  });
+
+  test('a target is reported ONLY at the orb level: a fly-over at another height emits no target event', () => {
+    // emitter on a t=2 ridge; the orb at (3,3) is on t=0 and the beam passes over it at z=2.
+    const terrain = rows('0000000', '0000000', '0000000', '2000000', '0000000', '0000000', '0000000');
+    const r = trace(mk({ terrain, targets: [{ x: 3, y: 3 }] }), []);
+    assert.equal(r.end, 'lost-edge');
+    assert.deepEqual(r.hits, []);
+    assert.deepEqual(r.events.filter(e => e.kind === 'target'), []);
+    // matching on x,y alone WOULD light it - the cell is entered
+    assert.ok(r.events.some(e => e.kind === 'enter' && e.x === 3 && e.y === 3));
+  });
+
+  test('the stream is step-indexed onto segments and ends with exactly one terminal event', () => {
+    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0200002', '0000000');
+    const r = trace(mk({ terrain, targets: [{ x: 6, y: 5 }] }), [W(1, 3, '/'), M(1, 5, '/')]);
+    assert.equal(r.end, 'target');
+    assert.ok(r.events.length > 0);
+    const terminals = r.events.filter(e => e.kind === 'end');
+    assert.equal(terminals.length, 1);
+    assert.equal(terminals[0], r.events[r.events.length - 1]);
+    assert.equal(terminals[0].end, 'target');
+    assert.equal(terminals[0].step, r.segments.length - 1);
+    for (const e of r.events) assert.ok(e.step >= 0 && e.step < r.segments.length);
+    // pitch events line up with the altitude badges the flat view draws
+    assert.deepEqual(r.events.filter(e => e.kind === 'pitch').map(e => ({ x: e.x, y: e.y, z: e.z })),
+      r.altitudeMarks.slice(0, -1));
+  });
+
+  test('a piece that acts emits piece (+pitch when it changes the pitch); a fly-over emits overflight', () => {
+    const terrain = rows('0000000', '0000000', '0000000', '1000000', '0000000', '0000000', '0000000');
+    const over = trace(mk({ terrain, targets: far }), [M(3, 3, '/')]);
+    assert.deepEqual(over.events.filter(e => e.kind === 'overflight').map(e => ({ x: e.x, y: e.y, z: e.z })), [{ x: 3, y: 3, z: 1 }]);
+    assert.deepEqual(over.events.filter(e => e.kind === 'piece'), []);
+    const act = trace(mk({ targets: far }), [W(3, 3, '/')]);
+    const piece = act.events.filter(e => e.kind === 'piece');
+    assert.equal(piece.length, 1);
+    assert.equal(piece[0].type, 'WEDGE');
+    assert.equal(piece[0].fixed, false);
+    assert.deepEqual(act.events.filter(e => e.kind === 'pitch').map(e => [e.from, e.to]), [[0, 1]]);
   });
 });
 

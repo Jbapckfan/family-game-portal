@@ -16,6 +16,12 @@
 
   var DIRS = { E: { dx: 1, dy: 0 }, N: { dx: 0, dy: 1 }, W: { dx: -1, dy: 0 }, S: { dx: 0, dy: -1 } };
   var H_MAX = 4;
+  var N_DIRS = 4;
+  var N_PITCHES = 3;
+  /* MINIMUM step cap. The real per-level cap is derived from the finite state space
+   * (see stepCap): it must exceed w * d * H_MAX * 4 directions * 3 pitches so that the
+   * (x,y,z,d,v) repeat guard - which is what actually guarantees termination - always
+   * fires first. MAX_STEPS is only the floor for tiny boards. */
   var MAX_STEPS = 400;
   var ORIENTS = Pieces.ORIENTS;
   var PIECES = Pieces.PIECES;
@@ -24,7 +30,16 @@
   function isInt(n) { return typeof n === 'number' && isFinite(n) && Math.floor(n) === n; }
   function fail(msg) { throw new Error('lasers-3d level: ' + msg); }
 
+  /* Distinct beam states on a w x d board, + 1. A trace can never reach it. */
+  function capForSize(size) {
+    var n = size.w * size.d * H_MAX * N_DIRS * N_PITCHES + 1;
+    return n > MAX_STEPS ? n : MAX_STEPS;
+  }
+
   /* ---------- parseLevel ---------- */
+
+  /* Private brand: a caller cannot forge membership, so `parsed: true` is a label, not a trust token. */
+  var PARSED = new WeakSet();
 
   function parseSize(level) {
     var s = level.size;
@@ -32,20 +47,29 @@
     return { w: s.w, d: s.d };
   }
 
+  /* Returns { t: number[d][w], terrain: string[d] } - always canonical strings. */
   function parseTerrain(level, size) {
     var rows = level.terrain;
     if (!Array.isArray(rows) || rows.length !== size.d) fail('terrain must have d=' + size.d + ' rows (got ' + (rows && rows.length) + ')');
-    var t = [];
+    var t = [], text = [];
     for (var y = 0; y < size.d; y++) {
-      var row = rows[y];
-      if (Array.isArray(row)) row = row.join('');
-      if (typeof row !== 'string' || row.length !== size.w) fail('terrain row ' + y + ' must be a string of w=' + size.w + ' chars');
-      if (!/^[0-3]+$/.test(row)) fail('terrain row ' + y + ' has a char outside 0..3: "' + row + '"');
-      var cells = [];
-      for (var x = 0; x < size.w; x++) cells.push(row.charCodeAt(x) - 48);
+      var row = rows[y], cells = [], x, n;
+      if (Array.isArray(row)) {
+        if (row.length !== size.w) fail('terrain row ' + y + ' must have w=' + size.w + ' cells (got ' + row.length + ')');
+        for (x = 0; x < size.w; x++) {
+          n = row[x];
+          if (!isInt(n) || n < 0 || n > 3) fail('terrain row ' + y + ' cell ' + x + ' must be an integer 0..3');
+          cells.push(n);
+        }
+      } else {
+        if (typeof row !== 'string' || row.length !== size.w) fail('terrain row ' + y + ' must be a string of w=' + size.w + ' chars');
+        if (!/^[0-3]+$/.test(row)) fail('terrain row ' + y + ' has a char outside 0..3: "' + row + '"');
+        for (x = 0; x < size.w; x++) cells.push(row.charCodeAt(x) - 48);
+      }
       t.push(cells);
+      text.push(cells.join(''));
     }
-    return t;
+    return { t: t, terrain: text };
   }
 
   function inGrid(size, x, y) { return isInt(x) && isInt(y) && x >= 0 && y >= 0 && x < size.w && y < size.d; }
@@ -98,29 +122,36 @@
     return tray.slice();
   }
 
-  /* Returns a normalized copy. Idempotent: a parsed level is returned as is. */
+  /* Returns a normalized copy. Idempotent for levels THIS module parsed (private brand);
+   * a hand-made object claiming `parsed: true` is validated like any other raw level. */
   function parseLevel(level) {
     if (!level || typeof level !== 'object') fail('level must be an object');
-    if (level.parsed === true && Array.isArray(level.t)) return level;
+    if (PARSED.has(level)) return level;
     var size = parseSize(level);
     var par = level.par == null ? 0 : level.par;
     if (!isInt(par) || par < 0) fail('par must be a non-negative integer');
     var emitter = parseEmitter(level, size);
     var targets = parseTargets(level, size, emitter);
-    return {
+    var terr = parseTerrain(level, size);
+    var out = {
       parsed: true,
       name: String(level.name || ''),
       par: par,
       size: size,
-      terrain: Array.isArray(level.terrain) ? level.terrain.slice() : [],
-      t: parseTerrain(level, size),
+      terrain: terr.terrain,
+      t: terr.t,
       emitter: emitter,
       targets: targets,
       fixed: parseFixed(level, size, emitter, targets),
       tray: parseTray(level, par),
       intro: level.intro ? String(level.intro) : ''
     };
+    PARSED.add(out);
+    return out;
   }
+
+  /* Derived per-level loop-guard step cap (>= MAX_STEPS). Accepts a raw or parsed level. */
+  function stepCap(level) { return capForSize(parseLevel(level).size); }
 
   /* ---------- canPlace (3.4) ---------- */
 
@@ -164,6 +195,14 @@
   function pt(x, y, z) { return { x: x, y: y, z: z }; }
   function copyState(s) { return { x: s.x, y: s.y, z: s.z, d: s.d, v: s.v }; }
 
+  /* Ordered, step-indexed event stream (see INTERFACES 2.2). `step` is the index of the
+   * segment that produced the event, so a renderer can drive timing from arc length. */
+  function emit(out, kind, step, x, y, z, extra) {
+    var e = { kind: kind, step: step, x: x, y: y, z: z }, k;
+    if (extra) for (k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) e[k] = extra[k];
+    out.events.push(e);
+  }
+
   /* One step from state s. Returns {kind:'enter', state} or {kind:<terminal>}. */
   function advance(L, s) {
     var dir = DIRS[s.d];
@@ -189,27 +228,41 @@
     out.end = kind;
     out.endPoint = pt(at.x, at.y, at.z);
     out.altitudeMarks.push(pt(at.x, at.y, at.z));
+    emit(out, 'end', out.segments.length - 1, at.x, at.y, at.z, { end: kind });
     return out;
   }
 
   /* Piece interaction on entering a cell at level ns.z. Mutates ns (d, v). */
-  function applyPiece(L, out, pieces, ns) {
+  function applyPiece(L, out, pieces, ns, step) {
     var p = pieces[key(ns.x, ns.y)];
     if (!p) return;
-    if (ns.z !== L.t[ns.y][ns.x]) { out.overflights.push(pt2(ns)); return; }
+    if (ns.z !== L.t[ns.y][ns.x]) {
+      out.overflights.push(pt2(ns));
+      emit(out, 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
+      return;
+    }
     var r = Pieces.apply(p.type, p.orient, ns.d);
     out.pieceHits.push({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: p.fixed });
-    if (r.v !== ns.v) out.altitudeMarks.push(pt(ns.x, ns.y, ns.z));
+    emit(out, 'piece', step, ns.x, ns.y, ns.z,
+         { type: p.type, orient: p.orient, fixed: p.fixed, dIn: ns.d, dOut: r.d, vIn: ns.v, vOut: r.v });
+    if (r.v !== ns.v) {
+      out.altitudeMarks.push(pt(ns.x, ns.y, ns.z));
+      emit(out, 'pitch', step, ns.x, ns.y, ns.z, { from: ns.v, to: r.v });
+    }
     ns.d = r.d;
     ns.v = r.v;
   }
   function pt2(s) { return { x: s.x, y: s.y }; }
 
   /* Target check on entering a cell. Returns true when the beam must stop (all targets lit). */
-  function applyTarget(L, out, targets, lit, ns) {
+  function applyTarget(L, out, targets, lit, ns, step) {
     var ti = targets[key(ns.x, ns.y)];
     if (ti === undefined || ns.z !== L.t[ns.y][ns.x]) return false;
-    if (!lit[ti]) { lit[ti] = true; out.hits.push(ti); }
+    if (!lit[ti]) {
+      lit[ti] = true;
+      out.hits.push(ti);
+      emit(out, 'target', step, ns.x, ns.y, ns.z, { targetIndex: ti });
+    }
     return out.hits.length === L.targets.length;
   }
 
@@ -217,27 +270,29 @@
     var L = parseLevel(level);
     var pieces = buildPieceMap(L, placed);
     var targets = buildTargetMap(L);
+    var cap = capForSize(L.size);
     var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
-                altitudeMarks: [], pieceHits: [], overflights: [] };
+                altitudeMarks: [], pieceHits: [], overflights: [], events: [] };
     var s = { x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 };
     var seen = {}, lit = {};
     seen[stateKey(s)] = true;
-    for (var step = 0; step < MAX_STEPS; step++) {
+    for (var step = 0; step < cap; step++) {
       var r = advance(L, s);
       if (r.kind !== 'enter') return finish(out, s, r.kind);
       var ns = r.state;
       out.segments.push({ from: pt(s.x, s.y, s.z), to: pt(ns.x, ns.y, ns.z), d: s.d, v: s.v });
       out.visited.push(copyState(ns));
-      if (applyTarget(L, out, targets, lit, ns)) { out.allTargetsHit = true; return end(out, 'target', ns); }
-      applyPiece(L, out, pieces, ns);
+      emit(out, 'enter', step, ns.x, ns.y, ns.z, { d: ns.d, v: ns.v });
+      if (applyTarget(L, out, targets, lit, ns, step)) { out.allTargetsHit = true; return end(out, 'target', ns); }
+      applyPiece(L, out, pieces, ns, step);
       var sk = stateKey(ns);
       if (seen[sk]) return end(out, 'loop', ns);
       seen[sk] = true;
       s = ns;
     }
-    return end(out, 'loop', s);
+    return end(out, 'loop', s); // unreachable: cap > the number of distinct states
   }
 
   return { DIRS: DIRS, H_MAX: H_MAX, MAX_STEPS: MAX_STEPS, ORIENTS: ORIENTS, PIECES: PIECES, TURN: Pieces.TURN,
-           parseLevel: parseLevel, canPlace: canPlace, trace: trace };
+           stepCap: stepCap, parseLevel: parseLevel, canPlace: canPlace, trace: trace };
 }));

@@ -64,7 +64,7 @@ All three pieces turn the beam 90 degrees exactly like a classic 45-degree mirro
 ### 3.7 Level set
 - ~20 levels, curated from a generator and validated. Levels 1 to 3 are pure 2D (no height, MIRROR only) so the game reads as the sibling of the existing one. Level 4 introduces a hidden low wall. Level 5 introduces the WEDGE. Level 7 introduces the DIP. Level 9 introduces a fixed secret WEDGE. Level 12 introduces two targets. Later levels combine.
 - Every level from 4 on must be **3D-necessary**: solving it under the classic flat rules (all `t >= 1` treated as full walls, every piece behaves like MIRROR) is either impossible with the tray, or every such flat solution fails when replayed in true 3D.
-- Every level must fit the touch grid: at 320 CSS px wide the smallest cell is at least 34 px.
+- Board sizes follow the curve in section 11 (12x12 up to 24x24). Cells are NOT shrunk to fit; see section 11 for the camera rule.
 
 ## 4. Non-functional requirements
 - iOS Safari first (iPhone and iPad, portrait and landscape), then desktop. Touch, mouse, and keyboard all work.
@@ -140,3 +140,32 @@ Prior-art result (full report: `2026-09-03-lasers-3d-prior-art.md`): 79 distinct
 3. Tide dial: a water plane at height h that swallows beams and reveals contours (medium).
 4. Architect vs Solver pass-and-play: one kid builds heights in the tilted view, the other solves flat with limited tilts; needs the solver in the browser (medium-large).
 5. Shade targets: targets lit by the beam's shadow (medium).
+
+
+## 11. Board size and camera (amended 2026-09-03, James's call)
+
+James reviewed the first tilted screenshot and ruled the 6x6 board too small: "The game board will need to be much bigger than 6x6. Something like 20x20 or bigger probably."
+
+### 11.1 Size curve (replaces the sizes implied in 3.7)
+| Levels | Size | Par |
+|---|---|---|
+| 1-3 (pure 2D) | 12x12 | 1-2 |
+| 4-6 (low wall, first WEDGE) | 14x14 | 1-2 |
+| 7-9 (first DIP, stilt beat, secret WEDGE) | 16x16 | 2-3 |
+| 10-12 (mixed, first two-target) | 18x18 | 2-3 |
+| 13-16 | 20x20 | 3-4 |
+| 17-20 | 22x22 and 24x24 (at least two at 24x24) | 4-5 |
+
+Teaching beats and the 3D-necessity rule from 3.7 are unchanged.
+
+### 11.2 The camera rule (measured problem, then the fix)
+Measured on the 6x6 build at 393x852 with a 393x614 canvas: the board projected to 269x269 px in FLAT (68% of canvas width) and 260x195 px in TILT (66% width, 32% height). Too much margin, and isometric foreshortening shrinks it further.
+
+- The orthographic frustum is fitted to the board's projected bounding box in the CURRENT camera orientation, not to a fixed padding on board width. Target: at least 92% of the limiting canvas dimension in FLAT, at least 88% in TILT.
+- Cells are never shrunk below `theme.camera.minCellPx` (34 CSS px). When a fit would go below it, the camera zooms so cells are exactly 34 px and the board overflows the viewport instead.
+- Consequence, and it is intended: on a phone a 20x20 or larger board starts zoomed showing part of the board. The player pans to see the rest.
+- Pan and zoom: two-finger drag pans, pinch and wheel zoom. A ONE-finger drag still orbits the camera, because orbiting is the game's signature move and must stay the cheapest gesture. Panning is clamped so at least 25% of the board stays on screen; zoom is clamped between fit-to-board and 3x the minimum-cell zoom.
+- A FIT button (and the `0` key) returns to the framed view and clears pan.
+
+### 11.3 Generation had to change with the size
+Generate-then-solve does not scale to 20x20 (the 9x9 par-4 level already cost 345,693 solver nodes). Level generation is now CONSTRUCTIVE: walk a beam path first, place the target at its end, then paint terrain around the path (raising blocks the beam flies over, walling off alternative routes) re-tracing after every edit. The solver is then used only to prove MINIMALITY by an exhaustive search bounded to depth par-1, which is far cheaper than searching at depth par, plus the existing 3D-necessity test. A level whose par cannot be proven within budget does not ship.

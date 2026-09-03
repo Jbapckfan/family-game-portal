@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const Pieces = require('../src/pieces.js');
 const Sim = require('../src/sim.js');
 
-const { trace, canPlace, parseLevel, DIRS, H_MAX, PIECES, TURN } = Sim;
+const { trace, canPlace, parseLevel, DIRS, H_MAX, PIECES, TURN, MAX_STEPS, stepCap } = Sim;
 
 // 7x7 all-floor by default; emitter west edge row 3 facing east; target east edge row 3.
 function mk(o = {}) {
@@ -229,8 +229,65 @@ describe('beam stepping (3.2)', () => {
     assert.deepEqual(r.overflights, [{ x: 1, y: 4 }]);
     assert.deepEqual(r.hits, []);
   });
-  test('step cap: MAX_STEPS is 400', () => {
-    assert.equal(Sim.MAX_STEPS, 400);
+  test('step cap: MAX_STEPS is the MINIMUM cap; the real cap is derived per level', () => {
+    // Was: `MAX_STEPS is 400`. The hard-coded 400 reported a legal >400-step route on a big board
+    // as a false 'loop'. MAX_STEPS stays 400 as the documented floor; stepCap(level) derives the
+    // real cap from the finite state space so the (x,y,z,d,v) repeat guard always fires first.
+    assert.equal(MAX_STEPS, 400);
+    const cap = (w, d) => stepCap({ size: { w, d }, terrain: Array.from({ length: d }, () => '0'.repeat(w)),
+      emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: w - 1, y: d - 1 }] });
+    const want = (w, d) => Math.max(MAX_STEPS, w * d * H_MAX * 4 * 3 + 1);
+    for (const [w, d] of [[2, 2], [6, 6], [12, 12], [16, 16], [20, 20], [24, 24]]) {
+      assert.equal(cap(w, d), want(w, d), `${w}x${d}`);
+      assert.ok(cap(w, d) > w * d * H_MAX * 4 * 3, `${w}x${d}: cap must exceed the state count`);
+    }
+    assert.equal(cap(2, 2), MAX_STEPS);   // floor
+    assert.equal(cap(6, 6), 1729);        // 6*6*4*4*3 + 1
+    assert.equal(cap(24, 24), 27649);     // 24*24*4*4*3 + 1
+    // stepCap accepts a raw or a parsed level and validates like parseLevel
+    assert.equal(stepCap(parseLevel(mk())), stepCap(mk()));
+    assert.throws(() => stepCap(mk({ terrain: ['000'] })), /lasers-3d level: terrain/);
+  });
+  test('REGRESSION: a legal 575-step route on a 24x24 board reaches its target, not a false loop', () => {
+    // Serpentine corridor of fixed mirrors on a flat 24x24 board. The route enters every cell of
+    // every row exactly once (575 segments > the old 400-step cap) and ends on the target at (0,23).
+    // Under the old hard-coded MAX_STEPS this reported end:'loop' at step 400 - a false loss.
+    const w = 24, d = 24;
+    const fixed = [];
+    for (let y = 0; y < d; y++) {
+      // east column: even rows turn E->N ('/'), odd rows turn N->W ('\\')
+      fixed.push({ x: w - 1, y, type: 'MIRROR', orient: y % 2 === 0 ? '/' : '\\' });
+      // west column: odd rows turn W->N ('\\'), even rows turn N->E ('/'). (0,0) is the emitter,
+      // (0,23) is the target, so both are skipped.
+      if (y > 0 && y < d - 1) fixed.push({ x: 0, y, type: 'MIRROR', orient: y % 2 === 0 ? '/' : '\\' });
+    }
+    const level = {
+      name: 'SERPENTINE 24',
+      par: 0,
+      size: { w, d },
+      terrain: Array.from({ length: d }, () => '0'.repeat(w)),
+      emitter: { x: 0, y: 0, dir: 'E' },
+      targets: [{ x: 0, y: d - 1 }],
+      fixed,
+      tray: [],
+    };
+    const r = trace(level, []);
+    assert.equal(r.end, 'target');
+    assert.notEqual(r.end, 'loop');
+    assert.deepEqual(r.hits, [0]);
+    assert.equal(r.allTargetsHit, true);
+    assert.deepEqual(r.endPoint, { x: 0, y: 23, z: 0 });
+    // 24 rows x 23 horizontal steps + 23 vertical steps between rows
+    assert.equal(r.segments.length, 575);
+    assert.equal(r.visited.length, 575);
+    assert.ok(r.segments.length > MAX_STEPS, 'the route must be longer than the old hard-coded cap');
+    assert.ok(r.segments.length < stepCap(level), 'and still far below the derived cap');
+    assert.equal(stepCap(level), 27649);
+    // every cell except the emitter is entered exactly once: a genuinely non-repeating route
+    const cells = new Set(r.visited.map(s => `${s.x},${s.y}`));
+    assert.equal(cells.size, 575);
+    assert.equal(r.pieceHits.length, 46);
+    assert.ok(r.pieceHits.every(p => p.fixed === true));
   });
   test('the emitter body blocks a beam that comes back to it at its level', () => {
     // E from (0,3); mirror (3,3) '/' -> N; mirror (3,5) '\\' -> W; mirror (0,5) '/' -> S ... arrives at (0,3) from N.
@@ -262,6 +319,162 @@ describe('beam stepping (3.2)', () => {
   test('trace accepts a parsed level and an omitted placed list', () => {
     const r = trace(parseLevel(mk()));
     assert.equal(r.end, 'target');
+  });
+});
+
+describe('trace events (ordered, step-indexed stream)', () => {
+  const kinds = (r) => r.events.map(e => e.kind);
+  const ENDS = ['target', 'blocked', 'lost-edge', 'lost-floor', 'lost-sky', 'loop'];
+
+  test('events is purely additive: every documented field keeps its shape', () => {
+    const r = trace(mk(), []);
+    assert.deepEqual(Object.keys(r).sort(),
+      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'pieceHits', 'segments', 'visited'].sort());
+    assert.ok(Array.isArray(r.events));
+    assert.equal(r.end, 'target');
+    assert.equal(r.segments.length, 6);
+    assert.equal(r.visited.length, 6);
+    assert.deepEqual(r.hits, [0]);
+    assert.deepEqual(r.altitudeMarks, [{ x: 6, y: 3, z: 0 }]);
+  });
+
+  test('a straight shot: one enter per segment, then target, then the terminal event', () => {
+    const r = trace(mk({ targets: [{ x: 2, y: 3 }] }), []);
+    assert.deepEqual(r.events, [
+      { kind: 'enter', step: 0, x: 1, y: 3, z: 0, d: 'E', v: 0 },
+      { kind: 'enter', step: 1, x: 2, y: 3, z: 0, d: 'E', v: 0 },
+      { kind: 'target', step: 1, x: 2, y: 3, z: 0, targetIndex: 0 },
+      { kind: 'end', step: 1, x: 2, y: 3, z: 0, end: 'target' },
+    ]);
+  });
+
+  test('step is the index of the segment that produced the event', () => {
+    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0200002', '0000000');
+    const r = trace(mk({ terrain, targets: [{ x: 6, y: 5 }] }), [W(1, 3, '/'), M(1, 5, '/')]);
+    for (const e of r.events) {
+      assert.ok(Number.isInteger(e.step) && e.step >= 0 && e.step < r.segments.length, `step ${e.step}`);
+    }
+    // steps are non-decreasing, and each 'enter' at step i lands on segment i's `to`
+    for (let i = 1; i < r.events.length; i++) assert.ok(r.events[i].step >= r.events[i - 1].step);
+    for (const e of r.events) {
+      if (e.kind !== 'enter') continue;
+      assert.deepEqual({ x: e.x, y: e.y, z: e.z }, r.segments[e.step].to);
+    }
+    // the terminal event is last, unique, and carries the same value as `end`
+    const terminals = r.events.filter(e => e.kind === 'end');
+    assert.equal(terminals.length, 1);
+    assert.equal(terminals[0], r.events[r.events.length - 1]);
+    assert.equal(terminals[0].end, r.end);
+    assert.deepEqual({ x: terminals[0].x, y: terminals[0].y, z: terminals[0].z }, r.endPoint);
+    assert.equal(terminals[0].step, r.segments.length - 1);
+  });
+
+  test('THE BUG: a beam that flies OVER a target and hits it later emits one target event, at the hit', () => {
+    // emitter on a t=1 ridge at (0,3); the orb at (3,3) sits on t=0 so the outbound level-1 beam
+    // passes over it. A DIP on the t=1 pedestal (5,3) drops the beam to z=0, two mirrors walk it
+    // back, and it enters (3,3) at z=0 - the real hit. Matching on x,y alone lights it twice.
+    const terrain = rows('0000000', '0000000', '0000000', '1000010', '0000000', '0000000', '0000000');
+    const placed = [D(5, 3, '/'), M(5, 4, '\\'), M(3, 4, '/')];
+    const r = trace(mk({ terrain, targets: [{ x: 3, y: 3 }] }), placed);
+    assert.equal(r.end, 'target');
+    assert.equal(r.segments.length, 9);
+    // (3,3) is ENTERED twice, at two different heights
+    const at33 = r.events.filter(e => e.kind === 'enter' && e.x === 3 && e.y === 3);
+    assert.deepEqual(at33.map(e => [e.step, e.z]), [[2, 1], [8, 0]]);
+    // ...but exactly ONE target event, on the second entry, at the orb's own level
+    const hits = r.events.filter(e => e.kind === 'target');
+    assert.deepEqual(hits, [{ kind: 'target', step: 8, x: 3, y: 3, z: 0, targetIndex: 0 }]);
+    assert.deepEqual(r.hits, [0]);
+    // the fly-over is visible as an 'enter' with no matching 'target' at the same step
+    assert.equal(r.events.some(e => e.kind === 'target' && e.step === 2), false);
+  });
+
+  test('piece, pitch and overflight events carry the piece and the pitch change', () => {
+    const terrain = rows('0000000', '0000000', '0000000', '1000000', '0000000', '0000000', '0000000');
+    const over = trace(mk({ terrain, targets: [{ x: 6, y: 0 }] }), [M(3, 3, '/')]);
+    assert.deepEqual(over.events.filter(e => e.kind === 'overflight'),
+      [{ kind: 'overflight', step: 2, x: 3, y: 3, z: 1, type: 'MIRROR', orient: '/', fixed: false }]);
+    assert.deepEqual(over.overflights, [{ x: 3, y: 3 }]);
+    assert.deepEqual(over.events.filter(e => e.kind === 'piece'), []);
+
+    const wedge = trace(mk({ targets: [{ x: 6, y: 6 }] }), [W(3, 3, '/')]);
+    assert.deepEqual(wedge.events.filter(e => e.kind === 'piece'), [
+      { kind: 'piece', step: 2, x: 3, y: 3, z: 0, type: 'WEDGE', orient: '/', fixed: false,
+        dIn: 'E', dOut: 'N', vIn: 0, vOut: 1 },
+    ]);
+    assert.deepEqual(wedge.events.filter(e => e.kind === 'pitch'),
+      [{ kind: 'pitch', step: 2, x: 3, y: 3, z: 0, from: 0, to: 1 }]);
+
+    // a MIRROR hit by a level beam changes no pitch: piece event, no pitch event (same rule as altitudeMarks)
+    const flat = trace(mk({ targets: [{ x: 3, y: 6 }] }), [M(3, 3, '/')]);
+    assert.equal(flat.events.filter(e => e.kind === 'piece').length, 1);
+    assert.deepEqual(flat.events.filter(e => e.kind === 'pitch'), []);
+  });
+
+  test('a fixed piece is reported with fixed:true, and the secret wedge reveal is one event', () => {
+    const lvl = mk({ fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }], targets: [{ x: 6, y: 6 }] });
+    const r = trace(lvl, []);
+    const piece = r.events.filter(e => e.kind === 'piece');
+    assert.equal(piece.length, 1);
+    assert.equal(piece[0].fixed, true);
+    assert.equal(piece[0].type, 'WEDGE');
+    assert.equal(parseLevel(lvl).fixed[0].secret, true);
+  });
+
+  test('every terminal kind produces exactly one end event carrying the same value as `end`', () => {
+    const cases = [
+      trace(mk(), []),                                                                     // target
+      trace(mk({ terrain: rows('0000000', '0000000', '0000000', '0001000', '0000000', '0000000', '0000000') }), []),  // blocked
+      trace(mk({ targets: [{ x: 6, y: 0 }] }), []),                                        // lost-edge
+      trace(mk({ targets: [{ x: 6, y: 0 }] }), [D(2, 3, '/')]),                            // lost-floor
+      trace(mk({ emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 6, y: 6 }] }), [W(1, 0, '/')]),  // lost-sky
+      trace(mk({ terrain: rows('0000000', '0000000', '0000000', '0000000', '0000000', '0220000', '0000000'),
+        emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }),
+        [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')]),         // loop
+    ];
+    const seen = new Set();
+    for (const r of cases) {
+      const terminals = r.events.filter(e => e.kind === 'end');
+      assert.equal(terminals.length, 1, `end ${r.end}`);
+      assert.equal(terminals[0].end, r.end);
+      assert.equal(terminals[0], r.events[r.events.length - 1]);
+      assert.deepEqual({ x: terminals[0].x, y: terminals[0].y, z: terminals[0].z }, r.endPoint);
+      seen.add(r.end);
+    }
+    assert.deepEqual([...seen].sort(), [...ENDS].sort());
+  });
+
+  test('events agree with the legacy fields they mirror', () => {
+    const terrain = rows('0000000', '0000000', '0000000', '0000000', '0000000', '0220000', '0000000');
+    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
+    const r = trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed);
+    assert.deepEqual(r.events.filter(e => e.kind === 'enter').map(e => ({ x: e.x, y: e.y, z: e.z, d: e.d, v: e.v })), r.visited);
+    assert.deepEqual(r.events.filter(e => e.kind === 'piece').map(e => ({ x: e.x, y: e.y, type: e.type, orient: e.orient, fixed: e.fixed })), r.pieceHits);
+    assert.deepEqual(r.events.filter(e => e.kind === 'overflight').map(e => ({ x: e.x, y: e.y })), r.overflights);
+    assert.deepEqual(r.events.filter(e => e.kind === 'target').map(e => e.targetIndex), r.hits);
+    // altitudeMarks = every pitch event's cell + the endPoint, in order
+    const marks = r.events.filter(e => e.kind === 'pitch' || e.kind === 'end').map(e => ({ x: e.x, y: e.y, z: e.z }));
+    assert.deepEqual(marks, r.altitudeMarks);
+    assert.deepEqual(kinds(r).filter(k => k === 'end'), ['end']);
+  });
+
+  test('a multi-target level emits one target event per NEWLY lit orb, in hit order', () => {
+    const r = trace(mk({ targets: [{ x: 3, y: 3 }, { x: 6, y: 3 }] }), []);
+    assert.deepEqual(r.events.filter(e => e.kind === 'target'), [
+      { kind: 'target', step: 2, x: 3, y: 3, z: 0, targetIndex: 0 },
+      { kind: 'target', step: 5, x: 6, y: 3, z: 0, targetIndex: 1 },
+    ]);
+    assert.deepEqual(r.hits, [0, 1]);
+    assert.equal(r.end, 'target');
+  });
+
+  test('events are fresh per call and never alias the inputs', () => {
+    const lvl = parseLevel(mk());
+    const a = trace(lvl, []);
+    a.events.length = 0;
+    const b = trace(lvl, []);
+    assert.equal(b.events.length, 8);   // 6 enters + 1 target + 1 end
+    assert.notEqual(a.events, b.events);
   });
 });
 

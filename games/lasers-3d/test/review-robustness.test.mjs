@@ -1,6 +1,7 @@
 // ROBUSTNESS review suite for the Lasers 3D rules engine (DESIGN.md section 3, INTERFACES.md).
 // Written as an adversarial reviewer: malformed levels, illegal placements, determinism,
-// loop guard, the 400-step cap, and the UMD wrapper under node require AND a browser-like vm.
+// loop guard, the DERIVED step cap (LaserSim.stepCap), and the UMD wrapper under node require
+// AND a browser-like vm.
 // Row-order convention: terrain[y][x], y = 0 is the SOUTH row.
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,9 @@ import vm from 'node:vm';
 const require = createRequire(import.meta.url);
 const Pieces = require('../src/pieces.js');
 const Sim = require('../src/sim.js');
-const { trace, canPlace, parseLevel, MAX_STEPS } = Sim;
+const { trace, canPlace, parseLevel, MAX_STEPS, stepCap } = Sim;
+// The loop-guard cap is DERIVED per level from the finite state space; MAX_STEPS is only its floor.
+const CAP = (level) => stepCap(level);
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.resolve(here, '../src');
@@ -74,10 +77,10 @@ describe('robustness: malformed levels (INTERFACES 3 validation list)', () => {
     const ragged = terrain.slice(); ragged[3] = [0, 1, 2];
     assert.throws(() => parseLevel(mk({ terrain: ragged })), /terrain/);
   });
-  // FINDING (minor, spec silent): INTERFACES 3 says "a row may also be an array of digits". parseTerrain
-  // does row.join('') then validates the STRING, so a 6-element array [10,0,0,0,0,0] joins to "1000000"
-  // and is accepted as a valid 7-wide row. Marked todo so the suite stays green; remove `todo` once fixed.
-  test('terrain row as an array of multi-digit numbers is NOT accepted as a row of w digits', { todo: 'parseTerrain validates the joined string, not the array elements' }, () => {
+  // REGRESSION (fixed): parseTerrain used to row.join('') and validate the STRING, so a 6-element array
+  // [10,0,0,0,0,0] joined to "1000000" and passed as a valid 7-wide row. Array rows are now validated
+  // element by element (integer 0..3) with the row length checked against w.
+  test('terrain row as an array of multi-digit numbers is NOT accepted as a row of w digits', () => {
     const terrain = Array.from({ length: 7 }, () => '0000000');
     terrain[3] = [10, 0, 0, 0, 0, 0];
     assert.throws(() => parseLevel(mk({ terrain })), /terrain/);
@@ -341,7 +344,7 @@ describe('robustness: loop guard', () => {
   test('4-mirror square cycle -> end loop at the first repeated state, well under the cap', () => {
     const r = trace(squareLevel(), squarePieces());
     assert.equal(r.end, 'loop');
-    assert.ok(r.segments.length < MAX_STEPS, `segments ${r.segments.length}`);
+    assert.ok(r.segments.length < CAP(squareLevel()), `segments ${r.segments.length} vs cap ${CAP(squareLevel())}`);
     assert.deepEqual(r.endPoint, { x: 3, y: 4, z: 0 });
     // The square's four corners each acted, corner A twice; D was overflown once on the way in.
     assert.deepEqual(r.overflights, [{ x: 3, y: 5 }]);
@@ -366,7 +369,7 @@ describe('robustness: loop guard', () => {
       const r = trace(mk({ targets: [{ x: 6, y: 6 }] }), [M(3, 3, o1), M(3, 4, o2), M(4, 3, o2), M(2, 3, o1)]);
       assert.ok(ENDS.has(r.end));
       assert.notEqual(r.end, 'loop', `orients ${o1}${o2}`);
-      assert.ok(r.segments.length <= MAX_STEPS);
+      assert.ok(r.segments.length <= CAP(mk({ targets: [{ x: 6, y: 6 }] })));
     }
     // Direct check on the turn tables: no orientation maps a direction to its opposite.
     const OPP = { E: 'W', W: 'E', N: 'S', S: 'N' };
@@ -390,34 +393,80 @@ describe('robustness: loop guard', () => {
 });
 
 // ---------------------------------------------------------------------------
-describe('robustness: the 400-step cap', () => {
-  // The schema does not bound size, so a 1-row corridor exercises the cap exactly.
+// The step cap used to be the hard-coded 400 and a >400-step legal route was reported as a
+// false 'loop'. It is now DERIVED per level from the finite state space, so the (x,y,z,d,v)
+// repeat guard - the thing that actually guarantees termination - always fires first.
+// These tests keep the original intent: the guard exists, it fires when it should, and it
+// never cuts a legal route short.
+describe('robustness: the derived step cap (LaserSim.stepCap)', () => {
+  // The schema does not bound size, so a 1-row corridor is the longest possible straight run.
   const corridor = (w, tx) => mk({ w, d: 1, terrain: ['0'.repeat(w)], emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: tx, y: 0 }], tray: [] });
+  const derived = (w, d) => Math.max(MAX_STEPS, w * d * Sim.H_MAX * 4 * 3 + 1);
 
-  test('a straight beam is cut at exactly MAX_STEPS entered cells and reports loop', () => {
+  test('stepCap is max(MAX_STEPS, w * d * H_MAX * 4 dirs * 3 pitches + 1) and MAX_STEPS is only the floor', () => {
+    assert.equal(MAX_STEPS, 400, 'the documented minimum cap must not change');
+    assert.equal(CAP(mk({ w: 6, d: 6, emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 5, y: 5 }], terrain: Array.from({ length: 6 }, () => '000000') })), 1729);
+    assert.equal(CAP(mk({ w: 24, d: 24, emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 23, y: 23 }], terrain: Array.from({ length: 24 }, () => '0'.repeat(24)) })), 27649);
+    // small boards fall back to the 400 floor (2 * 2 * 4 * 4 * 3 + 1 = 193 < 400)
+    assert.equal(CAP({ size: { w: 2, d: 2 }, terrain: ['00', '00'], emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 1, y: 1 }] }), MAX_STEPS);
+    for (const [w, d] of [[1, 2], [7, 7], [12, 12], [18, 18], [22, 22], [1000, 1]]) {
+      const lvl = { size: { w, d }, terrain: Array.from({ length: d }, () => '0'.repeat(w)),
+        emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: w - 1, y: d - 1 }] };
+      assert.equal(CAP(lvl), derived(w, d), `${w}x${d}`);
+    }
+    // stepCap validates like parseLevel and accepts an already-parsed level
+    assert.throws(() => CAP(mk({ terrain: ['000'] })), /lasers-3d level: terrain/);
+    assert.equal(CAP(parseLevel(mk())), CAP(mk()));
+  });
+  test('the cap can never fire: it strictly exceeds the number of distinct (x,y,z,d,v) states', () => {
+    for (const [w, d] of [[1, 1], [6, 6], [12, 12], [24, 24], [1000, 1]]) {
+      const states = w * d * Sim.H_MAX * 4 * 3;
+      const cap = derived(w, d);
+      assert.ok(cap > states, `${w}x${d}: cap ${cap} must exceed ${states} states`);
+    }
+  });
+  test('a legal straight run far longer than 400 cells reaches its target (was a false loop)', () => {
     const r = trace(corridor(1000, 999), []);
-    assert.equal(r.end, 'loop');
-    assert.equal(r.segments.length, MAX_STEPS);
-    assert.equal(r.visited.length, MAX_STEPS);
-    assert.deepEqual(r.endPoint, { x: MAX_STEPS, y: 0, z: 0 });
+    assert.equal(r.end, 'target');
+    assert.notEqual(r.end, 'loop');
+    assert.equal(r.segments.length, 999);
+    assert.equal(r.visited.length, 999);
+    assert.ok(r.segments.length > MAX_STEPS, 'the run must be longer than the old hard-coded cap');
+    assert.ok(r.segments.length < CAP(corridor(1000, 999)));
+    assert.deepEqual(r.endPoint, { x: 999, y: 0, z: 0 });
     assert.deepEqual(r.endPoint, r.segments[r.segments.length - 1].to);
-    assert.deepEqual(r.hits, []);
-    assert.equal(r.allTargetsHit, false);
+    assert.deepEqual(r.hits, [0]);
+    assert.equal(r.allTargetsHit, true);
   });
-  test('boundary: a target on the 400th entered cell is hit; on the 401st it is not', () => {
-    const hit = trace(corridor(1000, MAX_STEPS), []);
-    assert.equal(hit.end, 'target');
-    assert.equal(hit.visited.length, MAX_STEPS);
-    const miss = trace(corridor(1000, MAX_STEPS + 1), []);
-    assert.equal(miss.end, 'loop');
-    assert.deepEqual(miss.hits, []);
+  test('no boundary at 400: a target on the 400th, 401st and 900th entered cell is hit alike', () => {
+    for (const tx of [MAX_STEPS, MAX_STEPS + 1, 900]) {
+      const r = trace(corridor(1000, tx), []);
+      assert.equal(r.end, 'target', `target at x=${tx}`);
+      assert.equal(r.visited.length, tx);
+      assert.deepEqual(r.hits, [0]);
+    }
   });
-  test('the cap counts entered cells, not pieces: a zig-zag through 500 mirrors is cut at 400', () => {
-    // 2-row corridor; mirrors alternate rows so the beam zig-zags E: (1,0)'/'->N, (1,1)'\\'->E, (2,1)'/'? no: '/' N->E already.
-    // Simpler: a long straight corridor with mirrors nowhere near the beam - the beam itself is the load.
-    const r = trace(corridor(5000, 4999), Array.from({ length: 500 }, (_, i) => M(i + 1, 0, '/')).filter(() => false));
+  test('a long corridor with no target on the beam leaves the grid instead of reporting loop', () => {
+    // target parked off the beam row so the beam runs the full corridor and exits east
+    const lvl = mk({ w: 1000, d: 2, terrain: ['0'.repeat(1000), '0'.repeat(1000)], emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 5, y: 1 }], tray: [] });
+    const r = trace(lvl, []);
+    assert.equal(r.end, 'lost-edge');
+    assert.notEqual(r.end, 'loop');
+    assert.equal(r.visited.length, 999);
+    assert.deepEqual(r.endPoint, { x: 1000, y: 0, z: 0 });
+    assert.ok(r.segments.length < CAP(lvl));
+  });
+  test('the guard still fires on a 24x24 board: the documented 3D cycle ends loop far below the cap', () => {
+    // Same construction as the documented 3D cycle, replayed on a 24x24 board: the state-repeat
+    // guard - not the step cap - is what stops it, and it stops at the same place as on 7x7.
+    const big = Array.from({ length: 24 }, (_, y) => (y === 5 ? '0220' + '0'.repeat(20) : '0'.repeat(24)));
+    const lvl = mk({ w: 24, d: 24, terrain: big, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 23, y: 23 }], tray: [] });
+    const placed = [M(1, 4, '/'), M(1, 3, '\\'), W(2, 3, '/'), M(2, 5, '\\'), D(1, 5, '/')];
+    const r = trace(lvl, placed);
     assert.equal(r.end, 'loop');
-    assert.equal(r.visited.length, MAX_STEPS);
+    assert.deepEqual(r.endPoint, { x: 1, y: 3, z: 0 });
+    assert.ok(r.segments.length < CAP(lvl), `segments ${r.segments.length} vs cap ${CAP(lvl)}`);
+    assert.ok(r.segments.length < MAX_STEPS, 'a real cycle is caught by the state guard, not the cap');
   });
   test('cap end is deterministic', () => {
     const L = parseLevel(corridor(1000, 999));
@@ -453,7 +502,9 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
   }
   function checkInvariants(L, placed, res, tag) {
     assert.ok(ENDS.has(res.end), `${tag}: end ${res.end}`);
-    assert.ok(res.segments.length <= MAX_STEPS, `${tag}: segments ${res.segments.length}`);
+    assert.ok(res.segments.length <= CAP(L), `${tag}: segments ${res.segments.length} vs cap ${CAP(L)}`);
+    // the cap is a safety net only: a fuzz board is small enough that a real cycle always ends first
+    assert.ok(res.segments.length < CAP(L), `${tag}: the derived cap must never be the terminator`);
     assert.ok(res.segments.length >= 1, `${tag}: at least the terminal segment`);
     assert.deepEqual(res.endPoint, res.segments[res.segments.length - 1].to, `${tag}: endPoint = last to`);
     assert.deepEqual(res.altitudeMarks[res.altitudeMarks.length - 1], res.endPoint, `${tag}: last mark = endPoint`);
@@ -482,6 +533,31 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
     }
     // the emitter cell is never entered
     assert.ok(!res.visited.some(s => s.x === L.emitter.x && s.y === L.emitter.y), `${tag}: emitter never entered`);
+    // --- events stream mirrors the legacy fields exactly and is ordered by segment index
+    assert.ok(Array.isArray(res.events), `${tag}: events array`);
+    const EK = new Set(['enter', 'piece', 'overflight', 'target', 'pitch', 'end']);
+    for (let i = 0; i < res.events.length; i++) {
+      const e = res.events[i];
+      assert.ok(EK.has(e.kind), `${tag}: event kind ${e.kind}`);
+      assert.ok(Number.isInteger(e.step) && e.step >= 0 && e.step < res.segments.length, `${tag}: event step ${e.step}`);
+      if (i) assert.ok(e.step >= res.events[i - 1].step, `${tag}: events ordered by step`);
+    }
+    const last = res.events[res.events.length - 1];
+    assert.equal(last.kind, 'end', `${tag}: last event is the terminal`);
+    assert.equal(last.end, res.end, `${tag}: terminal event carries end`);
+    assert.equal(res.events.filter(e => e.kind === 'end').length, 1, `${tag}: exactly one terminal`);
+    assert.deepEqual({ x: last.x, y: last.y, z: last.z }, res.endPoint, `${tag}: terminal at endPoint`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'enter').map(e => ({ x: e.x, y: e.y, z: e.z, d: e.d, v: e.v })), res.visited, `${tag}: enters = visited`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'piece').map(e => ({ x: e.x, y: e.y, type: e.type, orient: e.orient, fixed: e.fixed })), res.pieceHits, `${tag}: pieces = pieceHits`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'overflight').map(e => ({ x: e.x, y: e.y })), res.overflights, `${tag}: overflights`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'target').map(e => e.targetIndex), res.hits, `${tag}: targets = hits`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'pitch' || e.kind === 'end').map(e => ({ x: e.x, y: e.y, z: e.z })), res.altitudeMarks, `${tag}: pitch+end = altitudeMarks`);
+    // a target is only ever reported at the orb's own level - never on a fly-over
+    for (const e of res.events) {
+      if (e.kind !== 'target') continue;
+      assert.equal(e.z, L.t[e.y][e.x], `${tag}: target event above the orb`);
+      assert.deepEqual({ x: e.x, y: e.y }, { x: L.targets[e.targetIndex].x, y: L.targets[e.targetIndex].y }, `${tag}: target event cell`);
+    }
   }
 
   test('1500 random boards: never throws, invariants hold, deterministic', () => {
@@ -496,7 +572,7 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
       const b = trace(raw, placed.map(p => ({ ...p })));
       assert.deepEqual(a, b, `iteration ${i}: nondeterministic`);
       checkInvariants(L, placed, a, `iteration ${i}`);
-      if (a.end === 'loop') { loops++; if (a.segments.length === MAX_STEPS) caps++; }
+      if (a.end === 'loop') { loops++; if (a.segments.length >= CAP(L)) caps++; }
       if (a.overflights.length) over++;
       for (let y = 0; y < L.size.d; y++) for (let x = 0; x < L.size.w; x++) {
         assert.equal(typeof canPlace(L, placed, x, y), 'boolean');
@@ -522,7 +598,7 @@ describe('robustness: UMD wrapper', () => {
     assert.equal(require('../src/sim.js'), Sim);
   });
   test('node require: module.exports is the factory result, not wrapped', () => {
-    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'parseLevel', 'trace'].sort());
+    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'parseLevel', 'stepCap', 'trace'].sort());
     assert.deepEqual(Object.keys(Pieces).sort(), ['ORIENTS', 'PIECES', 'TURN', 'TYPES', 'apply', 'isOrient', 'isType', 'rotate'].sort());
   });
 
@@ -609,19 +685,65 @@ describe('robustness (pass 2): frozen inputs, spoofed parsed levels, coordinate-
     assert.equal(trace(L, placed).end, 'target');
     assert.equal(canPlace(L, placed, 3, 3), false);
   });
-  test('a spoofed "parsed" level (parsed:true, t:[]) skips validation - trace must not produce garbage silently', () => {
-    // INTERFACES 2: parseLevel is idempotent for a PARSED level. A raw level that lies about being parsed is a
-    // caller bug (spec silent). Requirement here: it must throw, not return a result with NaN/undefined fields.
+  // REGRESSION (fixed): parseLevel used to treat `parsed: true` as a trust brand and return early, so a
+  // hand-made object claiming it bypassed every check and could crash the renderer later. The brand is now
+  // module-private (a WeakSet), so `parsed: true` on an input is just a label and is validated like any field.
+  test('a forged "parsed" level (parsed:true, t:[]) is validated, not trusted', () => {
     const spoof = { ...mk(), parsed: true, t: [] };
-    let out = null;
-    try { out = trace(spoof, []); } catch (e) { return; }
-    assert.ok(ENDS.has(out.end) && Number.isFinite(out.endPoint.x), 'spoofed parsed level produced garbage: ' + JSON.stringify(out.endPoint));
+    const out = trace(spoof, []);
+    assert.ok(ENDS.has(out.end) && Number.isFinite(out.endPoint.x), 'forged parsed level produced garbage: ' + JSON.stringify(out.endPoint));
+    assert.equal(out.end, 'target');
+    // the forged `t` is discarded: the real terrain is re-derived from `terrain`
+    const L = parseLevel(spoof);
+    assert.notEqual(L, spoof);
+    assert.equal(L.t.length, 7);
+    assert.equal(L.t[0].length, 7);
   });
-  test('parseLevel normalizes array-of-digit terrain rows to strings in .terrain (INTERFACES 3: "[...original strings]")', { todo: 'parsed.terrain keeps the array row as-is; downstream renderers indexing terrain[y][x] as a string see a number, not a char' }, () => {
+  test('a forged "parsed" level with an invalid body still throws the documented error', () => {
+    for (const [bad, re] of [
+      [{ ...mk(), parsed: true, t: [[0]], terrain: ['000'] }, /lasers-3d level: terrain/],
+      [{ ...mk(), parsed: true, t: [[0]], size: { w: 0, d: 7 } }, /lasers-3d level: size/],
+      [{ ...mk(), parsed: true, t: [[0]], emitter: { x: 99, y: 0, dir: 'E' } }, /lasers-3d level: emitter/],
+      [{ ...mk(), parsed: true, t: [[0]], targets: [] }, /lasers-3d level: target/],
+      [{ ...mk(), parsed: true, t: [[0]], tray: ['PRISM'] }, /lasers-3d level: tray/],
+      [{ parsed: true, t: [[0]] }, /lasers-3d level: size/],
+    ]) {
+      assert.throws(() => parseLevel(bad), re);
+      assert.throws(() => trace(bad, []), re);
+      assert.throws(() => canPlace(bad, [], 1, 1), re);
+    }
+  });
+  test('the parsed brand cannot be forged by copying a genuinely parsed level', () => {
+    const L = parseLevel(mk());
+    assert.equal(parseLevel(L), L, 'idempotent for a level THIS module parsed');
+    // a structural clone is NOT branded: it is re-validated and a fresh object comes back
+    const clone = { ...L };
+    const re = parseLevel(clone);
+    assert.notEqual(re, clone);
+    assert.equal(re.parsed, true);
+    assert.deepEqual(re.t, L.t);
+    // ...and a clone with a poisoned body throws instead of sliding through
+    assert.throws(() => parseLevel({ ...L, terrain: ['0'] }), /lasers-3d level: terrain/);
+    assert.throws(() => parseLevel({ ...L, targets: [{ x: 99, y: 0 }] }), /lasers-3d level: target/);
+  });
+  test('parseLevel stays idempotent across many traces (the solver parses once, traces many)', () => {
+    const L = parseLevel(mk({ targets: [{ x: 3, y: 6 }] }));
+    for (let i = 0; i < 200; i++) {
+      assert.equal(parseLevel(L), L);
+      assert.equal(trace(L, [M(3, 3, '/')]).end, 'target');
+    }
+    assert.equal(JSON.stringify(L), JSON.stringify(parseLevel(L)));
+  });
+  // REGRESSION (fixed): parsed.terrain used to keep an array row as-is, so a renderer indexing
+  // terrain[y][x] as a string saw a number, not a char. parseLevel now always returns canonical strings.
+  test('parseLevel always returns canonical string terrain rows (INTERFACES 3)', () => {
     const terrain = Array.from({ length: 7 }, () => '0000000');
     terrain[3] = [0, 1, 2, 3, 0, 0, 0];
     const L = parseLevel(mk({ terrain }));
     assert.ok(L.terrain.every(rw => typeof rw === 'string'), 'parsed.terrain rows should all be strings');
+    assert.equal(L.terrain[3], '0123000');
+    assert.equal(L.terrain.length, 7);
+    L.terrain.forEach((rw, y) => assert.equal(rw, L.t[y].join(''), `row ${y} matches t`));
   });
   test('placed piece coordinates as strings: trace and canPlace agree on whether the cell is occupied (both key by "x,y")', () => {
     // Spec silent on coordinate types; the invariant asserted is internal consistency between 3.4 and 3.2.
@@ -708,19 +830,28 @@ describe('robustness (pass 2): loop guard corner cases', () => {
     // the entry-state list may legitimately repeat only at the very last entry (that is what a loop is)
     const firstRepeatIdx = keys.findIndex((k, i) => keys.indexOf(k) !== i);
     assert.ok(firstRepeatIdx === -1 || firstRepeatIdx === keys.length - 1, 'a repeated ENTRY state should end the trace immediately');
-    assert.ok(r.segments.length < MAX_STEPS);
+    assert.ok(r.segments.length < CAP(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] })));
     // the same trace repeated 50 times is identical (loop guard has no hidden state)
     const s = JSON.stringify(r);
     for (let i = 0; i < 50; i++) assert.equal(JSON.stringify(trace(mk({ terrain, emitter: { x: 6, y: 4, dir: 'W' }, targets: [{ x: 6, y: 0 }] }), placed)), s);
   });
-  test('the 400-step cap on a huge empty board reports loop, exactly 400 segments, endPoint at the 400th cell', () => {
+  test('a huge empty board runs to its natural terminal, never to the derived cap', () => {
+    // Was: cut at exactly 400 with end 'loop'. The cap is now derived (1000*1*4*4*3+1 = 48001)
+    // and a 999-cell straight run is a legal route, so it must reach the target.
     const lvl = { size: { w: 1000, d: 1 }, terrain: ['0'.repeat(1000)], emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 999, y: 0 }] };
     const r = trace(lvl, []);
-    assert.equal(r.end, 'loop');
-    assert.equal(r.segments.length, MAX_STEPS);
-    assert.equal(r.visited.length, MAX_STEPS);
-    assert.deepEqual(r.endPoint, { x: 400, y: 0, z: 0 });
-    assert.deepEqual(r.altitudeMarks, [{ x: 400, y: 0, z: 0 }]);
+    assert.equal(CAP(lvl), 48001);
+    assert.equal(r.end, 'target');
+    assert.notEqual(r.end, 'loop');
+    assert.equal(r.segments.length, 999);
+    assert.equal(r.visited.length, 999);
+    assert.deepEqual(r.endPoint, { x: 999, y: 0, z: 0 });
+    assert.deepEqual(r.altitudeMarks, [{ x: 999, y: 0, z: 0 }]);
+    // and with the target moved off the run, it exits the grid rather than reporting loop
+    const off = { size: { w: 1000, d: 2 }, terrain: ['0'.repeat(1000), '0'.repeat(1000)], emitter: { x: 0, y: 0, dir: 'E' }, targets: [{ x: 3, y: 1 }] };
+    const r2 = trace(off, []);
+    assert.equal(r2.end, 'lost-edge');
+    assert.equal(r2.visited.length, 999);
   });
 });
 

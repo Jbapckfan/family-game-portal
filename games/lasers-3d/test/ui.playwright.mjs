@@ -332,27 +332,57 @@ async function robustnessPass(browser, url) {
 // findFlyover: a placement whose beam passes THROUGH a target's cell at a different height (LaserMainTrace.flyover),
 // which is what makes the readout print both altitudes. Multi-target levels are preferred so the same single FIRE
 // also exercises the "n of m lit" progress chip, exactly as the old hand-picked fixture did.
-// The search is 0 or 1 piece per level: enough to reach every situation these checks need, and cheap enough
-// (a few thousand traces of pure arithmetic) to run in the page on every viewport.
+// The search runs at 0, then 1, then 2 pieces, and its CANDIDATE CELLS come from the beam itself: a piece can only
+// change a beam by sitting on a cell that beam already visits at that cell's own level. That is the same pruning the
+// solver uses, and it keeps an otherwise huge search to a few tens of thousands of pure-arithmetic traces.
+// Two pieces are needed in practice. A flyover requires the beam to arrive at a target's cell ABOVE it, the beam
+// leaves the emitter level, and only a WEDGE or a DIP changes pitch - so the first piece must be a pitch-changer and
+// a second is then usually needed to steer the now-climbing beam back over the orb. Levels whose targets all sit at
+// the maximum height are skipped outright: nothing can fly over them, by construction.
 const findFlyover = (page) => page.evaluate(() => {
   const sim = window.__laser.sim, LEVELS = window.__laser.main.levels, T = window.LaserMainTrace, ORIENTS = ['/', '\\'];
   let best = null;
   const consider = (li, raw, L, placed) => {
     const r = sim.trace(raw, placed);
-    if (r.allTargetsHit) return;                     // a win shows the victory modal, not a miss readout
+    if (r.allTargetsHit) return false;               // a win shows the victory modal, not a miss readout
     const f = T.flyover(L, r);
-    if (!f || !f.above) return;                      // "flew over", the case the readout copy is written for
+    if (!f || !f.above) return false;                // "flew over", the case the readout copy is written for
     const cand = { level: li, placed, beamZ: f.beamZ, targetZ: f.targetZ, lit: r.hits.length, total: L.targets.length, end: r.end };
     if (!best || (cand.total > 1 && best.total < 2)) best = cand;
+    return true;
+  };
+  // cells the given beam could be altered at: visited at exactly that cell's terrain level, and legally placeable
+  const touchable = (raw, L, placed) => {
+    const seen = {}, out = [];
+    sim.trace(raw, placed).visited.forEach((v) => {
+      const k = v.x + ',' + v.y;
+      if (seen[k] || v.z !== L.t[v.y][v.x]) return;
+      seen[k] = 1;
+      if (sim.canPlace(raw, placed, v.x, v.y)) out.push({ x: v.x, y: v.y });
+    });
+    return out;
   };
   for (let li = 0; li < LEVELS.length; li++) {
     const raw = LEVELS[li], L = sim.parseLevel(raw), types = Array.from(new Set(L.tray));
+    if (L.targets.every((t) => L.t[t.y][t.x] >= sim.H_MAX - 1)) continue;   // nothing can be above it
     consider(li, raw, L, []);
-    for (let y = 0; y < L.size.d; y++) for (let x = 0; x < L.size.w; x++) {
-      if (!sim.canPlace(raw, [], x, y)) continue;
-      for (const type of types) for (const orient of ORIENTS) consider(li, raw, L, [{ x, y, type, orient }]);
+    if (best && best.total > 1) break;
+    const first = touchable(raw, L, []);
+    const pitchers = types.filter((t) => t === 'WEDGE' || t === 'DIP');
+    for (const c of first) for (const type of types) for (const orient of ORIENTS) {
+      if (consider(li, raw, L, [{ x: c.x, y: c.y, type, orient }]) && best && best.total > 1) break;
     }
     if (best && best.total > 1) break;
+    // depth 2, first piece restricted to a pitch-changer: without one the beam never leaves its starting level
+    for (const c of first) for (const type of pitchers) for (const orient of ORIENTS) {
+      const a = [{ x: c.x, y: c.y, type, orient }];
+      for (const c2 of touchable(raw, L, a)) for (const t2 of types) for (const o2 of ORIENTS) {
+        consider(li, raw, L, a.concat([{ x: c2.x, y: c2.y, type: t2, orient: o2 }]));
+        if (best && best.total > 1) break;
+      }
+      if (best && best.total > 1) break;
+    }
+    if (best) break;
   }
   return best;
 });

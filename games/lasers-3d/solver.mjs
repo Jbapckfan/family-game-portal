@@ -10,6 +10,14 @@
 //   - flatten() is the one place that rewrites piece semantics, and its claim had to be re-proven
 //     under the new rule; see its doc comment and the flatten test in test/solver.test.mjs.
 //
+// ARCHES AND WINDOWS (DESIGN.md section 13). The search reads the board only through Sim.trace and
+// Sim.canPlace, so an `openings` array flows through the DFS untouched: a beam that threads an arch
+// or a window simply visits cells it could not visit before. Two places did need a decision, both
+// recorded where they live: candidateCells (a beam inside an opening is at z < t, so that cell is
+// NOT a placement candidate - correct, because a piece sits on the column TOP and nothing may be
+// placed inside an opening) and flatten (an opened column stays an impassable wall - see its doc
+// comment for the reasoning, which is load-bearing for every under-arch level).
+//
 // SEARCH (rewritten for the 12x12..24x24 level set)
 // Iterative deepening, but each round is a depth-limited DFS in BEAM ORDER instead of a BFS over every
 // distinct placed set. The canonical order kills the permutation blow-up that made big boards
@@ -73,6 +81,9 @@ function lastActIndex(L, placed, visited) {
 // Candidate cells for the NEXT piece: cells the current beam enters at exactly that cell's terrain
 // level, strictly after the last placed piece acted, in beam order, deduped, placeable. A piece
 // anywhere else is either flown over, never reached, or out of canonical order.
+// SECTION 13: the `v.z !== t` test also excludes every cell the beam threads through an OPENING
+// (there z < t), which is exactly right - a piece sits on the column TOP, so it could never catch a
+// beam inside the opening, and nothing may be placed inside one.
 function candidateCells(L, placed, visited) {
   const out = [], seen = {};
   for (let i = lastActIndex(L, placed, visited) + 1; i < visited.length; i++) {
@@ -262,6 +273,7 @@ export function replay(level, placed) {
  * flatten(level) -> the CLASSIC 2D projection used by the 3D-necessity test (spec 3.7):
  *   - every cell with t >= 1 becomes a full-height wall ('3'), so it is impassable and
  *     no beam can ever meet a piece on it (pieces on raised terrain are unusable);
+ *   - EVERY OPENING IS DROPPED (DESIGN.md section 13) - see the paragraph below;
  *   - the emitter and every target sit at level 0 (their cells are floor);
  *   - fixed pieces on raised cells are dropped (they would be inside a wall);
  *   - every piece, fixed or in the tray, behaves as MIRROR (secret flags cleared).
@@ -276,6 +288,26 @@ export function replay(level, placed) {
  * v = 0. So v is 0 on the first step and preserved on every step after it: EVERY segment of EVERY
  * flat trace is level, at z = 0, with no over-flights. That is exactly the 2D game, and it is
  * asserted directly (over the fixtures and 120 random levels) in test/solver.test.mjs.
+ *
+ * IS AN OPENED COLUMN PASSABLE IN THE FLAT PROJECTION? NO - it stays a wall. Deliberately, and the
+ * reasoning matters because it is what makes an under-arch level provable:
+ *   1. flatten answers ONE question: "can a player who believes the board is the classic 2D game
+ *      solve it?" That game has no levels at all, so there is nothing an opening could mean in it.
+ *      A cell is a wall or it is not.
+ *   2. From directly above an opened column is pixel-identical to a solid one - the top surface is
+ *      untouched, which is the entire point of section 13.1. The only thing that distinguishes them
+ *      in FLAT is the light leak of 13.3, and that leak is precisely a signal that the board is NOT
+ *      flat. Handing the flat player the opening would be handing them 3D information.
+ *   3. The claim above - "every t >= 1 is an impassable wall" - is structural, not decorative. It is
+ *      what forces v = 0 on every step of every flat trace: a beam can never climb onto a wall, so
+ *      no piece on raised terrain is reachable and no pitch ever appears. A passable opening would
+ *      let a flat beam cross a wall at z = 0, and "wall" would stop meaning wall.
+ * Consequence, stated plainly so it is not mistaken for a convenience: a route that goes UNDER an
+ * arch is unavailable to the flat player by construction, so an under-arch level tends to come out
+ * `flat-unsolvable` - the AIRTIGHT verdict. That is the correct answer, not a loophole: the route
+ * requires knowing that a level-0 gap exists inside a wall, which is 3D knowledge and nothing else.
+ * Openings are therefore omitted from the returned level (spelled out as `openings: []` rather than
+ * left off, so a reader can see the decision was made rather than forgotten).
  */
 export function flatten(level) {
   const L = Sim.parseLevel(level);
@@ -296,6 +328,7 @@ export function flatten(level) {
     par: 0,
     size: { w: L.size.w, d: L.size.d },
     terrain,
+    openings: [],                     // section 13: an opened column is a wall in the classic game
     emitter: { x: L.emitter.x, y: L.emitter.y, dir: L.emitter.dir },
     targets: L.targets.map(tg => ({ x: tg.x, y: tg.y })),
     fixed,

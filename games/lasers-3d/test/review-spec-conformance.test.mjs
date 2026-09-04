@@ -16,6 +16,7 @@ function mk(o = {}) {
     targets: o.targets || [{ x: 6, y: 3 }],
     fixed: o.fixed || [],
     tray: o.tray || ['MIRROR', 'MIRROR', 'WEDGE', 'DIP'],
+    openings: o.openings,          // DESIGN.md 13.1; undefined == "no openings"
   };
 }
 const M = (x, y, orient = '/') => ({ x, y, type: 'MIRROR', orient });
@@ -299,10 +300,13 @@ describe('3.3 pieces via trace (all four incoming directions, both orientations)
 });
 
 describe('INTERFACES 2.2 events stream (additive; consumers must not match on x,y)', () => {
-  test('every documented legacy field keeps its shape and `events` is the only addition', () => {
+  test('every documented legacy field keeps its shape; `events` and `underpasses` are the only additions', () => {
     const r = trace(mk(), []);
     assert.deepEqual(Object.keys(r).sort(),
-      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'pieceHits', 'segments', 'visited'].sort());
+      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
+    // `underpasses` (DESIGN.md 13) is empty on every level that carries no openings, which is what
+    // keeps the pre-openings corpus byte-identical - see the compatibility suite in sim.test.mjs.
+    assert.deepEqual(r.underpasses, []);
   });
 
   test('a target is reported ONLY at the orb level: a fly-over at another height emits no target event', () => {
@@ -373,5 +377,97 @@ describe('3.4 placement boundaries', () => {
     assert.equal(canPlace(mk(), [], 1.5, 1), false);
     assert.equal(canPlace(mk(), [], 6, 7), false);
     assert.equal(canPlace(mk(), [], -1, 3), false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DESIGN.md 13.2 - the blocked test, exhaustively
+// ---------------------------------------------------------------------------
+// "the next cell is BLOCKED when z' < t[next] AND z' is not one of that column's open levels."
+// Everything below drives that sentence directly over every (column height, open set, beam level)
+// the grid can express, so the rule is checked rather than sampled.
+describe('13.2 the blocked test, over every column height x open set x beam level', () => {
+  // Row y=3 only: the emitter column at x=0 sets the beam's level, the column under test is x=3,
+  // and the orb at x=6 sits at the beam's level so "got through" is observable as a hit.
+  function board(top, openLevels, emitZ) {
+    const row = ['0', '0', '0', String(top), '0', '0', '0'];
+    row[0] = String(emitZ); row[6] = String(emitZ);
+    return mk({
+      terrain: rows('0000000', '0000000', '0000000', row.join(''), '0000000', '0000000', '0000000'),
+      emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }],
+      openings: openLevels.length ? [{ x: 3, y: 3, levels: openLevels.slice() }] : undefined,
+    });
+  }
+
+  test('every case: blocked iff z < t and z is not open; otherwise the beam enters and carries on', () => {
+    let blocked = 0, entered = 0, threaded = 0;
+    for (let top = 0; top <= 3; top++) {
+      // every subset of the levels this column may legally have punched out
+      for (let mask = 0; mask < (1 << top); mask++) {
+        const openLevels = [];
+        for (let z = 0; z < top; z++) if ((mask >> z) & 1) openLevels.push(z);
+        for (let emitZ = 0; emitZ <= 3; emitZ++) {
+          const lvl = board(top, openLevels, emitZ);
+          const L = parseLevel(lvl);
+          assert.equal(L.openMask[3][3], mask, `mask t=${top} m=${mask}`);
+          const r = trace(lvl, []);
+          const tag = `t=${top} open=[${openLevels}] z=${emitZ}`;
+          const shouldBlock = emitZ < top && !openLevels.includes(emitZ);
+          if (shouldBlock) {
+            blocked++;
+            assert.equal(r.end, 'blocked', tag);
+            assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: emitZ }, tag + ' stub at the wall face');
+            assert.deepEqual(r.hits, [], tag);
+          } else {
+            entered++;
+            assert.equal(r.end, 'target', tag);
+            assert.ok(r.visited.some(v => v.x === 3 && v.y === 3 && v.z === emitZ), tag + ' entered the column cell');
+            if (emitZ < top) threaded++;
+          }
+        }
+      }
+    }
+    // 4 heights x (1 + 2 + 4 + 8 legal open sets) x 4 beam levels = 60 cases, all of them
+    assert.equal(blocked + entered, (1 + 2 + 4 + 8) * 4, 'every (t, mask, z) combination was exercised');
+    assert.ok(blocked > 0 && threaded > 0, `blocked ${blocked}, threaded ${threaded}`);
+  });
+
+  test('an opening changes NOTHING about the rest of the step order (rules 1, 2, 4 of INTERFACES 4)', () => {
+    // The blocked test is check 3. Openings must not disturb the checks around it: off-grid still
+    // wins over everything, the floor and sky checks still come first, and the emitter body is still
+    // an obstacle at its own level even when its column is open elsewhere.
+    const wide = rows('0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000');
+    const openAll = [{ x: 3, y: 3, levels: [0, 1, 2] }];
+
+    // rule 1, off-grid: a level-0 beam threads the wide-open column and leaves the board
+    const edge = trace(mk({ terrain: wide, targets: far, openings: openAll }), []);
+    assert.equal(edge.end, 'lost-edge');
+    assert.deepEqual(edge.endPoint, { x: 7, y: 3, z: 0 });
+
+    // rule 2, the floor: a DIP one cell in sends the beam below z=0 before any terrain is consulted
+    const floor = trace(mk({ terrain: wide, targets: far, openings: openAll }), [D(1, 3, '/')]);
+    assert.equal(floor.end, 'lost-floor');
+
+    // rule 2, the sky: the same shape one level from the ceiling, on a ridge so the piece can act
+    const ridge = rows('0000000', '0000000', '0000000', '3303000', '0000000', '0000000', '0000000');
+    const sky = trace(mk({ terrain: ridge, targets: far, openings: openAll }), [W(1, 3, '/')]);
+    assert.equal(sky.end, 'lost-sky');
+
+    // rule 4, the emitter body: an opened column at the emitter's own level is still its body
+    const em = (openings) => mk({
+      terrain: rows('0000000', '0000000', '0000000', '3003000', '0000000', '0000000', '0000000'),
+      openings, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 0, y: 5 }],
+    });
+    const route = [D(3, 3, '\\'), W(3, 0, '/'), M(0, 0, '\\')];
+    assert.equal(trace(em([{ x: 0, y: 3, levels: [0, 1, 2] }]), route).end, 'target', 'level 0 open: the beam goes under the emitter');
+    assert.equal(trace(em([{ x: 0, y: 3, levels: [1, 2] }]), route).end, 'blocked', 'level 0 sealed: the same route dies at the pillar');
+  });
+
+  test('an opening does not change the derived loop-guard cap', () => {
+    const plain = mk({ terrain: rows('0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000') });
+    const open = mk({ terrain: rows('0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'),
+                      openings: [{ x: 3, y: 3, levels: [0, 1, 2] }] });
+    assert.equal(stepCap(open), stepCap(plain));
+    assert.equal(stepCap(open), MAX_STEPS > 7 * 7 * H_MAX * 12 ? MAX_STEPS : 7 * 7 * H_MAX * 12 + 1);
   });
 });

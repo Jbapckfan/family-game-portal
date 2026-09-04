@@ -4,6 +4,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { solve, replay, flatten, needs3D, enumerate, proveMinimal } from '../solver.mjs';
+import { concepts } from '../gen.mjs';
 const require = createRequire(import.meta.url);
 const Sim = require('../src/sim.js');
 const Pieces = require('../src/pieces.js');
@@ -427,5 +428,208 @@ describe('(6) unsolvable and (7) determinism', () => {
     const before = JSON.stringify(PLATEAU);
     solve(PLATEAU); needs3D(PLATEAU); flatten(PLATEAU);
     assert.equal(JSON.stringify(PLATEAU), before);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// ARCHES AND WINDOWS (DESIGN.md section 13) - the solver's side
+// ---------------------------------------------------------------------------------------------
+
+// 7x7. Row y=3: emitter at (0,3), a full-height column at (3,3) with a hole in it, target at (6,3).
+function opened(levels, emitZ = 0) {
+  const row = ['0', '0', '0', '3', '0', '0', '0'];
+  row[0] = String(emitZ); row[6] = String(emitZ);
+  return {
+    name: 'OPEN', par: 0, size: { w: 7, d: 7 },
+    terrain: ['0000000', '0000000', '0000000', row.join(''), '0000000', '0000000', '0000000'],
+    openings: [{ x: 3, y: 3, levels }],
+    emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }], fixed: [], tray: ['MIRROR', 'MIRROR']
+  };
+}
+
+describe('openings: flatten keeps an opened column a WALL (DESIGN.md 13, reasoning in solver.mjs)', () => {
+  test('flatten drops `openings` entirely and reports it as an explicit empty array', () => {
+    const f = flatten(opened([0]));
+    assert.deepEqual(f.openings, [], 'the decision is spelled out, not left off');
+    assert.equal(f.terrain[3][3], '3', 'the opened column is a full wall in the projection');
+    const F = Sim.parseLevel(f);
+    assert.ok(F.openMask.every(row => row.every(m => m === 0)));
+  });
+
+  test('the route UNDER an arch exists in 3D and does not exist in the flat projection', () => {
+    const lvl = opened([0]);
+    assert.equal(replay(lvl, []).end, 'target', 'in 3D the beam goes under the arch');
+    assert.equal(replay(flatten(lvl), []).end, 'blocked', 'in the flat game that column is a wall');
+  });
+
+  // The claim flatten makes - "every t >= 1 is an impassable wall, so every flat segment is level at
+  // z = 0" - is what forces the projection to BE the classic 2D game. Section 13 could have broken it
+  // (a passable opening would let a flat beam cross a wall), so it is re-proven here over levels that
+  // DO carry openings, exactly as it was re-proven for the delta pitch rule of section 12.
+  test('flatten is still 2D on levels WITH openings: every flat trace is level at z = 0', () => {
+    const r = rng(20260913);
+    const cases = [opened([0]), opened([1], 1), opened([2], 2), opened([0, 2])];
+    for (let i = 0; i < 80; i++) cases.push(randomOpenLevel(r));
+    for (const lvl of cases) {
+      const F = Sim.parseLevel(flatten(lvl));
+      assert.ok(F.terrain.join('').split('').every(c => c === '0' || c === '3'));
+      assert.deepEqual(F.openings, [], 'an opening survived into the flat projection');
+      const placements = [[]];
+      for (let y = 0; y < F.size.d; y++) for (let x = 0; x < F.size.w; x++) {
+        for (const o of Pieces.ORIENTS) if (Sim.canPlace(F, [], x, y)) placements.push([{ x, y, type: 'MIRROR', orient: o }]);
+      }
+      for (const placed of placements) {
+        const t = Sim.trace(F, placed);
+        assert.ok(t.segments.every(sg => sg.v === 0), 'a flat segment climbed');
+        assert.ok(t.visited.every(v => v.z === 0 && v.v === 0), 'a flat beam left level 0');
+        assert.deepEqual(t.underpasses, [], 'a flat beam went UNDER something - the wall stopped being a wall');
+        assert.deepEqual(t.overflights, [], 'nothing can be flown over in the flat game');
+      }
+    }
+  });
+
+  test('an under-arch level comes out flat-unsolvable - the AIRTIGHT verdict the shipped set needs', () => {
+    // A one-mirror board whose only route threads the opening.
+    const lvl = {
+      name: 'ARCHED', par: 1, size: { w: 7, d: 7 },
+      terrain: ['0000000', '0000000', '0003000', '0000000', '0000000', '0000000', '0000000'],
+      openings: [{ x: 3, y: 2, levels: [0] }],
+      emitter: { x: 3, y: 0, dir: 'N' }, targets: [{ x: 6, y: 4 }], fixed: [], tray: ['MIRROR']
+    };
+    assert.equal(replay(lvl, [{ x: 3, y: 4, type: 'MIRROR', orient: '/' }]).allTargetsHit, true);
+    const n3 = needs3D(lvl);
+    assert.equal(n3.needs3D, true);
+    assert.equal(n3.reason, 'flat-unsolvable');
+    assert.deepEqual(n3.flatSolutions, []);
+  });
+});
+
+describe('openings: the search never places a piece inside one', () => {
+  // canPlace is per CELL, so an opened column IS placeable - on its top. What must never happen is a
+  // piece being offered because the beam threads the hole below it: the beam is at z < t there, and
+  // candidateCells only offers cells the beam enters at exactly t.
+  const lvl = {
+    name: 'THREAD', par: 1, size: { w: 7, d: 7 },
+    terrain: ['0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'],
+    openings: [{ x: 3, y: 3, levels: [0] }],
+    emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 5, y: 5 }], fixed: [], tray: ['MIRROR', 'MIRROR']
+  };
+  test('the opened column is placeable (on its top) but never appears in a minimal solution', () => {
+    assert.equal(Sim.canPlace(lvl, [], 3, 3), true, 'canPlace is unchanged by an opening');
+    const r = solve(lvl, { maxSolutions: Infinity });
+    assert.equal(r.solvable, true);
+    assert.equal(r.par, 1);
+    for (const sol of r.solutions) {
+      for (const p of sol) assert.ok(!(p.x === 3 && p.y === 3), 'a piece was placed on the column the beam threads');
+    }
+  });
+  test('a piece put there by hand is passed UNDER, not acted on, so it cannot solve the level', () => {
+    const t = replay(lvl, [{ x: 3, y: 3, type: 'MIRROR', orient: '/' }]);
+    assert.deepEqual(t.pieceHits, []);
+    assert.deepEqual(t.underpasses, [{ x: 3, y: 3 }]);
+    assert.equal(t.allTargetsHit, false);
+  });
+});
+
+// A random 4x4 level that carries openings, for the brute-force cross-check below.
+function randomOpenLevel(r) {
+  const lvl = randomLevel(r);
+  const L = Sim.parseLevel(lvl);
+  const openings = [];
+  for (let y = 0; y < L.size.d; y++) for (let x = 0; x < L.size.w; x++) {
+    const top = L.t[y][x];
+    if (top < 1 || r() < 0.6) continue;
+    const levels = [];
+    for (let z = 0; z < top; z++) if (r() < 0.5) levels.push(z);
+    if (levels.length) openings.push({ x, y, levels });
+  }
+  return Object.assign({}, lvl, { openings });
+}
+
+describe('openings: pruning soundness on levels that carry them', () => {
+  test('solve() still matches brute force on 120 random 4x4 levels WITH openings', () => {
+    const r = rng(20260914);
+    let withOpenings = 0, threaded = 0, solvableCount = 0, beamThreads = 0;
+    for (let i = 0; i < 120; i++) {
+      const lvl = randomOpenLevel(r);
+      const L = Sim.parseLevel(lvl);
+      if (L.openings.length) withOpenings++;
+      const a = solve(lvl, { maxSolutions: Infinity });
+      const b = brute(lvl);
+      const ctx = JSON.stringify(lvl);
+      assert.equal(a.solvable, b.solvable, 'solvable ' + ctx);
+      assert.equal(a.par, b.par, 'par ' + ctx);
+      assert.equal(a.solutions.length, b.count, 'minimal solution count ' + ctx);
+      assert.deepEqual(new Set(a.solutions.map(canon)), b.sols, 'solution sets ' + ctx);
+      if (a.solvable) {
+        solvableCount++;
+        assert.equal(replay(lvl, a.solution).allTargetsHit, true);
+        if (a.solutions.some(sol => replay(lvl, sol).visited.some(v => v.z < L.t[v.y][v.x]))) threaded++;
+      }
+      // Every trace inside the sample must respect 13.2: the beam is only ever below a column's top
+      // at a level that column has open. A stepper bug here would show up as a beam inside rock.
+      const t0 = replay(lvl, []);
+      let usedOpening = false;
+      for (const v of t0.visited) {
+        if (v.z >= L.t[v.y][v.x]) continue;
+        assert.equal((L.openMask[v.y][v.x] >> v.z) & 1, 1, 'the beam entered solid rock: ' + JSON.stringify(lvl));
+        usedOpening = true;
+      }
+      if (usedOpening) beamThreads++;
+    }
+    assert.ok(withOpenings >= 60, 'the sample must actually carry openings: ' + withOpenings);
+    assert.ok(solvableCount >= 3, 'sample has solvable levels: ' + solvableCount);
+    assert.ok(beamThreads >= 5, 'beams should routinely thread the openings: ' + beamThreads);
+    assert.ok(threaded >= 1, 'at least one minimal solution should route through an opening: ' + threaded);
+  });
+
+  test('proveMinimal and enumerate agree with brute force on an opening level', () => {
+    const lvl = opened([0]);                            // solvable with nothing placed: par 0
+    assert.equal(solve(lvl).par, 0);
+    assert.equal(proveMinimal(lvl, 0).proven, true, 'par 0 needs no search');
+    const both = {
+      name: 'TWO WAYS', par: 1, size: { w: 7, d: 7 },
+      terrain: ['0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'],
+      openings: [{ x: 3, y: 3, levels: [0] }],
+      emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 5, y: 5 }], fixed: [], tray: ['MIRROR', 'MIRROR']
+    };
+    const e = enumerate(both, {});
+    const b = brute(both);
+    assert.equal(e.byDepth[b.par], b.count, 'enumerate finds every minimal solution the brute force does');
+    assert.equal(proveMinimal(both, b.par).proven, true);
+    assert.equal(proveMinimal(both, b.par + 1).proven, false, 'a par one too high is caught');
+  });
+});
+
+describe('openings: the concept tags of DESIGN.md 13', () => {
+  test('under-arch is tagged for a level-0 thread, through-window for one above it', () => {
+    assert.ok(concepts(opened([0]), []).includes('under-arch'));
+    assert.ok(!concepts(opened([0]), []).includes('through-window'));
+    assert.ok(concepts(opened([1], 1), []).includes('through-window'));
+    assert.ok(!concepts(opened([1], 1), []).includes('under-arch'));
+    assert.ok(concepts(opened([2], 2), []).includes('through-window'));
+  });
+  test('flying OVER the same column tags neither - it is an overflight', () => {
+    const cs = concepts(opened([0], 3), []);
+    assert.ok(!cs.includes('under-arch'));
+    assert.ok(!cs.includes('through-window'));
+    assert.ok(cs.includes('overflight'));
+  });
+  test('being BLOCKED by the column tags neither', () => {
+    const cs = concepts(opened([0], 1), []);
+    assert.equal(replay(opened([0], 1), []).end, 'blocked');
+    assert.ok(!cs.includes('under-arch') && !cs.includes('through-window'));
+  });
+  test('the shipped level set carries both tags, on distinct levels', () => {
+    const LEVELS = require('../src/levels.js');
+    const arch = [], win = [];
+    for (const [i, raw] of LEVELS.entries()) {
+      const cs = concepts(raw, raw.solution || []);
+      if (cs.includes('under-arch')) arch.push(i + 1);
+      if (cs.includes('through-window')) win.push(i + 1);
+    }
+    assert.ok(arch.length >= 3, 'under-arch levels: ' + arch.join(','));
+    assert.ok(win.length >= 3, 'through-window levels: ' + win.join(','));
+    assert.ok(Math.min(...arch) < Math.min(...win), 'the arch must be introduced before the window');
   });
 });

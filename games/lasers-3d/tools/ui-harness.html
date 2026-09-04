@@ -306,6 +306,23 @@
         .hd-name[data-type="WEDGE"] { fill: var(--color-wedge); }
         .hd-name[data-type="DIP"] { fill: var(--color-dip); }
         .hd-note { font: 600 10.5px var(--font-ui); fill: var(--color-text-muted); }
+        /* Arches and windows (DESIGN.md 13). The two side panels reuse .hd-ground; the rest takes terrain tokens,
+         * so the diagram's wall, floor cell and spark are literally the board's own colours. */
+        .help-shape { margin: 0 0 var(--space-2); font-size: var(--type-md); line-height: var(--line-body); }
+        .help-shape b { color: var(--color-text); font-weight: 800; letter-spacing: 0.04em; }
+        .ht-wall { fill: var(--color-block-top); stroke: var(--color-grid-outline); stroke-width: 1; }
+        .ht-gap { fill: none; stroke: var(--color-panel-border); stroke-width: 1; stroke-dasharray: 3 3; }
+        .ht-cell { fill: var(--color-floor); stroke: var(--color-grid-outline); stroke-width: 1; }
+        .ht-beam { fill: none; stroke-linecap: round; stroke-width: 2.4; }
+        .ht-beam[data-z="0"] { stroke: var(--color-beam-0); }
+        .ht-beam[data-z="1"] { stroke: var(--color-beam-1); stroke-width: 3.1; }
+        .ht-arrow[data-z="0"] { fill: var(--color-beam-0); }
+        .ht-arrow[data-z="1"] { fill: var(--color-beam-1); }
+        .ht-stop { fill: var(--color-danger); }
+        .ht-leak { fill: var(--color-leak); }
+        .ht-leak-halo { fill: var(--color-leak); fill-opacity: 0.20; }
+        .ht-name { font: 800 11px var(--font-ui); fill: var(--color-text); letter-spacing: 0.05em; }
+        .ht-note { font: 600 10.5px var(--font-ui); fill: var(--color-text-muted); }
         .help-beams { display: flex; gap: var(--space-2); align-items: center; margin: var(--space-2) 0 var(--space-3); font: 800 var(--type-xs) var(--font-data); }
         .help-beam { flex: 1; height: 0; border-top: var(--w) solid var(--c); box-shadow: 0 0 6px var(--c); border-radius: 2px; }
         .help-beam-label { color: var(--c); }
@@ -411,6 +428,7 @@
     <script src="../src/sim.js"></script>
     <script src="../src/theme.js"></script>
     <script src="../src/ui.js"></script>
+    <script src="../src/main-trace.js"></script>
     <script>
     /* Stub main: exercises LaserUI with a sample view model. No render, no input, no audio. */
     (function () {
@@ -451,7 +469,14 @@
       ui.setState(vm);
       ui.showToast(level.intro, { kind: 'intro', ms: 60000 });
       window.__harness = { ui: ui, vm: vm, log: log, level: level,
-        setState: function (patch) { var k; for (k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) vm[k] = patch[k]; ui.setState(vm); return vm; } };
+        setState: function (patch) { var k; for (k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) vm[k] = patch[k]; ui.setState(vm); return vm; },
+        /* DESIGN.md 13.3: the post-FIRE readout is the tell a blind solver reasons from, so the harness can build
+         * one end to end - raw level in, LaserMainTrace view model out - without a renderer or a running game. */
+        readout: function (raw, placed) {
+          var L = LaserSim.parseLevel(raw);
+          var r = LaserSim.trace(L, placed || []);
+          return { end: r.end, vm: LaserMainTrace.readout(L, r, LaserUI.endText) };
+        } };
     }());
     </script>
 </body>

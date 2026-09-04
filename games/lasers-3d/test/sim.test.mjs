@@ -4,9 +4,12 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 const require = createRequire(import.meta.url);
 const Pieces = require('../src/pieces.js');
 const Sim = require('../src/sim.js');
+const LEVELS = require('../src/levels.js');
 
 const { trace, canPlace, parseLevel, DIRS, H_MAX, PIECES, TURN, MAX_STEPS, stepCap } = Sim;
 
@@ -23,6 +26,7 @@ function mk(o = {}) {
     targets: o.targets || [{ x: 6, y: 3 }],
     fixed: o.fixed || [],
     tray: o.tray || ['MIRROR', 'MIRROR', 'WEDGE', 'DIP'],
+    openings: o.openings,          // DESIGN.md 13.1; undefined == "no openings"
   };
 }
 const M = (x, y, orient = '/') => ({ x, y, type: 'MIRROR', orient });
@@ -470,7 +474,7 @@ describe('trace events (ordered, step-indexed stream)', () => {
   test('events is purely additive: every documented field keeps its shape', () => {
     const r = trace(mk(), []);
     assert.deepEqual(Object.keys(r).sort(),
-      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'pieceHits', 'segments', 'visited'].sort());
+      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
     assert.ok(Array.isArray(r.events));
     assert.equal(r.end, 'target');
     assert.equal(r.segments.length, 6);
@@ -633,4 +637,351 @@ describe('canPlace (3.4)', () => {
   });
   test('true on raised terrain', () => assert.equal(canPlace(lvl, placed, 2, 4), true));
   test('true on an empty floor cell', () => assert.equal(canPlace(lvl, [], 1, 1), true));
+});
+
+// ---------------------------------------------------------------------------------------------
+// ARCHES AND WINDOWS (DESIGN.md section 13)
+// ---------------------------------------------------------------------------------------------
+// The whole rule change is one clause of the blocked test (13.2):
+//     BLOCKED when  z' < t[next]  AND  z' is not one of that column's open levels.
+// Everything below either exercises that clause or proves it inert when `openings` is absent.
+
+// Shared geometry for the arch / window cases. Row y = 3 only:
+//   x=0 emitter column (its height sets the beam's level), x=3 the opened column (t = 3),
+//   x=6 the target column (same height as the emitter, so a beam that gets through lands on it).
+function pierced({ emitZ = 0, levels = [0], targetZ = null } = {}) {
+  const tz = targetZ == null ? emitZ : targetZ;
+  const row = ['0', '0', '0', '3', '0', '0', '0'];
+  row[0] = String(emitZ);
+  row[6] = String(tz);
+  return mk({
+    terrain: rows('0000000', '0000000', '0000000', row.join(''), '0000000', '0000000', '0000000'),
+    emitter: { x: 0, y: 3, dir: 'E' },
+    targets: [{ x: 6, y: 3 }],
+    openings: levels === null ? undefined : [{ x: 3, y: 3, levels }],
+  });
+}
+
+describe('openings: the ARCH (13.1) - a tall column open at level 0', () => {
+  test('a beam at level 0 passes UNDER the arch and reaches the target', () => {
+    const r = trace(pierced({ emitZ: 0, levels: [0] }), []);
+    assert.equal(r.end, 'target');
+    assert.deepEqual(r.hits, [0]);
+    // it really went THROUGH the column, at level 0, while the column stands 3 high
+    const L = parseLevel(pierced({ emitZ: 0, levels: [0] }));
+    assert.equal(L.t[3][3], 3);
+    assert.ok(r.visited.some(v => v.x === 3 && v.y === 3 && v.z === 0), 'the beam entered the arch cell at level 0');
+    assert.equal(r.segments.length, 6);
+  });
+
+  test('WITHOUT the opening the identical board blocks that same beam - the opening is what does it', () => {
+    const r = trace(pierced({ emitZ: 0, levels: null }), []);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: 0 });
+  });
+
+  test('the same beam at level 1 is BLOCKED by the arch (solid at 1)', () => {
+    const r = trace(pierced({ emitZ: 1, levels: [0] }), []);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: 1 });
+    assert.deepEqual(r.hits, []);
+  });
+
+  test('the same beam at level 2 is BLOCKED by the arch (solid at 2)', () => {
+    const r = trace(pierced({ emitZ: 2, levels: [0] }), []);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: 2 });
+  });
+
+  test('a beam at level 3 flies OVER the arch exactly as it flies over any t=3 column', () => {
+    const r = trace(pierced({ emitZ: 3, levels: [0] }), []);
+    assert.equal(r.end, 'target');
+    assert.deepEqual(r.hits, [0]);
+    assert.ok(r.visited.some(v => v.x === 3 && v.y === 3 && v.z === 3));
+    // and it is over the TOP, not through the hole: t === z there
+    const L = parseLevel(pierced({ emitZ: 3, levels: [0] }));
+    assert.equal(L.t[3][3], 3);
+  });
+});
+
+describe('openings: the WINDOW (13.1) - a tall column open at exactly one middle level', () => {
+  test('threaded at exactly its open level (1)', () => {
+    const r = trace(pierced({ emitZ: 1, levels: [1] }), []);
+    assert.equal(r.end, 'target');
+    assert.ok(r.visited.some(v => v.x === 3 && v.y === 3 && v.z === 1));
+  });
+  test('blocked one level BELOW the window (0 is solid)', () => {
+    const r = trace(pierced({ emitZ: 0, levels: [1] }), []);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: 0 });
+  });
+  test('blocked one level ABOVE the window (2 is solid)', () => {
+    const r = trace(pierced({ emitZ: 2, levels: [1] }), []);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2.5, y: 3, z: 2 });
+  });
+  test('a window at level 2 behaves the same way one level up', () => {
+    assert.equal(trace(pierced({ emitZ: 2, levels: [2] }), []).end, 'target');
+    assert.equal(trace(pierced({ emitZ: 1, levels: [2] }), []).end, 'blocked');
+    assert.equal(trace(pierced({ emitZ: 0, levels: [2] }), []).end, 'blocked');
+    assert.equal(trace(pierced({ emitZ: 3, levels: [2] }), []).end, 'target'); // over the top
+  });
+  test('a column may be open at more than one level (an arch AND a window in one column)', () => {
+    assert.equal(trace(pierced({ emitZ: 0, levels: [0, 2] }), []).end, 'target');
+    assert.equal(trace(pierced({ emitZ: 1, levels: [0, 2] }), []).end, 'blocked');
+    assert.equal(trace(pierced({ emitZ: 2, levels: [0, 2] }), []).end, 'target');
+    assert.equal(parseLevel(pierced({ emitZ: 0, levels: [2, 0] })).openings[0].levels.join(''), '02',
+      'levels are normalised into ascending order');
+  });
+});
+
+describe('openings: a CLIMBING beam must arrive at the window\'s exact height', () => {
+  // Emitter (2,0) fires N at level 0 up the clear column x = 2. The player's piece at (2,2) turns it
+  // east; a MIRROR leaves it level (z stays 0) and a WEDGE starts it climbing (spec 12).
+  //   window column (4,2): t = 3      target tower (5,2): t = 3
+  //   level route:    (3,2) z=0 -> (4,2) at z=0
+  //   climbing route: (3,2) z=1 -> (4,2) at z=2 -> (5,2) at z=3 = the tower top
+  const climb = (levels) => mk({
+    terrain: rows('0000000', '0000000', '0000330', '0000000', '0000000', '0000000', '0000000'),
+    emitter: { x: 2, y: 0, dir: 'N' },
+    targets: [{ x: 5, y: 2 }],
+    openings: [{ x: 4, y: 2, levels }],
+  });
+
+  test('window open at 2: the CLIMBING beam threads it and lights the tower target', () => {
+    const r = trace(climb([2]), [W(2, 2, '/')]);
+    assert.equal(r.end, 'target');
+    assert.deepEqual(r.hits, [0]);
+    assert.ok(r.visited.some(v => v.x === 4 && v.y === 2 && v.z === 2), 'threaded at level 2');
+    assert.deepEqual(r.endPoint, { x: 5, y: 2, z: 3 });
+  });
+
+  test('window open at 2: the LEVEL beam arrives at 0 - the wrong height - and is blocked', () => {
+    const r = trace(climb([2]), [M(2, 2, '/')]);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 3.5, y: 2, z: 0 });
+  });
+
+  test('window open at 1: the same climbing beam arrives at 2 - one level too high - and is blocked', () => {
+    const r = trace(climb([1]), [W(2, 2, '/')]);
+    assert.equal(r.end, 'blocked');
+    // the stub stops at the wall face and keeps the level of the cell it is LEAVING (INTERFACES 2);
+    // the beam was climbing out of (3,2) at z=1, so it would have ARRIVED at z=2 - one above the window
+    assert.deepEqual(r.endPoint, { x: 3.5, y: 2, z: 1 });
+    assert.equal(r.segments[r.segments.length - 1].v, 1, 'still climbing when it hit the wall');
+    assert.equal(trace(climb([2]), [W(2, 2, '/')]).end, 'target', 'and the same beam threads a window at 2');
+  });
+
+  test('window open at 0: the climbing beam is blocked, the level beam goes UNDER (the arch case)', () => {
+    assert.equal(trace(climb([0]), [W(2, 2, '/')]).end, 'blocked');
+    const under = trace(climb([0]), [M(2, 2, '/')]);
+    assert.ok(under.visited.some(v => v.x === 4 && v.y === 2 && v.z === 0), 'passed under at level 0');
+    assert.equal(under.end, 'blocked', 'and is then stopped by the t=3 tower it meets at level 0');
+    assert.deepEqual(under.endPoint, { x: 4.5, y: 2, z: 0 });
+  });
+});
+
+describe('openings: the degenerate t = 1 column (level 0 only)', () => {
+  // t = 1 open at 0 is the smallest legal opening: the block is hollow all the way through, so a
+  // floor beam passes under it and a beam at 1 or above was already flying over it.
+  const one = (levels) => mk({
+    terrain: rows('0000000', '0000000', '0000000', '0001000', '0000000', '0000000', '0000000'),
+    openings: levels === null ? undefined : [{ x: 3, y: 3, levels }],
+  });
+  test('a level-0 beam passes under a t=1 arch that would otherwise block it', () => {
+    assert.equal(trace(one(null), []).end, 'blocked');
+    const r = trace(one([0]), []);
+    assert.equal(r.end, 'target');
+    assert.ok(r.visited.some(v => v.x === 3 && v.y === 3 && v.z === 0));
+  });
+  test('level 1 is NOT an opening on a t=1 column: it is the column top, and parseLevel rejects it', () => {
+    assert.throws(() => parseLevel(one([1])), /openings\[0\] levels\[0\] is 1, which is not strictly below the height t=1/);
+  });
+  test('a piece still sits on top of the hollow column and acts on a level-1 beam', () => {
+    const lvl = mk({
+      terrain: rows('0000000', '0000000', '0000000', '1001000', '0000000', '0000000', '0000000'),
+      openings: [{ x: 3, y: 3, levels: [0] }],
+      targets: [{ x: 3, y: 6 }],
+    });
+    // emitter on the t=1 ridge at (0,3) fires east at z=1 and meets the piece on the column top
+    const r = trace(lvl, [M(3, 3, '/')]);
+    assert.deepEqual(r.pieceHits, [{ x: 3, y: 3, type: 'MIRROR', orient: '/', fixed: false }]);
+    assert.equal(r.end, 'lost-edge'); // (3,6) is on t=0, so the z=1 beam flies over the orb
+    assert.deepEqual(r.hits, []);
+  });
+});
+
+describe('openings: an opening never makes a column placeable at another level', () => {
+  // Placement is per CELL and a piece always sits on the column top at `t`; every open level is
+  // strictly below `t`, so a piece can never be inside an opening (DESIGN.md 13.2, last sentence).
+  const lvl = () => mk({
+    terrain: rows('0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'),
+    openings: [{ x: 3, y: 3, levels: [0] }],
+  });
+
+  test('canPlace is unchanged: the arch column is placeable (on its TOP) exactly like any other cell', () => {
+    assert.equal(canPlace(lvl(), [], 3, 3), true);
+    assert.equal(canPlace(lvl(), [M(3, 3)], 3, 3), false);
+    assert.equal(canPlace(lvl(), [], 0, 3), false, 'still not on the emitter');
+    assert.equal(canPlace(lvl(), [], 6, 3), false, 'still not on a target');
+  });
+
+  test('a piece on the arch top does NOT act on the beam threading the opening below it', () => {
+    const r = trace(lvl(), [M(3, 3, '/')]);
+    assert.equal(r.end, 'target', 'the beam went under the piece and on to the orb');
+    assert.deepEqual(r.pieceHits, [], 'the piece did not act');
+    assert.deepEqual(r.overflights, [], 'and it was not flown OVER either');
+    assert.deepEqual(r.underpasses, [{ x: 3, y: 3 }], 'it was passed UNDER - a distinct event');
+    assert.deepEqual(r.events.filter(e => e.kind === 'underpass'),
+      [{ kind: 'underpass', step: 2, x: 3, y: 3, z: 0, type: 'MIRROR', orient: '/', fixed: false }]);
+  });
+
+  test('the same piece DOES act when the beam arrives at the column top', () => {
+    // emitter raised onto a t=3 ridge, so the beam meets the piece at level 3
+    const high = mk({
+      terrain: rows('0000000', '0000000', '0000000', '3003000', '0000000', '0000000', '0000000'),
+      openings: [{ x: 3, y: 3, levels: [0] }],
+      targets: [{ x: 3, y: 6 }],
+    });
+    const r = trace(high, [M(3, 3, '/')]);
+    assert.deepEqual(r.pieceHits, [{ x: 3, y: 3, type: 'MIRROR', orient: '/', fixed: false }]);
+    assert.deepEqual(r.underpasses, []);
+  });
+
+  test('over and under are reported separately, never merged into overflights', () => {
+    // t=1 column open at 0 with a piece on top: a z=0 beam goes UNDER, a z=2 beam goes OVER.
+    const board = (emitZ) => mk({
+      terrain: rows('0000000', '0000000', '0000000', emitZ + '001000', '0000000', '0000000', '0000000'),
+      openings: [{ x: 3, y: 3, levels: [0] }],
+    });
+    const under = trace(board(0), [M(3, 3)]);
+    assert.deepEqual(under.underpasses, [{ x: 3, y: 3 }]);
+    assert.deepEqual(under.overflights, []);
+    const over = trace(board(2), [M(3, 3)]);
+    assert.deepEqual(over.overflights, [{ x: 3, y: 3 }]);
+    assert.deepEqual(over.underpasses, []);
+  });
+});
+
+describe('openings: parseLevel validation (13.1)', () => {
+  const base = (openings) => mk({
+    terrain: rows('0000000', '0000000', '0000000', '0003000', '0020000', '0000000', '0000000'),
+    openings,
+  });
+  test('normalises to a per-column bitmask and keeps a canonical array', () => {
+    const L = parseLevel(base([{ x: 3, y: 3, levels: [2, 0] }, { x: 2, y: 4, levels: [1] }]));
+    assert.deepEqual(L.openings, [{ x: 3, y: 3, levels: [0, 2] }, { x: 2, y: 4, levels: [1] }]);
+    assert.equal(L.openMask[3][3], 0b101);
+    assert.equal(L.openMask[4][2], 0b010);
+    assert.equal(L.openMask[0][0], 0, 'every other column is 0');
+    assert.equal(Sim.isOpen(L, 3, 3, 0), true);
+    assert.equal(Sim.isOpen(L, 3, 3, 1), false);
+    assert.equal(Sim.isOpen(L, 3, 3, 2), true);
+    assert.equal(Sim.isOpen(L, 0, 0, 0), false);
+    assert.equal(Sim.isOpen(L, 99, 0, 0), false, 'off-grid is never open');
+    assert.equal(Sim.isOpen(L, 3, 3, 4), false, 'off-range level is never open');
+  });
+  test('absent, null and [] all mean "no openings"', () => {
+    for (const v of [undefined, null, []]) {
+      const L = parseLevel(base(v));
+      assert.deepEqual(L.openings, []);
+      assert.ok(L.openMask.every(row => row.every(m => m === 0)));
+    }
+  });
+  test('rejects an OFF-GRID column, naming the field', () => {
+    assert.throws(() => parseLevel(base([{ x: 9, y: 3, levels: [0] }])), /openings\[0\] must name an on-grid column/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: -1, levels: [0] }])), /openings\[0\] must name an on-grid column/);
+    assert.throws(() => parseLevel(base([{ x: 1.5, y: 3, levels: [0] }])), /openings\[0\] must name an on-grid column/);
+  });
+  test('rejects a NON-INTEGER or out-of-range level', () => {
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [0.5] }])), /openings\[0\] levels\[0\] must be an integer 0\.\.3/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [-1] }])), /openings\[0\] levels\[0\] must be an integer 0\.\.3/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [4] }])), /openings\[0\] levels\[0\] must be an integer 0\.\.3/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: ['0'] }])), /openings\[0\] levels\[0\] must be an integer 0\.\.3/);
+  });
+  test('rejects a level that is NOT strictly below the column height', () => {
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [3] }])), /not strictly below the height t=3/);
+    assert.throws(() => parseLevel(base([{ x: 2, y: 4, levels: [2] }])), /not strictly below the height t=2/);
+    assert.throws(() => parseLevel(base([{ x: 0, y: 0, levels: [0] }])), /not strictly below the height t=0/,
+      'a floor column has no level to punch');
+  });
+  test('rejects DUPLICATES - a repeated level, and a column named twice', () => {
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [1, 1] }])), /openings\[0\] repeats level 1/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [0] }, { x: 3, y: 3, levels: [1] }])),
+      /openings\[1\] duplicates the column \(3,3\)/);
+  });
+  test('rejects a malformed container or entry', () => {
+    assert.throws(() => parseLevel(base({ x: 3, y: 3, levels: [0] })), /openings must be an array/);
+    assert.throws(() => parseLevel(base([null])), /openings\[0\] must be an object/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3 }])), /openings\[0\] levels must be a non-empty array/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: [] }])), /openings\[0\] levels must be a non-empty array/);
+    assert.throws(() => parseLevel(base([{ x: 3, y: 3, levels: 1 }])), /openings\[0\] levels must be a non-empty array/);
+  });
+  test('the normalised openings are a fresh copy: the input level is never mutated or aliased', () => {
+    const raw = base([{ x: 3, y: 3, levels: [2, 0] }]);
+    const L = parseLevel(raw);
+    assert.deepEqual(raw.openings, [{ x: 3, y: 3, levels: [2, 0] }]);
+    assert.notEqual(L.openings, raw.openings);
+    assert.notEqual(L.openings[0].levels, raw.openings[0].levels);
+  });
+  test('stepCap is unchanged: an opening does not enlarge the (x,y,z,d,v) state space', () => {
+    assert.equal(stepCap(base([{ x: 3, y: 3, levels: [0] }])), stepCap(base()));
+  });
+});
+
+describe('openings: BACKWARD COMPATIBILITY - a level with no `openings` behaves exactly as before', () => {
+  // test/fixtures/pre-openings-traces.json was captured from the engine as it stood BEFORE section 13
+  // was implemented, and it is self-contained: every level literal is embedded, so it stays a valid
+  // "before" corpus even after src/levels.js is rebuilt. Each case stores the sha256 of
+  // JSON.stringify(trace(level, placed)) - the whole result, byte for byte, not a summary.
+  //
+  // Section 13's only additive field is `underpasses`, which is inserted between `overflights` and
+  // `events`. Deleting it restores the exact pre-change key order, so the digest below compares the
+  // legacy result BYTE FOR BYTE; the field itself is asserted empty on every case, which is what
+  // "no openings changes nothing" means.
+  const golden = JSON.parse(readFileSync(new URL('./fixtures/pre-openings-traces.json', import.meta.url), 'utf8'));
+
+  test('the corpus is the real one: 26 levels, every terminal kind, hundreds of traces', () => {
+    assert.ok(golden.entries.length >= 26, 'levels: ' + golden.entries.length);
+    assert.ok(golden.traces >= 250, 'traces: ' + golden.traces);
+    const ends = new Set();
+    for (const e of golden.entries) for (const c of e.cases) ends.add(c.end);
+    for (const k of ['target', 'blocked', 'lost-edge', 'lost-floor', 'lost-sky', 'loop']) {
+      assert.ok(ends.has(k), 'the corpus never reaches ' + k);
+    }
+    assert.ok(golden.entries.every(e => e.level.openings === undefined), 'a corpus level carries openings');
+  });
+
+  test('every trace is byte-identical to the pre-openings engine', () => {
+    let n = 0;
+    for (const e of golden.entries) {
+      for (const c of e.cases) {
+        const r = trace(e.level, c.placed);
+        assert.deepEqual(r.underpasses, [], `${e.name}: an under-pass on a level with no openings`);
+        delete r.underpasses;
+        assert.equal(createHash('sha256').update(JSON.stringify(r)).digest('hex'), c.sha,
+          `${e.name} with ${JSON.stringify(c.placed)}: trace changed (end ${r.end} vs ${c.end})`);
+        n++;
+      }
+    }
+    assert.equal(n, golden.traces);
+  });
+
+  test('and every corpus level parses to an all-zero openMask and an empty openings list', () => {
+    for (const e of golden.entries) {
+      const L = parseLevel(e.level);
+      assert.deepEqual(L.openings, [], e.name);
+      assert.ok(L.openMask.length === L.size.d && L.openMask.every(row => row.length === L.size.w && row.every(m => m === 0)), e.name);
+    }
+  });
+
+  test('the shipped level set still parses, and any openings it carries are legal', () => {
+    for (const raw of LEVELS) {
+      const L = parseLevel(raw);
+      for (const o of L.openings) {
+        assert.ok(o.levels.length > 0 && o.levels.every(z => Number.isInteger(z) && z >= 0 && z < L.t[o.y][o.x]),
+          raw.name + ': illegal opening ' + JSON.stringify(o));
+      }
+    }
+  });
 });

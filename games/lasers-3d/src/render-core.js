@@ -122,6 +122,87 @@
     ctx.closePath();
   }
 
+  /* ---- ARCHES AND WINDOWS (DESIGN.md 13.1) ----------------------------------------------------------------
+   * A level may carry `openings: [{ x, y, levels: [0] }]` - the levels punched OUT of that column. The engine
+   * normalises this in LaserSim.parseLevel to `openMask[y][x]`, a per-column bitmask, alongside a canonical
+   * `openings` array, so the renderer reads the PARSED level and never the raw one. Field naming is the engine's
+   * call and this is the seam between the two, so the adapter accepts every shape it could reasonably hand back
+   * and reduces them all to one flat bitmask:
+   *
+   *   parsed.isOpen(x, y, z) -> boolean                (a predicate wins over any data field)
+   *   parsed.openMask / parsed.open                    (d rows of w - what the engine ships - or a flat w*d array)
+   *   parsed.openings: [{x, y, levels: [..]}]          (also tolerated: {level: n} and {mask: n})
+   *   parsed.raw.openings                              (a level object that never went through parseLevel)
+   *
+   * Bit k of the returned mask means "level k of this column is NOT solid". A bit at or above the column's own
+   * height is dropped: an opening must be strictly below `t` (13.1), and a mask that says otherwise would make the
+   * renderer disagree with the stepper about where the wall is.
+   */
+  function openMask(parsed) {
+    var w = parsed.size.w, d = parsed.size.d, out = new Uint8Array(w * d), any = false, x, y, k, m, list, i, e, lv;
+    function set(cx, cy, lvl) {
+      if (!(cx >= 0 && cy >= 0 && cx < w && cy < d)) return;
+      if (!(lvl >= 0 && lvl < 4)) return;
+      if (lvl >= parsed.t[cy][cx]) return;             /* strictly below the column top, or it is not an opening */
+      out[cy * w + cx] |= (1 << lvl);
+      any = true;
+    }
+    if (typeof parsed.isOpen === 'function') {
+      for (y = 0; y < d; y++) for (x = 0; x < w; x++) for (k = 0; k < parsed.t[y][x]; k++) if (parsed.isOpen(x, y, k)) set(x, y, k);
+    }
+    m = parsed.openMask || parsed.open || null;
+    if (m && typeof m.length === 'number') {
+      if (m.length === d && m[0] && typeof m[0] === 'object' && typeof m[0].length === 'number') {
+        for (y = 0; y < d; y++) for (x = 0; x < w; x++) for (k = 0; k < 4; k++) if ((m[y][x] | 0) & (1 << k)) set(x, y, k);
+      } else if (m.length === w * d) {
+        for (y = 0; y < d; y++) for (x = 0; x < w; x++) for (k = 0; k < 4; k++) if ((m[y * w + x] | 0) & (1 << k)) set(x, y, k);
+      }
+    }
+    list = parsed.openings || (parsed.raw && parsed.raw.openings) || null;
+    if (list && typeof list.length === 'number') {
+      for (i = 0; i < list.length; i++) {
+        e = list[i];
+        if (!e || typeof e !== 'object') continue;
+        if (typeof e.mask === 'number') { for (k = 0; k < 4; k++) if (e.mask & (1 << k)) set(e.x, e.y, k); }
+        if (typeof e.level === 'number') set(e.x, e.y, e.level);
+        if (e.levels && typeof e.levels.length === 'number') for (lv = 0; lv < e.levels.length; lv++) set(e.x, e.y, e.levels[lv]);
+      }
+    }
+    return { mask: out, any: any, w: w, d: d };
+  }
+
+  /* The FLAT light leak of DESIGN.md 13.3, drawn once into a canvas and reused by every opened column: a soft round
+   * halo with a four-point gleam over it - the shape light makes, not an icon. Greyscale, so the material's colour
+   * tints it and one texture serves any palette. Direction- and level-neutral by construction: the star is
+   * symmetric under a quarter turn, so it cannot suggest a heading, and it carries no vertical reading at all (see
+   * theme.terrain.lightLeak for the rest of the reasoning). */
+  function leakTexture(theme) {
+    var L = theme.terrain.lightLeak, s = L.texturePx, c = makeCanvas(s, s), ctx = c.getContext('2d');
+    var q = L.quadCells, half = s / 2, px = s / q, i, ang, rad;
+    var outer = (L.spanCells / 2) * px, waist = Math.max(1, (L.waistCells / 2) * px), dot = (L.coreDotCells / 2) * px;
+    var g = ctx.createRadialGradient(half, half, 0, half, half, half);
+    g.addColorStop(0, 'rgba(255,255,255,' + L.haloOpacity + ')');
+    g.addColorStop(0.42, 'rgba(255,255,255,' + (L.haloOpacity * 0.30).toFixed(4) + ')');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
+    ctx.save();
+    ctx.shadowColor = 'rgba(255,255,255,0.85)';
+    ctx.shadowBlur = L.softPx * (s / 128);
+    ctx.fillStyle = 'rgba(255,255,255,' + L.coreOpacity + ')';
+    ctx.beginPath();
+    for (i = 0; i < 8; i++) {                       /* 4 tapered spikes: N, E, S, W with a narrow waist between */
+      ang = -Math.PI / 2 + i * Math.PI / 4;
+      rad = (i % 2 === 0) ? outer : waist;
+      ctx[i ? 'lineTo' : 'moveTo'](half + Math.cos(ang) * rad, half + Math.sin(ang) * rad);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(half, half, dot, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    var tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+
   /* Soft radial glow (halo) or a starburst with `streaks` glass-like rays. */
   function glowTexture(color, streaks) {
     var s = 128, c = makeCanvas(s, s), ctx = c.getContext('2d'), i;
@@ -210,7 +291,7 @@
     __version: 1,
     world: world, matFromSpec: matFromSpec, grainTexture: grainTexture,
     mergeGeometries: mergeGeometries, boxAt: boxAt,
-    badgeTexture: badgeTexture, glowTexture: glowTexture,
+    badgeTexture: badgeTexture, glowTexture: glowTexture, leakTexture: leakTexture, openMask: openMask,
     disposeObject: disposeObject, clearGroup: clearGroup, smoothstep: smoothstep, clamp: clamp, convexHull2D: convexHull2D,
     markShared: markShared, markSharedAll: markSharedAll, isShared: isShared
   };

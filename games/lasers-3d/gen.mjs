@@ -25,6 +25,15 @@
 //   2. layTerrain    piece / emitter / target cells get t = the beam's level there (a plateau target when
 //                    that level is > 0); pass cells get raised into ridges and staircases the beam flies
 //                    OVER (t <= z) - the hidden-height reveals.
+//   2b. punchOpenings ARCHES AND WINDOWS (DESIGN.md section 13). The generator AUTHORS them: it takes a
+//                    cell the beam already crosses, RAISES that column to full height, and punches out
+//                    exactly the level the beam uses. From above the column is now indistinguishable
+//                    from any other tower, so the route reads as impossible - which is the point. A
+//                    pass cell at z = 0 becomes an ARCH (the beam goes under); a pass cell at z >= 1
+//                    becomes a WINDOW (the beam threads it at one exact height). Short wing walls are
+//                    grown to either side, off the path, so the shape reads as a wall with a hole in
+//                    it rather than a lone spike. This never touches the intended trace: the column is
+//                    open at exactly the level the beam is at, and the wings are on non-path cells.
 //   3. decorate      ridges, plateaus and towers on non-path cells up to a coverage target. Every edit is
 //                    re-traced against the intended solution and rolled back if the solution stops working.
 //   4. repair        loop: kill any solution shorter than par, any same-length solution missing a required
@@ -136,7 +145,9 @@ function pickEmitter(r, w, h) {
 
 /**
  * walkPath(r, spec) -> { emitter, path } | null
- * path entries: { x, y, z, role: 'emitter'|'pass'|'piece'|'target', type?, orient? } in beam order.
+ * path entries: { x, y, z, v, role: 'emitter'|'pass'|'piece'|'target', type?, orient? } in beam order.
+ * `v` is the pitch the beam ARRIVES at that cell with, which is what punchOpenings needs to tell a
+ * window the beam merely flies past while climbing from one it arrives at level and on purpose.
  * The state (x, y, z, d, v) is advanced exactly as LaserSim.trace advances it.
  */
 function walkPath(r, spec) {
@@ -144,13 +155,13 @@ function walkPath(r, spec) {
   const em = pickEmitter(r, w, h);
   let x = em.x, y = em.y, z = spec.emitterZ, dir = em.dir, v = 0;
   const used = new Set([key(x, y)]);
-  const path = [{ x, y, z, role: 'emitter' }];
+  const path = [{ x, y, z, v: 0, dir, role: 'emitter' }];
 
   const advance = (n) => {
     for (let k = 0; k < n; k++) {
       x += DIRS[dir].dx; y += DIRS[dir].dy; z += v;
       used.add(key(x, y));
-      path.push({ x, y, z, role: 'pass' });
+      path.push({ x, y, z, v, dir, role: 'pass' });
     }
   };
 
@@ -164,7 +175,12 @@ function walkPath(r, spec) {
     const canReuse = path[path.length - 1].role === 'pass';
     if (room === 0 && !canReuse) return null;
     const minLen = canReuse ? 0 : 1;
-    const want = Math.min(longRun(r, spec.minRun, cap), room);
+    // A PITCHED run is what sets the height the next level leg sits at: climbing k cells from z
+    // leaves the beam at z + k, and fitRun below always takes the LONGEST run that fits, so an
+    // unconstrained climb from the floor always tops out at H_MAX-1 = 3. `maxPitchedRun` caps it, which
+    // is how a level leg at height 1 or 2 - the only heights a WINDOW can sit at - is ever produced.
+    const pitchCap = (v !== 0 && spec.maxPitchedRun != null) ? Math.min(cap, spec.maxPitchedRun) : cap;
+    const want = Math.min(longRun(r, Math.min(spec.minRun, pitchCap), pitchCap), room);
 
     // A wildcard slot tries its candidate types in a shuffled order and keeps the first that leaves
     // the beam somewhere to go. Under the delta rule a type's usefulness depends on the CURRENT
@@ -260,6 +276,73 @@ function layTerrain(r, spec, path) {
   return t;
 }
 
+/* ---------- 2b. arches and windows (DESIGN.md section 13) ---------- */
+
+// Cells the beam merely passes through, far enough from both ends to read as a real obstacle, that
+// can be turned into an opened column. An ARCH needs the beam at level 0; a WINDOW needs it at 1 or
+// 2 (the column must stand strictly higher than the hole, and H_MAX-1 = 3 is the tallest column).
+function openingCandidates(path, kind, wantLevelBeam) {
+  const out = [];
+  for (let i = 2; i < path.length - 2; i++) {
+    const c = path[i];
+    if (c.role !== 'pass') continue;
+    if (kind === 'arch' ? c.z !== 0 : !(c.z >= 1 && c.z <= H_MAX - 2)) continue;
+    // A window the player must ARRIVE at (rather than climb past) is one on a LEVEL leg: the beam is
+    // flat there, so its height is a thing the player has to have set up, not a thing in passing.
+    if (wantLevelBeam && c.v !== 0) continue;
+    out.push({ i, c });
+  }
+  return out;
+}
+
+// Grow a short wall to either side of an opened column, perpendicular to the beam, on cells the path
+// does not own. Cosmetic and structural: the hole reads as a hole in something.
+function growWings(t, c, onPath, w, h, span) {
+  const perp = (c.dir === 'E' || c.dir === 'W') ? { dx: 0, dy: 1 } : { dx: 1, dy: 0 };
+  for (const sign of [1, -1]) {
+    for (let k = 1; k <= span; k++) {
+      const x = c.x + perp.dx * sign * k, y = c.y + perp.dy * sign * k;
+      if (x < 0 || y < 0 || x >= w || y >= h) break;
+      if (onPath.has(key(x, y))) break;
+      t[y][x] = Math.max(t[y][x], H_MAX - 1);
+    }
+  }
+}
+
+/**
+ * punchOpenings(r, spec, t, path, onPath) -> [{ x, y, levels: [z] }]
+ * Raises chosen pass columns to full height and punches out exactly the level the beam uses there.
+ * Returns null when the path cannot supply what the spec asked for (the seed is then rejected).
+ */
+function punchOpenings(r, spec, t, path, onPath) {
+  const want = spec.openings;
+  if (!want || (!want.arch && !want.window)) return [];
+  const out = [];
+  const taken = new Set();
+  const place = (kind, wantLevelBeam, preferLate) => {
+    // `wantLevelBeam` is STRICT on purpose: falling back to a cell the beam merely climbs THROUGH
+    // would still satisfy the tag, but the level would then teach the wrong lesson - and its intro
+    // would be a lie. A seed that cannot offer a level leg at the right height is rejected instead.
+    const cands = openingCandidates(path, kind, wantLevelBeam).filter(o => !taken.has(o.i));
+    if (!cands.length) return false;
+    // Late cells sit after the beam has done its climbing and levelling, which is where a window
+    // makes the player commit to a height; a small random nudge keeps seeds from all looking alike.
+    cands.sort((a, b) => (preferLate ? b.i - a.i : a.i - b.i));
+    const pickIdx = Math.min(cands.length - 1, rint(r, Math.max(1, Math.ceil(cands.length * 0.4))));
+    const chosen = cands[pickIdx];
+    // neighbouring path cells must not be swallowed by this column's wings
+    taken.add(chosen.i); taken.add(chosen.i - 1); taken.add(chosen.i + 1);
+    const c = chosen.c;
+    t[c.y][c.x] = H_MAX - 1;                       // a full-height column: solid everywhere but the hole
+    growWings(t, c, onPath, spec.w, spec.d, want.wingSpan == null ? 2 : want.wingSpan);
+    out.push({ x: c.x, y: c.y, levels: [c.z] });
+    return true;
+  };
+  for (let k = 0; k < (want.arch || 0); k++) if (!place('arch', false, false)) return null;
+  for (let k = 0; k < (want.window || 0); k++) if (!place('window', !!want.windowOnLevelLeg, true)) return null;
+  return out;
+}
+
 function coverage(t) {
   let n = 0, total = 0;
   for (const row of t) for (const v of row) { total++; if (v > 0) n++; }
@@ -298,7 +381,7 @@ function decorate(r, spec, t, onPath) {
 
 /* ---------- level assembly ---------- */
 
-function assemble(spec, walk, t) {
+function assemble(spec, walk, t, openings) {
   const pieces = walk.path.filter(c => c.role === 'piece');
   const fixedIdx = spec.fixedIdx == null ? -1 : spec.fixedIdx;
   const fixed = [];
@@ -324,7 +407,7 @@ function assemble(spec, walk, t) {
   const tray = solution.map(p => p.type);
   for (let i = 0; i < spec.slack; i++) tray.push(spec.slackType);
 
-  return {
+  const out = {
     name: '',
     par: solution.length,
     size: { w: spec.w, d: spec.d },
@@ -336,6 +419,8 @@ function assemble(spec, walk, t) {
     intro: '',
     solution
   };
+  if (openings && openings.length) out.openings = openings.map(o => ({ x: o.x, y: o.y, levels: o.levels.slice() }));
+  return out;
 }
 
 /* ---------- concepts (validate-levels.mjs imports this) ----------
@@ -347,6 +432,15 @@ function assemble(spec, walk, t) {
  *   fall-then-level   the mirror image (DIP down, WEDGE back to level).
  *   pitched-mirror    a MIRROR acted on a beam that was NOT level, and preserved its climb or fall.
  *                     This is the beat that changed: a mirror used to flatten such a beam.
+ *
+ * Tags added for arches and windows (DESIGN.md section 13):
+ *   under-arch        the beam entered a cell THROUGH an opening at level 0 - it went under an
+ *                     overhang that looks, from directly above, like solid wall.
+ *   through-window    the beam entered a cell through an opening ABOVE level 0 - it threaded a hole
+ *                     at one exact height, with solid block below it and solid block above it.
+ * Both are read off `visited`: the beam is inside the column (z < t) at a level the column's
+ * openMask has punched out. A beam flying OVER the same column (z >= t) is an `overflight`, not
+ * either of these, and a beam that merely stops at its wall face tags nothing.
  */
 
 export function concepts(level, solution) {
@@ -378,6 +472,11 @@ export function concepts(level, solution) {
     const tt = L.t[y][x];
     if (tt > 0 && tt <= z) out.add('overflight');
   }
+  // ARCHES AND WINDOWS (section 13): a cell the beam is INSIDE, at a level punched out of the column.
+  for (const v of res.visited) {
+    if (!((L.openMask[v.y][v.x] >> v.z) & 1)) continue;
+    out.add(v.z === 0 ? 'under-arch' : 'through-window');
+  }
   if (res.overflights.length) out.add('piece-overflight');
   if (L.targets.length === 2) out.add('twotargets');
   for (const ti of res.hits) { const tg = L.targets[ti]; if (L.t[tg.y][tg.x] >= 1) out.add('plateau-target'); }
@@ -400,7 +499,8 @@ function blockPlacement(level, t, onPath, placed, spec) {
   const res = replay(L, placed);
   const cands = [];
   for (const v of res.visited) {
-    if (onPath.has(key(v.x, v.y))) continue;
+    // Opened columns are path cells, so `onPath` already protects them; the explicit test says so.
+    if (onPath.has(key(v.x, v.y)) || L.openMask[v.y][v.x]) continue;
     const want = blockHeight(spec, v.z);
     if (want === null) continue;
     if (t[v.y][v.x] >= want) continue;
@@ -427,7 +527,7 @@ function blockFlatRoutes(level, t, onPath, routes, spec) {
     const seen = new Set();
     for (const v of res.visited) {
       const k = key(v.x, v.y);
-      if (seen.has(k) || onPath.has(k) || t[v.y][v.x] >= 1) continue;
+      if (seen.has(k) || onPath.has(k) || t[v.y][v.x] >= 1) continue;   // opened columns are already t = 3
       seen.add(k);
       tally.set(k, (tally.get(k) || 0) + 1);
     }
@@ -460,9 +560,13 @@ export function buildLevel(seed, spec, stats) {
   if (!walk) return bail('walk');
   const t = layTerrain(r, spec, walk.path);
   const onPath = new Set(walk.path.map(c => key(c.x, c.y)));
+  // Arches and windows are punched BEFORE decorate so their wings count towards coverage and
+  // decorate cannot bury them: `put` never touches a path cell, and an opened column is a path cell.
+  const openings = punchOpenings(r, spec, t, walk.path, onPath);
+  if (openings === null) return bail('openings');
   decorate(r, spec, t, onPath);
 
-  const level = assemble(spec, walk, t);
+  const level = assemble(spec, walk, t, openings);
   if (!level) return bail('assemble');
   if (level.par !== spec.par) return bail('par');
   syncTerrain(level, t);
@@ -615,10 +719,14 @@ export function normalizeSpec(spec) {
     minRun: Math.max(2, Math.round(maxRun * 0.45)),
     maxRun,
     minFinalRun: 2,
+    // Cap on a run the beam takes while CLIMBING or FALLING (null = uncapped). See walkPath.
+    maxPitchedRun: null,
     minSpan: Math.round(side * 0.5),
     minPathLen: Math.round(side * 1.15),
     slack: 1,
     slackType: 'MIRROR',
+    // DESIGN.md 13: { arch: n, window: n, windowOnLevelLeg: bool, wingSpan: n }. null = no openings.
+    openings: null,
     need3d: 'unsolvable',
     require: [],
     forbid: [],

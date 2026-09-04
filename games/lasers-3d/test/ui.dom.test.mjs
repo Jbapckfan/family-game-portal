@@ -356,6 +356,70 @@ async function run() {
         `pitch diagram fits the modal without overflowing it (${rules.w && rules.w.toFixed(0)}x${rules.h && rules.h.toFixed(0)})`);
       assert(rules.notePx >= 8 && rules.namePx >= 9,
         `diagram labels stay legible on this screen (name ${rules.namePx.toFixed(1)} px, note ${rules.notePx.toFixed(1)} px)`);
+      // ---- DESIGN.md 13: arches and windows must be explained, in the same voice, with the tell named ----
+      const shapes = await page.evaluate(() => {
+        const body = document.querySelector('#modal-help .modal-body');
+        const rows = Array.from(body.querySelectorAll('.help-shape')).map((r) => r.textContent.replace(/\s+/g, ' ').trim());
+        const svgs = Array.from(body.querySelectorAll('svg.help-diagram'));
+        const t = body.querySelector('svg.help-diagram-terrain');
+        const box = t ? t.getBoundingClientRect() : null;
+        const modal = document.querySelector('#modal-help .modal').getBoundingClientRect();
+        const notes = Array.from(body.querySelectorAll('.help-note')).map((n) => n.textContent.replace(/\s+/g, ' ').trim());
+        return {
+          rows, notes, diagrams: svgs.length, isSecond: !!t && svgs[1] === t,
+          role: t && t.getAttribute('role'),
+          labelled: t && t.getAttribute('aria-labelledby'),
+          labelIds: t ? Array.from(t.querySelectorAll('title, desc')).map((n) => n.id).join(' ') : '',
+          alt: t ? Array.from(t.querySelectorAll('title, desc')).map((n) => n.textContent).join(' ') : '',
+          walls: t ? t.querySelectorAll('.ht-wall').length : 0,
+          gaps: t ? t.querySelectorAll('.ht-gap').length : 0,
+          beams: t ? Array.from(t.querySelectorAll('.ht-beam')).map((n) => n.getAttribute('data-z')) : [],
+          stops: t ? t.querySelectorAll('.ht-stop').length : 0,
+          cells: t ? t.querySelectorAll('.ht-cell').length : 0,
+          leaks: t ? t.querySelectorAll('.ht-leak').length : 0,
+          captions: t ? Array.from(t.querySelectorAll('.ht-name')).map((n) => n.textContent) : [],
+          captionNotes: t ? Array.from(t.querySelectorAll('.ht-note')).map((n) => n.textContent) : [],
+          paints: t ? Array.from(t.querySelectorAll('.ht-wall, .ht-cell, .ht-leak, .ht-stop')).map((n) => getComputedStyle(n).fill)
+            .concat(Array.from(t.querySelectorAll('.ht-beam')).map((n) => getComputedStyle(n).stroke)) : [],
+          w: box && box.width, h: box && box.height,
+          insideModal: box && box.left >= modal.left - 0.5 && box.right <= modal.right + 0.5,
+          namePx: t ? parseFloat(getComputedStyle(t.querySelector('.ht-name')).fontSize) * (box.width / 300) : 0,
+          notePx: t ? parseFloat(getComputedStyle(t.querySelector('.ht-note')).fontSize) * (box.width / 300) : 0,
+          overflowNote: t ? Array.from(t.querySelectorAll('.ht-note')).map((n) => n.getComputedTextLength() > 100) : []
+        };
+      });
+      assert(/ARCH/.test(shapes.rows[0] || '') && /gap along the ground/.test(shapes.rows[0] || '') && /under/.test(shapes.rows[0] || ''),
+        `ARCH is explained as a gap on the ground you go under: "${shapes.rows[0]}"`);
+      assert(/WINDOW/.test(shapes.rows[1] || '') && /part way up/.test(shapes.rows[1] || '') && /one height/.test(shapes.rows[1] || ''),
+        `WINDOW is explained as one height only: "${shapes.rows[1]}"`);
+      assert(shapes.rows.every((r) => !/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(r)) && shapes.rows.length === 2,
+        `the two shape lines carry no emoji and nothing else claims to be one ${JSON.stringify(shapes.rows.length)}`);
+      {
+        const leakNote = shapes.notes.find((n) => /sliver/i.test(n)) || '';
+        assert(/sliver of light/i.test(leakNote) && /not how high/i.test(leakNote),
+          `the fair tell is named and its limit stated: "${leakNote}"`);
+        assert(/what height the beam was at/i.test(leakNote),
+          `the blocked-shot readout is named as the second thing to reason from: "${leakNote}"`);
+      }
+      assert(shapes.diagrams === 2 && shapes.isSecond && shapes.role === 'img' && shapes.labelled && shapes.labelled === shapes.labelIds,
+        `the arch/window diagram is a second inline SVG labelled by its own title+desc ${JSON.stringify({ n: shapes.diagrams, role: shapes.role, labelled: shapes.labelled, ids: shapes.labelIds })}`);
+      assert(/arch/i.test(shapes.alt) && /window/i.test(shapes.alt) && /under/i.test(shapes.alt) && /sliver/i.test(shapes.alt) && shapes.alt.length > 200,
+        `the diagram has a text alternative describing all three pictures (${shapes.alt.length} chars): "${shapes.alt.slice(0, 90)}..."`);
+      assert(shapes.walls === 3 && shapes.gaps === 2 && shapes.cells === 2 && shapes.leaks === 1,
+        `the diagram draws an arch, a window and the view from above ${JSON.stringify({ walls: shapes.walls, gaps: shapes.gaps, cells: shapes.cells, leaks: shapes.leaks })}`);
+      assert(JSON.stringify(shapes.beams) === '["0","1","0"]' && shapes.stops === 1,
+        `it shows a beam UNDER the arch, a beam THROUGH the window at its own height, and one more stopped by the ` +
+        `wall beside it ${JSON.stringify(shapes.beams)} with ${shapes.stops} stop cap`);
+      assert(JSON.stringify(shapes.captions) === '["ARCH","WINDOW","FROM ABOVE"]' &&
+             JSON.stringify(shapes.captionNotes) === '["goes under","one height fits","one is not solid"]',
+        `every panel is captioned in words, not colour alone ${JSON.stringify(shapes.captions)} ${JSON.stringify(shapes.captionNotes)}`);
+      assert(shapes.paints.every((c) => c && c !== 'none' && c !== 'rgb(0, 0, 0)'),
+        `every diagram colour resolves to a theme token ${JSON.stringify(shapes.paints)}`);
+      assert(shapes.insideModal && shapes.w > 200 && shapes.h > 60 && shapes.h < 200,
+        `the diagram fits the modal (${shapes.w && shapes.w.toFixed(0)}x${shapes.h && shapes.h.toFixed(0)})`);
+      assert(shapes.namePx >= 9 && shapes.notePx >= 8 && shapes.overflowNote.every((o) => !o),
+        `its labels stay legible and inside their panel (name ${shapes.namePx.toFixed(1)} px, note ${shapes.notePx.toFixed(1)} px)`);
+
       // focus trap: Tab from the last focusable wraps to the first
       await page.evaluate(() => { const f = Array.from(document.querySelectorAll('#modal-help .modal button, #modal-help .modal a[href]')); f[f.length - 1].focus(); });
       await page.keyboard.press('Tab');
@@ -364,6 +428,76 @@ async function run() {
       await page.screenshot({ path: `${SHOTS}/rule-${vp.name}-help.png`, fullPage: true });
       await page.keyboard.press('Escape');
       assert(await page.evaluate(() => !window.__harness.ui.isModalOpen() && document.getElementById('modal-help').hidden), 'Escape closes help');
+
+      // ---- DESIGN.md 13.3: the post-FIRE readout is the third fair tell ----
+      // A shot stopped by a wall that HAS a way through names the height the beam was travelling at, so the player
+      // can reason about which level might be open. It must never name the open level, and it must say nothing
+      // extra about an ordinary solid wall - that alone would give away which walls are not solid.
+      const READ = await page.evaluate(() => {
+        const wall = (openings) => ({
+          name: 'W', par: 1, size: { w: 8, d: 7 },
+          terrain: ['00000000', '00000000', '00000000', '00030000', '00000000', '00000000', '00000000'],
+          emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 7, y: 3 }], fixed: [], tray: ['WEDGE'],
+          openings: openings
+        });
+        const H = window.__harness;
+        return {
+          openMid: H.readout(wall([{ x: 3, y: 3, levels: [1] }]), []),
+          openHigh: H.readout(wall([{ x: 3, y: 3, levels: [2] }]), []),
+          // the same wall struck at a height the beam CLIMBED to: a wedge lifts it, a dip levels it at 1, and the
+          // wall it then hits is open at 2 - so "where the drawing stops" and "the height it was travelling at" differ
+          climb: H.readout({
+            name: 'C', par: 2, size: { w: 8, d: 7 },
+            terrain: ['00000000', '00000000', '00000000', '00000000', '01030000', '00000000', '00000000'],
+            emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 7, y: 3 }], fixed: [], tray: ['WEDGE', 'DIP'],
+            openings: [{ x: 3, y: 4, levels: [2] }]
+          }, [{ x: 1, y: 3, type: 'WEDGE', orient: '/' }, { x: 1, y: 4, type: 'DIP', orient: '/' }]),
+          solid: H.readout(wall(undefined), []),
+          none: H.readout(wall([]), [])
+        };
+      });
+      assert(READ.openMid.end === 'blocked' && /hit a wall/.test(READ.openMid.vm.message) && /height 0/.test(READ.openMid.vm.message),
+        `a level-0 shot stopped by a wall that HAS a way through it names the height: "${READ.openMid.vm.message}"`);
+      assert(READ.openHigh.vm.message === READ.openMid.vm.message,
+        `the SAME wording whether that wall's gap is at level 1 or level 2 - the readout never says which level is ` +
+        `open ("${READ.openHigh.vm.message}")`);
+      assert(READ.climb.vm.blocked && READ.climb.vm.blocked.z > 0 &&
+             READ.climb.vm.message === 'The beam hit a wall at height ' + READ.climb.vm.blocked.z + '.',
+        `the height it names is the height the beam was TRAVELLING at, not where the drawing stops ` +
+        `("${READ.climb.vm.message}", beam z ${READ.climb.vm.blocked && READ.climb.vm.blocked.z})`);
+      /* The height is named on EVERY blocked shot. Reporting it only for walls that happen to have an opening would
+       * make the longer sentence itself the marker for which walls are hollow, which is the exact leak this tell
+       * exists to avoid. The faint floor gleam is the only thing that marks an opened column. */
+      assert(READ.solid.vm.blocked && READ.solid.vm.blocked.hasOpening === false &&
+             READ.solid.vm.message === 'The beam hit a wall at height ' + READ.solid.vm.blocked.z + '.' &&
+             READ.none.vm.message === 'The beam hit a wall at height ' + READ.none.vm.blocked.z + '.',
+        `a SOLID wall names the height too, so the wording never marks out which walls are hollow ` +
+        `("${READ.solid.vm.message}" vs "${READ.openMid.vm.message}")`);
+      assert(READ.solid.vm.message.replace(/height \d+/, 'height N') ===
+             READ.openMid.vm.message.replace(/height \d+/, 'height N'),
+        `solid and opened walls are worded IDENTICALLY apart from the number ` +
+        `("${READ.solid.vm.message}" vs "${READ.openMid.vm.message}")`);
+      assert(!/level/i.test(READ.openMid.vm.message) && !/open/i.test(READ.openMid.vm.message) &&
+             !/through/i.test(READ.openMid.vm.message) && !/gap/i.test(READ.openMid.vm.message),
+        `it helps without giving the answer: no mention of a level, an opening or a way through`);
+      {
+        // and it renders into the readout row, clear of the board and the Menu link, without colour carrying meaning
+        const shown = await page.evaluate((vm) => {
+          const H = window.__harness;
+          H.setState({ readout: vm });
+          const box = document.getElementById('readout'), b = box.getBoundingClientRect();
+          const menu = document.querySelector('a.menu-link').getBoundingClientRect();
+          const stage = document.getElementById('stage').getBoundingClientRect();
+          const hit = (p, q) => !(p.right <= q.left || p.left >= q.right || p.bottom <= q.top || p.top >= q.bottom);
+          return { hidden: box.hidden, text: box.textContent.replace(/\s+/g, ' ').trim(),
+            overMenu: hit(b, menu), overBoard: hit(b, stage),
+            inViewport: b.top >= 0 && b.bottom <= innerHeight + 0.5 && b.left >= 0 && b.right <= innerWidth + 0.5 };
+        }, READ.climb.vm);
+        assert(!shown.hidden && /height \d/.test(shown.text) && !shown.overMenu && !shown.overBoard && shown.inViewport,
+          `the blocked-at-height readout is on screen, clear of the board and the Menu link: "${shown.text}" ${JSON.stringify(shown)}`);
+        await page.screenshot({ path: `${SHOTS}/arch-readout-${vp.name}.png` });
+        await page.evaluate(() => window.__harness.setState({ readout: { kind: 'danger', message: 'The beam flew over the target.', pitch: 1, altitude: { beamZ: 2, targetZ: 1, above: true }, progress: { lit: 0, total: 1 } } }));
+      }
 
       await page.evaluate(() => window.__harness.ui.showLevelSelect());
       const tiles = await page.evaluate(() => ({ n: document.querySelectorAll('.level-tile').length, locked: document.querySelectorAll('.level-tile[data-state="locked"]').length, current: document.querySelectorAll('.level-tile[data-state="current"]').length, completed: document.querySelectorAll('.level-tile[data-state="completed"]').length }));

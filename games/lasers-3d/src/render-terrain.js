@@ -24,52 +24,111 @@
 
   function create(theme) {
     var uReveal = { value: 0 };
+    var LEAK = theme.terrain.lightLeak;
     var mats = {
       floor: revealMaterial(theme.materials.floor, theme, uReveal),
       top: revealMaterial(theme.materials.blockTopLit, theme, uReveal),
       side: Core.matFromSpec(theme.materials.blockSide),
-      grid: new THREE.LineBasicMaterial({ color: new THREE.Color(theme.palette.gridOutline), toneMapped: false })
+      grid: new THREE.LineBasicMaterial({ color: new THREE.Color(theme.palette.gridOutline), toneMapped: false }),
+      /* DESIGN.md 13.3: the ONE mark the flat view is allowed to show. Additive over the floor so it reads as light
+       * escaping, never as paint; depthWrite off so it cannot disturb anything drawn after it. */
+      leak: new THREE.MeshBasicMaterial({ color: new THREE.Color(LEAK.color), transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
     };
-    Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid]);
+    var leakTex = null;
+    Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid, mats.leak]);
     mats.side.opacity = 0;
     mats.top.polygonOffset = true; mats.top.polygonOffsetFactor = 1; mats.top.polygonOffsetUnits = 1;
     mats.floor.polygonOffset = true; mats.floor.polygonOffsetFactor = 1; mats.floor.polygonOffsetUnits = 1;
 
+    /* Terrain draws BEFORE everything else in the scene. In TILT that is just early-z; in FLAT it is what lets the
+     * beam of 13.3 cross an arch (see applyReveal), because a mesh that writes no depth must be painted first or it
+     * paints over what it was supposed to let through. */
+    var TERRAIN_ORDER = -1;
     var group = new THREE.Group();
     group.name = 'terrain';
-    var level = null, maxHeight = 0, fitPoints = new Float32Array(0);
+    var level = null, maxHeight = 0, fitPoints = new Float32Array(0), openings = null;
 
+    /* ---- ARCHES AND WINDOWS (DESIGN.md 13.5) -----------------------------------------------------------------
+     * Terrain used to be one box per column, which cannot express a gap under a block or a hole through a wall. It
+     * is now built PER SOLID VOXEL: the column's open levels are simply skipped, so an opening is a genuine hole
+     * with its own ceiling and floor faces. Three invariants keep the game's bargain intact:
+     *
+     *  1. THE FLAT VIEW IS UNCHANGED. The lid at z = t is emitted for EVERY column with t > 0 whatever is (or is
+     *     not) underneath it, so the top surface never moves. Everything else the opening adds is either a vertical
+     *     face or a downward face in `mats.side`, which is invisible while reveal = 0, or an upward face in
+     *     `mats.top`, which the FLAT shader forces to exactly #172544 - the same byte the lid above it writes. The
+     *     only pixels that can differ are the light leak's, and that is 13.3's deliberate exception.
+     *  2. THE SILHOUETTE IS UNCHANGED. buildFitPoints still reads only the per-column top corners at height t, so
+     *     the camera auto-fit sees the same convex hull with or without openings.
+     *  3. MERGED PER MATERIAL. Every voxel's faces land in one of the same two buckets as before, so a 24x24 board
+     *     is still four draw calls of terrain (base slab, tops, sides, outlines) plus one for the light leaks.
+     *
+     * A solid column is byte-identical to what the old code produced: the four side quads are simply cut into h
+     * stacked quads over exactly the same rectangle, sharing vertices, with the same flat normals and an unused uv.
+     */
     function build(parsed) {
       level = parsed;
       Core.clearGroup(group);
       var w = parsed.size.w, d = parsed.size.d, t = parsed.t;
-      var cell = theme.terrain.cellTop, x, y, h;
-      var tops = [], sides = [], lines = [];
+      var cell = theme.terrain.cellTop, hc = cell / 2, x, y, h, k;
+      var tops = [], sides = [], lines = [], leaks = [];
       var byHeight = [];   /* height -> flat [worldX, worldZ, ...] of that height's top-face corners */
       maxHeight = 0;
+      openings = Core.openMask(parsed);
+      var om = openings.mask;
 
-      /* Base floor slab: one quad under the whole board so gaps show floor colour (never the page). */
+      /* Base floor slab: one quad under the whole board so gaps show floor colour (never the page). It is also the
+       * floor an ARCH is open onto: a beam passing under one runs along this slab. */
       var base = new THREE.PlaneGeometry(w, d);
       base.rotateX(-Math.PI / 2);
       base.translate((w - 1) / 2, -0.01, -(d - 1) / 2);
       var baseMesh = new THREE.Mesh(base, mats.floor);
       baseMesh.receiveShadow = true;
+      baseMesh.renderOrder = TERRAIN_ORDER;
       group.add(baseMesh);
+
+      function face(z, up) {
+        var g = new THREE.PlaneGeometry(cell, cell);
+        g.rotateX(up ? -Math.PI / 2 : Math.PI / 2);
+        g.translate(x, z, -y);
+        return g;
+      }
 
       for (y = 0; y < d; y++) {
         for (x = 0; x < w; x++) {
           h = t[y][x];
+          var bits = om[y * w + x];
           if (h > 0) {
-            var top = new THREE.PlaneGeometry(cell, cell);
-            top.rotateX(-Math.PI / 2);
-            top.translate(x, h, -y);
-            tops.push(top);
-            /* four vertical faces from z=0 to z=h */
-            var hc = cell / 2;
-            sides.push(sideQuad([x + hc, 0, -y + hc], [x + hc, 0, -y - hc], h, [1, 0, 0]));
-            sides.push(sideQuad([x - hc, 0, -y - hc], [x - hc, 0, -y + hc], h, [-1, 0, 0]));
-            sides.push(sideQuad([x - hc, 0, -y + hc], [x + hc, 0, -y + hc], h, [0, 0, 1]));
-            sides.push(sideQuad([x + hc, 0, -y - hc], [x - hc, 0, -y - hc], h, [0, 0, -1]));
+            /* The lid. Always drawn at the column's own height, opening or not: this is the surface the FLAT view
+             * shows, the surface a piece stands on, and the surface the camera fit measures. */
+            tops.push(face(h, true));
+            for (k = 0; k < h; k++) {
+              if (bits & (1 << k)) continue;                 /* punched out - leave a real hole */
+              /* four vertical faces of THIS voxel, z = k .. k+1 */
+              sides.push(sideQuad([x + hc, k, -y + hc], [x + hc, k, -y - hc], k + 1, [1, 0, 0]));
+              sides.push(sideQuad([x - hc, k, -y - hc], [x - hc, k, -y + hc], k + 1, [-1, 0, 0]));
+              sides.push(sideQuad([x - hc, k, -y + hc], [x + hc, k, -y + hc], k + 1, [0, 0, 1]));
+              sides.push(sideQuad([x + hc, k, -y - hc], [x - hc, k, -y - hc], k + 1, [0, 0, -1]));
+              /* the floor INSIDE an opening: this voxel's own top, wherever the voxel above is missing. This is the
+               * one interior surface a player ever sees, since the camera looks DOWN from 25..90 degrees, so it is a
+               * lit block top like any other. */
+              if (k + 1 < h && (bits & (1 << (k + 1)))) tops.push(face(k + 1, true));
+              /* the ceiling INSIDE an opening: this voxel's underside, wherever the voxel below is missing. It is
+               * back-facing at every legal camera elevation, so it is never seen; it exists so the hole is a real
+               * hole and not a one-sided cut, and it goes in the dark side bucket with the walls. */
+              if (k > 0 && (bits & (1 << (k - 1)))) sides.push(face(k, false));
+            }
+            /* the lid's own underside, when the voxel it caps was punched out (an overhang with nothing below it) */
+            if (bits & (1 << (h - 1))) sides.push(face(h, false));
+            /* 13.3: the fair tell. One quad on the column top; the material's opacity carries it (and retires it as
+             * the board tilts), so an opened column costs exactly one more quad in one shared mesh. */
+            if (bits) {
+              var lq = new THREE.PlaneGeometry(LEAK.quadCells, LEAK.quadCells);
+              lq.rotateX(-Math.PI / 2);
+              lq.translate(x, h + LEAK.zOffset, -y);
+              leaks.push(lq);
+            }
           }
           /* outline square at this cell's actual top */
           var zl = h + 0.004, a = x - cell / 2, b = x + cell / 2, c = -y + cell / 2, e = -y - cell / 2;
@@ -82,6 +141,7 @@
       if (tops.length) {
         var topMesh = new THREE.Mesh(Core.mergeGeometries(tops), mats.top);
         topMesh.castShadow = true; topMesh.receiveShadow = true;
+        topMesh.renderOrder = TERRAIN_ORDER;
         group.add(topMesh);
         var sideMesh = new THREE.Mesh(Core.mergeGeometries(sides), mats.side);
         sideMesh.castShadow = true; sideMesh.receiveShadow = true;
@@ -92,6 +152,22 @@
       var lineMesh = new THREE.LineSegments(lg, mats.grid);
       lineMesh.renderOrder = 1;
       group.add(lineMesh);
+      if (leaks.length) {
+        if (!leakTex) { leakTex = Core.markShared(Core.leakTexture(theme)); mats.leak.map = leakTex; mats.leak.needsUpdate = true; }
+        var leakMesh = new THREE.Mesh(Core.mergeGeometries(leaks), mats.leak);
+        leakMesh.name = 'terrainLightLeak';
+        leakMesh.renderOrder = LEAK.renderOrder;
+        group.add(leakMesh);
+      }
+    }
+
+    /* Bitmask of the levels punched out of a column (0 = solid). Exposed so the readout and the tests can ask the
+     * same question the geometry answered, without re-deriving the engine's field name. */
+    function openLevelsAt(x, y) {
+      if (!openings || !level) return 0;
+      x = Math.round(x); y = Math.round(y);
+      if (y < 0 || x < 0 || y >= level.size.d || x >= level.size.w) return 0;
+      return openings.mask[y * level.size.w + x];
     }
 
     /* Camera-fit silhouette (INTERFACES-FRONTEND.md "Changes"): the solid's projected outline in ANY orientation is
@@ -118,10 +194,12 @@
       fitPoints = new Float32Array(pts);
     }
 
-    /* Vertical quad from world point a to b (both at y=0) up to height h, with the given outward normal. */
+    /* Vertical quad from world point a to b (both at height a[1]) up to height h, with the given outward normal.
+     * A column is cut into one of these per solid voxel; the quads share their edge vertices exactly, so a solid
+     * column rasterises identically to the single full-height quad this used to emit. */
     function sideQuad(a, b, h, n) {
-      var g = new THREE.BufferGeometry();
-      var p = [a[0], 0, a[2], b[0], 0, b[2], b[0], h, b[2], a[0], 0, a[2], b[0], h, b[2], a[0], h, a[2]];
+      var g = new THREE.BufferGeometry(), z0 = a[1];
+      var p = [a[0], z0, a[2], b[0], z0, b[2], b[0], h, b[2], a[0], z0, a[2], b[0], h, b[2], a[0], h, a[2]];
       var nn = [], i;
       for (i = 0; i < 6; i++) nn.push(n[0], n[1], n[2]);
       g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
@@ -137,6 +215,19 @@
       mats.side.opacity = so;
       mats.side.transparent = so < 1;
       mats.side.visible = so > 0;
+      /* The light leak is a FLAT-view tell (13.3). Once the board is tilted the hole itself is the tell, and
+       * VISUAL-DIRECTION C forbids decals on lit terrain tops, so it retires exactly as the sides arrive. */
+      mats.leak.opacity = LEAK.opacity * (1 - r);
+      mats.leak.visible = mats.leak.opacity > 0.001;
+      /* 13.3's second tell, "the beam is its own": a beam passing UNDER an arch is hidden by the very column top
+       * that hides the arch, so at reveal 0 a level-0 run would appear to stop dead at that cell - a lie in the
+       * wrong direction, and the one thing worse than no tell. While the board is a flat graphic the terrain writes
+       * no depth (VISUAL-DIRECTION D already keeps the beam among the objects FLAT must not hide), so the beam is
+       * drawn crossing a cell that looks solid. The instant the board starts becoming physical, real occlusion is
+       * back. Nothing else changes: at reveal 0 every terrain fragment is forced to the same #172544. */
+      var occludes = r > 0;
+      mats.top.depthWrite = occludes;
+      mats.floor.depthWrite = occludes;
     }
 
     /* Picking is analytic, not a raycast against per-cell meshes: 576 invisible boxes at 24x24 would be 576 ray/box
@@ -195,10 +286,12 @@
     function dispose() {
       Core.clearGroup(group);
       for (var k in mats) if (Object.prototype.hasOwnProperty.call(mats, k)) mats[k].dispose();
+      if (leakTex) { leakTex.dispose(); leakTex = null; }
     }
 
     return { group: group, build: build, applyReveal: applyReveal, pick: pick, heightAt: heightAt, dispose: dispose,
-      materials: mats, fitPoints: function () { return fitPoints; }, maxHeight: function () { return maxHeight; } };
+      materials: mats, fitPoints: function () { return fitPoints; }, maxHeight: function () { return maxHeight; },
+      openLevelsAt: openLevelsAt };
   }
 
   root.LaserRenderTerrain = { __version: 1, create: create };

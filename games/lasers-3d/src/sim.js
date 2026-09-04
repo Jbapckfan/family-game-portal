@@ -4,6 +4,26 @@
  *
  * ROW ORDER: terrain is indexed t[y][x]; y = 0 is the SOUTH row.
  * (The spec prose writes t[x][y]; the level schema and every module use t[y][x].)
+ *
+ * ARCHES AND WINDOWS (DESIGN.md section 13, extends 3.1 and 3.2). Terrain is a HEIGHT FIELD, so a
+ * column is solid at every level below `t` and neither an overhang nor a hole through a wall can
+ * exist. A level may now carry an `openings` array naming levels punched OUT of specific columns:
+ *
+ *   openings: [ { x: 4, y: 9, levels: [0] } ]   // this column is NOT solid at these levels
+ *
+ * The whole rule change is one clause of the blocked test (13.2):
+ *
+ *   BLOCKED when  z' < t[next]  AND  z' is not one of that column's open levels.
+ *
+ * parseLevel normalises `openings` into `openMask[y][x]`, a per-column BITMASK (bit z set = level z
+ * is open), so the stepper's test is one shift and one AND. A level with no `openings` gets an
+ * all-zero mask, the second clause is never true, and the engine behaves EXACTLY as it did before -
+ * which test/sim.test.mjs proves byte-for-byte against a corpus captured from the pre-openings
+ * engine (test/fixtures/pre-openings-traces.json).
+ *
+ * Nothing else in section 3 moves: pitch is still the DELTA of section 12, a piece still sits on the
+ * column TOP at `t` and acts only at that level, and nothing may be placed inside an opening - which
+ * needs no new rule, because a piece only ever exists at `t` and every open level is strictly below it.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -74,6 +94,55 @@
 
   function inGrid(size, x, y) { return isInt(x) && isInt(y) && x >= 0 && y >= 0 && x < size.w && y < size.d; }
 
+  /* ---------- openings (DESIGN.md 13.1) ----------
+   * Returns { openings: [{x, y, levels:[asc ints]}], openMask: number[d][w] }.
+   * openMask[y][x] has bit z set when level z of that column is NOT solid. An absent or empty
+   * `openings` gives an all-zero mask, which is exactly the old height-field behaviour.
+   *
+   * ARCH   t = 3, levels [0]  - solid at 1 and 2; a floor beam passes UNDER it, a beam at 1 or 2 is
+   *                             blocked, a beam at 3 flies over as before.
+   * WINDOW t = 3, levels [1]  - solid at 0 and 2; only a beam at level 1 threads it.
+   * Both are pixel-identical to a solid column from directly above: the top surface is untouched. */
+  function parseOpenings(level, size, t) {
+    var raw = level.openings;
+    var mask = [], y, x;
+    for (y = 0; y < size.d; y++) { mask.push([]); for (x = 0; x < size.w; x++) mask[y].push(0); }
+    if (raw == null) return { openings: [], openMask: mask };
+    if (!Array.isArray(raw)) fail('openings must be an array of { x, y, levels }');
+    var out = [], seenCol = {};
+    for (var i = 0; i < raw.length; i++) {
+      var o = raw[i];
+      if (!o || typeof o !== 'object') fail('openings[' + i + '] must be an object { x, y, levels }');
+      if (!inGrid(size, o.x, o.y)) fail('openings[' + i + '] must name an on-grid column, got (' + o.x + ',' + o.y + ')');
+      var k = key(o.x, o.y);
+      if (seenCol[k]) fail('openings[' + i + '] duplicates the column (' + o.x + ',' + o.y + ') of an earlier entry; put every level of a column in one entry');
+      seenCol[k] = true;
+      var top = t[o.y][o.x];
+      var levels = o.levels;
+      if (!Array.isArray(levels) || levels.length === 0) fail('openings[' + i + '] levels must be a non-empty array of integers 0..3');
+      var seenLvl = {}, list = [];
+      for (var j = 0; j < levels.length; j++) {
+        var z = levels[j];
+        if (!isInt(z) || z < 0 || z >= H_MAX) fail('openings[' + i + '] levels[' + j + '] must be an integer 0..' + (H_MAX - 1) + ', got ' + z);
+        if (z >= top) fail('openings[' + i + '] levels[' + j + '] is ' + z + ', which is not strictly below the height t=' + top + ' of column (' + o.x + ',' + o.y + ')');
+        if (seenLvl[z]) fail('openings[' + i + '] repeats level ' + z);
+        seenLvl[z] = true;
+        list.push(z);
+      }
+      list.sort(function (a, b) { return a - b; });
+      for (var m = 0; m < list.length; m++) mask[o.y][o.x] |= (1 << list[m]);
+      out.push({ x: o.x, y: o.y, levels: list });
+    }
+    return { openings: out, openMask: mask };
+  }
+
+  /* True when level z of column (x, y) has been punched out (DESIGN.md 13.1). */
+  function isOpen(level, x, y, z) {
+    var L = parseLevel(level);
+    if (!inGrid(L.size, x, y) || !isInt(z) || z < 0 || z >= H_MAX) return false;
+    return ((L.openMask[y][x] >> z) & 1) === 1;
+  }
+
   function parseEmitter(level, size) {
     var e = level.emitter;
     if (!e || !inGrid(size, e.x, e.y)) fail('emitter must be on the grid');
@@ -133,6 +202,7 @@
     var emitter = parseEmitter(level, size);
     var targets = parseTargets(level, size, emitter);
     var terr = parseTerrain(level, size);
+    var open = parseOpenings(level, size, terr.t);
     var out = {
       parsed: true,
       name: String(level.name || ''),
@@ -140,6 +210,8 @@
       size: size,
       terrain: terr.terrain,
       t: terr.t,
+      openings: open.openings,
+      openMask: open.openMask,
       emitter: emitter,
       targets: targets,
       fixed: parseFixed(level, size, emitter, targets),
@@ -153,7 +225,10 @@
   /* Derived per-level loop-guard step cap (>= MAX_STEPS). Accepts a raw or parsed level. */
   function stepCap(level) { return capForSize(parseLevel(level).size); }
 
-  /* ---------- canPlace (3.4) ---------- */
+  /* ---------- canPlace (3.4) ----------
+   * Unchanged by section 13. Placement is per CELL and a piece always sits on the column TOP at `t`,
+   * so an opening - which is strictly below `t` - can never be placed in and never makes a column
+   * placeable at any other level. A beam threading an opening passes UNDER any piece on that column. */
 
   function occupiedMap(L, placed) {
     var occ = {};
@@ -210,7 +285,9 @@
     if (!inGrid(L.size, nx, ny)) return { kind: 'lost-edge' };
     if (nz < 0) return { kind: 'lost-floor' };
     if (nz >= H_MAX) return { kind: 'lost-sky' };
-    if (L.t[ny][nx] > nz) return { kind: 'blocked' };
+    /* THE BLOCKED TEST (DESIGN.md 13.2): solid below the column top, UNLESS this level is punched out.
+     * openMask is all zeros on a level with no `openings`, so this is the old test exactly. */
+    if (L.t[ny][nx] > nz && !((L.openMask[ny][nx] >> nz) & 1)) return { kind: 'blocked' };
     if (nx === L.emitter.x && ny === L.emitter.y && nz === L.t[ny][nx]) return { kind: 'blocked' }; // emitter body
     return { kind: 'enter', state: { x: nx, y: ny, z: nz, d: s.d, v: s.v } };
   }
@@ -232,13 +309,19 @@
     return out;
   }
 
-  /* Piece interaction on entering a cell at level ns.z. Mutates ns (d, v). */
+  /* Piece interaction on entering a cell at level ns.z. Mutates ns (d, v).
+   * A piece acts only at the column top (z === t). Otherwise the beam misses it, and there are now
+   * two ways to miss: OVER the piece (z > t, the old hidden-information beat) or, since section 13,
+   * UNDER it (z < t, only reachable through an opening). They are reported separately because they
+   * are different events on screen and a consumer that treats an under-pass as a fly-over would put
+   * the reveal camera - and the readout - on the wrong side of the block. */
   function applyPiece(L, out, pieces, ns, step) {
     var p = pieces[key(ns.x, ns.y)];
     if (!p) return;
     if (ns.z !== L.t[ns.y][ns.x]) {
-      out.overflights.push(pt2(ns));
-      emit(out, 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
+      var under = ns.z < L.t[ns.y][ns.x];
+      (under ? out.underpasses : out.overflights).push(pt2(ns));
+      emit(out, under ? 'underpass' : 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
       return;
     }
     /* Pitch is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12.1 / 12.2). The clamp
@@ -274,7 +357,7 @@
     var targets = buildTargetMap(L);
     var cap = capForSize(L.size);
     var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
-                altitudeMarks: [], pieceHits: [], overflights: [], events: [] };
+                altitudeMarks: [], pieceHits: [], overflights: [], underpasses: [], events: [] };
     var s = { x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 };
     var seen = {}, lit = {};
     seen[stateKey(s)] = true;
@@ -296,5 +379,5 @@
   }
 
   return { DIRS: DIRS, H_MAX: H_MAX, MAX_STEPS: MAX_STEPS, ORIENTS: ORIENTS, PIECES: PIECES, TURN: Pieces.TURN,
-           stepCap: stepCap, parseLevel: parseLevel, canPlace: canPlace, trace: trace };
+           stepCap: stepCap, parseLevel: parseLevel, canPlace: canPlace, isOpen: isOpen, trace: trace };
 }));

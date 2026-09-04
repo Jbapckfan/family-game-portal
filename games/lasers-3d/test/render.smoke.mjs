@@ -161,7 +161,8 @@ try {
     const settled = r.getBeamProgress();
     // a one-cell stub must not flash past: the duration floor keeps it readable
     const stub = { segments: [{ from: { x: 0, y: 0, z: 0 }, to: { x: 1, y: 0, z: 0 }, d: 'E', v: 0 }], hits: [],
-      allTargetsHit: false, end: 'lost-edge', endPoint: { x: 1, y: 0, z: 0 }, altitudeMarks: [], pieceHits: [], overflights: [], visited: [] };
+      allTargetsHit: false, end: 'lost-edge', endPoint: { x: 1, y: 0, z: 0 }, altitudeMarks: [], pieceHits: [],
+      overflights: [], underpasses: [], events: [], visited: [] };
     r.setBeam(stub, { animate: true, fired: true });
     const shortTotal = r.getBeamProgress().total;
     let st = 0; while (r.getBeamProgress().playing && st < 5) { r.frame(1 / 60); st += 1 / 60; }
@@ -598,6 +599,244 @@ try {
     check(p.calls < 600, `${k}: ${p.cells} cells, ${p.objects} scene objects, ${p.calls} draw calls, ${p.triangles} tris, ${p.ms.toFixed(2)} ms/frame`);
     check(p.ms < 16.7, `${k}: frame time ${p.ms.toFixed(2)} ms < 16.7 ms (60 fps)`);
   }
+
+  // ================================================================================================
+  // ARCHES AND WINDOWS (DESIGN.md 13.3 + 13.5)
+  // The feature is a deception with one deliberate leak, so it is tested as one: (a) the FLAT view of an opened
+  // column must be pixel-identical to a solid column of the same height EVERYWHERE except inside the light leak,
+  // (b) the leak must actually be there and be findable at the 34 px phone cell floor, (c) the camera silhouette
+  // must not move, (d) the tilted view must show a real hole, (e) the per-voxel geometry must not cost draw calls.
+  // ================================================================================================
+  console.log('\n== arches and windows (DESIGN.md 13)');
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.waitForTimeout(150);
+
+  // (0) the openings adapter reads the parsed level
+  const bits = await page.evaluate(() => {
+    const h = window.__h; h.load('arch'); h.fit();
+    return { arch: h.openLevelsAt(3, 4), window: h.openLevelsAt(8, 5), solid: h.openLevelsAt(10, 5),
+      lone: h.openLevelsAt(2, 8), loneSolid: h.openLevelsAt(4, 8),
+      wallA: h.openLevelsAt(3, 3), wallB: h.openLevelsAt(8, 4), off: h.openLevelsAt(-1, 40),
+      t: { arch: h.level.t[4][3], window: h.level.t[5][8], solid: h.level.t[5][10],
+           lone: h.level.t[8][2], loneSolid: h.level.t[8][4] } };
+  });
+  check(bits.arch === 1, `ARCH at (3,4) is open at level 0 only (mask ${bits.arch}) and t = ${bits.t.arch}`);
+  check(bits.window === 2, `WINDOW at (8,5) is open at level 1 only (mask ${bits.window}) and t = ${bits.t.window}`);
+  check(bits.solid === 0 && bits.wallA === 0 && bits.wallB === 0 && bits.off === 0 && bits.loneSolid === 0,
+    `the solid columns and both wall neighbours carry no opening (${bits.solid}/${bits.wallA}/${bits.wallB}/${bits.loneSolid}), off-board is 0`);
+  check(bits.lone === 1 && bits.t.lone === 3 && bits.t.loneSolid === 3,
+    `the lone ARCH at (2,8) and the lone SOLID column at (4,8) are both height 3 - the pair FLAT is judged on`);
+  check(bits.t.arch === 3 && bits.t.window === 3 && bits.t.solid === 3,
+    `arch, window and solid column are all height 3, so FLAT cannot tell them apart by height`);
+
+  // (1) THE FLAT VIEW MUST STAY A LIE. Whole-framebuffer diff: the same board, with and without `openings`.
+  const openCells = [{ x: 3, y: 4 }, { x: 8, y: 5 }, { x: 2, y: 8 }];
+  const diff = await page.evaluate((cells) => window.__h.flatDiff('arch', 'archSolid', cells), openCells);
+  const leakQuadPx = await page.evaluate(() => window.__h.theme.terrain.lightLeak.quadCells * window.__h.render.getCellPx());
+  check(!diff.error && diff.diff > 0,
+    `FLAT diff of the opened board against the solid one: ${diff.diff} of ${diff.pixels} pixels differ ` +
+    `(max channel delta ${diff.maxDelta}), i.e. the hole itself is completely invisible from above`);
+  check(diff.worstDistPx <= leakQuadPx / 2 + 1,
+    `every differing pixel lies inside a light-leak quad: furthest is ${diff.worstDistPx.toFixed(1)} CSS px from an ` +
+    `opened cell centre, quad half-width ${(leakQuadPx / 2).toFixed(1)} px (cell ${diff.cellPx.toFixed(1)} px)`);
+  check(diff.perCell.every((n) => n > 0),
+    `every opened column leaks: ${JSON.stringify(diff.perCell)} differing pixels at (3,4), (8,5) and (2,8)`);
+
+  // ... and the same proof stated the way a player would check it: an opened column's top, sampled clear of the
+  // leak, is BYTE-identical to the solid column beside it and to a plain floor cell.
+  const tops = await page.evaluate(() => {
+    const h = window.__h; h.load('arch'); h.fit();
+    h.render.setCameraPreset('flat', { animate: false }); h.settle(900);
+    const c = h.render.getCellPx(), off = Math.round(c * 0.36);      // out past the leak, still on the cell top
+    return { arch: h.sampleCell({ x: 2, y: 8 }, off, 0), archUp: h.sampleCell({ x: 2, y: 8 }, 0, off),
+      wall: h.sampleCell({ x: 4, y: 8 }, off, 0), window: h.sampleCell({ x: 8, y: 6 }, off, 0),
+      solid: h.sampleCell({ x: 10, y: 5 }, off, 0), floor: h.sampleCell({ x: 1, y: 1 }, off, 0), off,
+      // 13.3's second tell: the beam IS drawn crossing the arch cell, which from above looks solid
+      beamOverArch: h.sampleCell({ x: 3, y: 4 }, Math.round(c * 0.40), 0),
+      sameSpotNoBeam: h.sampleCell({ x: 3, y: 3 }, Math.round(c * 0.40), 0) };
+  });
+  {
+    const eq = (a, b) => a.length === 3 && a.every((v, i) => v === b[i]);
+    check(eq(tops.arch, tops.wall) && eq(tops.window, tops.solid) && eq(tops.arch, tops.solid) &&
+      eq(tops.arch, tops.floor) && eq(tops.archUp, tops.wall),
+      `FLAT top colour is byte-identical for arch ${tops.arch}, window ${tops.window}, solid ${tops.solid}, ` +
+      `plain wall ${tops.wall} and bare floor ${tops.floor} (sampled ${tops.off} px off centre)`);
+    // DESIGN.md 13.3, "the beam is its own tell": a level-0 beam must be SEEN crossing the arch's cell in FLAT.
+    // Before this change the column top hid it and the run looked like it stopped dead at the wall.
+    const bright = Math.max(...tops.beamOverArch), dim = Math.max(...tops.sameSpotNoBeam);
+    check(bright > dim + 60 && eq(tops.sameSpotNoBeam, tops.floor),
+      `FLAT: the beam is drawn CROSSING the arch's cell ${JSON.stringify(tops.beamOverArch)} while the identical ` +
+      `spot on the solid column beside it stays floor ${JSON.stringify(tops.sameSpotNoBeam)} - passing under an ` +
+      `overhang reads as "wait, what?", never as "the beam stopped"`);
+  }
+
+  // (2) THE LIGHT LEAK (13.3): present, faint, cyan, additive, and gone by the time the board is tilted.
+  const leak = await page.evaluate(async () => {
+    const h = window.__h, r = h.render;
+    h.load('arch'); h.fit();
+    await r.setCameraPreset('flat', { animate: false }); h.settle(900);
+    const flat = h.leak(), L = h.theme.terrain.lightLeak;
+    // the leak's own pixel, dead centre of the opened cell, against the identical spot on the solid column
+    const lit = h.sampleCell({ x: 2, y: 8 }, 0, 0), dark = h.sampleCell({ x: 4, y: 8 }, 0, 0);
+    const solidNone = (h.load('archSolid'), h.fit(), h.settle(300), h.leak());
+    h.load('arch'); h.fit(); await r.setCameraPreset('flat', { animate: false }); h.settle(900);
+    await r.setCameraPreset('tilt', { animate: false }); h.settle(900);
+    const tilt = h.leak();
+    return { flat, tilt, solidNone, lit, dark, L, cellPx: r.getCellPx() };
+  });
+  check(leak.flat.mesh && leak.flat.quads === 3 && leak.solidNone.mesh === false,
+    `one merged light-leak mesh carries exactly ${leak.flat.quads} quads (one per opened column) and a board with ` +
+    `no openings builds none`);
+  check(leak.flat.color === '#45E7FF' && leak.flat.additive && leak.flat.renderOrder === leak.L.renderOrder,
+    `the leak is theme.terrain.lightLeak: colour ${leak.flat.color}, additive ${leak.flat.additive}, ` +
+    `renderOrder ${leak.flat.renderOrder}`);
+  check(Math.abs(leak.flat.opacity - leak.L.opacity) < 1e-9 && leak.flat.visible,
+    `visible in FLAT at opacity ${leak.flat.opacity}`);
+  check(leak.tilt.opacity === 0 && !leak.tilt.visible,
+    `retired at full tilt (opacity ${leak.tilt.opacity}), so tilting is not rewarded with two tells at once`);
+  {
+    // Findable at the phone floor: the leak must lift the cell centre clear of the floor colour, without turning it
+    // into a beacon. Measured against the identical pixel on the solid column of the same height.
+    const d = [0, 1, 2].map((i) => leak.lit[i] - leak.dark[i]);
+    const peak = Math.max(...d);
+    check(JSON.stringify(leak.dark) !== JSON.stringify(leak.lit) && peak >= 24 && peak <= 150,
+      `at the ${leak.cellPx.toFixed(1)} px phone cell the leak lifts the cell centre from ${JSON.stringify(leak.dark)} ` +
+      `to ${JSON.stringify(leak.lit)} (+${JSON.stringify(d)}): findable when you look, quiet when you do not`);
+    check(d[2] >= d[0] && d[1] >= d[0],
+      `the lift is cyan, not white: red +${d[0]} is the smallest channel (green +${d[1]}, blue +${d[2]})`);
+  }
+
+  // (3) THE SILHOUETTE IS UNCHANGED: the camera auto-fit reads render-terrain's fitPoints, which must not see the
+  // hole - the column's outer extent is the same.
+  const sil = await page.evaluate(async () => {
+    const h = window.__h, r = h.render, out = {};
+    for (const which of ['arch', 'archSolid']) {
+      out[which] = {};
+      for (const v of ['flat', 'tilt']) {
+        h.load(which); h.fit();
+        await r.setCameraPreset(v, { animate: false }); await r.fitToBoard({ animate: false }); h.settle(900);
+        out[which][v] = h.silhouette();
+      }
+    }
+    return out;
+  });
+  for (const v of ['flat', 'tilt']) {
+    check(JSON.stringify(sil.arch[v]) === JSON.stringify(sil.archSolid[v]),
+      `${v}: the camera fit is identical with and without openings ${JSON.stringify(sil.arch[v])}`);
+  }
+
+  // (4) THE TILTED VIEW MUST SHOW A REAL HOLE. Read the terrain geometry cell by cell: for the arch, the window
+  // and a solid column of the same height, which altitude bands actually carry wall, where the ceilings are, and
+  // where the interior floors are. A height field cannot produce any of the answers below.
+  const holes = await page.evaluate(async (cells) => {
+    const h = window.__h, r = h.render;
+    function scanCell(cx, cy) {
+      let terrain = null;
+      r._scene.traverse((o) => { if (o.name === 'terrain') terrain = o; });
+      const bands = [0, 0, 0, 0], ceil = [], floors = [], lids = [];
+      terrain.children.forEach((m) => {
+        if (!m.isMesh || m.name === 'terrainLightLeak') return;
+        const p = m.geometry.getAttribute('position'), n = m.geometry.getAttribute('normal');
+        if (!p || !n) return;
+        for (let i = 0; i < p.count; i += 3) {
+          const mx = (p.getX(i) + p.getX(i + 1) + p.getX(i + 2)) / 3;
+          const mz = (p.getZ(i) + p.getZ(i + 1) + p.getZ(i + 2)) / 3;
+          if (Math.abs(mx - cx) > 0.49 || Math.abs(mz + cy) > 0.49) continue;      // three -> game: z = -y
+          const ny = n.getY(i);
+          const y0 = Math.min(p.getY(i), p.getY(i + 1), p.getY(i + 2));
+          const y1 = Math.max(p.getY(i), p.getY(i + 1), p.getY(i + 2));
+          if (Math.abs(ny) < 0.5) { for (let k = 0; k < 4; k++) if (y0 <= k + 0.01 && y1 >= k + 0.99) bands[k]++; }
+          else if (ny < -0.5) { if (ceil.indexOf(Math.round(y0)) < 0) ceil.push(Math.round(y0)); }
+          else if (y0 > 0.01) { if (lids.indexOf(Math.round(y0)) < 0) lids.push(Math.round(y0)); }
+        }
+      });
+      return { bands: bands, ceilings: ceil.sort(), ups: lids.sort(), floors: floors };
+    }
+    h.load('arch'); h.fit(); await r.setCameraPreset('tilt', { animate: false }); h.settle(900);
+    const out = { open: {} };
+    for (const k of Object.keys(cells)) out.open[k] = scanCell(cells[k][0], cells[k][1]);
+    h.load('archSolid'); h.fit(); h.settle(300);
+    out.solid = {};
+    for (const k of Object.keys(cells)) out.solid[k] = scanCell(cells[k][0], cells[k][1]);
+    return out;
+  }, { arch: [3, 4], window: [8, 5], solid: [10, 5], wall: [3, 3] });
+  check(holes.open.arch.bands[0] === 0 && holes.open.arch.bands[1] > 0 && holes.open.arch.bands[2] > 0,
+    `TILT ARCH (3,4): NO wall in the level-0 band (${holes.open.arch.bands[0]} triangles) but wall at 1 and 2 ` +
+    `(${holes.open.arch.bands[1]}/${holes.open.arch.bands[2]}) - a beam on the floor runs straight under it`);
+  check(JSON.stringify(holes.open.arch.ceilings) === '[1]',
+    `TILT ARCH: the opening has a real ceiling face at height 1 ${JSON.stringify(holes.open.arch.ceilings)}`);
+  check(holes.open.window.bands[0] > 0 && holes.open.window.bands[1] === 0 && holes.open.window.bands[2] > 0,
+    `TILT WINDOW (8,5): wall at level 0 and 2 (${holes.open.window.bands[0]}/${holes.open.window.bands[2]}), ` +
+    `nothing at 1 (${holes.open.window.bands[1]}) - only a beam at height 1 threads it`);
+  check(JSON.stringify(holes.open.window.ceilings) === '[2]' && holes.open.window.ups.indexOf(1) >= 0,
+    `TILT WINDOW: the opening has a ceiling at 2 ${JSON.stringify(holes.open.window.ceilings)} and a lit floor at 1 ` +
+    `${JSON.stringify(holes.open.window.ups)}, so the hole reads as a recess and not as a gap in the render`);
+  check(holes.open.solid.bands.slice(0, 3).every((n) => n > 0) && holes.open.solid.ceilings.length === 0 &&
+        JSON.stringify(holes.open.solid.bands) === JSON.stringify(holes.solid.solid.bands),
+    `the SOLID column of the same height is walled at every level ${JSON.stringify(holes.open.solid.bands)} with no ` +
+    `ceilings, and is built identically whether or not the board carries openings`);
+  check(JSON.stringify(holes.solid.arch.bands) === JSON.stringify(holes.open.wall.bands) &&
+        holes.solid.arch.ceilings.length === 0 && holes.solid.window.ceilings.length === 0,
+    `with the openings stripped, the same cells build exactly like their solid neighbours ` +
+    `${JSON.stringify(holes.solid.arch.bands)} and gain no ceilings`);
+
+  // (5) PERFORMANCE: the per-voxel rebuild must not cost draw calls, and a 24x24 board with an opening in every
+  // column tall enough to take one must still hold 60 fps.
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await page.waitForTimeout(120);
+  const openPerf = await page.evaluate(async () => {
+    const h = window.__h, r = h.render, out = {};
+    for (const which of ['big24', 'big24open']) {
+      const info = h.load(which); h.fit();
+      for (const v of ['flat', 'tilt']) {
+        await h.view(v); h.settle(600); r.frame(0.016);
+        out[which + '/' + v] = { cells: info.w * info.d, objects: h.sceneObjects(), calls: r._renderer.info.render.calls,
+          triangles: r._renderer.info.render.triangles, ms: h.frameTime(60) };
+      }
+      out[which + '/openColumns'] = (function () {
+        let n = 0;
+        for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) if (h.openLevelsAt(x, y)) n++;
+        return n;
+      }());
+      const t0 = performance.now();
+      for (let i = 0; i < 5000; i++) r.pickCell(200 + (i % 300), 300 + (i % 400));
+      out[which + '/pickUs'] = (performance.now() - t0) * 1000 / 5000;
+    }
+    return out;
+  });
+  console.log(`   ${openPerf['big24open/openColumns']} of 576 columns on the 24x24 stress board carry an opening`);
+  for (const v of ['flat', 'tilt']) {
+    const a = openPerf['big24/' + v], b = openPerf['big24open/' + v];
+    console.log(`   big24 ${v.padEnd(4)}  solid ${String(a.calls).padStart(3)} calls ${String(a.triangles).padStart(6)} tris ${a.ms.toFixed(2)} ms   ->   openings ${String(b.calls).padStart(3)} calls ${String(b.triangles).padStart(6)} tris ${b.ms.toFixed(2)} ms`);
+    check(b.calls <= a.calls + 1 && b.calls < 600,
+      `24x24 with openings ${v}: ${b.calls} draw calls vs ${a.calls} solid (the leak adds at most one merged mesh), still < 600`);
+    check(b.ms < 16.7,
+      `24x24 with openings ${v}: ${b.ms.toFixed(2)} ms/frame < 16.7 ms (solid board ${a.ms.toFixed(2)} ms)`);
+  }
+  check(openPerf['big24open/pickUs'] < 40,
+    `picking is untouched by openings: ${openPerf['big24open/pickUs'].toFixed(1)} us per pickCell ` +
+    `(solid board ${openPerf['big24/pickUs'].toFixed(1)} us)`);
+
+  // (6) the eyeball shots, at the phone size the leak has to survive
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.waitForTimeout(150);
+  await page.evaluate(async () => { const h = window.__h; h.load('arch'); h.fit(); await h.view('flat'); h.settle(900); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(shots, 'arch-flat-iphone.png') });
+  await page.evaluate(async () => { const h = window.__h; await h.view('tilt'); h.settle(900); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(shots, 'arch-tilt-iphone.png') });
+  await page.evaluate(async () => { const h = window.__h; h.load('archSolid'); h.fit(); await h.view('flat'); h.settle(900); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(shots, 'arch-flat-solid-control-iphone.png') });
+  await page.setViewportSize({ width: 900, height: 900 });
+  await page.waitForTimeout(150);
+  await page.evaluate(async () => { const h = window.__h; h.load('arch'); h.fit(); await h.view('tilt'); h.settle(900); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(shots, 'arch-tilt-desktop.png') });
+  await page.evaluate(async () => { const h = window.__h; await h.view('flat'); h.settle(900); });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(shots, 'arch-flat-desktop.png') });
 
   // ---- screenshots of a 20x20 board on a phone ----
   await page.setViewportSize({ width: 393, height: 852 });

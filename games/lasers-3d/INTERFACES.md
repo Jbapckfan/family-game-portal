@@ -5,9 +5,10 @@ Shipped files (all under `games/lasers-3d/`):
 - `src/pieces.js` — piece registry + turn tables (UMD: `window.LaserPieces` / `module.exports`)
 - `src/sim.js` — stepper + public API (UMD: `window.LaserSim` / `module.exports`; loads `pieces.js` itself)
 - `test/sim.test.mjs` — `node:test` suite, one or more per bullet of spec 3.2, 3.3, 3.4 and the corrected pitch rule of spec 12 (every cell of its table, all three clamp cases, and the owner's WEDGE-then-MIRROR scenario), plus the `events` stream and the derived step cap
-- `test/review-robustness.test.mjs`, `test/review-spec-conformance.test.mjs` — adversarial review suites (malformed levels, illegal placements, determinism, loop guard, derived cap, UMD wrapper)
+- `test/review-robustness.test.mjs`, `test/review-spec-conformance.test.mjs` — adversarial review suites (malformed levels, illegal placements, determinism, loop guard, derived cap, UMD wrapper, and the whole `openings` truth table of DESIGN.md 13.2)
+- `test/fixtures/pre-openings-traces.json` — 261 traces over 26 self-contained levels, captured from the engine as it stood BEFORE section 13. `test/sim.test.mjs` replays every one and compares a sha256 of the full result, which is the proof that a level with no `openings` behaves exactly as it did.
 
-Implements DESIGN.md section 3 **as corrected by section 12** (pitch is a DELTA, not a set). Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
+Implements DESIGN.md section 3 **as corrected by section 12** (pitch is a DELTA, not a set) **and extended by section 13** (arches and windows: an optional `openings` array punches levels out of a column). Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
 
 ### PITCH IS A DELTA (DESIGN.md 12, supersedes the pitch column of 3.3)
 
@@ -25,6 +26,40 @@ level a climbing beam.** The only way to level a climber is a DIP, and the only 
 descender is a WEDGE. The bold cells are the clamp of spec 12.2 - the one deliberate approximation,
 which keeps every beam segment at 45 degrees or level. A level beam behaves exactly as it did
 before, so the pure-2D levels are unaffected.
+
+### ARCHES AND WINDOWS (DESIGN.md 13, extends 3.1 and 3.2)
+
+`terrain` is a HEIGHT FIELD: a column is solid at every level below `t`, so neither an overhang nor a
+hole through a wall can exist. A level may now carry an **`openings`** array naming levels punched
+OUT of specific columns:
+
+```js
+openings: [ { x: 4, y: 9, levels: [0] } ]   // this column is NOT solid at these levels
+```
+
+The whole rule change is one clause of the blocked test:
+
+> the next cell is BLOCKED when `z' < t[next]` **AND** `z'` is not one of that column's open levels.
+
+| shape | data | behaviour |
+|---|---|---|
+| **ARCH** | `t = 3`, `levels: [0]` | solid at 1 and 2. A floor beam passes UNDER it; a beam at 1 or 2 is blocked; a beam at 3 flies over as before. |
+| **WINDOW** | `t = 3`, `levels: [1]` | solid at 0 and 2. Only a beam at level 1 threads it. |
+
+Both are pixel-identical to an ordinary solid column seen from directly above, because the top
+surface is unchanged - that is the point, and the fair tell is the light leak of DESIGN.md 13.3.
+
+`parseLevel` normalises `openings` into **`openMask[y][x]`**, a per-column bitmask (bit `z` set =
+level `z` is open), so the stepper's test is one shift and one AND. A level with **no** `openings`
+gets an all-zero mask, the added clause is never true, and the engine behaves EXACTLY as it did
+before - proved byte-for-byte by `test/sim.test.mjs` against `test/fixtures/pre-openings-traces.json`,
+a 261-trace corpus captured from the pre-openings engine.
+
+Nothing else moves. Pitch is still the DELTA above; a piece still sits on the column TOP at `t` and
+acts only at that level; targets and the emitter are unchanged; and **nothing may be placed inside an
+opening** - which needs no new rule, because a piece only ever exists at `t` and every open level is
+strictly below it. The one additive result field is `underpasses` (section 2), because a beam can now
+miss a piece by going UNDER it as well as over it, and those are different events on screen.
 
 ---
 
@@ -81,7 +116,11 @@ LaserSim.TURN            // turn tables: TURN['/'] and TURN['\\'], each { E, N, 
 LaserSim.stepCap(level)  // -> the DERIVED loop-guard cap for that level (see 2.1). Validates like parseLevel.  [added]
 
 LaserSim.parseLevel(level) -> normalized level (see section 3). Throws Error('lasers-3d level: ...') on a malformed level.
-LaserSim.canPlace(level, placed, x, y) -> boolean (rule 3.4)
+LaserSim.canPlace(level, placed, x, y) -> boolean (rule 3.4). UNCHANGED by openings: placement is per CELL and a
+                         piece always sits on the column TOP, so an opening never makes a column placeable at
+                         another level, and never makes an opened column unplaceable.
+LaserSim.isOpen(level, x, y, z) -> boolean  // is level z of column (x,y) punched out? (DESIGN.md 13.1)  [added]
+                         false for an off-grid cell or a z outside 0..3. Accepts a raw or parsed level.
 LaserSim.trace(level, placed) -> {
     segments: [{ from:{x,y,z}, to:{x,y,z}, d:'E'|'N'|'W'|'S', v:-1|0|1 }],  // one per cell-to-cell step; z is the LEVEL (integer).
                                                                             // A terminal stub (blocked / lost-floor / lost-sky) ends at the
@@ -95,7 +134,12 @@ LaserSim.trace(level, placed) -> {
     endPoint: {x,y,z},             // where the visual beam stops (= last segment's `to`)
     altitudeMarks: [{x,y,z}],      // one per pitch CHANGE (at the piece's cell, at the beam's level there) plus the endPoint, in order
     pieceHits: [{x,y,type,orient,fixed:boolean}],   // pieces that acted, in order (a piece can appear more than once)
-    overflights: [{x,y}],          // cells whose piece the beam passed OVER (beam level above the piece's terrain level), in order
+    overflights: [{x,y}],          // cells whose piece the beam passed OVER (beam level ABOVE the piece's terrain level), in order
+    underpasses: [{x,y}],          // cells whose piece the beam passed UNDER (beam BELOW it, inside an opening), in order.  [added]
+                                   // Only reachable on a level with `openings`; ALWAYS [] otherwise, which is what keeps
+                                   // pre-section-13 levels byte-identical. Kept separate from `overflights` on purpose:
+                                   // a consumer that merged them would put the reveal camera and the readout on the
+                                   // wrong side of the block.
     events: [{kind, step, x, y, z, ...}]            // ordered, step-indexed event stream - see 2.2. PREFER THIS.  [added]
 }
 ```
@@ -160,10 +204,12 @@ event at that step.
 | `target` | an orb was NEWLY lit (entered at `z == t[cell]`) | `targetIndex` | one per `hits` entry |
 | `piece`  | a piece acted (`z == t[cell]`) | `type`, `orient`, `fixed`, `dIn`, `dOut`, `vIn`, `vOut` | one per `pieceHits` entry |
 | `overflight` | the beam passed OVER a piece (`z > t[cell]`) | `type`, `orient`, `fixed` | one per `overflights` entry |
+| `underpass` | the beam passed UNDER a piece (`z < t[cell]`, i.e. through an opening) | `type`, `orient`, `fixed` | one per `underpasses` entry |
 | `pitch` | a piece CHANGED the pitch | `from`, `to` (the old and new `v`) | the piece-cell `altitudeMarks` |
 | `end` | terminal, always last, exactly one | `end` - the same value as the result's `end` | the final `altitudeMarks` entry |
 
-Order within one `step`: `enter`, then `target` (if it lights), then `piece` or `overflight`, then
+Order within one `step`: `enter`, then `target` (if it lights), then `piece` / `overflight` /
+`underpass` (exactly one of the three, when the cell holds a piece), then
 `pitch` (if the piece changed the pitch). A trace that stops on a target emits no `piece` event for
 that cell, because the beam stops before the piece can act.
 
@@ -174,7 +220,8 @@ Notes:
   fly-over; detect one as an `enter` at `(x, y)` with no `target` event at the same `step`.
 - Reconstructions that must stay in sync:
   `events.filter(kind==='enter')` -> `visited`, `filter(kind==='piece')` -> `pieceHits`,
-  `filter(kind==='overflight')` -> `overflights`, `filter(kind==='target').map(targetIndex)` -> `hits`,
+  `filter(kind==='overflight')` -> `overflights`, `filter(kind==='underpass')` -> `underpasses`,
+  `filter(kind==='target').map(targetIndex)` -> `hits`,
   `filter(kind==='pitch'||kind==='end')` cells -> `altitudeMarks`.
 
 **Worked example.** Emitter on a `t=1` ridge at (0,3); the orb at (3,3) sits on `t=0`, so the
@@ -253,6 +300,9 @@ registry entry.
   par: 1,                          // minimum pieces, proven by the solver (>= 0; default 0 if absent)
   size: { w: 7, d: 7 },            // w cells east-west (x), d cells north-south (y)
   terrain: ['0000000', ...],       // d strings of w chars '0'..'3'; terrain[y][x]; y = 0 is the SOUTH row
+  openings: [{ x: 4, y: 2, levels: [0] }],  // OPTIONAL (DESIGN.md 13.1). Levels punched OUT of a column: each an
+                                   // integer 0..3 STRICTLY BELOW that column's terrain height. One entry per
+                                   // column (list all its levels together). Absent, null and [] all mean "none".
   emitter: { x: 0, y: 3, dir: 'E' },   // dir in 'E','N','W','S'; emits pitch 0 at level terrain[y][x]
   targets: [{ x: 5, y: 1 }],       // >= 1; orb sits at level terrain[y][x]
   fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }],  // pre-placed, immovable; secret = drawn as a plain mirror in the flat view
@@ -267,8 +317,16 @@ registry entry.
 ```js
 { parsed: true, name, par, size:{w,d}, terrain: string[d] /* ALWAYS canonical '0'..'3' strings */,
   t: number[d][w] /* t[y][x] */,
+  openings: [{x, y, levels:number[] /* ASCENDING, deduped */}],   // canonical copy; [] when the level had none
+  openMask: number[d][w],                                        // openMask[y][x], bit z set = level z is open
   emitter:{x,y,dir}, targets:[{x,y}], fixed:[{x,y,type,orient,secret:boolean}], tray:[...], intro:'' }
 ```
+
+`openings` is the readable form (a renderer wants it to draw the hole); `openMask` is the fast form
+(the stepper wants `(openMask[y][x] >> z) & 1`). They always agree, they are fresh copies - the input
+level is never mutated or aliased - and `openMask` is a full `d x w` grid of zeros on a level with no
+openings, so a consumer can index it unconditionally. `LaserSim.isOpen(level, x, y, z)` wraps the
+bit test for callers that would rather not shift.
 
 `terrain` on the returned object is always an array of `d` strings of `w` chars, even when the input
 gave a row as an array of digits, so a renderer may index `terrain[y][x]` as a char without checking.
@@ -283,6 +341,16 @@ trace-many pattern is unchanged.
 
 Validation (each throws a descriptive `Error` whose message names the field): size is positive integers; exactly `d` terrain rows; a **string** row must be exactly `w` chars in `0..3`; an **array** row must have exactly `w` elements, each an integer `0..3` (checked element by element - `[10, 0]` is NOT three cells); emitter on-grid with a valid dir; at least one target, all on-grid, none on the emitter, no duplicates; fixed pieces on-grid, known type and orient, not on the emitter, a target, or another fixed piece; tray entries are known types; `tray.length >= par`; `par` a non-negative integer.
 
+`openings` validation (DESIGN.md 13.1), each throwing a descriptive `Error` naming the field:
+`openings` is an array if present; each entry is an object naming an **on-grid integer** column
+(`openings[i] must name an on-grid column`); no column appears twice
+(`openings[i] duplicates the column (x,y) of an earlier entry`); `levels` is a **non-empty** array
+(`openings[i] levels must be a non-empty array of integers 0..3`); each level is an **integer 0..3**
+(`openings[i] levels[j] must be an integer 0..3`); each level is **strictly below** that column's
+height (`openings[i] levels[j] is Z, which is not strictly below the height t=T of column (x,y)`) -
+so a floor column can carry no opening at all; and no level is repeated within an entry
+(`openings[i] repeats level Z`).
+
 ---
 
 ## 4. Rules as implemented (spec 3.2–3.4, with the resolved ambiguities)
@@ -290,17 +358,20 @@ Validation (each throws a descriptive `Error` whose message names the field): si
 Step from state `(x,y,z,d,v)`: next cell `(x+dx, y+dy)`, arrival level `z' = z+v`. Checks in this order:
 1. off-grid -> `lost-edge` (checked FIRST, so a beam leaving the grid while climbing from z=3 reports `lost-edge` with endPoint z=4, not `lost-sky`);
 2. `z' < 0` -> `lost-floor`; `z' > 3` -> `lost-sky`;
-3. `t[next] > z'` -> `blocked` at the wall face;
+3. `t[next] > z'` **and level `z'` of that column is not open** -> `blocked` at the wall face. This is the
+   entire rule change of DESIGN.md 13.2; `openMask` is all zeros without `openings`, so it reduces to
+   the old `t[next] > z'`. A beam at an open level enters the cell normally - it is inside the column,
+   and the terminal-stub geometry, `visited`, `segments` and everything else are unchanged;
 4. **the emitter's own cell at its terrain level -> `blocked`** (the emitter body is a one-level-tall obstacle; the beam may fly over it) — *resolved ambiguity, spec is silent*;
 5. otherwise enter. Then, in this order in the entered cell: target check, piece check, loop check.
 
 Target: lit when entered at `z' == t[cell]` (from any direction, any pitch). Above the orb the beam flies over it and it is NOT lit. **A lit orb passes the beam through unchanged; the beam stops (`end:'target'`) only when the LAST unlit target is lit** — *resolved ambiguity*: the spec says both "the beam stops at the target" and "multi-target levels require all targets lit" with no splitter in v1; pass-through is the only reading under which a two-target level (spec 3.7, level 12) is solvable. Single-target levels behave exactly as "the beam stops at the target".
 
-Piece: acts only when `z' == t[cell]`; sets `d = TURN[orient][d]` and `v = clamp(v + piece.dPitch)` with the clamp to -1..+1 (MIRROR dPitch 0, WEDGE +1, DIP -1) - a DELTA on the incoming pitch, spec 12. Above its level the beam passes over (`overflights`), keeping `d` and `v`. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
+Piece: acts only when `z' == t[cell]`; sets `d = TURN[orient][d]` and `v = clamp(v + piece.dPitch)` with the clamp to -1..+1 (MIRROR dPitch 0, WEDGE +1, DIP -1) - a DELTA on the incoming pitch, spec 12. Above its level the beam passes over (`overflights`), keeping `d` and `v`; **below** it - only possible through an opening - the beam passes under (`underpasses`), also keeping `d` and `v`. Over and under are reported separately and never merged. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
 
 Loop guard: the start state is seeded; after each entered cell (post-piece) the state `(x,y,z,d,v)` is checked; a repeat -> `end:'loop'` with endPoint at that cell center. This state guard is what guarantees termination. There is also a step cap, but it is DERIVED per level (`LaserSim.stepCap`, section 2.1) so that it strictly exceeds the number of distinct states and can never fire first - `end:'loop'` therefore always means a genuine repeated state. `MAX_STEPS` (400) is only the cap's floor for tiny boards; it is NOT the cap in force on a 12x12..24x24 board, where a legal route may run to hundreds of steps. Note: in pure 2D, mirror dynamics are reversible so cycles cannot be entered; in 3D they can, because a beam can leave a cell at a different height than it entered the board at and because the pitch CLAMP is not injective - a WEDGE maps both `v=0` and `v=+1` to `+1`, so two different histories can merge into one state (see the loop test for a constructed example).
 
-canPlace: false off-grid, on the emitter, on any target, on a fixed piece, on a placed piece; true on any other cell, including raised terrain (`t` 1..3) — the piece then sits at that level and only a beam at that level meets it.
+canPlace: false off-grid, on the emitter, on any target, on a fixed piece, on a placed piece; true on any other cell, including raised terrain (`t` 1..3) — the piece then sits at that level and only a beam at that level meets it. Openings do NOT change this: an opened column is placeable exactly like any other cell (the piece goes on its TOP), and because every open level is strictly below `t`, nothing can ever be placed inside an opening.
 
 altitudeMarks: a mark at every pitch change (`{x,y,z}` of the piece cell at the beam's level there) plus the endPoint. A MIRROR never changes the pitch, so a MIRROR NEVER gets a mark. A WEDGE hit by an already-climbing beam and a DIP hit by an already-descending beam are clamped to no change, so they get no mark either; a DIP that levels a climber, and a WEDGE that levels a descender, do.
 
@@ -585,10 +656,53 @@ placed = [{"x":3,"y":4,"type":"DIP","orient":"/"}]
 }
 ```
 
+### Example D — ARCHWAY (an opening, DESIGN.md 13). The `t=3` tower at (3,2) is open at level 0, so the floor beam crosses a cell that looks solid from directly above. Raise the emitter one level and the identical board blocks it.
+
+```json
+{
+  "name": "ARCHWAY",
+  "par": 1,
+  "size": { "w": 7, "d": 7 },
+  "terrain": ["0000000", "0000000", "0003000", "0000000", "0000000", "0000000", "0000000"],
+  "openings": [{ "x": 3, "y": 2, "levels": [0] }],
+  "emitter": { "x": 0, "y": 2, "dir": "E" },
+  "targets": [{ "x": 5, "y": 5 }],
+  "fixed": [],
+  "tray": ["MIRROR"]
+}
+```
+
+`parseLevel` turns that into `openMask[2] = [0,0,0,1,0,0,0]` (bit 0 set on column x=3) and leaves
+`t[2][3] = 3` and `terrain[2] = "0003000"` untouched — the top surface, which is all the FLAT camera
+can see, is identical to any other tower.
+
+```
+placed = [{"x":5,"y":2,"type":"MIRROR","orient":"/"}]
+
+segments:  (0,2,0)->(1,2,0)->(2,2,0)->(3,2,0)->(4,2,0)->(5,2,0) then N to (5,3,0),(5,4,0),(5,5,0)
+visited:   every step at z 0, v 0; (3,2) is entered at z=0 INSIDE the t=3 column
+end:       "target"        endPoint: {"x":5,"y":5,"z":0}      hits: [0]
+pieceHits: [{"x":5,"y":2,"type":"MIRROR","orient":"/","fixed":false}]
+overflights: []            underpasses: []      altitudeMarks: [{"x":5,"y":5,"z":0}]
+```
+
+Change `terrain[2]` to `"1003000"` so the emitter sits on a ridge and fires at level 1, and the same
+board stops the beam dead: level 1 of that column is solid.
+
+```
+end: "blocked"    endPoint: {"x":2.5,"y":2,"z":1}
+```
+
+That pair is the whole of section 13: same terrain, same tower, different beam height, opposite
+answer. Put a MIRROR on the arch's own cell and it is neither hit nor flown over — it is passed
+UNDER, `underpasses: [{"x":3,"y":2}]` with a matching `underpass` event, and the beam carries on
+unchanged.
+
 ---
 
 ## 6. Notes for downstream engineers
 
+- **Openings (DESIGN.md 13)**: draw terrain per solid VOXEL, not as one column box, so a hole is a real hole - `LaserSim.isOpen(level, x, y, z)` (or `openMask[y][x]`) says which voxels exist. In FLAT the top surface is unchanged and the only difference is the light leak of 13.3. `underpasses` / the `underpass` event is the beam going UNDER a piece; `overflights` is still only OVER one. A blocked shot's readout should name the height the beam was travelling at, which is `endPoint.z` on the terminal stub (the level the beam was LEAVING; add the last segment's `v` for the level it would have arrived at).
 - **Renderer / audio**: drive lighting, badges and sounds from `events` (section 2.2), not from matching `visited`/`hits` cells on `x, y`. A beam can enter one `(x, y)` at several heights; only an `events` `target` entry means the orb actually lit, and each event's `step` indexes the segment it belongs to, so animation timing follows cumulative arc length. Beam height in world units is `z + 0.5`; a segment with `v != 0` is a 45-degree diagonal from `from.z+0.5` to `to.z+0.5`. Terminal stubs keep `from.z` in `to.z`; slope them by `v` if you want the physically exact end (floor at height 0, sky at height 4 are reached exactly at the boundary). `endPoint` is where the altitude badge and the "lost/blocked" spark go.
 - **Solver**: to test whether a trace ended on the safety-net cap rather than a real cycle, compare `segments.length` with `LaserSim.stepCap(level)`, never with `MAX_STEPS` (which is only the cap's floor and is far below the cap on a 12x12+ board). `visited` is the pruning set — a new piece can only change the beam if placed on a visited `(x,y)` whose `t[y][x] == z` at that visit (and `canPlace` is true). Parse once, then pass the parsed level to `trace`.
 - **UI**: `hits.length` vs `targets.length` for the HUD; `end` for the status line; `pieceHits[].fixed === true && level.fixed[i].secret` is the reveal moment.

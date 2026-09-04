@@ -264,6 +264,9 @@
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
       setViewMode: rig.setViewMode, getViewMode: rig.getViewMode, hasOverview: rig.hasOverview,
       pickCell: pickCell, projectCell: projectCell, cellToScreen: function (cell) { return projectCell(cell, 0); },
+      /* DESIGN.md 13: bitmask of the levels punched out of a column (0 = an ordinary solid column). The renderer
+       * owns the adapter for the engine's normalised `openings` field, so nothing else has to guess its shape. */
+      openLevelsAt: terrain.openLevelsAt,
       setSelection: pieces.setSelection, setGhost: pieces.setGhost, setHover: pieces.setHover, setCursor: pieces.setCursor, pulseCell: pieces.pulseCell,
       resize: resize, frame: frame, isFlat: isFlat, getShadingBlend: getShadingBlend, getCamera: getCamera,
       setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,

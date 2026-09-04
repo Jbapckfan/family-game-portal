@@ -196,3 +196,48 @@ Physically, a face that adds +45 degrees to an already-climbing beam would send 
 
 ### 12.3 What this invalidates
 The pitch change is a rules change, so everything derived from the rules must be rebuilt, not patched: every level's par, stored solution and 3D-necessity verdict; the solver's search; the help text; and the level intros. No level ships without its par being re-proven under the new rule.
+
+
+## 13. Arches and windows (amended 2026-09-03, James's request; extends 3.1 and 3.2)
+
+James, having not yet played every level: "make sure some require going below an overhang, or through an open window etc."
+
+Today's terrain is a HEIGHT FIELD: `t[y][x]` and a column is solid at every level below `t`. That cannot express a gap under a block or a hole through a wall, so neither shape exists in the game. This section adds them with the smallest possible change.
+
+### 13.1 Level data
+The `terrain` rows are UNCHANGED and remain the common case. A level may additionally carry:
+
+```js
+openings: [ { x: 4, y: 9, levels: [0] } ]   // this column is NOT solid at these levels
+```
+
+- Every entry names a column and the levels punched OUT of it. Levels must be integers `0..3` and strictly below that column's `t`, or `parseLevel` throws.
+- **ARCH** = a tall column open at level 0, e.g. `t = 3, levels: [0]`. Solid at 1 and 2. A floor beam passes UNDER it; a beam at 1 or 2 is blocked; a beam at 3 or above flies over as before.
+- **WINDOW** = a tall column open at exactly one middle level, e.g. `t = 3, levels: [1]`. Solid at 0 and 2. Only a beam at level 1 threads it.
+- Both are pixel-identical to an ordinary solid column when seen from directly above, because the top surface is unchanged. That is the point.
+
+### 13.2 The stepper (this is the whole rule change)
+Rule 3.2's blocked test becomes:
+
+> the next cell is BLOCKED when `z' < t[next]` AND `z'` is not one of that column's open levels.
+
+Everything else in section 3 is untouched: pitch is still the delta of section 12, pieces still sit on the column top at `t`, targets and the emitter are unchanged, and nothing may be placed inside an opening.
+
+### 13.3 Fairness: the flat view must leak light
+An opening is invisible from above by construction, so the game MUST give a tell or the no-tilt star becomes a guessing game.
+
+- **Light leak.** A column with any opening shows a faint sliver of light on the floor at the opening's cell in the FLAT view. It marks that a column is not solid; it does NOT say at which level. Enough to prompt "there is a way through here", not enough to hand over the answer.
+- **The beam is its own tell.** A beam that passes under an arch is drawn crossing a cell that looks solid from above, which is a legitimate and delightful "wait, what?" moment, not a bug.
+- **The readout already carries the rest.** A blocked shot reports the height the beam was travelling at, so a player can reason about which level might be open without ever tilting.
+
+### 13.4 Level requirements
+- At least THREE shipped levels must be `under-arch`: every minimal solution routes the beam under an arch at level 0.
+- At least THREE must be `through-window`: every minimal solution threads an opening at a level above 0.
+- At least ONE must combine an arch or window with the climb-then-level pattern of section 12, so the player must arrive at the opening's exact height rather than stumble into it.
+- These are validator assertions, not aspirations, and they are checked against every minimal solution, not merely the shipped one.
+- Teaching order: an arch is introduced before a window, because "the beam went under it" is easier to grasp than "only one height fits". Each gets its own intro line naming the fair tell.
+
+### 13.5 Rendering
+- Terrain is drawn per solid voxel rather than as a single column box, so an opening is a real hole with visible ceiling and floor faces inside it. Geometry stays merged per material; the count rises but the board is at most 24x24x4.
+- The FLAT view is unchanged apart from the light leak of 13.3. The top surface still renders identically for solid and opened columns.
+- The TILTED view is where the hole becomes obvious, which preserves the game's existing bargain: tilting costs a star and buys the truth.

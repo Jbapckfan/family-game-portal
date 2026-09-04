@@ -1,0 +1,8541 @@
+{
+ "note": "Golden trace fixture captured from the PRE-openings engine (git-clean src/sim.js) on 2026-09-03. Self-contained: every level literal is embedded, so this stays a valid \"before\" corpus after src/levels.js is rebuilt. sha = sha256 of JSON.stringify(LaserSim.trace(level, placed)) - byte-identical results, not a summary.",
+ "engine": {
+  "H_MAX": 4,
+  "MAX_STEPS": 400
+ },
+ "traces": 261,
+ "entries": [
+  {
+   "name": "FIRST BOUNCE",
+   "level": {
+    "name": "FIRST BOUNCE",
+    "par": 1,
+    "size": {
+     "w": 12,
+     "d": 12
+    },
+    "terrain": [
+     "000000000333",
+     "000000000000",
+     "000000000000",
+     "030000000000",
+     "030300033330",
+     "030300000000",
+     "330000000000",
+     "330000000033",
+     "330000000033",
+     "000000000033",
+     "000000000033",
+     "000030000000"
+    ],
+    "emitter": {
+     "x": 11,
+     "y": 3,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 2,
+      "y": 11
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "Tap a square to put a mirror down. Tap it again to spin it. Then hit FIRE.",
+    "solution": [
+     {
+      "x": 2,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "19344257708dc69ec4353d89c1fbe4445bb0b4ad678f1db9f4d138e609bbbe47",
+     "end": "blocked",
+     "endPoint": {
+      "x": 1.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "967a22ff2d2512a48a9cf1ab1085eda03e4526b601e99ae35c689085a279c50e",
+     "end": "target",
+     "endPoint": {
+      "x": 2,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 17,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "a09ed20d6bff87e603449e3a61b7df8028566da981203f09ce61e16e0b332741",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 2,
+      "y": -1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "967a22ff2d2512a48a9cf1ab1085eda03e4526b601e99ae35c689085a279c50e",
+     "end": "target",
+     "endPoint": {
+      "x": 2,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 17,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2b3de7a6a5beba4399944e3162498cd7ed3f3ba2f015ee1679115017614308fd",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 2,
+      "y": 6.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "79924c710a2e831514a30ab32aa80b793ec7662a6ae76f69e7582dc6e3ebdc5d",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 2,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 3,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "58f725e76b01ccd5058bacdedb6d394d37a6a1db0526f19f8d286aab29d6081b",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 3,
+      "y": -1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5f94e67de4c224e89b0994f23ecd6560faa0c91dceb9d0db958262b168cf05a2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 3,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "b67aaa4ab1fcc78d4abff42324866df356068c03641e702e9a12c8330c5c891e",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 5,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "a9d28b1a3f2086e26e1f9ebd27da5bced75486fdc68948f5be6a2ad86eb9b6e9",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": -1,
+      "z": 4
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "624604ee409a8ebabe01820f7534eb88655bc4bfd5d1137567c46c4c1a42f0dc",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8,
+      "y": 2.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "967a22ff2d2512a48a9cf1ab1085eda03e4526b601e99ae35c689085a279c50e",
+     "end": "target",
+     "endPoint": {
+      "x": 2,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 17,
+     "events": 20
+    }
+   ]
+  },
+  {
+   "name": "AROUND THE CORNER",
+   "level": {
+    "name": "AROUND THE CORNER",
+    "par": 1,
+    "size": {
+     "w": 12,
+     "d": 12
+    },
+    "terrain": [
+     "000000000000",
+     "300000000000",
+     "303333000000",
+     "303333000030",
+     "303333000030",
+     "003333000030",
+     "003003000030",
+     "000003000030",
+     "000000000000",
+     "000000003000",
+     "000000003000",
+     "000000003003"
+    ],
+    "emitter": {
+     "x": 9,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 1,
+      "y": 8
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 9,
+      "y": 8,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "455d12ee4f9c3fe77894c1d0950c288740f6e6d908da4078878678a777d918cd",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 9,
+      "y": 12,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "bd349ff4156e7a95cc4e100c774d8213f20a09111cd6f53fe800d99fe59ceaf4",
+     "end": "target",
+     "endPoint": {
+      "x": 1,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 16,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "05e3b716103f4a7ee548b4d72a64347dd755bd8444c5e0ea182f48961c127f28",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 12,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "bd349ff4156e7a95cc4e100c774d8213f20a09111cd6f53fe800d99fe59ceaf4",
+     "end": "target",
+     "endPoint": {
+      "x": 1,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 16,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "3da95b0d23892e4146ab4f92cc4a8ffe2bd380964e81fc350dc52e44ba866d17",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 5.5,
+      "y": 8,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 8,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "f973d942d375fb6758f98bb58a90eebc4d931aae91b32b667d84b026aada4eb1",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "21cf20c5ceaa64c885cb081f0a0c7c86f6f8d71164198a87a5751531997b68a4",
+     "end": "blocked",
+     "endPoint": {
+      "x": 0.5,
+      "y": 1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "dc3e5268628b706e8e11ca6028ed1d09f474a01174d4995de4b947325d5d4777",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 5.5,
+      "y": 3,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "21cf20c5ceaa64c885cb081f0a0c7c86f6f8d71164198a87a5751531997b68a4",
+     "end": "blocked",
+     "endPoint": {
+      "x": 0.5,
+      "y": 1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 6,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "9e3de5f5147c1d28bf4fea7f4a138d60ebf7b2618189df15efb8802ccfea5947",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5.5,
+      "y": 4,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 1,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "c2a833b7ee0b8b6dae0c5da476dd4924a2fe9b37fd7cf81397183f1ad0812a00",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 12,
+      "y": 1,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 1,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "e1f8221d65d00f877ca4e64e9b15c8650688fdbf6972e87334dc1a919c67e34a",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 9.5,
+      "y": 1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    }
+   ]
+  },
+  {
+   "name": "DOUBLE TAKE",
+   "level": {
+    "name": "DOUBLE TAKE",
+    "par": 2,
+    "size": {
+     "w": 12,
+     "d": 12
+    },
+    "terrain": [
+     "000000000000",
+     "000000333000",
+     "003333333000",
+     "000000333000",
+     "000000000000",
+     "000000000000",
+     "000000333000",
+     "000000333000",
+     "000000333003",
+     "000000000000",
+     "000000000000",
+     "000003000000"
+    ],
+    "emitter": {
+     "x": 9,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 3,
+      "y": 11
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 9,
+      "y": 9,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 3,
+      "y": 9,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "455d12ee4f9c3fe77894c1d0950c288740f6e6d908da4078878678a777d918cd",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 9,
+      "y": 12,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 3,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "ecec0ea487decab3c8ba84f3e18134e595644f68d2af8f436144ae7f17dc5f95",
+     "end": "target",
+     "endPoint": {
+      "x": 3,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 17,
+     "events": 21
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 3,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "87acce33c406278d87180c363d9379e4a31110ff004fc16b1852767cc2295bba",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 12,
+      "y": 9,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "3d2cb49bc3dcfbbda69e11c5131aa21d72d69d88dc8ace434b438d0dc1933409",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 9,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 19,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 3,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "58a7a635db1702975fd24e5c59077d49ee6672de8b9072cabdd9b65d3df8201b",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 5.5,
+      "y": 9,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 3,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "7694ce442fbc8c02fd17e7ebe6ce6780305bcdaaf8974b7dd799bd13c9f24be6",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 9,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 2,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "be0e1f97d807280e569edf186211bd6930e9c3e03d6ac0b3619fd2abc5bc6550",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 2,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "d0ed71eb2c61988f88586a43f35c848b84d870d7e563d372a6815ba6174137f0",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 12,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 7,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "674108c35127532dee4603f73145acf765a5d18f9703aa91b59d1131e567f541",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8.5,
+      "y": 6,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "f7108022d6e2b924637dfb87190a96791eaa7ec600a518caf69082656160e27b",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "674108c35127532dee4603f73145acf765a5d18f9703aa91b59d1131e567f541",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8.5,
+      "y": 6,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 10,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "b0d701f08a77bba94de8c6ba74b954d29dbabf349e087dcc881bcfb3f53d6c0c",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 9.5,
+      "y": 10,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    }
+   ]
+  },
+  {
+   "name": "OVER THE WALL",
+   "level": {
+    "name": "OVER THE WALL",
+    "par": 2,
+    "size": {
+     "w": 14,
+     "d": 14
+    },
+    "terrain": [
+     "10110002000000",
+     "00110000000000",
+     "10111111333300",
+     "30122220333330",
+     "30000000333300",
+     "32222220000000",
+     "30000000000000",
+     "00222001122000",
+     "00222001122000",
+     "00222001000000",
+     "00222001000000",
+     "00000331000000",
+     "00000000330000",
+     "10000001200000"
+    ],
+    "emitter": {
+     "x": 7,
+     "y": 13,
+     "dir": "S"
+    },
+    "targets": [
+     {
+      "x": 0,
+      "y": 0
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "Some walls are lower than they look, and a beam can fly right over a low one. The beam gets wider and brighter the higher it climbs, and the readout after FIRE names every height. You can tilt the board to peek, but a no-tilt solve is what earns the third star.",
+    "solution": [
+     {
+      "x": 7,
+      "y": 2,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 0,
+      "y": 2,
+      "type": "MIRROR",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "982e27deb10fb164aa404bd3e4fd70ee70281b30e0e08a6d0a92a322e14163d2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7,
+      "y": 0.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "4acd0c1dbe361ad706efc82a8a9c0ccdd59d3f7245e675b4b17e7cfddfc50f5b",
+     "end": "target",
+     "endPoint": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 20,
+     "events": 24
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 0,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "595129c8ec60e372795995f7e23ff9dadb74996899a34e3e75aa1205c7c6b874",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 2,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "74db649d33f74be4e87f99042c1ee117cbc19555a19235f19fe3dc617e7aba09",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 2,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 19,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 2,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 2,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "0918b0941fa2e55d91c07749dd054fe0a0f7c773c3b16db7a56563312b1b09f9",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4.5,
+      "y": 2,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 2,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 2,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "feb95e40720c5e8c0d0f056d38ee6723ff3962e7796a3fc753dc6b41250c51c2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 6.5,
+      "y": 2,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 2,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "be5a1e6071b62a456a11ae548d374f9d330c7f5b97714506b67fb0ebbc8290ec",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 9.5,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 7,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "228c61ec89e4bdfad1b35929cc2175fcac1d4dd8f90145013728312b062f560f",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 9.5,
+      "y": 8,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "ac62dce02adf358d6f78a0953d7b4136dae2a7feabf96aac44f759ea99b47169",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 14,
+      "y": 11,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 7,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "0157ed57bccaa7a3575b65204755e8a38b0b77b88c4113c0d5c3626d4637d57e",
+     "end": "blocked",
+     "endPoint": {
+      "x": 6.5,
+      "y": 11,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "8e5238c99ee2e515f6676baa18e69c72bc0f7d925138e67e49f8e7e24779986f",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 7,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "218a4a613ce0a8d5b36b70248f371f4907eff498742fa36816b8be9ef55a7951",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 9.5,
+      "y": 7,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    }
+   ]
+  },
+  {
+   "name": "UP THE STAIRS",
+   "level": {
+    "name": "UP THE STAIRS",
+    "par": 2,
+    "size": {
+     "w": 14,
+     "d": 14
+    },
+    "terrain": [
+     "00010222000000",
+     "00010000000000",
+     "00011000000000",
+     "00010111001011",
+     "00000111000000",
+     "00000333330000",
+     "00000112000000",
+     "33300112111020",
+     "33300002000033",
+     "33300003333000",
+     "00000003333000",
+     "00000003331010",
+     "33330000000110",
+     "33330000003010"
+    ],
+    "emitter": {
+     "x": 11,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 10,
+      "y": 13
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "WEDGE",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "A WEDGE turns the beam and tilts it UP one step every square. A plain mirror turns it too, but it keeps the beam climbing - watch it grow brighter as it rises.",
+    "solution": [
+     {
+      "x": 11,
+      "y": 11,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 10,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "0774875f68564237043af6b00c7d0bf40e307dea9cbd76297fdaa1c7224ac8cd",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11,
+      "y": 11.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "793e95482c3dbba9b7b948e07415820c61476d13a2df324716d49d5afa213db5",
+     "end": "target",
+     "endPoint": {
+      "x": 10,
+      "y": 13,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 14,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "785379fca57cdde9706363ed19323a966b22f82b9719414cb3bbd9a68eefa9db",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 14,
+      "y": 11,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6091ab6e1647be20147f82ad4313b06b10a3e286b4352eb79a86385075c41344",
+     "end": "blocked",
+     "endPoint": {
+      "x": 9.5,
+      "y": 11,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "fe771ac2594beab21e99aded994e10c2082f6ab0bc98a905e3ff7b001ee001df",
+     "end": "target",
+     "endPoint": {
+      "x": 10,
+      "y": 13,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 14,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "41b46c952a413f3382a1dbca635b016573a50f94e9df55dda84ec5ee726495dc",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "881a92b330008f6d8b821b858cdbb3a732d6e9d32a37c5132f2fa7f2c7dd0bd7",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 4,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "ac8dcbba916b99390cb143b51d9a55dad85882f3d53aa30be3dc8c9a3e9435ed",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "358ac35d1f23033cd88f2547b9f013c2422506d2bd97697c4ee3d1bf451cba78",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 14,
+      "y": 5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 6,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "b9d005ffb9e6d6b5dbae5a4f6989f41130c82f4118ad9824f41282c939a4ad45",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 14,
+      "y": 6,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 3,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "b867e31a0b52deef7de52f61b28c05377f11d95d949a446faa897f0e28de87cf",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 4,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "92dc08eb4d2db724983ae0c1cd7a0c2fba4675e7252ec6db089cffd1dbb991c4",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 4,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    }
+   ]
+  },
+  {
+   "name": "BEND THEN CLIMB",
+   "level": {
+    "name": "BEND THEN CLIMB",
+    "par": 2,
+    "size": {
+     "w": 14,
+     "d": 14
+    },
+    "terrain": [
+     "03333000000000",
+     "03333000000001",
+     "03333000000000",
+     "03333000010003",
+     "02222000101133",
+     "00000003303003",
+     "00000000201002",
+     "01000000200012",
+     "01000000200022",
+     "01000000300012",
+     "01000100300012",
+     "01001110200012",
+     "00000000002212",
+     "00022222000012"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 12,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 12,
+      "y": 4
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 9,
+      "y": 12,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 9,
+      "y": 4,
+      "type": "WEDGE",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "1992a0a0d07d8c5c5378c67454cbe837e8f0f6f9f3354dfef5b5c4dcf7d3ee0e",
+     "end": "blocked",
+     "endPoint": {
+      "x": 9.5,
+      "y": 12,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "f37b487e6e599e360edaac5d52457ec230aa2da7a6759a49578d6903fd725ef6",
+     "end": "target",
+     "endPoint": {
+      "x": 12,
+      "y": 4,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 20,
+     "events": 25
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "cef5e76eea29dcf7cc75e4442c3bea363e0090658c5268d0e2ea8344f781bb65",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 9,
+      "y": 14,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6022d1faf5e196748670fa9c7e9ba0f15c12dead89eec1d1ad1cd82a4b92a674",
+     "end": "blocked",
+     "endPoint": {
+      "x": 9,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 18,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "722032b80d2e559846d6620b879b1580c6bbe0dee8180a0f52468a3161f6c28a",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 9,
+      "y": 8.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 12,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 4,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "7483caff44b68c0670c37b69a318738b57a6b7cb0e6248de58f425e90e487efc",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 9,
+      "y": 11.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 12,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 2,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "9b83e46a90e389de145f63a9e54599571327655ae4b40e4245809210a72a4dac",
+     "end": "blocked",
+     "endPoint": {
+      "x": 2,
+      "y": 4.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "e440afcf036bcfa61b2e23190186cb48734460e55f9ad6022d2b97c784c65c2d",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7,
+      "y": 5.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "ff748b487e92ac8b0f1f38c9bcf297a799c11de234f559f1d9099f35768bec75",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 12,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "7fc81fc4dabff88492063f6654678685d813bcfc5f9ce88a684879f02df86ffa",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 8,
+      "y": 14,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "cc4b50ce620e54c6be2078a2fd6f2f6312fd7bbf03660a0f0c2a8f16f7d60cb5",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 3,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "524113aabada28e128e202c54d3b4c15e44f0887b7424d234c0a1da7b560a144",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4,
+      "y": 8.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    }
+   ]
+  },
+  {
+   "name": "LEVEL OFF",
+   "level": {
+    "name": "LEVEL OFF",
+    "par": 3,
+    "size": {
+     "w": 16,
+     "d": 16
+    },
+    "terrain": [
+     "0033330000000003",
+     "0033330000000003",
+     "2233330000001000",
+     "2233330000001000",
+     "2222001222001003",
+     "2222000222031003",
+     "0000000233331013",
+     "0000000222031100",
+     "0000000000031110",
+     "0000000033030010",
+     "0000000033330010",
+     "0000000030323333",
+     "0000000013003332",
+     "0000000010033332",
+     "0000000000033332",
+     "0000000000030002"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 14,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 15,
+      "y": 1
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "WEDGE",
+     "DIP",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "A DIP turns the beam and tilts it DOWN one step. That makes it the only thing that can flatten a climbing beam: go UP with a wedge, then DIP to level off and fly straight.",
+    "solution": [
+     {
+      "x": 8,
+      "y": 14,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 8,
+      "y": 11,
+      "type": "DIP",
+      "orient": "\\"
+     },
+     {
+      "x": 15,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "58e16659d330a7f4f04a75a3bbe3b69b8505b99cb07b7feae0cf8a4077c280e9",
+     "end": "blocked",
+     "endPoint": {
+      "x": 10.5,
+      "y": 14,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 15,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "7b9b4d978d33aea94a06d4b003037d59686a0f4e25e37bab1e21dd5dcb35415e",
+     "end": "target",
+     "endPoint": {
+      "x": 15,
+      "y": 1,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 28,
+     "events": 35
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 15,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "88914932d0afe1b34c2719abeea3ae5dafc3aad6d24f78c676919f5a7859df2e",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 8,
+      "y": 16,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c67c502ee642f327180f7c141ab80cf1ad5a69bb3cad20ffaee8394dc3d95e3f",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 8,
+      "y": 10.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 15,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "b01fdd49722a9bec23c76178ba42039926155d27f1e13ae87ae157a29799c196",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 8.5,
+      "y": 11,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 15,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "3fd5db9d50f266803aba1885484df60ced38eede709b692f2dd0dc9e8079a69c",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 6,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "57614b22bfbf33fd85adc5724b68b931809243c67939d62c9771a7045de51261",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 6,
+      "y": 10.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "6c040b34cec61b4502efcb2ad64d07ba99fa033f04aa282cd019318643b8b1e9",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 3,
+      "y": 16,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "8465eda44eb8688b9e52d616d6eca3b7e51a899091e62aeec01bea6e0a5d9d97",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4,
+      "y": 10.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "de39090617f051f5c7b5d018a64b483b4a3ff196b60660f3cb6e702a284a8a1f",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": 16,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 14,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "17889c95a07726c763ec59c840221e5c51e6f953249607f7b3dc74f8703df07b",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 2,
+      "y": 16,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c969c2ec0ae53dfc9cc51ba9ed0906c8aa89d8e3778c4541e734873890b76968",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 5,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    }
+   ]
+  },
+  {
+   "name": "ON STILTS",
+   "level": {
+    "name": "ON STILTS",
+    "par": 3,
+    "size": {
+     "w": 16,
+     "d": 16
+    },
+    "terrain": [
+     "0000003000000000",
+     "0000000000000200",
+     "0000000030000000",
+     "0000000030000000",
+     "0330003030000002",
+     "0300002030333000",
+     "0311103030333000",
+     "0311103000333000",
+     "0311100000333033",
+     "0311110000000000",
+     "0300000333000003",
+     "0300023333033303",
+     "0300000333133333",
+     "0300000000000000",
+     "0302210220000123",
+     "0311111110000020"
+    ],
+    "emitter": {
+     "x": 15,
+     "y": 13,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 0
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "WEDGE",
+     "MIRROR",
+     "DIP",
+     "MIRROR"
+    ],
+    "intro": "You can stand a piece on top of a block. Only a beam at that same height will hit it, and the readout after FIRE tells you what height your beam is flying at.",
+    "solution": [
+     {
+      "x": 5,
+      "y": 13,
+      "type": "WEDGE",
+      "orient": "/"
+     },
+     {
+      "x": 5,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 6,
+      "y": 11,
+      "type": "DIP",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "7138dd5cf5526595a5447cad8befee79a62e4dbc7a5e503d512c15377e5fb004",
+     "end": "blocked",
+     "endPoint": {
+      "x": 1.5,
+      "y": 13,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "b1d504eeced7a938e13552d57f9d8a5fc0b1f477fb97972d761743d796f35079",
+     "end": "target",
+     "endPoint": {
+      "x": 6,
+      "y": 0,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 24,
+     "events": 31
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6e3bf99b2152e1fd554232793081705e58346207b1726568dc92bba9f1e516ad",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 5,
+      "y": 16,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "a45f9136e7c1aa7d08b3bd849c0bb8d3f7ad6026e7e6a7c85dd148851b3c05b9",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 5,
+      "y": 9.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2d061c805588ca796d3537839df0a13309c0f2a2cdb022d7709e69d7d60d3f0c",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 6,
+      "y": 10.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 18
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "314f74db96adf40a935981532f229340b8752aa47463fc1fedf9806a50a3f1d6",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 5,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 6,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "79116da2aea49b7fd2462b0e3ad157f82be2e488038ac352fd9718145405bf25",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "856d3e327c0b01463bacce7ea19686a27e2b014d2e17ab677109c4d3a0da3a83",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "badf18b7ee6ef968a3b4f0d6321c089eb58b75a45b53ef0395f35106af3ce93b",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 10,
+      "y": 16,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 6,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "d08b1102b921277e3815dfa0e556307e595549196df52cf9b8c6099908949885",
+     "end": "blocked",
+     "endPoint": {
+      "x": 6,
+      "y": 11.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "9a299cfe5cdd57fa9ed0976651dc098acc5b219804b6dc088f9806a173e864d7",
+     "end": "blocked",
+     "endPoint": {
+      "x": 9,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 14,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "006f1767f80b82e16a73b57bb9eb9383ba1dbe26b423433e7c7c92d92da36566",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    }
+   ]
+  },
+  {
+   "name": "SECRET RAMP",
+   "level": {
+    "name": "SECRET RAMP",
+    "par": 3,
+    "size": {
+     "w": 16,
+     "d": 16
+    },
+    "terrain": [
+     "0000003303333000",
+     "0000003300003000",
+     "1000013022220000",
+     "0003033300000000",
+     "0300011300030000",
+     "0010011203330333",
+     "0001011300020222",
+     "0000003333330330",
+     "0000000000000000",
+     "0000000000000100",
+     "0200000000003300",
+     "0222222222033300",
+     "0233333333333300",
+     "0233300000000022",
+     "0233300000000000",
+     "0200000000000000"
+    ],
+    "emitter": {
+     "x": 4,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 12,
+      "y": 10
+     }
+    ],
+    "fixed": [
+     {
+      "x": 4,
+      "y": 6,
+      "type": "WEDGE",
+      "orient": "/",
+      "secret": true
+     }
+    ],
+    "tray": [
+     "DIP",
+     "MIRROR",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "One of these mirrors is not a mirror. Fire and watch the beam: if it turns and starts climbing, you have found the hidden wedge - and only a DIP can bring it back down to level.",
+    "solution": [
+     {
+      "x": 7,
+      "y": 6,
+      "type": "DIP",
+      "orient": "\\"
+     },
+     {
+      "x": 7,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 12,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "223cf11a89551427ef7e4bfb82993f48879a4fa5cc02feeb3f9b7ea490576607",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7.5,
+      "y": 6,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 6,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "f236bf67eaf1b29aafaa77f32380be4e6b7e95085028466baf0ac3b3a2297a68",
+     "end": "target",
+     "endPoint": {
+      "x": 12,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 28,
+     "events": 36
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 6,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 7,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 1,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "b9cb804305d98a0ad5e006a93efa33498da03d1422267ded8a6688e22404e6e1",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": 16,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 19,
+     "events": 23
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 6,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "42da492618b343df563a5dc68db83a468c0b4c276b9e37d8c1e854dca5ffe19a",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": -1,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 16,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 6,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 1,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 1,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "ba0e7bf83939be60433366925115be2af0863edbbfdfab50aa001e2d4c1eed1d",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7,
+      "y": 5.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 6,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 1,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 1,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "abd4b4c175dab8f2ab7a0b6543e44b9efe5ab4e946d62787b480db0086e5455c",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 18,
+     "events": 24
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "d71d3b9148e029c5b6cb1160e03675682e67ab3c55fc2773ad6fb2b70f13c3c7",
+     "end": "blocked",
+     "endPoint": {
+      "x": 0.5,
+      "y": 2,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "c16f0f00b32fb95ecdde45c190bad59afa20a0587fdfd570a42b04f625f470a1",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "168276e4d00900fdd5836b6f7547e6dc4d800023d10c3724161286e1058177fb",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 1,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "5f20426888d0b5929373893910130f29cfac1c566cf211fd8f11c7c503abeaa3",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5.5,
+      "y": 1,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 1,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c62b874c559880c5d256233d933d7f6f7576db9db1337c3e66a88b55b9be0981",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 3.5,
+      "y": 1,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 6,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "278bc555028ddc1ea38bfc09bec87ed9c182fbd69db7be817be4ec3437303ca2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5,
+      "y": 10.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 16
+    }
+   ]
+  },
+  {
+   "name": "UP AND OVER",
+   "level": {
+    "name": "UP AND OVER",
+    "par": 3,
+    "size": {
+     "w": 18,
+     "d": 18
+    },
+    "terrain": [
+     "002200000001001111",
+     "020000300001000011",
+     "020000300001000011",
+     "020000300001300000",
+     "020000301001302200",
+     "000003310000000011",
+     "000003300001002000",
+     "000000300001002000",
+     "033330000001000003",
+     "033333300001000003",
+     "033333300000000003",
+     "000033300022222003",
+     "001333311110000003",
+     "003333311112033033",
+     "000000311333333033",
+     "000000322220000003",
+     "000000000000000003",
+     "000000000000000000"
+    ],
+    "emitter": {
+     "x": 15,
+     "y": 17,
+     "dir": "S"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 4
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 15,
+      "y": 5,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 8,
+      "y": 5,
+      "type": "WEDGE",
+      "orient": "/"
+     },
+     {
+      "x": 8,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "99ed8a462fb72f943d6d10affbdfaf6cdb147dfac502f507c90745b0eb37970b",
+     "end": "blocked",
+     "endPoint": {
+      "x": 15,
+      "y": 4.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "0996a15eb5c4f0bd55af66d543d7043335872d21bb2c1899c494e3b7e5a78d5b",
+     "end": "target",
+     "endPoint": {
+      "x": 6,
+      "y": 4,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 22,
+     "events": 28
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "4b68ff6002b254de23ac0cd20576bb251d76ea634650841f0d0a6d23d78a00ba",
+     "end": "blocked",
+     "endPoint": {
+      "x": 15.5,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "169e51467cfa313e5d85b3958c6103d234bda85dae77d4bc4b2c0ade0c1aaa40",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 20,
+     "events": 21
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "fe6c11ba3d1ab5f8883f55d86e1420ce0abe93c1a5b4bb2b4d118c73a2b51c18",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 11.5,
+      "y": 5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 16,
+     "events": 18
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 4,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "979d006e184967eb675954264df1480f1895a33eff9dcee6abed5f96df67274b",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14.5,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 7,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 15,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "9113753e6d45cce7a655affc2752c6d7d29e33b6214f1282e00dd473d1af4679",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14.5,
+      "y": 7,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 7,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c5c4f9c0205eb77983d56793833e04dc5e98b297be717f19e468683d7eec605b",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 18,
+      "y": 7,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 15,
+       "y": 7,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "0f443b41caa57f5832369109daa82d7669bb1187629cf3d1784f6c44f5bbbf2e",
+     "end": "blocked",
+     "endPoint": {
+      "x": 14.5,
+      "y": 13,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 15,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "b7444647df1e447399b6ec309896bce481b091e153b276478be83e114fbd4b95",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14.5,
+      "y": 12,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "1e0931379957086407d4a83827040a98ad8cc60162d71f91292ecf28c8a08f03",
+     "end": "blocked",
+     "endPoint": {
+      "x": 16.5,
+      "y": 8,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 14,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "8bfc5c6ee88268ffc45f418e3f36f86b14d96298312f858770972d0e10ee48ca",
+     "end": "blocked",
+     "endPoint": {
+      "x": 14.5,
+      "y": 14,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    }
+   ]
+  },
+  {
+   "name": "SECRET SLIDE",
+   "level": {
+    "name": "SECRET SLIDE",
+    "par": 3,
+    "size": {
+     "w": 18,
+     "d": 18
+    },
+    "terrain": [
+     "000002222222000000",
+     "000001100000030111",
+     "300001100000030000",
+     "300000000000030000",
+     "302222000003330000",
+     "000000000000032222",
+     "000000000100030000",
+     "000003000100030000",
+     "000003000111000000",
+     "033003000222000000",
+     "233113111222000000",
+     "000003000000000000",
+     "000113000111133011",
+     "000111002001112202",
+     "000113333111000001",
+     "000003333000000001",
+     "220000000022000001",
+     "222222220022000001"
+    ],
+    "emitter": {
+     "x": 17,
+     "y": 13,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 5
+     }
+    ],
+    "fixed": [
+     {
+      "x": 8,
+      "y": 13,
+      "type": "DIP",
+      "orient": "/",
+      "secret": true
+     }
+    ],
+    "tray": [
+     "WEDGE",
+     "MIRROR",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 8,
+      "y": 11,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 12,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 12,
+      "y": 5,
+      "type": "MIRROR",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "74afe4aadae9a5d398b89947759d635c7232295616eafb6a3e6dfb98ee6dc098",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "032e2a173e0a10acacf92ab81dcea96d75500f7d747abfe1197d25587f9928bb",
+     "end": "target",
+     "endPoint": {
+      "x": 6,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 27,
+     "events": 35
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 12,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "f5399ceab7f0a54101953b5dba2f6c34f43d42d5eb61c92591f11df6cc08a1b8",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 18
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "48c54d324db93ae3d1f0d8c85f358da9d136cfd880d396f1e2c9d37947f0806d",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 18,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 21,
+     "events": 25
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "c47b856f5093732c9376885ef7747a2756878b052c71511115b3a09943220074",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 12,
+      "y": 7.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 19,
+     "events": 25
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 12,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "c69fe931d5cf8d1df7ef03e244a9fc1da6705dab7dd059752fcd9fc902842c02",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 14,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "8eddb01e494ed3fcdb5c40b7938ffc5355db23a51a789a8c7a23916efc81e261",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14,
+      "y": 15.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 14,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "510f61a9ced552553fdf0212fbbf60432feac8d0aad9bff55d83331a580dbf7c",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 15,
+      "y": 11.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "130701bdfc60758fc97968830cfae2116a0b0710b6f6daeb2f0d88980ea1b689",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 15,
+      "y": 14.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 14,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "8eddb01e494ed3fcdb5c40b7938ffc5355db23a51a789a8c7a23916efc81e261",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 14,
+      "y": 15.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 14,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c7d26fb4263c25cc95bfd62648d90f370b134c8236828fab238aa8a165de8553",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 14,
+      "y": 14.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 14,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c7d26fb4263c25cc95bfd62648d90f370b134c8236828fab238aa8a165de8553",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 14,
+      "y": 14.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    }
+   ]
+  },
+  {
+   "name": "TWO ORBS",
+   "level": {
+    "name": "TWO ORBS",
+    "par": 3,
+    "size": {
+     "w": 18,
+     "d": 18
+    },
+    "terrain": [
+     "000000000000000000",
+     "000002200000300000",
+     "000000000003333000",
+     "000000102223333000",
+     "000020100033300000",
+     "000020101233300000",
+     "000023101133300000",
+     "000000101133300000",
+     "000300101000300000",
+     "000320001110000000",
+     "000300001111112222",
+     "300020221222202222",
+     "000222222222202222",
+     "000222000000000000",
+     "000330100111000000",
+     "000330100000033300",
+     "000000100002233320",
+     "000003110000000000"
+    ],
+    "emitter": {
+     "x": 17,
+     "y": 13,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 7,
+      "y": 17
+     },
+     {
+      "x": 5,
+      "y": 6
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "DIP",
+     "MIRROR"
+    ],
+    "intro": "Two orbs this time. One beam has to light them both - it passes straight through the first one and carries on to the second.",
+    "solution": [
+     {
+      "x": 8,
+      "y": 13,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 8,
+      "y": 17,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 5,
+      "y": 17,
+      "type": "DIP",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "f77636b92c2fd0a950bf21eedce368ae44b6d29faeec12b6417dacce648580f1",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5.5,
+      "y": 13,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 17,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 17,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "d31ebd92ac775c756afd861ee6c280236eb5f9037a6ca3c55cbe2a758dae4ff0",
+     "end": "target",
+     "endPoint": {
+      "x": 5,
+      "y": 6,
+      "z": 3
+     },
+     "hits": [
+      0,
+      1
+     ],
+     "allTargetsHit": true,
+     "segments": 27,
+     "events": 35
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 17,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 17,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "3616390e05e8eb7cb03ddad15b6a2d63a931a7a4a14620b99a50184ef41e1b2d",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "4126b56e6c84043919ed8fd296321d739d18f4e96a3d540040e10f7a264b9ae0",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 8,
+      "y": 18,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 17,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 17,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "129433a65228194fbecf48198b964fef42c7b162a76aba7775ee639515b7b4a2",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 8,
+      "y": 16.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 17,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 17,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "4585b9ec17145fbfa50e7cd7647163a20affd08a895c40be63a9f342155ba5e8",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 6,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 15,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "16b1289e44b8c1a095f13c9c41e5eee10eec55b42bbf3b745f0f0f034e718654",
+     "end": "blocked",
+     "endPoint": {
+      "x": 15,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 16,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "ce49230c65d1100b41da9a35f891a20293ae2b7d5a6ab9f2e7cf4f976d847d76",
+     "end": "blocked",
+     "endPoint": {
+      "x": 16,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 3
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 14,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "91e9e5a96eb2ae72e2532072740546d1d19307e27e85d3466ccdfd9738818951",
+     "end": "blocked",
+     "endPoint": {
+      "x": 14,
+      "y": 12.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 16,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 6,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "27de90c061ac852368522671352abe07e5472621a77a00ffde18490db0d17fa2",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 16,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 14,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "e51eb8ff4c6109f1628a7fa5b7dc289779ef67bd4fe50b58ec10285b6d4561f2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 14,
+      "y": 14.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 12,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "0efc5d8eaf989f9e93321721391bb455b14581e4a2fbb7a1f97d3fff84d53c14",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 12,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    }
+   ]
+  },
+  {
+   "name": "ZIGZAG CLIMB",
+   "level": {
+    "name": "ZIGZAG CLIMB",
+    "par": 3,
+    "size": {
+     "w": 20,
+     "d": 20
+    },
+    "terrain": [
+     "00000000003330111000",
+     "03000000003331111002",
+     "03000000000001333000",
+     "03000000001112333000",
+     "03000000001111333000",
+     "03000000000000000000",
+     "00000000000000000000",
+     "00000000111000220000",
+     "00000000111000000033",
+     "03000022222222000000",
+     "00011100000002033000",
+     "00000000200002000000",
+     "33002200200002022122",
+     "00002202112000000002",
+     "00002233200002020000",
+     "00000033200030020000",
+     "30000033200030222222",
+     "00033330200031121111",
+     "00000010003032020011",
+     "20000033333333333000"
+    ],
+    "emitter": {
+     "x": 19,
+     "y": 13,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 0,
+      "y": 0
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "DIP",
+     "WEDGE",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 7,
+      "y": 13,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 7,
+      "y": 11,
+      "type": "WEDGE",
+      "orient": "/"
+     },
+     {
+      "x": 0,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "015241e2c297172e65bc14aae744f28e51bb31a559c66c13258e8c60fb7382d4",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 13,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 20,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 7,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "73ece315e3468e6e1bb29cedbab448e698aa7353fa44b0c715cb15d04f33797e",
+     "end": "target",
+     "endPoint": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 32,
+     "events": 39
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 7,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "618b9c6570d5d6799b101f98896d90fa13e86f1bc6123dbdd95c6631df84f0a0",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7,
+      "y": 13.5,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "ff91310e202ed6c580e873c4214d3f4bf194b8ed4b75e617859ee648ac659d07",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 7,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 7,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "2909faa7ad555c2674829e352bcdd8b35cb38c7c96708a92b46e2429ebf8b356",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7,
+      "y": 11.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 7,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 0,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "a65b3b9de9f7e1ea6a5b7d58b13409405a5baa5b0efc156795c58a26df5b6e98",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 6.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 18
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2b3fa06d967c68110bf3fcc211e562a29054dc22ca38c6e3f77f778d8da7dd29",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "618b9c6570d5d6799b101f98896d90fa13e86f1bc6123dbdd95c6631df84f0a0",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7,
+      "y": 13.5,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "cb5ff33491b143e7308240dc043e7b9a584e21b48be83f001cdce44564f83387",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10,
+      "y": 15.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2b3fa06d967c68110bf3fcc211e562a29054dc22ca38c6e3f77f778d8da7dd29",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 13,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "b32f94176eb4b66824c4e867d68aa74c4221226c6ae7ae8de684bc6ccd512c4a",
+     "end": "blocked",
+     "endPoint": {
+      "x": 5,
+      "y": 12.5,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "abf1416058d13305b19f2200ed1bf6868eb38931f1492d20ff32e111adc42232",
+     "end": "blocked",
+     "endPoint": {
+      "x": 10,
+      "y": 1.5,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 21,
+     "events": 22
+    }
+   ]
+  },
+  {
+   "name": "FLY OVER",
+   "level": {
+    "name": "FLY OVER",
+    "par": 4,
+    "size": {
+     "w": 20,
+     "d": 20
+    },
+    "terrain": [
+     "00000300000000000000",
+     "00000000000000002033",
+     "00000333333011111000",
+     "11111111000033333333",
+     "01010000000003300000",
+     "01010000000000000000",
+     "01010000000022222222",
+     "00333000000000000000",
+     "00333000022000200000",
+     "00300000030000200000",
+     "00022200020000200000",
+     "00022211110033333333",
+     "00010000000000203000",
+     "00312220000000203000",
+     "00312223333333333000",
+     "20311000033330203000",
+     "00200000033330203000",
+     "00000000020000003000",
+     "00302220000000003000",
+     "00003320000000222222"
+    ],
+    "emitter": {
+     "x": 11,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 2,
+      "y": 18
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "WEDGE",
+     "MIRROR",
+     "DIP",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 11,
+      "y": 10,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 9,
+      "y": 10,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 9,
+      "y": 9,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 2,
+      "y": 9,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "ff0546f91ceeb85ff36a497c860cba3114587a61078263533f2d627b538c84fd",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11,
+      "y": 13.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 10,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "ad15f3fb6965500c6b1c2c336822bcc44f7f9a7110210b8397eda47e73ad4f0a",
+     "end": "target",
+     "endPoint": {
+      "x": 2,
+      "y": 18,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 29,
+     "events": 37
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 10,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 9,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "001d57bd293e6c2a283c3b656c8420d1d2bef42064327e53143c2d968d575740",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 14.5,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "abf73ea9e7faac13196c86cf3e5f1cfe7e52b7167cad6456c70ad22e57c06cd3",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7.5,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "0e5fd72caeaed75c1c04c101833beafa84917bca4ae46d7f033a7148ff0b9081",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 8.5,
+      "y": 9,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 18
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 10,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 10,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "1793d410a85fe643b965d4e3473dbf23e59f2d7308397527a1396250ef3bd5fc",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 10,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 7,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "e975dd23c98255e7ea3157b83b8dd6657e6bde544bde396d4c78a9cf3589047c",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "c12cb65aa62bc1cb650a8e62013faffb72616fb6f6d5b16e3ff9a44e72f35273",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11.5,
+      "y": 6,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "d04e63dec3cf18e46458654458c88fdbcfa41083a62be84d469003c8bf374278",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 9,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "8f0334653a978c98a819f17aa63aa3ec6f58881a8dade6733b3d815e8d60d115",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10.5,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 2,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 7,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "9e050f1b39c09855a2d2b94a4134c8976b6b3f53a56947c604f453e5c3d25ba6",
+     "end": "blocked",
+     "endPoint": {
+      "x": 10.5,
+      "y": 2,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "cbbbdbbc444d75bfd820d22e593c06ec77cd2ddb02c850cabb80562108a5c0bb",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 14.5,
+      "y": 9,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    }
+   ]
+  },
+  {
+   "name": "TWO TOWERS",
+   "level": {
+    "name": "TWO TOWERS",
+    "par": 4,
+    "size": {
+     "w": 20,
+     "d": 20
+    },
+    "terrain": [
+     "00000000000000222020",
+     "00000000000000222020",
+     "00001111111111222121",
+     "00000000200000011121",
+     "00011220000000000333",
+     "22222222032320003000",
+     "00000223313300000000",
+     "00000000010001110000",
+     "00000000000001110000",
+     "00000000222211100000",
+     "00000000222211100000",
+     "00020000222200000002",
+     "00000000222200002332",
+     "00000000000000002332",
+     "00000000000020002332",
+     "00220200000020011122",
+     "00220200003330011100",
+     "00010101000220011100",
+     "00010201000220011111",
+     "00000001000020000002"
+    ],
+    "emitter": {
+     "x": 4,
+     "y": 19,
+     "dir": "S"
+    },
+    "targets": [
+     {
+      "x": 7,
+      "y": 8
+     },
+     {
+      "x": 16,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "DIP",
+     "DIP",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 4,
+      "y": 8,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 9,
+      "y": 8,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 9,
+      "y": 5,
+      "type": "DIP",
+      "orient": "\\"
+     },
+     {
+      "x": 16,
+      "y": 5,
+      "type": "DIP",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "ea5dd0d07803b7a9798ed7beb6f8155c36a4a263230e8beee4053d169cbd2ffc",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4,
+      "y": 5.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 16,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6eca9df26089fbc63a172e02ced3802f8689858e101616a7c80a81c1a2a072c4",
+     "end": "target",
+     "endPoint": {
+      "x": 16,
+      "y": 3,
+      "z": 1
+     },
+     "hits": [
+      0,
+      1
+     ],
+     "allTargetsHit": true,
+     "segments": 28,
+     "events": 38
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 9,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 16,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5780eaf21215ec365a22f681e369d6ec2fbbbcca371109ebb2e14378aea98c80",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 16,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "f40de677e4e87b8bf538d5bd99ef2296c725cab8728953aee37cc707ee00b22b",
+     "end": "blocked",
+     "endPoint": {
+      "x": 12.5,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": false,
+     "segments": 20,
+     "events": 22
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 16,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "fde74eafdd762a2d36a7614c204be36a47aa5c4c69f715e4c3f210e4d9363aee",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7.5,
+      "y": 8,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 8,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 8,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 9,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 16,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "34f8a72d579867bd15e49c3d18f2ae40586cbefdd1c74998b7dcb828f1278dab",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 4.5,
+      "y": 8,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 15,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 16,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "98e7d8ffde38cb41c9b2fba0646b96d3b2a6e4387df1bd65fa0bcab4c0ddfac7",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 3.5,
+      "y": 16,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 14,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 17,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "a14c4fb844670da8e35f11592bf1da2f765584d2f8e6670647345246647aaf93",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3.5,
+      "y": 17,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 17,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6c0f1b7dd059dae2819e9699da284967e23074ad44050551f310294e2bb63001",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4.5,
+      "y": 17,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 15,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "3f87d20525320b8120f11c51d0ede23f599bc1b3494f6f4fae915ed2d4b1b744",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3.5,
+      "y": 15,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 16,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "372a5b70892ef93c3d322058de3cdc45db17b6c2605eb2206c4bc6f1d192d2ac",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3.5,
+      "y": 16,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 6,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "1b6be7028d9a886f0f545d833e2aaeada0ecba2fc702da15d738c76a61eaacad",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 6,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 18,
+     "events": 19
+    }
+   ]
+  },
+  {
+   "name": "SECRET STEPS",
+   "level": {
+    "name": "SECRET STEPS",
+    "par": 4,
+    "size": {
+     "w": 20,
+     "d": 20
+    },
+    "terrain": [
+     "00200000222200000000",
+     "00200000222200000000",
+     "00332222322210000000",
+     "00333320300000000000",
+     "00330000000000330000",
+     "00330001311111330333",
+     "00000022210000331333",
+     "00000000210000311333",
+     "00020110210000200333",
+     "00113110311000000000",
+     "00001110022200000000",
+     "00000000022211113333",
+     "00022333333333330000",
+     "00022200022200000220",
+     "00022200001000000000",
+     "00022222201000000000",
+     "00200022202000000000",
+     "00000000001000002222",
+     "00000000001000000000",
+     "00000000000000000000"
+    ],
+    "emitter": {
+     "x": 1,
+     "y": 0,
+     "dir": "N"
+    },
+    "targets": [
+     {
+      "x": 11,
+      "y": 9
+     }
+    ],
+    "fixed": [
+     {
+      "x": 1,
+      "y": 9,
+      "type": "WEDGE",
+      "orient": "/",
+      "secret": true
+     }
+    ],
+    "tray": [
+     "DIP",
+     "MIRROR",
+     "MIRROR",
+     "DIP",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 4,
+      "y": 9,
+      "type": "DIP",
+      "orient": "\\"
+     },
+     {
+      "x": 4,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 8,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 8,
+      "y": 9,
+      "type": "DIP",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "50bb9f77d3c01ee3dd56aa4de853cbf387fe9cbf5904447c07117b2a42438373",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4.5,
+      "y": 9,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "2769f8d10bce05ae5790c1a3e5dc8fa22586f8274865696699ebda6458db6a90",
+     "end": "target",
+     "endPoint": {
+      "x": 11,
+      "y": 9,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 31,
+     "events": 41
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "7b7d2837fc1a705e77a26a468ab9bfc6c6aa522b6b2548277afdaa7eae783320",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 4,
+      "y": 20,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 23,
+     "events": 27
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5de8c1379e229f51f91b1c2d69501a659a4f9d167d59707da55ea60b5f141867",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 4,
+      "y": -1,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 22,
+     "events": 26
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "3307dca9d7f551da29266e9bd6caf76b445f602f44d5e9aacb588b45fe7f07c3",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4,
+      "y": 8.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "5ffd35413179f6cdf6faa0e5add8e096e769e1dc2c379b193263656ccdb7ac4f",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4.5,
+      "y": 3,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 19,
+     "events": 25
+    },
+    {
+     "placed": [
+      {
+       "x": 1,
+       "y": 4,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 9,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "971e2d4a442e422bfb28b1d70fc57591964a7685d4aa26dda0582a24b81df6b4",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 1.5,
+      "y": 4,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "2aeb3192f7228173df4926845dd1a5f5f94c12bacda5cfcdf469897e1a5ff44b",
+     "end": "blocked",
+     "endPoint": {
+      "x": 2,
+      "y": 15.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 17,
+     "events": 21
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 9,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5de8c1379e229f51f91b1c2d69501a659a4f9d167d59707da55ea60b5f141867",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 4,
+      "y": -1,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 22,
+     "events": 26
+    },
+    {
+     "placed": [
+      {
+       "x": 1,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "6291cc1b5b10684ecaf1a338c1bdd4fecd42f3495b50f5202f4bd560c3a61c96",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": -1,
+      "y": 8,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 9,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 1,
+       "y": 2,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "78174cf499d1777088c13e4b64d8be055ad6f4f20ee03f37c7d8a017f08ea9df",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 1.5,
+      "y": 2,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 1,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "45c1760c85e4106540a493fec172b5e95e24a5c9eb5a888a34fe52959879a92c",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 0.5,
+      "y": 5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    }
+   ]
+  },
+  {
+   "name": "SKY BRIDGE",
+   "level": {
+    "name": "SKY BRIDGE",
+    "par": 4,
+    "size": {
+     "w": 22,
+     "d": 22
+    },
+    "terrain": [
+     "1000000000033000300000",
+     "1000332000033000000020",
+     "1000332000033000000020",
+     "1000332000000100200020",
+     "0000002000002000300020",
+     "0000002000002000300020",
+     "0000002000003000300000",
+     "0000000000003000300000",
+     "0000000000003033033000",
+     "0000111022223033033222",
+     "0000111000223033033000",
+     "2222000002300033333000",
+     "2222022200003000000000",
+     "2222022200003000000333",
+     "0031110000003000000000",
+     "0032222200013222111111",
+     "0032222200003222000000",
+     "0032222202003222000000",
+     "0032222200002222000000",
+     "0030000000000000000000",
+     "0030000000000000100000",
+     "0030000000222222222222"
+    ],
+    "emitter": {
+     "x": 8,
+     "y": 21,
+     "dir": "S"
+    },
+    "targets": [
+     {
+      "x": 16,
+      "y": 0
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "WEDGE",
+     "MIRROR",
+     "DIP",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 8,
+      "y": 10,
+      "type": "WEDGE",
+      "orient": "\\"
+     },
+     {
+      "x": 10,
+      "y": 10,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 10,
+      "y": 11,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 16,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "06d96768c20a249a335d228d25b3c817f52ddc96eca125acd7124c287418c6ba",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8,
+      "y": 9.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 10,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 16,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "03c4916c8e6fec3c1cae7988682d6f8c5381151c0271fd6909699a2ae5fbb42c",
+     "end": "target",
+     "endPoint": {
+      "x": 16,
+      "y": 0,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 31,
+     "events": 39
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 10,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 16,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "9dc906fdd1ca3e1c6a8b37a86abbdf78e4e757c8359d644218f7a7478c711a38",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4.5,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "c0ebd8301afa803b26b0cf5287792aacdd1f040b55d11ba4f4000b7d161a3efe",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 11.5,
+      "y": 10,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 10,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 16,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2aa87d227ddfb8731d404bbe91d01da072f00df79316a311bdbf11a06b0afa84",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 10.5,
+      "y": 11,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 19
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 10,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 10,
+       "y": 10,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 16,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "601d2ded2e8724f6b5c4e1cb91d64158985d79a64d451e9e10b99382d5f550aa",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 10,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 16,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 15,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "e0e7e8bc33056a16b901bb37e819e4134881a2e03e45e28bdcc932368d872907",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 16,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 17,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "51dd3465503a72657429c01ff6aab614e37e88267caa65e509707c623c7a8dfd",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 8.5,
+      "y": 17,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 19,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 20,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5764cf4a3b0008dd5a30988106f99b42ce33bad8c4ec607c57f0caf7a0ad0c0a",
+     "end": "blocked",
+     "endPoint": {
+      "x": 15.5,
+      "y": 20,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 10
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 14,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 17,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "0344eacb881a322c56a2af7d22e01696e511b26f3d95959d5b41831f5bd89146",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 17,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "dcc415f1c845e6d96b9d09187687203779bfb978c55565bfba8229da0e328f5f",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 7.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 17,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "3a5e3b6f32b4a8b438fbdb595fe3106a4ceafdcc571c96199799e77ff1d53e59",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7.5,
+      "y": 17,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    }
+   ]
+  },
+  {
+   "name": "HIGH ROAD LOW ROAD",
+   "level": {
+    "name": "HIGH ROAD LOW ROAD",
+    "par": 4,
+    "size": {
+     "w": 22,
+     "d": 22
+    },
+    "terrain": [
+     "0000001110000000000000",
+     "0000001110000000000020",
+     "2000011110000000000020",
+     "0000011110000022221121",
+     "0000333333333330000020",
+     "1000000010000111100020",
+     "2220000012002000000020",
+     "2220000010000000000020",
+     "0000222230000000003020",
+     "0112233020200011111121",
+     "0112220030200000220222",
+     "0132220030210000001220",
+     "0222220031102000000200",
+     "0220000000200000000200",
+     "0220000000200000000000",
+     "0020020000200002222000",
+     "0020200000000002222003",
+     "3322222222202002222000",
+     "0000000000000000000000",
+     "3022222002000000020000",
+     "3022222002000000020000",
+     "3000202000000000020000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 18,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 11,
+      "y": 13
+     },
+     {
+      "x": 18,
+      "y": 8
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "DIP",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 11,
+      "y": 18,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 11,
+      "y": 12,
+      "type": "WEDGE",
+      "orient": "/"
+     },
+     {
+      "x": 8,
+      "y": 12,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 8,
+      "y": 8,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "b0aa35abe61ec7d97076e277ccd0f069cf8967ba940bc65a39d0215375c071a1",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 22,
+      "y": 18,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 22,
+     "events": 22
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "75d7aa69a1fa35f915e247854e0e4d28e49ec243968e9a6c46b96f8f82397a60",
+     "end": "target",
+     "endPoint": {
+      "x": 18,
+      "y": 8,
+      "z": 3
+     },
+     "hits": [
+      0,
+      1
+     ],
+     "allTargetsHit": true,
+     "segments": 34,
+     "events": 43
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 8,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2b5f657ca99a93869f6cee30c95cf548d049d55802a6c144e817b31f66c2e90e",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 11,
+      "y": 22,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "b98630856e7fba494452f571d6bd749017548d615b44be3d3a5e97d07f82bd88",
+     "end": "blocked",
+     "endPoint": {
+      "x": 11,
+      "y": 11.5,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": false,
+     "segments": 18,
+     "events": 20
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 18,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 12,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 8,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "39ee13cd1370cbe9cdce8a52ad2f6954b361d72a4caf3ad57ff70b6b8d1a8f6d",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 11,
+      "y": 14.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 15,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 11,
+       "y": 18,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 11,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 12,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 8,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "593aacf9c86ae49441570bcdd20d53e956c5d410c6285e6b2a4285ce53ccb1ea",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 11,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 14
+    },
+    {
+     "placed": [
+      {
+       "x": 12,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "ea1402121c7d0867ccf38c54565aacf01345215a76a1035ce74fe92616d9142c",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 19,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "055d4c4b8f52485efcb87bd7e6c610af557d881dc9558aac9bb1b4d0a975ec7b",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 19,
+      "y": 22,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 23,
+     "events": 24
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "564ffacf9459d9b56349d05dabf0b5a94dd97e8d5cee45e4d3f98498e9f7117e",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 2,
+      "y": 18.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 3,
+     "events": 5
+    },
+    {
+     "placed": [
+      {
+       "x": 10,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 18,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "40cbe270222e21169e4e757ceaea34ea8408d7cc1dba9da4f8e70f5d5006e4cc",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 10,
+      "y": 18.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 18,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "caa0bdec90b9eacf4d081b30936a3c2409c3e819047283d834f74744f76ef2cd",
+     "end": "blocked",
+     "endPoint": {
+      "x": 4,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 16,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5208d8b44dce3994e9a180b5219f32115724b9f5819513e598e000b12e5bd32c",
+     "end": "blocked",
+     "endPoint": {
+      "x": 16,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 17,
+     "events": 18
+    }
+   ]
+  },
+  {
+   "name": "THE LONG WAY ROUND",
+   "level": {
+    "name": "THE LONG WAY ROUND",
+    "par": 5,
+    "size": {
+     "w": 24,
+     "d": 24
+    },
+    "terrain": [
+     "000000000000010000000033",
+     "000030000000000000002000",
+     "220030000000000200000000",
+     "220033230003000200000000",
+     "220020000002000220000000",
+     "000020000000100220000000",
+     "000030002000001220000000",
+     "030020003330001212222000",
+     "031000003330001212222000",
+     "031000003330001333332000",
+     "131101113331102133332000",
+     "031000000020000000000000",
+     "031002200300022100000000",
+     "031000022200022033020300",
+     "031030022211000033002222",
+     "031000000011000000002222",
+     "031011111000100000002223",
+     "000000100000000331000003",
+     "033330000000000220111003",
+     "033330000000000220111003",
+     "033330000000002222222223",
+     "000000002333333333333003",
+     "000000002222000000000000",
+     "000000002222000000000000"
+    ],
+    "emitter": {
+     "x": 23,
+     "y": 11,
+     "dir": "W"
+    },
+    "targets": [
+     {
+      "x": 4,
+      "y": 14
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "WEDGE",
+     "MIRROR",
+     "DIP",
+     "MIRROR",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 13,
+      "y": 11,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 13,
+      "y": 4,
+      "type": "WEDGE",
+      "orient": "/"
+     },
+     {
+      "x": 11,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 11,
+      "y": 3,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 4,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "\\"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "e0b45c10094bd8922fe75ab0a6cd4de10cc1b9b590d73db947b87a52b6a86a40",
+     "end": "blocked",
+     "endPoint": {
+      "x": 10.5,
+      "y": 11,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 13,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 13,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "47b37022be83d33e40572c06bba27b8374b1e627c270ab08fd437ea72eec2944",
+     "end": "target",
+     "endPoint": {
+      "x": 4,
+      "y": 14,
+      "z": 3
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 38,
+     "events": 47
+    },
+    {
+     "placed": [
+      {
+       "x": 13,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 13,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "2a7e3cb7793fbcf0648b8fa5c84296a2ef40ef7664a8846fdbb35e444f70836b",
+     "end": "blocked",
+     "endPoint": {
+      "x": 13,
+      "y": 11.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 13,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "247a56dfd2c4f3b39c48970564850a52c17194200926e01c9c996f5d19c598a2",
+     "end": "blocked",
+     "endPoint": {
+      "x": 13,
+      "y": 0.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 21,
+     "events": 22
+    },
+    {
+     "placed": [
+      {
+       "x": 13,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 13,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "9a6d5f017c8c1119e6f38416b6d7e1b30008a73aa5247f88aaa64b327acc1fa9",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 13,
+      "y": 7.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 14,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 13,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 13,
+       "y": 4,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 4,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 3,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "4cd532de521e52bd65fdbe28d297e080b76ddebd9530b51a7a39c585f85d1392",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 13,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 11,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 15,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 12,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "6cb25a868c7b96a51cc47e11c75f5d22e27dd14cbd7f5c7520e1ab4ad6efb271",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 15,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 9,
+     "events": 11
+    },
+    {
+     "placed": [
+      {
+       "x": 18,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5a60a92622fa9e34281744418e21526dde869d6c740b05209b20204129c51fc5",
+     "end": "blocked",
+     "endPoint": {
+      "x": 18,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 22,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 11,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "4c3bb7afc75a43647c723881b073dd340472ed5dce0b3a262e80bd782ee0bc87",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 22,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 18,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "5a60a92622fa9e34281744418e21526dde869d6c740b05209b20204129c51fc5",
+     "end": "blocked",
+     "endPoint": {
+      "x": 18,
+      "y": 17.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 13
+    },
+    {
+     "placed": [
+      {
+       "x": 20,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 21,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "68152234f53eecd249add3992185859d742e747f75b91fd168ef544162918bce",
+     "end": "blocked",
+     "endPoint": {
+      "x": 21,
+      "y": 12.5,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 16,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 14,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "397a5c39590b42b72bae58b92cd54ae03076b4f8bd4de214487b0c39bffdd979",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 16,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 10
+    }
+   ]
+  },
+  {
+   "name": "SUMMIT",
+   "level": {
+    "name": "SUMMIT",
+    "par": 5,
+    "size": {
+     "w": 24,
+     "d": 24
+    },
+    "terrain": [
+     "000000000000000022222222",
+     "000030000000000000000000",
+     "000030000002000000000000",
+     "000333000002000000003300",
+     "000333111112110000003300",
+     "000333003302112200333300",
+     "000333003312112200003300",
+     "111311110112113330000300",
+     "000300010012113330000300",
+     "000300033333300000000300",
+     "000300010221100000000333",
+     "000000000011110002222320",
+     "033333312000012200000300",
+     "000002003222222222222200",
+     "000302000333333333330000",
+     "000002000000012200000000",
+     "000000203000011000000000",
+     "000011110000013300000000",
+     "000011113010003300000000",
+     "000011110000000000000000",
+     "000011110002222033330000",
+     "000000000002222033330000",
+     "000000000000001000000000",
+     "000000000000001000000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 11,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 8,
+      "y": 16
+     },
+     {
+      "x": 20,
+      "y": 19
+     }
+    ],
+    "fixed": [
+     {
+      "x": 9,
+      "y": 11,
+      "type": "WEDGE",
+      "orient": "/",
+      "secret": true
+     }
+    ],
+    "tray": [
+     "MIRROR",
+     "DIP",
+     "DIP",
+     "MIRROR",
+     "WEDGE",
+     "MIRROR"
+    ],
+    "intro": "",
+    "solution": [
+     {
+      "x": 9,
+      "y": 13,
+      "type": "MIRROR",
+      "orient": "\\"
+     },
+     {
+      "x": 8,
+      "y": 13,
+      "type": "DIP",
+      "orient": "\\"
+     },
+     {
+      "x": 8,
+      "y": 18,
+      "type": "DIP",
+      "orient": "/"
+     },
+     {
+      "x": 10,
+      "y": 18,
+      "type": "MIRROR",
+      "orient": "/"
+     },
+     {
+      "x": 10,
+      "y": 19,
+      "type": "WEDGE",
+      "orient": "/"
+     }
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "1597b2a495d17f5febe7726a4230fade555eb5a2897f88f7c9a5943c6f1eb17a",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 9,
+      "y": 14.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 15
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 19,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "0cab3e2acbb89dc36798117116368f2a39833d62ed38e7a3b0cc119ac2d1e57d",
+     "end": "target",
+     "endPoint": {
+      "x": 20,
+      "y": 19,
+      "z": 0
+     },
+     "hits": [
+      0,
+      1
+     ],
+     "allTargetsHit": true,
+     "segments": 30,
+     "events": 43
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 8,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 18,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 19,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "75f8663e76289ac859bc553dc666be7e292db25a91859420b0327ffc2fd6c28d",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 10.5,
+      "y": 13,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "85c61b0c9ed86fc2448254443ef5521e5a33dea29e816a567fdc26036eb665f2",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 7.5,
+      "y": 13,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 13,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 18,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 18,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 19,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "1cb3fe9b09a8e141cbc6f722df4e1c20f43c5c09b5604904afc50ac33056ecae",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 8,
+      "y": 13.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 17
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 13,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 8,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 18,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 10,
+       "y": 19,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "66a250ad5954cabacfca05584657a7f5893565996af1b1bcf451baf7952d6264",
+     "end": "blocked",
+     "endPoint": {
+      "x": 8.5,
+      "y": 13,
+      "z": 2
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 12,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 8,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 6,
+       "y": 11,
+       "type": "WEDGE",
+       "orient": "\\"
+      }
+     ],
+     "sha": "d4ee9510aa9e3b6d6d2d7853f3cfc28999149cabea53bed857e580278775a414",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 6,
+      "y": 7.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 10,
+     "events": 12
+    },
+    {
+     "placed": [
+      {
+       "x": 9,
+       "y": 13,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "75f8663e76289ac859bc553dc666be7e292db25a91859420b0327ffc2fd6c28d",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 10.5,
+      "y": 13,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 16
+    },
+    {
+     "placed": [
+      {
+       "x": 1,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 5,
+       "y": 11,
+       "type": "DIP",
+       "orient": "\\"
+      }
+     ],
+     "sha": "bc66374dba5fd035af3ae722761761bc72fe949cbd47adc0ed4979e718312b9a",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 1,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 4
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 11,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "a079f0e0cf48eaa39b17959fa70d8989376d91380da121fe1525ea3171c05cca",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 3,
+      "y": 11.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 7,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "dab802902474a2281ec840c14436d53432f1d62fdc4ce83974ba12ccbce38f90",
+     "end": "blocked",
+     "endPoint": {
+      "x": 7,
+      "y": 10.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 11,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "efa6f8c83e2062845958f032086c0842f850be1666e50ccab0fe8577cee4e711",
+     "end": "blocked",
+     "endPoint": {
+      "x": 2,
+      "y": 7.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 7
+    }
+   ]
+  },
+  {
+   "name": "SYN plain",
+   "level": {
+    "name": "T",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "0000000",
+     "0000000",
+     "0000000",
+     "0000000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "WEDGE",
+     "DIP"
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "449c89462678ffb55192db7f4c7bc1672d89820e87710226154f069ca93d477a",
+     "end": "target",
+     "endPoint": {
+      "x": 6,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "62e83f881696a5b433e5c9da8da84988c94e7a2377721481307a25b61c3d4db2",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 3,
+      "y": 7,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "59284318aea2c8f142de5e4bb9ca2cb3c751589f39708574afa7e63367382d97",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 3,
+      "y": 7,
+      "z": 4
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "57153b14dfb074d248fdd63bcf8dfba22b1ff8fabba0bef2b1a48e94e1d724fd",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 3,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 4,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "\\"
+      }
+     ],
+     "sha": "449c89462678ffb55192db7f4c7bc1672d89820e87710226154f069ca93d477a",
+     "end": "target",
+     "endPoint": {
+      "x": 6,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 6,
+     "events": 8
+    }
+   ]
+  },
+  {
+   "name": "SYN wall",
+   "level": {
+    "name": "T",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "0000000",
+     "0013000",
+     "0000000",
+     "0000000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "WEDGE",
+     "DIP"
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "2f8778775acf614e9e19554f0503f7c49630dc2a815c33d93e5d71bc8453277a",
+     "end": "blocked",
+     "endPoint": {
+      "x": 1.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 2
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "2f8778775acf614e9e19554f0503f7c49630dc2a815c33d93e5d71bc8453277a",
+     "end": "blocked",
+     "endPoint": {
+      "x": 1.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 2
+    },
+    {
+     "placed": [
+      {
+       "x": 2,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "2f8778775acf614e9e19554f0503f7c49630dc2a815c33d93e5d71bc8453277a",
+     "end": "blocked",
+     "endPoint": {
+      "x": 1.5,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 2,
+     "events": 2
+    },
+    {
+     "placed": [
+      {
+       "x": 1,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "7974e394414f49064ba36d5be7482222dc572a47cbf4bd735b6f3827b98dd2bb",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 1,
+      "y": 7,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 5,
+     "events": 6
+    }
+   ]
+  },
+  {
+   "name": "SYN ridge emitter",
+   "level": {
+    "name": "T",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "1010100",
+     "1010100",
+     "0000000",
+     "0000000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "WEDGE",
+     "DIP"
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "a363ec7fee5c5a0f6e7ca912873d7f48a70ed0230f7aa2d8387420bf8a30f142",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": 3,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 7
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 3,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "030a1341a1f27f656f4fdc7fcc3ba4e61398d3bbf82c007b323e73061db4b6ab",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 4,
+      "y": 7,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 8,
+     "events": 9
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "bc5cd05e5228c3baaab1357f083620225b1a7f48ea521e075f2895202b4e835e",
+     "end": "lost-floor",
+     "endPoint": {
+      "x": 4,
+      "y": 4.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 6,
+     "events": 8
+    },
+    {
+     "placed": [
+      {
+       "x": 4,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "8e13fd4adbe1f10da1654c0e4a4f1bcf301cee4a5718b9eec56e5f6dd91fda09",
+     "end": "lost-sky",
+     "endPoint": {
+      "x": 4,
+      "y": 5.5,
+      "z": 3
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 9
+    }
+   ]
+  },
+  {
+   "name": "SYN plateau",
+   "level": {
+    "name": "T",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "0000000",
+     "0000000",
+     "0002020",
+     "0000000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 5,
+      "y": 4
+     }
+    ],
+    "fixed": [
+     {
+      "x": 3,
+      "y": 3,
+      "type": "WEDGE",
+      "orient": "/",
+      "secret": true
+     }
+    ],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "WEDGE",
+     "DIP"
+    ]
+   },
+   "cases": [
+    {
+     "placed": [],
+     "sha": "8c6c6b8744663318998260973182267fb56c68e541de7c9d4499636d609f7c04",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      }
+     ],
+     "sha": "8c6c6b8744663318998260973182267fb56c68e541de7c9d4499636d609f7c04",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 5,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "8c6c6b8744663318998260973182267fb56c68e541de7c9d4499636d609f7c04",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    },
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 5,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "8c6c6b8744663318998260973182267fb56c68e541de7c9d4499636d609f7c04",
+     "end": "blocked",
+     "endPoint": {
+      "x": 3,
+      "y": 3.5,
+      "z": 0
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 4,
+     "events": 6
+    }
+   ]
+  },
+  {
+   "name": "SYN loop",
+   "level": {
+    "name": "T",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "0000000",
+     "1001000",
+     "0000000",
+     "0303000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 6,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": [
+     "MIRROR",
+     "MIRROR",
+     "WEDGE",
+     "DIP"
+    ]
+   },
+   "cases": [
+    {
+     "placed": [
+      {
+       "x": 3,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      },
+      {
+       "x": 3,
+       "y": 5,
+       "type": "DIP",
+       "orient": "\\"
+      },
+      {
+       "x": 1,
+       "y": 5,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 1,
+       "y": 2,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 2,
+       "y": 2,
+       "type": "MIRROR",
+       "orient": "/"
+      },
+      {
+       "x": 2,
+       "y": 3,
+       "type": "WEDGE",
+       "orient": "/"
+      }
+     ],
+     "sha": "cf4f9f8750e154efc4c7eb25d4b1e3a2a56f33259c72bfef1212fa9b10d5493b",
+     "end": "loop",
+     "endPoint": {
+      "x": 3,
+      "y": 3,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 13,
+     "events": 27
+    },
+    {
+     "placed": [],
+     "sha": "a363ec7fee5c5a0f6e7ca912873d7f48a70ed0230f7aa2d8387420bf8a30f142",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": 3,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 7
+    }
+   ]
+  },
+  {
+   "name": "SYN INTERFACES worked example",
+   "level": {
+    "name": "WE",
+    "par": 0,
+    "size": {
+     "w": 7,
+     "d": 7
+    },
+    "terrain": [
+     "0000000",
+     "0000000",
+     "0000000",
+     "1000010",
+     "0000000",
+     "0000000",
+     "0000000"
+    ],
+    "emitter": {
+     "x": 0,
+     "y": 3,
+     "dir": "E"
+    },
+    "targets": [
+     {
+      "x": 3,
+      "y": 3
+     }
+    ],
+    "fixed": [],
+    "tray": []
+   },
+   "cases": [
+    {
+     "placed": [
+      {
+       "x": 5,
+       "y": 3,
+       "type": "DIP",
+       "orient": "/"
+      },
+      {
+       "x": 5,
+       "y": 4,
+       "type": "WEDGE",
+       "orient": "\\"
+      },
+      {
+       "x": 3,
+       "y": 4,
+       "type": "MIRROR",
+       "orient": "/"
+      }
+     ],
+     "sha": "d8a655a9e2190b5aeff8b3d36a3b3ba05b6b878f9d620cb6f4cbbdfa4330e4da",
+     "end": "target",
+     "endPoint": {
+      "x": 3,
+      "y": 3,
+      "z": 0
+     },
+     "hits": [
+      0
+     ],
+     "allTargetsHit": true,
+     "segments": 9,
+     "events": 16
+    },
+    {
+     "placed": [],
+     "sha": "a363ec7fee5c5a0f6e7ca912873d7f48a70ed0230f7aa2d8387420bf8a30f142",
+     "end": "lost-edge",
+     "endPoint": {
+      "x": 7,
+      "y": 3,
+      "z": 1
+     },
+     "hits": [],
+     "allTargetsHit": false,
+     "segments": 7,
+     "events": 7
+    }
+   ]
+  }
+ ]
+}

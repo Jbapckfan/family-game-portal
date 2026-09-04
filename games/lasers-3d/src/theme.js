@@ -140,7 +140,43 @@
     gridStrip: 0.012,         /* outline strip width, every cell incl. floor */
     sideFrom: 0,              /* sides span world z=0 .. z=t */
     flatColorVec4: [0.0902, 0.1451, 0.2667, 1.0],   /* #172544 for the uReveal mix */
-    revealShader: 'finalColor = mix(vec4(0.0902, 0.1451, 0.2667, 1.0), pbrColor, uReveal);'
+    revealShader: 'finalColor = mix(vec4(0.0902, 0.1451, 0.2667, 1.0), pbrColor, uReveal);',
+
+    /* ---- ARCHES AND WINDOWS: the light leak (DESIGN.md 13.3) --------------------------------------------------
+     * A column with an `openings` entry is drawn per solid voxel, so the hole is real; from directly above it is
+     * still pixel-identical to a solid column, because the top surface is unchanged. That is the whole feature and
+     * it would make the no-tilt star a guessing game, so 13.3 buys the fairness back with ONE deliberate exception
+     * to the flat lie: a faint mark of light on the floor of that cell.
+     *
+     * Design constraints, in the order they decided the numbers:
+     *  - It must say "this column is not solid" and NOT say at which level. Hence a shape with no vertical reading
+     *    and no direction: a four-point gleam over a soft halo, symmetric under a quarter turn. A single slit would
+     *    invite "the beam goes THAT way" (an opening is open in all four headings); a ring or a dot would collide
+     *    with the FLAT target reticle (render-pieces proxyRing/proxyDot); crossed bars of even thickness came out
+     *    reading as a drawn "+" icon rather than as light, which is why the spikes taper.
+     *  - It must survive the phone floor of theme.camera.minCellPx = 34 CSS px. At 34 px the gleam is 13.6 px tip
+     *    to tip inside a 22 px halo - findable when you know to look, ignorable when you do not.
+     *  - Colour comes from the palette, not a new hue: `mirror` cyan is the coolest "instrument light" token and is
+     *    the one accent that appears NOWHERE on the FLAT board (pieces show the common grey glyph, the target proxy
+     *    is target-unlit grey, beams are teal), so it cannot be mistaken for a piece, a target or a beam.
+     *  - Additive over #172544, so it reads as light spilling out rather than as paint on the floor.
+     *  - It belongs to the FLAT lie only: opacity is multiplied by (1 - reveal), so it is gone by the time the
+     *    tilted view shows the hole itself. Tilting must not be rewarded with two tells at once, and
+     *    VISUAL-DIRECTION C forbids decals on lit terrain tops. */
+    lightLeak: {
+      color: palette.mirror,        /* '#45E7FF' */
+      quadCells: 0.66,              /* side of the sprite quad, in cells (0.66 * 34 px = 22.4 px on a phone) */
+      spanCells: 0.40,              /* tip to tip of the gleam (13.6 px at the 34 px cell floor) */
+      waistCells: 0.052,            /* its waist, i.e. how fat the four spikes are where they meet */
+      coreDotCells: 0.036,          /* the bright point the spikes radiate from */
+      softPx: 5,                    /* canvas blur, so the spikes glow rather than draw a hard icon */
+      haloOpacity: 0.42,            /* alpha of the radial halo at the centre of the texture */
+      coreOpacity: 0.62,            /* alpha of the gleam itself in the texture */
+      opacity: 0.30,                /* material opacity in FLAT; x (1 - reveal) as the board tilts */
+      zOffset: 0.006,               /* above the column top (grid outline sits at +0.004) */
+      texturePx: 128,
+      renderOrder: 3
+    }
   };
 
   var piece = {
@@ -320,6 +356,12 @@
     '--color-mirror': palette.mirror,
     '--color-wedge': palette.wedge,
     '--color-dip': palette.dip,
+    /* Terrain tokens, so the how-to-play diagrams can draw a wall, a floor cell and the light leak of DESIGN.md 13.3
+     * in the board's own colours instead of inventing hues. */
+    '--color-block-side': palette.blockSide,
+    '--color-block-top': palette.blockTopLit,
+    '--color-grid-outline': palette.gridOutline,
+    '--color-leak': palette.mirror,
     '--color-star': palette.star,
     '--color-star-empty': palette.starEmpty,
     '--color-target-lit': palette.targetLit,

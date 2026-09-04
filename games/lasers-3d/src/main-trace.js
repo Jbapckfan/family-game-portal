@@ -28,6 +28,47 @@
     return null;
   }
 
+  /* Levels punched out of a column, as a bitmask (DESIGN.md 13.1: `openings: [{x, y, levels: [0]}]`, which
+   * LaserSim.parseLevel normalises into `openMask[y][x]`). Read whichever shape is there, so this file does not
+   * break if the engine renames the field. The renderer keeps its own copy of this adapter in
+   * LaserRenderCore.openMask: two tiny readers rather than one shared module, because THIS file is deliberately
+   * free of the DOM and of Three.js and must stay loadable on its own in node. A bit at or above the column's own
+   * height is not an opening (13.1). */
+  function openBits(level, x, y) {
+    var m = 0, i, k, e, src;
+    if (!level || !level.t || !level.t[y] || level.t[y][x] === undefined) return 0;
+    if (typeof level.isOpen === 'function') { for (k = 0; k < 4; k++) if (level.isOpen(x, y, k)) m |= (1 << k); }
+    src = level.openMask || level.open;
+    if (src && typeof src.length === 'number') {
+      if (src.length === level.size.d && src[0] && typeof src[0].length === 'number') m |= (src[y] && src[y][x]) | 0;
+      else if (src.length === level.size.w * level.size.d) m |= src[y * level.size.w + x] | 0;
+    }
+    src = level.openings || (level.raw && level.raw.openings);
+    if (src && typeof src.length === 'number') {
+      for (i = 0; i < src.length; i++) {
+        e = src[i];
+        if (!e || e.x !== x || e.y !== y) continue;
+        if (typeof e.mask === 'number') m |= e.mask;
+        if (typeof e.level === 'number') m |= (1 << e.level);
+        if (e.levels && typeof e.levels.length === 'number') for (k = 0; k < e.levels.length; k++) m |= (1 << e.levels[k]);
+      }
+    }
+    return m & ((1 << level.t[y][x]) - 1);
+  }
+
+  /* What a BLOCKED shot ran into. The stepper stops the beam at the boundary of the cell it could not enter, so the
+   * wall is one step on from the last segment's start and the height the beam was TRAVELLING at is that segment's
+   * z plus its climb - which is not the same as where the drawing stops. Returns null unless the beam was blocked. */
+  function blockedWall(level, result) {
+    var segs = result.segments || [], last = segs.length ? segs[segs.length - 1] : null;
+    if (result.end !== 'blocked' || !last) return null;
+    var bx = last.from.x + Math.round((last.to.x - last.from.x) * 2);
+    var by = last.from.y + Math.round((last.to.y - last.from.y) * 2);
+    var bz = last.from.z + last.v;
+    if (!level.t[by] || level.t[by][bx] === undefined) return null;
+    return { x: bx, y: by, z: bz, wallHeight: level.t[by][bx], hasOpening: openBits(level, bx, by) !== 0 };
+  }
+
   /* The post-FIRE readout view model. `texts` is LaserUI.endText: the end-reason strings in kid language, plus
    * 'over' / 'under' for a flyover, which takes precedence because it is the more actionable fact.
    * `pitch` is the climb the beam still had on its LAST segment (-1, 0 or +1). Under the delta rule (DESIGN.md 12)
@@ -41,12 +82,22 @@
     var msg = texts[key] || texts[result.end] || '';
     if (!msg) return null;
     var segs = result.segments || [], last = segs.length ? segs[segs.length - 1] : null;
+    /* DESIGN.md 13.3, the third fair tell: name the height the beam was travelling at when it was stopped, so the
+     * player can reason about which level might be open without ever tilting. It never says which level IS open;
+     * that is the puzzle.
+     * ALWAYS report the height, on every blocked shot, never only on walls that happen to have an opening. Making
+     * the sentence conditional on hasOpening inverts the intent: the longer wording would then BE the marker for
+     * which walls are hollow, which is the exact leak this tell was written to avoid. The faint floor gleam is the
+     * one and only thing that marks an opened column, and the height is useful on a solid wall too. */
+    var wall = blockedWall(level, result);
+    if (!over && wall && texts['blocked-height']) msg = texts['blocked-height'].replace('{z}', String(wall.z));
     return {
       kind: result.allTargetsHit ? 'success' : 'danger',
       end: result.end,
       message: msg,
       pitch: last && last.v ? last.v : 0,
       altitude: over ? { beamZ: over.beamZ, targetZ: over.targetZ, above: over.above } : null,
+      blocked: wall,
       progress: total > 1 ? { lit: lit, total: total } : null
     };
   }
@@ -74,11 +125,20 @@
   }
 
   /* The cell the free reveal should pulse (DESIGN.md 3.5): whatever best explains why the beam failed - a piece it
-   * flew over, else a secret fixed piece, else the first raised cell it crossed, else any raised cell at all. */
+   * missed, else a secret fixed piece, else the first raised cell it crossed, else any raised cell at all.
+   * Since DESIGN.md 13 a beam can miss a piece from EITHER side: over it, as before, or under it through an arch,
+   * which `trace()` reports separately as `underpasses`. Both are "you went past the piece"; whichever happened
+   * first along the beam is the better thing to show, so take the earlier of the two. */
   function revealCell(level, result) {
     if (!level || !result) return null;
     var t = level.t, i, v, x, y;
-    if (result.overflights && result.overflights.length) return { x: result.overflights[0].x, y: result.overflights[0].y };
+    var missed = (result.overflights || []).concat(result.underpasses || []);
+    if (missed.length) {
+      if (missed.length > 1 && result.visited) {
+        missed.sort(function (a, b) { return firstVisit(result, a) - firstVisit(result, b); });
+      }
+      return { x: missed[0].x, y: missed[0].y };
+    }
     for (i = 0; i < level.fixed.length; i++) if (level.fixed[i].secret) return { x: level.fixed[i].x, y: level.fixed[i].y };
     for (i = 0; i < result.visited.length; i++) { v = result.visited[i]; if (t[v.y] && t[v.y][v.x] > 0) return { x: v.x, y: v.y }; }
     for (i = 0; i < level.targets.length; i++) if (t[level.targets[i].y][level.targets[i].x] > 0) return { x: level.targets[i].x, y: level.targets[i].y };
@@ -86,5 +146,13 @@
     return null;
   }
 
-  return { __version: 1, flyover: flyover, readout: readout, cues: cues, revealCell: revealCell };
+  /* Index of the first step at which the beam entered this cell (Infinity if it never did). */
+  function firstVisit(result, cell) {
+    var v = result.visited || [], i;
+    for (i = 0; i < v.length; i++) if (v[i].x === cell.x && v[i].y === cell.y) return i;
+    return Infinity;
+  }
+
+  return { __version: 1, flyover: flyover, readout: readout, cues: cues, revealCell: revealCell,
+           openBits: openBits, blockedWall: blockedWall };
 }));

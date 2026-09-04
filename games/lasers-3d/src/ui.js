@@ -29,6 +29,10 @@
   var END_TEXT = {
     'target': 'Beam connected!',
     'blocked': 'The beam hit a wall.',
+    /* DESIGN.md 13.3: only when the wall the beam struck HAS a way through it. Naming the height the beam was
+     * travelling at is what makes an arch or a window solvable without tilting; naming the open level would hand
+     * over the answer, so it never does. `{z}` is filled in by LaserMainTrace.readout. */
+    'blocked-height': 'The beam hit a wall at height {z}.',
     'lost-edge': 'The beam left the board.',
     'lost-floor': 'The beam fell to the floor.',
     'lost-sky': 'The beam went too high.',
@@ -50,6 +54,14 @@
     DIP: 'Turns the beam and tips it down one step: a flat beam starts going down, a beam going up comes back to flat, and a beam going down stays going down.'
   };
   var HELP_NOTE = 'Remember: a mirror can never flatten a beam. Only a DIP flattens a beam that is going up, and only a WEDGE flattens a beam that is going down.';
+  /* DESIGN.md 13: arches and windows. Same voice as the piece lines above - short sentences, no jargon, and the
+   * fair tell of 13.3 named outright, because a shape that is invisible from above is only fair if the player is
+   * told what to look for. */
+  var SHAPE_HELP = {
+    ARCH: 'A tall wall with a gap along the ground. A beam running flat on the floor slides straight underneath it.',
+    WINDOW: 'A tall wall with a gap part way up. Only a beam at that one height goes through. A beam at any other height stops.'
+  };
+  var SHAPE_NOTE = 'From above, an arch and a window look exactly like a solid wall. Watch the floor: a cell with a way through it shows a faint sliver of light. The sliver tells you there is a gap, but not how high the gap is. When a shot stops, the message says what height the beam was at, and that is the number to work from.';
 
   /* number | {solved,par,blind} | anything -> {solved,par,blind}. An old numeric count of N becomes the first N
    * flags in the order solved, par, blind (the order stars were awarded in). */
@@ -392,14 +404,82 @@
         g + '</svg>';
     }
 
+    /* ---- the arch / window diagram (DESIGN.md 13) ------------------------------------------------------------
+     * A companion to the pitch diagram above and drawn to the same grid: three 100 x 102 panels in one 300 x 102
+     * viewBox, one unit ~ one CSS px on a 393 px phone. The first two are SIDE views on the same ground line as the
+     * pitch panels, with one altitude level = 18 units, so the wall bands line up with the beam heights. The third
+     * is the view the player actually plays in - straight down - because the whole point of 13.3 is that the tell
+     * lives THERE, and a side view can never show it. Every colour is a theme custom property (.ht-* in the
+     * stylesheet); the beams take their own altitude's colour and the level-1 beam is drawn fractionally wider,
+     * exactly as the board draws it.
+     * Geometry: ground y = 70; level k spans y = 70 - 18(k+1) .. 70 - 18k; the wall column is 22 units wide. */
+    var HT = { ground: 70, lvl: 18, wallX: 37, wallW: 26 };
+    function htBand(k) { return { top: HT.ground - HT.lvl * (k + 1), bot: HT.ground - HT.lvl * k }; }
+    function htRect(cls, ox, k0, k1) {   /* a block (or a marked gap) covering levels k0..k1 inclusive */
+      var a = htBand(k1).top, b = htBand(k0).bot;
+      return '<rect class="' + cls + '" x="' + (ox + HT.wallX) + '" y="' + a + '" width="' + HT.wallW + '" height="' + (b - a) + '" rx="1"/>';
+    }
+    function htBeam(ox, k, x0, x1, stopped) {   /* a beam running east along level k, from x0 to x1 (panel-local) */
+      var y = htBand(k).top + HT.lvl / 2;
+      var s = '<path class="ht-beam" data-z="' + k + '" d="M' + (ox + x0) + ' ' + y + 'H' + (ox + x1) + '"/>';
+      if (stopped) s += '<rect class="ht-stop" x="' + (ox + x1 - 1.6) + '" y="' + (y - 5.5) + '" width="3.2" height="11" rx="1.6"/>';
+      else s += '<polygon class="ht-arrow" data-z="' + k + '" points="0,-3.4 7.5,0 0,3.4" transform="translate(' + (ox + x1) + ',' + y + ')"/>';
+      return s;
+    }
+    function htCaption(ox, name, note) {
+      return '<text class="ht-name" x="' + (ox + 50) + '" y="87" text-anchor="middle">' + name + '</text>' +
+             '<text class="ht-note" x="' + (ox + 50) + '" y="99" text-anchor="middle">' + note + '</text>';
+    }
+    /* The light leak, drawn the way render-terrain draws it: a four-point gleam over a soft halo. */
+    function htGleam(cx, cy) {
+      var i, ang, r, pts = [];
+      for (i = 0; i < 8; i++) { ang = -Math.PI / 2 + i * Math.PI / 4; r = (i % 2 === 0) ? 8.5 : 1.6;
+        pts.push((cx + Math.cos(ang) * r).toFixed(2) + ',' + (cy + Math.sin(ang) * r).toFixed(2)); }
+      return '<circle class="ht-leak-halo" cx="' + cx + '" cy="' + cy + '" r="7.5"/>' +
+             '<polygon class="ht-leak" points="' + pts.join(' ') + '"/>';
+    }
+    function terrainDiagram() {
+      var g = '';
+      /* 1. ARCH, from the side. The dashed outline is the block that ISN'T there: without it a single-cell arch in
+       * cross-section is just a slab hanging in the air, which is true but does not read as a wall you go under. */
+      g += '<line class="hd-ground" x1="6" y1="70" x2="94" y2="70"/>' +
+           htRect('ht-wall', 0, 1, 2) + htRect('ht-gap', 0, 0, 0) +
+           htBeam(0, 0, 6, 90, false) + htCaption(0, 'ARCH', 'goes under');
+      /* 2. WINDOW: one beam at the open height threads it, one at the wrong height stops at the wall. */
+      g += '<line class="hd-ground" x1="106" y1="70" x2="194" y2="70"/>' +
+           htRect('ht-wall', 100, 0, 0) + htRect('ht-wall', 100, 2, 2) + htRect('ht-gap', 100, 1, 1) +
+           htBeam(100, 1, 6, 90, false) + htBeam(100, 0, 6, HT.wallX - 1, true) +
+           htCaption(100, 'WINDOW', 'one height fits');
+      /* 3. FROM ABOVE: the two cells a player really sees, one solid and one not. */
+      g += '<rect class="ht-cell" x="212" y="22" width="34" height="34" rx="1"/>' +
+           '<rect class="ht-cell" x="254" y="22" width="34" height="34" rx="1"/>' +
+           htGleam(271, 39) + htCaption(200, 'FROM ABOVE', 'one is not solid');
+      return '<svg class="help-diagram help-diagram-terrain" viewBox="0 0 300 102" role="img" ' +
+        'aria-labelledby="help-shapes-t help-shapes-d" focusable="false">' +
+        '<title id="help-shapes-t">Arches and windows, and the sliver of light that gives them away</title>' +
+        '<desc id="help-shapes-d">Three pictures. First, from the side: a tall wall block hanging above the ground ' +
+        'with an empty square marked underneath it, and a beam travelling flat along the floor passing straight ' +
+        'under the block. Second, from the side: a wall with an empty square marked part way up. A beam at the ' +
+        'height of that gap goes through the wall, while a lower beam runs into the wall and stops dead. Third, ' +
+        'looking straight down at two square cells that look identical: the right hand one carries a small four ' +
+        'pointed sliver of light in the middle, and that sliver is the only sign that a beam can get through it.' +
+        '</desc>' + g + '</svg>';
+    }
+
     function helpBody() {
       function row(t) { return '<div class="help-row">' + iconHtml(t) + '<div><b style="color:var(--color-' + t.toLowerCase() + ')">' + LABELS[t].toUpperCase() + '</b> <span class="caption">' + PIECE_HELP[t] + '</span></div></div>'; }
+      /* Terrain shapes have no tray icon to show, so they get a plain labelled line instead of a .help-row. */
+      function shapeRow(t) { return '<p class="help-shape"><b>' + t + '</b> <span class="caption">' + SHAPE_HELP[t] + '</span></p>'; }
       return '<p>Steer the laser into every target. Tap a piece in the tray, then tap a cell to place it. Tap a placed piece to rotate it; drag it to move it.</p>' +
         '<p class="caption">All three pieces turn the beam the same way. What changes is the beam\'s height.</p>' +
         row('MIRROR') + row('WEDGE') + row('DIP') +
         '<p class="help-note">' + HELP_NOTE + '</p>' +
         '<p class="caption">Seen from the side:</p>' + pitchDiagram() +
         '<p class="caption">The board looks flat, but it is not. Higher beams are wider and brighter:</p><div class="help-beams">' + beamRow(0) + beamRow(1) + beamRow(2) + beamRow(3) + '</div>' +
+        '<p class="caption">Some walls have a way through them:</p>' +
+        shapeRow('ARCH') + shapeRow('WINDOW') +
+        terrainDiagram() +
+        '<p class="help-note">' + SHAPE_NOTE + '</p>' +
         '<p class="caption">Drag the empty board or press TILT to see the real heights. Solve without tilting for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
         '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>0</kbd><span>fit board to screen</span><kbd>1-3</kbd><span>pick a tray piece</span></div>';
     }

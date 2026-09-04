@@ -15,6 +15,7 @@
 <script src="../vendor/three.min.js"></script>
 <script src="../src/pieces.js"></script>
 <script src="../src/sim.js"></script>
+<script src="../src/levels.js"></script>
 <script src="../src/theme.js"></script>
 <script src="../src/render-core.js"></script>
 <script src="../src/render-camera.js"></script>
@@ -65,6 +66,57 @@
     };
   }
 
+  /* ---- ARCHES AND WINDOWS (DESIGN.md 13) -------------------------------------------------------------------
+   * A 12x12 board (big enough that a 393 px phone hits theme.camera.minCellPx = 34 px, which is the size the light
+   * leak of 13.3 has to survive) carrying all three shapes at the SAME height 3, so the flat view can be compared
+   * cell for cell:
+   *   x = 3, y = 3..5   a wall; (3,4) is an ARCH,  open at level 0
+   *   x = 8, y = 4..6   a wall; (8,5) is a WINDOW, open at level 1
+   *   x = 10, y = 5     a plain SOLID column, the blocker
+   *   x = 2 / 4, y = 8   a lone ARCH and a lone SOLID column of the same height, side by side and clear of the beam
+   * The beam does all three things in one run: it passes UNDER the arch at level 0, a WEDGE lifts it and a DIP
+   * levels it at 1, it THREADS the window, and it is stopped by the solid column short of the target. The trace is
+   * the engine's own (LaserSim.trace), so the renderer is drawing exactly what the stepper of 13.2 produces.
+   */
+  var ARCH = (function () {
+    var n = 12, rows = [], x, y, row;
+    for (y = 0; y < n; y++) {
+      row = '';
+      for (x = 0; x < n; x++) {
+        var h = 0;
+        if (x === 3 && y >= 3 && y <= 5) h = 3;          /* the arch wall */
+        if (x === 8 && y >= 4 && y <= 6) h = 3;          /* the window wall */
+        if (x === 10 && y === 5) h = 3;                  /* the solid blocker, same height as both */
+        if (x === 6 && y === 5) h = 1;                   /* the DIP's pedestal */
+        /* a lone ARCH and a lone SOLID column of the same height, side by side and well clear of the beam: the
+         * pair the FLAT view is judged on, by eye and by the pixel diff */
+        if (x === 2 && y === 8) h = 3;
+        if (x === 4 && y === 8) h = 3;
+        if (x === 9 && y === 10) h = 1;                  /* a little scenery, so the board is not just the demo */
+        row += String(h);
+      }
+      rows.push(row);
+    }
+    return {
+      raw: {
+        name: 'ARCH+WINDOW', par: 2, size: { w: n, d: n }, terrain: rows,
+        openings: [{ x: 3, y: 4, levels: [0] }, { x: 8, y: 5, levels: [1] }, { x: 2, y: 8, levels: [0] }],
+        emitter: { x: 0, y: 4, dir: 'E' },
+        targets: [{ x: 11, y: 5 }],
+        fixed: [], tray: ['MIRROR', 'WEDGE', 'DIP']
+      },
+      placed: [{ x: 6, y: 4, type: 'WEDGE', orient: '/' }, { x: 6, y: 5, type: 'DIP', orient: '/' }]
+    };
+  }());
+  /* The arch board's own trace, reused by the `archSolid` control below. The control must draw the IDENTICAL beam,
+   * or the FLAT pixel diff would be measuring a different beam path rather than the openings. */
+  function archResult() { return LaserSim.trace(LaserSim.parseLevel(ARCH.raw), ARCH.placed); }
+  /* the same level with its `openings` removed: the control every "does the hole show?" measurement is made against */
+  function stripOpenings(raw) { var k, c = {}; if (!raw) return null; for (k in raw) if (k !== 'openings') c[k] = raw[k]; return c; }
+  /* A shipped level, or the demo board if the level set has moved under us (this is a dev tool, not a test fixture). */
+  function shipped(i) { var L = (self.LASER_LEVELS || [])[i]; return L ? { raw: L, placed: [] } : ARCH; }
+  function shippedSolid(i) { var L = stripOpenings((self.LASER_LEVELS || [])[i]); return L ? { raw: L, placed: [] } : ARCH; }
+
   var LEVELS = {
     small: {
       raw: {
@@ -79,6 +131,26 @@
     },
     big20: bigLevel(20),
     big24: bigLevel(24),
+    /* the same 24x24 board with an opening punched into every column tall enough to take one: the worst case for
+     * the per-voxel geometry of 13.5, used to prove the draw calls and the frame time have not regressed */
+    big24open: (function () {
+      var L = bigLevel(24), o = [], x, y;
+      for (y = 0; y < 24; y++) for (x = 0; x < 24; x++) {
+        var h = L.raw.terrain[y].charCodeAt(x) - 48;
+        if (h >= 2) o.push({ x: x, y: y, levels: [(x + y) % 2 === 0 ? 0 : h - 2] });
+      }
+      return { raw: { name: '24x24 open', par: L.raw.par, size: L.raw.size, terrain: L.raw.terrain, openings: o,
+        emitter: L.raw.emitter, targets: L.raw.targets, fixed: L.raw.fixed, tray: L.raw.tray }, placed: L.placed };
+    }()),
+    arch: ARCH,
+    /* the shipped levels that actually use the shapes, so the tilted reveal can be judged on real content and not
+     * only on the demo board. Indexes, not names: the level set is regenerated and the names may move. */
+    real10: shipped(9), real14: shipped(13),
+    real10solid: shippedSolid(9), real14solid: shippedSolid(13),
+    /* the arch board with the `openings` stripped, drawing the SAME beam: the control for the FLAT pixel-equality
+     * proof of DESIGN.md 13.5, so the only thing that can differ between the two frames is the openings themselves */
+    archSolid: { raw: (function () { var r = ARCH.raw, k, c = {}; for (k in r) if (k !== 'openings') c[k] = r[k]; return c; }()),
+      placed: ARCH.placed, result: archResult },
     /* the 6x6 board James measured (269x269 px flat, 260x195 tilt in a 393x614 canvas) */
     six: {
       raw: {
@@ -106,7 +178,8 @@
     placed = L.placed.slice();
     render.setLevel(level);
     render.setPlaced(placed);
-    result = LaserSim.trace(level, placed);
+    /* A scene may pin its own TraceResult (the archSolid control draws the arch board's beam over solid terrain). */
+    result = typeof L.result === 'function' ? L.result() : (L.result || LaserSim.trace(level, placed));
     render.setBeam(result, { animate: false, fired: true });
     render.frame(0.016);
     return { w: level.size.w, d: level.size.d, segments: result.segments.length };
@@ -198,9 +271,88 @@
     return z;
   }
 
+  /* ---- FLAT pixel equality (DESIGN.md 13.5 / task 2) --------------------------------------------------------
+   * The whole feature rests on an opened column being INDISTINGUISHABLE from a solid one in FLAT, so the proof is
+   * a whole-framebuffer diff of the same board with and without its `openings`, not a spot check: read every pixel
+   * of both, and report where the two differ. The only pixels allowed to differ are the light leak's (13.3), so
+   * the diff is reported as "how far is the furthest differing pixel from an opened cell's centre".
+   */
+  function readPixels() {
+    var gl = render._renderer.getContext();
+    var w = gl.drawingBufferWidth, h = gl.drawingBufferHeight, buf = new Uint8Array(w * h * 4);
+    render.frame(0.016);
+    gl.finish();
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    return { w: w, h: h, buf: buf };
+  }
+  function bufferPoint(cell) {
+    var gl = render._renderer.getContext(), rect = render._renderer.domElement.getBoundingClientRect();
+    var p = render.projectCell(cell, 0), dpr = render._renderer.getPixelRatio();
+    return { x: (p.x - rect.left) * dpr, y: gl.drawingBufferHeight - (p.y - rect.top) * dpr };
+  }
+  /* Load `a`, snapshot; load `b`, snapshot; diff. `cells` are the cells whose columns carry an opening. */
+  function flatDiff(a, b, cells, view) {
+    view = view || 'flat';
+    load(a); fit(); render.setCameraPreset(view, { animate: false }); settle(900);
+    var A = readPixels(), centres = cells.map(bufferPoint);
+    load(b); fit(); render.setCameraPreset(view, { animate: false }); settle(900);
+    var B = readPixels();
+    if (A.w !== B.w || A.h !== B.h) return { error: 'size', a: [A.w, A.h], b: [B.w, B.h] };
+    var i, j, n = A.w * A.h, diff = 0, maxDelta = 0, worst = 0, x, y, dx, dy, dist, near;
+    var dpr = render._renderer.getPixelRatio(), perCell = cells.map(function () { return 0; });
+    var bbox = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+    for (i = 0; i < n; i++) {
+      var d0 = Math.abs(A.buf[i * 4] - B.buf[i * 4]), d1 = Math.abs(A.buf[i * 4 + 1] - B.buf[i * 4 + 1]);
+      var d2 = Math.abs(A.buf[i * 4 + 2] - B.buf[i * 4 + 2]), d3 = Math.abs(A.buf[i * 4 + 3] - B.buf[i * 4 + 3]);
+      var dmax = Math.max(d0, d1, d2, d3);
+      if (dmax === 0) continue;
+      diff++;
+      if (dmax > maxDelta) maxDelta = dmax;
+      x = i % A.w; y = (i / A.w) | 0;
+      near = 0; dist = Infinity;
+      for (j = 0; j < centres.length; j++) {
+        dx = x - centres[j].x; dy = y - centres[j].y;
+        var dd = Math.sqrt(dx * dx + dy * dy);
+        if (dd < dist) { dist = dd; near = j; }
+      }
+      perCell[near]++;
+      if (dist > worst) worst = dist;
+      if (x < bbox.x0) bbox.x0 = x; if (x > bbox.x1) bbox.x1 = x;
+      if (y < bbox.y0) bbox.y0 = y; if (y > bbox.y1) bbox.y1 = y;
+    }
+    return { pixels: n, diff: diff, maxDelta: maxDelta, worstDistPx: worst / dpr, perCell: perCell, dpr: dpr,
+      cellPx: render.getCellPx(), bbox: bbox, centres: centres.map(function (c) { return { x: Math.round(c.x / dpr), y: Math.round((A.h - c.y) / dpr) }; }) };
+  }
+  /* Byte-exact sample of one cell's top, offset a few CSS px off centre so it never lands on the leak. */
+  function sampleCell(cell, offX, offY) {
+    var gl = render._renderer.getContext(), p = bufferPoint(cell), dpr = render._renderer.getPixelRatio();
+    var buf = new Uint8Array(4);
+    render.frame(0.016);
+    gl.readPixels(Math.round(p.x + (offX || 0) * dpr), Math.round(p.y + (offY || 0) * dpr), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    return Array.prototype.slice.call(buf, 0, 3);
+  }
+
   window.__h = {
     render: render, sim: LaserSim, theme: LaserTheme,
     name: function () { return name; },
+    flatDiff: flatDiff, sampleCell: sampleCell,
+    openLevelsAt: function (x, y) { return render.openLevelsAt(x, y); },
+    /* the light-leak material's live state, so the test can prove it is a FLAT-only tell */
+    leak: function () {
+      var mesh = null;
+      render._scene.traverse(function (o) { if (o.name === 'terrainLightLeak') mesh = o; });
+      var mat = mesh ? mesh.material : null;
+      return { mesh: !!mesh, quads: mesh ? mesh.geometry.getAttribute('position').count / 6 : 0,
+        opacity: mat ? mat.opacity : 0, visible: !!(mat && mat.visible && mesh.visible),
+        color: mat ? '#' + mat.color.getHexString().toUpperCase() : null,
+        additive: !!(mat && mat.blending === THREE.AdditiveBlending), renderOrder: mesh ? mesh.renderOrder : null };
+    },
+    /* the camera's silhouette, as the auto-fit sees it: an opening must not move any of this */
+    silhouette: function () {
+      var c = render.getCamera(), b = render.getBoardScreenBox();
+      return { fitZoom: c.fitZoom, effectiveZoom: c.effectiveZoom, cellPx: c.cellPx,
+        box: { w: +b.width.toFixed(4), h: +b.height.toFixed(4), cx: +b.centerX.toFixed(4), cy: +b.centerY.toFixed(4) } };
+    },
     load: load, fit: fit, settle: settle, sceneObjects: sceneObjects, frameTime: frameTime, refPick: refPick,
     view: function (n) { return render.setCameraPreset(n, { animate: false }); },
     place: function (p) { placed = p; render.setPlaced(p); result = LaserSim.trace(level, p); render.setBeam(result, { animate: false, fired: true }); return result; },

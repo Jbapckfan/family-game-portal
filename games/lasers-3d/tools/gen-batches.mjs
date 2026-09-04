@@ -9,11 +9,22 @@
 //   levels 1-3   12x12   pure 2D, MIRROR only
 //   levels 4-6   14x14   hidden low wall, first WEDGE, wedge again
 //   levels 7-9   16x16   first DIP (as the climb-LEVELLER, spec 12), the stilt beat, secret WEDGE
-//   levels 10-12 18x18   mixed, mixed, first two-target
-//   levels 13-16 20x20
-//   levels 17-18 22x22
+//   levels 10-12 18x18   first ARCH, first WINDOW (DESIGN.md 13), first two-target
+//   levels 13-16 20x20   arch again, the arch/window + climb-then-level combo, arch again, secret
+//   levels 17-18 22x22   window again, two-target
 //   levels 19-20 24x24
 // Par grows with the board: 1-2 (levels 1-5), 2-3 (6-12), 3-4 (13-17), 4-5 (18-20). Tray = par + 1 slack.
+//
+// ARCHES AND WINDOWS (DESIGN.md 13.4). The shipped set must carry, as validator assertions checked
+// against EVERY minimal solution and not merely the shipped one:
+//   - three `under-arch` levels   (10, 13, 15)   the beam routes UNDER an overhang at level 0
+//   - three `through-window` lvls (11, 14, 17)   the beam threads a hole ABOVE level 0
+//   - at least one combining an opening with the climb-then-level pattern of section 12, so the
+//     player has to ARRIVE at the opening's exact height rather than stumble into it (14 and 17)
+// The ARCH is introduced first (10) because "the beam went under it" is easier to grasp than "only
+// one height fits" (11). Each gets its own intro naming the fair tell of 13.3 - the light leak on
+// the floor and the height in the post-fire readout - and neither ever tells the player to tilt,
+// because tilting is what forfeits that level's own third star.
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { writeFileSync } from 'node:fs';
@@ -81,35 +92,57 @@ const SLOTS = [
     intro: 'One of these mirrors is not a mirror. Fire and watch the beam: if it turns and starts climbing, you have found the hidden wedge - and only a DIP can bring it back down to level.',
     spec: { w: 16, d: 16, plan: ['WEDGE', 'DIP', 'MIRROR', 'MIRROR'], fixedIdx: 0, secret: true, require: ['secret', 'wedge'], forceRequire: true, wantUnique: false } },
 
-  { n: 10, name: 'UP AND OVER', seed: 101,
-    spec: { w: 18, d: 18, plan: ['MIRROR', 'WEDGE', 'MIRROR'], require: ['wedge', 'overflight'] } },
+  // 10 - THE ARCH (DESIGN.md 13). A pure level-0 board: no climbing, no wedges, nothing new except
+  // that one of the towers is not solid at the bottom. Plan MIRROR x3 keeps the beam at height 0 all
+  // the way, so the only thing the player has to work out is that a wall can be gone under.
+  { n: 10, name: 'UNDER THE ARCH', seed: 1001,
+    intro: 'Look for the faint sliver of light on the floor - that block is not solid all the way down. A beam at ground level slips straight under it, and the readout after FIRE always names the height your beam is flying at.',
+    spec: { w: 18, d: 18, plan: ['MIRROR', 'MIRROR', 'MIRROR'], openings: { arch: 1 },
+            require: ['under-arch'], forceRequire: true, wantUnique: false } },
 
-  // 11 - the secret piece is a DIP this time. It drops the beam off the start tower and a WEDGE has
-  // to catch it and level it out again: the fall-then-level half of the delta rule.
-  { n: 11, name: 'SECRET SLIDE', seed: 111,
-    spec: { w: 18, d: 18, plan: ['DIP', 'WEDGE', 'MIRROR', 'MIRROR'], emitterZ: 2, fixedIdx: 0, secret: true, require: ['secret', 'dip', 'fall-then-level'] } },
+  // 11 - THE WINDOW. Same tell, harder lesson: the hole is part-way UP, so the height has to match.
+  // The emitter starts on a t=1 ridge and the whole route stays level at 1, which is the gentlest
+  // way to make "your beam is at height 1, so the hole at height 1 is the one that fits" land.
+  { n: 11, name: 'THROUGH THE WINDOW', seed: 1101,
+    intro: 'This block is hollow part-way UP, not at the bottom. The floor leaks the same faint light, but only a beam already flying at the hole\'s height will thread it - the readout after FIRE names the height your beam is at.',
+    spec: { w: 18, d: 18, plan: ['MIRROR', 'MIRROR'], emitterZ: 1, openings: { window: 1 },
+            require: ['through-window'], forceRequire: true, wantUnique: false } },
 
   // 12 - two orbs. The beam passes through a lit orb and carries on.
   { n: 12, name: 'TWO ORBS', seed: 121,
     intro: 'Two orbs this time. One beam has to light them both - it passes straight through the first one and carries on to the second.',
     spec: { w: 18, d: 18, plan: ['?', '?', '?'], targets: 2, require: ['twotargets'] } },
 
-  // 13 - the other half of the delta rule: a DIP starts the beam falling and a WEDGE levels it again.
-  { n: 13, name: 'ZIGZAG CLIMB', seed: 131,
-    spec: { w: 20, d: 20, plan: ['DIP', 'WEDGE', 'MIRROR'], emitterZ: 2, require: ['wedge', 'dip', 'fall-then-level'] } },
+  // 13 - arch again, now underneath a FALL: the beam drops off the start tower with a secret-free DIP
+  // and a WEDGE levels it at ground height, which is where the arch is waiting.
+  { n: 13, name: 'THE LOW ROAD', seed: 1301,
+    spec: { w: 20, d: 20, plan: ['DIP', 'WEDGE', 'MIRROR'], emitterZ: 2, openings: { arch: 1 },
+            require: ['under-arch', 'fall-then-level'], forceRequire: true, wantUnique: false } },
 
-  // 14 - climb, carry the climb through a mirror, then level off. The pattern, at par 4.
-  { n: 14, name: 'FLY OVER', seed: 141,
-    spec: { w: 20, d: 20, plan: ['WEDGE', 'MIRROR', 'DIP', 'MIRROR'], require: ['climb-then-level', 'overflight'] } },
+  // 14 - THE COMBO required by 13.4: a window plus climb-then-level. The window sits on a LEVEL leg
+  // above the floor, so the beam has to be climbed up with a WEDGE and then flattened with a DIP at
+  // exactly the right height. Arriving one level out is the whole difficulty.
+  { n: 14, name: 'THREAD THE NEEDLE', seed: 1401,
+    intro: 'The hole in this one is high up. Climb with a wedge, then level off with a dip so the beam is flying at the hole\'s own height when it arrives - the readout after FIRE tells you the height you actually got.',
+    // maxPitchedRun 2 keeps the climb short so the DIP levels the beam off at height 1 or 2 - the only
+    // heights a window can sit at. Without it the climb always runs to the ceiling and the level leg
+    // after it is at height 3, where no column can stand above a hole.
+    spec: { w: 20, d: 20, plan: ['WEDGE', 'DIP', 'MIRROR'], openings: { window: 1, windowOnLevelLeg: true },
+            maxPitchedRun: 2, require: ['through-window', 'climb-then-level'], forceRequire: true, wantUnique: false } },
 
-  { n: 15, name: 'TWO TOWERS', seed: 151,
-    spec: { w: 20, d: 20, plan: ['?', '?', '?', '?'], targets: 2, require: ['twotargets', 'overflight'] } },
+  // 15 - the third arch, this time on a board that also climbs: the beam goes under the overhang
+  // first and only then gets lifted, so the arch is not the last thing that happens.
+  { n: 15, name: 'STONE BRIDGE', seed: 1502,
+    spec: { w: 20, d: 20, plan: ['MIRROR', 'WEDGE', 'MIRROR'], openings: { arch: 1 },
+            require: ['under-arch', 'wedge'], forceRequire: true, wantUnique: false } },
 
   { n: 16, name: 'SECRET STEPS', seed: 161,
     spec: { w: 20, d: 20, plan: ['WEDGE', '?', '?', '?', '?'], fixedIdx: 0, secret: true, require: ['secret', 'overflight'] } },
 
-  { n: 17, name: 'SKY BRIDGE', seed: 171,
-    spec: { w: 22, d: 22, plan: ['WEDGE', 'MIRROR', 'DIP', 'MIRROR'], require: ['climb-then-level', 'overflight', 'stilt'] } },
+  // 17 - the third window, at par 3 on a 22x22 board, again demanding the exact height.
+  { n: 17, name: 'THE HIGH WINDOW', seed: 1703,
+    spec: { w: 22, d: 22, plan: ['WEDGE', 'DIP', 'MIRROR'], openings: { window: 1, windowOnLevelLeg: true },
+            maxPitchedRun: 2, require: ['through-window', 'climb-then-level'], forceRequire: true, wantUnique: false } },
 
   { n: 18, name: 'HIGH ROAD LOW ROAD', seed: 181,
     spec: { w: 22, d: 22, plan: ['?', '?', '?', '?'], targets: 2, require: ['twotargets', 'overflight'] } },
@@ -147,6 +180,10 @@ function mapComment(level) {
   marks[L.emitter.x + ',' + L.emitter.y] = dirGlyph[L.emitter.dir];
   for (const t of L.targets) marks[t.x + ',' + t.y] = '@';
   for (const f of L.fixed) marks[f.x + ',' + f.y] = 'F';
+  // DESIGN.md 13: an opened column is a full-height block from above, so the map has to say so
+  // explicitly or the level reads as unsolvable on paper. A = open at level 0 (arch), O = open above 0
+  // (window). The exact levels are in the `openings` field just below the map.
+  for (const o of L.openings) marks[o.x + ',' + o.y] = o.levels[0] === 0 ? 'A' : 'O';
   const out = [];
   for (let y = L.size.d - 1; y >= 0; y--) {
     let row = '';
@@ -167,6 +204,10 @@ function levelLiteral(slot, b) {
   const arr = a => '[' + a.map(q).join(', ') + ']';
   const pieces = a => '[' + a.map(p => '{ x: ' + p.x + ', y: ' + p.y + ", type: '" + p.type + "', orient: " + q(p.orient) + (p.secret != null ? ', secret: ' + p.secret : '') + ' }').join(', ') + ']';
   const pts = a => '[' + a.map(p => '{ x: ' + p.x + ', y: ' + p.y + ' }').join(', ') + ']';
+  const opens = a => '[' + a.map(o => '{ x: ' + o.x + ', y: ' + o.y + ', levels: [' + o.levels.join(', ') + '] }').join(', ') + ']';
+  const openLine = (L.openings && L.openings.length)
+    ? ['    openings: ' + opens(L.openings) + ',   // DESIGN.md 13: these columns are NOT solid at these levels']
+    : [];
   return [
     '  // ' + slot.n + '. ' + slot.name + '  (' + L.size.w + 'x' + L.size.d + ', par ' + L.par + ', seed ' + b.seed + ')',
     mapComment(L),
@@ -175,6 +216,7 @@ function levelLiteral(slot, b) {
     '    par: ' + L.par + ',',
     '    size: { w: ' + L.size.w + ', d: ' + L.size.d + ' },',
     '    terrain: ' + arr(L.terrain) + ', // terrain[y][x], y = 0 is the SOUTH row (reverse of the map above)',
+  ].concat(openLine).concat([
     "    emitter: { x: " + L.emitter.x + ', y: ' + L.emitter.y + ", dir: " + q(L.emitter.dir) + ' },',
     '    targets: ' + pts(L.targets) + ',',
     '    fixed: ' + pieces(L.fixed) + ',',
@@ -182,7 +224,7 @@ function levelLiteral(slot, b) {
     '    intro: ' + q(slot.intro || '') + ',',
     '    solution: ' + pieces(L.solution),
     '  }'
-  ].join('\n');
+  ]).join('\n');
 }
 
 const HEADER = `/* Lasers 3D - shipped level set (DESIGN.md 3.7). Generated by tools/gen-batches.mjs - edit that, not this.
@@ -194,6 +236,11 @@ const HEADER = `/* Lasers 3D - shipped level set (DESIGN.md 3.7). Generated by t
  *     par:      1,                           // minimum piece count, PROVEN by an exhaustive search at depth par-1
  *     size:     { w: 12, d: 12 },            // w cells east-west (x), d cells north-south (y); 12..24
  *     terrain:  ['000000', ...],             // d strings of w chars '0'..'3' = height; terrain[y][x]; y = 0 is the SOUTH row
+ *     openings: [{ x, y, levels: [0] }],     // OPTIONAL (DESIGN.md 13): levels punched OUT of a column, each
+ *                                            // an integer 0..3 strictly below that column's terrain height.
+ *                                            // levels [0] under a tall column = an ARCH (go under it);
+ *                                            // a middle level = a WINDOW (thread it at that height only).
+ *                                            // Identical to a solid column from directly above - that is the point.
  *     emitter:  { x: 0, y: 2, dir: 'E' },    // dir in E N W S; fires level (pitch 0) at height terrain[y][x]
  *     targets:  [{ x: 3, y: 5 }],            // 1 or 2 orbs; an orb sits at height terrain[y][x]; all must be lit
  *     fixed:    [{ x, y, type, orient, secret }], // immovable pieces; secret = drawn as a plain mirror in the flat view
@@ -204,7 +251,8 @@ const HEADER = `/* Lasers 3D - shipped level set (DESIGN.md 3.7). Generated by t
  * Boards run 12x12 (levels 1-3) to 24x24 (levels 19-20); the renderer auto-zooms and pans when a cell would
  * fall under the 34 px touch floor. Levels 1-3 are pure 2D (heights 0/3, MIRROR only). Every level from 4 on
  * is 3D-necessary (validate-levels.mjs).
- * Map comments: north row first; . = floor, 1-3 = height, > ^ < v = emitter, @ = target, F = fixed piece.
+ * Map comments: north row first; . = floor, 1-3 = height, > ^ < v = emitter, @ = target, F = fixed piece,
+ * A = a full-height column with an ARCH under it (open at level 0), O = one with a WINDOW in it (open above 0).
  * Verify: node validate-levels.mjs
  */
 (function (root, factory) {

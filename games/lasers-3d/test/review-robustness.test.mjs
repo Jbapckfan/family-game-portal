@@ -558,7 +558,9 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
     for (const s of res.visited) {
       assert.ok(s.x >= 0 && s.x < L.size.w && s.y >= 0 && s.y < L.size.d, `${tag}: visited on grid`);
       assert.ok(s.z >= 0 && s.z <= 3, `${tag}: visited z`);
-      assert.ok(L.t[s.y][s.x] <= s.z, `${tag}: visited above terrain`);
+      // DESIGN.md 13.2: a visited cell is at or above the column top, OR at a level punched out of it.
+      assert.ok(L.t[s.y][s.x] <= s.z || ((L.openMask[s.y][s.x] >> s.z) & 1) === 1,
+        `${tag}: visited inside solid rock at (${s.x},${s.y}) level ${s.z}, column height ${L.t[s.y][s.x]}`);
       assert.ok(DIRK.includes(s.d) && [-1, 0, 1].includes(s.v), `${tag}: visited d/v`);
     }
     // visited.length equals the number of non-terminal-stub segments
@@ -574,7 +576,7 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
     assert.ok(!res.visited.some(s => s.x === L.emitter.x && s.y === L.emitter.y), `${tag}: emitter never entered`);
     // --- events stream mirrors the legacy fields exactly and is ordered by segment index
     assert.ok(Array.isArray(res.events), `${tag}: events array`);
-    const EK = new Set(['enter', 'piece', 'overflight', 'target', 'pitch', 'end']);
+    const EK = new Set(['enter', 'piece', 'overflight', 'underpass', 'target', 'pitch', 'end']);
     for (let i = 0; i < res.events.length; i++) {
       const e = res.events[i];
       assert.ok(EK.has(e.kind), `${tag}: event kind ${e.kind}`);
@@ -589,6 +591,12 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
     assert.deepEqual(res.events.filter(e => e.kind === 'enter').map(e => ({ x: e.x, y: e.y, z: e.z, d: e.d, v: e.v })), res.visited, `${tag}: enters = visited`);
     assert.deepEqual(res.events.filter(e => e.kind === 'piece').map(e => ({ x: e.x, y: e.y, type: e.type, orient: e.orient, fixed: e.fixed })), res.pieceHits, `${tag}: pieces = pieceHits`);
     assert.deepEqual(res.events.filter(e => e.kind === 'overflight').map(e => ({ x: e.x, y: e.y })), res.overflights, `${tag}: overflights`);
+    assert.deepEqual(res.events.filter(e => e.kind === 'underpass').map(e => ({ x: e.x, y: e.y })), res.underpasses, `${tag}: underpasses`);
+    // over and under are never both reported for the same step, and each is on the right side of the piece
+    for (const e of res.events) {
+      if (e.kind === 'overflight') assert.ok(e.z > L.t[e.y][e.x], `${tag}: overflight not above the piece`);
+      if (e.kind === 'underpass') assert.ok(e.z < L.t[e.y][e.x] && ((L.openMask[e.y][e.x] >> e.z) & 1) === 1, `${tag}: underpass not through an opening`);
+    }
     assert.deepEqual(res.events.filter(e => e.kind === 'target').map(e => e.targetIndex), res.hits, `${tag}: targets = hits`);
     assert.deepEqual(res.events.filter(e => e.kind === 'pitch' || e.kind === 'end').map(e => ({ x: e.x, y: e.y, z: e.z })), res.altitudeMarks, `${tag}: pitch+end = altitudeMarks`);
     // a target is only ever reported at the orb's own level - never on a fly-over
@@ -619,6 +627,46 @@ describe('robustness: seeded fuzz - random levels and random (possibly illegal) 
     }
     assert.ok(over > 0, 'fuzz should exercise overflights');
   });
+
+  test('1200 random boards WITH openings: never throws, deterministic, and no beam is ever inside rock', () => {
+    const r = rng(0x0FE0FE);
+    let threaded = 0, under = 0, withOpen = 0;
+    for (let i = 0; i < 1200; i++) {
+      const raw = randomLevel(r);
+      const base = parseLevel(raw);
+      const openings = [];
+      for (let y = 0; y < base.size.d; y++) for (let x = 0; x < base.size.w; x++) {
+        const top = base.t[y][x];
+        if (top < 1 || r() < 0.55) continue;
+        const levels = [];
+        for (let z = 0; z < top; z++) if (r() < 0.5) levels.push(z);
+        if (levels.length) openings.push({ x, y, levels });
+      }
+      const withOpenings = Object.assign({}, raw, { openings });
+      if (openings.length) withOpen++;
+      let L;
+      try { L = parseLevel(withOpenings); } catch (e) { assert.fail(`iteration ${i}: ${e.message}`); }
+      const placed = randomPlaced(r, L);
+      const a = trace(L, placed);
+      const b = trace(withOpenings, placed.map(p => ({ ...p })));
+      assert.deepEqual(a, b, `iteration ${i}: nondeterministic`);
+      checkInvariants(L, placed, a, `iteration ${i} (openings)`);
+      // THE RULE OF 13.2, stated as an invariant: the beam is below a column's top only at a level
+      // that column has actually had punched out.
+      for (const v of a.visited) {
+        if (v.z >= L.t[v.y][v.x]) continue;
+        assert.equal((L.openMask[v.y][v.x] >> v.z) & 1, 1, `iteration ${i}: beam inside solid rock`);
+        assert.equal(Sim.isOpen(L, v.x, v.y, v.z), true, `iteration ${i}: isOpen disagrees with openMask`);
+        threaded++;
+      }
+      for (const u of a.underpasses) under++;
+      // openings never change the derived loop-guard cap: the state space is unchanged
+      assert.equal(Sim.stepCap(L), Sim.stepCap(raw), `iteration ${i}: stepCap moved`);
+    }
+    assert.ok(withOpen > 600, 'the fuzz should carry openings: ' + withOpen);
+    assert.ok(threaded > 100, 'the fuzz should thread openings: ' + threaded);
+    assert.ok(under > 0, 'the fuzz should pass under a piece at least once: ' + under);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -637,7 +685,7 @@ describe('robustness: UMD wrapper', () => {
     assert.equal(require('../src/sim.js'), Sim);
   });
   test('node require: module.exports is the factory result, not wrapped', () => {
-    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'parseLevel', 'stepCap', 'trace'].sort());
+    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'isOpen', 'parseLevel', 'stepCap', 'trace'].sort());
     assert.deepEqual(Object.keys(Pieces).sort(),
       ['ORIENTS', 'PIECES', 'TURN', 'TYPES', 'V_MIN', 'V_MAX', 'apply', 'applyPitch', 'clampPitch', 'isOrient', 'isType', 'rotate'].sort());
   });
@@ -945,4 +993,81 @@ describe('robustness (pass 2): UMD wrapper under hostile globals', () => {
     const leaked = Object.keys(sb).filter(k => !['window', 'self', 'LaserPieces', 'LaserSim'].includes(k));
     assert.deepEqual(leaked, []);
   });
+});
+
+// ---------------------------------------------------------------------------
+// ARCHES AND WINDOWS (DESIGN.md section 13) - the adversarial half
+// ---------------------------------------------------------------------------
+describe('robustness: openings', () => {
+  const arch = (o = {}) => mk(Object.assign({
+    terrain: ['0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'],
+    openings: [{ x: 3, y: 3, levels: [0] }],
+  }, o));
+
+  test('a FORGED openMask on a hand-made "parsed" level is discarded and re-derived from `openings`', () => {
+    // The mask is the thing the stepper actually reads, so a forged one is the dangerous forgery:
+    // it would open a column that `openings` never named, or seal one that it did.
+    const spoof = { ...arch(), parsed: true, openMask: Array.from({ length: 7 }, () => new Array(7).fill(15)) };
+    const L = parseLevel(spoof);
+    assert.notEqual(L, spoof);
+    assert.equal(L.openMask[3][3], 1, 'only the level `openings` names is open');
+    assert.equal(L.openMask[0][0], 0, 'the forged all-open mask is gone');
+    assert.equal(trace(spoof, []).end, 'target', 'and the beam still only goes where the data allows');
+  });
+
+  test('a forged openMask cannot seal an opening that `openings` declares', () => {
+    const spoof = { ...arch(), parsed: true, openMask: Array.from({ length: 7 }, () => new Array(7).fill(0)) };
+    assert.equal(parseLevel(spoof).openMask[3][3], 1);
+    assert.equal(trace(spoof, []).end, 'target');
+  });
+
+  test('a malformed `openings` throws the documented error from trace and canPlace too, not only parseLevel', () => {
+    for (const [bad, re] of [
+      [arch({ openings: [{ x: 99, y: 3, levels: [0] }] }), /openings\[0\] must name an on-grid column/],
+      [arch({ openings: [{ x: 3, y: 3, levels: [3] }] }), /not strictly below the height t=3/],
+      [arch({ openings: [{ x: 3, y: 3, levels: [1, 1] }] }), /openings\[0\] repeats level 1/],
+      [arch({ openings: [{ x: 3, y: 3, levels: [0] }, { x: 3, y: 3, levels: [1] }] }), /openings\[1\] duplicates the column/],
+      [arch({ openings: 'nope' }), /openings must be an array/],
+      [{ ...arch(), parsed: true, openings: [{ x: 3, y: 3, levels: [9] }] }, /openings\[0\] levels\[0\] must be an integer/],
+    ]) {
+      assert.throws(() => parseLevel(bad), re);
+      assert.throws(() => trace(bad, []), re);
+      assert.throws(() => canPlace(bad, [], 1, 1), re);
+      assert.throws(() => Sim.stepCap(bad), re);
+      assert.throws(() => Sim.isOpen(bad, 3, 3, 0), re);
+    }
+  });
+
+  test('the parsed level never aliases the input: mutating `openings` afterwards changes nothing', () => {
+    const raw = arch();
+    const L = parseLevel(raw);
+    raw.openings[0].levels.push(2);
+    raw.openings.push({ x: 0, y: 0, levels: [0] });
+    assert.deepEqual(L.openings, [{ x: 3, y: 3, levels: [0] }]);
+    assert.equal(L.openMask[3][3], 1);
+    assert.equal(trace(L, []).end, 'target');
+  });
+
+  test('an opening under the EMITTER lets a beam pass beneath the emitter body', () => {
+    // The emitter body is a one-level-tall obstacle at its own terrain level (INTERFACES 4, rule 4).
+    // Stand the emitter on a t=3 pillar and punch level 0 out of it: a beam that comes back round at
+    // ground level runs straight UNDER the emitter instead of being stopped by its body.
+    //   emitter (0,3) on the t=3 pillar fires E at z=3 -> DIP on the t=3 tower at (3,3) turns it S and
+    //   drops it to z=0 by (3,0) -> WEDGE there levels it and sends it W -> MIRROR at (0,0) turns it N
+    //   -> it passes THROUGH the emitter's own pillar at level 0 and lights the orb at (0,5).
+    const board = (openings) => mk({
+      terrain: ['0000000', '0000000', '0000000', '3003000', '0000000', '0000000', '0000000'],
+      openings, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 0, y: 5 }],
+    });
+    const placed = [D(3, 3, '\\'), W(3, 0, '/'), M(0, 0, '\\')];
+    const open = trace(board([{ x: 0, y: 3, levels: [0] }]), placed);
+    assert.equal(open.visited[0].z, 3, 'the emitter fires from the TOP of its pillar');
+    assert.equal(open.end, 'target');
+    assert.ok(open.visited.some(v => v.x === 0 && v.y === 3 && v.z === 0), 'the beam passed under the emitter');
+    // the identical board without the opening stops at the pillar's wall face
+    const solid = trace(board(undefined), placed);
+    assert.equal(solid.end, 'blocked');
+    assert.deepEqual(solid.endPoint, { x: 0, y: 2.5, z: 0 });
+  });
+
 });

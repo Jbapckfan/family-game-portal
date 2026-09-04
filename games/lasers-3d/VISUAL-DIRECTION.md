@@ -312,7 +312,13 @@ Additional beam rules:
 End states:
 
 - **Blocked:** stop at the cell boundary. Add a solid octagonal `danger` cap perpendicular to the beam, diameter `0.18` cell, plus three `0.08`-cell sparks that fade over `260ms`.
-- **Lost at edge:** taper the final `0.22` cell of beam to zero and place a hollow `danger` ring at the exit point, diameter `0.20` cell with `0.025`-cell stroke.
+- **A lost beam departs, it does not stop.** (Amended 2026-09-03 after James reported "the beam should keep going up or at least look like its going farther".)
+  The beam is drawn PAST the simulation's endpoint and fades to nothing, so leaving the world reads as departure rather than a halt.
+  Distances live in `theme.beam.endStates.*.departCells`: `lostSky` 2.8 cells continuing the 45-degree climb, `lostEdge` 2.4 cells
+  continuing the heading, `lostFloor` 1.7 cells skimming ALONG the ground (a descending ray would only bury itself, since the beam
+  already meets the floor plane exactly at the endpoint). Radius and opacity fall to zero across the departure. The hollow `danger`
+  ring is kept in every case, diameter `0.20` cell with `0.025`-cell stroke, but on `lostSky` it is pushed `1.10` cells along the
+  departure or the level-3 glow swallows it.
 - **Lost into floor:** use the same ring laid flat on the floor, with one downward triangular notch.
 - **Lost into sky:** use a screen-facing ring with one upward triangular notch.
 - **Loop:** use a `wedge`-colored double ring rotating once over `500ms`.

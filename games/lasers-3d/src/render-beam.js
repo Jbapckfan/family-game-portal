@@ -11,18 +11,23 @@
     var B = theme.beam, ES = B.endStates;
     var group = new THREE.Group(); group.name = 'beam';
     var tubes = new THREE.Group(), fx = new THREE.Group(), badges = new THREE.Group();
+    tubes.name = 'beamTubes'; fx.name = 'beamFx'; badges.name = 'beamBadges';   /* named so tests can read the drawn tubes alone */
     group.add(tubes); group.add(fx); group.add(badges);
     var uHead = { value: 0 }, uBias = { value: 0 };
     var DEPTH_BIAS_WORLD = 0.08;   /* pull the beam toward the camera so a tube grazing a block edge is not clipped */
 
-    /* Shader hook: hide every fragment beyond the head distance (arc length along the beam) + depth bias. */
+    /* Shader hook: hide every fragment beyond the head distance (arc length along the beam) + depth bias, and scale
+     * the fragment's alpha by the per-vertex `aFade` that the departure (see set()) tapers to zero. EVERY beam mesh
+     * carries aFade - 1 all along the beam proper - because a missing attribute reads as 0 and would blank the beam. */
     function headHook(m) {
       m.onBeforeCompile = function (s) {
         s.uniforms.uHead = uHead; s.uniforms.uBias = uBias;
-        s.vertexShader = 'attribute float aDist;\nvarying float vDist;\nuniform float uBias;\n' + s.vertexShader
-          .replace('#include <begin_vertex>', '#include <begin_vertex>\n vDist = aDist;')
+        s.vertexShader = 'attribute float aDist;\nattribute float aFade;\nvarying float vDist;\nvarying float vFade;\nuniform float uBias;\n' + s.vertexShader
+          .replace('#include <begin_vertex>', '#include <begin_vertex>\n vDist = aDist;\n vFade = aFade;')
           .replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position.z -= uBias * gl_Position.w;');
-        s.fragmentShader = 'uniform float uHead;\nvarying float vDist;\n' + s.fragmentShader.replace('void main() {', 'void main() {\n if (vDist > uHead) discard;');
+        s.fragmentShader = 'uniform float uHead;\nvarying float vDist;\nvarying float vFade;\n' + s.fragmentShader
+          .replace('void main() {', 'void main() {\n if (vDist > uHead) discard;')
+          .replace('#include <dithering_fragment>', '#include <dithering_fragment>\n gl_FragColor.a *= vFade;');
       };
       m.customProgramCacheKey = function () { return 'lasers3d-beam-head'; };
       return m;
@@ -33,15 +38,27 @@
       mats.glow[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamGlow, { color: L.color, opacity: L.glowOpacity })));
       mats.filament[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamFilament)));
     });
+    /* The departure fades its opacity to zero, which the OPAQUE core material cannot express (alpha is ignored with
+     * blending off), so the departure's core gets its own transparent copy per altitude. Glow and filament are
+     * already transparent, so the departure reuses their buckets and materials as they are. */
+    var depMats = [];
+    B.levels.forEach(function (L, z) {
+      var m = Core.matFromSpec(theme.materials.beamCore, { color: L.color, emissive: L.color, emissiveIntensity: L.coreEmissive });
+      m.transparent = true; m.depthWrite = false;
+      depMats[z] = Core.markShared(headHook(m));
+    });
+    /* result.end -> theme.beam.endStates key, for the three endings that leave the world. */
+    var DEPART = { 'lost-edge': 'lostEdge', 'lost-floor': 'lostFloor', 'lost-sky': 'lostSky' };
     var badgeTex = [], ringGeo = new THREE.RingGeometry(0.5 - 0.0625, 0.5, 40), discGeo = new THREE.CircleGeometry(0.5, 8);
     var sparkGeo = new THREE.SphereGeometry(0.5, 8, 6), triGeo = new THREE.CircleGeometry(0.5, 3);
     var burstTex = { hit: Core.markShared(Core.glowTexture(theme.palette.targetLit, ES.target.streaks)) };
     Core.markSharedAll([ringGeo, discGeo, sparkGeo, triGeo]);
 
     /* ---- tube building ---- */
-    function Bucket() { this.pos = []; this.nor = []; this.dist = []; }
+    function Bucket() { this.pos = []; this.nor = []; this.dist = []; this.fade = []; }
     var tmpA = new THREE.Vector3(), tmpN1 = new THREE.Vector3(), tmpN2 = new THREE.Vector3();
-    function tube(bk, P, Q, r0, r1, d0, d1, extS, extE) {
+    function tube(bk, P, Q, r0, r1, d0, d1, extS, extE, f0, f1) {
+      var fS = f0 === undefined ? 1 : f0, fE = f1 === undefined ? 1 : f1;
       var axis = tmpA.subVectors(Q, P).normalize(), sides = B.tubeSides;
       var n1 = Math.abs(axis.y) > 0.9 ? tmpN1.set(1, 0, 0) : tmpN1.set(0, 1, 0).cross(axis).normalize();
       var n2 = tmpN2.crossVectors(axis, n1).normalize();
@@ -56,7 +73,7 @@
       function v(k, atQ) {
         var n = ring[k], r = atQ ? r1 : r0;
         bk.pos.push((atQ ? qx : px) + n[0] * r, (atQ ? qy : py) + n[1] * r, (atQ ? qz : pz) + n[2] * r);
-        bk.nor.push(n[0], n[1], n[2]); bk.dist.push(atQ ? d1 : d0);
+        bk.nor.push(n[0], n[1], n[2]); bk.dist.push(atQ ? d1 : d0); bk.fade.push(atQ ? fE : fS);
       }
       for (i = 0; i < sides; i++) { v(i, false); v(i + 1, false); v(i, true); v(i + 1, false); v(i + 1, true); v(i, true); }
     }
@@ -65,6 +82,7 @@
       g.setAttribute('position', new THREE.Float32BufferAttribute(bk.pos, 3));
       g.setAttribute('normal', new THREE.Float32BufferAttribute(bk.nor, 3));
       g.setAttribute('aDist', new THREE.Float32BufferAttribute(bk.dist, 1));
+      g.setAttribute('aFade', new THREE.Float32BufferAttribute(bk.fade, 1));
       var m = new THREE.Mesh(g, mat); m.frustumCulled = false; return m;
     }
 
@@ -82,8 +100,8 @@
       clear();
       if (!result || !result.segments || !result.segments.length) return;
       opts = opts || {};
-      var cores = [], glows = [], fils = [], i, z;
-      for (z = 0; z < 4; z++) { cores.push(new Bucket()); glows.push(new Bucket()); fils.push(new Bucket()); }
+      var cores = [], glows = [], fils = [], deps = [], i, z;
+      for (z = 0; z < 4; z++) { cores.push(new Bucket()); glows.push(new Bucket()); fils.push(new Bucket()); deps.push(new Bucket()); }
       var cum = 0, marks = [], lits = [], segs = result.segments, P = new THREE.Vector3(), Q = new THREE.Vector3(), lastDir = new THREE.Vector3(1, 0, 0);
       var edge = result.end === 'lost-edge', run = null, runs = [];
       for (i = 0; i < segs.length; i++) {
@@ -106,27 +124,71 @@
           if (result.hits.indexOf(ti) >= 0 && t.x === s.to.x && t.y === s.to.y && !lits.some(function (l) { return l.index === ti; })) lits.push({ index: ti, dist: cum, pos: Q.clone() });
         });
       }
+      /* `dep` is the departure spec for an ending that LEAVES the world (theme.beam.endStates.<state>). It only ever
+       * affects the last run's radius ramp here; the continuation past endPoint is built right after this loop. */
+      var dep = DEPART[result.end] ? ES[DEPART[result.end]] : null;
       runs.forEach(function (r, ri) {
         var L0 = B.levels[r.z0], L1 = B.levels[r.z1], lastRun = ri === runs.length - 1, len = r.a.distanceTo(r.b);
-        var parts = [{ a: r.a, b: r.b, r0: L0.coreDiameter / 2, r1: L1.coreDiameter / 2, g0: L0.glowDiameter / 2, g1: L1.glowDiameter / 2, d0: r.d0, d1: r.d1, extE: !lastRun }];
-        if (lastRun && edge && len > ES.lostEdge.taperCells) {
-          var k = 1 - ES.lostEdge.taperCells / len, mid = r.a.clone().lerp(r.b, k), dm = r.d0 + (r.d1 - r.d0) * k;
-          parts = [{ a: r.a, b: mid, r0: L0.coreDiameter / 2, r1: L1.coreDiameter / 2, g0: L0.glowDiameter / 2, g1: L1.glowDiameter / 2, d0: r.d0, d1: dm, extE: false },
-                   { a: mid, b: r.b, r0: L1.coreDiameter / 2, r1: 0, g0: L1.glowDiameter / 2, g1: 0, d0: dm, d1: r.d1, extE: false }];
+        var back = (dep && lastRun) ? Math.min(dep.taperBackCells || 0, len * 0.9) : 0;
+        var parts = [{ a: r.a, b: r.b, s0: 1, s1: 1, d0: r.d0, d1: r.d1, extE: !lastRun }];
+        if (back > 0) {
+          var k = 1 - back / len, mid = r.a.clone().lerp(r.b, k), dm = r.d0 + (r.d1 - r.d0) * k;
+          parts = [{ a: r.a, b: mid, s0: 1, s1: 1, d0: r.d0, d1: dm, extE: false },
+                   { a: mid, b: r.b, s0: 1, s1: dep.startScale === undefined ? 1 : dep.startScale, d0: dm, d1: r.d1, extE: false }];
         }
         parts.forEach(function (p, j) {
           var extS = (ri > 0) && j === 0;
-          tube(cores[r.z0], p.a, p.b, p.r0, p.r1, p.d0, p.d1, extS, p.extE);
-          tube(glows[r.z0], p.a, p.b, p.g0, p.g1, p.d0, p.d1, extS, p.extE);
-          if (L0.filament) tube(fils[r.z0], p.a, p.b, p.r0 * B.filament.diameterRatio, p.r1 * B.filament.diameterRatio, p.d0, p.d1, extS, p.extE);
+          var cr0 = L0.coreDiameter / 2 * p.s0, cr1 = L1.coreDiameter / 2 * p.s1;
+          tube(cores[r.z0], p.a, p.b, cr0, cr1, p.d0, p.d1, extS, p.extE);
+          tube(glows[r.z0], p.a, p.b, L0.glowDiameter / 2 * p.s0, L1.glowDiameter / 2 * p.s1, p.d0, p.d1, extS, p.extE);
+          if (L0.filament) tube(fils[r.z0], p.a, p.b, cr0 * B.filament.diameterRatio, cr1 * B.filament.diameterRatio, p.d0, p.d1, extS, p.extE);
         });
       });
+      /* ---- the departure: carry the DRAWING past the simulation's endPoint ----
+       * A beam that leaves the world used to stop dead at endPoint (owner report, DESIGN.md-era note in theme.js).
+       * It now continues along its own direction - a 45-degree climb keeps climbing at 45 degrees, it is never bent -
+       * for theme departCells, with core and glow radius and opacity both easing to zero. Nothing here is pickable
+       * (picking is analytic against the terrain) and nothing here reaches the camera fit, which is built once per
+       * level from the terrain silhouette (render-terrain.buildFitPoints), so a long departure cannot zoom the board
+       * out. The distances continue `cum`, so the travel sweep reveals the departure as part of the same arc. */
+      var depDir = null;
+      if (dep && runs.length) {
+        var lr = runs[runs.length - 1], bz = lr.z0, LZ = B.levels[lr.z1], bL = B.levels[bz];
+        var span = Math.max(0, dep.departCells || 0), steps = Math.max(1, dep.departSteps | 0);
+        var sc = dep.startScale === undefined ? 1 : dep.startScale, rp = dep.radiusPower || 1, fp = dep.fadePower || 1;
+        depDir = new THREE.Vector3().subVectors(lr.b, lr.a);
+        if (depDir.lengthSq() < 1e-12) depDir.copy(lastDir);
+        depDir.normalize();
+        var origin = lr.b.clone();
+        if (dep.departMode === 'skim') {
+          /* A lost-floor beam reaches the floor plane EXACTLY at endPoint, so there is no descending room left:
+           * continuing the ray would only bury the tube. The departure runs along the ground heading instead, just
+           * clear of the floor, so the beam reads as striking the ground and dissipating forward. */
+          depDir.y = 0;
+          if (depDir.lengthSq() < 1e-12) depDir.set(1, 0, 0);
+          depDir.normalize();
+          origin.y = Math.max(origin.y, dep.floorClearance || 0);
+        }
+        var prev = origin.clone(), pt = new THREE.Vector3(), tPrev = 0, dPrev = cum;
+        for (i = 1; i <= steps && span > 0; i++) {
+          var t = i / steps, dNow = cum + span * t;
+          pt.copy(origin).addScaledVector(depDir, span * t);
+          var a0 = sc * Math.pow(1 - tPrev, rp), a1 = sc * Math.pow(1 - t, rp);
+          var o0 = Math.pow(1 - tPrev, fp), o1 = Math.pow(1 - t, fp);
+          tube(deps[bz], prev, pt, LZ.coreDiameter / 2 * a0, LZ.coreDiameter / 2 * a1, dPrev, dNow, false, false, o0, o1);
+          tube(glows[bz], prev, pt, LZ.glowDiameter / 2 * a0, LZ.glowDiameter / 2 * a1, dPrev, dNow, false, false, o0, o1);
+          if (bL.filament) tube(fils[bz], prev, pt, LZ.coreDiameter / 2 * a0 * B.filament.diameterRatio, LZ.coreDiameter / 2 * a1 * B.filament.diameterRatio, dPrev, dNow, false, false, o0, o1);
+          prev.copy(pt); tPrev = t; dPrev = dNow;
+        }
+        cum += span;
+      }
       result.altitudeMarks.forEach(function (m, mi) {
         if (!marks[mi]) marks[mi] = { dist: 0, pos: Core.world(m.x, m.y, m.z + B.heightOffset), z: Core.clamp(Math.round(m.z), 0, 3) };
       });
       for (z = 0; z < 4; z++) {
         if (cores[z].pos.length) { tubes.add(bucketMesh(cores[z], mats.core[z])); var gm = bucketMesh(glows[z], mats.glow[z]); gm.renderOrder = 6; tubes.add(gm); }
         if (fils[z].pos.length) { var fm = bucketMesh(fils[z], mats.filament[z]); fm.renderOrder = 7; tubes.add(fm); }
+        if (deps[z].pos.length) { var dpm = bucketMesh(deps[z], depMats[z]); dpm.renderOrder = 8; tubes.add(dpm); }
       }
       /* The travel DURATION is what the player waits through, so it is what is clamped: a 60-cell route on a 24x24
        * board would take 11 s at a fixed 5.5 cells/s and the controls are locked for all of it. Short beams keep a
@@ -135,7 +197,8 @@
         ? Core.clamp(cum / Math.max(0.001, motion.cellsPerSecond) * 1000, motion.minDurationMs, motion.maxDurationMs)
         : motion.liveRetraceMs;
       var speed = cum / Math.max(0.001, durMs / 1000);
-      state = { total: cum, head: 0, speed: speed, playing: true, marks: marks, lits: lits, end: result.end, endPos: Q.clone(), endDir: lastDir.clone(), fired: !!opts.fired, ended: false };
+      state = { total: cum, head: 0, speed: speed, playing: true, marks: marks, lits: lits, end: result.end, endPos: Q.clone(), endDir: lastDir.clone(),
+        depDir: depDir, fired: !!opts.fired, ended: false };
       if (opts.fired) marks.forEach(function (m) { badges.add(makeBadge(m)); });
     }
 
@@ -192,7 +255,11 @@
         }
       } else if (st.end === 'lost-edge' || st.end === 'lost-floor' || st.end === 'lost-sky') {
         var spec = st.end === 'lost-edge' ? ES.lostEdge : (st.end === 'lost-floor' ? ES.lostFloor : ES.lostSky);
-        var ring = new THREE.Mesh(ringGeo, basic(spec.ringColor)); ring.position.copy(e); ring.scale.setScalar(spec.ringDiameter);
+        /* The ring still says WHY the beam was lost. It sits on endPoint - the point where the beam left the world -
+         * unless the theme slides it along the departure (markerAlongCells) to keep it clear of the fading tube. */
+        var at = e.clone();
+        if (st.depDir && spec.markerAlongCells) at.addScaledVector(st.depDir, spec.markerAlongCells);
+        var ring = new THREE.Mesh(ringGeo, basic(spec.ringColor)); ring.position.copy(at); ring.scale.setScalar(spec.ringDiameter);
         if (st.end === 'lost-edge') faceAlong(ring, dir);
         else if (st.end === 'lost-floor') { ring.position.y = 0.006; ring.rotation.x = -Math.PI / 2; }
         else ring.userData.screenFacing = true;
@@ -268,6 +335,7 @@
     function dispose() {
       clear();
       ['core', 'glow', 'filament'].forEach(function (k) { mats[k].forEach(function (m) { m.dispose(); }); });
+      depMats.forEach(function (m) { m.dispose(); }); depMats = [];
       Object.keys(pool).forEach(function (k) { pool[k].forEach(function (m) { m.dispose(); }); }); pool = {};
       badgeMat.forEach(function (m) { if (m) m.dispose(); }); badgeMat = [];
       badgeTex.forEach(function (t) { if (t) t.dispose(); }); burstTex.hit.dispose();

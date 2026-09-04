@@ -171,10 +171,169 @@ try {
   });
   check(capped.seconds <= capped.cap + 0.05,
     `24x24 beam of ${capped.total.toFixed(1)} cells travels in ${capped.seconds.toFixed(2)} s (cap ${capped.cap.toFixed(2)} s), not ${(capped.total / 5.5).toFixed(1)} s`);
-  check(capped.shortSeconds >= capped.floor - 0.02 && capped.shortSeconds <= capped.floor + 0.05,
-    `a ${capped.shortTotal.toFixed(2)}-cell stub still takes the ${capped.floor.toFixed(2)} s floor (${capped.shortSeconds.toFixed(2)} s), so short beams still read`);
+  {
+    // A lost ending is DRAWN past its endPoint (theme.beam.endStates.*.departCells), so this one-cell lost-edge stub
+    // has a drawn arc of 1 cell of beam plus its departure. The duration follows the clamp on the DRAWN arc and can
+    // never fall under the floor, which is what keeps a short beam readable.
+    const want = Math.min(capped.cap, Math.max(capped.floor, capped.shortTotal / anim.travel.cellsPerSecond));
+    check(capped.shortSeconds >= want - 0.02 && capped.shortSeconds <= want + 0.05 && want >= capped.floor,
+      `a 1-cell stub is drawn as ${capped.shortTotal.toFixed(2)} cells (beam + departure) and travels in ${capped.shortSeconds.toFixed(2)} s ` +
+      `(clamped target ${want.toFixed(2)} s, floor ${capped.floor.toFixed(2)} s), so short beams still read`);
+  }
   check(capped.midway > 0 && capped.midway < capped.total && Math.abs(capped.afterSkip.cells - capped.total) < 1e-6 && !capped.settled.playing,
     `finishBeam() jumps a beam mid-flight (${capped.midway.toFixed(1)} cells) straight to ${capped.afterSkip.cells.toFixed(1)}/${capped.total.toFixed(1)} and ends it`);
+
+  // ---- departing beams: a lost beam is DRAWN past the simulation's endPoint ----
+  // Owner report, 2026-09-03: "after the wedge moves the beam up it eventually stops... the beam should keep going up
+  // or at least look like its going farther". trace() is untouched; theme.beam.endStates.<state>.departCells carries
+  // the DRAWING past result.endPoint and tapers it to nothing. These checks prove, for every ending that leaves the
+  // world, that (a) real geometry exists beyond endPoint in the right direction, (b) it is part of the travel sweep's
+  // arc length rather than popped in at the end, (c) a lost-floor departure never sinks below the floor plane,
+  // (d) the camera auto-fit and picking are untouched by it, and (e) reduced motion changes only the sweep.
+  const DEPART_SCENES = {
+    'lost-sky': {   // wedge turns the beam north and it climbs 0 -> 3, then off the top of the world
+      raw: { name: 'SKY', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 2, dir: 'E' }, targets: [{ x: 7, y: 7 }], fixed: [], tray: ['WEDGE'] },
+      placed: [{ x: 3, y: 2, type: 'WEDGE', orient: '/' }] },
+    'lost-floor': {  // dip on a plateau sends the beam down 2 -> 0 and into the floor
+      raw: { name: 'FLOOR', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '20020000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 7 }], fixed: [], tray: ['DIP'] },
+      placed: [{ x: 3, y: 4, type: 'DIP', orient: '\\' }] },
+    'lost-edge': {   // straight run off the east edge at level 0
+      raw: { name: 'EDGE', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 7 }], fixed: [], tray: ['MIRROR'] },
+      placed: [] },
+    'lost-edge-climbing': {   // a CLIMBING exit: the last run changes altitude, so the departure continues a ramp
+      raw: { name: 'EDGECLIMB', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['WEDGE'] },
+      placed: [{ x: 5, y: 4, type: 'WEDGE', orient: '/' }] },
+  };
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.waitForTimeout(120);
+  const departed = await page.evaluate(async (scenes) => {
+    const h = window.__h, r = h.render, B = h.theme.beam, out = {};
+    const KEY = { 'lost-edge': 'lostEdge', 'lost-floor': 'lostFloor', 'lost-sky': 'lostSky' };
+    // Independent reimplementation of the drawing UP TO endPoint (INTERFACES.md 2: a terminal stub keeps from.z in
+    // to.z and is sloped by v; a lost-edge stub is cut at the board boundary). Everything past this is the departure.
+    function pathToEnd(res) {
+      const off = B.heightOffset, edge = res.end === 'lost-edge';
+      let len = 0, P = null, Q = null;
+      for (let i = 0; i < res.segments.length; i++) {
+        const s = res.segments[i], last = i === res.segments.length - 1;
+        const stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
+        const toH = stub ? s.from.z + off + 0.5 * s.v : s.to.z + off;
+        P = { x: s.from.x, y: s.from.z + off, z: -s.from.y };
+        Q = { x: s.to.x, y: toH, z: -s.to.y };
+        if (last && edge) { Q.x += (P.x - Q.x) * 0.5; Q.y += (P.y - Q.y) * 0.5; Q.z += (P.z - Q.z) * 0.5; }
+        len += Math.hypot(Q.x - P.x, Q.y - P.y, Q.z - P.z);
+      }
+      const u = { x: Q.x - P.x, y: Q.y - P.y, z: Q.z - P.z };
+      const m = Math.hypot(u.x, u.y, u.z) || 1;
+      return { len, end: Q, dir: { x: u.x / m, y: u.y / m, z: u.z / m } };
+    }
+    function tubeVerts() {
+      let tubes = null;
+      r._scene.traverse((o) => { if (o.name === 'beamTubes') tubes = o; });
+      const v = [];
+      if (tubes) tubes.traverse((o) => {
+        if (!o.isMesh || !o.geometry) return;
+        const p = o.geometry.getAttribute('position'), f = o.geometry.getAttribute('aFade');
+        for (let i = 0; i < p.count; i++) v.push([p.getX(i), p.getY(i), p.getZ(i), f ? f.getX(i) : 1]);
+      });
+      return v;
+    }
+    function frame(box) { return { fitZoom: box.fitZoom, effectiveZoom: box.effectiveZoom, cellPx: box.cellPx }; }
+    for (const name of Object.keys(scenes)) {
+      const sc = scenes[name];
+      const level = h.sim.parseLevel(sc.raw);
+      r.setLevel(level); r.setPlaced(sc.placed); r.setBeam(null);
+      await r.setCameraPreset('tilt', { animate: false });
+      h.settle(900);
+      const camNoBeam = frame(r.getCamera()), boxNoBeam = r.getBoardScreenBox();
+      const rect = r._renderer.domElement.getBoundingClientRect();
+      const probes = [[0.5, 0.35], [0.5, 0.5], [0.35, 0.62], [0.7, 0.45]].map(([fx2, fy2]) =>
+        r.pickCell(rect.left + rect.width * fx2, rect.top + rect.height * fy2));
+      const res = h.sim.trace(level, sc.placed);
+      r.setBeam(res, { animate: true, fired: true });
+      const total = r.getBeamProgress().total;
+      let t = 0; while (r.getBeamProgress().playing && t < 20) { r.frame(1 / 60); t += 1 / 60; }
+      h.settle(600);
+      const camBeam = frame(r.getCamera()), boxBeam = r.getBoardScreenBox();
+      const probes2 = [[0.5, 0.35], [0.5, 0.5], [0.35, 0.62], [0.7, 0.45]].map(([fx2, fy2]) =>
+        r.pickCell(rect.left + rect.width * fx2, rect.top + rect.height * fy2));
+      const spec = B.endStates[KEY[res.end]];
+      const path = pathToEnd(res);
+      let u = { x: path.dir.x, y: path.dir.y, z: path.dir.z };
+      if (spec.departMode === 'skim') { const m = Math.hypot(u.x, u.z) || 1; u = { x: u.x / m, y: 0, z: u.z / m }; }
+      const verts = tubeVerts();
+      let beyond = -Infinity, lateral = 0, minY = Infinity, maxY = -Infinity, faded = 0, tipFade = 1;
+      for (const [vx, vy, vz, vf] of verts) {
+        const dx = vx - path.end.x, dy = vy - path.end.y, dz = vz - path.end.z;
+        const along = dx * u.x + dy * u.y + dz * u.z;
+        if (along > beyond) { beyond = along; tipFade = vf; }
+        if (along <= 0.05) continue;                 /* departure vertices only, past endPoint */
+        lateral = Math.max(lateral, Math.hypot(dx - along * u.x, dy - along * u.y, dz - along * u.z));
+        if (vf < 0.999) faded++;
+        minY = Math.min(minY, vy); maxY = Math.max(maxY, vy);
+      }
+      // reduced motion must change only the SWEEP: identical geometry, a shorter travel duration
+      r.setReducedMotion(true);
+      r.setBeam(res, { animate: true, fired: true });
+      const rmTotal = r.getBeamProgress().total, rmVerts = tubeVerts().length;
+      let rt = 0; while (r.getBeamProgress().playing && rt < 20) { r.frame(1 / 60); rt += 1 / 60; }
+      r.setReducedMotion(false);
+      out[name] = { end: res.end, endPoint: res.endPoint, spec: spec, pathLen: path.len, total: total,
+        beyond: beyond, lateral: lateral, minY: minY, maxY: maxY, endY: path.end.y, faded: faded, tipFade: tipFade,
+        verts: verts.length, rmTotal: rmTotal, rmVerts: rmVerts, rmSeconds: rt, seconds: t,
+        camNoBeam: camNoBeam, camBeam: camBeam, boxNoBeam: boxNoBeam, boxBeam: boxBeam,
+        pickSame: JSON.stringify(probes) === JSON.stringify(probes2), probes: probes };
+    }
+    return out;
+  }, DEPART_SCENES);
+  for (const name of Object.keys(departed)) {
+    const d = departed[name], want = d.spec.departCells;
+    check(want > 0, `${name}: theme carries the beam ${want} cells past endPoint (departMode ${d.spec.departMode})`);
+    check(Math.abs((d.total - d.pathLen) - want) < 0.02,
+      `${name}: drawn arc ${d.total.toFixed(3)} = path-to-endPoint ${d.pathLen.toFixed(3)} + departure ${want} ` +
+      `(so the travel sweep reveals the departure instead of popping it in)`);
+    check(d.beyond >= want - 0.02,
+      `${name}: tube geometry reaches ${d.beyond.toFixed(3)} cells past endPoint ${JSON.stringify(d.endPoint)} (>= ${want})`);
+    check(d.lateral < 0.25,
+      `${name}: the departure stays on the beam's own line (max lateral offset ${d.lateral.toFixed(3)} cell), it is not bent`);
+    check(d.tipFade < 0.02 && d.faded > 0,
+      `${name}: opacity fades to ${d.tipFade.toFixed(4)} at the tip over ${d.faded} faded vertices`);
+    check(d.camNoBeam.fitZoom === d.camBeam.fitZoom && d.camNoBeam.effectiveZoom === d.camBeam.effectiveZoom &&
+      d.boxNoBeam.width === d.boxBeam.width && d.boxNoBeam.height === d.boxBeam.height,
+      `${name}: camera auto-fit is identical with and without the beam ` +
+      `(zoom ${d.camNoBeam.effectiveZoom.toFixed(4)} -> ${d.camBeam.effectiveZoom.toFixed(4)}, ` +
+      `box ${d.boxNoBeam.width.toFixed(1)}x${d.boxNoBeam.height.toFixed(1)} -> ${d.boxBeam.width.toFixed(1)}x${d.boxBeam.height.toFixed(1)})`);
+    check(d.pickSame, `${name}: the departure is not pickable - pickCell is unchanged by the beam ${JSON.stringify(d.probes)}`);
+    check(d.rmVerts === d.verts && Math.abs(d.rmTotal - d.total) < 1e-9 && d.rmSeconds < d.seconds + 1e-9,
+      `${name}: prefers-reduced-motion changes only the sweep (${d.verts} vertices either way, ` +
+      `${d.seconds.toFixed(2)} s -> ${d.rmSeconds.toFixed(2)} s)`);
+  }
+  {
+    const h0 = await page.evaluate(() => window.__h.theme.beam.levels[0]);
+    const sky = departed['lost-sky'], climb = sky.spec.departCells / Math.SQRT2;
+    check(sky.maxY >= sky.endY + climb - 0.02,
+      `lost-sky: the departure KEEPS CLIMBING at 45 degrees - it reaches height ${sky.maxY.toFixed(2)} from ${sky.endY.toFixed(2)} (+${climb.toFixed(2)})`);
+    const floor = departed['lost-floor'], halfGlow = h0.glowDiameter / 2;
+    // Continuing the descending ray would have driven the tube to y = -departCells/sqrt(2); the departure instead
+    // lies ON the floor, so only the tube's own thickness straddles the plane.
+    const sunk = -floor.spec.departCells / Math.SQRT2;
+    check(floor.minY >= -halfGlow - 1e-3 && floor.minY > sunk / 4,
+      `lost-floor: the departure lies on the floor, it does not sink through it (lowest vertex y = ${floor.minY.toFixed(4)}, ` +
+      `bounded by the glow radius ${halfGlow.toFixed(4)}; the descending ray would have reached ${sunk.toFixed(2)})`);
+    check(floor.maxY <= halfGlow + (floor.spec.floorClearance || 0) + 1e-3 && floor.endY < 0.001,
+      `lost-floor: the departure never lifts off the floor it struck (endPoint height ${floor.endY.toFixed(3)}, highest departure vertex ${floor.maxY.toFixed(3)})`);
+    const edge = departed['lost-edge'];
+    check(edge.endPoint.x === 8 && edge.beyond > 1,
+      `lost-edge: the beam is drawn ${edge.beyond.toFixed(2)} cells off the east side of the 8x8 board`);
+  }
 
   // ------------------------------------------------------------------ big boards
   // DESIGN.md 11.2: the fit must fill >= 92% of the limiting canvas dimension in FLAT and >= 88% in TILT, UNLESS the

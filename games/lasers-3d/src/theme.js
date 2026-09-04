@@ -254,9 +254,42 @@
     },
     endStates: {
       blocked: { cap: 'octagon', capColor: palette.danger, capDiameter: 0.18, sparks: 3, sparkSize: 0.08, sparkFadeMs: 260 },
-      lostEdge: { taperCells: 0.22, ring: 'hollow', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025 },
-      lostFloor: { ring: 'flatOnFloor', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025, notch: 'down' },
-      lostSky: { ring: 'screenFacing', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025, notch: 'up' },
+      /* DEPARTURE - the owner's report, 2026-09-03: "after the wedge moves the beam up it eventually stops... the
+       * beam should keep going up or at least look like its going farther". A beam that leaves the world must read
+       * as CONTINUING and fading out, never as stopping dead in mid-air. The simulation is untouched (trace() still
+       * ends where it ends); every token below describes only how the LAST STRETCH OF THE DRAWING behaves past
+       * result.endPoint:
+       *   departCells      how far the tube is carried beyond endPoint, in cells
+       *   departMode       'ray'  - along the beam's own direction, so a 45-degree climb keeps climbing. Never bent.
+       *                    'skim' - along the ground heading from the floor contact point. A lost-floor beam already
+       *                             meets the floor EXACTLY at endPoint (level 0 travels at height 0.5 and the stub
+       *                             drops half a cell over the half cell to the boundary), so continuing the
+       *                             descending ray would only bury the tube; the departure scatters forward along
+       *                             the floor instead, which is what striking a surface looks like.
+       *   departSteps      sub-tubes the departure is cut into, so the taper reads as a curve and not a cone
+       *   radiusPower      core and glow radius = startScale * (1 - t)^radiusPower across the departure
+       *   fadePower        opacity = (1 - t)^fadePower across the departure (higher = fades out sooner)
+       *   taperBackCells   narrowing applied INSIDE the beam over the last cells BEFORE endPoint (floor only)
+       *   startScale       radius at endPoint as a fraction of full, i.e. where taperBackCells lands
+       *   floorClearance   how far above the floor plane a 'skim' departure is centred, so it never sinks through
+       *   markerAlongCells where the marker ring sits along the departure (0 = on endPoint, as before). The rings
+       *                    still say WHY the beam was lost and all keep ringDiameter 0.20, but at level 3 the beam's
+       *                    own glow is 0.315 wide, so a lost-SKY ring left on endPoint is swallowed by the tube it
+       *                    is meant to mark; sliding it up the departure puts it where the tube has tapered.
+       * departCells is set by eye at the shipping board sizes (12x12 to 24x24 - see DESIGN.md 11.1): the old 0.22
+       * cell edge taper was invisible once a cell is ~34 px. The departure is part of the beam's ARC LENGTH, so the
+       * travel sweep reveals it instead of popping it in at the end, and it carries no animation of its own - there
+       * is nothing extra to gate on prefers-reduced-motion, and the sweep that reveals it already obeys
+       * reducedMotion.beamTravel*. */
+      lostEdge: { departCells: 2.4, departMode: 'ray', departSteps: 6, radiusPower: 1.25, fadePower: 1.05,
+        taperBackCells: 0, startScale: 1, markerAlongCells: 0,
+        ring: 'hollow', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025 },
+      lostFloor: { departCells: 1.7, departMode: 'skim', departSteps: 6, radiusPower: 1.40, fadePower: 1.20,
+        taperBackCells: 0.55, startScale: 0.72, floorClearance: 0.02, markerAlongCells: 0,
+        ring: 'flatOnFloor', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025, notch: 'down' },
+      lostSky: { departCells: 2.8, departMode: 'ray', departSteps: 6, radiusPower: 1.30, fadePower: 1.10,
+        taperBackCells: 0, startScale: 1, markerAlongCells: 1.10,
+        ring: 'screenFacing', ringColor: palette.danger, ringDiameter: 0.20, ringStroke: 0.025, notch: 'up' },
       loop: { ring: 'double', ringColor: palette.wedge, rotateOnceMs: 500 },
       target: { litFadeMs: 160, rings: 2, ringFrom: 0.18, ringTo: 0.75, ringMs: 420, streaks: 8, haloDiameter: 0.42, haloOpacity: 0.22 }
     }

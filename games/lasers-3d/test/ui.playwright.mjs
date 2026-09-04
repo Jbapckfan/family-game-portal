@@ -324,9 +324,71 @@ async function robustnessPass(browser, url) {
 // Review-fix pass: the post-FIRE readout (S5/S10), per-criterion stars (S3), RESET's camera settle (S4), the
 // exclusive one-time reveal (S6), tap-to-finish beam travel (S8), dirty rendering (S13) and the OVERVIEW/WORKING
 // view toggle. Also takes the polish-* screenshots.
-// Level 18 (index 17) with a single WEDGE '\' at (19,11) is a proven target OVERFLIGHT: the beam passes the target
-// cell at z=3 while the target sits at z=0, on a two-target level - every readout field at once.
-const FLYOVER = { level: 17, placed: [{ x: 19, y: 11, type: 'WEDGE', orient: '\\' }] };
+// The readout fixtures used to name a level and a cell ("level 18, WEDGE '\' at (19,11)"). Every one of those went
+// stale the moment the level set was regenerated under the corrected pitch-delta rule (DESIGN.md 12), because the
+// terrain, the emitter and the targets all moved. They now SEARCH the shipped levels for a placement that actually
+// produces the situation under test - the same thing a player does - so the next regeneration cannot break them.
+//
+// findFlyover: a placement whose beam passes THROUGH a target's cell at a different height (LaserMainTrace.flyover),
+// which is what makes the readout print both altitudes. Multi-target levels are preferred so the same single FIRE
+// also exercises the "n of m lit" progress chip, exactly as the old hand-picked fixture did.
+// The search is 0 or 1 piece per level: enough to reach every situation these checks need, and cheap enough
+// (a few thousand traces of pure arithmetic) to run in the page on every viewport.
+const findFlyover = (page) => page.evaluate(() => {
+  const sim = window.__laser.sim, LEVELS = window.__laser.main.levels, T = window.LaserMainTrace, ORIENTS = ['/', '\\'];
+  let best = null;
+  const consider = (li, raw, L, placed) => {
+    const r = sim.trace(raw, placed);
+    if (r.allTargetsHit) return;                     // a win shows the victory modal, not a miss readout
+    const f = T.flyover(L, r);
+    if (!f || !f.above) return;                      // "flew over", the case the readout copy is written for
+    const cand = { level: li, placed, beamZ: f.beamZ, targetZ: f.targetZ, lit: r.hits.length, total: L.targets.length, end: r.end };
+    if (!best || (cand.total > 1 && best.total < 2)) best = cand;
+  };
+  for (let li = 0; li < LEVELS.length; li++) {
+    const raw = LEVELS[li], L = sim.parseLevel(raw), types = Array.from(new Set(L.tray));
+    consider(li, raw, L, []);
+    for (let y = 0; y < L.size.d; y++) for (let x = 0; x < L.size.w; x++) {
+      if (!sim.canPlace(raw, [], x, y)) continue;
+      for (const type of types) for (const orient of ORIENTS) consider(li, raw, L, [{ x, y, type, orient }]);
+    }
+    if (best && best.total > 1) break;
+  }
+  return best;
+});
+// A multi-target level with at least one orb still dark, for the "n of m lit" chip when the flyover pick above
+// happens to land on a single-target level.
+const findProgress = (page) => page.evaluate(() => {
+  const sim = window.__laser.sim, LEVELS = window.__laser.main.levels;
+  for (let li = 0; li < LEVELS.length; li++) {
+    const raw = LEVELS[li], L = sim.parseLevel(raw);
+    if (L.targets.length < 2) continue;
+    const r = sim.trace(raw, []);
+    if (!r.allTargetsHit) return { level: li, placed: [], lit: r.hits.length, total: L.targets.length };
+  }
+  return null;
+});
+// One placement per END REASON, in kid language. Same rule: searched, never named. A flyover is excluded because
+// its readout says "flew over the target" instead of naming the end reason, and a win opens the victory modal.
+const findEnds = (page, wanted) => page.evaluate((want) => {
+  const sim = window.__laser.sim, LEVELS = window.__laser.main.levels, T = window.LaserMainTrace, ORIENTS = ['/', '\\'];
+  const out = {}, need = () => want.filter((w) => !out[w]);
+  const consider = (li, raw, L, placed) => {
+    const r = sim.trace(raw, placed);
+    if (r.allTargetsHit || out[r.end] || want.indexOf(r.end) < 0) return;
+    if (T.flyover(L, r)) return;
+    out[r.end] = { level: li, placed: placed };
+  };
+  for (let li = 0; li < LEVELS.length && need().length; li++) consider(li, LEVELS[li], sim.parseLevel(LEVELS[li]), []);
+  for (let li = 0; li < LEVELS.length && need().length; li++) {
+    const raw = LEVELS[li], L = sim.parseLevel(raw), types = Array.from(new Set(L.tray));
+    for (let y = 0; y < L.size.d && need().length; y++) for (let x = 0; x < L.size.w; x++) {
+      if (!sim.canPlace(raw, [], x, y)) continue;
+      for (const type of types) for (const orient of ORIENTS) consider(li, raw, L, [{ x, y, type, orient }]);
+    }
+  }
+  return out;
+}, wanted);
 
 async function polishPass(browser, url, vp) {
   console.log(`\n== polish ${vp.name} ${vp.width}x${vp.height} @${vp.dpr}x`);
@@ -349,8 +411,27 @@ async function polishPass(browser, url, vp) {
   // ---------- S13: dirty rendering. Frames must stop when the board is static and resume for every animation. ----------
   const frames = () => page.evaluate(() => window.__laser.main.state.frames);
   async function framesOver(ms) { const a = await frames(); await page.waitForTimeout(ms); return (await frames()) - a; }
-  const idle = await framesOver(600);
-  assert(idle <= 2, `idle board schedules no frames (${idle} in 600 ms, was ~36 before)`);
+  // "Idle" is not "some fixed time after boot". Loading a level runs a live retrace (theme.beam.travel.liveRetraceMs,
+  // 140 ms of beam draw-in) and then ONE end-state effect where the beam dies, and how long that lasts is a property
+  // of the level DATA: a beam that leaves the board / floor / sky drops a static ring (0 extra frames), while one
+  // that stops against a wall throws three sparks that fade over theme.beam.endStates.blocked.sparkFadeMs (260 ms).
+  // Level 1's empty board now ends 'blocked', so the board legitimately animates for ~400 ms after load where the
+  // old level set took ~140 ms. Waiting a fixed 200 ms therefore measured the tail of a real, terminating animation
+  // and called it a leak. So wait for the renderer's OWN answer instead, then measure. This is strictly stronger
+  // than the old fixed wait: anything that genuinely pins the loop on - a dirty flag re-set every frame, a tween
+  // that never resolves, an observer that keeps firing - never settles, and `settled: false` fails the check.
+  async function idleFrames(ms) {
+    let settled = true;
+    try {
+      await page.waitForFunction(() => {
+        const a = window.__laser.main;
+        return !a.state.dirty && a.state.status !== 'tracing' && !window.__laser.render.needsFrame();
+      }, null, { timeout: 5000 });
+    } catch (e) { settled = false; }
+    return { settled, drawn: await framesOver(ms) };
+  }
+  const idle = await idleFrames(600);
+  assert(idle.settled && idle.drawn <= 2, `a settled board schedules no frames (${idle.drawn} in 600 ms, was ~36 before)${idle.settled ? '' : ' - NEVER SETTLED: something is pinning the loop on'}`);
   const onTap = await page.evaluate(async () => {
     const before = window.__laser.main.state.frames;
     document.querySelector('.tray-card:not([disabled])').click();
@@ -372,8 +453,10 @@ async function polishPass(browser, url, vp) {
   anims.beam = await page.evaluate(async () => { const b = window.__laser.main.state.frames; window.__laser.main.fire(); await new Promise((r) => setTimeout(r, 500)); return window.__laser.main.state.frames - b; });
   await page.waitForFunction(() => window.__laser.main.getViewModel().status !== 'tracing', null, { timeout: 8000 });
   for (const k of Object.keys(anims)) assert(anims[k] >= 8, `frames keep coming during the ${k} animation (${anims[k]} in 400-500 ms)`);
-  const settled = await framesOver(600);
-  assert(settled <= 2, `and stop again once everything settles (${settled} in 600 ms)`);
+  // Same again after the beam: the FIRE above ends against a wall, so its spark burst is still fading when the
+  // status leaves 'tracing'. Settle first, then the 600 ms window measures a board that really is at rest.
+  const settled = await idleFrames(600);
+  assert(settled.settled && settled.drawn <= 2, `and stop again once everything settles (${settled.drawn} in 600 ms)${settled.settled ? '' : ' - NEVER SETTLED'}`);
   // The hint ghost is not an animation: it is one frame to draw it and one, 2 s later, to take it away. A missed
   // dirty flag on that TIMEOUT would leave the ghost frozen on a board that never redraws.
   await page.evaluate(() => window.__laser.main.reset());
@@ -439,14 +522,20 @@ async function polishPass(browser, url, vp) {
   await page.waitForFunction(() => !window.__laser.render.getCamera().animating, null, { timeout: 4000 });
 
   // ---------- S5 + S10: the post-FIRE readout on a real target overflight ----------
-  await page.evaluate((f) => { window.__laser.main.loadLevel(f.level); }, FLYOVER);
-  await page.waitForFunction((f) => window.__laser.main.getViewModel().levelIndex === f.level, FLYOVER);
-  await page.waitForTimeout(200);
-  await page.evaluate((f) => { window.__laser.main.setPlaced(f.placed); }, FLYOVER);
-  await page.waitForTimeout(200);
-  await page.evaluate(() => window.__laser.main.fire());
-  await page.waitForFunction(() => window.__laser.main.getViewModel().status === 'placing', null, { timeout: 8000 });
-  await page.waitForTimeout(300);
+  // The overflight is SEARCHED for in the shipped levels (see findFlyover) rather than named by coordinates, so a
+  // regenerated level set moves the fixture instead of breaking it.
+  const fly = await findFlyover(page);
+  const fireAt = async (pick) => {
+    await page.evaluate((f) => { window.__laser.main.loadLevel(f.level); }, pick);
+    await page.waitForFunction((f) => window.__laser.main.getViewModel().levelIndex === f.level, pick);
+    await page.waitForTimeout(200);
+    await page.evaluate((f) => { window.__laser.main.setPlaced(f.placed); }, pick);
+    await page.waitForTimeout(200);
+    await page.evaluate(() => window.__laser.main.fire());
+    await page.waitForFunction(() => window.__laser.main.getViewModel().status === 'placing', null, { timeout: 8000 });
+    await page.waitForTimeout(300);
+  };
+  if (fly) await fireAt(fly);
   const ro = await page.evaluate(() => {
     const box = document.getElementById('readout'), b = box.getBoundingClientRect();
     const R = window.__laser.render, L = window.__laser.main.getViewModel().level;
@@ -465,27 +554,44 @@ async function polishPass(browser, url, vp) {
       inViewport: b.left >= -0.5 && b.right <= innerWidth + 0.5 && b.top >= -0.5 && b.bottom <= innerHeight + 0.5,
       vm: window.__laser.main.getViewModel().readout, fontPx: getComputedStyle(box).fontSize };
   });
-  assert(!ro.hidden && /flew over the target/.test(ro.msg), `readout names what happened: "${ro.msg}"`);
-  assert(ro.chips.some((c) => /\^3/.test(c)) && ro.chips.some((c) => /\^0/.test(c)),
-    `readout gives both altitudes as numbers (beam ^3, target ^0) ${JSON.stringify(ro.chips)}`);
-  assert(ro.chips.some((c) => /0 of 2 lit/.test(c)), `readout shows two-target progress ${JSON.stringify(ro.chips)}`);
+  assert(!!fly && !ro.hidden && /flew over the target/.test(ro.msg),
+    `readout names what happened on level ${fly && fly.level + 1} ${JSON.stringify(fly && fly.placed)}: "${ro.msg}"`);
+  // The altitudes come from the trace, not from a memorised pair of numbers, but they must still both be printed as
+  // a NUMBER (the ^ prefix) and they must differ - that is the whole point of the chip, and colour alone will not do.
+  assert(!!fly && fly.beamZ !== fly.targetZ &&
+    ro.chips.some((c) => new RegExp('\\^' + fly.beamZ + '\\b').test(c)) && ro.chips.some((c) => new RegExp('\\^' + fly.targetZ + '\\b').test(c)),
+    `readout gives both altitudes as numbers (beam ^${fly && fly.beamZ}, target ^${fly && fly.targetZ}) ${JSON.stringify(ro.chips)}`);
+  // Multi-target progress. findFlyover prefers a multi-target level so this is normally the same single FIRE the
+  // altitude chips came from; if the level set ever offers no multi-target overflight, fire a second one for it.
+  let prog = fly && fly.total > 1 ? { pick: fly, chips: ro.chips } : null;
+  if (!prog) {
+    const pick = await findProgress(page);
+    if (pick) { await fireAt(pick); prog = { pick, chips: await page.evaluate(() => Array.from(document.querySelectorAll('#readout .chip')).map((c) => c.textContent.replace(/\s+/g, ' ').trim())) }; }
+  }
+  assert(!!prog && prog.chips.some((c) => c === `${prog.pick.lit} of ${prog.pick.total} lit`) && prog.pick.total > 1,
+    `readout shows multi-target progress ${JSON.stringify(prog && prog.chips)}`);
   assert(!ro.overBoard && !ro.overMenu && ro.inViewport, `readout covers neither the board nor the Menu link ${JSON.stringify(ro)}`);
   await page.screenshot({ path: `${SHOTS}/polish-readout-${vp.name}.png` });
-  // other end reasons speak kid language too
-  const reasons = await page.evaluate(async () => {
+  // Other end reasons speak kid language too. Which level produces which end is level data, so each one is searched
+  // for (findEnds) instead of hard-coded - two of the four old fixtures had drifted onto the same 'blocked' ending.
+  const WANT = { blocked: /hit a wall/, 'lost-sky': /too high/, 'lost-floor': /fell to the floor/, 'lost-edge': /left the board/ };
+  const picks = await findEnds(page, Object.keys(WANT));
+  const reasons = await page.evaluate(async (p) => {
     const app = window.__laser.main, out = {};
-    for (const [lvl, want] of [[7, 'wall'], [8, 'high'], [10, 'floor'], [0, 'board']]) {
-      app.loadLevel(lvl);
+    for (const end of Object.keys(p)) {
+      app.loadLevel(p[end].level);
+      await new Promise((r) => setTimeout(r, 120));
+      app.setPlaced(p[end].placed);
       await new Promise((r) => setTimeout(r, 120));
       app.fire();
       await new Promise((res) => { const t = setInterval(() => { if (app.getViewModel().status !== 'tracing') { clearInterval(t); res(); } }, 16); setTimeout(res, 6000); });
       await new Promise((r) => setTimeout(r, 60));
-      out[want] = { end: app.getViewModel().beamResult.end, msg: document.getElementById('readout').textContent.trim() };
+      out[end] = { level: p[end].level + 1, placed: p[end].placed, end: app.getViewModel().beamResult.end, msg: document.getElementById('readout').textContent.trim() };
     }
     return out;
-  });
-  assert(/hit a wall/.test(reasons.wall.msg) && /too high/.test(reasons.high.msg) && /fell to the floor/.test(reasons.floor.msg) && /left the board/.test(reasons.board.msg),
-    `every end reason reads in kid language ${JSON.stringify(reasons)}`);
+  }, picks);
+  assert(Object.keys(WANT).every((end) => reasons[end] && reasons[end].end === end && WANT[end].test(reasons[end].msg)),
+    `every end reason is reachable and reads in kid language ${JSON.stringify(reasons)}`);
 
   // ---------- S4: RESET does not hand back a tilted board mid-swing ----------
   await page.evaluate(() => { window.__laser.main.loadLevel(0); });

@@ -552,9 +552,33 @@ async function polishPass(browser, url, vp) {
   await page.waitForFunction(() => !window.__laser.render.getCamera().animating, null, { timeout: 4000 });
 
   // ---------- S5 + S10: the post-FIRE readout on a real target overflight ----------
-  // The overflight is SEARCHED for in the shipped levels (see findFlyover) rather than named by coordinates, so a
-  // regenerated level set moves the fixture instead of breaking it.
-  const fly = await findFlyover(page);
+  // This fixture is a level the TEST BUILDS and appends to the live level list, not one it searches for. Searching
+  // the shipped set was tried twice and failed both times: a target flown OVER has to sit below the beam, but the
+  // generator puts most targets on plateaus at the maximum height where nothing can be above them, and the few low
+  // ones need three or more pieces to arrive over. That is a property of good level design, not a bug, so the test
+  // supplies its own board and is immune to the next regeneration.
+  // The board: the emitter fires east at ground level; a fixed WEDGE turns it north and starts it climbing; a fixed
+  // MIRROR standing on a height-1 block turns it back east and, per DESIGN.md 12, PRESERVES the climb. It then
+  // crosses the first target three levels above it and leaves the sky. A second target stays dark so the same shot
+  // also exercises the "n of m lit" progress chip.
+  const fly = await page.evaluate(() => {
+    const level = {
+      name: 'READOUT FIXTURE', par: 0, size: { w: 8, d: 8 },
+      terrain: ['00000000', '00000000', '00000000', '00000000', '00100000', '00000000', '00000000', '00000000'],
+      emitter: { x: 0, y: 3, dir: 'E' },
+      targets: [{ x: 4, y: 4 }, { x: 6, y: 6 }],
+      fixed: [{ x: 2, y: 3, type: 'WEDGE', orient: '/' }, { x: 2, y: 4, type: 'MIRROR', orient: '/' }],
+      tray: ['MIRROR'],
+    };
+    const levels = window.__laser.main.levels;
+    levels.push(level);
+    const li = levels.length - 1;
+    const L = window.__laser.sim.parseLevel(level);
+    const r = window.__laser.sim.trace(level, []);
+    const f = window.LaserMainTrace.flyover(L, r);
+    if (!f || !f.above) return null;
+    return { level: li, placed: [], beamZ: f.beamZ, targetZ: f.targetZ, lit: r.hits.length, total: L.targets.length, end: r.end };
+  });
   const fireAt = async (pick) => {
     await page.evaluate((f) => { window.__laser.main.loadLevel(f.level); }, pick);
     await page.waitForFunction((f) => window.__laser.main.getViewModel().levelIndex === f.level, pick);

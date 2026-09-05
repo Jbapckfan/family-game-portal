@@ -4,11 +4,11 @@ Shipped files (all under `games/lasers-3d/`):
 
 - `src/pieces.js` — piece registry + turn tables (UMD: `window.LaserPieces` / `module.exports`)
 - `src/sim.js` — stepper + public API (UMD: `window.LaserSim` / `module.exports`; loads `pieces.js` itself)
-- `test/sim.test.mjs` — `node:test` suite, one or more per bullet of spec 3.2, 3.3, 3.4 and the corrected pitch rule of spec 12 (every cell of its table, all three clamp cases, and the owner's WEDGE-then-MIRROR scenario), plus the `events` stream and the derived step cap
+- `test/sim.test.mjs` — `node:test` suite, one or more per bullet of spec 3.2, 3.3, 3.4, the corrected pitch rule of spec 12 (every cell of its table, all three clamp cases, and the owner's WEDGE-then-MIRROR scenario) and the FLOOR table of spec 14.1 (every row, through the engine; a plate on raised terrain; a bounce into a solid cell; a plate flown over; the skipping stone; an arch and a bounce in one shot; and an exhaustive proof that a FLOOR never changes the heading), plus the `events` stream, the `dark` flag of spec 15.1 and the derived step cap
 - `test/review-robustness.test.mjs`, `test/review-spec-conformance.test.mjs` — adversarial review suites (malformed levels, illegal placements, determinism, loop guard, derived cap, UMD wrapper, and the whole `openings` truth table of DESIGN.md 13.2)
-- `test/fixtures/pre-openings-traces.json` — 261 traces over 26 self-contained levels, captured from the engine as it stood BEFORE section 13. `test/sim.test.mjs` replays every one and compares a sha256 of the full result, which is the proof that a level with no `openings` behaves exactly as it did.
+- `test/fixtures/pre-openings-traces.json` — 261 traces over 26 self-contained levels, captured from the engine as it stood BEFORE section 13. `test/sim.test.mjs` replays every one and compares a sha256 of the full result, which is the proof that a level with no `openings` behaves exactly as it did. It doubles as the section-14 compatibility corpus: it predates the FLOOR piece too, so `glides` and `bounces` are asserted empty on all 261 traces and the digest still matches byte for byte.
 
-Implements DESIGN.md section 3 **as corrected by section 12** (pitch is a DELTA, not a set) **and extended by section 13** (arches and windows: an optional `openings` array punches levels out of a column). Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
+Implements DESIGN.md section 3 **as corrected by section 12** (pitch is a DELTA, not a set), **extended by section 13** (arches and windows: an optional `openings` array punches levels out of a column), **extended again by section 14** (FLOOR mirrors: a fourth piece that does not turn the beam) and carrying the **section 15** `dark` flag. Pure, deterministic, no DOM, no Three.js, no dependencies, ES2019 (Safari 15).
 
 ### PITCH IS A DELTA (DESIGN.md 12, supersedes the pitch column of 3.3)
 
@@ -26,6 +26,38 @@ level a climbing beam.** The only way to level a climber is a DIP, and the only 
 descender is a WEDGE. The bold cells are the clamp of spec 12.2 - the one deliberate approximation,
 which keeps every beam segment at 45 degrees or level. A level beam behaves exactly as it did
 before, so the pure-2D levels are unaffected.
+
+### FLOOR MIRRORS (DESIGN.md 14, adds a fourth piece)
+
+`FLOOR` is a mirror lying **flat in the cell's top surface**. A horizontal mirror's normal is
+vertical, so it flips the beam's vertical component and leaves the horizontal one alone - the exact
+complement of the upright `MIRROR` above, and the first piece in the game that does **not turn the
+beam**:
+
+| `v_in` | what a FLOOR does |
+|---|---|
+| `-1` (descending onto it) | **reflect**: heading UNCHANGED, pitch becomes `+1` |
+| `0` (level) | nothing; the beam glides over it |
+| `+1` (climbing away) | nothing |
+
+**The registry generalised rather than the stepper special-casing it.** A piece entry now declares
+BOTH halves of the transform of `(direction, pitch)` as data: `turn` (a table `orient -> dir -> dir`;
+the three upright pieces share `TURN`, FLOOR uses `TURN_KEEP`, the identity) and either `dPitch` (a
+constant delta) or `pitch(vIn)` (a function, for an effect that is not a plain delta). The clamp of
+spec 12.2 is applied centrally to whichever one it is. Nothing in the stepper, the solver or the
+generator names a piece type, so a fifth piece is still exactly one entry in `PIECES`.
+
+Because a piece can now be met without being CHANGED by, the trace grew two additive fields:
+`glides` (met at its own level and left the beam alone) and `bounces` (reflected the beam without
+turning it - the bright dot of DESIGN.md 14.3, where beam and floor shadow coincide). Both are `[]`
+on any level with no plate, which keeps every pre-section-14 trace byte-identical.
+
+### DARKNESS (DESIGN.md 15, a rendering flag on the level)
+
+A level may carry `dark: true`. `parseLevel` validates it (a boolean if present; anything else
+throws rather than being coerced) and carries it through. **The rules engine never reads it** -
+darkness gates WHEN the player sees the board, never what the beam does - so a dark level traces
+identically to the same board without the flag.
 
 ### ARCHES AND WINDOWS (DESIGN.md 13, extends 3.1 and 3.2)
 
@@ -109,9 +141,13 @@ LaserSim.H_MAX           // 4   (levels z in 0..3; arrival at z >= 4 is 'lost-sk
 LaserSim.MAX_STEPS       // 400 - the MINIMUM step cap, NOT the cap a trace actually uses.  [added]
                          //       See 2.1; the real cap is LaserSim.stepCap(level).
 LaserSim.ORIENTS         // ['/', '\\']                                                    [added]
-LaserSim.PIECES          // registry from pieces.js: { MIRROR:{dPitch:0,...}, WEDGE:{dPitch:1,...}, DIP:{dPitch:-1,...} }
-                         //       `dPitch` is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12).
+LaserSim.PIECES          // registry from pieces.js: { MIRROR:{turn:TURN,dPitch:0,...}, WEDGE:{dPitch:1,...},
+                         //       DIP:{dPitch:-1,...}, FLOOR:{turn:TURN_KEEP,pitch:fn,...} }
+                         //       `dPitch` is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12);
+                         //       `pitch(vIn)` is the function form, for FLOOR's bounce (spec 14).  [FLOOR added]
 LaserSim.TURN            // turn tables: TURN['/'] and TURN['\\'], each { E, N, W, S } -> outgoing dir  [added, same object as LaserPieces.TURN]
+                         //       NOTE: this is the 90-degree table only. To find where a piece sends the
+                         //       beam, ask LaserPieces.turnDir(type, orient, dir) - a FLOOR does not turn.
 
 LaserSim.stepCap(level)  // -> the DERIVED loop-guard cap for that level (see 2.1). Validates like parseLevel.  [added]
 
@@ -135,6 +171,13 @@ LaserSim.trace(level, placed) -> {
     altitudeMarks: [{x,y,z}],      // one per pitch CHANGE (at the piece's cell, at the beam's level there) plus the endPoint, in order
     pieceHits: [{x,y,type,orient,fixed:boolean}],   // pieces that acted, in order (a piece can appear more than once)
     overflights: [{x,y}],          // cells whose piece the beam passed OVER (beam level ABOVE the piece's terrain level), in order
+    glides: [{x,y}],               // cells whose piece the beam MET at its own level and was NOT changed by.  [added]
+                                   // Only a FLOOR plate can do this (under a level or climbing beam, DESIGN.md 14.1);
+                                   // ALWAYS [] on a level with no plate. A glide is not an overflight: the beam is at
+                                   // the plate's own level, skimming it, not passing it at another height.
+    bounces: [{x,y,z}],            // cells where a piece changed the beam's pitch WITHOUT turning it - the floor  [added]
+                                   // bounce of DESIGN.md 14. This is the anchor for the bright-dot tell of 14.3.
+                                   // ALWAYS [] on a level with no plate.
     underpasses: [{x,y}],          // cells whose piece the beam passed UNDER (beam BELOW it, inside an opening), in order.  [added]
                                    // Only reachable on a level with `openings`; ALWAYS [] otherwise, which is what keeps
                                    // pre-section-13 levels byte-identical. Kept separate from `overflights` on purpose:
@@ -205,13 +248,21 @@ event at that step.
 | `piece`  | a piece acted (`z == t[cell]`) | `type`, `orient`, `fixed`, `dIn`, `dOut`, `vIn`, `vOut` | one per `pieceHits` entry |
 | `overflight` | the beam passed OVER a piece (`z > t[cell]`) | `type`, `orient`, `fixed` | one per `overflights` entry |
 | `underpass` | the beam passed UNDER a piece (`z < t[cell]`, i.e. through an opening) | `type`, `orient`, `fixed` | one per `underpasses` entry |
+| `glide` | the beam MET a piece at its own level and the piece did nothing (`z == t[cell]`, a FLOOR under a level or climbing beam) | `type`, `orient`, `fixed`, `d`, `v` | one per `glides` entry |
 | `pitch` | a piece CHANGED the pitch | `from`, `to` (the old and new `v`) | the piece-cell `altitudeMarks` |
+| `bounce` | a piece changed the pitch WITHOUT turning the beam (a floor bounce, DESIGN.md 14) | `type`, `fixed`, `d`, `vIn`, `vOut` | one per `bounces` entry |
 | `end` | terminal, always last, exactly one | `end` - the same value as the result's `end` | the final `altitudeMarks` entry |
 
 Order within one `step`: `enter`, then `target` (if it lights), then `piece` / `overflight` /
-`underpass` (exactly one of the three, when the cell holds a piece), then
-`pitch` (if the piece changed the pitch). A trace that stops on a target emits no `piece` event for
-that cell, because the beam stops before the piece can act.
+`underpass` / `glide` (exactly one of the four, when the cell holds a piece), then
+`pitch` (if the piece changed the pitch), then `bounce` (if it changed the pitch without turning).
+A trace that stops on a target emits no `piece` event for that cell, because the beam stops before
+the piece can act.
+
+**`piece` means ACTED, not MET.** A piece that leaves the beam exactly as it found it emits `glide`
+instead, appears in neither `pieceHits` nor `events.filter(kind==='piece')`, and is indistinguishable
+from a bare cell as far as the beam is concerned - which is precisely why a solution containing one
+is never minimal (see solver.mjs's irredundancy argument).
 
 Notes:
 - A `target` event fires only for a NEWLY lit orb, exactly like `hits`. Passing back through an
@@ -221,6 +272,7 @@ Notes:
 - Reconstructions that must stay in sync:
   `events.filter(kind==='enter')` -> `visited`, `filter(kind==='piece')` -> `pieceHits`,
   `filter(kind==='overflight')` -> `overflights`, `filter(kind==='underpass')` -> `underpasses`,
+  `filter(kind==='glide')` -> `glides`, `filter(kind==='bounce')` -> `bounces`,
   `filter(kind==='target').map(targetIndex)` -> `hits`,
   `filter(kind==='pitch'||kind==='end')` cells -> `altitudeMarks`.
 
@@ -268,27 +320,42 @@ gets both.
 ### 2.3 `src/pieces.js` (also exported, for the tray UI and future twist pieces)
 
 ```
-LaserPieces.TURN          // { '/': {E:'N',N:'E',W:'S',S:'W'}, '\\': {E:'S',S:'E',W:'N',N:'W'} }
+LaserPieces.TURN          // { '/': {E:'N',N:'E',W:'S',S:'W'}, '\\': {E:'S',S:'E',W:'N',N:'W'} }   the 90-degree bounce
+LaserPieces.TURN_KEEP     // { '/': {E:'E',N:'N',W:'W',S:'S'}, '\\': same }  the IDENTITY - "does not turn"  [added]
 LaserPieces.ORIENTS       // ['/', '\\']
-LaserPieces.PIECES        // { MIRROR:{type,dPitch:0,turn,label:'Mirror',tag:'',hint}, WEDGE:{dPitch:1,label:'Wedge',tag:'^'}, DIP:{dPitch:-1,label:'Dip',tag:'v'} }
+LaserPieces.PIECES        // { MIRROR:{type,turn:TURN,dPitch:0,label:'Mirror',tag:'',hint},
+                          //   WEDGE:{turn:TURN,dPitch:1,label:'Wedge',tag:'^'},
+                          //   DIP:{turn:TURN,dPitch:-1,label:'Dip',tag:'v'},
+                          //   FLOOR:{turn:TURN_KEEP,pitch:fn,label:'Floor',tag:'_'} }              [FLOOR added]
 LaserPieces.V_MIN, V_MAX  // -1, +1 - the only pitches the grid represents (spec 12.2)
-LaserPieces.TYPES         // ['MIRROR','WEDGE','DIP']
+LaserPieces.TYPES         // ['MIRROR','WEDGE','DIP','FLOOR']
 LaserPieces.isType(t), isOrient(o)
 LaserPieces.rotate(orient)             // '/' -> '\\' -> '/'
 LaserPieces.clampPitch(v)              // -> v clamped to -1..+1 (the central clamp, spec 12.2)
-LaserPieces.applyPitch(type, vIn)      // -> outgoing pitch alone: clampPitch(vIn + dPitch)
+LaserPieces.turnDir(type, orient, dir) // -> outgoing HEADING alone, from the entry's own turn table   [added]
+LaserPieces.turnsBeam(type)            // -> does this type EVER change the heading? false for FLOOR   [added]
+                                       //    derived from the table, so it cannot drift from behaviour
+LaserPieces.applyPitch(type, vIn)      // -> outgoing pitch alone: clampPitch(dPitch delta OR pitch(vIn))
 LaserPieces.apply(type, orient, dir, vIn)  // -> { d: outgoingDir, v: outgoingPitch }
+LaserPieces.acts(type, orient, dir, vIn)   // -> does it change the beam at all? (d or v differs)      [added]
 ```
 
 **`apply` takes the INCOMING pitch.** It has to: under spec 12 the outgoing pitch is a function of
 the incoming one, so the old 3-argument `apply(type, orient, dir)` could not express the rule and is
 gone. `vIn` must be -1, 0 or +1.
 
-A piece is data `{turn, dPitch}`; the stepper never special-cases a type. `applyPitch` adds the
-entry's `dPitch` and applies the clamp centrally, and an entry may instead supply its own
-`applyPitch(vIn)` function for a future piece whose effect is not a plain delta (a floor mirror that
-flips -1 to +1, say) - the central clamp still applies. Either way a new twist piece is one more
-registry entry.
+**A piece declares how it transforms `(direction, pitch)`; the stepper never special-cases a type.**
+An entry carries a `turn` table for the heading half - `TURN` for a 90-degree bounce, `TURN_KEEP` for
+a piece that leaves the heading alone - and, for the vertical half, EXACTLY ONE of a constant
+`dPitch` delta or a `pitch(vIn)` function. `applyPitch` applies the clamp of spec 12.2 centrally to
+whichever it is, so no entry can escape it, and `acts` is derived rather than declared: it is simply
+"the outgoing state differs from the incoming one". Adding a fifth piece is one more registry entry
+and no change anywhere else.
+
+**`acts` matters now that it can be false.** `MIRROR`, `WEDGE` and `DIP` always turn, so they always
+act; a `FLOOR` acts only on a descending beam. The stepper uses `acts` (implicitly, by comparing
+`apply`'s answer with the incoming state) to tell a `piece` event from a `glide`, and the generator
+uses it to refuse to plan a piece that would be a no-op where it stands.
 
 ---
 
@@ -307,9 +374,15 @@ registry entry.
   targets: [{ x: 5, y: 1 }],       // >= 1; orb sits at level terrain[y][x]
   fixed: [{ x: 3, y: 3, type: 'WEDGE', orient: '/', secret: true }],  // pre-placed, immovable; secret = drawn as a plain mirror in the flat view
   tray: ['MIRROR', 'MIRROR', 'WEDGE'],  // inventory; tray.length >= par
-  intro: 'optional one-line teaching text shown once'
+  intro: 'optional one-line teaching text shown once',
+  dark: true                       // OPTIONAL (DESIGN.md 15.1). A RENDERING flag: the board is drawn only where a
+                                   // beam has been. Boolean if present - anything else throws. Absent means false.
+                                   // The engine never reads it; a dark level traces identically to a lit one.
 }
-// PLACED PIECES: [{ x, y, type: 'MIRROR'|'WEDGE'|'DIP', orient: '/'|'\\' }]
+// PLACED PIECES: [{ x, y, type: 'MIRROR'|'WEDGE'|'DIP'|'FLOOR', orient: '/'|'\\' }]
+// FLOOR (DESIGN.md 14) is a plate lying flat in the cell's top surface. Its two orientations are
+// indistinguishable in the rules - it never turns the beam - and it is never `secret`, because from
+// directly above it reads as a flat plate by silhouette and needs no disguise (14.3).
 ```
 
 `parseLevel` returns:
@@ -319,7 +392,8 @@ registry entry.
   t: number[d][w] /* t[y][x] */,
   openings: [{x, y, levels:number[] /* ASCENDING, deduped */}],   // canonical copy; [] when the level had none
   openMask: number[d][w],                                        // openMask[y][x], bit z set = level z is open
-  emitter:{x,y,dir}, targets:[{x,y}], fixed:[{x,y,type,orient,secret:boolean}], tray:[...], intro:'' }
+  emitter:{x,y,dir}, targets:[{x,y}], fixed:[{x,y,type,orient,secret:boolean}], tray:[...], intro:'',
+  dark: boolean }
 ```
 
 `openings` is the readable form (a renderer wants it to draw the hole); `openMask` is the fast form
@@ -339,7 +413,7 @@ either normalizes correctly or throws - it can no longer slide through and crash
 Genuinely parsed levels are still returned as-is (`parseLevel(L) === L`), so the solver's parse-once /
 trace-many pattern is unchanged.
 
-Validation (each throws a descriptive `Error` whose message names the field): size is positive integers; exactly `d` terrain rows; a **string** row must be exactly `w` chars in `0..3`; an **array** row must have exactly `w` elements, each an integer `0..3` (checked element by element - `[10, 0]` is NOT three cells); emitter on-grid with a valid dir; at least one target, all on-grid, none on the emitter, no duplicates; fixed pieces on-grid, known type and orient, not on the emitter, a target, or another fixed piece; tray entries are known types; `tray.length >= par`; `par` a non-negative integer.
+Validation (each throws a descriptive `Error` whose message names the field): size is positive integers; exactly `d` terrain rows; a **string** row must be exactly `w` chars in `0..3`; an **array** row must have exactly `w` elements, each an integer `0..3` (checked element by element - `[10, 0]` is NOT three cells); emitter on-grid with a valid dir; at least one target, all on-grid, none on the emitter, no duplicates; fixed pieces on-grid, known type and orient, not on the emitter, a target, or another fixed piece; tray entries are known types; `tray.length >= par`; `par` a non-negative integer; `dark`, when present, is a **boolean** (`dark must be true or false when present, got string`) - it is never coerced, because `dark: 'false'` reading as true is exactly the sort of quiet bug a level file should not be able to ship.
 
 `openings` validation (DESIGN.md 13.1), each throwing a descriptive `Error` naming the field:
 `openings` is an array if present; each entry is an object naming an **on-grid integer** column
@@ -367,13 +441,13 @@ Step from state `(x,y,z,d,v)`: next cell `(x+dx, y+dy)`, arrival level `z' = z+v
 
 Target: lit when entered at `z' == t[cell]` (from any direction, any pitch). Above the orb the beam flies over it and it is NOT lit. **A lit orb passes the beam through unchanged; the beam stops (`end:'target'`) only when the LAST unlit target is lit** — *resolved ambiguity*: the spec says both "the beam stops at the target" and "multi-target levels require all targets lit" with no splitter in v1; pass-through is the only reading under which a two-target level (spec 3.7, level 12) is solvable. Single-target levels behave exactly as "the beam stops at the target".
 
-Piece: acts only when `z' == t[cell]`; sets `d = TURN[orient][d]` and `v = clamp(v + piece.dPitch)` with the clamp to -1..+1 (MIRROR dPitch 0, WEDGE +1, DIP -1) - a DELTA on the incoming pitch, spec 12. Above its level the beam passes over (`overflights`), keeping `d` and `v`; **below** it - only possible through an opening - the beam passes under (`underpasses`), also keeping `d` and `v`. Over and under are reported separately and never merged. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
+Piece: it is only MET when `z' == t[cell]`; the outgoing state is `{d, v} = LaserPieces.apply(type, orient, d, v)`, i.e. the entry's own `turn` table for the heading and its `dPitch` delta or `pitch(vIn)` function for the climb, clamped to -1..+1 (MIRROR dPitch 0, WEDGE +1, DIP -1, FLOOR flips -1 to +1 and leaves 0 and +1 alone) - a DELTA on the incoming pitch, spec 12, generalised by spec 14. **A piece that returns the incoming state unchanged does nothing at all**: the beam carries on as if the cell were bare and a `glide` event is emitted instead of a `piece` event (only a FLOOR can do this, under a level or climbing beam). A piece that changes the pitch without changing the heading also emits `bounce`. Above its level the beam passes over (`overflights`), keeping `d` and `v`; **below** it - only possible through an opening - the beam passes under (`underpasses`), also keeping `d` and `v`. Over, under and glide are reported separately and never merged. A pitched beam with no piece keeps its pitch cell after cell. Fixed and placed pieces behave identically; `pieceHits[i].fixed` tells them apart. If a placed piece is (illegally) on a fixed piece's cell, the fixed piece wins.
 
 Loop guard: the start state is seeded; after each entered cell (post-piece) the state `(x,y,z,d,v)` is checked; a repeat -> `end:'loop'` with endPoint at that cell center. This state guard is what guarantees termination. There is also a step cap, but it is DERIVED per level (`LaserSim.stepCap`, section 2.1) so that it strictly exceeds the number of distinct states and can never fire first - `end:'loop'` therefore always means a genuine repeated state. `MAX_STEPS` (400) is only the cap's floor for tiny boards; it is NOT the cap in force on a 12x12..24x24 board, where a legal route may run to hundreds of steps. Note: in pure 2D, mirror dynamics are reversible so cycles cannot be entered; in 3D they can, because a beam can leave a cell at a different height than it entered the board at and because the pitch CLAMP is not injective - a WEDGE maps both `v=0` and `v=+1` to `+1`, so two different histories can merge into one state (see the loop test for a constructed example).
 
 canPlace: false off-grid, on the emitter, on any target, on a fixed piece, on a placed piece; true on any other cell, including raised terrain (`t` 1..3) — the piece then sits at that level and only a beam at that level meets it. Openings do NOT change this: an opened column is placeable exactly like any other cell (the piece goes on its TOP), and because every open level is strictly below `t`, nothing can ever be placed inside an opening.
 
-altitudeMarks: a mark at every pitch change (`{x,y,z}` of the piece cell at the beam's level there) plus the endPoint. A MIRROR never changes the pitch, so a MIRROR NEVER gets a mark. A WEDGE hit by an already-climbing beam and a DIP hit by an already-descending beam are clamped to no change, so they get no mark either; a DIP that levels a climber, and a WEDGE that levels a descender, do.
+altitudeMarks: a mark at every pitch change (`{x,y,z}` of the piece cell at the beam's level there) plus the endPoint. A MIRROR never changes the pitch, so a MIRROR NEVER gets a mark. A WEDGE hit by an already-climbing beam and a DIP hit by an already-descending beam are clamped to no change, so they get no mark either; a DIP that levels a climber, and a WEDGE that levels a descender, do. A FLOOR gets a mark exactly when it bounces (`-1 -> +1`) and never when it is glided over.
 
 ---
 
@@ -698,10 +772,43 @@ answer. Put a MIRROR on the arch's own cell and it is neither hit nor flown over
 UNDER, `underpasses: [{"x":3,"y":2}]` with a matching `underpass` event, and the beam carries on
 unchanged.
 
+### Example E — SKIP PAD (a FLOOR mirror, DESIGN.md 14). The plate at (2,3) is FIXED. A DIP at (2,4) drops the beam off the `t=1` ridge; the plate throws it back up **on the same heading**; the climb lands it on the `t=2` plateau orb at (2,1). A MIRROR at (2,4) instead keeps the beam level at `z=1` and is stopped by the plateau's own wall face, and a WEDGE overshoots — so this board's par-1 answer is forced to bounce.
+
+```json
+{
+  "name": "SKIP PAD",
+  "par": 1,
+  "size": { "w": 5, "d": 5 },
+  "terrain": ["00000", "00200", "00000", "00000", "10100"],
+  "emitter": { "x": 0, "y": 4, "dir": "E" },
+  "targets": [{ "x": 2, "y": 1 }],
+  "fixed": [{ "x": 2, "y": 3, "type": "FLOOR", "orient": "/", "secret": false }],
+  "tray": ["DIP", "MIRROR"]
+}
+```
+
+```
+placed = [{"x":2,"y":4,"type":"DIP","orient":"\\"}]
+
+visited:   (1,4) z1 E v0 | (2,4) z1 E v0 | (2,3) z0 S v-1 | (2,2) z1 S v+1 | (2,1) z2 S v+1
+end:       "target"      endPoint: {"x":2,"y":1,"z":2}      hits: [0]
+pieceHits: [{"x":2,"y":4,"type":"DIP",...,"fixed":false}, {"x":2,"y":3,"type":"FLOOR",...,"fixed":true}]
+bounces:   [{"x":2,"y":3,"z":0}]        glides: []      overflights: []
+altitudeMarks: [{"x":2,"y":4,"z":1}, {"x":2,"y":3,"z":0}, {"x":2,"y":1,"z":2}]
+```
+
+The plate's `piece` event reads `"dIn":"S","dOut":"S","vIn":-1,"vOut":1` — the heading does not move,
+which is the whole of 14.1 — and it is followed by a `pitch` event and a `bounce` event at the same
+step. Raise the emitter's column to `t=2` so the beam arrives at the plate **level** instead of
+falling, and the same plate does nothing at all: no `piece` event, no `pieceHits` entry, one
+`glide` event and one entry in `glides`, and the beam sails on as if the cell were bare.
+
 ---
 
 ## 6. Notes for downstream engineers
 
+- **Floor mirrors (DESIGN.md 14)**: `FLOOR` needs its own tray card, its own icon (14.3: lying flat, so the silhouette alone distinguishes it from the three upright pieces) and its own mesh - and it is the one piece never drawn as a decoy mirror, because it is never `secret`. Its two orientations are identical in the rules; the rotate tap still works, it just changes nothing. For the fair tell of 14.3, drive the bright dot from `bounces` / the `bounce` event, not from a plate's presence: a plate the beam glides over must not light up. `glides` is the third kind of miss beside `overflights` and `underpasses` and should read differently on screen - the beam is skimming the plate's own surface, not passing it at another height.
+- **Darkness (DESIGN.md 15)**: `parseLevel(level).dark` is the flag; the engine does nothing else with it. What is KNOWN is the renderer's own accumulated state, seeded from the emitter and the target cells and grown from `visited` after each trace.
 - **Openings (DESIGN.md 13)**: draw terrain per solid VOXEL, not as one column box, so a hole is a real hole - `LaserSim.isOpen(level, x, y, z)` (or `openMask[y][x]`) says which voxels exist. In FLAT the top surface is unchanged and the only difference is the light leak of 13.3. `underpasses` / the `underpass` event is the beam going UNDER a piece; `overflights` is still only OVER one. A blocked shot's readout should name the height the beam was travelling at, which is `endPoint.z` on the terminal stub (the level the beam was LEAVING; add the last segment's `v` for the level it would have arrived at).
 - **Renderer / audio**: drive lighting, badges and sounds from `events` (section 2.2), not from matching `visited`/`hits` cells on `x, y`. A beam can enter one `(x, y)` at several heights; only an `events` `target` entry means the orb actually lit, and each event's `step` indexes the segment it belongs to, so animation timing follows cumulative arc length. Beam height in world units is `z + 0.5`; a segment with `v != 0` is a 45-degree diagonal from `from.z+0.5` to `to.z+0.5`. Terminal stubs keep `from.z` in `to.z`; slope them by `v` if you want the physically exact end (floor at height 0, sky at height 4 are reached exactly at the boundary). `endPoint` is where the altitude badge and the "lost/blocked" spark go.
 - **Solver**: to test whether a trace ended on the safety-net cap rather than a real cycle, compare `segments.length` with `LaserSim.stepCap(level)`, never with `MAX_STEPS` (which is only the cap's floor and is far below the cap on a 12x12+ board). `visited` is the pruning set — a new piece can only change the beam if placed on a visited `(x,y)` whose `t[y][x] == z` at that visit (and `canPlace` is true). Parse once, then pass the parsed level to `trace`.

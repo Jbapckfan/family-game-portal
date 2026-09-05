@@ -300,13 +300,16 @@ describe('3.3 pieces via trace (all four incoming directions, both orientations)
 });
 
 describe('INTERFACES 2.2 events stream (additive; consumers must not match on x,y)', () => {
-  test('every documented legacy field keeps its shape; `events` and `underpasses` are the only additions', () => {
+  test('every documented legacy field keeps its shape; the additions are `events`, `underpasses`, `glides` and `bounces`', () => {
     const r = trace(mk(), []);
     assert.deepEqual(Object.keys(r).sort(),
-      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
-    // `underpasses` (DESIGN.md 13) is empty on every level that carries no openings, which is what
-    // keeps the pre-openings corpus byte-identical - see the compatibility suite in sim.test.mjs.
+      ['allTargetsHit', 'altitudeMarks', 'bounces', 'end', 'endPoint', 'events', 'glides', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
+    // `underpasses` (DESIGN.md 13) is empty on every level that carries no openings, and `glides` /
+    // `bounces` (DESIGN.md 14) are empty on every level that carries no FLOOR plate, which is what
+    // keeps the pre-change corpora byte-identical - see the compatibility suites in sim.test.mjs.
     assert.deepEqual(r.underpasses, []);
+    assert.deepEqual(r.glides, []);
+    assert.deepEqual(r.bounces, []);
   });
 
   test('a target is reported ONLY at the orb level: a fly-over at another height emits no target event', () => {
@@ -469,5 +472,84 @@ describe('13.2 the blocked test, over every column height x open set x beam leve
                       openings: [{ x: 3, y: 3, levels: [0, 1, 2] }] });
     assert.equal(stepCap(open), stepCap(plain));
     assert.equal(stepCap(open), MAX_STEPS > 7 * 7 * H_MAX * 12 ? MAX_STEPS : 7 * 7 * H_MAX * 12 + 1);
+  });
+});
+
+/* DESIGN.md 14 + 15, held to the exact wording of INTERFACES sections 2, 2.2, 3 and 4. */
+const F = (x, y, orient = '/') => ({ x, y, type: 'FLOOR', orient });
+
+describe('INTERFACES 4: a piece is MET at z == t, but only ACTS if it changes the beam', () => {
+  // (2,4) holds the plate. Emitter on a t=1 ridge at (0,4) heading east.
+  //                     x:  0123456
+  const board = rows('0000000', '0000000', '0000000', '0000000', '1010000', '0000000', '0000000');
+  const lvl = (o = {}) => mk(Object.assign({ terrain: board, emitter: { x: 0, y: 4, dir: 'E' }, targets: far }, o));
+
+  test('the four ways to meet a piece are exclusive: piece, overflight, underpass, glide', () => {
+    // 1. ACTED (a DIP drops the beam onto the plate at z=0, which bounces it)
+    const acted = trace(lvl(), [D(2, 4, '\\'), F(2, 3)]);
+    assert.equal(acted.events.filter(e => e.kind === 'piece' && e.type === 'FLOOR').length, 1);
+    assert.deepEqual(acted.glides, []);
+    // 2. GLIDE (the same plate, met level - the beam runs straight along the ridge at z=1)
+    const glide = trace(lvl(), [F(2, 4)]);
+    assert.equal(glide.events.filter(e => e.kind === 'glide').length, 1);
+    assert.deepEqual(glide.pieceHits, []);
+    assert.deepEqual(glide.overflights, []);
+    assert.deepEqual(glide.underpasses, []);
+    // 3. OVERFLIGHT (a plate on a t=0 cell, met from a beam at z=1)
+    const over = trace(lvl(), [F(3, 4)]);
+    assert.deepEqual(over.overflights, [{ x: 3, y: 4 }]);
+    assert.deepEqual(over.glides, []);
+    // 4. UNDERPASS (a plate on top of an opened column, met from inside the opening)
+    const arch = mk({
+      terrain: rows('0000000', '0000000', '0000000', '0003000', '0000000', '0000000', '0000000'),
+      openings: [{ x: 3, y: 3, levels: [0] }], emitter: { x: 0, y: 3, dir: 'E' }, targets: far
+    });
+    const under = trace(arch, [F(3, 3)]);
+    assert.deepEqual(under.underpasses, [{ x: 3, y: 3 }]);
+    assert.deepEqual(under.glides, []);
+  });
+
+  test('a glided-over piece is indistinguishable from a bare cell, step for step', () => {
+    const bare = trace(lvl(), []);
+    const plated = trace(lvl(), [F(2, 4)]);
+    assert.deepEqual(plated.visited, bare.visited);
+    assert.deepEqual(plated.segments, bare.segments);
+    assert.deepEqual(plated.altitudeMarks, bare.altitudeMarks);
+    assert.equal(plated.end, bare.end);
+    // the ONLY difference in the whole result is the glide record
+    assert.deepEqual(plated.events.filter(e => e.kind !== 'glide'), bare.events);
+  });
+
+  test('event ORDER within a step: enter, target, piece, pitch, bounce', () => {
+    const r = trace(lvl(), [D(2, 4, '\\'), F(2, 3)]);
+    const atPlate = r.events.filter(e => e.x === 2 && e.y === 3 && e.z === 0).map(e => e.kind);
+    assert.deepEqual(atPlate, ['enter', 'piece', 'pitch', 'bounce']);
+    // and the documented mirrors hold
+    assert.equal(r.events.filter(e => e.kind === 'bounce').length, r.bounces.length);
+    assert.equal(r.events.filter(e => e.kind === 'glide').length, r.glides.length);
+    assert.equal(r.events.filter(e => e.kind === 'piece').length, r.pieceHits.length);
+    for (const e of r.events) assert.ok(e.step >= 0 && e.step < r.segments.length);
+  });
+
+  test('a bounce is a pitch change with NO heading change, and nothing else produces one', () => {
+    const r = trace(lvl(), [D(2, 4, '\\'), F(2, 3)]);
+    for (const e of r.events) {
+      if (e.kind !== 'bounce') continue;
+      const piece = r.events.find(p => p.kind === 'piece' && p.step === e.step && p.x === e.x && p.y === e.y);
+      assert.equal(piece.dIn, piece.dOut);
+      assert.notEqual(piece.vIn, piece.vOut);
+    }
+    // the three upright pieces always turn, so they can never emit one
+    const turning = trace(lvl({ targets: far }), [D(2, 4, '\\'), W(2, 3, '/'), M(3, 3, '/')]);
+    assert.deepEqual(turning.bounces, []);
+  });
+
+  test('INTERFACES 3: `dark` is validated, carried through, and changes no trace', () => {
+    const plain = lvl();
+    const dark = Object.assign(lvl(), { dark: true });
+    assert.equal(parseLevel(plain).dark, false);
+    assert.equal(parseLevel(dark).dark, true);
+    assert.throws(() => parseLevel(Object.assign(lvl(), { dark: 'true' })), /lasers-3d level: dark/);
+    assert.deepEqual(trace(dark, [D(2, 4, '\\')]), trace(plain, [D(2, 4, '\\')]));
   });
 });

@@ -17,6 +17,27 @@
 // a climbing beam can only be levelled by a DIP, so the plan 'WEDGE ... DIP' is the shape that
 // teaches the corrected rule and the generator now scores it as its own concept (climb-then-level).
 //
+// FLOOR MIRRORS (DESIGN.md section 14). The registry grew a piece that does NOT turn the beam and that
+// acts only on a FALLING one, so two assumptions inside walkPath had to go:
+//   - "a planned piece always changes the beam". It does not: a plate under a level or climbing beam
+//     is glided over, and a no-op on the intended path would make par a lie (the solver would find the
+//     same route one piece cheaper). walkPath now refuses any candidate for which
+//     LaserPieces.acts(type, orient, dir, v) is false in BOTH orientations - derived from the registry,
+//     so a future inert piece is refused too without naming a type.
+//   - "the two orientations are two options". For a plate they are the same option, because the
+//     outgoing heading comes from the entry's own turn table (LaserPieces.turnDir) and TURN_KEEP is the
+//     identity. The option list is deduped by outgoing direction.
+// The design consequence worth knowing before writing a plan: a plate needs the beam to arrive with
+// pitch -1, so the leg before it must be a descent, which means the level must start ABOVE the floor
+// (`emitterZ >= 1`). And because a bounce leaves the beam CLIMBING while one DIP only levels a climber
+// (the clamp of spec 12.2), a SECOND trough costs two dips: the skipping-stone plan is
+// DIP, FLOOR, DIP, DIP, FLOOR, DIP - which is exactly what slot 22 of tools/gen-batches.mjs asks for.
+//
+// PRE-PLACED PIECES (14.5) and DARKNESS (15). `fixedIdxs` promotes several planned pieces to `fixed`
+// (the old single `fixedIdx` still works), `secret` may be a boolean or a list of the indices that are
+// disguised, and `spec.dark` puts `dark: true` on the emitted level. All three are level data; none of
+// them changes a single step of the beam.
+//
 // PIPELINE (buildLevel):
 //   1. walkPath      emitter on an edge facing inward; alternate straight runs with piece placements,
 //                    tracking (x, y, z, d, v) exactly as LaserSim.trace would - including the pitch
@@ -44,6 +65,9 @@
 //
 // CLI:
 //   node gen.mjs --w 20 --d 20 --plan MIRROR,WEDGE,MIRROR --seed 1 --count 2
+//   node gen.mjs --w 20 --d 20 --plan DIP,FLOOR,DIP --emitterZ 2 --seed 1
+//     (a FLOOR plan needs --emitterZ >= 1: a plate only ever acts on a FALLING beam, and a beam
+//      already on the floor cannot fall - see DESIGN.md 14.1 and walkPath's `Pieces.acts` guard)
 //   (the shipped 20-level curve lives in tools/gen-batches.mjs, which drives generate() slot by slot)
 import { createRequire } from 'node:module';
 import { writeFileSync, mkdirSync } from 'node:fs';
@@ -192,17 +216,28 @@ function walkPath(r, spec) {
     for (const cand of candidates) {
       // THE DELTA (spec 12.1): the outgoing pitch depends on the incoming one, clamped to -1..+1.
       const vOut = Pieces.applyPitch(cand, v);
+      // A PIECE THAT WOULD DO NOTHING HERE IS NOT A PIECE (DESIGN.md 14.1). Since FLOOR joined the
+      // registry a planned piece can be a no-op - a plate under a level or climbing beam is glided
+      // over - and a no-op on the path would make the intended par a lie: the solver would simply
+      // find the same route one piece cheaper. `acts` is derived from the registry's own transform,
+      // so this refuses any future inert piece too without naming a type.
+      if (!ORIENTS.some(o => Pieces.acts(cand, o, dir, v))) continue;
       // Stop the run short of the ceiling / floor so the leg AFTER this piece still has room.
       let len = fitRun(z, v, vOut, want, minLen, Math.min(base, H_MAX - 1));
       if (len === null) len = fitRun(z, v, vOut, want, minLen, 1);
       if (len === null) continue;
-      // The piece would sit at (px, py, pz). A 90-degree turn always leaves this run's own line, so
-      // the perpendicular ray can be measured before the run's cells are added to `used`.
+      // The piece would sit at (px, py, pz). The outgoing ray is either perpendicular to this run
+      // (a 90-degree turn) or straight ahead of its last cell (a FLOOR bounce); either way it never
+      // touches a cell of this run, so it can be measured before the run is added to `used`.
       const px = x + DIRS[dir].dx * len, py = y + DIRS[dir].dy * len, pz = z + v * len;
       const need = runFloor(spec, pz, vOut, isLast);
-      const options = [];
+      // The heading half of the transform is the registry's, not TURN's: a FLOOR plate leaves the
+      // heading alone, so its two orientations are the SAME option and only one is offered.
+      const options = [], seenDir = new Set();
       for (const o of ORIENTS) {
-        const nd = TURN[o][dir];
+        const nd = Pieces.turnDir(cand, o, dir);
+        if (seenDir.has(nd)) continue;
+        seenDir.add(nd);
         options.push({ o, nd, v: vOut, room: roomAhead(px, py, pz, nd, vOut, used, w, h, spec.maxRun + 4) });
       }
       const viable = options.filter(t => t.room >= need);
@@ -383,11 +418,19 @@ function decorate(r, spec, t, onPath) {
 
 function assemble(spec, walk, t, openings) {
   const pieces = walk.path.filter(c => c.role === 'piece');
-  const fixedIdx = spec.fixedIdx == null ? -1 : spec.fixedIdx;
+  // WHICH PLANNED PIECES ARE PRE-PLACED (DESIGN.md 14.5). `fixedIdx` (one index) is kept for the
+  // levels that already used it; `fixedIdxs` (a list) is how a board carries SEVERAL built-in
+  // pieces. A fixed piece is always taken from the intended path, never sprinkled elsewhere: that
+  // is what makes it "a constraint the player cannot remove" rather than scenery, and it is why the
+  // player's par drops by one for each of them. `secret` may be a boolean (all of them) or a list of
+  // the indices that are disguised, because a fixed FLOOR is never disguised (14.3).
+  const fixedIdxs = spec.fixedIdxs != null ? spec.fixedIdxs.slice()
+    : (spec.fixedIdx == null ? [] : [spec.fixedIdx]);
+  const secretOf = (i) => (Array.isArray(spec.secret) ? spec.secret.indexOf(i) >= 0 : !!spec.secret);
   const fixed = [];
   const solution = [];
   pieces.forEach((c, i) => {
-    if (i === fixedIdx) fixed.push({ x: c.x, y: c.y, type: c.type, orient: c.orient, secret: !!spec.secret });
+    if (fixedIdxs.indexOf(i) >= 0) fixed.push({ x: c.x, y: c.y, type: c.type, orient: c.orient, secret: secretOf(i) });
     else solution.push({ x: c.x, y: c.y, type: c.type, orient: c.orient });
   });
   const targets = [];
@@ -420,6 +463,9 @@ function assemble(spec, walk, t, openings) {
     solution
   };
   if (openings && openings.length) out.openings = openings.map(o => ({ x: o.x, y: o.y, levels: o.levels.slice() }));
+  // DESIGN.md 15.1: a pure RENDERING flag. It is level data, so the generator carries it, and the
+  // engine ignores it entirely - nothing about the beam changes on a dark board.
+  if (spec.dark) out.dark = true;
   return out;
 }
 
@@ -441,6 +487,17 @@ function assemble(spec, walk, t, openings) {
  * Both are read off `visited`: the beam is inside the column (z < t) at a level the column's
  * openMask has punched out. A beam flying OVER the same column (z >= t) is an `overflight`, not
  * either of these, and a beam that merely stops at its wall face tags nothing.
+ *
+ * Tags added for floor mirrors (DESIGN.md section 14):
+ *   bounce            the beam reflected off a FLOOR plate at least once: it arrived pitched DOWN,
+ *                     left pitched UP, and kept its heading. Read off the engine's own `bounces`
+ *                     list, so a plate the beam merely GLIDES over (level or climbing, 14.1) tags
+ *                     nothing - which is the whole distinction the piece exists to make.
+ *   skip              TWO OR MORE bounces in one shot: the skipping-stone rhythm of 14.2, where the
+ *                     player is spacing the peaks and troughs rather than steering.
+ *   floor-glide       a FLOOR plate the beam met at its own level and was NOT changed by. Not a
+ *                     teaching beat - it is here so a level whose "bounce" is really a fly-past can
+ *                     be told apart at a glance in the validator's table.
  */
 
 export function concepts(level, solution) {
@@ -477,6 +534,10 @@ export function concepts(level, solution) {
     if (!((L.openMask[v.y][v.x] >> v.z) & 1)) continue;
     out.add(v.z === 0 ? 'under-arch' : 'through-window');
   }
+  // FLOOR mirrors (section 14). `bounces` is the engine's own list of vertical-only reflections.
+  if (res.bounces.length) out.add('bounce');
+  if (res.bounces.length >= 2) out.add('skip');
+  if (res.glides.length) out.add('floor-glide');
   if (res.overflights.length) out.add('piece-overflight');
   if (L.targets.length === 2) out.add('twotargets');
   for (const ti of res.hits) { const tg = L.targets[ti]; if (L.t[tg.y][tg.x] >= 1) out.add('plateau-target'); }
@@ -704,10 +765,15 @@ export function normalizeSpec(spec) {
   return Object.assign({
     w, d,
     plan: ['MIRROR'],
+    // Wildcard '?' slots draw from here. FLOOR is in the pool: walkPath only ever accepts a type
+    // that ACTS where it stands (see the `Pieces.acts` guard), so a plate is only ever planned onto
+    // a descending leg, which is exactly where it belongs.
     pool: ALL_TYPES.slice(),
     par: null,
     fixedIdx: null,
+    fixedIdxs: null,
     secret: false,
+    dark: false,
     emitterZ: 0,
     targets: 1,
     heights: [1, 2, 3],
@@ -745,7 +811,10 @@ export function normalizeSpec(spec) {
  */
 export function generate(spec, opts) {
   const s = normalizeSpec(spec);
-  if (s.par == null) s.par = s.plan.length - (s.fixedIdx == null ? 0 : 1);
+  if (s.par == null) {
+    const nFixed = s.fixedIdxs != null ? s.fixedIdxs.length : (s.fixedIdx == null ? 0 : 1);
+    s.par = s.plan.length - nFixed;
+  }
   const o = Object.assign({ seed: 1, tries: 3000, count: 1, stats: null }, opts);
   const built = [];
   let tried = 0;
@@ -770,6 +839,9 @@ if (isMain) {
   const a = {};
   for (let i = 2; i < process.argv.length; i++) if (process.argv[i].startsWith('--')) a[process.argv[i].slice(2)] = process.argv[++i];
   const spec = { w: +(a.w || 12), d: +(a.d || a.w || 12), plan: (a.plan || 'MIRROR').split(',') };
+  // A FLOOR plan needs the emitter OFF the floor, or the first DIP has nowhere to fall to and every
+  // walk is rejected. `--emitterZ 2` is the usual answer; the shipped slots set it in their specs.
+  if (a.emitterZ != null) spec.emitterZ = +a.emitterZ;
   const res = generate(spec, { seed: +(a.seed || 1), tries: +(a.tries || 500), count: +(a.count || 1) });
   process.stdout.write(JSON.stringify(res.built, null, 1) + '\n');
   process.stderr.write('gen: ' + res.built.length + ' built in ' + res.tried + ' seeds\n');

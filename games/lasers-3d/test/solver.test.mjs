@@ -44,6 +44,18 @@ const SECRET_WEDGE = mk({
   fixed: [{ x: 2, y: 2, type: 'WEDGE', orient: '/', secret: true }], tray: ['MIRROR']
 });
 
+// (5) SKIP PAD (DESIGN.md 14). A FIXED floor plate at (2,3) and a t=2 plateau target at (2,1).
+// The only par-1 answer is a DIP at (2,4): it drops the beam onto the plate, the plate bounces it
+// back up with the SAME heading, and the climb lands it on the plateau. A MIRROR there keeps the
+// beam level at z=1 and is stopped by the plateau's own wall face; a WEDGE overshoots into the sky.
+// So this fixture is a level whose minimal solution is FORCED to bounce, which is what the shipped
+// set has to be able to promise.
+const SKIP_PAD = mk({
+  terrain: ['00000', '00200', '00000', '00000', '10100'],
+  emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 2, y: 1 }],
+  fixed: [{ x: 2, y: 3, type: 'FLOOR', orient: '/', secret: false }], tray: ['DIP', 'MIRROR']
+});
+
 describe('solve: known levels', () => {
   test('(1) FIRST BOUNCE par 1, unique, known solution', () => {
     const r = solve(FIRST_BOUNCE);
@@ -151,31 +163,41 @@ describe('flatten / needs3D', () => {
   // Under the corrected rule (spec 12) MIRROR PRESERVES the pitch instead of zeroing it, so
   // flatten()'s claim - "the CLASSIC 2D game" - has to be re-established rather than assumed.
   // It still holds, and for a stronger reason than before: in the flat projection the emitter fires
-  // level, every t >= 1 cell is a full wall (nothing can climb onto one) and every piece is a MIRROR,
-  // which now preserves v. v starts at 0 and no piece can ever change it, so EVERY segment is level.
-  test('flatten really is 2D: every segment of every flat trace has v === 0 (spec 12 re-check)', () => {
-    const cases = [FIRST_BOUNCE, WALLED, PLATEAU, SECRET_WEDGE];
+  // level, every t >= 1 cell is a full wall (nothing can climb onto one) and every piece is either a
+  // MIRROR (which preserves v) or an inert FLOOR plate (which leaves a level beam alone, DESIGN.md
+  // 14.1). v starts at 0 and no piece can ever change it, so EVERY segment is level.
+  test('flatten really is 2D: every segment of every flat trace has v === 0 (spec 12 + 14 re-check)', () => {
+    const cases = [FIRST_BOUNCE, WALLED, PLATEAU, SECRET_WEDGE, SKIP_PAD];
     const r = rng(20260903);
-    for (let i = 0; i < 120; i++) cases.push(randomLevel(r));
+    for (let i = 0; i < 120; i++) cases.push(randomLevel(r));   // randomLevel draws from Pieces.TYPES, so FLOOR appears
+    let sawFloor = 0;
     for (const lvl of cases) {
       const F = Sim.parseLevel(flatten(lvl));
       // heights in the projection are only 0 or 3, and 3 is a full wall
       assert.ok(F.terrain.join('').split('').every(c => c === '0' || c === '3'), F.terrain.join('|'));
-      assert.ok(F.tray.every(t => t === 'MIRROR'));
-      assert.ok(F.fixed.every(f => f.type === 'MIRROR' && F.t[f.y][f.x] === 0));
+      // A disguised piece flattens to a MIRROR; a FLOOR plate is NOT disguised (14.3) so it stays
+      // itself and is simply inert here. Nothing else may survive the projection.
+      assert.ok(F.tray.every(t => t === 'MIRROR' || t === 'FLOOR'), F.tray.join(','));
+      assert.ok(F.fixed.every(f => (f.type === 'MIRROR' || f.type === 'FLOOR') && F.t[f.y][f.x] === 0));
+      // and the FLOOR entries are exactly the ones the real level had, one for one
+      assert.deepEqual(F.tray.map(t => t === 'FLOOR'), Sim.parseLevel(lvl).tray.map(t => t === 'FLOOR'));
+      if (F.tray.includes('FLOOR') || F.fixed.some(f => f.type === 'FLOOR')) sawFloor++;
       // every reachable flat trace, with any legal placement of any tray piece, stays level
+      const trayTypes = Array.from(new Set(F.tray));
       const placements = [[]];
       for (let y = 0; y < F.size.d; y++) for (let x = 0; x < F.size.w; x++) {
-        for (const o of Pieces.ORIENTS) if (Sim.canPlace(F, [], x, y)) placements.push([{ x, y, type: 'MIRROR', orient: o }]);
+        for (const o of Pieces.ORIENTS) for (const ty of trayTypes) if (Sim.canPlace(F, [], x, y)) placements.push([{ x, y, type: ty, orient: o }]);
       }
       for (const placed of placements) {
         const t = Sim.trace(F, placed);
         assert.ok(t.segments.every(sg => sg.v === 0), 'a flat segment climbed');
         assert.ok(t.visited.every(v => v.z === 0 && v.v === 0), 'a flat beam left level 0');
         assert.deepEqual(t.events.filter(e => e.kind === 'pitch'), [], 'a flat trace changed pitch');
+        assert.deepEqual(t.bounces, [], 'a flat beam bounced off a plate, which needs a pitch to do');
         assert.deepEqual(t.overflights, [], 'nothing can be flown over in the flat game');
       }
     }
+    assert.ok(sawFloor > 5, 'the corpus barely exercised FLOOR in the flat projection: ' + sawFloor);
   });
 
   test('solve({flat:true}) equals solve(flatten(level))', () => {
@@ -631,5 +653,151 @@ describe('openings: the concept tags of DESIGN.md 13', () => {
     assert.ok(arch.length >= 3, 'under-arch levels: ' + arch.join(','));
     assert.ok(win.length >= 3, 'through-window levels: ' + win.join(','));
     assert.ok(Math.min(...arch) < Math.min(...win), 'the arch must be introduced before the window');
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// DESIGN.md section 14: a piece that does NOT turn the beam.
+// The beam-order DFS was written when every piece always changed the beam it met. FLOOR breaks that
+// (a plate is inert under a level or climbing beam), so the pruning argument in solver.mjs's header
+// had to be re-proven rather than re-read. These tests are that proof, mechanised.
+// ---------------------------------------------------------------------------------------------
+describe('DESIGN.md 14: a non-turning piece in the search', () => {
+  test('SKIP PAD: par 1, unique, and the one minimal solution BOUNCES', () => {
+    const r = solve(SKIP_PAD, { maxSolutions: Infinity });
+    assert.equal(r.solvable, true);
+    assert.equal(r.par, 1);
+    assert.equal(r.unique, true);
+    assert.deepEqual(r.solution, [{ x: 2, y: 4, type: 'DIP', orient: '\\' }]);
+    const tr = replay(SKIP_PAD, r.solution);
+    assert.equal(tr.allTargetsHit, true);
+    assert.deepEqual(tr.bounces, [{ x: 2, y: 3, z: 0 }]);
+    assert.ok(concepts(SKIP_PAD, r.solution).includes('bounce'));
+    assert.ok(!concepts(SKIP_PAD, r.solution).includes('skip'), 'one bounce is not a skip');
+  });
+
+  test('a level beam is not helped by the plate: MIRROR and WEDGE both miss', () => {
+    // the two rival par-1 placements on the same cell, spelled out - this is WHY the bounce is forced
+    assert.equal(replay(SKIP_PAD, [{ x: 2, y: 4, type: 'MIRROR', orient: '\\' }]).end, 'blocked');
+    assert.equal(replay(SKIP_PAD, [{ x: 2, y: 4, type: 'WEDGE', orient: '\\' }]).allTargetsHit, false);
+  });
+
+  test('an INERT piece can never be part of a minimal solution (the irredundancy claim)', () => {
+    // Put a FLOOR in the tray of a level whose route is entirely level. Every trace that places it is
+    // byte-identical to the trace without it, so no minimal solution can contain one.
+    const lvl = mk({ emitter: { x: 0, y: 2, dir: 'E' }, targets: [{ x: 2, y: 4 }], tray: ['MIRROR', 'FLOOR'] });
+    const r = solve(lvl, { maxSolutions: Infinity });
+    assert.equal(r.par, 1);
+    for (const sol of r.solutions) assert.ok(sol.every(p => p.type !== 'FLOOR'), JSON.stringify(sol));
+    // and the reason, directly: adding the inert plate anywhere changes nothing about the beam
+    const base = replay(lvl, [{ x: 2, y: 2, type: 'MIRROR', orient: '/' }]);
+    const withPlate = replay(lvl, [{ x: 2, y: 2, type: 'MIRROR', orient: '/' }, { x: 1, y: 2, type: 'FLOOR', orient: '/' }]);
+    assert.deepEqual(withPlate.visited, base.visited);
+    assert.deepEqual(withPlate.segments, base.segments);
+    assert.equal(withPlate.glides.length, 1, 'the plate was met and glided over');
+  });
+
+  // A random 4x4 board whose ONLY way up is a bounce: the emitter stands on a t=1 ridge, the orb sits
+  // on a t=2 plateau, and the tray carries no WEDGE. Nothing in {MIRROR, DIP} can raise a beam, so a
+  // solvable board here is a board solved by a floor mirror - which is what makes this corpus worth
+  // brute-forcing. (randomLevel's plain corpus already covers FLOOR too, since it draws from
+  // Pieces.TYPES, but a bounce almost never turns out to be NEEDED there.)
+  function bounceLevel(r) {
+    const w = 4, d = 4;
+    const terrain = [];
+    for (let y = 0; y < d; y++) { let row = ''; for (let x = 0; x < w; x++) row += r() < 0.75 ? '0' : '1'; terrain.push(row); }
+    const set = (x, y, v) => { terrain[y] = terrain[y].slice(0, x) + v + terrain[y].slice(x + 1); };
+    const side = Math.floor(r() * 4), k = Math.floor(r() * d);
+    const emitter = [{ x: 0, y: k, dir: 'E' }, { x: w - 1, y: k, dir: 'W' }, { x: k, y: 0, dir: 'N' }, { x: k, y: d - 1, dir: 'S' }][side];
+    set(emitter.x, emitter.y, 1);
+    const used = new Set([emitter.x + ',' + emitter.y]);
+    const free = () => { for (;;) { const x = Math.floor(r() * w), y = Math.floor(r() * d); const q = x + ',' + y; if (!used.has(q)) { used.add(q); return { x, y }; } } };
+    const tg = free();
+    set(tg.x, tg.y, 2);
+    const fixed = [];
+    if (r() < 0.6) { const c = free(); set(c.x, c.y, 0); fixed.push({ x: c.x, y: c.y, type: 'FLOOR', orient: pick(r, Pieces.ORIENTS), secret: false }); }
+    const tray = ['DIP', 'FLOOR'];
+    if (r() < 0.6) tray.push('MIRROR');
+    return { name: 'R', par: 0, size: { w, d }, terrain, emitter, targets: [tg], fixed, tray };
+  }
+
+  test('pruning soundness WITH floor mirrors: solve() matches brute force on 300 bounce boards', () => {
+    const r = rng(20260914);
+    let solvable = 0, bounced = 0;
+    for (let i = 0; i < 300; i++) {
+      const lvl = bounceLevel(r);
+      const b = brute(lvl);
+      const got = solve(lvl, { maxSolutions: Infinity });
+      assert.equal(got.solvable, b.solvable, JSON.stringify(lvl));
+      if (!b.solvable) continue;
+      solvable++;
+      assert.equal(got.par, b.par, JSON.stringify(lvl));
+      assert.equal(got.solutions.length, b.count, 'minimal-solution COUNT differs: ' + JSON.stringify(lvl));
+      for (const sol of got.solutions) assert.equal(replay(lvl, sol).allTargetsHit, true);
+      if (got.solutions.some(sol => replay(lvl, sol).bounces.length)) bounced++;
+    }
+    assert.ok(bounced >= 5, 'the corpus proved nothing about bounces: ' + bounced + ' of ' + solvable + ' solvable');
+    assert.equal(bounced, solvable, 'a board with no WEDGE was solved without a bounce, so the corpus is not what it claims');
+  });
+
+  test('and the plain random corpus, which now draws FLOOR from Pieces.TYPES, still matches brute force', () => {
+    const r = rng(20260915);
+    let withFloor = 0;
+    for (let i = 0; i < 120; i++) {
+      const lvl = randomLevel(r);
+      if (!(lvl.tray.includes('FLOOR') || lvl.fixed.some(f => f.type === 'FLOOR'))) continue;
+      withFloor++;
+      const b = brute(lvl);
+      const got = solve(lvl, { maxSolutions: Infinity });
+      assert.equal(got.solvable, b.solvable, JSON.stringify(lvl));
+      if (b.solvable) {
+        assert.equal(got.par, b.par, JSON.stringify(lvl));
+        assert.equal(got.solutions.length, b.count, 'minimal-solution COUNT differs: ' + JSON.stringify(lvl));
+      }
+    }
+    assert.ok(withFloor >= 30, 'too few floor-mirror levels in the sample: ' + withFloor);
+  });
+
+  test('flatten keeps a FLOOR a FLOOR - it is not disguised (14.3), and it is inert there', () => {
+    const F = flatten(SKIP_PAD);
+    assert.deepEqual(F.tray, ['MIRROR', 'MIRROR'], 'a DIP is disguised, so it flattens to a MIRROR');
+    assert.deepEqual(F.fixed, [{ x: 2, y: 3, type: 'FLOOR', orient: '/', secret: false }]);
+    // it still occupies its cell, exactly as the flat player sees it
+    assert.equal(Sim.canPlace(F, [], 2, 3), false);
+    // a tray FLOOR survives the projection one for one
+    const withTrayFloor = mk({ emitter: { x: 0, y: 2, dir: 'E' }, targets: [{ x: 2, y: 4 }], tray: ['FLOOR', 'WEDGE'] });
+    assert.deepEqual(flatten(withTrayFloor).tray, ['FLOOR', 'MIRROR']);
+  });
+
+  test('a bounce route is unavailable to the flat player, so a bounce level is flat-unsolvable', () => {
+    // the same board with the tray cut to the one piece the route needs
+    const lvl = mk({
+      terrain: ['00000', '00200', '00000', '00000', '10100'],
+      emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 2, y: 1 }],
+      fixed: [{ x: 2, y: 3, type: 'FLOOR', orient: '/', secret: false }], tray: ['DIP']
+    });
+    const n3 = needs3D(lvl);
+    assert.equal(n3.reason, 'flat-unsolvable');
+    assert.equal(n3.needs3D, true);
+  });
+
+  test('the `skip` tag needs TWO bounces, and enumerate/proveMinimal agree on such a level', () => {
+    const lvl = {
+      name: 'SKIP', par: 0, size: { w: 7, d: 11 },
+      terrain: ['0000000', '0000000', '0000000', '0000000', '0000000',
+                '2002020', '0000000', '0000000', '0000000', '0002020', '0000000'],
+      emitter: { x: 0, y: 5, dir: 'E' }, targets: [{ x: 5, y: 5 }], fixed: [],
+      tray: ['DIP', 'FLOOR', 'DIP', 'DIP', 'FLOOR']
+    };
+    const sol = [
+      { x: 3, y: 5, type: 'DIP', orient: '/' }, { x: 3, y: 7, type: 'FLOOR', orient: '/' },
+      { x: 3, y: 9, type: 'DIP', orient: '/' }, { x: 5, y: 9, type: 'DIP', orient: '\\' },
+      { x: 5, y: 7, type: 'FLOOR', orient: '/' }
+    ];
+    const tr = replay(lvl, sol);
+    assert.equal(tr.allTargetsHit, true);
+    assert.equal(tr.bounces.length, 2);
+    const cs = concepts(lvl, sol);
+    assert.ok(cs.includes('bounce') && cs.includes('skip'), cs.join(','));
   });
 });

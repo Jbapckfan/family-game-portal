@@ -241,3 +241,56 @@ An opening is invisible from above by construction, so the game MUST give a tell
 - Terrain is drawn per solid voxel rather than as a single column box, so an opening is a real hole with visible ceiling and floor faces inside it. Geometry stays merged per material; the count rises but the board is at most 24x24x4.
 - The FLAT view is unchanged apart from the light leak of 13.3. The top surface still renders identically for solid and opened columns.
 - The TILTED view is where the hole becomes obvious, which preserves the game's existing bargain: tilting costs a star and buys the truth.
+
+
+## 14. Floor mirrors (amended 2026-09-04, James's request)
+
+James: "I like the idea of floor mirrors/other mirrors already built into the level."
+
+### 14.1 The piece
+A fourth piece, tray label **FLOOR** (working label; the name is James's to confirm). Unlike the other three it does NOT turn the beam. It lies flat in the cell's top surface and acts only on a beam that is coming DOWN onto it.
+
+Acting rule, using the existing "a piece acts when the beam enters its cell at `z' == t[cell]`" convention:
+
+| incoming pitch | what a FLOOR mirror does |
+|---|---|
+| `v = -1` (descending onto it) | reflect: heading UNCHANGED, pitch becomes `+1` |
+| `v = 0` (level) | nothing; the beam glides over it |
+| `v = +1` (climbing away) | nothing |
+
+That is physically the right behaviour for a horizontal mirror: it flips the vertical component and leaves the horizontal component alone, which is the exact complement of the vertical MIRROR of section 12 that leaves the vertical component alone.
+
+### 14.2 Why it is worth a fourth piece
+It creates a verb the game does not have: the beam becomes a **skipping stone**. DIP down, bounce up off a floor mirror, coast over a wall, DIP again, bounce again. The player is spacing the bounces so the peaks clear the walls and the troughs miss the low obstacles, which is a puzzle about wavelength rather than direction. Nothing else in the game asks that question.
+
+### 14.3 Fair tell in the flat view
+A floor mirror lies in the floor, so from directly above it is a flat plate and reads differently from the three upright pieces by silhouette alone; it does not need a disguise. Its tray icon must show it lying flat, matching the established icon language where the piece's slope is the readable thing. Where a beam bounces, beam and its own floor shadow coincide at that instant, which draws a bright dot on the floor at the bounce point: that dot is the fair tell for reading a skip path without tilting.
+
+### 14.4 Requirements on the level set
+- Introduced no earlier than the DIP, since a floor mirror is useless until the player can send a beam downward.
+- At least three levels where every minimal solution bounces off a floor mirror, and at least one requiring TWO bounces so the skipping-stone rhythm is unmistakable.
+- Fixed (pre-placed) floor mirrors are encouraged: James also asked for more mirrors built into the level, and a bounce plate the player did not place reads as part of the architecture.
+
+### 14.5 More pre-placed pieces generally
+Independent of the new piece: the generator should place more `fixed` pieces across the set. They cost the player nothing to discover, they make a board read as designed rather than empty, and a fixed piece the beam must route THROUGH is a constraint the player cannot remove. Aim for most levels from the middle of the curve on to carry at least one.
+
+## 15. Darkness (amended 2026-09-04, James's request)
+
+James: "I like the idea of darkness."
+
+### 15.1 The rule
+A level may set `dark: true`. On a dark level the board's terrain, pieces, targets and openings are NOT drawn until the beam has been there. Firing is how you survey.
+
+- The empty grid outline is always drawn, so the player can always see the board's extent and tap a cell. Darkness hides what is IN the world, never where the world is.
+- A cell becomes **known** when any beam has entered it, and known cells stay known for the rest of the level, across shots. Discovery accumulates; it is never taken away.
+- RESET keeps what is known. Re-entering the level from the level select keeps it too. Darkness is a fog of war, not a punishment, and re-learning a board is tedium rather than difficulty.
+- The emitter, and the cell each target sits in, are known from the start. A puzzle whose goal you cannot see is a maze, not a puzzle.
+- Anything the player places is always drawn, whether or not its cell is known.
+
+### 15.2 Why it is worth building
+It converts a shot from a test into an expedition, and it makes the existing fair tells load-bearing: on a dark board the altitude badges and the post-fire readout are most of what you have. It also pairs with the arches and windows of section 13, because a hollow column is discovered by the beam going through it.
+
+### 15.3 Fairness and where it belongs
+- Dark levels are LATE levels. They are not a mode toggle and never apply to a teaching level.
+- The third star on a dark level is unchanged (solve without tilting), and is genuinely harder, which is the point.
+- A known cell renders exactly as it would on a lit board, so nothing about the flat view's deception changes; darkness only gates WHEN the player sees it.

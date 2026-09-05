@@ -58,25 +58,40 @@ describe('pieces.js registry and turn tables (3.3)', () => {
     assert.equal(PIECES.MIRROR.dPitch, 0);
     assert.equal(PIECES.WEDGE.dPitch, 1);
     assert.equal(PIECES.DIP.dPitch, -1);
-    // the old absolute `pitch` field is GONE; leaving it would let a stale consumer keep the old rule
-    for (const t of Pieces.TYPES) assert.equal(PIECES[t].pitch, undefined, t + ' still carries an absolute pitch');
+    // The old absolute `pitch` NUMBER is gone; leaving it would let a stale consumer keep the old
+    // "a piece SETS the pitch" rule. `pitch` is now the name of the optional FUNCTION form of the
+    // vertical half of the transform, which only a piece that is not a plain delta carries.
+    for (const t of Pieces.TYPES) {
+      assert.notEqual(typeof PIECES[t].pitch, 'number', t + ' still carries an absolute pitch number');
+      const hasDelta = Number.isInteger(PIECES[t].dPitch), hasFn = typeof PIECES[t].pitch === 'function';
+      assert.ok(hasDelta !== hasFn, t + ' must declare EXACTLY one of dPitch / pitch');
+    }
     assert.equal(Pieces.rotate('/'), '\\');
     assert.equal(Pieces.rotate('\\'), '/');
   });
-  test('THE PITCH TABLE (spec 12.1), every cell: apply(type, orient, dir, vIn).v', () => {
-    // rows are v_in = -1, 0, +1 (DESIGN.md section 12.1)
+  test('THE PITCH TABLE (spec 12.1 + 14.1), every cell: apply(type, orient, dir, vIn).v', () => {
+    // rows are v_in = -1, 0, +1 (DESIGN.md section 12.1; the FLOOR row is section 14.1)
     const TABLE = {
       MIRROR: { '-1': -1, '0': 0, '1': 1 },     // preserved
       WEDGE:  { '-1': 0,  '0': 1, '1': 1 },     // +1, clamped at +1
       DIP:    { '-1': -1, '0': -1, '1': 0 },    // -1, clamped at -1
+      FLOOR:  { '-1': 1,  '0': 0, '1': 1 },     // bounce: -1 flips to +1; level and climbing untouched
     };
+    // The heading half of the transform, also data: the three upright pieces turn 90 degrees, the
+    // flat plate does not turn at all (14.1).
+    const TURNS = { MIRROR: true, WEDGE: true, DIP: true, FLOOR: false };
+    assert.deepEqual(Object.keys(TABLE).sort(), Pieces.TYPES.slice().sort(), 'the registry grew a type this table does not cover');
     for (const type of Pieces.TYPES) {
+      assert.equal(Pieces.turnsBeam(type), TURNS[type], type + ' turnsBeam');
       for (const vIn of [-1, 0, 1]) {
         assert.equal(Pieces.applyPitch(type, vIn), TABLE[type][String(vIn)], `${type} v_in ${vIn}`);
         for (const orient of Pieces.ORIENTS) for (const dir of ['E', 'N', 'W', 'S']) {
           const r = Pieces.apply(type, orient, dir, vIn);
           assert.equal(r.v, TABLE[type][String(vIn)], `${type} ${orient} ${dir} v_in ${vIn}`);
-          assert.equal(r.d, TURN[orient][dir], `${type} ${orient} ${dir}: the turn is unchanged by the pitch rule`);
+          assert.equal(r.d, TURNS[type] ? TURN[orient][dir] : dir, `${type} ${orient} ${dir}: heading`);
+          assert.equal(Pieces.turnDir(type, orient, dir), r.d, `${type} ${orient} ${dir}: turnDir agrees with apply`);
+          // `acts` is derived, never declared: it is exactly "the outgoing state differs".
+          assert.equal(Pieces.acts(type, orient, dir, vIn), r.d !== dir || r.v !== vIn, `${type} acts ${orient} ${dir} ${vIn}`);
         }
       }
     }
@@ -85,13 +100,26 @@ describe('pieces.js registry and turn tables (3.3)', () => {
     assert.equal(Pieces.V_MIN, -1);
     assert.equal(Pieces.V_MAX, 1);
     assert.deepEqual([-3, -2, -1, 0, 1, 2, 3].map(Pieces.clampPitch), [-1, -1, -1, 0, 1, 1, 1]);
-    // a future piece is one registry entry: a plain dPitch, or its own applyPitch, clamped centrally
+    // A piece is one registry entry: a plain dPitch, or its own pitch(vIn), and the clamp is applied
+    // centrally to WHICHEVER it is - an entry cannot escape it by supplying a function.
     for (const t of Pieces.TYPES) {
-      assert.ok(Number.isInteger(PIECES[t].dPitch), t + ' must carry a numeric dPitch');
+      const raw = typeof PIECES[t].pitch === 'function' ? PIECES[t].pitch : (v) => v + PIECES[t].dPitch;
       for (const vIn of [-1, 0, 1]) {
-        assert.equal(Pieces.applyPitch(t, vIn), Pieces.clampPitch(vIn + PIECES[t].dPitch), t + ' v_in ' + vIn);
+        assert.equal(Pieces.applyPitch(t, vIn), Pieces.clampPitch(raw(vIn)), t + ' v_in ' + vIn);
+        assert.ok(Pieces.applyPitch(t, vIn) >= Pieces.V_MIN && Pieces.applyPitch(t, vIn) <= Pieces.V_MAX, t + ' escaped the clamp');
       }
     }
+    // A hypothetical fifth piece with a wild pitch function is still clamped by applyPitch, because
+    // the clamp lives there and not in the entry. Proven by clamping the entry's own raw output.
+    assert.equal(Pieces.clampPitch(7), 1);
+    assert.equal(Pieces.clampPitch(-7), -1);
+  });
+  test('TURN_KEEP is the identity table, so "does not turn" is DATA not a branch (14.1)', () => {
+    for (const orient of Pieces.ORIENTS) for (const dir of ['E', 'N', 'W', 'S']) {
+      assert.equal(Pieces.TURN_KEEP[orient][dir], dir, `TURN_KEEP ${orient} ${dir}`);
+    }
+    assert.equal(PIECES.FLOOR.turn, Pieces.TURN_KEEP);
+    for (const t of ['MIRROR', 'WEDGE', 'DIP']) assert.equal(PIECES[t].turn, TURN, t + ' must use the 90-degree table');
   });
   test('sim exports the same registry object', () => {
     assert.equal(PIECES, Pieces.PIECES);
@@ -474,7 +502,7 @@ describe('trace events (ordered, step-indexed stream)', () => {
   test('events is purely additive: every documented field keeps its shape', () => {
     const r = trace(mk(), []);
     assert.deepEqual(Object.keys(r).sort(),
-      ['allTargetsHit', 'altitudeMarks', 'end', 'endPoint', 'events', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
+      ['allTargetsHit', 'altitudeMarks', 'bounces', 'end', 'endPoint', 'events', 'glides', 'hits', 'overflights', 'underpasses', 'pieceHits', 'segments', 'visited'].sort());
     assert.ok(Array.isArray(r.events));
     assert.equal(r.end, 'target');
     assert.equal(r.segments.length, 6);
@@ -935,10 +963,11 @@ describe('openings: BACKWARD COMPATIBILITY - a level with no `openings` behaves 
   // "before" corpus even after src/levels.js is rebuilt. Each case stores the sha256 of
   // JSON.stringify(trace(level, placed)) - the whole result, byte for byte, not a summary.
   //
-  // Section 13's only additive field is `underpasses`, which is inserted between `overflights` and
-  // `events`. Deleting it restores the exact pre-change key order, so the digest below compares the
-  // legacy result BYTE FOR BYTE; the field itself is asserted empty on every case, which is what
-  // "no openings changes nothing" means.
+  // Section 13's only additive field is `underpasses`, and section 14 added `glides` and `bounces`;
+  // all three sit between `overflights` and `events`. Deleting them restores the exact pre-change key
+  // order, so the digest below compares the legacy result BYTE FOR BYTE, and each one is asserted
+  // EMPTY on every case - which is what "no openings, no floor plates, nothing changes" means. The
+  // corpus predates both sections, so it contains no opening and no FLOOR piece anywhere.
   const golden = JSON.parse(readFileSync(new URL('./fixtures/pre-openings-traces.json', import.meta.url), 'utf8'));
 
   test('the corpus is the real one: 26 levels, every terminal kind, hundreds of traces', () => {
@@ -958,7 +987,11 @@ describe('openings: BACKWARD COMPATIBILITY - a level with no `openings` behaves 
       for (const c of e.cases) {
         const r = trace(e.level, c.placed);
         assert.deepEqual(r.underpasses, [], `${e.name}: an under-pass on a level with no openings`);
+        assert.deepEqual(r.glides, [], `${e.name}: a glide on a level with no floor plate`);
+        assert.deepEqual(r.bounces, [], `${e.name}: a bounce on a level with no floor plate`);
         delete r.underpasses;
+        delete r.glides;
+        delete r.bounces;
         assert.equal(createHash('sha256').update(JSON.stringify(r)).digest('hex'), c.sha,
           `${e.name} with ${JSON.stringify(c.placed)}: trace changed (end ${r.end} vs ${c.end})`);
         n++;
@@ -983,5 +1016,252 @@ describe('openings: BACKWARD COMPATIBILITY - a level with no `openings` behaves 
           raw.name + ': illegal opening ' + JSON.stringify(o));
       }
     }
+  });
+});
+
+/* =============================================================================================
+ * FLOOR MIRRORS (DESIGN.md section 14)
+ * The first piece that does NOT turn the beam. It lies flat in the cell's top surface and acts only
+ * on a beam coming DOWN onto it, flipping the pitch and leaving the heading alone.
+ * ============================================================================================= */
+
+const F = (x, y, orient = '/') => ({ x, y, type: 'FLOOR', orient });
+
+describe('DESIGN.md 14.1: the FLOOR table, every row, through the ENGINE', () => {
+  // One board, three incoming pitches at the same cell. (2,3) is the plate, always on t=0.
+  // A DIP at (2,5) drops the beam onto it; nothing there leaves the beam level; a WEDGE lifts it.
+  //   x:       0123456
+  const board = rows('0000000', '0000000', '0000000', '0000000', '0000000', '2020000', '0000000');
+  const lvl = (o = {}) => mk(Object.assign({ terrain: board, emitter: { x: 0, y: 5, dir: 'E' }, targets: [{ x: 6, y: 0 }] }, o));
+
+  test('v = -1 (descending onto it): REFLECT - pitch becomes +1 and the heading is UNCHANGED', () => {
+    // DIP at (2,5) turns the beam south and drops it: (2,4) z=1, (2,3) z=0 where the plate waits.
+    const r = trace(lvl(), [D(2, 5, '\\'), F(2, 3)]);
+    const hit = r.events.find(e => e.kind === 'piece' && e.type === 'FLOOR');
+    assert.ok(hit, 'the plate was never met');
+    assert.equal(hit.vIn, -1);
+    assert.equal(hit.vOut, 1);
+    assert.equal(hit.dIn, 'S');
+    assert.equal(hit.dOut, 'S', 'a FLOOR must never turn the beam');
+    assert.deepEqual(r.bounces, [{ x: 2, y: 3, z: 0 }]);
+    assert.deepEqual(r.glides, []);
+    // and the beam really does climb away northbound... southbound, rather: same heading, rising
+    assert.deepEqual(r.visited.map(v => `${v.x},${v.y},${v.z},${v.d},${v.v}`).slice(2, 6),
+      ['2,4,1,S,-1', '2,3,0,S,-1', '2,2,1,S,1', '2,1,2,S,1']);
+  });
+
+  test('v = 0 (level): NOTHING - the beam glides over it, and it is not a pieceHit', () => {
+    // no DIP: the beam runs east along y=5 at z=2 and meets a plate sitting on t=2 at (3,5)
+    const flat = rows('0000000', '0000000', '0000000', '0000000', '0000000', '2002002', '0000000');
+    const r = trace(mk({ terrain: flat, emitter: { x: 0, y: 5, dir: 'E' }, targets: [{ x: 6, y: 5 }] }), [F(3, 5)]);
+    assert.equal(r.end, 'target', 'the plate must not stop or turn a level beam');
+    assert.deepEqual(r.pieceHits, [], 'an inert plate is not a piece hit');
+    assert.deepEqual(r.bounces, []);
+    assert.deepEqual(r.altitudeMarks, [{ x: 6, y: 5, z: 2 }], 'no pitch change, so no altitude mark but the end');
+    assert.deepEqual(r.glides, [{ x: 3, y: 5 }]);
+    const g = r.events.find(e => e.kind === 'glide');
+    assert.deepEqual({ kind: g.kind, x: g.x, y: g.y, z: g.z, type: g.type, d: g.d, v: g.v },
+      { kind: 'glide', x: 3, y: 5, z: 2, type: 'FLOOR', d: 'E', v: 0 });
+    assert.deepEqual(r.events.filter(e => e.kind === 'pitch'), []);
+  });
+
+  test('v = +1 (climbing away from it): NOTHING - it is behind the beam, not under it', () => {
+    // a WEDGE at (1,5) on t=2 starts the climb; the plate at (3,5) sits on t=... the beam is ABOVE
+    // it, so put the plate at the exact level the beam is at by raising its column to match.
+    // emitter on t=2 fires level east; the WEDGE at (2,5) on t=2 turns it north and starts it
+    // climbing; the plate at (2,6) sits on a t=3 column, which is exactly the level the climbing beam
+    // arrives at - so it is MET, at its own top, and still does nothing.
+    const climb = rows('0000000', '0000000', '0000000', '0000000', '0000000', '2020000', '0030000');
+    const r = trace(mk({ terrain: climb, emitter: { x: 0, y: 5, dir: 'E' }, targets: [{ x: 6, y: 5 }] }),
+      [W(2, 5, '/'), F(2, 6)]);
+    const g = r.events.find(e => e.kind === 'glide');
+    assert.ok(g, 'the climbing beam never met the plate');
+    assert.equal(g.v, 1, 'it was met while climbing');
+    assert.equal(g.z, 3, 'and at the plate column top');
+    assert.deepEqual(r.bounces, []);
+    assert.equal(r.pieceHits.filter(h => h.type === 'FLOOR').length, 0);
+  });
+
+  test('a FLOOR NEVER changes the heading: exhaustive over orientation, heading and pitch', () => {
+    for (const orient of Pieces.ORIENTS) for (const dir of ['E', 'N', 'W', 'S']) for (const vIn of [-1, 0, 1]) {
+      assert.equal(Pieces.apply('FLOOR', orient, dir, vIn).d, dir, `${orient} ${dir} ${vIn}`);
+    }
+    assert.equal(Pieces.turnsBeam('FLOOR'), false);
+    // and through the engine: no `piece` or `glide` event on a FLOOR ever reports a turn, on any of
+    // the boards in this file or in the shipped set.
+    const boards = [
+      { lvl: lvl(), placed: [D(2, 5, '\\'), F(2, 3)] },
+      { lvl: lvl(), placed: [D(2, 5, '\\'), F(2, 4)] },
+      { lvl: lvl(), placed: [F(1, 5)] },
+      { lvl: lvl(), placed: [W(2, 5, '/'), F(2, 6)] }
+    ];
+    let met = 0;
+    for (const b of boards) {
+      for (const e of trace(b.lvl, b.placed).events) {
+        if (e.type !== 'FLOOR') continue;
+        met++;
+        if (e.kind === 'piece') assert.equal(e.dOut, e.dIn, JSON.stringify(e));
+      }
+    }
+    assert.ok(met >= 4, 'the plates were never met: ' + met);
+    for (const raw of LEVELS) {
+      const sol = raw.solution || [];
+      for (const e of trace(raw, sol).events) {
+        if (e.kind === 'piece' && e.type === 'FLOOR') assert.equal(e.dOut, e.dIn, raw.name + ' ' + JSON.stringify(e));
+      }
+    }
+  });
+});
+
+describe('DESIGN.md 14: floor mirrors on the board', () => {
+  test('a plate on RAISED terrain sits at the COLUMN TOP, not at z = 0', () => {
+    //             x:       0123456
+    const raised = rows('0000000', '0000000', '0000000', '2020000', '0010000', '0000000', '0000000');
+    const r = trace(mk({ terrain: raised, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 2, y: 6 }] }),
+      [D(2, 3, '/'), F(2, 4)]);
+    // the plate's column is t=1, so the falling beam meets it at z=1 and bounces from THERE
+    assert.deepEqual(r.bounces, [{ x: 2, y: 4, z: 1 }]);
+    assert.deepEqual(r.visited.map(v => v.z), [2, 2, 1, 2, 3]);
+    // the identical placement on a t=0 column bounces one level lower, two cells further on
+    const flat = rows('0000000', '0000000', '0000000', '2020000', '0000000', '0000000', '0000000');
+    const r2 = trace(mk({ terrain: flat, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 2, y: 6 }] }),
+      [D(2, 3, '/'), F(2, 5)]);
+    assert.deepEqual(r2.bounces, [{ x: 2, y: 5, z: 0 }]);
+  });
+
+  test('a plate the beam passes OVER at a higher level is an overflight, and is left alone', () => {
+    const over = rows('0000000', '0000000', '0000000', '2000002', '0000000', '0000000', '0000000');
+    const r = trace(mk({ terrain: over, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }] }), [F(3, 3)]);
+    assert.equal(r.end, 'target');
+    assert.deepEqual(r.overflights, [{ x: 3, y: 3 }], 'the plate is on t=0 and the beam is at z=2');
+    assert.deepEqual(r.glides, [], 'passing OVER a plate is not gliding ALONG it');
+    assert.deepEqual(r.bounces, []);
+    assert.equal(r.events.filter(e => e.kind === 'overflight').length, 1);
+    // and the beam is unchanged: same trace as with nothing placed at all
+    const bare = trace(mk({ terrain: over, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 3 }] }), []);
+    assert.deepEqual(r.visited, bare.visited);
+    assert.deepEqual(r.segments, bare.segments);
+  });
+
+  test('the bounce happens even when the cell it climbs into is solid: bounce, then BLOCKED', () => {
+    //           x:       0123456
+    const wall = rows('0000000', '0000000', '0000000', '2020000', '0000000', '0000000', '0020000');
+    const r = trace(mk({ terrain: wall, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 6, y: 6 }] }),
+      [D(2, 3, '/'), F(2, 5)]);
+    // the plate does its job - the pitch flips - and only THEN does the wall stop the beam
+    assert.deepEqual(r.bounces, [{ x: 2, y: 5, z: 0 }]);
+    assert.equal(r.end, 'blocked');
+    assert.deepEqual(r.endPoint, { x: 2, y: 5.5, z: 0 }, 'the visual stops at the wall face');
+    // `visited` records the state on ENTRY, before the plate acts, so the last entry still reads -1;
+    // the outgoing pitch is on the piece event, and it is that +1 the wall then stops.
+    assert.equal(r.visited[r.visited.length - 1].v, -1);
+    assert.equal(r.events.find(e => e.kind === 'bounce').vOut, 1, 'it was climbing when it hit the wall');
+    assert.equal(r.segments[r.segments.length - 1].v, 1, 'the stub segment carries the post-bounce pitch');
+  });
+
+  test('THE SKIPPING STONE (14.2): DIP, bounce, DIP-DIP, bounce, target', () => {
+    // Note the shape the CLAMP of spec 12.2 forces, and it is the real design consequence of the
+    // fourth piece: a bounce leaves the beam climbing at +1, and one DIP only LEVELS a climber. So
+    // the second trough costs TWO dips - "dip, bounce, dip, bounce" is not spellable in one dip.
+    const lvl = {
+      name: 'SKIP', par: 0, size: { w: 7, d: 11 },
+      terrain: ['0000000', '0000000', '0000000', '0000000', '0000000',
+                '2002020', '0000000', '0000000', '0000000', '0002020', '0000000'],
+      emitter: { x: 0, y: 5, dir: 'E' }, targets: [{ x: 5, y: 5 }], fixed: [],
+      tray: ['DIP', 'FLOOR', 'DIP', 'DIP', 'FLOOR']
+    };
+    const r = trace(lvl, [D(3, 5, '/'), F(3, 7), D(3, 9, '/'), D(5, 9, '\\'), F(5, 7)]);
+    assert.equal(r.end, 'target');
+    assert.deepEqual(r.hits, [0]);
+    assert.deepEqual(r.bounces, [{ x: 3, y: 7, z: 0 }, { x: 5, y: 7, z: 0 }]);
+    // the height profile IS the skip: down to the floor, up, level, down, up onto the plateau
+    assert.deepEqual(r.visited.map(v => v.z), [2, 2, 2, 1, 0, 1, 2, 2, 2, 1, 0, 1, 2]);
+    // the heading only ever changes at a DIP, never at a plate
+    for (const e of r.events) if (e.kind === 'piece') {
+      assert.equal(e.dOut === e.dIn, e.type === 'FLOOR', JSON.stringify(e));
+    }
+  });
+
+  test('an arch, a bounce, and a fly-over in one shot (13 + 14 together)', () => {
+    // Level at z=0 UNDER the t=3 arch at (2,4); a WEDGE climbs to z=2; a DIP levels it; a second DIP
+    // drops it onto the plate at (6,4); the bounce lifts it OVER the t=1 block at (6,3) and onto the
+    // t=2 plateau orb at (6,2).
+    const lvl = {
+      name: 'ARCH+BOUNCE', par: 0, size: { w: 9, d: 9 },
+      terrain: ['000000000', '000000000', '000000200', '000000100', '003000000',
+                '000000000', '000020200', '000000000', '000000000'],
+      openings: [{ x: 2, y: 4, levels: [0] }],
+      emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 6, y: 2 }], fixed: [],
+      tray: ['WEDGE', 'DIP', 'DIP', 'FLOOR']
+    };
+    const placed = [W(4, 4, '/'), D(4, 6, '/'), D(6, 6, '\\'), F(6, 4)];
+    const r = trace(lvl, placed);
+    assert.equal(r.end, 'target');
+    // it really went UNDER the arch: inside the column (z < t) at a level punched out
+    const inArch = r.visited.find(v => v.x === 2 && v.y === 4);
+    assert.equal(inArch.z, 0);
+    assert.equal(Sim.isOpen(lvl, 2, 4, 0), true);
+    assert.deepEqual(r.bounces, [{ x: 6, y: 4, z: 0 }]);
+    // and after the bounce it flew OVER the t=1 block at (6,3) at z=1
+    const overCell = r.visited.find(v => v.x === 6 && v.y === 3);
+    assert.equal(overCell.z, 1);
+    assert.equal(overCell.v, 1, 'still climbing as it cleared the block');
+  });
+
+  test('a plate is placeable like any other piece, and blocks its cell like any other piece', () => {
+    const lvl = mk({ tray: ['FLOOR'] });
+    assert.equal(canPlace(lvl, [], 3, 3), true);
+    assert.equal(canPlace(lvl, [F(3, 3)], 3, 3), false);
+    assert.equal(canPlace(lvl, [], 0, 3), false, 'the emitter cell');
+    assert.equal(canPlace(lvl, [], 6, 3), false, 'the target cell');
+    // on raised terrain too (3.4), where it then only ever meets a beam at that level
+    const raised = mk({ terrain: rows('0000000', '0000000', '0000000', '0002000', '0000000', '0000000', '0000000') });
+    assert.equal(canPlace(raised, [], 3, 3), true);
+  });
+
+  test('a fixed FLOOR parses, traces and reports itself as fixed', () => {
+    const raised = rows('0000000', '0000000', '0000000', '2020000', '0000000', '0000000', '0000000');
+    const lvl = mk({ terrain: raised, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 2, y: 6 }],
+      fixed: [{ x: 2, y: 5, type: 'FLOOR', orient: '/', secret: false }], tray: ['DIP'] });
+    const L = parseLevel(lvl);
+    assert.deepEqual(L.fixed, [{ x: 2, y: 5, type: 'FLOOR', orient: '/', secret: false }]);
+    const r = trace(lvl, [D(2, 3, '/')]);
+    assert.deepEqual(r.bounces, [{ x: 2, y: 5, z: 0 }]);
+    assert.equal(r.pieceHits.find(h => h.type === 'FLOOR').fixed, true);
+  });
+
+  test('both orientations of a FLOOR behave identically - a plate has no handedness', () => {
+    const raised = rows('0000000', '0000000', '0000000', '2020000', '0000000', '0000000', '0000000');
+    const base = mk({ terrain: raised, emitter: { x: 0, y: 3, dir: 'E' }, targets: [{ x: 2, y: 6 }] });
+    const a = trace(base, [D(2, 3, '/'), F(2, 5, '/')]);
+    const b = trace(base, [D(2, 3, '/'), F(2, 5, '\\')]);
+    assert.deepEqual(a.visited, b.visited);
+    assert.deepEqual(a.segments, b.segments);
+    assert.deepEqual(a.bounces, b.bounces);
+  });
+});
+
+describe('DESIGN.md 15.1: the `dark` flag on a level', () => {
+  test('absent, null and false all parse to false; true parses to true', () => {
+    assert.equal(parseLevel(mk()).dark, false);
+    assert.equal(parseLevel(mk({})).dark, false);
+    assert.equal(parseLevel(Object.assign(mk(), { dark: null })).dark, false);
+    assert.equal(parseLevel(Object.assign(mk(), { dark: false })).dark, false);
+    assert.equal(parseLevel(Object.assign(mk(), { dark: true })).dark, true);
+  });
+  test('anything that is not a boolean THROWS rather than being coerced', () => {
+    for (const bad of ['true', 'false', 1, 0, {}, [], 'yes']) {
+      assert.throws(() => parseLevel(Object.assign(mk(), { dark: bad })), /dark/, 'dark: ' + JSON.stringify(bad));
+    }
+  });
+  test('it changes NOTHING about the beam: a dark level traces exactly like a lit one', () => {
+    const lit = mk({ terrain: rows('0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '0000000') });
+    const dark = Object.assign(mk({ terrain: rows('0000000', '0000000', '0000000', '0000000', '0000000', '0000000', '0000000') }), { dark: true });
+    assert.deepEqual(trace(dark, [M(2, 3)]), trace(lit, [M(2, 3)]));
+  });
+  test('the shipped set carries `dark` only on LATE levels, and never on a teaching level', () => {
+    const darkAt = LEVELS.map((l, i) => (l.dark ? i + 1 : 0)).filter(Boolean);
+    assert.ok(darkAt.length >= 2 && darkAt.length <= 3, 'dark levels: ' + darkAt.join(','));
+    for (const n of darkAt) assert.ok(n > LEVELS.length - 4, 'level ' + n + ' is not a late level');
   });
 });

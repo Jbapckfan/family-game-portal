@@ -24,6 +24,24 @@
  * Nothing else in section 3 moves: pitch is still the DELTA of section 12, a piece still sits on the
  * column TOP at `t` and acts only at that level, and nothing may be placed inside an opening - which
  * needs no new rule, because a piece only ever exists at `t` and every open level is strictly below it.
+ *
+ * FLOOR MIRRORS (DESIGN.md section 14). The registry now carries a piece that does NOT turn the beam:
+ * a FLOOR plate lies flat in the cell's top surface, reflects a beam arriving with pitch -1 back up
+ * at +1 with the HEADING UNCHANGED, and does nothing at all to a level or climbing beam. The stepper
+ * does not know that. It asks LaserPieces.apply(type, orient, d, v) for the outgoing (d, v) exactly as
+ * before and compares the answer with what came in:
+ *   - different            -> the piece ACTED: a `piece` event, a `pitch` event if v moved, and, when
+ *                             the heading did not move, a `bounce` event and an entry in `bounces`
+ *                             (the bright dot of 14.3, where the beam meets its own floor shadow);
+ *   - identical            -> the piece had no purchase on this beam: a `glide` event and an entry in
+ *                             `glides`. The beam carries on untouched, exactly as if the cell were bare.
+ * `glide` is the third way to MISS a piece, alongside `overflight` (over it) and `underpass` (under
+ * it, through an opening). It is reported separately because it is a different thing on screen: the
+ * beam is at the plate's own level, skimming its surface, rather than passing it at another height.
+ *
+ * DARKNESS (DESIGN.md section 15). A level may carry `dark: true`. It is a RENDERING flag - the rules
+ * engine does not read it - so parseLevel validates it (a boolean, if present) and carries it through
+ * on the parsed level, and nothing in the stepper changes.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -183,6 +201,18 @@
     });
   }
 
+  /* ---------- dark (DESIGN.md 15.1) ----------
+   * An OPTIONAL boolean. Absent, null and undefined all mean false; anything that is not a boolean
+   * is a mistake and throws rather than being coerced, because `dark: 'false'` reading as true is
+   * exactly the sort of quiet bug a level file should not be able to ship. The engine itself never
+   * reads it - darkness gates WHEN the player sees the board, never what the beam does. */
+  function parseDark(level) {
+    var v = level.dark;
+    if (v == null) return false;
+    if (typeof v !== 'boolean') fail('dark must be true or false when present, got ' + typeof v);
+    return v;
+  }
+
   function parseTray(level, par) {
     var tray = level.tray || [];
     if (!Array.isArray(tray)) fail('tray must be an array');
@@ -216,7 +246,8 @@
       targets: targets,
       fixed: parseFixed(level, size, emitter, targets),
       tray: parseTray(level, par),
-      intro: level.intro ? String(level.intro) : ''
+      intro: level.intro ? String(level.intro) : '',
+      dark: parseDark(level)
     };
     PARSED.add(out);
     return out;
@@ -310,11 +341,21 @@
   }
 
   /* Piece interaction on entering a cell at level ns.z. Mutates ns (d, v).
-   * A piece acts only at the column top (z === t). Otherwise the beam misses it, and there are now
+   * A piece is only ever MET at the column top (z === t). Otherwise the beam misses it, and there are
    * two ways to miss: OVER the piece (z > t, the old hidden-information beat) or, since section 13,
    * UNDER it (z < t, only reachable through an opening). They are reported separately because they
    * are different events on screen and a consumer that treats an under-pass as a fly-over would put
-   * the reveal camera - and the readout - on the wrong side of the block. */
+   * the reveal camera - and the readout - on the wrong side of the block.
+   *
+   * Meeting a piece is not the same as being CHANGED by one (DESIGN.md 14.1). The whole transform is
+   * data in the registry - `turn` for the heading, `dPitch` or `pitch` for the climb, the clamp of
+   * spec 12.2 applied centrally - so the stepper simply asks for the outgoing (d, v) and compares:
+   *   changed   -> the piece acted. `piece`, plus `pitch` when the climb moved, plus `bounce` when the
+   *                HEADING did not (a floor plate flipping a falling beam back up: the beam meets its
+   *                own floor shadow there, which is the bright dot of 14.3).
+   *   unchanged -> the piece had no purchase on this beam (a FLOOR under a level or climbing beam).
+   *                `glide`, and the beam carries on exactly as if the cell were bare.
+   * No piece type is named here, so a fifth piece is still one registry entry. */
   function applyPiece(L, out, pieces, ns, step) {
     var p = pieces[key(ns.x, ns.y)];
     if (!p) return;
@@ -324,15 +365,22 @@
       emit(out, under ? 'underpass' : 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
       return;
     }
-    /* Pitch is a DELTA on the incoming pitch, clamped to -1..+1 (spec 12.1 / 12.2). The clamp
-     * lives in pieces.js so the registry stays the single place a piece's physics is written. */
     var r = Pieces.apply(p.type, p.orient, ns.d, ns.v);
+    if (r.d === ns.d && r.v === ns.v) {
+      out.glides.push(pt2(ns));
+      emit(out, 'glide', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed, d: ns.d, v: ns.v });
+      return;
+    }
     out.pieceHits.push({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: p.fixed });
     emit(out, 'piece', step, ns.x, ns.y, ns.z,
          { type: p.type, orient: p.orient, fixed: p.fixed, dIn: ns.d, dOut: r.d, vIn: ns.v, vOut: r.v });
     if (r.v !== ns.v) {
       out.altitudeMarks.push(pt(ns.x, ns.y, ns.z));
       emit(out, 'pitch', step, ns.x, ns.y, ns.z, { from: ns.v, to: r.v });
+      if (r.d === ns.d) {
+        out.bounces.push(pt(ns.x, ns.y, ns.z));
+        emit(out, 'bounce', step, ns.x, ns.y, ns.z, { type: p.type, fixed: p.fixed, d: ns.d, vIn: ns.v, vOut: r.v });
+      }
     }
     ns.d = r.d;
     ns.v = r.v;
@@ -357,7 +405,8 @@
     var targets = buildTargetMap(L);
     var cap = capForSize(L.size);
     var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
-                altitudeMarks: [], pieceHits: [], overflights: [], underpasses: [], events: [] };
+                altitudeMarks: [], pieceHits: [], overflights: [], underpasses: [], glides: [],
+                bounces: [], events: [] };
     var s = { x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 };
     var seen = {}, lit = {};
     seen[stateKey(s)] = true;

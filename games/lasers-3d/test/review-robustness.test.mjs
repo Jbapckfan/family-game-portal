@@ -687,7 +687,8 @@ describe('robustness: UMD wrapper', () => {
   test('node require: module.exports is the factory result, not wrapped', () => {
     assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'isOpen', 'parseLevel', 'stepCap', 'trace'].sort());
     assert.deepEqual(Object.keys(Pieces).sort(),
-      ['ORIENTS', 'PIECES', 'TURN', 'TYPES', 'V_MIN', 'V_MAX', 'apply', 'applyPitch', 'clampPitch', 'isOrient', 'isType', 'rotate'].sort());
+      ['ORIENTS', 'PIECES', 'TURN', 'TURN_KEEP', 'TYPES', 'V_MIN', 'V_MAX', 'acts', 'apply', 'applyPitch', 'clampPitch',
+       'isOrient', 'isType', 'rotate', 'turnDir', 'turnsBeam'].sort());
   });
 
   function browserContext({ withSelf }) {
@@ -1070,4 +1071,45 @@ describe('robustness: openings', () => {
     assert.deepEqual(solid.endPoint, { x: 0, y: 2.5, z: 0 });
   });
 
+});
+
+/* DESIGN.md 14 + 15: the new type and the new flag, held to the same validation standard as the rest. */
+describe('robustness: the FLOOR type and the `dark` flag', () => {
+  const trace = Sim.trace, parseLevel = Sim.parseLevel;
+
+  test('FLOOR is a first-class type everywhere a type is accepted', () => {
+    assert.equal(Pieces.isType('FLOOR'), true);
+    assert.ok(Pieces.TYPES.includes('FLOOR'));
+    assert.doesNotThrow(() => parseLevel(mk({ tray: ['FLOOR'] })));
+    assert.doesNotThrow(() => parseLevel(mk({ fixed: [{ x: 2, y: 2, type: 'FLOOR', orient: '\\' }] })));
+    assert.doesNotThrow(() => trace(mk(), [{ x: 2, y: 2, type: 'FLOOR', orient: '/' }]));
+    // and the near-misses are still rejected the same way any unknown type is
+    assert.throws(() => parseLevel(mk({ tray: ['floor'] })), /tray/);
+    assert.throws(() => parseLevel(mk({ tray: ['PLATE'] })), /tray/);
+    assert.throws(() => trace(mk(), [{ x: 2, y: 2, type: 'floor', orient: '/' }]), /placed piece/);
+  });
+
+  test('`dark` rejects every non-boolean, with the documented message prefix', () => {
+    for (const bad of ['true', 'false', '', 0, 1, NaN, {}, [], () => {}]) {
+      let msg = '';
+      try { parseLevel(mk({ dark: bad })); } catch (e) { msg = e.message; }
+      assert.ok(/^lasers-3d level: dark must be true or false/.test(msg), 'dark: ' + String(bad) + ' -> ' + msg);
+    }
+    assert.equal(parseLevel(mk({ dark: undefined })).dark, false);
+    assert.equal(parseLevel(mk({ dark: null })).dark, false);
+    assert.equal(parseLevel(mk({ dark: true })).dark, true);
+    // parseLevel is idempotent on its own output, dark included
+    const L = parseLevel(mk({ dark: true }));
+    assert.equal(parseLevel(L), L);
+    assert.equal(parseLevel(L).dark, true);
+  });
+
+  test('a FLOOR cannot be smuggled past the clamp or the turn table', () => {
+    for (const orient of Pieces.ORIENTS) for (const dir of ['E', 'N', 'W', 'S']) for (const v of [-1, 0, 1]) {
+      const r = Pieces.apply('FLOOR', orient, dir, v);
+      assert.equal(r.d, dir);
+      assert.ok(r.v >= Pieces.V_MIN && r.v <= Pieces.V_MAX);
+      assert.ok(r.v === (v === -1 ? 1 : v));
+    }
+  });
 });

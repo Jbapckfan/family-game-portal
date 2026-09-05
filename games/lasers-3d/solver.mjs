@@ -24,17 +24,43 @@
 // infeasible, and the DFS uses O(depth) memory instead of O(states).
 //
 // IRREDUNDANT PLACEMENTS AND WHY BEAM ORDER IS COMPLETE
-// Call a placement IRREDUNDANT when every piece in it is actually hit by the beam. The DFS enumerates
-// exactly the irredundant placements: order a placement's pieces p1..pn by first hit; with only p1..pk
-// down, the trace is byte-identical to the full trace up to pk's first hit and onward to wherever
-// p(k+1) is met, so p(k+1) always appears in `visited` AFTER pk acted. Restricting the next placement
+// Call a placement IRREDUNDANT when every piece in it ACTS - changes the beam - at least once. The DFS
+// enumerates exactly the irredundant placements: order a placement's pieces p1..pn by the step at which
+// each FIRST ACTS; with only p1..pk down, the trace is byte-identical to the full trace up to p(k+1)'s
+// first act, so p(k+1)'s cell always appears in `visited` AFTER pk acted. Restricting the next placement
 // to cells visited strictly after the last placed piece acted therefore loses nothing and reaches each
 // irredundant placement along exactly one build order.
-//   - Every MINIMAL solution is irredundant (an unhit piece could be deleted without changing the
-//     trace, giving a smaller solution), so `solve` is complete for par.
+//   - Every MINIMAL solution is irredundant (a piece that never acts could be deleted without changing
+//     the trace by a single step, giving a smaller solution), so `solve` is complete for par.
 //   - Pruning a branch as soon as its prefix solves is also safe: any superset of a solving prefix
-//     traces identically, stops at the same target, and so leaves the extra piece unhit - i.e. it is
+//     traces identically, stops at the same target, and so leaves the extra piece unacted - i.e. it is
 //     not irredundant. `enumerate` relies on this.
+//
+// A PIECE THAT DOES NOT TURN (DESIGN.md section 14). FLOOR breaks the assumption that a piece always
+// changes the beam it meets: a floor plate acts on a beam arriving with pitch -1 and is inert under a
+// level or climbing one, so "met" and "acted" have come apart, and the argument above had to be
+// re-proven rather than re-read. It survives, and here is why, in the three places it could have failed:
+//
+//   1. "every piece in a minimal solution acts". Still true, and for a stronger reason than before. An
+//      inert piece is not merely unhelpful: LaserSim's stepper leaves (d, v) untouched when the
+//      registry's transform returns the incoming state, so deleting that piece leaves the trace
+//      IDENTICAL, step for step, event for event apart from the `glide`. A solution containing one is
+//      therefore never minimal. (A FLOOR that is glided over early and bounces the beam later counts as
+//      acting - it acts at the bounce.)
+//   2. "p(k+1)'s cell is in the candidate window". candidateCells starts at lastActIndex(pk) + 1, and
+//      lastActIndex returns the FIRST index at which pk's cell is entered at its own terrain level -
+//      which, for a plate glided over before it bounces, can be EARLIER than the step pk actually acted.
+//      Earlier only widens the window, and firstAct(pk) < firstAct(p(k+1)) by the ordering, so
+//      lastActIndex(pk) <= firstAct(pk) < firstAct(p(k+1)): p(k+1)'s cell still lands inside it. A
+//      wider window can only produce duplicate build orders, which canonKey dedupes.
+//   3. "the prefix trace agrees with the full trace up to p(k+1)'s first act". Before that moment none
+//      of p(k+1)..pn has acted, so in the full trace they were all inert wherever they were met - and an
+//      inert piece and a bare cell are indistinguishable to the stepper (see 1). The two traces
+//      therefore evolve identically, and at that moment the beam is entering p(k+1)'s cell at exactly
+//      z === t, which is what candidateCells requires.
+//
+// So a non-turning piece is an ordinary placement candidate, the pruning is unchanged, and no code in
+// the search names a piece type. What DID have to change is flatten() - see its doc comment.
 //
 // BUDGET
 // `maxNodes` / `maxMs` stop a search early and set `truncated: true`. A truncated result NEVER claims
@@ -276,7 +302,8 @@ export function replay(level, placed) {
  *   - EVERY OPENING IS DROPPED (DESIGN.md section 13) - see the paragraph below;
  *   - the emitter and every target sit at level 0 (their cells are floor);
  *   - fixed pieces on raised cells are dropped (they would be inside a wall);
- *   - every piece, fixed or in the tray, behaves as MIRROR (secret flags cleared).
+ *   - every DISGUISED piece, fixed or in the tray, behaves as MIRROR (secret flags cleared);
+ *   - a FLOOR plate is NOT disguised, and is kept as a FLOOR - see the paragraph on it below.
  * Returns a fresh raw level; the input is not mutated. flatten only ever describes the FLAT game -
  * a candidate found in it is always replayed against the untouched 3D level.
  *
@@ -284,10 +311,27 @@ export function replay(level, placed) {
  * Before, MIRROR forced v to 0, so flatness was imposed piece by piece. Now MIRROR PRESERVES v - so
  * flatness has to come from the projection itself, and it does: the emitter fires with v = 0, every
  * raised cell is a full-height wall that no beam can climb onto (arriving at z' > 0 anywhere would
- * need a piece that adds pitch, and the only pieces left are MIRRORs), and a MIRROR maps v = 0 to
- * v = 0. So v is 0 on the first step and preserved on every step after it: EVERY segment of EVERY
- * flat trace is level, at z = 0, with no over-flights. That is exactly the 2D game, and it is
- * asserted directly (over the fixtures and 120 random levels) in test/solver.test.mjs.
+ * need a piece that adds pitch, and the only pieces left are MIRRORs and inert FLOOR plates), a
+ * MIRROR maps v = 0 to v = 0, and a FLOOR maps v = 0 to v = 0. So v is 0 on the first step and
+ * preserved on every step after it: EVERY segment of EVERY flat trace is level, at z = 0, with no
+ * over-flights. That is exactly the 2D game, and it is asserted directly (over the fixtures and 120
+ * random levels) in test/solver.test.mjs.
+ *
+ * WHAT HAPPENS TO A FLOOR MIRROR IN THE FLAT PROJECTION (DESIGN.md section 14)? The three upright
+ * pieces all become MIRRORs because from directly above they are PIXEL-IDENTICAL - that is the
+ * disguise the whole game is built on, and the flat player genuinely cannot tell them apart. A FLOOR
+ * plate is the opposite case: 14.3 says it lies in the floor and "reads differently from the three
+ * upright pieces by silhouette alone; it does not need a disguise". Calling it a MIRROR in the flat
+ * projection would therefore fabricate a deflection the flat player can plainly see is not there, and
+ * a level could come out `flat-unsolvable` for an imaginary reason. So a FLOOR stays a FLOOR:
+ *   - in the TRAY: a flat player holding a plate can place it, and it does nothing, because every
+ *     flat beam is level (proved above) and a FLOOR is inert on a level beam (14.1). The flat tray
+ *     therefore keeps its full length - the flat player is not quietly handed a shorter search - and
+ *     the placements the search wastes on it are exact no-ops rather than phantom mirrors.
+ *   - FIXED on a floor cell: kept, inert, and still OCCUPYING its cell, so the flat player cannot
+ *     place a mirror on top of it. That is precisely what they see from above.
+ * The consequence for a level whose route needs a bounce is the honest one: the bounce is unavailable
+ * to a flat player by construction, because it needs a beam with a pitch and the flat game has none.
  *
  * IS AN OPENED COLUMN PASSABLE IN THE FLAT PROJECTION? NO - it stays a wall. Deliberately, and the
  * reasoning matters because it is what makes an under-arch level provable:
@@ -320,9 +364,11 @@ export function flatten(level) {
     for (let x = 0; x < L.size.w; x++) row += (L.t[y][x] >= 1 && !floor[cellKey(x, y)]) ? '3' : '0';
     terrain.push(row);
   }
+  // A disguised piece flattens to a MIRROR; a FLOOR plate is not disguised, so it stays itself and is
+  // simply inert in a world with no pitch (see the doc comment above).
   const fixed = L.fixed
     .filter(f => L.t[f.y][f.x] === 0)
-    .map(f => ({ x: f.x, y: f.y, type: 'MIRROR', orient: f.orient, secret: false }));
+    .map(f => ({ x: f.x, y: f.y, type: f.type === 'FLOOR' ? 'FLOOR' : 'MIRROR', orient: f.orient, secret: false }));
   return {
     name: L.name ? L.name + ' (flat)' : '',
     par: 0,
@@ -332,7 +378,7 @@ export function flatten(level) {
     emitter: { x: L.emitter.x, y: L.emitter.y, dir: L.emitter.dir },
     targets: L.targets.map(tg => ({ x: tg.x, y: tg.y })),
     fixed,
-    tray: L.tray.map(() => 'MIRROR'),
+    tray: L.tray.map(t => (t === 'FLOOR' ? 'FLOOR' : 'MIRROR')),
     intro: ''
   };
 }

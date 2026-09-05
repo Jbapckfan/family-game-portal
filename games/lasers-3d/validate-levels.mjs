@@ -40,6 +40,25 @@
 // level 4 MIRROR tray with an overflight; level 5 first WEDGE; level 7 first DIP; level 9 first
 // secret fixed WEDGE; level 12 first two-target level; intros on the teaching levels.
 //
+// FLOOR MIRRORS (DESIGN.md 14.4 and 14.5) and DARKNESS (15.3). Same machinery, same standard: every
+// bullet is an assertion, and every teaching claim is checked against EVERY MINIMAL SOLUTION rather
+// than only the shipped one, via the `forcedConcepts` intersection described below.
+//   - the floor mirror is introduced NO EARLIER than the DIP (14.4 bullet 1) - it is useless until
+//     the player can send a beam downward - and the level that first carries one is the level whose
+//     intro teaches it
+//   - at least THREE levels whose every minimal solution carries `bounce`      (14.4 bullet 2)
+//   - at least ONE whose every minimal solution carries `skip`, i.e. TWO or more bounces, and one
+//     bounce is taught before two                                             (14.4 bullet 2)
+//   - at least one PRE-PLACED plate, so a bounce the player did not build reads as architecture
+//                                                                             (14.4 bullet 3)
+//   - MOST levels from the middle of the curve on carry at least one `fixed` piece (14.5)
+//   - the FLOOR intro names the fair tell of 14.3 - the BRIGHT DOT the beam draws where it meets its
+//     own floor shadow - and, like the section 13 intros, never tells the player to tilt
+//   - a `bounce` is verified against the ENGINE, not the tag: LaserSim's own `bounces` list, with the
+//     pitch flipping -1 to +1 and the heading unchanged, on every minimal solution
+//   - `dark` (15.3) appears only on the last three levels, on two or three of them, and never on a
+//     teaching level; the flag is boolean and parseLevel carries it through
+//
 // ARCHES AND WINDOWS (DESIGN.md 13.4). Every requirement of 13.4 is an assertion here, and each one
 // is checked against EVERY MINIMAL SOLUTION rather than only the shipped one - the same standard the
 // teaching beats are held to. `forcedConcepts(i)` below is the intersection of concepts() over the
@@ -82,7 +101,7 @@ function flatCellPx(side, px) {
   return zoom;
 }
 
-const TEACHING = { 0: true, 3: true, 4: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true, 13: true };
+const TEACHING = { 0: true, 3: true, 4: true, 6: true, 7: true, 8: true, 9: true, 10: true, 11: true, 12: true, 14: true };
 // Levels whose teaching beat must hold for EVERY minimal solution, not just the shipped one.
 // Each needs a full depth-par enumeration, which is why only the low-par beats carry one.
 const FORCED = {
@@ -94,10 +113,15 @@ const FORCED = {
   // DESIGN.md 13.4 - the arch and window levels. Same machinery, same standard.
   9: { concepts: ['under-arch'], what: 'the ARCH (routing the beam under an overhang at level 0)' },
   10: { concepts: ['through-window'], what: 'the WINDOW (threading an opening above level 0)' },
-  12: { concepts: ['under-arch'], what: 'the ARCH' },
-  13: { concepts: ['through-window', 'climb-then-level'], what: 'the WINDOW arrived at by climb-then-level' },
-  14: { concepts: ['under-arch'], what: 'the ARCH' },
-  16: { concepts: ['through-window', 'climb-then-level'], what: 'the WINDOW arrived at by climb-then-level' }
+  // DESIGN.md 14.4 - the floor mirror. Same machinery again: a bounce that some minimal solution can
+  // skip is not a bounce level, it is a level that happens to have a plate on it.
+  12: { concepts: ['bounce'], what: 'the FLOOR mirror (bouncing a falling beam back up)' },
+  13: { concepts: ['under-arch'], what: 'the ARCH' },
+  14: { concepts: ['through-window', 'climb-then-level'], what: 'the WINDOW arrived at by climb-then-level' },
+  15: { concepts: ['under-arch'], what: 'the ARCH' },
+  16: { concepts: ['bounce'], what: 'the FLOOR mirror' },
+  18: { concepts: ['through-window', 'climb-then-level'], what: 'the WINDOW arrived at by climb-then-level' },
+  21: { concepts: ['bounce', 'skip'], what: 'the SKIPPING STONE (two or more bounces in one shot)' }
 };
 // The two levels that TEACH a section 13 mechanic. Their intros must name the fair tell of 13.3 and
 // must never send the player to the tilt button, which is the very thing that costs them a star here.
@@ -109,9 +133,22 @@ const FORBIDS_TILT = /tilt/i;
 function parBand(i) {
   if (i <= 4) return [1, 2];     // levels 1-5    12x12 / 14x14
   if (i <= 11) return [2, 3];    // levels 6-12   14x14 / 16x16 / 18x18
-  if (i <= 16) return [3, 4];    // levels 13-17  20x20 / 22x22
-  return [4, 5];                 // levels 18-20  22x22 / 24x24
+  if (i <= 17) return [3, 4];    // levels 13-18  20x20 / 22x22
+  return [4, 5];                 // levels 19-23  22x22 / 24x24
 }
+
+// ---- DESIGN.md 14 + 15: where the fourth piece and the dark levels are allowed to be ----
+// The FLOOR teaching level (14.4: "introduced no earlier than the DIP"). Its intro must name the
+// fair tell of 14.3 - the BRIGHT DOT the beam draws on the floor where it meets its own shadow -
+// and, like every other intro on a level whose third star is a no-tilt solve, must never send the
+// player to the tilt button.
+const FLOOR_INTRO = 12;
+const TELL_DOT = /bright dot/i;
+// 14.5: from this level on the board should carry at least one pre-placed piece. Level 9 is where
+// `fixed` first appears in the curve (the secret WEDGE), so that is the line.
+const FIXED_FROM = 8;
+// 15.3: dark levels are LATE levels. The last three slots, and never a teaching level.
+const DARK_LAST_N = 3;
 
 const failures = [];
 const climbThenLevel = [];   // levels whose solution climbs with a WEDGE and then levels off with a DIP
@@ -120,6 +157,14 @@ const fallThenLevel = [];    // levels whose solution falls with a DIP and then 
 // the full depth-par enumeration); `shipped` = it merely holds for the solution we ship.
 const forcedArch = [], forcedWindow = [], forcedOpeningClimb = [];
 const shippedArch = [], shippedWindow = [];
+// DESIGN.md 14.4 tallies, same standard: `forced` = the tag survives the intersection over EVERY
+// minimal solution, `shipped` = it merely holds for the route we ship.
+const forcedBounce = [], forcedSkip = [], shippedBounce = [], shippedSkip = [];
+const floorLevels = [];        // levels where a FLOOR is available at all (tray or pre-placed)
+const dipLevels = [];          // levels where a DIP is available at all - the piece FLOOR may not precede
+const fixedFloorLevels = [];   // levels carrying a pre-placed plate (14.4's "built into the level")
+const withFixed = [];          // levels carrying any pre-placed piece (14.5)
+const darkLevels = [];         // DESIGN.md 15
 function fail(i, msg) { failures.push('level ' + (i + 1) + ': ' + msg); }
 function assert(i, cond, msg) { if (!cond) fail(i, msg); return !!cond; }
 
@@ -202,7 +247,15 @@ LEVELS.forEach((raw, i) => {
         const want = Pieces.applyPitch(e.type, e.vIn);
         assert(i, e.vOut === want, 'piece ' + e.type + ' at (' + e.x + ',' + e.y + ') left pitch ' + e.vOut +
           ' on an incoming pitch of ' + e.vIn + '; the delta rule says ' + want);
-        assert(i, e.dOut === Sim.TURN[e.orient][e.dIn], 'piece ' + e.type + ' at (' + e.x + ',' + e.y + ') turned the beam wrongly');
+        // The heading half of the transform is the registry's, not TURN's: since DESIGN.md 14 a piece
+        // may leave the heading alone (a FLOOR plate always does), so this asks pieces.js rather
+        // than assuming the 90-degree table.
+        assert(i, e.dOut === Pieces.turnDir(e.type, e.orient, e.dIn),
+          'piece ' + e.type + ' at (' + e.x + ',' + e.y + ') left heading ' + e.dOut + ' on an incoming heading of ' + e.dIn +
+          '; the registry says ' + Pieces.turnDir(e.type, e.orient, e.dIn));
+        if (!Pieces.turnsBeam(e.type)) {
+          assert(i, e.dOut === e.dIn, 'a ' + e.type + ' turned the beam, which it must never do (DESIGN.md 14.1)');
+        }
       }
     }
   }
@@ -266,6 +319,31 @@ LEVELS.forEach((raw, i) => {
       if ((forcedSet.has('under-arch') || forcedSet.has('through-window')) && forcedSet.has('climb-then-level')) {
         forcedOpeningClimb.push(i + 1);
       }
+      // DESIGN.md 14.4, checked exactly as 13.4 is: the intersection over EVERY minimal solution.
+      if (forcedSet.has('bounce')) forcedBounce.push(i + 1);
+      if (forcedSet.has('skip')) forcedSkip.push(i + 1);
+      // A forced `skip` had better be a forced `bounce` too - and the engine had better agree that
+      // every one of those minimal solutions really reflects twice, not merely tags itself so.
+      if (forcedSet.has('skip')) {
+        assert(i, forcedSet.has('bounce'), 'a level forces `skip` without forcing `bounce`, which cannot happen');
+        for (const one of allSolutions) {
+          const n = replay(L, one).bounces.length;
+          assert(i, n >= 2, 'a minimal solution bounces ' + n + ' time(s), so the two-bounce skip is not forced: ' + JSON.stringify(one));
+        }
+      }
+      // A forced bounce must be a real reflection off a plate, not a tag: the engine's own `bounces`
+      // list, on every minimal solution.
+      if (forcedSet.has('bounce')) {
+        for (const one of allSolutions) {
+          const tr = replay(L, one);
+          assert(i, tr.bounces.length >= 1, 'a minimal solution never bounces: ' + JSON.stringify(one));
+          for (const e of tr.events) {
+            if (e.kind !== 'bounce') continue;
+            assert(i, e.vIn === -1 && e.vOut === 1, 'a bounce did not flip a falling beam to a climbing one');
+            assert(i, e.type === 'FLOOR', 'a bounce came from a ' + e.type + ', not a floor plate');
+          }
+        }
+      }
     }
   }
   // level 8 additionally: EVERY minimal solution puts a piece on raised terrain (the stilt)
@@ -310,6 +388,40 @@ LEVELS.forEach((raw, i) => {
   if (cs.includes('fall-then-level')) fallThenLevel.push(i + 1);
   if (cs.includes('under-arch')) shippedArch.push(i + 1);
   if (cs.includes('through-window')) shippedWindow.push(i + 1);
+  if (cs.includes('bounce')) shippedBounce.push(i + 1);
+  if (cs.includes('skip')) shippedSkip.push(i + 1);
+
+  // ---- FLOOR MIRRORS: per-level data checks (DESIGN.md 14) ----
+  const hasFloor = L.tray.indexOf('FLOOR') >= 0 || L.fixed.some(f => f.type === 'FLOOR');
+  if (hasFloor) floorLevels.push(i + 1);
+  if (L.tray.indexOf('DIP') >= 0 || L.fixed.some(f => f.type === 'DIP')) dipLevels.push(i + 1);
+  if (L.fixed.some(f => f.type === 'FLOOR')) fixedFloorLevels.push(i + 1);
+  if (L.fixed.length) withFixed.push(i + 1);
+  // A plate is never disguised (14.3: it reads by silhouette), so marking one `secret` would be a
+  // promise the renderer cannot keep.
+  assert(i, !L.fixed.some(f => f.type === 'FLOOR' && f.secret),
+    'a FLOOR plate is marked secret, but a plate is not disguised from above (DESIGN.md 14.3)');
+  // Whatever the route does, no FLOOR anywhere in the shipped trace may turn the beam.
+  if (solTrace) {
+    for (const e of solTrace.events) {
+      if (e.kind === 'piece' && e.type === 'FLOOR') {
+        assert(i, e.dOut === e.dIn, 'a FLOOR turned the beam at (' + e.x + ',' + e.y + ')');
+        assert(i, e.vIn === -1 && e.vOut === 1, 'a FLOOR acted on a beam that was not falling');
+      }
+      if (e.kind === 'glide') assert(i, e.v >= 0, 'a plate was glided over by a FALLING beam, which must bounce instead');
+    }
+    // `bounces` and the bounce events must agree, and each must sit on a plate at its column top
+    assert(i, solTrace.bounces.length === solTrace.events.filter(e => e.kind === 'bounce').length,
+      'the bounces list and the bounce events disagree');
+    for (const b of solTrace.bounces) {
+      assert(i, b.z === L.t[b.y][b.x], 'a bounce happened at level ' + b.z + ', not at its column top ' + L.t[b.y][b.x]);
+    }
+  }
+
+  // ---- DARKNESS (DESIGN.md 15) ----
+  assert(i, raw.dark === undefined || raw.dark === true, '`dark` must be omitted or true, never ' + JSON.stringify(raw.dark));
+  assert(i, L.dark === !!raw.dark, 'parseLevel did not carry `dark` through');
+  if (L.dark) darkLevels.push(i + 1);
 
   // ---- ARCHES AND WINDOWS: per-level checks (DESIGN.md 13.1 / 13.3 / 13.4) ----
   // The data itself: every opening names an on-grid column and integer levels strictly below its
@@ -346,6 +458,15 @@ LEVELS.forEach((raw, i) => {
         'the opened column at (' + o.x + ',' + o.y + ') does not report its full height in `terrain`');
     }
   }
+  // DESIGN.md 14.4 teaching level: its intro names the fair tell of 14.3 - the bright dot the beam
+  // draws where it meets its own floor shadow - and never tells the player to tilt.
+  if (i === FLOOR_INTRO) {
+    assert(i, hasFloor, 'the FLOOR teaching level carries no floor mirror');
+    assert(i, L.tray.indexOf('FLOOR') >= 0, 'the FLOOR teaching level must put a plate in the TRAY, so the player places one');
+    assert(i, TELL_DOT.test(L.intro), 'the FLOOR intro must name the fair tell of 14.3 - the BRIGHT DOT where the beam touches down');
+    assert(i, !FORBIDS_TILT.test(L.intro),
+      'the FLOOR intro tells the player to tilt, which forfeits this level\'s own third star; the bright dot is the whole point');
+  }
   if (OPENING_INTRO[i]) {
     const what = OPENING_INTRO[i];
     assert(i, L.openings.length > 0, 'the ' + what + ' teaching level carries no openings');
@@ -359,7 +480,13 @@ LEVELS.forEach((raw, i) => {
   if (raw.intro) assert(i, !/[^\x20-\x7e]/.test(raw.intro), 'intro must be plain ASCII (no emojis)');
 
   rows.push({
-    i, name: raw.name, size: L.size.w + 'x' + L.size.d, par: L.par, tray: L.tray.map(t => t[0]).join(''),
+    i, name: raw.name, size: L.size.w + 'x' + L.size.d, par: L.par,
+    // tray/fixed initials: M mirror, W wedge, D dip, F floor plate (DESIGN.md 14). A '*' marks a
+    // secret fixed piece - one drawn as a plain mirror in the flat view.
+    tray: L.tray.map(t => t[0]).join(''),
+    fixed: L.fixed.length ? L.fixed.map(f => f.type[0] + (f.secret ? '*' : '')).join('') : '-',
+    bnc: solTrace ? (solTrace.bounces.length || '-') : '-',
+    dark: L.dark ? 'DARK' : '-',
     // DESIGN.md 13: A0 = an arch (open at level 0), W1/W2 = a window at that level. '-' = a plain height field.
     open: L.openings.length ? L.openings.map(o => o.levels.map(z => (z === 0 ? 'A' : 'W') + z).join('+')).join(' ') : '-',
     fit: fitPx.toFixed(1), zoom: fitPx + 1e-6 >= MIN_CELL_PX ? 'fit' : cellsAtFloor.toFixed(1) + '/' + side,
@@ -405,6 +532,65 @@ if (forcedWindow.length) {
       ' but the window intro is on level(s) ' + introWin.join(', '));
   }
 }
+// ---- DESIGN.md 14.4 + 14.5, every bullet, checked against EVERY minimal solution ----
+if (floorLevels.length) {
+  const firstFloor = Math.min(...floorLevels);
+  const firstDip = dipLevels.length ? Math.min(...dipLevels) : Infinity;
+  if (!(firstFloor >= firstDip)) {
+    failures.push('level set (14.4): the floor mirror may not be introduced before the DIP - "a floor mirror is useless until '
+      + 'the player can send a beam downward". First plate on level ' + firstFloor + ', first DIP on level ' + firstDip + '.');
+  }
+  if (firstFloor !== FLOOR_INTRO + 1) {
+    failures.push('level set (14.4): the first level carrying a floor mirror is ' + firstFloor + ' but the FLOOR intro is on level '
+      + (FLOOR_INTRO + 1) + ', so the lesson lands after the piece.');
+  }
+} else {
+  failures.push('level set (14.4): no level carries a floor mirror at all');
+}
+if (forcedBounce.length < 3) {
+  failures.push('level set (14.4): needs at least THREE levels where EVERY minimal solution bounces off a floor mirror; found '
+    + forcedBounce.length + ' (' + (forcedBounce.join(', ') || 'none') + '). Levels whose SHIPPED solution bounces: '
+    + (shippedBounce.join(', ') || 'none') + ' - a shipped solution is not enough, the beat has to be forced.');
+}
+if (forcedSkip.length < 1) {
+  failures.push('level set (14.4): needs at least ONE level requiring TWO bounces, so the skipping-stone rhythm of 14.2 is '
+    + 'unmistakable; found none. Levels whose SHIPPED solution skips: ' + (shippedSkip.join(', ') || 'none') + '.');
+}
+if (forcedBounce.length && forcedSkip.length && Math.min(...forcedBounce) >= Math.min(...forcedSkip)) {
+  failures.push('level set (14.4): one bounce must be taught before two; first forced bounce is level ' + Math.min(...forcedBounce)
+    + ', first forced skip is level ' + Math.min(...forcedSkip));
+}
+if (fixedFloorLevels.length < 1) {
+  failures.push('level set (14.4): "fixed (pre-placed) floor mirrors are encouraged" - a bounce plate the player did not place '
+    + 'reads as part of the architecture; no level carries one');
+}
+// 14.5: most levels past the early teaching ones carry at least one pre-placed piece.
+const lateSlots = [];
+for (let i = FIXED_FROM; i < LEVELS.length; i++) lateSlots.push(i + 1);
+const lateWithFixed = lateSlots.filter(n => withFixed.indexOf(n) >= 0);
+if (lateWithFixed.length * 2 <= lateSlots.length) {
+  failures.push('level set (14.5): MOST levels from ' + (FIXED_FROM + 1) + ' on should carry at least one pre-placed piece so a '
+    + 'board reads as designed rather than empty; only ' + lateWithFixed.length + ' of ' + lateSlots.length + ' do ('
+    + (lateWithFixed.join(', ') || 'none') + ')');
+}
+// ---- DESIGN.md 15.3: dark levels are LATE levels and never teaching levels ----
+if (darkLevels.length < 2) {
+  failures.push('level set (15.3): darkness should be shown off on the last two or three levels; found '
+    + darkLevels.length + ' (' + (darkLevels.join(', ') || 'none') + ')');
+}
+if (darkLevels.length > DARK_LAST_N) {
+  failures.push('level set (15.3): dark is for the last ' + DARK_LAST_N + ' levels, not a mode; found ' + darkLevels.length
+    + ' (' + darkLevels.join(', ') + ')');
+}
+for (const n of darkLevels) {
+  if (n <= LEVELS.length - DARK_LAST_N) {
+    failures.push('level set (15.3): level ' + n + ' is dark but is not one of the last ' + DARK_LAST_N + ' levels');
+  }
+  if (TEACHING[n - 1]) {
+    failures.push('level set (15.3): level ' + n + ' is dark AND a teaching level; darkness never applies to a teaching level');
+  }
+}
+
 if (climbThenLevel.filter(n => n >= 7).length < 5) {
   failures.push('level set: the WEDGE-then-DIP pattern (climb-then-level) must be taught by several levels from 7 on; found '
     + climbThenLevel.filter(n => n >= 7).length + ' (' + climbThenLevel.join(', ') + ')');
@@ -412,13 +598,14 @@ if (climbThenLevel.filter(n => n >= 7).length < 5) {
 
 // table
 const conceptWidth = Math.max(8, ...rows.map(r => String(r.concepts).length));
-const cols = [['#', 3, true], ['name', 20], ['size', 7], ['par', 3, true], ['tray', 6], ['beam', 4, true],
-  ['fitpx', 5, true], ['@34px', 9], ['open', 5], ['concepts', conceptWidth], ['needs3D', 20], ['nodes', 8, true]];
+const cols = [['#', 3, true], ['name', 20], ['size', 7], ['par', 3, true], ['tray', 6], ['fixed', 5], ['beam', 4, true],
+  ['bnc', 3, true], ['dark', 4], ['fitpx', 5, true], ['@34px', 9], ['open', 5], ['concepts', conceptWidth], ['needs3D', 20], ['nodes', 8, true]];
 console.log(cols.map(c => pad(c[0], c[1], c[2])).join('  '));
 console.log(cols.map(c => '-'.repeat(c[1])).join('  '));
 for (const r of rows) {
   console.log([pad(r.i + 1, 3, true), pad(r.name, 20), pad(r.size, 7), pad(r.par, 3, true), pad(r.tray, 6),
-    pad(r.beam, 4, true), pad(r.fit, 5, true), pad(r.zoom, 9), pad(r.open, 5), pad(r.concepts, conceptWidth), pad(r.reason, 20), pad(r.nodes, 8, true)].join('  '));
+    pad(r.fixed, 5), pad(r.beam, 4, true), pad(r.bnc, 3, true), pad(r.dark, 4), pad(r.fit, 5, true), pad(r.zoom, 9),
+    pad(r.open, 5), pad(r.concepts, conceptWidth), pad(r.reason, 20), pad(r.nodes, 8, true)].join('  '));
 }
 console.log('');
 const zoomed = rows.filter(r => r.zoom !== 'fit');
@@ -428,6 +615,18 @@ console.log('        board\'s cells are visible across once the view clamps to '
   (zoomed.length ? zoomed.length + ' level(s) START ZOOMED: ' + zoomed.map(r => r.i + 1).join(', ') : 'no level starts zoomed') + '.');
 console.log('open  = DESIGN.md 13 openings on that board: A0 = a column open at level 0 (an ARCH, go under it),');
 console.log('        W1 / W2 = a column open at that level only (a WINDOW, thread it at exactly that height).');
+console.log('fixed = pre-placed pieces (DESIGN.md 14.5), by initial; * = secret (drawn as a plain mirror from above).');
+console.log('bnc   = bounces off a FLOOR plate in the shipped solution (DESIGN.md 14); dark = the fog-of-war levels of 15.3.');
+console.log('bounce is REQUIRED (every minimal solution) by level(s) ' + (forcedBounce.join(', ') || 'none') +
+  '; it appears in the shipped solution of level(s) ' + (shippedBounce.join(', ') || 'none') + '.');
+console.log('skip (TWO or more bounces in one shot, DESIGN.md 14.2) is REQUIRED by level(s) ' + (forcedSkip.join(', ') || 'none') +
+  '; shipped on level(s) ' + (shippedSkip.join(', ') || 'none') + '.');
+console.log('a floor mirror is available (tray or pre-placed) on level(s) ' + (floorLevels.join(', ') || 'none') +
+  ', never before the DIP (first DIP: level ' + (dipLevels.length ? Math.min(...dipLevels) : '-') + ');');
+console.log('        pre-placed PLATES on level(s) ' + (fixedFloorLevels.join(', ') || 'none') + '.');
+console.log('pre-placed pieces of any kind (DESIGN.md 14.5) on ' + lateWithFixed.length + ' of the ' + lateSlots.length +
+  ' levels from ' + (FIXED_FROM + 1) + ' on: ' + (lateWithFixed.join(', ') || 'none') + '.');
+console.log('DARK (DESIGN.md 15.3) on level(s) ' + (darkLevels.join(', ') || 'none') + ' - late levels only, never a teaching level.');
 console.log('under-arch is REQUIRED (every minimal solution) by level(s) ' + (forcedArch.join(', ') || 'none') +
   '; it appears in the shipped solution of level(s) ' + (shippedArch.join(', ') || 'none') + '.');
 console.log('through-window is REQUIRED (every minimal solution) by level(s) ' + (forcedWindow.join(', ') || 'none') +
@@ -450,5 +649,6 @@ if (failures.length) {
   console.error('validate-levels: ' + failures.length + ' failure(s) across ' + LEVELS.length + ' levels');
   process.exit(1);
 }
-console.log('validate-levels: ' + LEVELS.length + ' levels OK (tray = M mirror, W wedge, D dip; beam = steps in the shipped');
-console.log('solution; nodes = traces to EXHAUST depth par-1, which is the proof that par is real and the 2-star is honest)');
+console.log('validate-levels: ' + LEVELS.length + ' levels OK (tray/fixed = M mirror, W wedge, D dip, F floor plate; beam =');
+console.log('steps in the shipped solution; bnc = bounces off a plate; nodes = traces to EXHAUST depth par-1, which is the');
+console.log('proof that par is real and the 2-star is honest)');

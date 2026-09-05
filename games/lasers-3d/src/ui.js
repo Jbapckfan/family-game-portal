@@ -161,15 +161,61 @@
     var root = opts.root || $('app') || doc.body, theme = opts.theme || window.LaserTheme, handlers = opts.handlers || {}, render = opts.render || null;
     var ui = { __version: 1 }, vm = null, viewportCbs = [], timers = {}, iconCache = {}, modalStack = [], openerStack = [], destroyed = false;
     var rm = theme && theme.reducedMotion && window.matchMedia ? window.matchMedia(theme.reducedMotion.mediaQuery).matches : false;
-    var scale = rm ? (theme.reducedMotion.durationScale || 0.35) : 1;
+    /* MOTION-DIRECTION.md sections 5, 6 and 7. `opts.motion` is the ONE LaserMotion registry, created in main.js;
+     * without it the DOM choreography degrades to its settled presentation (the modal and every earned star
+     * arrive together, no ring, no shake) rather than to something that never finishes. */
+    var uiMotion = window.LaserUiMotion ? window.LaserUiMotion.create({ theme: theme, motion: opts.motion || null, reducedMotion: rm })
+      : {
+        /* No src/ui-motion.js on the page (an embedding host, a stripped harness): present the win SETTLED rather
+         * than not at all - every earned star is marked awarded at once, which is the reduced-motion presentation
+         * with the fade left out. Never a missing star. */
+        victory: function (n) {
+          if (!n || !n.stars) return;
+          Array.prototype.forEach.call(n.stars.querySelectorAll('.star[data-earned="true"]'), function (s) { s.classList.add('is-awarded'); });
+        },
+        readout: function () {}, shake: function () {}, cancel: function () {}, setMotion: function () {}
+      };
 
     /* theme tokens + page background */
     if (theme && !$('lasers3d-theme')) { var st = doc.createElement('style'); st.id = 'lasers3d-theme'; st.textContent = theme.cssVariables(); doc.head.appendChild(st); }
+    if (theme && window.LaserUiMotion) window.LaserUiMotion.install(theme);   /* keyframes generated from theme.motion */
     if (theme) { doc.body.style.background = theme.pageBackground; doc.body.style.backgroundColor = theme.palette.background; }
     ensureDom(root);
     var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-dark', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
     ids.forEach(function (id) { el[id] = $(id); });
     var cards = {}; Array.prototype.forEach.call(el.tray.querySelectorAll('.tray-card'), function (c) { cards[c.getAttribute('data-type')] = c; });
+
+    /* ---- the blind-star dot (MOTION-DIRECTION.md 3) -------------------------------------------------------
+     * The cyan dot on the third star is the no-tilt star's mark, and while the current attempt can still earn it
+     * the mark is lit. The instant a tilt or an accepted camera drag clears eligibility the rules have already
+     * changed - so the dot FADES to the existing empty state over m.reveal.eligibilityFadeMs, linear. The star
+     * itself never moves: nothing is ejected, cracked or dropped, and a blind star already earned on this level
+     * stays lit whatever this attempt does.
+     *
+     * It registers as a 'dom' animation: it asks for no WebGL frames of its own, and the only thing that can clear
+     * eligibility is a camera move, which is already holding the loop open for far longer than this fade lasts.
+     * Without a registry the dot simply arrives at its settled value. */
+    var blindEl = null, blindShown = null;
+    function setBlindEligibility(on) {
+      var host = el['hud-stars'];
+      var dot = host ? host.querySelector('.star[data-blind="true"] circle') : null;
+      if (!dot) { blindEl = null; blindShown = null; return; }
+      if (dot !== blindEl) { blindEl = dot; blindShown = on; dot.style.opacity = on ? '1' : '0'; return; }
+      if (blindShown === on) return;
+      var was = blindShown;
+      blindShown = on;
+      if (on) { if (opts.motion) opts.motion.cancel('hud.blindEligibility'); dot.style.opacity = '1'; return; }
+      function settled() { dot.style.opacity = '0'; }
+      if (!opts.motion || was === null) { settled(); return; }
+      var M = theme.motion;
+      opts.motion.run({
+        key: 'hud.blindEligibility', role: 'presentation', surface: 'dom',
+        ease: M.easing.linear, durationMs: opts.motion.scaleMs(M.reveal.eligibilityFadeMs, M.reduced.fadeMs),
+        from: 1, to: 0,
+        update: function (e, ctx) { dot.style.opacity = String(ctx.value); },
+        final: settled, cancel: settled, fallback: settled
+      });
+    }
 
     /* ------------------------------------------------------------ buttons */
     function wire(id, name) { on(el[id], 'click', function (e) { if (el[id].disabled) return; e.preventDefault(); call(handlers, name); }); }
@@ -251,6 +297,10 @@
       }
       var sk = 'stars' + (flags.solved ? 1 : 0) + (flags.par ? 1 : 0) + (flags.blind ? 1 : 0);
       if (el['hud-stars'].getAttribute('data-key') !== sk) { el['hud-stars'].innerHTML = starsHtml(flags); el['hud-stars'].setAttribute('data-key', sk); }
+      /* MOTION-DIRECTION.md 3: "At input acceptance, the rules clear blind-solve eligibility immediately. Fade the
+       * HUD blind-star dot and eligibility highlight to the existing empty state over 160 ms, linear. Never eject,
+       * crack, or drop the star. Already earned historical stars remain unchanged." */
+      setBlindEligibility(!!(v.attemptStars && v.attemptStars.blind) || flags.blind);
       attr(el['hud-stars'], 'aria-label', count + ' of 3 stars: solve ' + (flags.solved ? 'earned' : 'not earned') +
         ', par ' + (flags.par ? 'earned' : 'not earned') + ', no-tilt ' + (flags.blind ? 'earned' : 'not earned'));
       text(el['hud-pieces'], 'PIECES ' + used + '/' + par);
@@ -310,6 +360,10 @@
       if (r.progress) chips += '<span class="chip chip-progress">' + r.progress.lit + ' of ' + r.progress.total + ' lit</span>';
       var msg = r.message + (pitchNote(r) ? ' ' + pitchNote(r) : '');
       var key = r.kind + '|' + msg + '|' + chips;
+      /* Section 7, step 2: "Fade the post-FIRE readout in over 120 ms, linear, in its existing reserved row."
+       * Opacity only, and only when the sentence is actually new - the row is reserved, so nothing moves, and a
+       * state push that repeats the same result must not re-run the fade. */
+      var fresh = box.hidden || box.getAttribute('data-key') !== key;
       if (box.getAttribute('data-key') !== key) {
         box.querySelector('.readout-msg').textContent = msg;
         box.querySelector('.readout-chips').innerHTML = chips;
@@ -317,6 +371,7 @@
       }
       attr(box, 'data-kind', r.kind || 'info');
       if (box.hidden) box.hidden = false;
+      if (fresh) uiMotion.readout(box);
     };
 
     /* ----------------------------------------------- piece controls, toast */
@@ -342,6 +397,7 @@
       if (!pc.hidden) pc.hidden = true;
     };
     var liveToast = null;   /* { text, kind, ms, at } while a toast is on screen */
+    var invalidEl = null;   /* the control currently wearing the danger border, so a second refusal can clear it */
     ui.showToast = function (s, o) {
       o = o || {}; var t = el.toast, ms = o.ms || (theme && theme.ui.toastMs) || 2600;
       clearTimeout(timers.toast); t.textContent = s; t.setAttribute('data-kind', o.kind || 'info'); t.classList.add('is-visible');
@@ -365,10 +421,26 @@
       var t = liveToast; liveToast = null;
       ui.showToast(t.text, { kind: t.kind, ms: t.ms });
     }
+    /* MOTION-DIRECTION.md section 5, last row: "Keep the board and piece in place... Apply the existing two 70 ms,
+     * 4 px shake beats ONLY to the selected tray card." A refused placement used to shake the whole stage, which
+     * moved the board - and a board that jumps is a board whose flat lie the player stops trusting. The danger
+     * outline that belongs on the refused footprint is the renderer's (render-pieces flashInvalid(cell)); this
+     * function now answers on the control the player pressed and nowhere else. */
     ui.flashInvalid = function (what) {
-      var t = what === 'tray' ? (vm && vm.selectedTray && cards[vm.selectedTray] ? cards[vm.selectedTray] : el.tray) : what === 'button:fire' ? el['btn-fire'] : what === 'cell' ? el.stage : el[what.replace('button:', 'btn-')];
-      if (!t) return; t.classList.remove('is-invalid'); void t.offsetWidth; t.classList.add('is-invalid');
-      setTimeout(function () { t.classList.remove('is-invalid'); }, 400);
+      var card = (vm && vm.selectedTray && cards[vm.selectedTray]) ? cards[vm.selectedTray] : null;
+      var t = what === 'tray' ? (card || el.tray) : what === 'cell' ? card : el[String(what).replace('button:', 'btn-')];
+      if (!t) return;
+      /* A second refusal before the first has finished must not strand the danger border on the first control. */
+      if (invalidEl && invalidEl !== t) { invalidEl.classList.remove('is-invalid'); invalidEl.classList.remove('is-shaking'); }
+      clearTimeout(timers.invalid);
+      invalidEl = t;
+      t.classList.remove('is-invalid'); void t.offsetWidth; t.classList.add('is-invalid');
+      uiMotion.shake(t);
+      timers.invalid = setTimeout(function () {
+        invalidEl = null;
+        if (destroyed) return;
+        t.classList.remove('is-invalid'); t.classList.remove('is-shaking');
+      }, (theme && theme.ui.button.invalid.dangerBorderMs) || 400);
     };
     ui.setHintGhostVisible = function (b) { el['btn-hint'].classList.toggle('is-active', !!b); };
     ui.showWebGLFallback = function () { el['webgl-fallback'].hidden = false; el.board.hidden = true; el.tray.hidden = true; el.hud.hidden = true; };
@@ -383,6 +455,7 @@
     }
     function closeModal(id) {
       var b = el[id]; if (b.hidden) return false; b.hidden = true;
+      if (id === 'modal-victory') uiMotion.cancel();   /* nothing may still be scheduled into a closed panel */
       var i = modalStack.indexOf(id); if (i >= 0) { modalStack.splice(i, 1); var op = openerStack.splice(i, 1)[0]; if (op && op.focus && doc.body.contains(op)) { try { op.focus(); } catch (e) { /* ignore */ } } }
       if (modalStack.length === 0) { call(handlers, 'onModalClose'); resumeToast(); }
       return true;
@@ -571,10 +644,13 @@
       on($('btn-next'), 'click', function () { closeModal('modal-victory'); call(handlers, 'onNextLevel'); });
       on($('btn-replay'), 'click', function () { closeModal('modal-victory'); call(handlers, 'onRetryLevel'); });
       on($('btn-victory-levels'), 'click', function () { closeModal('modal-victory'); ui.showLevelSelect(); });
-      var ring = m.querySelector('.light-ring'); if (ring) { var clone = ring.cloneNode(true); ring.parentNode.replaceChild(clone, ring); }
       openModal('modal-victory');
-      var delays = (theme && theme.ui.victory.starDelaysMs) || [0, 180, 360];
-      Array.prototype.forEach.call(stars.querySelectorAll('.star[data-earned="true"]'), function (s, i) { setTimeout(function () { s.classList.add('is-awarded'); }, Math.round(delays[i] * scale)); });
+      /* MOTION-DIRECTION.md section 6. The host opens this modal at W0 + win.modalDelayMs; from here the sequence
+       * is the existing 360 ms rise, the star awards at [0, 180, 360] ms from "modal fully visible", and ONE cyan
+       * light ring behind the first star for 540 ms. It is started AFTER openModal so the elements are laid out:
+       * the ring's diameter is a fraction of the modal's smaller dimension, which cannot be measured while the
+       * backdrop is still hidden. */
+      uiMotion.victory({ backdrop: m, modal: m.querySelector('.modal'), stars: stars, ring: m.querySelector('.light-ring') });
       var next = $('btn-next'); if (next) next.focus();
     };
     ui.hideVictory = function () { closeModal('modal-victory'); };
@@ -604,8 +680,9 @@
     ui.saveProgress = function (p) { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p || DEFAULT_PROGRESS())); } catch (e) { /* quota / private mode */ } };
     ui.hasProgress = function () { try { return window.localStorage.getItem(STORAGE_KEY) !== null; } catch (e) { return true; } };
 
+    ui.setMotion = function (m) { uiMotion.setMotion(m); };
     ui.destroy = function () {
-      destroyed = true; if (ro) ro.disconnect(); window.removeEventListener('resize', queueFit); window.removeEventListener('orientationchange', queueFit);
+      destroyed = true; uiMotion.cancel(); if (ro) ro.disconnect(); window.removeEventListener('resize', queueFit); window.removeEventListener('orientationchange', queueFit);
       if (window.visualViewport) { window.visualViewport.removeEventListener('resize', queueFit); window.visualViewport.removeEventListener('scroll', queueFit); }
       Object.keys(timers).forEach(function (k) { clearTimeout(timers[k]); }); viewportCbs.length = 0;
     };

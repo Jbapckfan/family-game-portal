@@ -1,4 +1,5 @@
-/* Lasers 3D - orthographic camera rig: bounding-box auto-fit, minimum tappable cell, pan, zoom, presets.
+/* Lasers 3D - orthographic camera rig: bounding-box auto-fit, minimum tappable cell, pan, zoom, presets, and THE
+ * REVEAL (MOTION-DIRECTION.md section 3).
  * Global: window.LaserRenderCamera. Classic script, ES2019. Needs THREE + LaserRenderCore + LaserTheme.
  *
  * DESIGN.md 11.2: the frustum is fitted to the board's PROJECTED bounding box in the CURRENT orientation (not to a
@@ -9,6 +10,31 @@
  * Frame of reference (INTERFACES-FRONTEND.md 1.2): game (x, y, z) -> three (x, z, -y); camera at azimuth a and
  * elevation e sits at boardCenter + R * (cos e sin a, sin e, cos e cos a). Screen-right is always the horizontal
  * (cos a, 0, -sin a); screen-up has a vertical part, and its ground shadow is (-sin a, 0, -cos a) shortened by sin e.
+ *
+ * ---------------------------------------------------------------------------------------------------------------
+ * THE REVEAL (MOTION-DIRECTION.md 3, "The reveal: the lie collapses"). Tilting is the move that costs the third
+ * star, so a preset move is not one tween any more; it is a staged one, and every number below is a token:
+ *
+ *   0 .. m.reveal.prepareMs (96 ms)   the camera HOLDS at exactly FLAT. Nothing about the board moves. The only
+ *                                     thing that changes is `intake`, the scalar the renderer multiplies into the
+ *                                     beam glow (down toward m.reveal.beamGlowMinimum, smoothstep) - the intake of
+ *                                     breath before the lie fails. render.js reads it through revealIntake().
+ *   prepareMs .. camera.motion.flatToTiltMs (720 ms)   the spherical orbit to the TILT preset, on
+ *                                     m.reveal.cameraEasing (easeInOutCubic). The complete move still lasts
+ *                                     flatToTiltMs; the hold is inside it, not added to it.
+ *
+ * Returning to FLAT keeps the existing 620 ms `camera` easing and has NO preparatory hold. The free teaching
+ * reveal names its own duration (900 ms) and therefore also gets no hold - "with no additional preparation hold".
+ * Reduced motion collapses all of it to the existing 140 ms linear move with no anticipation and no beam dimming.
+ *
+ * The per-view framing rule (FLAT keeps the 34 px tapping floor, TILT frames the WHOLE board) is unchanged, but it
+ * used to SWITCH the base zoom on the first frame of the move - a zoom punch on a board the document says must
+ * "remain exactly FLAT". It is now blended across the same interval as the orbit (see setPreset).
+ *
+ * Scheduling: a move is one record with a start, an exact duration, an update, an exact final state and a cancel.
+ * When the host has wired the one LaserMotion registry (opts.motion) the record is registered there and the
+ * registry is its clock; otherwise it is advanced by step(dt) from the single main-loop frame, exactly like every
+ * other renderer module. Either way isAnimating() goes false the instant it ends, so the dirty-driven loop stops.
  */
 (function (root) {
   'use strict';
@@ -18,6 +44,15 @@
   function create(opts) {
     var theme = opts.theme, size = opts.size, Core = root.LaserRenderCore;
     var CAM = theme.camera, R = opts.distance || 60;
+    /* MOTION-DIRECTION.md 3 token block (`m.reveal.*`) and the callable curves. theme.motion is pure data by
+     * contract, so the easing NAMES in it resolve through theme.easeByName. */
+    var MR = (theme.motion && theme.motion.reveal) || {};
+    var MEASE = (theme.motion && theme.motion.easing) || {};
+    /* The one animation registry (src/motion.js), when the host has wired it. Optional: without it the move is
+     * advanced by step(dt) from the same single main-loop frame that already drives beam, pieces and fog. */
+    var sched = opts.motion || null;
+    function easeOf(name) { return theme.easeByName ? theme.easeByName(name) : theme.easeCamera; }
+    var easeSmooth = easeOf(MEASE.smooth || 'smoothstep');
 
     var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
     var boardCenter = new THREE.Vector3(0, 0, 0);
@@ -91,13 +126,22 @@
       return Core.clamp(baseZoom() * cam.userZoom, lim.lo, lim.hi);
     }
 
+    /* The player has taken the framing. Besides latching cam.manual (which stops the per-preset default framing
+     * from ever coming back), this releases the pan/zoom blend of a preset move that is still in flight, so a pinch
+     * during the reveal is not overwritten a frame later by the move that was easing the framing under it. The
+     * orbit itself continues: the player asked for the tilt. */
+    function takeManualFraming() {
+      cam.manual = true;
+      if (cam.anim) { cam.anim.fromPan = null; cam.anim.fromZoom = null; }
+    }
+
     /* ------------------------------------------------------------------- pan */
     /* Screen dx moves the board with the finger: the look-at target slides the opposite way along screen-right, and
      * along the ground shadow of screen-up (which covers sin(e) of a screen pixel, hence the /se). */
     function panBy(dxPx, dyPx) {
       var se = basis(cam.az, cam.el), z = effectiveZoom();
       if (z <= 0) return;
-      cam.manual = true;                 /* the player has chosen where to look; stop re-framing under them */
+      takeManualFraming();               /* the player has chosen where to look; stop re-framing under them */
       pan.addScaledVector(rightVec, -dxPx / z);
       pan.addScaledVector(groundUp, dyPx / (z * Math.max(0.2, se)));
       clampPan();
@@ -142,30 +186,122 @@
     }
 
     /* -------------------------------------------------------------- presets */
-    function endAnim() { if (cam.anim) { var res = cam.anim.resolve; cam.anim = null; res(); } }
+    /* A preset move (MOTION-DIRECTION.md 3). Four functions, and nothing else may write the move's state:
+     *   advance(a, elapsedMs)  the update. Below prepareMs it writes ONLY the intake and the camera does not move.
+     *   applyFinal(a)          the exact final state. Never "advance(a, total)" - the endpoint is written, not
+     *                          interpolated, so a rounding error in the last frame cannot become the resting pose.
+     *   abandon(a)             cancellation: the pose the eye can see is KEPT (a superseding move continues from
+     *                          it), only the decorative intake is released.
+     *   detach(a)              removes the record and resolves its promise exactly once, whatever ended it.
+     */
+    function advance(a, elapsedMs) {
+      if (elapsedMs < a.prepareMs) {
+        /* "0-96 ms: Remain exactly FLAT. No deformation or ripple. Camera holds." Not one camera value is touched
+         * here. "Multiply existing beam-glow opacity toward 0.82, smoothstep, creating a brief intake." */
+        a.intake = a.reveal ? easeSmooth(elapsedMs / a.prepareMs) : 0;
+        return;
+      }
+      var k = a.orbitMs > 0 ? Math.min(1, (elapsedMs - a.prepareMs) / a.orbitMs) : 1;
+      var e = a.linear ? k : a.ease(k);
+      /* Spherical orbit around the board centre: azimuth and elevation are interpolated and the radius is fixed,
+       * so the camera swings on the sphere rather than sliding through it (VISUAL-DIRECTION E). */
+      cam.az = a.fromAz + a.dAz * e;
+      cam.el = a.fromEl + (a.toEl - a.fromEl) * e;
+      if (a.fromPan) pan.copy(a.fromPan).multiplyScalar(1 - e);
+      if (a.fromZoom !== null) cam.userZoom = a.fromZoom + (1 - a.fromZoom) * e;
+      /* "Beam-glow multiplier returns from 0.82 to 1 with r", r = theme.revealBlend(elevation). One scalar, read
+       * by render.js; the rig never touches a beam material and never samples terrain for it. */
+      a.intake = a.reveal ? 1 - theme.revealBlend(cam.el) : 0;
+      refit(true);       /* the orientation is already eased, so the fit can follow it exactly */
+    }
+    function applyFinal(a) {
+      cam.az = a.fromAz + a.dAz;
+      cam.el = a.toEl;
+      if (a.fromPan) pan.set(0, 0, 0);
+      if (a.fromZoom !== null) cam.userZoom = 1;
+      a.intake = 0;
+      refit(true);
+    }
+    function abandon(a) { a.intake = 0; }
+    function detach(a) {
+      if (cam.anim === a) cam.anim = null;
+      if (!a.settled) { a.settled = true; a.resolve(); }
+    }
+    function endAnim() {
+      var a = cam.anim;
+      if (!a) return;
+      cam.anim = null;
+      if (a.handle && sched) sched.cancel(a.handle);   /* runs cancel() -> abandon(), then onDone -> detach() */
+      else abandon(a);
+      detach(a);
+    }
     function endTween() { if (cam.tween) { var res = cam.tween.resolve; cam.tween = null; res(); } }
     function setPreset(name, o) {
       o = o || {};
       var P = CAM.presets[name] || CAM.presets.flat;
       var fromAz = cam.az, fromEl = cam.el;
       var dAz = ((P.azimuthDeg - fromAz + 540) % 360) - 180;
+      var wasFlat = isFlat();          /* read BEFORE anything moves: only flat -> tilt is "the reveal" */
       endAnim(); endTween();
       cam.preset = name;
+      basis(cam.az, cam.el);           /* effectiveZoom()/minCellZoom() read dirVec; make it current, not inherited */
       /* Each view gets the framing it is FOR. FLAT is where the player taps individual cells, so it wants the
        * working zoom that keeps cells at the touch floor. TILT is bought with the third star and its whole job is
        * showing the shape of the board at once, so it wants the entire board on screen - panning around a zoomed
        * isometric board to reconstruct the structure in your head is strictly worse than just looking at it.
        * Suppressed once the player has taken manual control of the framing (cam.manual). */
+      var effBefore = effectiveZoom(), fromPan = null, fromZoom = null;
       if (!cam.manual) {
         var want = (name === 'tilt') ? 'overview' : 'working';
-        if (cam.view !== want) { cam.view = want; pan.set(0, 0, 0); cam.userZoom = 1; }
+        if (cam.view !== want) {
+          cam.view = want;
+          if (!o.animate) { pan.set(0, 0, 0); cam.userZoom = 1; }
+          else {
+            /* baseZoom() STEPS here (working clamps to minCellPx, overview does not), and switching it at t = 0
+             * was a zoom punch on the very first frame of the reveal - against "Remain exactly FLAT" and "Do not
+             * add camera zoom punches". Pre-load userZoom so the effective zoom is unchanged at t = 0, then let
+             * the move ease it back to 1 alongside the orbit. Same technique as applyViewMode(). */
+            fromPan = pan.clone();
+            var nb = baseZoom(), lim = zoomLimits();
+            cam.userZoom = nb > 0 ? Core.clamp(effBefore, lim.lo, lim.hi) / nb : 1;
+            fromZoom = cam.userZoom;
+          }
+        }
       }
       if (!o.animate) { cam.az = P.azimuthDeg; cam.el = P.elevationDeg; refit(true); return Promise.resolve(); }
-      var ms = o.durationMs || (name === 'tilt' ? CAM.motion.flatToTiltMs : CAM.motion.tiltToFlatMs), linear = false;
-      if (reducedMotion) { ms = theme.reducedMotion.cameraMs; linear = true; }
-      return new Promise(function (resolve) {
-        cam.anim = { t: 0, ms: ms, linear: linear, fromAz: fromAz, dAz: dAz, fromEl: fromEl, toEl: P.elevationDeg, resolve: resolve };
-      });
+      var ms = o.durationMs || (name === 'tilt' ? CAM.motion.flatToTiltMs : CAM.motion.tiltToFlatMs);
+      var linear = false, easeFn = theme.easeCamera, prepareMs = 0, isReveal = false;
+      /* THE REVEAL is flat -> tilt and only that: m.reveal.prepareMs of held anticipation, then
+       * m.reveal.cameraEasing over the rest, so "the complete move still lasts camera.motion.flatToTiltMs".
+       * A caller that names its own durationMs owns the whole timing - that is the free teaching reveal, which the
+       * document gives 900 ms "with no additional preparation hold" - and o.prepareMs overrides either way.
+       * Returning to FLAT keeps the existing camera easing and has no preparatory hold at all. */
+      if (name === 'tilt' && wasFlat) {
+        isReveal = true;
+        easeFn = easeOf(MR.cameraEasing);
+        prepareMs = (o.prepareMs != null) ? o.prepareMs : (o.durationMs ? 0 : (MR.prepareMs || 0));
+      } else if (o.prepareMs) prepareMs = o.prepareMs;
+      /* Reduced motion: "Omit anticipation, beam dimming... Use the existing 140 ms linear camera transition with
+       * the same elevation-based information boundary." */
+      if (reducedMotion) { ms = theme.reducedMotion.cameraMs; linear = true; prepareMs = 0; isReveal = false; }
+      prepareMs = Core.clamp(prepareMs, 0, ms);
+      var a = { t: 0, prepareMs: prepareMs, orbitMs: Math.max(0, ms - prepareMs), linear: linear, ease: easeFn,
+        fromAz: fromAz, dAz: dAz, fromEl: fromEl, toEl: P.elevationDeg, fromPan: fromPan, fromZoom: fromZoom,
+        reveal: isReveal, intake: 0, handle: null, settled: false, resolve: null };
+      var promise = new Promise(function (resolve) { a.resolve = resolve; });
+      cam.anim = a;
+      if (sched) {
+        var total = a.prepareMs + a.orbitMs;
+        a.handle = sched.run({
+          key: 'camera.preset', role: 'presentation', surface: 'webgl',
+          durationMs: total, ease: MEASE.linear || 'linear',
+          update: function (t) { advance(a, t * total); },
+          final: function () { applyFinal(a); },
+          cancel: function () { abandon(a); },
+          onDone: function () { detach(a); }
+        });
+      }
+      return promise;
     }
     function orbit(dAz, dEl) {
       endAnim();
@@ -175,7 +311,7 @@
       refit(false);       /* the fit EASES to the new orientation in step(); a hard snap here pumps during a drag */
     }
     function zoomBy(f) {
-      cam.manual = true;                 /* the player has chosen a zoom; stop re-framing under them */
+      takeManualFraming();               /* the player has chosen a zoom; stop re-framing under them */
       var lim = zoomLimits(), base = baseZoom();
       var eff = Core.clamp(base * cam.userZoom * (f || 1), lim.lo, lim.hi);
       cam.userZoom = eff / base;
@@ -221,11 +357,12 @@
         else refit(true);
       }
       if (a) {
+        /* When the host wired the registry it is the clock: motion.tick() already ran advance()/applyFinal() for
+         * this frame, before the render. Advancing here too would double the move's speed. */
+        if (a.handle) return;
         a.t += dt * 1000;
-        k = Math.min(1, a.t / a.ms); e = a.linear ? k : theme.easeCamera(k);
-        cam.az = a.fromAz + a.dAz * e; cam.el = a.fromEl + (a.toEl - a.fromEl) * e;
-        refit(true);       /* the orientation is already eased, so the fit can follow it exactly */
-        if (k >= 1) { cam.anim = null; a.resolve(); }
+        if (a.t >= a.prepareMs + a.orbitMs) { cam.anim = null; applyFinal(a); detach(a); }
+        else advance(a, a.t);
         return;
       }
       if (w) return;
@@ -242,6 +379,11 @@
     /* ----------------------------------------------------------------- info */
     function getCellPx() { basis(cam.az, cam.el); return effectiveZoom() * cellFactor(); }
     function isFlat() { return cam.el >= 90 - CAM.flatEpsilonDeg; }
+    /* MOTION-DIRECTION.md 3: how far into the reveal's anticipation we are, in [0, 1]. It is 0 at rest, 0 for
+     * every move that is not a flat -> tilt reveal, and exactly 0 again the instant the move ends. render.js turns
+     * it into the beam-glow multiplier; nothing else reads it. It is a function of TIME and camera ELEVATION only
+     * - never of terrain height, opening height, opening count or opening shape. */
+    function revealIntake() { return cam.anim ? (cam.anim.intake || 0) : 0; }
     /* True while the rig still has work to do: a preset move, a view/fit tween, or the eased fit chasing a new
      * orientation. main uses it to decide whether to schedule another animation frame (dirty rendering). */
     function isAnimating() {
@@ -251,7 +393,8 @@
     }
     function getCamera() {
       return { azimuthDeg: cam.az, elevationDeg: cam.el, zoom: cam.userZoom, preset: cam.preset, view: cam.view,
-        animating: !!(cam.anim || cam.tween), cellPx: getCellPx(), fitZoom: cam.fitZoom, effectiveZoom: effectiveZoom() };
+        animating: !!(cam.anim || cam.tween), cellPx: getCellPx(), fitZoom: cam.fitZoom, effectiveZoom: effectiveZoom(),
+        revealIntake: revealIntake() };
     }
     /* The board's projected box in canvas CSS px: {width, height, centerX, centerY} with the canvas centre at (0,0). */
     function getBoardScreenBox() {
@@ -264,6 +407,7 @@
       boardCenter.copy(center);
       fitPoints = points && points.length >= 3 ? points : fitPoints;
       pan.set(0, 0, 0); cam.userZoom = 1; cam.view = 'working'; cam.manual = false;   /* a level always opens tappable */
+      endAnim();     /* level navigation cancels presentation work: a move aimed at the old board must not finish */
       endTween();
       refit(true);
     }
@@ -274,6 +418,7 @@
       setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, fitToBoard: fitToBoard, canFit: canFit,
       setViewMode: setViewMode, getViewMode: getViewMode, hasOverview: hasOverview,
       getCellPx: getCellPx, isFlat: isFlat, isAnimating: isAnimating, getCamera: getCamera, getBoardScreenBox: getBoardScreenBox,
+      revealIntake: revealIntake,
       effectiveZoom: effectiveZoom, minCellZoom: minCellZoom, zoomLimits: zoomLimits,
       setReducedMotion: function (b) { reducedMotion = !!b; },
       getPan: function () { return { x: pan.x, y: pan.y, z: pan.z }; }

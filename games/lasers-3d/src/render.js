@@ -22,6 +22,12 @@
     renderer.toneMappingExposure = theme.renderer.toneMappingExposure;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE[theme.renderer.shadowMapType];
+    /* MOTION-DIRECTION.md 3, "Shadow handling": the shadow map belongs to the SETTLED geometry and the light rig,
+     * not to the camera. With autoUpdate on, three re-renders it on EVERY frame of the 720 ms reveal for a picture
+     * that cannot change - the key light does not move and its intensity is not part of the depth pass. It is
+     * rendered once whenever geometry or the rig actually changes (invalidateShadows), and the whole orbit samples
+     * that same map. */
+    renderer.shadowMap.autoUpdate = false;
     renderer.setClearColor(0x000000, 0);
 
     var scene = new THREE.Scene();
@@ -29,9 +35,24 @@
      * It is created before the modules that sample it so terrain and pieces can bind its uniforms at construction,
      * and it is INERT (uFogOn = 0) on every level that does not set `dark`. */
     var fog = Core.createFog(theme);
-    var terrain = root.LaserRenderTerrain.create(theme, fog);
-    var pieces = root.LaserRenderPieces.create(theme, fog);
+    /* THE ONE ANIMATION REGISTRY (src/motion.js), created by main.js and handed down here. Every module below
+     * degrades to its pre-motion behaviour when it is absent - a stripped harness, an embedding host - so a
+     * missing registry costs presentation and never a frozen board or a loop with no way out. */
+    var reg = opts.motion || null;
+    var terrain = root.LaserRenderTerrain.create(theme, fog, reg);
+    var pieces = root.LaserRenderPieces.create(theme, fog, { motion: reg });
     var beam = root.LaserRenderBeam.create(theme);
+    /* The beam runs on its own single clock inside frame(dt); the lease exists so that cancelAll() (RESET, level
+     * navigation) and documentHidden() reach it. It releases the lease itself the moment that clock ends. */
+    beam.attachMotion(reg);
+    /* MOTION-DIRECTION.md 2: T0..T0+m.fire.chargeMs charges the emitter before the head is released. The beam owns
+     * the schedule and publishes the envelope through getCharge(); frame() hands it to render-pieces below. */
+    beam.setChargeMs(theme.motion.fire.chargeMs);
+    /* Section 8's one shadow commit: newly discovered geometry joins the cache when every reveal from the current
+     * trace has settled - on completion, on a skip and on an abandoned burn alike. */
+    terrain.onFogSettled(invalidateShadows);
+    /* A fixed piece must arrive through the SAME sweep as the terrain around it, not pop in at the beam event. */
+    pieces.setFogSampler(terrain.cellReveal);
     /* The reveal moves geometry (a column grows out of the ground, its outline rides up with it), which needs a
      * vertex texture fetch. Every GL this game ships on has one; a hypothetical one that does not still gets the
      * whole fog, it just arrives as a cross-fade in place. Asked once, here, rather than guessed in a shader. */
@@ -73,6 +94,12 @@
     lights.rim = new THREE.DirectionalLight(new THREE.Color(LR.rim.color), 0);
     lights.fill = new THREE.PointLight(new THREE.Color(LR.fill.color), 0, LR.fill.distance, LR.fill.decay);
     lights.ambient = new THREE.AmbientLight(new THREE.Color(LR.ambient.color), 0);
+    /* One flag, one commit. `shadowDirty` is raised by the things that actually change the depth pass - a new
+     * level, a placed piece, a discovered cell finishing its arrival, the shadow pass being switched on - and is
+     * consumed by exactly one shadow-map render in frame(). m.fog.shadowCommit is 'after-trace-reveals-settle',
+     * so discovery commits once when the last cell has settled, never per cell and never per fade frame. */
+    var shadowDirty = true;
+    function invalidateShadows() { shadowDirty = true; }
     var mem = (typeof navigator !== 'undefined' && navigator.deviceMemory) || 0;
     var mapSize = mem > S.deviceMemoryThresholdGB ? S.mapSizeHighMem : S.mapSizeLowMem;
     lights.key.castShadow = false;
@@ -94,7 +121,7 @@
 
     /* ---- camera rig (src/render-camera.js) ---- */
     var size = { w: 300, h: 300, dpr: 1 };
-    var rig = root.LaserRenderCamera.create({ theme: theme, size: size });
+    var rig = root.LaserRenderCamera.create({ theme: theme, size: size, motion: opts.motion || null });
     var camera = rig.camera;
     var level = null, reducedMotion = !!(theme.reducedMotion && root.matchMedia && root.matchMedia(theme.reducedMotion.mediaQuery).matches);
     var appliedReveal = -1;
@@ -107,11 +134,31 @@
     function getShadingBlend() { return theme.revealBlend(rig.getCamera().elevationDeg); }
     function getCamera() { return rig.getCamera(); }
 
-    /* ---- reveal (VISUAL-DIRECTION.md D) ---- */
+    /* ---- reveal (VISUAL-DIRECTION.md D + MOTION-DIRECTION.md 3) --------------------------------------------
+     * ONE scalar drives the whole collapse of the lie: r = theme.revealBlend(elevation), zero through the flat
+     * dead band and one by 56 degrees. The document fixes every consumer of it, and this is the whole list:
+     *
+     *   floor and terrain-top shading   exactly r          (terrain's uReveal shader mix)
+     *   all tilted light intensities    exactly r          (the key is SPLIT into a shadow-casting and a
+     *                                                       shadowless half so the shadow can have its own
+     *                                                       opacity curve while the two still sum to intensity*r)
+     *   physical piece visibility       r * base opacity   (render-pieces)
+     *   common glyph visibility         1 - r              (render-pieces)
+     *   side opacity                    smoothstep(clamp(r / lightRig.reveal.sideOpacityFullAt))
+     *   shadow opacity                  smoothstep(0.25, 0.65, r)
+     *   opening gleams                  1 - r              (render-terrain's light leak)
+     *   beam-glow multiplier            0.82 -> 1 with r   (frame(), below - it also owns the anticipation)
+     *
+     * Nothing here samples terrain height, opening height, opening count or opening shape. r is a function of the
+     * camera's elevation alone, so the whole board reveals together and no column is staggered by position or
+     * height - which is the only reason the flat view can be a lie in the first place. */
     function applyReveal(r) {
       if (r === appliedReveal) return;
       appliedReveal = r;
       terrain.applyReveal(r); pieces.applyReveal(r);
+      /* Side opacity is smoothstep(clamp(r / lightRig.reveal.sideOpacityFullAt)) and render-terrain.applyReveal now
+       * writes exactly that, so the override this file used to keep here is gone rather than duplicated: there is
+       * one expression for the curve and one place it lives. */
       envMaterials.forEach(function (m) { m.envMapIntensity = ENV_STRENGTH * r; });
       var so = Core.smoothstep(0.25, 0.65, r);
       lights.hemi.intensity = LR.hemisphere.intensity * r;
@@ -121,8 +168,50 @@
       lights.fill.intensity = LR.fill.intensity * r;
       lights.ambient.intensity = LR.ambient.intensity * r;
       var shadows = r > S.updateAboveReveal;
-      if (lights.key.castShadow !== shadows) lights.key.castShadow = shadows;
+      /* The existing enable threshold, unchanged. Crossing it needs ONE shadow render, not one per frame; below it
+       * the pass is off entirely, which is what "at the flat dead band ... disable shadows" asks for. */
+      if (lights.key.castShadow !== shadows) { lights.key.castShadow = shadows; if (shadows) shadowDirty = true; }
       renderer.shadowMap.enabled = shadows;
+    }
+
+    /* ---- the reveal's anticipation, on the beam (MOTION-DIRECTION.md 3) ------------------------------------
+     * "Multiply existing beam-glow opacity toward 0.82, smoothstep, creating a brief intake. If no beam exists,
+     * omit this change." ... "Beam-glow multiplier returns from 0.82 to 1 with r."
+     * The rig owns the scalar (rig.revealIntake(), 0 at rest and 0 the instant the move ends); the beam owns the
+     * material - render-beam.setGlowMultiplier(k) is one shared uniform over the merged geometry, so this costs no
+     * draw call and no per-segment work. The multiplier is exactly 1 whenever no reveal is in flight, so a settled
+     * beam is always at its baseline brightness (section 9, "settled lit targets and beam: steady light"), and it
+     * is skipped entirely when render-beam has no such seam rather than reaching into its materials. */
+    var RVL = (theme.motion && theme.motion.reveal) || {}, GLOW_MIN = RVL.beamGlowMinimum;
+    var appliedGlowMul = 1;
+    function setBeamGlowMultiplier(k) {
+      if (k === appliedGlowMul || typeof beam.setGlowMultiplier !== 'function') return;
+      beam.setGlowMultiplier(k);      /* one shared uniform on the merged beam geometry; no per-segment work */
+      appliedGlowMul = k;
+    }
+    /* MOTION-DIRECTION.md section 6. The host owns the bell curve and the registry lease; this is only the seam,
+     * kept beside the reveal's glow seam because both are one shared uniform over the merged beam geometry. */
+    function setBeamSeal(k) { if (typeof beam.setSealGain === 'function') beam.setSealGain(k); }
+
+    /* ---- MOTION-DIRECTION.md section 10: the decorative-degradation ladder's renderer half ----
+     * ONE shared object. src/quality.js decides WHEN a rung is spent; this applies it. The object is passed by
+     * reference to every module that has to honour a cut, so a cut is one mutation plus one re-read - never a
+     * per-module flag to keep in sync, and never a rebuild of anything the player is looking at. */
+    var qualityCuts = { weather: false, scatter: false, rings: false, pulses: false };
+    function pushCuts() {
+      if (beam.setDecorCuts) beam.setDecorCuts(qualityCuts);
+      if (pieces.setDecorCuts) pieces.setDecorCuts(qualityCuts);
+      if (terrain.setDecorCuts) terrain.setDecorCuts(qualityCuts);
+    }
+    function setQualityCut(name, step) {
+      if (name === 'scatter-and-target-streaks') qualityCuts.scatter = true;
+      else if (name === 'decorative-rings-and-fog-rim') qualityCuts.rings = true;
+      else if (name === 'trailing-beam-pulses') qualityCuts.pulses = true;
+      else if (name === 'weather') qualityCuts.weather = true;
+      else if (name === 'pixel-ratio') { dprCap = (step && step.dpr) || dprCap; pushCuts(); resize(size.w, size.h, requestedDpr); return; }
+      /* 'reduced-presentation' is the host's rung: it owns the registry, the weather and this facade's own
+       * reduced-motion switch, so main.js applies that one and this function does not double-apply it. */
+      pushCuts();
     }
 
     /* ---- screen mapping ---- */
@@ -153,6 +242,9 @@
       pieces.setLevel(parsed, terrain.heightAt);
       beam.clear();
       appliedReveal = -1;
+      appliedGlowMul = 1;                    /* a new level always starts at baseline beam brightness, even if a */
+      if (typeof beam.setGlowMultiplier === 'function') beam.setGlowMultiplier(1);   /* reveal was cut short */
+      invalidateShadows();                   /* new terrain and a re-placed light rig: the depth pass is stale */
       rig.setBoard(boardCenter, terrain.fitPoints());
     }
 
@@ -172,17 +264,25 @@
       fog.setBoard(level.size.w, level.size.d, !!o.dark);
       if (o.known) fog.learnAll(o.known, true);
       pieces.applyFog();
+      invalidateShadows();                   /* a whole known set arrives at once: geometry changed */
     }
     function revealCells(cells) {
       if (!cells || !cells.length) return false;
-      var changed = fog.learnAll(cells, false);
+      /* MOTION-DIRECTION.md 8: the cell is committed to the known set FIRST and then burned back along the beam.
+       * terrain.discover() does both; without a registry it IS the old fog.learnAll(cells, false). */
+      var changed = terrain.discover(cells);
       if (changed) pieces.applyFog();
+      /* "Newly discovered geometry does not join that cache until all reveals from the current trace have settled."
+       * While a burn or a core arrival is running, the ONE commit comes from terrain.onFogSettled / frame() below;
+       * invalidating here as well would be one shadow render per discovery batch, which section 8 forbids. With
+       * reduced motion there is no arrival to settle, so this call is itself the settled moment. */
+      if (changed && !terrain.isBurning() && !fog.isAnimating()) invalidateShadows();
       return changed;
     }
     function fogState() {
       return { dark: fog.isDark(), known: fog.count(), total: fog.total() };
     }
-    function setPlaced(placed) { pieces.setPlaced(placed); }
+    function setPlaced(placed) { pieces.setPlaced(placed); invalidateShadows(); }
     /* Beam motion parameters: two frozen objects (normal / reduced motion), nothing allocated per frame. */
     var MOTION_NORMAL = { cellsPerSecond: theme.beam.travel.cellsPerSecond, liveRetraceMs: theme.beam.travel.liveRetraceMs,
       minDurationMs: theme.beam.travel.minDurationMs, maxDurationMs: theme.beam.travel.maxDurationMs };
@@ -196,8 +296,15 @@
       beam.set(result, { animate: !!o.animate, fired: !!o.fired, level: level }, motion());
     }
 
+    /* MOTION-DIRECTION.md "What to cut first", rung 5. The requested ratio is remembered separately from the cap
+     * so a later resize cannot silently undo a cut, and theme.renderer.maxDevicePixelRatio stays the absolute
+     * ceiling above it. Rung 5 preserves "CSS cell size, geometry, information, timing, and typography": nothing
+     * here touches the layout, only how many device pixels it is sampled at. */
+    var dprCap = Infinity, requestedDpr = 1;
     function resize(w, h, dpr) {
-      size.w = Math.max(1, w | 0); size.h = Math.max(1, h | 0); size.dpr = Math.min(dpr || 1, theme.renderer.maxDevicePixelRatio);
+      requestedDpr = dpr || requestedDpr;
+      size.w = Math.max(1, w | 0); size.h = Math.max(1, h | 0);
+      size.dpr = Math.min(requestedDpr, theme.renderer.maxDevicePixelRatio, dprCap);
       renderer.setPixelRatio(size.dpr);
       renderer.setSize(size.w, size.h, true);
       rig.refit(true);
@@ -208,18 +315,31 @@
       dt = Math.min(0.05, Math.max(0, dt || 0));
       rig.step(dt);
       applyReveal(getShadingBlend());
+      /* The reveal's intake, applied to the beam glow. It is skipped entirely when there is no beam to dim, and it
+       * is exactly 1 at rest, so a settled board never carries a residue of it. */
+      setBeamGlowMultiplier(beam.getProgress().total > 0 ? 1 - (1 - GLOW_MIN) * rig.revealIntake() : 1);
+      /* MOTION-DIRECTION.md 2, T0..T0+180 ms: the emitter charges before the head is released. The beam owns the
+       * clock and publishes { intensity, halo }; render-pieces owns the filament and the halo sprite. Both are
+       * exactly zero whenever there is no charge, so a settled emitter is its plain theme state. */
+      pieces.setCharge(beam.getCharge());
       var speed = reducedMotion ? 1 / theme.reducedMotion.durationScale : 1;
+      var fogAnim = fog.isAnimating();
       if (fog.step(dt * speed)) pieces.applyFog();   /* the arrival eases; reduced motion snaps it (setReducedMotion) */
+      /* m.fog.shadowCommit: newly discovered geometry joins the shadow cache once, when the last cell of the trace
+       * has finished arriving - never per cell, never per fade frame. */
+      if (fogAnim && !fog.isAnimating()) shadowDirty = true;
       view.zoom = rig.effectiveZoom();
       pieces.frame(dt, speed, view);
       beam.frame(dt, view, motion());
+      /* The one shadow-map render. Camera motion and light-intensity changes never reach it. */
+      if (renderer.shadowMap.enabled && shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; }
       renderer.render(scene, camera);
     }
     /* Dirty rendering (main owns the loop): true while ANY of the renderer's own animations still has work to do -
      * a camera preset move, a view/fit tween, the eased fit chasing a new orientation, the travelling beam, an
      * end-state effect, a target fading between lit states, or a reveal pulse. main schedules a frame whenever it
      * changes state and keeps scheduling while this is true, so a static board costs nothing. */
-    function needsFrame() { return rig.isAnimating() || beam.isAnimating() || pieces.isAnimating() || fog.isAnimating(); }
+    function needsFrame() { return rig.isAnimating() || beam.isAnimating() || pieces.isAnimating() || fog.isAnimating() || terrain.isBurning(); }
 
     /* ---- tray icons: the piece's physical model, seen from an angle that shows the panel's SLOPE ---- */
     /* The panel hinge runs along the '/' diagonal, so the old camera (azimuth 45) looked straight into it and MIRROR,
@@ -305,6 +425,7 @@
     return {
       __version: 1,
       setLevel: setLevel, setPlaced: setPlaced, setBeam: setBeam, getBeamProgress: beam.getProgress, finishBeam: beam.skip,
+      setBeamSeal: setBeamSeal, setQualityCut: setQualityCut,
       setCameraPreset: setCameraPreset, orbit: rig.orbit, zoom: rig.zoomBy, pan: rig.panBy, needsFrame: needsFrame,
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
       setViewMode: rig.setViewMode, getViewMode: rig.getViewMode, hasOverview: rig.hasOverview,
@@ -313,10 +434,20 @@
        * owns the adapter for the engine's normalised `openings` field, so nothing else has to guess its shape. */
       openLevelsAt: terrain.openLevelsAt,
       setSelection: pieces.setSelection, setGhost: pieces.setGhost, setHover: pieces.setHover, setCursor: pieces.setCursor, pulseCell: pieces.pulseCell,
+      /* MOTION-DIRECTION.md section 5. Neither of these is inferable from the state the renderer is handed - a
+       * drag that lifts a piece and a refused footprint are both host knowledge - so they are entry points, and
+       * they have to be reachable through the facade or section 5's "Pick up", "Drag", "Cancel drag" and
+       * "Illegal placement" rows are dead code. main.js onDragPiece() and its refusal paths call them. */
+      setPickup: pieces.setPickup, flashInvalid: pieces.flashInvalid,
       resize: resize, frame: frame, isFlat: isFlat, getShadingBlend: getShadingBlend, getCamera: getCamera,
       /* DESIGN.md 15: fog of war. setDarkness() installs a level's whole known set at once; revealCells() eases in
        * the cells a shot has just reached; fogState() reports coverage for the HUD. */
       setDarkness: setDarkness, revealCells: revealCells, fogState: fogState,
+      /* MOTION-DIRECTION.md 3: the shadow map is rendered on demand, not per frame. Anything that moves geometry
+       * or the light rig must say so; camera motion and intensity changes must NOT. */
+      invalidateShadows: invalidateShadows,
+      /* The reveal's anticipation scalar, 0 at rest (tests and the integrator read it; nothing else needs it). */
+      getRevealIntake: rig.revealIntake,
       setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); fog.setInstant(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,
       /* debug/test hooks */
       _scene: scene, _camera: camera, _renderer: renderer, _fog: fog

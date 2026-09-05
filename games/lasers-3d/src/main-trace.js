@@ -102,24 +102,59 @@
     };
   }
 
-  /* Audio cues keyed by ARC LENGTH along the beam, so main can fire them as the animated head passes: an altitude
-   * change ('level') retunes the travel loop, a 'hit' plays the target chime. The distance maths mirrors the
-   * renderer's (a terminal stub ends at the cell boundary; a lost-edge run stops half a cell out). */
-  function cues(level, result) {
-    if (!level || !result || !result.segments) return [];
-    var out = [], cum = 0, segs = result.segments, z = -1, lit = {}, i;
+  /* THE ONE ARC-LENGTH TABLE, and the reason it exists.
+   *
+   * Everything a shot pays out over time - the audio cues below, the fog discoveries further down, and every visual
+   * beat src/render-beam.js dispatches (contact discs, FLOOR bounce dots, target rings, altitude badges, the
+   * terminal marker) - is scheduled against the SAME cumulative distances, because they are all one head measured
+   * against one drawing. `arcLengths(result)[i]` is the distance at which the head arrives at the far end of
+   * segment i. That is exactly what render-beam's `segDist` holds and exactly what its event cursor indexes with
+   * `event.step`, so a cue and the picture it belongs to land on the same frame instead of drifting apart.
+   *
+   * The maths mirrors the renderer's, clause for clause: a terminal stub climbs half a cell rather than a whole
+   * one, and a lost-edge run stops half a cell out (render-beam does `Q.lerp(P, 0.5)` for the same reason). */
+  function arcLengths(result) {
+    var out = [], segs = (result && result.segments) || [], cum = 0, i, s, stub, dz, len;
     for (i = 0; i < segs.length; i++) {
-      var s = segs[i];
-      if (s.from.z !== z) { z = s.from.z; out.push({ dist: cum, kind: 'level', z: z }); }
-      var stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0), dz = stub ? 0.5 * s.v : (s.to.z - s.from.z);
-      var len = Math.sqrt(Math.pow(s.to.x - s.from.x, 2) + Math.pow(s.to.y - s.from.y, 2) + dz * dz);
+      s = segs[i];
+      stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
+      dz = stub ? 0.5 * s.v : (s.to.z - s.from.z);
+      len = Math.sqrt(Math.pow(s.to.x - s.from.x, 2) + Math.pow(s.to.y - s.from.y, 2) + dz * dz);
       if (i === segs.length - 1 && result.end === 'lost-edge') len *= 0.5;
       cum += len;
-      /* eslint-disable no-loop-func */
-      level.targets.forEach(function (t, ti) {
-        if (!lit[ti] && result.hits.indexOf(ti) >= 0 && t.x === s.to.x && t.y === s.to.y) { lit[ti] = true; out.push({ dist: cum, kind: 'hit' }); }
-      });
-      /* eslint-enable no-loop-func */
+      out.push(cum);
+    }
+    return out;
+  }
+
+  /* Audio cues keyed by ARC LENGTH along the beam, so main can fire them as the animated head passes: an altitude
+   * change ('level') retunes the travel loop, a 'hit' plays the target chime.
+   *
+   * DRIVEN BY THE SIMULATION'S ORDERED EVENT STREAM, never by matching cells against segment endpoints. The old
+   * reader walked the segments and, for each one, asked "does a target sit at this segment's far end and is it in
+   * result.hits?" - which is the same shape of bug render-beam's own event cursor was written to kill: a beam that
+   * flies OVER a target's cell early and only lights it later, from another direction, matched on the fly-over and
+   * played the chime while the beam was still passing overhead. `result.events` already says what happened and at
+   * which step, so 'target' is the chime and nothing else can be mistaken for one.
+   *
+   * The 'level' cue moved for the same reason. It used to fire at the START of the segment that DEPARTS at a new
+   * altitude, i.e. at a cell boundary the eye has no mark for. It now fires on the 'enter' event that ARRIVES at
+   * that altitude - the instant the head crosses into the run drawn in the new altitude colour and width, which is
+   * the visual beat the sound is supposed to be describing. The opening cue at distance 0 is the emitter's own
+   * altitude, so the drone is in tune before the head is released. */
+  function cues(level, result) {
+    if (!level || !result || !result.segments || !result.segments.length) return [];
+    var dist = arcLengths(result), evs = result.events || [], out = [], i, ev;
+    var z = result.segments[0].from.z;
+    out.push({ dist: 0, kind: 'level', z: z });
+    for (i = 0; i < evs.length; i++) {
+      ev = evs[i];
+      if (typeof ev.step !== 'number' || ev.step < 0 || ev.step >= dist.length) continue;
+      if (ev.kind === 'enter') {
+        if (ev.z === z) continue;
+        z = ev.z;
+        out.push({ dist: dist[ev.step], kind: 'level', z: z });
+      } else if (ev.kind === 'target') out.push({ dist: dist[ev.step], kind: 'hit' });
     }
     return out;
   }
@@ -152,25 +187,24 @@
    * instant the trigger is pulled would hand over the destination before the beam got there, which is the opposite
    * of "a shot becomes an expedition" (15.2).
    *
-   * The distances mirror cues() exactly, because they are measuring the same head against the same drawing. The
-   * CELLS come from result.visited rather than from the segments: visited[i] is the cell segment i arrived at, and
-   * it is the stepper's own list, so a terminal stub (which stops half a cell short) and a lost-edge run (which
-   * leaves the grid altogether) contribute a distance but no cell - which is right, because the beam never entered
-   * one. The emitter's own cell is included at distance 0; it is known from the start anyway (15.1), so this only
-   * matters for a caller that starts from nothing.
+   * The distances are arcLengths()' - the same table the audio cues and the renderer's own event cursor use,
+   * because they are measuring the same head against the same drawing. The CELLS come from the stepper's ordered
+   * 'enter' events, so a terminal stub (which stops half a cell short) and a lost-edge run (which leaves the grid
+   * altogether) contribute a distance but no cell - which is right, because the beam never entered one. Blocked
+   * cells emit no 'enter' either, which is section 8's "a blocked cell has not been entered and remains unknown",
+   * enforced by the event stream rather than by a rule written twice. The emitter's own cell is included at
+   * distance 0; it is known from the start anyway (15.1), so this only matters for a caller that starts from
+   * nothing.
    */
   function discoveries(level, result) {
     if (!level || !result || !result.segments) return [];
     var out = [{ dist: 0, x: level.emitter.x, y: level.emitter.y }];
-    var segs = result.segments, visited = result.visited || [], cum = 0, i, s, stub, dz, len;
-    for (i = 0; i < segs.length; i++) {
-      s = segs[i];
-      stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
-      dz = stub ? 0.5 * s.v : (s.to.z - s.from.z);
-      len = Math.sqrt(Math.pow(s.to.x - s.from.x, 2) + Math.pow(s.to.y - s.from.y, 2) + dz * dz);
-      if (i === segs.length - 1 && result.end === 'lost-edge') len *= 0.5;
-      cum += len;
-      if (i < visited.length) out.push({ dist: cum, x: visited[i].x, y: visited[i].y });
+    var dist = arcLengths(result), evs = result.events || [], i, ev;
+    for (i = 0; i < evs.length; i++) {
+      ev = evs[i];
+      if (ev.kind !== 'enter') continue;
+      if (typeof ev.step !== 'number' || ev.step < 0 || ev.step >= dist.length) continue;
+      out.push({ dist: dist[ev.step], x: ev.x, y: ev.y });
     }
     return out;
   }
@@ -183,5 +217,5 @@
   }
 
   return { __version: 1, flyover: flyover, readout: readout, cues: cues, revealCell: revealCell,
-           openBits: openBits, blockedWall: blockedWall, discoveries: discoveries };
+           openBits: openBits, blockedWall: blockedWall, discoveries: discoveries, arcLengths: arcLengths };
 }));

@@ -104,8 +104,10 @@
             .btn[aria-pressed="true"]:hover { box-shadow: 0 0 18px rgba(0, 255, 204, 0.45), var(--shadow-raised); }
             .menu-link:hover { background: rgba(0, 0, 0, 0.9); }
         }
-        .is-invalid { animation: l3d-shake 140ms linear 1; border-color: var(--color-danger) !important; box-shadow: 0 0 0 1px var(--color-danger) !important; }
-        @keyframes l3d-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-4px); } 100% { transform: translateX(0); } }
+        /* .is-invalid, .is-shaking and every @keyframes this page used to hard-code are now GENERATED from
+         * theme.motion by src/ui-motion.js (MOTION-DIRECTION.md: "CSS animation parameters must be generated from
+         * these tokens"). The old rules are gone rather than overridden, so there is exactly one definition of the
+         * shake's offsets, the star's scale curve and the modal ring anywhere in the game. */
 
         /* ---- App grid ---- */
         /* The readout gets its own grid ROW between the HUD and the stage, so it can never cover the board or the
@@ -157,7 +159,11 @@
         .readout-chips .chip b { color: var(--color-text); font-weight: 800; }
         .readout-chips .chip-k { text-transform: uppercase; letter-spacing: 0.04em; }
 
-        #stage { grid-area: stage; position: relative; overflow: hidden; min-width: 0; min-height: 0; }
+        /* The vertical gutter is MOTION-DIRECTION.md 4's weather rail (theme.motion.weather.railPx, published as
+           --weather-rail): the two flecks sit immediately outside the canvas's top and bottom edges and are
+           omitted where no unobstructed space exists, so without this the board is flush against the HUD and
+           the tray and the effect can never run. */
+        #stage { grid-area: stage; position: relative; overflow: hidden; min-width: 0; min-height: 0; margin: var(--weather-rail, 6px) 0; }
         #board { position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; touch-action: none; -webkit-user-select: none; user-select: none; }
         #piece-controls { position: absolute; z-index: 120; display: flex; gap: var(--space-2); pointer-events: auto; }
 
@@ -374,16 +380,12 @@
         .level-tile[data-state="locked"] { color: var(--color-star-empty); opacity: 0.45; cursor: default; }
         .level-tile .lock { width: 16px; height: 16px; display: block; }
         .victory-title { font-size: 28px; font-weight: 800; margin: 0 44px var(--space-2) 0; }
-        #modal-victory .modal { animation: l3d-rise 360ms var(--ease-camera) both; }
-        @keyframes l3d-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+        /* Layout only. The rise, the star awards and the one cyan light ring are section 6's, and they are built
+         * from theme.motion in src/ui-motion.js: the ring is a real 1 px circular outline growing from 0.25 to
+         * 1.25 of the modal's smaller dimension behind the stars, not the diagonal gradient sweep that used to
+         * live here (a sweep is not a ring, and it ran on a curve no token names). */
         .victory-stars { display: flex; gap: var(--space-2); justify-content: center; margin: var(--space-3) 0; position: relative; }
-        .victory-stars .star { width: 40px; height: 40px; transform: scale(0.72); opacity: 0; }
-        .victory-stars .star.is-awarded { animation: l3d-star 420ms var(--ease-camera) forwards; }
-        .victory-stars .star[data-earned="false"] { opacity: 1; transform: scale(1); }
-        @keyframes l3d-star { 0% { transform: scale(0.72); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        .light-ring { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
-        .light-ring::after { content: ""; position: absolute; top: -20%; bottom: -20%; width: 34%; left: -40%; background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.16), transparent); transform: skewX(-18deg); animation: l3d-ring 900ms ease-out 120ms 1 both; }
-        @keyframes l3d-ring { from { left: -40%; } to { left: 120%; } }
+        .victory-stars .star { width: 40px; height: 40px; }
         .victory-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font: 700 var(--type-sm) var(--font-data); color: var(--color-text-muted); margin: var(--space-2) 0; }
         .victory-stats b { color: var(--color-text); }
 
@@ -394,7 +396,9 @@
 
         @media (prefers-reduced-motion: reduce) {
             .btn, .tray-card, #toast, .modal { transition: none !important; }
-            #modal-victory .modal, .victory-stars .star.is-awarded, .light-ring::after, .is-invalid { animation-duration: 1ms !important; }
+            /* The animations themselves are handled at their source: src/ui-motion.js emits the reduced-motion
+             * presentation (modal and earned stars together over theme.motion.reduced.fadeMs, no ring, no shake)
+             * rather than squashing a full choreography to 1 ms and hoping it lands somewhere sensible. */
         }
     </style>
 </head>
@@ -455,15 +459,28 @@
     <script src="src/pieces.js"></script>
     <script src="src/sim.js"></script>
     <script src="src/theme.js"></script>
+    <!-- THE animation registry and render scheduler. Everything that moves registers here (MOTION-DIRECTION.md,
+         "Rendering and ownership"); it must load after theme.js and before anything that animates. -->
+    <script src="src/motion.js"></script>
+    <!-- Section 10's adaptive decorative-degradation ladder. Pure decision logic (window.LaserQuality); the host
+         and the renderer apply the cuts. After theme.js, before main.js. -->
+    <script src="src/quality.js"></script>
     <script src="src/levels.js"></script>
     <script src="src/audio.js"></script>
     <script src="src/render-core.js"></script>
     <script src="src/render-camera.js"></script>
     <script src="src/render-terrain.js"></script>
+    <!-- Section 5's transient overlays (pick up, drop, seating mark, ghost, refused footprint). -->
+    <script src="src/render-placement.js"></script>
     <script src="src/render-pieces.js"></script>
     <script src="src/render-beam.js"></script>
     <script src="src/render.js"></script>
     <script src="src/input.js"></script>
+    <!-- Section 4's weather. DOM only (window.LaserWeather); its header asks only for theme.js and motion.js
+         before it. Added here because index.html is the one place a script tag can live. -->
+    <script src="src/render-weather.js"></script>
+    <!-- Sections 6 and 7 on the DOM side: keyframes generated from theme.motion, plus the win choreography. -->
+    <script src="src/ui-motion.js"></script>
     <script src="src/ui.js"></script>
     <script src="src/main-trace.js"></script>
     <script src="src/main-camera.js"></script>

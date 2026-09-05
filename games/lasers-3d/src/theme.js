@@ -1,4 +1,5 @@
-/* Lasers 3D - visual tokens (transcribed from VISUAL-DIRECTION.md sections B..G).
+/* Lasers 3D - visual tokens (transcribed from VISUAL-DIRECTION.md sections B..G and, for `motion`,
+ * from MOTION-DIRECTION.md's Token ledger).
  * Global: window.LaserTheme (also CommonJS module.exports for node tooling).
  * Pure data + three tiny pure helpers. NO DOM, NO Three.js. ES2019 (Safari 15).
  *
@@ -494,7 +495,137 @@
     beamTravelMaxDurationMs: 700
   };
 
+  /* ---------------------------------------------- H. motion (MOTION-DIRECTION.md "Token ledger") */
+  /* The art director's ledger, transcribed leaf for leaf. Every token NAME matches the document exactly, so
+   * searching MOTION-DIRECTION.md for `m.beam.packetMs` finds the prose that defines it (`m` = theme.motion).
+   * This object is PURE DATA, as the Implementation contract requires: the callable easing functions live in
+   * `theme.ease` below and `theme.motion.easing` carries only their NAMES. Rows the ledger writes as references
+   * (palette.*, camera.motion.easing) stay references here - "do not duplicate their values".
+   *
+   * TWO RULES THAT OUTRANK EVERY VALUE BELOW:
+   *  1. Flat-view information boundary. While render.isFlat(), no animation's timing, amplitude, colour, shape or
+   *     delay may be chosen from terrain height, opening height, opening count or opening shape. The beam may
+   *     encode its own TRACED altitude after a FIRE; nothing else may sample the terrain. Leaking height in FLAT
+   *     hands the player the third star for free and destroys the game.
+   *  2. Every animation ends. Nothing here describes a loop, an idle shimmer or a clock that runs without an
+   *     active animation; `policy` below is the explicit list of what must never move. */
+  var motion = {
+    /* -- Shared tokens -- */
+    /* Names, not functions. Resolve with theme.easeByName(name) -> theme.ease.*. */
+    easing: { linear: 'linear', smooth: 'smoothstep', enter: 'easeOutCubic', exit: 'easeInCubic',
+      turn: 'easeInOutCubic', camera: camera.motion.easing, pulse: 'bell' },
+    /* Item-specific reduced-motion fallbacks. These are FINAL values: never multiply them by
+     * reducedMotion.durationScale (LaserMotion.scaleMs(ms, fixedReducedMs) enforces this). */
+    reduced: { fadeMs: 120, contactHoldMs: 120, chargeMs: 60, releaseMs: 60 },
+    budget: { targetFps: 60, floorFps: 30, newDrawCallsMax: 4, transientSpritesMax: 32, animatedFogCellsMax: 24,
+      cpuUpdateMs: 1, sampleFrames: 30, degradeMedianMs: 18, restoreWithinAttempt: false },
+
+    /* -- Beam, contact, and FIRE tokens (sections 1 and 2) -- */
+    beam: {
+      headCells: 0.28, headGain: 0.45,
+      packetIntervalMs: 240, packetMs: 480, packetGain: 0.32,
+      peakAt: { level: 0.50, climb: 0.78, descend: 0.22 },   /* by SEGMENT PITCH of the traced beam, not terrain */
+      pitchBlendCells: 0.10, settleMs: 160
+    },
+    contact: {
+      diameterCells: 0.12, peakOpacity: 0.60, attackMs: 36, decayMs: 144,
+      flatColor: palette.commonFlatPiece,
+      bounceDot: { diameterCells: 0.10, opacity: 0.65, color: 'arrivalBeamColor' }
+    },
+    scatter: { anglesDeg: [-35, 35], lengthCells: 0.06, widthCells: 0.012, distanceCells: 0.18, ms: 180, opacity: 0.45 },
+    fire: {
+      chargeMs: 180, chargeEmissiveMultiplier: 1.35, chargeHaloScale: 0.84, chargeHaloOpacity: 0.34,
+      releaseMs: 120, badgeFadeMs: 80, lostMarkerFadeMs: 120
+    },
+    target: { ringDelayMs: 80, ringOpacity: 0.32, ringStrokeCells: 0.018 },
+
+    /* -- Reveal tokens (section 3) -- */
+    reveal: {
+      prepareMs: 96, cameraEasing: 'easeInOutCubic', beamGlowMinimum: 0.82, eligibilityFadeMs: 160,
+      sideEasing: 'smoothstep', teachingOutlineOpacity: 0.55, teachingOutlineWidthCells: 0.018
+    },
+
+    /* -- Weather tokens (section 4) -- CSS compositor only; never a WebGL frame, never self-restarting. */
+    weather: {
+      enabled: true, reducedEnabled: false, color: palette.metalLight, railPx: 6,
+      fleckSizePx: [2, 1], startX: [0.16, 0.78], delaysMs: [0, 320], travelXPx: 18, ms: 2400,
+      opacityStops: [0, 0.16, 0.16, 0], progressStops: [0, 0.20, 0.70, 1], iterations: 1
+    },
+
+    /* -- Placement tokens (section 5) -- screen-space, identical at every terrain height. */
+    placement: {
+      pickupMs: 100, liftPx: 6, pickupScale: 1.04,
+      ghostOpacity: 0.28, ghostFadeMs: 80, overlayColor: palette.commonFlatPiece,
+      dropMs: 140, seatOpacity: 0.24, seatMs: 180,
+      rotateDeg: 90,          /* clockwise, about the piece's own center */
+      rotateMs: 120, floorAcknowledgeMs: 120,
+      removeMs: 100, removeScale: 0.92, cancelMs: 140,
+      invalidOffsets: [0, 1, -1, 1, 0], invalidProgress: [0, 0.25, 0.50, 0.75, 1]
+    },
+
+    /* -- Win, failure, and darkness tokens (sections 6, 7, 8) -- */
+    win: {
+      beamSealMs: 480, beamSealGain: 0.18, modalDelayMs: 520,
+      starMs: 320, starProgress: [0, 0.55, 1], starFadeMs: 120,
+      ringMs: 540, ringDiameterFactors: [0.25, 1.25], ringStrokePx: 1, ringOpacity: 0.18, ringColor: palette.uiAccent
+    },
+    failure: {
+      blockedAnglesDeg: [-35, 0, 35],   /* relative to the reverse incoming heading */
+      readoutFadeMs: 120, quietMs: 240, targetUnlightMs: 120
+    },
+    fog: {
+      featherCells: 0.08, rimWidthCells: 0.04, rimOpacity: 0.12, rimColor: palette.uiAccent,
+      easing: 'smoothstep', shadowCommit: 'after-trace-reveals-settle'
+    },
+
+    /* -- Stationary-policy and degradation tokens (sections 9 and 10) -- */
+    /* Every one of these is false and stays false. Section 9 is the reason: motion here would either turn hidden
+     * structure into a timing code or leave the scheduler alive for ever. */
+    policy: {
+      terrainMotion: false, flatLightingMotion: false, anticipatoryPieceMotion: false, openingPulse: false,
+      targetIdleMotion: false, beamIdleMotion: false, cameraIdleMotion: false, trayIdleMotion: false,
+      panelShimmer: false, starIdleMotion: false, groundWaves: false, weatherSelfRestart: false
+    },
+    quality: {
+      cutOrder: ['weather', 'scatter-and-target-streaks', 'decorative-rings-and-fog-rim', 'trailing-beam-pulses',
+        'pixel-ratio', 'reduced-presentation'],
+      degradedDprMax: 1.5, floorDprMax: 1.0
+    }
+  };
+
+  /* The named easing functions of the Implementation contract's "Units and easing", as callable pure functions.
+   * Normalized time is clamped to [0, 1] in every one of them - the contract calls those endpoints mathematical,
+   * not tuning values. They live beside revealBlend/easeCamera rather than inside theme.motion because that object
+   * must stay pure data. `camera` is the EXISTING theme.easeCamera, not a second curve. */
+  function clamp01(t) { return t < 0 ? 0 : (t > 1 ? 1 : t); }
+  var ease = {
+    linear: function (t) { return clamp01(t); },
+    smoothstep: function (t) { t = clamp01(t); return t * t * (3 - 2 * t); },
+    easeOutCubic: function (t) { var u = 1 - clamp01(t); return 1 - u * u * u; },
+    easeInCubic: function (t) { t = clamp01(t); return t * t * t; },
+    easeInOutCubic: function (t) { t = clamp01(t); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; },
+    bell: function (t) { var s = Math.sin(Math.PI * clamp01(t)); return s * s; },
+    camera: easeCamera
+  };
+  /* Resolve any of: a function, a theme.motion.easing NAME, or the camera's CSS cubic-bezier string. Anything
+   * unrecognised falls back to linear, never to a silently invented curve. */
+  function easeByName(name) {
+    if (typeof name === 'function') return name;
+    if (typeof name === 'string') {
+      if (Object.prototype.hasOwnProperty.call(ease, name)) return ease[name];
+      if (name === camera.motion.easing || name === camera.motion.easingName) return ease.camera;
+    }
+    return ease.linear;
+  }
+
   /* ------------------------------------------------------------- helpers */
+  /* MOTION-DIRECTION.md 4: the two weather flecks live in railPx rails "immediately outside the canvas's top and
+   * bottom edges", and "Omit a rail if no unobstructed space exists". With the canvas flush against the HUD and the
+   * tray there IS no such space on any shipped layout, so the effect - the document's one idle-motion allowance -
+   * could never appear. The page leaves exactly that much clear, and it is published from the token rather than
+   * typed into the stylesheet, so the gutter and the rail can never drift apart. */
+  cssVars['--weather-rail'] = motion.weather.railPx + 'px';
+
   function cssVariables() {
     var out = ':root{', k;
     for (k in cssVars) if (Object.prototype.hasOwnProperty.call(cssVars, k)) out += k + ':' + cssVars[k] + ';';
@@ -506,7 +637,8 @@
     version: 1,
     palette: palette, beamColors: beamColors, pieceAccent: pieceAccent, pageBackground: pageBackground,
     renderer: renderer, materials: materials, brushedGrain: brushedGrain, terrain: terrain, piece: piece,
-    lightRig: lightRig, camera: camera, beam: beam, ui: ui, reducedMotion: reducedMotion,
-    revealBlend: revealBlend, easeCamera: easeCamera, beamLevel: beamLevel, cssVariables: cssVariables
+    lightRig: lightRig, camera: camera, beam: beam, ui: ui, reducedMotion: reducedMotion, motion: motion,
+    revealBlend: revealBlend, easeCamera: easeCamera, ease: ease, easeByName: easeByName,
+    beamLevel: beamLevel, cssVariables: cssVariables
   };
 }));

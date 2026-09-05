@@ -15,13 +15,31 @@
 
   function create(opts) {
     var theme = opts.theme, render = opts.render;
+    var motion = opts.motion || null;
     var hold = opts.hold || function (ms) { return ms; };
     var play = opts.play || function () {};
     var dirty = opts.dirty || function () {};
     var alive = opts.alive || function () { return true; };
-    var token = 0;
+    var token = 0, holds = [];
 
-    function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+    /* THE CHOREOGRAPHY HOLDS. MOTION-DIRECTION.md's Implementation contract: "Use one-shot timers for stationary
+     * choreography holds. A hold does not render." These used to be bare setTimeouts, which meant that RESET, a
+     * level change and the tab going away could not reach them - the timer fired anyway and only the `live()`
+     * token stopped it writing. They are motion.hold()s now: still one-shot, still rendering nothing, but tracked,
+     * so cancelAll() and documentHidden() genuinely end them. Without a registry the old timer is the fallback,
+     * because a reveal that never advances is worse than one that is merely harder to cancel. */
+    function wait(ms) {
+      return new Promise(function (res) {
+        if (!motion) { setTimeout(res, ms); return; }
+        var st = motion.token();
+        holds.push(motion.hold(motion.holdMs(ms), res, { role: 'presentation', attempt: st.attempt, cancel: function () {} }));
+      });
+    }
+    function dropHolds() {
+      var i;
+      for (i = 0; i < holds.length; i++) if (holds[i] && holds[i].cancel) holds[i].cancel();
+      holds.length = 0;
+    }
 
     /* Where a press of the view button would take us, or null to hide it. */
     function viewToggle() {
@@ -42,7 +60,11 @@
     /* Runs the reveal. `done` is called ONLY if the whole choreography finishes uninterrupted. */
     function playReveal(cell, done) {
       var C = theme.camera.revealChoreography, mine = ++token;
-      function live() { return mine === token && alive(); }
+      dropHolds();
+      /* Every step of the chain verifies its attempt AND its own token before it changes anything: a step from a
+       * superseded reveal must be a no-op, never a late write into the current attempt (contract 7). */
+      var stamp = motion ? motion.token() : null;
+      function live() { return mine === token && alive() && (!motion || motion.isCurrent(stamp)); }
       wait(hold(C.holdAfterTraceMs)).then(function () {
         if (!live()) return;
         play('reveal'); dirty();
@@ -59,7 +81,7 @@
       });
       dirty();
     }
-    function cancelReveal() { token++; }
+    function cancelReveal() { token++; dropHolds(); }
 
     return { __version: 1, viewToggle: viewToggle, toggleView: toggleView, playReveal: playReveal, cancelReveal: cancelReveal };
   }

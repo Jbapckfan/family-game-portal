@@ -33,8 +33,16 @@
     return { type: type, flat: !turns, slope: slope, tilt: -slope * Math.PI / 4 };
   }
 
-  function create(theme, fog) {
+  /* The animation registry is created by main.js (there is exactly one). render.js builds this module, so the
+   * registry cannot be handed in through create()'s existing call; attachMotion() is the one-line hook the host
+   * uses instead - `LaserRenderPieces.attachMotion(motion)` right after LaserMotion.create(). Instances built
+   * before the call pick it up too. WITHOUT a registry every section-5 animation below is skipped and the settled
+   * state is applied at once: no frozen board, no loop with nothing to end it, exactly today's behaviour. */
+  var sharedMotion = null, instances = [];
+
+  function create(theme, fog, opts) {
     var P = theme.piece, M = theme.materials;
+    var motion = (opts && opts.motion) || sharedMotion || null;
     var group = new THREE.Group(); group.name = 'pieces';
     var overlay = new THREE.Group(); overlay.name = 'overlay';
     group.add(overlay);
@@ -77,7 +85,8 @@
       geo.proxyRing = new THREE.RingGeometry(0.19, 0.25, 32);
       geo.proxyDot = new THREE.CircleGeometry(0.085, 20);
       geo.ring = new THREE.RingGeometry(0.42, 0.47, 40); geo.ring.rotateX(-Math.PI / 2);
-      geo.pulse = new THREE.RingGeometry(0.46, 0.5, 40); geo.pulse.rotateX(-Math.PI / 2);
+      /* MOTION-DIRECTION.md 3, free teaching reveal: "Use a 0.018-cell cyan outline." */
+      geo.pulse = new THREE.RingGeometry(0.5 - theme.motion.reveal.teachingOutlineWidthCells, 0.5, 40); geo.pulse.rotateX(-Math.PI / 2);
       geo.hover = new THREE.PlaneGeometry(theme.terrain.cellTop, theme.terrain.cellTop); geo.hover.rotateX(-Math.PI / 2);
       var q = 0.45, cg = new THREE.BufferGeometry();
       cg.setAttribute('position', new THREE.Float32BufferAttribute([-q, 0, -q, q, 0, -q, q, 0, q, -q, 0, q, -q, 0, -q], 3));
@@ -179,12 +188,96 @@
       updateSecret(g);
       return g;
     }
+    /* A `secret` fixed piece wears another type's flat glyph, and that glyph IS the lie: it is drawn at 1 - r, so
+     * it is the whole of what FLAT shows. The physical faces are drawn at r * base opacity, so at r = 0 neither
+     * face is on screen at all - which means the decoy face has nothing to say during the reveal and everything to
+     * lose by saying it. Swapping the two at r >= 0.5 was a hard identity change partway through the orbit, and
+     * MOTION-DIRECTION.md 3 allows no threshold there: "the lie collapses" means the TRUE face is what fades in
+     * with r, from nothing, while the glyph fades out with 1 - r. */
     function updateSecret(g) {
       if (!g.userData.decoy) return;
-      var showReal = reveal >= 0.5;
+      var showReal = reveal > 0;
       g.userData.real.visible = showReal; g.userData.decoy.visible = !showReal;
     }
     function placeAt(obj, x, y) { obj.position.set(x, heightAt(x, y), -y); return obj; }
+
+    /* ---- the drag/drop/rotate/remove proxy (MOTION-DIRECTION.md section 5) -------------------------------------
+     * A detached copy of the piece with its OWN materials, so it can be lifted, scaled, spun and faded without
+     * touching the shared board materials every other piece is drawn with. depthTest is off: in FLAT a 6 px lift
+     * pushes a sliver of the housing past its own cell edge, and letting a taller neighbour clip that sliver would
+     * make the lift's appearance depend on hidden height. The clones are disposed by hand rather than through
+     * Core.disposeObject, because they share the housing's brushed-grain texture with the real board material. */
+    function proxyModel(type, orient) {
+      if (!geo.faces[type]) type = TYPES[0];
+      var g = new THREE.Group();
+      g.rotation.y = orientAngle(orient);
+      var clones = [];
+      function own(src, base) {
+        var m = src.clone();
+        m.userData = { shared: false, baseOpacity: base };
+        m.transparent = true; m.depthWrite = false; m.depthTest = false;
+        clones.push(m);
+        return m;
+      }
+      var hm = own(mats.housing, mats.housing.userData.baseOpacity);
+      var gm = own(mats.glyph, 1);
+      var fm = own(mats.face[type], mats.face[type].userData.baseOpacity);
+      var lm = own(mats.filament[type], mats.filament[type].userData.baseOpacity);
+      var housing = new THREE.Mesh(geo.housing, hm); housing.renderOrder = 7; g.add(housing);
+      var glyph = new THREE.Mesh(glyphGeo(type), gm); glyph.renderOrder = 8; g.add(glyph);
+      var face = new THREE.Mesh(geo.faces[type].face, fm); face.renderOrder = 7;
+      var fil = new THREE.Mesh(geo.faces[type].filament, lm); fil.renderOrder = 7;
+      g.add(face); g.add(fil);
+      g.userData = {};
+      return {
+        group: g,
+        /* The same mapping applyReveal() uses, so the proxy is the piece the player was already looking at:
+         * physical parts at reveal x their base opacity, the common glyph at 1 - reveal. */
+        setOpacity: function (fade, r) {
+          var i, m;
+          for (i = 0; i < clones.length; i++) {
+            m = clones[i];
+            m.opacity = (m === gm ? (1 - r) : m.userData.baseOpacity * r) * fade;
+            m.visible = m.opacity > 0.001;
+          }
+        },
+        dispose: function () { for (var i = 0; i < clones.length; i++) clones[i].dispose(); }
+      };
+    }
+
+    /* Section 5 lives in its own file: everything it draws is transient, and keeping it apart is what makes
+     * "does every placement animation stop?" answerable by reading one short module. */
+    var fx = root.LaserPlacementFx ? root.LaserPlacementFx.create({
+      theme: theme, parent: group, place: placeAt, makeProxy: proxyModel, fog: fog, motion: motion,
+      onProxies: function () { applyProxyMasks(); }
+    }) : null;
+
+    /* ---- the emitter's charge (MOTION-DIRECTION.md 2, T0..T0+m.fire.chargeMs) ---------------------------------
+     * "Multiply filament emissive intensity from 1 to 1.35, easeInCubic. Contract its halo from scale 1 to 0.84
+     * while opacity rises from its existing value to 0.34, smoothstep." Then "Return filament intensity, halo
+     * scale, and halo opacity to their existing values" over m.fire.releaseMs, easeOutCubic.
+     *
+     * The CURVES are the beam's: it owns the one clock a shot runs on, and getCharge() hands back the two already
+     * eased scalars. This function is therefore pure application - two material writes and one scale - and it is a
+     * strict no-op once the charge is over, so a settled emitter carries no residue of it. Nothing here reads the
+     * board: the emitter's cell is the same cell at every terrain height. */
+    var NO_CHARGE = { active: false, intensity: 0, halo: 0 };
+    var emitterHalo = null, emitterHaloScale = 1, chargeApplied = false;
+    var FIRE = theme.motion.fire;
+    var filamentBaseIntensity = (mats.emitterFilament.emissiveIntensity === undefined) ? 1 : mats.emitterFilament.emissiveIntensity;
+    var haloBaseOpacity = mats.emitterHalo.opacity;
+    function setCharge(c) {
+      var on = !!(c && c.active);
+      if (!on && !chargeApplied) return;                 /* the common case: nothing to write, nothing to undo */
+      chargeApplied = on;
+      var k = on ? c.intensity : 0, h = on ? c.halo : 0;
+      mats.emitterFilament.emissiveIntensity = filamentBaseIntensity * (1 + (FIRE.chargeEmissiveMultiplier - 1) * k);
+      mats.emitterHalo.opacity = haloBaseOpacity + (FIRE.chargeHaloOpacity - haloBaseOpacity) * h;
+      if (emitterHalo) {
+        var s = emitterHaloScale * (1 + (FIRE.chargeHaloScale - 1) * h);
+        emitterHalo.scale.set(s, s, 1);
+      }
+    }
 
     /* ---- level actors ---- */
     var targets = [];
@@ -199,6 +292,8 @@
       var b2 = new THREE.Mesh(geo.emBarrel, mats.emitterBody); b2.castShadow = true; em.add(b2);
       em.add(new THREE.Mesh(geo.emFilament, mats.emitterFilament));
       var halo = new THREE.Sprite(mats.emitterHalo); halo.position.set(0.36, 0.5, 0); halo.scale.set(0.7, 0.7, 1); em.add(halo);
+      emitterHalo = halo; emitterHaloScale = halo.scale.x;
+      setCharge(NO_CHARGE);                  /* a new level always starts at the emitter's plain theme state */
       actorGroup.add(placeAt(em, parsed.emitter.x, parsed.emitter.y));
       parsed.targets.forEach(function (tg, i) {
         var g = new THREE.Group();
@@ -241,20 +336,73 @@
     /* The fog pass for the level's own pieces: they ride the column as it grows out of the ground, and are simply
      * not there before it does. Nothing else in this module is fogged - targets and the emitter are known from the
      * start (15.1), the player's own pieces are always drawn, and every overlay is a player affordance. */
+    /* MOTION-DIRECTION.md 8: "Apply the same mask to terrain, fixed pieces, and opening gleams." A fixed piece
+     * cannot sample the per-fragment mask, so render-terrain publishes a whole-cell scalar (cellReveal) and the
+     * host installs it here. With the burn running that scalar is the SWEEP's position across the cell, so the
+     * piece arrives with the terrain around it instead of popping in at the beam event - and it arrives at its
+     * true position, because section 8 says terrain "does not grow upward". The old lift is kept on the pre-burn
+     * path, where the scalar is render-core's own eased arrival and the lift is what that arrival IS. */
+    var fogSampler = null;
+    function setFogSampler(fn) { fogSampler = (typeof fn === 'function') ? fn : null; applyFog(); }
     function applyFog() {
       var i, c, k, on = !!(fog && fog.isDark()), min = theme.terrain.darkness.minVisible;
       for (i = 0; i < fixedGroup.children.length; i++) {
         c = fixedGroup.children[i];
         if (!c.userData || !c.userData.cell) continue;
-        k = on ? fog.value(c.userData.cell.x, c.userData.cell.y) : 1;
+        k = on ? (fogSampler ? fogSampler(c.userData.cell.x, c.userData.cell.y) : fog.value(c.userData.cell.x, c.userData.cell.y)) : 1;
         c.visible = k > min;
-        c.position.y = c.userData.baseY * k;
+        c.position.y = fogSampler ? c.userData.baseY : c.userData.baseY * k;
       }
     }
 
+    /* ---- placed pieces, and the edit that produced them (MOTION-DIRECTION.md section 5) ------------------------
+     * The host commits an edit and hands over the WHOLE new list; it does not say what changed. Rather than ask it
+     * to, the change is read off the two lists: a cell that gained a piece was a drop, a cell that lost one was a
+     * removal, a cell whose orientation moved was a rotation, and exactly one loss plus exactly one gain of the
+     * same type is a drag from one cell to the other. That keeps the feel of an edit in the renderer, where the
+     * pose being animated lives, and it costs one pass over a list that is at most a level's tray. */
+    var placedNow = [];
+    function findAt(list, x, y) { for (var i = 0; i < list.length; i++) if (list[i].x === x && list[i].y === y) return list[i]; return null; }
+    function isPlate(type) { return !!(SHAPE[type] && SHAPE[type].flat); }
+    function diffPlaced(prev, next) {
+      if (!fx) return;
+      var gained = [], lost = [], i, p, q;
+      for (i = 0; i < next.length; i++) {
+        p = next[i]; q = findAt(prev, p.x, p.y);
+        if (!q) gained.push(p);
+        else if (q.orient !== p.orient || q.type !== p.type) fx.rotate(p, p.type, p.orient, isPlate(p.type));
+      }
+      for (i = 0; i < prev.length; i++) { q = prev[i]; if (!findAt(next, q.x, q.y)) lost.push(q); }
+      /* One out, one in, same type: the player dragged it. The destination gets the drop; the source gets nothing,
+       * because the piece did not cease to exist there, it arrived here. */
+      if (gained.length === 1 && lost.length === 1 && gained[0].type === lost[0].type) {
+        fx.drop(gained[0], gained[0].type, gained[0].orient);
+        return;
+      }
+      for (i = 0; i < lost.length; i++) fx.remove(lost[i], lost[i].type, lost[i].orient);
+      for (i = 0; i < gained.length; i++) fx.drop(gained[i], gained[i].type, gained[i].orient);
+    }
     function setPlaced(placed) {
+      var next = (placed || []).map(function (p) { return { x: p.x, y: p.y, type: p.type, orient: p.orient }; });
       Core.clearGroup(placedGroup);
-      (placed || []).forEach(function (p) { placedGroup.add(placeAt(pieceModel(p.type, p.orient, false), p.x, p.y)); });
+      next.forEach(function (p) {
+        var m = placeAt(pieceModel(p.type, p.orient, false), p.x, p.y);
+        m.userData.cell = { x: p.x, y: p.y };
+        placedGroup.add(m);
+      });
+      diffPlaced(placedNow, next);
+      placedNow = next;
+      applyProxyMasks();
+    }
+    /* While a proxy stands in for a piece, the board copy is hidden: two of the same piece in one cell, one of
+     * them lifted, would read as a duplicate rather than as one piece being seated. */
+    function applyProxyMasks() {
+      if (!fx) return;
+      var i, c;
+      for (i = 0; i < placedGroup.children.length; i++) {
+        c = placedGroup.children[i];
+        if (c.userData && c.userData.cell) c.visible = !fx.hasProxy(c.userData.cell.x, c.userData.cell.y);
+      }
     }
 
     function setTargetLit(index, lit) { if (targets[index]) targets[index].goal = lit ? 1 : 0; }
@@ -300,12 +448,15 @@
       mats.glyph.opacity = 1 - r; mats.glyph.visible = r < 1;
       targets.forEach(function (t) { t.orb.envMapIntensity = r; refreshTarget(t); });
       placedGroup.children.forEach(updateSecret); fixedGroup.children.forEach(updateSecret);
-      if (ghost) { ghost.userData.faceMat.opacity = 0.45 * r; ghost.userData.faceMat.visible = r > 0; }
     }
 
     /* ---- overlays: selection, ghost, hover, cursor, pulse ---- */
-    var selection = null, ghost = null, hover = null, cursor = null, pulses = [];
-    function clearOverlay() { Core.clearGroup(overlay); selection = ghost = hover = cursor = null; pulses = []; }
+    var selection = null, hover = null, cursor = null, pulses = [];
+    function clearOverlay() {
+      Core.clearGroup(overlay); selection = hover = cursor = null; pulses = [];
+      if (fx) fx.clear();                      /* the transient placement overlays belong to the attempt that is going away */
+      placedNow = [];
+    }
     function swap(old, mesh) { if (old) { overlay.remove(old); Core.disposeObject(old); } if (mesh) overlay.add(mesh); return mesh; }
 
     function setSelection(cell) {
@@ -321,20 +472,25 @@
       if (cell) { line = new THREE.Line(geo.cursor, mats.cursor); line.computeLineDistances(); placeAt(line, cell.x, cell.y); line.position.y += 0.008; line.renderOrder = 4; }
       cursor = swap(cursor, line);
     }
+    /* MOTION-DIRECTION.md section 5, "Legal ghost": one fixed 0.72-cell footprint plus the proposed COMMON glyph,
+     * in palette.commonFlatPiece. The old ghost was the physical model in the piece's own accent, which named the
+     * piece on the board before it was placed - exactly the identity the flat view must not carry. src/render-
+     * placement.js owns the drawing; the only thing decided here is whether the piece lies flat (FLOOR's disc). */
     function setGhost(g) {
-      if (ghost) { swap(ghost, null); ghost = null; }
-      if (!g) return;
-      var col = g.invalid ? theme.palette.danger : (theme.pieceAccent[g.type] || theme.palette.uiAccent);
-      var gm = new THREE.MeshBasicMaterial({ color: new THREE.Color(col), transparent: true, opacity: 0.45, toneMapped: false, depthWrite: false });
-      var fm = gm.clone(); fm.opacity = 0.45 * reveal; fm.visible = reveal > 0; fm.side = THREE.DoubleSide;
-      var model = pieceModel(g.type, g.orient, false, { body: gm, face: fm });
-      model.userData.faceMat = fm;
-      model.renderOrder = 5;
-      ghost = swap(null, placeAt(model, g.x, g.y));
+      if (!fx) return;
+      fx.setGhost(g ? { x: g.x, y: g.y, orient: g.orient, invalid: !!g.invalid, flatPlate: isPlate(g.type) } : null);
     }
+    var PULSE_PEAK = theme.motion.reveal.teachingOutlineOpacity;
+    var easePulse = theme.easeByName(theme.motion.easing.pulse);
+    /* Ladder rung 3 takes the teaching outline's PULSE, and the document's replacement is named: "Use a stationary
+     * teaching outline." That is exactly the reduced-motion presentation this predicate already selects, so the cut
+     * reuses it rather than inventing a second stationary outline. */
+    var decorCuts = { rings: false };
+    function setDecorCuts(c) { if (c) decorCuts = c; if (fx && fx.setDecorCuts) fx.setDecorCuts(c); }
+    function pulseStill() { return !!((motion && motion.isReducedMotion()) || decorCuts.rings); }
     function pulseCell(cell, opts) {
       var col = (opts && opts.color) || theme.camera.revealChoreography.pulseColor;
-      var m = new THREE.MeshBasicMaterial({ color: new THREE.Color(col), transparent: true, opacity: 1, toneMapped: false, depthWrite: false });
+      var m = new THREE.MeshBasicMaterial({ color: new THREE.Color(col), transparent: true, opacity: PULSE_PEAK * (pulseStill() ? 1 : 0), toneMapped: false, depthWrite: false });
       var mesh = placeAt(new THREE.Mesh(geo.pulse, m), cell.x, cell.y);
       mesh.position.y += 0.01; mesh.renderOrder = 4;
       overlay.add(mesh);
@@ -342,19 +498,28 @@
     }
 
     function frame(dt, speed, view) {
-      var litMs = theme.beam.endStates.target.litFadeMs / 1000 / speed, i;
+      /* Two different clocks, and section 7 is why. A target LIGHTING is the arrival of the shot and keeps the
+       * existing 160 ms; a target going dark again is a retrace discovering the beam no longer reaches it, and
+       * that is `failure.targetUnlightMs` - 120 ms. Same material, opposite directions, different durations. */
+      var litMs = theme.beam.endStates.target.litFadeMs / 1000 / speed;
+      var unlitMs = theme.motion.failure.targetUnlightMs / 1000 / speed, i;
       applyFog();
       for (i = 0; i < targets.length; i++) {
         var t = targets[i];
         if (view && t.proxy.visible) t.proxy.quaternion.copy(view.quaternion);   /* screen-facing reticle */
         if (t.lit === t.goal) continue;
-        t.lit = t.goal > t.lit ? Math.min(t.goal, t.lit + dt / litMs) : Math.max(t.goal, t.lit - dt / litMs);
+        t.lit = t.goal > t.lit ? Math.min(t.goal, t.lit + dt / litMs) : Math.max(t.goal, t.lit - dt / unlitMs);
         lerpTarget(t, t.lit);
       }
+      if (fx) { fx.frame(view, reveal); applyProxyMasks(); }
+      /* MOTION-DIRECTION.md 3, step 4 of the free teaching reveal: "pulse one relevant visible outline for 500 ms,
+       * using bell opacity from zero to 0.55 and back". Opacity ONLY - the outline does not grow, so it never
+       * spills into a neighbouring cell and never suggests a size the board does not have. Reduced motion asks for
+       * "a stationary outline", which is the same mark held at its peak for the same 500 ms. */
       for (i = pulses.length - 1; i >= 0; i--) {
         var p = pulses[i]; p.t += dt * 1000 * speed;
         var k = Math.min(1, p.t / p.ms);
-        p.mesh.material.opacity = 1 - k; var s = 1 + 0.35 * k; p.mesh.scale.set(s, 1, s);
+        p.mesh.material.opacity = PULSE_PEAK * (pulseStill() ? 1 : easePulse(k));
         if (k >= 1) { overlay.remove(p.mesh); Core.disposeObject(p.mesh); pulses.splice(i, 1); }
       }
     }
@@ -371,6 +536,8 @@
     }
 
     function dispose() {
+      if (fx) fx.dispose();
+      var at = instances.indexOf(self); if (at >= 0) instances.splice(at, 1);
       Core.clearGroup(group);
       for (var k in geo) if (Object.prototype.hasOwnProperty.call(geo, k)) {
         if (geo[k].dispose) geo[k].dispose();
@@ -381,19 +548,51 @@
       if (mats.emitterHalo.map) mats.emitterHalo.map.dispose();
     }
 
-    /* Frames are still needed while a target is fading between lit states or a reveal pulse is easing. */
+    /* Frames are still needed while a target is fading between lit states, a reveal pulse is easing, or a
+     * placement proxy is live. The last term matters: the host's loop already consults render.needsFrame(), so a
+     * placement animation keeps the loop alive through a path that exists today, and src/render-placement.js's
+     * sweep() guarantees it goes false again even if motion.tick() were never wired in. */
     function isAnimating() {
       var i;
       if (pulses.length) return true;
+      if (fx && fx.isAnimating()) return true;
       for (i = 0; i < targets.length; i++) if (targets[i].lit !== targets[i].goal) return true;
       return false;
     }
 
-    return { group: group, setLevel: setLevel, setPlaced: setPlaced, applyReveal: applyReveal, setTargetLit: setTargetLit,
+    var self = {
+      group: group, setLevel: setLevel, setPlaced: setPlaced, applyReveal: applyReveal, setTargetLit: setTargetLit,
       resetTargets: resetTargets, setSelection: setSelection, setGhost: setGhost, setHover: setHover, setCursor: setCursor,
-      pulseCell: pulseCell, frame: frame, isAnimating: isAnimating, trayModel: trayModel, dispose: dispose, materials: mats,
-      applyFog: applyFog, types: function () { return TYPES.slice(); }, shape: function (t) { return SHAPE[t] || null; } };
+      pulseCell: pulseCell, setDecorCuts: setDecorCuts, frame: frame, isAnimating: isAnimating, trayModel: trayModel, dispose: dispose, materials: mats,
+      applyFog: applyFog, types: function () { return TYPES.slice(); }, shape: function (t) { return SHAPE[t] || null; },
+      /* MOTION-DIRECTION.md section 5. setPickup(cell) is the "Pick up" row - the host calls it when a drag takes
+       * hold of a placed piece, and setPickup(null) is "Cancel drag". flashInvalid(cell) is the danger outline on
+       * a refused footprint. Both are no-ops until the host calls them, and neither is inferable from the state
+       * the renderer is handed, which is why they are entry points rather than something diffed. */
+      setPickup: function (cell) { if (fx) fx.setPickup(cell); },
+      flashInvalid: function (cell) { if (fx) fx.flashInvalid(cell); },
+      /* MOTION-DIRECTION.md 2's emitter charge, and section 8's whole-cell reveal scalar. Both are pushed by
+       * render.js: the beam owns the charge clock, render-terrain owns the sweep. */
+      setCharge: setCharge, setFogSampler: setFogSampler,
+      setMotion: function (m) { motion = m || null; if (fx) fx.setMotion(motion); }
+    };
+    instances.push(self);
+    return self;
   }
 
-  root.LaserRenderPieces = { __version: 1, create: create, orientAngle: orientAngle, describe: describe, types: types };
+  /* The one wiring hook. main.js: `LaserRenderPieces.attachMotion(motion);` right after LaserMotion.create().
+   * Everything section 5 draws is skipped until this is called, so forgetting it costs the placement feel and
+   * nothing else - never a frozen board and never a loop with no way out. */
+  function attachMotion(m) {
+    sharedMotion = m || null;
+    for (var i = 0; i < instances.length; i++) instances[i].setMotion(sharedMotion);
+    return sharedMotion;
+  }
+
+  root.LaserRenderPieces = { __version: 1, create: create, orientAngle: orientAngle, describe: describe, types: types,
+    attachMotion: attachMotion,
+    /* Live instances, newest last. render.js DOES now re-export setPickup/flashInvalid and main.js onDragPiece()
+     * calls them, so this is no longer the only way to reach section 5's two entry points - it remains what the
+     * verification harness drives. Read-only: the array is copied. */
+    instances: function () { return instances.slice(); } };
 }(typeof self !== 'undefined' ? self : this));

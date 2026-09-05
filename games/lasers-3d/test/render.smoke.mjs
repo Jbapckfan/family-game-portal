@@ -102,7 +102,14 @@ try {
     const h = window.__h, r = h.render;
     r.setBeam(h.result, { animate: true, fired: true });
     const p0 = r.getBeamProgress();
-    r.frame(0.05); const p1 = r.getBeamProgress();
+    // MOTION-DIRECTION.md 2: T0..T0+m.fire.chargeMs charges the emitter and the head is NOT released until then,
+    // so travel is measured as the DELTA over one 0.05 s frame taken after the head is already moving. (render.frame
+    // clamps dt to 0.05 s, so the charge cannot be stepped out in a single call.)
+    const chargeMs = h.theme.motion.fire.chargeMs;
+    const beforeRelease = r.getBeamProgress().cells;                 // one 0.05 s frame is well inside the charge
+    let guard = 0; while (r.getBeamProgress().cells === 0 && guard++ < 40) r.frame(0.05);
+    const before = r.getBeamProgress().cells;
+    r.frame(0.05); const p1 = r.getBeamProgress(), travelStep = p1.cells - before;
     for (let i = 0; i < 100; i++) r.frame(0.05);
     const p2 = r.getBeamProgress();
     r.orbit(0.3, -0.2); const o = r.getCamera();
@@ -114,7 +121,8 @@ try {
     r.frame(0.016);
     r.setSelection(null); r.setGhost(null); r.setHover(null); r.setCursor(null);
     r.frame(0.016);
-    return { p0, p1, p2, o, frames, cam: r.getCamera(), icon: icon.slice(0, 22), iconLen: icon.length, travel: window.__h.theme.beam.travel };
+    return { p0, p1, p2, o, frames, cam: r.getCamera(), icon: icon.slice(0, 22), iconLen: icon.length,
+      travel: window.__h.theme.beam.travel, chargeMs, beforeRelease, travelStep };
   });
   check(anim.p0.playing && anim.p0.cells === 0 && anim.p0.total > 7, `beam starts playing total ${anim.p0.total}`);
   {
@@ -122,8 +130,10 @@ try {
     const T = anim.travel;
     const dur = Math.min(T.maxDurationMs, Math.max(T.minDurationMs, anim.p0.total / T.cellsPerSecond * 1000));
     const expected = anim.p0.total / (dur / 1000) * 0.05;
-    check(Math.abs(anim.p1.cells - expected) < 1e-9,
-      `beam travel dt-based: ${anim.p1.cells.toFixed(4)} cells after 0.05 s (path ${anim.p0.total.toFixed(2)} cells in ${dur.toFixed(0)} ms)`);
+    check(Math.abs(anim.travelStep - expected) < 1e-9,
+      `beam travel dt-based: ${anim.travelStep.toFixed(4)} cells per 0.05 s (path ${anim.p0.total.toFixed(2)} cells in ${dur.toFixed(0)} ms)`);
+    check(anim.beforeRelease === 0,
+      `and the head does not move at all during the ${anim.chargeMs} ms emitter charge (${anim.beforeRelease} cells at half of it)`);
   }
   check(!anim.p2.playing && Math.abs(anim.p2.cells - anim.p2.total) < 1e-6, `beam finished ${anim.p2.cells}/${anim.p2.total}`);
   check(anim.o.preset === null && anim.o.elevationDeg < 35, `orbit cancels preset: az ${anim.o.azimuthDeg.toFixed(1)}, el ${anim.o.elevationDeg}`);
@@ -135,7 +145,9 @@ try {
     const r = window.__h.render, T = window.__h.theme; r.setReducedMotion(true);
     r.setBeam(window.__h.result, { animate: true, fired: true });
     const total = r.getBeamProgress().total;
-    r.frame(0.05); const cells = r.getBeamProgress().cells;
+    let g = 0; while (r.getBeamProgress().cells === 0 && g++ < 40) r.frame(0.05);   // step out the reduced charge
+    const before = r.getBeamProgress().cells;
+    r.frame(0.05); const cells = r.getBeamProgress().cells - before;
     const pr = r.setCameraPreset('tilt', { animate: true }); let frames = 0; while (r.getCamera().animating && frames < 100) { r.frame(0.02); frames++; } await pr;
     r.setReducedMotion(false); r.setCameraPreset('flat', { animate: false });
     const rmT = T.reducedMotion;
@@ -148,11 +160,13 @@ try {
   const capped = await page.evaluate(async () => {
     const h = window.__h, r = h.render, T = h.theme.beam.travel;
     h.load('big24'); h.fit(); await h.view('flat'); h.settle(400);
+    const chargeS = h.theme.motion.fire.chargeMs / 1000;
     r.setBeam(h.result, { animate: true, fired: true });
     const total = r.getBeamProgress().total;
     let t = 0; while (r.getBeamProgress().playing && t < 20) { r.frame(1 / 60); t += 1 / 60; }
     // and a second run that is skipped by a tap
     r.setBeam(h.result, { animate: true, fired: true });
+    let cg = 0; while (r.getBeamProgress().cells === 0 && cg++ < 40) r.frame(1 / 60);   // out of the charge
     r.frame(1 / 60);
     const midway = r.getBeamProgress().cells;
     r.finishBeam();
@@ -168,15 +182,17 @@ try {
     let st = 0; while (r.getBeamProgress().playing && st < 5) { r.frame(1 / 60); st += 1 / 60; }
     r.setBeam(null);
     return { total, seconds: t, cap: T.maxDurationMs / 1000, floor: T.minDurationMs / 1000, midway, afterSkip, settled,
-      shortTotal, shortSeconds: st };
+      shortTotal, shortSeconds: st, chargeS };
   });
-  check(capped.seconds <= capped.cap + 0.05,
-    `24x24 beam of ${capped.total.toFixed(1)} cells travels in ${capped.seconds.toFixed(2)} s (cap ${capped.cap.toFixed(2)} s), not ${(capped.total / 5.5).toFixed(1)} s`);
+  // The whole FIRE lasts the emitter charge PLUS the clamped travel; the clamp is on the travel (S8), so that is
+  // what this measures. MOTION-DIRECTION.md 2 puts the 180 ms charge in front of it and never inside it.
+  check(capped.seconds <= capped.cap + capped.chargeS + 0.05,
+    `24x24 beam of ${capped.total.toFixed(1)} cells travels in ${(capped.seconds - capped.chargeS).toFixed(2)} s after a ${(capped.chargeS * 1000).toFixed(0)} ms charge (cap ${capped.cap.toFixed(2)} s), not ${(capped.total / 5.5).toFixed(1)} s`);
   {
     // A lost ending is DRAWN past its endPoint (theme.beam.endStates.*.departCells), so this one-cell lost-edge stub
     // has a drawn arc of 1 cell of beam plus its departure. The duration follows the clamp on the DRAWN arc and can
     // never fall under the floor, which is what keeps a short beam readable.
-    const want = Math.min(capped.cap, Math.max(capped.floor, capped.shortTotal / anim.travel.cellsPerSecond));
+    const want = Math.min(capped.cap, Math.max(capped.floor, capped.shortTotal / anim.travel.cellsPerSecond)) + capped.chargeS;
     check(capped.shortSeconds >= want - 0.02 && capped.shortSeconds <= want + 0.05 && want >= capped.floor,
       `a 1-cell stub is drawn as ${capped.shortTotal.toFixed(2)} cells (beam + departure) and travels in ${capped.shortSeconds.toFixed(2)} s ` +
       `(clamped target ${want.toFixed(2)} s, floor ${capped.floor.toFixed(2)} s), so short beams still read`);
@@ -1002,6 +1018,527 @@ try {
   await page.evaluate(async () => { const h = window.__h; await h.view('tilt'); h.settle(900); });
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(shots, 'big-tilt.png') });
+
+
+  // ============================================================================================================
+  // == MOTION-DIRECTION.md 1 (the beam as a living thing) and 2 (FIRE as a timed sequence)
+  // ============================================================================================================
+  // These drive a STANDALONE LaserRenderBeam instance (the harness's globals are all loaded) so the whole
+  // choreography can be stepped deterministically without touching render.js's own beam or the checks above.
+  console.log('\n== beam motion: pulse, contact, FIRE sequence (MOTION-DIRECTION 1 + 2)');
+  const BEAM_SCENES = {
+    // WEDGE lifts the beam, a MIRROR turns it while it is STILL CLIMBING, a DIP levels it.
+    'climb-mirror-dip': {
+      raw: { name: 'CMD', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '02100000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['MIRROR'] },
+      placed: [{ x: 2, y: 4, type: 'WEDGE', orient: '/' }, { x: 2, y: 5, type: 'MIRROR', orient: '\\' },
+               { x: 1, y: 5, type: 'DIP', orient: '\\' }] },
+    // DIP sends the beam DOWN, a FLOOR plate bounces it back UP without turning it.
+    'floor-bounce': {
+      raw: { name: 'FB', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '22000000', '01000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['MIRROR'] },
+      placed: [{ x: 1, y: 4, type: 'DIP', orient: '/' }, { x: 1, y: 5, type: 'FLOOR', orient: '/' }] },
+    // straight into a wall: the blocked cap and its three recoil sparks
+    'blocked': {
+      raw: { name: 'BLK', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00003000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['MIRROR'] },
+      placed: [] },
+    // one MIRROR turns the beam into the target
+    'target': {
+      raw: { name: 'TGT', par: 1, size: { w: 8, d: 8 },
+        terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+        emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 4, y: 7 }], fixed: [], tray: ['MIRROR'] },
+      placed: [{ x: 4, y: 4, type: 'MIRROR', orient: '/' }] },
+    // the three tray pieces on the SAME cell: in FLAT their contact decoration must be indistinguishable
+    'flat-mirror': { raw: null, placed: [{ x: 2, y: 4, type: 'MIRROR', orient: '/' }] },
+    'flat-wedge': { raw: null, placed: [{ x: 2, y: 4, type: 'WEDGE', orient: '/' }] },
+    'flat-dip': { raw: null, placed: [{ x: 2, y: 4, type: 'DIP', orient: '/' }] },
+  };
+  // Same emitter, same pieces, same traced route; the columns the beam never touches differ in height.
+  for (const [key, filler] of [['height-a', '0'], ['height-b', '3']]) {
+    const rows = [];
+    for (let y = 0; y < 8; y++) {
+      let row = '';
+      for (let x = 0; x < 8; x++) row += (y === 4 || (x === 4 && y >= 4)) ? '0' : filler;
+      rows.push(row);
+    }
+    BEAM_SCENES[key] = { raw: { name: key, par: 1, size: { w: 8, d: 8 }, terrain: rows,
+      emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 4, y: 7 }], fixed: [], tray: ['MIRROR'] },
+      placed: [{ x: 4, y: 4, type: 'MIRROR', orient: '/' }] };
+  }
+  BEAM_SCENES['flat-mirror'].raw = BEAM_SCENES['flat-wedge'].raw = BEAM_SCENES['flat-dip'].raw = {
+    name: 'FLATPIECE', par: 1, size: { w: 8, d: 8 },
+    terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+    emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['MIRROR'] };
+
+  const beamMotion = await page.evaluate((scenes) => {
+    const T = window.LaserTheme, M = T.motion, S = window.LaserSim, THREE = window.THREE;
+    const NORMAL = { cellsPerSecond: T.beam.travel.cellsPerSecond, liveRetraceMs: T.beam.travel.liveRetraceMs,
+      minDurationMs: T.beam.travel.minDurationMs, maxDurationMs: T.beam.travel.maxDurationMs };
+    const REDUCED = { cellsPerSecond: T.reducedMotion.beamTravelCellsPerSecond,
+      liveRetraceMs: T.beam.travel.liveRetraceMs * T.reducedMotion.durationScale,
+      minDurationMs: T.reducedMotion.beamTravelMinDurationMs, maxDurationMs: T.reducedMotion.beamTravelMaxDurationMs };
+    function makeView(mode) {
+      const cam = new THREE.OrthographicCamera(-8, 8, 8, -8, 0.1, 100);
+      if (mode === 'flat') { cam.position.set(0, 20, 0); cam.up.set(0, 0, -1); }
+      else { cam.position.set(12, 12, 12); cam.up.set(0, 1, 0); }
+      cam.lookAt(0, 0, 0); cam.updateMatrixWorld(true);
+      return { zoom: 30, up: new THREE.Vector3(0, 1, 0), quaternion: cam.quaternion, camera: cam };
+    }
+    const FLAT = makeView('flat'), TILT = makeView('tilt');
+    function trace(name) {
+      const sc = scenes[name], level = S.parseLevel(sc.raw);
+      return { level, result: S.trace(level, sc.placed) };
+    }
+    function newBeam() { return window.LaserRenderBeam.create(T); }
+    // every (arc distance, pitch-envelope peak) pair the merged tubes carry
+    function peaks(beam) {
+      const out = [];
+      beam.group.getObjectByName('beamTubes').traverse((o) => {
+        if (!o.isMesh || !o.geometry) return;
+        const d = o.geometry.getAttribute('aDist'), p = o.geometry.getAttribute('aPeak');
+        if (!d || !p) return;
+        for (let i = 0; i < d.count; i++) out.push([d.getX(i), p.getX(i)]);
+      });
+      return out;
+    }
+    // tube vertices carry only their END distances, so the rhythm AT a distance is the one on the nearest
+    // vertex ring at or before it - i.e. the start of the tube that contains it.
+    function peakSpan(list, at) {
+      let best = -Infinity, lo = Infinity, hi = -Infinity, n = 0;
+      for (const [d] of list) if (d <= at + 1e-9 && d > best) best = d;
+      for (const [d, p] of list) { if (Math.abs(d - best) > 1e-9) continue; n++; lo = Math.min(lo, p); hi = Math.max(hi, p); }
+      return { n, at, from: +best.toFixed(4), lo: +lo.toFixed(4), hi: +hi.toFixed(4) };
+    }
+    function peakPairs(list) {
+      const seen = {}, out = [];
+      for (const [d, p] of list) { const k = d.toFixed(4) + '|' + p.toFixed(4); if (seen[k]) continue; seen[k] = 1; out.push([+d.toFixed(4), +p.toFixed(4)]); }
+      return out.sort((a, b) => a[0] - b[0]);
+    }
+    function instances(beam) {
+      const out = { disc: [], streak: [] };
+      beam.group.getObjectByName('beamSprites').children.forEach((mesh, mi) => {
+        const key = mi === 0 ? 'disc' : 'streak';
+        const a = mesh.userData.alpha, c = mesh.userData.tint, m = new THREE.Matrix4();
+        for (let i = 0; i < mesh.count; i++) {
+          mesh.getMatrixAt(i, m);
+          out[key].push({ alpha: +a.getX(i).toFixed(5), color: [c.getX(i), c.getY(i), c.getZ(i)].map((v) => +v.toFixed(5)),
+            m: Array.from(m.elements).map((v) => +v.toFixed(5)) });
+        }
+      });
+      return out;
+    }
+    /* run to a stop, then keep going: the frame count, whether anything still asks for frames, and whether the
+     * next 300 frames change ANY observable value. This is the proof that every animation added here terminates. */
+    function runToStop(beam, view, mp, maxFrames) {
+      let n = 0;
+      while (beam.isAnimating() && n < (maxFrames || 4000)) { beam.frame(1 / 60, view, mp); n++; }
+      const dbg = beam._debug(), stamp = JSON.stringify([dbg, instances(beam)]);
+      for (let i = 0; i < 300; i++) beam.frame(1 / 60, view, mp);
+      return { frames: n, animating: beam.isAnimating(), dbg,
+        stable: JSON.stringify([beam._debug(), instances(beam)]) === stamp, after: beam._debug() };
+    }
+    const out = {};
+
+    // ---- 1. the pitch-envelope attribute: peakAt by the TRACED segment's own pitch ----
+    {
+      const b = newBeam(), t = trace('climb-mirror-dip');
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      const p = peaks(b);
+      out.cmd = { level: peakSpan(p, 1.0), climb1: peakSpan(p, 3.0),
+        climb2: peakSpan(p, 4.2), levelled: peakSpan(p, 6.0), pairs: peakPairs(p),
+        total: b.getProgress().total, ends: t.result.end,
+        kinds: t.result.events.map((e) => e.kind).join(',') };
+      out.cmd.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 2. a FLOOR plate turns a descent into a climb and leaves its bounce dot ----
+    {
+      const b = newBeam(), t = trace('floor-bounce');
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      const p = peaks(b);
+      out.floor = { level: peakSpan(p, 0.5), descend: peakSpan(p, 2.0), climb: peakSpan(p, 3.0),
+        climb2: peakSpan(p, 4.5), pairs: peakPairs(p),
+        bounces: t.result.bounces.length, total: b.getProgress().total };
+      out.floor.stop = runToStop(b, TILT, NORMAL);
+      out.floor.settled = instances(b);
+      b.dispose();
+    }
+    // ---- 3. the FIRE sequence: charge, release, linear travel, settle ----
+    {
+      const b = newBeam(), t = trace('target');
+      b.setChargeMs(M.fire.chargeMs);
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      const d0 = b._debug();
+      const samples = [];
+      let lit = 0; b.onLit(() => { lit++; });
+      const step = () => { b.frame(1 / 60, TILT, NORMAL); return b._debug(); };
+      // during the charge the head must not move, the beam must still count as playing, and the emitter charge rises
+      let midCharge = null, chargeEnd = null;
+      for (let i = 0; i < 200; i++) {
+        const d = step();
+        if (d.clock >= M.fire.chargeMs * 0.5 && !midCharge) midCharge = { d, charge: b.getCharge(), playing: b.getProgress().playing };
+        if (d.clock >= M.fire.chargeMs && !chargeEnd) { chargeEnd = { d, charge: b.getCharge(), head: d.head }; }
+        if (d.clock > M.fire.chargeMs + 40) break;
+      }
+      // travel: linear head, gain pinned at 1
+      const t1 = b._debug();
+      while (b._debug().clock < d0.routeEndMs - 20) { step(); samples.push(b._debug()); }
+      const beforeEnd = b._debug();
+      out.fireBeforeEnd = beforeEnd;
+      // the settle: gain must ramp to EXACTLY zero over m.beam.settleMs and never come back
+      while (b._debug().clock < d0.routeEndMs + 1) step();
+      const atRouteEnd = b._debug();
+      while (b._debug().clock < d0.routeEndMs + M.beam.settleMs * 0.5) step();
+      const midSettle = b._debug();
+      out.fire = { d0, midCharge, chargeEnd, atRouteEnd, midSettle, lit,
+        release: M.fire.releaseMs, chargeMs: M.fire.chargeMs,
+        linear: samples.length > 4 ? (() => {
+          // head must be an exactly linear function of the clock while travelling
+          let worst = 0;
+          for (const s of samples) worst = Math.max(worst, Math.abs(s.head - (s.clock - s.chargeMs) * (s.total / (s.routeEndMs - s.chargeMs))));
+          return worst;
+        })() : -1 };
+      out.fire.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 4. FLAT: MIRROR, WEDGE and DIP get identical contact decoration ----
+    {
+      const grab = (name) => {
+        const b = newBeam(), t = trace(name);
+        b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+        const hit = t.result.events.filter((e) => e.kind === 'piece').length;
+        // step to just past the contact's attack peak
+        for (let i = 0; i < 400; i++) { b.frame(1 / 60, FLAT, NORMAL); if (b._debug().discs > 0) break; }
+        for (let i = 0; i < 3; i++) b.frame(1 / 60, FLAT, NORMAL);
+        const inst = instances(b);
+        const tilt = (() => {
+          const c = newBeam();
+          c.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+          for (let i = 0; i < 400; i++) { c.frame(1 / 60, TILT, NORMAL); if (c._debug().discs > 0) break; }
+          const r = instances(c); c.dispose(); return r;
+        })();
+        b.dispose();
+        return { hit, discColor: inst.disc[0] ? inst.disc[0].color : null,
+          discScale: inst.disc[0] ? [inst.disc[0].m[0], inst.disc[0].m[5], inst.disc[0].m[10]] : null,
+          discBasis: inst.disc[0] ? inst.disc[0].m.slice(0, 11) : null,
+          streaks: inst.streak.length, tiltColor: tilt.disc[0] ? tilt.disc[0].color : null };
+      };
+      out.flatPieces = { MIRROR: grab('flat-mirror'), WEDGE: grab('flat-wedge'), DIP: grab('flat-dip'),
+        commonFlat: new THREE.Color(M.contact.flatColor).toArray().map((v) => +v.toFixed(5)),
+        accent: { MIRROR: new THREE.Color(T.pieceAccent.MIRROR).toArray().map((v) => +v.toFixed(5)),
+          WEDGE: new THREE.Color(T.pieceAccent.WEDGE).toArray().map((v) => +v.toFixed(5)) } };
+    }
+    // ---- 5. blocked: the cap, and three sparks at m.failure.blockedAnglesDeg ----
+    {
+      const b = newBeam(), t = trace('blocked');
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      let peakStreaks = 0, peakDiscs = 0;
+      for (let i = 0; i < 1000 && b.isAnimating(); i++) {
+        b.frame(1 / 60, TILT, NORMAL);
+        peakStreaks = Math.max(peakStreaks, b._debug().streaks);
+        peakDiscs = Math.max(peakDiscs, b._debug().discs);
+      }
+      out.blocked = { end: t.result.end, peakStreaks, peakDiscs, dbg: b._debug(),
+        angles: M.failure.blockedAnglesDeg.length };
+      out.blocked.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 6. target arrival: two staggered rings of CONSTANT stroke, eight streaks ----
+    {
+      const b = newBeam(), t = trace('target');
+      let lit = 0; b.onLit(() => { lit++; });
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      let peakStreaks = 0, peakEffects = 0, rings = [];
+      for (let i = 0; i < 1000 && b.isAnimating(); i++) {
+        b.frame(1 / 60, TILT, NORMAL);
+        const d = b._debug();
+        peakStreaks = Math.max(peakStreaks, d.streaks);
+        peakEffects = Math.max(peakEffects, d.effects);
+        const fxg = b.group.getObjectByName('beamFx');
+        fxg.children.forEach((o) => {
+          if (!o.material || !o.material.userData || o.material.userData.uInner === undefined) return;
+          const dia = o.scale.x, inner = o.material.userData.uInner.value;
+          if (dia > 0) rings.push({ dia: +dia.toFixed(5), stroke: +(dia / 2 * (1 - inner / 0.5)).toFixed(5), op: +o.material.opacity.toFixed(5) });
+        });
+      }
+      const strokes = rings.map((r) => r.stroke);
+      out.target = { lit, hits: t.result.hits.length, peakStreaks, peakEffects,
+        strokeMin: Math.min.apply(null, strokes), strokeMax: Math.max.apply(null, strokes),
+        want: M.target.ringStrokeCells, diaMin: Math.min.apply(null, rings.map((r) => r.dia)),
+        diaMax: Math.max.apply(null, rings.map((r) => r.dia)), opMax: Math.max.apply(null, rings.map((r) => r.op)) };
+      out.target.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 7. skip: the presentation completes at once and STOPS ----
+    {
+      const b = newBeam(), t = trace('target');
+      let lit = 0; b.onLit(() => { lit++; });
+      b.setChargeMs(M.fire.chargeMs);
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      for (let i = 0; i < 12; i++) b.frame(1 / 60, TILT, NORMAL);
+      const mid = b._debug();
+      b.skip();
+      const afterSkip = { dbg: b._debug(), animating: b.isAnimating(), progress: b.getProgress(), lit };
+      b.frame(1 / 60, TILT, NORMAL);
+      out.skip = { mid, afterSkip, settled: b._debug(), animatingAfterFrame: b.isAnimating() };
+      out.skip.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 8. reduced motion: no pulses, no scatter, a held contact disc, and it still stops ----
+    {
+      const b = newBeam(), t = trace('floor-bounce');
+      b.setChargeMs(M.fire.chargeMs);
+      b.set(t.result, { animate: true, fired: true, level: t.level }, REDUCED);
+      let maxGain = 0, maxStreaks = 0, maxDiscs = 0;
+      for (let i = 0; i < 2000 && b.isAnimating(); i++) {
+        b.frame(1 / 60, TILT, REDUCED);
+        const d = b._debug();
+        maxGain = Math.max(maxGain, d.gain); maxStreaks = Math.max(maxStreaks, d.streaks); maxDiscs = Math.max(maxDiscs, d.discs);
+      }
+      out.reduced = { maxGain, maxStreaks, maxDiscs, dbg: b._debug(),
+        chargeMs: b._debug().chargeMs, wantCharge: M.reduced.chargeMs };
+      out.reduced.stop = runToStop(b, TILT, REDUCED);
+      out.reduced.settled = instances(b);
+      b.dispose();
+    }
+    // ---- 9. a live retrace (not fired) omits charging, pulses, scatter and rings ----
+    {
+      const b = newBeam(), t = trace('target');
+      b.setChargeMs(M.fire.chargeMs);
+      b.set(t.result, { animate: false, fired: false, level: t.level }, NORMAL);
+      let maxGain = 0, maxSprites = 0;
+      for (let i = 0; i < 2000 && b.isAnimating(); i++) {
+        b.frame(1 / 60, TILT, NORMAL);
+        maxGain = Math.max(maxGain, b._debug().gain); maxSprites = Math.max(maxSprites, b._debug().sprites);
+      }
+      out.retrace = { maxGain, maxSprites, dbg: b._debug(), badges: b._debug().badges };
+      out.retrace.stop = runToStop(b, TILT, NORMAL);
+      b.dispose();
+    }
+    // ---- 10. the flat-view information boundary: the SAME route over DIFFERENT hidden terrain ----
+    // Nothing in section 1 or 2 may read terrain height. Two boards whose traced routes are identical but whose
+    // hidden columns differ must therefore produce a byte-identical presentation, frame for frame.
+    {
+      const snap = (name) => {
+        const b2 = newBeam(), t = trace(name);
+        b2.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+        const film = [];
+        for (let i = 0; i < 200 && b2.isAnimating(); i++) {
+          b2.frame(1 / 60, FLAT, NORMAL);
+          if (i % 3 === 0) film.push([b2._debug(), instances(b2), peakPairs(peaks(b2))]);
+        }
+        b2.dispose();
+        return { end: t.result.end, route: t.result.segments.map((x) => [x.from.x, x.from.y, x.from.z, x.d, x.v]),
+          film: JSON.stringify(film) };
+      };
+      const flatA = snap('height-a'), flatB = snap('height-b');
+      out.heightBlind = { sameRoute: JSON.stringify(flatA.route) === JSON.stringify(flatB.route),
+        sameFilm: flatA.film === flatB.film, frames: JSON.parse(flatA.film).length, ends: [flatA.end, flatB.end] };
+    }
+    // ---- 11. the sprite pool never exceeds m.budget.transientSpritesMax ----
+    {
+      const b = newBeam(), t = trace('climb-mirror-dip');
+      b.set(t.result, { animate: true, fired: true, level: t.level }, NORMAL);
+      let maxLive = 0;
+      for (let i = 0; i < 2000 && b.isAnimating(); i++) { b.frame(1 / 60, TILT, NORMAL); maxLive = Math.max(maxLive, b._debug().sprites); }
+      out.pool = { maxLive, cap: M.budget.transientSpritesMax };
+      b.dispose();
+    }
+    return out;
+  }, BEAM_SCENES);
+
+  {
+    const c = beamMotion.cmd, P = { level: 0.50, climb: 0.78, descend: 0.22 };
+    check(c.level.n > 0 && c.level.lo === P.level && c.level.hi === P.level,
+      `pulse rhythm: the LEVEL opening run carries peakAt ${c.level.lo} (${c.level.n} vertices)`);
+    check(c.climb1.n > 0 && c.climb1.lo === P.climb && c.climb1.hi === P.climb,
+      `a WEDGE makes the beam CLIMB and the rhythm becomes ${c.climb1.lo} (gathers late, releases forward)`);
+    check(c.climb2.n > 0 && c.climb2.lo === P.climb && c.climb2.hi === P.climb,
+      `a MIRROR turns that climbing beam and PRESERVES the climbing rhythm (${c.climb2.lo}, not ${P.level})`);
+    check(c.levelled.n > 0 && c.levelled.lo === P.level && c.levelled.hi === P.level,
+      `a DIP levels it and only THEN does the rhythm return to ${c.levelled.lo}`);
+  }
+  {
+    const f = beamMotion.floor, P = { level: 0.50, climb: 0.78, descend: 0.22 };
+    check(f.descend.n > 0 && f.descend.lo === P.descend && f.descend.hi === P.descend,
+      `a DIP sends the beam DOWN and the rhythm becomes ${f.descend.lo} (arrives sharply, drains slowly)`);
+    check(f.climb.n > 0 && f.climb.lo === P.climb && f.climb.hi === P.climb,
+      `a FLOOR plate switches that descent to ASCENT and the rhythm becomes ${f.climb.lo}`);
+    check(f.bounces === 1 && f.settled.disc.length === 1 && Math.abs(f.settled.disc[0].alpha - 0.65) < 1e-4,
+      `the FLOOR bounce leaves exactly one stationary dot at opacity ${f.settled.disc[0] && f.settled.disc[0].alpha} for the life of the trace`);
+  }
+  {
+    const f = beamMotion.fire;
+    check(f.midCharge && f.midCharge.d.head === 0 && f.midCharge.playing,
+      `FIRE + ${f.chargeMs} ms: the head does not move during the charge (head ${f.midCharge && f.midCharge.d.head}) but the beam still counts as playing`);
+    check(f.midCharge && f.midCharge.charge.active && f.midCharge.charge.intensity > 0 && f.midCharge.charge.intensity < 1,
+      `the emitter charge ramps through it (intensity ${f.midCharge && f.midCharge.charge.intensity.toFixed(3)}, halo ${f.midCharge && f.midCharge.charge.halo.toFixed(3)})`);
+    check(f.chargeEnd && f.chargeEnd.head >= 0 && f.chargeEnd.d.clock >= f.chargeMs,
+      `the head is released at T0 + ${f.chargeMs} ms (clock ${f.chargeEnd && f.chargeEnd.d.clock.toFixed(1)} ms)`);
+    check(f.linear >= 0 && f.linear < 1e-9, `travel is exactly LINEAR in the clock (worst deviation ${f.linear.toExponential(2)} cells)`);
+    check(beamMotion.fireBeforeEnd.gain === 1,
+      `the pulse gain is exactly 1 for the whole of the travel (${beamMotion.fireBeforeEnd.gain} at ` +
+      `${beamMotion.fireBeforeEnd.clock.toFixed(0)} of ${beamMotion.fireBeforeEnd.routeEndMs.toFixed(0)} ms)`);
+    check(f.midSettle.gain > 0 && f.midSettle.gain < 1,
+      `then it eases to zero over m.beam.settleMs (mid-settle ${f.midSettle.gain.toFixed(4)})`);
+    check(f.stop.after.gain === 0 && f.stop.after.head === f.stop.after.total,
+      `and lands on EXACTLY zero with the whole route drawn (gain ${f.stop.after.gain}, head ${f.stop.after.head.toFixed(3)}/${f.stop.after.total.toFixed(3)})`);
+  }
+  {
+    const p = beamMotion.flatPieces, same = (a, b2) => JSON.stringify(a) === JSON.stringify(b2);
+    check(p.MIRROR.hit === 1 && p.WEDGE.hit === 1 && p.DIP.hit === 1, `flat boundary: each of the three pieces produces exactly one acting-piece hit`);
+    check(same(p.MIRROR.discColor, p.WEDGE.discColor) && same(p.WEDGE.discColor, p.DIP.discColor) && same(p.MIRROR.discColor, p.commonFlat),
+      `in FLAT all three contact discs are the SAME common colour ${JSON.stringify(p.MIRROR.discColor)} (palette.commonFlatPiece)`);
+    check(same(p.MIRROR.discBasis, p.WEDGE.discBasis) && same(p.WEDGE.discBasis, p.DIP.discBasis),
+      `in FLAT all three sit in the same common presentation plane at the same scale (identical basis + board position)`);
+    check(p.MIRROR.streaks === p.WEDGE.streaks && p.WEDGE.streaks === p.DIP.streaks && p.MIRROR.streaks === 2,
+      `and each emits the same ${p.MIRROR.streaks} scatter streaks - nothing about the decoration says which piece it was`);
+    check(!same(p.MIRROR.tiltColor, p.WEDGE.tiltColor) && same(p.MIRROR.tiltColor, p.accent.MIRROR) && same(p.WEDGE.tiltColor, p.accent.WEDGE),
+      `in TILT the same hit uses pieceAccent[type] instead (MIRROR ${JSON.stringify(p.MIRROR.tiltColor)} vs WEDGE ${JSON.stringify(p.WEDGE.tiltColor)})`);
+  }
+  {
+    const b2 = beamMotion.blocked;
+    check(b2.end === 'blocked' && b2.peakStreaks === b2.angles,
+      `blocked: exactly ${b2.peakStreaks} recoil sparks at m.failure.blockedAnglesDeg, and the solid cap stays`);
+  }
+  {
+    const t = beamMotion.target;
+    check(t.hits === 1 && t.lit === 1, `target arrival is driven by the trace's own target event (lit ${t.lit} of ${t.hits})`);
+    check(t.peakStreaks === 8, `it emits the existing ${t.peakStreaks} streaks at equal angular intervals`);
+    check(Math.abs(t.strokeMin - t.want) < 2e-4 && Math.abs(t.strokeMax - t.want) < 2e-4,
+      `both rings keep a CONSTANT ${t.want}-cell stroke while their diameter grows ${t.diaMin.toFixed(3)} -> ${t.diaMax.toFixed(3)} cell (measured ${t.strokeMin.toFixed(4)}..${t.strokeMax.toFixed(4)})`);
+    check(Math.abs(t.opMax - 0.32) < 1e-4, `ring opacity starts at m.target.ringOpacity ${t.opMax}`);
+  }
+  {
+    const s = beamMotion.skip;
+    check(s.mid.head < s.mid.total && s.mid.clock < s.mid.routeEndMs,
+      `skip: taken mid-flight at ${s.mid.head.toFixed(2)} of ${s.mid.total.toFixed(2)} cells`);
+    check(!s.afterSkip.animating && Math.abs(s.afterSkip.progress.cells - s.afterSkip.progress.total) < 1e-9 && !s.afterSkip.progress.playing,
+      `it completes the presentation IMMEDIATELY: ${s.afterSkip.progress.cells.toFixed(2)}/${s.afterSkip.progress.total.toFixed(2)} cells, playing false, isAnimating false`);
+    check(s.afterSkip.lit === 1, `the target still lights - discovery and target state are never dropped by a skip`);
+    check(s.afterSkip.dbg.streaks === 0 && s.afterSkip.dbg.gain === 0,
+      `and no queued scatter or rings are replayed (${s.afterSkip.dbg.streaks} streaks, gain ${s.afterSkip.dbg.gain})`);
+  }
+  {
+    const r = beamMotion.reduced;
+    check(r.maxGain === 0, `reduced motion: no travelling pulse and no leading brightness at all (max gain ${r.maxGain})`);
+    check(r.maxStreaks === 0, `no scatter (${r.maxStreaks} streaks ever created)`);
+    check(r.chargeMs === r.wantCharge, `the charge collapses to m.reduced.chargeMs ${r.chargeMs} ms, unscaled`);
+    check(r.settled.disc.length === 1 && Math.abs(r.settled.disc[0].alpha - 0.65) < 1e-4,
+      `and the FLOOR dot, altitude widths, badges and the complete route are kept (${r.settled.disc.length} dot at ${r.settled.disc[0].alpha})`);
+  }
+  {
+    const r = beamMotion.retrace;
+    check(r.maxGain === 0 && r.maxSprites === 0 && r.dbg.chargeMs === 0,
+      `live retrace after an edit: no emitter charge, no pulse train, no scatter and no rings (gain ${r.maxGain}, sprites ${r.maxSprites}, charge ${r.dbg.chargeMs} ms)`);
+  }
+  {
+    const hb = beamMotion.heightBlind;
+    check(hb.sameRoute && hb.sameFilm,
+      `FLAT information boundary: two boards whose hidden columns differ by 3 levels but whose traced route is ` +
+      `identical produce a byte-identical beam presentation over ${hb.frames} sampled frames - no timing, ` +
+      `amplitude, colour, scale, delay or shape here is derived from terrain height`);
+  }
+  check(beamMotion.pool.maxLive <= beamMotion.pool.cap,
+    `the transient sprite pool never exceeds m.budget.transientSpritesMax (peak ${beamMotion.pool.maxLive} of ${beamMotion.pool.cap})`);
+
+  // ---- THE STOP. Every scene above ran to a halt; none of them moved again over 300 further frames. ----
+  for (const key of ['cmd', 'floor', 'fire', 'blocked', 'target', 'skip', 'reduced', 'retrace']) {
+    const s = beamMotion[key].stop;
+    check(!s.animating && s.stable && s.dbg.clock === s.dbg.animEndMs,
+      `STOP/${key}: isAnimating() false after ${s.frames} frames, clock landed EXACTLY on animEndMs ` +
+      `(${s.dbg.clock.toFixed(1)} ms), and 300 further frames changed nothing (${s.stable})`);
+  }
+
+  // ---- the modulation on the SCREEN: the pulse brightens the beam, and its trough is the settled baseline ----
+  // MOTION-DIRECTION 1: "the darkest pulse trough is the current baseline beam, so motion cannot temporarily
+  // disguise altitude". Measured as real framebuffer luminance over an 11x11 block on the beam.
+  const beamPixels = await page.evaluate(async () => {
+    const h = window.__h, r = h.render, S = window.LaserSim;
+    const raw = { name: 'STRAIGHT', par: 1, size: { w: 8, d: 8 },
+      terrain: ['00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000', '00000000'],
+      emitter: { x: 0, y: 4, dir: 'E' }, targets: [{ x: 7, y: 0 }], fixed: [], tray: ['MIRROR'] };
+    const level = S.parseLevel(raw), res = S.trace(level, []);
+    r.setLevel(level); r.setPlaced([]); r.setBeam(null);
+    h.fit(); await r.setCameraPreset('flat', { animate: false }); h.settle(900);
+    const gl = r._renderer.getContext(), dpr = r._renderer.getPixelRatio();
+    const rect = r._renderer.domElement.getBoundingClientRect(), N = 11, buf = new Uint8Array(N * N * 4);
+    const cell = { x: 3, y: 4 };
+    function lum() {
+      const p = r.projectCell(cell, 0);
+      const x = Math.round((p.x - rect.left) * dpr), y = Math.round(gl.drawingBufferHeight - (p.y - rect.top) * dpr);
+      gl.finish();
+      gl.readPixels(x - 5, y - 5, N, N, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+      let sum = 0;
+      for (let i = 0; i < N * N; i++) sum += buf[i * 4] + buf[i * 4 + 1] + buf[i * 4 + 2];
+      return sum;
+    }
+    r.setBeam(res, { animate: false, fired: false }); h.settle(1200); r.frame(0.016);
+    const baseline = lum();
+    r.setBeam(res, { animate: true, fired: true });
+    const series = [];
+    for (let i = 0; i < 400; i++) {
+      r.frame(1 / 60);
+      if (r.getBeamProgress().cells > 3.4 && r.getBeamProgress().playing) series.push(lum());
+      if (!r.needsFrame()) break;
+    }
+    r.frame(0.016);
+    const settled = lum();
+    return { baseline, settled, n: series.length,
+      min: series.length ? Math.min.apply(null, series) : -1, max: series.length ? Math.max.apply(null, series) : -1 };
+  });
+  check(beamPixels.n > 20 && beamPixels.max > beamPixels.baseline,
+    `the pulse train really reaches the framebuffer: over ${beamPixels.n} sampled frames the beam's luminance ` +
+    `peaks at ${beamPixels.max} against a settled baseline of ${beamPixels.baseline} (+${beamPixels.max - beamPixels.baseline})`);
+  check(beamPixels.min >= beamPixels.baseline,
+    `and its darkest trough is ${beamPixels.min}, never below that baseline - motion can never temporarily disguise altitude`);
+  check(Math.abs(beamPixels.settled - beamPixels.baseline) <= 3,
+    `when the modulation has faded the beam is back on its exact baseline (${beamPixels.settled} vs ${beamPixels.baseline})`);
+
+  // ---- draw calls: all the new decoration together, measured on the real renderer by toggling it off ----
+  // MOTION-DIRECTION 10 allows at most m.budget.newDrawCallsMax = 4 WebGL draw calls for ALL new contact,
+  // scatter, ring and footprint effects combined. The measurement hides exactly the new objects (the two
+  // instanced sprite meshes, and the target's band-shader rings) in the SAME frame and diffs renderer.info.
+  const beamCalls = await page.evaluate(async (scene) => {
+    const h = window.__h, r = h.render, M = window.LaserTheme.motion, S = window.LaserSim;
+    // a board whose one shot does everything at once: an acting MIRROR hit, then the target arrival
+    const level = S.parseLevel(scene.raw), res = S.trace(level, scene.placed);
+    r.setLevel(level); r.setPlaced(scene.placed); r.setBeam(null);
+    h.fit(); await r.setCameraPreset('tilt', { animate: false }); h.settle(900);
+    let sp = null; r._scene.traverse((o) => { if (o.name === 'beamSprites') sp = o; });
+    let fxg = null; r._scene.traverse((o) => { if (o.name === 'beamFx') fxg = o; });
+    const isNewRing = (o) => !!(o.material && o.material.userData && o.material.userData.uInner !== undefined);
+    r.setBeam(res, { animate: true, fired: true });
+    let best = null;
+    for (let i = 0; i < 600; i++) {
+      r.frame(1 / 60);
+      const sprites = sp.children.reduce((a, m) => a + m.count, 0);
+      const rings = fxg.children.filter(isNewRing).length;
+      if (sprites <= 0 && rings <= 0) continue;
+      const withAll = r._renderer.info.render.calls;
+      // material.visible, not object.visible: frame() recomputes each effect's object visibility every call
+      const hidden = fxg.children.filter(isNewRing);
+      sp.visible = false; hidden.forEach((o) => { o.material.visible = false; });
+      r.frame(0);
+      const without = r._renderer.info.render.calls;
+      sp.visible = true; hidden.forEach((o) => { o.material.visible = true; });
+      r.frame(0);
+      const cost = r._renderer.info.render.calls - without;
+      if (!best || cost > best.cost) best = { sprites, rings, withAll, without, cost };
+    }
+    h.settle(1500); r.frame(0.016);
+    return { best, hits: res.hits.length, pieces: res.pieceHits.length,
+      after: r._renderer.info.render.calls, budget: M.budget.newDrawCallsMax, needs: r.needsFrame() };
+  }, BEAM_SCENES.target);
+  check(!!beamCalls.best && beamCalls.best.sprites > 0 && beamCalls.best.cost <= beamCalls.budget,
+    `every new contact disc, scatter streak, spark, bounce dot and target ring on screen at once ` +
+    `(${beamCalls.best && beamCalls.best.sprites} sprites + ${beamCalls.best && beamCalls.best.rings} rings) costs ` +
+    `${beamCalls.best && beamCalls.best.cost} draw calls, within m.budget.newDrawCallsMax ${beamCalls.budget}`);
+  check(!beamCalls.needs, `and when it is over the renderer stops asking for frames (needsFrame ${beamCalls.needs})`);
 
   console.log('\n== measured fit (board box as a fraction of the limiting canvas dimension)');
   for (const k of Object.keys(measured)) {

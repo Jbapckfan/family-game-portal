@@ -203,6 +203,181 @@
     return tex;
   }
 
+  /* ---- DARKNESS (DESIGN.md 15) ----------------------------------------------------------------------------
+   * Fog of war as ONE TEXTURE, not as geometry. The obvious implementation - rebuild the terrain for the known set
+   * whenever a cell is learned - would re-merge and re-upload the whole board thirty times during a single shot,
+   * which is exactly the per-tap hitch the rest of this renderer is built to avoid. Instead the board's knowledge
+   * lives in a w x d byte texture (a 24x24 board is 2.3 KB) that every fogged material samples:
+   *
+   *   red channel = 0   the cell is unknown: its terrain, its pieces and its light leak are not drawn at all,
+   *                     its ground is painted theme.terrain.darkness.unknownColor and its grid outline lies flat
+   *                     on the board's ground plane, which is the "you can always see WHERE the world is" of 15.1.
+   *   red channel = 255 the cell is known: it renders EXACTLY as it would on a lit board (15.1's last rule), so
+   *                     the flat view's deception is untouched - the fog gates WHEN, never HOW.
+   *   in between        the ~400 ms arrival: the ground brightens, the column grows up out of it and the outline
+   *                     rides up with it. The stagger is free - main learns a cell as the travelling beam head
+   *                     reaches its centre, so a shot peels the board open along its own path.
+   *
+   * The value is sampled TWICE per fogged material: once in the vertex shader (only where geometry has to move,
+   * and only if the GL can do a vertex texture fetch - see setRise) and once in the fragment shader, from an
+   * INTERPOLATED board position rather than a varying of the vertex's own value. That second sample is what makes
+   * the single four-vertex ground slab correct: its corners are the board's corners, so a varying would smear one
+   * gradient across the whole board instead of resolving per cell.
+   */
+  function createFog(theme) {
+    var D = theme.terrain.darkness, C = D.unknownColorVec3;
+    var w = 1, d = 1, dark = false, instant = false;
+    var val = new Float32Array(1);     /* per cell, 0 unknown .. 1 known */
+    var live = [];                     /* indices still easing, so isAnimating() is O(1) */
+    var count = 0;                     /* cells whose goal is 1 (known), animating or not */
+    var data = new Uint8Array(4);
+    var tex = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat, THREE.UnsignedByteType);
+    tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter;
+    tex.wrapS = THREE.ClampToEdgeWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.generateMipmaps = false; tex.flipY = false; tex.needsUpdate = true;
+    markShared(tex);
+    /* ONE uniform object per name, shared by every fogged material: three reads `.value` each frame, so a single
+     * assignment here reaches all of them (the same trick render-terrain's uReveal and render-beam's uHead use). */
+    var uniforms = {
+      uFogMap: { value: tex },
+      uFogSize: { value: new THREE.Vector2(1, 1) },
+      uFogOn: { value: 0 },
+      uFogRise: { value: 1 },
+      uFogDark: { value: new THREE.Vector3(C[0], C[1], C[2]) },
+      uFogGrid: { value: D.unknownGridLevel },
+      uFogMin: { value: D.minVisible },
+      uFogGround: { value: D.gridKnownAt }
+    };
+
+    function alloc(W, H) {
+      if (W === w && H === d) return;
+      w = W; d = H;
+      val = new Float32Array(w * d);
+      data = new Uint8Array(w * d * 4);
+      tex.dispose();
+      tex = new THREE.DataTexture(data, w, d, THREE.RGBAFormat, THREE.UnsignedByteType);
+      tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter;
+      tex.wrapS = THREE.ClampToEdgeWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
+      tex.generateMipmaps = false; tex.flipY = false;
+      markShared(tex);
+      uniforms.uFogMap.value = tex;
+      uniforms.uFogSize.value.set(w, d);
+    }
+    function writeTexel(i) {
+      var v = Math.round(clamp(val[i], 0, 1) * 255), o = i * 4;
+      data[o] = v; data[o + 1] = v; data[o + 2] = v; data[o + 3] = 255;
+    }
+    function flush() { tex.needsUpdate = true; }
+    function paintAll() { for (var i = 0; i < w * d; i++) writeTexel(i); flush(); }
+
+    /* A dark level starts with every cell at 0 and is told its seed set (the emitter and the targets, 15.1) plus
+     * whatever the player already knew. A LIT level is simply every cell at 1 with uFogOn 0, so the fogged shaders
+     * are inert and cost one uniform compare. */
+    function setBoard(W, H, isDark) {
+      alloc(W, H);
+      dark = !!isDark;
+      live.length = 0; count = 0;
+      var i, n = w * d, v = dark ? 0 : 1;
+      for (i = 0; i < n; i++) val[i] = v;
+      if (!dark) count = n;
+      uniforms.uFogOn.value = dark ? 1 : 0;
+      paintAll();
+    }
+    function index(x, y) {
+      x = Math.round(x); y = Math.round(y);
+      if (x < 0 || y < 0 || x >= w || y >= d) return -1;
+      return y * w + x;
+    }
+    /* `now` skips the arrival animation: used for the cells a level opens with, for a restored save and whenever
+     * prefers-reduced-motion is on. Discovery only ever accumulates (15.1), so there is no un-learn. */
+    function learn(x, y, now) {
+      var i = index(x, y);
+      if (i < 0 || val[i] >= 1) return false;
+      if (val[i] === 0) count++;
+      if (now || instant) { val[i] = 1; writeTexel(i); flush(); return true; }
+      if (live.indexOf(i) < 0) live.push(i);
+      return true;
+    }
+    function learnAll(cells, now) {
+      var changed = false, i;
+      if (!cells) return false;
+      for (i = 0; i < cells.length; i++) {
+        if (!cells[i]) continue;
+        if (learn(cells[i].x, cells[i].y, now)) changed = true;
+      }
+      return changed;
+    }
+    function step(dt) {
+      if (!live.length) return false;
+      var ms = Math.max(1, D.revealMs), i, k;
+      for (i = live.length - 1; i >= 0; i--) {
+        k = live[i];
+        val[k] += dt * 1000 / ms;
+        if (val[k] >= 1) { val[k] = 1; live.splice(i, 1); }
+        writeTexel(k);
+      }
+      flush();
+      return true;
+    }
+    function isAnimating() { return live.length > 0; }
+    function value(x, y) { var i = index(x, y); return i < 0 ? 0 : val[i]; }
+    function known(x, y) { var i = index(x, y); return i >= 0 && val[i] > 0; }
+    /* Vertex texture fetch is what lets the column grow and the outline ride up. Every GL this game ships on has
+     * it; a hypothetical one that does not still gets the whole fog, just without the geometry moving. */
+    function setRise(on) { uniforms.uFogRise.value = on ? 1 : 0; }
+    function setInstant(on) {
+      instant = !!on;
+      if (instant && live.length) { while (live.length) { var i = live.pop(); val[i] = 1; writeTexel(i); } flush(); }
+    }
+    function dispose() { tex.dispose(); }
+
+    return { __version: 1, uniforms: uniforms, setBoard: setBoard, learn: learn, learnAll: learnAll, step: step,
+      isAnimating: isAnimating, value: value, known: known, setRise: setRise, setInstant: setInstant,
+      isDark: function () { return dark; }, count: function () { return count; },
+      total: function () { return w * d; }, size: function () { return { w: w, d: d }; }, dispose: dispose };
+  }
+
+  /* GLSL the fogged materials share. `mode` says what the VERTEX shader does with the value:
+   *   'none'  nothing moves (the ground slab: it IS the board's ground plane)
+   *   'rise'  transformed.y *= k       (terrain tops, sides and light leaks grow out of the ground)
+   *   'lift'  transformed.y = mix(ground, transformed.y, k)   (the grid outline, which is drawn at the column's
+   *           own top on a lit board and must lie on the ground plane until the cell is known - 15.1)
+   * and `tint` what the FRAGMENT shader does with it:
+   *   'mix'    toward the fog colour, and GONE below uFogMin - the terrain proper, which 15.1 says is simply not
+   *            drawn until the beam has been there
+   *   'ground' toward the fog colour and never gone: the board's ground plane, which is the surface an unknown
+   *            cell still shows (and must, or the page's own background shows through and an unexplored board
+   *            comes out BRIGHTER than an explored one)
+   *   'grid'   toward the fog colour, but only as far as uFogGrid, so the outline is ALWAYS drawn
+   *   'alpha'  scale colour and alpha (the additive light leak, which cannot be darkened by mixing)
+   * The fragment always re-samples from the interpolated board position, never from a varying of the vertex's own
+   * value: the ground slab has four vertices and the whole board between them.
+   */
+  function fogShader(shader, fog, mode, tint) {
+    var u = fog.uniforms, k;
+    for (k in u) if (Object.prototype.hasOwnProperty.call(u, k)) shader.uniforms[k] = u[k];
+    var head = 'uniform sampler2D uFogMap;\nuniform vec2 uFogSize;\nuniform float uFogOn;\nuniform float uFogRise;\n' +
+      'uniform vec3 uFogDark;\nuniform float uFogGrid;\nuniform float uFogMin;\nuniform float uFogGround;\n' +
+      'varying vec2 vFogPos;\n';
+    var vert = '\n vFogPos = vec2(position.x, -position.z);\n';
+    if (mode !== 'none') {
+      vert += ' if (uFogOn > 0.5 && uFogRise > 0.5) {\n' +
+        '   float fk = texture2D(uFogMap, (floor(vFogPos + 0.5) + 0.5) / uFogSize).r;\n' +
+        (mode === 'lift' ? '   transformed.y = mix(uFogGround, transformed.y, fk);\n' : '   transformed.y *= fk;\n') +
+        ' }\n';
+    }
+    shader.vertexShader = head + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>' + vert);
+    var frag = '\n if (uFogOn > 0.5) {\n' +
+      '   float fk = texture2D(uFogMap, (floor(vFogPos + 0.5) + 0.5) / uFogSize).r;\n';
+    if (tint === 'grid') frag += '   gl_FragColor.rgb = mix(uFogDark, gl_FragColor.rgb, mix(uFogGrid, 1.0, fk));\n';
+    else if (tint === 'ground') frag += '   gl_FragColor.rgb = mix(uFogDark, gl_FragColor.rgb, fk);\n';
+    else if (tint === 'alpha') frag += '   if (fk < uFogMin) discard;\n   gl_FragColor.rgb *= fk;\n   gl_FragColor.a *= fk;\n';
+    else frag += '   if (fk < uFogMin) discard;\n   gl_FragColor.rgb = mix(uFogDark, gl_FragColor.rgb, fk);\n';
+    frag += ' }\n';
+    shader.fragmentShader = head + shader.fragmentShader.replace('#include <dithering_fragment>', '#include <dithering_fragment>' + frag);
+    return shader;
+  }
+
   /* Soft radial glow (halo) or a starburst with `streaks` glass-like rays. */
   function glowTexture(color, streaks) {
     var s = 128, c = makeCanvas(s, s), ctx = c.getContext('2d'), i;
@@ -292,6 +467,7 @@
     world: world, matFromSpec: matFromSpec, grainTexture: grainTexture,
     mergeGeometries: mergeGeometries, boxAt: boxAt,
     badgeTexture: badgeTexture, glowTexture: glowTexture, leakTexture: leakTexture, openMask: openMask,
+    createFog: createFog, fogShader: fogShader,
     disposeObject: disposeObject, clearGroup: clearGroup, smoothstep: smoothstep, clamp: clamp, convexHull2D: convexHull2D,
     markShared: markShared, markSharedAll: markSharedAll, isShared: isShared
   };

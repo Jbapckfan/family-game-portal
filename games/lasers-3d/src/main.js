@@ -6,8 +6,11 @@
  */
 (function (root) {
   'use strict';
-  var TYPES = ['MIRROR', 'WEDGE', 'DIP'];
   var REVEAL_LEVELS = { 3: true, 4: true };   /* 0-based: levels 4 and 5 play the free reveal once */
+  /* DESIGN.md 15: the alphabet the discovered set is packed into, four cells per character. Module scope, not
+   * start()'s: everything after start()'s `return finishApp()` is a hoisted function DECLARATION, so a `var`
+   * initialiser down there is hoisted to undefined and never assigned. */
+  var HEX = '0123456789abcdef';
 
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
   function sameCell(a, b) { return !!a && !!b && a.x === b.x && a.y === b.y; }
@@ -16,6 +19,9 @@
   function start(opts) {
     opts = opts || {};
     var theme = root.LaserTheme, sim = root.LaserSim, Pieces = root.LaserPieces, Trace = root.LaserMainTrace;
+    /* The piece set is the registry's. Everything that used to be a literal ['MIRROR', 'WEDGE', 'DIP'] in here -
+     * the tray count, the number keys - reads it, so a fourth piece (DESIGN.md 14) or a fifth needs no edit. */
+    var TYPES = (Pieces && Pieces.TYPES && Pieces.TYPES.length) ? Pieces.TYPES.slice() : ['MIRROR', 'WEDGE', 'DIP'];
     var LEVELS = root.LASER_LEVELS || root.LEVELS || [];
     var rootEl = opts.root || document.getElementById('app'), canvas = opts.canvas || document.getElementById('board');
     var reducedMotion = !!(root.matchMedia && theme.reducedMotion && root.matchMedia(theme.reducedMotion.mediaQuery).matches);
@@ -24,7 +30,10 @@
       fires: 0, tiltsUsed: 0, hintUsed: false, result: null, status: 'idle', isFlat: true, canFit: false, viewToggle: null, revealPlaying: false,
       resetting: false, readout: null, traceStartedAt: 0,
       placedDirty: false, fireDirty: false, cues: [], drag: null, hintGhost: null, hintTimer: null, pendingIntro: null, camDirty: false,
-      version: 0, pushed: -1, nudged: false, dirty: true, frames: 0 };
+      version: 0, pushed: -1, nudged: false, dirty: true, frames: 0,
+      /* DESIGN.md 15: fog of war. `known` is the level's whole discovered set, `discoveries` the queue a shot is
+       * still paying out as its beam travels, `knownDirty` whether the set has moved since it was last saved. */
+      dark: false, known: null, discoveries: [], knownDirty: false };
     var resetToken = 0, victoryTimer = null, rafId = 0, last = 0, destroyed = false, docListeners = [];
 
     /* Dirty rendering (S13): a WebGL frame every 16 ms for ever, on a phone, for a board that is not moving, is
@@ -48,12 +57,14 @@
     function pieceAt(cell) { for (var i = 0; i < S.placed.length; i++) if (S.placed[i].x === cell.x && S.placed[i].y === cell.y) return S.placed[i]; return null; }
     function fixedAt(cell) { var f = S.level ? S.level.fixed : [], i; for (i = 0; i < f.length; i++) if (f[i].x === cell.x && f[i].y === cell.y) return f[i]; return null; }
     function remaining() {
-      var r = { MIRROR: 0, WEDGE: 0, DIP: 0 }, i;
+      var r = {}, i;
+      for (i = 0; i < TYPES.length; i++) r[TYPES[i]] = 0;
       if (!S.level) return r;
-      for (i = 0; i < S.level.tray.length; i++) r[S.level.tray[i]]++;
-      for (i = 0; i < S.placed.length; i++) r[S.placed[i].type]--;
+      for (i = 0; i < S.level.tray.length; i++) if (r[S.level.tray[i]] !== undefined) r[S.level.tray[i]]++;
+      for (i = 0; i < S.placed.length; i++) if (r[S.placed[i].type] !== undefined) r[S.placed[i].type]--;
       return r;
     }
+    function trayTotal() { var r = remaining(), n = 0, k; for (k in r) if (Object.prototype.hasOwnProperty.call(r, k)) n += r[k]; return n; }
     /* Three INDEPENDENT criteria, never an ordinal count (S3): a hinted blind solve earns solve + blind, not "2". */
     function attemptStars() {
       return { solved: true, par: !!(S.level && S.placed.length <= S.level.par && !S.hintUsed), blind: S.tiltsUsed === 0 };
@@ -133,10 +144,127 @@
     function finishApp() {
       var app = { state: S, sim: sim, render: render, input: input, ui: ui, audio: audio, theme: theme, levels: LEVELS,
         loadLevel: loadLevel, fire: fire, reset: reset, undo: undo, redo: redo, hint: hint, tilt: tilt, setPlaced: setPlaced,
+        /* DESIGN.md 15 test/debug surface: the level's discovered set and a way to grow it without firing. */
+        knownList: knownList, learnCells: learnCells, saveKnown: saveKnown,
         getViewModel: getViewModel, getProgress: function () { return progress; }, step: step, destroy: destroy, __version: 1 };
       root.__lasers3d = app;
       root.__laser = { main: app, render: render, sim: sim, ui: ui, input: input, audio: audio };
       return app;
+    }
+
+    /* ------------------------------------------------- darkness (DESIGN.md 15) */
+    /* A level may carry `dark: true`. On such a level the board's terrain, pieces, targets and openings are not
+     * drawn until a beam has been in the cell; the grid outline always is, so the board's extent and every tap
+     * target stay visible. main owns WHAT is known - it is game state, the renderer only owns how it arrives.
+     *
+     * THE SET IS A BITMASK, ONE BYTE PER CELL, and it is:
+     *   seeded  with the emitter's cell and every target's cell (15.1: a puzzle whose goal you cannot see is a
+     *           maze, not a puzzle);
+     *   grown   only ever grown, one cell at a time, as the travelling beam head reaches each cell's centre;
+     *   kept    across RESET (resetAttempt deliberately does not touch it) and across leaving and re-entering the
+     *           level, because 15.1 calls re-learning a board tedium rather than difficulty;
+     *   SAVED   to the same progress record that already holds stars, seen intros and consumed reveals.
+     *
+     * The save is the one call this file makes that 15.1 does not spell out, so here is the reasoning: a page
+     * reload is the strongest form of "leaving and re-entering the level", and the rule it would otherwise break is
+     * the one written in the spec's own voice - fog of war, not punishment. A child who closes the tab and comes
+     * back to a 24x24 board should not have to re-survey it. Everything else in this game that costs the player
+     * time to earn already survives a reload; discovery is no different.
+     *
+     * A saved mask is only restored when the level it was saved for is still THAT level: the record carries the
+     * board's size and a fingerprint of its terrain, emitter and targets, and a mismatch is discarded silently.
+     * The level set is regenerated from the solver, so index 17 is not a stable identity and a stale mask would
+     * un-hide a board the player has never actually seen. */
+    function levelIsDark(parsed, raw) {
+      /* The `dark` flag is the ENGINE's to validate and carry (parseLevel), and this is the seam between the two
+       * modules, so read the parsed level first and fall back to the raw one - the same tolerance the renderer's
+       * `openings` adapter uses, and for the same reason. */
+      if (parsed && parsed.dark !== undefined) return !!parsed.dark;
+      return !!(raw && raw.dark);
+    }
+    /* FNV-1a over everything that makes this board THIS board. Cheap, stable across sessions, and it changes the
+     * moment the generator moves a wall. */
+    function fingerprint(parsed) {
+      var str = parsed.size.w + 'x' + parsed.size.d + '|', h = 0x811c9dc5, i;
+      for (i = 0; i < parsed.t.length; i++) str += parsed.t[i].join('') + ';';
+      str += '|' + parsed.emitter.x + ',' + parsed.emitter.y + ',' + parsed.emitter.dir + '|';
+      for (i = 0; i < parsed.targets.length; i++) str += parsed.targets[i].x + ',' + parsed.targets[i].y + ';';
+      for (i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0; }
+      return h.toString(36);
+    }
+    function packKnown(mask, n) {
+      var out = '', i, v;
+      for (i = 0; i < n; i += 4) {
+        v = (mask[i] ? 1 : 0) | (mask[i + 1] ? 2 : 0) | (mask[i + 2] ? 4 : 0) | (mask[i + 3] ? 8 : 0);
+        out += HEX.charAt(v);
+      }
+      return out;
+    }
+    function unpackKnown(str, n) {
+      var mask = new Uint8Array(n), i, v, k;
+      if (typeof str !== 'string') return mask;
+      for (i = 0; i < n; i += 4) {
+        v = HEX.indexOf(str.charAt(i >> 2));
+        if (v < 0) continue;
+        for (k = 0; k < 4 && i + k < n; k++) mask[i + k] = (v >> k) & 1;
+      }
+      return mask;
+    }
+    function countMask(mask) { var n = 0, i; for (i = 0; i < mask.length; i++) if (mask[i]) n++; return n; }
+    /* Build (or restore) this level's known set. Always returns a usable record, even with no save and no storage. */
+    function makeKnown(parsed) {
+      var w = parsed.size.w, d = parsed.size.d, n = w * d, fp = fingerprint(parsed);
+      var rec = bag('known')[String(S.levelIndex)], mask = null, i;
+      if (rec && typeof rec === 'object' && rec.w === w && rec.d === d && rec.f === fp) mask = unpackKnown(rec.b, n);
+      if (!mask) mask = new Uint8Array(n);
+      mask[parsed.emitter.y * w + parsed.emitter.x] = 1;                       /* 15.1: known from the start */
+      for (i = 0; i < parsed.targets.length; i++) mask[parsed.targets[i].y * w + parsed.targets[i].x] = 1;
+      return { w: w, d: d, f: fp, cells: mask, count: countMask(mask) };
+    }
+    function knownList() {
+      var out = [], K = S.known, x, y;
+      if (!K) return out;
+      for (y = 0; y < K.d; y++) for (x = 0; x < K.w; x++) if (K.cells[y * K.w + x]) out.push({ x: x, y: y });
+      return out;
+    }
+    /* Push the whole set to the renderer at once, with no arrival animation: a level that opened by easing thirty
+     * cells in would read as a title card rather than as a board. */
+    function applyDarkness() {
+      if (!render) return;
+      render.setDarkness({ dark: S.dark, known: S.dark ? knownList() : null });
+    }
+    function learnCells(cells) {
+      if (!S.dark || !S.known || !cells || !cells.length) return;
+      var fresh = [], K = S.known, i, c, idx;
+      for (i = 0; i < cells.length; i++) {
+        c = cells[i];
+        if (!c || c.x < 0 || c.y < 0 || c.x >= K.w || c.y >= K.d) continue;
+        idx = c.y * K.w + c.x;
+        if (K.cells[idx]) continue;
+        K.cells[idx] = 1; K.count++;
+        fresh.push({ x: c.x, y: c.y });
+      }
+      if (!fresh.length) return;
+      if (render) render.revealCells(fresh);      /* the renderer eases each one in; main only says WHICH */
+      S.knownDirty = true;
+      bump();
+    }
+    /* Saved once a shot is over rather than once per cell: a 40-cell beam would otherwise serialise the board forty
+     * times while the animation was still playing. */
+    function saveKnown() {
+      if (!S.knownDirty || !S.known) return;
+      S.knownDirty = false;
+      var K = S.known;
+      bag('known')[String(S.levelIndex)] = { w: K.w, d: K.d, f: K.f, b: packKnown(K.cells, K.w * K.d) };
+      ui.saveProgress(progress);
+    }
+    /* Everything the CURRENT shot still has to teach, drained as the beam head passes each cell (15.2: a shot is an
+     * expedition, so the board opens along the beam rather than all at once when the trigger is pulled). */
+    function drainDiscoveries(upTo) {
+      if (!S.discoveries.length) return;
+      var take = [];
+      while (S.discoveries.length && S.discoveries[0].dist <= upTo + 1e-6) take.push(S.discoveries.shift());
+      learnCells(take);
     }
 
     /* ------------------------------------------------------- levels */
@@ -151,11 +279,17 @@
       cancelReveal(); cancelReset(); cancelHint(); S.drag = null;
       if (victoryTimer) { clearTimeout(victoryTimer); victoryTimer = null; }
       if (audio) audio.stop('travel');   /* a level change mid-FIRE must not leave the travel loop droning */
+      saveKnown();                       /* a level change mid-shot must not lose what that shot already taught */
       S.levelIndex = index; S.level = parsed; S.solution = Array.isArray(raw.solution) && raw.solution.length ? clone(raw.solution) : null;
       resetAttempt();
       S.cursorCell = null; S.nudged = false;
+      /* DESIGN.md 15: the fog is decided BEFORE anything is drawn, and restored from the save, so a level the
+       * player has already surveyed opens showing what they surveyed rather than flashing a dark board first. */
+      S.dark = levelIsDark(parsed, raw);
+      S.known = makeKnown(parsed);
+      S.knownDirty = false;
       if (render) {
-        render.setLevel(parsed); render.setCameraPreset('flat', { animate: false });
+        render.setLevel(parsed); applyDarkness(); render.setCameraPreset('flat', { animate: false });
         render.setSelection(null); render.setGhost(null); render.setCursor(null); render.setHover(null);
       }
       if (input) input.setCursor(null);
@@ -166,9 +300,13 @@
       return true;
     }
     function nextLevel() { if (!loadLevel(S.levelIndex + 1)) ui.showLevelSelect(); }
+    /* Note what is NOT here: S.known. DESIGN.md 15.1 - "RESET keeps what is known" - so discovery is not part of an
+     * attempt at all, it is part of the level. The in-flight `discoveries` queue IS cleared: it belongs to a shot
+     * that is being abandoned, and anything it had already paid out is in S.known already. */
     function resetAttempt() {
       S.placed = []; S.history = []; S.future = []; S.fires = 0; S.tiltsUsed = 0; S.hintUsed = false; S.status = 'idle';
       S.result = null; S.selectedTray = null; S.selectedCell = null; S.cues = []; S.fireDirty = false; S.readout = null;
+      S.discoveries = [];
       ui.hidePieceControls();
     }
     /* S4: RESET used to zero tiltsUsed and re-enable input while the camera was still swinging back from tilted,
@@ -294,8 +432,7 @@
       if (fixedAt(cell)) { ui.flashInvalid('cell'); play('invalid'); ui.showToast('That piece is bolted down.', { kind: 'danger' }); return; }
       if (S.selectedTray) { placeAt(cell, S.selectedTray); return; }
       clearSelection();
-      var r = remaining();
-      if (!S.nudged && (r.MIRROR + r.WEDGE + r.DIP) > 0) { S.nudged = true; ui.showToast('Pick a piece from the tray first.', { kind: 'info' }); }
+      if (!S.nudged && trayTotal() > 0) { S.nudged = true; ui.showToast('Pick a piece from the tray first.', { kind: 'info' }); }
     }
     function onDragPiece(phase, p) {
       if (phase === 'start') { if (busy()) return; S.drag = { from: p.from, piece: p.piece, over: null }; clearSelection(); cancelHint(); refreshGhost(); return; }
@@ -363,6 +500,10 @@
       if (render) { render.setPlaced(S.placed); render.setBeam(S.result, { animate: fired, fired: fired }); }
       if (fired) {
         S.cues = Trace.cues(S.level, S.result);
+        /* DESIGN.md 15: a FIRED shot is what surveys the board. The live retrace after every edit draws a beam but
+         * teaches nothing - 15.2 makes the shot the expedition, and a preview that lit the route would leave the
+         * FIRE button with nothing left to do. The queue is paid out cell by cell as the head travels. */
+        S.discoveries = S.dark ? Trace.discoveries(S.level, S.result) : [];
         if (audio) { audio.setLevel(S.result.segments.length ? S.result.segments[0].from.z : 0); audio.play('travel'); }
         if (!render) finishTrace();
       }
@@ -370,6 +511,7 @@
     }
     function pollTrace() {
       var p = render ? render.getBeamProgress() : { playing: false, cells: Infinity };
+      drainDiscoveries(p.cells);          /* the board opens along the beam, in step with it */
       while (S.cues.length && S.cues[0].dist <= p.cells + 1e-6) {
         var c = S.cues.shift();
         if (c.kind === 'hit') play('hit'); else if (audio) audio.setLevel(c.z);
@@ -379,6 +521,10 @@
     function finishTrace() {
       if (audio) audio.stop('travel');
       S.cues = [];
+      /* Whatever the head did not reach - because the player skipped the animation, or because there is no
+       * renderer at all - is learned now. A shot always teaches the whole of its own path. */
+      drainDiscoveries(Infinity);
+      saveKnown();
       var r = S.result;
       S.readout = Trace.readout(S.level, r, root.LaserUI.endText);   /* what the beam did, in kid language (S5/S10) */
       if (r && r.allTargetsHit) { win(); return; }
@@ -468,7 +614,9 @@
         camera: S.isFlat ? 'flat' : 'tilt', isFlat: S.isFlat,
         muted: !!progress.muted, canUndo: S.history.length > 0, canRedo: S.future.length > 0,
         revealPlaying: S.revealPlaying, cameraBusy: S.resetting,
-        readout: S.readout, hintAvailable: !!S.solution, canFit: !!S.canFit, viewToggle: S.viewToggle };
+        readout: S.readout, hintAvailable: !!S.solution, canFit: !!S.canFit, viewToggle: S.viewToggle,
+        /* DESIGN.md 15: the HUD says the level is dark and how much of it the player has uncovered. */
+        dark: S.dark, known: S.known ? S.known.count : 0, knownTotal: S.known ? S.known.w * S.known.d : 0 };
     }
     function step(dt) {
       S.dirty = false; S.frames++;
@@ -497,7 +645,9 @@
       else last = 0;
     }
     function destroy() {
-      if (destroyed) return; destroyed = true;
+      if (destroyed) return;
+      saveKnown();
+      destroyed = true;
       if (rafId) cancelAnimationFrame(rafId);
       rafId = 0; cancelReveal(); cancelReset(); cancelHint();
       if (victoryTimer) clearTimeout(victoryTimer);

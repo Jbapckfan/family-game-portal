@@ -377,7 +377,19 @@ try {
         // the bounding-box auto-fit itself, with the min-cell clamp removed, must always hit the target
         check(m.fitPct >= TARGET[v] - 1e-6 && m.fitPct <= 1 + 1e-6,
           `${vp.name} ${board} ${v}: bounding-box fit alone fills ${pct(m.fitPct)} (target ${pct(TARGET[v])})`);
-        check(m.cellPx >= info.minCellPx - 1e-6, `${vp.name} ${board} ${v}: getCellPx() ${m.cellPx.toFixed(1)} >= ${info.minCellPx}`);
+        /* Each view gets the framing it is FOR, so the assertion differs by view.
+         * FLAT is where the player taps individual cells, so cells must never fall below the touch floor.
+         * TILT is bought with the third star and exists to show the board's SHAPE at once, so it frames the whole
+         * board and cells are allowed below the floor. Requiring the touch floor in tilt is what produced a canyon
+         * of blocks filling the screen on a 24x24 board instead of the isometric model of the whole thing. */
+        if (v === 'flat') {
+          check(m.cellPx >= info.minCellPx - 1e-6,
+            `${vp.name} ${board} flat: getCellPx() ${m.cellPx.toFixed(1)} >= ${info.minCellPx} (flat is the tapping view)`);
+        } else {
+          check(m.pct >= TARGET[v] - 1e-6 && m.pct <= 1 + 1e-6,
+            `${vp.name} ${board} tilt: the WHOLE board is on screen, filling ${pct(m.pct)} of the limiting dimension ` +
+            `(cells ${m.cellPx.toFixed(1)} px, below the touch floor by design)`);
+        }
       }
     }
   }
@@ -837,6 +849,149 @@ try {
   await page.evaluate(async () => { const h = window.__h; await h.view('flat'); h.settle(900); });
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(shots, 'arch-flat-desktop.png') });
+
+  // ================================================================================================
+  // DARKNESS (DESIGN.md 15). A dark level draws nothing of the world until a beam has been in the cell, and the
+  // grid outline over the ground plane always. The feature is a GATE ON TIME, so it is tested as two opposite
+  // statements about the SAME board (the arch board, dark and lit, drawing the identical beam):
+  //   (a) nothing known  -> the terrain is not drawn at all, and the board still shows its grid and its extent;
+  //   (b) everything known -> BYTE-IDENTICAL to the lit board, because 15.1 says a known cell renders exactly as
+  //       it would on a lit board and darkness only decides when the player sees it.
+  // Plus: the seed set (15.1's "the emitter and every target are known from the start"), and the arrival - which
+  // must produce frames, keep asking for them, and then stop, because rendering is dirty-driven and a fog that
+  // never cleared its flag would pin a phone's GPU on for ever.
+  // ================================================================================================
+  console.log('\n== darkness (DESIGN.md 15)');
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.waitForTimeout(150);
+
+  // (0) the seed: the emitter's cell and every target's cell, and nothing else
+  const seed = await page.evaluate(() => {
+    const h = window.__h; h.load('dark'); h.fit(); h.view('flat'); h.settle(300);
+    const L = h.level, f = h.fog();
+    const others = [];
+    for (let y = 0; y < L.size.d; y++) for (let x = 0; x < L.size.w; x++) {
+      if (x === L.emitter.x && y === L.emitter.y) continue;
+      if (L.targets.some((t) => t.x === x && t.y === y)) continue;
+      if (h.fogAt(x, y) !== 0) others.push([x, y]);
+    }
+    return { dark: f.dark, on: f.on, known: f.known, total: f.total, targets: L.targets.length,
+      emitter: h.fogAt(L.emitter.x, L.emitter.y), target: h.fogAt(L.targets[0].x, L.targets[0].y),
+      wall: h.fogAt(3, 3), others };
+  });
+  check(seed.dark && seed.on === 1, `dark level: fog on (uFogOn ${seed.on}), ${seed.total} cells`);
+  check(seed.emitter === 1 && seed.target === 1,
+    `the emitter's cell and the target's cell are known from the start (${seed.emitter} / ${seed.target})`);
+  check(seed.known === 1 + seed.targets && seed.others.length === 0,
+    `and NOTHING else is: ${seed.known} known of ${seed.total} = emitter + ${seed.targets} target(s), ` +
+    `${seed.others.length} other cells known`);
+  check(seed.wall === 0, `a tall wall the beam has not reached is unknown (fog ${seed.wall})`);
+
+  // (1) an unknown cell draws NO terrain: its lid is gone and the pixel is the fog ground, not the block top.
+  //     Sampled in TILT, where a 3-high column is unmistakable, at the cell's own projected top.
+  const hidden = await page.evaluate(() => {
+    const h = window.__h;
+    function sampleTop(cell) {   // the pixel at the cell's centre, at the column's own height
+      const r = h.render, gl = r._renderer.getContext(), rect = r._renderer.domElement.getBoundingClientRect();
+      const dpr = r._renderer.getPixelRatio(), p = r.projectCell(cell, 0), buf = new Uint8Array(4);
+      r.frame(0.016); gl.finish();
+      gl.readPixels(Math.round((p.x - rect.left) * dpr), Math.round(gl.drawingBufferHeight - (p.y - rect.top) * dpr), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+      return Array.prototype.slice.call(buf, 0, 3);
+    }
+    const cell = { x: 4, y: 8 };                       // a lone solid column, height 3, well clear of the beam
+    h.load('dark'); h.fit(); h.view('tilt'); h.settle(900);
+    const unknown = sampleTop(cell), fogK = h.fogAt(cell.x, cell.y);
+    h.reveal([cell]); h.settle(900);
+    const known = sampleTop(cell);
+    h.load('arch'); h.fit(); h.view('tilt'); h.settle(900);
+    const lit = sampleTop(cell);
+    return { cell, unknown, known, lit, fogK, dark: h.theme.terrain.darkness.unknownColor };
+  });
+  const near = (a, b, tol) => a.every((v, i) => Math.abs(v - b[i]) <= tol);
+  check(hidden.fogK === 0 && !near(hidden.unknown, hidden.lit, 12),
+    `an unknown 3-high column draws no terrain: (${hidden.cell.x},${hidden.cell.y}) reads rgb(${hidden.unknown}) ` +
+    `where the lit board draws rgb(${hidden.lit})`);
+  check(hidden.unknown.every((v) => v < 40),
+    `and what is there instead is the fog ground ${hidden.dark}, not a block top: rgb(${hidden.unknown})`);
+  check(near(hidden.known, hidden.lit, 2),
+    `revealing that one cell brings the column back exactly as the lit board draws it: rgb(${hidden.known}) vs rgb(${hidden.lit})`);
+
+  // (2) 15.1's last rule, as a whole-framebuffer diff. Dark + everything known must be pixel-identical to lit.
+  for (const view of ['flat', 'tilt']) {
+    const same = await page.evaluate((v) => window.__h.diffScenes('arch', 'dark', v, true), view);
+    check(!same.error && same.diff === 0,
+      `${view.toUpperCase()}: a dark board with every cell known is pixel-identical to the lit board ` +
+      `(${same.diff} of ${same.pixels} pixels differ, max channel delta ${same.maxDelta})`);
+  }
+  // ...and the opposite direction, so the diff above is not passing because the fog does nothing at all.
+  for (const view of ['flat', 'tilt']) {
+    const gone = await page.evaluate((v) => window.__h.diffScenes('arch', 'dark', v, false), view);
+    check(!gone.error && gone.pct > 0.05,
+      `${view.toUpperCase()}: with only the seed known the same board differs from the lit one over ` +
+      `${pct(gone.pct)} of the frame (max channel delta ${gone.maxDelta})`);
+  }
+
+  // (3) the grid outline is ALWAYS drawn (15.1), so the board's extent and every tap target survive the dark.
+  const extent = await page.evaluate(() => {
+    const h = window.__h;
+    h.load('dark'); h.fit(); h.view('flat'); h.settle(600);
+    const lines = [];
+    h.render._scene.traverse((o) => { if (o.isLineSegments) lines.push({ visible: o.visible, verts: o.geometry.getAttribute('position').count }); });
+    const box = h.render.getBoardScreenBox();
+    const corner = h.render.pickCell(h.render.projectCell({ x: 0, y: 0 }, 0).x, h.render.projectCell({ x: 0, y: 0 }, 0).y);
+    const far = h.render.pickCell(h.render.projectCell({ x: 11, y: 11 }, 0).x, h.render.projectCell({ x: 11, y: 11 }, 0).y);
+    return { lines, box: { w: +box.width.toFixed(1), h: +box.height.toFixed(1) }, corner, far, cells: h.level.size.w * h.level.size.d };
+  });
+  check(extent.lines.length === 1 && extent.lines[0].visible && extent.lines[0].verts === extent.cells * 8,
+    `the grid outline is drawn for every one of the ${extent.cells} cells, dark or not ` +
+    `(${extent.lines[0] && extent.lines[0].verts} line vertices)`);
+  check(extent.corner && extent.corner.x === 0 && extent.corner.y === 0 && extent.far && extent.far.x === 11 && extent.far.y === 11,
+    `an unknown cell is still tappable: pick(0,0) -> ${JSON.stringify(extent.corner)}, pick(11,11) -> ${JSON.stringify(extent.far)}`);
+
+  // (4) the arrival: frames are produced, needsFrame() stays true through it and goes false at the end. A missed
+  //     dirty flag would freeze the board mid-reveal; a flag that never cleared would never let it sleep.
+  const arrive = await page.evaluate(() => {
+    const h = window.__h;
+    h.load('dark'); h.fit(); h.view('flat'); h.settle(900);
+    return { run: h.revealTrace({ x: 4, y: 8 }), ms: h.theme.terrain.darkness.revealMs };
+  });
+  const vals = arrive.run.values;
+  check(arrive.run.before === 0 && arrive.run.needsAfterCall === true,
+    `revealing a cell marks the scene dirty at once (needsFrame ${arrive.run.needsAfterCall} with the cell at ${arrive.run.before})`);
+  check(vals.length > 3 && vals.every((v, i) => i === 0 || v > vals[i - 1]) && arrive.run.after === 1,
+    `the arrival eases over ${vals.length} frames, strictly increasing, and lands on 1 ` +
+    `(${vals.slice(0, 3).join(' -> ')} ... ${vals[vals.length - 1]})`);
+  check(Math.abs(vals.length * 16 - arrive.ms) < arrive.ms * 0.5,
+    `and it takes about theme.terrain.darkness.revealMs = ${arrive.ms} ms (${vals.length} frames of 16 ms)`);
+  check(arrive.run.animatingAfter === false && arrive.run.needsAfter === false,
+    `then it STOPS asking for frames (animating ${arrive.run.animatingAfter}, needsFrame ${arrive.run.needsAfter}), ` +
+    `so a dark board at rest costs nothing`);
+
+  // (5) prefers-reduced-motion: no arrival at all, the cell is simply known.
+  const reduced = await page.evaluate(() => {
+    const h = window.__h;
+    h.load('dark'); h.fit(); h.view('flat'); h.settle(600);
+    h.render.setReducedMotion(true);
+    const run = h.revealTrace({ x: 2, y: 8 });
+    h.render.setReducedMotion(false);
+    return run;
+  });
+  check(reduced.values.length === 1 && reduced.after === 1 && reduced.animatingAfter === false,
+    `prefers-reduced-motion: the cell is known immediately, with no arrival to animate (${reduced.values.length} frame)`);
+
+  // (6) the eyeball shots
+  await page.evaluate(() => { const h = window.__h; h.load('dark'); h.fit(); h.view('flat'); h.settle(900); });
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: join(shots, 'dark-harness-flat-before.png') });
+  await page.evaluate(() => { const h = window.__h; h.view('tilt'); h.settle(900); });
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: join(shots, 'dark-harness-tilt-before.png') });
+  await page.evaluate(() => { const h = window.__h; h.reveal(h.beamCells()); h.settle(900); });
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: join(shots, 'dark-harness-tilt-after.png') });
+  await page.evaluate(() => { const h = window.__h; h.view('flat'); h.settle(900); });
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: join(shots, 'dark-harness-flat-after.png') });
 
   // ---- screenshots of a 20x20 board on a phone ----
   await page.setViewportSize({ width: 393, height: 852 });

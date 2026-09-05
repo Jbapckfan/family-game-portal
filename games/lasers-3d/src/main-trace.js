@@ -146,6 +146,35 @@
     return null;
   }
 
+  /* ---- DARKNESS (DESIGN.md 15) -------------------------------------------------------------------------------
+   * The cells one shot teaches, each keyed by the ARC LENGTH at which the beam head reaches its centre, so main can
+   * learn them as the animation passes rather than all at once when FIRE is pressed. Revealing the whole route the
+   * instant the trigger is pulled would hand over the destination before the beam got there, which is the opposite
+   * of "a shot becomes an expedition" (15.2).
+   *
+   * The distances mirror cues() exactly, because they are measuring the same head against the same drawing. The
+   * CELLS come from result.visited rather than from the segments: visited[i] is the cell segment i arrived at, and
+   * it is the stepper's own list, so a terminal stub (which stops half a cell short) and a lost-edge run (which
+   * leaves the grid altogether) contribute a distance but no cell - which is right, because the beam never entered
+   * one. The emitter's own cell is included at distance 0; it is known from the start anyway (15.1), so this only
+   * matters for a caller that starts from nothing.
+   */
+  function discoveries(level, result) {
+    if (!level || !result || !result.segments) return [];
+    var out = [{ dist: 0, x: level.emitter.x, y: level.emitter.y }];
+    var segs = result.segments, visited = result.visited || [], cum = 0, i, s, stub, dz, len;
+    for (i = 0; i < segs.length; i++) {
+      s = segs[i];
+      stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
+      dz = stub ? 0.5 * s.v : (s.to.z - s.from.z);
+      len = Math.sqrt(Math.pow(s.to.x - s.from.x, 2) + Math.pow(s.to.y - s.from.y, 2) + dz * dz);
+      if (i === segs.length - 1 && result.end === 'lost-edge') len *= 0.5;
+      cum += len;
+      if (i < visited.length) out.push({ dist: cum, x: visited[i].x, y: visited[i].y });
+    }
+    return out;
+  }
+
   /* Index of the first step at which the beam entered this cell (Infinity if it never did). */
   function firstVisit(result, cell) {
     var v = result.visited || [], i;
@@ -154,5 +183,5 @@
   }
 
   return { __version: 1, flyover: flyover, readout: readout, cues: cues, revealCell: revealCell,
-           openBits: openBits, blockedWall: blockedWall };
+           openBits: openBits, blockedWall: blockedWall, discoveries: discoveries };
 }));

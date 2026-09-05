@@ -221,6 +221,53 @@ async function run() {
       assert(snd.off.svg && snd.off.label === 'Sound off' && snd.on.label === 'Sound on' && snd.off.d !== snd.back.d,
         `muted state swaps to a different glyph and updates the label ${JSON.stringify({ off: snd.off.label, on: snd.on.label })}`);
       assert(await page.evaluate(() => document.querySelector('.tray-card[data-type="DIP"]').disabled && document.querySelector('.tray-card[data-type="MIRROR"]').getAttribute('aria-pressed') === 'true'), 'tray: DIP disabled at 0, MIRROR selected');
+
+      // ---- DESIGN.md 14: the tray follows the piece REGISTRY, not a literal list of three ----
+      const trayTypes = await page.evaluate(() => ({
+        cards: Array.from(document.querySelectorAll('.tray-card')).map((c) => c.getAttribute('data-type')),
+        registry: (window.LaserPieces && window.LaserPieces.TYPES) || [],
+        labels: Array.from(document.querySelectorAll('.tray-card .tray-label')).map((n) => n.textContent),
+        accents: Array.from(document.querySelectorAll('.tray-card')).map((c) => getComputedStyle(c.querySelector('.tray-label')).color)
+      }));
+      assert(JSON.stringify(trayTypes.cards) === JSON.stringify(trayTypes.registry),
+        `one tray card per registry piece, in registry order ${JSON.stringify(trayTypes.cards)}`);
+      assert(new Set(trayTypes.accents).size === trayTypes.accents.length && trayTypes.accents.every((c) => c && c !== 'rgb(0, 0, 0)'),
+        `every piece has its OWN accent token, none of them black ${JSON.stringify(trayTypes.accents)}`);
+
+      // ---- DESIGN.md 15: the HUD says the level is dark and how much of it is uncovered ----
+      const darkOff = await page.evaluate(() => {
+        const d = document.getElementById('hud-dark');
+        return { exists: !!d, hidden: d.hidden, shown: d.offsetParent !== null };
+      });
+      assert(darkOff.exists && darkOff.hidden && !darkOff.shown, 'the dark indicator is absent on a lit level');
+      const darkOn = await page.evaluate(() => {
+        window.__harness.setState({ dark: true, known: 12, knownTotal: 49 });
+        const d = document.getElementById('hud-dark'), r = d.getBoundingClientRect();
+        const hud = document.getElementById('hud').getBoundingClientRect();
+        const menu = document.querySelector('a.menu-link').getBoundingClientRect();
+        const board = document.getElementById('board').getBoundingClientRect();
+        const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+        return { text: d.textContent, label: d.getAttribute('aria-label'), role: d.getAttribute('role'),
+          shown: d.offsetParent !== null, px: parseFloat(getComputedStyle(d).fontSize),
+          insideHud: r.left >= hud.left - 0.5 && r.right <= hud.right + 0.5 && r.top >= hud.top - 0.5 && r.bottom <= hud.bottom + 0.5,
+          overMenu: overlaps(r, menu), overBoard: overlaps(r, board) };
+      });
+      assert(darkOn.shown && darkOn.text === 'DARK 24%',
+        `it names the state and the coverage in the HUD's own voice: "${darkOn.text}"`);
+      assert(darkOn.role === 'img' && /Dark level\. 24 percent of the board uncovered\./.test(darkOn.label || ''),
+        `and gives a screen reader the unambiguous sentence: "${darkOn.label}"`);
+      assert(darkOn.insideHud && !darkOn.overMenu && !darkOn.overBoard,
+        `it lives in the HUD panel, clear of the board and the Menu link ${JSON.stringify({ hud: darkOn.insideHud, menu: darkOn.overMenu, board: darkOn.overBoard })}`);
+      assert(darkOn.px >= 9 && !/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(darkOn.text),
+        `it is legible (${darkOn.px} px) and carries no emoji`);
+      const darkTicks = await page.evaluate(() => {
+        const d = document.getElementById('hud-dark'), out = [];
+        [0, 1, 24, 48, 49].forEach((k) => { window.__harness.setState({ dark: true, known: k, knownTotal: 49 }); out.push(d.textContent); });
+        window.__harness.setState({ dark: false, known: 2, knownTotal: 49 });
+        return { out, hiddenAgain: d.hidden };
+      });
+      assert(JSON.stringify(darkTicks.out) === '["DARK 0%","DARK 2%","DARK 49%","DARK 98%","DARK 100%"]' && darkTicks.hiddenAgain,
+        `the coverage tracks discovery and the pill retires with the level ${JSON.stringify(darkTicks.out)}`);
       assert(await page.evaluate(() => document.getElementById('toast').classList.contains('is-visible')), 'intro toast visible');
 
       // ---- FIT button (DESIGN.md 11.2): present, hidden until the board is zoomed/panned, 44 px, next to TILT ----
@@ -419,6 +466,44 @@ async function run() {
         `the diagram fits the modal (${shapes.w && shapes.w.toFixed(0)}x${shapes.h && shapes.h.toFixed(0)})`);
       assert(shapes.namePx >= 9 && shapes.notePx >= 8 && shapes.overflowNote.every((o) => !o),
         `its labels stay legible and inside their panel (name ${shapes.namePx.toFixed(1)} px, note ${shapes.notePx.toFixed(1)} px)`);
+
+      // ---- DESIGN.md 14: the fourth piece is explained in the same voice, from the same registry ----
+      const pieces = await page.evaluate(() => {
+        const body = document.querySelector('#modal-help .modal-body');
+        return { rows: Array.from(body.querySelectorAll('.help-row')).map((r) => r.textContent.replace(/\s+/g, ' ').trim()),
+          registry: (window.LaserPieces && window.LaserPieces.TYPES) || [],
+          keys: (body.querySelector('.help-keys') || {}).textContent || '' };
+      });
+      assert(pieces.rows.length === pieces.registry.length,
+        `one help row per registry piece (${pieces.rows.length} rows, ${pieces.registry.length} pieces)`);
+      {
+        const floor = pieces.rows.find((r) => /^FLOOR/.test(r)) || '';
+        assert(/does not turn the beam/i.test(floor) && /bounces straight back up/i.test(floor),
+          `FLOOR is explained by what makes it unlike the other three: "${floor}"`);
+        assert(pieces.rows.every((r) => !/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(r)), 'no emoji in any piece row');
+        assert(pieces.keys.indexOf('1-' + pieces.registry.length) >= 0,
+          `the keyboard legend names one number key per piece ("1-${pieces.registry.length}")`);
+      }
+
+      // ---- DESIGN.md 15: dark levels are explained, in the same voice, with the two facts a child needs ----
+      const darkHelp = await page.evaluate(() => {
+        const body = document.querySelector('#modal-help .modal-body');
+        const rows = Array.from(body.querySelectorAll('.help-mode')).map((r) => r.textContent.replace(/\s+/g, ' ').trim());
+        const shapes = body.querySelectorAll('.help-shape').length;
+        const b = body.querySelector('.help-mode b');
+        return { rows, shapes, label: b && b.textContent, color: b && getComputedStyle(b).color,
+          afterShapes: !!(body.querySelector('.help-shape') && b && (body.querySelector('.help-shape').compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)) };
+      });
+      assert(darkHelp.rows.length === 1 && darkHelp.label === 'DARK' && darkHelp.shapes === 2,
+        `darkness gets its own line, beside the shape lines and not one of them ${JSON.stringify(darkHelp.rows.length)}`);
+      assert(/hidden until a beam has been there/i.test(darkHelp.rows[0]) && /stays lit/i.test(darkHelp.rows[0]) && /RESET/.test(darkHelp.rows[0]),
+        `it says what is hidden, that firing shows it, and that nothing is taken back: "${darkHelp.rows[0]}"`);
+      assert(/always see the grid/i.test(darkHelp.rows[0]) && /targets/i.test(darkHelp.rows[0]),
+        `and that the grid and the targets are never hidden: "${darkHelp.rows[0]}"`);
+      assert(!/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(darkHelp.rows[0]),
+        'the dark line carries no emoji');
+      assert(darkHelp.color && darkHelp.color !== 'rgb(0, 0, 0)' && darkHelp.afterShapes,
+        `it is painted from a theme token (${darkHelp.color}) and comes after the wall shapes it builds on`);
 
       // focus trap: Tab from the last focusable wraps to the first
       await page.evaluate(() => { const f = Array.from(document.querySelectorAll('#modal-help .modal button, #modal-help .modal a[href]')); f[f.length - 1].focus(); });

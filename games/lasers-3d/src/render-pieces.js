@@ -10,7 +10,30 @@
 
   function orientAngle(o) { return o === '/' ? Math.PI / 4 : -Math.PI / 4; }
 
-  function create(theme) {
+  /* ---- the piece set is the REGISTRY's, not this file's (DESIGN.md 14) ------------------------------------------
+   * There used to be three literal ['MIRROR', 'WEDGE', 'DIP'] lists in here and every one of them was a place a
+   * fourth piece could be forgotten. The set now comes from LaserPieces.TYPES and each type's SHAPE is derived from
+   * what the rules say it does, so a new registry entry renders without anyone editing this file:
+   *
+   *   does it turn the beam?   A piece that turns the horizontal heading is a mirror whose normal is HORIZONTAL,
+   *                            i.e. an upright panel standing on the cell's diagonal. A piece that leaves the
+   *                            heading alone can only be turning the beam vertically, i.e. a horizontal mirror -
+   *                            a plate lying in the cell's top surface (14.1).
+   *   what does it do to a     For an upright panel that is the SLOPE of its face: +1 rises to the right (WEDGE),
+   *   level beam's pitch?      -1 falls to the right (DIP), 0 stands straight up (MIRROR). The face is tilted about
+   *                            its own hinge by -slope * 45 degrees, which is the geometry the slope names.
+   *
+   * Anything a future piece needs beyond that (a colour, a material) is looked up by type with a fallback, so the
+   * worst a missing token can do is make the piece look like a mirror - never make it fail to draw. */
+  var Pieces = root.LaserPieces;
+  function types() { return (Pieces && Pieces.TYPES && Pieces.TYPES.length) ? Pieces.TYPES : ['MIRROR', 'WEDGE', 'DIP']; }
+  function describe(type) {
+    var turns = (Pieces && typeof Pieces.turnsBeam === 'function') ? Pieces.turnsBeam(type) : true;
+    var slope = (Pieces && typeof Pieces.applyPitch === 'function') ? Pieces.applyPitch(type, 0) : 0;
+    return { type: type, flat: !turns, slope: slope, tilt: -slope * Math.PI / 4 };
+  }
+
+  function create(theme, fog) {
     var P = theme.piece, M = theme.materials;
     var group = new THREE.Group(); group.name = 'pieces';
     var overlay = new THREE.Group(); overlay.name = 'overlay';
@@ -20,6 +43,8 @@
     group.add(placedGroup); group.add(fixedGroup); group.add(actorGroup);
 
     /* ---- shared geometries ---- */
+    var TYPES = types(), SHAPE = {};
+    TYPES.forEach(function (t) { SHAPE[t] = describe(t); });
     var geo = {};
     (function () {
       var h = P.housing, c = h.chamfer, s = h.w / 2 - c;
@@ -30,8 +55,15 @@
       geo.housing = hg;
       var gg = new THREE.PlaneGeometry(P.flatGlyph.length, P.flatGlyph.width);
       gg.rotateX(-Math.PI / 2); gg.translate(0, h.h + 0.003, 0);
-      geo.glyph = gg;
-      geo.faces = { MIRROR: faceGeo(0, 'MIRROR'), WEDGE: faceGeo(-Math.PI / 4, 'WEDGE'), DIP: faceGeo(Math.PI / 4, 'DIP') };
+      geo.glyph = gg;                                   /* the diagonal strip every UPRIGHT piece shows in FLAT */
+      /* DESIGN.md 14.3: a plate lying in the floor "reads differently from the three upright pieces by silhouette
+       * alone; it does not need a disguise". So its FLAT mark is a disc, not the shared diagonal strip - the one
+       * place the flat view is allowed to tell two piece types apart, because the rules already do. */
+      var pg = new THREE.CircleGeometry(P.floorPlate.glyphRadius, 28);
+      pg.rotateX(-Math.PI / 2); pg.translate(0, h.h + 0.003, 0);
+      geo.plateGlyph = pg;
+      geo.faces = {};
+      TYPES.forEach(function (t) { geo.faces[t] = SHAPE[t].flat ? plateGeo(t) : faceGeo(SHAPE[t].tilt, t); });
       geo.emBase = Core.boxAt(0, 0.14, 0, 0.6, 0.28, 0.6);
       var barrel = new THREE.CylinderGeometry(0.2, 0.22, 0.62, 24); barrel.rotateZ(-Math.PI / 2); barrel.translate(0, 0.5, 0);
       geo.emBarrel = barrel;
@@ -57,6 +89,20 @@
       }
     }());
 
+    /* The horizontal mirror of DESIGN.md 14: a silvered DISC set into the housing lid, with the same edge filament
+     * the upright faces carry so the four pieces still read as one family. A disc rather than a square because a
+     * FLOOR plate's two orientations are identical in the rules (LaserPieces.TURN_KEEP) and the model is rotated by
+     * the orientation like every other piece - a square would spin visibly and promise a difference that is not
+     * there, while a disc is honest under any rotation. */
+    function plateGeo(type) {
+      var F = P.floorPlate, y = P.housing.h + 0.004 + F.thickness / 2;
+      var disc = new THREE.CylinderGeometry(F.radius, F.radius, F.thickness, F.segments);
+      disc.translate(0, y, 0);
+      var rim = new THREE.TorusGeometry(F.radius + F.rimFilament / 2, F.rimFilament / 2, 6, F.segments);
+      rim.rotateX(-Math.PI / 2); rim.translate(0, y, 0);
+      return { face: disc, filament: rim, type: type };
+    }
+
     /* Face plane (+ merged 0.025 filament boxes) tilted about the diagonal (local X) by `tilt`, centred at mid height. */
     function faceGeo(tilt, type) {
       var size = P.mirrorPanel.size, zFrom = P.mirrorPanel.zFrom, zTo = P.mirrorPanel.zTo, f = P.edgeFilament;
@@ -80,18 +126,25 @@
       selection: new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.palette.uiAccent), transparent: true, opacity: 0.9, toneMapped: false, depthWrite: false }),
       hover: new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.palette.uiAccent), transparent: true, opacity: 0.14, toneMapped: false, depthWrite: false }),
       cursor: new THREE.LineDashedMaterial({ color: new THREE.Color(theme.palette.uiAccent), dashSize: 0.08, gapSize: 0.05, toneMapped: false }),
-      face: { MIRROR: Core.matFromSpec(M.mirrorFace), WEDGE: Core.matFromSpec(M.wedgeFace), DIP: Core.matFromSpec(M.dipFace) },
+      face: {},
       filament: {}
     };
     mats.housing.map = Core.grainTexture(theme);
-    ['MIRROR', 'WEDGE', 'DIP'].forEach(function (t) {
-      mats.filament[t] = Core.matFromSpec(M.edgeFilament, { color: theme.pieceAccent[t], emissive: theme.pieceAccent[t] });
+    /* One face + one filament material per REGISTRY type. The face spec is looked up as `<type>Face` in the theme
+     * (mirrorFace, wedgeFace, dipFace, floorFace); a type the theme has no entry for still draws, as a mirror face
+     * repainted in its own accent, so a fifth piece is never invisible while its tokens are being written. */
+    function accentOf(t) { return theme.pieceAccent[t] || theme.palette.uiAccent; }
+    TYPES.forEach(function (t) {
+      var spec = M[t.toLowerCase() + 'Face'];
+      mats.face[t] = spec ? Core.matFromSpec(spec) : Core.matFromSpec(M.mirrorFace, { color: accentOf(t), emissive: accentOf(t) });
+      mats.filament[t] = Core.matFromSpec(M.edgeFilament, { color: accentOf(t), emissive: accentOf(t) });
     });
     Core.markSharedAll([mats.housing, mats.glyph, mats.emitterBody, mats.emitterFilament, mats.emitterHalo, mats.emitterHalo.map, mats.socket,
-      mats.selection, mats.hover, mats.cursor, mats.face.MIRROR, mats.face.WEDGE, mats.face.DIP, mats.filament.MIRROR, mats.filament.WEDGE, mats.filament.DIP]);
+      mats.selection, mats.hover, mats.cursor]);
+    TYPES.forEach(function (t) { Core.markShared(mats.face[t]); Core.markShared(mats.filament[t]); });
     /* materials whose opacity is `reveal * base` */
-    var physical = [mats.housing, mats.emitterBody, mats.socket, mats.face.MIRROR, mats.face.WEDGE, mats.face.DIP,
-      mats.filament.MIRROR, mats.filament.WEDGE, mats.filament.DIP];
+    var physical = [mats.housing, mats.emitterBody, mats.socket];
+    TYPES.forEach(function (t) { physical.push(mats.face[t], mats.filament[t]); });
     physical.forEach(function (m) { m.userData.baseOpacity = m.opacity; m.userData.baseTransparent = m.transparent; });
     var reveal = 0;
 
@@ -104,16 +157,23 @@
       return g;
     }
 
+    /* The type a piece PRETENDS to be while the board is flat: a secret piece wears a MIRROR (the common case), and
+     * everything else wears itself. It decides the decoy model AND the flat glyph together, so a disguised piece can
+     * never be given away by the mark on its lid. */
+    function shownType(type, secret) { return (secret && type !== 'MIRROR' && geo.faces.MIRROR) ? 'MIRROR' : type; }
+    function glyphGeo(type) { return (SHAPE[type] && SHAPE[type].flat) ? geo.plateGlyph : geo.glyph; }
+
     /* A piece group. Secret pieces keep both models and swap on reveal >= 0.5. */
     function pieceModel(type, orient, secret, ghostMats) {
-      var g = new THREE.Group(), gm = ghostMats;
+      var g = new THREE.Group(), gm = ghostMats, shown = shownType(type, secret);
+      if (!geo.faces[type]) type = TYPES[0];            /* an unknown type still draws, as the first registry piece */
       g.rotation.y = orientAngle(orient);
       var housing = new THREE.Mesh(geo.housing, gm ? gm.body : mats.housing); housing.castShadow = !gm; g.add(housing);
-      var glyph = new THREE.Mesh(geo.glyph, gm ? gm.body : mats.glyph); glyph.renderOrder = 2; g.add(glyph);
+      var glyph = new THREE.Mesh(glyphGeo(shown), gm ? gm.body : mats.glyph); glyph.renderOrder = 2; g.add(glyph);
       var real = faceMesh(type, gm ? gm.face : mats.face[type], gm ? gm.face : mats.filament[type]); g.add(real);
       g.userData = { type: type, orient: orient, secret: !!secret, real: real, glyph: glyph, housing: housing };
-      if (secret && type !== 'MIRROR') {
-        var decoy = faceMesh('MIRROR', mats.face.MIRROR, mats.filament.MIRROR);
+      if (shown !== type) {
+        var decoy = faceMesh(shown, mats.face[shown], mats.filament[shown]);
         g.add(decoy); g.userData.decoy = decoy;
       }
       updateSecret(g);
@@ -166,7 +226,30 @@
         targets.push(rec);
         refreshTarget(rec);
       });
-      parsed.fixed.forEach(function (f) { fixedGroup.add(placeAt(pieceModel(f.type, f.orient, f.secret), f.x, f.y)); });
+      /* DESIGN.md 15.1: a piece the LEVEL placed is part of the world and is hidden until the beam has been in its
+       * cell; a piece the PLAYER placed is always drawn, known cell or not (setPlaced below is deliberately not
+       * fogged). The cell and the column top are stashed on the group so the per-frame pass costs one lookup. */
+      parsed.fixed.forEach(function (f) {
+        var m = placeAt(pieceModel(f.type, f.orient, f.secret), f.x, f.y);
+        m.userData.cell = { x: f.x, y: f.y };
+        m.userData.baseY = m.position.y;
+        fixedGroup.add(m);
+      });
+      applyFog();
+    }
+
+    /* The fog pass for the level's own pieces: they ride the column as it grows out of the ground, and are simply
+     * not there before it does. Nothing else in this module is fogged - targets and the emitter are known from the
+     * start (15.1), the player's own pieces are always drawn, and every overlay is a player affordance. */
+    function applyFog() {
+      var i, c, k, on = !!(fog && fog.isDark()), min = theme.terrain.darkness.minVisible;
+      for (i = 0; i < fixedGroup.children.length; i++) {
+        c = fixedGroup.children[i];
+        if (!c.userData || !c.userData.cell) continue;
+        k = on ? fog.value(c.userData.cell.x, c.userData.cell.y) : 1;
+        c.visible = k > min;
+        c.position.y = c.userData.baseY * k;
+      }
     }
 
     function setPlaced(placed) {
@@ -260,6 +343,7 @@
 
     function frame(dt, speed, view) {
       var litMs = theme.beam.endStates.target.litFadeMs / 1000 / speed, i;
+      applyFog();
       for (i = 0; i < targets.length; i++) {
         var t = targets[i];
         if (view && t.proxy.visible) t.proxy.quaternion.copy(view.quaternion);   /* screen-facing reticle */
@@ -278,6 +362,7 @@
     /* Standalone model for tray icons (real type, always physical). Caller adds it to its own scene. */
     function trayModel(type) {
       var g = new THREE.Group();
+      if (!geo.faces[type]) type = TYPES[0];
       function solid(m, opacity) { var c = m.clone(); c.userData.shared = false; c.visible = true; c.opacity = opacity; c.transparent = opacity < 1; if (c.envMapIntensity !== undefined) c.envMapIntensity = 1; return c; }
       g.add(new THREE.Mesh(geo.housing, solid(mats.housing, 1)));
       g.add(faceMesh(type, solid(mats.face[type], mats.face[type].userData.baseOpacity), solid(mats.filament[type], 1)));
@@ -292,6 +377,7 @@
         else for (var f in geo[k]) if (geo[k][f].face) { geo[k][f].face.dispose(); geo[k][f].filament.dispose(); }
       }
       physical.concat([mats.glyph, mats.emitterFilament, mats.emitterHalo, mats.selection, mats.hover, mats.cursor]).forEach(function (m) { m.dispose(); });
+      /* physical already carries every per-type face and filament material, so a fifth piece needs nothing here. */
       if (mats.emitterHalo.map) mats.emitterHalo.map.dispose();
     }
 
@@ -305,8 +391,9 @@
 
     return { group: group, setLevel: setLevel, setPlaced: setPlaced, applyReveal: applyReveal, setTargetLit: setTargetLit,
       resetTargets: resetTargets, setSelection: setSelection, setGhost: setGhost, setHover: setHover, setCursor: setCursor,
-      pulseCell: pulseCell, frame: frame, isAnimating: isAnimating, trayModel: trayModel, dispose: dispose, materials: mats };
+      pulseCell: pulseCell, frame: frame, isAnimating: isAnimating, trayModel: trayModel, dispose: dispose, materials: mats,
+      applyFog: applyFog, types: function () { return TYPES.slice(); }, shape: function (t) { return SHAPE[t] || null; } };
   }
 
-  root.LaserRenderPieces = { __version: 1, create: create, orientAngle: orientAngle };
+  root.LaserRenderPieces = { __version: 1, create: create, orientAngle: orientAngle, describe: describe, types: types };
 }(typeof self !== 'undefined' ? self : this));

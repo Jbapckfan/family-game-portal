@@ -6,8 +6,12 @@
   var THREE = root.THREE;
   var Core = root.LaserRenderCore;
 
-  /* Inject the FLAT mix after tone mapping + colour space so uReveal = 0 yields EXACTLY #172544. */
-  function revealMaterial(spec, theme, uReveal) {
+  /* Inject the FLAT mix after tone mapping + colour space so uReveal = 0 yields EXACTLY #172544, then - on a dark
+   * level (DESIGN.md 15) - the fog mix on top of it, so fog 0 yields exactly theme.terrain.darkness.unknownColor.
+   * Order matters and is fixed: reveal first, fog second. The FLAT lie decides what a cell WOULD look like; the fog
+   * decides whether the player has earned the right to see it yet. Doing it the other way round would let a
+   * half-revealed cell come out lighter than the lit board it is supposed to be converging on. */
+  function revealMaterial(spec, theme, uReveal, fog, mode, tint) {
     var m = Core.matFromSpec(spec);
     var v = theme.terrain.flatColorVec4;
     m.onBeforeCompile = function (shader) {
@@ -17,23 +21,41 @@
         '#include <dithering_fragment>',
         '#include <dithering_fragment>\n gl_FragColor = mix(uFlat, gl_FragColor, uReveal);'
       );
+      if (fog) Core.fogShader(shader, fog, mode, tint);
     };
-    m.customProgramCacheKey = function () { return 'lasers3d-reveal'; };
+    /* The cache key must name the injection, or three hands two differently-patched materials the same program:
+     * the ground slab (which never moves) and the block tops (which grow out of it) are otherwise identical. */
+    m.customProgramCacheKey = function () { return 'lasers3d-reveal|' + (fog ? mode + '|' + tint : 'nofog'); };
     return m;
   }
 
-  function create(theme) {
+  /* The same injection for a material that has no FLAT mix of its own (the sides, the outline, the light leak). */
+  function fogMaterial(m, fog, mode, tint) {
+    if (!fog) return m;
+    m.onBeforeCompile = function (shader) { Core.fogShader(shader, fog, mode, tint); };
+    m.customProgramCacheKey = function () { return 'lasers3d-fog|' + mode + '|' + tint; };
+    return m;
+  }
+
+  function create(theme, fog) {
     var uReveal = { value: 0 };
     var LEAK = theme.terrain.lightLeak;
     var mats = {
-      floor: revealMaterial(theme.materials.floor, theme, uReveal),
-      top: revealMaterial(theme.materials.blockTopLit, theme, uReveal),
-      side: Core.matFromSpec(theme.materials.blockSide),
-      grid: new THREE.LineBasicMaterial({ color: new THREE.Color(theme.palette.gridOutline), toneMapped: false }),
+      /* The board's ground plane. It is the ONE surface darkness never removes (15.1: the player must always be
+       * able to see the board's extent and tap a cell), so it is tinted rather than gated - 'none' because it is
+       * itself the ground and has nowhere to rise from. */
+      floor: revealMaterial(theme.materials.floor, theme, uReveal, fog, 'none', 'ground'),
+      top: revealMaterial(theme.materials.blockTopLit, theme, uReveal, fog, 'rise', 'mix'),
+      side: fogMaterial(Core.matFromSpec(theme.materials.blockSide), fog, 'rise', 'mix'),
+      /* 15.1: "The empty grid outline is ALWAYS drawn." So the outline is the one fogged material that never
+       * discards - it only lies flat on the ground plane and dims to uFogGrid until its cell is known. */
+      grid: fogMaterial(new THREE.LineBasicMaterial({ color: new THREE.Color(theme.palette.gridOutline), toneMapped: false }), fog, 'lift', 'grid'),
       /* DESIGN.md 13.3: the ONE mark the flat view is allowed to show. Additive over the floor so it reads as light
-       * escaping, never as paint; depthWrite off so it cannot disturb anything drawn after it. */
-      leak: new THREE.MeshBasicMaterial({ color: new THREE.Color(LEAK.color), transparent: true, opacity: 0,
-        blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })
+       * escaping, never as paint; depthWrite off so it cannot disturb anything drawn after it. On a dark level it
+       * is one of the things 15.1 hides until the beam has been there, and additive light cannot be darkened by
+       * mixing toward a colour, so the fog scales it to nothing instead. */
+      leak: fogMaterial(new THREE.MeshBasicMaterial({ color: new THREE.Color(LEAK.color), transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }), fog, 'rise', 'alpha')
     };
     var leakTex = null;
     Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid, mats.leak]);

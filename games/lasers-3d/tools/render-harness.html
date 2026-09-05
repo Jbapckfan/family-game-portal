@@ -143,6 +143,13 @@
         emitter: L.raw.emitter, targets: L.raw.targets, fixed: L.raw.fixed, tray: L.raw.tray }, placed: L.placed };
     }()),
     arch: ARCH,
+    /* ---- DARKNESS (DESIGN.md 15) ---------------------------------------------------------------------------
+     * The same arch board with `dark: true`. It is the right board for the fog because it already carries every
+     * shape darkness has to hide - tall walls, an arch, a window, a light leak and two placed pieces - so the
+     * "unknown draws nothing / known draws exactly the lit board" pair can be diffed cell for cell against `arch`
+     * itself, which is the identical level with the fog off. */
+    dark: { raw: (function () { var r = ARCH.raw, k, c = {}; for (k in r) c[k] = r[k]; c.name = 'DARK'; c.dark = true; return c; }()),
+      placed: ARCH.placed },
     /* the shipped levels that actually use the shapes, so the tilted reveal can be judged on real content and not
      * only on the demo board. Indexes, not names: the level set is regenerated and the names may move. */
     real10: shipped(9), real14: shipped(13),
@@ -171,12 +178,21 @@
     var w = document.documentElement.clientWidth, h = document.documentElement.clientHeight;
     render.resize(w, h, window.devicePixelRatio || 1);
   }
+  /* The cells DESIGN.md 15.1 says a dark level opens with: the emitter's, and every target's. */
+  function seedCells(lv) {
+    var out = [{ x: lv.emitter.x, y: lv.emitter.y }], i;
+    for (i = 0; i < lv.targets.length; i++) out.push({ x: lv.targets[i].x, y: lv.targets[i].y });
+    return out;
+  }
   function load(which) {
     var L = LEVELS[which] || LEVELS.small;
     name = which;
     level = LaserSim.parseLevel(L.raw);
     placed = L.placed.slice();
     render.setLevel(level);
+    /* `dark` may or may not have survived parseLevel yet (the engine owns that flag); read the parsed level first
+     * and fall back to the raw one, exactly as main.js does. */
+    render.setDarkness({ dark: !!(level.dark || L.raw.dark), known: seedCells(level) });
     render.setPlaced(placed);
     /* A scene may pin its own TraceResult (the archSolid control draws the arch board's beam over solid terrain). */
     result = typeof L.result === 'function' ? L.result() : (L.result || LaserSim.trace(level, placed));
@@ -323,6 +339,55 @@
     return { pixels: n, diff: diff, maxDelta: maxDelta, worstDistPx: worst / dpr, perCell: perCell, dpr: dpr,
       cellPx: render.getCellPx(), bbox: bbox, centres: centres.map(function (c) { return { x: Math.round(c.x / dpr), y: Math.round((A.h - c.y) / dpr) }; }) };
   }
+  /* ---- DARKNESS (DESIGN.md 15) ------------------------------------------------------------------------------
+   * Every cell of the current level, i.e. "the beam has been everywhere". Applied through setDarkness so it lands
+   * instantly, with no arrival animation left to settle. */
+  function revealAll() {
+    var c = [], x, y;
+    for (y = 0; y < level.size.d; y++) for (x = 0; x < level.size.w; x++) c.push({ x: x, y: y });
+    render.setDarkness({ dark: true, known: c });
+  }
+  /* Whole-framebuffer diff of two scenes in the same view. `revealB` fully reveals the second one first, which is
+   * how 15.1's last rule is proved: a dark board with everything known must be BYTE-IDENTICAL to the lit board,
+   * because darkness gates when the player sees a cell and never how it looks. */
+  function diffScenes(a, b, view, revealB) {
+    view = view || 'flat';
+    load(a); fit(); render.setCameraPreset(view, { animate: false }); settle(900);
+    var A = readPixels();
+    load(b); fit(); render.setCameraPreset(view, { animate: false });
+    if (revealB) revealAll();
+    settle(900);
+    var B = readPixels();
+    if (A.w !== B.w || A.h !== B.h) return { error: 'size' };
+    var i, n = A.w * A.h, diff = 0, maxDelta = 0, d;
+    for (i = 0; i < n; i++) {
+      d = Math.max(Math.abs(A.buf[i * 4] - B.buf[i * 4]), Math.abs(A.buf[i * 4 + 1] - B.buf[i * 4 + 1]),
+                   Math.abs(A.buf[i * 4 + 2] - B.buf[i * 4 + 2]), Math.abs(A.buf[i * 4 + 3] - B.buf[i * 4 + 3]));
+      if (!d) continue;
+      diff++;
+      if (d > maxDelta) maxDelta = d;
+    }
+    return { pixels: n, diff: diff, maxDelta: maxDelta, pct: diff / n };
+  }
+  /* Run the fog's arrival frame by frame and report what it did: the value per frame, how many frames it took, and
+   * whether the renderer was still asking for frames at each end. */
+  function revealTrace(cell, maxFrames) {
+    var out = { before: render._fog.value(cell.x, cell.y), needsBefore: render.needsFrame(), values: [], frames: 0 };
+    render.revealCells([cell]);
+    out.needsAfterCall = render.needsFrame();
+    var i;
+    for (i = 0; i < (maxFrames || 200); i++) {
+      render.frame(0.016);
+      out.frames++;
+      out.values.push(+render._fog.value(cell.x, cell.y).toFixed(4));
+      if (!render._fog.isAnimating()) break;
+    }
+    out.after = render._fog.value(cell.x, cell.y);
+    out.animatingAfter = render._fog.isAnimating();
+    out.needsAfter = render.needsFrame();
+    return out;
+  }
+
   /* Byte-exact sample of one cell's top, offset a few CSS px off centre so it never lands on the leak. */
   function sampleCell(cell, offX, offY) {
     var gl = render._renderer.getContext(), p = bufferPoint(cell), dpr = render._renderer.getPixelRatio();
@@ -353,6 +418,22 @@
       return { fitZoom: c.fitZoom, effectiveZoom: c.effectiveZoom, cellPx: c.cellPx,
         box: { w: +b.width.toFixed(4), h: +b.height.toFixed(4), cx: +b.centerX.toFixed(4), cy: +b.centerY.toFixed(4) } };
     },
+    /* ---- DARKNESS hooks (DESIGN.md 15) ---- */
+    fog: function () {
+      var f = render.fogState(), g = render._fog;
+      return { dark: f.dark, known: f.known, total: f.total, on: g.uniforms.uFogOn.value, rise: g.uniforms.uFogRise.value,
+        animating: g.isAnimating() };
+    },
+    fogAt: function (x, y) { return render._fog.value(x, y); },
+    revealAll: revealAll, diffScenes: diffScenes, revealTrace: revealTrace,
+    reveal: function (cells) { return render.revealCells(cells); },
+    /* Every cell the current trace entered, in the order the beam entered them - the set a FIRE learns (15.1). */
+    beamCells: function () {
+      var out = [{ x: level.emitter.x, y: level.emitter.y }], v = (result && result.visited) || [], i;
+      for (i = 0; i < v.length; i++) out.push({ x: v[i].x, y: v[i].y });
+      return out;
+    },
+    setDark: function (on, known) { render.setDarkness({ dark: on, known: known || seedCells(level) }); },
     load: load, fit: fit, settle: settle, sceneObjects: sceneObjects, frameTime: frameTime, refPick: refPick,
     view: function (n) { return render.setCameraPreset(n, { animate: false }); },
     place: function (p) { placed = p; render.setPlaced(p); result = LaserSim.trace(level, p); render.setBeam(result, { animate: false, fired: true }); return result; },

@@ -31,7 +31,10 @@
      * view button toggles between the two. */
     var cam = {
       az: CAM.presets.flat.azimuthDeg, el: CAM.presets.flat.elevationDeg,
-      fitZoom: 40, userZoom: 1, preset: 'flat', view: 'working', anim: null, tween: null
+      fitZoom: 40, userZoom: 1, preset: 'flat', view: 'working', anim: null, tween: null,
+      /* manual: the player has zoomed, panned, or pressed the view toggle since the level loaded, so the
+       * per-preset default framing below must stop overriding them. Cleared only on setLevel. */
+      manual: false
     };
     var extent = { hw: 1, hh: 1 };          /* world half-extents of the projected box, around boardCenter */
     var reducedMotion = false;
@@ -94,6 +97,7 @@
     function panBy(dxPx, dyPx) {
       var se = basis(cam.az, cam.el), z = effectiveZoom();
       if (z <= 0) return;
+      cam.manual = true;                 /* the player has chosen where to look; stop re-framing under them */
       pan.addScaledVector(rightVec, -dxPx / z);
       pan.addScaledVector(groundUp, dyPx / (z * Math.max(0.2, se)));
       clampPan();
@@ -147,6 +151,15 @@
       var dAz = ((P.azimuthDeg - fromAz + 540) % 360) - 180;
       endAnim(); endTween();
       cam.preset = name;
+      /* Each view gets the framing it is FOR. FLAT is where the player taps individual cells, so it wants the
+       * working zoom that keeps cells at the touch floor. TILT is bought with the third star and its whole job is
+       * showing the shape of the board at once, so it wants the entire board on screen - panning around a zoomed
+       * isometric board to reconstruct the structure in your head is strictly worse than just looking at it.
+       * Suppressed once the player has taken manual control of the framing (cam.manual). */
+      if (!cam.manual) {
+        var want = (name === 'tilt') ? 'overview' : 'working';
+        if (cam.view !== want) { cam.view = want; pan.set(0, 0, 0); cam.userZoom = 1; }
+      }
       if (!o.animate) { cam.az = P.azimuthDeg; cam.el = P.elevationDeg; refit(true); return Promise.resolve(); }
       var ms = o.durationMs || (name === 'tilt' ? CAM.motion.flatToTiltMs : CAM.motion.tiltToFlatMs), linear = false;
       if (reducedMotion) { ms = theme.reducedMotion.cameraMs; linear = true; }
@@ -162,6 +175,7 @@
       refit(false);       /* the fit EASES to the new orientation in step(); a hard snap here pumps during a drag */
     }
     function zoomBy(f) {
+      cam.manual = true;                 /* the player has chosen a zoom; stop re-framing under them */
       var lim = zoomLimits(), base = baseZoom();
       var eff = Core.clamp(base * cam.userZoom * (f || 1), lim.lo, lim.hi);
       cam.userZoom = eff / base;
@@ -174,6 +188,7 @@
     function applyViewMode(name, o) {
       o = o || {};
       endTween();
+      cam.manual = true;                 /* an explicit view toggle is manual control */
       var effBefore = effectiveZoom();
       cam.view = name === 'overview' ? 'overview' : 'working';
       cam.fitZoom = targetFit();
@@ -248,7 +263,7 @@
     function setBoard(center, points) {
       boardCenter.copy(center);
       fitPoints = points && points.length >= 3 ? points : fitPoints;
-      pan.set(0, 0, 0); cam.userZoom = 1; cam.view = 'working';   /* a level always opens tappable */
+      pan.set(0, 0, 0); cam.userZoom = 1; cam.view = 'working'; cam.manual = false;   /* a level always opens tappable */
       endTween();
       refit(true);
     }

@@ -25,9 +25,20 @@
     renderer.setClearColor(0x000000, 0);
 
     var scene = new THREE.Scene();
-    var terrain = root.LaserRenderTerrain.create(theme);
-    var pieces = root.LaserRenderPieces.create(theme);
+    /* DESIGN.md 15: one fog-of-war state for the whole renderer - a w x d byte texture every fogged material reads.
+     * It is created before the modules that sample it so terrain and pieces can bind its uniforms at construction,
+     * and it is INERT (uFogOn = 0) on every level that does not set `dark`. */
+    var fog = Core.createFog(theme);
+    var terrain = root.LaserRenderTerrain.create(theme, fog);
+    var pieces = root.LaserRenderPieces.create(theme, fog);
     var beam = root.LaserRenderBeam.create(theme);
+    /* The reveal moves geometry (a column grows out of the ground, its outline rides up with it), which needs a
+     * vertex texture fetch. Every GL this game ships on has one; a hypothetical one that does not still gets the
+     * whole fog, it just arrives as a cross-fade in place. Asked once, here, rather than guessed in a shader. */
+    try {
+      var glc = renderer.getContext();
+      fog.setRise((glc.getParameter(glc.MAX_VERTEX_TEXTURE_IMAGE_UNITS) | 0) > 0);
+    } catch (eVtf) { fog.setRise(false); }
     scene.add(terrain.group); scene.add(pieces.group); scene.add(beam.group);
     beam.onLit(function (index) { pieces.setTargetLit(index, true); });
 
@@ -46,7 +57,8 @@
       pmrem.dispose(); tex.dispose();
       scene.environment = env;
       var tm = terrain.materials, pm = pieces.materials;
-      envMaterials = [tm.floor, tm.top, tm.side, pm.housing, pm.emitterBody, pm.socket, pm.face.MIRROR, pm.face.WEDGE, pm.face.DIP];
+      envMaterials = [tm.floor, tm.top, tm.side, pm.housing, pm.emitterBody, pm.socket];
+      pieces.types().forEach(function (t) { if (pm.face[t]) envMaterials.push(pm.face[t]); });
       envMaterials.forEach(function (m) { m.envMapIntensity = 0; });
       return env;
     }
@@ -88,6 +100,7 @@
     var appliedReveal = -1;
     var projVec = new THREE.Vector3();   /* scratch: no per-call allocation */
     rig.setReducedMotion(reducedMotion);
+    fog.setInstant(reducedMotion);   /* prefers-reduced-motion: a cell is simply known, with no arrival at all */
 
     function setCameraPreset(name, o) { return rig.setPreset(name, o); }
     function isFlat() { return rig.isFlat(); }
@@ -132,11 +145,42 @@
     function setLevel(parsed) {
       level = parsed;
       placeLights(parsed.size.w, parsed.size.d);
+      /* The fog is sized and cleared BEFORE the content is built, so nothing is ever drawn against another level's
+       * knowledge for a frame. A level opens LIT: main calls setDarkness() straight after with the level's own flag
+       * and whatever the player already knew (DESIGN.md 15.1 - discovery survives RESET and re-entry). */
+      fog.setBoard(parsed.size.w, parsed.size.d, !!parsed.dark);
       terrain.build(parsed);
       pieces.setLevel(parsed, terrain.heightAt);
       beam.clear();
       appliedReveal = -1;
       rig.setBoard(boardCenter, terrain.fitPoints());
+    }
+
+    /* ---- DARKNESS (DESIGN.md 15) ------------------------------------------------------------------------------
+     * main owns WHAT is known (it is game state, it is saved, and it survives RESET); the renderer owns only how a
+     * known cell arrives. `known` is the full set to hold - seeded from the emitter and the targets and restored
+     * from the save - and it is applied INSTANTLY, because a level opening with thirty cells easing in at once
+     * would read as a title card rather than as a board. revealCells() is the animated one, called as the beam
+     * head reaches each cell.
+     *
+     * The camera fit is deliberately NOT re-derived from the known set. It is built once per level from the
+     * terrain silhouette (render-terrain.buildFitPoints), so it cannot pump as cells arrive - and under the
+     * top-down FLAT camera the silhouette carries no height information to leak in the first place. */
+    function setDarkness(o) {
+      o = o || {};
+      if (!level) return;
+      fog.setBoard(level.size.w, level.size.d, !!o.dark);
+      if (o.known) fog.learnAll(o.known, true);
+      pieces.applyFog();
+    }
+    function revealCells(cells) {
+      if (!cells || !cells.length) return false;
+      var changed = fog.learnAll(cells, false);
+      if (changed) pieces.applyFog();
+      return changed;
+    }
+    function fogState() {
+      return { dark: fog.isDark(), known: fog.count(), total: fog.total() };
     }
     function setPlaced(placed) { pieces.setPlaced(placed); }
     /* Beam motion parameters: two frozen objects (normal / reduced motion), nothing allocated per frame. */
@@ -165,6 +209,7 @@
       rig.step(dt);
       applyReveal(getShadingBlend());
       var speed = reducedMotion ? 1 / theme.reducedMotion.durationScale : 1;
+      if (fog.step(dt * speed)) pieces.applyFog();   /* the arrival eases; reduced motion snaps it (setReducedMotion) */
       view.zoom = rig.effectiveZoom();
       pieces.frame(dt, speed, view);
       beam.frame(dt, view, motion());
@@ -174,7 +219,7 @@
      * a camera preset move, a view/fit tween, the eased fit chasing a new orientation, the travelling beam, an
      * end-state effect, a target fading between lit states, or a reveal pulse. main schedules a frame whenever it
      * changes state and keeps scheduling while this is true, so a static board costs nothing. */
-    function needsFrame() { return rig.isAnimating() || beam.isAnimating() || pieces.isAnimating(); }
+    function needsFrame() { return rig.isAnimating() || beam.isAnimating() || pieces.isAnimating() || fog.isAnimating(); }
 
     /* ---- tray icons: the piece's physical model, seen from an angle that shows the panel's SLOPE ---- */
     /* The panel hinge runs along the '/' diagonal, so the old camera (azimuth 45) looked straight into it and MIRROR,
@@ -195,7 +240,7 @@
       if (iconSpan) return iconSpan;
       var b = iconBasis({ dir: new THREE.Vector3(), up: new THREE.Vector3(), right: new THREE.Vector3() });
       var lookY = theme.piece.trayIcon.lookAtY, span = 0.1;
-      ['MIRROR', 'WEDGE', 'DIP'].forEach(function (t) {
+      pieces.types().forEach(function (t) {
         var m = pieces.trayModel(t);
         m.updateMatrixWorld(true);
         var box = new THREE.Box3().setFromObject(m), p = new THREE.Vector3(), i;
@@ -251,7 +296,7 @@
     var disposed = false;
     function dispose() {
       if (disposed) return; disposed = true;
-      terrain.dispose(); pieces.dispose(); beam.dispose();
+      terrain.dispose(); pieces.dispose(); beam.dispose(); fog.dispose();
       if (envTexture) envTexture.dispose(); scene.environment = null;
       renderer.dispose();
     }
@@ -269,9 +314,12 @@
       openLevelsAt: terrain.openLevelsAt,
       setSelection: pieces.setSelection, setGhost: pieces.setGhost, setHover: pieces.setHover, setCursor: pieces.setCursor, pulseCell: pieces.pulseCell,
       resize: resize, frame: frame, isFlat: isFlat, getShadingBlend: getShadingBlend, getCamera: getCamera,
-      setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,
+      /* DESIGN.md 15: fog of war. setDarkness() installs a level's whole known set at once; revealCells() eases in
+       * the cells a shot has just reached; fogState() reports coverage for the HUD. */
+      setDarkness: setDarkness, revealCells: revealCells, fogState: fogState,
+      setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); fog.setInstant(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,
       /* debug/test hooks */
-      _scene: scene, _camera: camera, _renderer: renderer
+      _scene: scene, _camera: camera, _renderer: renderer, _fog: fog
     };
   }
 

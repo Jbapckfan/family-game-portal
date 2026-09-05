@@ -4,8 +4,24 @@
  */
 (function () {
   'use strict';
-  var doc = document, STORAGE_KEY = 'lasers3d.v1', TYPES = ['MIRROR', 'WEDGE', 'DIP'];
-  var LABELS = { MIRROR: 'Mirror', WEDGE: 'Wedge', DIP: 'Dip' };
+  var doc = document, STORAGE_KEY = 'lasers3d.v1';
+  /* The piece set is the REGISTRY's (LaserPieces), not a literal in here: DESIGN.md 14 adds a fourth piece and the
+   * whole point of a data-driven registry is that the tray, the labels and the help rows follow it without an edit.
+   * The fallback exists only so ui.js still loads in a page that never included pieces.js. */
+  var REG = (typeof window !== 'undefined' && window.LaserPieces) ? window.LaserPieces : null;
+  var TYPES = (REG && REG.TYPES && REG.TYPES.length) ? REG.TYPES.slice() : ['MIRROR', 'WEDGE', 'DIP'];
+  var LABELS = (function () {
+    var out = {}, i, t;
+    for (i = 0; i < TYPES.length; i++) {
+      t = TYPES[i];
+      out[t] = (REG && REG.PIECES && REG.PIECES[t] && REG.PIECES[t].label) || (t.charAt(0) + t.slice(1).toLowerCase());
+    }
+    return out;
+  }());
+  /* One accent custom property per type, named after the type (theme.js emits --color-piece-*). Never
+   * `--color-<type>`: the terrain floor already owns --color-floor, and a FLOOR piece painted in the board's own
+   * near-black navy would be invisible on its own tray card. */
+  function accentVar(type) { return 'var(--color-piece-' + type.toLowerCase() + ', var(--color-accent))'; }
   /* Stars are three INDEPENDENT criteria (DESIGN.md 3.6), not a rank: a player can solve blind without hitting par.
    * Storing an ordinal count lit the wrong stars back (a hint + a blind solve scored 2 and lit "solve"+"par").
    * Progress therefore stores a flag per criterion; the count exists only for display. `schema` marks the migration
@@ -51,7 +67,10 @@
   var PIECE_HELP = {
     MIRROR: 'Turns the beam but does not change its climb. A beam that is going up keeps going up, and a beam that is going down keeps going down.',
     WEDGE: 'Turns the beam and tips it up one step: a flat beam starts going up, a beam going down comes back to flat, and a beam going up stays going up.',
-    DIP: 'Turns the beam and tips it down one step: a flat beam starts going down, a beam going up comes back to flat, and a beam going down stays going down.'
+    DIP: 'Turns the beam and tips it down one step: a flat beam starts going down, a beam going up comes back to flat, and a beam going down stays going down.',
+    /* DESIGN.md 14: the fourth piece. The line has to carry the one thing that makes it unlike the other three -
+     * it does NOT turn the beam - before it says what it does do. */
+    FLOOR: 'Lies flat in the ground and does not turn the beam at all. A beam falling onto it bounces straight back up, still going the same way. A flat or rising beam slides over the top and nothing happens.'
   };
   var HELP_NOTE = 'Remember: a mirror can never flatten a beam. Only a DIP flattens a beam that is going up, and only a WEDGE flattens a beam that is going down.';
   /* DESIGN.md 13: arches and windows. Same voice as the piece lines above - short sentences, no jargon, and the
@@ -61,6 +80,9 @@
     ARCH: 'A tall wall with a gap along the ground. A beam running flat on the floor slides straight underneath it.',
     WINDOW: 'A tall wall with a gap part way up. Only a beam at that one height goes through. A beam at any other height stops.'
   };
+  /* DESIGN.md 15: dark levels. Same voice as the piece and shape lines - short sentences, no jargon - and it names
+   * the two things a child needs to know: nothing is being taken away, and firing is what shows you the board. */
+  var DARK_HELP = 'Some later levels start dark. You can always see the grid, the laser and the targets, but the walls and everything else stay hidden until a beam has been there. Fire to light the way: every square a beam crosses stays lit for good, even after you press RESET.';
   var SHAPE_NOTE = 'From above, an arch and a window look exactly like a solid wall. Watch the floor: a cell with a way through it shows a faint sliver of light. The sliver tells you there is a gap, but not how high the gap is. When a shot stops, the message says what height the beam was at, and that is the number to work from.';
 
   /* number | {solved,par,blind} | anything -> {solved,par,blind}. An old numeric count of N becomes the first N
@@ -99,14 +121,17 @@
     function card(t) { return '<button class="tray-card" type="button" data-type="' + t + '" aria-pressed="false" aria-label="' + LABELS[t] + ', 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="' + t + '"></span></span><span class="tray-meta"><span class="tray-label">' + LABELS[t] + '</span><span class="tray-count">0</span></span></button>'; }
     function modal(id, title, body, extra) { return '<div id="' + id + '" class="backdrop" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="' + id + '-title">' + (extra || '') + '<button class="btn btn-icon modal-close" type="button" aria-label="Close ' + title.toLowerCase() + '">&#x2715;</button><h2 id="' + id + '-title"' + (id === 'modal-victory' ? ' class="victory-title"' : '') + '>' + title + '</h2>' + body + '</div></div>'; }
     return {
-      hud: '<div id="hud" class="glass"><div class="hud-line"><span class="hud-num" id="hud-level-num">LEVEL 1</span><span class="hud-name" id="hud-level-name">&nbsp;</span></div><div class="hud-line"><span class="stars" id="hud-stars" aria-label="Stars earned"></span><span class="hud-pill" id="hud-camera" data-camera="flat">FLAT</span><span class="hud-pieces" id="hud-pieces">PIECES 0/0</span></div></div>',
+      hud: '<div id="hud" class="glass"><div class="hud-line"><span class="hud-num" id="hud-level-num">LEVEL 1</span><span class="hud-name" id="hud-level-name">&nbsp;</span></div><div class="hud-line"><span class="stars" id="hud-stars" aria-label="Stars earned"></span><span class="hud-pill" id="hud-camera" data-camera="flat">FLAT</span><span class="hud-pill hud-dark" id="hud-dark" role="img" aria-label="Dark level" hidden>DARK</span><span class="hud-pieces" id="hud-pieces">PIECES 0/0</span></div></div>',
       sound: '<button id="sound" class="btn btn-icon" type="button" aria-label="Sound on" aria-pressed="true" data-icon="on"><span class="icon-slot" aria-hidden="true">' + SOUND_SVG.on + '</span></button>',
       readout: '<div id="readout" class="glass" role="status" aria-live="polite" data-kind="info" hidden><span class="readout-msg"></span><span class="readout-chips"></span></div>',
       stageKids: '<div id="piece-controls" hidden><button id="btn-rotate" class="btn btn-icon" type="button" aria-label="Rotate piece"><span aria-hidden="true">&#x21BB;</span></button><button id="btn-remove" class="btn btn-icon btn-danger" type="button" aria-label="Remove piece"><span aria-hidden="true">&#x2715;</span></button></div><div id="toast" class="glass" role="status" aria-live="polite" data-kind="info"></div><div id="webgl-fallback" hidden><div class="glass"><h2 style="margin:0 0 8px;font-size:24px;font-weight:750">3D is not available here</h2><p class="caption">This browser could not start WebGL. The classic 2D game works everywhere.</p><a class="btn btn-selected" href="../mini-games/lasers_mirrors_game.html">Play Lasers and Mirrors (2D)</a></div></div>',
-      tray: '<div id="tray" class="glass" aria-label="Piece tray and controls"><div class="tray-cards" role="group" aria-label="Pieces">' + card('MIRROR') + card('WEDGE') + card('DIP') + '</div><div class="tray-actions" role="group" aria-label="Actions"><button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button><button id="btn-tilt" class="btn" type="button" aria-label="Tilt the board" aria-pressed="false">TILT</button><button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button><button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button><button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button><button id="btn-undo" class="btn btn-icon tray-side-only" type="button" aria-label="Undo"><span aria-hidden="true">&#x21A9;</span></button><button id="btn-redo" class="btn btn-icon tray-side-only" type="button" aria-label="Redo"><span aria-hidden="true">&#x21AA;</span></button><button id="btn-levels" class="btn tray-side-only" type="button" aria-label="Choose a level">LEVELS</button><button id="btn-help" class="btn tray-side-only" type="button" aria-label="How to play">HELP</button><button id="btn-more" class="btn btn-icon" type="button" aria-label="More controls" aria-expanded="false" aria-controls="more-sheet"><span aria-hidden="true">&#x22EF;</span></button></div><div id="more-sheet" class="glass" hidden role="group" aria-label="More controls"></div></div>',
+      tray: '<div id="tray" class="glass" aria-label="Piece tray and controls"><div class="tray-cards" role="group" aria-label="Pieces">' + TYPES.map(card).join('') + '</div><div class="tray-actions" role="group" aria-label="Actions"><button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button><button id="btn-tilt" class="btn" type="button" aria-label="Tilt the board" aria-pressed="false">TILT</button><button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button><button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button><button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button><button id="btn-undo" class="btn btn-icon tray-side-only" type="button" aria-label="Undo"><span aria-hidden="true">&#x21A9;</span></button><button id="btn-redo" class="btn btn-icon tray-side-only" type="button" aria-label="Redo"><span aria-hidden="true">&#x21AA;</span></button><button id="btn-levels" class="btn tray-side-only" type="button" aria-label="Choose a level">LEVELS</button><button id="btn-help" class="btn tray-side-only" type="button" aria-label="How to play">HELP</button><button id="btn-more" class="btn btn-icon" type="button" aria-label="More controls" aria-expanded="false" aria-controls="more-sheet"><span aria-hidden="true">&#x22EF;</span></button></div><div id="more-sheet" class="glass" hidden role="group" aria-label="More controls"></div></div>',
       modals: modal('modal-help', 'How to play', '<div class="modal-body"></div>') + modal('modal-levels', 'Levels', '<div class="level-grid"></div>') +
         modal('modal-victory', 'Beam Connected', '<div class="victory-stars"></div><div class="victory-stats"></div><div class="modal-actions"></div>', '<div class="light-ring" aria-hidden="true"></div>'),
-      defs: '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="l3d-star-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A6"/><stop offset="1" stop-color="#FFD75A"/></linearGradient></defs></svg>'
+      defs: '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="l3d-star-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A6"/><stop offset="1" stop-color="#FFD75A"/></linearGradient></defs></svg>',
+      /* Exposed so ensureDom can RECONCILE a page whose shell was written before a piece type existed. */
+      card: card,
+      hudDark: '<span class="hud-pill hud-dark" id="hud-dark" role="img" aria-label="Dark level" hidden>DARK</span>'
     };
   }
   function insertHtml(parent, html, before) { var t = doc.createElement('template'); t.innerHTML = html; while (t.content.firstChild) parent.insertBefore(t.content.firstChild, before || null); }
@@ -121,6 +146,14 @@
     if (!$('tray')) insertHtml(root, m.tray);
     if (!$('modal-help')) insertHtml(doc.body, m.modals);
     if (!$('l3d-star-grad')) insertHtml(doc.body, m.defs);
+    /* Reconcile the shipped shell with the piece REGISTRY and with DESIGN.md 15's HUD line. index.html carries both
+     * so the page is complete before any script runs, but a fifth piece must not need an HTML edit to be playable,
+     * and a host page written before darkness existed must not lose the indicator. Missing parts are added; nothing
+     * is ever removed, so a card for a type the registry no longer has simply sits at 0 and disabled. */
+    var cardsRow = doc.querySelector('#tray .tray-cards');
+    if (cardsRow) TYPES.forEach(function (t) { if (!cardsRow.querySelector('.tray-card[data-type="' + t + '"]')) insertHtml(cardsRow, m.card(t)); });
+    var cam = $('hud-camera');
+    if (cam && cam.parentNode && !$('hud-dark')) insertHtml(cam.parentNode, m.hudDark, cam.nextSibling);
   }
 
   function create(opts) {
@@ -134,7 +167,7 @@
     if (theme && !$('lasers3d-theme')) { var st = doc.createElement('style'); st.id = 'lasers3d-theme'; st.textContent = theme.cssVariables(); doc.head.appendChild(st); }
     if (theme) { doc.body.style.background = theme.pageBackground; doc.body.style.backgroundColor = theme.palette.background; }
     ensureDom(root);
-    var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
+    var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-dark', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
     ids.forEach(function (id) { el[id] = $(id); });
     var cards = {}; Array.prototype.forEach.call(el.tray.querySelectorAll('.tray-card'), function (c) { cards[c.getAttribute('data-type')] = c; });
 
@@ -144,7 +177,7 @@
     wire('btn-undo', 'onUndo'); wire('btn-redo', 'onRedo'); wire('sound', 'onSoundToggle'); wire('btn-rotate', 'onRotateSelected'); wire('btn-remove', 'onRemoveSelected');
     on(el['btn-levels'], 'click', function () { closeMore(); if (call(handlers, 'onLevels') !== false) ui.showLevelSelect(); });
     on(el['btn-help'], 'click', function () { closeMore(); if (call(handlers, 'onHelp') !== false) ui.showHowToPlay(); });
-    TYPES.forEach(function (t) { on(cards[t], 'click', function () { if (cards[t].disabled) return; call(handlers, 'onTraySelect', vm && vm.selectedTray === t ? null : t); }); });
+    TYPES.forEach(function (t) { on(cards[t], 'click', function () { if (!cards[t] || cards[t].disabled) return; call(handlers, 'onTraySelect', vm && vm.selectedTray === t ? null : t); }); });
 
     /* MORE sheet: on portrait phones it holds Undo / Redo / Levels / Help (moved, not cloned, so ids stay unique) */
     var sideOnly = Array.prototype.slice.call(el.tray.querySelectorAll('.tray-side-only')), actionsRow = el.tray.querySelector('.tray-actions');
@@ -205,6 +238,17 @@
       text(el['hud-level-num'], 'LEVEL ' + (v.levelIndex + 1)); attr(el.hud, 'aria-label', 'Level ' + (v.levelIndex + 1) + (v.levelCount ? ' of ' + v.levelCount : ''));
       text(el['hud-level-name'], lvl.name || '');
       attr(el['hud-camera'], 'data-camera', v.isFlat ? 'flat' : 'tilt'); text(el['hud-camera'], v.isFlat ? 'FLAT' : 'TILT');
+      /* DESIGN.md 15: on a dark level the HUD says so, and says how much of the board the player has uncovered.
+       * Same terse data voice as the pills either side of it ("FLAT", "PIECES 0/1"); the sentence a screen reader
+       * gets is the unambiguous one, because "DARK 34%" alone could be read as "34% dark". */
+      if (el['hud-dark']) {
+        var dk = !!v.dark, pctSeen = dk && v.knownTotal ? Math.round((v.known / v.knownTotal) * 100) : 0;
+        if (el['hud-dark'].hidden !== !dk) el['hud-dark'].hidden = !dk;
+        if (dk) {
+          text(el['hud-dark'], 'DARK ' + pctSeen + '%');
+          attr(el['hud-dark'], 'aria-label', 'Dark level. ' + pctSeen + ' percent of the board uncovered.');
+        }
+      }
       var sk = 'stars' + (flags.solved ? 1 : 0) + (flags.par ? 1 : 0) + (flags.blind ? 1 : 0);
       if (el['hud-stars'].getAttribute('data-key') !== sk) { el['hud-stars'].innerHTML = starsHtml(flags); el['hud-stars'].setAttribute('data-key', sk); }
       attr(el['hud-stars'], 'aria-label', count + ' of 3 stars: solve ' + (flags.solved ? 'earned' : 'not earned') +
@@ -215,7 +259,9 @@
       if (el.sound.getAttribute('data-icon') !== si) { el.sound.firstElementChild.innerHTML = SOUND_SVG[si]; el.sound.setAttribute('data-icon', si); }
       ui.setReadout(v.readout);
       TYPES.forEach(function (t) {
-        var c = cards[t], n = (v.trayRemaining && v.trayRemaining[t]) | 0, sel = v.selectedTray === t;
+        var c = cards[t];
+        if (!c) return;                       /* a registry type this page has no card for is simply not offered */
+        var n = (v.trayRemaining && v.trayRemaining[t]) | 0, sel = v.selectedTray === t;
         text(c.querySelector('.tray-count'), String(n)); attr(c, 'aria-pressed', sel ? 'true' : 'false'); attr(c, 'aria-label', LABELS[t] + ', ' + fmtCount(n));
         var dis = n === 0 || busy; if (c.disabled !== dis) c.disabled = dis;
         var ic = c.querySelector('.tray-icon'); if (ic.getAttribute('data-src') !== (trayIcon(t) || 'glyph')) { ic.innerHTML = iconHtml(t); ic.setAttribute('data-src', trayIcon(t) || 'glyph'); }
@@ -320,7 +366,7 @@
       ui.showToast(t.text, { kind: t.kind, ms: t.ms });
     }
     ui.flashInvalid = function (what) {
-      var t = what === 'tray' ? (vm && vm.selectedTray ? cards[vm.selectedTray] : el.tray) : what === 'button:fire' ? el['btn-fire'] : what === 'cell' ? el.stage : el[what.replace('button:', 'btn-')];
+      var t = what === 'tray' ? (vm && vm.selectedTray && cards[vm.selectedTray] ? cards[vm.selectedTray] : el.tray) : what === 'button:fire' ? el['btn-fire'] : what === 'cell' ? el.stage : el[what.replace('button:', 'btn-')];
       if (!t) return; t.classList.remove('is-invalid'); void t.offsetWidth; t.classList.add('is-invalid');
       setTimeout(function () { t.classList.remove('is-invalid'); }, 400);
     };
@@ -467,12 +513,19 @@
     }
 
     function helpBody() {
-      function row(t) { return '<div class="help-row">' + iconHtml(t) + '<div><b style="color:var(--color-' + t.toLowerCase() + ')">' + LABELS[t].toUpperCase() + '</b> <span class="caption">' + PIECE_HELP[t] + '</span></div></div>'; }
+      /* One row per REGISTRY type, in registry order, with the player-facing wording from PIECE_HELP and the
+       * registry's own hint as the fallback - so a new piece explains itself the day it is added. */
+      function help(t) { return PIECE_HELP[t] || (REG && REG.PIECES && REG.PIECES[t] && REG.PIECES[t].hint) || ''; }
+      function row(t) { return '<div class="help-row">' + iconHtml(t) + '<div><b style="color:' + accentVar(t) + '">' + LABELS[t].toUpperCase() + '</b> <span class="caption">' + help(t) + '</span></div></div>'; }
       /* Terrain shapes have no tray icon to show, so they get a plain labelled line instead of a .help-row. */
       function shapeRow(t) { return '<p class="help-shape"><b>' + t + '</b> <span class="caption">' + SHAPE_HELP[t] + '</span></p>'; }
+      /* Darkness is neither a piece nor a wall shape, so it gets its own line in the same shape as the two above. */
+      function modeRow(name, body) { return '<p class="help-mode"><b>' + name + '</b> <span class="caption">' + body + '</span></p>'; }
+      var turners = TYPES.filter(function (t) { return !REG || typeof REG.turnsBeam !== 'function' || REG.turnsBeam(t); });
       return '<p>Steer the laser into every target. Tap a piece in the tray, then tap a cell to place it. Tap a placed piece to rotate it; drag it to move it.</p>' +
-        '<p class="caption">All three pieces turn the beam the same way. What changes is the beam\'s height.</p>' +
-        row('MIRROR') + row('WEDGE') + row('DIP') +
+        '<p class="caption">' + (turners.length === TYPES.length ? 'All the pieces turn the beam the same way. What changes is the beam\'s height.'
+          : 'Most pieces turn the beam the same way. What changes is the beam\'s height.') + '</p>' +
+        TYPES.map(row).join('') +
         '<p class="help-note">' + HELP_NOTE + '</p>' +
         '<p class="caption">Seen from the side:</p>' + pitchDiagram() +
         '<p class="caption">The board looks flat, but it is not. Higher beams are wider and brighter:</p><div class="help-beams">' + beamRow(0) + beamRow(1) + beamRow(2) + beamRow(3) + '</div>' +
@@ -480,8 +533,10 @@
         shapeRow('ARCH') + shapeRow('WINDOW') +
         terrainDiagram() +
         '<p class="help-note">' + SHAPE_NOTE + '</p>' +
+        '<p class="caption">And some levels start in the dark:</p>' +
+        modeRow('DARK', DARK_HELP) +
         '<p class="caption">Drag the empty board or press TILT to see the real heights. Solve without tilting for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
-        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>0</kbd><span>fit board to screen</span><kbd>1-3</kbd><span>pick a tray piece</span></div>';
+        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>0</kbd><span>fit board to screen</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
     }
     ui.showHowToPlay = function () { el['modal-help'].querySelector('.modal-body').innerHTML = helpBody(); openModal('modal-help'); };
     ui.hideHowToPlay = function () { closeModal('modal-help'); };
@@ -540,7 +595,9 @@
         p.stars = plainObject(j.stars);
         Object.keys(p.stars).forEach(function (k) { p.stars[k] = starFlags(p.stars[k]); });
         p.schema = SCHEMA;
-        ['intros', 'revealed'].forEach(function (k) { if (p[k] !== undefined) p[k] = plainObject(p[k]); });
+        /* `known` is DESIGN.md 15's discovered set, one packed record per level (see main.js makeKnown). Like the
+         * other per-level bags it must be a plain object whatever storage held, or a later write would throw. */
+        ['intros', 'revealed', 'known'].forEach(function (k) { if (p[k] !== undefined) p[k] = plainObject(p[k]); });
       } catch (e) { return DEFAULT_PROGRESS(); }
       return p;
     };
@@ -564,6 +621,6 @@
 
   window.LaserUI = { __version: 1, create: create, markup: markup, starSvg: starSvg, starsHtml: starsHtml,
     starFlags: starFlags, starCount: starCount, mergeStars: mergeStars, endText: END_TEXT,
-    pieceHelp: PIECE_HELP, helpNote: HELP_NOTE, pitchText: PITCH_TEXT,
+    pieceHelp: PIECE_HELP, helpNote: HELP_NOTE, pitchText: PITCH_TEXT, darkHelp: DARK_HELP, types: TYPES.slice(),
     STAR_KEYS: STAR_KEYS, SCHEMA: SCHEMA, STORAGE_KEY: STORAGE_KEY };
 }());

@@ -23,6 +23,12 @@
     mirror: '#45E7FF',
     wedge: '#FFC857',
     dip: '#FF4FA3',
+    /* DESIGN.md 14: the FLOOR plate is a mirror LYING DOWN, so it is the one piece whose accent is a metal
+     * rather than a hue. A fourth saturated colour beside cyan/amber/pink would read as a fourth direction;
+     * polished silver reads as "the same mirror, laid flat", which is exactly what it is. It sits in the
+     * palette's existing metal family (metalLight #A8C0CE, commonFlatPiece #B7CEDB) two steps brighter, so it
+     * is never mistaken for the grey glyph the FLAT view paints on the other three. */
+    floorPlate: '#D6ECF7',
     emitter: '#FF2F92',
     targetUnlit: '#6D7896',
     targetLit: '#78FFD8',
@@ -48,13 +54,16 @@
     commonFlatPiece: '#B7CEDB',
     star: '#FFD75A',
     starEmpty: '#65718E',
-    badgeFill: '#071020'
+    badgeFill: '#071020',
+    /* DESIGN.md 15: the ground of a cell no beam has reached yet. Darker than the floor (#172544) and lighter
+     * than the page (#050817), so an unexplored board reads as unlit board rather than as a hole in the page. */
+    darkUnknown: '#070D1F'
   };
 
   /* Beam color by integer level z in 0..3 (index = z). */
   var beamColors = [palette.beamLevel0, palette.beamLevel1, palette.beamLevel2, palette.beamLevel3];
   /* Piece accent by type. */
-  var pieceAccent = { MIRROR: palette.mirror, WEDGE: palette.wedge, DIP: palette.dip };
+  var pieceAccent = { MIRROR: palette.mirror, WEDGE: palette.wedge, DIP: palette.dip, FLOOR: palette.floorPlate };
 
   var pageBackground =
     'radial-gradient(circle at 20% 78%, rgba(0, 255, 204, 0.07), transparent 45%), ' +
@@ -109,6 +118,12 @@
     dipFace: { material: 'MeshPhysicalMaterial', color: palette.dip, metalness: 0.42, roughness: 0.22,
       emissive: '#67123D', emissiveIntensity: 0.38, opacity: 0.94, transparent: true,
       clearcoat: 0.85, side: 'DoubleSide' },
+    /* DESIGN.md 14.1: the FLOOR plate. It is the only piece whose face is HORIZONTAL, so it is the only one the key
+     * light hits square on; a near-mirror finish (low roughness, high metalness, no transmission) is what makes it
+     * read as a puddle of silver rather than as a lid. Opaque, because a beam bounces OFF it and never through. */
+    floorFace: { material: 'MeshPhysicalMaterial', color: palette.floorPlate, metalness: 0.92, roughness: 0.07,
+      emissive: '#20323F', emissiveIntensity: 0.30, opacity: 1.0, transparent: true /* opacity = reveal */,
+      clearcoat: 1.0, clearcoatRoughness: 0.06 },
     edgeFilament: { material: 'MeshStandardMaterial', color: 'accent' /* pieceAccent[type] */, metalness: 0.0, roughness: 0.3,
       emissive: 'accent', emissiveIntensity: 3.0, opacity: 1.0, transparent: true /* opacity = reveal */ },
     emitterBody: { material: 'MeshPhysicalMaterial', color: palette.metalLight, metalness: 0.88, roughness: 0.22,
@@ -176,6 +191,34 @@
       zOffset: 0.006,               /* above the column top (grid outline sits at +0.004) */
       texturePx: 128,
       renderOrder: 3
+    },
+
+    /* ---- DARKNESS (DESIGN.md 15) -----------------------------------------------------------------------------
+     * A level may set `dark: true`. Until a beam has entered a cell, that cell's terrain, pieces, targets and
+     * openings are not drawn; the grid outline over the board's ground plane always is. The tokens below describe
+     * only the FOG - what an unknown cell looks like and how a newly known one arrives. What a KNOWN cell looks
+     * like is not decided here and never can be: 15.1 fixes it as "exactly as it would on a lit board", so the
+     * whole feature is a gate on WHEN, never a second look.
+     *
+     *  - `unknownColorVec3` is plain sRGB in 0..1, NOT a linear colour, because the mix happens after tone mapping
+     *    and the colour-space conversion (the same place terrain.flatColorVec4 is used, and for the same reason:
+     *    at reveal 0 the FLAT board must land on EXACTLY #172544, and at fog 0 on exactly #070D1F).
+     *  - `gridKnownAt` is where the outline of an unknown cell sits relative to a known one: 0 = the board's ground
+     *    plane. That is the whole of "darkness hides what is IN the world, never WHERE it is" - the outline is
+     *    always drawn, it simply lies flat until the cell is known and then rises to the column's own top.
+     *  - `revealMs` is per cell and deliberately short. The stagger comes free from the beam: a cell is learned as
+     *    the travelling head reaches its centre, so a shot peels the board open along its own path.
+     *  - `unknownGridLevel` keeps the outline of an unknown cell clearly visible (it is the player's only way to
+     *    aim a tap) while still letting a revealed strip read as brighter. It is never 0.
+     */
+    darkness: {
+      unknownColor: palette.darkUnknown,                  /* '#070D1F' - also the CSS token --color-dark */
+      unknownColorVec3: [0.0275, 0.0510, 0.1216],         /* #070D1F / 255, sRGB, for the post-tone-map mix */
+      unknownGridLevel: 0.62,   /* an unknown cell's outline, as a fraction of the lit outline's colour */
+      gridKnownAt: 0.004,       /* world height the outline rests at while a cell is unknown (the ground plane) */
+      revealMs: 420,            /* one cell, unknown -> fully known */
+      minVisible: 0.004,        /* below this a cell's terrain is discarded outright */
+      leakFadePower: 1.0        /* the light leak (13.3) arrives with the cell, never before it */
     }
   };
 
@@ -186,6 +229,11 @@
     wedgeFace: { lowZ: 0.12, highZ: 0.78 },        /* upward 45deg ramp across the diagonal */
     dipFace: { nearZ: 0.78, farZ: 0.12 },          /* inverse: near lip high, recessed edge low */
     edgeFilament: 0.025,
+    /* DESIGN.md 14: the FLOOR plate. A DISC, not a square: the piece's two orientations are indistinguishable in the
+     * rules (LaserPieces.TURN_KEEP), so a shape that changes with the rotate tap would be a lie about the rules. It
+     * sits just proud of the housing lid, i.e. in the cell's top surface, and carries the same edge filament as the
+     * upright faces so the family still reads as one set. */
+    floorPlate: { radius: 0.30, thickness: 0.030, segments: 32, rimFilament: 0.026, glyphRadius: 0.26 },
     trayIconElevationDeg: 35,          /* DEPRECATED: superseded by trayIcon below (see INTERFACES-FRONTEND.md Changes) */
     /* Tray icon camera (DESIGN.md 3.3 needs the three pieces to be told apart by silhouette).
      * The panel's hinge (its `/` diagonal) runs along world (0.707, 0, -0.707) = azimuth 135 deg, so a camera at
@@ -356,6 +404,16 @@
     '--color-mirror': palette.mirror,
     '--color-wedge': palette.wedge,
     '--color-dip': palette.dip,
+    /* One accent token per PIECE TYPE, named after the type. The three above are kept because the help diagram and
+     * the tray stylesheet already reference them, but nothing new should: a fifth piece must be able to get its
+     * colour without anyone editing a stylesheet, and `--color-floor` was already taken by the terrain floor, which
+     * would have painted the FLOOR piece's label in the board's own near-black navy. */
+    '--color-piece-mirror': pieceAccent.MIRROR,
+    '--color-piece-wedge': pieceAccent.WEDGE,
+    '--color-piece-dip': pieceAccent.DIP,
+    '--color-piece-floor': pieceAccent.FLOOR,
+    /* DESIGN.md 15: the ground of a cell no beam has reached. */
+    '--color-dark': palette.darkUnknown,
     /* Terrain tokens, so the how-to-play diagrams can draw a wall, a floor cell and the light leak of DESIGN.md 13.3
      * in the board's own colours instead of inventing hues. */
     '--color-block-side': palette.blockSide,

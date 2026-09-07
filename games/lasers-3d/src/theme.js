@@ -475,7 +475,7 @@
       emptyFill: '#0B1330', emptyStroke: palette.starEmpty, blindDot: { px: 4, color: palette.uiAccent } },
     victory: { riseFromPx: 12, fadeMs: 360, title: 'Beam Connected', titleSizePx: 28, titleWeight: 800,
       starDelaysMs: [0, 180, 360], starScale: [0.72, 1.12, 1.0], lightRing: true, confetti: false, nextColor: palette.success },
-    hintGhostMs: 2000,
+    hintGhostMs: 8000,
     toastMs: 2600,
     /* Post-FIRE result readout (DESIGN.md 3.6's blind star only rewards deduction if a FIRE actually tells the
      * player something). It is its own grid row between the HUD and the stage, so it can never cover the board or

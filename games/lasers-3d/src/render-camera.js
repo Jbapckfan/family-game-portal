@@ -393,7 +393,7 @@
     }
     function getCamera() {
       return { azimuthDeg: cam.az, elevationDeg: cam.el, zoom: cam.userZoom, preset: cam.preset, view: cam.view,
-        animating: !!(cam.anim || cam.tween), cellPx: getCellPx(), fitZoom: cam.fitZoom, effectiveZoom: effectiveZoom(),
+        pan: {x:pan.x,y:pan.y,z:pan.z}, manual:cam.manual, animating: !!(cam.anim || cam.tween), cellPx: getCellPx(), fitZoom: cam.fitZoom, effectiveZoom: effectiveZoom(),
         revealIntake: revealIntake() };
     }
     /* The board's projected box in canvas CSS px: {width, height, centerX, centerY} with the canvas centre at (0,0). */
@@ -416,6 +416,7 @@
       camera: camera, up: upVec, right: rightVec, dir: dirVec, boardCenter: boardCenter, pan: pan,
       setBoard: setBoard, apply: apply, refit: refit, step: step,
       setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, fitToBoard: fitToBoard, canFit: canFit,
+      restoreCamera: function (c) { if (!c || !Number.isFinite(c.azimuthDeg) || !Number.isFinite(c.elevationDeg)) return; endAnim(); endTween(); cam.az = c.azimuthDeg % 360; cam.el = Core.clamp(c.elevationDeg, CAM.orbit.elevationMinDeg, 90); cam.view = c.view === 'overview' ? 'overview' : 'working'; cam.manual = true; cam.userZoom = Number.isFinite(c.zoom) ? Core.clamp(c.zoom, 0.1, 10) : 1; var p = c.pan || {}; pan.set(Number.isFinite(p.x) ? p.x : 0, 0, Number.isFinite(p.z) ? p.z : 0); refit(true); clampPan(); apply(); },
       setViewMode: setViewMode, getViewMode: getViewMode, hasOverview: hasOverview,
       getCellPx: getCellPx, isFlat: isFlat, isAnimating: isAnimating, getCamera: getCamera, getBoardScreenBox: getBoardScreenBox,
       revealIntake: revealIntake,

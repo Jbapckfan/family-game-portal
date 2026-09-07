@@ -1,3 +1,5 @@
+import { homedir as browserHome } from 'node:os';
+const joinHomedirCache = () => process.platform === 'darwin' ? browserHome() + '/Library/Caches/ms-playwright' : browserHome() + '/.cache/ms-playwright';
 // Lasers 3D - THE TWO REGRESSIONS A SCREENSHOT CANNOT SEE.
 // Run: node test/motion.frames.mjs   (starts tools/serve.mjs on a free port; SHOTS_DIR overrides the screenshot dir)
 //
@@ -25,17 +27,17 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
 const require = createRequire(import.meta.url);
-const { webkit } = require('/Users/jamesalford/.npm-global/lib/node_modules/playwright');
+const { webkit } = require('playwright');
 
 function webkitLaunchOptions() {
   if (existsSync(webkit.executablePath())) return {};
-  const cache = '/Users/jamesalford/Library/Caches/ms-playwright';
+  const cache = joinHomedirCache();
   const builds = existsSync(cache) ? readdirSync(cache).filter((d) => /^webkit-\d+$/.test(d) && existsSync(`${cache}/${d}/pw_run.sh`)).sort() : [];
   if (!builds.length) throw new Error('no WebKit build found for Playwright');
   return { executablePath: `${cache}/${builds[builds.length - 1]}/pw_run.sh` };
 }
 const here = dirname(fileURLToPath(import.meta.url));
-const SHOTS = process.env.SHOTS_DIR || '/private/tmp/claude-501/-Users-jamesalford/7f475eac-e253-4679-b02d-9b0f7b9b6404/scratchpad/shots';
+const SHOTS = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.meta.url).pathname;
 mkdirSync(SHOTS, { recursive: true });
 
 const IGNORE = /three\.min\.js.*deprecated|build\/three\.js/;
@@ -102,7 +104,7 @@ const PROGRESS = (over) => JSON.stringify(Object.assign({
 
 async function boot(page, url, over) {
   await page.goto(url, { waitUntil: 'load' });
-  await page.evaluate((p) => localStorage.setItem('lasers3d.v1', p), PROGRESS(over));
+  await page.evaluate((p) => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', p), PROGRESS(over));
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => window.__lasers3d && window.__lasers3d.render && window.__lasers3d.state.level);
   await waitQuiet(page);
@@ -457,7 +459,7 @@ async function bootHiddenPass(browser, url) {
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (window.__forceHidden === true ? 'hidden' : 'visible') });
   });
   await page.goto(url, { waitUntil: 'load' });
-  await page.evaluate((p) => localStorage.setItem('lasers3d.v1', p), PROGRESS());
+  await page.evaluate((p) => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', p), PROGRESS());
   await page.reload({ waitUntil: 'load' });
   await page.waitForFunction(() => window.__lasers3d && window.__lasers3d.render && window.__lasers3d.state.level);
   await page.waitForTimeout(900);

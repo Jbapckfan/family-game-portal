@@ -428,6 +428,8 @@
       setBeamSeal: setBeamSeal, setQualityCut: setQualityCut,
       setCameraPreset: setCameraPreset, orbit: rig.orbit, zoom: rig.zoomBy, pan: rig.panBy, needsFrame: needsFrame,
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
+      restoreCamera: rig.restoreCamera,
+      focusCell: function (c, zoom) { if (zoom) rig.setViewMode('working', {animate:false}); var p = projectCell(c, 0), r = canvas.getBoundingClientRect(); rig.panBy(r.left + r.width / 2 - p.x, r.top + r.height / 2 - p.y); },
       setViewMode: rig.setViewMode, getViewMode: rig.getViewMode, hasOverview: rig.hasOverview,
       pickCell: pickCell, projectCell: projectCell, cellToScreen: function (cell) { return projectCell(cell, 0); },
       /* DESIGN.md 13: bitmask of the levels punched out of a column (0 = an ordinary solid column). The renderer

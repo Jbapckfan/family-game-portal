@@ -1,3 +1,5 @@
+import { homedir as browserHome } from 'node:os';
+const joinHomedirCache = () => process.platform === 'darwin' ? browserHome() + '/Library/Caches/ms-playwright' : browserHome() + '/.cache/ms-playwright';
 // Lasers 3D - end-to-end Playwright WebKit test for the assembled game (index.html + src/main.js).
 // Run: node test/ui.playwright.mjs   (starts tools/serve.mjs on a free port; SHOTS_DIR overrides the screenshot dir)
 // Flow viewports: iPhone 393x852 @3x and iPad 820x1180 @2x. Per viewport: clean console, dismiss how-to-play, solve
@@ -17,17 +19,17 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const { webkit } = require('/Users/jamesalford/.npm-global/lib/node_modules/playwright');
+const { webkit } = require('playwright');
 
 function webkitLaunchOptions() {
   if (existsSync(webkit.executablePath())) return {};
-  const cache = '/Users/jamesalford/Library/Caches/ms-playwright';
+  const cache = joinHomedirCache();
   const builds = existsSync(cache) ? readdirSync(cache).filter((d) => /^webkit-\d+$/.test(d) && existsSync(`${cache}/${d}/pw_run.sh`)).sort() : [];
   if (!builds.length) throw new Error('no WebKit build found for Playwright');
   return { executablePath: `${cache}/${builds[builds.length - 1]}/pw_run.sh` };
 }
 const here = dirname(fileURLToPath(import.meta.url));
-const SHOTS = process.env.SHOTS_DIR || '/private/tmp/claude-501/-Users-jamesalford/7f475eac-e253-4679-b02d-9b0f7b9b6404/scratchpad/shots';
+const SHOTS = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.meta.url).pathname;
 mkdirSync(SHOTS, { recursive: true });
 
 const VIEWPORTS = [
@@ -139,7 +141,7 @@ async function layoutPass(browser, url) {
     page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
     await page.goto(url, { waitUntil: 'load' });
     await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);
-    await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: false, seenHelp: true })));
+    await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: false, seenHelp: true })));
     await page.reload({ waitUntil: 'load' });
     await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);
     await page.waitForTimeout(250);
@@ -208,7 +210,7 @@ async function layoutPass(browser, url) {
     });
     assert(tray.fireInside && (!tray.overflow || (tray.lastInside && tray.fireAtRest)), `FIRE fully inside the viewport (and the action row scrolls to its last button when it overflows) ${JSON.stringify(tray)}`);
     assert(tray.small.length === 0 && tray.scrollW2 <= tray.cw && tray.scrollY === 0, `every button >= 44x44 and no page overflow ${JSON.stringify({ small: tray.small, sw: tray.scrollW2, cw: tray.cw })}`);
-    if (vp.name === 'se320') assert(tray.overflow, `320 px: the action row is horizontally scrollable (scrollWidth ${tray.scrollW} > clientWidth ${tray.clientW})`);
+    if (vp.name === 'se320') assert(!tray.overflow, `320 px: the action grid fits without scrolling (scrollWidth ${tray.scrollW} > clientWidth ${tray.clientW})`);
 
     // ---- resize during a preset animation ends on the fit for the NEW size ----
     await page.evaluate(() => window.__laser.main.reset());
@@ -240,7 +242,7 @@ async function robustnessPass(browser, url) {
   // corrupt `intros` (a string) with the current level on an intro level: must boot and show the level
   await page.goto(url, { waitUntil: 'load' });
   await booted();
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ intros: 'x', currentLevel: 3, highestUnlocked: 19, seenHelp: true })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ intros: 'x', currentLevel: 3, highestUnlocked: 19, seenHelp: true })));
   await page.reload({ waitUntil: 'load' });
   let ok = await booted();
   await page.waitForTimeout(200);
@@ -250,7 +252,7 @@ async function robustnessPass(browser, url) {
   assert(intros && typeof intros === 'object' && intros['3'] === true, `intros normalised to an object and the level-4 intro recorded ${JSON.stringify(intros)}`);
 
   // corrupt `revealed` (a number): the free reveal after a failed FIRE on level 4 must not throw
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ revealed: 5, currentLevel: 3, highestUnlocked: 19, seenHelp: true, intros: {} })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ revealed: 5, currentLevel: 3, highestUnlocked: 19, seenHelp: true, intros: {} })));
   await page.reload({ waitUntil: 'load' });
   ok = await booted();
   await page.waitForTimeout(200);
@@ -261,7 +263,7 @@ async function robustnessPass(browser, url) {
   assert(ok && errors.length === 0 && revealed && revealed['3'] === true, `corrupt revealed:5 -> FIRE + free reveal run clean and the flag is re-recorded ${JSON.stringify({ revealed, errors })}`);
 
   // corrupt currentLevel + intros: loadLevel(3) works
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ intros: 'x', currentLevel: 'abc', highestUnlocked: 19, seenHelp: true })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ intros: 'x', currentLevel: 'abc', highestUnlocked: 19, seenHelp: true })));
   await page.reload({ waitUntil: 'load' });
   ok = await booted();
   await page.evaluate(() => window.__laser.main.loadLevel(3));
@@ -269,7 +271,7 @@ async function robustnessPass(browser, url) {
   assert(ok && (await vm(page)).levelIndex === 3 && errors.length === 0, `corrupt currentLevel:"abc" + intros:"x" -> boots and loadLevel(3) works ${JSON.stringify(errors)}`);
 
   // shared materials survive setPlaced: no shader program is recompiled by rotating a piece
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 19, highestUnlocked: 19, seenHelp: true })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 19, highestUnlocked: 19, seenHelp: true })));
   await page.reload({ waitUntil: 'load' });
   ok = await booted();
   await page.waitForTimeout(200);
@@ -435,7 +437,7 @@ async function polishPass(browser, url, vp) {
   await boot();
   // `revealed` pre-set: the one-time reveal on levels 4 and 5 is exercised on its own further down, and it is
   // exclusive by design, so it must not fire in the middle of an unrelated check.
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: {}, revealed: { 3: true, 4: true } })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: {}, revealed: { 3: true, 4: true } })));
   await boot();
 
   // ---------- S13: dirty rendering. Frames must stop when the board is static and resume for every animation. ----------
@@ -493,7 +495,7 @@ async function polishPass(browser, url, vp) {
   await page.waitForTimeout(200);
   const ghost = await page.evaluate(async () => {
     const app = window.__laser.main, b0 = app.state.frames;
-    app.hint();
+    app.hint(); app.hint(); app.hint();
     await new Promise((r) => setTimeout(r, 200));
     const shown = { frames: app.state.frames - b0, ghost: !!app.state.hintGhost, active: document.getElementById('btn-hint').classList.contains('is-active') };
     const b1 = app.state.frames;
@@ -501,7 +503,7 @@ async function polishPass(browser, url, vp) {
     return { shown, gone: { frames: app.state.frames - b1, ghost: !!app.state.hintGhost, active: document.getElementById('btn-hint').classList.contains('is-active') } };
   });
   assert(ghost.shown.frames >= 1 && ghost.shown.ghost && ghost.shown.active, `the hint ghost draws a frame when it appears ${JSON.stringify(ghost.shown)}`);
-  assert(ghost.gone.frames >= 1 && !ghost.gone.ghost && !ghost.gone.active, `and its 2 s timeout draws another to take it away ${JSON.stringify(ghost.gone)}`);
+  assert(ghost.gone.frames >= 1 && !ghost.gone.ghost && !ghost.gone.active, `and its 8 s timeout draws another to take it away ${JSON.stringify(ghost.gone)}`);
 
   // ---------- S8: travel is duration-capped and a tap finishes it instantly ----------
   await page.evaluate(() => window.__laser.main.loadLevel(19));
@@ -669,16 +671,15 @@ async function polishPass(browser, url, vp) {
     `and hands the new attempt over flat, with tiltsUsed 0 ${JSON.stringify(resetting.end)}`);
 
   // ---------- S3: stars are three criteria, not a rank. Hint + no tilt = solve and blind, par dark. ----------
-  await page.evaluate(() => { localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: {}, revealed: {} })); });
+  await page.evaluate(() => { (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: {}, revealed: {} })); });
   await boot();
   const hinted = await page.evaluate(async () => {
     const app = window.__laser.main;
     app.loadLevel(0);
     await new Promise((r) => setTimeout(r, 150));
-    app.hint();
+    app.hint(); app.hint(); app.hint();
     app.setPlaced(app.levels[0].solution);
     await new Promise((r) => setTimeout(r, 150));
-    app.state.hintUsed = true;                       // the hint above already set it; make the intent explicit
     app.fire();
     await new Promise((res) => { const t = setInterval(() => { if (!document.getElementById('modal-victory').hidden) { clearInterval(t); res(); } }, 40); setTimeout(res, 9000); });
     await new Promise((r) => setTimeout(r, 400));
@@ -687,9 +688,9 @@ async function polishPass(browser, url, vp) {
       saved: JSON.parse(localStorage.getItem('lasers3d.v1')).stars['0'],
       vm: window.__laser.main.getViewModel().stars, tilts: app.getViewModel().tiltsUsed, hintUsed: app.getViewModel().hintUsed };
   });
-  assert(JSON.stringify(hinted.modal) === '["true","false","true"]' && JSON.stringify(hinted.hud) === '["true","false","true"]',
-    `a hinted blind solve lights SOLVE and BLIND, not "the first two" ${JSON.stringify(hinted)}`);
-  assert(hinted.saved && hinted.saved.solved === true && hinted.saved.par === false && hinted.saved.blind === true,
+  assert(JSON.stringify(hinted.modal) === '["true","false","false"]' && JSON.stringify(hinted.hud) === '["true","false","false"]',
+    `an exact hint leaves SOLVE earned and both unassisted criteria dark ${JSON.stringify(hinted)}`);
+  assert(hinted.saved && hinted.saved.solved === true && hinted.saved.par === false && hinted.saved.blind === false,
     `and stores the criteria, not a count ${JSON.stringify(hinted.saved)}`);
   await page.screenshot({ path: `${SHOTS}/polish-victory-${vp.name}.png` });
   await page.click('#modal-victory .modal-close');
@@ -701,18 +702,18 @@ async function polishPass(browser, url, vp) {
     await new Promise((r) => setTimeout(r, 200));
     app.setPlaced(app.levels[0].solution);
     await new Promise((r) => setTimeout(r, 120));
-    app.tilt();                                       // costs the blind star for THIS attempt
+    app.tilt();                                       // tilting is free for campaign stars
     await new Promise((r) => setTimeout(r, 900));
     app.fire();
     await new Promise((res) => { const t = setInterval(() => { if (!document.getElementById('modal-victory').hidden) { clearInterval(t); res(); } }, 40); setTimeout(res, 9000); });
     return { attempt: app.getViewModel().attemptStars, saved: JSON.parse(localStorage.getItem('lasers3d.v1')).stars['0'] };
   });
-  assert(merged.attempt.blind === false && merged.saved.par === true && merged.saved.blind === true,
-    `a par-but-tilted replay adds the par star and keeps the blind one ${JSON.stringify(merged)}`);
+  assert(merged.attempt.blind === true && merged.saved.par === true && merged.saved.blind === true,
+    `an unassisted tilted replay earns all three campaign stars ${JSON.stringify(merged)}`);
   await page.evaluate(() => window.__laser.ui.hideVictory());
 
   // ---------- S6: the one-time reveal is exclusive, and only consumed when it finishes ----------
-  await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 3, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: { 3: true }, revealed: {} })));
+  await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 3, highestUnlocked: 19, stars: {}, muted: true, seenHelp: true, intros: { 3: true }, revealed: {} })));
   await boot();
   await page.click('#btn-fire');
   await page.waitForFunction(() => window.__laser.main.getViewModel().revealPlaying, null, { timeout: 8000 });
@@ -775,6 +776,8 @@ async function run() {
       // ---- first launch: level 1, how-to-play opens by itself ----
       await page.goto(url, { waitUntil: 'load' });
       await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);
+      assert(await page.evaluate(() => document.getElementById('modal-help').hidden), 'first launch starts with the playable lesson');
+      await page.evaluate(() => window.__laser.ui.showHowToPlay());
       await page.waitForFunction(() => !document.getElementById('modal-help').hidden, null, { timeout: 3000 });
       assert(await page.evaluate(() => window.__laser.ui.isModalOpen() && !window.__laser.input.isEnabled()), 'how-to-play opens on first launch; board input disabled while open');
       await page.click('#modal-help .modal-close');
@@ -806,8 +809,8 @@ async function run() {
       const vs = await page.evaluate(() => ({ earned: document.querySelectorAll('#modal-victory .star[data-earned="true"]').length, awarded: document.querySelectorAll('#modal-victory .star.is-awarded').length, stats: document.querySelector('#modal-victory .victory-stats').textContent }));
       assert(vs.earned === 3 && vs.awarded === 3, `victory modal shows 3 stars ${JSON.stringify(vs)}`);
       const prog = await page.evaluate(() => JSON.parse(localStorage.getItem('lasers3d.v1')));
-      assert(prog.schema === 2 && prog.stars['0'] && prog.stars['0'].solved === true && prog.stars['0'].par === true && prog.stars['0'].blind === true && prog.highestUnlocked >= 1,
-        `progress saved as criterion flags at schema 2 ${JSON.stringify({ schema: prog.schema, stars: prog.stars, hu: prog.highestUnlocked })}`);
+      assert(prog.schema === 3 && prog.stars['0'] && prog.stars['0'].solved === true && prog.stars['0'].par === true && prog.stars['0'].blind === true && prog.highestUnlocked >= 1,
+        `progress saved as criterion flags at schema 3 ${JSON.stringify({ schema: prog.schema, stars: prog.stars, hu: prog.highestUnlocked })}`);
       assert(await page.evaluate(() => document.querySelectorAll('#hud-stars .star[data-earned="true"]').length === 3), 'HUD shows 3 stars after the win');
       const mh = await page.evaluate(menuHit);
       assert(mh.hit && mh.z === '9999', `Menu link is elementFromPoint at its center with the victory modal open ${JSON.stringify(mh)}`);
@@ -819,7 +822,7 @@ async function run() {
 
       // ---- unlock level 5 by writing progress, reload, go there through the level select ----
       // deliberately the OLD numeric schema: it must migrate, not be discarded
-      await page.evaluate(() => localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 4, stars: { '0': 3 }, muted: false, seenHelp: true })));
+      await page.evaluate(() => (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify({ currentLevel: 0, highestUnlocked: 4, stars: { '0': 3 }, muted: false, seenHelp: true })));
       await page.reload({ waitUntil: 'load' });
       await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);
       await page.waitForTimeout(250);
@@ -872,8 +875,8 @@ async function run() {
       await page.click('#btn-tilt');   // now a real TILT press
       await page.waitForFunction(() => !window.__laser.render.isFlat() && !window.__laser.render.getCamera().animating, null, { timeout: 3000 });
       v = await vm(page);
-      assert(!v.isFlat && v.tiltsUsed === 2 && v.attemptStarCount === 2 && v.attemptStars.blind === false,
-        `TILT press counts (tiltsUsed ${v.tiltsUsed}); the attempt loses the BLIND star ${JSON.stringify(v.attemptStars)}`);
+      assert(!v.isFlat && v.tiltsUsed === 2 && v.attemptStarCount === 3 && v.attemptStars.blind === true,
+        `TILT press counts (tiltsUsed ${v.tiltsUsed}); campaign star eligibility is unchanged ${JSON.stringify(v.attemptStars)}`);
       await page.waitForTimeout(300);
       await page.screenshot({ path: `${SHOTS}/game-tilted-${vp.name}.png` });
       await page.click('#btn-tilt');
@@ -910,10 +913,10 @@ async function run() {
       await page.evaluate(() => window.__laser.main.reset());
       await page.keyboard.press('2');   // tray slot 2 = WEDGE (cards are always MIRROR, WEDGE, DIP)
       await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight');
-      await page.keyboard.press('h');   // hint while the solution is not placed yet: ghost + par star forfeited
+      await page.keyboard.press('h'); await page.keyboard.press('h'); await page.keyboard.press('h');   // exact hint while the solution is not placed yet: ghost + par star forfeited
       await page.waitForTimeout(150);
       v = await vm(page);
-      assert(v.hintUsed && v.attemptStars.par === false && v.attemptStarCount === 2 && await page.evaluate(() => document.getElementById('btn-hint').classList.contains('is-active')), `H shows the hint ghost and forfeits the PAR star ${JSON.stringify(v.attemptStars)}`);
+      assert(v.hintUsed && v.attemptStars.par === false && v.attemptStars.blind === false && v.attemptStarCount === 1 && await page.evaluate(() => document.getElementById('btn-hint').classList.contains('is-active')), `H shows the hint ghost and forfeits the PAR star ${JSON.stringify(v.attemptStars)}`);
       const em = await page.evaluate(() => { const L = window.__laser.main.getViewModel().level; return { x: L.emitter.x, y: L.emitter.y, w: L.size.w }; });
       const wantX = Math.min(em.x + 3, em.w - 1);   // the cursor is clamped to the board
       await page.keyboard.press('Enter');
@@ -1025,7 +1028,7 @@ async function run() {
         assert(saved[String(darkIndex)] && typeof saved[String(darkIndex)].b === 'string' && saved[String(darkIndex)].f,
           `the discovered set is saved, packed, with the board's size and fingerprint ${JSON.stringify(Object.keys(saved[String(darkIndex)] || {}))}`);
         // main clamps the level it opens on to highestUnlocked, so unlock this far before reloading into it
-        await page.evaluate((i) => { const p = JSON.parse(localStorage.getItem('lasers3d.v1')); p.currentLevel = i; p.highestUnlocked = Math.max(p.highestUnlocked | 0, i); localStorage.setItem('lasers3d.v1', JSON.stringify(p)); }, darkIndex);
+        await page.evaluate((i) => { const p = JSON.parse(localStorage.getItem('lasers3d.v1')); p.currentLevel = i; p.currentId = window.__lasers3d.levels[i].id; window.__lasers3d.levels.slice(0,i+1).forEach(l => { p.records[l.id].unlocked = true; }); p.highestUnlocked = Math.max(p.highestUnlocked | 0, i); (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify(p)); }, darkIndex);
         await page.reload({ waitUntil: 'load' });
         await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);
         await page.waitForTimeout(400);
@@ -1036,8 +1039,8 @@ async function run() {
         // index alone is not an identity.
         await page.evaluate((i) => {
           const p = JSON.parse(localStorage.getItem('lasers3d.v1'));
-          p.known[String(i)].f = 'notthisboard';
-          localStorage.setItem('lasers3d.v1', JSON.stringify(p));
+          p.known[String(i)].f = 'notthisboard'; p.records[window.__lasers3d.levels[i].id].known.f = 'notthisboard';
+          (window.__lasers3d && window.__lasers3d.destroy()) || localStorage.setItem('lasers3d.v1', JSON.stringify(p));
         }, darkIndex);
         await page.reload({ waitUntil: 'load' });
         await page.waitForFunction(() => window.__laser && window.__laser.main && window.__laser.main.getViewModel().level);

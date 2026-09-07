@@ -44,10 +44,10 @@
  * on the parsed level, and nothing in the stepper changes.
  */
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) {
+  if (typeof module === 'object' && module.exports && typeof require === 'function') {
     module.exports = factory(require('./pieces.js'));
   } else {
-    root.LaserSim = factory(root.LaserPieces);
+    root.LaserSim = factory(root.LaserPieces || (typeof module === 'object' ? module.exports : undefined));
   }
 }(typeof self !== 'undefined' ? self : this, function (Pieces) {
   'use strict';
@@ -266,7 +266,7 @@
     occ[key(L.emitter.x, L.emitter.y)] = 'emitter';
     L.targets.forEach(function (tg) { occ[key(tg.x, tg.y)] = 'target'; });
     L.fixed.forEach(function (f) { occ[key(f.x, f.y)] = 'fixed'; });
-    (placed || []).forEach(function (p) { if (p) occ[key(p.x, p.y)] = 'placed'; });
+    (Array.isArray(placed) ? placed : []).forEach(function (p) { if (p) occ[key(p.x, p.y)] = 'placed'; });
     return occ;
   }
 
@@ -280,7 +280,7 @@
 
   function buildPieceMap(L, placed) {
     var map = {};
-    (placed || []).forEach(function (p, i) {
+    (Array.isArray(placed) ? placed : []).forEach(function (p, i) {
       if (!p || !Pieces.isType(p.type)) throw new Error('lasers-3d trace: placed piece ' + i + ' has unknown type ' + (p && p.type));
       if (!Pieces.isOrient(p.orient)) throw new Error('lasers-3d trace: placed piece ' + i + ' orient must be / or \\');
       map[key(p.x, p.y)] = { x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: false };

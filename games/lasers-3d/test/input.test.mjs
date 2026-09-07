@@ -436,13 +436,13 @@ describe('pan', () => {
     me('pointerdown', 1, 100, 100);
     me('pointermove', 1, 140, 120);
     me('pointerup', 1, 140, 120);
-    assert.deepEqual(names(), ['onKey', 'onPan']);      // Space keeps its frozen 'enter' meaning too
-    assert.deepEqual(log[1], ['onPan', 40, 20]);
+    assert.deepEqual(names(), ['onPan']);      // Space only arms panning; it never edits the puzzle
+    assert.deepEqual(log[0], ['onPan', 40, 20]);
     el.dispatch('keyup', { key: ' ' });
     me('pointerdown', 2, 100, 100);
     me('pointermove', 2, 140, 120);
     me('pointerup', 2, 140, 120);
-    assert.deepEqual(names().slice(2), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
+    assert.deepEqual(names().slice(1), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
   });
   test('right-button drag is ignored entirely', () => {
     const { me, log } = setup();
@@ -520,7 +520,7 @@ describe('keyboard', () => {
     assert.deepEqual(log, [
       ['onKey', 'cursor', { dx: 0, dy: 1 }], ['onKey', 'cursor', { dx: 0, dy: -1 }],
       ['onKey', 'cursor', { dx: -1, dy: 0 }], ['onKey', 'cursor', { dx: 1, dy: 0 }],
-      ['onKey', 'enter'], ['onKey', 'enter'], ['onKey', 'delete'], ['onKey', 'delete'],
+      ['onKey', 'enter'], ['onKey', 'delete'], ['onKey', 'delete'],
       ['onKey', 'fire'], ['onKey', 'fire'], ['onKey', 'tilt'], ['onKey', 'reset'], ['onKey', 'undo'], ['onKey', 'redo'],
       ['onKey', 'hint'], ['onKey', 'escape'], ['onKey', 'select', { index: 1 }], ['onKey', 'select', { index: 9 }],
       ['onKey', 'redo'], ['onKey', 'redo'],
@@ -533,7 +533,7 @@ describe('keyboard', () => {
     assert.equal(key(el, 'q').defaultPrevented, false);
     assert.equal(key(el, '0').defaultPrevented, true);
     assert.deepEqual(log[log.length - 1], ['onKey', 'fit']);
-    assert.equal(log.length, 3);
+    assert.equal(log.length, 2);
   });
   test('modifier combos: Cmd/Ctrl+Z -> undo (prevented), Cmd/Ctrl+Shift+Z -> redo, other combos untouched', () => {
     const { el, log } = setup();

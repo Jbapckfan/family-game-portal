@@ -853,7 +853,7 @@ describe('robustness (pass 2): frozen inputs, spoofed parsed levels, coordinate-
       assert.equal(L.fixed[0].secret, want, `secret ${String(inp)}`);
     }
   });
-  test('non-array placed (plain object, number, string) never crashes the stepper', { todo: 'trace calls placed.forEach directly; a plain object throws TypeError' }, () => {
+  test('non-array placed (plain object, number, string) never crashes the stepper', () => {
     // INTERFACES 2: "placed may be omitted or []". Anything else is a caller bug (spec silent). Asserting graceful handling.
     for (const placed of [{}, 0, 'MIRROR', { length: 1, 0: M(3, 3) }]) {
       assert.doesNotThrow(() => trace(mk(), placed), `placed=${JSON.stringify(placed)}`);
@@ -965,7 +965,7 @@ describe('robustness (pass 2): UMD wrapper under hostile globals', () => {
     run(sb);
     assert.equal(typeof sb.LaserSim, 'object', 'must fall through to the browser branch when module.exports is falsy');
   });
-  test('page that defines `module.exports` but no `require` (bundler shim leak): loading must not throw ReferenceError', { todo: 'sim.js takes the CommonJS branch on any module.exports and calls require(); a page with a module shim but no require crashes' }, () => {
+  test('page that defines `module.exports` but no `require` (bundler shim leak): loading must not throw ReferenceError', () => {
     const sb = {}; sb.window = sb; sb.self = sb; sb.module = { exports: {} };
     assert.doesNotThrow(() => run(sb));
     assert.ok(typeof sb.LaserSim === 'object' || typeof sb.module.exports.trace === 'function');

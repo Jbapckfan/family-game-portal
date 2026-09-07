@@ -55,6 +55,7 @@
   //   y= 1  . . . . . . . . . . . .
   //   y= 0  . . . . . . . . . 3 3 3
   {
+    id: 'first-bounce',
     name: 'FIRST BOUNCE',
     par: 1,
     size: { w: 12, d: 12 },
@@ -81,6 +82,7 @@
   //   y= 1  3 . . . . . . . . . . .
   //   y= 0  . . . . . . . . . ^ . .
   {
+    id: 'around-the-corner',
     name: 'AROUND THE CORNER',
     par: 1,
     size: { w: 12, d: 12 },
@@ -107,6 +109,7 @@
   //   y= 1  . . . . . . 3 3 3 . . .
   //   y= 0  . . . . . . . . . ^ . .
   {
+    id: 'double-take',
     name: 'DOUBLE TAKE',
     par: 2,
     size: { w: 12, d: 12 },
@@ -135,6 +138,7 @@
   //   y= 1  . . 1 1 . . . . . . . . . .
   //   y= 0  @ . 1 1 . . . 2 . . . . . .
   {
+    id: 'over-the-wall',
     name: 'OVER THE WALL',
     par: 2,
     size: { w: 14, d: 14 },
@@ -163,6 +167,7 @@
   //   y= 1  . . . 1 . . . . . . . . . .
   //   y= 0  . . . 1 . 2 2 2 . . . ^ . .
   {
+    id: 'up-the-stairs',
     name: 'UP THE STAIRS',
     par: 2,
     size: { w: 14, d: 14 },
@@ -191,6 +196,7 @@
   //   y= 1  . 3 3 3 3 . . . . . . . . 1
   //   y= 0  . 3 3 3 3 . . . . . . . . .
   {
+    id: 'bend-then-climb',
     name: 'BEND THEN CLIMB',
     par: 2,
     size: { w: 14, d: 14 },
@@ -221,6 +227,7 @@
   //   y= 1  . . 3 3 3 3 . . . . . . . . . @
   //   y= 0  . . 3 3 3 3 . . . . . . . . . 3
   {
+    id: 'level-off',
     name: 'LEVEL OFF',
     par: 3,
     size: { w: 16, d: 16 },
@@ -251,6 +258,7 @@
   //   y= 1  . . . . . . . . . . . . . 2 . .
   //   y= 0  . . . . . . @ . . . . . . . . .
   {
+    id: 'on-stilts',
     name: 'ON STILTS',
     par: 3,
     size: { w: 16, d: 16 },
@@ -281,6 +289,7 @@
   //   y= 1  . . . . . . 3 3 . . . . 3 . . .
   //   y= 0  . . . . ^ . 3 3 . 3 3 3 3 . . .
   {
+    id: 'secret-ramp',
     name: 'SECRET RAMP',
     par: 3,
     size: { w: 16, d: 16 },
@@ -313,6 +322,7 @@
   //   y= 1  . . . . . . . . 1 1 1 . . . . . . .
   //   y= 0  . . . . . . . . 1 1 1 . . . . . . .
   {
+    id: 'under-the-arch',
     name: 'UNDER THE ARCH',
     par: 3,
     size: { w: 18, d: 18 },
@@ -346,6 +356,7 @@
   //   y= 1  1 1 . . . . 3 3 3 3 1 1 1 1 1 1 . .
   //   y= 0  . . . . . . 2 2 . . . . . . . . . 2
   {
+    id: 'through-the-window',
     name: 'THROUGH THE WINDOW',
     par: 2,
     size: { w: 18, d: 18 },
@@ -379,6 +390,7 @@
   //   y= 1  . . . . . . . . 3 . . . . . . . . .
   //   y= 0  . . . . . . . . 3 . . . . 3 3 2 2 @
   {
+    id: 'two-orbs',
     name: 'TWO ORBS',
     par: 3,
     size: { w: 18, d: 18 },
@@ -413,6 +425,7 @@
   //   y= 1  . . . . . . 3 3 3 3 3 . . . . . . . . .
   //   y= 0  . . . . 2 2 2 2 2 2 2 2 2 2 . . . . . .
   {
+    id: 'skipping-stone',
     name: 'SKIPPING STONE',
     par: 3,
     size: { w: 20, d: 20 },
@@ -447,6 +460,7 @@
   //   y= 1  . . 3 3 1 . 1 1 1 1 1 3 1 3 . . . . 1 .
   //   y= 0  . . . . . ^ . . . . . 3 . 3 . . . . . .
   {
+    id: 'the-low-road',
     name: 'THE LOW ROAD',
     par: 3,
     size: { w: 20, d: 20 },
@@ -482,6 +496,7 @@
   //   y= 1  . 3 3 . . . . . . . . . . . . 3 3 . . .
   //   y= 0  . . . . 2 2 2 2 ^ 2 2 2 2 2 2 3 3 . . .
   {
+    id: 'thread-the-needle',
     name: 'THREAD THE NEEDLE',
     par: 3,
     size: { w: 20, d: 20 },
@@ -517,6 +532,7 @@
   //   y= 1  . . . . . . . . . 2 . . . . . . . . . .
   //   y= 0  @ . . . 2 3 2 . . 3 . . . . . . . . . .
   {
+    id: 'stone-bridge',
     name: 'STONE BRIDGE',
     par: 3,
     size: { w: 20, d: 20 },
@@ -554,6 +570,7 @@
   //   y= 1  . . . . . . . . . . . . . . . . . . . . . .
   //   y= 0  . . . . . . 3 3 3 3 3 ^ . . . . . . . . . .
   {
+    id: 'the-skimming-stone',
     name: 'THE SKIMMING STONE',
     par: 3,
     size: { w: 22, d: 22 },
@@ -590,6 +607,7 @@
   //   y= 1  . . . . . . . . . . . . . . . 3 3 . . . . 2
   //   y= 0  . . . . . . . . . . . . . . . 2 . . . . . 2
   {
+    id: 'secret-steps',
     name: 'SECRET STEPS',
     par: 4,
     size: { w: 22, d: 22 },
@@ -626,6 +644,7 @@
   //   y= 1  . . . . . . . . . . . . 2 2 . . . . . . . .
   //   y= 0  1 1 1 1 1 1 1 1 . . . 1 . . . . . . . @ . .
   {
+    id: 'the-high-window',
     name: 'THE HIGH WINDOW',
     par: 4,
     size: { w: 22, d: 22 },
@@ -663,6 +682,7 @@
   //   y= 1  . . . . . . . 3 3 3 3 . . . . . 1 1 1 . . .
   //   y= 0  . . . . . . . 3 3 3 3 . . . . . 1 1 1 . . .
   {
+    id: 'high-road-low-road',
     name: 'HIGH ROAD LOW ROAD',
     par: 4,
     size: { w: 22, d: 22 },
@@ -701,6 +721,7 @@
   //   y= 1  . . . . . . . . . . . . . . . . . . 2 2 3 3 3 .
   //   y= 0  . . . . . . . . . . . . . . . 2 2 2 2 2 2 . . .
   {
+    id: 'the-long-way-round',
     name: 'THE LONG WAY ROUND',
     par: 5,
     size: { w: 24, d: 24 },
@@ -740,6 +761,7 @@
   //   y= 1  . . . . . 1 1 . . . . . . . . . 1 1 . 2 . . . .
   //   y= 0  . . . . . 3 3 3 3 3 3 3 3 3 3 2 2 1 . . . . . .
   {
+    id: 'stone-skipping',
     name: 'STONE SKIPPING',
     par: 4,
     size: { w: 24, d: 24 },
@@ -779,6 +801,7 @@
   //   y= 1  . 2 2 2 . . . . 1 . . . . . . . . 2 2 2 . . . .
   //   y= 0  2 2 2 2 2 2 2 2 2 . . . . . . . . . . . . . . .
   {
+    id: 'summit',
     name: 'SUMMIT',
     par: 5,
     size: { w: 24, d: 24 },

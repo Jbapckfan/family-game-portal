@@ -1,3 +1,5 @@
+import { homedir as browserHome } from 'node:os';
+const joinHomedirCache = () => process.platform === 'darwin' ? browserHome() + '/Library/Caches/ms-playwright' : browserHome() + '/.cache/ms-playwright';
 // Lasers 3D - DOM/layout test for src/ui.js + index.html markup, in Playwright WebKit.
 // Run: node test/ui.dom.test.mjs   (starts its own static server on a free port)
 import { createRequire } from 'node:module';
@@ -8,18 +10,18 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const { webkit } = require('/Users/jamesalford/.npm-global/lib/node_modules/playwright');
+const { webkit } = require('playwright');
 import { existsSync, readdirSync } from 'node:fs';
 // The global Playwright may want a WebKit revision that is not downloaded; fall back to any installed webkit-* build.
 function webkitLaunchOptions() {
   if (existsSync(webkit.executablePath())) return {};
-  const cache = '/Users/jamesalford/Library/Caches/ms-playwright';
+  const cache = joinHomedirCache();
   const builds = existsSync(cache) ? readdirSync(cache).filter((d) => /^webkit-\d+$/.test(d) && existsSync(`${cache}/${d}/pw_run.sh`)).sort() : [];
   if (!builds.length) throw new Error('no WebKit build found for Playwright');
   return { executablePath: `${cache}/${builds[builds.length - 1]}/pw_run.sh` };
 }
 const here = dirname(fileURLToPath(import.meta.url));
-const SHOTS = process.env.SHOTS_DIR || '/private/tmp/claude-501/-Users-jamesalford/7f475eac-e253-4679-b02d-9b0f7b9b6404/scratchpad/shots';
+const SHOTS = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.meta.url).pathname;
 mkdirSync(SHOTS, { recursive: true });
 
 const VIEWPORTS = [
@@ -198,7 +200,7 @@ async function run() {
       const perStar = await page.evaluate(() => Array.from(document.querySelectorAll('#hud-stars .star')).map((s) => s.getAttribute('data-earned')));
       assert(JSON.stringify(perStar) === '["true","false","true"]', `stars render per criterion (solve, par, blind) ${JSON.stringify(perStar)}`);
       const starLabel = await page.evaluate(() => document.getElementById('hud-stars').getAttribute('aria-label'));
-      assert(/par not earned/.test(starLabel) && /no-tilt earned/.test(starLabel), `star aria-label names each criterion: "${starLabel}"`);
+      assert(/par not earned/.test(starLabel) && /unassisted earned/.test(starLabel), `star aria-label names each criterion: "${starLabel}"`);
       const flipped = await page.evaluate(() => {
         window.__harness.setState({ stars: { solved: true, par: true, blind: false } });
         const out = Array.from(document.querySelectorAll('#hud-stars .star')).map((s) => s.getAttribute('data-earned'));
@@ -630,7 +632,7 @@ async function run() {
         const d = ui.loadProgress();
         return { a, b, c, d };
       });
-      assert(prog.a.currentLevel === 2 && prog.a.muted === true && prog.a.schema === 2, 'progress round-trips and is stamped schema 2 ' + JSON.stringify({ s: prog.a.schema, c: prog.a.currentLevel }));
+      assert(prog.a.currentLevel === 2 && prog.a.muted === true && prog.a.schema === 3, 'progress round-trips and is stamped schema 3 ' + JSON.stringify({ s: prog.a.schema, c: prog.a.currentLevel }));
       assert(JSON.stringify(prog.a.stars['0']) === '{"solved":true,"par":true,"blind":true}' &&
              JSON.stringify(prog.a.stars['1']) === '{"solved":true,"par":true,"blind":false}' &&
              JSON.stringify(prog.a.stars['2']) === '{"solved":true,"par":false,"blind":false}' &&

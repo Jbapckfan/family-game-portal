@@ -400,6 +400,34 @@
              * presentation (modal and earned stars together over theme.motion.reduced.fadeMs, no ring, no shake)
              * rather than squashing a full choreography to 1 ms and hoping it lands somewhere sensible. */
         }
+
+        /* Every action is visible; no undisclosed horizontal scroll on phones. */
+        @media (max-width:699px) and (orientation:portrait) {
+          .tray-actions {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:6px;width:100%;box-sizing:border-box;}
+          .tray-actions > :first-child,.tray-actions > :last-child {margin:0;}
+          .tray-actions .btn {width:100%;min-width:0;height:44px;padding:0 6px;box-sizing:border-box;}
+          #btn-fire {width:100%;min-width:0;height:44px;}
+          #more-sheet {display:grid;grid-template-columns:repeat(2,minmax(64px,1fr));width:240px;max-width:calc(100vw - 40px);}
+        }
+        .tile-name {font-size:11px;line-height:1.2;white-space:normal;}
+        .tile-chapter {font-size:9px;opacity:.7;}
+        .level-grid {grid-template-columns:repeat(auto-fit,minmax(105px,1fr));}
+        .tray-card[data-unintroduced="true"] {display:none;}
+        .coach-actions {display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+        .camera-pad {display:grid;grid-template-columns:repeat(3,44px);gap:6px;justify-content:center;}
+        .camera-pad button {min-width:44px;min-height:44px;}
+        #cursor-description {position:absolute;left:8px;top:8px;max-width:calc(100% - 32px);pointer-events:none;font-size:12px;padding:4px 8px;}
+        #cursor-description:empty {display:none;}
+        #btn-move {width:44px;height:44px;}
+        #readout {font-size:12px;}
+        @media (max-width:359px) and (orientation:portrait) {
+          .tray-card {height:48px;min-height:48px;}
+          .tray-icon {height:26px;}
+          .tray-icon img {width:26px;height:26px;}
+          .tray-glyph {width:22px;height:22px;}
+          .tray-meta {padding-bottom:2px;}
+          #readout {max-width:calc(100% - 8px);padding:2px 3px;gap:0 4px;}
+        }
     </style>
 </head>
 <body>
@@ -417,7 +445,7 @@
         <div id="readout" class="glass" role="status" aria-live="polite" data-kind="info" hidden><span class="readout-msg"></span><span class="readout-chips"></span></div>
         <button id="sound" class="btn btn-icon" type="button" aria-label="Sound on" aria-pressed="true" data-icon="on"><span class="icon-slot" aria-hidden="true"><svg class="icon-sound" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 7.4h2.9L10 4.1v11.8L6.1 12.6H3.2z"/><path d="M13.1 7.6a3.6 3.6 0 0 1 0 4.8"/><path d="M15.7 5.2a7.2 7.2 0 0 1 0 9.6"/></svg></span></button>
         <div id="stage">
-            <canvas id="board" aria-label="Laser board" role="img"></canvas>
+            <canvas id="board" tabindex="0" aria-label="Laser board. Arrow keys move the cursor; Enter places or rotates. Space and drag pans." role="img"></canvas>
             <div id="piece-controls" hidden>
                 <button id="btn-rotate" class="btn btn-icon" type="button" aria-label="Rotate piece"><span aria-hidden="true">&#x21BB;</span></button>
                 <button id="btn-remove" class="btn btn-icon btn-danger" type="button" aria-label="Remove piece"><span aria-hidden="true">&#x2715;</span></button>

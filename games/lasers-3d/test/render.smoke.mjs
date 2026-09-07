@@ -7,11 +7,11 @@ import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 const require = createRequire(import.meta.url);
-const { webkit } = require('/Users/jamesalford/.npm-global/lib/node_modules/playwright');
+const { webkit } = require('playwright');
 
 const here = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.argv[2] || 8771);
-const shots = process.env.SHOTS_DIR || '/private/tmp/claude-501/-Users-jamesalford/7f475eac-e253-4679-b02d-9b0f7b9b6404/scratchpad/shots';
+const shots = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.meta.url).pathname;
 mkdirSync(shots, { recursive: true });
 
 const server = spawn(process.execPath, [join(here, '..', 'tools', 'serve.mjs'), String(port)], { stdio: ['ignore', 'pipe', 'inherit'] });

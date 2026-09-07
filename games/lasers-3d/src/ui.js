@@ -27,7 +27,7 @@
    * Progress therefore stores a flag per criterion; the count exists only for display. `schema` marks the migration
    * from the old numeric form so an existing save is upgraded, never discarded. */
   var STAR_KEYS = ['solved', 'par', 'blind'];
-  var SCHEMA = 2;
+  var SCHEMA = 3;
   var DEFAULT_PROGRESS = function () { return { schema: SCHEMA, currentLevel: 0, highestUnlocked: 0, stars: {}, muted: false }; };
   var STAR_PATH = 'M12 2.6l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.4l-5.9 3.3 1.3-6.6L2.5 9.5l6.6-.8z';
   /* Sound control (VISUAL-DIRECTION A7): a 2 px stroked line glyph, not a loudspeaker emoji. */
@@ -302,7 +302,7 @@
        * crack, or drop the star. Already earned historical stars remain unchanged." */
       setBlindEligibility(!!(v.attemptStars && v.attemptStars.blind) || flags.blind);
       attr(el['hud-stars'], 'aria-label', count + ' of 3 stars: solve ' + (flags.solved ? 'earned' : 'not earned') +
-        ', par ' + (flags.par ? 'earned' : 'not earned') + ', no-tilt ' + (flags.blind ? 'earned' : 'not earned'));
+        ', par ' + (flags.par ? 'earned' : 'not earned') + ', unassisted ' + (flags.blind ? 'earned' : 'not earned'));
       text(el['hud-pieces'], 'PIECES ' + used + '/' + par);
       attr(el.sound, 'aria-pressed', v.muted ? 'false' : 'true'); attr(el.sound, 'aria-label', v.muted ? 'Sound off' : 'Sound on');
       var si = v.muted ? 'off' : 'on';
@@ -608,8 +608,8 @@
         '<p class="help-note">' + SHAPE_NOTE + '</p>' +
         '<p class="caption">And some levels start in the dark:</p>' +
         modeRow('DARK', DARK_HELP) +
-        '<p class="caption">Drag the empty board or press TILT to see the real heights. Solve without tilting for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
-        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>0</kbd><span>fit board to screen</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
+        '<p class="caption">Drag the empty board or press TILT to see the real heights. Tilt freely. Solve without revealing an answer for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
+        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>Space + drag</kbd><span>pan without editing</span><kbd>Pinch / wheel</kbd><span>zoom; two fingers pan</span><kbd>0</kbd><span>overview / edit view</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
     }
     ui.showHowToPlay = function () { el['modal-help'].querySelector('.modal-body').innerHTML = helpBody(); openModal('modal-help'); };
     ui.hideHowToPlay = function () { closeModal('modal-help'); };
@@ -622,7 +622,7 @@
         var locked = i > p.highestUnlocked, state = locked ? 'locked' : i === cur ? 'current' : st > 0 ? 'completed' : 'open';
         var name = levels[i] && levels[i].name ? levels[i].name : 'Level ' + (i + 1);
         h += '<button class="level-tile" type="button" data-index="' + i + '" data-state="' + state + '" aria-label="' + name + (locked ? ', locked' : ', ' + st + ' of 3 stars') + '"' + (locked ? ' aria-disabled="true"' : '') + '>' +
-          '<span class="tile-num">' + (i + 1) + '</span>' + (locked ? LOCK_SVG : '<span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span>') + '</button>';
+          '<span class="tile-num">' + (i + 1) + '</span><span class="tile-name">' + name + '</span><span class="tile-chapter">' + (i < 3 ? 'REFLECTION' : i < 9 ? 'HEIGHTS' : i < 13 ? 'OPENINGS' : i < 20 ? 'MASTERY' : 'IN THE DARK') + '</span>' + (locked ? LOCK_SVG : '<span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span>') + '</button>';
       }
       grid.innerHTML = h; openModal('modal-levels');
     };
@@ -637,8 +637,9 @@
       var vf = starFlags(r.stars);
       stars.innerHTML = starsHtml(vf);
       attr(stars, 'aria-label', starCount(vf) + ' of 3 stars: solve ' + (vf.solved ? 'earned' : 'not earned') +
-        ', par ' + (vf.par ? 'earned' : 'not earned') + ', no-tilt ' + (vf.blind ? 'earned' : 'not earned'));
+        ', par ' + (vf.par ? 'earned' : 'not earned') + ', unassisted ' + (vf.blind ? 'earned' : 'not earned'));
       stats.innerHTML = '<span>PIECES <b>' + (r.piecesUsed | 0) + '/' + (r.par | 0) + '</b></span><span>FIRES <b>' + (r.fires | 0) + '</b></span><span>TILTS <b>' + (r.tiltsUsed | 0) + '</b></span><span>HINT <b>' + (r.hintUsed ? 'used' : 'none') + '</b></span>';
+      if (r.mastery) stats.innerHTML += '<span class="mastery-badge">FROM ABOVE</span>';
       acts.innerHTML = (r.hasNext !== false ? '<button id="btn-next" class="btn btn-success" type="button" aria-label="Next level">NEXT LEVEL</button>' : '') +
         '<button id="btn-replay" class="btn" type="button" aria-label="Replay this level">REPLAY</button><button id="btn-victory-levels" class="btn" type="button" aria-label="Choose a level">LEVELS</button>';
       on($('btn-next'), 'click', function () { closeModal('modal-victory'); call(handlers, 'onNextLevel'); });
@@ -675,9 +676,9 @@
          * other per-level bags it must be a plain object whatever storage held, or a later write would throw. */
         ['intros', 'revealed', 'known'].forEach(function (k) { if (p[k] !== undefined) p[k] = plainObject(p[k]); });
       } catch (e) { return DEFAULT_PROGRESS(); }
-      return p;
+      return window.LaserProgress ? window.LaserProgress.migrate(p, opts.levels || window.LASER_LEVELS || []) : p;
     };
-    ui.saveProgress = function (p) { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p || DEFAULT_PROGRESS())); } catch (e) { /* quota / private mode */ } };
+    ui.saveProgress = function (p) { try { var encoded = JSON.stringify(window.LaserProgress && p ? window.LaserProgress.sync(p, opts.levels || window.LASER_LEVELS || []) : (p || DEFAULT_PROGRESS())); window.localStorage.setItem(STORAGE_KEY, encoded); if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.saveProgress) window.webkit.messageHandlers.saveProgress.postMessage(encoded); } catch (e) { /* quota / private mode */ } };
     ui.hasProgress = function () { try { return window.localStorage.getItem(STORAGE_KEY) !== null; } catch (e) { return true; } };
 
     ui.setMotion = function (m) { uiMotion.setMotion(m); };

@@ -274,6 +274,7 @@ function levelLiteral(slot, b) {
     '  // ' + slot.n + '. ' + slot.name + '  (' + L.size.w + 'x' + L.size.d + ', par ' + L.par + ', seed ' + b.seed + ')',
     mapComment(L),
     '  {',
+    '    id: ' + q(slot.name.toLowerCase().replace(/ /g, '-')) + ',',
     '    name: ' + q(slot.name) + ',',
     '    par: ' + L.par + ',',
     '    size: { w: ' + L.size.w + ', d: ' + L.size.d + ' },',

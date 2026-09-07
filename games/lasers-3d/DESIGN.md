@@ -1,3 +1,5 @@
+> Historical design and amendments. For the current implemented rules and release workflow, read [CURRENT-RULES.md](CURRENT-RULES.md).
+
 # Lasers 3D (working slug `lasers-3d`, name NOT chosen) — design spec
 
 Date: 2026-09-03. Author: Claude (Fable 5.1) from James's brief. Status: v1 rules FROZEN for the build; the "Uniqueness" section is appended after the prior-art research completes.

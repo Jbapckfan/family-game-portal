@@ -26,7 +26,7 @@
     ArrowDown: ['cursor', { dx: 0, dy: -1 }],
     ArrowLeft: ['cursor', { dx: -1, dy: 0 }],
     ArrowRight: ['cursor', { dx: 1, dy: 0 }],
-    Enter: ['enter'], ' ': ['enter'], Spacebar: ['enter'],
+    Enter: ['enter'],
     Delete: ['delete'], Backspace: ['delete'],
     f: ['fire'], t: ['tilt'], r: ['reset'], h: ['hint'], y: ['redo'],
     '0': ['fit'],
@@ -301,9 +301,8 @@
       if (ev.preventDefault) ev.preventDefault();
       call('onKey', action, payload);
     }
-    /* Space keeps its frozen 'enter' meaning; holding it ALSO arms the desktop pan drag (nothing changes until a
-     * left-drag actually starts, so the key map is untouched). */
-    function onKeyDownSpace(ev) { if ((ev.key === ' ' || ev.key === 'Spacebar') && !editableTarget(ev.target)) spaceHeld = true; }
+    /* Space only arms panning; Enter activates the cursor. */
+    function onKeyDownSpace(ev) { if (enabled && (ev.key === ' ' || ev.key === 'Spacebar') && !editableTarget(ev.target)) { spaceHeld = true; ev.preventDefault(); } }
     function onKeyUpSpace(ev) { if (ev.key === ' ' || ev.key === 'Spacebar') spaceHeld = false; }
     function onBlur() { spaceHeld = false; }
 
@@ -340,7 +339,7 @@
       on(element, 'wheel', onWheel, active);
       on(element, 'contextmenu', onContextMenu, active);
       on(doc, 'keydown', onKeyDown, active);
-      on(doc, 'keydown', onKeyDownSpace, passive);
+      on(doc, 'keydown', onKeyDownSpace, active);
       on(doc, 'keyup', onKeyUpSpace, passive);
       if (view) on(view, 'blur', onBlur, passive);
     }

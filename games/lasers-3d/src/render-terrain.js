@@ -297,6 +297,10 @@
       floor: revealMaterial(theme.materials.floor, theme, uReveal, fog, 'none', 'ground', burn),
       top: revealMaterial(theme.materials.blockTopLit, theme, uReveal, fog, 'rise', 'mix', burn),
       side: fogMaterial(Core.matFromSpec(theme.materials.blockSide), fog, 'rise', 'mix', burn),
+      sideEdge: fogMaterial(new THREE.LineBasicMaterial({color:0x9bbdcd,transparent:true,opacity:0,depthWrite:false,toneMapped:false}), fog, 'rise', 'alpha', burn, true),
+      frame: new THREE.MeshBasicMaterial({color:0x0c1923,toneMapped:false}),
+      frameEdge: new THREE.MeshBasicMaterial({color:0x507283,toneMapped:false}),
+      frameMarks: new THREE.MeshBasicMaterial({color:0x93b9c5,toneMapped:false}),
       /* 15.1: "The empty grid outline is ALWAYS drawn." So the outline is the one fogged material that never
        * discards - it only lies flat on the ground plane and dims to uFogGrid until its cell is known. */
       grid: fogMaterial(new THREE.LineBasicMaterial({ color: new THREE.Color(theme.palette.gridOutline), toneMapped: false }), fog, 'lift', 'grid', burn, true),
@@ -308,7 +312,7 @@
         blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }), fog, 'rise', 'alpha', burn)
     };
     var leakTex = null;
-    Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid, mats.leak]);
+    Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid, mats.leak, mats.sideEdge, mats.frame, mats.frameEdge, mats.frameMarks]);
     mats.side.opacity = 0;
     mats.top.polygonOffset = true; mats.top.polygonOffsetFactor = 1; mats.top.polygonOffsetUnits = 1;
     mats.floor.polygonOffset = true; mats.floor.polygonOffsetFactor = 1; mats.floor.polygonOffsetUnits = 1;
@@ -339,10 +343,36 @@
      * A solid column is byte-identical to what the old code produced: the four side quads are simply cut into h
      * stacked quads over exactly the same rectangle, sharing vertices, with the same flat normals and an unused uv.
      */
+    /* A fixed instrument chassis, independent of terrain and discovery. Its markings stay outside playable cells. */
+    function platform(w, d) {
+      var cx = (w - 1) / 2, cz = -(d - 1) / 2;
+      var slab = new THREE.Mesh(Core.boxAt(cx, -0.22, cz, w + 0.42, 0.40, d + 0.42), mats.frame);
+      slab.name = 'instrument-chassis'; slab.renderOrder = -2; group.add(slab);
+      var rails = [
+        Core.boxAt(cx, -0.005, 0.60, w + 0.35, 0.055, 0.06),
+        Core.boxAt(cx, -0.005, -d + 0.40, w + 0.35, 0.055, 0.06),
+        Core.boxAt(-0.60, -0.005, cz, 0.06, 0.055, d + 0.35),
+        Core.boxAt(w - 0.40, -0.005, cz, 0.06, 0.055, d + 0.35)
+      ];
+      group.add(new THREE.Mesh(Core.mergeGeometries(rails), mats.frameEdge));
+      var ticks = [];
+      for (var x = 0; x < w; x++) {
+        ticks.push(Core.boxAt(x, 0.027, 0.59, 0.025, 0.01, x % 5 === 0 ? 0.14 : 0.065));
+        ticks.push(Core.boxAt(x, 0.027, -d + 0.41, 0.025, 0.01, x % 5 === 0 ? 0.14 : 0.065));
+      }
+      for (var y = 0; y < d; y++) {
+        ticks.push(Core.boxAt(-0.59, 0.027, -y, y % 5 === 0 ? 0.14 : 0.065, 0.01, 0.025));
+        ticks.push(Core.boxAt(w - 0.41, 0.027, -y, y % 5 === 0 ? 0.14 : 0.065, 0.01, 0.025));
+      }
+      var marks = new THREE.Mesh(Core.mergeGeometries(ticks), mats.frameMarks);
+      marks.name = 'calibration-marks'; group.add(marks);
+    }
+
     function build(parsed) {
       level = parsed;
       Core.clearGroup(group);
       var w = parsed.size.w, d = parsed.size.d, t = parsed.t;
+      platform(w, d);
       var cell = theme.terrain.cellTop, hc = cell / 2, x, y, h, k;
       var tops = [], sides = [], lines = [], leaks = [], roles = [];
       var byHeight = [];   /* height -> flat [worldX, worldZ, ...] of that height's top-face corners */
@@ -438,6 +468,8 @@
         topMesh.renderOrder = TERRAIN_ORDER;
         group.add(topMesh);
         var sideMesh = new THREE.Mesh(Core.mergeGeometries(sides), mats.side);
+        var sideEdges = new THREE.LineSegments(new THREE.EdgesGeometry(sideMesh.geometry, 25), mats.sideEdge);
+        sideEdges.name='terrain-edge-light'; group.add(sideEdges);
         sideMesh.castShadow = true; sideMesh.receiveShadow = true;
         group.add(sideMesh);
       }
@@ -445,6 +477,7 @@
       lg.setAttribute('position', new THREE.Float32BufferAttribute(lines, 3));
       if (burn) lg.setAttribute('aGridRole', new THREE.Float32BufferAttribute(roles, 1));
       var lineMesh = new THREE.LineSegments(lg, mats.grid);
+      lineMesh.name = 'terrain-grid';
       lineMesh.renderOrder = 1;
       group.add(lineMesh);
       if (leaks.length) {
@@ -517,6 +550,7 @@
        * dead at sideOpacityFullAt, which is a visible kink partway through the orbit. m.reveal.sideEasing names the
        * curve; theme.ease resolves it, so the expression is not written out a second time anywhere. */
       var so = easeSide(Math.min(1, r / theme.lightRig.reveal.sideOpacityFullAt));
+      mats.sideEdge.opacity = 0.23 * r; mats.sideEdge.visible = r > 0;
       mats.side.opacity = so;
       mats.side.transparent = so < 1;
       mats.side.visible = so > 0;

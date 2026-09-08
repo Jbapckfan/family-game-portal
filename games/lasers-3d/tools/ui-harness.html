@@ -27,8 +27,8 @@
             --color-mirror: #45E7FF; --color-wedge: #FFC857; --color-dip: #FF4FA3;
             --color-star: #FFD75A; --color-star-empty: #65718E; --color-target-lit: #78FFD8;
             --color-beam-0: #2CB5A8; --color-beam-1: #39D4C2; --color-beam-2: #64EFDA; --color-beam-3: #C4FFF5;
-            --color-panel: rgba(12, 20, 52, 0.78); --color-panel-strong: rgba(8, 14, 38, 0.94);
-            --color-panel-fallback: #0C1434; --color-panel-border: rgba(183, 226, 255, 0.22);
+            --color-panel: rgba(12, 24, 39, 0.88); --color-panel-strong: rgba(8, 14, 38, 0.94);
+            --color-panel-fallback: #0C1827; --color-panel-border: rgba(183, 226, 255, 0.22);
             --color-backdrop: rgba(2, 5, 17, 0.74);
             --touch-min: 44px;
             --shadow-panel: 0 12px 32px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.13);
@@ -37,7 +37,7 @@
             --shadow-cyan-glow: 0 0 18px rgba(0, 255, 204, 0.30);
             --shadow-pink-glow: 0 0 18px rgba(255, 47, 146, 0.34);
             --z-hud: 100; --z-backdrop: 900; --z-modal: 910; --z-menu: 9999;
-            --page-bg: radial-gradient(circle at 20% 78%, rgba(0, 255, 204, 0.07), transparent 45%), radial-gradient(circle at 82% 20%, rgba(255, 47, 146, 0.07), transparent 42%), radial-gradient(circle at 50% 38%, #243F90 0%, #101A50 47%, #050817 100%);
+            --page-bg: radial-gradient(circle at 20% 78%, rgba(69, 231, 255, 0.035), transparent 45%), radial-gradient(circle at 82% 20%, rgba(255, 200, 117, 0.025), transparent 42%), radial-gradient(circle at 50% 38%, #19394B 0%, #0D1B2B 48%, #050817 100%);
             --ease-camera: cubic-bezier(0.22, 1, 0.36, 1);
             /* layout-only tokens (shell) */
             --sa-t: env(safe-area-inset-top, 0px); --sa-r: env(safe-area-inset-right, 0px);
@@ -427,6 +427,39 @@
           .tray-glyph {width:22px;height:22px;}
           .tray-meta {padding-bottom:2px;}
           #readout {max-width:calc(100% - 8px);padding:2px 3px;gap:0 4px;}
+        }
+
+        /* Art direction: a quiet optical instrument, with color reserved for the shot and selected tools. */
+        .glass {border-color:rgba(151,191,207,.16);box-shadow:0 16px 36px rgba(0,0,0,.24),inset 0 1px 0 rgba(215,243,255,.08);}
+        .glass::before {background:linear-gradient(135deg,rgba(197,230,239,.04),transparent 42%);}
+        .btn {border-color:rgba(154,191,211,.20);background:linear-gradient(180deg,#152b3b,#0b1727);box-shadow:inset 0 1px 0 rgba(222,244,255,.06),0 3px 8px rgba(0,0,0,.15);border-radius:10px;}
+        #btn-fire {color:#fff1f6;border-color:#ff68a9;background:linear-gradient(150deg,#bc235c,#64143e);box-shadow:inset 0 1px 0 rgba(255,221,235,.28),0 4px 18px rgba(242,51,132,.14);letter-spacing:.10em;}
+        .btn[aria-pressed="true"],.btn-selected {background:linear-gradient(150deg,#154148,#102b39);}
+        #sound {background:transparent;border-color:rgba(151,191,207,.16);color:#aac7d1;box-shadow:none;}
+        #sound[aria-pressed="true"] {color:#aac7d1;}
+        #hud {background:rgba(8,20,32,.76);border-color:rgba(151,191,207,.14);box-shadow:0 5px 18px rgba(0,0,0,.12);}
+        .hud-name {letter-spacing:.02em;}
+        .hud-num,.hud-pieces {color:#92a9b9;}
+        .tray-card {border-radius:12px;background:linear-gradient(145deg,#1a3444,#0a1727);border-color:rgba(168,208,224,.24);box-shadow:inset 0 1px 0 rgba(215,244,255,.12),0 5px 12px rgba(0,0,0,.18);}
+        .tray-card::before {left:14px;right:14px;height:2px;}
+        .tray-card[aria-pressed="true"] {box-shadow:0 0 0 3px rgba(69,231,255,.09),0 6px 16px rgba(0,0,0,.28);}
+        .level-tile {background:linear-gradient(145deg,#183344,#0a1727);border-color:rgba(154,191,211,.18);}
+        .tile-name {font-weight:700;letter-spacing:.025em;}
+        .tile-chapter {color:#a5c1cb;opacity:1;}
+        #toast {background:rgba(8,21,31,.94);border-color:rgba(118,188,207,.48);font-weight:500;}
+        #piece-controls {padding:5px;border-radius:14px;background:rgba(8,20,30,.92);border:1px solid rgba(151,191,207,.24);}
+        .menu-link {background:rgba(7,18,28,.88);border-color:rgba(151,191,207,.20);}
+        @media (min-width:700px),(orientation:landscape) and (min-width:640px) {
+          #tray.glass {background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;border-left:1px solid rgba(151,191,207,.10);box-shadow:none;}
+          #tray.glass::before {display:none;}
+          .tray-actions {padding:12px;background:rgba(8,20,32,.78);border:1px solid rgba(151,191,207,.18);border-radius:18px;box-shadow:0 15px 36px rgba(0,0,0,.20);}
+          .tray-cards {margin-bottom:12px;}
+          #tray::after {content:"LASERS  /  OPTICS LAB";position:absolute;top:38px;left:0;right:0;text-align:center;font:600 10px var(--font-data);letter-spacing:.18em;color:#8ba8b8;pointer-events:none;}
+        }
+        @media (min-width:640px) and (max-height:480px) {
+          .tray-actions {padding:6px;gap:6px;}
+          .tray-cards {margin-bottom:0;}
+          #tray::after {display:none;}
         }
     </style>
 </head>

@@ -65,7 +65,7 @@
 
     /* Procedural environment (no texture files): a navy studio with the rig's key/rim/fill as soft spots, so
      * brushed metal and glass have something to reflect. Strength follows the reveal blend. */
-    var ENV_STRENGTH = 0.9, envMaterials = [];
+    var ENV_STRENGTH = 1.15, envMaterials = [];
     function makeEnvironment() {
       var c = document.createElement('canvas'); c.width = 256; c.height = 128;
       var ctx = c.getContext('2d'), g = ctx.createLinearGradient(0, 0, 0, 128);
@@ -73,6 +73,9 @@
       ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 128);
       function spot(x, y, rad, color) { var r = ctx.createRadialGradient(x, y, 0, x, y, rad); r.addColorStop(0, color); r.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = r; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2); }
       spot(80, 28, 46, LR.key.color); spot(196, 44, 30, LR.rim.color); spot(40, 56, 26, LR.fill.color);
+      // Broad studio panels give metal and glass readable reflections without another render pass.
+      ctx.fillStyle = 'rgba(245,250,255,0.80)'; ctx.fillRect(56, 22, 62, 9);
+      ctx.fillStyle = 'rgba(255,222,170,0.45)'; ctx.fillRect(167, 42, 12, 42);
       var tex = new THREE.CanvasTexture(c); tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
       var pmrem = new THREE.PMREMGenerator(renderer), env = pmrem.fromEquirectangular(tex).texture;
       pmrem.dispose(); tex.dispose();

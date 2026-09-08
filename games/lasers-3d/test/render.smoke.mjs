@@ -952,7 +952,7 @@ try {
     const h = window.__h;
     h.load('dark'); h.fit(); h.view('flat'); h.settle(600);
     const lines = [];
-    h.render._scene.traverse((o) => { if (o.isLineSegments) lines.push({ visible: o.visible, verts: o.geometry.getAttribute('position').count }); });
+    h.render._scene.traverse((o) => { if (o.name === 'terrain-grid') lines.push({ visible: o.visible, verts: o.geometry.getAttribute('position').count }); });
     const box = h.render.getBoardScreenBox();
     const corner = h.render.pickCell(h.render.projectCell({ x: 0, y: 0 }, 0).x, h.render.projectCell({ x: 0, y: 0 }, 0).y);
     const far = h.render.pickCell(h.render.projectCell({ x: 11, y: 11 }, 0).x, h.render.projectCell({ x: 11, y: 11 }, 0).y);

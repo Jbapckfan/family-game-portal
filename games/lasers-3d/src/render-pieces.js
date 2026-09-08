@@ -79,11 +79,14 @@
       geo.emFilament = fil;
       var sock = new THREE.CylinderGeometry(0.24, 0.28, 0.08, 24); sock.translate(0, 0.04, 0);
       geo.socket = sock;
+      geo.targetCrown = new THREE.TorusGeometry(0.32,0.028,8,40);geo.targetCrown.rotateX(-Math.PI/2);geo.targetCrown.translate(0,0.16,0);
+      var collar = new THREE.TorusGeometry(0.20,0.026,8,28);collar.rotateY(Math.PI/2);collar.translate(0.24,0.50,0);geo.emCollar=collar;
+      geo.emGlyph=Core.mergeGeometries([Core.boxAt(-0.18,0.10,-0.23,0.35,0.012,0.045),Core.boxAt(-0.18,0.10,0.23,0.35,0.012,0.045),Core.boxAt(-0.35,0.10,0,0.045,0.012,0.46)]);
       geo.orb = new THREE.SphereGeometry(0.24, 32, 20); geo.orb.translate(0, 0.5, 0);
       geo.core = new THREE.SphereGeometry(0.1, 16, 12); geo.core.translate(0, 0.5, 0);
       /* FLAT target proxy: a reticle in the XY plane (so copying the camera quaternion makes it screen-facing). */
-      geo.proxyRing = new THREE.RingGeometry(0.19, 0.25, 32);
-      geo.proxyDot = new THREE.CircleGeometry(0.085, 20);
+      geo.proxyRing = new THREE.RingGeometry(0.25, 0.32, 40);
+      geo.proxyDot = new THREE.CircleGeometry(0.075, 20);
       geo.ring = new THREE.RingGeometry(0.42, 0.47, 40); geo.ring.rotateX(-Math.PI / 2);
       /* MOTION-DIRECTION.md 3, free teaching reveal: "Use a 0.018-cell cyan outline." */
       geo.pulse = new THREE.RingGeometry(0.5 - theme.motion.reveal.teachingOutlineWidthCells, 0.5, 40); geo.pulse.rotateX(-Math.PI / 2);
@@ -291,6 +294,8 @@
       var b1 = new THREE.Mesh(geo.emBase, mats.emitterBody); b1.castShadow = true; em.add(b1);
       var b2 = new THREE.Mesh(geo.emBarrel, mats.emitterBody); b2.castShadow = true; em.add(b2);
       em.add(new THREE.Mesh(geo.emFilament, mats.emitterFilament));
+      em.add(new THREE.Mesh(geo.emCollar, mats.emitterFilament));
+      var sourceGlyph=new THREE.Mesh(geo.emGlyph,mats.glyph);sourceGlyph.renderOrder=6;em.add(sourceGlyph);
       var halo = new THREE.Sprite(mats.emitterHalo); halo.position.set(0.36, 0.5, 0); halo.scale.set(0.7, 0.7, 1); em.add(halo);
       emitterHalo = halo; emitterHaloScale = halo.scale.x;
       setCharge(NO_CHARGE);                  /* a new level always starts at the emitter's plain theme state */
@@ -298,6 +303,8 @@
       parsed.targets.forEach(function (tg, i) {
         var g = new THREE.Group();
         var sock = new THREE.Mesh(geo.socket, mats.socket); sock.castShadow = true; g.add(sock);
+        var crownMat=new THREE.MeshBasicMaterial({color:new THREE.Color(theme.palette.targetUnlit),transparent:true,opacity:0,toneMapped:false,depthWrite:false});
+        g.add(new THREE.Mesh(geo.targetCrown,crownMat));
         var orbMat = Core.matFromSpec(M.targetUnlit);
         var orb = new THREE.Mesh(geo.orb, orbMat); orb.renderOrder = 3; g.add(orb);
         var coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.palette.targetLit), transparent: true, opacity: 0, toneMapped: false });
@@ -317,7 +324,7 @@
         g.add(proxy);
         actorGroup.add(placeAt(g, tg.x, tg.y));
         orbMat.envMapIntensity = reveal;
-        var rec = { index: i, orb: orbMat, core: coreMat, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
+        var rec = { index: i, crown: crownMat, orb: orbMat, core: coreMat, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
         targets.push(rec);
         refreshTarget(rec);
       });
@@ -419,6 +426,7 @@
       m.transmission = a.transmission + (b.transmission - a.transmission) * k;
       m.roughness = a.roughness + (b.roughness - a.roughness) * k;
       m.metalness = a.metalness + (b.metalness - a.metalness) * k;
+      t.crown.color.copy(TC.colorUnlit).lerp(TC.colorLit,k);
       t.core.opacity = k; t.halo.opacity = k * theme.beam.endStates.target.haloOpacity;
       refreshTarget(t);
     }
@@ -429,6 +437,7 @@
       var a = M.targetUnlit, b = M.targetLit;
       var base = t.orb.userData.baseOpacity === undefined ? a.opacity + (b.opacity - a.opacity) * t.lit : t.orb.userData.baseOpacity;
       var show = Math.max(reveal, t.lit);
+      t.crown.opacity = show * 0.90; t.crown.visible = show > 0.001;
       t.orb.opacity = base * show;
       t.orb.transparent = true;
       t.orb.visible = show > 0.001;

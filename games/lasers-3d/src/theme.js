@@ -18,9 +18,9 @@
     background: '#050817',
     floor: '#172544',
     blockTopFlat: '#172544',      /* deliberately identical to floor */
-    blockTopLit: '#2B4777',
-    blockSide: '#0B1530',
-    gridOutline: '#334766',
+    blockTopLit: '#365569',
+    blockSide: '#142A3B',
+    gridOutline: '#293C52',
     mirror: '#45E7FF',
     wedge: '#FFC857',
     dip: '#FF4FA3',
@@ -31,7 +31,7 @@
      * is never mistaken for the grey glyph the FLAT view paints on the other three. */
     floorPlate: '#D6ECF7',
     emitter: '#FF2F92',
-    targetUnlit: '#6D7896',
+    targetUnlit: '#FFC875',
     targetLit: '#78FFD8',
     beamLevel0: '#2CB5A8',
     beamLevel1: '#39D4C2',
@@ -43,11 +43,11 @@
     danger: '#FF5C70',
     success: '#69F0AE',
     /* supporting */
-    backgroundRadialMid: '#101A50',
-    backgroundRadialLight: '#243F90',
-    panelFill: 'rgba(12, 20, 52, 0.78)',
+    backgroundRadialMid: '#0D1B2B',
+    backgroundRadialLight: '#19394B',
+    panelFill: 'rgba(12, 24, 39, 0.88)',
     panelFillStrong: 'rgba(8, 14, 38, 0.94)',
-    panelFillFallback: '#0C1434',   /* when backdrop-filter is unsupported */
+    panelFillFallback: '#0C1827',   /* when backdrop-filter is unsupported */
     panelBorder: 'rgba(183, 226, 255, 0.22)',
     metalLight: '#A8C0CE',
     metalMid: '#7893A6',
@@ -67,9 +67,9 @@
   var pieceAccent = { MIRROR: palette.mirror, WEDGE: palette.wedge, DIP: palette.dip, FLOOR: palette.floorPlate };
 
   var pageBackground =
-    'radial-gradient(circle at 20% 78%, rgba(0, 255, 204, 0.07), transparent 45%), ' +
-    'radial-gradient(circle at 82% 20%, rgba(255, 47, 146, 0.07), transparent 42%), ' +
-    'radial-gradient(circle at 50% 38%, #243F90 0%, #101A50 47%, #050817 100%)';
+    'radial-gradient(circle at 20% 78%, rgba(69, 231, 255, 0.035), transparent 45%), ' +
+    'radial-gradient(circle at 82% 20%, rgba(255, 200, 117, 0.025), transparent 42%), ' +
+    'radial-gradient(circle at 50% 38%, #19394B 0%, #0D1B2B 48%, #050817 100%)';
 
   /* -------------------------------------------------------------- C. materials */
   var renderer = {
@@ -86,7 +86,7 @@
     floor: { material: 'MeshPhysicalMaterial', color: palette.floor, metalness: 0.15, roughness: 0.78,
       emissive: '#050817', emissiveIntensity: 0.08, opacity: 1.0, transparent: false,
       clearcoat: 0.12, clearcoatRoughness: 0.75, receiveShadow: true },
-    blockTopLit: { material: 'MeshPhysicalMaterial', color: palette.blockTopLit, metalness: 0.22, roughness: 0.56,
+    blockTopLit: { material: 'MeshPhysicalMaterial', color: palette.blockTopLit, metalness: 0.30, roughness: 0.38,
       emissive: '#08152B', emissiveIntensity: 0.10, opacity: 1.0, transparent: false,
       clearcoat: 0.20, clearcoatRoughness: 0.62, receiveShadow: true, castShadow: true },
     /* Block sides used to render as flat black silhouettes under the tilt rig (only the key light reaches them and
@@ -134,12 +134,12 @@
     emitterHalo: { material: 'MeshBasicMaterial', color: palette.emitter, opacity: 0.22, transparent: true,
       blending: 'AdditiveBlending', depthWrite: false, toneMapped: false },
     targetUnlit: { material: 'MeshPhysicalMaterial', color: palette.targetUnlit, metalness: 0.0, roughness: 0.16,
-      emissive: '#18213C', emissiveIntensity: 0.25, opacity: 0.58, transparent: true,
-      transmission: 0.52, ior: 1.42, clearcoat: 1.0 },
+      emissive: '#B9762A', emissiveIntensity: 0.70, opacity: 0.72, transparent: true,
+      transmission: 0.28, ior: 1.42, clearcoat: 1.0 },
     targetLit: { material: 'MeshPhysicalMaterial', color: palette.targetLit, metalness: 0.05, roughness: 0.10,
       emissive: palette.targetLit, emissiveIntensity: 5.50, opacity: 0.82, transparent: true,
       transmission: 0.25, ior: 1.42, clearcoat: 1.0 },
-    targetSocket: { material: 'MeshPhysicalMaterial', color: palette.targetUnlit, metalness: 0.6, roughness: 0.4,
+    targetSocket: { material: 'MeshPhysicalMaterial', color: palette.metalMid, metalness: 0.6, roughness: 0.4,
       emissive: '#000000', emissiveIntensity: 0.0, opacity: 1.0, transparent: false },
     beamCore: { material: 'MeshStandardMaterial', color: 'beam' /* beamColors[z] */, metalness: 0.0, roughness: 0.30,
       emissive: 'beam', emissiveIntensity: 'beam' /* beam.levels[z].coreEmissive */, opacity: 1.0, transparent: false, toneMapped: true },
@@ -251,8 +251,8 @@
     flat: { intensityMultiplier: 0, shadows: false, elevationDeg: 90 },
     tilt: {
       hemisphere: { skyColor: '#B7EEFF', groundColor: '#071020', intensity: 0.75, direction: 'worldUp', shadows: false },
-      key: { type: 'DirectionalLight', color: '#D8F7FF', position: [-5, -7, 10], target: 'boardCenter', intensity: 2.80, shadows: true },
-      rim: { type: 'DirectionalLight', color: '#FF4FA3', position: [6, 4, 5], target: 'boardCenter', intensity: 0.55, shadows: false },
+      key: { type: 'DirectionalLight', color: '#FFF0DC', position: [-5, -7, 10], target: 'boardCenter', intensity: 2.80, shadows: true },
+      rim: { type: 'DirectionalLight', color: '#80C8EA', position: [6, 4, 5], target: 'boardCenter', intensity: 0.80, shadows: false },
       fill: { type: 'PointLight', color: '#45E7FF', position: [-3, 5, 3], intensity: 7.00, distance: 16, decay: 2, shadows: false },
       ambient: { type: 'AmbientLight', color: '#152B50', intensity: 0.18, shadows: false }
     },

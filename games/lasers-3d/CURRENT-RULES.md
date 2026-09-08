@@ -28,7 +28,11 @@ Hints have three stages: explain the failed concept, focus the relevant region, 
 
 Unfinished attempts persist placements, fire/tilt counts, hint use, and camera framing. Level navigation, edits, camera changes, and backgrounding save progress. A completed attempt is removed while its awards persist. Undo history is session-local. The native app mirrors progress into app preferences and recovers the web content process if it terminates.
 
+Restoring an automatic camera preserves automatic framing: TILT still fits the whole board. A manually panned or zoomed camera keeps its chosen framing. Legacy saves without a manual flag retain their framing.
+
 Motion uses one on-demand registry and frame scheduler. Settled scenes produce no application frames. Backgrounding commits active shot results and cancels decoration. WebGL loss saves the puzzle; restoration invalidates shadows and redraws the scene.
+
+The [current art direction](../../docs/reviews/2026-09-07-lasers-3d-art.md) uses a dark instrument chassis, quiet navy panels, steel terrain edges and warm dormant targets. Chassis markings depend only on board dimensions. Terrain edge lighting disappears in FLAT and respects discovery. All new ornament is static; the flat floor/top pixel identity and common piece glyph remain intact.
 
 ## Verification and iPad installation
 

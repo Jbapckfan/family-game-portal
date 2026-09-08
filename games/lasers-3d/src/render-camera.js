@@ -412,11 +412,26 @@
       refit(true);
     }
 
+    function restoreCamera(c) {
+      if (!c || !Number.isFinite(c.azimuthDeg) || !Number.isFinite(c.elevationDeg)) return;
+      endAnim(); endTween();
+      cam.az = c.azimuthDeg % 360;
+      cam.el = Core.clamp(c.elevationDeg, CAM.orbit.elevationMinDeg, 90);
+      cam.view = c.view === 'overview' ? 'overview' : 'working';
+      /* Reloading an automatic view must still let TILT fit the whole board. Older saves without
+       * this flag keep their chosen framing, as before. */
+      cam.manual = c.manual !== false;
+      cam.userZoom = Number.isFinite(c.zoom) ? Core.clamp(c.zoom, 0.1, 10) : 1;
+      var p = c.pan || {};
+      pan.set(Number.isFinite(p.x) ? p.x : 0, 0, Number.isFinite(p.z) ? p.z : 0);
+      refit(true); clampPan(); apply();
+    }
+
     return {
       camera: camera, up: upVec, right: rightVec, dir: dirVec, boardCenter: boardCenter, pan: pan,
       setBoard: setBoard, apply: apply, refit: refit, step: step,
       setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, fitToBoard: fitToBoard, canFit: canFit,
-      restoreCamera: function (c) { if (!c || !Number.isFinite(c.azimuthDeg) || !Number.isFinite(c.elevationDeg)) return; endAnim(); endTween(); cam.az = c.azimuthDeg % 360; cam.el = Core.clamp(c.elevationDeg, CAM.orbit.elevationMinDeg, 90); cam.view = c.view === 'overview' ? 'overview' : 'working'; cam.manual = true; cam.userZoom = Number.isFinite(c.zoom) ? Core.clamp(c.zoom, 0.1, 10) : 1; var p = c.pan || {}; pan.set(Number.isFinite(p.x) ? p.x : 0, 0, Number.isFinite(p.z) ? p.z : 0); refit(true); clampPan(); apply(); },
+      restoreCamera: restoreCamera,
       setViewMode: setViewMode, getViewMode: getViewMode, hasOverview: hasOverview,
       getCellPx: getCellPx, isFlat: isFlat, isAnimating: isAnimating, getCamera: getCamera, getBoardScreenBox: getBoardScreenBox,
       revealIntake: revealIntake,

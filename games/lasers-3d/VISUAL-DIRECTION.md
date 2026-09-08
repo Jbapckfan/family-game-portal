@@ -1,5 +1,7 @@
 # Lasers 3D — Visual Direction
 
+> September 7, 2026 art update: [the implemented polish pass](../../docs/reviews/2026-09-07-lasers-3d-art.md) supersedes the historical palette, material and panel styling below. `src/theme.js` holds the shipping colors. The flat-view information boundary and discovery rules still apply.
+
 ## A. Art direction
 
 Present the game as a precision optics workbench discovered in a dark family game room: the sibling game’s deep navy radial field, neon cyan beam language, hot-pink emitter accents, and clean system typography remain recognizable, but the board becomes a tactile miniature made from smoked glass, brushed gunmetal, beveled acrylic, and glowing filaments. The FLAT view must look deliberately graphic and deceptively two-dimensional—an uninterrupted blue floor divided only by thin cell outlines—while tilting transforms the same board into a warmly lit physical diorama with tall voxel sides, soft shadows, reflective panels, recessed hardware, and obvious elevation. Avoid fantasy scenery, toy-block primary colors, cyberpunk clutter, and generic glossy mobile-game plastic; every detail should suggest a real optical instrument scaled into a child-friendly tabletop puzzle.

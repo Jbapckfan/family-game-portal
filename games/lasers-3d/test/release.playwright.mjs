@@ -21,6 +21,10 @@ try {
   check(await page.locator('.tray-card:visible').count()===1,`${width}: only introduced pieces shown`);
   const bounds=await page.evaluate(()=>Array.from(document.querySelectorAll('.tray-actions > button')).filter(b=>b.offsetParent!==null).map(b=>{const r=b.getBoundingClientRect();return {id:b.id,ok:r.width>=44&&r.height>=44&&r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};}));
   check(bounds.every(b=>b.ok),`${width}: every visible action is on screen and at least 44px ${JSON.stringify(bounds)}`);
+  await page.evaluate(()=>__lasers3d.saveAttempt());await page.reload();await ready(page);await settle(page);
+  await page.click('#btn-tilt');await page.waitForFunction(()=>!__lasers3d.render.getCamera().animating);
+  const automatic=await page.evaluate(()=>{const r=__lasers3d.render,c=r.getCamera(),b=r.getBoardScreenBox(),canvas=r._renderer.domElement.getBoundingClientRect();return !c.manual&&c.view==='overview'&&b.width<=canvas.width+1&&b.height<=canvas.height+1;});
+  check(automatic,`${width}: reloading an automatic camera still fits the whole board on tilt`);
   await page.evaluate(()=>{const a=__lasers3d;a.getProgress().highestUnlocked=22;a.loadLevel(3);a.setPlaced([a.levels[3].solution[0]]);});await settle(page);
   await page.click('#btn-hint');check(!(await page.evaluate(()=>__lasers3d.state.hintUsed)),`${width}: concept hint is free`);
   await page.click('#btn-hint');await page.click('#btn-hint');await settle(page);
@@ -51,7 +55,7 @@ try {
  const cameraBefore=await savedPage.evaluate(()=>__lasers3d.render.getCamera());
  await savedPage.reload();await ready(savedPage);await settle(savedPage);
  const cameraAfter=await savedPage.evaluate(()=>({camera:__lasers3d.render.getCamera(),fires:__lasers3d.state.fires,tilts:__lasers3d.state.tiltsUsed}));
- check(cameraAfter.fires===1&&cameraAfter.tilts===1&&Math.abs(cameraAfter.camera.elevationDeg-cameraBefore.elevationDeg)<0.01&&Math.abs(cameraAfter.camera.pan.x-cameraBefore.pan.x)<0.01,'reload restores fire/tilt counts and camera framing');
+ check(cameraAfter.fires===1&&cameraAfter.tilts===1&&cameraAfter.camera.manual&&cameraAfter.camera.view===cameraBefore.view&&Math.abs(cameraAfter.camera.elevationDeg-cameraBefore.elevationDeg)<0.01&&Math.abs(cameraAfter.camera.pan.x-cameraBefore.pan.x)<0.01,'reload restores fire/tilt counts and manual camera framing');
  await savedPage.evaluate(()=>__lasers3d.reset());await savedPage.waitForFunction(()=>!__lasers3d.state.resetting);
  await savedPage.evaluate(()=>{const a=__lasers3d;a.setPlaced(a.levels[0].solution);a.focusCell(a.levels[0].solution[0],true);});await settle(savedPage);
  const moveStart=await savedPage.evaluate(()=>__lasers3d.render.projectCell(__lasers3d.state.placed[0],0));await savedPage.mouse.click(moveStart.x,moveStart.y);await settle(savedPage);

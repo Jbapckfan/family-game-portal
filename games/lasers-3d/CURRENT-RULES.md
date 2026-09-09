@@ -1,6 +1,6 @@
 # Lasers 3D: current rules and release workflow
 
-This is the current implementation reference as of September 7, 2026. `DESIGN.md` preserves the original proposal and subsequent amendments; use this document when those historical sections conflict. The physics and the 23 authored level layouts are unchanged by the usability release.
+This is the current implementation reference as of September 8, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The physics and the 23 authored level layouts are unchanged by the usability and cinematic releases.
 
 ## Puzzle rules
 
@@ -32,7 +32,9 @@ Restoring an automatic camera preserves automatic framing: TILT still fits the w
 
 Motion uses one on-demand registry and frame scheduler. Settled scenes produce no application frames. Backgrounding commits active shot results and cancels decoration. WebGL loss saves the puzzle; restoration invalidates shadows and redraws the scene.
 
-The [current art direction](../../docs/reviews/2026-09-07-lasers-3d-art.md) uses a dark instrument chassis, quiet navy panels, steel terrain edges and warm dormant targets. Chassis markings depend only on board dimensions. Terrain edge lighting disappears in FLAT and respects discovery. All new ornament is static; the flat floor/top pixel identity and common piece glyph remain intact.
+The [current cinematic art direction](../../docs/reviews/2026-09-08-lasers-3d-cinematic.md) adds sculpted enamel blocks, metal bevels and hardware, glass optics, local laser illumination, and five chapter palettes. All seven decorative lamps are off in FLAT. Terrain shading and bevels obey discovery and the flat floor/top pixel identity; common upright-piece glyphs remain intact. Chassis markings and its grounding shadow depend only on public board dimensions.
+
+A winning shot sends one pulse along its actual route, then a surface illumination wave expands from the final reached target. This decoration lasts 1,200 ms and the victory modal starts at 1,280 ms; every gain returns exactly to rest. Reset, level change, backgrounding, reduced motion and the decorative-ring quality cut cancel the wave. Reduced motion omits it and retains the existing short victory fade. This finite celebration supersedes the historical prohibition on all ground waves; ambient/repeating waves remain disabled.
 
 ## Verification and iPad installation
 
@@ -44,7 +46,7 @@ npx playwright install webkit chromium
 npm run verify
 ```
 
-The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render and motion scripts use WebKit. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 23 solutions and par values independently.
+The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render, motion and optical-art scripts use WebKit. The art checks compare actual illuminated framebuffers and exercise celebration cancellation and zero idle frames. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 23 solutions and par values independently.
 
 The iOS app is an offline WKWebView bundle. Its icon source is in `assets/app-icon-source.png`, with the opaque 1024px shipping asset in the iOS asset catalog. Build with XcodeGen and the configured Apple development team:
 

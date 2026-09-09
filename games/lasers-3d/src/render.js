@@ -1,6 +1,6 @@
 /* Lasers 3D - renderer facade (INTERFACES-FRONTEND.md section 1).
  * Global: window.LaserRender. Classic script, ES2019 (Safari 15).
- * Load order: vendor/three.min.js, src/theme.js, src/render-core.js, src/render-camera.js, src/render-terrain.js,
+ * Load order: vendor/three.min.js, src/theme.js, src/render-core.js, src/render-art.js, src/render-camera.js, src/render-terrain.js,
  *             src/render-pieces.js, src/render-beam.js, src/render.js.
  * World mapping (FROZEN): game (x, y, z) -> three (x, z, -y). Camera up (0,1,0); FLAT = north up, east right.
  */
@@ -39,9 +39,11 @@
      * degrades to its pre-motion behaviour when it is absent - a stripped harness, an embedding host - so a
      * missing registry costs presentation and never a frozen board or a loop with no way out. */
     var reg = opts.motion || null;
-    var terrain = root.LaserRenderTerrain.create(theme, fog, reg);
+    var art = root.LaserRenderArt.create(theme, reg);
+    var terrain = root.LaserRenderTerrain.create(theme, fog, reg, art);
     var pieces = root.LaserRenderPieces.create(theme, fog, { motion: reg });
     var beam = root.LaserRenderBeam.create(theme);
+    art.connectBeam(beam);
     /* The beam runs on its own single clock inside frame(dt); the lease exists so that cancelAll() (RESET, level
      * navigation) and documentHidden() reach it. It releases the lease itself the moment that clock ends. */
     beam.attachMotion(reg);
@@ -60,12 +62,12 @@
       var glc = renderer.getContext();
       fog.setRise((glc.getParameter(glc.MAX_VERTEX_TEXTURE_IMAGE_UNITS) | 0) > 0);
     } catch (eVtf) { fog.setRise(false); }
-    scene.add(terrain.group); scene.add(pieces.group); scene.add(beam.group);
-    beam.onLit(function (index) { pieces.setTargetLit(index, true); });
+    scene.add(terrain.group); scene.add(pieces.group); scene.add(beam.group); scene.add(art.group);
+    beam.onLit(function (index, pos) { pieces.setTargetLit(index, true); art.targetHit(index, pos); });
 
     /* Procedural environment (no texture files): a navy studio with the rig's key/rim/fill as soft spots, so
      * brushed metal and glass have something to reflect. Strength follows the reveal blend. */
-    var ENV_STRENGTH = 1.15, envMaterials = [];
+    var ENV_STRENGTH = 1.45, envMaterials = [];
     function makeEnvironment() {
       var c = document.createElement('canvas'); c.width = 256; c.height = 128;
       var ctx = c.getContext('2d'), g = ctx.createLinearGradient(0, 0, 0, 128);
@@ -76,12 +78,14 @@
       // Broad studio panels give metal and glass readable reflections without another render pass.
       ctx.fillStyle = 'rgba(245,250,255,0.80)'; ctx.fillRect(56, 22, 62, 9);
       ctx.fillStyle = 'rgba(255,222,170,0.45)'; ctx.fillRect(167, 42, 12, 42);
+      ctx.fillStyle = 'rgba(226,239,246,0.65)'; ctx.fillRect(12, 38, 12, 43); ctx.fillRect(126, 36, 9, 40);
       var tex = new THREE.CanvasTexture(c); tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
       var pmrem = new THREE.PMREMGenerator(renderer), env = pmrem.fromEquirectangular(tex).texture;
       pmrem.dispose(); tex.dispose();
       scene.environment = env;
       var tm = terrain.materials, pm = pieces.materials;
-      envMaterials = [tm.floor, tm.top, tm.side, pm.housing, pm.emitterBody, pm.socket];
+      envMaterials = [tm.floor, tm.top, tm.bevel, tm.side, tm.frame, tm.frameEdge, pm.housing, pm.emitterBody, pm.socket];
+      tm.floor.userData.envScale = 0.18; tm.side.userData.envScale = 1.40;
       pieces.types().forEach(function (t) { if (pm.face[t]) envMaterials.push(pm.face[t]); });
       envMaterials.forEach(function (m) { m.envMapIntensity = 0; });
       return env;
@@ -130,6 +134,7 @@
     var appliedReveal = -1;
     var projVec = new THREE.Vector3();   /* scratch: no per-call allocation */
     rig.setReducedMotion(reducedMotion);
+    art.setReducedMotion(reducedMotion);
     fog.setInstant(reducedMotion);   /* prefers-reduced-motion: a cell is simply known, with no arrival at all */
 
     function setCameraPreset(name, o) { return rig.setPreset(name, o); }
@@ -159,10 +164,11 @@
       if (r === appliedReveal) return;
       appliedReveal = r;
       terrain.applyReveal(r); pieces.applyReveal(r);
+      art.setReveal(r);
       /* Side opacity is smoothstep(clamp(r / lightRig.reveal.sideOpacityFullAt)) and render-terrain.applyReveal now
        * writes exactly that, so the override this file used to keep here is gone rather than duplicated: there is
        * one expression for the curve and one place it lives. */
-      envMaterials.forEach(function (m) { m.envMapIntensity = ENV_STRENGTH * r; });
+      envMaterials.forEach(function (m) { m.envMapIntensity = ENV_STRENGTH * r * (m.userData.envScale || 1); });
       var so = Core.smoothstep(0.25, 0.65, r);
       lights.hemi.intensity = LR.hemisphere.intensity * r;
       lights.key.intensity = LR.key.intensity * r * so;
@@ -205,6 +211,7 @@
       if (beam.setDecorCuts) beam.setDecorCuts(qualityCuts);
       if (pieces.setDecorCuts) pieces.setDecorCuts(qualityCuts);
       if (terrain.setDecorCuts) terrain.setDecorCuts(qualityCuts);
+      art.setDecorCuts(qualityCuts);
     }
     function setQualityCut(name, step) {
       if (name === 'scatter-and-target-streaks') qualityCuts.scatter = true;
@@ -234,8 +241,14 @@
     }
 
     /* ---- level / content ---- */
-    function setLevel(parsed) {
+    function setLevel(parsed, index) {
       level = parsed;
+      var world = art.setLevel(parsed, index);
+      terrain.materials.top.roughness = world.roughness;
+      lights.key.color.set(world.key); lights.keyFlat.color.set(world.key);
+      lights.rim.color.set(world.rim); lights.hemi.color.set(world.sky);
+      pieces.materials.housing.color.set(world.trim); pieces.materials.emitterBody.color.set(world.trim);
+      pieces.materials.socket.color.set(world.trim);
       placeLights(parsed.size.w, parsed.size.d);
       /* The fog is sized and cleared BEFORE the content is built, so nothing is ever drawn against another level's
        * knowledge for a frame. A level opens LIT: main calls setDarkness() straight after with the level's own flag
@@ -293,6 +306,7 @@
       minDurationMs: theme.reducedMotion.beamTravelMinDurationMs, maxDurationMs: theme.reducedMotion.beamTravelMaxDurationMs };
     function motion() { return reducedMotion ? MOTION_REDUCED : MOTION_NORMAL; }
     function setBeam(result, o) {
+      art.beginShot();
       pieces.resetTargets();
       if (!result) { beam.clear(); return; }
       o = o || {};
@@ -334,6 +348,7 @@
       view.zoom = rig.effectiveZoom();
       pieces.frame(dt, speed, view);
       beam.frame(dt, view, motion());
+      art.frame();
       /* The one shadow-map render. Camera motion and light-intensity changes never reach it. */
       if (renderer.shadowMap.enabled && shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; }
       renderer.render(scene, camera);
@@ -419,7 +434,7 @@
     var disposed = false;
     function dispose() {
       if (disposed) return; disposed = true;
-      terrain.dispose(); pieces.dispose(); beam.dispose(); fog.dispose();
+      art.dispose(); terrain.dispose(); pieces.dispose(); beam.dispose(); fog.dispose();
       if (envTexture) envTexture.dispose(); scene.environment = null;
       renderer.dispose();
     }
@@ -429,6 +444,7 @@
       __version: 1,
       setLevel: setLevel, setPlaced: setPlaced, setBeam: setBeam, getBeamProgress: beam.getProgress, finishBeam: beam.skip,
       setBeamSeal: setBeamSeal, setQualityCut: setQualityCut,
+      playVictory: art.playVictory, getArtState: art.state,
       setCameraPreset: setCameraPreset, orbit: rig.orbit, zoom: rig.zoomBy, pan: rig.panBy, needsFrame: needsFrame,
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
       restoreCamera: rig.restoreCamera,
@@ -453,7 +469,7 @@
       invalidateShadows: invalidateShadows,
       /* The reveal's anticipation scalar, 0 at rest (tests and the integrator read it; nothing else needs it). */
       getRevealIntake: rig.revealIntake,
-      setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); fog.setInstant(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,
+      setReducedMotion: function (b) { reducedMotion = !!b; rig.setReducedMotion(!!b); fog.setInstant(!!b); art.setReducedMotion(!!b); }, dispose: dispose, snapshotTrayIcon: snapshotTrayIcon,
       /* debug/test hooks */
       _scene: scene, _camera: camera, _renderer: renderer, _fog: fog
     };

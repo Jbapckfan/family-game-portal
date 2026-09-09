@@ -282,7 +282,7 @@
     return m;
   }
 
-  function create(theme, fog, motion) {
+  function create(theme, fog, motion, art) {
     var uReveal = { value: 0 };
     /* m.reveal.sideEasing, resolved through the theme's own table (never a curve written out here). */
     var easeSide = theme.easeByName(theme.motion.reveal.sideEasing);
@@ -296,10 +296,12 @@
        * itself the ground and has nowhere to rise from. */
       floor: revealMaterial(theme.materials.floor, theme, uReveal, fog, 'none', 'ground', burn),
       top: revealMaterial(theme.materials.blockTopLit, theme, uReveal, fog, 'rise', 'mix', burn),
+      bevel: revealMaterial({ material: 'MeshPhysicalMaterial', color: '#B9CCD3', metalness: 0.78,
+        roughness: 0.25, clearcoat: 0.65 }, theme, uReveal, fog, 'rise', 'mix', burn),
       side: fogMaterial(Core.matFromSpec(theme.materials.blockSide), fog, 'rise', 'mix', burn),
       sideEdge: fogMaterial(new THREE.LineBasicMaterial({color:0x9bbdcd,transparent:true,opacity:0,depthWrite:false,toneMapped:false}), fog, 'rise', 'alpha', burn, true),
-      frame: new THREE.MeshBasicMaterial({color:0x0c1923,toneMapped:false}),
-      frameEdge: new THREE.MeshBasicMaterial({color:0x507283,toneMapped:false}),
+      frame: new THREE.MeshPhysicalMaterial({color:0x08131a,metalness:0.72,roughness:0.34,clearcoat:0.7}),
+      frameEdge: new THREE.MeshStandardMaterial({color:0xb7c3ce,metalness:0.78,roughness:0.25}),
       frameMarks: new THREE.MeshBasicMaterial({color:0x93b9c5,toneMapped:false}),
       /* 15.1: "The empty grid outline is ALWAYS drawn." So the outline is the one fogged material that never
        * discards - it only lies flat on the ground plane and dims to uFogGrid until its cell is known. */
@@ -312,7 +314,8 @@
         blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }), fog, 'rise', 'alpha', burn)
     };
     var leakTex = null;
-    Core.markSharedAll([mats.floor, mats.top, mats.side, mats.grid, mats.leak, mats.sideEdge, mats.frame, mats.frameEdge, mats.frameMarks]);
+    if (art) { art.surface(mats.floor, 'floor'); art.surface(mats.top, 'top'); art.surface(mats.bevel, 'bevel'); art.surface(mats.side, 'side'); art.paintTerrain(mats); }
+    Core.markSharedAll([mats.floor, mats.top, mats.bevel, mats.side, mats.grid, mats.leak, mats.sideEdge, mats.frame, mats.frameEdge, mats.frameMarks]);
     mats.side.opacity = 0;
     mats.top.polygonOffset = true; mats.top.polygonOffsetFactor = 1; mats.top.polygonOffsetUnits = 1;
     mats.floor.polygonOffset = true; mats.floor.polygonOffsetFactor = 1; mats.floor.polygonOffsetUnits = 1;
@@ -346,7 +349,9 @@
     /* A fixed instrument chassis, independent of terrain and discovery. Its markings stay outside playable cells. */
     function platform(w, d) {
       var cx = (w - 1) / 2, cz = -(d - 1) / 2;
-      var slab = new THREE.Mesh(Core.boxAt(cx, -0.22, cz, w + 0.42, 0.40, d + 0.42), mats.frame);
+      var shell = root.LaserRenderArt.bevelBox(w + 0.42, 0.45, d + 0.42, 0.07);
+      shell.translate(cx, -0.24, cz);
+      var slab = new THREE.Mesh(shell, mats.frame);
       slab.name = 'instrument-chassis'; slab.renderOrder = -2; group.add(slab);
       var rails = [
         Core.boxAt(cx, -0.005, 0.60, w + 0.35, 0.055, 0.06),
@@ -354,7 +359,12 @@
         Core.boxAt(-0.60, -0.005, cz, 0.06, 0.055, d + 0.35),
         Core.boxAt(w - 0.40, -0.005, cz, 0.06, 0.055, d + 0.35)
       ];
-      group.add(new THREE.Mesh(Core.mergeGeometries(rails), mats.frameEdge));
+      [[-0.60,0.60],[w-0.40,0.60],[-0.60,-d+0.40],[w-0.40,-d+0.40]].forEach(function (p) {
+        var bolt = new THREE.CylinderGeometry(0.075, 0.075, 0.025, 12);
+        bolt.translate(p[0], 0.04, p[1]); rails.push(bolt);
+      });
+      var rim = new THREE.Mesh(Core.mergeGeometries(rails), mats.frameEdge);
+      rim.name = 'instrument-rim'; group.add(rim);
       var ticks = [];
       for (var x = 0; x < w; x++) {
         ticks.push(Core.boxAt(x, 0.027, 0.59, 0.025, 0.01, x % 5 === 0 ? 0.14 : 0.065));
@@ -374,7 +384,8 @@
       var w = parsed.size.w, d = parsed.size.d, t = parsed.t;
       platform(w, d);
       var cell = theme.terrain.cellTop, hc = cell / 2, x, y, h, k;
-      var tops = [], sides = [], lines = [], leaks = [], roles = [];
+      var tops = [], bevels = [], sides = [], lines = [], leaks = [], roles = [];
+      var bevel = 0.036;
       var byHeight = [];   /* height -> flat [worldX, worldZ, ...] of that height's top-face corners */
       maxHeight = 0;
       openings = Core.openMask(parsed);
@@ -404,9 +415,19 @@
       group.add(baseMesh);
 
       function face(z, up) {
-        var g = new THREE.PlaneGeometry(cell, cell);
+        var g = new THREE.PlaneGeometry(up ? cell - bevel * 2 : cell, up ? cell - bevel * 2 : cell);
         g.rotateX(up ? -Math.PI / 2 : Math.PI / 2);
         g.translate(x, z, -y);
+        if (up) {
+          var outer = [[-hc,-hc],[hc,-hc],[hc,hc],[-hc,hc]], inner = hc - bevel;
+          for (var i = 0; i < 4; i++) {
+            var a = outer[i], b = outer[(i + 1) % 4], pa = [x+a[0],z-bevel,-y+a[1]], pb = [x+b[0],z-bevel,-y+b[1]];
+            var ia = [x+Math.sign(a[0])*inner,z,-y+Math.sign(a[1])*inner], ib = [x+Math.sign(b[0])*inner,z,-y+Math.sign(b[1])*inner];
+            var edge = new THREE.BufferGeometry();
+            edge.setAttribute('position',new THREE.Float32BufferAttribute(pa.concat(ia,ib,pa,ib,pb),3));
+            edge.computeVertexNormals(); bevels.push(edge);
+          }
+        }
         return g;
       }
 
@@ -420,11 +441,12 @@
             tops.push(face(h, true));
             for (k = 0; k < h; k++) {
               if (bits & (1 << k)) continue;                 /* punched out - leave a real hole */
+              var capHeight = k + 1 - ((k + 1 === h || (bits & (1 << (k + 1)))) ? bevel : 0);
               /* four vertical faces of THIS voxel, z = k .. k+1 */
-              sides.push(sideQuad([x + hc, k, -y + hc], [x + hc, k, -y - hc], k + 1, [1, 0, 0]));
-              sides.push(sideQuad([x - hc, k, -y - hc], [x - hc, k, -y + hc], k + 1, [-1, 0, 0]));
-              sides.push(sideQuad([x - hc, k, -y + hc], [x + hc, k, -y + hc], k + 1, [0, 0, 1]));
-              sides.push(sideQuad([x + hc, k, -y - hc], [x - hc, k, -y - hc], k + 1, [0, 0, -1]));
+              sides.push(sideQuad([x + hc, k, -y + hc], [x + hc, k, -y - hc], capHeight, [1, 0, 0]));
+              sides.push(sideQuad([x - hc, k, -y - hc], [x - hc, k, -y + hc], capHeight, [-1, 0, 0]));
+              sides.push(sideQuad([x - hc, k, -y + hc], [x + hc, k, -y + hc], capHeight, [0, 0, 1]));
+              sides.push(sideQuad([x + hc, k, -y - hc], [x - hc, k, -y - hc], capHeight, [0, 0, -1]));
               /* the floor INSIDE an opening: this voxel's own top, wherever the voxel above is missing. This is the
                * one interior surface a player ever sees, since the camera looks DOWN from 25..90 degrees, so it is a
                * lit block top like any other. */
@@ -464,10 +486,15 @@
       buildFitPoints(parsed, byHeight);
       if (tops.length) {
         var topMesh = new THREE.Mesh(Core.mergeGeometries(tops), mats.top);
+        topMesh.name = 'terrain-tops';
         topMesh.castShadow = true; topMesh.receiveShadow = true;
         topMesh.renderOrder = TERRAIN_ORDER;
         group.add(topMesh);
+        var bevelMesh = new THREE.Mesh(Core.mergeGeometries(bevels), mats.bevel);
+        bevelMesh.name = 'terrain-beveled-caps'; bevelMesh.renderOrder = TERRAIN_ORDER; bevelMesh.receiveShadow = true;
+        group.add(bevelMesh);
         var sideMesh = new THREE.Mesh(Core.mergeGeometries(sides), mats.side);
+        sideMesh.name = 'terrain-sides';
         var sideEdges = new THREE.LineSegments(new THREE.EdgesGeometry(sideMesh.geometry, 25), mats.sideEdge);
         sideEdges.name='terrain-edge-light'; group.add(sideEdges);
         sideMesh.castShadow = true; sideMesh.receiveShadow = true;
@@ -550,7 +577,7 @@
        * dead at sideOpacityFullAt, which is a visible kink partway through the orbit. m.reveal.sideEasing names the
        * curve; theme.ease resolves it, so the expression is not written out a second time anywhere. */
       var so = easeSide(Math.min(1, r / theme.lightRig.reveal.sideOpacityFullAt));
-      mats.sideEdge.opacity = 0.23 * r; mats.sideEdge.visible = r > 0;
+      mats.sideEdge.opacity = 0.32 * r; mats.sideEdge.visible = r > 0;
       mats.side.opacity = so;
       mats.side.transparent = so < 1;
       mats.side.visible = so > 0;
@@ -566,6 +593,7 @@
        * back. Nothing else changes: at reveal 0 every terrain fragment is forced to the same #172544. */
       var occludes = r > 0;
       mats.top.depthWrite = occludes;
+      mats.bevel.depthWrite = occludes;
       mats.floor.depthWrite = occludes;
     }
 

@@ -454,13 +454,16 @@
           #tray.glass::before {display:none;}
           .tray-actions {padding:12px;background:rgba(8,20,32,.78);border:1px solid rgba(151,191,207,.18);border-radius:18px;box-shadow:0 15px 36px rgba(0,0,0,.20);}
           .tray-cards {margin-bottom:12px;}
-          #tray::after {content:"LASERS  /  OPTICS LAB";position:absolute;top:38px;left:0;right:0;text-align:center;font:600 10px var(--font-data);letter-spacing:.18em;color:#8ba8b8;pointer-events:none;}
+          #tray::after {content:attr(data-world-label);position:absolute;top:38px;left:0;right:0;text-align:center;font:600 11px var(--font-data);letter-spacing:.18em;color:var(--world-trim,#8ba8b8);pointer-events:none;}
         }
         @media (min-width:640px) and (max-height:480px) {
           .tray-actions {padding:6px;gap:6px;}
           .tray-cards {margin-bottom:0;}
           #tray::after {display:none;}
         }
+        body[data-world] {background:radial-gradient(ellipse at 8% 12%,var(--world-glow) 0%,transparent 43%),radial-gradient(ellipse at 47% 43%,var(--world-backdrop),#050817 76%);}
+        body[data-world] .tray-card {background:linear-gradient(145deg,var(--world-backdrop),#09131f);}
+        body[data-world] .level-tile {box-shadow:inset 0 1px 0 rgba(240,245,255,.08);}
     </style>
 </head>
 <body>
@@ -529,6 +532,7 @@
     <script src="src/levels.js"></script>
     <script src="src/audio.js"></script>
     <script src="src/render-core.js"></script>
+    <script src="src/render-art.js"></script>
     <script src="src/render-camera.js"></script>
     <script src="src/render-terrain.js"></script>
     <!-- Section 5's transient overlays (pick up, drop, seating mark, ghost, refused footprint). -->

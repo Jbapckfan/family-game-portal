@@ -435,7 +435,7 @@
       S.known = makeKnown(parsed);
       S.knownDirty = false;
       if (render) {
-        render.setLevel(parsed); applyDarkness(); render.setCameraPreset('flat', { animate: false });
+        render.setLevel(parsed, index); applyDarkness(); render.setCameraPreset('flat', { animate: false });
         render.setSelection(null); render.setGhost(null); render.setCursor(null); render.setHover(null);
       }
       if (input) input.setCursor(null);
@@ -746,9 +746,10 @@
        * which section 6 asks for in as many words), it is tracked so RESET and a level change cancel it, and
        * documentHidden() settles it - which shows the modal the player earned rather than replaying it on return. */
       var wt = motion.token();
+      if (typeof render.playVictory === 'function') render.playVictory();
       /* MOTION-DIRECTION.md section 6, W0 to W0 + m.win.beamSealMs: ONE whole-route emissive and glow gain of
-       * m.win.beamSealGain * bell(t). Not a travelling flourish and not a new brightness floor - bell() starts and
-       * ends at exactly zero, so the sealed circuit settles back onto the same baseline the altitude widths and
+       * m.win.beamSealGain * bell(t), underneath the optical route pulse. bell() starts and
+       * ends at exactly zero, so the circuit settles back onto the same baseline the altitude widths and
        * colours are read against, and every baseline altitude difference survives the celebration untouched.
        * A registry animation, so it holds frames only while it runs, RESET and a level change cancel it, and
        * documentHidden() settles it to the exact final gain of 0. Reduced motion omits the seal entirely. */

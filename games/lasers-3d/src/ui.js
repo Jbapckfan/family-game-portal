@@ -179,7 +179,7 @@
     /* theme tokens + page background */
     if (theme && !$('lasers3d-theme')) { var st = doc.createElement('style'); st.id = 'lasers3d-theme'; st.textContent = theme.cssVariables(); doc.head.appendChild(st); }
     if (theme && window.LaserUiMotion) window.LaserUiMotion.install(theme);   /* keyframes generated from theme.motion */
-    if (theme) { doc.body.style.background = theme.pageBackground; doc.body.style.backgroundColor = theme.palette.background; }
+    if (theme) { doc.body.style.backgroundColor = theme.palette.background; }
     ensureDom(root);
     var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-dark', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
     ids.forEach(function (id) { el[id] = $(id); });
@@ -274,8 +274,20 @@
     function iconHtml(type) { var u = trayIcon(type); return u ? '<img src="' + u + '" alt="" draggable="false">' : '<span class="tray-glyph" data-type="' + type + '"></span>'; }
 
     /* ----------------------------------------------------------- setState */
+    var appliedWorld = '';
     ui.setState = function (v) {
       if (!v) return; vm = v;
+      if (theme.worldForLevel) {
+        var world = theme.worldForLevel(v.levelIndex);
+        if (world.id !== appliedWorld) {
+          appliedWorld = world.id;
+          doc.body.setAttribute('data-world', world.id);
+          doc.body.style.setProperty('--world-backdrop', world.backdrop);
+          doc.body.style.setProperty('--world-glow', world.glow + '66');
+          doc.body.style.setProperty('--world-trim', world.trim);
+          if (el.tray) el.tray.setAttribute('data-world-label', 'LASERS  /  ' + world.name);
+        }
+      }
       var lvl = v.level || {}, par = lvl.par || 0, used = (v.placed || []).length;
       /* `cameraBusy` covers the exclusive camera choreographies (the free reveal, RESET's return to flat and the
        * view toggle): every control that could interrupt them is disabled for their duration. */

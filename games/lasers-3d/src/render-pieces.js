@@ -60,7 +60,14 @@
       shape.moveTo(-s, -s); shape.lineTo(s, -s); shape.lineTo(s, s); shape.lineTo(-s, s); shape.closePath();
       var hg = new THREE.ExtrudeGeometry(shape, { depth: h.h - 2 * c, bevelEnabled: true, bevelThickness: c, bevelSize: c, bevelSegments: 1 });
       hg.rotateX(-Math.PI / 2); hg.translate(0, c, 0);
-      geo.housing = hg;
+      var hardware = [hg];
+      [-0.26, 0.26].forEach(function (x) { [-0.26, 0.26].forEach(function (z) {
+        var screw = new THREE.CylinderGeometry(0.028, 0.028, 0.018, 10);
+        screw.translate(x, h.h + 0.007, z); hardware.push(screw);
+      }); });
+      var hinge = new THREE.CylinderGeometry(0.035, 0.035, 0.58, 12);
+      hinge.rotateZ(Math.PI / 2); hinge.translate(0, h.h + 0.01, 0); hardware.push(hinge);
+      geo.housing = Core.mergeGeometries(hardware);
       var gg = new THREE.PlaneGeometry(P.flatGlyph.length, P.flatGlyph.width);
       gg.rotateX(-Math.PI / 2); gg.translate(0, h.h + 0.003, 0);
       geo.glyph = gg;                                   /* the diagonal strip every UPRIGHT piece shows in FLAT */
@@ -72,13 +79,20 @@
       geo.plateGlyph = pg;
       geo.faces = {};
       TYPES.forEach(function (t) { geo.faces[t] = SHAPE[t].flat ? plateGeo(t) : faceGeo(SHAPE[t].tilt, t); });
-      geo.emBase = Core.boxAt(0, 0.14, 0, 0.6, 0.28, 0.6);
+      geo.emBase = root.LaserRenderArt.bevelBox(0.62, 0.28, 0.6, 0.035); geo.emBase.translate(0, 0.14, 0);
       var barrel = new THREE.CylinderGeometry(0.2, 0.22, 0.62, 24); barrel.rotateZ(-Math.PI / 2); barrel.translate(0, 0.5, 0);
-      geo.emBarrel = barrel;
+      var bands = [barrel];
+      [-0.22, -0.08, 0.12].forEach(function (x) {
+        var band = new THREE.TorusGeometry(0.218, 0.025, 8, 24);
+        band.rotateY(Math.PI / 2); band.translate(x, 0.5, 0); bands.push(band);
+      });
+      geo.emBarrel = Core.mergeGeometries(bands);
       var fil = new THREE.CylinderGeometry(0.12, 0.12, 0.08, 16); fil.rotateZ(-Math.PI / 2); fil.translate(0.33, 0.5, 0);
       geo.emFilament = fil;
       var sock = new THREE.CylinderGeometry(0.24, 0.28, 0.08, 24); sock.translate(0, 0.04, 0);
-      geo.socket = sock;
+      var cradle = new THREE.TorusGeometry(0.265, 0.036, 8, 32);
+      cradle.rotateX(-Math.PI / 2); cradle.translate(0, 0.12, 0);
+      geo.socket = Core.mergeGeometries([sock, cradle]);
       geo.targetCrown = new THREE.TorusGeometry(0.32,0.028,8,40);geo.targetCrown.rotateX(-Math.PI/2);geo.targetCrown.translate(0,0.16,0);
       var collar = new THREE.TorusGeometry(0.20,0.026,8,28);collar.rotateY(Math.PI/2);collar.translate(0.24,0.50,0);geo.emCollar=collar;
       geo.emGlyph=Core.mergeGeometries([Core.boxAt(-0.18,0.10,-0.23,0.35,0.012,0.045),Core.boxAt(-0.18,0.10,0.23,0.35,0.012,0.045),Core.boxAt(-0.35,0.10,0,0.045,0.012,0.46)]);
@@ -119,7 +133,7 @@
     function faceGeo(tilt, type) {
       var size = P.mirrorPanel.size, zFrom = P.mirrorPanel.zFrom, zTo = P.mirrorPanel.zTo, f = P.edgeFilament;
       var span = zTo - zFrom, h = tilt === 0 ? span : span * Math.SQRT2, mid = (zFrom + zTo) / 2;
-      var face = new THREE.PlaneGeometry(size, h);
+      var face = new THREE.BoxGeometry(size, h, 0.018);
       var fil = Core.mergeGeometries([
         Core.boxAt(0, h / 2, 0, size + f, f, f), Core.boxAt(0, -h / 2, 0, size + f, f, f),
         Core.boxAt(size / 2, 0, 0, f, h, f), Core.boxAt(-size / 2, 0, 0, f, h, f)]);
@@ -308,7 +322,7 @@
         var orbMat = Core.matFromSpec(M.targetUnlit);
         var orb = new THREE.Mesh(geo.orb, orbMat); orb.renderOrder = 3; g.add(orb);
         var coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.palette.targetLit), transparent: true, opacity: 0, toneMapped: false });
-        g.add(new THREE.Mesh(geo.core, coreMat));
+        var core = new THREE.Mesh(geo.core, coreMat); g.add(core);
         var haloMat = new THREE.SpriteMaterial({ map: Core.glowTexture(theme.palette.targetLit, 0), color: new THREE.Color(theme.palette.targetLit),
           transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
         var hs = new THREE.Sprite(haloMat); hs.position.set(0, 0.5, 0);
@@ -324,7 +338,7 @@
         g.add(proxy);
         actorGroup.add(placeAt(g, tg.x, tg.y));
         orbMat.envMapIntensity = reveal;
-        var rec = { index: i, crown: crownMat, orb: orbMat, core: coreMat, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
+        var rec = { index: i, crown: crownMat, orb: orbMat, core: coreMat, coreMesh: core, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
         targets.push(rec);
         refreshTarget(rec);
       });
@@ -428,6 +442,8 @@
       m.metalness = a.metalness + (b.metalness - a.metalness) * k;
       t.crown.color.copy(TC.colorUnlit).lerp(TC.colorLit,k);
       t.core.opacity = k; t.halo.opacity = k * theme.beam.endStates.target.haloOpacity;
+      var fill = 0.55 + 1.15 * k;
+      t.coreMesh.scale.setScalar(fill); t.coreMesh.position.y = 0.5 * (1 - fill);
       refreshTarget(t);
     }
     /* Physical orb vs FLAT proxy, on complementary curves. `show` is max(reveal, lit): a LIT target must glow in the

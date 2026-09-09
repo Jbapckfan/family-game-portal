@@ -773,7 +773,8 @@ try {
           const ny = n.getY(i);
           const y0 = Math.min(p.getY(i), p.getY(i + 1), p.getY(i + 2));
           const y1 = Math.max(p.getY(i), p.getY(i + 1), p.getY(i + 2));
-          if (Math.abs(ny) < 0.5) { for (let k = 0; k < 4; k++) if (y0 <= k + 0.01 && y1 >= k + 0.99) bands[k]++; }
+          // Upright walls stop 0.036 cells below the lid, where the sculpted cap takes over.
+          if (Math.abs(ny) < 0.5) { for (let k = 0; k < 4; k++) if (y0 <= k + 0.01 && y1 >= k + 0.94) bands[k]++; }
           else if (ny < -0.5) { if (ceil.indexOf(Math.round(y0)) < 0) ceil.push(Math.round(y0)); }
           else if (y0 > 0.01) { if (lids.indexOf(Math.round(y0)) < 0) lids.push(Math.round(y0)); }
         }
@@ -917,18 +918,26 @@ try {
     const cell = { x: 4, y: 8 };                       // a lone solid column, height 3, well clear of the beam
     h.load('dark'); h.fit(); h.view('tilt'); h.settle(900);
     const unknown = sampleTop(cell), fogK = h.fogAt(cell.x, cell.y);
+    // The public chassis can reflect the studio at this projected pixel. Compare against the same scene
+    // with voxel surfaces removed, instead of assuming an arbitrary black RGB threshold for that chassis.
+    const surfaces = ['terrain-tops','terrain-sides','terrain-beveled-caps','terrain-edge-light','terrain-grid']
+      .map(name => h.render._scene.getObjectByName(name)).filter(Boolean);
+    const visible = surfaces.map(m => m.visible);
+    surfaces.forEach(m => { m.visible = false; });
+    const noTerrain = sampleTop(cell);
+    surfaces.forEach((m, i) => { m.visible = visible[i]; });
     h.reveal([cell]); h.settle(900);
     const known = sampleTop(cell);
     h.load('arch'); h.fit(); h.view('tilt'); h.settle(900);
     const lit = sampleTop(cell);
-    return { cell, unknown, known, lit, fogK, dark: h.theme.terrain.darkness.unknownColor };
+    return { cell, unknown, noTerrain, known, lit, fogK };
   });
   const near = (a, b, tol) => a.every((v, i) => Math.abs(v - b[i]) <= tol);
   check(hidden.fogK === 0 && !near(hidden.unknown, hidden.lit, 12),
     `an unknown 3-high column draws no terrain: (${hidden.cell.x},${hidden.cell.y}) reads rgb(${hidden.unknown}) ` +
     `where the lit board draws rgb(${hidden.lit})`);
-  check(hidden.unknown.every((v) => v < 40),
-    `and what is there instead is the fog ground ${hidden.dark}, not a block top: rgb(${hidden.unknown})`);
+  check(near(hidden.unknown, hidden.noTerrain, 2),
+    `the unknown-column pixel matches the scene with voxel terrain removed: rgb(${hidden.unknown}) vs rgb(${hidden.noTerrain})`);
   check(near(hidden.known, hidden.lit, 2),
     `revealing that one cell brings the column back exactly as the lit board draws it: rgb(${hidden.known}) vs rgb(${hidden.lit})`);
 
@@ -1268,7 +1277,7 @@ try {
       const strokes = rings.map((r) => r.stroke);
       out.target = { lit, hits: t.result.hits.length, peakStreaks, peakEffects,
         strokeMin: Math.min.apply(null, strokes), strokeMax: Math.max.apply(null, strokes),
-        want: M.target.ringStrokeCells, diaMin: Math.min.apply(null, rings.map((r) => r.dia)),
+        want: M.target.ringStrokeCells, opacity: M.target.ringOpacity, diaMin: Math.min.apply(null, rings.map((r) => r.dia)),
         diaMax: Math.max.apply(null, rings.map((r) => r.dia)), opMax: Math.max.apply(null, rings.map((r) => r.op)) };
       out.target.stop = runToStop(b, TILT, NORMAL);
       b.dispose();
@@ -1411,7 +1420,7 @@ try {
     check(t.peakStreaks === 8, `it emits the existing ${t.peakStreaks} streaks at equal angular intervals`);
     check(Math.abs(t.strokeMin - t.want) < 2e-4 && Math.abs(t.strokeMax - t.want) < 2e-4,
       `both rings keep a CONSTANT ${t.want}-cell stroke while their diameter grows ${t.diaMin.toFixed(3)} -> ${t.diaMax.toFixed(3)} cell (measured ${t.strokeMin.toFixed(4)}..${t.strokeMax.toFixed(4)})`);
-    check(Math.abs(t.opMax - 0.32) < 1e-4, `ring opacity starts at m.target.ringOpacity ${t.opMax}`);
+    check(Math.abs(t.opMax - t.opacity) < 1e-4, `ring opacity starts at m.target.ringOpacity ${t.opMax}`);
   }
   {
     const s = beamMotion.skip;

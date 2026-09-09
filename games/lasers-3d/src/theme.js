@@ -83,21 +83,17 @@
 
   /* One entry per surface. `material` names the THREE class. Absent keys = THREE default. */
   var materials = {
-    floor: { material: 'MeshPhysicalMaterial', color: palette.floor, metalness: 0.15, roughness: 0.78,
+    floor: { material: 'MeshPhysicalMaterial', color: palette.floor, metalness: 0.72, roughness: 0.56,
       emissive: '#050817', emissiveIntensity: 0.08, opacity: 1.0, transparent: false,
-      clearcoat: 0.12, clearcoatRoughness: 0.75, receiveShadow: true },
-    blockTopLit: { material: 'MeshPhysicalMaterial', color: palette.blockTopLit, metalness: 0.30, roughness: 0.38,
+      clearcoat: 0.24, clearcoatRoughness: 0.35, receiveShadow: true },
+    blockTopLit: { material: 'MeshPhysicalMaterial', color: palette.blockTopLit, metalness: 0.62, roughness: 0.23,
       emissive: '#08152B', emissiveIntensity: 0.10, opacity: 1.0, transparent: false,
-      clearcoat: 0.20, clearcoatRoughness: 0.62, receiveShadow: true, castShadow: true },
-    /* Block sides used to render as flat black silhouettes under the tilt rig (only the key light reaches them and
-     * half of them face away from it), so large faces merged into one shape. A self-lit floor of the side's OWN
-     * colour keeps them reading as smoked gunmetal and lets the key light modulate on top of it instead of up from
-     * black. Intensity measured on a tilted 20x20 screenshot, darkest side-face pixel: 0 -> rgb(0,0,8) (black),
-     * 0.65 -> rgb(0,4,30) (still crushed), 1.2 -> rgb(0,9,45), 1.5 -> ~rgb(1,13,52), 2.6 -> starts to flatten
-     * against the lit faces (median rgb(28,40,85)). 1.5 puts an unlit face on its own token colour #0B1530 with the
-     * lit/unlit gradient intact. */
-    blockSide: { material: 'MeshStandardMaterial', color: palette.blockSide, metalness: 0.38, roughness: 0.48,
-      emissive: palette.blockSide, emissiveIntensity: 1.5, opacity: 1.0, transparent: true /* opacity follows reveal */,
+      clearcoat: 1.0, clearcoatRoughness: 0.12, receiveShadow: true, castShadow: true },
+    /* A small self-lit contribution keeps the chapter's enamel readable on faces away from the key.
+     * The optical surface shader adds a reveal-gated finish gradient toward each block's base. */
+    blockSide: { material: 'MeshPhysicalMaterial', color: palette.blockSide, metalness: 0.72, roughness: 0.28,
+      clearcoat: 0.70, clearcoatRoughness: 0.18,
+      emissive: palette.blockSide, emissiveIntensity: 0.48, opacity: 1.0, transparent: true /* opacity follows reveal */,
       receiveShadow: true, castShadow: true },
     /* FLAT-only stand-in for a dormant target: the physical orb is glass, so with the lights at zero it reads as a
      * black hole in the floor. This screen-facing reticle marks the cell in the flat view and cross-fades out as the
@@ -111,7 +107,7 @@
     flatPieceGlyph: { material: 'MeshBasicMaterial', color: palette.commonFlatPiece, opacity: 1.0, transparent: true /* opacity = 1 - reveal */,
       toneMapped: false },
     mirrorFace: { material: 'MeshPhysicalMaterial', color: palette.mirror, metalness: 0.28, roughness: 0.08,
-      emissive: '#0D7C8A', emissiveIntensity: 0.42, opacity: 0.84, transparent: true,
+      emissive: '#0D7C8A', emissiveIntensity: 0.20, opacity: 0.84, transparent: true,
       transmission: 0.48, ior: 1.46, clearcoat: 1.0, side: 'DoubleSide' },
     wedgeFace: { material: 'MeshPhysicalMaterial', color: palette.wedge, metalness: 0.46, roughness: 0.19,
       emissive: '#6B3C00', emissiveIntensity: 0.34, opacity: 0.94, transparent: true,
@@ -144,7 +140,7 @@
     beamCore: { material: 'MeshStandardMaterial', color: 'beam' /* beamColors[z] */, metalness: 0.0, roughness: 0.30,
       emissive: 'beam', emissiveIntensity: 'beam' /* beam.levels[z].coreEmissive */, opacity: 1.0, transparent: false, toneMapped: true },
     beamGlow: { material: 'MeshBasicMaterial', color: 'beam', opacity: 'beam' /* beam.levels[z].glowOpacity */, transparent: true,
-      blending: 'AdditiveBlending', depthTest: true, depthWrite: false },
+      blending: 'AdditiveBlending', depthTest: true, depthWrite: false, toneMapped: false },
     beamFilament: { material: 'MeshBasicMaterial', color: '#FFFFFF', opacity: 0.65, transparent: true,
       blending: 'AdditiveBlending', depthWrite: false, toneMapped: false }
   };
@@ -320,10 +316,10 @@
     heightOffset: 0.5,                     /* world height = z + 0.5 */
     tubeSides: 6,
     levels: [
-      { z: 0, color: palette.beamLevel0, coreDiameter: 0.055, glowDiameter: 0.150, coreEmissive: 2.0, glowOpacity: 0.16, filament: false },
-      { z: 1, color: palette.beamLevel1, coreDiameter: 0.072, glowDiameter: 0.195, coreEmissive: 3.0, glowOpacity: 0.21, filament: false },
-      { z: 2, color: palette.beamLevel2, coreDiameter: 0.092, glowDiameter: 0.250, coreEmissive: 4.5, glowOpacity: 0.28, filament: true },
-      { z: 3, color: palette.beamLevel3, coreDiameter: 0.118, glowDiameter: 0.315, coreEmissive: 6.5, glowOpacity: 0.36, filament: true }
+      { z: 0, color: palette.beamLevel0, glowColor: '#1DAAB0', coreDiameter: 0.055, glowDiameter: 0.150, coreEmissive: 2.0, glowOpacity: 0.22, filament: false },
+      { z: 1, color: palette.beamLevel1, glowColor: '#28C7D5', coreDiameter: 0.072, glowDiameter: 0.195, coreEmissive: 3.0, glowOpacity: 0.28, filament: false },
+      { z: 2, color: palette.beamLevel2, glowColor: '#38D6E8', coreDiameter: 0.092, glowDiameter: 0.250, coreEmissive: 4.5, glowOpacity: 0.35, filament: true },
+      { z: 3, color: palette.beamLevel3, glowColor: '#66E8F2', coreDiameter: 0.118, glowDiameter: 0.315, coreEmissive: 6.5, glowOpacity: 0.42, filament: true }
     ],
     filament: { diameterRatio: 0.35, opacity: 0.65, color: '#FFFFFF' },
     /* Travel timing. `cellsPerSecond` is the base rate, but the DURATION is what the player feels: boards run to
@@ -522,22 +518,22 @@
 
     /* -- Beam, contact, and FIRE tokens (sections 1 and 2) -- */
     beam: {
-      headCells: 0.28, headGain: 0.45,
+      headCells: 0.38, headGain: 1.0,
       packetIntervalMs: 240, packetMs: 480, packetGain: 0.32,
       peakAt: { level: 0.50, climb: 0.78, descend: 0.22 },   /* by SEGMENT PITCH of the traced beam, not terrain */
       pitchBlendCells: 0.10, settleMs: 160
     },
     contact: {
-      diameterCells: 0.12, peakOpacity: 0.60, attackMs: 36, decayMs: 144,
+      diameterCells: 0.20, peakOpacity: 0.84, attackMs: 36, decayMs: 144,
       flatColor: palette.commonFlatPiece,
       bounceDot: { diameterCells: 0.10, opacity: 0.65, color: 'arrivalBeamColor' }
     },
-    scatter: { anglesDeg: [-35, 35], lengthCells: 0.06, widthCells: 0.012, distanceCells: 0.18, ms: 180, opacity: 0.45 },
+    scatter: { anglesDeg: [-35, 35], lengthCells: 0.10, widthCells: 0.015, distanceCells: 0.22, ms: 180, opacity: 0.50 },
     fire: {
-      chargeMs: 180, chargeEmissiveMultiplier: 1.35, chargeHaloScale: 0.84, chargeHaloOpacity: 0.34,
+      chargeMs: 180, chargeEmissiveMultiplier: 2.6, chargeHaloScale: 0.72, chargeHaloOpacity: 0.48,
       releaseMs: 120, badgeFadeMs: 80, lostMarkerFadeMs: 120
     },
-    target: { ringDelayMs: 80, ringOpacity: 0.32, ringStrokeCells: 0.018 },
+    target: { ringDelayMs: 80, ringOpacity: 0.46, ringStrokeCells: 0.018 },
 
     /* -- Reveal tokens (section 3) -- */
     reveal: {
@@ -565,7 +561,7 @@
 
     /* -- Win, failure, and darkness tokens (sections 6, 7, 8) -- */
     win: {
-      beamSealMs: 480, beamSealGain: 0.18, modalDelayMs: 520,
+      beamSealMs: 480, beamSealGain: 0.12, modalDelayMs: 1280,
       starMs: 320, starProgress: [0, 0.55, 1], starFadeMs: 120,
       ringMs: 540, ringDiameterFactors: [0.25, 1.25], ringStrokePx: 1, ringOpacity: 0.18, ringColor: palette.uiAccent
     },
@@ -579,8 +575,8 @@
     },
 
     /* -- Stationary-policy and degradation tokens (sections 9 and 10) -- */
-    /* Every one of these is false and stays false. Section 9 is the reason: motion here would either turn hidden
-     * structure into a timing code or leave the scheduler alive for ever. */
+    /* Idle policy: no self-restarting effects. The approved finite win wave lives in theme.art and has its own
+     * registry lifetime; groundWaves remains false for ambient/idle motion. */
     policy: {
       terrainMotion: false, flatLightingMotion: false, anticipatoryPieceMotion: false, openingPulse: false,
       targetIdleMotion: false, beamIdleMotion: false, cameraIdleMotion: false, trayIdleMotion: false,
@@ -618,6 +614,24 @@
     return ease.linear;
   }
 
+  /* Chapter identity changes materials and studio lighting, never the FLAT color, optics colors or rules. */
+  var art = { victoryMs: 1200, worlds: [
+    { id: 'sapphire', name: 'SAPPHIRE', top: '#193C54', side: '#0A1C2C', floor: '#0C1924', grid: '#314651',
+      trim: '#B9CCD3', key: '#FFF0D7', rim: '#88C8FF', sky: '#B1D3EA', backdrop: '#152C3D', glow: '#45647A', roughness: 0.23 },
+    { id: 'obsidian', name: 'OBSIDIAN', top: '#15354C', side: '#143048', floor: '#10171E', grid: '#333C42',
+      trim: '#D9B477', key: '#FFE4B3', rim: '#7BDFFF', sky: '#B7CDDA', backdrop: '#1C272E', glow: '#645039', roughness: 0.22 },
+    { id: 'glacier', name: 'GLACIER', top: '#34546A', side: '#1B3144', floor: '#102332', grid: '#496474',
+      trim: '#D5EDF2', key: '#E8F5FF', rim: '#80DDE3', sky: '#D0ECF4', backdrop: '#192C40', glow: '#34566C', roughness: 0.36 },
+    { id: 'amethyst', name: 'AMETHYST', top: '#352B4E', side: '#171328', floor: '#171723', grid: '#48455B',
+      trim: '#C5B2CC', key: '#F6E0E9', rim: '#8FABFF', sky: '#D4C9E9', backdrop: '#252037', glow: '#594565', roughness: 0.25 },
+    { id: 'midnight', name: 'MIDNIGHT', top: '#302E32', side: '#121319', floor: '#14151C', grid: '#46434A',
+      trim: '#D7AE70', key: '#FFE4B6', rim: '#91B8E5', sky: '#BECBD9', backdrop: '#171C29', glow: '#483D30', roughness: 0.27 }
+  ] };
+  function worldForLevel(index) {
+    var i = Number.isFinite(index) ? index : 0;
+    return art.worlds[i < 3 ? 0 : i < 9 ? 1 : i < 13 ? 2 : i < 20 ? 3 : 4];
+  }
+
   /* ------------------------------------------------------------- helpers */
   /* MOTION-DIRECTION.md 4: the two weather flecks live in railPx rails "immediately outside the canvas's top and
    * bottom edges", and "Omit a rail if no unobstructed space exists". With the canvas flush against the HUD and the
@@ -638,6 +652,7 @@
     palette: palette, beamColors: beamColors, pieceAccent: pieceAccent, pageBackground: pageBackground,
     renderer: renderer, materials: materials, brushedGrain: brushedGrain, terrain: terrain, piece: piece,
     lightRig: lightRig, camera: camera, beam: beam, ui: ui, reducedMotion: reducedMotion, motion: motion,
+    art: art, worldForLevel: worldForLevel,
     revealBlend: revealBlend, easeCamera: easeCamera, ease: ease, easeByName: easeByName,
     beamLevel: beamLevel, cssVariables: cssVariables
   };

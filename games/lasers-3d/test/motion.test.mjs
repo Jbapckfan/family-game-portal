@@ -482,7 +482,7 @@ describe('dispose', () => {
 });
 
 /* ------------------------------------------------------------------ theme.motion: the token ledger */
-describe('theme.motion transcribes the MOTION-DIRECTION.md token ledger', () => {
+describe('theme.motion preserves the motion contract with the approved cinematic tuning', () => {
   const leaves = (o, p = '', out = []) => {
     for (const k of Object.keys(o)) {
       const v = o[k], q = p ? `${p}.${k}` : k;
@@ -514,16 +514,16 @@ describe('theme.motion transcribes the MOTION-DIRECTION.md token ledger', () => 
 
   test('beam, contact, scatter, fire and target tokens', () => {
     const m = theme.motion;
-    assert.deepEqual(m.beam, { headCells: 0.28, headGain: 0.45, packetIntervalMs: 240, packetMs: 480,
+    assert.deepEqual(m.beam, { headCells: 0.38, headGain: 1.0, packetIntervalMs: 240, packetMs: 480,
       packetGain: 0.32, peakAt: { level: 0.50, climb: 0.78, descend: 0.22 }, pitchBlendCells: 0.10, settleMs: 160 });
-    assert.deepEqual(m.contact, { diameterCells: 0.12, peakOpacity: 0.60, attackMs: 36, decayMs: 144,
+    assert.deepEqual(m.contact, { diameterCells: 0.20, peakOpacity: 0.84, attackMs: 36, decayMs: 144,
       flatColor: theme.palette.commonFlatPiece,
       bounceDot: { diameterCells: 0.10, opacity: 0.65, color: 'arrivalBeamColor' } });
-    assert.deepEqual(m.scatter, { anglesDeg: [-35, 35], lengthCells: 0.06, widthCells: 0.012,
-      distanceCells: 0.18, ms: 180, opacity: 0.45 });
-    assert.deepEqual(m.fire, { chargeMs: 180, chargeEmissiveMultiplier: 1.35, chargeHaloScale: 0.84,
-      chargeHaloOpacity: 0.34, releaseMs: 120, badgeFadeMs: 80, lostMarkerFadeMs: 120 });
-    assert.deepEqual(m.target, { ringDelayMs: 80, ringOpacity: 0.32, ringStrokeCells: 0.018 });
+    assert.deepEqual(m.scatter, { anglesDeg: [-35, 35], lengthCells: 0.10, widthCells: 0.015,
+      distanceCells: 0.22, ms: 180, opacity: 0.50 });
+    assert.deepEqual(m.fire, { chargeMs: 180, chargeEmissiveMultiplier: 2.6, chargeHaloScale: 0.72,
+      chargeHaloOpacity: 0.48, releaseMs: 120, badgeFadeMs: 80, lostMarkerFadeMs: 120 });
+    assert.deepEqual(m.target, { ringDelayMs: 80, ringOpacity: 0.46, ringStrokeCells: 0.018 });
   });
 
   test('reveal, weather and placement tokens', () => {
@@ -544,7 +544,7 @@ describe('theme.motion transcribes the MOTION-DIRECTION.md token ledger', () => 
 
   test('win, failure, fog, policy and quality tokens', () => {
     const m = theme.motion;
-    assert.deepEqual(m.win, { beamSealMs: 480, beamSealGain: 0.18, modalDelayMs: 520, starMs: 320,
+    assert.deepEqual(m.win, { beamSealMs: 480, beamSealGain: 0.12, modalDelayMs: 1280, starMs: 320,
       starProgress: [0, 0.55, 1], starFadeMs: 120, ringMs: 540, ringDiameterFactors: [0.25, 1.25],
       ringStrokePx: 1, ringOpacity: 0.18, ringColor: theme.palette.uiAccent });
     assert.deepEqual(m.failure, { blockedAnglesDeg: [-35, 0, 35], readoutFadeMs: 120, quietMs: 240, targetUnlightMs: 120 });

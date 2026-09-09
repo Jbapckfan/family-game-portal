@@ -63,6 +63,7 @@
      * a travelling flourish here would be a second pulse train, and section 6 forbids celebratory circulation.
      * It is exactly 0 at rest, so the sealed beam settles to the same baseline every altitude reading depends on. */
     var uSeal = { value: 0 };
+    var uSweep = { value: new THREE.Vector2(-1, 0) };
     /* MOTION-DIRECTION.md "What to cut first". A SHARED, host-owned object (see render.setQualityCut): rung 2
      * takes scatter streaks and target streaks, rung 3 takes target rings, rung 4 takes the trailing pulse train.
      * Nothing here cuts a contact disc, a blocked cap, a lost departure, a badge, an altitude width or a FLOOR
@@ -77,7 +78,7 @@
      * is a fixed 3 and masks the out-of-range ones with step() rather than branching (Safari 15 / ANGLE safe).
      * `vPeak` is the per-vertex peakAt of m.beam.peakAt, blended over m.beam.pitchBlendCells at every join. */
     var PULSE_GLSL =
-      'uniform float uHead;\nuniform vec3 uPulse;\nuniform vec4 uPk;\nuniform float uHeadGain;\nuniform float uSeal;\n' +
+      'uniform float uHead;\nuniform vec3 uPulse;\nuniform vec4 uPk;\nuniform float uHeadGain;\nuniform float uSeal;\nuniform vec2 uSweep;\n' +
       'varying float vDist;\nvarying float vFade;\nvarying float vPeak;\n' +
       'float l3ss(float t){ t = clamp(t, 0.0, 1.0); return t * t * (3.0 - 2.0 * t); }\n' +
       'float l3pulse(){\n' +
@@ -108,12 +109,13 @@
       m.onBeforeCompile = function (s) {
         s.uniforms.uHead = uHead; s.uniforms.uBias = uBias; s.uniforms.uPulse = uPulse;
         s.uniforms.uPk = uPk; s.uniforms.uHeadGain = uHeadGain; s.uniforms.uGlowMul = uGlowMul; s.uniforms.uSeal = uSeal;
+        s.uniforms.uSweep = uSweep;
         s.vertexShader = 'attribute float aDist;\nattribute float aFade;\nattribute float aPeak;\n' +
           'varying float vDist;\nvarying float vFade;\nvarying float vPeak;\nuniform float uBias;\n' + s.vertexShader
           .replace('#include <begin_vertex>', '#include <begin_vertex>\n vDist = aDist;\n vFade = aFade;\n vPeak = aPeak;')
           .replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position.z -= uBias * gl_Position.w;');
         s.fragmentShader = PULSE_GLSL + 'uniform float uGlowMul;\n' + s.fragmentShader
-          .replace('void main() {', 'void main() {\n if (vDist > uHead) discard;\n float l3g = uPulse.z * l3pulse();')
+          .replace('void main() {', 'void main() {\n if (vDist > uHead) discard;\n float l3g = uPulse.z * l3pulse() + uSweep.y * (1.0 - smoothstep(0.0,1.6,abs(vDist-uSweep.x)));')
           .replace('#include <opaque_fragment>', glow ? '#include <opaque_fragment>'
             : '#include <opaque_fragment>\n gl_FragColor.rgb *= 1.0 + uSeal + l3g + uPulse.z * uHeadGain * l3ss(1.0 - (uHead - vDist) / max(uPk.w, 1e-4));')
           .replace('#include <dithering_fragment>', glow
@@ -126,7 +128,7 @@
     var mats = { core: [], glow: [], filament: [] };
     B.levels.forEach(function (L, z) {
       mats.core[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamCore, { color: L.color, emissive: L.color, emissiveIntensity: L.coreEmissive }), 'emissive'));
-      mats.glow[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamGlow, { color: L.color, opacity: L.glowOpacity }), 'glow'));
+      mats.glow[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamGlow, { color: L.glowColor || L.color, opacity: L.glowOpacity }), 'glow'));
       mats.filament[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamFilament), 'emissive'));
     });
     /* The departure fades its opacity to zero, which the OPAQUE core material cannot express (alpha is ignored with
@@ -339,7 +341,7 @@
       releaseBadges();
       Core.clearGroup(tubes); Core.clearGroup(fx); Core.clearGroup(badges);
       live.length = 0; applyInst(discInst, 0); applyInst(streakInst, 0);
-      effects = []; state = null; uHead.value = 0; uPulse.value.set(0, 1, 0); uSeal.value = 0;
+      effects = []; state = null; uHead.value = 0; uPulse.value.set(0, 1, 0); uSeal.value = 0; uSweep.value.set(-1, 0);
     }
 
     function set(result, opts, motion) {
@@ -481,7 +483,7 @@
         routeEndMs: routeEndMs, animEndMs: routeEndMs + (pulseOn ? MB.settleMs : 0),
         pulseOn: pulseOn, reduced: reduced, fired: fired, decorate: fired,
         end: result.end, endPos: endPos, endDir: endDir, endDist: endDist, depDir: depDir,
-        sched: [], cursor: 0, marks: [], skipped: false };
+        sched: [], cursor: 0, marks: [], skipped: false, runs: runs };
       if (fired) state.animEndMs = Math.max(state.animEndMs, chargeMs + (reduced ? MRED.releaseMs : MF.releaseMs));
 
       buildSchedule(result, segDist, segPos, segDir, dep);
@@ -786,6 +788,19 @@
       return state ? { playing: state.clock < state.routeEndMs, cells: Core.clamp((state.clock - state.chargeMs) * state.speedPerMs, 0, state.total), total: state.total }
         : { playing: false, cells: 0, total: 0 };
     }
+    /* Arc-length sampling for the bounded studio lamps. Binary search handles long/looping routes without
+     * scanning every segment on each animation frame. The visible departure keeps the last contact position. */
+    function sampleAt(distance, out) {
+      if (!state || !state.runs.length) return false;
+      var a = state.runs, lo = 0, hi = a.length - 1;
+      while (lo < hi) { var mid = (lo + hi) >> 1; if (a[mid].d1 < distance) lo = mid + 1; else hi = mid; }
+      var r = a[lo], k = Core.clamp((distance - r.d0) / Math.max(1e-6, r.d1 - r.d0), 0, 1);
+      out.copy(r.a).lerp(r.b, k); return true;
+    }
+    function setVictorySweep(t) {
+      var k = t < 0 ? -1 : t / 0.48;
+      uSweep.value.set(state ? state.total * k : -1, k >= 0 && k <= 1 ? Math.sin(k * Math.PI) * 2.2 : 0);
+    }
     /* A tap or key after the skip grace completes the presentation IMMEDIATELY (section 2): the final route, the
      * endpoint, every target state and every traversed discovery, with no queued scatter or rings replayed. Every
      * remaining event is dispatched in trace order with `skipped` set, transient decoration is dropped, the
@@ -870,6 +885,7 @@
       isAnimating: isAnimating, dispose: dispose,
       onLit: function (fn) { onLit = fn || function () {}; },
       setGlowMultiplier: setGlowMultiplier, setSealGain: setSealGain, setReducedMotion: setReducedMotion,
+      sampleAt: sampleAt, setVictorySweep: setVictorySweep,
       setDecorCuts: setDecorCuts,
       setChargeMs: setChargeMs, getCharge: getCharge, attachMotion: attachMotion,
       /* test hooks: the live decoration and the one clock, so a smoke test can prove both stop */

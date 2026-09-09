@@ -1,9 +1,9 @@
-/* Lasers 3D - gesture arbitration and keyboard (INTERFACES-FRONTEND.md section 2, FROZEN).
+/* Lasers 3D - gesture arbitration and keyboard. CURRENT-RULES.md defines the touch contract.
  * Global: window.LaserInput (also CommonJS module.exports for node tests).
  * ES2019, Safari 15. Pointer Events (with a touch fallback ONLY when PointerEvent is missing).
  *
- * Gesture thresholds are the contract's frozen numbers; `theme.input` may override
- * them (same keys as DEFAULTS) so nothing is re-decided here.
+ * Touch: drag to pan, two-finger drag to orbit, pinch to zoom, hold then drag to move a piece.
+ * Multi-touch samples share the host's frame scheduler so alternating pointer events cannot wobble the camera.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) { module.exports = factory(); }
@@ -18,7 +18,9 @@
     orbitRadPerPx: 0.0075,   /* azimuth and elevation, per CSS px */
     wheelStep: 1.1,          /* onZoom(1.1) or onZoom(1/1.1) per notch */
     pinchTapDebounceMs: 250, /* a tap whose pointerdown lands this soon after a pinch is ignored */
-    panMinPx: 0              /* two-finger midpoint travel before onPan starts (0 = immediately) */
+    twoFingerMinPx: 6,      /* intent threshold: ignore finger-placement jitter */
+    twoFingerMinSeparationPx: 24,
+    touchOrbitRadPerPx: 0.006
   };
 
   var KEY_ACTIONS = {
@@ -65,6 +67,7 @@
     var g = null;               /* active gesture, see newGesture() */
     var pinchLastDist = 0;
     var pinchLastMid = null;
+    var cameraPending = false;
     var pinchEndedAt = -Infinity;
     var spaceHeld = false;
     var listeners = [];
@@ -95,7 +98,7 @@
         gg.timer = setT(function () {
           gg.timer = null;
           if (g !== gg || gg.mode !== 'pending') return;
-          gg.mode = 'consumed';
+          gg.mode = type === 'touch' ? 'held' : 'consumed';
           call('onLongPressPiece', { x: cell0.x, y: cell0.y });
         }, cfg.longPressMs);
       }
@@ -107,16 +110,59 @@
       if (!gg) return;
       clearTimer(gg);
       if (gg.mode === 'drag') call('onDragPiece', 'cancel', { from: gg.cell0, piece: gg.piece0 });
-      else if (gg.mode === 'orbit') call('onOrbitEnd');
+      else if (gg.mode === 'orbit' || gg.orbitStarted) { gg.orbitStarted = false; call('onOrbitEnd'); }
+      cameraPending = false;
       gg.mode = 'dead';   /* PAN ends silently: it has no start/end event */
     }
     function twoPointers() {
+      if (g && g.pair) return pointers[g.pair[0]] && pointers[g.pair[1]] ? [pointers[g.pair[0]], pointers[g.pair[1]]] : null;
       var pts = [], id;
       for (id in pointers) if (Object.prototype.hasOwnProperty.call(pointers, id)) { pts.push(pointers[id]); if (pts.length === 2) break; }
       return pts.length === 2 ? pts : null;
     }
     function pinchDistance() { var p = twoPointers(); return p ? dist(p[0], p[1]) : 0; }
     function pinchMid() { var p = twoPointers(); return p ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : null; }
+    function rebasePair() {
+      g.pair = null;
+      var p = twoPointers();
+      if (!p) return;
+      g.pair = [p[0].id, p[1].id];
+      g.pairStart = [{ x: p[0].x, y: p[0].y }, { x: p[1].x, y: p[1].y }];
+      g.pairMid = pinchMid(); g.pairDist = pinchDistance(); g.pinchMode = null;
+      pinchLastMid = g.pairMid; pinchLastDist = g.pairDist; cameraPending = false;
+    }
+    function queueCamera() {
+      cameraPending = true;
+      if (typeof opts.requestFrame === 'function') opts.requestFrame();
+      else flush();
+    }
+    /* Called once by main before its render. Intent locks for this pair: a drifting pinch must not rotate the
+     * board or consume FROM ABOVE eligibility. Releasing/replacing a finger gives the next gesture a fresh origin. */
+    function flush() {
+      if (!cameraPending) return;
+      cameraPending = false;
+      if (!enabled || !g || g.mode !== 'pinch') return;
+      var p = twoPointers(), d = pinchDistance(), mid = pinchMid();
+      if (!p || !mid) return;
+      if (d < cfg.twoFingerMinSeparationPx || g.pairDist < cfg.twoFingerMinSeparationPx) { rebasePair(); return; }
+      if (!g.pinchMode) {
+        var travel = dist(mid, g.pairMid), spread = Math.abs(d - g.pairDist) / 2;
+        if (spread >= cfg.twoFingerMinPx && spread >= travel * 0.7) g.pinchMode = 'zoom';
+        else if (travel >= cfg.twoFingerMinPx && spread < travel * 0.7 &&
+          dist(p[0], g.pairStart[0]) >= 3 && dist(p[1], g.pairStart[1]) >= 3) g.pinchMode = 'orbit';
+        else return;
+      }
+      if (g.pinchMode === 'zoom') {
+        if (d !== pinchLastDist) call('onZoom', d / pinchLastDist);
+      } else {
+        var dx = mid.x - pinchLastMid.x, dy = mid.y - pinchLastMid.y;
+        if (dx || dy) {
+          if (!g.orbitStarted) { g.orbitStarted = true; call('onOrbitStart'); }
+          call('onOrbit', dx * cfg.touchOrbitRadPerPx, -dy * cfg.touchOrbitRadPerPx || 0);
+        }
+      }
+      pinchLastDist = d; pinchLastMid = mid;
+    }
     function setHover(cell) {
       if (sameCell(cell, hoverCell)) return;
       hoverCell = cell;
@@ -142,8 +188,7 @@
         if (g && g.mode !== 'pinch') abortGesture(g);
         if (!g) g = { id: id, mode: 'dead', cell0: null, piece0: null, timer: null };
         g.mode = 'pinch';
-        pinchLastDist = pinchDistance();
-        pinchLastMid = pinchMid();
+        rebasePair();
       }
       /* a third pointer is tracked but changes nothing */
     }
@@ -159,16 +204,7 @@
       pointers[id].x = cur.x; pointers[id].y = cur.y;
       if (!g) return;
       if (g.mode === 'pinch') {
-        /* two fingers do BOTH at once, exactly as iOS map gestures do: the spread zooms, the midpoint pans. */
-        if (pointerCount >= 2) {
-          var d = pinchDistance(), mid = pinchMid();
-          if (d > 0 && pinchLastDist > 0 && d !== pinchLastDist) call('onZoom', d / pinchLastDist);
-          if (d > 0) pinchLastDist = d;
-          if (mid && pinchLastMid) {
-            var mdx = mid.x - pinchLastMid.x, mdy = mid.y - pinchLastMid.y;
-            if ((mdx !== 0 || mdy !== 0) && Math.sqrt(mdx * mdx + mdy * mdy) >= cfg.panMinPx) { call('onPan', mdx, mdy); pinchLastMid = mid; }
-          } else pinchLastMid = mid;
-        }
+        if (g.pair && g.pair.indexOf(id) >= 0) queueCamera();
         return;
       }
       if (id !== g.id) return;
@@ -178,23 +214,25 @@
         g.last = cur;
         return;
       }
-      if (g.mode === 'pending') {
+      if (g.mode === 'pending' || g.mode === 'held') {
         if (dist(g.p0, cur) < cfg.tapMaxPx) return;
         clearTimer(g);
-        if (movable(g.piece0)) {
+        if (movable(g.piece0) && (g.type !== 'touch' || g.mode === 'held')) {
           g.mode = 'drag';
           call('onDragPiece', 'start', { from: g.cell0, piece: g.piece0 });
           call('onDragPiece', 'move', { from: g.cell0, piece: g.piece0, over: pick(cur.x, cur.y) });
           g.last = cur;
           return;
         }
-        g.mode = 'orbit';
-        call('onOrbitStart');
+        g.mode = g.type === 'touch' ? 'pan' : 'orbit';
+        if (g.mode === 'orbit') call('onOrbitStart');
         /* fall through: first delta from the press point */
         g.last = g.p0;
       }
       if (g.mode === 'drag') {
         call('onDragPiece', 'move', { from: g.cell0, piece: g.piece0, over: pick(cur.x, cur.y) });
+      } else if (g.mode === 'pan') {
+        call('onPan', cur.x - g.last.x, cur.y - g.last.y);
       } else if (g.mode === 'orbit') {
         var dx = cur.x - g.last.x, dy = cur.y - g.last.y;
         if (dx !== 0 || dy !== 0) call('onOrbit', dx * cfg.orbitRadPerPx, (0 - dy) * cfg.orbitRadPerPx || 0);
@@ -210,11 +248,22 @@
     function finish(ev, cancelled) {
       var id = ev.pointerId;
       if (!Object.prototype.hasOwnProperty.call(pointers, id)) { releasePointer(id); return; }
+      var pairMember = g && g.mode === 'pinch' && g.pair && g.pair.indexOf(id) >= 0;
+      if (pairMember) { if (cancelled) cameraPending = false; else flush(); }
       releasePointer(id);
       if (!g) return;
       if (g.mode === 'pinch') {
+        if (!pairMember) return;    /* a third finger lifting does not interrupt the active pair */
         pinchEndedAt = now();
-        g.mode = 'dead';            /* the remaining finger does nothing until it lifts */
+        if (pointerCount >= 2) { rebasePair(); return; }
+        if (g.orbitStarted) { g.orbitStarted = false; call('onOrbitEnd'); }
+        g.mode = 'dead';
+        if (pointerCount === 1) {
+          var remaining = pointers[Object.keys(pointers)[0]];
+          g = { id: remaining.id, type: remaining.type, mode: cancelled ? 'dead' : 'pan',
+            last: { x: remaining.x, y: remaining.y }, timer: null, cell0: null, piece0: null };
+          return;                 /* continue panning from here; this contact can never become an edit/tap */
+        }
       }
       if (pointerCount === 0) { endPrimary(ev, cancelled); g = null; return; }
       if (id === g.id && g.mode !== 'dead') { endPrimary(ev, cancelled); g.mode = 'dead'; }
@@ -304,7 +353,7 @@
     /* Space only arms panning; Enter activates the cursor. */
     function onKeyDownSpace(ev) { if (enabled && (ev.key === ' ' || ev.key === 'Spacebar') && !editableTarget(ev.target)) { spaceHeld = true; ev.preventDefault(); } }
     function onKeyUpSpace(ev) { if (ev.key === ' ' || ev.key === 'Spacebar') spaceHeld = false; }
-    function onBlur() { spaceHeld = false; }
+    function onBlur() { resetAll(); }
 
     /* --------------------------------------------------------------- wiring */
     function on(target, type, fn, options) {
@@ -328,6 +377,7 @@
         on(element, 'pointermove', onMove, passive);
         on(element, 'pointerup', onUp, passive);
         on(element, 'pointercancel', onCancel, passive);
+        on(element, 'lostpointercapture', onCancel, passive);
         on(element, 'pointerleave', onLeave, passive);
       }
       on(element, 'touchstart', onTouchStart, active);
@@ -349,7 +399,7 @@
       var id, ids = [];
       for (id in pointers) if (Object.prototype.hasOwnProperty.call(pointers, id)) ids.push(pointers[id].id);
       for (id = 0; id < ids.length; id++) releasePointer(ids[id]);
-      pointers = {}; pointerCount = 0; pinchLastDist = 0; pinchLastMid = null; spaceHeld = false;
+      pointers = {}; pointerCount = 0; pinchLastDist = 0; pinchLastMid = null; cameraPending = false; spaceHeld = false;
       setHover(null);
     }
 
@@ -367,6 +417,7 @@
       getCursor: function () { return cursorCell; },
       getGesture: function () { return g ? g.mode : 'none'; },
       config: cfg,
+      flush: flush,
       detach: function () {
         if (!attached) return;
         resetAll();

@@ -607,7 +607,8 @@
       /* Darkness is neither a piece nor a wall shape, so it gets its own line in the same shape as the two above. */
       function modeRow(name, body) { return '<p class="help-mode"><b>' + name + '</b> <span class="caption">' + body + '</span></p>'; }
       var turners = TYPES.filter(function (t) { return !REG || typeof REG.turnsBeam !== 'function' || REG.turnsBeam(t); });
-      return '<p>Steer the laser into every target. Tap a piece in the tray, then tap a cell to place it. Tap a placed piece to rotate it; drag it to move it.</p>' +
+      return '<p>Steer the laser into every target. Tap a piece in the tray, then tap a cell to place it. Tap a placed piece to rotate it. On touchscreens, hold a piece, then drag to move it; with a mouse, drag it directly.</p>' +
+        '<p>Drag one finger to pan. Drag two fingers down to tilt, up to look from above, or sideways to rotate. Pinch to zoom. Lift one finger to continue panning. FLAT brings you back overhead.</p>' +
         '<p class="caption">' + (turners.length === TYPES.length ? 'All the pieces turn the beam the same way. What changes is the beam\'s height.'
           : 'Most pieces turn the beam the same way. What changes is the beam\'s height.') + '</p>' +
         TYPES.map(row).join('') +
@@ -621,7 +622,7 @@
         '<p class="caption">And some levels start in the dark:</p>' +
         modeRow('DARK', DARK_HELP) +
         '<p class="caption">Drag the empty board or press TILT to see the real heights. Tilt freely. Solve without revealing an answer for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
-        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>Space + drag</kbd><span>pan without editing</span><kbd>Pinch / wheel</kbd><span>zoom; two fingers pan</span><kbd>0</kbd><span>overview / edit view</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
+        '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>Space + drag</kbd><span>pan without editing</span><kbd>Pinch / wheel</kbd><span>zoom</span><kbd>0</kbd><span>overview / edit view</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
     }
     ui.showHowToPlay = function () { el['modal-help'].querySelector('.modal-body').innerHTML = helpBody(); openModal('modal-help'); };
     ui.hideHowToPlay = function () { closeModal('modal-help'); };

@@ -139,6 +139,7 @@
     /* Screen dx moves the board with the finger: the look-at target slides the opposite way along screen-right, and
      * along the ground shadow of screen-up (which covers sin(e) of a screen pixel, hence the /se). */
     function panBy(dxPx, dyPx) {
+      endTween();
       var se = basis(cam.az, cam.el), z = effectiveZoom();
       if (z <= 0) return;
       takeManualFraming();               /* the player has chosen where to look; stop re-framing under them */
@@ -304,13 +305,16 @@
       return promise;
     }
     function orbit(dAz, dEl) {
-      endAnim();
+      endAnim(); endTween();
+      var oldAz = cam.az, oldEl = cam.el;
       cam.preset = null;
       cam.az = (cam.az + dAz / DEG) % 360;
       cam.el = Core.clamp(cam.el + dEl / DEG, CAM.orbit.elevationMinDeg, CAM.orbit.elevationMaxDeg);
       refit(false);       /* the fit EASES to the new orientation in step(); a hard snap here pumps during a drag */
+      return oldAz !== cam.az || oldEl !== cam.el;
     }
     function zoomBy(f) {
+      endTween();
       takeManualFraming();               /* the player has chosen a zoom; stop re-framing under them */
       var lim = zoomLimits(), base = baseZoom();
       var eff = Core.clamp(base * cam.userZoom * (f || 1), lim.lo, lim.hi);

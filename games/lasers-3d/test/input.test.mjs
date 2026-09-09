@@ -79,13 +79,13 @@ function setup(opts = {}) {
   const rec = (name) => (a, b) => log.push(b === undefined ? [name, a] : [name, a, b]);
   const handlers = {};
   for (const n of ['onTapCell', 'onTapEmpty', 'onDragPiece', 'onOrbit', 'onOrbitStart', 'onOrbitEnd', 'onZoom', 'onPan', 'onLongPressPiece', 'onHover', 'onKey']) handlers[n] = rec(n);
-  const input = LaserInput.attach({ element: el, render: fakeRender, handlers, theme: LaserTheme, clock });
+  const input = LaserInput.attach({ element: el, render: fakeRender, handlers, theme: LaserTheme, clock, requestFrame: () => {} });
   const placed = opts.placed || [];
   input.setPlacedLookup((c) => placed.find((p) => p.x === c.x && p.y === c.y) || null);
   const names = () => log.map((e) => e[0]);
   const pe = (type, id, x, y, extra = {}) => el.dispatch(type, { pointerId: id, clientX: x, clientY: y, pointerType: 'touch', buttons: 1, button: 0, ...extra });
   const me = (type, id, x, y, extra = {}) => el.dispatch(type, { pointerId: id, clientX: x, clientY: y, pointerType: 'mouse', buttons: 1, button: 0, ...extra });
-  return { clock, el, log, names, input, pe, me, placed };
+  return { clock, el, log, names, input, pe, me, placed, frame: () => input.flush() };
 }
 
 // --------------------------------------------------------------- element setup
@@ -166,9 +166,9 @@ describe('tap', () => {
 });
 
 // ------------------------------------------------------------------ orbit
-describe('drag on empty board -> orbit', () => {
+describe('mouse drag on empty board -> orbit', () => {
   test('onOrbitStart, per-move deltas at 0.0075 rad/px, drag up = +elevation, onOrbitEnd', () => {
-    const { pe, log } = setup();
+    const { me: pe, log } = setup();
     const p = center(3, 3);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, p.x + 5, p.y);            // below threshold: nothing
@@ -187,7 +187,7 @@ describe('drag on empty board -> orbit', () => {
     assert.equal(log.length, 4);
   });
   test('drag that starts on a FIXED piece orbits (not a piece drag)', () => {
-    const { pe, names } = setup({ placed: [{ x: 2, y: 2, type: 'MIRROR', orient: '/', fixed: true }] });
+    const { me: pe, names } = setup({ placed: [{ x: 2, y: 2, type: 'MIRROR', orient: '/', fixed: true }] });
     const p = center(2, 2);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, p.x + 30, p.y);
@@ -195,7 +195,7 @@ describe('drag on empty board -> orbit', () => {
     assert.deepEqual(names(), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
   });
   test('slow drag (after 300 ms) still becomes an orbit', () => {
-    const { pe, names, clock } = setup();
+    const { me: pe, names, clock } = setup();
     const p = center(3, 3);
     pe('pointerdown', 1, p.x, p.y);
     clock.advance(600);
@@ -204,7 +204,7 @@ describe('drag on empty board -> orbit', () => {
     assert.deepEqual(names(), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
   });
   test('pointercancel during orbit -> onOrbitEnd, no tap', () => {
-    const { pe, names } = setup();
+    const { me: pe, names } = setup();
     pe('pointerdown', 1, 100, 100);
     pe('pointermove', 1, 130, 100);
     pe('pointercancel', 1, 130, 100);
@@ -213,10 +213,10 @@ describe('drag on empty board -> orbit', () => {
 });
 
 // ------------------------------------------------------------- drag piece
-describe('drag on a placed piece -> DRAG_PIECE', () => {
+describe('mouse drag on a placed piece -> DRAG_PIECE', () => {
   const piece = { x: 1, y: 1, type: 'WEDGE', orient: '\\' };
   test('start / move(over) / end(to)', () => {
-    const { pe, log } = setup({ placed: [piece] });
+    const { me: pe, log } = setup({ placed: [piece] });
     const p = center(1, 1), q = center(4, 5);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, p.x + 12, p.y);
@@ -230,7 +230,7 @@ describe('drag on a placed piece -> DRAG_PIECE', () => {
     ]);
   });
   test('end off-board -> to null; no orbit callbacks at all', () => {
-    const { pe, log, names } = setup({ placed: [piece] });
+    const { me: pe, log, names } = setup({ placed: [piece] });
     const p = center(1, 1);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, 900, 900);
@@ -239,7 +239,7 @@ describe('drag on a placed piece -> DRAG_PIECE', () => {
     assert.ok(!names().includes('onOrbitStart') && !names().includes('onOrbit'));
   });
   test('pointercancel -> cancel', () => {
-    const { pe, log } = setup({ placed: [piece] });
+    const { me: pe, log } = setup({ placed: [piece] });
     const p = center(1, 1);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, p.x + 40, p.y);
@@ -247,7 +247,7 @@ describe('drag on a placed piece -> DRAG_PIECE', () => {
     assert.deepEqual(log[log.length - 1], ['onDragPiece', 'cancel', { from: { x: 1, y: 1 }, piece }]);
   });
   test('setEnabled(false) mid-drag cancels and releases capture; events swallowed while disabled', () => {
-    const { pe, log, input, el } = setup({ placed: [piece] });
+    const { me: pe, log, input, el } = setup({ placed: [piece] });
     const p = center(1, 1);
     pe('pointerdown', 1, p.x, p.y);
     pe('pointermove', 1, p.x + 40, p.y);
@@ -261,7 +261,7 @@ describe('drag on a placed piece -> DRAG_PIECE', () => {
     assert.equal(log.length, n);
     input.setEnabled(true);
     pe('pointerdown', 3, 900, 900); pe('pointerup', 3, 900, 900);
-    assert.deepEqual(log[log.length - 1], ['onTapEmpty', { pointerType: 'touch' }]);
+    assert.deepEqual(log[log.length - 1], ['onTapEmpty', { pointerType: 'mouse' }]);
   });
 });
 
@@ -290,7 +290,7 @@ describe('long-press', () => {
     assert.deepEqual(log, [['onTapCell', { x: 2, y: 3, pointerType: 'touch' }]]);
     assert.equal(clock.pending(), 0);
   });
-  test('movement >= 10 px before 500 ms cancels the long-press (becomes a drag)', () => {
+  test('movement before the hold threshold pans without picking up the piece', () => {
     const { pe, names, clock } = setup({ placed: [piece] });
     const p = center(2, 3);
     pe('pointerdown', 1, p.x, p.y);
@@ -298,7 +298,7 @@ describe('long-press', () => {
     pe('pointermove', 1, p.x + 15, p.y);
     clock.advance(1000);
     assert.ok(!names().includes('onLongPressPiece'));
-    assert.equal(names()[0], 'onDragPiece');
+    assert.equal(names()[0], 'onPan');
   });
   test('no long-press on empty board or on a fixed piece', () => {
     const a = setup();
@@ -311,113 +311,108 @@ describe('long-press', () => {
   });
 });
 
-// ------------------------------------------------------------------ pinch
-describe('pinch', () => {
-  test('second pointer -> onZoom(current/last) per move; lifting one finger ends the gesture with no tap', () => {
-    const { pe, log } = setup();
-    pe('pointerdown', 1, 100, 100);
-    pe('pointerdown', 2, 200, 100);      // distance 100
-    pe('pointermove', 2, 250, 100);      // 150 -> 1.5
-    pe('pointermove', 1, 130, 100);      // 120 -> 0.8
-    pe('pointerup', 2, 130 + 120, 100);
-    pe('pointerup', 1, 130, 100);
-    const zooms = log.filter((e) => e[0] === 'onZoom');
-    assert.equal(zooms.length, 2);
-    assert.ok(Math.abs(zooms[0][1] - 1.5) < 1e-12);
-    assert.ok(Math.abs(zooms[1][1] - 0.8) < 1e-12);
+// ---------------------------------------------------------- touch camera controls
+describe('touch pan, orbit and pinch', () => {
+  test('one finger pans even over a placed piece, without rotating or moving it', () => {
+    for (const placed of [[], [{x:2,y:2,type:'MIRROR',orient:'/'}]]) {
+      const {pe,log,names}=setup({placed});
+      pe('pointerdown',1,125,125);pe('pointermove',1,155,145);pe('pointermove',1,165,145);pe('pointerup',1,165,145);
+      assert.deepEqual(names(),['onPan','onPan']);assert.deepEqual(log[0],['onPan',30,20]);
+      assert.deepEqual(log[1],['onPan',10,0]);
+    }
   });
-  test('pinch during a piece drag cancels the drag; during an orbit ends the orbit', () => {
-    const piece = { x: 1, y: 1, type: 'DIP', orient: '/' };
-    const a = setup({ placed: [piece] });
-    const p = center(1, 1);
-    a.pe('pointerdown', 1, p.x, p.y);
-    a.pe('pointermove', 1, p.x + 30, p.y);
-    a.pe('pointerdown', 2, 300, 300);
-    assert.deepEqual(a.log[a.log.length - 1], ['onDragPiece', 'cancel', { from: { x: 1, y: 1 }, piece }]);
-    a.pe('pointermove', 2, 320, 300);
-    assert.ok(a.names().includes('onZoom'));
-    const b = setup();
-    b.pe('pointerdown', 1, 100, 100);
-    b.pe('pointermove', 1, 140, 100);
-    b.pe('pointerdown', 2, 300, 300);
-    assert.deepEqual(b.names(), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
-    const n0 = b.log.length;
-    b.pe('pointermove', 1, 150, 100);     // two-finger movement is never orbit
-    const after = b.log.slice(n0).map((e) => e[0]);
-    assert.ok(after.length > 0 && after.every((x) => x === 'onZoom' || x === 'onPan'));
+  test('hold then drag deliberately picks up a piece; adding a second finger cancels it', () => {
+    const piece={x:2,y:2,type:'MIRROR',orient:'/'};
+    const {pe,clock,log,names,frame}=setup({placed:[piece]});
+    pe('pointerdown',1,125,125);clock.advance(500);pe('pointermove',1,145,125);
+    assert.deepEqual(names(),['onLongPressPiece','onDragPiece','onDragPiece']);
+    pe('pointerdown',2,245,125);
+    assert.deepEqual(log.at(-1),['onDragPiece','cancel',{from:{x:2,y:2},piece}]);
+    pe('pointermove',2,275,125);frame();assert.equal(log.at(-1)[0],'onZoom');
+    pe('pointerup',2,275,125);pe('pointerup',1,145,125);assert.ok(!names().includes('onTapCell'));
   });
-  test('remaining finger after a pinch never orbits or taps; long-press timer is cleared by the pinch', () => {
-    const { pe, log, clock } = setup({ placed: [{ x: 2, y: 2, type: 'MIRROR', orient: '/' }] });
-    const p = center(2, 2);
-    pe('pointerdown', 1, p.x, p.y);
-    pe('pointerdown', 2, 300, 300);
-    clock.advance(1000);
-    pe('pointerup', 2, 300, 300);
-    pe('pointermove', 1, p.x + 60, p.y);
-    pe('pointerup', 1, p.x + 60, p.y);
-    assert.deepEqual(log, []);
+  test('hold-drag finishes at the destination and does not pan', () => {
+    const piece={x:2,y:2,type:'MIRROR',orient:'/'};
+    const {pe,clock,log,names}=setup({placed:[piece]});
+    pe('pointerdown',1,125,125);clock.advance(500);pe('pointermove',1,175,125);pe('pointerup',1,175,125);
+    assert.deepEqual(log.at(-1),['onDragPiece','end',{from:{x:2,y:2},piece,to:{x:3,y:2}}]);
+    assert.ok(!names().includes('onPan'));
   });
-  test('a tap right after a pinch is ignored; one after the debounce window is not', () => {
-    const { pe, log, clock } = setup();
-    pe('pointerdown', 1, 100, 100);
-    pe('pointerdown', 2, 200, 100);
-    pe('pointerup', 2, 200, 100);
-    pe('pointerup', 1, 100, 100);
-    clock.advance(50);
-    pe('pointerdown', 3, 100, 100); pe('pointerup', 3, 100, 100);
-    assert.deepEqual(log, []);
-    clock.advance(LaserInput.DEFAULTS.pinchTapDebounceMs);
-    pe('pointerdown', 4, 100, 100); pe('pointerup', 4, 100, 100);
-    assert.deepEqual(log, [['onTapCell', { x: 2, y: 2, pointerType: 'touch' }]]);
+  test('paired moves are sampled once per frame: rigid drag orbits with exactly zero zoom wobble', () => {
+    const {pe,frame,log,names}=setup();
+    pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointermove',1,130,140);pe('pointermove',2,230,140);
+    assert.deepEqual(log,[]);frame();
+    assert.deepEqual(names(),['onOrbitStart','onOrbit']);
+    assert.deepEqual(log[1],['onOrbit',30*LaserInput.DEFAULTS.touchOrbitRadPerPx,-40*LaserInput.DEFAULTS.touchOrbitRadPerPx]);
+    pe('pointermove',1,140,145);pe('pointermove',2,240,145);frame();
+    pe('pointerup',2,240,145);pe('pointerup',1,140,145);
+    assert.deepEqual(names(),['onOrbitStart','onOrbit','onOrbit','onOrbitEnd']);
+  });
+  test('a drifting pinch only zooms and cannot consume a tilt award', () => {
+    const {pe,frame,log,names}=setup();
+    pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointermove',2,250,100);frame();pe('pointermove',1,130,100);frame();
+    pe('pointerup',2,250,100);pe('pointerup',1,130,100);
+    assert.deepEqual(names(),['onZoom','onZoom']);
+    assert.ok(Math.abs(log[0][1]-1.5)<1e-12);assert.ok(Math.abs(log[1][1]-0.8)<1e-12);
+  });
+  test('adding and lifting fingers rebases each gesture without a jump or accidental tap', () => {
+    const {pe,frame,log,names}=setup();
+    pe('pointerdown',1,100,100);pe('pointermove',1,140,100);
+    pe('pointerdown',2,240,100);assert.deepEqual(log,[['onPan',40,0]]);
+    pe('pointermove',1,140,125);pe('pointermove',2,240,125);frame();
+    pe('pointerup',2,240,125);const n=log.length;pe('pointermove',1,150,130);pe('pointerup',1,150,130);
+    assert.deepEqual(log.slice(n),[['onPan',10,5]]);assert.ok(!names().includes('onTapCell'));
+    assert.equal(names().filter(n=>n==='onOrbitStart').length,1);assert.equal(names().filter(n=>n==='onOrbitEnd').length,1);
+  });
+  test('a third finger is ignored; replacing a pair member preserves the current camera and orbit lifetime', () => {
+    const {pe,frame,log,names}=setup();
+    pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointermove',1,100,120);pe('pointermove',2,200,120);frame();const n=log.length;
+    pe('pointerdown',3,300,300);pe('pointermove',3,400,400);frame();pe('pointerup',3,400,400);
+    assert.equal(log.length,n);
+    pe('pointerdown',3,300,120);pe('pointerup',2,200,120);frame();assert.equal(log.length,n);
+    pe('pointermove',1,100,140);pe('pointermove',3,300,140);frame();
+    pe('pointerup',3,300,140);pe('pointerup',1,100,140);
+    assert.equal(names().filter(n=>n==='onOrbitStart').length,1);assert.equal(names().filter(n=>n==='onOrbitEnd').length,1);
+    assert.ok(!names().includes('onZoom'));
+  });
+  test('finger placement jitter is ignored and pending motion is flushed on release', () => {
+    const {pe,frame,log,names}=setup();
+    pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointermove',1,101,102);pe('pointermove',2,201,102);frame();assert.deepEqual(log,[]);
+    pe('pointermove',1,100,120);pe('pointermove',2,200,120);pe('pointerup',2,200,120);pe('pointerup',1,100,120);
+    assert.deepEqual(names(),['onOrbitStart','onOrbit','onOrbitEnd']);
+  });
+  test('cancellation or lost capture drops pending motion and the survivor cannot edit or move the camera', () => {
+    for(const end of ['pointercancel','lostpointercapture']) {
+      const {pe,frame,log}=setup();pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+      pe('pointermove',1,100,130);pe('pointermove',2,200,130);pe(end,2,200,130);frame();
+      pe('pointermove',1,160,150);pe('pointerup',1,160,150);assert.deepEqual(log,[]);
+    }
+  });
+  test('disabling input cancels an active orbit once and releases every pointer', () => {
+    const {pe,frame,input,names,el}=setup();pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointermove',1,100,130);pe('pointermove',2,200,130);frame();input.setEnabled(false);frame();
+    assert.deepEqual(names(),['onOrbitStart','onOrbit','onOrbitEnd']);assert.equal(el.captured.size,0);
+  });
+  test('very close fingers never produce extreme zoom factors', () => {
+    const {pe,frame,log}=setup();pe('pointerdown',1,100,100);pe('pointerdown',2,101,100);
+    pe('pointermove',2,110,100);frame();pe('pointermove',2,140,100);frame();assert.deepEqual(log,[]);
+    pe('pointermove',2,160,100);frame();assert.equal(log[0][0],'onZoom');assert.equal(log[0][1],1.5);
+  });
+  test('a tap immediately after a multi-touch gesture is debounced', () => {
+    const {pe,clock,log}=setup();pe('pointerdown',1,100,100);pe('pointerdown',2,200,100);
+    pe('pointerup',2,200,100);pe('pointerup',1,100,100);clock.advance(50);
+    pe('pointerdown',3,100,100);pe('pointerup',3,100,100);assert.deepEqual(log,[]);
+    clock.advance(LaserInput.DEFAULTS.pinchTapDebounceMs);pe('pointerdown',4,100,100);pe('pointerup',4,100,100);
+    assert.deepEqual(log,[['onTapCell',{x:2,y:2,pointerType:'touch'}]]);
   });
 });
 
-// -------------------------------------------------------------------- pan
-// DESIGN.md 11.2: two fingers pan (and zoom); ONE finger still orbits, because orbiting is the game's signature
-// move and must stay the cheapest gesture. On desktop, middle-drag or Space+drag pans.
-describe('pan', () => {
-  test('two fingers moving together pan by the midpoint delta and do not zoom', () => {
-    const { pe, log } = setup();
-    pe('pointerdown', 1, 100, 100);
-    pe('pointerdown', 2, 200, 100);            // distance 100, midpoint (150, 100)
-    pe('pointermove', 1, 130, 140);            // midpoint (165, 120) once both have moved
-    pe('pointermove', 2, 230, 140);
-    const pans = log.filter((e) => e[0] === 'onPan');
-    const sum = pans.reduce((a, e) => ({ x: a.x + e[1], y: a.y + e[2] }), { x: 0, y: 0 });
-    assert.ok(pans.length >= 1);
-    assert.ok(Math.abs(sum.x - 30) < 1e-9 && Math.abs(sum.y - 40) < 1e-9, JSON.stringify(pans));
-    // pointermove arrives one finger at a time, so the spread wobbles mid-gesture; the NET zoom must be 1
-    const net = log.filter((e) => e[0] === 'onZoom').reduce((a, e) => a * e[1], 1);
-    assert.ok(Math.abs(net - 1) < 1e-9, 'a rigid two-finger move must not change the zoom, got ' + net);
-  });
-  test('a pinch that also drifts emits both onZoom and onPan', () => {
-    const { pe, log } = setup();
-    pe('pointerdown', 1, 100, 100);
-    pe('pointerdown', 2, 200, 100);
-    pe('pointermove', 2, 260, 100);            // distance 160 -> zoom 1.6, midpoint 150 -> 180
-    const z = log.filter((e) => e[0] === 'onZoom'), p = log.filter((e) => e[0] === 'onPan');
-    assert.equal(z.length, 1); assert.ok(Math.abs(z[0][1] - 1.6) < 1e-12);
-    assert.equal(p.length, 1); assert.ok(Math.abs(p[0][1] - 30) < 1e-9 && p[0][2] === 0);
-  });
-  test('one finger on empty board still orbits and never pans', () => {
-    const { pe, names, log } = setup();
-    pe('pointerdown', 1, 100, 100);
-    pe('pointermove', 1, 160, 130);
-    pe('pointermove', 1, 200, 130);
-    pe('pointerup', 1, 200, 130);
-    assert.deepEqual(names(), ['onOrbitStart', 'onOrbit', 'onOrbit', 'onOrbitEnd']);
-    assert.equal(log.filter((e) => e[0] === 'onPan').length, 0);
-  });
-  test('one finger on a placed piece still drags the piece and never pans', () => {
-    const piece = { x: 2, y: 2, type: 'MIRROR', orient: '/' };
-    const { pe, names, log } = setup({ placed: [piece] });
-    const p = center(2, 2);
-    pe('pointerdown', 1, p.x, p.y);
-    pe('pointermove', 1, p.x + 60, p.y + 10);
-    pe('pointerup', 1, p.x + 60, p.y + 10);
-    assert.deepEqual(names(), ['onDragPiece', 'onDragPiece', 'onDragPiece']);
-    assert.equal(log.filter((e) => e[0] === 'onPan').length, 0);
-  });
+// ----------------------------------------------------------- desktop controls
+describe('desktop pan', () => {
   test('desktop middle-drag pans; it never orbits, drags a piece or taps', () => {
     const piece = { x: 2, y: 2, type: 'MIRROR', orient: '/' };
     const { me, log, names } = setup({ placed: [piece] });
@@ -567,7 +562,7 @@ describe('keyboard', () => {
 // ------------------------------------------------- touch fallback + scroll block
 describe('touch fallback and page-scroll blocking', () => {
   const touch = (id, x, y) => ({ identifier: id, clientX: x, clientY: y });
-  test('without PointerEvent, touch events drive taps and orbits', () => {
+  test('without PointerEvent, touch events drive taps and panning', () => {
     const { el, log, names } = setup({ pointerEvents: false });
     assert.deepEqual(el.optsFor('pointerdown'), []);
     const p = center(1, 2);
@@ -578,7 +573,7 @@ describe('touch fallback and page-scroll blocking', () => {
     const mv = el.dispatch('touchmove', { touches: [touch(2, 140, 100)], changedTouches: [touch(2, 140, 100)] });
     assert.equal(mv.defaultPrevented, true);
     el.dispatch('touchend', { touches: [], changedTouches: [touch(2, 140, 100)] });
-    assert.deepEqual(names().slice(1), ['onOrbitStart', 'onOrbit', 'onOrbitEnd']);
+    assert.deepEqual(names().slice(1), ['onPan']);
   });
   test('with PointerEvent, touchmove is preventDefault-ed only during a gesture and touch events do not double-fire', () => {
     const { el, pe, log } = setup();

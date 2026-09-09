@@ -1,4 +1,6 @@
-# Lasers 3D — front-end INTERFACES (FROZEN for the parallel build)
+# Lasers 3D — front-end interfaces (historical build contract)
+
+> September 9, 2026: the user approved one-finger pan, two-finger orbit and pinch zoom. [CURRENT-RULES.md](CURRENT-RULES.md) supersedes the gesture mapping below. `LaserInput.attach` accepts an optional `requestFrame` callback; its `flush()` method samples multi-touch once per host frame. Mouse controls remain supported.
 
 Companion to `INTERFACES.md` (rules engine) and `VISUAL-DIRECTION.md` (art). Four engineers build `src/render.js`, `src/input.js`, `src/ui.js`, `src/audio.js` in parallel against THIS document; `src/main.js` (the integrator) wires them. Nobody edits another module. If a signature here is wrong, fix THIS file first, then the code.
 

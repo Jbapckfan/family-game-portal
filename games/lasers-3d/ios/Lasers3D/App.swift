@@ -31,6 +31,7 @@ final class GameController: UIViewController, WKNavigationDelegate, WKScriptMess
         super.viewDidLoad()
         initialSave = UserDefaults.standard.string(forKey: saveKey)
         let config = WKWebViewConfiguration()
+        if verify { config.websiteDataStore = .nonPersistent() }
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         config.userContentController.add(self, name: "saveProgress")

@@ -27,6 +27,7 @@
     var reducedMotion = !!(root.matchMedia && theme.reducedMotion && root.matchMedia(theme.reducedMotion.mediaQuery).matches);
     var render = null, input = null, ui = null, audio = null, progress = null, cam = null, weather = null, quality = null, learning = null;
     var wasAnimating = false;   /* section 10: only an interval BETWEEN two animating frames is a sample */
+    var orbitCounted = false;
     /* THE ONE ANIMATION REGISTRY AND THE ONE RENDER SCHEDULER (src/motion.js, MOTION-DIRECTION.md "Rendering and
      * ownership"). Everything that moves in this game registers here and is advanced by step() below: there is no
      * second requestAnimationFrame loop, no setInterval, no perpetual CSS animation and no free-running shader
@@ -158,10 +159,14 @@
       if (render && render.setQualityCut) render.setQualityCut(name, arguments[1]);
       markDirty();
     } }) : null;
-    input = root.LaserInput.attach({ element: canvas, render: render, theme: theme, handlers: {
+    input = root.LaserInput.attach({ element: canvas, render: render, theme: theme, requestFrame: markDirty, handlers: {
       onTapCell: onTapCell, onTapEmpty: function () { clearSelection(); }, onDragPiece: onDragPiece,
-      onOrbitStart: function () { if (locked()) return; calmWeather(); S.tiltsUsed++; clearSelection(); bump(); },
-      onOrbit: function (dAz, dEl) { if (locked()) return; render.orbit(dAz, dEl); S.camDirty = true; markDirty(); },
+      onOrbitStart: function () { if (locked()) return; orbitCounted = false; calmWeather(); clearSelection(); bump(); },
+      onOrbit: function (dAz, dEl) {
+        if (locked()) return;
+        if (render.orbit(dAz, dEl) !== false && !orbitCounted) { orbitCounted = true; S.tiltsUsed++; bump(); }
+        S.camDirty = true; markDirty();
+      },
       onOrbitEnd: function () { S.camDirty = true; saveAttempt(); markDirty(); },
       onZoom: function (f) { calmWeather(); render.zoom(f); S.camDirty = true; bump(); },
       onPan: function (dx, dy) { calmWeather(); render.pan(dx, dy); S.camDirty = true; bump(); },
@@ -857,6 +862,7 @@
         dark: S.dark, known: S.known ? S.known.count : 0, knownTotal: S.known ? S.known.w * S.known.d : 0 };
     }
     function step(dt) {
+      if (input && input.flush) input.flush();
       S.dirty = false; S.frames++;
       /* THE ONE SCHEDULER TICK, and it belongs exactly here: before anything reads a pose and before render.frame()
        * draws. An animation that completes inside tick() applies its EXACT final state there, so the frame this

@@ -23,6 +23,25 @@ void (async function () {
     a.ui.hideVictory();a.loadLevel(3);a.setPlaced([a.levels[3].solution[0]]);await pause(100);a.hint();a.hint();a.hint();await pause(150);
     const p=a.render.projectCell(a.state.hintGhost,0),b=canvas.getBoundingClientRect();check(p.x>b.left&&p.x<b.right&&p.y>b.top&&p.y<b.bottom,'Exact hint is visible on the physical iPad');
     a.loadLevel(0);a.reset();await pause(300);
+    await until(()=>!a.state.resetting&&!a.render.needsFrame());
+    const bounds=canvas.getBoundingClientRect(),cx=bounds.left+bounds.width/2,cy=bounds.top+bounds.height/2;
+    const pointer=(type,id,x,y)=>canvas.dispatchEvent(new PointerEvent(type,{bubbles:true,pointerId:id,pointerType:'touch',clientX:x,clientY:y,button:0,buttons:type==='pointerup'?0:1}));
+    const pan0=a.render.getCamera().pan,placed0=JSON.stringify(a.state.placed),tilts0=a.state.tiltsUsed;
+    pointer('pointerdown',11,cx,cy);pointer('pointermove',11,cx+40,cy+20);pointer('pointerup',11,cx+40,cy+20);await pause(100);
+    check(JSON.stringify(a.render.getCamera().pan)!==JSON.stringify(pan0)&&a.render.isFlat()&&a.state.tiltsUsed===tilts0&&JSON.stringify(a.state.placed)===placed0,'One-finger pan preserves pieces and flat-view eligibility');
+    pointer('pointerdown',11,cx-70,cy);pointer('pointerdown',12,cx+70,cy);
+    for(let i=1;i<=6;i++){pointer('pointermove',11,cx-70,cy+i*10);pointer('pointermove',12,cx+70,cy+i*10);await pause(20);}
+    pointer('pointerup',12,cx+70,cy+60);await until(()=>!a.render.needsFrame());
+    check(a.render.getCamera().elevationDeg<75&&a.state.tiltsUsed===tilts0+1,'Two-finger drag tilts smoothly as one gesture');
+    const pan1=JSON.stringify(a.render.getCamera().pan);
+    pointer('pointermove',11,cx-45,cy+70);pointer('pointerup',11,cx-45,cy+70);await pause(100);
+    check(JSON.stringify(a.render.getCamera().pan)!==pan1&&JSON.stringify(a.state.placed)===placed0,'Lifting one finger continues into pan without editing');
+    const zoom0=a.render.getCamera().effectiveZoom,tilt1=a.state.tiltsUsed,el0=a.render.getCamera().elevationDeg;
+    pointer('pointerdown',11,cx-70,cy);pointer('pointerdown',12,cx+70,cy);pointer('pointermove',12,cx+120,cy);await pause(50);
+    pointer('pointerup',12,cx+120,cy);pointer('pointerup',11,cx-70,cy);await until(()=>!a.render.needsFrame());
+    check(a.render.getCamera().effectiveZoom>zoom0&&a.state.tiltsUsed===tilt1&&a.render.getCamera().elevationDeg===el0,'Pinch zoom does not introduce an accidental tilt');
+    await until(()=>!a.state.dirty&&a.motion.count().webgl===0&&!a.render.needsFrame());
+    const idleFrames=a.state.frames;await pause(600);check(a.state.frames===idleFrames,'Camera controls settle to zero idle application frames');
   } catch(e) {errors.push(String(e.stack||e));}
   finally {
     if(window.__lasers3d)window.__lasers3d.destroy();

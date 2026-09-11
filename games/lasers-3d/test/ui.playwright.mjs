@@ -484,7 +484,9 @@ async function polishPass(browser, url, vp) {
   await page.waitForTimeout(200);
   anims.beam = await page.evaluate(async () => { const b = window.__laser.main.state.frames; window.__laser.main.fire(); await new Promise((r) => setTimeout(r, 500)); return window.__laser.main.state.frames - b; });
   await page.waitForFunction(() => window.__laser.main.getViewModel().status !== 'tracing', null, { timeout: 8000 });
-  for (const k of Object.keys(anims)) assert(anims[k] >= 8, `frames keep coming during the ${k} animation (${anims[k]} in 400-500 ms)`);
+  // Direct view switches now finish in 360 ms. Check that they draw intermediate frames,
+  // without imposing the old 720 ms transition's frame count on a loaded WebKit runner.
+  for (const k of Object.keys(anims)) assert(anims[k] >= (k === 'beam' ? 8 : 3), `frames keep coming during the ${k} animation (${anims[k]} in 400-500 ms)`);
   // Same again after the beam: the FIRE above ends against a wall, so its spark burst is still fading when the
   // status leaves 'tracing'. Settle first, then the 600 ms window measures a board that really is at rest.
   const settled = await idleFrames(600);
@@ -867,8 +869,8 @@ async function run() {
       v = await vm(page);
       const cam = await page.evaluate(() => window.__laser.render.getCamera());
       assert(!v.isFlat && v.camera === 'tilt' && v.tiltsUsed === 1, `drag orbits: isFlat false, tilt pill, tiltsUsed ${v.tiltsUsed} (elev ${cam.elevationDeg.toFixed(1)})`);
-      assert(await page.evaluate(() => document.getElementById('hud-camera').textContent === 'TILT' && document.getElementById('btn-tilt').textContent === 'FLAT' && document.getElementById('btn-tilt').getAttribute('aria-pressed') === 'true'), 'tilt pill reads TILT; button reads FLAT');
-      await page.click('#btn-tilt');   // TILT button while tilted = snap FLAT
+      assert(await page.evaluate(() => document.getElementById('hud-camera').textContent === '3D' && document.getElementById('btn-tilt').textContent === '3D' && document.getElementById('btn-tilt').getAttribute('aria-pressed') === 'true'), '3D view is labelled and selected');
+      await page.click('#btn-flat');   // direct 2D view
       await page.waitForFunction(() => window.__laser.render.isFlat() && !window.__laser.render.getCamera().animating, null, { timeout: 3000 });
       v = await vm(page);
       assert(v.isFlat && v.tiltsUsed === 1, `FLAT snaps back (isFlat true) without counting a tilt (tiltsUsed ${v.tiltsUsed})`);
@@ -879,7 +881,7 @@ async function run() {
         `TILT press counts (tiltsUsed ${v.tiltsUsed}); campaign star eligibility is unchanged ${JSON.stringify(v.attemptStars)}`);
       await page.waitForTimeout(300);
       await page.screenshot({ path: `${SHOTS}/game-tilted-${vp.name}.png` });
-      await page.click('#btn-tilt');
+      await page.click('#btn-flat');
       await page.waitForFunction(() => window.__laser.render.isFlat() && !window.__laser.render.getCamera().animating, null, { timeout: 3000 });
 
       // ---- RESET restores eligibility; undo/redo; floating remove ----

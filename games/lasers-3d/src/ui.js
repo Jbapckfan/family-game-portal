@@ -125,7 +125,7 @@
       sound: '<button id="sound" class="btn btn-icon" type="button" aria-label="Sound on" aria-pressed="true" data-icon="on"><span class="icon-slot" aria-hidden="true">' + SOUND_SVG.on + '</span></button>',
       readout: '<div id="readout" class="glass" role="status" aria-live="polite" data-kind="info" hidden><span class="readout-msg"></span><span class="readout-chips"></span></div>',
       stageKids: '<div id="piece-controls" hidden><button id="btn-rotate" class="btn btn-icon" type="button" aria-label="Rotate piece"><span aria-hidden="true">&#x21BB;</span></button><button id="btn-remove" class="btn btn-icon btn-danger" type="button" aria-label="Remove piece"><span aria-hidden="true">&#x2715;</span></button></div><div id="toast" class="glass" role="status" aria-live="polite" data-kind="info"></div><div id="webgl-fallback" hidden><div class="glass"><h2 style="margin:0 0 8px;font-size:24px;font-weight:750">3D is not available here</h2><p class="caption">This browser could not start WebGL. The classic 2D game works everywhere.</p><a class="btn btn-selected" href="../mini-games/lasers_mirrors_game.html">Play Lasers and Mirrors (2D)</a></div></div>',
-      tray: '<div id="tray" class="glass" aria-label="Piece tray and controls"><div class="tray-cards" role="group" aria-label="Pieces">' + TYPES.map(card).join('') + '</div><div class="tray-actions" role="group" aria-label="Actions"><button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button><button id="btn-tilt" class="btn" type="button" aria-label="Tilt the board" aria-pressed="false">TILT</button><button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button><button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button><button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button><button id="btn-undo" class="btn btn-icon tray-side-only" type="button" aria-label="Undo"><span aria-hidden="true">&#x21A9;</span></button><button id="btn-redo" class="btn btn-icon tray-side-only" type="button" aria-label="Redo"><span aria-hidden="true">&#x21AA;</span></button><button id="btn-levels" class="btn tray-side-only" type="button" aria-label="Choose a level">LEVELS</button><button id="btn-help" class="btn tray-side-only" type="button" aria-label="How to play">HELP</button><button id="btn-more" class="btn btn-icon" type="button" aria-label="More controls" aria-expanded="false" aria-controls="more-sheet"><span aria-hidden="true">&#x22EF;</span></button></div><div id="more-sheet" class="glass" hidden role="group" aria-label="More controls"></div></div>',
+      tray: '<div id="tray" class="glass" aria-label="Piece tray and controls"><div class="tray-cards" role="group" aria-label="Pieces">' + TYPES.map(card).join('') + '</div><div class="tray-actions" role="group" aria-label="Actions"><button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button><button id="btn-flat" class="btn btn-view" type="button" aria-label="Show centred 2D view" aria-pressed="true">2D</button><button id="btn-tilt" class="btn btn-view" type="button" aria-label="Show centred 3D view" aria-pressed="false">3D</button><button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button><button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button><button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button><button id="btn-undo" class="btn btn-icon tray-side-only" type="button" aria-label="Undo"><span aria-hidden="true">&#x21A9;</span></button><button id="btn-redo" class="btn btn-icon tray-side-only" type="button" aria-label="Redo"><span aria-hidden="true">&#x21AA;</span></button><button id="btn-levels" class="btn tray-side-only" type="button" aria-label="Choose a level">LEVELS</button><button id="btn-help" class="btn tray-side-only" type="button" aria-label="How to play">HELP</button><button id="btn-more" class="btn btn-icon" type="button" aria-label="More controls" aria-expanded="false" aria-controls="more-sheet"><span aria-hidden="true">&#x22EF;</span></button></div><div id="more-sheet" class="glass" hidden role="group" aria-label="More controls"></div></div>',
       modals: modal('modal-help', 'How to play', '<div class="modal-body"></div>') + modal('modal-levels', 'Levels', '<div class="level-grid"></div>') +
         modal('modal-victory', 'Beam Connected', '<div class="victory-stars"></div><div class="victory-stats"></div><div class="modal-actions"></div>', '<div class="light-ring" aria-hidden="true"></div>'),
       defs: '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="l3d-star-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1A6"/><stop offset="1" stop-color="#FFD75A"/></linearGradient></defs></svg>',
@@ -181,7 +181,7 @@
     if (theme && window.LaserUiMotion) window.LaserUiMotion.install(theme);   /* keyframes generated from theme.motion */
     if (theme) { doc.body.style.backgroundColor = theme.palette.background; }
     ensureDom(root);
-    var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-dark', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
+    var el = {}, ids = ['hud', 'hud-level-num', 'hud-level-name', 'hud-camera', 'hud-dark', 'hud-stars', 'hud-pieces', 'readout', 'sound', 'stage', 'board', 'tray', 'btn-fire', 'btn-flat', 'btn-tilt', 'btn-fit', 'btn-reset', 'btn-hint', 'btn-undo', 'btn-redo', 'btn-levels', 'btn-help', 'btn-more', 'more-sheet', 'piece-controls', 'btn-rotate', 'btn-remove', 'toast', 'modal-help', 'modal-levels', 'modal-victory', 'webgl-fallback'];
     ids.forEach(function (id) { el[id] = $(id); });
     var cards = {}; Array.prototype.forEach.call(el.tray.querySelectorAll('.tray-card'), function (c) { cards[c.getAttribute('data-type')] = c; });
 
@@ -219,7 +219,7 @@
 
     /* ------------------------------------------------------------ buttons */
     function wire(id, name) { on(el[id], 'click', function (e) { if (el[id].disabled) return; e.preventDefault(); call(handlers, name); }); }
-    wire('btn-fire', 'onFire'); wire('btn-reset', 'onReset'); wire('btn-tilt', 'onTiltToggle'); wire('btn-hint', 'onHint'); wire('btn-fit', 'onFit');
+    wire('btn-fire', 'onFire'); wire('btn-reset', 'onReset'); wire('btn-tilt', 'onTiltToggle'); wire('btn-flat', 'onFlatView'); wire('btn-hint', 'onHint'); wire('btn-fit', 'onFit');
     wire('btn-undo', 'onUndo'); wire('btn-redo', 'onRedo'); wire('sound', 'onSoundToggle'); wire('btn-rotate', 'onRotateSelected'); wire('btn-remove', 'onRemoveSelected');
     on(el['btn-levels'], 'click', function () { closeMore(); if (call(handlers, 'onLevels') !== false) ui.showLevelSelect(); });
     on(el['btn-help'], 'click', function () { closeMore(); if (call(handlers, 'onHelp') !== false) ui.showHowToPlay(); });
@@ -295,7 +295,7 @@
       var flags = starFlags(v.stars), count = starCount(flags);
       text(el['hud-level-num'], 'LEVEL ' + (v.levelIndex + 1)); attr(el.hud, 'aria-label', 'Level ' + (v.levelIndex + 1) + (v.levelCount ? ' of ' + v.levelCount : ''));
       text(el['hud-level-name'], lvl.name || '');
-      attr(el['hud-camera'], 'data-camera', v.isFlat ? 'flat' : 'tilt'); text(el['hud-camera'], v.isFlat ? 'FLAT' : 'TILT');
+      attr(el['hud-camera'], 'data-camera', v.isFlat ? 'flat' : 'tilt'); text(el['hud-camera'], v.isFlat ? '2D' : '3D');
       /* DESIGN.md 15: on a dark level the HUD says so, and says how much of the board the player has uncovered.
        * Same terse data voice as the pills either side of it ("FLAT", "PIECES 0/1"); the sentence a screen reader
        * gets is the unambiguous one, because "DARK 34%" alone could be read as "34% dark". */
@@ -330,8 +330,10 @@
       });
       var lock = !!v.revealPlaying || !!v.cameraBusy;
       el['btn-fire'].disabled = busy || v.status === 'won';   /* 'won' is terminal until an edit, RESET or a level change */
-      el['btn-reset'].disabled = lock; el['btn-tilt'].disabled = lock;
-      attr(el['btn-tilt'], 'aria-pressed', v.isFlat ? 'false' : 'true'); text(el['btn-tilt'], v.isFlat ? 'TILT' : 'FLAT'); attr(el['btn-tilt'], 'aria-label', v.isFlat ? 'Tilt the board' : 'Snap the board flat');
+      el['btn-reset'].disabled = lock; el['btn-tilt'].disabled = lock; el['btn-flat'].disabled = lock;
+      var selectedView = v.cameraDestination || (v.isFlat ? 'flat' : 'tilt');
+      attr(el['btn-flat'], 'aria-pressed', selectedView === 'flat' ? 'true' : 'false');
+      attr(el['btn-tilt'], 'aria-pressed', selectedView === 'tilt' ? 'true' : 'false');
       /* The view button is a two-state toggle: OVERVIEW shows the whole board, WORKING keeps cells tappable
        * (DESIGN.md 11.2). Its label names where pressing it goes. It is hidden when there is nothing to go to. */
       if (el['btn-fit']) {
@@ -608,7 +610,7 @@
       function modeRow(name, body) { return '<p class="help-mode"><b>' + name + '</b> <span class="caption">' + body + '</span></p>'; }
       var turners = TYPES.filter(function (t) { return !REG || typeof REG.turnsBeam !== 'function' || REG.turnsBeam(t); });
       return '<p>Steer the laser into every target. Tap a piece in the tray, then tap a cell to place it. Tap a placed piece to rotate it. On touchscreens, hold a piece, then drag to move it; with a mouse, drag it directly.</p>' +
-        '<p>Drag one finger to pan. Drag two fingers down to tilt, up to look from above, or sideways to rotate. Pinch to zoom. Lift one finger to continue panning. FLAT brings you back overhead.</p>' +
+        '<p>Drag one finger to pan. Drag two fingers down to tilt, up to look from above, or sideways to rotate. Pinch to zoom. Lift one finger to continue panning. Tap 2D or 3D to switch views and centre the board. Rotation stays around the middle of the board.</p>' +
         '<p class="caption">' + (turners.length === TYPES.length ? 'All the pieces turn the beam the same way. What changes is the beam\'s height.'
           : 'Most pieces turn the beam the same way. What changes is the beam\'s height.') + '</p>' +
         TYPES.map(row).join('') +

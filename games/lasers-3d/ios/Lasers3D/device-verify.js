@@ -2,7 +2,7 @@ void (async function () {
   const results=[],errors=[],backup=localStorage.getItem('lasers3d.v1');
   const pause=ms=>new Promise(r=>setTimeout(r,ms));
   const until=async(fn,ms=12000)=>{const start=Date.now();while(!fn()){if(Date.now()-start>ms)throw Error('Timed out');await pause(50);}};
-  const check=(value,name)=>{results.push({name,passed:!!value});if(!value)throw Error(name);};
+  const check=(value,name,details)=>{results.push({name,passed:!!value,...(details?{details}:{})});if(!value)throw Error(name);};
   try {
     await until(()=>window.__lasers3d?.state.frames>0);
     const a=window.__lasers3d;
@@ -32,7 +32,8 @@ void (async function () {
     pointer('pointerdown',11,cx-70,cy);pointer('pointerdown',12,cx+70,cy);
     for(let i=1;i<=6;i++){pointer('pointermove',11,cx-70,cy+i*10);pointer('pointermove',12,cx+70,cy+i*10);await pause(20);}
     pointer('pointerup',12,cx+70,cy+60);await until(()=>!a.render.needsFrame());
-    check(a.render.getCamera().elevationDeg<75&&a.state.tiltsUsed===tilts0+1,'Two-finger drag tilts smoothly as one gesture');
+    check(a.render.getCamera().elevationDeg<75&&a.state.tiltsUsed===tilts0+1,'Two-finger drag tilts smoothly as one gesture',
+      {camera:a.render.getCamera(),tilts:a.state.tiltsUsed,initialTilts:tilts0});
     const pan1=JSON.stringify(a.render.getCamera().pan);
     pointer('pointermove',11,cx-45,cy+70);pointer('pointerup',11,cx-45,cy+70);await pause(100);
     check(JSON.stringify(a.render.getCamera().pan)!==pan1&&JSON.stringify(a.state.placed)===placed0,'Lifting one finger continues into pan without editing');
@@ -42,6 +43,21 @@ void (async function () {
     check(a.render.getCamera().effectiveZoom>zoom0&&a.state.tiltsUsed===tilt1&&a.render.getCamera().elevationDeg===el0,'Pinch zoom does not introduce an accidental tilt');
     await until(()=>!a.state.dirty&&a.motion.count().webgl===0&&!a.render.needsFrame());
     const idleFrames=a.state.frames;await pause(600);check(a.state.frames===idleFrames,'Camera controls settle to zero idle application frames');
+    check(['btn-flat','btn-tilt'].every(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.width>=44&&r.height>=44&&r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight;}),'Separate 2D and 3D buttons are visible and tappable');
+    const worldCentre=new THREE.Vector3((a.state.level.size.w-1)/2,0,-(a.state.level.size.d-1)/2);
+    const projectedCentre=()=>worldCentre.clone().project(a.render._camera);
+    a.render.zoom(1.3);a.render.pan(30,15);a.ui.fitStage();await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    const pivot0=projectedCentre();
+    pointer('pointerdown',21,cx-70,cy);pointer('pointerdown',22,cx+70,cy);
+    pointer('pointermove',21,cx-35,cy+20);pointer('pointermove',22,cx+105,cy+20);await pause(60);
+    pointer('pointerup',21,cx-35,cy+20);pointer('pointerup',22,cx+105,cy+20);await until(()=>!a.render.needsFrame());
+    const pivot1=projectedCentre(),camera=a.render._camera;
+    check(Math.hypot(pivot1.x-pivot0.x,pivot1.y-pivot0.y)<0.0001&&camera.getWorldDirection(new THREE.Vector3()).dot(worldCentre.clone().sub(camera.position).normalize())>0.999999,'Rotation stays around the board centre after panning and zooming');
+    document.getElementById('btn-tilt').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    const centred=projectedCentre();check(Math.hypot(centred.x,centred.y)<0.0001&&a.render.getCamera().view==='overview','3D button recentres and fits the board');
+    document.getElementById('btn-flat').click();await pause(50);document.getElementById('btn-tilt').click();await pause(50);document.getElementById('btn-flat').click();
+    await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    check(a.render.isFlat()&&document.getElementById('btn-flat').getAttribute('aria-pressed')==='true','Rapid view swaps finish in the last selected 2D view');
   } catch(e) {errors.push(String(e.stack||e));}
   finally {
     if(window.__lasers3d)window.__lasers3d.destroy();

@@ -103,7 +103,8 @@
     } catch (e) { render = null; }
     if (root.LaserAudio) audio = root.LaserAudio.create({ theme: theme });
     ui = root.LaserUI.create({ root: rootEl, theme: theme, render: render, motion: motion, levels: LEVELS, autoHelp: false, handlers: {
-      onTraySelect: onTraySelect, onFire: fire, onReset: reset, onTiltToggle: tilt, onHint: hint, onUndo: undo, onRedo: redo,
+      onTraySelect: onTraySelect, onFire: fire, onReset: reset, onTiltToggle: function () { tilt('tilt'); },
+      onFlatView: function () { tilt('flat'); }, onHint: hint, onUndo: undo, onRedo: redo,
       onSoundToggle: toggleSound, onRotateSelected: function () { if (S.selectedCell) rotateAt(S.selectedCell); },
       onRemoveSelected: function () { if (S.selectedCell) removeAt(S.selectedCell); },
       onSelectLevel: function (i) { loadLevel(i); }, onNextLevel: nextLevel, onRetryLevel: reset, onFit: fitBoard,
@@ -798,11 +799,15 @@
     function cancelReveal() { if (cam) cam.cancelReveal(); if (S.revealPlaying) { S.revealPlaying = false; syncInput(); bump(); } }
 
     /* ---------------------------------------------------- tilt, hint */
-    function tilt() {
+    function tilt(destination) {
       if (locked() || !render || (ui && ui.isModalOpen())) return;
+      var camera = render.getCamera(), current = camera.animating && camera.preset ? camera.preset : (render.isFlat() ? 'flat' : 'tilt');
+      var next = destination === 'flat' || destination === 'tilt' ? destination : (current === 'flat' ? 'tilt' : 'flat');
+      if (next === current && camera.preset === next && (camera.animating || !render.canFit())) return;
       clearSelection();
-      if (render.isFlat()) { S.tiltsUsed++; play('tilt'); render.setCameraPreset('tilt', { animate: true }).then(saveAttempt); }
-      else { play('flat'); render.setCameraPreset('flat', { animate: true }).then(saveAttempt); }
+      if (next === 'tilt' && render.isFlat() && current !== 'tilt') S.tiltsUsed++;
+      play(next);
+      render.setCameraPreset(next, { animate: true, recenter: true, durationMs: theme.camera.motion.viewSwitchMs, prepareMs: 0 }).then(saveAttempt);
       S.camDirty = true; saveAttempt(); bump();
     }
     function hint() {
@@ -855,6 +860,7 @@
         stars: flags, starCount: root.LaserUI.starCount(flags),
         attemptStars: attemptStars(), attemptStarCount: root.LaserUI.starCount(attemptStars()),
         camera: S.isFlat ? 'flat' : 'tilt', isFlat: S.isFlat,
+        cameraDestination: render && render.getCamera().animating ? render.getCamera().preset : null,
         muted: !!progress.muted, canUndo: S.history.length > 0, canRedo: S.future.length > 0,
         revealPlaying: S.revealPlaying, cameraBusy: S.resetting,
         readout: S.readout, hintAvailable: !!S.solution, canFit: !!S.canFit, viewToggle: S.viewToggle,

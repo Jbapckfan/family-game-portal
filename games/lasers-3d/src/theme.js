@@ -293,7 +293,7 @@
     zoom: { minFactorOfFit: 1, maxCellPxMultiple: 3 },   /* absolute zoom in [fit-to-board, 3x the minCellPx zoom] */
     flatEpsilonDeg: 2,                    /* render.isFlat(): elevation >= 88 */
     motion: {
-      flatToTiltMs: 720, tiltToFlatMs: 620, fitMs: 420,
+      flatToTiltMs: 720, tiltToFlatMs: 620, viewSwitchMs: 360, fitMs: 420,
       easing: 'cubic-bezier(0.22, 1, 0.36, 1)', easingName: 'easeOutQuint-ish'
     },
     /* First-failure reveal (levels 4 and 5 only, once per level). */

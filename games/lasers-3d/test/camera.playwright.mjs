@@ -14,6 +14,12 @@ let checks=0;
 const check=(ok,label)=>{assert.ok(ok,label);checks++;console.log('ok '+label);};
 const state=p=>p.evaluate(()=>({camera:__lasers3d.render.getCamera(),tilts:__lasers3d.state.tiltsUsed,placed:JSON.stringify(__lasers3d.state.placed),frames:__lasers3d.state.frames}));
 const settle=p=>p.waitForFunction(()=>{const a=__lasers3d;return !a.state.dirty&&!a.render.needsFrame()&&a.motion.count().webgl===0;});
+const centre=p=>p.evaluate(()=>{
+ const a=__lasers3d,r=a.render,b=document.getElementById('board').getBoundingClientRect();
+ const c=new THREE.Vector3((a.state.level.size.w-1)/2,0,-(a.state.level.size.d-1)/2);
+ const forward=r._camera.getWorldDirection(new THREE.Vector3()),toward=c.clone().sub(r._camera.position).normalize();
+ c.project(r._camera);return {x:c.x*b.width/2,y:-c.y*b.height/2,alignment:forward.dot(toward)};
+});
 try {
  for(const engine of ['chromium','webkit']) {
   const launch=engine==='chromium'?(existsSync(chromium.executablePath())?{}:{channel:'chrome'}):
@@ -81,7 +87,7 @@ try {
     },operation);
     check(!result.camera.animating,`${engine}: ${operation} takes over a fit animation immediately`);
    }
-   await p.click('#btn-tilt');await settle(p);
+   await p.click('#btn-flat');await settle(p);
    check((await state(p)).camera.elevationDeg===90,`${engine}: FLAT remains a reliable one-tap reset`);
    const beforeClamp=(await state(p)).tilts;
    await touch('touchStart',[[1,350,420],[2,530,420]]);await touch('touchMove',[[1,350,390],[2,530,390]]);await p.waitForTimeout(40);await touch('touchEnd',[]);await settle(p);
@@ -89,6 +95,47 @@ try {
    await p.emulateMedia({reducedMotion:'reduce'});await p.waitForFunction(()=>__lasers3d.motion.isReducedMotion());
    await touch('touchStart',[[1,350,400],[2,530,400]]);await touch('touchMove',[[1,350,430],[2,530,430]]);await p.waitForTimeout(40);await touch('touchEnd',[]);await settle(p);
    check((await state(p)).camera.elevationDeg<90,`${engine}: direct camera control remains responsive with reduced motion`);
+   // The physical pivot is the board centre, even after panning and zooming. Verify actual
+   // projection matrices, not just the rig's reported pan, throughout a native paired drag.
+   await p.emulateMedia({reducedMotion:'no-preference'});await p.waitForFunction(()=>!__lasers3d.motion.isReducedMotion());
+   await p.click('#btn-flat');await settle(p);
+   await p.evaluate(()=>{const a=__lasers3d;a.render.zoom(1.6);a.render.pan(60,35);a.ui.fitStage();});await settle(p);
+   const pivot0=await centre(p),pivots=[];
+   await touch('touchStart',[[1,350,340],[2,530,340]]);
+   for(let i=1;i<=10;i++){
+    await touch('touchMove',[[1,350+i*3,340+i*6],[2,530+i*3,340+i*6]]);await p.waitForTimeout(20);pivots.push(await centre(p));
+   }
+   await touch('touchEnd',[]);await settle(p);pivots.push(await centre(p));
+   check(pivots.every(c=>Math.hypot(c.x-pivot0.x,c.y-pivot0.y)<0.1),`${engine}: the panned board centre stays fixed during rotation and fit easing`);
+   check(pivots.every(c=>c.alignment>0.999999),`${engine}: camera orbit axis passes through the middle of the board`);
+   // A mode button always returns a manually offset camera to a useful centred framing.
+   const switchResult=await p.evaluate(async()=>{
+    const a=__lasers3d,r=a.render,b=document.getElementById('board').getBoundingClientRect(),samples=[],start=performance.now();
+    document.getElementById('btn-tilt').click();
+    const selected=document.getElementById('btn-tilt').getAttribute('aria-pressed');
+    do {
+     await new Promise(requestAnimationFrame);
+     const c=new THREE.Vector3((a.state.level.size.w-1)/2,0,-(a.state.level.size.d-1)/2).project(r._camera);
+     samples.push(Math.hypot(c.x*b.width/2,c.y*b.height/2));
+    } while(r.getCamera().animating);
+    return {elapsed:performance.now()-start,samples,selected,camera:r.getCamera(),bounds:r.getBoardScreenBox(),width:b.width,height:b.height};
+   });await settle(p);
+   check(switchResult.selected==='true'&&switchResult.elapsed<650,`${engine}: 3D selects immediately and completes its short transition (${Math.round(switchResult.elapsed)} ms)`);
+   check(switchResult.samples.every((d,i)=>i===0||d<=switchResult.samples[i-1]+0.2)&&(await centre(p)).x**2+(await centre(p)).y**2<0.01,`${engine}: view switch recentres smoothly without swinging past the centre`);
+   check(switchResult.camera.view==='overview'&&!switchResult.camera.manual&&switchResult.bounds.width<=switchResult.width+1&&switchResult.bounds.height<=switchResult.height+1,`${engine}: 3D fits the whole board after manual pan and zoom`);
+   const countBeforeRepeat=(await state(p)).tilts;await p.click('#btn-tilt');await settle(p);
+   check((await state(p)).tilts===countBeforeRepeat,`${engine}: selecting the active view does not charge another tilt`);
+   await p.evaluate(async()=>{
+    document.getElementById('btn-flat').click();await new Promise(r=>setTimeout(r,50));
+    document.getElementById('btn-tilt').click();await new Promise(r=>setTimeout(r,50));
+    document.getElementById('btn-flat').click();
+   });await settle(p);
+   check((await state(p)).camera.elevationDeg===90&&await p.locator('#btn-flat').getAttribute('aria-pressed')==='true',`${engine}: rapid view swaps finish in the last requested mode`);
+   for(const [width,height] of [[320,568],[393,852],[1376,1032]]){
+    await p.setViewportSize({width,height});await settle(p);
+    check(await p.evaluate(()=>['btn-flat','btn-tilt'].every(id=>{const b=document.getElementById(id).getBoundingClientRect();return b.width>=44&&b.height>=44&&b.left>=0&&b.right<=innerWidth&&b.top>=0&&b.bottom<=innerHeight;})),`${engine}: both view buttons are visible and tappable at ${width}×${height}`);
+   }
+   await p.setViewportSize({width:1194,height:834});await settle(p);
    await p.click('#btn-camera-tools');check((await p.getByRole('dialog',{name:'Camera and beam tools'}).innerText()).includes('One finger pans'),`${engine}: camera help teaches the new gestures`);
    check(errors.length===0,`${engine}: no runtime exceptions ${JSON.stringify(errors)}`);
    mkdirSync('output/screenshots',{recursive:true});await p.screenshot({path:`output/screenshots/camera-controls-${engine}.png`});

@@ -477,6 +477,10 @@ try {
         else if (disagree.length < 4) disagree.push({ analytic: a, reference: b });
       }
       out[v + 'Pick'] = { onScreen, visible, bad: bad.slice(0, 5), badCount: bad.length, grid, agree, disagree };
+      if (v === 'tilt') out.cornerOcclusion = [[5,6],[4,7],[3,8]].every(([x,y])=>{
+        const p=r.projectCell({x,y},0),hit=r.pickCell(p.x,p.y),ref=h.refPick(p.x,p.y);
+        return hit&&hit.x===x-1&&hit.y===y-1&&ref&&ref.x===hit.x&&ref.y===hit.y;
+      });
       // zoom clamp: all the way out is the fit-to-board zoom, all the way in is 3x the minCellPx zoom
       r.zoom(0.0001);
       const outZ = r.getCamera();
@@ -497,6 +501,7 @@ try {
     }
     return out;
   });
+  check(panZoom.cornerOcclusion, 'exact diagonal rays select the foreground column instead of the cell hidden behind it');
   for (const v of ['flat', 'tilt']) {
     const p = panZoom[v + 'Pan'];
     check(p.x >= 0.25 - 1e-6 && p.y >= 0.25 - 1e-6, `${v}: pan clamp keeps >= 25% of the board on screen (worst x ${pct(p.x)}, y ${pct(p.y)})`);

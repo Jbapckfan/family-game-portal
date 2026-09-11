@@ -60,6 +60,7 @@
 
     var upVec = new THREE.Vector3(), rightVec = new THREE.Vector3(), dirVec = new THREE.Vector3();
     var groundUp = new THREE.Vector3(), negDir = new THREE.Vector3(), pan = new THREE.Vector3(), target = new THREE.Vector3();
+    var orbitOffset = new THREE.Vector2(), frameOffset = new THREE.Vector2();
     /* view: 'working' = the shipping default, cells never below theme.camera.minCellPx (the board overflows and the
      * player pans). 'overview' = the WHOLE board on screen at the bounding-box fit, cells allowed below the touch
      * floor because it is a planning view, not a tapping view. DESIGN.md 11.2 fixes 'working' as the default; the
@@ -67,8 +68,8 @@
     var cam = {
       az: CAM.presets.flat.azimuthDeg, el: CAM.presets.flat.elevationDeg,
       fitZoom: 40, userZoom: 1, preset: 'flat', view: 'working', anim: null, tween: null,
-      /* manual: the player has zoomed, panned, or pressed the view toggle since the level loaded, so the
-       * per-preset default framing below must stop overriding them. Cleared only on setLevel. */
+      /* Manual framing survives ordinary preset/lesson moves. Explicit 2D/3D buttons
+       * request recentering, which restores the appropriate default framing. */
       manual: false
     };
     var extent = { hw: 1, hh: 1 };          /* world half-extents of the projected box, around boardCenter */
@@ -132,11 +133,11 @@
      * orbit itself continues: the player asked for the tilt. */
     function takeManualFraming() {
       cam.manual = true;
-      if (cam.anim) { cam.anim.fromPan = null; cam.anim.fromZoom = null; }
+      if (cam.anim) { cam.anim.fromOffset = null; cam.anim.fromZoom = null; }
     }
 
     /* ------------------------------------------------------------------- pan */
-    /* Screen dx moves the board with the finger: the look-at target slides the opposite way along screen-right, and
+    /* Screen dx moves the board with the finger: the framing shifts along screen-right, and
      * along the ground shadow of screen-up (which covers sin(e) of a screen pixel, hence the /se). */
     function panBy(dxPx, dyPx) {
       endTween();
@@ -167,21 +168,35 @@
     }
 
     /* ---------------------------------------------------------------- apply */
+    /* Pan is an off-axis framing offset, never the orbit's pivot. Keep its screen position
+     * through an orbit (including the following fit easing), so the board rotates in place. */
+    function readOffset(out) {
+      basis(cam.az, cam.el);
+      var z = effectiveZoom();
+      return out.set(pan.dot(rightVec) * z, pan.dot(upVec) * z);
+    }
+    function writeOffset(offset) {
+      var se = basis(cam.az, cam.el), z = effectiveZoom();
+      pan.copy(rightVec).multiplyScalar(offset.x / z);
+      pan.addScaledVector(groundUp, offset.y / (se * z));
+    }
     function apply() {
       basis(cam.az, cam.el);
-      target.copy(boardCenter).add(pan);
+      target.copy(boardCenter);
       camera.position.copy(target).addScaledVector(dirVec, R);
       camera.up.copy(upVec);
       camera.lookAt(target);
       var z = effectiveZoom();
-      camera.left = -size.w / 2 / z; camera.right = size.w / 2 / z;
-      camera.top = size.h / 2 / z; camera.bottom = -size.h / 2 / z;
+      var x = pan.dot(rightVec), y = pan.dot(upVec);
+      camera.left = x - size.w / 2 / z; camera.right = x + size.w / 2 / z;
+      camera.top = y + size.h / 2 / z; camera.bottom = y - size.h / 2 / z;
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld();
     }
-    function refit(snap) {
+    function refit(snap, offset) {
       var t = targetFit();
       if (snap !== false) cam.fitZoom = t;
+      if (offset) writeOffset(offset);
       clampPan();
       apply();
     }
@@ -208,20 +223,19 @@
        * so the camera swings on the sphere rather than sliding through it (VISUAL-DIRECTION E). */
       cam.az = a.fromAz + a.dAz * e;
       cam.el = a.fromEl + (a.toEl - a.fromEl) * e;
-      if (a.fromPan) pan.copy(a.fromPan).multiplyScalar(1 - e);
       if (a.fromZoom !== null) cam.userZoom = a.fromZoom + (1 - a.fromZoom) * e;
       /* "Beam-glow multiplier returns from 0.82 to 1 with r", r = theme.revealBlend(elevation). One scalar, read
        * by render.js; the rig never touches a beam material and never samples terrain for it. */
       a.intake = a.reveal ? 1 - theme.revealBlend(cam.el) : 0;
-      refit(true);       /* the orientation is already eased, so the fit can follow it exactly */
+      refit(true, a.fromOffset ? frameOffset.copy(a.fromOffset).multiplyScalar(a.centre ? 1 - e : 1) : null);
     }
     function applyFinal(a) {
       cam.az = a.fromAz + a.dAz;
       cam.el = a.toEl;
-      if (a.fromPan) pan.set(0, 0, 0);
+      if (a.fromOffset && a.centre) pan.set(0, 0, 0);
       if (a.fromZoom !== null) cam.userZoom = 1;
       a.intake = 0;
-      refit(true);
+      refit(true, a.fromOffset && !a.centre ? a.fromOffset : null);
     }
     function abandon(a) { a.intake = 0; }
     function detach(a) {
@@ -250,11 +264,12 @@
        * working zoom that keeps cells at the touch floor. TILT is bought with the third star and its whole job is
        * showing the shape of the board at once, so it wants the entire board on screen - panning around a zoomed
        * isometric board to reconstruct the structure in your head is strictly worse than just looking at it.
-       * Suppressed once the player has taken manual control of the framing (cam.manual). */
-      var effBefore = effectiveZoom(), fromPan = null, fromZoom = null;
-      if (!cam.manual) {
+       * Manual framing is retained unless the caller explicitly requests recentering. */
+      var effBefore = effectiveZoom(), fromOffset = readOffset(new THREE.Vector2()), fromZoom = null, centre = false;
+      if (!cam.manual || o.recenter) {
         var want = (name === 'tilt') ? 'overview' : 'working';
-        if (cam.view !== want) {
+        if (cam.view !== want || o.recenter) {
+          centre = true;
           cam.view = want;
           if (!o.animate) { pan.set(0, 0, 0); cam.userZoom = 1; }
           else {
@@ -262,14 +277,14 @@
              * was a zoom punch on the very first frame of the reveal - against "Remain exactly FLAT" and "Do not
              * add camera zoom punches". Pre-load userZoom so the effective zoom is unchanged at t = 0, then let
              * the move ease it back to 1 alongside the orbit. Same technique as applyViewMode(). */
-            fromPan = pan.clone();
             var nb = baseZoom(), lim = zoomLimits();
             cam.userZoom = nb > 0 ? Core.clamp(effBefore, lim.lo, lim.hi) / nb : 1;
             fromZoom = cam.userZoom;
           }
         }
+        if (o.recenter) cam.manual = false;
       }
-      if (!o.animate) { cam.az = P.azimuthDeg; cam.el = P.elevationDeg; refit(true); return Promise.resolve(); }
+      if (!o.animate) { cam.az = P.azimuthDeg; cam.el = P.elevationDeg; refit(true, centre ? null : fromOffset); return Promise.resolve(); }
       var ms = o.durationMs || (name === 'tilt' ? CAM.motion.flatToTiltMs : CAM.motion.tiltToFlatMs);
       var linear = false, easeFn = theme.easeCamera, prepareMs = 0, isReveal = false;
       /* THE REVEAL is flat -> tilt and only that: m.reveal.prepareMs of held anticipation, then
@@ -287,7 +302,7 @@
       if (reducedMotion) { ms = theme.reducedMotion.cameraMs; linear = true; prepareMs = 0; isReveal = false; }
       prepareMs = Core.clamp(prepareMs, 0, ms);
       var a = { t: 0, prepareMs: prepareMs, orbitMs: Math.max(0, ms - prepareMs), linear: linear, ease: easeFn,
-        fromAz: fromAz, dAz: dAz, fromEl: fromEl, toEl: P.elevationDeg, fromPan: fromPan, fromZoom: fromZoom,
+        fromAz: fromAz, dAz: dAz, fromEl: fromEl, toEl: P.elevationDeg, fromOffset: fromOffset, fromZoom: fromZoom, centre: centre,
         reveal: isReveal, intake: 0, handle: null, settled: false, resolve: null };
       var promise = new Promise(function (resolve) { a.resolve = resolve; });
       cam.anim = a;
@@ -306,11 +321,12 @@
     }
     function orbit(dAz, dEl) {
       endAnim(); endTween();
+      readOffset(orbitOffset);
       var oldAz = cam.az, oldEl = cam.el;
       cam.preset = null;
       cam.az = (cam.az + dAz / DEG) % 360;
       cam.el = Core.clamp(cam.el + dEl / DEG, CAM.orbit.elevationMinDeg, CAM.orbit.elevationMaxDeg);
-      refit(false);       /* the fit EASES to the new orientation in step(); a hard snap here pumps during a drag */
+      refit(false, orbitOffset);
       return oldAz !== cam.az || oldEl !== cam.el;
     }
     function zoomBy(f) {
@@ -372,10 +388,11 @@
       if (w) return;
       var t = targetFit();
       if (t !== cam.fitZoom) {
+        readOffset(frameOffset);
         var tau = (CAM.fitSmoothingMs || 0) / 1000;
         if (tau <= 0 || Math.abs(t - cam.fitZoom) < t * 0.001) cam.fitZoom = t;
         else cam.fitZoom += (t - cam.fitZoom) * (1 - Math.exp(-dt / tau));
-        clampPan();
+        writeOffset(frameOffset); clampPan();
         apply();
       }
     }

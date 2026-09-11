@@ -214,7 +214,7 @@
         .tray-label { font-size: var(--type-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; color: var(--accent); overflow: hidden; text-overflow: clip; white-space: nowrap; }
         .tray-count { font: 700 var(--type-xs) var(--font-data); color: var(--color-text); }
         #btn-fire { width: 72px; height: 56px; min-width: 72px; }
-        #btn-tilt, #btn-reset, #btn-hint, #btn-fit { min-width: 56px; height: 44px; }
+        #btn-flat, #btn-tilt, #btn-reset, #btn-hint, #btn-fit { min-width: 56px; height: 44px; }
         .btn[hidden] { display: none; } /* .btn sets display:inline-flex, which would otherwise beat the UA [hidden] rule */
         #btn-hint.is-active { color: var(--color-accent); border-color: var(--color-accent); }
         .tray-side-only { display: none; }
@@ -502,7 +502,7 @@
             </div>
             <div class="tray-actions" role="group" aria-label="Actions">
                 <button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button>
-                <button id="btn-tilt" class="btn" type="button" aria-label="Tilt the board" aria-pressed="false">TILT</button>
+                <button id="btn-flat" class="btn btn-view" type="button" aria-label="Show centred 2D view" aria-pressed="true">2D</button><button id="btn-tilt" class="btn btn-view" type="button" aria-label="Show centred 3D view" aria-pressed="false">3D</button>
                 <button id="btn-fit" class="btn" type="button" aria-label="Fit board to screen" hidden>FIT</button>
                 <button id="btn-reset" class="btn" type="button" aria-label="Reset the level">RESET</button>
                 <button id="btn-hint" class="btn" type="button" aria-label="Show a hint">HINT</button>
@@ -557,7 +557,7 @@
       var log = [];
       var events = {};
       var handlers = {};
-      ['onTraySelect', 'onFire', 'onReset', 'onTiltToggle', 'onHint', 'onUndo', 'onRedo', 'onSoundToggle', 'onHelp', 'onLevels',
+      ['onTraySelect', 'onFire', 'onReset', 'onTiltToggle', 'onFlatView', 'onHint', 'onUndo', 'onRedo', 'onSoundToggle', 'onHelp', 'onLevels',
        'onRotateSelected', 'onRemoveSelected', 'onSelectLevel', 'onNextLevel', 'onRetryLevel', 'onModalOpen', 'onModalClose', 'onStageResize', 'onFit'].forEach(function (n) {
         handlers[n] = function (a) { log.push([n, a]); };
       });

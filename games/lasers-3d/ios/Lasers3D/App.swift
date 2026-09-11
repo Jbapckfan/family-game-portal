@@ -29,6 +29,7 @@ final class GameController: UIViewController, WKNavigationDelegate, WKScriptMess
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if verify { UIApplication.shared.isIdleTimerDisabled = true }
         initialSave = UserDefaults.standard.string(forKey: saveKey)
         let config = WKWebViewConfiguration()
         if verify { config.websiteDataStore = .nonPersistent() }
@@ -78,6 +79,7 @@ final class GameController: UIViewController, WKNavigationDelegate, WKScriptMess
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "saveProgress", let value = message.body as? String, !verify { UserDefaults.standard.set(value, forKey: saveKey) }
         if message.name == "verification", let body = message.body as? [String: Any] {
+            if verify { UIApplication.shared.isIdleTimerDisabled = false }
             let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("verification.json")
             if let data = try? JSONSerialization.data(withJSONObject: body, options: [.prettyPrinted, .sortedKeys]) { try? data.write(to: url, options: .atomic) }
             print("LASERS_VERIFICATION: \(body)")

@@ -246,6 +246,7 @@
       h = level.t[y][x];
       var g = new THREE.BoxGeometry(cell, h + 0.05, cell);
       g.translate(x, (h + 0.05) / 2 - 0.05, -y);
+      g.computeBoundingBox();
       var m = new THREE.Mesh(g, mat);
       m.userData.cell = { x: x, y: y };
       refGroup.add(m);
@@ -257,8 +258,16 @@
     var rect = render._renderer.domElement.getBoundingClientRect();
     var nx = ((clientX - rect.left) / rect.width) * 2 - 1, ny = -((clientY - rect.top) / rect.height) * 2 + 1;
     refRay.setFromCamera(new THREE.Vector2(nx, ny), render._camera);
-    var hits = refRay.intersectObjects(refGroup.children, false);
-    return hits.length ? { x: hits[0].object.userData.cell.x, y: hits[0].object.userData.cell.y } : null;
+    // Exhaustive Three.js box intersections are independent of the production grid traversal.
+    // Triangle raycasts can miss a shared face edge when the ray enters exactly at a corner,
+    // falsely declaring an occluded cell visible after an off-axis camera projection.
+    var point = new THREE.Vector3(), nearest = Infinity, cell = null;
+    refGroup.children.forEach(function (mesh) {
+      if (!refRay.ray.intersectBox(mesh.geometry.boundingBox, point)) return;
+      var distance = point.distanceToSquared(refRay.ray.origin);
+      if (distance < nearest) { nearest = distance; cell = mesh.userData.cell; }
+    });
+    return cell ? { x: cell.x, y: cell.y } : null;
   }
 
   /* The PREVIOUS fit rule (theme.camera.presets[*].paddingCells / minPaddingCells / fitHeights), reimplemented here

@@ -1,6 +1,6 @@
 # Lasers 3D: current rules and release workflow
 
-This is the current implementation reference as of September 9, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The physics and the 23 authored level layouts are unchanged by the usability and cinematic releases.
+This is the current implementation reference as of September 11, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The physics and the 23 authored level layouts are unchanged by the usability and cinematic releases.
 
 ## Puzzle rules
 
@@ -16,7 +16,7 @@ This is the current implementation reference as of September 9, 2026. `DESIGN.md
 
 The opening uses a playable choose/place/rotate/fire lesson. Tray types appear after their introduction. Help remains available from More on portrait phones or the side panel on larger screens. VIEW provides pan/zoom buttons, a replayable lesson, and a step-through inspector of the last fired route; only discovered events are described on dark boards.
 
-Working view keeps cells at least 34 CSS pixels. ALL shows the overview; tapping an overview region focuses it for editing. On touchscreens, drag one finger anywhere to pan; drag two fingers down/up to tilt toward the side/overhead or sideways to rotate; pinch to zoom. A pinch locks to zoom so midpoint drift cannot tilt the board. Lifting one finger continues panning from its current position without an edit. Hold a piece for 500 ms, then drag to move it. Mouse/pen piece drags remain direct; an empty-board mouse drag orbits. Middle-drag, Space-drag and VIEW arrows pan. Enter activates the keyboard cursor; Space only arms panning. Arrow keys keep the cursor visible. Selected pieces can be moved using the arrow button and then tapping a destination.
+The separate 2D and 3D buttons switch directly to a centred view in 360 ms, with no preparation pause; reduced motion uses 140 ms. 3D fits the whole board even after manual pan or zoom. 2D restores a centred editing view. Another press can reverse a transition immediately; pressing the active centred view does not add a tilt. Working view keeps cells at least 34 CSS pixels. ALL shows the overview; tapping an overview region focuses it for editing. On touchscreens, drag one finger anywhere to pan; drag two fingers down/up to tilt toward the side/overhead or sideways to rotate; pinch to zoom. A pinch locks to zoom so midpoint drift cannot tilt the board. Lifting one finger continues panning from its current position without an edit. Hold a piece for 500 ms, then drag to move it. Mouse/pen piece drags remain direct; an empty-board mouse drag orbits. Middle-drag, Space-drag and VIEW arrows pan. Enter activates the keyboard cursor; Space only arms panning. Arrow keys keep the cursor visible. Selected pieces can be moved using the arrow button and then tapping a destination.
 
 Campaign stars are independent flags: connect all targets; finish within par without an exact-answer hint; solve without an exact-answer hint. Tilting does not affect these stars. An unassisted solve with zero manual tilts also earns the optional FROM ABOVE badge. Old earned stars survive migration; the legacy internal `blind` flag now represents the unassisted campaign criterion.
 
@@ -28,9 +28,9 @@ Hints have three stages: explain the failed concept, focus the relevant region, 
 
 Unfinished attempts persist placements, fire/tilt counts, hint use, and camera framing. Level navigation, edits, camera changes, and backgrounding save progress. A completed attempt is removed while its awards persist. Undo history is session-local. The native app mirrors progress into app preferences and recovers the web content process if it terminates.
 
-Restoring an automatic camera preserves automatic framing: TILT still fits the whole board. A manually panned or zoomed camera keeps its chosen framing. Legacy saves without a manual flag retain their framing.
+Restoring an automatic camera preserves automatic framing: TILT still fits the whole board. A manually panned or zoomed camera keeps its chosen framing until the player explicitly selects 2D or 3D. Legacy saves without a manual flag retain their framing.
 
-Multi-touch input samples both pointers once per host frame, avoiding intermediate spread/zoom wobble. It adds no scheduler. Finger changes rebase the gesture; lost capture, cancellation, disabled input and blur release it. Manual pan/zoom/orbit interrupts a fit animation. A clamped gesture that never changes the angle does not count as a tilt.
+The camera always rotates around the geometric board centre at floor height. Pan shifts the orthographic framing, not that pivot. During a rotation and its fit easing, the board centre stays at the same screen position; view buttons smoothly bring it back to the canvas centre. Multi-touch input samples both pointers once per host frame, avoiding intermediate spread/zoom wobble. It adds no scheduler. Finger changes rebase the gesture; lost capture, cancellation, disabled input and blur release it. Manual pan/zoom/orbit interrupts a fit animation. A clamped gesture that never changes the angle does not count as a tilt.
 
 Motion uses one on-demand registry and frame scheduler. Settled scenes produce no application frames. Backgrounding commits active shot results and cancels decoration. WebGL loss saves the puzzle; restoration invalidates shadows and redraws the scene.
 

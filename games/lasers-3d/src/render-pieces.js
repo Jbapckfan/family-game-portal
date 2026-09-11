@@ -79,25 +79,59 @@
       geo.plateGlyph = pg;
       geo.faces = {};
       TYPES.forEach(function (t) { geo.faces[t] = SHAPE[t].flat ? plateGeo(t) : faceGeo(SHAPE[t].tilt, t); });
-      geo.emBase = root.LaserRenderArt.bevelBox(0.62, 0.28, 0.6, 0.035); geo.emBase.translate(0, 0.14, 0);
-      var barrel = new THREE.CylinderGeometry(0.2, 0.22, 0.62, 24); barrel.rotateZ(-Math.PI / 2); barrel.translate(0, 0.5, 0);
-      var bands = [barrel];
-      [-0.22, -0.08, 0.12].forEach(function (x) {
-        var band = new THREE.TorusGeometry(0.218, 0.025, 8, 24);
-        band.rotateY(Math.PI / 2); band.translate(x, 0.5, 0); bands.push(band);
-      });
-      geo.emBarrel = Core.mergeGeometries(bands);
-      var fil = new THREE.CylinderGeometry(0.12, 0.12, 0.08, 16); fil.rotateZ(-Math.PI / 2); fil.translate(0.33, 0.5, 0);
-      geo.emFilament = fil;
-      var sock = new THREE.CylinderGeometry(0.24, 0.28, 0.08, 24); sock.translate(0, 0.04, 0);
-      var cradle = new THREE.TorusGeometry(0.265, 0.036, 8, 32);
-      cradle.rotateX(-Math.PI / 2); cradle.translate(0, 0.12, 0);
-      geo.socket = Core.mergeGeometries([sock, cradle]);
-      geo.targetCrown = new THREE.TorusGeometry(0.32,0.028,8,40);geo.targetCrown.rotateX(-Math.PI/2);geo.targetCrown.translate(0,0.16,0);
-      var collar = new THREE.TorusGeometry(0.20,0.026,8,28);collar.rotateY(Math.PI/2);collar.translate(0.24,0.50,0);geo.emCollar=collar;
+      /* Instrument hardware stays inside one cell. Every optical centre remains at y=0.5,
+       * so the visible aperture/crystal and the authoritative beam agree at any height. */
+      function bevel(w, h, d, c, x, y, z) {
+        var b = root.LaserRenderArt.bevelBox(w, h, d, c); b.translate(x, y, z); return b;
+      }
+      function barrel(radius, length, x, segments) {
+        var b = new THREE.CylinderGeometry(radius, radius, length, segments || 32);
+        b.rotateZ(-Math.PI / 2); b.translate(x, 0.5, 0); return b;
+      }
+      function ring(radius, tube, x) {
+        var r = new THREE.TorusGeometry(radius, tube, 8, 32);
+        r.rotateY(Math.PI / 2); r.translate(x, 0.5, 0); return r;
+      }
+      function floorRing(radius, tube, y, arc) {
+        var r = new THREE.TorusGeometry(radius, tube, 8, 40, arc);
+        r.rotateX(-Math.PI / 2); r.translate(0, y, 0); return r;
+      }
+      geo.emChassis = Core.mergeGeometries([
+        bevel(0.69, 0.16, 0.62, 0.04, -0.02, 0.17, 0),
+        bevel(0.27, 0.18, 0.36, 0.03, -0.09, 0.30, 0), barrel(0.25, 0.60, 0),
+        barrel(0.21, 0.035, 0.335)
+      ]);
+      var bands = [bevel(0.78, 0.08, 0.72, 0.025, -0.02, 0.055, 0), ring(0.252, 0.036, 0.29), ring(0.25, 0.025, -0.29)];
+      [-0.22, -0.13, -0.04].forEach(function (x) { bands.push(ring(0.253, 0.014, x)); });
+      [-0.26, 0.26].forEach(function (z) { bands.push(bevel(0.46, 0.035, 0.065, 0.01, -0.04, 0.255, z)); });
+      geo.emHardware = Core.mergeGeometries(bands);
+      geo.emLens = barrel(0.176, 0.026, 0.353);
+      geo.emFilament = Core.mergeGeometries([
+        ring(0.20, 0.018, 0.37), barrel(0.072, 0.012, 0.373),
+        Core.boxAt(0.10, 0.56, -0.247, 0.21, 0.028, 0.016),
+        Core.boxAt(0.10, 0.56, 0.247, 0.21, 0.028, 0.016)
+      ]);
+      // Four swept supports leave the cardinal beam paths open; the crystal is a receiver from every direction.
+      geo.targetBase = new THREE.CylinderGeometry(0.34, 0.39, 0.14, 8); geo.targetBase.translate(0, 0.12, 0);
+      var foot = new THREE.CylinderGeometry(0.38, 0.40, 0.06, 8); foot.translate(0, 0.035, 0);
+      var cradle = [foot, floorRing(0.305, 0.035, 0.205)];
+      for (var arm = 0; arm < 4; arm++) {
+        var angle = Math.PI / 8 + arm * Math.PI / 2;
+        var points = [[0.28, 0.18], [0.35, 0.34], [0.32, 0.62], [0.22, 0.76]].map(function (p) {
+          return new THREE.Vector3(Math.cos(angle) * p[0], p[1], Math.sin(angle) * p[0]);
+        });
+        cradle.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 12, 0.026, 6, false));
+      }
+      geo.socket = Core.mergeGeometries(cradle);
+      var crown = [];
+      for (var sector = 0; sector < 8; sector++) {
+        var arc = floorRing(0.352, 0.021, 0.175, Math.PI / 4 - 0.12);
+        arc.rotateY(sector * Math.PI / 4); crown.push(arc);
+      }
+      geo.targetCrown = Core.mergeGeometries(crown);
       geo.emGlyph=Core.mergeGeometries([Core.boxAt(-0.18,0.10,-0.23,0.35,0.012,0.045),Core.boxAt(-0.18,0.10,0.23,0.35,0.012,0.045),Core.boxAt(-0.35,0.10,0,0.045,0.012,0.46)]);
-      geo.orb = new THREE.SphereGeometry(0.24, 32, 20); geo.orb.translate(0, 0.5, 0);
-      geo.core = new THREE.SphereGeometry(0.1, 16, 12); geo.core.translate(0, 0.5, 0);
+      geo.orb = new THREE.SphereGeometry(0.255, 24, 16); geo.orb.translate(0, 0.5, 0);
+      geo.core = new THREE.OctahedronGeometry(0.19, 0); geo.core.scale(0.9, 1.2, 0.9); geo.core.translate(0, 0.5, 0);
       /* FLAT target proxy: a reticle in the XY plane (so copying the camera quaternion makes it screen-facing). */
       geo.proxyRing = new THREE.RingGeometry(0.25, 0.32, 40);
       geo.proxyDot = new THREE.CircleGeometry(0.075, 20);
@@ -146,6 +180,7 @@
     var mats = {
       housing: Core.matFromSpec(M.pieceHousing), glyph: Core.matFromSpec(M.flatPieceGlyph),
       emitterBody: Core.matFromSpec(M.emitterBody), emitterFilament: Core.matFromSpec(M.emitterFilament),
+      instrumentShell: Core.matFromSpec(M.instrumentShell), emitterLens: Core.matFromSpec(M.emitterLens),
       emitterHalo: new THREE.SpriteMaterial({ map: Core.glowTexture(theme.palette.emitter, 0), color: new THREE.Color(theme.palette.emitter),
         transparent: true, opacity: M.emitterHalo.opacity, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }),
       socket: Core.matFromSpec(M.targetSocket),
@@ -165,11 +200,11 @@
       mats.face[t] = spec ? Core.matFromSpec(spec) : Core.matFromSpec(M.mirrorFace, { color: accentOf(t), emissive: accentOf(t) });
       mats.filament[t] = Core.matFromSpec(M.edgeFilament, { color: accentOf(t), emissive: accentOf(t) });
     });
-    Core.markSharedAll([mats.housing, mats.glyph, mats.emitterBody, mats.emitterFilament, mats.emitterHalo, mats.emitterHalo.map, mats.socket,
+    Core.markSharedAll([mats.housing, mats.glyph, mats.emitterBody, mats.instrumentShell, mats.emitterLens, mats.emitterFilament, mats.emitterHalo, mats.emitterHalo.map, mats.socket,
       mats.selection, mats.hover, mats.cursor]);
     TYPES.forEach(function (t) { Core.markShared(mats.face[t]); Core.markShared(mats.filament[t]); });
     /* materials whose opacity is `reveal * base` */
-    var physical = [mats.housing, mats.emitterBody, mats.socket];
+    var physical = [mats.housing, mats.emitterBody, mats.instrumentShell, mats.emitterLens, mats.socket];
     TYPES.forEach(function (t) { physical.push(mats.face[t], mats.filament[t]); });
     physical.forEach(function (m) { m.userData.baseOpacity = m.opacity; m.userData.baseTransparent = m.transparent; });
     var reveal = 0;
@@ -289,6 +324,7 @@
       chargeApplied = on;
       var k = on ? c.intensity : 0, h = on ? c.halo : 0;
       mats.emitterFilament.emissiveIntensity = filamentBaseIntensity * (1 + (FIRE.chargeEmissiveMultiplier - 1) * k);
+      mats.emitterLens.emissiveIntensity = M.emitterLens.emissiveIntensity * (1 + 2 * k);
       mats.emitterHalo.opacity = haloBaseOpacity + (FIRE.chargeHaloOpacity - haloBaseOpacity) * h;
       if (emitterHalo) {
         var s = emitterHaloScale * (1 + (FIRE.chargeHaloScale - 1) * h);
@@ -303,25 +339,28 @@
       Core.clearGroup(placedGroup); Core.clearGroup(fixedGroup); Core.clearGroup(actorGroup);
       targets = [];
       clearOverlay();
-      var em = new THREE.Group();
+      var em = new THREE.Group(); em.name = 'laser-emitter';
       em.rotation.y = DIR_ROT[parsed.emitter.dir] || 0;
-      var b1 = new THREE.Mesh(geo.emBase, mats.emitterBody); b1.castShadow = true; em.add(b1);
-      var b2 = new THREE.Mesh(geo.emBarrel, mats.emitterBody); b2.castShadow = true; em.add(b2);
+      var b1 = new THREE.Mesh(geo.emChassis, mats.instrumentShell); b1.castShadow = true; em.add(b1);
+      var b2 = new THREE.Mesh(geo.emHardware, mats.emitterBody); b2.castShadow = true; em.add(b2);
+      em.add(new THREE.Mesh(geo.emLens, mats.emitterLens));
       em.add(new THREE.Mesh(geo.emFilament, mats.emitterFilament));
-      em.add(new THREE.Mesh(geo.emCollar, mats.emitterFilament));
       var sourceGlyph=new THREE.Mesh(geo.emGlyph,mats.glyph);sourceGlyph.renderOrder=6;em.add(sourceGlyph);
       var halo = new THREE.Sprite(mats.emitterHalo); halo.position.set(0.36, 0.5, 0); halo.scale.set(0.7, 0.7, 1); em.add(halo);
       emitterHalo = halo; emitterHaloScale = halo.scale.x;
       setCharge(NO_CHARGE);                  /* a new level always starts at the emitter's plain theme state */
       actorGroup.add(placeAt(em, parsed.emitter.x, parsed.emitter.y));
       parsed.targets.forEach(function (tg, i) {
-        var g = new THREE.Group();
+        var g = new THREE.Group(); g.name = 'laser-receiver-' + i;
+        var base = new THREE.Mesh(geo.targetBase, mats.instrumentShell); base.castShadow = true; g.add(base);
         var sock = new THREE.Mesh(geo.socket, mats.socket); sock.castShadow = true; g.add(sock);
         var crownMat=new THREE.MeshBasicMaterial({color:new THREE.Color(theme.palette.targetUnlit),transparent:true,opacity:0,toneMapped:false,depthWrite:false});
         g.add(new THREE.Mesh(geo.targetCrown,crownMat));
         var orbMat = Core.matFromSpec(M.targetUnlit);
         var orb = new THREE.Mesh(geo.orb, orbMat); orb.renderOrder = 3; g.add(orb);
-        var coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(theme.palette.targetLit), transparent: true, opacity: 0, toneMapped: false });
+        var coreMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(theme.palette.targetUnlit),
+          emissive: new THREE.Color(theme.palette.targetUnlit), emissiveIntensity: 0.8,
+          roughness: 0.18, metalness: 0.25, transparent: true, opacity: 0 });
         var core = new THREE.Mesh(geo.core, coreMat); g.add(core);
         var haloMat = new THREE.SpriteMaterial({ map: Core.glowTexture(theme.palette.targetLit, 0), color: new THREE.Color(theme.palette.targetLit),
           transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
@@ -337,10 +376,10 @@
         var pd = new THREE.Mesh(geo.proxyDot, proxyMat); pd.renderOrder = 6; proxy.add(pd);
         g.add(proxy);
         actorGroup.add(placeAt(g, tg.x, tg.y));
-        orbMat.envMapIntensity = reveal;
+        orbMat.envMapIntensity = reveal; coreMat.envMapIntensity = reveal;
         var rec = { index: i, crown: crownMat, orb: orbMat, core: coreMat, coreMesh: core, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
         targets.push(rec);
-        refreshTarget(rec);
+        lerpTarget(rec, 0);
       });
       /* DESIGN.md 15.1: a piece the LEVEL placed is part of the world and is hidden until the beam has been in its
        * cell; a piece the PLAYER placed is always drawn, known cell or not (setPlaced below is deliberately not
@@ -441,8 +480,11 @@
       m.roughness = a.roughness + (b.roughness - a.roughness) * k;
       m.metalness = a.metalness + (b.metalness - a.metalness) * k;
       t.crown.color.copy(TC.colorUnlit).lerp(TC.colorLit,k);
-      t.core.opacity = k; t.halo.opacity = k * theme.beam.endStates.target.haloOpacity;
-      var fill = 0.55 + 1.15 * k;
+      t.core.color.copy(TC.colorUnlit).lerp(TC.colorLit, k);
+      t.core.emissive.copy(TC.colorUnlit).lerp(TC.colorLit, k);
+      t.core.emissiveIntensity = 0.8 + 0.9 * k;
+      t.halo.opacity = k * theme.beam.endStates.target.haloOpacity;
+      var fill = 0.72 + 0.28 * k;
       t.coreMesh.scale.setScalar(fill); t.coreMesh.position.y = 0.5 * (1 - fill);
       refreshTarget(t);
     }
@@ -457,6 +499,7 @@
       t.orb.opacity = base * show;
       t.orb.transparent = true;
       t.orb.visible = show > 0.001;
+      t.core.opacity = show; t.core.visible = show > 0.001;
       var hide = (1 - reveal) * (1 - t.lit);
       t.proxyMat.opacity = hide;
       t.proxy.visible = hide > 0.001;
@@ -471,7 +514,7 @@
         m.visible = r > 0;
       });
       mats.glyph.opacity = 1 - r; mats.glyph.visible = r < 1;
-      targets.forEach(function (t) { t.orb.envMapIntensity = r; refreshTarget(t); });
+      targets.forEach(function (t) { t.orb.envMapIntensity = r; t.core.envMapIntensity = r; refreshTarget(t); });
       placedGroup.children.forEach(updateSecret); fixedGroup.children.forEach(updateSecret);
     }
 

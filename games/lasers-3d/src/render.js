@@ -84,7 +84,7 @@
       pmrem.dispose(); tex.dispose();
       scene.environment = env;
       var tm = terrain.materials, pm = pieces.materials;
-      envMaterials = [tm.floor, tm.top, tm.bevel, tm.side, tm.frame, tm.frameEdge, pm.housing, pm.emitterBody, pm.socket];
+      envMaterials = [tm.floor, tm.top, tm.bevel, tm.side, tm.frame, tm.frameEdge, pm.housing, pm.emitterBody, pm.instrumentShell, pm.emitterLens, pm.socket];
       tm.floor.userData.envScale = 0.18; tm.side.userData.envScale = 1.40;
       pieces.types().forEach(function (t) { if (pm.face[t]) envMaterials.push(pm.face[t]); });
       envMaterials.forEach(function (m) { m.envMapIntensity = 0; });

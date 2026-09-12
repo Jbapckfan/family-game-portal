@@ -7,7 +7,7 @@ void (async function () {
     await until(()=>window.__lasers3d?.state.frames>0);
     const a=window.__lasers3d;
     check(!!a.render&&!a.render._renderer.getContext().isContextLost(),'Physical iPad WebGL renderer active');
-    check(a.levels.length===23&&a.levels.every(l=>a.sim.trace(l,l.solution).allTargetsHit),'All 23 bundled solutions connect');
+    check(a.levels.length===27&&a.levels.every(l=>a.sim.trace(l,l.solution).allTargetsHit),'All 27 bundled solutions connect');
     a.loadLevel(0);a.reset();await pause(300);
     const solution=a.levels[0].solution[0];a.focusCell(solution,true);await pause(100);
     document.querySelector('.tray-card[data-type="MIRROR"]').click();
@@ -46,18 +46,29 @@ void (async function () {
     check(['btn-flat','btn-tilt'].every(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.width>=44&&r.height>=44&&r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight;}),'Separate 2D and 3D buttons are visible and tappable');
     const worldCentre=new THREE.Vector3((a.state.level.size.w-1)/2,0,-(a.state.level.size.d-1)/2);
     const projectedCentre=()=>worldCentre.clone().project(a.render._camera);
-    a.render.zoom(1.3);a.render.pan(30,15);a.ui.fitStage();await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    a.render.zoom(1.3);a.render.pan(30,15);a.ui.fitStage();await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
     const pivot0=projectedCentre();
     pointer('pointerdown',21,cx-70,cy);pointer('pointerdown',22,cx+70,cy);
     pointer('pointermove',21,cx-35,cy+20);pointer('pointermove',22,cx+105,cy+20);await pause(60);
     pointer('pointerup',21,cx-35,cy+20);pointer('pointerup',22,cx+105,cy+20);await until(()=>!a.render.needsFrame());
     const pivot1=projectedCentre(),camera=a.render._camera;
     check(Math.hypot(pivot1.x-pivot0.x,pivot1.y-pivot0.y)<0.0001&&camera.getWorldDirection(new THREE.Vector3()).dot(worldCentre.clone().sub(camera.position).normalize())>0.999999,'Rotation stays around the board centre after panning and zooming');
-    document.getElementById('btn-tilt').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    document.getElementById('btn-tilt').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
     const centred=projectedCentre();check(Math.hypot(centred.x,centred.y)<0.0001&&a.render.getCamera().view==='overview','3D button recentres and fits the board');
     document.getElementById('btn-flat').click();await pause(50);document.getElementById('btn-tilt').click();await pause(50);document.getElementById('btn-flat').click();
-    await until(()=>!a.render.needsFrame()&&!a.state.dirty);
+    await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
     check(a.render.isFlat()&&document.getElementById('btn-flat').getAttribute('aria-pressed')==='true','Rapid view swaps finish in the last selected 2D view');
+    a.ui.showLevelSelect();document.getElementById('btn-splitter-chapter').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.levelIndex===23,'Splitters chapter opens from Levels');
+    document.querySelector('.tray-card[data-type="SPLITTER"]').click();
+    const split=a.render.projectCell(a.levels[23].solution[0],0);
+    pointer('pointerdown',31,split.x,split.y);pointer('pointerup',31,split.x,split.y);await pause(150);
+    check(a.state.placed[0]?.type==='SPLITTER'&&a.sim.trace(a.state.level,a.state.placed).allTargetsHit,'Splitter touch placement connects two receivers');
+    document.getElementById('btn-fire').click();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.lastShot.hits.length===2&&a.getProgress().stars[23].solved,'Split FIRE awards only after both receivers connect');
+    a.ui.hideVictory();a.loadLevel(24);a.setPlaced(a.levels[24].solution);await pause(150);a.fire();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.lastShot.hits.length===3,'Cascaded splitters reach three receivers on iPad');
+    const splitFrames=a.state.frames;await pause(600);check(a.state.frames===splitFrames,'Split beam and receiver effects return to zero idle frames');
   } catch(e) {errors.push(String(e.stack||e));}
   finally {
     if(window.__lasers3d)window.__lasers3d.destroy();

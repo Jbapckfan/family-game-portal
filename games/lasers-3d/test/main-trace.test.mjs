@@ -26,8 +26,8 @@ function rendererSegDist(result) {
     const stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
     const toH = stub ? s.from.z + 0.5 * s.v : s.to.z;
     let len = Math.hypot(s.to.x - s.from.x, s.to.y - s.from.y, toH - s.from.z);
-    if (i === segs.length - 1 && result.end === 'lost-edge') len *= 0.5;
-    cum += len;
+    if ((i === segs.length - 1 && result.end === 'lost-edge') || s.terminal === 'lost-edge') len *= 0.5;
+    cum = (result.branched ? (s.parent < 0 ? 0 : out[s.parent]) : cum) + len;
     out.push(cum);
   }
   return out;

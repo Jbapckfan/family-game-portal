@@ -45,7 +45,7 @@
       var a=app.state,p=app.getProgress(),c=v.cursorCell||v.selectedCell;
       if(c){var key=c.x+','+c.y+','+a.version;if(key!==selected){selected=key;var piece=v.placed.find(function(t){return t.x===c.x&&t.y===c.y;});describe.textContent='Column '+(c.x+1)+', row '+(c.y+1)+(piece?' · '+piece.type+' '+piece.orient:app.knownCell(c)?' · square selected':' · undiscovered');}}
       else describe.textContent='';
-      doc.querySelectorAll('.tray-card').forEach(function(b){var t=b.dataset.type,introduced=app.levels.slice(0,v.levelIndex+1).some(function(l){return l.tray.indexOf(t)!==-1;});b.setAttribute('data-unintroduced',introduced?'false':'true');});
+      doc.querySelectorAll('.tray-card').forEach(function(b){var t=b.dataset.type,introduced=t==='SPLITTER'?a.level.tray.indexOf(t)!==-1:app.levels.slice(0,v.levelIndex+1).some(function(l){return l.tray.indexOf(t)!==-1;});b.setAttribute('data-unintroduced',introduced?'false':'true');});
       if(v.levelIndex===0&&!p.tutorialDone&&!app.ui.isModalOpen()){
         var first=v.placed[0],step=v.status==='won'?'done':!v.selectedTray&&!first?'pick':!first?'place':app.sim.trace(a.level,v.placed).allTargetsHit?'fire':'rotate';
         if(step!==seen){seen=step;

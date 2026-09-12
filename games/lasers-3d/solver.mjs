@@ -368,7 +368,7 @@ export function flatten(level) {
   // simply inert in a world with no pitch (see the doc comment above).
   const fixed = L.fixed
     .filter(f => L.t[f.y][f.x] === 0)
-    .map(f => ({ x: f.x, y: f.y, type: f.type === 'FLOOR' ? 'FLOOR' : 'MIRROR', orient: f.orient, secret: false }));
+    .map(f => ({ x: f.x, y: f.y, type: (f.type === 'FLOOR' || Sim.PIECES[f.type].split) ? f.type : 'MIRROR', orient: f.orient, secret: false }));
   return {
     name: L.name ? L.name + ' (flat)' : '',
     par: 0,
@@ -378,7 +378,7 @@ export function flatten(level) {
     emitter: { x: L.emitter.x, y: L.emitter.y, dir: L.emitter.dir },
     targets: L.targets.map(tg => ({ x: tg.x, y: tg.y })),
     fixed,
-    tray: L.tray.map(t => (t === 'FLOOR' ? 'FLOOR' : 'MIRROR')),
+    tray: L.tray.map(t => ((t === 'FLOOR' || Sim.PIECES[t].split) ? t : 'MIRROR')),
     intro: ''
   };
 }

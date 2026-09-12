@@ -79,7 +79,9 @@ const require = createRequire(import.meta.url);
 const Sim = require('./src/sim.js');
 const Pieces = require('./src/pieces.js');
 const Theme = require('./src/theme.js');
-const LEVELS = require(process.env.LASERS_LEVELS || './src/levels.js');
+const ALL_LEVELS = require(process.env.LASERS_LEVELS || './src/levels.js');
+const LEVELS = ALL_LEVELS.filter(l => !l.bonus); // Original campaign keeps its full authored curve checks.
+const BONUS_LEVELS = ALL_LEVELS.filter(l => l.bonus);
 
 const MIN_SIDE = 12, MAX_SIDE = 24;
 const STAGE_PX = 393;                                        // iPhone 14/15 CSS width (test/ui.playwright.mjs)
@@ -644,11 +646,32 @@ console.log('        (LaserSim.MAX_STEPS = ' + Sim.MAX_STEPS + ' is only its flo
 console.log('        everywhere - so every par and 3D-necessity result here holds whatever the cap is set to.');
 console.log('');
 
+// Bonus chapter has its own teaching curve: flat branching first, then height and windows.
+for (const raw of BONUS_LEVELS) {
+  const i = ALL_LEVELS.indexOf(raw), L = Sim.parseLevel(raw), placed = [];
+  assert(i, !names.has(L.name), 'duplicate chapter name'); names.add(L.name);
+  assert(i, L.targets.length >= 2, 'splitter puzzle needs multiple receivers');
+  assert(i, L.size.w >= 12 && L.size.d >= 12 && L.size.w <= 24 && L.size.d <= 24, 'chapter board size');
+  const counts = {}; L.tray.forEach(t => counts[t] = (counts[t] || 0) + 1);
+  for (const p of raw.solution) {
+    assert(i, Sim.canPlace(L, placed, p.x, p.y) && counts[p.type] > 0, 'illegal solution piece');
+    counts[p.type]--; placed.push(p);
+  }
+  const r = replay(L, placed), min = proveMinimal(L, L.par, BUDGET);
+  assert(i, placed.length === L.par && r.allTargetsHit, 'authored solution must connect every receiver at par');
+  assert(i, r.events.some(e => e.kind === 'split'), 'solution must actually split');
+  assert(i, min.proven && !min.truncated && min.capHits === 0, 'chapter par must be proven exhaustively');
+  const without = {...raw, tray: raw.tray.filter(t => t !== 'SPLITTER'), par: 0};
+  const unsplit = solve(without, {...BUDGET, firstOnly: true});
+  assert(i, !unsplit.solvable && !unsplit.truncated, 'splitter must be necessary, not decorative');
+  console.log('SPLITTERS ' + (i + 1) + ' ' + L.name + ': ' + r.hits.length + ' receivers, par ' + L.par + ', proven in ' + min.nodes + ' nodes');
+}
+
 if (failures.length) {
   for (const f of failures) console.error('FAIL ' + f);
   console.error('validate-levels: ' + failures.length + ' failure(s) across ' + LEVELS.length + ' levels');
   process.exit(1);
 }
-console.log('validate-levels: ' + LEVELS.length + ' levels OK (tray/fixed = M mirror, W wedge, D dip, F floor plate; beam =');
+console.log('validate-levels: ' + ALL_LEVELS.length + ' levels OK (tray/fixed = M mirror, W wedge, D dip, F floor plate; beam =');
 console.log('steps in the shipped solution; bnc = bounces off a plate; nodes = traces to EXHAUST depth par-1, which is the');
 console.log('proof that par is real and the 2-star is honest)');

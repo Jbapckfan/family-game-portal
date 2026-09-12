@@ -71,6 +71,9 @@
       var gg = new THREE.PlaneGeometry(P.flatGlyph.length, P.flatGlyph.width);
       gg.rotateX(-Math.PI / 2); gg.translate(0, h.h + 0.003, 0);
       geo.glyph = gg;                                   /* the diagonal strip every UPRIGHT piece shows in FLAT */
+      var splitMark = new THREE.RingGeometry(0.15, 0.205, 4);
+      splitMark.rotateX(-Math.PI / 2); splitMark.translate(0, h.h + 0.005, 0);
+      geo.splitGlyph = Core.mergeGeometries([gg.clone(), splitMark]);
       /* DESIGN.md 14.3: a plate lying in the floor "reads differently from the three upright pieces by silhouette
        * alone; it does not need a disguise". So its FLAT mark is a disc, not the shared diagonal strip - the one
        * place the flat view is allowed to tell two piece types apart, because the rules already do. */
@@ -78,7 +81,7 @@
       pg.rotateX(-Math.PI / 2); pg.translate(0, h.h + 0.003, 0);
       geo.plateGlyph = pg;
       geo.faces = {};
-      TYPES.forEach(function (t) { geo.faces[t] = SHAPE[t].flat ? plateGeo(t) : faceGeo(SHAPE[t].tilt, t); });
+      TYPES.forEach(function (t) { geo.faces[t] = t === 'SPLITTER' ? splitterGeo() : SHAPE[t].flat ? plateGeo(t) : faceGeo(SHAPE[t].tilt, t); });
       /* Instrument hardware stays inside one cell. Every optical centre remains at y=0.5,
        * so the visible aperture/crystal and the authoritative beam agree at any height. */
       function bevel(w, h, d, c, x, y, z) {
@@ -163,6 +166,16 @@
       return { face: disc, filament: rim, type: type };
     }
 
+    function splitterGeo() {
+      var panel = faceGeo(0, 'SPLITTER');
+      var crystal = new THREE.OctahedronGeometry(0.35);
+      crystal.scale(1, 1, 0.72); crystal.translate(0, 0.5, 0);
+      var rim = new THREE.TorusGeometry(0.27, 0.015, 6, 4);
+      rim.translate(0, 0.5, 0);
+      return { face: Core.mergeGeometries([panel.face, crystal]),
+        filament: Core.mergeGeometries([panel.filament, rim]), type: 'SPLITTER' };
+    }
+
     /* Face plane (+ merged 0.025 filament boxes) tilted about the diagonal (local X) by `tilt`, centred at mid height. */
     function faceGeo(tilt, type) {
       var size = P.mirrorPanel.size, zFrom = P.mirrorPanel.zFrom, zTo = P.mirrorPanel.zTo, f = P.edgeFilament;
@@ -222,7 +235,7 @@
      * everything else wears itself. It decides the decoy model AND the flat glyph together, so a disguised piece can
      * never be given away by the mark on its lid. */
     function shownType(type, secret) { return (secret && type !== 'MIRROR' && geo.faces.MIRROR) ? 'MIRROR' : type; }
-    function glyphGeo(type) { return (SHAPE[type] && SHAPE[type].flat) ? geo.plateGlyph : geo.glyph; }
+    function glyphGeo(type) { return type === 'SPLITTER' ? geo.splitGlyph : (SHAPE[type] && SHAPE[type].flat) ? geo.plateGlyph : geo.glyph; }
 
     /* A piece group. Secret pieces keep both models and swap on reveal >= 0.5. */
     function pieceModel(type, orient, secret, ghostMats) {

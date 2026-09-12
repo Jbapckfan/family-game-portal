@@ -8,7 +8,7 @@ test('legacy earned stars follow explicit identity after reorder',()=>{
  P.sync(p,levels);const reordered=[levels[1],levels[0],...levels.slice(2)];P.migrate(p,reordered);
  assert.equal(p.currentLevel,0);assert.equal(p.stars[1].par,true);assert.equal(p.intros[1],true);assert.equal(p.stars[0],undefined);
 });
-test('every shipped level has a unique stable ID',()=>assert.equal(new Set(levels.map(l=>l.id)).size,23));
+test('every shipped level has a unique stable ID',()=>assert.equal(new Set(levels.map(l=>l.id)).size,27));
 test('fingerprint changes for fixed optics, openings, par, tray and dark rules',()=>{
  const l=levels[20],f=P.fingerprint(l);
  for(const mutate of [x=>x.fixed[0].orient='\\',x=>x.openings=[{x:1,y:1,levels:[0]}],x=>x.par++,x=>x.tray.push('MIRROR'),x=>x.dark=false]){const n=clone(l);mutate(n);assert.notEqual(P.fingerprint(n),f);}

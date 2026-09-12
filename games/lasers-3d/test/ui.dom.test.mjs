@@ -58,7 +58,7 @@ const overflow = () => ({ sw: document.documentElement.scrollWidth, cw: document
 
 const trayVisible = () => {
   const t = document.getElementById('tray'); const r = t.getBoundingClientRect();
-  const cards = Array.from(t.querySelectorAll('.tray-card')).map((c) => c.getBoundingClientRect());
+  const cards = Array.from(t.querySelectorAll('.tray-card')).filter(c => !c.hidden).map((c) => c.getBoundingClientRect());
   const fire = document.getElementById('btn-fire').getBoundingClientRect();
   const inside = (b) => b.top >= 0 && b.left >= 0 && b.bottom <= innerHeight + 0.5 && b.right <= innerWidth + 0.5 && b.width > 0;
   return { tray: inside(r), cards: cards.every(inside), fire: inside(fire), rect: [r.left, r.top, r.width, r.height], scrollY: window.scrollY };

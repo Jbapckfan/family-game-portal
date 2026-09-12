@@ -76,7 +76,7 @@
    * real explanation for a miss rather than a restatement. The wording of that sentence lives in ui.js. */
   function readout(level, result, texts) {
     if (!level || !result || !texts) return null;
-    var over = flyover(level, result);
+    var over = result.allTargetsHit ? null : flyover(level, result);
     var total = level.targets.length, lit = result.hits ? result.hits.length : 0;
     var key = over ? (over.above ? 'over' : 'under') : result.end;
     var msg = texts[key] || texts[result.end] || '';
@@ -117,6 +117,7 @@
     var out = [], segs = (result && result.segments) || [], cum = 0, i, s, stub, dz, len;
     for (i = 0; i < segs.length; i++) {
       s = segs[i];
+      if (typeof s.d1 === 'number') { out.push(s.d1); continue; }
       stub = (s.to.x % 1 !== 0) || (s.to.y % 1 !== 0);
       dz = stub ? 0.5 * s.v : (s.to.z - s.from.z);
       len = Math.sqrt(Math.pow(s.to.x - s.from.x, 2) + Math.pow(s.to.y - s.from.y, 2) + dz * dz);

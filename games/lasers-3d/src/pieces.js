@@ -84,7 +84,8 @@
     MIRROR: { type: 'MIRROR', turn: TURN,      dPitch: 0,       label: 'Mirror', tag: '',  hint: 'Turns the beam and keeps it going the way it was: level stays level, a climb keeps climbing.' },
     WEDGE:  { type: 'WEDGE',  turn: TURN,      dPitch: 1,       label: 'Wedge',  tag: '^', hint: 'Turns the beam and tilts it UP one step. It levels a falling beam.' },
     DIP:    { type: 'DIP',    turn: TURN,      dPitch: -1,      label: 'Dip',    tag: 'v', hint: 'Turns the beam and tilts it DOWN one step. It is the only way to level a climbing beam.' },
-    FLOOR:  { type: 'FLOOR',  turn: TURN_KEEP, pitch: bounceUp, label: 'Floor',  tag: '_', hint: 'A mirror lying flat in the ground. It does NOT turn the beam: a beam falling onto it bounces straight back up, still heading the same way. A level or climbing beam glides right over it.' }
+    FLOOR:  { type: 'FLOOR',  turn: TURN_KEEP, pitch: bounceUp, label: 'Floor',  tag: '_', hint: 'A mirror lying flat in the ground. It does NOT turn the beam: a beam falling onto it bounces straight back up, still heading the same way. A level or climbing beam glides right over it.' },
+    SPLITTER: { type: 'SPLITTER', turn: TURN, dPitch: 0, split: true, label: 'Splitter', tag: '+', hint: 'Makes two beams: one continues straight and one turns along the diagonal. Both keep their climb. Light every receiver in one shot.' }
   };
 
   var TYPES = Object.keys(PIECES);

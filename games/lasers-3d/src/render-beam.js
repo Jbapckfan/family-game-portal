@@ -362,15 +362,16 @@
         var toH = stub ? s.from.z + B.heightOffset + 0.5 * s.v : s.to.z + B.heightOffset;
         Core.world(s.from.x, s.from.y, s.from.z + B.heightOffset, P);
         Core.world(s.to.x, s.to.y, 0, Q); Q.y = toH;
-        if (last && edge) Q.lerp(P, 0.5);                        /* stop at the board edge */
+        if ((last && edge) || s.terminal === 'lost-edge') Q.lerp(P, 0.5); /* stop at the board edge */
         var z0 = Core.clamp(s.from.z, 0, 3), z1 = Core.clamp(Math.round(stub ? s.from.z : s.to.z), 0, 3), len = P.distanceTo(Q);
+        var startDist = result.branched ? s.d0 : cum, arrivalDist = result.branched ? s.d1 : cum + len;
         /* merge collinear level segments into one tube so additive glow never double-covers a joint */
-        if (run && run.z0 === z0 && run.z1 === z1 && run.d === s.d && s.v === 0 && run.v === 0 && !stub) { run.b.copy(Q); run.d1 = cum + len; }
-        else { run = { a: P.clone(), b: Q.clone(), z0: z0, z1: z1, d: s.d, v: s.v, d0: cum, d1: cum + len }; runs.push(run); }
-        cum += len;
+        if (run && run.b.distanceToSquared(P) < 1e-10 && run.z0 === z0 && run.z1 === z1 && run.d === s.d && s.v === 0 && run.v === 0 && !stub) { run.b.copy(Q); run.d1 = arrivalDist; }
+        else { run = { a: P.clone(), b: Q.clone(), z0: z0, z1: z1, d: s.d, v: s.v, d0: startDist, d1: arrivalDist }; runs.push(run); }
+        cum = Math.max(cum, arrivalDist);
         lastDir.subVectors(Q, P).normalize();
         /* Per-segment arc distance, arrival point and heading: the ONLY index the event stream needs. */
-        segDist.push(cum); segPos.push(Q.clone()); segDir.push(lastDir.clone());
+        segDist.push(arrivalDist); segPos.push(Q.clone()); segDir.push(lastDir.clone());
       }
       /* `dep` is the departure spec for an ending that LEAVES the world (theme.beam.endStates.<state>). It only ever
        * affects the last run's radius ramp here; the continuation past endPoint is built right after this loop. */
@@ -380,7 +381,7 @@
         var L0 = B.levels[r.z0], L1 = B.levels[r.z1], lastRun = ri === runs.length - 1;
         var len = r.a.distanceTo(r.b);
         if (len <= 1e-9) return;
-        var peak = peakForPitch(r.v), prevPeak = ri > 0 ? peakForPitch(runs[ri - 1].v) : peak;
+        var peak = peakForPitch(r.v), prevPeak = ri > 0 && !result.branched ? peakForPitch(runs[ri - 1].v) : peak;
         var back = (dep && lastRun) ? Math.min(dep.taperBackCells || 0, len * 0.9) : 0;
         var taperAt = back > 0 ? 1 - back / len : 1;
         var blendAt = (prevPeak !== peak) ? Math.min(blendCells / len, 1) : 0;
@@ -403,6 +404,7 @@
           var gd0 = (L0.glowDiameter + (L1.glowDiameter - L0.glowDiameter) * f0) / 2 * s0;
           var gd1 = (L0.glowDiameter + (L1.glowDiameter - L0.glowDiameter) * f1) / 2 * s1;
           var extS = (ri > 0) && ci === 0, extE = !lastRun && ci === cuts.length - 2;
+          if (result.branched) { extS = false; extE = false; }
           tube(cores[r.z0], A, Bv, cd0, cd1, dA, dB, extS, extE, 1, 1, p0, p1);
           tube(glows[r.z0], A, Bv, gd0, gd1, dA, dB, extS, extE, 1, 1, p0, p1);
           if (L0.filament) tube(fils[r.z0], A, Bv, cd0 * B.filament.diameterRatio, cd1 * B.filament.diameterRatio, dA, dB, extS, extE, 1, 1, p0, p1);
@@ -502,11 +504,16 @@
         if (typeof st !== 'number' || st < 0 || st >= segDist.length) continue;
         if (ev.kind === 'piece') {
           sched.push({ d: segDist[st], kind: 'contact', pos: segPos[st], inDir: segDir[st],
-            outDir: segDir[st + 1] || segDir[st], type: ev.type });
+            outDir: result.branched ? new THREE.Vector3(ev.dOut === 'E' ? 1 : ev.dOut === 'W' ? -1 : 0, ev.vOut, ev.dOut === 'N' ? -1 : ev.dOut === 'S' ? 1 : 0).normalize() : segDir[st + 1] || segDir[st], type: ev.type });
         } else if (ev.kind === 'bounce') {
           sched.push({ d: segDist[st], kind: 'dot', pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
         } else if (ev.kind === 'target') {
           sched.push({ d: segDist[st], kind: 'target', index: ev.targetIndex, pos: segPos[st] });
+        } else if (ev.kind === 'branch-end') {
+          var spec = DEPART[ev.end] ? ES[DEPART[ev.end]] : null;
+          sched.push({ d: segDist[st], kind: ev.end === 'blocked' ? 'blocked' : 'marker', spec: spec,
+            end: ev.end, endPos: segPos[st], endDir: segDir[st] });
+          marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
         } else if (ev.kind === 'pitch') {
           marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
         }
@@ -621,6 +628,8 @@
     }
     function dispatch(e, view, skipped) {
       var t0 = e.t, flat = isFlatView(view), n = new THREE.Vector3(), i;
+      var endPos = e.endPos || state.endPos, endDir = e.endDir || state.endDir;
+      var endKind = e.end || state.end, depDir = e.end ? null : state.depDir;
       if (e.kind === 'target') {
         onLit(e.index, e.pos);                               /* target state is NEVER dropped, skipped or not */
         if (skipped || !state.decorate || state.reduced) return;
@@ -666,19 +675,19 @@
       }
       if (e.kind === 'blocked') {
         var cap = new THREE.Mesh(discGeo, basic(ES.blocked.capColor));
-        cap.position.copy(state.endPos); faceAlong(cap, state.endDir);
+        cap.position.copy(endPos); faceAlong(cap, endDir);
         cap.scale.setScalar(ES.blocked.capDiameter); cap.rotation.z += Math.PI / 8;
         addFx(cap, t0, 0, 1, null, true);                    /* the cap stays; the wall does not flash or shake */
         if (skipped || !state.decorate || state.reduced) return;
         /* Three sparks at m.failure.blockedAnglesDeg around the REVERSE incoming heading, in the horizontal
          * presentation plane, travelling m.scatter.distanceCells over the existing sparkFadeMs. */
-        var back = _p.copy(state.endDir).negate(); back.y = 0;
+        var back = _p.copy(endDir).negate(); back.y = 0;
         if (back.lengthSq() < 1e-8) back.set(1, 0, 0);
         back.normalize();
         var d = new THREE.Vector3();
         for (i = 0; i < MFA.blockedAnglesDeg.length; i++) {
           rotateAbout(back, UP, MFA.blockedAnglesDeg[i], d);
-          addStreak(state.endPos, d, UP, ES.blocked.sparkFadeMs, MSC.distanceCells,
+          addStreak(endPos, d, UP, ES.blocked.sparkFadeMs, MSC.distanceCells,
             SPARK_SIZE, ES.blocked.capColor, t0);
         }
         return;
@@ -686,13 +695,13 @@
       if (e.kind === 'marker') {
         /* The hollow reason marker fades in over m.fire.lostMarkerFadeMs when the head reaches its position. The
          * departure itself is never compressed to a cap and never faded away. */
-        var spec = e.spec, at = state.endPos.clone();
-        if (state.depDir && spec.markerAlongCells) at.addScaledVector(state.depDir, spec.markerAlongCells);
+        var spec = e.spec, at = endPos.clone();
+        if (depDir && spec.markerAlongCells) at.addScaledVector(depDir, spec.markerAlongCells);
         var fadeMs = (skipped || state.reduced) ? 0 : MF.lostMarkerFadeMs;
         var mk = new THREE.Mesh(ringGeo, basic(spec.ringColor));
         mk.position.copy(at); mk.scale.setScalar(spec.ringDiameter);
-        if (state.end === 'lost-edge') faceAlong(mk, state.endDir);
-        else if (state.end === 'lost-floor') { mk.position.y = 0.006; mk.rotation.x = -Math.PI / 2; }
+        if (endKind === 'lost-edge') faceAlong(mk, endDir);
+        else if (endKind === 'lost-floor') { mk.position.y = 0.006; mk.rotation.x = -Math.PI / 2; }
         else mk.userData.screenFacing = true;
         addFx(mk, t0, 0, Math.max(1e-6, fadeMs), fadeInUpdate, true);
         if (spec.notch) {
@@ -705,8 +714,8 @@
         return;
       }
       if (e.kind === 'floorScatter') {
-        if (skipped || !state.decorate || state.reduced || !state.depDir) return;
-        fanStreaks(state.endPos, state.depDir, UP, MSC.anglesDeg, MSC.ms, MSC.distanceCells, ES.lostFloor.ringColor, e.t);
+        if (skipped || !state.decorate || state.reduced || !depDir) return;
+        fanStreaks(endPos, depDir, UP, MSC.anglesDeg, MSC.ms, MSC.distanceCells, ES.lostFloor.ringColor, e.t);
         return;
       }
       if (e.kind === 'loop') {
@@ -714,7 +723,7 @@
         var spin = (skipped || state.reduced) ? null : loopUpdate;
         for (i = 0; i < 2; i++) {
           var lrr = new THREE.Mesh(ringGeo, basic(ES.loop.ringColor));
-          lrr.position.copy(state.endPos); lrr.scale.setScalar(0.22 + i * 0.1); lrr.userData.screenFacing = true;
+          lrr.position.copy(endPos); lrr.scale.setScalar(0.22 + i * 0.1); lrr.userData.screenFacing = true;
           addFx(lrr, e.t, 0, ES.loop.rotateOnceMs, spin, true);
         }
       }

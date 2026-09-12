@@ -241,7 +241,7 @@
     canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); saveAttempt(); ui.showToast('Graphics paused. Your puzzle is saved.', {ms:8000}); });
     canvas.addEventListener('webglcontextrestored', function () { render.invalidateShadows(); S.placedDirty = true; markDirty(); });
     var startIndex = Math.min(Math.max(0, progress.currentLevel | 0), Math.max(0, LEVELS.length - 1));
-    if (startIndex > (progress.highestUnlocked | 0)) startIndex = progress.highestUnlocked | 0;
+    if (!(LEVELS[startIndex] && LEVELS[startIndex].bonus) && startIndex > (progress.highestUnlocked | 0)) startIndex = progress.highestUnlocked | 0;
     if (!loadLevel(startIndex)) loadLevel(0);
     syncInput();
     markDirty();
@@ -737,7 +737,7 @@
       S.status = 'won';
       var stars = attemptStars(), key = String(S.levelIndex);
       progress.stars[key] = root.LaserUI.mergeStars(progress.stars[key], stars);   /* per criterion, never max() of a count */
-      progress.highestUnlocked = Math.max(progress.highestUnlocked | 0, S.levelIndex + 1);
+      if (!LEVELS[S.levelIndex].bonus) progress.highestUnlocked = Math.max(progress.highestUnlocked | 0, S.levelIndex + 1);
       if (S.tiltsUsed === 0 && !S.hintUsed) bag('mastery')[key] = true;
       delete bag('attempts')[key]; ui.saveProgress(progress);
       play('win');

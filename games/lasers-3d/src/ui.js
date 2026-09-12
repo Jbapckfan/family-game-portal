@@ -45,6 +45,7 @@
   var END_TEXT = {
     'target': 'Beam connected!',
     'blocked': 'The beam hit a wall.',
+    'split-incomplete': 'Some receivers are still dark. Follow each branch and connect them all in one shot.',
     /* DESIGN.md 13.3: only when the wall the beam struck HAS a way through it. Naming the height the beam was
      * travelling at is what makes an arch or a window solvable without tilting; naming the open level would hand
      * over the answer, so it never does. `{z}` is filled in by LaserMainTrace.readout. */
@@ -70,6 +71,7 @@
     DIP: 'Turns the beam and tips it down one step: a flat beam starts going down, a beam going up comes back to flat, and a beam going down stays going down.',
     /* DESIGN.md 14: the fourth piece. The line has to carry the one thing that makes it unlike the other three -
      * it does NOT turn the beam - before it says what it does do. */
+    SPLITTER: 'Makes two beams: one goes straight and one turns along its diagonal. Both keep the incoming climb. Rotate it to change the turn. Light every receiver in one shot.',
     FLOOR: 'Lies flat in the ground and does not turn the beam at all. A beam falling onto it bounces straight back up, still going the same way. A flat or rising beam slides over the top and nothing happens.'
   };
   var HELP_NOTE = 'Remember: a mirror can never flatten a beam. Only a DIP flattens a beam that is going up, and only a WEDGE flattens a beam that is going down.';
@@ -324,6 +326,8 @@
         var c = cards[t];
         if (!c) return;                       /* a registry type this page has no card for is simply not offered */
         var n = (v.trayRemaining && v.trayRemaining[t]) | 0, sel = v.selectedTray === t;
+        var hasSplit = lvl.tray && lvl.tray.indexOf('SPLITTER') !== -1;
+        c.hidden = t === 'SPLITTER' ? !hasSplit : !!hasSplit && lvl.tray.indexOf(t) === -1;
         text(c.querySelector('.tray-count'), String(n)); attr(c, 'aria-pressed', sel ? 'true' : 'false'); attr(c, 'aria-label', LABELS[t] + ', ' + fmtCount(n));
         var dis = n === 0 || busy; if (c.disabled !== dis) c.disabled = dis;
         var ic = c.querySelector('.tray-icon'); if (ic.getAttribute('data-src') !== (trayIcon(t) || 'glyph')) { ic.innerHTML = iconHtml(t); ic.setAttribute('data-src', trayIcon(t) || 'glyph'); }
@@ -623,7 +627,7 @@
         '<p class="help-note">' + SHAPE_NOTE + '</p>' +
         '<p class="caption">And some levels start in the dark:</p>' +
         modeRow('DARK', DARK_HELP) +
-        '<p class="caption">Drag the empty board or press TILT to see the real heights. Tilt freely. Solve without revealing an answer for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
+        '<p class="caption">Tap 3D to see the real heights. Tilt freely. Solve without revealing an answer for the third star ' + starSvg(true, true).replace('class="star"', 'class="star" style="display:inline-block;vertical-align:middle;width:18px;height:18px"') + '.</p>' +
         '<div class="help-keys"><kbd>Arrows</kbd><span>move cursor</span><kbd>Enter</kbd><span>place / rotate</span><kbd>Delete</kbd><span>remove</span><kbd>F</kbd><span>fire</span><kbd>T</kbd><span>tilt</span><kbd>R</kbd><span>reset</span><kbd>Z</kbd><span>undo (shift: redo)</span><kbd>H</kbd><span>hint</span><kbd>Space + drag</kbd><span>pan without editing</span><kbd>Pinch / wheel</kbd><span>zoom</span><kbd>0</kbd><span>overview / edit view</span><kbd>1-' + TYPES.length + '</kbd><span>pick a tray piece</span></div>';
     }
     ui.showHowToPlay = function () { el['modal-help'].querySelector('.modal-body').innerHTML = helpBody(); openModal('modal-help'); };
@@ -631,13 +635,20 @@
 
     ui.showLevelSelect = function () {
       var p = ui.loadProgress(), grid = el['modal-levels'].querySelector('.level-grid'), levels = opts.levels || window.LEVELS || [];
+      var bonusIndex = levels.findIndex(function (l) { return l.bonus && l.chapter === 'SPLITTERS'; });
+      if (bonusIndex >= 0 && !el['modal-levels'].querySelector('#btn-splitter-chapter')) {
+        var chapter = doc.createElement('button'); chapter.id = 'btn-splitter-chapter'; chapter.className = 'btn';
+        chapter.textContent = 'NEW: Play the Splitters chapter'; chapter.style.marginBottom = '16px';
+        chapter.addEventListener('click', function () { closeModal('modal-levels'); call(handlers, 'onSelectLevel', bonusIndex); });
+        grid.parentNode.insertBefore(chapter, grid);
+      }
       var count = (vm && vm.levelCount) || levels.length, cur = vm ? vm.levelIndex : p.currentLevel, h = '', i;
       for (i = 0; i < count; i++) {
         var sf = starFlags(p.stars[String(i)]), st = starCount(sf);
-        var locked = i > p.highestUnlocked, state = locked ? 'locked' : i === cur ? 'current' : st > 0 ? 'completed' : 'open';
+        var locked = !(levels[i] && levels[i].bonus) && i > p.highestUnlocked, state = locked ? 'locked' : i === cur ? 'current' : st > 0 ? 'completed' : 'open';
         var name = levels[i] && levels[i].name ? levels[i].name : 'Level ' + (i + 1);
         h += '<button class="level-tile" type="button" data-index="' + i + '" data-state="' + state + '" aria-label="' + name + (locked ? ', locked' : ', ' + st + ' of 3 stars') + '"' + (locked ? ' aria-disabled="true"' : '') + '>' +
-          '<span class="tile-num">' + (i + 1) + '</span><span class="tile-name">' + name + '</span><span class="tile-chapter">' + (i < 3 ? 'REFLECTION' : i < 9 ? 'HEIGHTS' : i < 13 ? 'OPENINGS' : i < 20 ? 'MASTERY' : 'IN THE DARK') + '</span>' + (locked ? LOCK_SVG : '<span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span>') + '</button>';
+          '<span class="tile-num">' + (i + 1) + '</span><span class="tile-name">' + name + '</span><span class="tile-chapter">' + (levels[i] && levels[i].chapter || (i < 3 ? 'REFLECTION' : i < 9 ? 'HEIGHTS' : i < 13 ? 'OPENINGS' : i < 20 ? 'MASTERY' : 'IN THE DARK')) + '</span>' + (locked ? LOCK_SVG : '<span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span>') + '</button>';
       }
       grid.innerHTML = h; openModal('modal-levels');
     };

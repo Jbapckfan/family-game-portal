@@ -72,6 +72,7 @@ describe('pieces.js registry and turn tables (3.3)', () => {
   test('THE PITCH TABLE (spec 12.1 + 14.1), every cell: apply(type, orient, dir, vIn).v', () => {
     // rows are v_in = -1, 0, +1 (DESIGN.md section 12.1; the FLOOR row is section 14.1)
     const TABLE = {
+      SPLITTER: { '-1': -1, '0': 0, '1': 1 },
       MIRROR: { '-1': -1, '0': 0, '1': 1 },     // preserved
       WEDGE:  { '-1': 0,  '0': 1, '1': 1 },     // +1, clamped at +1
       DIP:    { '-1': -1, '0': -1, '1': 0 },    // -1, clamped at -1
@@ -79,7 +80,7 @@ describe('pieces.js registry and turn tables (3.3)', () => {
     };
     // The heading half of the transform, also data: the three upright pieces turn 90 degrees, the
     // flat plate does not turn at all (14.1).
-    const TURNS = { MIRROR: true, WEDGE: true, DIP: true, FLOOR: false };
+    const TURNS = { MIRROR: true, WEDGE: true, DIP: true, FLOOR: false, SPLITTER: true };
     assert.deepEqual(Object.keys(TABLE).sort(), Pieces.TYPES.slice().sort(), 'the registry grew a type this table does not cover');
     for (const type of Pieces.TYPES) {
       assert.equal(Pieces.turnsBeam(type), TURNS[type], type + ' turnsBeam');
@@ -1262,6 +1263,6 @@ describe('DESIGN.md 15.1: the `dark` flag on a level', () => {
   test('the shipped set carries `dark` only on LATE levels, and never on a teaching level', () => {
     const darkAt = LEVELS.map((l, i) => (l.dark ? i + 1 : 0)).filter(Boolean);
     assert.ok(darkAt.length >= 2 && darkAt.length <= 3, 'dark levels: ' + darkAt.join(','));
-    for (const n of darkAt) assert.ok(n > LEVELS.length - 4, 'level ' + n + ' is not a late level');
+    for (const n of darkAt) assert.ok(n > LEVELS.filter(l => !l.bonus).length - 4, 'level ' + n + ' is not a late level');
   });
 });

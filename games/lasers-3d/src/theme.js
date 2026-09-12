@@ -24,6 +24,7 @@
     mirror: '#45E7FF',
     wedge: '#FFC857',
     dip: '#FF4FA3',
+    splitter: '#C6A4FF',
     /* DESIGN.md 14: the FLOOR plate is a mirror LYING DOWN, so it is the one piece whose accent is a metal
      * rather than a hue. A fourth saturated colour beside cyan/amber/pink would read as a fourth direction;
      * polished silver reads as "the same mirror, laid flat", which is exactly what it is. It sits in the
@@ -64,7 +65,7 @@
   /* Beam color by integer level z in 0..3 (index = z). */
   var beamColors = [palette.beamLevel0, palette.beamLevel1, palette.beamLevel2, palette.beamLevel3];
   /* Piece accent by type. */
-  var pieceAccent = { MIRROR: palette.mirror, WEDGE: palette.wedge, DIP: palette.dip, FLOOR: palette.floorPlate };
+  var pieceAccent = { MIRROR: palette.mirror, WEDGE: palette.wedge, DIP: palette.dip, FLOOR: palette.floorPlate, SPLITTER: palette.splitter };
 
   var pageBackground =
     'radial-gradient(circle at 20% 78%, rgba(69, 231, 255, 0.035), transparent 45%), ' +
@@ -121,6 +122,9 @@
     floorFace: { material: 'MeshPhysicalMaterial', color: palette.floorPlate, metalness: 0.92, roughness: 0.07,
       emissive: '#20323F', emissiveIntensity: 0.30, opacity: 1.0, transparent: true /* opacity = reveal */,
       clearcoat: 1.0, clearcoatRoughness: 0.06 },
+    splitterFace: { material: 'MeshPhysicalMaterial', color: '#BBA5EE', metalness: 0.22, roughness: 0.10,
+      emissive: '#68549A', emissiveIntensity: 0.22, opacity: 0.62, transparent: true,
+      clearcoat: 1.0, clearcoatRoughness: 0.05, depthWrite: false },
     edgeFilament: { material: 'MeshStandardMaterial', color: 'accent' /* pieceAccent[type] */, metalness: 0.0, roughness: 0.3,
       emissive: 'accent', emissiveIntensity: 3.0, opacity: 1.0, transparent: true /* opacity = reveal */ },
     emitterBody: { material: 'MeshPhysicalMaterial', color: palette.metalLight, metalness: 0.88, roughness: 0.22,
@@ -413,6 +417,7 @@
     '--color-piece-wedge': pieceAccent.WEDGE,
     '--color-piece-dip': pieceAccent.DIP,
     '--color-piece-floor': pieceAccent.FLOOR,
+    '--color-piece-splitter': pieceAccent.SPLITTER,
     /* DESIGN.md 15: the ground of a cell no beam has reached. */
     '--color-dark': palette.darkUnknown,
     /* Terrain tokens, so the how-to-play diagrams can draw a wall, a floor cell and the light leak of DESIGN.md 13.3
@@ -633,7 +638,7 @@
   ] };
   function worldForLevel(index) {
     var i = Number.isFinite(index) ? index : 0;
-    return art.worlds[i < 3 ? 0 : i < 9 ? 1 : i < 13 ? 2 : i < 20 ? 3 : 4];
+    return art.worlds[i < 3 ? 0 : i < 9 ? 1 : i < 13 ? 2 : i < 20 || i >= 23 ? 3 : 4];
   }
 
   /* ------------------------------------------------------------- helpers */

@@ -365,6 +365,7 @@
       emit(out, under ? 'underpass' : 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
       return;
     }
+    var straight = PIECES[p.type].split ? copyState(ns) : null;
     var r = Pieces.apply(p.type, p.orient, ns.d, ns.v);
     if (r.d === ns.d && r.v === ns.v) {
       out.glides.push(pt2(ns));
@@ -384,6 +385,10 @@
     }
     ns.d = r.d;
     ns.v = r.v;
+    if (straight) {
+      emit(out, 'split', step, ns.x, ns.y, ns.z, { dStraight: straight.d, dTurn: ns.d, v: ns.v });
+      return straight;
+    }
   }
   function pt2(s) { return { x: s.x, y: s.y }; }
 
@@ -402,6 +407,7 @@
   function trace(level, placed) {
     var L = parseLevel(level);
     var pieces = buildPieceMap(L, placed);
+    if (Object.keys(pieces).some(function (k) { return PIECES[pieces[k].type].split; })) return traceBranches(L, pieces);
     var targets = buildTargetMap(L);
     var cap = capForSize(L.size);
     var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
@@ -425,6 +431,69 @@
       s = ns;
     }
     return end(out, 'loop', s); // unreachable: cap > the number of distinct states
+  }
+
+  /* A finite graph of outgoing beam states. The min-heap processes arrivals in physical distance
+   * order; two children inherit their split's distance, so they travel simultaneously. Identical
+   * outgoing states share their continuation, preventing both cycles and exponential re-splitting.
+   * Legacy traces keep their exact shape above. Branch segments add d0/d1, parent and terminal. */
+  function traceBranches(L, pieces) {
+    var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
+      altitudeMarks: [], pieceHits: [], overflights: [], underpasses: [], glides: [], bounces: [], events: [], branched: true };
+    var targets = buildTargetMap(L), lit = {}, seen = {}, heap = [], order = 0;
+    function before(a, b) { return a.d1 < b.d1 || (a.d1 === b.d1 && a.order < b.order); }
+    function push(s, d0, parent) {
+      var r = advance(L, s), to, dir = DIRS[s.d];
+      if (r.kind === 'enter') to = pt(r.state.x, r.state.y, r.state.z);
+      else if (r.kind === 'lost-edge') to = pt(s.x + dir.dx, s.y + dir.dy, s.z + s.v);
+      else to = pt(s.x + dir.dx / 2, s.y + dir.dy / 2, s.z);
+      var len = r.kind === 'enter' ? Math.sqrt(1 + s.v * s.v) : Math.sqrt(1 + s.v * s.v) / 2;
+      var n = { s: s, r: r, to: to, d0: d0, d1: d0 + len, parent: parent, order: order++ };
+      var i = heap.length; heap.push(n);
+      while (i > 0) { var p = (i - 1) >> 1; if (!before(n, heap[p])) break; heap[i] = heap[p]; i = p; }
+      heap[i] = n;
+    }
+    function pop() {
+      var n = heap[0], last = heap.pop();
+      if (heap.length) {
+        var i = 0;
+        while (i * 2 + 1 < heap.length) {
+          var c = i * 2 + 1;
+          if (c + 1 < heap.length && before(heap[c + 1], heap[c])) c++;
+          if (!before(heap[c], last)) break;
+          heap[i] = heap[c]; i = c;
+        }
+        heap[i] = last;
+      }
+      return n;
+    }
+    function continueFrom(s, distance, parent) {
+      var k = stateKey(s);
+      if (seen[k]) { emit(out, 'merge', parent, s.x, s.y, s.z); return; }
+      seen[k] = true; push(s, distance, parent);
+    }
+    continueFrom({ x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 }, 0, -1);
+    while (heap.length) {
+      var n = pop(), s = n.s, step = out.segments.length;
+      var seg = { from: pt(s.x, s.y, s.z), to: n.to, d: s.d, v: s.v, d0: n.d0, d1: n.d1, parent: n.parent };
+      out.segments.push(seg);
+      if (n.r.kind !== 'enter') {
+        seg.terminal = n.r.kind;
+        emit(out, 'branch-end', step, n.to.x, n.to.y, n.to.z, { end: n.r.kind });
+        continue;
+      }
+      var ns = n.r.state;
+      out.visited.push(copyState(ns));
+      emit(out, 'enter', step, ns.x, ns.y, ns.z, { d: ns.d, v: ns.v });
+      if (applyTarget(L, out, targets, lit, ns, step)) {
+        out.allTargetsHit = true;
+        return end(out, 'target', ns);
+      }
+      var straight = applyPiece(L, out, pieces, ns, step);
+      continueFrom(ns, n.d1, step);
+      if (straight) continueFrom(straight, n.d1, step);
+    }
+    return end(out, 'split-incomplete', out.segments[out.segments.length - 1].to);
   }
 
   return { DIRS: DIRS, H_MAX: H_MAX, MAX_STEPS: MAX_STEPS, ORIENTS: ORIENTS, PIECES: PIECES, TURN: Pieces.TURN,

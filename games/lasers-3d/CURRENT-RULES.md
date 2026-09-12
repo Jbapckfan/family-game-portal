@@ -1,11 +1,12 @@
 # Lasers 3D: current rules and release workflow
 
-This is the current implementation reference as of September 11, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The physics and the 23 authored level layouts are unchanged by the usability and cinematic releases.
+This is the current implementation reference as of September 11, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The original 23 authored puzzles retain their physics and layouts. Four bonus Splitters puzzles extend the game to 27 levels.
 
 ## Puzzle rules
 
 - Boards range from 12×12 to 24×24. Coordinates use x east and y north; terrain rows start at the south edge. Beam heights are integers 0–3, with pitch −1, 0, or +1.
 - A mirror turns the horizontal direction and preserves pitch. WEDGE turns and adds +1 to pitch; DIP turns and adds −1. Pitch clamps to −1…+1. These pieces change pitch rather than setting it.
+- SPLITTER sends one branch straight ahead and reflects a second branch along its diagonal. Both preserve the incoming pitch and interact only at the piece’s own height. Rotate to change the reflected direction. Branches travel simultaneously; a blocked or lost branch does not stop its siblings. Identical outgoing states share their continuation, bounding cycles by the finite board state space.
 - FLOOR reflects a descending beam upward without changing its horizontal direction. Walls block unless an opening includes the beam's exact height. Arches and windows are openings in the column.
 - A target lights only when the beam reaches its cell at the target's height. The beam continues through intermediate targets. Every target must light in the same shot to win.
 - Repeated `(x,y,z,direction,pitch)` states terminate loops. The backup step cap is `max(400, width × depth × 4 × 4 × 3 + 1)`.
@@ -14,7 +15,7 @@ This is the current implementation reference as of September 11, 2026. `DESIGN.m
 
 ## Learning, camera and awards
 
-The opening uses a playable choose/place/rotate/fire lesson. Tray types appear after their introduction. Help remains available from More on portrait phones or the side panel on larger screens. VIEW provides pan/zoom buttons, a replayable lesson, and a step-through inspector of the last fired route; only discovered events are described on dark boards.
+The opening uses a playable choose/place/rotate/fire lesson. Tray types appear after their introduction. Levels includes a “Play the Splitters chapter” shortcut; all four bonus puzzles are available immediately. Their awards and unfinished attempts persist independently, without unlocking the original campaign. Splitter boards show only their available piece types. Help remains available from More on portrait phones or the side panel on larger screens. VIEW provides pan/zoom buttons, a replayable lesson, and a step-through inspector of the last fired route; only discovered events are described on dark boards.
 
 The separate 2D and 3D buttons switch directly to a centred view in 360 ms, with no preparation pause; reduced motion uses 140 ms. 3D fits the whole board even after manual pan or zoom. 2D restores a centred editing view. Another press can reverse a transition immediately; pressing the active centred view does not add a tilt. Working view keeps cells at least 34 CSS pixels. ALL shows the overview; tapping an overview region focuses it for editing. On touchscreens, drag one finger anywhere to pan; drag two fingers down/up to tilt toward the side/overhead or sideways to rotate; pinch to zoom. A pinch locks to zoom so midpoint drift cannot tilt the board. Lifting one finger continues panning from its current position without an edit. Hold a piece for 500 ms, then drag to move it. Mouse/pen piece drags remain direct; an empty-board mouse drag orbits. Middle-drag, Space-drag and VIEW arrows pan. Enter activates the keyboard cursor; Space only arms panning. Arrow keys keep the cursor visible. Selected pieces can be moved using the arrow button and then tapping a destination.
 
@@ -34,7 +35,7 @@ The camera always rotates around the geometric board centre at floor height. Pan
 
 Motion uses one on-demand registry and frame scheduler. Settled scenes produce no application frames. Backgrounding commits active shot results and cancels decoration. WebGL loss saves the puzzle; restoration invalidates shadows and redraws the scene.
 
-The [current cinematic art direction](../../docs/reviews/2026-09-08-lasers-3d-cinematic.md) adds sculpted enamel blocks, metal bevels and hardware, glass optics, local laser illumination, and five chapter palettes. All seven decorative lamps are off in FLAT. Terrain shading and bevels obey discovery and the flat floor/top pixel identity; common upright-piece glyphs remain intact. Chassis markings and its grounding shadow depend only on public board dimensions.
+The [current cinematic art direction](../../docs/reviews/2026-09-08-lasers-3d-cinematic.md) adds sculpted enamel blocks, metal bevels and hardware, glass optics, local laser illumination, and five chapter palettes. All seven decorative lamps are off in FLAT. Terrain shading and bevels obey discovery and the flat floor/top pixel identity; common MIRROR/WEDGE/DIP glyphs remain intact. SPLITTER has a distinct diamond-and-diagonal glyph and a lavender glass crystal, making its different behavior visible in both views without revealing terrain height. Chassis markings and its grounding shadow depend only on public board dimensions.
 
 A winning shot sends one pulse along its actual route, then a surface illumination wave expands from the final reached target. This decoration lasts 1,200 ms and the victory modal starts at 1,280 ms; every gain returns exactly to rest. Reset, level change, backgrounding, reduced motion and the decorative-ring quality cut cancel the wave. Reduced motion omits it and retains the existing short victory fade. This finite celebration supersedes the historical prohibition on all ground waves; ambient/repeating waves remain disabled.
 
@@ -48,7 +49,7 @@ npx playwright install webkit chromium
 npm run verify
 ```
 
-The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render, motion and optical-art scripts use WebKit. The camera suite covers native Chromium touch dispatch and WebKit Pointer Events, including gesture handoffs and zero idle frames. The art checks compare actual illuminated framebuffers and exercise celebration cancellation and zero idle frames. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 23 solutions and par values independently.
+The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render, motion and optical-art scripts use WebKit. The camera suite covers native Chromium touch dispatch and WebKit Pointer Events, including gesture handoffs and zero idle frames. The art checks compare actual illuminated framebuffers and exercise celebration cancellation and zero idle frames. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 27 solutions and par values independently. The original campaign retains all its existing difficulty/height checks; bonus puzzles additionally prove that a splitter is necessary. The splitter integration suite exercises both WebKit and Chromium, real touch placement, simultaneous receiver arrivals, failed branches, save/reload, reduced motion, small-screen controls and zero idle frames.
 
 The iOS app is an offline WKWebView bundle. Its icon source is in `assets/app-icon-source.png`, with the opaque 1024px shipping asset in the iOS asset catalog. Build with XcodeGen and the configured Apple development team:
 
@@ -60,4 +61,6 @@ xcodebuild -project ios/Lasers3D.xcodeproj -scheme Lasers3D -configuration Debug
 
 Install the resulting `Lasers3D.app` with Xcode or `xcrun devicectl device install app --device DEVICE_ID ...`. The debug launch argument `--verify-game` runs a physical-device smoke check in an isolated, nonpersistent WKWebView and writes `Documents/verification.json`; its test progress does not overwrite native saved progress. Relaunch normally afterwards. Simulator use requires an exact `sim-guardian` lease under the home agent instructions.
 
-Human playtesting, VoiceOver playability, listening checks and sustained thermal/battery profiling remain separate validation activities. Automated solvability and browser tests do not establish those outcomes. New modes, extra mechanics and online features remain future product work.
+Human playtesting, VoiceOver playability, listening checks and sustained thermal/battery profiling remain separate validation activities. Automated solvability and browser tests do not establish those outcomes. Online features remain future product work.
+
+Branch traces add `branched: true` and per-segment `d0`, `d1`, `parent`, and optional `terminal`. Distances are measured from the emitter along each branch, not summed across branches. Audio, fog, shader reveal and receiver effects share those arrival distances. `split`, `merge` and `branch-end` events support inspection; a failed split returns `split-incomplete`, and victory still requires every target in the same shot. Original non-split traces retain their exact result shape. `tools/gen-batches.mjs` preserves the authored bonus chapter when regenerating the original campaign.

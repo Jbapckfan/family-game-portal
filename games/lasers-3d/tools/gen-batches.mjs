@@ -59,6 +59,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
 const require = createRequire(import.meta.url);
 const Sim = require(join(root, 'src/sim.js'));
+const bonusLevels = require(join(root, 'src/levels.js')).filter(l => l.bonus);
 
 const args = {};
 for (let i = 2; i < process.argv.length; i++) if (process.argv[i].startsWith('--')) args[process.argv[i].slice(2)] = process.argv[++i];
@@ -365,7 +366,7 @@ for (const slot of SLOTS) {
 
 if (!only && built.length === SLOTS.length) {
   const body = built.map(({ slot, b }) => levelLiteral(slot, b)).join(',\n\n');
-  writeFileSync(join(root, 'src/levels.js'), HEADER + body + '\n  ];\n}));\n');
+  writeFileSync(join(root, 'src/levels.js'), HEADER + body + (bonusLevels.length ? ',\n' + bonusLevels.map(l => JSON.stringify(l, null, 2)).join(',\n') : '') + '\n  ];\n}));\n');
   process.stderr.write('\nwrote src/levels.js (' + built.length + ' levels)\n');
 } else if (only) {
   process.stderr.write('\n--only: src/levels.js NOT rewritten\n');

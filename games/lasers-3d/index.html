@@ -196,11 +196,16 @@
         .tray-card[data-type="WEDGE"], .tray-glyph[data-type="WEDGE"] { --accent: var(--color-piece-wedge); }
         .tray-card[data-type="DIP"], .tray-glyph[data-type="DIP"] { --accent: var(--color-piece-dip); }
         .tray-card[data-type="FLOOR"], .tray-glyph[data-type="FLOOR"] { --accent: var(--color-piece-floor); }
+        .tray-card[data-type="SPLITTER"], .tray-glyph[data-type="SPLITTER"] { --accent: var(--color-piece-splitter); --glow: rgba(198,164,255,0.35); }
+        .tray-glyph[data-type="SPLITTER"]::before { content:""; position:absolute; width:12px; height:12px; left:7px; top:7px; border:2px solid var(--accent); transform:rotate(45deg); }
         .tray-card[aria-pressed="true"] { border: 2px solid var(--accent); transform: translateY(-3px); box-shadow: 0 0 18px var(--glow), var(--shadow-raised); }
         .tray-card[data-type="MIRROR"] { --glow: rgba(69, 231, 255, 0.35); }
         .tray-card[data-type="WEDGE"] { --glow: rgba(255, 200, 87, 0.35); }
         .tray-card[data-type="DIP"] { --glow: rgba(255, 79, 163, 0.35); }
         .tray-card[data-type="FLOOR"] { --glow: rgba(214, 236, 247, 0.32); }
+        .tray-card[data-type="SPLITTER"] .tray-meta { padding-left: 2px; padding-right: 2px; gap: 2px; }
+        .tray-card[data-type="SPLITTER"] .tray-label { font-size: 10px; letter-spacing: 0; }
+        .tray-card[hidden] { display: none; }
         .tray-card:disabled { opacity: 0.38; pointer-events: none; transform: none; box-shadow: none; }
         .tray-icon { height: 44px; display: flex; align-items: center; justify-content: center; }
         .tray-icon img { width: 44px; height: 44px; display: block; }
@@ -287,7 +292,9 @@
             .tray-icon { height: 32px; }
             .tray-icon img { width: 32px; height: 32px; }
             .tray-card .tray-glyph { width: 24px; height: 24px; }
-            .tray-label { font-size: 10px; }
+            .tray-label { font-size: 10px; letter-spacing: 0; }
+            .tray-meta { padding-left: 2px; padding-right: 2px; gap: 2px; }
+            .tray-card[data-type="SPLITTER"] { width: 72px; min-width: 72px; }
             #hud-stars .star { width: 20px; height: 20px; }
             #readout { margin-top: 2px; font-size: var(--type-xs); }
             .tray-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -499,6 +506,7 @@
                 <button class="tray-card" type="button" data-type="WEDGE" aria-pressed="false" aria-label="Wedge, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="WEDGE"></span></span><span class="tray-meta"><span class="tray-label">Wedge</span><span class="tray-count">0</span></span></button>
                 <button class="tray-card" type="button" data-type="DIP" aria-pressed="false" aria-label="Dip, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="DIP"></span></span><span class="tray-meta"><span class="tray-label">Dip</span><span class="tray-count">0</span></span></button>
                 <button class="tray-card" type="button" data-type="FLOOR" aria-pressed="false" aria-label="Floor, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="FLOOR"></span></span><span class="tray-meta"><span class="tray-label">Floor</span><span class="tray-count">0</span></span></button>
+                <button class="tray-card" type="button" data-type="SPLITTER" aria-pressed="false" aria-label="Splitter, 0 left"><span class="tray-icon"><span class="tray-glyph" data-type="SPLITTER"></span></span><span class="tray-meta"><span class="tray-label">Splitter</span><span class="tray-count">0</span></span></button>
             </div>
             <div class="tray-actions" role="group" aria-label="Actions">
                 <button id="btn-fire" class="btn btn-primary" type="button" aria-label="Fire the laser">FIRE</button>

@@ -177,8 +177,8 @@ describe('flatten / needs3D', () => {
       assert.ok(F.terrain.join('').split('').every(c => c === '0' || c === '3'), F.terrain.join('|'));
       // A disguised piece flattens to a MIRROR; a FLOOR plate is NOT disguised (14.3) so it stays
       // itself and is simply inert here. Nothing else may survive the projection.
-      assert.ok(F.tray.every(t => t === 'MIRROR' || t === 'FLOOR'), F.tray.join(','));
-      assert.ok(F.fixed.every(f => (f.type === 'MIRROR' || f.type === 'FLOOR') && F.t[f.y][f.x] === 0));
+      assert.ok(F.tray.every(t => t === 'MIRROR' || t === 'FLOOR' || t === 'SPLITTER'), F.tray.join(','));
+      assert.ok(F.fixed.every(f => (f.type === 'MIRROR' || f.type === 'FLOOR' || f.type === 'SPLITTER') && F.t[f.y][f.x] === 0));
       // and the FLOOR entries are exactly the ones the real level had, one for one
       assert.deepEqual(F.tray.map(t => t === 'FLOOR'), Sim.parseLevel(lvl).tray.map(t => t === 'FLOOR'));
       if (F.tray.includes('FLOOR') || F.fixed.some(f => f.type === 'FLOOR')) sawFloor++;

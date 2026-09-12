@@ -39,7 +39,7 @@
       var key = id(l, i), r = object(records[key]);
       BAGS.forEach(function (b) { if (r[b] !== undefined) p[b][i] = r[b]; });
       if (first && r.known && r.known.f === legacyFingerprint(l)) { r.known.f = fingerprint(l); p.known[i] = r.known; }
-      if (r.unlocked || (r.stars && r.stars.solved)) highest = i;
+      if (!l.bonus && (r.unlocked || (r.stars && r.stars.solved))) highest = i;
       if (p.currentId === key) p.currentLevel = i;
     });
     p.highestUnlocked = first ? Math.min(levels.length - 1, Math.max(highest, p.highestUnlocked | 0)) : highest;
@@ -51,7 +51,7 @@
     levels.forEach(function (l, i) {
       var key = id(l, i), r = object(p.records[key]);
       BAGS.forEach(function (b) { if (object(p[b])[i] !== undefined) r[b] = p[b][i]; else delete r[b]; });
-      r.unlocked = i <= p.highestUnlocked; p.records[key] = r;
+      r.unlocked = !!l.bonus || i <= p.highestUnlocked; p.records[key] = r;
     });
     if (levels[p.currentLevel]) p.currentId = id(levels[p.currentLevel], p.currentLevel);
     p.identitySchema = 1;

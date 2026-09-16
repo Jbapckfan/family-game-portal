@@ -15,7 +15,15 @@ try{for(const engine of [webkit,chromium]){
  const p=await browser.newPage({viewport:{width:1194,height:834},deviceScaleFactor:1,hasTouch:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.goto(`http://127.0.0.1:${port}/games/lasers-3d/`);await p.waitForFunction(()=>window.__lasers3d?.state.frames>0);await quiet(p);
  await p.locator('#btn-levels').click();check(await p.locator('.level-tile').count()===31,name+': 31 puzzles');
- check(await p.locator('.level-tile[data-index="22"]').getAttribute('data-state')==='locked',name+': original campaign remains locked');
+ check(await p.locator('.level-tile[data-state="locked"],.level-tile[aria-disabled="true"]').count()===0,name+': every level is available on a fresh save');
+ for(const index of [22,30]){
+  await p.locator(`.level-tile[data-index="${index}"]`).click();await quiet(p);
+  check(await p.evaluate(i=>__lasers3d.state.levelIndex===i,index),name+': level '+(index+1)+' opens without prior completion');
+  await p.reload();await p.waitForFunction(()=>window.__lasers3d?.state.frames>0);await quiet(p);
+  check(await p.evaluate(i=>__lasers3d.state.levelIndex===i,index),name+': level '+(index+1)+' stays selected after reload');
+  check(await p.evaluate(()=>{const p=__lasers3d.getProgress();return p.highestUnlocked===0&&Object.values(p.stars).every(s=>!s.solved&&!s.par&&!s.blind);}),name+': jumping levels preserves earned progress');
+  await p.locator('#btn-levels').click();
+ }
  await p.locator('#btn-splitter-chapter').click();await quiet(p);check(await p.evaluate(()=>__lasers3d.state.levelIndex===23),name+': new chapter opens from its shortcut');
  await p.locator('.tray-card[data-type="SPLITTER"]').click();const at=await p.evaluate(()=>__lasers3d.render.projectCell({x:5,y:3},0));await p.touchscreen.tap(at.x,at.y);await quiet(p);
  check(await p.evaluate(()=>__lasers3d.state.placed[0]?.type==='SPLITTER'),name+': touch places splitter');
@@ -24,7 +32,7 @@ try{for(const engine of [webkit,chromium]){
  await p.evaluate(()=>__lasers3d.undo());await quiet(p);check(await p.evaluate(()=>__lasers3d.sim.trace(__lasers3d.state.level,__lasers3d.state.placed).allTargetsHit),name+': undo restores split');
  await p.evaluate(()=>__lasers3d.redo());await quiet(p);await p.touchscreen.tap(at.x,at.y);await quiet(p);
  await p.locator('#btn-fire').click();await p.waitForFunction(()=>__lasers3d.state.status==='won');await quiet(p);
- check(await p.evaluate(()=>__lasers3d.getProgress().stars[23].solved&&__lasers3d.getProgress().highestUnlocked===0),name+': victory saves bonus award without unlocking campaign');
+ check(await p.evaluate(()=>__lasers3d.getProgress().stars[23].solved&&__lasers3d.getProgress().highestUnlocked===0),name+': victory saves bonus award without changing campaign progress');
  await p.reload();await p.waitForFunction(()=>window.__lasers3d?.state.frames>0);await quiet(p);check(await p.evaluate(()=>__lasers3d.state.levelIndex===23&&__lasers3d.getProgress().stars[23].solved),name+': bonus progress survives reload');
  // Deterministic renderer test: two heads on one shared distance clock, with actual target callbacks.
  const timing=await p.evaluate(()=>{

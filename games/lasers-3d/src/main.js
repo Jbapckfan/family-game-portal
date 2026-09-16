@@ -247,7 +247,6 @@
     canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); saveAttempt(); ui.showToast('Graphics paused. Your puzzle is saved.', {ms:8000}); });
     canvas.addEventListener('webglcontextrestored', function () { render.invalidateShadows(); S.placedDirty = true; markDirty(); });
     var startIndex = Math.min(Math.max(0, progress.currentLevel | 0), Math.max(0, LEVELS.length - 1));
-    if (!(LEVELS[startIndex] && LEVELS[startIndex].bonus) && startIndex > (progress.highestUnlocked | 0)) startIndex = progress.highestUnlocked | 0;
     if (!loadLevel(startIndex)) loadLevel(0);
     syncInput();
     markDirty();

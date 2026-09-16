@@ -588,14 +588,15 @@ async function run() {
 
       await page.evaluate(() => window.__harness.ui.showLevelSelect());
       const tiles = await page.evaluate(() => ({ n: document.querySelectorAll('.level-tile').length, locked: document.querySelectorAll('.level-tile[data-state="locked"]').length, current: document.querySelectorAll('.level-tile[data-state="current"]').length, completed: document.querySelectorAll('.level-tile[data-state="completed"]').length }));
-      assert(tiles.n === 20 && tiles.locked === 14 && tiles.current === 1 && tiles.completed === 3, `level grid 20 tiles, 14 locked, 1 current, 3 completed ${JSON.stringify(tiles)}`);
+      assert(tiles.n === 20 && tiles.locked === 0 && tiles.current === 1 && tiles.completed === 3, `level grid 20 selectable tiles, 1 current, 3 completed ${JSON.stringify(tiles)}`);
       const mh2 = await page.evaluate(menuHit); assert(mh2.hit, `Menu link hit with levels open ${JSON.stringify(mh2)}`);
       const smallL = await page.evaluate(measureButtons); assert(smallL.length === 0, 'level tiles >= 44x44 ' + JSON.stringify(smallL));
       await page.screenshot({ path: `${SHOTS}/ui-${vp.name}-levels.png` });
-      await page.evaluate(() => document.querySelector('.level-tile[data-state="locked"]').click());
-      assert(await page.evaluate(() => window.__harness.ui.isModalOpen() && !window.__harness.log.some((l) => l[0] === 'onSelectLevel')), 'locked tile does not emit');
+      await page.click('.level-tile[data-index="19"]');
+      assert(await page.evaluate(() => !window.__harness.ui.isModalOpen() && window.__harness.log.some((l) => l[0] === 'onSelectLevel' && l[1] === 19)), 'last tile emits onSelectLevel(19) without prior completion');
+      await page.evaluate(() => window.__harness.ui.showLevelSelect());
       await page.click('.level-tile[data-index="1"]');
-      assert(await page.evaluate(() => !window.__harness.ui.isModalOpen() && window.__harness.log.some((l) => l[0] === 'onSelectLevel' && l[1] === 1)), 'unlocked tile emits onSelectLevel(1) and closes');
+      assert(await page.evaluate(() => !window.__harness.ui.isModalOpen() && window.__harness.log.some((l) => l[0] === 'onSelectLevel' && l[1] === 1)), 'earlier tile emits onSelectLevel(1) and closes');
 
       await page.evaluate(() => window.__harness.ui.showVictory({ stars: { solved: true, par: true, blind: true }, starCount: 3, piecesUsed: 2, par: 2, fires: 2, tiltsUsed: 0, hintUsed: false, hasNext: true }));
       await page.waitForTimeout(700);

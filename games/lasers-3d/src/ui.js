@@ -117,7 +117,6 @@
   }
   /* Each star is drawn from its OWN criterion flag, so a hint + blind solve lights the blind star and leaves par dark. */
   function starsHtml(v) { var f = starFlags(v), h = '', i; for (i = 0; i < 3; i++) h += starSvg(f[STAR_KEYS[i]], i === 2); return h; }
-  var LOCK_SVG = '<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="#7893A6" stroke="#A8C0CE" stroke-width="0.8"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="#A8C0CE" stroke-width="1.4"/></svg>';
 
   /* Fallback markup for a bare root (kept in sync with index.html). */
   function markup() {
@@ -657,15 +656,16 @@
       var count = (vm && vm.levelCount) || levels.length, cur = vm ? vm.levelIndex : p.currentLevel, h = '', i;
       for (i = 0; i < count; i++) {
         var sf = starFlags(p.stars[String(i)]), st = starCount(sf);
-        var locked = !(levels[i] && levels[i].bonus) && i > p.highestUnlocked, state = locked ? 'locked' : i === cur ? 'current' : st > 0 ? 'completed' : 'open';
+        // Testing access is independent of earned progress: every puzzle is selectable.
+        var state = i === cur ? 'current' : st > 0 ? 'completed' : 'open';
         var name = levels[i] && levels[i].name ? levels[i].name : 'Level ' + (i + 1);
-        h += '<button class="level-tile" type="button" data-index="' + i + '" data-state="' + state + '" aria-label="' + name + (locked ? ', locked' : ', ' + st + ' of 3 stars') + '"' + (locked ? ' aria-disabled="true"' : '') + '>' +
-          '<span class="tile-num">' + (i + 1) + '</span><span class="tile-name">' + name + '</span><span class="tile-chapter">' + (levels[i] && levels[i].chapter || (i < 3 ? 'REFLECTION' : i < 9 ? 'HEIGHTS' : i < 13 ? 'OPENINGS' : i < 20 ? 'MASTERY' : 'IN THE DARK')) + '</span>' + (locked ? LOCK_SVG : '<span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span>') + '</button>';
+        h += '<button class="level-tile" type="button" data-index="' + i + '" data-state="' + state + '" aria-label="' + name + ', ' + st + ' of 3 stars">' +
+          '<span class="tile-num">' + (i + 1) + '</span><span class="tile-name">' + name + '</span><span class="tile-chapter">' + (levels[i] && levels[i].chapter || (i < 3 ? 'REFLECTION' : i < 9 ? 'HEIGHTS' : i < 13 ? 'OPENINGS' : i < 20 ? 'MASTERY' : 'IN THE DARK')) + '</span><span class="stars" aria-hidden="true">' + starsHtml(sf) + '</span></button>';
       }
       grid.innerHTML = h; openModal('modal-levels');
     };
     on(el['modal-levels'], 'click', function (e) {
-      var t = e.target.closest ? e.target.closest('.level-tile') : null; if (!t || t.getAttribute('data-state') === 'locked') return;
+      var t = e.target.closest ? e.target.closest('.level-tile') : null; if (!t) return;
       var idx = parseInt(t.getAttribute('data-index'), 10); closeModal('modal-levels'); call(handlers, 'onSelectLevel', idx);
     });
     ui.hideLevelSelect = function () { closeModal('modal-levels'); };

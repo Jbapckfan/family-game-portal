@@ -45,6 +45,7 @@
   var END_TEXT = {
     'target': 'Beam connected!',
     'blocked': 'The beam hit a wall.',
+    'blocked-board': 'The board stopped the beam. Aim the diagonal through an opening.',
     'split-incomplete': 'Some receivers are still dark. Follow each branch and connect them all in one shot.',
     /* DESIGN.md 13.3: only when the wall the beam struck HAS a way through it. Naming the height the beam was
      * travelling at is what makes an arch or a window solvable without tilting; naming the open level would hand
@@ -604,9 +605,15 @@
     }
 
     function helpBody() {
+      var bothSides=!!(vm&&vm.level&&vm.level.duplex);
+      var faceHelp={
+        WEDGE:'Turns the beam and tips it one step away from the shared floor. On the underside, that points downward.',
+        DIP:'Turns the beam and tips it one step toward the shared floor. On the underside, it can level a falling beam or send a level beam upward.',
+        FLOOR:'Lies against its surface. A beam heading toward the surface bounces away, keeping its horizontal direction. The underside version is upside down.'
+      };
       /* One row per REGISTRY type, in registry order, with the player-facing wording from PIECE_HELP and the
        * registry's own hint as the fallback - so a new piece explains itself the day it is added. */
-      function help(t) { return PIECE_HELP[t] || (REG && REG.PIECES && REG.PIECES[t] && REG.PIECES[t].hint) || ''; }
+      function help(t) { return (bothSides&&faceHelp[t]) || PIECE_HELP[t] || (REG && REG.PIECES && REG.PIECES[t] && REG.PIECES[t].hint) || ''; }
       function row(t) { return '<div class="help-row">' + iconHtml(t) + '<div><b style="color:' + accentVar(t) + '">' + LABELS[t].toUpperCase() + '</b> <span class="caption">' + help(t) + '</span></div></div>'; }
       /* Terrain shapes have no tray icon to show, so they get a plain labelled line instead of a .help-row. */
       function shapeRow(t) { return '<p class="help-shape"><b>' + t + '</b> <span class="caption">' + SHAPE_HELP[t] + '</span></p>'; }
@@ -618,8 +625,8 @@
         '<p class="caption">' + (turners.length === TYPES.length ? 'All the pieces turn the beam the same way. What changes is the beam\'s height.'
           : 'Most pieces turn the beam the same way. What changes is the beam\'s height.') + '</p>' +
         TYPES.map(row).join('') +
-        '<p class="help-note">' + HELP_NOTE + '</p>' +
-        '<p class="caption">Seen from the side:</p>' + pitchDiagram() +
+        '<p class="help-note">' + (bothSides?'One shared floor, with terrain growing outward from both faces. Light can cross only through a hole. Tap Above or Below to flip the board, or keep tilting past its edge. 2D flattens the face you are looking at.':HELP_NOTE) + '</p>' +
+        '<p class="caption">'+(bothSides?'Top face shown; the underside is flipped:':'Seen from the side:')+'</p>' + pitchDiagram() +
         '<p class="caption">The board looks flat, but it is not. Higher beams are wider and brighter:</p><div class="help-beams">' + beamRow(0) + beamRow(1) + beamRow(2) + beamRow(3) + '</div>' +
         '<p class="caption">Some walls have a way through them:</p>' +
         shapeRow('ARCH') + shapeRow('WINDOW') +
@@ -641,6 +648,11 @@
         chapter.textContent = 'NEW: Play the Splitters chapter'; chapter.style.marginBottom = '16px';
         chapter.addEventListener('click', function () { closeModal('modal-levels'); call(handlers, 'onSelectLevel', bonusIndex); });
         grid.parentNode.insertBefore(chapter, grid);
+      }
+      var duplexIndex=levels.findIndex(function(l){return !!l.duplex;});
+      if(duplexIndex>=0&&!el['modal-levels'].querySelector('#btn-duplex-chapter')){
+        var two=doc.createElement('button');two.id='btn-duplex-chapter';two.className='btn';two.textContent='NEW: Play Both Sides';two.style.cssText='margin:0 8px 16px 0';
+        two.addEventListener('click',function(){closeModal('modal-levels');call(handlers,'onSelectLevel',duplexIndex);});grid.parentNode.insertBefore(two,grid.parentNode.firstChild);
       }
       var count = (vm && vm.levelCount) || levels.length, cur = vm ? vm.levelIndex : p.currentLevel, h = '', i;
       for (i = 0; i < count; i++) {

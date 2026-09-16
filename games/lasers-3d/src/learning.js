@@ -5,6 +5,11 @@
     var doc = document, seen = '', selected = '', eventIndex = 0, lastTrace = null;
     var describe = doc.createElement('div'); describe.id = 'cursor-description'; describe.className = 'glass'; describe.setAttribute('role','status');
     doc.getElementById('stage').appendChild(describe);
+    var layers=doc.createElement('div');layers.id='layer-controls';layers.className='glass';layers.hidden=true;layers.setAttribute('role','group');layers.setAttribute('aria-label','Board face to edit');
+    layers.innerHTML='<span class="layer-caption">BOARD SIDE</span><button id="btn-above" class="btn" aria-pressed="true">Above</button><button id="btn-below" class="btn" aria-pressed="false">Below</button>';
+    doc.getElementById('stage').parentNode.insertBefore(layers,doc.getElementById('stage'));
+    layers.querySelector('#btn-above').addEventListener('click',function(){app.setLayer('above');});
+    layers.querySelector('#btn-below').addEventListener('click',function(){app.setLayer('below');});
     var move = doc.createElement('button'); move.id = 'btn-move'; move.className = 'btn'; move.textContent = '↗'; move.setAttribute('aria-label','Move selected piece');
     doc.getElementById('piece-controls').appendChild(move);
     move.addEventListener('click', app.moveSelected);
@@ -34,16 +39,19 @@
         if(!ev){label.textContent='Fire a shot to inspect its path.';return;}
         var kind=String(ev.kind||'beam').replace(/-/g,' ');
         label.textContent='Event '+(eventIndex+1)+' of '+events.length+': '+kind+', column '+(ev.x+1)+', row '+(ev.y+1)+', height '+ev.z+'.';
-        app.focusCell(ev,true);app.render.pulseCell(ev);app.motion.requestRender();
+        var cell={x:ev.x,y:ev.y};if(ev.z<0)cell.side='below';app.focusCell(cell,true);app.render.pulseCell(cell);app.motion.requestRender();
       }
     });
     function update(v) {
+      layers.hidden=!(v.level&&v.level.duplex);
+      doc.getElementById('app').classList.toggle('has-decks',!layers.hidden);
+      ['above','below'].forEach(function(side){var b=layers.querySelector('#btn-'+side);b.setAttribute('aria-pressed',v.activeLayer===side?'true':'false');b.classList.toggle('btn-selected',v.activeLayer===side);b.disabled=v.status==='tracing'||v.revealPlaying||v.resetting;});
       tools.disabled = v.revealPlaying || v.cameraBusy || v.status === 'tracing';
       var docked=getComputedStyle(doc.getElementById('btn-more')).display!=='none';
       var host=docked?doc.getElementById('more-sheet'):doc.querySelector('.tray-actions');
       if(tools.parentNode!==host)host.appendChild(tools);tools.classList.toggle('tray-side-only',!docked);
       var a=app.state,p=app.getProgress(),c=v.cursorCell||v.selectedCell;
-      if(c){var key=c.x+','+c.y+','+a.version;if(key!==selected){selected=key;var piece=v.placed.find(function(t){return t.x===c.x&&t.y===c.y;});describe.textContent='Column '+(c.x+1)+', row '+(c.y+1)+(piece?' · '+piece.type+' '+piece.orient:app.knownCell(c)?' · square selected':' · undiscovered');}}
+      if(c){var key=c.x+','+c.y+','+a.version;if(key!==selected){selected=key;var piece=v.placed.find(function(t){return t.x===c.x&&t.y===c.y&&(t.side==='below')===(c.side==='below');});describe.textContent=(a.level.duplex?(c.side==='below'?'Below · ':'Above · '):'')+'Column '+(c.x+1)+', row '+(c.y+1)+(piece?' · '+piece.type+' '+piece.orient:app.knownCell(c)?' · square selected':' · undiscovered');}}
       else describe.textContent='';
       doc.querySelectorAll('.tray-card').forEach(function(b){var t=b.dataset.type,introduced=t==='SPLITTER'?a.level.tray.indexOf(t)!==-1:app.levels.slice(0,v.levelIndex+1).some(function(l){return l.tray.indexOf(t)!==-1;});b.setAttribute('data-unintroduced',introduced?'false':'true');});
       if(v.levelIndex===0&&!p.tutorialDone&&!app.ui.isModalOpen()){
@@ -57,7 +65,7 @@
       }
 
     }
-    return {close:close,update:update,destroy:function(){describe.remove();move.remove();tools.remove();panel.remove();}};
+    return {close:close,update:update,destroy:function(){describe.remove();layers.remove();doc.getElementById('app').classList.remove('has-decks');move.remove();tools.remove();panel.remove();}};
   }
   root.LaserLearning={attach:attach};
 }(typeof self!=='undefined'?self:this));

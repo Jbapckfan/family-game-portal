@@ -131,6 +131,7 @@
     var rig = root.LaserRenderCamera.create({ theme: theme, size: size, motion: opts.motion || null });
     var camera = rig.camera;
     var level = null, reducedMotion = !!(theme.reducedMotion && root.matchMedia && root.matchMedia(theme.reducedMotion.mediaQuery).matches);
+    var activeLayer = 'above';
     var appliedReveal = -1;
     var projVec = new THREE.Vector3();   /* scratch: no per-call allocation */
     rig.setReducedMotion(reducedMotion);
@@ -139,8 +140,21 @@
 
     function setCameraPreset(name, o) { return rig.setPreset(name, o); }
     function isFlat() { return rig.isFlat(); }
-    function getShadingBlend() { return theme.revealBlend(rig.getCamera().elevationDeg); }
-    function getCamera() { return rig.getCamera(); }
+    function getShadingBlend() { return theme.revealBlend(Math.abs(rig.getCamera().elevationDeg)); }
+    function getCamera() { var c=rig.getCamera();if(level&&level.duplex)c.layer=activeLayer;return c; }
+    function setLayer(side,o) {
+      if(!level||!level.duplex)return Promise.resolve();
+      var current=rig.getCamera(),mode=current.animating&&current.preset?current.preset:(rig.isFlat()?'flat':'tilt');
+      activeLayer=side==='below'?'below':'above';rig.setSide(activeLayer);
+      terrain.setLayer(activeLayer);pieces.setLayer(activeLayer,rig.isFlat());
+      lightGroup.scale.y=activeLayer==='below'?-1:1;invalidateShadows();
+      return o && o.keepCamera ? Promise.resolve() : rig.setPreset(mode,Object.assign({animate:true,recenter:true,prepareMs:0,durationMs:520},o||{}));
+    }
+    function orbit(az,el){
+      var changed=rig.orbit(az,el);
+      if(level&&level.duplex){var side=rig.getCamera().elevationDeg<0?'below':'above';if(side!==activeLayer)setLayer(side,{keepCamera:true});}
+      return changed;
+    }
 
     /* ---- reveal (VISUAL-DIRECTION.md D + MOTION-DIRECTION.md 3) --------------------------------------------
      * ONE scalar drives the whole collapse of the lie: r = theme.revealBlend(elevation), zero through the flat
@@ -236,13 +250,14 @@
     }
     function projectCell(cell, zOffset) {
       var rect = canvas.getBoundingClientRect();
-      var p = projVec.set(cell.x, terrain.heightAt(cell.x, cell.y) + (zOffset || 0), -cell.y).project(camera);
+      var side=cell.side || (cell.z<0?'below':undefined);
+      var p = projVec.set(cell.x, terrain.heightAt(cell.x, cell.y, side) + (zOffset || 0)*(side==='below'?-1:1), -cell.y).project(camera);
       return { x: rect.left + (p.x + 1) / 2 * rect.width, y: rect.top + (1 - p.y) / 2 * rect.height };
     }
 
     /* ---- level / content ---- */
     function setLevel(parsed, index) {
-      level = parsed;
+      level = parsed; activeLayer='above';lightGroup.scale.y=1;
       var world = art.setLevel(parsed, index);
       terrain.materials.top.roughness = world.roughness;
       lights.key.color.set(world.key); lights.keyFlat.color.set(world.key);
@@ -256,12 +271,13 @@
       fog.setBoard(parsed.size.w, parsed.size.d, !!parsed.dark);
       terrain.build(parsed);
       pieces.setLevel(parsed, terrain.heightAt);
+      pieces.setLayer('above');
       beam.clear();
       appliedReveal = -1;
       appliedGlowMul = 1;                    /* a new level always starts at baseline beam brightness, even if a */
       if (typeof beam.setGlowMultiplier === 'function') beam.setGlowMultiplier(1);   /* reveal was cut short */
       invalidateShadows();                   /* new terrain and a re-placed light rig: the depth pass is stale */
-      rig.setBoard(boardCenter, terrain.fitPoints());
+      rig.setBoard(boardCenter, terrain.fitPoints(),!!parsed.duplex);
     }
 
     /* ---- DARKNESS (DESIGN.md 15) ------------------------------------------------------------------------------
@@ -331,6 +347,8 @@
     function frame(dt) {
       dt = Math.min(0.05, Math.max(0, dt || 0));
       rig.step(dt);
+      terrain.frame(dt,rig.getCamera().elevationDeg,reducedMotion);
+      if(level&&level.duplex)pieces.setLayer(rig.getCamera().elevationDeg<0?'below':'above',rig.isFlat());
       applyReveal(getShadingBlend());
       /* The reveal's intake, applied to the beam glow. It is skipped entirely when there is no beam to dim, and it
        * is exactly 1 at rest, so a settled board never carries a residue of it. */
@@ -357,7 +375,7 @@
      * a camera preset move, a view/fit tween, the eased fit chasing a new orientation, the travelling beam, an
      * end-state effect, a target fading between lit states, or a reveal pulse. main schedules a frame whenever it
      * changes state and keeps scheduling while this is true, so a static board costs nothing. */
-    function needsFrame() { return rig.isAnimating() || beam.isAnimating() || pieces.isAnimating() || fog.isAnimating() || terrain.isBurning(); }
+    function needsFrame() { return terrain.needsFrame() || rig.isAnimating() || beam.isAnimating() || pieces.isAnimating() || fog.isAnimating() || terrain.isBurning(); }
 
     /* ---- tray icons: the piece's physical model, seen from an angle that shows the panel's SLOPE ---- */
     /* The panel hinge runs along the '/' diagonal, so the old camera (azimuth 45) looked straight into it and MIRROR,
@@ -445,10 +463,11 @@
       setLevel: setLevel, setPlaced: setPlaced, setBeam: setBeam, getBeamProgress: beam.getProgress, finishBeam: beam.skip,
       setBeamSeal: setBeamSeal, setQualityCut: setQualityCut,
       playVictory: art.playVictory, getArtState: art.state,
-      setCameraPreset: setCameraPreset, orbit: rig.orbit, zoom: rig.zoomBy, pan: rig.panBy, needsFrame: needsFrame,
+      setCameraPreset: setCameraPreset, orbit: orbit, zoom: rig.zoomBy, pan: rig.panBy, needsFrame: needsFrame,
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
-      restoreCamera: rig.restoreCamera,
-      focusCell: function (c, zoom) { if (zoom) rig.setViewMode('working', {animate:false}); var p = projectCell(c, 0), r = canvas.getBoundingClientRect(); rig.panBy(r.left + r.width / 2 - p.x, r.top + r.height / 2 - p.y); },
+      setLayer:setLayer, getLayer:function(){return activeLayer;},
+      restoreCamera: function(c){if(level&&level.duplex)setLayer(c&&c.layer,{keepCamera:true});return rig.restoreCamera(c);},
+      focusCell: function (c, zoom) { if(level&&level.duplex){var side=c.side || (c.z<0?'below':'above');if(side!==activeLayer)setLayer(side,{animate:false});} if (zoom) rig.setViewMode('working', {animate:false}); var p = projectCell(c, 0), r = canvas.getBoundingClientRect(); rig.panBy(r.left + r.width / 2 - p.x, r.top + r.height / 2 - p.y); },
       setViewMode: rig.setViewMode, getViewMode: rig.getViewMode, hasOverview: rig.hasOverview,
       pickCell: pickCell, projectCell: projectCell, cellToScreen: function (cell) { return projectCell(cell, 0); },
       /* DESIGN.md 13: bitmask of the levels punched out of a column (0 = an ordinary solid column). The renderer

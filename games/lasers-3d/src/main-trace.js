@@ -21,7 +21,8 @@
       v = result.visited[i];
       for (j = 0; j < targets.length; j++) {
         if (targets[j].x !== v.x || targets[j].y !== v.y) continue;
-        tz = t[v.y][v.x];
+        if (level.duplex && (targets[j].side === 'below') !== (v.z < 0)) continue;
+        tz = targets[j].side === 'below' && level.duplex ? -level.duplex.lower[v.y][v.x]-1 : t[v.y][v.x];
         if (v.z !== tz) return { index: j, beamZ: v.z, targetZ: tz, above: v.z > tz };
       }
     }
@@ -66,7 +67,7 @@
     var by = last.from.y + Math.round((last.to.y - last.from.y) * 2);
     var bz = last.from.z + last.v;
     if (!level.t[by] || level.t[by][bx] === undefined) return null;
-    return { x: bx, y: by, z: bz, wallHeight: level.t[by][bx], hasOpening: openBits(level, bx, by) !== 0 };
+    return { x: bx, y: by, z: bz, wallHeight: bz < 0 && level.duplex ? -level.duplex.lower[by][bx]-1 : level.t[by][bx], hasOpening: openBits(level, bx, by) !== 0 };
   }
 
   /* The post-FIRE readout view model. `texts` is LaserUI.endText: the end-reason strings in kid language, plus

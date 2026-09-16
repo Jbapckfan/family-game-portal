@@ -64,13 +64,21 @@
   var ORIENTS = Pieces.ORIENTS;
   var PIECES = Pieces.PIECES;
 
-  function key(x, y) { return x + ',' + y; }
+  function key(x, y, side) { return x + ',' + y + (side === 'below' ? ',below' : ''); }
+  function sideOf(z) { return z < 0 ? 'below' : undefined; }
+  function withSide(out, source) { if (source.side === 'below') out.side = 'below'; return out; }
+  // Heights on each face extend OUTWARD from the same floor. Beam centres sit half a cell
+  // off the surface: world height = z + .5, so underside height h has logical z = -h-1.
+  function heightAt(L, x, y, side) { return side === 'below' && L.duplex ? -L.duplex.lower[y][x] - 1 : L.t[y][x]; }
+  function inHole(L, x, y, margin) {
+    return !!L.duplex && L.duplex.holes.some(function (h) { return x > h.x - 0.5 + margin && x < h.x + h.w - 0.5 - margin && y > h.y - 0.5 + margin && y < h.y + h.d - 0.5 - margin; });
+  }
   function isInt(n) { return typeof n === 'number' && isFinite(n) && Math.floor(n) === n; }
   function fail(msg) { throw new Error('lasers-3d level: ' + msg); }
 
   /* Distinct beam states on a w x d board, + 1. A trace can never reach it. */
-  function capForSize(size) {
-    var n = size.w * size.d * H_MAX * N_DIRS * N_PITCHES + 1;
+  function capForSize(size, duplex) {
+    var n = size.w * size.d * H_MAX * (duplex ? 2 : 1) * N_DIRS * N_PITCHES + 1;
     return n > MAX_STEPS ? n : MAX_STEPS;
   }
 
@@ -165,7 +173,7 @@
     var e = level.emitter;
     if (!e || !inGrid(size, e.x, e.y)) fail('emitter must be on the grid');
     if (!Object.prototype.hasOwnProperty.call(DIRS, e.dir)) fail('emitter dir must be E, N, W or S');
-    return { x: e.x, y: e.y, dir: e.dir };
+    return withSide({ x: e.x, y: e.y, dir: e.dir }, e);
   }
 
   function parseTargets(level, size, emitter) {
@@ -175,11 +183,11 @@
     for (var i = 0; i < list.length; i++) {
       var tg = list[i];
       if (!tg || !inGrid(size, tg.x, tg.y)) fail('target ' + i + ' is off the grid');
-      var k = key(tg.x, tg.y);
-      if (k === key(emitter.x, emitter.y)) fail('target ' + i + ' sits on the emitter');
+      var k = key(tg.x, tg.y, tg.side);
+      if (k === key(emitter.x, emitter.y, emitter.side)) fail('target ' + i + ' sits on the emitter');
       if (seen[k]) fail('target ' + i + ' duplicates another target');
       seen[k] = true;
-      out.push({ x: tg.x, y: tg.y });
+      out.push(withSide({ x: tg.x, y: tg.y }, tg));
     }
     return out;
   }
@@ -188,16 +196,16 @@
     var list = level.fixed || [];
     if (!Array.isArray(list)) fail('fixed must be an array');
     var taken = {};
-    taken[key(emitter.x, emitter.y)] = true;
-    targets.forEach(function (tg) { taken[key(tg.x, tg.y)] = true; });
+    taken[key(emitter.x, emitter.y, emitter.side)] = true;
+    targets.forEach(function (tg) { taken[key(tg.x, tg.y, tg.side)] = true; });
     return list.map(function (f, i) {
       if (!f || !inGrid(size, f.x, f.y)) fail('fixed piece ' + i + ' is off the grid');
       if (!Pieces.isType(f.type)) fail('fixed piece ' + i + ' has unknown type ' + f.type);
       if (!Pieces.isOrient(f.orient)) fail('fixed piece ' + i + ' orient must be / or \\');
-      var k = key(f.x, f.y);
+      var k = key(f.x, f.y, f.side);
       if (taken[k]) fail('fixed piece ' + i + ' overlaps the emitter, a target or another fixed piece');
       taken[k] = true;
-      return { x: f.x, y: f.y, type: f.type, orient: f.orient, secret: !!f.secret };
+      return withSide({ x: f.x, y: f.y, type: f.type, orient: f.orient, secret: !!f.secret }, f);
     });
   }
 
@@ -227,6 +235,10 @@
     if (!level || typeof level !== 'object') fail('level must be an object');
     if (PARSED.has(level)) return level;
     var size = parseSize(level);
+    [level.emitter].concat(level.targets || [], level.fixed || []).forEach(function (p) {
+      if (p && p.side != null && p.side !== 'above' && p.side !== 'below') fail('side must be above or below');
+      if (p && p.side === 'below' && !level.duplex) fail('below actors require a duplex board');
+    });
     var par = level.par == null ? 0 : level.par;
     if (!isInt(par) || par < 0) fail('par must be a non-negative integer');
     var emitter = parseEmitter(level, size);
@@ -249,12 +261,31 @@
       intro: level.intro ? String(level.intro) : '',
       dark: parseDark(level)
     };
+    if (level.duplex != null) {
+      var d = level.duplex;
+      if (!d || typeof d !== 'object' || !Array.isArray(d.holes) || !d.holes.length) fail('duplex requires lower terrain and holes');
+      var lower = parseTerrain({terrain:d.lower}, size);
+      var lowerOpen = parseOpenings({openings:d.openings},size,lower.t);
+      var cells = {};
+      var holes = d.holes.map(function(h) {
+        if (!h || !inGrid(size,h.x,h.y) || !isInt(h.w) || !isInt(h.d) || h.w < 1 || h.d < 1 || h.x+h.w > size.w || h.y+h.d > size.d) fail('hole rectangle must fit the board');
+        for (var y=h.y;y<h.y+h.d;y++) for (var x=h.x;x<h.x+h.w;x++) {
+          if (cells[key(x,y)] || terr.t[y][x] !== 0 || lower.t[y][x] !== 0) fail('holes cannot overlap or cut terrain on either face');
+          cells[key(x,y)] = true;
+        }
+        return {x:h.x,y:h.y,w:h.w,d:h.d};
+      });
+      out.duplex = {lower:lower.t, holes:holes, openings:lowerOpen.openings, openMask:lowerOpen.openMask};
+      [out.emitter].concat(out.targets,out.fixed).forEach(function(p) {
+        if (inHole(out,p.x,p.y,0)) fail('actor cannot sit in a hole on either face');
+      });
+    }
     PARSED.add(out);
     return out;
   }
 
   /* Derived per-level loop-guard step cap (>= MAX_STEPS). Accepts a raw or parsed level. */
-  function stepCap(level) { return capForSize(parseLevel(level).size); }
+  function stepCap(level) { var L = parseLevel(level); return capForSize(L.size, L.duplex); }
 
   /* ---------- canPlace (3.4) ----------
    * Unchanged by section 13. Placement is per CELL and a piece always sits on the column TOP at `t`,
@@ -263,17 +294,20 @@
 
   function occupiedMap(L, placed) {
     var occ = {};
-    occ[key(L.emitter.x, L.emitter.y)] = 'emitter';
-    L.targets.forEach(function (tg) { occ[key(tg.x, tg.y)] = 'target'; });
-    L.fixed.forEach(function (f) { occ[key(f.x, f.y)] = 'fixed'; });
-    (Array.isArray(placed) ? placed : []).forEach(function (p) { if (p) occ[key(p.x, p.y)] = 'placed'; });
+    occ[key(L.emitter.x, L.emitter.y, L.emitter.side)] = 'emitter';
+    L.targets.forEach(function (tg) { occ[key(tg.x, tg.y, tg.side)] = 'target'; });
+    L.fixed.forEach(function (f) { occ[key(f.x, f.y, f.side)] = 'fixed'; });
+    (Array.isArray(placed) ? placed : []).forEach(function (p) { if (p) occ[key(p.x, p.y, p.side)] = 'placed'; });
     return occ;
   }
 
-  function canPlace(level, placed, x, y) {
+  function canPlace(level, placed, x, y, side) {
     var L = parseLevel(level);
     if (!inGrid(L.size, x, y)) return false;
-    return !occupiedMap(L, placed)[key(x, y)];
+    if (side != null && side !== 'above' && side !== 'below') return false;
+    if (side === 'below' && !L.duplex) return false;
+    if (inHole(L,x,y,0)) return false;
+    return !occupiedMap(L, placed)[key(x, y, side)];
   }
 
   /* ---------- trace (3.2) ---------- */
@@ -283,17 +317,18 @@
     (Array.isArray(placed) ? placed : []).forEach(function (p, i) {
       if (!p || !Pieces.isType(p.type)) throw new Error('lasers-3d trace: placed piece ' + i + ' has unknown type ' + (p && p.type));
       if (!Pieces.isOrient(p.orient)) throw new Error('lasers-3d trace: placed piece ' + i + ' orient must be / or \\');
-      map[key(p.x, p.y)] = { x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: false };
+      if ((L.duplex && !inGrid(L.size,p.x,p.y)) || (p.side != null && p.side !== 'above' && p.side !== 'below') || (p.side === 'below' && !L.duplex) || inHole(L,p.x,p.y,0)) throw new Error('lasers-3d trace: invalid piece surface');
+      map[key(p.x, p.y, p.side)] = withSide({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: false }, p);
     });
     L.fixed.forEach(function (f) { // fixed pieces win over an (illegal) placed piece on the same cell
-      map[key(f.x, f.y)] = { x: f.x, y: f.y, type: f.type, orient: f.orient, fixed: true };
+      map[key(f.x, f.y, f.side)] = withSide({ x: f.x, y: f.y, type: f.type, orient: f.orient, fixed: true }, f);
     });
     return map;
   }
 
   function buildTargetMap(L) {
     var map = {};
-    L.targets.forEach(function (tg, i) { map[key(tg.x, tg.y)] = i; });
+    L.targets.forEach(function (tg, i) { map[key(tg.x, tg.y, tg.side)] = i; });
     return map;
   }
 
@@ -314,12 +349,16 @@
     var dir = DIRS[s.d];
     var nx = s.x + dir.dx, ny = s.y + dir.dy, nz = s.z + s.v;
     if (!inGrid(L.size, nx, ny)) return { kind: 'lost-edge' };
-    if (nz < 0) return { kind: 'lost-floor' };
+    if (nz < (L.duplex ? -4 : 0)) return { kind: 'lost-floor' };
+    if (L.duplex && (s.z < 0) !== (nz < 0)) {
+      var k = (-0.5 - s.z) / s.v;
+      if (!inHole(L, s.x + dir.dx*k, s.y + dir.dy*k, 0.12)) return {kind:'blocked-board'};
+    }
     if (nz >= H_MAX) return { kind: 'lost-sky' };
     /* THE BLOCKED TEST (DESIGN.md 13.2): solid below the column top, UNLESS this level is punched out.
      * openMask is all zeros on a level with no `openings`, so this is the old test exactly. */
-    if (L.t[ny][nx] > nz && !((L.openMask[ny][nx] >> nz) & 1)) return { kind: 'blocked' };
-    if (nx === L.emitter.x && ny === L.emitter.y && nz === L.t[ny][nx]) return { kind: 'blocked' }; // emitter body
+    if (nz < 0 ? heightAt(L,nx,ny,'below') < nz && !((L.duplex.openMask[ny][nx] >> (-nz-1)) & 1) : L.t[ny][nx] > nz && !((L.openMask[ny][nx] >> nz) & 1)) return { kind: 'blocked' };
+    if (nx === L.emitter.x && ny === L.emitter.y && nz === heightAt(L,nx,ny,L.emitter.side)) return { kind: 'blocked' }; // emitter body
     return { kind: 'enter', state: { x: nx, y: ny, z: nz, d: s.d, v: s.v } };
   }
 
@@ -327,7 +366,7 @@
   function finish(out, s, kind) {
     var dir = DIRS[s.d], to;
     if (kind === 'lost-edge') to = pt(s.x + dir.dx, s.y + dir.dy, s.z + s.v);
-    else to = pt(s.x + dir.dx / 2, s.y + dir.dy / 2, s.z);
+    else to = pt(s.x + dir.dx / 2, s.y + dir.dy / 2, kind === 'blocked-board' ? -0.5 : s.z);
     out.segments.push({ from: pt(s.x, s.y, s.z), to: to, d: s.d, v: s.v });
     return end(out, kind, to);
   }
@@ -357,22 +396,24 @@
    *                `glide`, and the beam carries on exactly as if the cell were bare.
    * No piece type is named here, so a fifth piece is still one registry entry. */
   function applyPiece(L, out, pieces, ns, step) {
-    var p = pieces[key(ns.x, ns.y)];
+    var p = pieces[key(ns.x, ns.y, sideOf(ns.z))];
     if (!p) return;
-    if (ns.z !== L.t[ns.y][ns.x]) {
-      var under = ns.z < L.t[ns.y][ns.x];
+    if (ns.z !== heightAt(L,ns.x,ns.y,sideOf(ns.z))) {
+      var under = ns.z < 0 ? ns.z > heightAt(L,ns.x,ns.y,'below') : ns.z < heightAt(L,ns.x,ns.y);
       (under ? out.underpasses : out.overflights).push(pt2(ns));
       emit(out, under ? 'underpass' : 'overflight', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed });
       return;
     }
     var straight = PIECES[p.type].split ? copyState(ns) : null;
-    var r = Pieces.apply(p.type, p.orient, ns.d, ns.v);
+    var outward = ns.z < 0 ? -1 : 1;
+    var r = Pieces.apply(p.type, p.orient, ns.d, ns.v * outward);
+    r.v = r.v * outward || 0;
     if (r.d === ns.d && r.v === ns.v) {
       out.glides.push(pt2(ns));
       emit(out, 'glide', step, ns.x, ns.y, ns.z, { type: p.type, orient: p.orient, fixed: p.fixed, d: ns.d, v: ns.v });
       return;
     }
-    out.pieceHits.push({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: p.fixed });
+    out.pieceHits.push(withSide({ x: p.x, y: p.y, type: p.type, orient: p.orient, fixed: p.fixed }, p));
     emit(out, 'piece', step, ns.x, ns.y, ns.z,
          { type: p.type, orient: p.orient, fixed: p.fixed, dIn: ns.d, dOut: r.d, vIn: ns.v, vOut: r.v });
     if (r.v !== ns.v) {
@@ -394,8 +435,8 @@
 
   /* Target check on entering a cell. Returns true when the beam must stop (all targets lit). */
   function applyTarget(L, out, targets, lit, ns, step) {
-    var ti = targets[key(ns.x, ns.y)];
-    if (ti === undefined || ns.z !== L.t[ns.y][ns.x]) return false;
+    var ti = targets[key(ns.x, ns.y, sideOf(ns.z))];
+    if (ti === undefined || ns.z !== heightAt(L,ns.x,ns.y,sideOf(ns.z))) return false;
     if (!lit[ti]) {
       lit[ti] = true;
       out.hits.push(ti);
@@ -409,11 +450,11 @@
     var pieces = buildPieceMap(L, placed);
     if (Object.keys(pieces).some(function (k) { return PIECES[pieces[k].type].split; })) return traceBranches(L, pieces);
     var targets = buildTargetMap(L);
-    var cap = capForSize(L.size);
+    var cap = capForSize(L.size, L.duplex);
     var out = { segments: [], visited: [], hits: [], allTargetsHit: false, end: null, endPoint: null,
                 altitudeMarks: [], pieceHits: [], overflights: [], underpasses: [], glides: [],
                 bounces: [], events: [] };
-    var s = { x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 };
+    var s = { x: L.emitter.x, y: L.emitter.y, z: heightAt(L,L.emitter.x,L.emitter.y,L.emitter.side), d: L.emitter.dir, v: 0 };
     var seen = {}, lit = {};
     seen[stateKey(s)] = true;
     for (var step = 0; step < cap; step++) {
@@ -423,6 +464,7 @@
       out.segments.push({ from: pt(s.x, s.y, s.z), to: pt(ns.x, ns.y, ns.z), d: s.d, v: s.v });
       out.visited.push(copyState(ns));
       emit(out, 'enter', step, ns.x, ns.y, ns.z, { d: ns.d, v: ns.v });
+      if (L.duplex && (s.z < 0) !== (ns.z < 0)) emit(out,'crossing',step,(s.x+ns.x)/2,(s.y+ns.y)/2,-0.5,{side:ns.z<0?'below':'above'});
       if (applyTarget(L, out, targets, lit, ns, step)) { out.allTargetsHit = true; return end(out, 'target', ns); }
       applyPiece(L, out, pieces, ns, step);
       var sk = stateKey(ns);
@@ -446,7 +488,7 @@
       var r = advance(L, s), to, dir = DIRS[s.d];
       if (r.kind === 'enter') to = pt(r.state.x, r.state.y, r.state.z);
       else if (r.kind === 'lost-edge') to = pt(s.x + dir.dx, s.y + dir.dy, s.z + s.v);
-      else to = pt(s.x + dir.dx / 2, s.y + dir.dy / 2, s.z);
+      else to = pt(s.x + dir.dx / 2, s.y + dir.dy / 2, r.kind === 'blocked-board' ? -0.5 : s.z);
       var len = r.kind === 'enter' ? Math.sqrt(1 + s.v * s.v) : Math.sqrt(1 + s.v * s.v) / 2;
       var n = { s: s, r: r, to: to, d0: d0, d1: d0 + len, parent: parent, order: order++ };
       var i = heap.length; heap.push(n);
@@ -472,7 +514,7 @@
       if (seen[k]) { emit(out, 'merge', parent, s.x, s.y, s.z); return; }
       seen[k] = true; push(s, distance, parent);
     }
-    continueFrom({ x: L.emitter.x, y: L.emitter.y, z: L.t[L.emitter.y][L.emitter.x], d: L.emitter.dir, v: 0 }, 0, -1);
+    continueFrom({ x: L.emitter.x, y: L.emitter.y, z: heightAt(L,L.emitter.x,L.emitter.y,L.emitter.side), d: L.emitter.dir, v: 0 }, 0, -1);
     while (heap.length) {
       var n = pop(), s = n.s, step = out.segments.length;
       var seg = { from: pt(s.x, s.y, s.z), to: n.to, d: s.d, v: s.v, d0: n.d0, d1: n.d1, parent: n.parent };
@@ -485,6 +527,7 @@
       var ns = n.r.state;
       out.visited.push(copyState(ns));
       emit(out, 'enter', step, ns.x, ns.y, ns.z, { d: ns.d, v: ns.v });
+      if (L.duplex && (s.z < 0) !== (ns.z < 0)) emit(out,'crossing',step,(s.x+ns.x)/2,(s.y+ns.y)/2,-0.5,{side:ns.z<0?'below':'above'});
       if (applyTarget(L, out, targets, lit, ns, step)) {
         out.allTargetsHit = true;
         return end(out, 'target', ns);
@@ -497,5 +540,5 @@
   }
 
   return { DIRS: DIRS, H_MAX: H_MAX, MAX_STEPS: MAX_STEPS, ORIENTS: ORIENTS, PIECES: PIECES, TURN: Pieces.TURN,
-           stepCap: stepCap, parseLevel: parseLevel, canPlace: canPlace, isOpen: isOpen, trace: trace };
+           stepCap: stepCap, parseLevel: parseLevel, canPlace: canPlace, heightAt: heightAt, inHole: inHole, cellKey: key, withSide: withSide, isOpen: isOpen, trace: trace };
 }));

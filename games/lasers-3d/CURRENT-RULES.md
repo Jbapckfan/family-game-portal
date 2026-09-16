@@ -1,6 +1,6 @@
 # Lasers 3D: current rules and release workflow
 
-This is the current implementation reference as of September 11, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The original 23 authored puzzles retain their physics and layouts. Four bonus Splitters puzzles extend the game to 27 levels.
+This is the current implementation reference as of September 16, 2026. `DESIGN.md` and `MOTION-DIRECTION.md` preserve the original proposals and subsequent amendments; use this document when those historical sections conflict. The original 23 authored puzzles retain their physics and layouts. Four bonus Splitters puzzles and four Both Sides puzzles extend the game to 31 levels.
 
 ## Puzzle rules
 
@@ -12,6 +12,24 @@ This is the current implementation reference as of September 11, 2026. `DESIGN.m
 - Repeated `(x,y,z,direction,pitch)` states terminate loops. The backup step cap is `max(400, width × depth × 4 × 4 × 3 + 1)`.
 - Placement must use available inventory and a legal square. Fixed pieces cannot move. Undo/redo restores edits; RESET starts a fresh attempt while preserving earned stars and discovered cells.
 - Dark levels show only discovered cells. A fired beam adds discovery along its route. Unknown-cell refusals and cursor descriptions must not disclose hidden pieces, terrain, or height.
+
+## Both Sides chapter
+
+Levels → **NEW: Play Both Sides** opens level 28 immediately. Four puzzles teach a downward crossing, a round trip, a deeper underside route, and a splitter feeding receivers on both faces. The original 27 boards retain their layouts, fingerprints, traces and controls.
+
+**One floor, back-to-back terrain.** Upper terrain grows up from world height 0. Underside terrain grows down from that same floor, with mirrors, emitters and receivers reflected vertically and attached to its outward-facing surfaces. Both faces use the existing beveled terrain and the existing flat-to-3D reveal. There is no separate lower platform, intervening gap, support columns, or transparent cutaway. Boards open in the familiar 2D bird’s-eye view.
+
+A two-sided level adds `duplex: {lower: rows, holes: [{x,y,w,d}], openings?: [...]}`. Both terrain arrays contain outward heights 0–3. An upper surface of height h hosts logical beam height h; the reflected underside hosts logical height `-h-1`. World beam centres remain `z+0.5`, so they are always half a cell outward from their surface. Beam states occupy −4…3. `side: 'below'` on an emitter, receiver, fixed or placed optic selects the underside; absent side means above. Two optics may share `(x,y)` on opposite faces. Apertures remove the floor and placement surface on both faces. They cannot overlap or cut raised terrain or actors on either face. Optional `duplex.openings` expresses underside arches/windows in outward local heights using the same schema as ordinary `openings`.
+
+Underside optics are the existing optics reflected through the floor: the rules convert world pitch to outward-local pitch, apply the existing piece transform, then convert back. WEDGE bends away from the shared floor and DIP bends toward it. On the underside, DIP can level a descending beam and another DIP can send it back upward. FLOOR reflects a beam approaching its surface back outward. Heading reflection is unchanged. Underside columns are solid between their outward tip and the shared floor, except at authored arches/windows.
+
+When logical height crosses between 0 and −1, the continuous ray intersects the floor at logical −0.5 / world 0. The intersection must lie inside a hole with 0.12-cell edge clearance. Otherwise the beam stops there with `blocked-board`; solid floor can never transmit the beam. A legal crossing emits `crossing` with its position and destination `side`. The loop guard accounts for all eight heights.
+
+**Above / Below** flip the camera around the centre of the shared floor while retaining the requested 2D/3D mode. 2D looks directly at the selected face; 3D fits the entire board. Two-finger tilt can pass continuously through an edge-on pose to the other side and automatically changes the editing face. One-finger pan remains screen-relative underneath, including while crossing zero elevation. Projection cannot divide by zero or magnify without bound at the edge-on pose. Picking, rotation, long-press drag, keyboard cursors, ghosts, hints, undo and saves all preserve the face. Solid geometry keeps real depth occlusion, including beam-height badges. Reduced motion shortens the camera move; settled scenes have zero application frames. Both Sides does not award FROM ABOVE mastery.
+
+Camera saves include the selected face and signed elevation. Fingerprints include underside terrain, apertures, openings, piece sides and the back-to-back rules revision, rejecting saves from the earlier stacked-deck prototype. The prototype was rejected by James; his September 16 clarification and the corrected actual-game profile capture are the accepted structural direction.
+
+`test/duplex.test.mjs` reflects every original puzzle—including arches, windows, FLOOR plates and splitters—onto the underside and verifies the same routes. It also verifies crossing clearance, solid-floor blocking in both directions, solid underside columns, independent occupancy and saved identities. `test/duplex.playwright.mjs` covers both browser engines, touch editing, flipping, edge-on orbit, centred pan, responsive layouts, persistence, reduced motion and zero idle frames. Its native-verifier preflight in WebKit is browser evidence, not a physical iPad run.
 
 ## Learning, camera and awards
 
@@ -35,7 +53,7 @@ The camera always rotates around the geometric board centre at floor height. Pan
 
 Motion uses one on-demand registry and frame scheduler. Settled scenes produce no application frames. Backgrounding commits active shot results and cancels decoration. WebGL loss saves the puzzle; restoration invalidates shadows and redraws the scene.
 
-The [current cinematic art direction](../../docs/reviews/2026-09-08-lasers-3d-cinematic.md) adds sculpted enamel blocks, metal bevels and hardware, glass optics, local laser illumination, and five chapter palettes. All seven decorative lamps are off in FLAT. Terrain shading and bevels obey discovery and the flat floor/top pixel identity; common MIRROR/WEDGE/DIP glyphs remain intact. SPLITTER has a distinct diamond-and-diagonal glyph and a lavender glass crystal, making its different behavior visible in both views without revealing terrain height. Chassis markings and its grounding shadow depend only on public board dimensions.
+The [current cinematic art direction](../../docs/reviews/2026-09-08-lasers-3d-cinematic.md) adds sculpted enamel blocks, metal bevels and hardware, glass optics, local laser illumination, and five chapter palettes. All seven decorative lamps are off in FLAT, including on either face of a Both Sides board. Terrain shading and bevels obey discovery and the flat floor/top pixel identity; common MIRROR/WEDGE/DIP glyphs remain intact. SPLITTER has a distinct diamond-and-diagonal glyph and a lavender glass crystal, making its different behavior visible in both views without revealing terrain height. Chassis markings and its grounding shadow depend only on public board dimensions.
 
 A winning shot sends one pulse along its actual route, then a surface illumination wave expands from the final reached target. This decoration lasts 1,200 ms and the victory modal starts at 1,280 ms; every gain returns exactly to rest. Reset, level change, backgrounding, reduced motion and the decorative-ring quality cut cancel the wave. Reduced motion omits it and retains the existing short victory fade. This finite celebration supersedes the historical prohibition on all ground waves; ambient/repeating waves remain disabled.
 
@@ -49,7 +67,7 @@ npx playwright install webkit chromium
 npm run verify
 ```
 
-The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render, motion and optical-art scripts use WebKit. The camera suite covers native Chromium touch dispatch and WebKit Pointer Events, including gesture handoffs and zero idle frames. The art checks compare actual illuminated framebuffers and exercise celebration cancellation and zero idle frames. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 27 solutions and par values independently. The original campaign retains all its existing difficulty/height checks; bonus puzzles additionally prove that a splitter is necessary. The splitter integration suite exercises both WebKit and Chromium, real touch placement, simultaneous receiver arrivals, failed branches, save/reload, reduced motion, small-screen controls and zero idle frames.
+The release regression script uses Chromium (or installed Google Chrome as a fallback); the main UI, DOM, render, motion and optical-art scripts use WebKit. The camera suite covers native Chromium touch dispatch and WebKit Pointer Events, including gesture handoffs and zero idle frames. The art checks compare actual illuminated framebuffers and exercise celebration cancellation and zero idle frames. Screenshot artifacts go into the ignored `output/` directory. `npm test` runs unit/DOM checks; `npm run validate` proves all 31 solutions and par values independently. The original campaign retains all its existing difficulty/height checks; Splitters puzzles additionally prove that a splitter is necessary. Both Sides puzzles prove that every minimum solution crosses the central board. The splitter integration suite exercises both WebKit and Chromium, real touch placement, simultaneous receiver arrivals, failed branches, save/reload, reduced motion, small-screen controls and zero idle frames.
 
 The iOS app is an offline WKWebView bundle. Its icon source is in `assets/app-icon-source.png`, with the opaque 1024px shipping asset in the iOS asset catalog. Build with XcodeGen and the configured Apple development team:
 

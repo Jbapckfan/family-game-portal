@@ -6,6 +6,7 @@
  */
 (function (root) {
   'use strict';
+  function sided(out, source) { if (source && source.side === 'below') out.side = 'below'; return out; }
   var REVEAL_LEVELS = { 3: true, 4: true };   /* 0-based: levels 4 and 5 play the free reveal once */
   /* DESIGN.md 15: the alphabet the discovered set is packed into, four cells per character. Module scope, not
    * start()'s: everything after start()'s `return finishApp()` is a hoisted function DECLARATION, so a `var`
@@ -13,7 +14,7 @@
   var HEX = '0123456789abcdef';
 
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
-  function sameCell(a, b) { return !!a && !!b && a.x === b.x && a.y === b.y; }
+  function sameCell(a, b) { return !!a && !!b && a.x === b.x && a.y === b.y && (a.side === 'below') === (b.side === 'below'); }
   function now() { return (root.performance && root.performance.now) ? root.performance.now() : Date.now(); }
 
   function start(opts) {
@@ -68,8 +69,8 @@
     /* The registry owns both, so a fixed reduced-motion value can never be scaled twice (contract 9). */
     function scaleMs(ms, fixedReducedMs) { return motion.scaleMs(ms, fixedReducedMs); }
     function holdMs(ms) { return motion.holdMs(ms); }
-    function pieceAt(cell) { for (var i = 0; i < S.placed.length; i++) if (S.placed[i].x === cell.x && S.placed[i].y === cell.y) return S.placed[i]; return null; }
-    function fixedAt(cell) { var f = S.level ? S.level.fixed : [], i; for (i = 0; i < f.length; i++) if (f[i].x === cell.x && f[i].y === cell.y) return f[i]; return null; }
+    function pieceAt(cell) { for (var i = 0; i < S.placed.length; i++) if (sameCell(S.placed[i], cell)) return S.placed[i]; return null; }
+    function fixedAt(cell) { var f = S.level ? S.level.fixed : [], i; for (i = 0; i < f.length; i++) if (sameCell(f[i], cell)) return f[i]; return null; }
     function remaining() {
       var r = {}, i;
       for (i = 0; i < TYPES.length; i++) r[TYPES[i]] = 0;
@@ -85,7 +86,7 @@
     }
     function canPlaceExcluding(from, to) {
       var others = S.placed.filter(function (p) { return !sameCell(p, from); });
-      return sim.canPlace(S.level, others, to.x, to.y);
+      return sim.canPlace(S.level, others, to.x, to.y, to.side);
     }
     function syncInput() { if (input) input.setEnabled(!busy()); }
     /* A per-level flag bag inside progress (`intros`, `revealed`): always a plain object, whatever storage held. */
@@ -165,13 +166,18 @@
       onOrbitStart: function () { if (locked()) return; orbitCounted = false; calmWeather(); clearSelection(); bump(); },
       onOrbit: function (dAz, dEl) {
         if (locked()) return;
+        var faceBefore=render.getLayer();
         if (render.orbit(dAz, dEl) !== false && !orbitCounted) { orbitCounted = true; S.tiltsUsed++; bump(); }
+        if(faceBefore!==render.getLayer()){
+          S.cursorCell=null;S.moveFrom=null;cancelHint();input.setCursor(null);
+          render.setCursor(null);render.setGhost(null);render.setHover(null);bump();
+        }
         S.camDirty = true; markDirty();
       },
       onOrbitEnd: function () { S.camDirty = true; saveAttempt(); markDirty(); },
       onZoom: function (f) { calmWeather(); render.zoom(f); S.camDirty = true; bump(); },
       onPan: function (dx, dy) { calmWeather(); render.pan(dx, dy); S.camDirty = true; bump(); },
-      onLongPressPiece: function (c) { if (!busy() && pieceAt(c)) select({ x: c.x, y: c.y }); },
+      onLongPressPiece: function (c) { if (!busy() && pieceAt(c)) select(sided({ x: c.x, y: c.y }, c)); },
       onHover: function (c) { render.setHover(c); markDirty(); }, onKey: onKey
     } });
     input.setPlacedLookup(function (cell) { return pieceAt(cell); });
@@ -249,7 +255,7 @@
 
     function finishApp() {
       var app = { state: S, sim: sim, render: render, input: input, ui: ui, audio: audio, theme: theme, levels: LEVELS,
-        loadLevel: loadLevel, fire: fire, reset: reset, saveAttempt: saveAttempt, knownCell: knownCell, focusCell: focusCell, moveSelected: function () { S.moveFrom = S.selectedCell || S.cursorCell; if (S.moveFrom && pieceAt(S.moveFrom)) ui.showToast('Tap the destination square.', {ms:8000}); }, undo: undo, redo: redo, hint: hint, tilt: tilt, setPlaced: setPlaced,
+        loadLevel: loadLevel, fire: fire, reset: reset, saveAttempt: saveAttempt, knownCell: knownCell, focusCell: focusCell, setLayer: setLayer, moveSelected: function () { S.moveFrom = S.selectedCell || S.cursorCell; if (S.moveFrom && pieceAt(S.moveFrom)) ui.showToast('Tap the destination square.', {ms:8000}); }, undo: undo, redo: redo, hint: hint, tilt: tilt, setPlaced: setPlaced,
         /* DESIGN.md 15 test/debug surface: the level's discovered set and a way to grow it without firing. */
         knownList: knownList, learnCells: learnCells, saveKnown: saveKnown,
         getViewModel: getViewModel, getProgress: function () { return progress; }, step: step, destroy: destroy,
@@ -296,7 +302,21 @@
      * moment the generator moves a wall. */
     function fingerprint(parsed) { return root.LaserProgress.fingerprint(LEVELS[S.levelIndex] || parsed); }
     function knownCell(c) { return !S.dark || !!(S.known && S.known.cells[c.y * S.known.w + c.x]); }
-    function focusCell(c, zoom) { if (!render || !c) return; render.focusCell(c, zoom); S.camDirty = true; bump(); }
+    function setLayer(side) {
+      if (!S.level || !S.level.duplex || busy()) return;
+      clearDeckSelection();
+      render.setLayer(side, {animate:true}).then(saveAttempt); S.camDirty = true; bump();
+    }
+    function clearDeckSelection() {
+      clearSelection(); S.cursorCell = null; S.moveFrom = null; cancelHint();
+      input.cancel(); input.setCursor(null); render.setCursor(null); render.setHover(null); render.setGhost(null);
+    }
+    function focusCell(c, zoom) {
+      if (!render || !c) return;
+      var side = c.side || (c.z < 0 ? 'below' : 'above');
+      if (S.level && S.level.duplex && render.getLayer() !== side) clearDeckSelection();
+      render.focusCell(c, zoom); S.camDirty = true; bump();
+    }
     function saveAttempt() {
       if (!progress || !S.level || !root.LaserProgress) return;
       var key = String(S.levelIndex);
@@ -363,7 +383,7 @@
         idx = c.y * K.w + c.x;
         if (K.cells[idx]) continue;
         K.cells[idx] = 1; K.count++;
-        fresh.push({ x: c.x, y: c.y });
+        fresh.push(sided({ x: c.x, y: c.y }, c));
       }
       if (!fresh.length) return;
       if (render) render.revealCells(fresh);      /* the renderer eases each one in; main only says WHICH */
@@ -520,7 +540,7 @@
     }
     function placeAt(cell, type) {
       if (busy() || !type) return false;
-      if (remaining()[type] <= 0 || !sim.canPlace(S.level, S.placed, cell.x, cell.y)) {
+      if (remaining()[type] <= 0 || !sim.canPlace(S.level, S.placed, cell.x, cell.y, cell.side)) {
         /* Section 5, "Illegal placement": the board and the piece stay put; the danger outline goes on the
          * ATTEMPTED FOOTPRINT (the renderer's, ui.js only owns the tray card's two shake beats). It is the same
          * outline whatever the refusal's reason, so a refusal on a dark cell still tells the player nothing about
@@ -529,7 +549,7 @@
         if (render) render.flashInvalid(cell);
         return false;
       }
-      var next = clone(S.placed); next.push({ x: cell.x, y: cell.y, type: type, orient: '/' });
+      var next = clone(S.placed); next.push(sided({ x: cell.x, y: cell.y, type: type, orient: '/' }, cell));
       commit(next, 'place');
       if (remaining()[type] <= 0) S.selectedTray = null;
       clearSelection(); refreshGhost();
@@ -548,7 +568,7 @@
     }
     function movePiece(from, to) {
       var next = clone(S.placed);
-      next.forEach(function (p) { if (sameCell(p, from)) { p.x = to.x; p.y = to.y; } });
+      next.forEach(function (p) { if (sameCell(p, from)) { p.x = to.x; p.y = to.y; delete p.side; sided(p,to); } });
       commit(next, 'place');
     }
     function undo() { if (busy() || !S.history.length) return; S.future.push(clone(S.placed)); S.placed = S.history.pop(); afterHistory(); }
@@ -561,7 +581,7 @@
 
     /* ---------------------------------------------- selection, ghost */
     function select(cell) {
-      S.selectedCell = { x: cell.x, y: cell.y };
+      S.selectedCell = sided({ x: cell.x, y: cell.y }, cell);
       if (render) render.setSelection(S.selectedCell);
       anchorControls(); bump();
     }
@@ -579,10 +599,10 @@
       var g = null;
       if (S.drag) {
         var o = S.drag.over;
-        if (o) g = { x: o.x, y: o.y, type: S.drag.piece.type, orient: S.drag.piece.orient, invalid: !sameCell(o, S.drag.from) && !canPlaceExcluding(S.drag.from, o) };
+        if (o) g = sided({ x: o.x, y: o.y, type: S.drag.piece.type, orient: S.drag.piece.orient, invalid: !sameCell(o, S.drag.from) && !canPlaceExcluding(S.drag.from, o) }, o);
       } else if (S.hintGhost) g = S.hintGhost;
       else if (S.cursorCell && S.selectedTray && !pieceAt(S.cursorCell)) {
-        g = { x: S.cursorCell.x, y: S.cursorCell.y, type: S.selectedTray, orient: '/', invalid: !sim.canPlace(S.level, S.placed, S.cursorCell.x, S.cursorCell.y) };
+        g = sided({ x: S.cursorCell.x, y: S.cursorCell.y, type: S.selectedTray, orient: '/', invalid: !sim.canPlace(S.level, S.placed, S.cursorCell.x, S.cursorCell.y, S.cursorCell.side) }, S.cursorCell);
       }
       if (g && !knownCell(g)) g.invalid = false;
       render.setGhost(g);
@@ -596,7 +616,7 @@
     }
     function onTapCell(c) {
       if (busy()) return;
-      var cell = { x: c.x, y: c.y };
+      var cell = sided({ x: c.x, y: c.y }, c);
       if (S.moveFrom) { var from = S.moveFrom; S.moveFrom = null; if (canPlaceExcluding(from, cell)) { movePiece(from, cell); clearSelection(); } else ui.showToast('That square is unavailable.', {kind:'danger'}); return; }
       if (render.getViewMode() === 'overview') { focusCell(cell, true); return; }
       if (pieceAt(cell)) { rotateAt(cell); select(cell); return; }
@@ -622,7 +642,7 @@
         if (busy()) return;
         S.drag = { from: p.from, piece: p.piece, over: null };
         clearSelection(); cancelHint();
-        if (render && p.from && p.piece) render.setPickup({ x: p.from.x, y: p.from.y, type: p.piece.type, orient: p.piece.orient });
+        if (render && p.from && p.piece) render.setPickup(sided({ x: p.from.x, y: p.from.y, type: p.piece.type, orient: p.piece.orient }, p.from));
         refreshGhost();
         return;
       }
@@ -647,11 +667,11 @@
       if (busy()) return;
       if (action === 'cursor') {
         var c = S.cursorCell || { x: S.level.emitter.x, y: S.level.emitter.y };   /* the cursor starts on the emitter */
-        c = { x: c.x + payload.dx, y: c.y + payload.dy };
+        c = sided({ x: c.x + payload.dx, y: c.y + payload.dy }, {side:render.getLayer ? render.getLayer() : c.side});
         c.x = Math.max(0, Math.min(S.level.size.w - 1, c.x)); c.y = Math.max(0, Math.min(S.level.size.d - 1, c.y));
         setCursor(c);
       } else if (action === 'enter') {
-        if (!S.cursorCell) { setCursor({ x: S.level.emitter.x, y: S.level.emitter.y }); return; }
+        if (!S.cursorCell) { setCursor(sided({ x: S.level.emitter.x, y: S.level.emitter.y }, {side:render.getLayer ? render.getLayer() : undefined})); return; }
         if (pieceAt(S.cursorCell)) { rotateAt(S.cursorCell); select(S.cursorCell); }
         else if (S.selectedTray) placeAt(S.cursorCell, S.selectedTray);
         else { ui.flashInvalid('tray'); play('invalid'); }
@@ -671,7 +691,7 @@
       }
     }
     function setCursor(cell) {
-      S.cursorCell = cell ? { x: cell.x, y: cell.y } : null;
+      S.cursorCell = cell ? sided({ x: cell.x, y: cell.y }, cell) : null;
       if (render) { render.setCursor(S.cursorCell); if (S.cursorCell) focusCell(S.cursorCell, false); }
       if (input) input.setCursor(S.cursorCell);
       refreshGhost(); bump();
@@ -738,7 +758,7 @@
       var stars = attemptStars(), key = String(S.levelIndex);
       progress.stars[key] = root.LaserUI.mergeStars(progress.stars[key], stars);   /* per criterion, never max() of a count */
       if (!LEVELS[S.levelIndex].bonus) progress.highestUnlocked = Math.max(progress.highestUnlocked | 0, S.levelIndex + 1);
-      if (S.tiltsUsed === 0 && !S.hintUsed) bag('mastery')[key] = true;
+      if (!S.level.duplex && S.tiltsUsed === 0 && !S.hintUsed) bag('mastery')[key] = true;
       delete bag('attempts')[key]; ui.saveProgress(progress);
       play('win');
       var detail = { stars: progress.stars[key], starCount: root.LaserUI.starCount(progress.stars[key]),
@@ -814,6 +834,9 @@
       if (busy() || !S.solution) return;
       if (sim.trace(S.level, S.placed).allTargetsHit) { ui.showToast('Your route works. Press FIRE!', {kind:'success'}); return; }
       S.hintStage++;
+      if(S.hintStage===1&&S.level.duplex){
+        ui.showToast('The floor is solid except at the holes. DIP bends toward the shared floor; WEDGE bends away. Use Below to follow the underside route.',{ms:8000});bump();return;
+      }
       if (S.hintStage === 1) { ui.showToast(S.readout && S.readout.pitch > 0 ? 'The beam keeps climbing. A DIP can level it.' : S.readout && S.readout.pitch < 0 ? 'The beam keeps falling. A WEDGE can level it.' : 'Follow the beam to its last turn. Which direction would reach the target? Tilt freely to inspect the heights.', {ms:8000}); bump(); return; }
       var entry = null, i;
       for (i = 0; i < S.solution.length && !entry; i++) {
@@ -823,9 +846,9 @@
       if (!entry) { ui.showToast('That is the answer. Press FIRE!', { kind: 'success' }); return; }
       focusCell(entry, true);
       if (S.hintStage === 2) { render.pulseCell(entry); ui.showToast('Study this area. Ask once more to reveal a placement; that uses an assist.', {ms:8000}); bump(); return; }
-      S.hintUsed = true; S.hintGhost = { x: entry.x, y: entry.y, type: entry.type, orient: entry.orient };
+      S.hintUsed = true; S.hintGhost = sided({ x: entry.x, y: entry.y, type: entry.type, orient: entry.orient }, entry);
       refreshGhost(); ui.setHintGhostVisible(true); play('hint'); saveAttempt();
-      ui.showToast(entry.type + ' at column ' + (entry.x + 1) + ', row ' + (entry.y + 1) + ', facing ' + entry.orient + (pieceAt(entry) ? '. Move or rotate the piece already there.' : '.'), {ms:8000});
+      ui.showToast(entry.type + (entry.side === 'below' ? ' below at column ' : ' at column ') + (entry.x + 1) + ', row ' + (entry.y + 1) + ', facing ' + entry.orient + (pieceAt(entry) ? '. Move or rotate the piece already there.' : '.'), {ms:8000});
       /* The ghost's lifetime is a stationary one-shot - it renders nothing while it waits - so it is a registry
        * hold rather than a bare timer: RESET, a level change and the tab going away all reach it. */
       var ht = motion.token();
@@ -860,6 +883,7 @@
         stars: flags, starCount: root.LaserUI.starCount(flags),
         attemptStars: attemptStars(), attemptStarCount: root.LaserUI.starCount(attemptStars()),
         camera: S.isFlat ? 'flat' : 'tilt', isFlat: S.isFlat,
+        activeLayer: render && render.getLayer ? render.getLayer() : 'above',
         cameraDestination: render && render.getCamera().animating ? render.getCamera().preset : null,
         muted: !!progress.muted, canUndo: S.history.length > 0, canRedo: S.future.length > 0,
         revealPlaying: S.revealPlaying, cameraBusy: S.resetting,

@@ -53,7 +53,7 @@ test('recirculating splitter network terminates within the finite state space',(
  const r=Sim.trace(l,ps);assert.equal(r.allTargetsHit,false);assert.ok(r.events.some(e=>e.kind==='merge'));assert.ok(r.segments.length<Sim.stepCap(l));
  assert.deepEqual(Sim.trace(l,ps),r);
 });
-for(const l of levels.filter(l=>l.bonus))test(l.name+': authored route and minimum par are proven; a splitter is required',()=>{
+for(const l of levels.filter(l=>l.chapter==='SPLITTERS'))test(l.name+': authored route and minimum par are proven; a splitter is required',()=>{
  const r=Sim.trace(l,l.solution),min=proveMinimal(l,l.par,{maxNodes:100000,maxMs:10000});
  assert.equal(r.allTargetsHit,true);assert.equal(r.hits.length,l.targets.length);assert.ok(min.nodes>0&&min.proven&&!min.truncated);
  assert.ok(r.events.some(e=>e.kind==='split'));assert.equal(l.solution.length,l.par);

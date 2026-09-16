@@ -814,3 +814,10 @@ falling, and the same plate does nothing at all: no `piece` event, no `pieceHits
 - **Solver**: to test whether a trace ended on the safety-net cap rather than a real cycle, compare `segments.length` with `LaserSim.stepCap(level)`, never with `MAX_STEPS` (which is only the cap's floor and is far below the cap on a 12x12+ board). `visited` is the pruning set — a new piece can only change the beam if placed on a visited `(x,y)` whose `t[y][x] == z` at that visit (and `canPlace` is true). Parse once, then pass the parsed level to `trace`.
 - **UI**: `hits.length` vs `targets.length` for the HUD; `end` for the status line; `pieceHits[].fixed === true && level.fixed[i].secret` is the reveal moment.
 - Run the tests with `node --test test/sim.test.mjs` (or `node --test 'test/**/*.test.mjs'`; the installed Node 26 rejects a bare directory argument with MODULE_NOT_FOUND).
+
+
+## Two-sided boards (September 2026)
+
+See `CURRENT-RULES.md` for the duplex schema and physical crossing rule. `LaserSim.heightAt(parsed,x,y,side)` returns the selected face’s logical beam altitude (`h` above, `-h-1` below); renderer terrain `heightAt` returns the physical surface (`h` above, `-h` below). `canPlace` takes an optional fifth `side` argument. `cellKey(x,y,side)` distinguishes overlapping face cells, and `withSide(out,source)` preserves the optional underside tag without adding fields to legacy records. Solver candidates and saved pieces preserve this tag.
+
+`render.setLayer(side,options)` returns a camera-transition promise; `getLayer()` reports the picking face. `getCamera()` includes `layer` on duplex boards. Cell arguments to picking, projection, selection, drag and overlays carry the same optional `side`. The new renderer module `render-duplex.js` loads before `render-terrain.js`; its camera-fit points use the existing packed xyz array contract. Terrain geometry, rules and placement use the same aperture rectangles. Negative beam colour buckets are internal rendering indices; events and badge labels keep signed heights.

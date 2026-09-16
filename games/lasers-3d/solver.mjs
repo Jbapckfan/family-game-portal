@@ -84,11 +84,11 @@ function cellKey(x, y) { return x + ',' + y; }
 
 // Canonical key of a placed set (order-independent) for solution dedupe.
 function canonKey(placed) {
-  return placed.map(p => p.x + ',' + p.y + ',' + p.type + ',' + p.orient).sort().join('|');
+  return placed.map(p => Sim.cellKey(p.x,p.y,p.side) + ',' + p.type + ',' + p.orient).sort().join('|');
 }
 
 function copyPlaced(placed) {
-  return placed.map(p => ({ x: p.x, y: p.y, type: p.type, orient: p.orient }));
+  return placed.map(p => (Sim.withSide({ x: p.x, y: p.y, type: p.type, orient: p.orient }, p)));
 }
 
 // Index in `visited` at which the last placed piece acted (entered at its own terrain level).
@@ -99,7 +99,7 @@ function lastActIndex(L, placed, visited) {
   const last = placed[placed.length - 1];
   for (let i = 0; i < visited.length; i++) {
     const v = visited[i];
-    if (v.x === last.x && v.y === last.y && v.z === L.t[v.y][v.x]) return i;
+    if (v.x === last.x && v.y === last.y && v.z === Sim.heightAt(L,v.x,v.y,last.side)) return i;
   }
   return -1;
 }
@@ -114,11 +114,12 @@ function candidateCells(L, placed, visited) {
   const out = [], seen = {};
   for (let i = lastActIndex(L, placed, visited) + 1; i < visited.length; i++) {
     const v = visited[i];
-    if (v.z !== L.t[v.y][v.x]) continue;
-    const k = cellKey(v.x, v.y);
+    const side = v.z < 0 ? 'below' : undefined;
+    if (v.z !== Sim.heightAt(L,v.x,v.y,side)) continue;
+    const k = Sim.cellKey(v.x, v.y, side);
     if (seen[k]) continue;
     seen[k] = true;
-    if (Sim.canPlace(L, placed, v.x, v.y)) out.push({ x: v.x, y: v.y });
+    if (Sim.canPlace(L, placed, v.x, v.y, side)) out.push(Sim.withSide({ x: v.x, y: v.y }, {side}));
   }
   return out;
 }
@@ -168,7 +169,7 @@ function searchDepth(ctx, depth, sink, stopEarly) {
         if (!counts[type]) continue;
         counts[type] -= 1;
         for (const orient of ORIENTS) {
-          placed.push({ x: c.x, y: c.y, type, orient });
+          placed.push(Sim.withSide({ x: c.x, y: c.y, type, orient }, c));
           rec();
           placed.pop();
           if (ctx.truncated || done) { counts[type] += 1; return; }

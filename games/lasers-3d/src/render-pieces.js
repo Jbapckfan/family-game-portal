@@ -4,6 +4,7 @@
  */
 (function (root) {
   'use strict';
+  function sided(out, source) { if (source && source.side === 'below') out.side = 'below'; return out; }
   var THREE = root.THREE;
   var Core = root.LaserRenderCore;
   var DIR_ROT = { E: 0, N: Math.PI / 2, W: Math.PI, S: -Math.PI / 2 };
@@ -264,7 +265,7 @@
       var showReal = reveal > 0;
       g.userData.real.visible = showReal; g.userData.decoy.visible = !showReal;
     }
-    function placeAt(obj, x, y) { obj.position.set(x, heightAt(x, y), -y); return obj; }
+    function placeAt(obj, x, y, side) { obj.userData.side = side === 'below' ? 'below' : 'above'; obj.scale.y=side==='below'?-1:1; obj.position.set(x, heightAt(x, y, side), -y); return obj; }
 
     /* ---- the drag/drop/rotate/remove proxy (MOTION-DIRECTION.md section 5) -------------------------------------
      * A detached copy of the piece with its OWN materials, so it can be lifted, scaled, spun and faded without
@@ -346,6 +347,16 @@
     }
 
     /* ---- level actors ---- */
+    var activeLayer='above',flatFace=true;
+    function setLayer(side,flat){activeLayer=side;flatFace=!!flat;applyLayer();}
+    function applyLayer(){
+      if(!level||!level.duplex)return;
+      [actorGroup,fixedGroup,placedGroup].forEach(function(g){g.children.forEach(function(c){
+        var cell=c.userData.cell,proxy=g===placedGroup&&fx&&cell&&fx.hasProxy(cell.x,cell.y,cell.side);
+        var known=g!==fixedGroup||!fog||!fog.isDark()||fog.value(cell.x,cell.y)>theme.terrain.darkness.minVisible;
+        c.visible=known&&!proxy&&(!flatFace||c.userData.side===activeLayer);
+      });});
+    }
     var targets = [];
     function setLevel(parsed, hAt) {
       level = parsed; heightAt = hAt;
@@ -362,7 +373,7 @@
       var halo = new THREE.Sprite(mats.emitterHalo); halo.position.set(0.36, 0.5, 0); halo.scale.set(0.7, 0.7, 1); em.add(halo);
       emitterHalo = halo; emitterHaloScale = halo.scale.x;
       setCharge(NO_CHARGE);                  /* a new level always starts at the emitter's plain theme state */
-      actorGroup.add(placeAt(em, parsed.emitter.x, parsed.emitter.y));
+      actorGroup.add(placeAt(em, parsed.emitter.x, parsed.emitter.y, parsed.emitter.side));
       parsed.targets.forEach(function (tg, i) {
         var g = new THREE.Group(); g.name = 'laser-receiver-' + i;
         var base = new THREE.Mesh(geo.targetBase, mats.instrumentShell); base.castShadow = true; g.add(base);
@@ -388,7 +399,7 @@
         var pr = new THREE.Mesh(geo.proxyRing, proxyMat); pr.renderOrder = 6; proxy.add(pr);
         var pd = new THREE.Mesh(geo.proxyDot, proxyMat); pd.renderOrder = 6; proxy.add(pd);
         g.add(proxy);
-        actorGroup.add(placeAt(g, tg.x, tg.y));
+        actorGroup.add(placeAt(g, tg.x, tg.y, tg.side));
         orbMat.envMapIntensity = reveal; coreMat.envMapIntensity = reveal;
         var rec = { index: i, crown: crownMat, orb: orbMat, core: coreMat, coreMesh: core, halo: haloMat, proxy: proxy, proxyMat: proxyMat, lit: 0, goal: 0 };
         targets.push(rec);
@@ -398,8 +409,8 @@
        * cell; a piece the PLAYER placed is always drawn, known cell or not (setPlaced below is deliberately not
        * fogged). The cell and the column top are stashed on the group so the per-frame pass costs one lookup. */
       parsed.fixed.forEach(function (f) {
-        var m = placeAt(pieceModel(f.type, f.orient, f.secret), f.x, f.y);
-        m.userData.cell = { x: f.x, y: f.y };
+        var m = placeAt(pieceModel(f.type, f.orient, f.secret), f.x, f.y, f.side);
+        m.userData.cell = sided({ x: f.x, y: f.y }, f);
         m.userData.baseY = m.position.y;
         fixedGroup.add(m);
       });
@@ -435,17 +446,17 @@
      * same type is a drag from one cell to the other. That keeps the feel of an edit in the renderer, where the
      * pose being animated lives, and it costs one pass over a list that is at most a level's tray. */
     var placedNow = [];
-    function findAt(list, x, y) { for (var i = 0; i < list.length; i++) if (list[i].x === x && list[i].y === y) return list[i]; return null; }
+    function findAt(list, x, y, side) { for (var i = 0; i < list.length; i++) if (list[i].x === x && list[i].y === y && (list[i].side === 'below') === (side === 'below')) return list[i]; return null; }
     function isPlate(type) { return !!(SHAPE[type] && SHAPE[type].flat); }
     function diffPlaced(prev, next) {
       if (!fx) return;
       var gained = [], lost = [], i, p, q;
       for (i = 0; i < next.length; i++) {
-        p = next[i]; q = findAt(prev, p.x, p.y);
+        p = next[i]; q = findAt(prev, p.x, p.y, p.side);
         if (!q) gained.push(p);
         else if (q.orient !== p.orient || q.type !== p.type) fx.rotate(p, p.type, p.orient, isPlate(p.type));
       }
-      for (i = 0; i < prev.length; i++) { q = prev[i]; if (!findAt(next, q.x, q.y)) lost.push(q); }
+      for (i = 0; i < prev.length; i++) { q = prev[i]; if (!findAt(next, q.x, q.y, q.side)) lost.push(q); }
       /* One out, one in, same type: the player dragged it. The destination gets the drop; the source gets nothing,
        * because the piece did not cease to exist there, it arrived here. */
       if (gained.length === 1 && lost.length === 1 && gained[0].type === lost[0].type) {
@@ -456,11 +467,11 @@
       for (i = 0; i < gained.length; i++) fx.drop(gained[i], gained[i].type, gained[i].orient);
     }
     function setPlaced(placed) {
-      var next = (placed || []).map(function (p) { return { x: p.x, y: p.y, type: p.type, orient: p.orient }; });
+      var next = (placed || []).map(function (p) { return sided({ x: p.x, y: p.y, type: p.type, orient: p.orient }, p); });
       Core.clearGroup(placedGroup);
       next.forEach(function (p) {
-        var m = placeAt(pieceModel(p.type, p.orient, false), p.x, p.y);
-        m.userData.cell = { x: p.x, y: p.y };
+        var m = placeAt(pieceModel(p.type, p.orient, false), p.x, p.y, p.side);
+        m.userData.cell = sided({ x: p.x, y: p.y }, p);
         placedGroup.add(m);
       });
       diffPlaced(placedNow, next);
@@ -474,7 +485,7 @@
       var i, c;
       for (i = 0; i < placedGroup.children.length; i++) {
         c = placedGroup.children[i];
-        if (c.userData && c.userData.cell) c.visible = !fx.hasProxy(c.userData.cell.x, c.userData.cell.y);
+        if (c.userData && c.userData.cell) c.visible = !fx.hasProxy(c.userData.cell.x, c.userData.cell.y, c.userData.cell.side);
       }
     }
 
@@ -541,16 +552,16 @@
     function swap(old, mesh) { if (old) { overlay.remove(old); Core.disposeObject(old); } if (mesh) overlay.add(mesh); return mesh; }
 
     function setSelection(cell) {
-      selection = swap(selection, cell ? placeAt(new THREE.Mesh(geo.ring, mats.selection), cell.x, cell.y) : null);
-      if (selection) { selection.position.y += P.housing.h + 0.006; selection.renderOrder = 4; }
+      selection = swap(selection, cell ? placeAt(new THREE.Mesh(geo.ring, mats.selection), cell.x, cell.y, cell.side) : null);
+      if (selection) { selection.position.y += (P.housing.h + 0.006)*selection.scale.y; selection.renderOrder = 4; }
     }
     function setHover(cell) {
-      hover = swap(hover, cell ? placeAt(new THREE.Mesh(geo.hover, mats.hover), cell.x, cell.y) : null);
-      if (hover) { hover.position.y += 0.003; hover.renderOrder = 2; }
+      hover = swap(hover, cell ? placeAt(new THREE.Mesh(geo.hover, mats.hover), cell.x, cell.y, cell.side) : null);
+      if (hover) { hover.position.y += 0.003*hover.scale.y; hover.renderOrder = 2; }
     }
     function setCursor(cell) {
       var line = null;
-      if (cell) { line = new THREE.Line(geo.cursor, mats.cursor); line.computeLineDistances(); placeAt(line, cell.x, cell.y); line.position.y += 0.008; line.renderOrder = 4; }
+      if (cell) { line = new THREE.Line(geo.cursor, mats.cursor); line.computeLineDistances(); placeAt(line, cell.x, cell.y, cell.side); line.position.y += 0.008*line.scale.y; line.renderOrder = 4; }
       cursor = swap(cursor, line);
     }
     /* MOTION-DIRECTION.md section 5, "Legal ghost": one fixed 0.72-cell footprint plus the proposed COMMON glyph,
@@ -559,7 +570,7 @@
      * placement.js owns the drawing; the only thing decided here is whether the piece lies flat (FLOOR's disc). */
     function setGhost(g) {
       if (!fx) return;
-      fx.setGhost(g ? { x: g.x, y: g.y, orient: g.orient, invalid: !!g.invalid, flatPlate: isPlate(g.type) } : null);
+      fx.setGhost(g ? sided({ x: g.x, y: g.y, orient: g.orient, invalid: !!g.invalid, flatPlate: isPlate(g.type) }, g) : null);
     }
     var PULSE_PEAK = theme.motion.reveal.teachingOutlineOpacity;
     var easePulse = theme.easeByName(theme.motion.easing.pulse);
@@ -572,8 +583,8 @@
     function pulseCell(cell, opts) {
       var col = (opts && opts.color) || theme.camera.revealChoreography.pulseColor;
       var m = new THREE.MeshBasicMaterial({ color: new THREE.Color(col), transparent: true, opacity: PULSE_PEAK * (pulseStill() ? 1 : 0), toneMapped: false, depthWrite: false });
-      var mesh = placeAt(new THREE.Mesh(geo.pulse, m), cell.x, cell.y);
-      mesh.position.y += 0.01; mesh.renderOrder = 4;
+      var mesh = placeAt(new THREE.Mesh(geo.pulse, m), cell.x, cell.y, cell.side);
+      mesh.position.y += 0.01*mesh.scale.y; mesh.renderOrder = 4;
       overlay.add(mesh);
       pulses.push({ mesh: mesh, t: 0, ms: theme.camera.revealChoreography.pulseOutlineMs });
     }
@@ -587,12 +598,18 @@
       applyFog();
       for (i = 0; i < targets.length; i++) {
         var t = targets[i];
-        if (view && t.proxy.visible) t.proxy.quaternion.copy(view.quaternion);   /* screen-facing reticle */
+        if (view && t.proxy.visible) {
+          t.proxy.quaternion.copy(view.quaternion);
+          if(t.proxy.parent.userData.side==='below'){
+            t.proxy.quaternion.x*=-1;t.proxy.quaternion.z*=-1;t.proxy.scale.y=-1;
+          }
+        }
         if (t.lit === t.goal) continue;
         t.lit = t.goal > t.lit ? Math.min(t.goal, t.lit + dt / litMs) : Math.max(t.goal, t.lit - dt / unlitMs);
         lerpTarget(t, t.lit);
       }
       if (fx) { fx.frame(view, reveal); applyProxyMasks(); }
+      applyLayer();
       /* MOTION-DIRECTION.md 3, step 4 of the free teaching reveal: "pulse one relevant visible outline for 500 ms,
        * using bell opacity from zero to 0.55 and back". Opacity ONLY - the outline does not grow, so it never
        * spills into a neighbouring cell and never suggests a size the board does not have. Reduced motion asks for
@@ -642,7 +659,7 @@
     }
 
     var self = {
-      group: group, setLevel: setLevel, setPlaced: setPlaced, applyReveal: applyReveal, setTargetLit: setTargetLit,
+      group: group, setLayer:setLayer, setLevel: setLevel, setPlaced: setPlaced, applyReveal: applyReveal, setTargetLit: setTargetLit,
       resetTargets: resetTargets, setSelection: setSelection, setGhost: setGhost, setHover: setHover, setCursor: setCursor,
       pulseCell: pulseCell, setDecorCuts: setDecorCuts, frame: frame, isAnimating: isAnimating, trayModel: trayModel, dispose: dispose, materials: mats,
       applyFog: applyFog, types: function () { return TYPES.slice(); }, shape: function (t) { return SHAPE[t] || null; },

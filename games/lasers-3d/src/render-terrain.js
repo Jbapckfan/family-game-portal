@@ -378,11 +378,18 @@
       marks.name = 'calibration-marks'; group.add(marks);
     }
 
+    var duplex = null;
     function build(parsed) {
+      if (duplex) { duplex.dispose(); duplex = null; }
       level = parsed;
       Core.clearGroup(group);
       var w = parsed.size.w, d = parsed.size.d, t = parsed.t;
-      platform(w, d);
+      if (parsed.duplex) {
+        if (burn) burn.setBoard(w,d,false);
+        openings=Core.openMask(parsed); maxHeight=3;
+        duplex=root.LaserRenderDuplex.create(parsed,theme,art);group.add(duplex.group);fitPoints=duplex.fitPoints;return;
+      }
+      if (!parsed.sharedFloor) platform(w, d);
       var cell = theme.terrain.cellTop, hc = cell / 2, x, y, h, k;
       var tops = [], bevels = [], sides = [], lines = [], leaks = [], roles = [];
       var bevel = 0.036;
@@ -406,9 +413,18 @@
 
       /* Base floor slab: one quad under the whole board so gaps show floor colour (never the page). It is also the
        * floor an ARCH is open onto: a beam passing under one runs along this slab. */
-      var base = new THREE.PlaneGeometry(w, d);
-      base.rotateX(-Math.PI / 2);
-      base.translate((w - 1) / 2, -0.01, -(d - 1) / 2);
+      var base;
+      if (parsed.sharedFloor) {
+        var tiles=[];
+        for (y=0;y<d;y++) for (x=0;x<w;x++) if (!parsed.surfaceHoles(x,y)) {
+          var tile=new THREE.PlaneGeometry(1,1);tile.rotateX(-Math.PI/2);tile.translate(x,0,-y);tiles.push(tile);
+        }
+        base=Core.mergeGeometries(tiles);tiles.forEach(function(g){g.dispose();});
+      } else {
+        base = new THREE.PlaneGeometry(w, d);
+        base.rotateX(-Math.PI / 2);
+        base.translate((w - 1) / 2, -0.01, -(d - 1) / 2);
+      }
       var baseMesh = new THREE.Mesh(base, mats.floor);
       baseMesh.receiveShadow = true;
       baseMesh.renderOrder = TERRAIN_ORDER;
@@ -433,6 +449,7 @@
 
       for (y = 0; y < d; y++) {
         for (x = 0; x < w; x++) {
+          if (parsed.sharedFloor && parsed.surfaceHoles(x,y)) continue;
           h = t[y][x];
           var bits = om[y * w + x];
           if (h > 0) {
@@ -571,6 +588,7 @@
 
     /* Apply the reveal blend: shader mix + side opacity (VISUAL-DIRECTION.md D). */
     function applyReveal(r) {
+      if (duplex) { duplex.applyReveal(r); return; }
       uReveal.value = r;
       /* MOTION-DIRECTION.md 3: "Side opacity uses smoothstep(clamp(r / lightRig.reveal.sideOpacityFullAt)). This
        * replaces the old discontinuous side-opacity jump" - the raw ramp arrives at a constant rate and then stops
@@ -591,7 +609,7 @@
        * no depth (VISUAL-DIRECTION D already keeps the beam among the objects FLAT must not hide), so the beam is
        * drawn crossing a cell that looks solid. The instant the board starts becoming physical, real occlusion is
        * back. Nothing else changes: at reveal 0 every terrain fragment is forced to the same #172544. */
-      var occludes = r > 0;
+      var occludes = r > 0 || !!(level && level.sharedFloor);
       mats.top.depthWrite = occludes;
       mats.bevel.depthWrite = occludes;
       mats.floor.depthWrite = occludes;
@@ -620,6 +638,7 @@
       return slab(ou, du, i - HALF, i + HALF) && slab(ov, dv, j - HALF, j + HALF) && slab(oh, dh, BASE, h);
     }
     function pick(ndcX, ndcY, camera) {
+      if (duplex) return duplex.pick(ndcX,ndcY,camera);
       if (!level) return null;
       ndc.set(ndcX, ndcY);
       raycaster.setFromCamera(ndc, camera);
@@ -644,13 +663,14 @@
       return null;
     }
 
-    function heightAt(x, y) {
+    function heightAt(x, y, side) {
       x = Math.round(x); y = Math.round(y);
       if (!level || y < 0 || x < 0 || y >= level.size.d || x >= level.size.w) return 0;
-      return level.t[y][x];
+      return side === 'below' && level.duplex ? -level.duplex.lower[y][x] : level.t[y][x];
     }
 
     function dispose() {
+      if (duplex) duplex.dispose();
       Core.clearGroup(group);
       for (var k in mats) if (Object.prototype.hasOwnProperty.call(mats, k)) mats[k].dispose();
       if (leakTex) { leakTex.dispose(); leakTex = null; }
@@ -669,6 +689,9 @@
     return { group: group, build: build, applyReveal: applyReveal, pick: pick, heightAt: heightAt, dispose: dispose,
       materials: mats, fitPoints: function () { return fitPoints; }, maxHeight: function () { return maxHeight; },
       openLevelsAt: openLevelsAt,
+      setLayer: function(side){if(duplex)duplex.setLayer(side);},
+      frame: function(dt,el,reduced){if(duplex)duplex.frame(dt,el,reduced);},
+      needsFrame: function(){return !!duplex && duplex.needsFrame();},
       discover: discover, cellReveal: cellReveal,
       setDecorCuts: function (c) { if (burn) burn.setDecorCuts(c); },
       isBurning: function () { return !!burn && burn.isBurning(); },

@@ -1072,6 +1072,372 @@
         ]
       }
     ]
-  }
+  },
+{
+  "id": "through-the-board",
+  "name": "THROUGH THE BOARD",
+  "chapter": "BOTH SIDES",
+  "bonus": true,
+  "par": 1,
+  "size": {
+    "w": 12,
+    "d": 12
+  },
+  "terrain": [
+    "000000000000",
+    "000000000000",
+    "011100000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000"
+  ],
+  "duplex": {
+    "lower": [
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000111111000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000"
+    ],
+    "holes": [
+      {
+        "x": 3,
+        "y": 3,
+        "w": 2,
+        "d": 2
+      }
+    ]
+  },
+  "emitter": {
+    "x": 1,
+    "y": 2,
+    "dir": "E"
+  },
+  "targets": [
+    {
+      "x": 8,
+      "y": 5,
+      "side": "below"
+    }
+  ],
+  "fixed": [
+    {
+      "x": 3,
+      "y": 2,
+      "type": "DIP",
+      "orient": "/"
+    }
+  ],
+  "tray": [
+    "DIP"
+  ],
+  "intro": "One floor, two faces. Tilt to reveal the terrain above it, then tap Below to turn the board over. Catch the beam with an upside-down DIP. Light can cross the floor only through the opening.",
+  "solution": [
+    {
+      "x": 3,
+      "y": 5,
+      "type": "DIP",
+      "orient": "/",
+      "side": "below"
+    }
+  ]
+},
+{
+  "id": "return-to-light",
+  "name": "RETURN TO LIGHT",
+  "chapter": "BOTH SIDES",
+  "bonus": true,
+  "par": 2,
+  "size": {
+    "w": 12,
+    "d": 12
+  },
+  "terrain": [
+    "000000000000",
+    "000000000000",
+    "011101110000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000"
+  ],
+  "duplex": {
+    "lower": [
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000111111000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000"
+    ],
+    "holes": [
+      {
+        "x": 3,
+        "y": 3,
+        "w": 2,
+        "d": 2
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "w": 2,
+        "d": 2
+      }
+    ]
+  },
+  "emitter": {
+    "x": 1,
+    "y": 2,
+    "dir": "E"
+  },
+  "targets": [
+    {
+      "x": 5,
+      "y": 2
+    }
+  ],
+  "fixed": [
+    {
+      "x": 3,
+      "y": 2,
+      "type": "DIP",
+      "orient": "/"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "type": "DIP",
+      "orient": "/"
+    }
+  ],
+  "tray": [
+    "DIP",
+    "DIP"
+  ],
+  "intro": "Travel through the first hole, follow the underside, then return through the second. Underside mirrors are flipped: DIP bends toward the shared floor; WEDGE bends away from it.",
+  "solution": [
+    {
+      "x": 3,
+      "y": 5,
+      "type": "DIP",
+      "orient": "/",
+      "side": "below"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "type": "DIP",
+      "orient": "\\",
+      "side": "below"
+    }
+  ]
+},
+{
+  "id": "deep-current",
+  "name": "DEEP CURRENT",
+  "chapter": "BOTH SIDES",
+  "bonus": true,
+  "par": 3,
+  "size": {
+    "w": 12,
+    "d": 12
+  },
+  "terrain": [
+    "000000000000",
+    "000000000000",
+    "011100000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000"
+  ],
+  "duplex": {
+    "lower": [
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000333333000",
+      "000000003000",
+      "000000003000",
+      "000000003000",
+      "000000000000"
+    ],
+    "holes": [
+      {
+        "x": 3,
+        "y": 3,
+        "w": 2,
+        "d": 2
+      }
+    ]
+  },
+  "emitter": {
+    "x": 1,
+    "y": 2,
+    "dir": "E"
+  },
+  "targets": [
+    {
+      "x": 8,
+      "y": 10,
+      "side": "below"
+    }
+  ],
+  "fixed": [],
+  "tray": [
+    "DIP",
+    "DIP",
+    "MIRROR"
+  ],
+  "intro": "The terrain grows outward from both faces of one floor. Send the beam through the hole and catch it on the tallest underside columns. Tilt or flip to follow the whole route.",
+  "solution": [
+    {
+      "x": 3,
+      "y": 2,
+      "type": "DIP",
+      "orient": "/"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "type": "DIP",
+      "orient": "/",
+      "side": "below"
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "type": "MIRROR",
+      "orient": "/",
+      "side": "below"
+    }
+  ]
+},
+{
+  "id": "parallel-worlds",
+  "name": "PARALLEL WORLDS",
+  "chapter": "BOTH SIDES",
+  "bonus": true,
+  "par": 2,
+  "size": {
+    "w": 12,
+    "d": 12
+  },
+  "terrain": [
+    "000000000000",
+    "000000000000",
+    "011111111110",
+    "000000000000",
+    "000000100000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000",
+    "000000000000"
+  ],
+  "duplex": {
+    "lower": [
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000000",
+      "000000000100",
+      "000000000100",
+      "000000000100",
+      "000000000100",
+      "000000000100",
+      "000000000100",
+      "000000000000",
+      "000000000000"
+    ],
+    "holes": [
+      {
+        "x": 7,
+        "y": 4,
+        "w": 2,
+        "d": 2
+      }
+    ]
+  },
+  "emitter": {
+    "x": 1,
+    "y": 2,
+    "dir": "E"
+  },
+  "targets": [
+    {
+      "x": 10,
+      "y": 2
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "side": "below"
+    }
+  ],
+  "fixed": [
+    {
+      "x": 6,
+      "y": 4,
+      "type": "DIP",
+      "orient": "/"
+    }
+  ],
+  "tray": [
+    "SPLITTER",
+    "DIP"
+  ],
+  "intro": "Light both sides of the same board. Split the upper beam: one branch reaches the top receiver; the other passes through the opening and reflects along the underside.",
+  "solution": [
+    {
+      "x": 6,
+      "y": 2,
+      "type": "SPLITTER",
+      "orient": "/"
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "type": "DIP",
+      "orient": "/",
+      "side": "below"
+    }
+  ]
+}
 ]);
 }));

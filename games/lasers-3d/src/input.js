@@ -10,6 +10,7 @@
   else { root.LaserInput = factory(); }
 }(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  function sided(out, source) { if (source && source.side === 'below') out.side = 'below'; return out; }
 
   var DEFAULTS = {
     tapMaxPx: 10,            /* < 10 px movement = tap / long-press candidate */
@@ -36,7 +37,7 @@
   };
 
   function dist(a, b) { var dx = a.x - b.x, dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy); }
-  function sameCell(a, b) { return a === b || (!!a && !!b && a.x === b.x && a.y === b.y); }
+  function sameCell(a, b) { return a === b || (!!a && !!b && a.x === b.x && a.y === b.y && (a.side === 'below') === (b.side === 'below')); }
 
   function attach(opts) {
     opts = opts || {};
@@ -80,7 +81,7 @@
     function pick(x, y) {
       if (!render || typeof render.pickCell !== 'function') return null;
       var c = render.pickCell(x, y);
-      return c ? { x: c.x, y: c.y } : null;
+      return c ? sided({ x: c.x, y: c.y }, c) : null;
     }
     function lookup(cell) {
       if (!cell || typeof placedLookup !== 'function') return null;
@@ -99,7 +100,7 @@
           gg.timer = null;
           if (g !== gg || gg.mode !== 'pending') return;
           gg.mode = type === 'touch' ? 'held' : 'consumed';
-          call('onLongPressPiece', { x: cell0.x, y: cell0.y });
+          call('onLongPressPiece', sided({ x: cell0.x, y: cell0.y }, cell0));
         }, cfg.longPressMs);
       }
       return gg;
@@ -282,7 +283,7 @@
         var moved = dist(g.p0, { x: ev.clientX, y: ev.clientY });
         var afterPinch = (g.t0 - pinchEndedAt) < cfg.pinchTapDebounceMs;
         if (held < cfg.tapMaxMs && moved < cfg.tapMaxPx && !afterPinch) {
-          if (g.cell0) call('onTapCell', { x: g.cell0.x, y: g.cell0.y, pointerType: g.type });
+          if (g.cell0) call('onTapCell', sided({ x: g.cell0.x, y: g.cell0.y, pointerType: g.type }, g.cell0));
           else call('onTapEmpty', { pointerType: g.type });
         }
       }
@@ -413,11 +414,11 @@
       },
       isEnabled: function () { return enabled; },
       setPlacedLookup: function (fn) { placedLookup = typeof fn === 'function' ? fn : null; },
-      setCursor: function (cell) { cursorCell = cell ? { x: cell.x, y: cell.y } : null; },
+      setCursor: function (cell) { cursorCell = cell ? sided({ x: cell.x, y: cell.y }, cell) : null; },
       getCursor: function () { return cursorCell; },
       getGesture: function () { return g ? g.mode : 'none'; },
       config: cfg,
-      flush: flush,
+      flush: flush, cancel: resetAll,
       detach: function () {
         if (!attached) return;
         resetAll();

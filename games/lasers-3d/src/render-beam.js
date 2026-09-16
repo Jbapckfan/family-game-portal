@@ -40,6 +40,9 @@
 
   function create(theme) {
     var B = theme.beam, ES = B.endStates;
+    var belowColors=['#BCA7FF','#C7AEFF','#D6BAFF','#E3CBFF'];
+    var styles=B.levels.concat(belowColors.map(function(color,i){return Object.assign({},B.levels[Math.min(i+1,3)],{color:color,glowColor:color});}));
+    function colorIndex(z){z=Core.clamp(Math.round(z),-4,3);return z<0?3-z:z;}
     /* The art director's ledger. `M` is theme.motion; every number below comes from it or from theme.beam. */
     var M = theme.motion, MB = M.beam, MC = M.contact, MSC = M.scatter, MF = M.fire, MT = M.target, MFA = M.failure;
     var MRED = M.reduced;
@@ -126,7 +129,7 @@
       return m;
     }
     var mats = { core: [], glow: [], filament: [] };
-    B.levels.forEach(function (L, z) {
+    styles.forEach(function (L, z) {
       mats.core[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamCore, { color: L.color, emissive: L.color, emissiveIntensity: L.coreEmissive }), 'emissive'));
       mats.glow[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamGlow, { color: L.glowColor || L.color, opacity: L.glowOpacity }), 'glow'));
       mats.filament[z] = Core.markShared(headHook(Core.matFromSpec(theme.materials.beamFilament), 'emissive'));
@@ -135,14 +138,14 @@
      * blending off), so the departure's core gets its own transparent copy per altitude. Glow and filament are
      * already transparent, so the departure reuses their buckets and materials as they are. */
     var depMats = [];
-    B.levels.forEach(function (L, z) {
+    styles.forEach(function (L, z) {
       var m = Core.matFromSpec(theme.materials.beamCore, { color: L.color, emissive: L.color, emissiveIntensity: L.coreEmissive });
       m.transparent = true; m.depthWrite = false;
       depMats[z] = Core.markShared(headHook(m, 'emissive'));
     });
     /* result.end -> theme.beam.endStates key, for the three endings that leave the world. */
     var DEPART = { 'lost-edge': 'lostEdge', 'lost-floor': 'lostFloor', 'lost-sky': 'lostSky' };
-    var badgeTex = [], ringGeo = new THREE.RingGeometry(0.5 - 0.0625, 0.5, 40), discGeo = new THREE.CircleGeometry(0.5, 8);
+    var badgeTex = {}, ringGeo = new THREE.RingGeometry(0.5 - 0.0625, 0.5, 40), discGeo = new THREE.CircleGeometry(0.5, 8);
     var triGeo = new THREE.CircleGeometry(0.5, 3), bandGeo = new THREE.CircleGeometry(0.5, 48);
     var discQuad = new THREE.CircleGeometry(0.5, 20), streakQuad = new THREE.PlaneGeometry(1, 1);
     Core.markSharedAll([ringGeo, discGeo, triGeo, bandGeo, discQuad, streakQuad]);
@@ -353,7 +356,7 @@
         : reducedOverride;
       var fired = !!opts.fired && !!opts.animate;
       var cores = [], glows = [], fils = [], deps = [], i, z;
-      for (z = 0; z < 4; z++) { cores.push(new Bucket()); glows.push(new Bucket()); fils.push(new Bucket()); deps.push(new Bucket()); }
+      for (z = 0; z < styles.length; z++) { cores.push(new Bucket()); glows.push(new Bucket()); fils.push(new Bucket()); deps.push(new Bucket()); }
       var cum = 0, segs = result.segments, P = new THREE.Vector3(), Q = new THREE.Vector3(), lastDir = new THREE.Vector3(1, 0, 0);
       var edge = result.end === 'lost-edge', run = null, runs = [];
       var segDist = [], segPos = [], segDir = [];
@@ -363,7 +366,7 @@
         Core.world(s.from.x, s.from.y, s.from.z + B.heightOffset, P);
         Core.world(s.to.x, s.to.y, 0, Q); Q.y = toH;
         if ((last && edge) || s.terminal === 'lost-edge') Q.lerp(P, 0.5); /* stop at the board edge */
-        var z0 = Core.clamp(s.from.z, 0, 3), z1 = Core.clamp(Math.round(stub ? s.from.z : s.to.z), 0, 3), len = P.distanceTo(Q);
+        var z0 = colorIndex(s.from.z), z1 = colorIndex(stub ? s.from.z : s.to.z), len = P.distanceTo(Q);
         var startDist = result.branched ? s.d0 : cum, arrivalDist = result.branched ? s.d1 : cum + len;
         /* merge collinear level segments into one tube so additive glow never double-covers a joint */
         if (run && run.b.distanceToSquared(P) < 1e-10 && run.z0 === z0 && run.z1 === z1 && run.d === s.d && s.v === 0 && run.v === 0 && !stub) { run.b.copy(Q); run.d1 = arrivalDist; }
@@ -378,7 +381,7 @@
       var dep = DEPART[result.end] ? ES[DEPART[result.end]] : null;
       var endDist = cum, endPos = Q.clone(), endDir = lastDir.clone(), blendCells = MB.pitchBlendCells;
       runs.forEach(function (r, ri) {
-        var L0 = B.levels[r.z0], L1 = B.levels[r.z1], lastRun = ri === runs.length - 1;
+        var L0 = styles[r.z0], L1 = styles[r.z1], lastRun = ri === runs.length - 1;
         var len = r.a.distanceTo(r.b);
         if (len <= 1e-9) return;
         var peak = peakForPitch(r.v), prevPeak = ri > 0 && !result.branched ? peakForPitch(runs[ri - 1].v) : peak;
@@ -418,7 +421,7 @@
        * exactly like any other join. Nothing here is compressed to a cap and nothing fades the whole route away. */
       var depDir = null;
       if (dep && runs.length) {
-        var lr = runs[runs.length - 1], bz = lr.z0, LZ = B.levels[lr.z1], bL = B.levels[bz];
+        var lr = runs[runs.length - 1], bz = lr.z0, LZ = styles[lr.z1], bL = styles[bz];
         var span = Math.max(0, dep.departCells || 0), steps = Math.max(1, dep.departSteps | 0);
         var sc = dep.startScale === undefined ? 1 : dep.startScale, rp = dep.radiusPower || 1, fp = dep.fadePower || 1;
         depDir = new THREE.Vector3().subVectors(lr.b, lr.a);
@@ -431,7 +434,7 @@
           depDir.y = 0;
           if (depDir.lengthSq() < 1e-12) depDir.set(1, 0, 0);
           depDir.normalize();
-          origin.y = Math.max(origin.y, dep.floorClearance || 0);
+          origin.y = Math.max(origin.y, (opts.level && opts.level.duplex ? -4 : 0) + (dep.floorClearance || 0));
         }
         /* A 'skim' departure runs level along the ground, so its pulse rhythm becomes the LEVEL one; a 'ray'
          * departure continues the beam's own pitch. Either way the change is blended in over pitchBlendCells, so
@@ -462,7 +465,7 @@
         }
         cum += span;
       }
-      for (z = 0; z < 4; z++) {
+      for (z = 0; z < styles.length; z++) {
         if (cores[z].pos.length) { tubes.add(bucketMesh(cores[z], mats.core[z])); var gm = bucketMesh(glows[z], mats.glow[z]); gm.renderOrder = 6; tubes.add(gm); }
         if (fils[z].pos.length) { var fm = bucketMesh(fils[z], mats.filament[z]); fm.renderOrder = 7; tubes.add(fm); }
         if (deps[z].pos.length) { var dpm = bucketMesh(deps[z], depMats[z]); dpm.renderOrder = 8; tubes.add(dpm); }
@@ -483,7 +486,7 @@
 
       state = { total: cum, speedPerMs: speedPerMs, clock: 0, chargeMs: chargeMs, durMs: durMs,
         routeEndMs: routeEndMs, animEndMs: routeEndMs + (pulseOn ? MB.settleMs : 0),
-        pulseOn: pulseOn, reduced: reduced, fired: fired, decorate: fired,
+        pulseOn: pulseOn, reduced: reduced, fired: fired, decorate: fired, twoSided:!!(opts.level&&opts.level.duplex),
         end: result.end, endPos: endPos, endDir: endDir, endDist: endDist, depDir: depDir,
         sched: [], cursor: 0, marks: [], skipped: false, runs: runs };
       if (fired) state.animEndMs = Math.max(state.animEndMs, chargeMs + (reduced ? MRED.releaseMs : MF.releaseMs));
@@ -506,22 +509,22 @@
           sched.push({ d: segDist[st], kind: 'contact', pos: segPos[st], inDir: segDir[st],
             outDir: result.branched ? new THREE.Vector3(ev.dOut === 'E' ? 1 : ev.dOut === 'W' ? -1 : 0, ev.vOut, ev.dOut === 'N' ? -1 : ev.dOut === 'S' ? 1 : 0).normalize() : segDir[st + 1] || segDir[st], type: ev.type });
         } else if (ev.kind === 'bounce') {
-          sched.push({ d: segDist[st], kind: 'dot', pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
+          sched.push({ d: segDist[st], kind: 'dot', pos: segPos[st], z: Core.clamp(Math.round(ev.z), -4, 3) });
         } else if (ev.kind === 'target') {
           sched.push({ d: segDist[st], kind: 'target', index: ev.targetIndex, pos: segPos[st] });
         } else if (ev.kind === 'branch-end') {
           var spec = DEPART[ev.end] ? ES[DEPART[ev.end]] : null;
-          sched.push({ d: segDist[st], kind: ev.end === 'blocked' ? 'blocked' : 'marker', spec: spec,
+          sched.push({ d: segDist[st], kind: (ev.end === 'blocked' || ev.end === 'blocked-board') ? 'blocked' : 'marker', spec: spec,
             end: ev.end, endPos: segPos[st], endDir: segDir[st] });
-          marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
+          marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), -4, 3) });
         } else if (ev.kind === 'pitch') {
-          marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), 0, 3) });
+          marks.push({ dist: segDist[st], pos: segPos[st], z: Core.clamp(Math.round(ev.z), -4, 3) });
         }
       }
       /* The endpoint badge arrives with its endpoint (section 2). */
-      if (result.endPoint) marks.push({ dist: state.endDist, pos: state.endPos, z: Core.clamp(Math.round(result.endPoint.z), 0, 3) });
+      if (result.endPoint) marks.push({ dist: state.endDist, pos: state.endPos, z: Core.clamp(Math.round(result.endPoint.z), -4, 3) });
       /* Terminal behaviour, scheduled by arc distance like everything else. */
-      if (state.end === 'blocked') sched.push({ d: state.total, kind: 'blocked' });
+      if ((state.end === 'blocked' || state.end === 'blocked-board')) sched.push({ d: state.total, kind: 'blocked' });
       else if (state.end === 'loop') sched.push({ d: state.total, kind: 'loop' });
       else if (dep) {
         sched.push({ d: state.endDist + (dep.markerAlongCells || 0), kind: 'marker', spec: dep });
@@ -562,6 +565,7 @@
       var mat = acquire('badge|' + m.z, function () {
         return new THREE.SpriteMaterial({ map: badgeTex[m.z], transparent: true, depthTest: false, depthWrite: false, toneMapped: false });
       });
+      mat.depthTest=!!state.twoSided;
       var sp = new THREE.Sprite(mat);
       sp.renderOrder = 20; sp.visible = false; sp.userData.mark = m; return sp;
     }
@@ -624,7 +628,7 @@
       if (!view || !view.camera) return true;
       view.camera.getWorldDirection(_fwd);
       var el = Math.asin(Core.clamp(-_fwd.y, -1, 1)) / DEG;
-      return el >= 90 - theme.camera.flatEpsilonDeg;
+      return Math.abs(el) >= 90 - theme.camera.flatEpsilonDeg;
     }
     function dispatch(e, view, skipped) {
       var t0 = e.t, flat = isFlatView(view), n = new THREE.Vector3(), i;
@@ -666,7 +670,7 @@
         /* DESIGN.md 14.3 / MOTION-DIRECTION 1: the FLOOR bounce tell. Stationary, for the life of the displayed
          * trace, in the ARRIVAL beam colour. It is the prescribed bounce tell and the only mark of its kind - there
          * is no altitude-dependent shadow anywhere else in FLAT. */
-        var dotColor = MC.bounceDot.color === 'arrivalBeamColor' ? theme.beamColors[e.z] : MC.bounceDot.color;
+        var dotColor = MC.bounceDot.color === 'arrivalBeamColor' ? styles[colorIndex(e.z)].color : MC.bounceDot.color;
         var dot = makeDisc(e.pos, UP, MC.bounceDot.diameterCells, dotColor, MC.bounceDot.opacity, 0);
         dot.t0 = t0; dot.persist = true;
         if (!skipped && !state.reduced) { dot.attack = MC.attackMs; dot.ms = MC.attackMs; }
@@ -883,7 +887,7 @@
       ['core', 'glow', 'filament'].forEach(function (k) { mats[k].forEach(function (m) { m.dispose(); }); });
       depMats.forEach(function (m) { m.dispose(); }); depMats = [];
       Object.keys(pool).forEach(function (k) { pool[k].forEach(function (m) { m.dispose(); }); }); pool = {};
-      badgeTex.forEach(function (t) { if (t) t.dispose(); }); badgeTex = [];
+      Object.keys(badgeTex).forEach(function (k) { badgeTex[k].dispose(); }); badgeTex = {};
       discInst.geometry.dispose(); discInst.material.dispose();
       streakInst.geometry.dispose(); streakInst.material.dispose();
       ringGeo.dispose(); discGeo.dispose(); triGeo.dispose(); bandGeo.dispose();

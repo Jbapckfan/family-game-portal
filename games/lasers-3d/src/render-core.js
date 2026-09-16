@@ -96,7 +96,7 @@
     var b = theme.beam.badge, scale = 4;
     var w = b.widthPx * scale, h = b.heightPx * scale;
     var c = makeCanvas(w, h), ctx = c.getContext('2d'), r = h / 2, bw = b.borderPx * scale;
-    var color = theme.beamColors[level];
+    var color = level < 0 ? '#CDB7FF' : theme.beamColors[level];
     ctx.save();
     ctx.shadowColor = color; ctx.shadowBlur = b.glowPx * scale;
     roundRect(ctx, bw, bw, w - 2 * bw, h - 2 * bw, r - bw);
@@ -107,7 +107,7 @@
     ctx.fillStyle = theme.palette.uiText;
     ctx.font = b.fontWeight + ' ' + (b.fontSizePx * scale) + 'px ' + theme.ui.fonts.data;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(b.labels[level], w / 2, h / 2 + scale);
+    ctx.fillText(level < 0 ? 'Z−' + (-level) : b.labels[level], w / 2, h / 2 + scale);
     var tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;

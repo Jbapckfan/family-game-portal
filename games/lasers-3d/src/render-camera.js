@@ -74,6 +74,7 @@
     };
     var extent = { hw: 1, hh: 1 };          /* world half-extents of the projected box, around boardCenter */
     var reducedMotion = false;
+    var twoSided = false, faceSign = 1;
 
     /* ------------------------------------------------------------------ basis */
     function basis(azDeg, elDeg) {
@@ -91,7 +92,11 @@
       var fx = 1 - dirVec.x * dirVec.x, fz = 1 - dirVec.z * dirVec.z;
       return Math.sqrt(Math.max(1e-6, Math.min(fx, fz)));
     }
-    function minCellZoom() { return (CAM.minCellPx || 0) / cellFactor(); }
+    function minCellZoom() {
+      // Edge-on faces are not editing surfaces. Keep a two-sided flip from magnifying
+      // without bound as one board axis projects to zero at the shared floor.
+      return (CAM.minCellPx || 0) / (twoSided ? Math.max(0.65,cellFactor()) : cellFactor());
+    }
 
     /* ------------------------------------------------------------------- fit */
     function measure(azDeg, elDeg) {
@@ -145,7 +150,8 @@
       if (z <= 0) return;
       takeManualFraming();               /* the player has chosen where to look; stop re-framing under them */
       pan.addScaledVector(rightVec, -dxPx / z);
-      pan.addScaledVector(groundUp, dyPx / (z * Math.max(0.2, se)));
+      if (twoSided) pan.addScaledVector(upVec, dyPx / z);
+      else pan.addScaledVector(groundUp, dyPx / (z * Math.max(0.2, se)));
       clampPan();
       apply();
     }
@@ -157,13 +163,13 @@
       var keep = CAM.panMinVisiblePct || 0.25;
       var maxX = hwPx + size.w / 2 - keep * Math.min(2 * hwPx, size.w);
       var maxY = hhPx + size.h / 2 - keep * Math.min(2 * hhPx, size.h);
-      var aR = pan.dot(rightVec), aU = pan.dot(groundUp);
-      var sx = -aR * z, sy = -aU * se * z;
+      var aR = pan.dot(rightVec), aU = pan.dot(twoSided ? upVec : groundUp);
+      var sx = -aR * z, sy = -aU * (twoSided ? 1 : se) * z;
       var cx = Core.clamp(sx, -maxX, maxX), cy = Core.clamp(sy, -maxY, maxY);
       if (cx !== sx || cy !== sy) {
         pan.set(0, 0, 0);
         pan.addScaledVector(rightVec, -cx / z);
-        pan.addScaledVector(groundUp, -cy / (se * z));
+        pan.addScaledVector(twoSided ? upVec : groundUp, -cy / ((twoSided ? 1 : se) * z));
       }
     }
 
@@ -178,7 +184,7 @@
     function writeOffset(offset) {
       var se = basis(cam.az, cam.el), z = effectiveZoom();
       pan.copy(rightVec).multiplyScalar(offset.x / z);
-      pan.addScaledVector(groundUp, offset.y / (se * z));
+      pan.addScaledVector(twoSided ? upVec : groundUp, offset.y / ((twoSided ? 1 : se) * z));
     }
     function apply() {
       basis(cam.az, cam.el);
@@ -226,7 +232,7 @@
       if (a.fromZoom !== null) cam.userZoom = a.fromZoom + (1 - a.fromZoom) * e;
       /* "Beam-glow multiplier returns from 0.82 to 1 with r", r = theme.revealBlend(elevation). One scalar, read
        * by render.js; the rig never touches a beam material and never samples terrain for it. */
-      a.intake = a.reveal ? 1 - theme.revealBlend(cam.el) : 0;
+      a.intake = a.reveal ? 1 - theme.revealBlend(Math.abs(cam.el)) : 0;
       refit(true, a.fromOffset ? frameOffset.copy(a.fromOffset).multiplyScalar(a.centre ? 1 - e : 1) : null);
     }
     function applyFinal(a) {
@@ -253,7 +259,8 @@
     function endTween() { if (cam.tween) { var res = cam.tween.resolve; cam.tween = null; res(); } }
     function setPreset(name, o) {
       o = o || {};
-      var P = CAM.presets[name] || CAM.presets.flat;
+      var original = CAM.presets[name] || CAM.presets.flat;
+      var P = {azimuthDeg:original.azimuthDeg, elevationDeg:original.elevationDeg * (twoSided ? faceSign : 1)};
       var fromAz = cam.az, fromEl = cam.el;
       var dAz = ((P.azimuthDeg - fromAz + 540) % 360) - 180;
       var wasFlat = isFlat();          /* read BEFORE anything moves: only flat -> tilt is "the reveal" */
@@ -325,7 +332,8 @@
       var oldAz = cam.az, oldEl = cam.el;
       cam.preset = null;
       cam.az = (cam.az + dAz / DEG) % 360;
-      cam.el = Core.clamp(cam.el + dEl / DEG, CAM.orbit.elevationMinDeg, CAM.orbit.elevationMaxDeg);
+      cam.el = Core.clamp(cam.el + dEl / DEG, twoSided ? -90 : CAM.orbit.elevationMinDeg, CAM.orbit.elevationMaxDeg);
+      if (twoSided && Math.abs(cam.el)>0.1) faceSign=cam.el<0?-1:1;
       refit(false, orbitOffset);
       return oldAz !== cam.az || oldEl !== cam.el;
     }
@@ -399,7 +407,7 @@
 
     /* ----------------------------------------------------------------- info */
     function getCellPx() { basis(cam.az, cam.el); return effectiveZoom() * cellFactor(); }
-    function isFlat() { return cam.el >= 90 - CAM.flatEpsilonDeg; }
+    function isFlat() { return (twoSided ? Math.abs(cam.el) : cam.el) >= 90 - CAM.flatEpsilonDeg; }
     /* MOTION-DIRECTION.md 3: how far into the reveal's anticipation we are, in [0, 1]. It is 0 at rest, 0 for
      * every move that is not a flat -> tilt reveal, and exactly 0 again the instant the move ends. render.js turns
      * it into the beam-glow multiplier; nothing else reads it. It is a function of TIME and camera ELEVATION only
@@ -421,10 +429,11 @@
     function getBoardScreenBox() {
       var se = basis(cam.az, cam.el), z = effectiveZoom();
       measure(cam.az, cam.el);
-      var aR = pan.dot(rightVec), aU = pan.dot(groundUp);
-      return { width: 2 * extent.hw * z, height: 2 * extent.hh * z, centerX: -aR * z, centerY: aU * se * z };
+      var aR = pan.dot(rightVec), aU = pan.dot(twoSided ? upVec : groundUp);
+      return { width: 2 * extent.hw * z, height: 2 * extent.hh * z, centerX: -aR * z, centerY: aU * (twoSided ? 1 : se) * z };
     }
-    function setBoard(center, points) {
+    function setBoard(center, points, bothFaces) {
+      twoSided=!!bothFaces;faceSign=1;
       boardCenter.copy(center);
       fitPoints = points && points.length >= 3 ? points : fitPoints;
       pan.set(0, 0, 0); cam.userZoom = 1; cam.view = 'working'; cam.manual = false;   /* a level always opens tappable */
@@ -437,14 +446,15 @@
       if (!c || !Number.isFinite(c.azimuthDeg) || !Number.isFinite(c.elevationDeg)) return;
       endAnim(); endTween();
       cam.az = c.azimuthDeg % 360;
-      cam.el = Core.clamp(c.elevationDeg, CAM.orbit.elevationMinDeg, 90);
+      cam.el = Core.clamp(c.elevationDeg, twoSided ? -90 : CAM.orbit.elevationMinDeg, 90);
+      if(twoSided)faceSign=cam.el<0?-1:1;
       cam.view = c.view === 'overview' ? 'overview' : 'working';
       /* Reloading an automatic view must still let TILT fit the whole board. Older saves without
        * this flag keep their chosen framing, as before. */
       cam.manual = c.manual !== false;
       cam.userZoom = Number.isFinite(c.zoom) ? Core.clamp(c.zoom, 0.1, 10) : 1;
       var p = c.pan || {};
-      pan.set(Number.isFinite(p.x) ? p.x : 0, 0, Number.isFinite(p.z) ? p.z : 0);
+      pan.set(Number.isFinite(p.x) ? p.x : 0, twoSided && Number.isFinite(p.y) ? p.y : 0, Number.isFinite(p.z) ? p.z : 0);
       refit(true); clampPan(); apply();
     }
 
@@ -453,6 +463,7 @@
       setBoard: setBoard, apply: apply, refit: refit, step: step,
       setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, fitToBoard: fitToBoard, canFit: canFit,
       restoreCamera: restoreCamera,
+      setSide: function(side){faceSign=side==='below'?-1:1;},
       setViewMode: setViewMode, getViewMode: getViewMode, hasOverview: hasOverview,
       getCellPx: getCellPx, isFlat: isFlat, isAnimating: isAnimating, getCamera: getCamera, getBoardScreenBox: getBoardScreenBox,
       revealIntake: revealIntake,

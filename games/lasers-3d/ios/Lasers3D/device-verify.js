@@ -7,7 +7,7 @@ void (async function () {
     await until(()=>window.__lasers3d?.state.frames>0);
     const a=window.__lasers3d;
     check(!!a.render&&!a.render._renderer.getContext().isContextLost(),'Physical iPad WebGL renderer active');
-    check(a.levels.length===27&&a.levels.every(l=>a.sim.trace(l,l.solution).allTargetsHit),'All 27 bundled solutions connect');
+    check(a.levels.length===31&&a.levels.every(l=>a.sim.trace(l,l.solution).allTargetsHit),'All 31 bundled solutions connect');
     a.loadLevel(0);a.reset();await pause(300);
     const solution=a.levels[0].solution[0];a.focusCell(solution,true);await pause(100);
     document.querySelector('.tray-card[data-type="MIRROR"]').click();
@@ -69,6 +69,20 @@ void (async function () {
     a.ui.hideVictory();a.loadLevel(24);a.setPlaced(a.levels[24].solution);await pause(150);a.fire();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
     check(a.state.lastShot.hits.length===3,'Cascaded splitters reach three receivers on iPad');
     const splitFrames=a.state.frames;await pause(600);check(a.state.frames===splitFrames,'Split beam and receiver effects return to zero idle frames');
+    a.ui.hideVictory();a.ui.showLevelSelect();document.getElementById('btn-duplex-chapter').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.levelIndex===27&&!document.getElementById('layer-controls').hidden,'Both Sides chapter opens with deck controls');
+    document.getElementById('btn-below').click();await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    const lower={x:3,y:5,side:'below'};a.focusCell(lower,true);await pause(100);document.querySelector('.tray-card[data-type="DIP"]').click();
+    const below=a.render.projectCell(lower,0);pointer('pointerdown',41,below.x,below.y);pointer('pointerup',41,below.x,below.y);await pause(200);
+    check(a.state.placed[0]?.side==='below'&&a.sim.trace(a.state.level,a.state.placed).allTargetsHit,'Lower-deck touch placement catches a diagonal beam');
+    check(a.render.getCamera().elevationDeg<0&&a.render._scene.getObjectByName('underside-face').scale.y===-1,'Below flips beneath the shared floor with mirrored terrain');
+    a.fire();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.lastShot.events.some(e=>e.kind==='crossing')&&a.getProgress().stars[27].solved,'Crossing through the board awards a completed puzzle');
+    a.ui.hideVictory();a.loadLevel(28);a.setPlaced(a.levels[28].solution);a.fire();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.lastShot.events.filter(e=>e.kind==='crossing').map(e=>e.side).join(',')==='below,above','Round trip crosses downward and back upward');
+    a.ui.hideVictory();a.loadLevel(30);a.setPlaced(a.levels[30].solution);a.fire();await until(()=>a.state.status==='won');await until(()=>!a.render.needsFrame()&&!a.state.dirty&&a.motion.count().holds===0);
+    check(a.state.lastShot.hits.length===2&&a.state.lastShot.branched,'Split route connects receivers on both decks');
+    const duplexFrames=a.state.frames;await pause(600);check(a.state.frames===duplexFrames,'Two-sided board settles to zero idle frames');
   } catch(e) {errors.push(String(e.stack||e));}
   finally {
     if(window.__lasers3d)window.__lasers3d.destroy();

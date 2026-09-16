@@ -81,7 +81,7 @@ const Pieces = require('./src/pieces.js');
 const Theme = require('./src/theme.js');
 const ALL_LEVELS = require(process.env.LASERS_LEVELS || './src/levels.js');
 const LEVELS = ALL_LEVELS.filter(l => !l.bonus); // Original campaign keeps its full authored curve checks.
-const BONUS_LEVELS = ALL_LEVELS.filter(l => l.bonus);
+const BONUS_LEVELS = ALL_LEVELS.filter(l => l.chapter === 'SPLITTERS');
 
 const MIN_SIDE = 12, MAX_SIDE = 24;
 const STAGE_PX = 393;                                        // iPhone 14/15 CSS width (test/ui.playwright.mjs)
@@ -665,6 +665,19 @@ for (const raw of BONUS_LEVELS) {
   const unsplit = solve(without, {...BUDGET, firstOnly: true});
   assert(i, !unsplit.solvable && !unsplit.truncated, 'splitter must be necessary, not decorative');
   console.log('SPLITTERS ' + (i + 1) + ' ' + L.name + ': ' + r.hits.length + ' receivers, par ' + L.par + ', proven in ' + min.nodes + ' nodes');
+}
+
+for (const raw of ALL_LEVELS.filter(l=>l.duplex)) {
+  const i=ALL_LEVELS.indexOf(raw),L=Sim.parseLevel(raw),placed=[],counts={};L.tray.forEach(t=>counts[t]=(counts[t]||0)+1);
+  for(const p of raw.solution){assert(i,Sim.canPlace(L,placed,p.x,p.y,p.side)&&counts[p.type]>0,'legal deck placement');counts[p.type]--;placed.push(p);}
+  const r=replay(L,placed),min=proveMinimal(L,L.par,BUDGET);
+  assert(i,r.allTargetsHit&&r.events.some(e=>e.kind==='crossing'),'two-sided solution crosses the board');
+  assert(i,placed.length===L.par&&min.proven&&!min.truncated&&min.capHits===0,'two-sided par proven exhaustively');
+  const sealed={...raw,duplex:{...raw.duplex,holes:[{x:0,y:10,w:2,d:2}]}};
+  assert(i,!replay(sealed,placed).allTargetsHit,'sealing openings blocks the authored route');
+  const solutions=solve(raw,{...BUDGET,maxSolutions:Infinity});
+  assert(i,!solutions.truncated&&solutions.solutions.every(p=>replay(raw,p).events.some(e=>e.kind==='crossing')),'every minimal solution must cross the board');
+  console.log('BOTH SIDES '+(i+1)+' '+L.name+': par '+L.par+', proven in '+min.nodes+' nodes');
 }
 
 if (failures.length) {

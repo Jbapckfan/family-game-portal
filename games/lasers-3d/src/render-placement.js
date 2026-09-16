@@ -21,9 +21,10 @@
  */
 (function (root) {
   'use strict';
+  function sided(out, source) { if (source && source.side === 'below') out.side = 'below'; return out; }
   var THREE = root.THREE;
 
-  function cellKey(x, y) { return x + ',' + y; }
+  function cellKey(x, y, side) { return x + ',' + y + (side === 'below' ? ',below' : ''); }
   /* The piece's own orientation angle, borrowed from render-pieces rather than restated, so the ghost's glyph can
    * never drift out of step with the model it previews. Resolved at call time (load order puts this file first). */
   function orientAngle(o) {
@@ -148,14 +149,14 @@
       /* Darkness: an unknown cell's legality is decided by contents the player cannot see, so colouring the ghost
        * by it would hand over what is hidden there. It stays neutral until an attempted placement answers. */
       var bad = !!g.invalid;
-      if (bad && fog && fog.isDark() && !fog.known(g.x, g.y)) bad = false;
+      if (bad && fog && fog.isDark() && !fog.known(g.x, g.y, g.side)) bad = false;
       mats.ghost.color.set(bad ? theme.palette.danger : T.overlayColor);
       var flat = !!g.flatPlate;
       ghostMark.geometry = flat ? geo.disc : geo.glyph;
       ghostMark.rotation.y = flat ? 0 : orientAngle(g.orient);
-      place(ghost, g.x, g.y);
+      place(ghost, g.x, g.y, g.side);
       ghost.visible = true;
-      var k = cellKey(g.x, g.y);
+      var k = cellKey(g.x, g.y, g.side);
       /* "Changing orientation updates the ghost immediately": the pose above has already been written, so a
        * same-cell call only needs the frame, never a second fade. */
       if (ghostAt === k) { repaint(); return; }
@@ -183,7 +184,7 @@
        * still running before the next takes the mesh. */
       if (motion) { motion.cancel('placement.seat'); motion.cancel('placement.seat.hold'); }
       clearSeat();
-      seat = place(new THREE.Mesh(geo.seat, mats.seat), cell.x, cell.y);
+      seat = place(new THREE.Mesh(geo.seat, mats.seat), cell.x, cell.y, cell.side);
       seat.renderOrder = 4;
       mats.seat.opacity = T.seatOpacity;
       overlay.add(seat);
@@ -213,7 +214,7 @@
     function flashInvalid(cell) {
       if (!cell || !motion) return;
       clearInvalid();
-      invalid = place(new THREE.Mesh(geo.outline, mats.invalid), cell.x, cell.y);
+      invalid = place(new THREE.Mesh(geo.outline, mats.invalid), cell.x, cell.y, cell.side);
       invalid.renderOrder = 7;
       overlay.add(invalid);
       run({
@@ -245,21 +246,21 @@
       repaint();
     }
     function startProxy(cell, type, orient) {
-      var k = cellKey(cell.x, cell.y);
+      var k = cellKey(cell.x, cell.y, cell.side);
       if (proxies[k]) endProxy(proxies[k]);
       var api = makeProxy(type, orient);
       if (!api) return null;
       var g = api.group;
-      place(g, cell.x, cell.y);
+      place(g, cell.x, cell.y, cell.side);
       g.userData.basePos = g.position.clone();
       g.userData.baseAngle = g.rotation.y;
       overlay.add(g);
-      var st = { k: k, cell: { x: cell.x, y: cell.y }, api: api, lift: 0, scale: 1, spin: 0, fade: 1, dead: false };
+      var st = { k: k, cell: sided({ x: cell.x, y: cell.y }, cell), api: api, lift: 0, scale: 1, spin: 0, fade: 1, dead: false };
       proxies[k] = st;
       notifyProxies();
       return st;
     }
-    function hasProxy(x, y) { return !!proxies[cellKey(x, y)]; }
+    function hasProxy(x, y, side) { return !!proxies[cellKey(x, y, side)]; }
 
     /* Pick up: 6 CSS px toward screen top, scale 1.04, over 100 ms. Identical screen displacement at every
      * terrain height because the world offset is derived from the orthographic world-per-pixel scale alone. */
@@ -268,7 +269,7 @@
      * edit, so it is released rather than returned (returning it is what "Cancel drag" means, and only that). */
     function endPickup() {
       if (!pickupCell) return;
-      var st = proxies[cellKey(pickupCell.x, pickupCell.y)];
+      var st = proxies[cellKey(pickupCell.x, pickupCell.y, pickupCell.side)];
       pickupCell = null;
       if (!st) return;
       if (motion) motion.cancel('placement.proxy:' + st.k);
@@ -277,7 +278,7 @@
     function setPickup(cell) {
       if (!cell) {
         if (!pickupCell) return;
-        var was = pickupCell, st0 = proxies[cellKey(was.x, was.y)];
+        var was = pickupCell, st0 = proxies[cellKey(was.x, was.y, was.side)];
         pickupCell = null;
         if (!st0) return;
         if (!motion || reduced()) { endProxy(st0); return; }
@@ -296,10 +297,10 @@
       /* `cell` is { x, y, type, orient }: the piece the pointer has taken hold of. */
       if (pickupCell && pickupCell.x === cell.x && pickupCell.y === cell.y) return;
       setPickup(null);
-      if (!motion || reduced()) { pickupCell = { x: cell.x, y: cell.y }; return; }
+      if (!motion || reduced()) { pickupCell = sided({ x: cell.x, y: cell.y }, cell); return; }
       var st = startProxy(cell, cell.type, cell.orient);
       if (!st) return;
-      pickupCell = { x: cell.x, y: cell.y };
+      pickupCell = sided({ x: cell.x, y: cell.y }, cell);
       run({
         key: 'placement.proxy:' + st.k, role: 'presentation', surface: 'webgl',
         durationMs: ms(T.pickupMs), ease: theme.motion.easing.enter,
@@ -387,6 +388,7 @@
         base.copy(st.api.group.userData.basePos);
         st.api.group.position.copy(base).addScaledVector(up, st.lift * wpp);
         st.api.group.scale.setScalar(st.scale);
+        if(st.cell.side==='below')st.api.group.scale.y*=-1;
         st.api.group.rotation.y = st.api.group.userData.baseAngle + st.spin;
         st.api.setOpacity(st.fade, reveal);
       }

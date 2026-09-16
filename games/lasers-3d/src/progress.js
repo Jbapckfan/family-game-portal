@@ -10,6 +10,8 @@
   function id(l, i) { return l.id || LEGACY[i] || ('level-' + i); }
   function fingerprint(l) {
     var data = [3, l.size, l.terrain || l.t, l.openings || [], l.emitter, l.targets, l.fixed || [], l.tray, l.par, !!l.dark];
+    if (l.duplex) data[6]=(l.fixed||[]).map(function(f){var p={x:f.x,y:f.y,type:f.type,orient:f.orient,secret:!!f.secret};if(f.side==='below')p.side='below';return p;});
+    if (l.duplex) data.push({floor:"back-to-back-v1",lower:l.duplex.lower.map(function(r){return Array.isArray(r)?r.join(''):r;}),holes:l.duplex.holes,openings:l.duplex.openings||[]});
     var s = JSON.stringify(data), h = 2166136261;
     for (var i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
     return (h >>> 0).toString(36);
@@ -63,8 +65,8 @@
     level.tray.forEach(function (t) { counts[t] = (counts[t] || 0) + 1; });
     for (var i = 0; i < raw.placed.length; i++) {
       var p = raw.placed[i];
-      if (!p || !Number.isInteger(p.x) || !Number.isInteger(p.y) || !(counts[p.type] > 0) || (p.orient !== '/' && p.orient !== '\\') || !sim.canPlace(level, placed, p.x, p.y)) return null;
-      counts[p.type]--; placed.push({x:p.x, y:p.y, type:p.type, orient:p.orient});
+      if (!p || !Number.isInteger(p.x) || !Number.isInteger(p.y) || !(counts[p.type] > 0) || (p.orient !== '/' && p.orient !== '\\') || !sim.canPlace(level, placed, p.x, p.y, p.side)) return null;
+      counts[p.type]--; placed.push(p.side === 'below' ? {x:p.x,y:p.y,type:p.type,orient:p.orient,side:'below'} : {x:p.x,y:p.y,type:p.type,orient:p.orient});
     }
     function count(n) { return Number.isSafeInteger(n) && n >= 0 ? Math.min(n, 1000000) : 0; }
     return {placed:placed, fires:count(raw.fires), tiltsUsed:count(raw.tiltsUsed), hintUsed:!!raw.hintUsed, camera:raw.camera || null};

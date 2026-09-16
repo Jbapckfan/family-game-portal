@@ -36,7 +36,7 @@
         s.uniforms.uArtBoard = uBoard; s.uniforms.uArtWave = uWave;
         s.vertexShader = 'varying vec3 vArtPosition; varying vec3 vArtNormal;\n' + s.vertexShader
           .replace('#include <begin_vertex>', '#include <begin_vertex>\n vArtPosition = position; vArtNormal = normal;');
-        s.fragmentShader = 'varying vec3 vArtPosition; varying vec3 vArtNormal;\n' +
+        s.fragmentShader = 'uniform mat3 normalMatrix;\nvarying vec3 vArtPosition; varying vec3 vArtNormal;\n' +
           'uniform float uArtReveal; uniform vec3 uArtTrim; uniform vec4 uArtBoard; uniform vec3 uArtWave;\n' + s.fragmentShader;
         var top = kind === 'top', side = kind === 'side';
         if (top || side) {
@@ -46,7 +46,7 @@
             'vec2 artEdge = smoothstep(vec2(0.413), vec2(0.48), abs(artCell));\n' +
             (top ? 'vec3 artN = normalize(vec3(sign(artCell.x)*artEdge.x*0.85,1.0,sign(artCell.y)*artEdge.y*0.85));\n'
               : 'vec3 artN = normalize(vArtNormal + vec3(sign(artCell.x)*artEdge.x,0.0,sign(artCell.y)*artEdge.y)*0.52);\n') +
-            'normal = normalize(mix(normal, mat3(viewMatrix)*artN, uArtReveal));\n');
+            'normal = normalize(mix(normal, normalMatrix*artN, uArtReveal));\n');
           s.fragmentShader = s.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
             'vec2 artC = abs(fract(vArtPosition.xz + 0.5) - 0.5);\n' +
             (top ? 'float artRim = smoothstep(0.453,0.464,max(artC.x,artC.y));\n'
@@ -88,12 +88,12 @@
       Core.clearGroup(decor);
       /* A soft rectangular grounding shadow under the chassis, based only on public board dimensions. */
       var geo = new THREE.PlaneGeometry(parsed.size.w + 3, parsed.size.d + 3);
-      geo.rotateX(-Math.PI / 2); geo.translate(uBoard.value.x, -0.49, uBoard.value.y);
+      geo.rotateX(-Math.PI / 2); geo.translate(uBoard.value.x, parsed.duplex ? -4.49 : -0.49, uBoard.value.y);
       var mat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false,
         uniforms: { uArtReveal: uReveal },
         vertexShader: 'varying vec2 vUV; void main(){vUV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
         fragmentShader: 'varying vec2 vUV; uniform float uArtReveal; void main(){vec2 q=abs(vUV-0.5)*2.0; float a=(1.0-smoothstep(0.66,1.0,max(q.x,q.y)));gl_FragColor=vec4(0.0,0.0,0.0,a*0.52*uArtReveal);}' });
-      var shadow = new THREE.Mesh(geo, mat); shadow.name = 'chassis-contact-shadow'; shadow.renderOrder = -3; decor.add(shadow);
+      var shadow = new THREE.Mesh(geo, mat); shadow.visible = !parsed.duplex; shadow.name = 'chassis-contact-shadow'; shadow.renderOrder = -3; decor.add(shadow);
       if (terrainMats) paintTerrain(terrainMats);
       lamps.forEach(function (l) { l.intensity = 0; });
       return profile;
@@ -141,7 +141,7 @@
         else lamps[i].intensity = 0;
       }
       var e = level.emitter;
-      lamps[4].position.set(e.x, level.t[e.y][e.x] + 0.6, -e.y);
+      lamps[4].position.set(e.x, root.LaserSim.heightAt(level,e.x,e.y,e.side) + (e.side==='below'?0.4:0.6), -e.y);
       lamps[4].intensity = r * (0.7 + charge.intensity * 8);
       for (i = 0; i < 2; i++) {
         var hit = lastHits[i];

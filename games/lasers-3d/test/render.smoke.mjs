@@ -1,6 +1,7 @@
 // Playwright WebKit smoke test for src/render.js + src/render-camera.js via tools/render-harness.html.
 // Usage: node test/render.smoke.mjs [port]   (starts tools/serve.mjs itself)
 import { createRequire } from 'node:module';
+import { createServer } from 'node:net';
 import { spawn } from 'node:child_process';
 import { mkdirSync, readdirSync, existsSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -10,7 +11,7 @@ const require = createRequire(import.meta.url);
 const { webkit } = require('playwright');
 
 const here = dirname(fileURLToPath(import.meta.url));
-const port = Number(process.argv[2] || 8771);
+const port = process.argv[2] ? Number(process.argv[2]) : await new Promise(r=>{const s=createServer();s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>r(p));});});
 const shots = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.meta.url).pathname;
 mkdirSync(shots, { recursive: true });
 

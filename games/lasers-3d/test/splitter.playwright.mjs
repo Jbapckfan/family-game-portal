@@ -14,7 +14,7 @@ try{for(const engine of [webkit,chromium]){
  const browser=await engine.launch(opts);try{
  const p=await browser.newPage({viewport:{width:1194,height:834},deviceScaleFactor:1,hasTouch:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.goto(`http://127.0.0.1:${port}/games/lasers-3d/`);await p.waitForFunction(()=>window.__lasers3d?.state.frames>0);await quiet(p);
- await p.locator('#btn-levels').click();check(await p.locator('.level-tile').count()===27,name+': 27 puzzles');
+ await p.locator('#btn-levels').click();check(await p.locator('.level-tile').count()===31,name+': 31 puzzles');
  check(await p.locator('.level-tile[data-index="22"]').getAttribute('data-state')==='locked',name+': original campaign remains locked');
  await p.locator('#btn-splitter-chapter').click();await quiet(p);check(await p.evaluate(()=>__lasers3d.state.levelIndex===23),name+': new chapter opens from its shortcut');
  await p.locator('.tray-card[data-type="SPLITTER"]').click();const at=await p.evaluate(()=>__lasers3d.render.projectCell({x:5,y:3},0));await p.touchscreen.tap(at.x,at.y);await quiet(p);

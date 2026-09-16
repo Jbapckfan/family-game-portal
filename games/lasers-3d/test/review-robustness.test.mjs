@@ -685,7 +685,7 @@ describe('robustness: UMD wrapper', () => {
     assert.equal(require('../src/sim.js'), Sim);
   });
   test('node require: module.exports is the factory result, not wrapped', () => {
-    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'isOpen', 'parseLevel', 'stepCap', 'trace'].sort());
+    assert.deepEqual(Object.keys(Sim).sort(), ['DIRS', 'H_MAX', 'MAX_STEPS', 'ORIENTS', 'PIECES', 'TURN', 'canPlace', 'isOpen', 'parseLevel', 'stepCap', 'trace', 'heightAt', 'inHole', 'cellKey', 'withSide'].sort());
     assert.deepEqual(Object.keys(Pieces).sort(),
       ['ORIENTS', 'PIECES', 'TURN', 'TURN_KEEP', 'TYPES', 'V_MIN', 'V_MAX', 'acts', 'apply', 'applyPitch', 'clampPitch',
        'isOrient', 'isType', 'rotate', 'turnDir', 'turnsBeam'].sort());

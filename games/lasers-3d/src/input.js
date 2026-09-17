@@ -14,7 +14,7 @@
 
   var DEFAULTS = {
     tapMaxPx: 10,            /* < 10 px movement = tap / long-press candidate */
-    tapMaxMs: 300,           /* < 300 ms = tap */
+    tapMaxMs: 500,           /* a piece tap may last until its long-press action starts */
     longPressMs: 500,        /* held on a movable piece with no movement */
     orbitRadPerPx: 0.0075,   /* azimuth and elevation, per CSS px */
     wheelStep: 1.1,          /* onZoom(1.1) or onZoom(1/1.1) per notch */
@@ -282,7 +282,10 @@
         var held = now() - g.t0;
         var moved = dist(g.p0, { x: ev.clientX, y: ev.clientY });
         var afterPinch = (g.t0 - pinchEndedAt) < cfg.pinchTapDebounceMs;
-        if (held < cfg.tapMaxMs && moved < cfg.tapMaxPx && !afterPinch) {
+        // Empty cells have no hold action. A stationary touch release still places,
+        // even after a deliberate pause; moved/cancelled gestures never become taps.
+        var emptyTouch = g.type === 'touch' && g.cell0 && !movable(g.piece0);
+        if ((emptyTouch || held < cfg.tapMaxMs) && moved < cfg.tapMaxPx && !afterPinch) {
           if (g.cell0) call('onTapCell', sided({ x: g.cell0.x, y: g.cell0.y, pointerType: g.type }, g.cell0));
           else call('onTapEmpty', { pointerType: g.type });
         }

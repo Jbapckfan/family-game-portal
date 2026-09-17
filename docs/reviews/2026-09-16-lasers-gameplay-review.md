@@ -2,6 +2,8 @@
 
 Reviewed game revision: `426a8fd`, September 16, 2026. Review only; no game changes were made.
 
+**Implementation follow-up:** the five verified issues below and the level 21 darkness introduction have since been addressed. See [fixes, regression results and iPad installation status](2026-09-16-lasers-review-fixes.md). The findings below describe the reviewed revision.
+
 **Claude and Gemini completed source/evidence reviews covering the 31-level set. Kimi has not produced a review.** James reports Kimi access is available, but this Mac's current CLI login still returns a monthly-quota HTTP 403 on both its default and standard models. The existing legacy profile instead reports an invalid authorization grant. These are observations about the saved CLI logins, not a claim about the account James is using elsewhere. Prompts and diagnostic results are saved for retry after the working login is identified.
 
 The game has a sound solvability baseline: every level and minimum par passes the validator, and every stored solution wins in the running WebKit game. The strongest immediate improvements are trustworthy hints, correct instructions and a route inspector that follows the right board face. The new chapters provide a useful introduction to splitters and underside routing; extending their variety is a design opportunity, rather than evidence that the existing puzzles are broken.

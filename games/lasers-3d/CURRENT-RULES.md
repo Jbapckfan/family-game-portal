@@ -41,7 +41,9 @@ The separate 2D and 3D buttons switch directly to a centred view in 360 ms, with
 
 Campaign stars are independent flags: connect all targets; finish within par without an exact-answer hint; solve without an exact-answer hint. Tilting does not affect these stars. An unassisted solve with zero manual tilts also earns the optional FROM ABOVE badge. Old earned stars survive migration; the legacy internal `blind` flag now represents the unassisted campaign criterion.
 
-Hints have three stages: explain the failed concept, focus the relevant region, reveal an exact placement. The first two are free. The third affects the par/unassisted criteria, stays visible for eight seconds, and focuses its cell before charging assistance. A currently working route receives confirmation without a penalty, whether it matches the stored solution or not.
+Hints have three stages: explain the failed concept, focus the relevant region, reveal an exact change. The first two are free. The third affects the par/unassisted criteria, stays visible for eight seconds, and focuses its cell before charging assistance. Hints recognize equivalent FLOOR orientations and can identify an extra piece to remove when the authored pieces are already present. Only a successful trace receives confirmation, without a penalty, whether it matches the stored solution or not.
+
+Stationary touch releases on empty cells place even after a deliberate pause. A piece tap may last up to its 500 ms hold-to-move threshold; movement, cancellation and pinch handoffs never become taps. The route inspector follows a floor crossing's destination face in both directions and describes it as an opening to Above or Below. Level 4 explains the separate star and FROM ABOVE rules; level 21 introduces discovery and its persistence through RESET.
 
 ## Saves and rendering
 

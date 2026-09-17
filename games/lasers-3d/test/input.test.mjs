@@ -134,12 +134,26 @@ describe('tap', () => {
     pe('pointerup', 1, 900, 900);
     assert.deepEqual(log, [['onTapEmpty', { pointerType: 'touch' }]]);
   });
-  test('held >= 300 ms with < 10 px on empty board -> nothing', () => {
+  test('deliberate stationary touches place once, even past the piece hold threshold', () => {
+    for (const duration of [450, 500, 1200]) {
+      const { pe, log, clock } = setup();
+      const p = center(3, 3);
+      pe('pointerdown', 1, p.x, p.y);
+      clock.advance(duration);
+      pe('pointerup', 1, p.x, p.y);
+      assert.deepEqual(log, [['onTapCell', { x: 3, y: 3, pointerType: 'touch' }]], duration + 'ms');
+    }
+  });
+  test('a deliberate piece tap rotates before the hold-to-move threshold', () => {
+    const { pe, log, clock } = setup({ placed: [{ x: 3, y: 3, type: 'MIRROR', orient: '/' }] });
+    const p = center(3, 3);
+    pe('pointerdown', 1, p.x, p.y); clock.advance(450); pe('pointerup', 1, p.x, p.y);
+    assert.deepEqual(log, [['onTapCell', { x: 3, y: 3, pointerType: 'touch' }]]);
+  });
+  test('cancelling a stationary long touch never places a piece', () => {
     const { pe, log, clock } = setup();
     const p = center(3, 3);
-    pe('pointerdown', 1, p.x, p.y);
-    clock.advance(400);
-    pe('pointerup', 1, p.x, p.y);
+    pe('pointerdown', 1, p.x, p.y); clock.advance(1200); pe('pointercancel', 1, p.x, p.y);
     assert.deepEqual(log, []);
   });
   test('moved >= 10 px is never a tap', () => {

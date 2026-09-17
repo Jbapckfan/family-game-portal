@@ -38,8 +38,9 @@
         var ev=events[eventIndex],label=panel.querySelector('.event-description');
         if(!ev){label.textContent='Fire a shot to inspect its path.';return;}
         var kind=String(ev.kind||'beam').replace(/-/g,' ');
-        label.textContent='Event '+(eventIndex+1)+' of '+events.length+': '+kind+', column '+(ev.x+1)+', row '+(ev.y+1)+', height '+ev.z+'.';
-        var cell={x:ev.x,y:ev.y};if(ev.z<0)cell.side='below';app.focusCell(cell,true);app.render.pulseCell(cell);app.motion.requestRender();
+        var side=ev.side||(ev.z<0?'below':'above');
+        label.textContent='Event '+(eventIndex+1)+' of '+events.length+': '+(ev.kind==='crossing'?'Through the opening to '+(side==='below'?'Below':'Above')+'.':kind+', column '+(ev.x+1)+', row '+(ev.y+1)+', height '+ev.z+'.');
+        var cell={x:ev.x,y:ev.y,side:side};app.focusCell(cell,true);app.render.pulseCell(cell);app.motion.requestRender();
       }
     });
     function update(v) {

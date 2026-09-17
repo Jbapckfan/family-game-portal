@@ -86,7 +86,7 @@ const SLOTS = [
 
   // 4 - the first hidden low wall. MIRROR-only tray, no fixed pieces: the ONLY new idea is height.
   { n: 4, name: 'OVER THE WALL', seed: 41,
-    intro: 'Some walls are lower than they look, and a beam can fly right over a low one. The beam gets wider and brighter the higher it climbs, and the readout after FIRE names every height. You can tilt the board to peek, but a no-tilt solve is what earns the third star.',
+    intro: 'A beam can fly over a low wall. Tap 3D to see the heights, then 2D to return overhead. Tilting never costs a campaign star. Solve without an exact-answer hint for the third star; solving unassisted without tilting also earns the optional FROM ABOVE badge.',
     spec: { w: 14, d: 14, plan: ['MIRROR', 'MIRROR'], emitterZ: 1, require: ['overflight'], forceRequire: true, wantUnique: false } },
 
   // 5 - the WEDGE. It turns AND tilts the beam up, and a plain mirror after it KEEPS the climb
@@ -201,6 +201,7 @@ const SLOTS = [
   // 21-23 are the DARK levels of DESIGN.md 15.3: late, never a teaching level, and the board is only
   // revealed where the beam has been. The mechanics are ones the player already owns.
   { n: 21, name: 'THE LONG WAY ROUND', seed: 2101, dark: true,
+    intro: 'This board starts in darkness. FIRE to reveal the terrain along your beam. Discovered cells stay visible, even after RESET. Build on what you discover and connect the receiver.',
     spec: { w: 24, d: 24, plan: ['MIRROR', 'WEDGE', 'MIRROR', 'DIP', 'MIRROR', 'MIRROR'], fixedIdxs: [0],
             dark: true, require: ['climb-then-level', 'overflight'] } },
 

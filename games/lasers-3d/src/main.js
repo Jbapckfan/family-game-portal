@@ -829,6 +829,9 @@
       render.setCameraPreset(next, { animate: true, recenter: true, durationMs: theme.camera.motion.viewSwitchMs, prepareMs: 0 }).then(saveAttempt);
       S.camDirty = true; saveAttempt(); bump();
     }
+    function sameHintPiece(a, b) {
+      return sameCell(a, b) && a.type === b.type && (!Pieces.turnsBeam(a.type) || a.orient === b.orient);
+    }
     function hint() {
       if (busy() || !S.solution) return;
       if (sim.trace(S.level, S.placed).allTargetsHit) { ui.showToast('Your route works. Press FIRE!', {kind:'success'}); return; }
@@ -837,17 +840,35 @@
         ui.showToast('The floor is solid except at the holes. DIP bends toward the shared floor; WEDGE bends away. Use Below to follow the underside route.',{ms:8000});bump();return;
       }
       if (S.hintStage === 1) { ui.showToast(S.readout && S.readout.pitch > 0 ? 'The beam keeps climbing. A DIP can level it.' : S.readout && S.readout.pitch < 0 ? 'The beam keeps falling. A WEDGE can level it.' : 'Follow the beam to its last turn. Which direction would reach the target? Tilt freely to inspect the heights.', {ms:8000}); bump(); return; }
-      var entry = null, i;
+      var entry = null, removing = false, i;
       for (i = 0; i < S.solution.length && !entry; i++) {
         var e = S.solution[i], p = pieceAt(e);
-        if (!(p && p.type === e.type && p.orient === e.orient)) entry = e;
+        if (!(p && sameHintPiece(p, e))) entry = e;
       }
-      if (!entry) { ui.showToast('That is the answer. Press FIRE!', { kind: 'success' }); return; }
+      // All authored pieces can be present while an extra piece intercepts the route.
+      // The trace above already failed: find an extra to remove, never endorse this board.
+      if (!entry) {
+        for (i = 0; i < S.placed.length; i++) {
+          var extra = S.placed[i];
+          if (S.solution.some(function (e) { return sameHintPiece(extra, e); })) continue;
+          if (!entry) entry = extra;
+          if (sim.trace(S.level, S.placed.filter(function (p) { return p !== extra; })).allTargetsHit) { entry = extra; break; }
+        }
+        removing = !!entry;
+      }
+      if (!entry) { ui.showToast('The route is not connected yet. Follow the beam to where it stops.', {ms:8000}); bump(); return; }
       focusCell(entry, true);
-      if (S.hintStage === 2) { render.pulseCell(entry); ui.showToast('Study this area. Ask once more to reveal a placement; that uses an assist.', {ms:8000}); bump(); return; }
+      if (S.hintStage === 2) { render.pulseCell(entry); ui.showToast('Study this area. Ask once more for the exact change; that uses an assist.', {ms:8000}); bump(); return; }
+      cancelHint();
+      if (removing) {
+        S.hintUsed = true; play('hint'); saveAttempt(); render.pulseCell(entry);
+        ui.showToast('Remove the extra ' + entry.type + (entry.side === 'below' ? ' below at column ' : ' at column ') + (entry.x + 1) + ', row ' + (entry.y + 1) + '.', {ms:8000});
+        bump(); return;
+      }
       S.hintUsed = true; S.hintGhost = sided({ x: entry.x, y: entry.y, type: entry.type, orient: entry.orient }, entry);
       refreshGhost(); ui.setHintGhostVisible(true); play('hint'); saveAttempt();
-      ui.showToast(entry.type + (entry.side === 'below' ? ' below at column ' : ' at column ') + (entry.x + 1) + ', row ' + (entry.y + 1) + ', facing ' + entry.orient + (pieceAt(entry) ? '. Move or rotate the piece already there.' : '.'), {ms:8000});
+      var existing = pieceAt(entry);
+      ui.showToast(entry.type + (entry.side === 'below' ? ' below at column ' : ' at column ') + (entry.x + 1) + ', row ' + (entry.y + 1) + (Pieces.turnsBeam(entry.type) ? ', facing ' + entry.orient : '') + (existing ? (existing.type === entry.type ? '. Rotate the piece already here.' : '. Replace the ' + existing.type + ' already here.') : '.'), {ms:8000});
       /* The ghost's lifetime is a stationary one-shot - it renders nothing while it waits - so it is a registry
        * hold rather than a bare timer: RESET, a level change and the tab going away all reach it. */
       var ht = motion.token();

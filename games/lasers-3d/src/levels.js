@@ -147,7 +147,7 @@
     targets: [{ x: 0, y: 0 }],
     fixed: [],
     tray: ['MIRROR', 'MIRROR', 'MIRROR'],
-    intro: 'Some walls are lower than they look, and a beam can fly right over a low one. The beam gets wider and brighter the higher it climbs, and the readout after FIRE names every height. You can tilt the board to peek, but a no-tilt solve is what earns the third star.',
+    intro: 'A beam can fly over a low wall. Tap 3D to see the heights, then 2D to return overhead. Tilting never costs a campaign star. Solve without an exact-answer hint for the third star; solving unassisted without tilting also earns the optional FROM ABOVE badge.',
     solution: [{ x: 7, y: 2, type: 'MIRROR', orient: '/' }, { x: 0, y: 2, type: 'MIRROR', orient: '/' }],
   },
 
@@ -730,7 +730,7 @@
     targets: [{ x: 2, y: 10 }],
     fixed: [{ x: 14, y: 20, type: 'MIRROR', orient: '/', secret: false }],
     tray: ['WEDGE', 'MIRROR', 'DIP', 'MIRROR', 'MIRROR', 'MIRROR'],
-    intro: '',
+    intro: 'This board starts in darkness. FIRE to reveal the terrain along your beam. Discovered cells stay visible, even after RESET. Build on what you discover and connect the receiver.',
     dark: true,   // DESIGN.md 15: the board is drawn only where the beam has been
     solution: [{ x: 14, y: 14, type: 'WEDGE', orient: '/' }, { x: 12, y: 14, type: 'MIRROR', orient: '\\' }, { x: 12, y: 15, type: 'DIP', orient: '\\' }, { x: 7, y: 15, type: 'MIRROR', orient: '/' }, { x: 7, y: 10, type: 'MIRROR', orient: '/' }],
   },

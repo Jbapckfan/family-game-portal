@@ -61,7 +61,11 @@
      * for section 4's "a new interaction cancels the current weather". The few cues that are NOT input - the
      * blocked/lost/win chimes at the end of a shot - reach it too, and that is correct: each of those paths
      * schedules its own fresh burst immediately afterwards. Camera drags make no sound and interrupt explicitly. */
-    function play(name) { calmWeather(); if (audio) audio.play(name); }
+    function play(name, options) { calmWeather(); if (audio) audio.play(name, options); }
+    function soundAt(cell) {
+      if (!cell || !S.level || !S.level.size || !isFinite(cell.x)) return null;
+      return { pan: (((cell.x + 0.5) / S.level.size.w) * 2 - 1) * 0.8 };
+    }
     function busy() { return S.status === 'tracing' || S.revealPlaying || S.resetting || (ui && ui.isModalOpen()); }
     /* Exclusive camera choreography: the free reveal and RESET's return to flat. Controls that could cancel them
      * (level change, modals, TILT, RESET) are disabled for the duration (S4, S6). */
@@ -702,7 +706,7 @@
       clearSelection(); cancelHint();
       S.fires++; S.status = 'tracing'; S.fireDirty = true; S.placedDirty = true; S.readout = null;
       S.traceStartedAt = now(); saveAttempt();
-      play('fire');
+      play('fire', soundAt(S.level.emitter));
       syncInput(); bump();
     }
     function retrace() {
@@ -730,7 +734,8 @@
       drainDiscoveries(p.cells);          /* the board opens along the beam, in step with it */
       while (S.cues.length && S.cues[0].dist <= p.cells + 1e-6) {
         var c = S.cues.shift();
-        if (c.kind === 'hit') play('hit'); else if (audio) audio.setLevel(c.z);
+        if (c.kind === 'level') { if (audio) audio.setLevel(c.z); }
+        else play(c.kind, soundAt(c));
       }
       if (!p.playing) finishTrace();
     }

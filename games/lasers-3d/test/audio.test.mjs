@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const LaserAudio = require('../src/audio.js');
 const theme = require('../src/theme.js');
 
-const NAMES = ['place', 'rotate', 'remove', 'fire', 'hit', 'blocked', 'lost', 'win', 'tilt', 'flat', 'ui', 'invalid', 'hint', 'reveal'];
+const NAMES = ['place', 'rotate', 'remove', 'fire', 'reflect', 'bounce', 'cross', 'split', 'hit', 'blocked', 'lost', 'win', 'tilt', 'flat', 'ui', 'invalid', 'hint', 'reveal'];
 
 class FakeParam {
   constructor(v) { this.value = v; this.calls = []; }
@@ -39,6 +39,7 @@ class FakeAudioContext {
   createOscillator() { const n = new FakeSource(this, 'osc'); n.type = 'sine'; n.frequency = new FakeParam(440); n.detune = new FakeParam(0); return n; }
   createBufferSource() { const n = new FakeSource(this, 'buffer'); n.buffer = null; return n; }
   createBiquadFilter() { const n = new FakeNode(this, 'filter'); n.type = 'lowpass'; n.frequency = new FakeParam(350); n.Q = new FakeParam(1); return n; }
+  createStereoPanner() { const n = new FakeNode(this, 'panner'); n.pan = new FakeParam(0); return n; }
   createBuffer(ch, len, rate) { return { ch, len, rate, data: new Float32Array(len), getChannelData() { return this.data; } }; }
 }
 FakeAudioContext.instances = [];
@@ -60,7 +61,7 @@ const reachesDestination = (node, ctx, seen = new Set()) => {
 describe('LaserAudio surface', () => {
   test('exposes create and __version', () => {
     assert.equal(typeof LaserAudio.create, 'function');
-    assert.equal(LaserAudio.__version, 1);
+    assert.equal(LaserAudio.__version, 2);
     const a = make();
     for (const k of ['unlock', 'play', 'stop', 'setMuted', 'isMuted', 'setLevel', 'dispose']) assert.equal(typeof a[k], 'function', k);
   });
@@ -115,8 +116,8 @@ describe('one-shots', () => {
     });
   }
 
-  test('multi-source voices survive until their LAST source ends (invalid beep 2, win note 4)', () => {
-    for (const [name, notes] of [['invalid', 2], ['win', 4]]) {
+  test('multi-source voices survive until their LAST source ends (invalid beep 2, win bloom 6)', () => {
+    for (const [name, notes] of [['invalid', 2], ['win', 6]]) {
       const a = make(); a.unlock();
       const ctx = ctxOf();
       const before = ctx.nodes.length;
@@ -147,6 +148,28 @@ describe('one-shots', () => {
     assert.equal(srcs.filter((s) => !s.disconnected).length, 8);
   });
 
+  test('stealing a layered voice fades its shared bus before every source stops', () => {
+    const a = make(); a.unlock();
+    const ctx = ctxOf();
+    a.play('win');
+    const winNodes = ctx.nodes.slice(1);
+    const winBus = winNodes.find((n) => n.kind === 'gain' && n.outputs.includes(ctx.nodes[0]));
+    for (let i = 0; i < 8; i++) a.play('ui');
+    assert.ok(winBus.gain.calls.some((c) => c[0] === 'target' && c[1] === 0), 'whole voice bus fades');
+    assert.equal(winNodes.filter((n) => n instanceof FakeSource).every((s) => s.stopped <= ctx.currentTime + 0.05), true,
+      'every harmonic and noise layer stops after the fade');
+  });
+
+  test('route accents pan across the board and clamp safely for stereo iPad speakers', () => {
+    const a = make(); a.unlock();
+    const ctx = ctxOf();
+    a.play('reflect', { pan: 0.6 });
+    a.play('cross', { pan: -9 });
+    const pans = ctx.nodes.filter((n) => n.kind === 'panner').map((n) => n.pan.value);
+    assert.deepEqual(pans, [0.6, -0.85]);
+    assert.equal(ctx.nodes.filter((n) => n instanceof FakeSource).every((s) => reachesDestination(s, ctx)), true);
+  });
+
   test('unknown names and stop on one-shots are ignored without throwing', () => {
     const a = make(); a.unlock();
     const n = ctxOf().nodes.length;
@@ -167,11 +190,12 @@ describe('travel loop', () => {
     assert.equal(oscs.every((o) => o.started != null && o.stopped == null), true, 'running, not stopped');
     const voiceOscs = oscs.filter((o) => reachesDestination(o, ctx));
     assert.ok(voiceOscs.length >= 1, 'voice reaches destination');
-    const lfo = oscs.find((o) => o.type === 'sawtooth');
-    assert.ok(lfo, 'rising LFO present');
+    const lfo = oscs.find((o) => o.type === 'sine' && Math.abs(o.frequency.value - 0.38) < 1e-9);
+    assert.ok(lfo, 'slow analogue drift LFO present');
+    assert.equal(oscs.some((o) => o.type === 'sawtooth'), false, 'no repeating siren oscillator');
     const gains = created.filter((n) => n.kind === 'gain');
-    const loopGain = gains.find((g) => g.gain.calls.some((c) => c[0] === 'lin' && Math.abs(c[1] - 0.18) < 1e-9));
-    assert.ok(loopGain, 'loop gain ramps to 0.18');
+    const loopGain = gains.find((g) => g.gain.calls.some((c) => c[0] === 'lin' && Math.abs(c[1] - 0.105) < 1e-9));
+    assert.ok(loopGain, 'restrained loop gain ramps to 0.105');
 
     a.play('travel');
     assert.equal(ctx.nodes.length, before + created.length, 'second play(travel) is a no-op');
@@ -180,7 +204,7 @@ describe('travel loop', () => {
     a.setLevel(1);
     const call = voiceOscs[0].frequency.calls.find((c) => c[0] === 'target');
     assert.ok(call, 'setLevel retargets frequency');
-    assert.ok(Math.abs(call[1] / f0 - Math.pow(2, 2 / 12)) < 1e-6, 'one whole step up per altitude');
+    assert.ok(Math.abs(call[1] / f0 - Math.pow(2, 3 / 12)) < 1e-6, 'one minor third up per altitude');
 
     a.stop('travel');
     for (const o of oscs) assert.notEqual(o.stopped, null, 'osc stop scheduled');

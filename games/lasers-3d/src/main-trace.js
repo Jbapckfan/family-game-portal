@@ -130,7 +130,7 @@
   }
 
   /* Audio cues keyed by ARC LENGTH along the beam, so main can fire them as the animated head passes: an altitude
-   * change ('level') retunes the travel loop, a 'hit' plays the target chime.
+   * change ('level') retunes the travel loop, while real optical events add short accents to the continuous beam.
    *
    * DRIVEN BY THE SIMULATION'S ORDERED EVENT STREAM, never by matching cells against segment endpoints. The old
    * reader walked the segments and, for each one, asked "does a target sit at this segment's far end and is it in
@@ -156,7 +156,11 @@
         if (ev.z === z) continue;
         z = ev.z;
         out.push({ dist: dist[ev.step], kind: 'level', z: z });
-      } else if (ev.kind === 'target') out.push({ dist: dist[ev.step], kind: 'hit' });
+      } else if (ev.kind === 'target') out.push({ dist: dist[ev.step], kind: 'hit', x: ev.x });
+      else if (ev.kind === 'piece' && ev.type !== 'FLOOR' && ev.type !== 'SPLITTER') out.push({ dist: dist[ev.step], kind: 'reflect', x: ev.x });
+      else if (ev.kind === 'bounce') out.push({ dist: dist[ev.step], kind: 'bounce', x: ev.x });
+      else if (ev.kind === 'crossing') out.push({ dist: dist[ev.step], kind: 'cross', x: ev.x });
+      else if (ev.kind === 'split') out.push({ dist: dist[ev.step], kind: 'split', x: ev.x });
     }
     return out;
   }

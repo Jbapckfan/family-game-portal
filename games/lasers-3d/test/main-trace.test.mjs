@@ -117,6 +117,34 @@ describe('cues: the audio beats land on the visual beats, not on cell positions'
     }
   });
 
+  test('audible optical events get one synchronized accent without double-triggering FLOOR or SPLITTER pieces', () => {
+    const result = {
+      end: 'lost-edge', hits: [],
+      segments: Array.from({ length: 5 }, (_, i) => ({
+        from: { x: i, y: 0, z: 0 }, to: { x: i + 1, y: 0, z: 0 }, d: 'E', v: 0
+      })),
+      events: [
+        { kind: 'enter', step: 0, x: 1, y: 0, z: 0 },
+        { kind: 'piece', step: 0, x: 1, y: 0, z: 0, type: 'MIRROR' },
+        { kind: 'enter', step: 1, x: 2, y: 0, z: 0 },
+        { kind: 'piece', step: 1, x: 2, y: 0, z: 0, type: 'FLOOR' },
+        { kind: 'bounce', step: 1, x: 2, y: 0, z: 0, type: 'FLOOR' },
+        { kind: 'enter', step: 2, x: 3, y: 0, z: 0 },
+        { kind: 'crossing', step: 2, x: 3, y: 0, z: -0.5, side: 'below' },
+        { kind: 'enter', step: 3, x: 4, y: 0, z: 0 },
+        { kind: 'piece', step: 3, x: 4, y: 0, z: 0, type: 'SPLITTER' },
+        { kind: 'split', step: 3, x: 4, y: 0, z: 0 },
+        { kind: 'enter', step: 4, x: 5, y: 0, z: 0 },
+        { kind: 'target', step: 4, x: 5, y: 0, z: 0, targetIndex: 0 }
+      ]
+    };
+    const cues = T.cues({ targets: [{ x: 5, y: 0 }], emitter: { x: 0, y: 0 } }, result);
+    assert.deepEqual(cues.map((c) => c.kind), ['level', 'reflect', 'bounce', 'cross', 'split', 'hit']);
+    const dist = T.arcLengths(result);
+    assert.deepEqual(cues.slice(1).map((c) => c.dist), dist);
+    assert.deepEqual(cues.slice(1).map((c) => c.x), [1, 2, 3, 4, 5], 'accents carry their horizontal sound position');
+  });
+
   test('a level cue for every altitude the head actually arrives at, and no cue where nothing changes', () => {
     for (let i = 0; i < LEVELS.length; i++) {
       const { level, result } = traceLevel(i);

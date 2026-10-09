@@ -6,14 +6,14 @@ A self-hosted game portal for your UGREEN NAS - lets your kids test your web gam
 
 **One-time setup on your NAS:**
 ```bash
-ssh Jbapckfan@192.168.1.155
+ssh Jbapckfan@192.168.100.35
 cd /volume1/docker   # or wherever your docker folder is
 git clone https://github.com/Jbapckfan/family-game-portal.git
 cd family-game-portal
 docker compose up -d
 ```
 
-**Kids access:** Open browser → `http://192.168.1.155:8080`
+**Kids access:** Open browser → `http://192.168.100.35:8080`
 
 ---
 
@@ -48,7 +48,7 @@ docker compose up -d
 │                                                          │
 │   ┌─────────┐      ┌─────────────────┐      ┌────────┐  │
 │   │ Kid's   │      │  UGREEN NAS     │      │ Your   │  │
-│   │ iPad    │ ───▶ │  192.168.1.155  │ ◀─── │ Mac    │  │
+│   │ iPad    │ ───▶ │  192.168.100.35  │ ◀─── │ Mac    │  │
 │   └─────────┘      │                 │      └────────┘  │
 │                    │  Docker runs:   │           │      │
 │   ┌─────────┐      │  - Caddy server │      sync games  │
@@ -79,10 +79,10 @@ cd ~/Projects/nas-game-server
 Or manually:
 ```bash
 # Copy updated game file
-scp ~/Projects/Games/MyGame/index.html Jbapckfan@192.168.1.155:/volume1/docker/family-game-portal/games/my-game/
+scp ~/Projects/Games/MyGame/index.html Jbapckfan@192.168.100.35:/volume1/docker/family-game-portal/games/my-game/
 
 # Restart if needed (usually not necessary for static files)
-ssh Jbapckfan@192.168.1.155 "cd /volume1/docker/family-game-portal && docker compose restart"
+ssh Jbapckfan@192.168.100.35 "cd /volume1/docker/family-game-portal && docker compose restart"
 ```
 
 ---
@@ -132,7 +132,7 @@ family-game-portal/
 ## Configuration
 
 **NAS Details (configured in sync-to-nas.sh):**
-- Host: `192.168.1.155`
+- Host: `192.168.100.35`
 - User: `Jbapckfan`
 - Path: `/volume1/docker/family-game-portal`
 - Port: `8080`

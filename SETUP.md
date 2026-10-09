@@ -20,7 +20,7 @@ SSH into your NAS and clone the repo:
 
 ```bash
 # Connect to NAS
-ssh Jbapckfan@192.168.1.155
+ssh Jbapckfan@192.168.100.35
 
 # Navigate to docker directory (adjust path for UGOS if needed)
 cd /volume1/docker
@@ -46,7 +46,7 @@ cd ~/Projects/nas-game-server
 
 Then SSH to NAS and start Docker:
 ```bash
-ssh Jbapckfan@192.168.1.155
+ssh Jbapckfan@192.168.100.35
 cd /volume1/docker/family-game-portal
 docker compose up -d
 ```
@@ -73,7 +73,7 @@ game-portal   caddy:2-alpine  Up X minutes   0.0.0.0:8080->80/tcp
 From any device on your home network:
 
 1. Open a web browser
-2. Go to: `http://192.168.1.155:8080`
+2. Go to: `http://192.168.100.35:8080`
 3. You'll see the game portal with all games listed
 
 **Tip:** Bookmark this on kids' devices for easy access.
@@ -118,7 +118,7 @@ cd ~/Projects/nas-game-server
 ./sync-to-nas.sh
 
 # Or manually copy just that file
-scp games/zoo-conquest.html Jbapckfan@192.168.1.155:/volume1/docker/family-game-portal/games/
+scp games/zoo-conquest.html Jbapckfan@192.168.100.35:/volume1/docker/family-game-portal/games/
 ```
 
 No need to restart Docker - Caddy serves static files and picks up changes immediately.
@@ -129,7 +129,7 @@ No need to restart Docker - Caddy serves static files and picks up changes immed
 
 ### View logs:
 ```bash
-ssh Jbapckfan@192.168.1.155
+ssh Jbapckfan@192.168.100.35
 cd /volume1/docker/family-game-portal
 docker compose logs -f
 ```
@@ -219,9 +219,9 @@ git clone https://github.com/Jbapckfan/family-game-portal.git
 │              FAMILY GAME PORTAL CHEAT SHEET             │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  PLAY GAMES         http://192.168.1.155:8080           │
+│  PLAY GAMES         http://192.168.100.35:8080           │
 │                                                         │
-│  SSH TO NAS         ssh Jbapckfan@192.168.1.155         │
+│  SSH TO NAS         ssh Jbapckfan@192.168.100.35         │
 │                                                         │
 │  SYNC GAMES         cd ~/Projects/nas-game-server       │
 │                     ./sync-to-nas.sh                    │

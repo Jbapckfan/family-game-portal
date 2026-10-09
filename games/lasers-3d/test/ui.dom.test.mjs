@@ -25,7 +25,7 @@ const SHOTS = process.env.SHOTS_DIR || new URL('../output/screenshots/', import.
 mkdirSync(SHOTS, { recursive: true });
 
 const VIEWPORTS = [
-  { name: 'iphone', width: 393, height: 852, mobile: true },
+  { name: 'iphone', width: 390, height: 844, mobile: true },
   { name: 'ipad', width: 820, height: 1180, mobile: true },
   { name: 'landscape', width: 844, height: 390, mobile: true },
   { name: 'se320', width: 320, height: 568, mobile: true },
@@ -33,10 +33,11 @@ const VIEWPORTS = [
 
 function freePort() { return new Promise((res) => { const s = createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); }); }
 async function startServer() {
+  if (process.env.LASERS3D_BASE_URL) return { baseUrl: process.env.LASERS3D_BASE_URL.replace(/\/$/, ''), proc: null };
   const port = await freePort();
   const proc = spawn(process.execPath, [resolve(here, '../tools/serve.mjs'), String(port)], { stdio: ['ignore', 'pipe', 'inherit'] });
   await new Promise((res) => proc.stdout.on('data', () => res()));
-  return { port, proc };
+  return { baseUrl: `http://127.0.0.1:${port}`, proc };
 }
 
 let failures = 0, checks = 0;
@@ -75,7 +76,7 @@ function harnessParity() {
 }
 
 async function run() {
-  const { port, proc } = await startServer();
+  const { baseUrl, proc } = await startServer();
   const browser = await webkit.launch(webkitLaunchOptions());
   try {
     const parity = harnessParity();
@@ -89,7 +90,7 @@ async function run() {
       const errors = [];
       page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.type() + ': ' + m.text()); });
       page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
-      await page.goto(`http://127.0.0.1:${port}/games/lasers-3d/tools/ui-harness.html`, { waitUntil: 'load' });
+      await page.goto(`${baseUrl}/games/lasers-3d/tools/ui-harness.html`, { waitUntil: 'load' });
       await page.waitForFunction(() => window.__harness && window.__harness.ui);
       await page.waitForTimeout(150);
 
@@ -120,6 +121,40 @@ async function run() {
       const lay = await page.evaluate(() => { const r = (id) => document.getElementById(id).getBoundingClientRect(); const h = r('hud'), t = r('tray'), s = r('sound'), o = r('toast'); const sep = (a, b) => a.right <= b.left + 0.5 || b.right <= a.left + 0.5 || a.bottom <= b.top + 0.5 || b.bottom <= a.top + 0.5; return { hudTray: sep(h, t), soundTray: sep(s, t), toastHud: sep(o, h), toastTray: sep(o, t), nameClipped: (() => { const n = document.getElementById('hud-level-name'); return n.scrollWidth > n.clientWidth + 1; })(), piecesClipped: (() => { const p = r('hud-pieces'), hs = getComputedStyle(document.getElementById('hud')); return p.right > h.right - parseFloat(hs.paddingRight) + 0.5 || p.bottom > h.bottom - parseFloat(hs.paddingBottom) + 0.5; })() }; });
       assert(lay.hudTray && lay.soundTray && lay.toastHud && lay.toastTray, `HUD/sound/toast/tray do not overlap ${JSON.stringify(lay)}`);
       assert(!lay.nameClipped && !lay.piecesClipped, `level name and PIECES line are not clipped ${JSON.stringify(lay)}`);
+
+      if (vp.name === 'iphone' || vp.name === 'se320') {
+        const longName = await page.evaluate(() => {
+          const original = { name: window.__harness.level.name, levelIndex: window.__harness.vm.levelIndex, levelCount: window.__harness.vm.levelCount };
+          window.__harness.level.name = 'THROUGH THE BOARD';
+          window.__harness.setState({ levelIndex: 27, levelCount: 31 });
+          const n = document.getElementById('hud-level-name');
+          const result = { text: n.textContent, clipped: n.scrollWidth > n.clientWidth + 1, compactLevel: document.getElementById('hud-level-num').getAttribute('data-compact') };
+          window.__harness.level.name = original.name;
+          window.__harness.setState({ levelIndex: original.levelIndex, levelCount: original.levelCount });
+          return result;
+        });
+        assert(longName.text === 'THROUGH THE BOARD' && longName.compactLevel === '28' && !longName.clipped,
+          `${vp.name} portrait shows the full Both Sides level title without ellipsis ${JSON.stringify(longName)}`);
+      }
+
+      if (vp.name === 'ipad') {
+        const portraitDock = await page.evaluate(() => {
+          const stage = document.getElementById('stage').getBoundingClientRect();
+          const tray = document.getElementById('tray').getBoundingClientRect();
+          return { stage: [stage.width, stage.height], tray: [tray.width, tray.height], bottomDock: tray.top >= stage.bottom - 0.5 };
+        });
+        assert(portraitDock.bottomDock && portraitDock.stage[0] >= 800 && portraitDock.tray[0] >= 800,
+          `iPad portrait uses the wide bottom dock and preserves the full board width ${JSON.stringify(portraitDock)}`);
+      }
+
+      if (vp.name === 'landscape') {
+        const cardMeta = await page.evaluate(() => Array.from(document.querySelectorAll('.tray-card:not([hidden])')).map((card) => {
+          const label = card.querySelector('.tray-label').getBoundingClientRect();
+          const count = card.querySelector('.tray-count').getBoundingClientRect();
+          return { type: card.dataset.type, separated: label.right <= count.left || count.right <= label.left || label.bottom <= count.top || count.bottom <= label.top };
+        }));
+        assert(cardMeta.every((card) => card.separated), `short-landscape tray labels and counts never collide ${JSON.stringify(cardMeta)}`);
+      }
 
       // ---- A6: the HUD panel is CENTRED in its row, not pushed right by the wider Menu link ----
       const centred = await page.evaluate(() => {
@@ -655,7 +690,7 @@ async function run() {
     }
   } finally {
     await browser.close();
-    proc.kill();
+    if (proc) proc.kill();
   }
   console.log(`\n${checks - failures}/${checks} checks passed`);
   process.exit(failures ? 1 : 0);

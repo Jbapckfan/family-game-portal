@@ -240,8 +240,8 @@
             #hud { padding: 6px 8px; }
             #hud-stars .star { width: 18px; height: 18px; }
             .hud-pill { font-size: 10px; padding: 1px 5px; }
-            .hud-num { font-size: var(--type-xs); }
-            .hud-name { font-size: 15px; }
+            .hud-num { font-size: 10px; letter-spacing: 0; }
+            .hud-name { font-size: 13px; letter-spacing: 0; }
             .hud-pieces { font-size: 10px; letter-spacing: 0; }
             #readout { font-size: var(--type-xs); padding: 3px var(--space-2); }
             .readout-chips .chip { padding: 0 6px; }
@@ -250,9 +250,10 @@
             .menu-link .menu-icon { display: none; }
             #hud { padding: 5px 4px; }
             .hud-line { gap: 2px 4px; }
-            .hud-line:first-child { flex-wrap: nowrap; } /* LEVEL n + name stay on one row; a long name ellipsizes */
+            .hud-num { width: 16px; font-size: 0; }
+            .hud-num::after { content: attr(data-compact); font-size: 10px; }
             #hud-stars .star { width: 16px; height: 16px; }
-            .hud-name { font-size: 13px; min-width: 0; }
+            .hud-name { font-size: 12.5px; min-width: 0; letter-spacing: 0; }
             .hud-pill { display: none; } /* the camera state is still shown by the TILT/FLAT button */
             .hud-dark { display: inline-block; } /* nothing else on screen says the level is dark, so this stays */
             #readout { font-size: 10px; padding: 2px var(--space-2); min-height: 22px; }
@@ -266,7 +267,7 @@
         /* ---- Side panel (landscape and tablets) ---- */
         /* The HUD stays a grid row ABOVE the stage (never an overlay on it): the board is fit into the stage area between the
          * HUD and the tray (VISUAL-DIRECTION E), so the HUD glass can never cover or swallow taps on the board's north row. */
-        @media (min-width: 700px), (orientation: landscape) and (min-width: 640px) {
+        @media (min-width: 700px) and (orientation: landscape), (orientation: landscape) and (min-width: 640px) {
             :root { --panel-w: 264px; }
             #app { grid-template-columns: minmax(0, 1fr) var(--panel-w); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "hud tray" "readout tray" "stage tray"; }
             #sound { right: calc(var(--panel-w) + 12px); }
@@ -292,8 +293,9 @@
             .tray-icon { height: 32px; }
             .tray-icon img { width: 32px; height: 32px; }
             .tray-card .tray-glyph { width: 24px; height: 24px; }
-            .tray-label { font-size: 10px; letter-spacing: 0; }
-            .tray-meta { padding-left: 2px; padding-right: 2px; gap: 2px; }
+            .tray-meta { position: absolute; inset: 0; padding: 0; }
+            .tray-label { position: absolute; left: 4px; bottom: 3px; font-size: 10px; line-height: 10px; letter-spacing: 0; }
+            .tray-count { position: absolute; top: 4px; right: 4px; min-width: 14px; padding: 0 3px; border-radius: var(--radius-pill); background: rgba(5, 8, 23, 0.78); text-align: center; line-height: 14px; }
             .tray-card[data-type="SPLITTER"] { width: 72px; min-width: 72px; }
             #hud-stars .star { width: 20px; height: 20px; }
             #readout { margin-top: 2px; font-size: var(--type-xs); }
@@ -416,6 +418,14 @@
           #btn-fire {width:100%;min-width:0;height:44px;}
           #more-sheet {display:grid;grid-template-columns:repeat(2,minmax(64px,1fr));width:240px;max-width:calc(100vw - 40px);}
         }
+        /* Portrait iPads have enough horizontal room for a wide dock. Reserving a tall sidebar there shrinks the
+           board to a narrow strip and leaves most of the screen unused. Keep the sidebar for landscape ergonomics. */
+        @media (min-width:700px) and (orientation:portrait) {
+          #tray {width:100%;}
+          .tray-actions {display:grid;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;gap:8px;width:100%;box-sizing:border-box;}
+          .tray-actions > :first-child,.tray-actions > :last-child {margin:0;}
+          .tray-actions .btn,#btn-fire {width:100%;min-width:0;height:44px;padding:0 6px;box-sizing:border-box;}
+        }
         .tile-name {font-size:11px;line-height:1.2;white-space:normal;}
         .tile-chapter {font-size:9px;opacity:.7;}
         .level-grid {grid-template-columns:repeat(auto-fit,minmax(105px,1fr));}
@@ -456,7 +466,7 @@
         #toast {background:rgba(8,21,31,.94);border-color:rgba(118,188,207,.48);font-weight:500;}
         #piece-controls {padding:5px;border-radius:14px;background:rgba(8,20,30,.92);border:1px solid rgba(151,191,207,.24);}
         .menu-link {background:rgba(7,18,28,.88);border-color:rgba(151,191,207,.20);}
-        @media (min-width:700px),(orientation:landscape) and (min-width:640px) {
+        @media (min-width:700px) and (orientation:landscape),(orientation:landscape) and (min-width:640px) {
           #tray.glass {background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;border-left:1px solid rgba(151,191,207,.10);box-shadow:none;}
           #tray.glass::before {display:none;}
           .tray-actions {padding:12px;background:rgba(8,20,32,.78);border:1px solid rgba(151,191,207,.18);border-radius:18px;box-shadow:0 15px 36px rgba(0,0,0,.20);}
@@ -474,7 +484,7 @@
         #app.has-decks {grid-template-rows:auto auto auto minmax(0,1fr) auto;grid-template-areas:"hud" "readout" "decks" "stage" "tray";}
         #layer-controls {grid-area:decks;position:relative;justify-self:center;z-index:100;display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:16px;white-space:nowrap;}
         #layer-controls[hidden] {display:none;}
-        @media (min-width:700px), (orientation:landscape) and (min-width:640px) {#app.has-decks {grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"hud tray" "readout tray" "decks tray" "stage tray";}}
+        @media (min-width:700px) and (orientation:landscape), (orientation:landscape) and (min-width:640px) {#app.has-decks {grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"hud tray" "readout tray" "decks tray" "stage tray";}}
         #layer-controls .btn {min-width:72px;min-height:44px;}
         .layer-caption {font:700 10px var(--font-data);letter-spacing:1px;padding:0 7px;color:#a0bed1;}
         #btn-below.btn-selected {background:#685697;border-color:#ccb5ff;}

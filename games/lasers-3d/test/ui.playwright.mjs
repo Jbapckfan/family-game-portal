@@ -48,10 +48,11 @@ const IGNORE = /three\.min\.js.*deprecated|build\/three\.js/;
 
 function freePort() { return new Promise((res) => { const s = createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); }); }
 async function startServer() {
+  if (process.env.LASERS3D_BASE_URL) return { baseUrl: process.env.LASERS3D_BASE_URL.replace(/\/$/, ''), proc: null };
   const port = await freePort();
   const proc = spawn(process.execPath, [resolve(here, '../tools/serve.mjs'), String(port)], { stdio: ['ignore', 'pipe', 'inherit'] });
   await new Promise((res) => proc.stdout.on('data', () => res()));
-  return { port, proc };
+  return { baseUrl: `http://127.0.0.1:${port}`, proc };
 }
 
 let failures = 0, checks = 0;
@@ -170,6 +171,18 @@ async function layoutPass(browser, url) {
     // ---- HUD: two rows on this level set (three when a long name wraps on phones), never taller than the budget ----
     const hudH = await page.evaluate(() => document.getElementById('hud').getBoundingClientRect().height);
     assert(hudH >= 52 && hudH <= 90, `HUD height ${hudH.toFixed(1)} px within 52..90`);
+
+    if (vp.name === 'ipad') {
+      await page.evaluate(() => window.__laser.main.loadLevel(27));
+      await settle(page);
+      const decks = await page.evaluate(() => {
+        const controls = document.getElementById('layer-controls').getBoundingClientRect();
+        const stage = document.getElementById('stage').getBoundingClientRect();
+        return { shown: !document.getElementById('layer-controls').hidden, controls: [controls.left, controls.top, controls.right, controls.bottom], stage: [stage.left, stage.top, stage.right, stage.bottom] };
+      });
+      assert(decks.shown && decks.controls[3] <= decks.stage[1] + 0.5,
+        `iPad portrait Both Sides controls occupy their own row above the board ${JSON.stringify(decks)}`);
+    }
 
     // ---- real touch tap on the topmost VISIBLE empty cell of the biggest board places a piece ----
     // (the north row of a 24x24 board is off screen on a phone by design; what must work is the top of what IS shown)
@@ -760,9 +773,9 @@ async function polishPass(browser, url, vp) {
 }
 
 async function run() {
-  const { port, proc } = await startServer();
+  const { baseUrl, proc } = await startServer();
   const browser = await webkit.launch(webkitLaunchOptions());
-  const url = `http://127.0.0.1:${port}/games/lasers-3d/`;
+  const url = `${baseUrl}/games/lasers-3d/`;
   try {
     await layoutPass(browser, url);
     await robustnessPass(browser, url);
@@ -1097,7 +1110,7 @@ async function run() {
     }
   } finally {
     await browser.close();
-    proc.kill();
+    if (proc) proc.kill();
   }
   console.log(`\n${checks - failures}/${checks} checks passed`);
   process.exit(failures ? 1 : 0);

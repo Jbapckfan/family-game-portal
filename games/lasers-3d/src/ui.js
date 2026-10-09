@@ -295,7 +295,7 @@
        * view toggle): every control that could interrupt them is disabled for their duration. */
       var busy = !!v.revealPlaying || !!v.cameraBusy || v.status === 'tracing';
       var flags = starFlags(v.stars), count = starCount(flags);
-      text(el['hud-level-num'], 'LEVEL ' + (v.levelIndex + 1)); attr(el.hud, 'aria-label', 'Level ' + (v.levelIndex + 1) + (v.levelCount ? ' of ' + v.levelCount : ''));
+      text(el['hud-level-num'], 'LEVEL ' + (v.levelIndex + 1)); attr(el['hud-level-num'], 'data-compact', String(v.levelIndex + 1)); attr(el.hud, 'aria-label', 'Level ' + (v.levelIndex + 1) + (v.levelCount ? ' of ' + v.levelCount : ''));
       text(el['hud-level-name'], lvl.name || '');
       attr(el['hud-camera'], 'data-camera', v.isFlat ? 'flat' : 'tilt'); text(el['hud-camera'], v.isFlat ? '2D' : '3D');
       /* DESIGN.md 15: on a dark level the HUD says so, and says how much of the board the player has uncovered.

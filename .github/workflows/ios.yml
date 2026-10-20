@@ -1,0 +1,83 @@
+name: iOS app verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - 'games/counterpart/**'
+      - 'games/shortlist/**'
+      - 'games/second-sense/**'
+      - 'games/sideways/**'
+      - 'games/ringcount/**'
+      - 'games/switchpath/**'
+      - 'scripts/sync-ios-web*.mjs'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - 'games/**'
+      - 'scripts/sync-ios-web*.mjs'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulator:
+    name: Build and test the offline iOS app
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Check out private source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Verify the native project structure
+        run: python3 ios/scripts/validate_project.py
+      - name: Verify bundled game assets
+        run: |
+          node --test scripts/sync-ios-web.test.mjs
+          node scripts/sync-ios-web.mjs --check
+      - name: Select an available iPhone simulator
+        id: simulator
+        shell: bash
+        run: |
+          device_id=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; data=json.load(sys.stdin); choices=[device["udid"] for runtime,devices in data["devices"].items() if ".iOS-" in runtime for device in devices if device.get("isAvailable") and device["name"].startswith("iPhone")]; assert choices, "No available iPhone simulator"; print(choices[0])')
+          echo "id=$device_id" >> "$GITHUB_OUTPUT"
+      - name: Compile and run native and WebKit tests
+        shell: bash
+        run: |
+          xcodebuild test \
+            -project ios/AlfordDaily.xcodeproj \
+            -scheme AlfordDaily \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}' \
+            -destination-timeout 120 \
+            -derivedDataPath "$RUNNER_TEMP/AlfordDailyDerivedData" \
+            -resultBundlePath "$RUNNER_TEMP/AlfordDaily.xcresult" \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee "$RUNNER_TEMP/ios-build.log"
+      - name: Preserve simulator app permissions
+        if: success()
+        run: tar -czf "$RUNNER_TEMP/AlfordDaily-Simulator.tar.gz" -C "$RUNNER_TEMP/AlfordDailyDerivedData/Build/Products/Debug-iphonesimulator" AlfordDaily.app
+      - name: Save the simulator build
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: AlfordDaily-iOS-Simulator
+          path: ${{ runner.temp }}/AlfordDaily-Simulator.tar.gz
+          retention-days: 14
+      - name: Save test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: AlfordDaily-iOS-test-results
+          path: |
+            ${{ runner.temp }}/AlfordDaily.xcresult
+            ${{ runner.temp }}/ios-build.log
+          if-no-files-found: ignore
+          retention-days: 14

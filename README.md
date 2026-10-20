@@ -23,6 +23,12 @@ docker compose up -d
 |------|------|-------------|
 | ⇄ **Tradeoff** | Daily Word | Swap letters between six words to solve their clues; five swaps is perfect |
 | ＋ **Inbetween** | Daily Word | Insert six two-letter pairs into six four-letter words, using each pair once to match the clues |
+| ∶ **Counterpart** | Daily Word | Match five ordered word pairs by the relationships they share |
+| ⌕ **Shortlist** | Daily Word | Scan pairs of letters to narrow twelve candidate words before one final pick |
+| Ⅱ **Second Sense** | Daily Word | Pair two different meanings and type the word they share |
+| ↔ **Sideways** | Daily Word | Rotate five letter strips to form four clued words vertically |
+| ◯ **Ringcount** | Daily Number | Place four cuts around twelve numbers so each arc has the same sum |
+| ↗ **Switchpath** | Daily Logic | Visit every square on one route while numbers alternate higher and lower |
 | ⚡ **Reflex Riot** | Arcade | Escalating catch, smash, swipe, and freeze reflex challenges for 1–2 players |
 | 🦁 **Zoo Conquest** | Strategy | Risk-style board game with animal armies |
 | 🎯 **Particle Conquest Pro** | Strategy | Real-time particle territory control |
@@ -103,24 +109,51 @@ The sync script transfers the root `index.html` catalog along with the `games/` 
 
 ---
 
-## Daily Word Games
+## Alford Daily puzzles
+
+The eight daily puzzles have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
+
+| Game | Local portal path | Prepared boards |
+| --- | --- | --- |
+| Tradeoff | `/games/tradeoff/` | 90 |
+| Inbetween | `/games/inbetween/` | 60 |
+| Counterpart | `/games/counterpart/` | 30 |
+| Shortlist | `/games/shortlist/` | 90 |
+| Second Sense | `/games/second-sense/` | 30 |
+| Sideways | `/games/sideways/` | 90 |
+| Ringcount | `/games/ringcount/` | 90 |
+| Switchpath | `/games/switchpath/` | 90 |
 
 **Tradeoff:** Open `/games/tradeoff/`. Trade letters between six five-letter words until all six clues match. Correct words lock, and every supplied board has a five-swap solution. Daily and practice progress are stored in the current browser.
 
 **Inbetween:** Open `/games/inbetween/`. Start with six four-letter words and six two-letter tiles. Insert each intact tile at any position without rearranging the original letters, and use every tile once to form the six clue answers.
 
-Both games are served directly from their folders with relative asset paths. Their complete source and development files are kept alongside the runtime; no portal build step is needed. See each game's README for its rules and development notes.
+**Counterpart:** Five visible word pairs establish five relationships. Choose an ordered pair from ten shared word tiles for each row. Both the relationship and its direction must match; use every tile once.
 
-Run both games' engine, puzzle-content, persistence, and syntax checks from the repository root:
+**Shortlist:** One of twelve five-letter words is hidden. Scan two different letters to learn whether the answer contains zero, one, or both. Use up to three scans, then make one final pick. Every board has a verified strategy that can identify every possible answer within the scan budget.
+
+**Second Sense:** Pair clues for two different meanings of the same written word, then type that word. The spelling stays the same; the pronunciation may change. Each board has five answers.
+
+**Sideways:** Five horizontal strips each contain four letters. Rotate a whole strip left or right to make four clued five-letter words read vertically. Each move affects all four words.
+
+**Ringcount:** Twelve fixed numbers form a ring. Add four cuts so each contiguous arc sums to the target, then Check. Wrong arrangements remain editable. All boards have exactly one solution, with varied arc lengths and small numbers.
+
+**Switchpath:** Trace one orthogonal route from Start to End, covering all sixteen cells exactly once. Numbers must alternate higher, lower, higher, lower. Every board has one verified complete route.
+
+All games use relative runtime assets and work directly from their folders; the portal needs no build step. Daily and practice results are separate, hints are tracked, and revealed boards do not count as wins. Daily progress is stored in the current browser. The six newest games share a shell for dialogs, statistics, practice selection, sharing, and storage recovery.
+
+Run a packaged game's engine, content, and syntax checks from the repository root, replacing `ringcount` with its folder name:
 
 ```bash
-npm --prefix games/tradeoff test
-npm --prefix games/tradeoff run check
-npm --prefix games/inbetween test
-npm --prefix games/inbetween run check
+npm --prefix games/ringcount test
+npm --prefix games/ringcount run check
 ```
 
-Their deterministic puzzle generators are available with `npm --prefix games/tradeoff run generate` and `npm --prefix games/inbetween run generate`. Tradeoff contains 90 prepared boards; Inbetween contains 60. Both collections repeat once exhausted. Run the tests again after changing the authored vocabulary or generated collection. See [integration notes](docs/integration.md) for paths and deployment details.
+There are 570 prepared boards across the collection. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [portfolio research and app plan](docs/portfolio-and-app-plan.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
+
+The [iOS app project](ios/README.md) uses the six newest games, led by Ringcount and Switchpath, for 420 prepared boards. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
+
+Tradeoff and Inbetween remain in the family portal as earlier games. The [iOS launch and monetization plan](docs/ios-launch-and-monetization.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [release verification record](docs/verification-2026-10-20.md) for executed checks and remaining release gates.
 
 ---
 
@@ -137,8 +170,15 @@ family-game-portal/
 ├── SETUP.md               # Detailed setup guide
 └── games/
     ├── index.html         # Legacy game catalog
+    ├── daily/             # Alford Daily hub for all eight puzzles
     ├── tradeoff/          # Daily letter-swap game, source, tests, and generator
     ├── inbetween/         # Daily letter-pair insertion game
+    ├── counterpart/       # Ordered word relationships
+    ├── shortlist/         # Letter-scan deduction
+    ├── second-sense/      # Two meanings, one spelling
+    ├── sideways/          # Rotating letter strips
+    ├── ringcount/         # Equal-sum ring partition
+    ├── switchpath/        # Alternating number route
     ├── zoo-conquest.html  # Zoo Conquest game
     ├── particle-conquest/ # Particle Conquest Pro
     │   └── index.html

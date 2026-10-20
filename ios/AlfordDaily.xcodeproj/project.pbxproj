@@ -1,0 +1,716 @@
+// !$*UTF8*$!
+{
+	"archiveVersion" = 1;
+	"classes" = {
+	};
+	"objectVersion" = 56;
+	"objects" = {
+		"767C58B3A8367CC0DB5FAB9A" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "AlfordDailyApp.swift";
+			"path" = "AlfordDaily/AlfordDailyApp.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"F27746F6638AC577C43C72E8" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "767C58B3A8367CC0DB5FAB9A";
+		};
+		"C14397C74510FBA3B160125F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "BridgePayload.swift";
+			"path" = "AlfordDaily/Core/BridgePayload.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"1D3FEF859289990ADA0D8EC7" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "C14397C74510FBA3B160125F";
+		};
+		"36F452764557B977F83B067A" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "DailyCalendar.swift";
+			"path" = "AlfordDaily/Core/DailyCalendar.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"EC2DC787B143E2DC3B7A6617" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "36F452764557B977F83B067A";
+		};
+		"E3225F0EF50DA5BF0C032089" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "GameCatalog.swift";
+			"path" = "AlfordDaily/Core/GameCatalog.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"CDA29F9A2CC84E0CFD51730B" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "E3225F0EF50DA5BF0C032089";
+		};
+		"C3388A8F9A689BCAEFBFFE3F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "ProgressLedger.swift";
+			"path" = "AlfordDaily/Core/ProgressLedger.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"F4EBDA4C53C189BFCDC1777A" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "C3388A8F9A689BCAEFBFFE3F";
+		};
+		"9605687CAD5C217FB29ACF21" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "ProgressStore.swift";
+			"path" = "AlfordDaily/Core/ProgressStore.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"8EBA537C3ADD53E9FF5560BA" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "9605687CAD5C217FB29ACF21";
+		};
+		"DD093BE9F0D5CE225327149F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "GameScreen.swift";
+			"path" = "AlfordDaily/Features/GameScreen.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"1523F409634F4E70CAB394CC" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "DD093BE9F0D5CE225327149F";
+		};
+		"67AC214EB846E619B9E159A5" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "HomeView.swift";
+			"path" = "AlfordDaily/Features/HomeView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"DDCAA8335804EF4C144DBA9F" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "67AC214EB846E619B9E159A5";
+		};
+		"80D23E7F0297390BBC5C5412" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "RecordView.swift";
+			"path" = "AlfordDaily/Features/RecordView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"ED22DF66C9689CCB3D12FAB0" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "80D23E7F0297390BBC5C5412";
+		};
+		"0A786E585726629C5AA83290" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "SettingsView.swift";
+			"path" = "AlfordDaily/Features/SettingsView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"7B5B4C52C99D78088F2F613D" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "0A786E585726629C5AA83290";
+		};
+		"B607A6DDDF809ACDA2EC5F8B" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "HapticService.swift";
+			"path" = "AlfordDaily/Services/HapticService.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"4D743BA88342244F18B944C0" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "B607A6DDDF809ACDA2EC5F8B";
+		};
+		"60F1B39B112C9095A8083132" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "PurchaseManager.swift";
+			"path" = "AlfordDaily/Services/PurchaseManager.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"743A8CB576AF32E4D41C6DE7" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "60F1B39B112C9095A8083132";
+		};
+		"738F6DA74B4CF06DFB7DBC0F" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "ReminderManager.swift";
+			"path" = "AlfordDaily/Services/ReminderManager.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"394015D0F411A2A23938160B" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "738F6DA74B4CF06DFB7DBC0F";
+		};
+		"8B364A57A6CB8B8EE5CBA059" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "ShareSheet.swift";
+			"path" = "AlfordDaily/UI/ShareSheet.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"EFBFCE54A205C0841E99048E" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "8B364A57A6CB8B8EE5CBA059";
+		};
+		"A90D6B043FACFE52FA23E4F7" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "Theme.swift";
+			"path" = "AlfordDaily/UI/Theme.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"4ABCC3D28CB00173B0C1A76E" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "A90D6B043FACFE52FA23E4F7";
+		};
+		"72EF6A01254A5DEE2F7ACE8C" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "BundleResourceResolver.swift";
+			"path" = "AlfordDaily/Web/BundleResourceResolver.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"EB9B090CFFFC3F15934336C7" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "72EF6A01254A5DEE2F7ACE8C";
+		};
+		"38FAA4A9BAF1DAEAE4F619EE" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "GameWebView.swift";
+			"path" = "AlfordDaily/Web/GameWebView.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"F29243A1F9B51343BD8DAEE5" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "38FAA4A9BAF1DAEAE4F619EE";
+		};
+		"C079FA53B2FE23D8FC0AC337" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "OfflineSchemeHandler.swift";
+			"path" = "AlfordDaily/Web/OfflineSchemeHandler.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"C386A15F46F2E49504CCCDE5" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "C079FA53B2FE23D8FC0AC337";
+		};
+		"857B9E9E442EE7E2D881ACEE" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "BridgeDecoderTests.swift";
+			"path" = "AlfordDailyTests/BridgeDecoderTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"BC320B3BEE3E4D8AC28A12D6" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "857B9E9E442EE7E2D881ACEE";
+		};
+		"6AD722FF11F354FD080969D5" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "BundleResourceResolverTests.swift";
+			"path" = "AlfordDailyTests/BundleResourceResolverTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"F3C2C20923728471510CA926" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "6AD722FF11F354FD080969D5";
+		};
+		"F11E0A9AD4B799F24BCA6564" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "DailyCalendarTests.swift";
+			"path" = "AlfordDailyTests/DailyCalendarTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"B059DC539812F4FAD4597EDA" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "F11E0A9AD4B799F24BCA6564";
+		};
+		"A5FA1C01DF32E7C1907B7E96" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "OfflineGamesSmokeTests.swift";
+			"path" = "AlfordDailyTests/OfflineGamesSmokeTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"AE5A6A0E6933C0F91DB54EAC" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "A5FA1C01DF32E7C1907B7E96";
+		};
+		"12F488527C07B495AE2DBB76" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "ProgressLedgerTests.swift";
+			"path" = "AlfordDailyTests/ProgressLedgerTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"FF877C06C39954AEEAB0569C" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "12F488527C07B495AE2DBB76";
+		};
+		"45E2EBA17F0E9939871B99D7" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "PurchasePolicyTests.swift";
+			"path" = "AlfordDailyTests/PurchasePolicyTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"79677B2138A174CFC68D0462" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "45E2EBA17F0E9939871B99D7";
+		};
+		"BBC628BFE2116BBBDD4881D5" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "folder.assetcatalog";
+			"name" = "Assets.xcassets";
+			"path" = "AlfordDaily/Resources/Assets.xcassets";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"9145797D8E433CEA1A5736E7" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "BBC628BFE2116BBBDD4881D5";
+		};
+		"1B34E3AE038B0AEE8045594E" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.xml";
+			"name" = "PrivacyInfo.xcprivacy";
+			"path" = "AlfordDaily/Resources/PrivacyInfo.xcprivacy";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"1BC1B9584121B55E6D942D1C" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "1B34E3AE038B0AEE8045594E";
+		};
+		"54FA2DC83DB032222791F9A1" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "folder";
+			"name" = "Web";
+			"path" = "Web";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"B9C8F8CC9EB5D2A3F29B5B02" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "54FA2DC83DB032222791F9A1";
+		};
+		"128FC61CD0C23C5B7EE23612" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text.plist.xml";
+			"name" = "Info.plist";
+			"path" = "AlfordDaily/Resources/Info.plist";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"2264B4334DE8C1200650E886" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "text";
+			"name" = "LocalPurchases.storekit";
+			"path" = "Config/LocalPurchases.storekit";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"7770A93E75AF7158E8D440A8" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.application";
+			"includeInIndex" = 0;
+			"path" = "AlfordDaily.app";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"4A6B3E1D1D5CED76871E7B6E" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.cfbundle";
+			"includeInIndex" = 0;
+			"path" = "AlfordDailyTests.xctest";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"1A4ECF99A0E03A649EA99E29" = {
+			"isa" = "PBXGroup";
+			"name" = "AlfordDaily";
+			"children" = (
+				"767C58B3A8367CC0DB5FAB9A",
+				"C14397C74510FBA3B160125F",
+				"36F452764557B977F83B067A",
+				"E3225F0EF50DA5BF0C032089",
+				"C3388A8F9A689BCAEFBFFE3F",
+				"9605687CAD5C217FB29ACF21",
+				"DD093BE9F0D5CE225327149F",
+				"67AC214EB846E619B9E159A5",
+				"80D23E7F0297390BBC5C5412",
+				"0A786E585726629C5AA83290",
+				"B607A6DDDF809ACDA2EC5F8B",
+				"60F1B39B112C9095A8083132",
+				"738F6DA74B4CF06DFB7DBC0F",
+				"8B364A57A6CB8B8EE5CBA059",
+				"A90D6B043FACFE52FA23E4F7",
+				"72EF6A01254A5DEE2F7ACE8C",
+				"38FAA4A9BAF1DAEAE4F619EE",
+				"C079FA53B2FE23D8FC0AC337",
+			);
+			"sourceTree" = "<group>";
+		};
+		"6F90A4DECBC62816E2EF64C0" = {
+			"isa" = "PBXGroup";
+			"name" = "AlfordDailyTests";
+			"children" = (
+				"857B9E9E442EE7E2D881ACEE",
+				"6AD722FF11F354FD080969D5",
+				"F11E0A9AD4B799F24BCA6564",
+				"A5FA1C01DF32E7C1907B7E96",
+				"12F488527C07B495AE2DBB76",
+				"45E2EBA17F0E9939871B99D7",
+			);
+			"sourceTree" = "<group>";
+		};
+		"EEEB11053F39E43924DEF1DE" = {
+			"isa" = "PBXGroup";
+			"name" = "Resources";
+			"children" = (
+				"BBC628BFE2116BBBDD4881D5",
+				"1B34E3AE038B0AEE8045594E",
+				"54FA2DC83DB032222791F9A1",
+				"128FC61CD0C23C5B7EE23612",
+				"2264B4334DE8C1200650E886",
+			);
+			"sourceTree" = "<group>";
+		};
+		"3CA59B707EF1822FB589ECF8" = {
+			"isa" = "PBXGroup";
+			"name" = "Products";
+			"children" = (
+				"7770A93E75AF7158E8D440A8",
+				"4A6B3E1D1D5CED76871E7B6E",
+			);
+			"sourceTree" = "<group>";
+		};
+		"0380D36B3A3A2C81C3A09BE1" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"1A4ECF99A0E03A649EA99E29",
+				"6F90A4DECBC62816E2EF64C0",
+				"EEEB11053F39E43924DEF1DE",
+				"3CA59B707EF1822FB589ECF8",
+			);
+			"sourceTree" = "<group>";
+		};
+		"0DAC5A1182389CE6BD0DB22B" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"F27746F6638AC577C43C72E8",
+				"1D3FEF859289990ADA0D8EC7",
+				"EC2DC787B143E2DC3B7A6617",
+				"CDA29F9A2CC84E0CFD51730B",
+				"F4EBDA4C53C189BFCDC1777A",
+				"8EBA537C3ADD53E9FF5560BA",
+				"1523F409634F4E70CAB394CC",
+				"DDCAA8335804EF4C144DBA9F",
+				"ED22DF66C9689CCB3D12FAB0",
+				"7B5B4C52C99D78088F2F613D",
+				"4D743BA88342244F18B944C0",
+				"743A8CB576AF32E4D41C6DE7",
+				"394015D0F411A2A23938160B",
+				"EFBFCE54A205C0841E99048E",
+				"4ABCC3D28CB00173B0C1A76E",
+				"EB9B090CFFFC3F15934336C7",
+				"F29243A1F9B51343BD8DAEE5",
+				"C386A15F46F2E49504CCCDE5",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"DD58A5F0C3EC42904A6FD14A" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"B85CA9C648E6A1A596E2C34C" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"9145797D8E433CEA1A5736E7",
+				"1BC1B9584121B55E6D942D1C",
+				"B9C8F8CC9EB5D2A3F29B5B02",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"584F6B67434A4A10B7F45438" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"BC320B3BEE3E4D8AC28A12D6",
+				"F3C2C20923728471510CA926",
+				"B059DC539812F4FAD4597EDA",
+				"AE5A6A0E6933C0F91DB54EAC",
+				"FF877C06C39954AEEAB0569C",
+				"79677B2138A174CFC68D0462",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"21196951F2D001B8608D0BD4" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"01F44C4FD9DE37591CEAFCB8" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"6824D8D021F07D9CFAFC64CE" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"ALWAYS_SEARCH_USER_PATHS" = "NO";
+				"CLANG_ENABLE_MODULES" = "YES";
+				"CLANG_ENABLE_OBJC_ARC" = "YES";
+				"CLANG_WARN_DOCUMENTATION_COMMENTS" = "YES";
+				"CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER" = "YES";
+				"ENABLE_STRICT_OBJC_MSGSEND" = "YES";
+				"GCC_C_LANGUAGE_STANDARD" = "gnu17";
+				"GCC_NO_COMMON_BLOCKS" = "YES";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "17.0";
+				"SDKROOT" = "iphoneos";
+				"SWIFT_VERSION" = "5.0";
+				"SWIFT_STRICT_CONCURRENCY" = "targeted";
+				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf";
+				"ENABLE_TESTABILITY" = "YES";
+				"GCC_OPTIMIZATION_LEVEL" = "0";
+				"GCC_PREPROCESSOR_DEFINITIONS" = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				"ONLY_ACTIVE_ARCH" = "YES";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "$(inherited) DEBUG";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+			};
+			"name" = "Debug";
+		};
+		"67FBE34D1746AFFEA8DCE1AF" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"ALWAYS_SEARCH_USER_PATHS" = "NO";
+				"CLANG_ENABLE_MODULES" = "YES";
+				"CLANG_ENABLE_OBJC_ARC" = "YES";
+				"CLANG_WARN_DOCUMENTATION_COMMENTS" = "YES";
+				"CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER" = "YES";
+				"ENABLE_STRICT_OBJC_MSGSEND" = "YES";
+				"GCC_C_LANGUAGE_STANDARD" = "gnu17";
+				"GCC_NO_COMMON_BLOCKS" = "YES";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "17.0";
+				"SDKROOT" = "iphoneos";
+				"SWIFT_VERSION" = "5.0";
+				"SWIFT_STRICT_CONCURRENCY" = "targeted";
+				"SUPPORTED_PLATFORMS" = "iphoneos iphonesimulator";
+				"DEBUG_INFORMATION_FORMAT" = "dwarf-with-dsym";
+				"ENABLE_NS_ASSERTIONS" = "NO";
+				"SWIFT_COMPILATION_MODE" = "wholemodule";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"VALIDATE_PRODUCT" = "YES";
+			};
+			"name" = "Release";
+		};
+		"683517839FC77E7F3849C723" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"6824D8D021F07D9CFAFC64CE",
+				"67FBE34D1746AFFEA8DCE1AF",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"27C37E5231DECD94DD6D4658" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "AppIcon";
+				"ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME" = "AccentColor";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"DEVELOPMENT_TEAM" = "";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"INFOPLIST_FILE" = "AlfordDaily/Resources/Info.plist";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "1.0";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.alfordfamily.daily";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"SUPPORTS_MACCATALYST" = "NO";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ENABLE_PREVIEWS" = "YES";
+			};
+			"name" = "Debug";
+		};
+		"C1B314A40A0232EAC0B2592C" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "AppIcon";
+				"ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME" = "AccentColor";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"DEVELOPMENT_TEAM" = "";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"INFOPLIST_FILE" = "AlfordDaily/Resources/Info.plist";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "1.0";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.alfordfamily.daily";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"SUPPORTS_MACCATALYST" = "NO";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"ENABLE_PREVIEWS" = "YES";
+			};
+			"name" = "Release";
+		};
+		"905219149E3366ED65515151" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"27C37E5231DECD94DD6D4658",
+				"C1B314A40A0232EAC0B2592C",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"50DFFE1682A5A98360D3E9C9" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"BUNDLE_LOADER" = "$(TEST_HOST)";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"DEVELOPMENT_TEAM" = "";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.alfordfamily.daily.tests";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"TEST_HOST" = "$(BUILT_PRODUCTS_DIR)/AlfordDaily.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AlfordDaily";
+			};
+			"name" = "Debug";
+		};
+		"D5059DD5BE82ACCB8311F467" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"BUNDLE_LOADER" = "$(TEST_HOST)";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"DEVELOPMENT_TEAM" = "";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.alfordfamily.daily.tests";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"TEST_HOST" = "$(BUILT_PRODUCTS_DIR)/AlfordDaily.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AlfordDaily";
+			};
+			"name" = "Release";
+		};
+		"CD4C41E658D1659F7B8AE324" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"50DFFE1682A5A98360D3E9C9",
+				"D5059DD5BE82ACCB8311F467",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"1E75BEB4147854147FAC0805" = {
+			"isa" = "PBXContainerItemProxy";
+			"containerPortal" = "8B0F285AE3AB873E69E0D3F8";
+			"proxyType" = 1;
+			"remoteGlobalIDString" = "3DADE4C213AED24C24B35B2E";
+			"remoteInfo" = "AlfordDaily";
+		};
+		"E7B8CFE6551163F0D9F518D6" = {
+			"isa" = "PBXTargetDependency";
+			"target" = "3DADE4C213AED24C24B35B2E";
+			"targetProxy" = "1E75BEB4147854147FAC0805";
+		};
+		"3DADE4C213AED24C24B35B2E" = {
+			"isa" = "PBXNativeTarget";
+			"buildConfigurationList" = "905219149E3366ED65515151";
+			"buildPhases" = (
+				"0DAC5A1182389CE6BD0DB22B",
+				"DD58A5F0C3EC42904A6FD14A",
+				"B85CA9C648E6A1A596E2C34C",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+			);
+			"name" = "AlfordDaily";
+			"productName" = "AlfordDaily";
+			"productReference" = "7770A93E75AF7158E8D440A8";
+			"productType" = "com.apple.product-type.application";
+		};
+		"CE3927835B7B5C6199F3F1FC" = {
+			"isa" = "PBXNativeTarget";
+			"buildConfigurationList" = "CD4C41E658D1659F7B8AE324";
+			"buildPhases" = (
+				"584F6B67434A4A10B7F45438",
+				"21196951F2D001B8608D0BD4",
+				"01F44C4FD9DE37591CEAFCB8",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+				"E7B8CFE6551163F0D9F518D6",
+			);
+			"name" = "AlfordDailyTests";
+			"productName" = "AlfordDailyTests";
+			"productReference" = "4A6B3E1D1D5CED76871E7B6E";
+			"productType" = "com.apple.product-type.bundle.unit-test";
+		};
+		"8B0F285AE3AB873E69E0D3F8" = {
+			"isa" = "PBXProject";
+			"attributes" = {
+				"BuildIndependentTargetsInParallel" = "YES";
+				"LastUpgradeCheck" = "1600";
+				"TargetAttributes" = {
+					"3DADE4C213AED24C24B35B2E" = {
+						"CreatedOnToolsVersion" = "16.0";
+					};
+					"CE3927835B7B5C6199F3F1FC" = {
+						"CreatedOnToolsVersion" = "16.0";
+						"TestTargetID" = "3DADE4C213AED24C24B35B2E";
+					};
+				};
+			};
+			"buildConfigurationList" = "683517839FC77E7F3849C723";
+			"compatibilityVersion" = "Xcode 14.0";
+			"developmentRegion" = "en";
+			"hasScannedForEncodings" = 0;
+			"knownRegions" = (
+				"en",
+				"Base",
+			);
+			"mainGroup" = "0380D36B3A3A2C81C3A09BE1";
+			"productRefGroup" = "3CA59B707EF1822FB589ECF8";
+			"projectDirPath" = "";
+			"projectRoot" = "";
+			"targets" = (
+				"3DADE4C213AED24C24B35B2E",
+				"CE3927835B7B5C6199F3F1FC",
+			);
+		};
+	};
+	"rootObject" = "8B0F285AE3AB873E69E0D3F8";
+}

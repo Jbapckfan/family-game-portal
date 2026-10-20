@@ -1,0 +1,147 @@
+import {GAMES, LAUNCH_GAMES, gameURL, motif} from './catalog.mjs';
+
+const escape = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
+const dateParts = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit'});
+const dateLabel = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'});
+
+export function dateKey(now = new Date()) {
+  const parts = Object.fromEntries(dateParts.formatToParts(now).map(part => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+function readJSON(storage, key) {
+  let raw;
+  try {raw = storage.getItem(key);} catch {return {available: false, value: null};}
+  if (raw === null) return {available: true, value: null};
+  try {return {available: true, value: JSON.parse(raw)};} catch {return {available: true, value: null};}
+}
+
+function stableJSON(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJSON).join(',')}]`;
+  if (value && typeof value === 'object') return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableJSON(value[key])}`).join(',')}}`;
+  return JSON.stringify(value);
+}
+
+/** Read only. Validation is delegated to the same engine used when playing. */
+export function readDailyStatus({slug, engine, puzzles, storage, now = new Date()}) {
+  const daily = engine.getDaily(puzzles, now);
+  const saved = readJSON(storage, `${slug}:v1:daily:${daily.dateKey}`);
+  const records = readJSON(storage, `${slug}:v1:records`);
+  const record = records.value && typeof records.value === 'object' && !Array.isArray(records.value)
+    ? records.value[daily.dateKey] : null;
+  // The shell preserves the first valid daily record. It may survive an
+  // interrupted or quota-limited write of the full game, or vice versa.
+  if (record && engine.getStats({[daily.dateKey]: record}, daily.dateKey).played === 1) {
+    return {status: record.status, dateKey: daily.dateKey};
+  }
+  const game = engine.restoreGame(daily.puzzle, saved.value);
+  if (['won', 'lost', 'revealed'].includes(game.status)) return {status: game.status, dateKey: daily.dateKey};
+  if (!saved.available || !records.available) return {status: 'unavailable', dateKey: daily.dateKey};
+  return {status: stableJSON(game) === stableJSON(engine.createGame(daily.puzzle)) ? 'new' : 'playing', dateKey: daily.dateKey};
+}
+
+const STATUS = Object.freeze({
+  loading: {label: 'Today’s puzzle', action: 'Play today'},
+  new: {label: 'Ready for today', action: 'Play today'},
+  playing: {label: 'In progress', action: 'Continue'},
+  won: {label: 'Solved', action: 'See result'},
+  lost: {label: 'Not solved', action: 'See result'},
+  revealed: {label: 'Revealed', action: 'See result'},
+  unavailable: {label: 'Progress unavailable', action: 'Play today'},
+});
+
+function card(game, url) {
+  return `<a class="game-card ${game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}">
+    <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
+    <div class="card-motif">${motif(game.motif)}</div>
+    <div class="card-copy"><h3>${escape(game.name)}</h3><p>${escape(game.description)}</p></div>
+    <div class="card-bottom"><span class="card-detail">${escape(game.detail || game.category)}</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
+  </a>`;
+}
+
+export function startHome(doc = document, win = window) {
+  const $ = id => doc.getElementById(id);
+  const base = doc.documentElement.dataset.gameBase || './games/';
+  const urls = new Map(GAMES.map(game => [game.slug, gameURL(game.slug, base, doc.baseURI)]));
+  for (const group of ['flagship', 'word', 'classic']) {
+    $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
+  }
+  $('progress-marks').innerHTML = LAUNCH_GAMES.map(game => `<li class="progress-mark game-${game.slug}" data-mark="${game.slug}" title="${escape(game.name)}"><span class="mark-symbol" aria-hidden="true"></span><span class="sr-only">${escape(game.name)}: checking progress</span></li>`).join('');
+
+  const imports = new Map();
+  function runtime(slug) {
+    if (!imports.has(slug)) {
+      const url = urls.get(slug);
+      imports.set(slug, Promise.all([import(new URL('engine.mjs', url).href), import(new URL('puzzles.mjs', url).href)])
+        .then(([engine, content]) => ({engine, puzzles: content.PUZZLES})));
+    }
+    return imports.get(slug);
+  }
+
+  let sequence = 0;
+  let shownDate;
+  async function refresh() {
+    const current = ++sequence;
+    const now = new Date();
+    shownDate = dateKey(now);
+    $('today-date').dateTime = shownDate;
+    $('today-date').textContent = dateLabel.format(now);
+    let storage;
+    try {storage = win.localStorage;} catch {storage = null;}
+    const results = await Promise.all(GAMES.map(async game => {
+      try {return {slug: game.slug, ...readDailyStatus({slug: game.slug, ...await runtime(game.slug), storage, now})};}
+      catch {return {slug: game.slug, status: 'unavailable', dateKey: shownDate};}
+    }));
+    if (current !== sequence) return;
+    for (const result of results) {
+      const state = STATUS[result.status] || STATUS.unavailable;
+      const item = doc.querySelector(`[data-game="${result.slug}"]`);
+      item.querySelector('[data-status]').dataset.status = result.status;
+      item.querySelector('[data-status-label]').textContent = state.label;
+      item.querySelector('[data-action-label]').textContent = state.action;
+      const mark = doc.querySelector(`[data-mark="${result.slug}"]`);
+      if (mark) {
+        const game = GAMES.find(item => item.slug === result.slug);
+        mark.dataset.status = result.status;
+        mark.title = `${game.name}: ${state.label}`;
+        mark.querySelector('.sr-only').textContent = `${game.name}: ${state.label}`;
+        mark.querySelector('.mark-symbol').textContent = result.status === 'won' ? '✓' : result.status === 'playing' ? '·' : '';
+      }
+    }
+    const launch = results.filter(result => LAUNCH_GAMES.some(game => game.slug === result.slug));
+    const solved = launch.filter(result => result.status === 'won').length;
+    const unavailable = launch.filter(result => result.status === 'unavailable').length;
+    $('progress-count').textContent = unavailable === LAUNCH_GAMES.length ? 'Saved progress is unavailable'
+      : unavailable ? `${solved} of 6 solved · some saves unavailable`
+      : solved === 6 ? '6 of 6 solved. A day well played.' : `${solved} of 6 solved today`;
+    $('progress-note').hidden = !unavailable;
+    $('progress-note').textContent = unavailable ? 'You can still choose a game. This page could not read every saved result on this device.' : '';
+  }
+
+  const dialog = $('about-dialog');
+  let returnFocus;
+  function closeAbout() {dialog.close();}
+  doc.querySelectorAll('[data-open-about]').forEach(button => button.addEventListener('click', () => {
+    returnFocus = doc.activeElement;
+    dialog.showModal();
+    $('close-about').focus();
+  }));
+  $('close-about').addEventListener('click', closeAbout);
+  $('about-done').addEventListener('click', closeAbout);
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeAbout();
+  });
+  dialog.addEventListener('close', () => {if (returnFocus?.isConnected) returnFocus.focus();});
+  win.addEventListener('storage', event => {
+    if (event.key === null || GAMES.some(game => event.key.startsWith(`${game.slug}:v1:`))) void refresh();
+  });
+  win.addEventListener('pageshow', () => {void refresh();});
+  doc.addEventListener('visibilitychange', () => {if (doc.visibilityState === 'visible') void refresh();});
+  win.setInterval(() => {if (doc.visibilityState === 'visible' && dateKey() !== shownDate) void refresh();}, 30_000);
+  void refresh();
+  return {refresh};
+}
+
+if (typeof document !== 'undefined' && typeof window !== 'undefined') startHome();

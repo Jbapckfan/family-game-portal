@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f5ed">
+  <meta name="description" content="Higher. Lower. Find your flow. Connect all sixteen numbers in a daily path puzzle from Alford Family Games.">
+  <meta property="og:title" content="Switchpath — Alford Family Games">
+  <meta property="og:description" content="Sixteen numbers. One unbroken path. A daily puzzle of rhythm and reason.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Switchpath — Alford Family Games</title>
+</head>
+<body class="switchpath">
+  <a class="skip-link" href="#puzzle">Skip to puzzle</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="Switchpath home"><img src="./icon.svg" width="34" height="34" alt=""><span>switchpath<span class="brand-dot">.</span></span></a>
+      <span class="brand-caption">AN ALFORD FAMILY GAME</span>
+      <nav class="tools" aria-label="Game tools">
+        <button id="sound-button" class="icon-button" aria-label="Turn sound on" title="Turn sound on"></button>
+        <button id="stats-button" class="icon-button" aria-label="Your statistics" title="Your statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12h4v8M10 20V4h4v16M15 20V9h4v11"/></svg></button>
+        <button id="help-button" class="icon-button" aria-label="How to play" title="How to play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5a2.6 2.6 0 0 1 5 1c0 2-2.5 2-2.5 4M12 16.5v.1"/></svg></button>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-label="Welcome">
+        <p class="eyebrow"><span aria-hidden="true">↗↘</span>A LITTLE RHYTHM. A LITTLE REASON.</p>
+        <h1>Higher. Lower. <em>Find your flow.</em></h1>
+        <p>Sixteen numbers. One unbroken path.</p>
+      </section>
+      <div class="game-layout">
+        <section class="game" aria-label="Switchpath puzzle">
+          <div id="game-topline" class="game-topline">
+            <div class="tabs" aria-label="Game mode"><button id="daily-tab" class="tab active" aria-pressed="true">The daily</button><button id="practice-tab" class="tab" aria-pressed="false">Practice ↗</button></div>
+            <span id="issue" class="issue">NO. 001</span>
+          </div>
+          <div class="puzzle-meta"><span id="puzzle-date">A fresh daily puzzle</span><span id="difficulty" class="difficulty">Sharp</span></div>
+          <div id="new-day" class="new-day" hidden>A fresh puzzle is here. <button id="new-day-button">Play today →</button></div>
+          <div class="route-play">
+            <p class="quick-rules" id="quick-rules">Start at <strong>S</strong>. Alternate <strong>higher, lower</strong>. Visit every cell once, ending at <strong>E</strong>.</p>
+            <div class="direction-panel" id="direction-panel">
+              <span class="direction-icon" id="direction-icon" aria-hidden="true">↑</span>
+              <div class="direction-copy"><span class="direction-kicker" id="direction-kicker">YOUR NEXT STEP</span><strong id="direction-label">Go higher</strong></div>
+              <div class="rhythm" aria-hidden="true"><span id="rhythm-higher" class="rhythm-step current">↑</span><span class="rhythm-divider">·</span><span id="rhythm-lower" class="rhythm-step">↓</span></div>
+            </div>
+            <div id="puzzle" class="puzzle route-board" tabindex="-1" role="group" aria-label="Sixteen numbers to connect" aria-describedby="quick-rules movement-note keyboard-note"><p>Finding your next path…</p></div>
+            <div class="route-progress"><div id="progress-track" class="progress-track" role="progressbar" aria-label="Cells connected" aria-valuemin="1" aria-valuemax="16" aria-valuenow="1"><span id="progress-fill"></span></div><span id="progress-label">1 of 16 connected</span></div>
+            <div class="route-score"><span><strong id="move-count">0</strong> <span id="move-label">moves</span></span><span id="par-label">15 moves is perfect</span><span><strong id="hint-count">0</strong> <span id="hint-label">hints</span></span></div>
+            <p id="movement-note" class="movement-note">Move up, down, left or right. Tap an earlier step to rewind.</p>
+            <p id="keyboard-note" class="sr-only">Use arrow keys to move focus around the board. Press Enter or Space to select a cell. Backspace undoes the last step.</p>
+            <p id="feedback" class="feedback" role="status"></p>
+            <div id="game-controls" class="game-controls">
+              <button id="undo-button" class="secondary-button" aria-label="Undo one path step">↶ Undo</button>
+              <button id="reset-path-button" class="secondary-button">Reset path</button>
+              <button id="hint-button" class="secondary-button" title="One assisted step; may correct a wrong branch">✦ Hint</button>
+              <button id="more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button>
+            </div>
+            <div id="finished-actions" class="game-controls" hidden>
+              <button id="next-button" class="primary-button">Another puzzle →</button>
+              <button id="results-button" class="secondary-button">Your result ↗</button>
+              <button id="finished-more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button>
+            </div>
+            <p id="board-note" class="board-note">Your route is saved in this browser.</p>
+          </div>
+        </section>
+        <aside class="sidebar" aria-label="Guide to Switchpath">
+          <section class="rule-card">
+            <div class="rule-kicker">FOLLOW THE RHYTHM <span aria-hidden="true">↗↘</span></div>
+            <h2>One step up.<br>One step down.<br><em>All the way through.</em></h2>
+            <p>The numbers don’t need to be consecutive. They just need to keep changing direction.</p>
+            <div class="rhythm-example" aria-label="Example: 3, then 12 higher, then 7 lower, then 10 higher"><span>3</span><i>↑</i><span>12</span><i>↓</i><span>7</span><i>↑</i><span>10</span></div>
+            <p class="example-label">higher → lower → higher</p>
+            <ol><li>Start at S. Your first move goes higher.</li><li>Join neighbors: up, down, left or right.</li><li>Use all 16 cells once. Save E for last.</li></ol>
+            <button id="quick-help" class="guide-link">The full rules ↗</button>
+          </section>
+          <section class="margin-note"><span>A WRONG TURN IS A NEW IDEA</span><p>Trace it back.<br>Try another way.<br>Find your flow.</p></section>
+          <div class="daily-note">A fresh route, every day.<small>New puzzle at midnight Central.</small></div>
+        </aside>
+      </div>
+    </main>
+    <footer><a id="family-link" href="https://alford-daily.jbapckfan.chatgpt.site">← Alford Family Games</a><a id="sibling-link" href="https://alford-daily.jbapckfan.chatgpt.site/games/ringcount/">Play Ringcount ↗</a><button id="about-button">About Switchpath</button></footer>
+  </div>
+  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button id="dialog-close" class="icon-button dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript">Please enable JavaScript to play Switchpath.</p></noscript>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

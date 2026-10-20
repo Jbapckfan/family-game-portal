@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-game-base="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5ed">
+  <meta name="description" content="A little pause. A good puzzle. Play six daily word and logic games from Alford Daily, plus two family favorites.">
+  <title>Alford Daily — A good puzzle, every day</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preload" href="./fonts/dm-serif-display-regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="./fonts/dm-sans-regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#today">Skip to the games</a>
+  <div class="page-shell">
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="Alford Daily home">
+        <img src="./icon.svg" alt="" width="44" height="44">
+        <span>Alford <strong>Daily</strong></span>
+      </a>
+      <button class="text-button about-button" type="button" data-open-about>About the collection <span aria-hidden="true">↗</span></button>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">A fresh way to think</p>
+          <h1 id="page-title">A little pause.<br><em>A good puzzle.</em></h1>
+          <p class="hero-copy">Follow a hunch. Find a pattern.<br>Make a little room for an aha.</p>
+        </div>
+        <div class="daily-edition">
+          <span class="edition-sun" aria-hidden="true">✳</span>
+          <p class="edition-label">The daily collection</p>
+          <time id="today-date">Today</time>
+          <p>Six games. Your own pace.</p>
+        </div>
+      </section>
+      <section class="daily-progress" aria-labelledby="progress-title">
+        <div class="progress-caption">
+          <h2 id="progress-title">Your day, in puzzles</h2>
+          <p id="progress-count" role="status" aria-live="polite">Checking today’s progress…</p>
+        </div>
+        <ol class="progress-marks" id="progress-marks" aria-label="Today’s six games"></ol>
+      </section>
+      <p class="progress-note" id="progress-note" hidden></p>
+      <section class="game-section" id="today" aria-labelledby="flagships-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Start with a spark</p><h2 id="flagships-title">Two quick ways in.</h2></div>
+          <p>Simple rules. Satisfying turns.</p>
+        </div>
+        <div class="flagship-grid" id="flagship-games"></div>
+      </section>
+      <section class="game-section word-section" aria-labelledby="words-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">A way with words</p><h2 id="words-title">Look a little closer.</h2></div>
+          <p>Meaning, deduction, and a change of perspective.</p>
+        </div>
+        <div class="word-grid" id="word-games"></div>
+      </section>
+      <section class="classics-section" aria-labelledby="classics-title">
+        <div class="classics-heading"><h2 id="classics-title">The family favorites</h2><p>Two earlier games, always welcome at the table.</p></div>
+        <div class="classics-grid" id="classic-games"></div>
+      </section>
+      <noscript><p class="noscript-note">Turn on JavaScript to load the collection and play the games. Alford Daily saves progress on this device.</p></noscript>
+    </main>
+    <footer class="footer">
+      <p><span class="footer-brand">Alford Daily</span><span class="footer-divider" aria-hidden="true">/</span>A little play goes a long way.</p>
+      <button type="button" class="text-button" data-open-about>How the daily collection works</button>
+    </footer>
+  </div>
+  <dialog id="about-dialog" aria-labelledby="about-title">
+    <div class="dialog-topline"><span class="eyebrow">A note from Alford Daily</span><button id="close-about" class="close-button" type="button" aria-label="Close about dialog">×</button></div>
+    <h2 id="about-title">A small daily ritual.</h2>
+    <p>Alford Daily brings together six word and logic games, with Ringcount and Switchpath as the quick first stop. Tradeoff and Inbetween are here as two family favorites, too.</p>
+    <h3>One day, the same puzzles</h3>
+    <p>Everyone gets the same daily board for each game. The day changes at midnight in America/Chicago (Central Time). Play at your own pace; there is no hard timer.</p>
+    <h3>Pick up where you left off</h3>
+    <p>Progress is saved in this browser on this device. This home counts a daily game as solved only when you solve it; revealed answers and practice rounds do not increase the daily count. Separate website addresses have separate saves.</p>
+    <h3>More room to play</h3>
+    <p>Each game has a prepared collection of boards and a practice mode. These collections are finite and will eventually repeat. Your unfinished daily board stays reserved for daily play.</p>
+    <h3>Just the puzzles, for now</h3>
+    <p>This build has no accounts, advertising, purchase prompts, or tracking code. If browser storage is unavailable, a game can still be played, but progress may not survive closing the page.</p>
+    <button class="dialog-done" id="about-done" type="button">Back to the games</button>
+  </dialog>
+</body>
+</html>

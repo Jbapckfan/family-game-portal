@@ -1,0 +1,11 @@
+{
+  "name": "alford-daily",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Alford Daily word and logic collection.",
+  "scripts": {
+    "check": "node --check app.mjs && node --check catalog.mjs",
+    "serve": "python3 -m http.server 8080 --directory ../.."
+  }
+}

@@ -1,0 +1,177 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createContext, runInContext } from 'node:vm';
+import * as engine from '../engine.mjs';
+import { PUZZLES } from '../puzzles.mjs';
+
+// Run the actual shared browser shell with the real game engine. Only browser
+// facilities (DOM, timers and storage) are stand-ins; persistence is production code.
+const shellURL = new URL('../shell.mjs', import.meta.url);
+const source = readFileSync(shellURL, 'utf8').replace(/^export /gm, '');
+const slug = 'second-sense';
+const prefix = slug + ':v1:';
+const fixture = {...PUZZLES[0], id:'fixture'};
+const puzzles = [fixture, {...fixture,id:'practice-two'}, {...fixture,id:'practice-three'}];
+const record = state => ({status:state.status,attempts:state.attempts,hints:state.hintedNouns.length});
+const progress = state => state.attempts;
+const plain = value => JSON.parse(JSON.stringify(value));
+
+function storage(entries=[]) {
+  const values=new Map(entries);
+  return { values, denyReads:false, denyWrites:false,
+    getItem(key) { if(this.denyReads)throw new Error('Access denied'); return values.get(key)??null; },
+    setItem(key,value) { if(this.denyWrites)throw new Error('Quota exceeded'); values.set(key,value); },
+  };
+}
+function openShell(saved=storage()) {
+  const nodes=new Map(); const windowEvents=new Map(); const timerCallbacks=new Map();
+  let document; let timerId=0; let resets=0; let now=new Date('2026-10-20T12:00:00Z');
+  function element() {
+    const listeners=new Map(); const attributes=new Map();
+    return {textContent:'',innerHTML:'',hidden:false,open:false,disabled:false,isConnected:true,className:'',dataset:{},
+      classList:{toggle(){}},setAttribute(key,value){attributes.set(key,String(value));},getAttribute(key){return attributes.get(key);},
+      querySelector(){return null;},getClientRects(){return [{}];},getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};},
+      focus(){document.activeElement=this;},scrollIntoView(){},close(){this.open=false;},showModal(){this.open=true;},
+      addEventListener(type,listener){if(!listeners.has(type))listeners.set(type,[]);listeners.get(type).push(listener);},
+      emit(type,event={}){for(const listener of listeners.get(type)??[])listener({target:this,preventDefault(){},...event});},
+      click(){this.emit('click');},
+    };
+  }
+  document={activeElement:null,hidden:false,
+    getElementById(id){if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},
+    querySelector(){return null;},addEventListener(){},
+  };
+  document.activeElement=element();
+  document.getElementById('feedback').textContent='Think it through.';
+  document.getElementById('board-note').textContent='Your daily puzzle.';
+  const context=createContext({document,localStorage:saved,navigator:{},
+    window:{addEventListener(type,fn){windowEvents.set(type,fn);}},location:{pathname:`/games/${slug}/`},
+    matchMedia:()=>({matches:true}),requestAnimationFrame:fn=>fn(),
+    setTimeout(fn){const id=++timerId;timerCallbacks.set(id,fn);return id;},clearTimeout(id){timerCallbacks.delete(id);},setInterval:()=>1,
+  });
+  runInContext(source,context,{filename:shellURL.pathname});
+  const createShell=runInContext('createShell',context);
+  const timedEngine={...engine,getDaily:items=>engine.getDaily(items,now),getDateKey:()=>engine.getDateKey(now)};
+  const shell=createShell({slug,name:'Second Sense',puzzles,engine:timedEngine,
+    render(){},reset(){resets++;},record,result:()=>'<h2 id="dialog-title">Result</h2>',statsExtra:()=>'',help:'<h2 id="dialog-title">Help</h2>',about:'A word game.',
+    sibling:{slug:'companion',name:'Companion',url:'https://example.com/companion'},
+  });
+  shell.start();
+  return {shell,saved,nodes,timerCallbacks,
+    click(id){document.getElementById(id).click();},
+    action(action){document.getElementById('dialog-content').emit('click',{target:{closest(selector){return selector==='[data-action]'?{dataset:{action}}:null;}}});},
+    choosePractice(index){document.getElementById('dialog-content').emit('click',{target:{closest(selector){return selector==='[data-practice]'?{dataset:{practice:String(index)}}:null;}}});},
+    storageEvent(key){windowEvents.get('storage')?.({key});},
+    setNow(value){now=new Date(value);},
+    get resets(){return resets;},
+    stats(){return engine.getStats(JSON.parse(saved.values.get(prefix+'records')??'{}'),shell.daily.dateKey);},
+  };
+}
+function advance(app) {
+  const state=app.shell.game; const puzzle=app.shell.puzzle;
+  const pair=puzzle.pairs.find(candidate=>!state.placements.some(item=>item.nounId===candidate.nounId));
+  const next=engine.submitPair(puzzle,state,pair).state;
+  app.shell.commit(next,{message:'A useful step.'});
+}
+function solved(puzzle=fixture) {
+  let state=engine.createGame(puzzle);
+  for(const pair of puzzle.pairs)state=engine.submitPair(puzzle,state,pair).state;
+  return state;
+}
+
+test('denied reads and writes retain real progress when Daily is reselected',()=>{
+  const saved=storage();saved.denyReads=true;saved.denyWrites=true;
+  const app=openShell(saved);advance(app);
+  const before=plain(app.shell.game);
+  assert.equal(progress(before),1);
+  app.click('daily-tab');
+  assert.deepEqual(plain(app.shell.game),before);
+  assert.equal(saved.values.size,0);
+});
+
+test('a quota failure preserves newer memory over an old save and later recovers',()=>{
+  const app=openShell();advance(app);
+  const dailyKey=prefix+'daily:'+app.shell.daily.dateKey;
+  const firstSave=app.saved.values.get(dailyKey);
+  app.saved.denyWrites=true;advance(app);const unsaved=plain(app.shell.game);
+  assert.equal(progress(unsaved),2);
+  assert.equal(app.saved.values.get(dailyKey),firstSave);
+  app.click('daily-tab');assert.deepEqual(plain(app.shell.game),unsaved);
+  app.saved.denyWrites=false;advance(app);
+  assert.equal(progress(app.shell.game),3);
+  assert.deepEqual(JSON.parse(app.saved.values.get(dailyKey)),plain(app.shell.game));
+  assert.deepEqual(plain(openShell(app.saved).shell.game),plain(app.shell.game));
+});
+
+test('terminal saves repair missing, malformed and invalid daily result records',()=>{
+  const finished=solved();
+  const badRecord=JSON.stringify({'2026-10-20':{status:'won',attempts:0,hints:0}});
+  for(const raw of [undefined,'{bad json',badRecord]){
+    const entries=[[prefix+'daily:2026-10-20',JSON.stringify(finished)]];
+    if(raw!==undefined)entries.push([prefix+'records',raw]);
+    const app=openShell(storage(entries));
+    assert.equal(app.stats().played,1);assert.equal(app.stats().won,1);
+    assert.deepEqual(JSON.parse(app.saved.values.get(prefix+'records'))['2026-10-20'],record(finished));
+    app.click('daily-tab');app.click('stats-button');assert.equal(app.stats().played,1);
+  }
+});
+
+test('a stale tab cannot replace the first terminal daily, even with unsaved memory',()=>{
+  for(const status of ['won','revealed']){
+    const shared=storage();const first=openShell(shared);const stale=openShell(shared);
+    // Leave a dirty, readable-stale state in the second tab before the first finishes.
+    shared.denyWrites=true;advance(stale);shared.denyWrites=false;
+    const state=status==='won'?solved():engine.revealGame(fixture,engine.createGame(fixture));
+    first.shell.commit(state);
+    const firstRecord=shared.values.get(prefix+'records');
+    advance(stale);
+    assert.deepEqual(plain(stale.shell.game),plain(state));
+    assert.deepEqual(JSON.parse(shared.values.get(prefix+'daily:2026-10-20')),plain(state));
+    assert.equal(shared.values.get(prefix+'records'),firstRecord);
+  }
+});
+
+test('practice stays separate, reserves the unfinished daily and can restart',()=>{
+  const app=openShell();app.click('practice-tab');app.choosePractice(0);
+  assert.equal(app.shell.mode,'daily');
+  app.choosePractice(1);assert.equal(app.shell.mode,'practice');assert.equal(app.shell.puzzle.id,'practice-two');
+  advance(app);assert.ok(app.saved.values.has(prefix+'practice:practice-two'));
+  assert.equal(app.stats().played,0);
+  app.action('restart');assert.equal(progress(app.shell.game),0);
+  app.click('daily-tab');assert.equal(app.shell.mode,'daily');assert.equal(progress(app.shell.game),0);
+});
+
+test('storage events synchronize progress and reset selection state',()=>{
+  const shared=storage();const first=openShell(shared);const second=openShell(shared);
+  advance(first);const resets=second.resets;
+  second.storageEvent(prefix+'daily:2026-10-20');
+  assert.deepEqual(plain(second.shell.game),plain(first.shell.game));
+  assert.ok(second.resets>resets);
+});
+
+test('notices survive renders and a new board clears them',()=>{
+  const app=openShell();app.shell.notice('Consider the direction.');app.shell.render();
+  assert.equal(app.nodes.get('feedback').textContent,'Consider the direction.');
+  app.click('daily-tab');assert.equal(app.nodes.get('feedback').textContent,'Think it through.');
+});
+
+test('a completed daily cannot be restarted through the options action',()=>{
+  const app=openShell();app.shell.commit(solved());const finished=plain(app.shell.game);
+  app.action('restart');assert.deepEqual(plain(app.shell.game),finished);assert.equal(app.stats().won,1);
+});
+
+test('switching boards cancels a pending result popup',()=>{
+  const app=openShell();app.shell.commit(solved());
+  app.choosePractice(1);
+  for(const callback of app.timerCallbacks.values())callback();
+  assert.equal(app.shell.mode,'practice');assert.equal(app.nodes.get('game-dialog').open,false);
+});
+
+test('practice reservation follows the new Central day before the daily tab is refreshed',()=>{
+  const app=openShell();app.setNow('2026-10-21T05:00:00Z');
+  app.click('practice-tab');app.choosePractice(1);
+  assert.equal(app.shell.mode,'daily');assert.equal(app.shell.daily.dateKey,'2026-10-20');
+  app.click('new-day-button');
+  assert.equal(app.shell.daily.dateKey,'2026-10-21');assert.equal(app.shell.puzzle.id,'practice-two');
+});

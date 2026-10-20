@@ -89,6 +89,17 @@
 
         .tradeoff-thumb { background: linear-gradient(135deg, #274c3a, #456844); color: #e6f1ad; }
         .inbetween-thumb { background: linear-gradient(135deg, #423e72, #77659a); color: #f1e9ff; }
+
+        .counterpart-thumb { background: linear-gradient(135deg, #684b32, #ab7c4b); color: #fff0d4; }
+        .shortlist-thumb { background: linear-gradient(135deg, #294d69, #527b98); color: #e2f1ff; }
+        .second-sense-thumb { background: linear-gradient(135deg, #63476f, #94719e); color: #f9e9ff; }
+        .sideways-thumb { background: linear-gradient(135deg, #7c4234, #b37658); color: #ffe8d9; }
+        .ringcount-thumb { background: linear-gradient(135deg, #52602f, #82914b); color: #f6f4cc; }
+        .switchpath-thumb { background: linear-gradient(135deg, #35595d, #609195); color: #e2ffff; }
+        .daily-game-diagram { width: 168px; height: 94px; overflow: visible; }
+        .daily-hub-link { display: inline-block; margin-top: 16px; padding: 11px 18px; border: 1px solid #66637e; border-radius: 24px; color: #f1e9ff; text-decoration: none; font-size: 13px; }
+        .daily-hub-link:hover, .daily-hub-link:focus-visible { border-color: #f1e9ff; background: #353047; }
+
         .word-game-symbols { display: flex; align-items: center; justify-content: center; gap: 14px; }
         .word-game-letter {
             display: grid;
@@ -160,6 +171,7 @@
         <header>
             <h1>Alford Family Game Portal</h1>
             <p class="subtitle">Dad's experimental games - test at your own risk!</p>
+            <a class="daily-hub-link" href="./daily/">Open Alford Daily · eight daily puzzles →</a>
         </header>
 
         <section class="category">
@@ -185,6 +197,72 @@
                     <div class="game-desc">Six short words. Six letter pairs. Insert one pair into each word to match its clue, using every pair once.</div>
                     <span class="badge badge-new">New</span>
                     <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./counterpart/" class="game-card">
+                    <div class="game-thumb word-game-thumb counterpart-thumb" role="img" aria-label="Counterpart: Two ordered pairs connected by arrows">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><rect x="4" y="8" width="47" height="29" rx="6" fill="currentColor" opacity=".2"/><rect x="117" y="8" width="47" height="29" rx="6" fill="currentColor" opacity=".2"/><rect x="4" y="57" width="47" height="29" rx="6" fill="currentColor" opacity=".2"/><rect x="117" y="57" width="47" height="29" rx="6" fill="currentColor" opacity=".2"/><path d="M64 22h38m-8-7 8 7-8 7M64 71h38m-8-7 8 7-8 7" stroke="currentColor" stroke-width="3" fill="none"/><g fill="currentColor" font-size="18" font-weight="700" text-anchor="middle"><text x="27" y="29">A</text><text x="141" y="29">B</text><text x="27" y="78">C</text><text x="141" y="78">D</text></g></svg>
+                        <span class="word-game-label" aria-hidden="true">MATCH THE MEANING.</span>
+                    </div>
+                    <div class="game-title">Counterpart</div>
+                    <div class="game-desc">Five relationships. Ten words. Match each ordered pair to the same kind of connection.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./shortlist/" class="game-card">
+                    <div class="game-thumb word-game-thumb shortlist-thumb" role="img" aria-label="Shortlist: Twelve candidate tiles with one highlighted answer">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><g fill="currentColor" opacity=".22"><rect x="8" y="8" width="32" height="20" rx="4"/><rect x="48" y="8" width="32" height="20" rx="4"/><rect x="88" y="8" width="32" height="20" rx="4"/><rect x="128" y="8" width="32" height="20" rx="4"/><rect x="8" y="37" width="32" height="20" rx="4"/><rect x="48" y="37" width="32" height="20" rx="4"/><rect x="128" y="37" width="32" height="20" rx="4"/><rect x="8" y="66" width="32" height="20" rx="4"/><rect x="48" y="66" width="32" height="20" rx="4"/><rect x="88" y="66" width="32" height="20" rx="4"/><rect x="128" y="66" width="32" height="20" rx="4"/></g><rect x="88" y="37" width="32" height="20" rx="4" fill="currentColor"/><path d="m97 47 5 5 9-10" stroke="#294d69" stroke-width="2.5" fill="none"/></svg>
+                        <span class="word-game-label" aria-hidden="true">NARROW IT DOWN.</span>
+                    </div>
+                    <div class="game-title">Shortlist</div>
+                    <div class="game-desc">Twelve possible words. Three two-letter scans. Use the counts to narrow the field before one final pick.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./second-sense/" class="game-card">
+                    <div class="game-thumb word-game-thumb second-sense-thumb" role="img" aria-label="Second Sense: Two meaning cards meeting at a shared word">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><rect x="4" y="9" width="65" height="33" rx="7" fill="currentColor" opacity=".23"/><rect x="99" y="9" width="65" height="33" rx="7" fill="currentColor" opacity=".23"/><path d="m36 49 35 17m61-17-35 17" stroke="currentColor" stroke-width="2" fill="none"/><rect x="48" y="64" width="72" height="26" rx="6" fill="currentColor"/><g text-anchor="middle" font-size="16" font-weight="700"><text x="36" y="32" fill="currentColor">I</text><text x="132" y="32" fill="currentColor">II</text><text x="84" y="82" fill="#63476f">WORD</text></g></svg>
+                        <span class="word-game-label" aria-hidden="true">ONE WORD. TWO MEANINGS.</span>
+                    </div>
+                    <div class="game-title">Second Sense</div>
+                    <div class="game-desc">Pair two different meanings, then name the word they share. Familiar words take a second turn.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./sideways/" class="game-card">
+                    <div class="game-thumb word-game-thumb sideways-thumb" role="img" aria-label="Sideways: Letter strips sliding horizontally into vertical columns">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><g fill="currentColor" opacity=".23"><rect x="23" y="7" width="122" height="22" rx="5"/><rect x="23" y="36" width="122" height="22" rx="5"/><rect x="23" y="65" width="122" height="22" rx="5"/></g><g stroke="currentColor" stroke-width="2" fill="none"><path d="m12 12-6 6 6 6m144 17 6 6-6 6m-144 23-6 6 6 6"/><path d="M54 7v80M84 7v80M114 7v80" opacity=".3"/></g><g fill="currentColor" font-size="14" font-weight="700" text-anchor="middle"><text x="39" y="23">A</text><text x="69" y="23">B</text><text x="99" y="23">C</text><text x="129" y="23">D</text><text x="39" y="52">E</text><text x="69" y="52">F</text><text x="99" y="52">G</text><text x="129" y="52">H</text><text x="39" y="81">I</text><text x="69" y="81">J</text><text x="99" y="81">K</text><text x="129" y="81">L</text></g></svg>
+                        <span class="word-game-label" aria-hidden="true">LET THE WORDS LINE UP.</span>
+                    </div>
+                    <div class="game-title">Sideways</div>
+                    <div class="game-desc">Slide five letter rows left or right until four clued words line up vertically. Every turn changes the whole board.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./ringcount/" class="game-card">
+                    <div class="game-thumb word-game-thumb ringcount-thumb" role="img" aria-label="Ringcount: A circular ring divided into four equal-sum arcs">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><circle cx="84" cy="47" r="38" stroke="currentColor" stroke-width="12" opacity=".28" fill="none"/><g stroke="currentColor" stroke-width="3"><path d="M84 1v15M84 78v15M38 47h15M115 47h15"/></g><text x="84" y="55" fill="currentColor" font-size="25" font-weight="700" text-anchor="middle">15</text><g fill="currentColor"><circle cx="57" cy="20" r="3"/><circle cx="111" cy="20" r="3"/><circle cx="57" cy="74" r="3"/><circle cx="111" cy="74" r="3"/></g></svg>
+                        <span class="word-game-label" aria-hidden="true">FOUR CUTS. EQUAL PARTS.</span>
+                    </div>
+                    <div class="game-title">Ringcount</div>
+                    <div class="game-desc">Twelve numbers around a ring. Place four cuts so every arc adds up to the same target.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Number Game</span>
+                </a>
+
+                <a href="./switchpath/" class="game-card">
+                    <div class="game-thumb word-game-thumb switchpath-thumb" role="img" aria-label="Switchpath: A number route alternating between higher and lower values">
+                        <svg class="daily-game-diagram" viewBox="0 0 168 94" aria-hidden="true"><path d="M19 20h43v54h43V20h43" stroke="currentColor" stroke-width="4" fill="none" opacity=".6"/><g fill="currentColor"><circle cx="19" cy="20" r="13"/><circle cx="62" cy="20" r="13"/><circle cx="62" cy="74" r="13"/><circle cx="105" cy="74" r="13"/><circle cx="105" cy="20" r="13"/><circle cx="148" cy="20" r="13"/></g><g fill="#35595d" font-size="13" font-weight="700" text-anchor="middle"><text x="19" y="25">1</text><text x="62" y="25">8</text><text x="62" y="79">3</text><text x="105" y="79">9</text><text x="105" y="25">4</text><text x="148" y="25">7</text></g></svg>
+                        <span class="word-game-label" aria-hidden="true">UP. DOWN. ALL THE WAY.</span>
+                    </div>
+                    <div class="game-title">Switchpath</div>
+                    <div class="game-desc">Trace one route through sixteen numbers. Go higher, then lower, and visit every square exactly once.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Logic Game</span>
                 </a>
 
                 <a href="/reflex-riot/" class="game-card">

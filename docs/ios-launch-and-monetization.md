@@ -73,6 +73,43 @@ The following are simple commission-only illustrations, before taxes, refunds, a
 
 Actual profitability depends on conversion, retention, editorial cost, support, engineering, and acquisition cost. Ad income should be modeled from measured served impressions and realized net revenue per thousand impressions, rather than an assumed industry payout. Permanent ad removal also exchanges future ad revenue for a one-time receipt; evaluate that tradeoff using observed behavior.
 
+### A transparent revenue model
+
+Use these two separate calculations:
+
+`Monthly ad revenue = average daily active users × days × free share of active player-days × eligible ad opportunities per free player per day × displayed-impression rate per eligible opportunity × realized publisher eCPM / 1,000`
+
+`Monthly purchase receipts = new Remove Ads purchases that month × localized price × (1 − applicable store commission)`
+
+Here is an illustrative 30-day scenario. Every input below is a planning assumption, not an observed result or an industry benchmark:
+
+| Input | Assumption |
+| --- | ---: |
+| Average daily active users | 1,000 |
+| Share of active player-days without Remove Ads | 85% |
+| Eligible ad opportunities per free active player per day, after all frequency rules | 1.2 |
+| Displayed-impression rate per eligible opportunity, combining availability and display | 90% |
+| Realized publisher eCPM | $5.00 |
+| New Remove Ads purchases in the month | 100 |
+| Purchase price | $4.99 |
+| Store commission, assuming approved Small Business participation | 15% |
+
+Those assumptions produce **$137.70 in monthly ad revenue** and **$424.15 in purchase receipts**, totaling **$561.85 before taxes, refunds, membership, content, support, and other operating costs**. A one-time purchase is counted only when a new buyer pays; an existing purchaser does not create another purchase receipt each month. The free-player share is weighted by active player-days. The 1.2 opportunities already account for the first-session exclusion, three-game threshold, five-minute cooldown, and natural-break placement. The eCPM here is the publisher's realized amount after the ad platform's share, not advertiser gross spending.
+
+The 90% factor combines ad availability and actual display. AdMob's [reports glossary](https://support.google.com/admob/table/9462111?hl=en) distinguishes matched ad requests from displayed impressions; an ad that loads but is never shown should not be counted as revenue-generating exposure in this planning model.
+
+This example shows why returning players, purchase conversion, and editorial efficiency matter. It does not establish that 1,000 daily players will yield 100 new purchases, a $5 eCPM, or any particular revenue. Replace the assumptions with measured cohort behavior before setting an acquisition budget.
+
+## Product testing and distribution
+
+Begin with a small TestFlight group, such as 20–40 people, including people outside the family who have never heard the rules. That range is a proposed practical first cohort, not a statistical sample-size calculation. Ask them to start Ringcount or Switchpath without coaching, then let them choose what to play next. Observe whether the rules are understood, whether the final deduction feels earned, and whether the player voluntarily returns on another day.
+
+This external TestFlight stage requires a properly signed uploaded build and the applicable beta review. Apple says the [first build submitted for external testing requires a full TestFlight review](https://developer.apple.com/help/app-store-connect/test-a-beta-version/invite-external-testers/). The simulator artifact and source kit do not themselves grant external TestFlight distribution.
+
+Track first-round completion, solve-time distributions, hint and reveal rates, game choice, daily return by cohort, and how many games a returning player chooses to play. Distinguish difficult puzzles from unclear instructions or ambiguous clues. The current build has no analytics SDK; early results can come from consented observation and feedback. Any later event measurement should be narrowly scoped, documented, and reflected in the app's actual privacy disclosures.
+
+Use spoiler-free score sharing and the optional local reminder to support return visits. Lead the product page and first session with the two flagships, while letting people discover their preferred companion word game. Establish retention and purchase behavior before spending on acquisition. A publisher pitch should include demonstrated play behavior, a dependable editorial pipeline, and the mechanics' distinguishing qualities; acquisition interest is not something this build or plan can guarantee.
+
 ## Release order
 
 1. **Private iOS build:** package the six games, persistent progress, accessibility, offline content, and native navigation. Keep the two flagships prominent.

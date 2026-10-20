@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f5ed">
+  <meta name="description" content="Six words. Six pairs. Find where they fit. A daily word game from Alford Family Games.">
+  <meta property="og:title" content="Inbetween — find where you fit">
+  <meta property="og:description" content="A little space. A new meaning. Put six pairs of letters in their place.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Inbetween — find where you fit</title>
+</head>
+<body>
+  <a class="skip-link" href="#puzzle">Skip to puzzle</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="Inbetween home"><img src="./icon.svg" width="35" height="35" alt=""><span>inbetween<span class="brand-dot">.</span></span></a>
+      <span class="brand-caption">A DAILY GAME OF FINDING YOUR PLACE</span>
+      <nav class="tools" aria-label="Game tools">
+        <button id="sound-button" class="icon-button" aria-label="Turn sound on" title="Turn sound on"></button>
+        <button id="stats-button" class="icon-button" aria-label="Your statistics" title="Your statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12h4v8M10 20V4h4v16M15 20V9h4v11"/></svg></button>
+        <button id="help-button" class="icon-button" aria-label="How to play" title="How to play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5a2.6 2.6 0 0 1 5 1c0 2-2.5 2-2.5 4M12 16.5v.1"/></svg></button>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-label="Welcome">
+        <p class="eyebrow"><span aria-hidden="true">✳</span> A LITTLE SPACE. A NEW MEANING.</p>
+        <h1>Good things fit <em>inbetween.</em></h1>
+        <p>Six words. Six pairs. Find where they fit.</p>
+      </section>
+      <div class="game-layout">
+        <section class="game" aria-label="Inbetween puzzle">
+          <div class="game-topline"><div class="tabs" aria-label="Game mode"><button id="daily-tab" class="tab active" aria-pressed="true">The daily</button><button id="practice-tab" class="tab" aria-pressed="false">Practice <span aria-hidden="true">↗</span></button></div><span id="issue" class="issue">NO. 001</span></div>
+          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span id="difficulty" class="difficulty">Gentle</span></div>
+          <div id="new-day" class="new-day" hidden>A fresh puzzle is here. <button id="new-day-button">Play today →</button></div>
+          <section class="bank-card" aria-label="Your pairs of letters">
+            <div class="bank-heading"><span><b>01</b> PICK A PAIR</span><span id="bank-count">6 to place</span></div>
+            <div id="bank" class="bank" tabindex="-1"></div>
+            <p id="bank-note" class="bank-note">Each pair stays together. Each pair gets one home.</p>
+          </section>
+          <div class="board-heading"><span><b>02</b> FIND ITS PLACE</span><button id="quick-help">How it works ↗</button></div>
+          <div id="puzzle" class="puzzle" tabindex="-1" aria-label="Six words to complete"><p>Making a little room…</p></div>
+          <div class="board-bottom"><div class="progress"><span id="progress-dots" class="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 6 fit</span></div><div class="attempt-count"><strong id="attempt-count">0</strong> <span id="attempt-word">attempts</span><span class="par-label"> / 6 is perfect</span></div></div>
+          <p id="feedback" class="feedback" role="status">Pick a pair. Tap a gap. See what fits.</p>
+          <div id="game-controls" class="game-controls"><button id="hint-button" class="primary-button"><span aria-hidden="true">✦</span> A little nudge</button><button id="clear-button" class="secondary-button" disabled>Clear choice</button><button id="more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button></div>
+          <div id="finished-actions" class="game-controls" hidden><button id="results-button" class="primary-button">Your result ↗</button><button id="next-button" class="secondary-button">Try a practice →</button><button id="finished-more-button" class="secondary-button more-button" aria-label="Practice options" hidden>•••</button></div>
+          <p id="board-note" class="board-note">No timer. No lost lives. There’s room to think.</p>
+        </section>
+        <aside class="sidebar" aria-label="Guide to Inbetween">
+          <section class="rule-card">
+            <div class="rule-kicker">MAKE A LITTLE ROOM <span aria-hidden="true">[ + ]</span></div>
+            <h2>The word is there.<br>It just needs<br><em>a little more.</em></h2>
+            <p>Two letters can turn something familiar into something entirely new.</p>
+            <div class="example"><span>SING</span><span class="example-plus">+</span><span class="example-pair">PR</span></div>
+            <p class="example-caption">Clue: “Season of fresh starts”</p>
+            <div class="real-example" aria-label="Insert PR after S in SING to make SPRING"><span>S</span><span class="inserted">P</span><span class="inserted">R</span><span>I</span><span>N</span><span>G</span></div>
+            <p class="example-final">Same letters. A little more possibility.</p>
+            <ol><li><span>1</span>Choose a pair from the bank.</li><li><span>2</span>Insert it without moving other letters.</li><li><span>3</span>Match the clue. Lock in the fit.</li></ol>
+            <div class="perfect-note"><span aria-hidden="true">✳</span><div><strong>Six fits. One satisfying finish.</strong><span>Preview freely before you place.</span></div></div>
+          </section>
+          <section class="margin-note"><span>A SMALL REMINDER</span><p>Look at the spaces.<br>That’s where the<br>possibilities are.</p></section>
+          <div class="next-edition"><i></i><div>A fresh fit every day.<small>New puzzle at midnight Central.</small></div></div>
+        </aside>
+      </div>
+    </main>
+    <footer><a id="family-link" href="http://192.168.1.155:8080/">← Alford Family Games</a><a id="tradeoff-link" href="https://tradeoff-daily.jbapckfan.chatgpt.site">Play Tradeoff ↗</a><button id="about-button">About Inbetween</button></footer>
+  </div>
+  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button id="dialog-close" class="icon-button dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript">Please enable JavaScript to place your letters.</p></noscript>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

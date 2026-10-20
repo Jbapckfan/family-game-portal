@@ -1,0 +1,19 @@
+{
+  "name": "Tradeoff — a daily game of give and take",
+  "short_name": "Tradeoff",
+  "description": "Six words. Five swaps. Make every letter count.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f5ef",
+  "theme_color": "#f6f5ef",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "id": "./",
+  "scope": "./"
+}

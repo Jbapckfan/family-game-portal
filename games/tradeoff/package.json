@@ -1,0 +1,11 @@
+{
+  "name": "tradeoff-daily",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check app.mjs && node --check engine.mjs && node --check puzzles.mjs && node --check scripts/generate-puzzles.mjs",
+    "generate": "node scripts/generate-puzzles.mjs"
+  }
+}

@@ -58,6 +58,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     rsync -avz --progress \
         "$SCRIPT_DIR/docker-compose.yml" \
         "$SCRIPT_DIR/Caddyfile" \
+        "$SCRIPT_DIR/index.html" \
         "$GAMES_DIR" \
         "$NAS_USER@$NAS_HOST:$NAS_PATH/"
 

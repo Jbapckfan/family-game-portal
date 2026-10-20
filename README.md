@@ -21,6 +21,8 @@ docker compose up -d
 
 | Game | Type | Description |
 |------|------|-------------|
+| ⇄ **Tradeoff** | Daily Word | Swap letters between six words to solve their clues; five swaps is perfect |
+| ＋ **Inbetween** | Daily Word | Insert six two-letter pairs into six four-letter words, using each pair once to match the clues |
 | ⚡ **Reflex Riot** | Arcade | Escalating catch, smash, swipe, and freeze reflex challenges for 1–2 players |
 | 🦁 **Zoo Conquest** | Strategy | Risk-style board game with animal armies |
 | 🎯 **Particle Conquest Pro** | Strategy | Real-time particle territory control |
@@ -69,6 +71,17 @@ See [SETUP.md](SETUP.md) for detailed instructions.
 
 ## Updating Games
 
+After new source has been pushed to GitHub, update the NAS from your home network:
+
+```bash
+ssh Jbapckfan@192.168.1.155
+cd /volume1/docker/family-game-portal
+git status --short
+git pull --ff-only
+```
+
+Review any local changes shown by `git status` before pulling; keep them intact if Git reports a conflict. Caddy serves the mounted files directly, so these static game and catalog changes do not require a container restart. Pushing to GitHub alone does not update the NAS, and repository checks do not verify a live NAS deployment.
+
 When you update a game on your Mac:
 
 ```bash
@@ -85,12 +98,36 @@ scp ~/Projects/Games/MyGame/index.html Jbapckfan@192.168.1.155:/volume1/docker/f
 ssh Jbapckfan@192.168.1.155 "cd /volume1/docker/family-game-portal && docker compose restart"
 ```
 
+The sync script transfers the root `index.html` catalog along with the `games/` directory and Caddy configuration.
+
+---
+
+## Daily Word Games
+
+**Tradeoff:** Open `/games/tradeoff/`. Trade letters between six five-letter words until all six clues match. Correct words lock, and every supplied board has a five-swap solution. Daily and practice progress are stored in the current browser.
+
+**Inbetween:** Open `/games/inbetween/`. Start with six four-letter words and six two-letter tiles. Insert each intact tile at any position without rearranging the original letters, and use every tile once to form the six clue answers.
+
+Both games are served directly from their folders with relative asset paths. Their complete source and development files are kept alongside the runtime; no portal build step is needed. See each game's README for its rules and development notes.
+
+Run both games' engine, puzzle-content, persistence, and syntax checks from the repository root:
+
+```bash
+npm --prefix games/tradeoff test
+npm --prefix games/tradeoff run check
+npm --prefix games/inbetween test
+npm --prefix games/inbetween run check
+```
+
+Their deterministic puzzle generators are available with `npm --prefix games/tradeoff run generate` and `npm --prefix games/inbetween run generate`. Tradeoff contains 90 prepared boards; Inbetween contains 60. Both collections repeat once exhausted. Run the tests again after changing the authored vocabulary or generated collection. See [integration notes](docs/integration.md) for paths and deployment details.
+
 ---
 
 ## Project Structure
 
 ```
 family-game-portal/
+├── index.html            # Current landing page and featured-game catalog
 ├── docker-compose.yml     # Docker config (Caddy web server)
 ├── Caddyfile              # Web server settings
 ├── sync-to-nas.sh         # Sync script for Mac → NAS
@@ -98,7 +135,9 @@ family-game-portal/
 ├── README.md              # This file
 ├── SETUP.md               # Detailed setup guide
 └── games/
-    ├── index.html         # Landing page (game portal)
+    ├── index.html         # Legacy game catalog
+    ├── tradeoff/          # Daily letter-swap game, source, tests, and generator
+    ├── inbetween/         # Daily letter-pair insertion game
     ├── zoo-conquest.html  # Zoo Conquest game
     ├── particle-conquest/ # Particle Conquest Pro
     │   └── index.html

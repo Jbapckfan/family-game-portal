@@ -77,6 +77,39 @@
             object-fit: cover;
         }
 
+        .word-game-thumb {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+
+        .tradeoff-thumb { background: linear-gradient(135deg, #274c3a, #456844); color: #e6f1ad; }
+        .inbetween-thumb { background: linear-gradient(135deg, #423e72, #77659a); color: #f1e9ff; }
+        .word-game-symbols { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .word-game-letter {
+            display: grid;
+            place-items: center;
+            width: 47px;
+            height: 53px;
+            border-radius: 9px;
+            background: #e1efaa;
+            color: #304b34;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.16);
+            font-size: 27px;
+            font-weight: 700;
+        }
+        .word-game-letter:first-child { transform: rotate(-8deg); }
+        .word-game-letter:last-child { transform: rotate(8deg); }
+        .word-game-arrow { font-size: 45px; line-height: 1; }
+        .word-game-pair { display: flex; transform: rotate(-7deg); box-shadow: 0 4px 0 rgba(0,0,0,0.16); border-radius: 9px; overflow: hidden; }
+        .word-game-pair span { display: grid; place-items: center; width: 43px; height: 53px; background: #e3d9ff; color: #4d3b73; font-size: 27px; font-weight: 700; }
+        .word-game-pair span + span { border-left: 1px solid #c1addf; }
+        .word-game-label { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+
         .game-title {
             font-size: 1.3rem;
             font-weight: 600;
@@ -132,6 +165,28 @@
         <section class="category">
             <h2>Featured Games</h2>
             <div class="game-grid">
+                <a href="./tradeoff/" class="game-card">
+                    <div class="game-thumb word-game-thumb tradeoff-thumb" role="img" aria-label="Tradeoff: two green letter tiles trading places">
+                        <span class="word-game-symbols" aria-hidden="true"><span class="word-game-letter">A</span><span class="word-game-arrow">⇄</span><span class="word-game-letter">B</span></span>
+                        <span class="word-game-label" aria-hidden="true">GIVE A LITTLE. GET A LITTLE.</span>
+                    </div>
+                    <div class="game-title">Tradeoff</div>
+                    <div class="game-desc">Six words, six clues, five perfect swaps. Trade letters between words to bring every answer home.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
+                <a href="./inbetween/" class="game-card">
+                    <div class="game-thumb word-game-thumb inbetween-thumb" role="img" aria-label="Inbetween: a lavender pair of letters ready to be added to a word">
+                        <span class="word-game-symbols" aria-hidden="true"><span class="word-game-pair"><span>I</span><span>N</span></span><span class="word-game-arrow">+</span></span>
+                        <span class="word-game-label" aria-hidden="true">FIND WHERE TWO FIT.</span>
+                    </div>
+                    <div class="game-title">Inbetween</div>
+                    <div class="game-desc">Six short words. Six letter pairs. Insert one pair into each word to match its clue, using every pair once.</div>
+                    <span class="badge badge-new">New</span>
+                    <span class="badge badge-popular">Daily Word Game</span>
+                </a>
+
                 <a href="/reflex-riot/" class="game-card">
                     <img src="/reflex-riot-thumb.jpg" alt="Reflex Riot gameplay" class="game-thumb" />
                     <div class="game-title">Reflex Riot</div>

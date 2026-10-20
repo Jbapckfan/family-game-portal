@@ -8,7 +8,7 @@ The launch includes 420 prepared boards across six games; the complete web colle
 
 ## Executed web checks
 
-All six games passed their Node engine/content tests and syntax checks after the gameplay fixes. The shared shell also has regression coverage for daily/practice separation, storage failures, persisted terminal results, date rollover, sharing, and optional native messages. Shortlist, Sideways, and Switchpath generator checks passed.
+All six games passed 207 Node engine/content/shared-shell tests and their syntax checks after the gameplay fixes. The shared shell has regression coverage for daily/practice separation, storage failures, persisted terminal results, date rollover, sharing, and optional native messages. Shortlist, Sideways, and Switchpath generator checks passed. Four additional bundle-sync regression tests passed on Linux and in the successful Mac workflow.
 
 Every game was completed through its actual browser interface. The checks exercised incorrect choices, hints, refresh/resume, scoring, and keyboard interaction where relevant. Specific regression checks included Shortlist's focused-letter Enter action and retained hint text, Second Sense's normalized typed answers, Sideways' wrong-check feedback, Ringcount's correction of a full incorrect cut set, and Switchpath's illegal moves and early-end rejection.
 
@@ -33,7 +33,11 @@ The games have no mandatory speed timer. A revealed answer does not count as a s
 
 The portable structural validator and bundle hash check passed for 24 Swift source files, two Xcode targets, two shared schemes, 20 XCTest methods, and 90 bundled runtime files. Independent source review identified and fixed stale statistics overwriting native totals and queued messages repopulating progress after a reset.
 
-The GitHub workflow `iOS app verification` compiles the app and runs native unit tests plus a real WKWebView smoke test on a macOS iPhone simulator. That smoke test loads all six games using the production custom scheme handler and checks JavaScript module loading, the native bridge, styling, and persistent same-origin browser storage. See the workflow run for the commit being evaluated; a structural check alone is not evidence of successful Swift compilation or XCTest execution.
+The GitHub workflow `iOS app verification` successfully compiled the app and executed **20 native tests with zero failures** in [run 39465807033](https://github.com/Jbapckfan/family-game-portal/actions/runs/39465807033). The tested source commit is `7e96eeec194bedd17b3cf13ffbbfd09a7f7f15cb`. The runner used Intel macOS 26.6.1, Xcode 26.6, and the iPhone Simulator 26.5 SDK. The deployment target remains iOS 17; this run is not a claim of testing every supported OS version.
+
+The real WKWebView smoke test loaded all six games using the production custom scheme handler and checked JavaScript module loading, the native progress bridge, rendered puzzle content, native styling, and persistent same-origin browser storage. It passed in 30.514 seconds. The corrected resource-containment test also passed, covering existing and missing external targets, directory and final-component symlinks, dangling links, internal links, and an ordinary permitted file. The complete 20-test suite reported 52.087 seconds of test execution. The longer workflow duration included simulator/test-host preparation before the tests began.
+
+The successful run saved an [Intel/x86_64 simulator app](https://github.com/Jbapckfan/family-game-portal/actions/runs/39465807033/artifacts/12284723940) and the [Xcode test results and build log](https://github.com/Jbapckfan/family-game-portal/actions/runs/39465807033/artifacts/12285028563). GitHub reports both artifacts expire on November 3, 2026. The simulator artifact contains `AlfordDaily-Simulator.tar.gz`, preserving the app's executable permissions; it is not a signed iPhone IPA. The source project can be rebuilt in Xcode for the developer's own simulator architecture or signing team. The source kit and private repository retain the project, tests, puzzle data, and workflow after those temporary artifacts expire.
 
 Physical-device interaction, VoiceOver, local StoreKit transactions, signed distribution, and App Store review remain separate release gates. The ordinary build has commerce disabled and contains no advertising SDK.
 

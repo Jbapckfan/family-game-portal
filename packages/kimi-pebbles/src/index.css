@@ -1,0 +1,305 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- fonts ---------- */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('../public/fonts/baloo2-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('../public/fonts/baloo2-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('../public/fonts/baloo2-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('../public/fonts/baloo2-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/fonts/nunito-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/fonts/nunito-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/fonts/nunito-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/fonts/nunito-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- theme ---------- */
+@layer base {
+  :root {
+    --background: 36 62% 94%;
+    --foreground: 340 28% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 340 28% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 340 28% 20%;
+    --primary: 275 55% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 36 55% 88%;
+    --secondary-foreground: 340 28% 24%;
+    --muted: 36 30% 88%;
+    --muted-foreground: 340 12% 42%;
+    --accent: 24 90% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 340 20% 84%;
+    --input: 340 20% 84%;
+    --ring: 275 55% 55%;
+    --radius: 0.9rem;
+
+    /* game tokens */
+    --tile-face: 44 95% 89%;
+    --tile-edge: 32 82% 71%;
+    --tile-text: 28 65% 27%;
+    --slot-face: 24 92% 58%;
+    --slot-edge: 20 85% 43%;
+    --ok-face: 145 55% 52%;
+    --ok-edge: 145 60% 37%;
+    --berry-face: 340 75% 58%;
+    --berry-edge: 340 78% 43%;
+    --grape-face: 275 58% 58%;
+    --grape-edge: 275 60% 42%;
+    --sky-face: 200 82% 66%;
+    --sky-edge: 205 75% 48%;
+    --gold-face: 43 92% 55%;
+    --gold-edge: 38 85% 40%;
+    --dim-face: 340 14% 60%;
+    --dim-edge: 340 17% 44%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito', ui-rounded, system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .font-display {
+    font-family: 'Baloo 2', 'Nunito', ui-rounded, system-ui, sans-serif;
+  }
+}
+
+/* ---------- chunky toy tiles ---------- */
+@layer components {
+  .tile3d {
+    @apply font-display relative flex select-none items-center justify-center rounded-2xl font-extrabold uppercase;
+    width: clamp(44px, 11.5vw, 56px);
+    height: clamp(48px, 13vw, 62px);
+    font-size: clamp(1.25rem, 5.4vw, 1.75rem);
+    background: hsl(var(--tile-face));
+    color: hsl(var(--tile-text));
+    box-shadow: 0 5px 0 hsl(var(--tile-edge));
+    transition: transform 90ms ease-out, box-shadow 90ms ease-out, background 120ms ease-out;
+    cursor: pointer;
+  }
+  .tile3d:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 hsl(var(--tile-edge));
+  }
+  .tile3d:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  .tile-slot {
+    background: hsl(var(--slot-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--slot-edge));
+  }
+  .tile-slot:active {
+    box-shadow: 0 1px 0 hsl(var(--slot-edge));
+  }
+  .tile-ok {
+    background: hsl(var(--ok-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--ok-edge));
+  }
+  .tile-new {
+    background: hsl(var(--berry-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--berry-edge));
+  }
+  .tile-new:active {
+    box-shadow: 0 1px 0 hsl(var(--berry-edge));
+  }
+  .tile-sky {
+    background: hsl(var(--sky-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--sky-edge));
+  }
+  .tile-sky:active {
+    box-shadow: 0 1px 0 hsl(var(--sky-edge));
+  }
+  .tile-gold {
+    background: hsl(var(--gold-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--gold-edge));
+  }
+  .tile-dim {
+    background: hsl(var(--dim-face));
+    color: #fff;
+    box-shadow: 0 5px 0 hsl(var(--dim-edge));
+  }
+
+  .slot-empty {
+    @apply flex items-center justify-center rounded-2xl;
+    width: clamp(44px, 11.5vw, 56px);
+    height: clamp(48px, 13vw, 62px);
+    border: 3px dashed hsl(340 18% 75%);
+    background: hsl(36 60% 97% / 0.6);
+  }
+
+  .btn3d {
+    @apply font-display inline-flex select-none items-center justify-center gap-2 rounded-2xl font-bold text-white;
+    background: hsl(var(--grape-face));
+    box-shadow: 0 4px 0 hsl(var(--grape-edge));
+    transition: transform 90ms ease-out, box-shadow 90ms ease-out, filter 120ms ease-out;
+    cursor: pointer;
+  }
+  .btn3d:hover {
+    filter: brightness(1.06);
+  }
+  .btn3d:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 hsl(var(--grape-edge));
+  }
+  .btn3d:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn3d:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  .btn3d-accent {
+    background: hsl(var(--slot-face));
+    box-shadow: 0 4px 0 hsl(var(--slot-edge));
+  }
+  .btn3d-accent:active {
+    box-shadow: 0 1px 0 hsl(var(--slot-edge));
+  }
+  .btn3d-soft {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    box-shadow: 0 4px 0 hsl(33 45% 74%);
+  }
+  .btn3d-soft:active {
+    box-shadow: 0 1px 0 hsl(33 45% 74%);
+  }
+}
+
+/* ---------- animations ---------- */
+@keyframes tile-pop {
+  0% { transform: scale(0.4); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes tile-shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+@keyframes tile-drop {
+  0% { transform: translateY(-180%) rotate(-14deg); opacity: 0; }
+  60% { transform: translateY(6%) rotate(3deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(0); opacity: 1; }
+}
+@keyframes stone-drop {
+  0% { transform: translateY(-260%) rotate(-10deg) scale(0.6); opacity: 0; }
+  55% { transform: translateY(8%) rotate(2deg) scale(1.05); opacity: 1; }
+  80% { transform: translateY(-3%) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(var(--tilt, 0deg)) scale(1); opacity: 1; }
+}
+@keyframes toast-in {
+  from { transform: translateY(-10px) scale(0.92); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes cairn-sway {
+  from { transform: rotate(-1.1deg); }
+  to { transform: rotate(1.1deg); }
+}
+@keyframes flag-wave {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 0 hsl(var(--berry-face) / 0.55); }
+  70% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 12px hsl(var(--berry-face) / 0); }
+  100% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 0 hsl(var(--berry-face) / 0); }
+}
+
+.anim-pop { animation: tile-pop 180ms ease-out both; }
+.anim-shake { animation: tile-shake 480ms ease both; }
+.anim-drop { animation: tile-drop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.anim-toast { animation: toast-in 160ms ease-out both; }
+.anim-stone { animation: stone-drop 600ms cubic-bezier(0.2, 0.9, 0.3, 1.15) both; }
+.anim-sway { animation: cairn-sway 3.2s ease-in-out infinite alternate; transform-origin: bottom center; }
+.anim-flag { animation: flag-wave 1.6s ease-in-out infinite; transform-origin: bottom left; }
+.anim-pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop, .anim-shake, .anim-drop, .anim-toast, .anim-stone, .anim-sway, .anim-flag, .anim-pulse-ring {
+    animation: none !important;
+  }
+  .tile3d, .btn3d { transition: none !important; }
+}
+
+/* Shared collection navigation and attribution; game colors remain Kimi's. */
+.collection-header { padding: 8px 14px 10px; }
+.collection-header-inner { max-width: 512px; margin: 0 auto; }
+.collection-credit-row { display:flex; justify-content:space-between; align-items:center; min-height:36px; gap:12px; font-size:11px; font-weight:700; color:hsl(var(--muted-foreground)); }
+.collection-credit-row a { display:inline-flex; align-items:center; gap:6px; min-height:36px; }
+.collection-game-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.collection-game-name { display:flex; align-items:center; gap:9px; min-width:0; }
+.collection-game-name h1 { font-family:'Baloo 2',sans-serif; font-size:27px; font-weight:800; line-height:1.1; }
+.collection-subtitle { font-size:11px; font-weight:600; margin-top:3px; }
+.collection-controls { display:flex; flex-shrink:0; }
+.collection-storage-note { text-align:center; padding:8px 14px; font-size:12px; background:#fff3ce; color:#573b11; }
+.integration-loading,.integration-error { padding:40px 24px; text-align:center; }
+.integration-error h1 { font-size:24px; margin-bottom:14px; }
+.integration-error a,.integration-error button { display:block; margin:20px auto; text-decoration:underline; }
+html[data-native=true] .collection-credit-row a { visibility:hidden; }
+[data-slot=dialog-content] { max-width:calc(100vw - 24px); max-height:calc(100dvh - 40px); overflow-y:auto; }
+[data-slot=dialog-content] > button[data-slot=dialog-close] { min-width:44px; min-height:44px; }
+@media(max-width:360px) { .collection-header { padding-inline:10px; } .collection-game-name h1 { font-size:23px; } .collection-subtitle { font-size:10px; } .collection-game-name > svg { display:none; } }

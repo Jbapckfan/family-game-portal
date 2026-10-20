@@ -1,8 +1,8 @@
 # Alford Daily for iOS
 
-A dependency-free SwiftUI application for iPhone and iPad, targeting iOS 17 and later. The six game runtimes ship inside the app and load through a local `alford://app/` origin. Gameplay requires no server, account, sign-in session, or network connection.
+A SwiftUI application with no external native dependencies for iPhone and iPad, targeting iOS 17 and later. All 14 game runtimes ship inside the app and load through a local `alford://app/` origin. Gameplay requires no server, account, sign-in session, or network connection.
 
-The app adds native Today navigation, completion and streak summaries, a local Record screen, settings, haptic feedback, the system share sheet, and an optional local daily reminder. Ringcount and Switchpath lead the collection. Tradeoff and Inbetween remain in the web portal and are not bundled in this launch app.
+The app adds native Today navigation, completion and streak summaries, a local Record screen, settings, haptic feedback, the system share sheet, and an optional local daily reminder. Ringcount and Switchpath lead the collection. Tradeoff, Inbetween, and the six Kimi games are now bundled too. Cards and game screens show original developer credit, with an All / ChatGPT / Kimi filter. See [the unified collection record](../docs/unified-collection.md) for attribution and import details.
 
 ## Build status and prerequisites
 
@@ -42,7 +42,7 @@ xcodebuild test \
 
 Choose a real available simulator identifier from `simctl`; do not pass the placeholder literally. Use a fresh result bundle path for each run. The repository's macOS workflow selects an available iPhone Simulator automatically and retains the result bundle and build log.
 
-The test target includes 20 test methods covering Central-date boundaries and daylight-saving changes, native catalog membership, bridge input validation, terminal result preservation, stale-statistics recovery, local persistence and reset, resource traversal/symlink protection, disabled commerce, and the actual bundled WebKit runtime. The WebKit smoke test opens all six games through the production custom scheme handler, waits for a validated progress message, checks rendered puzzle content and native styling, and verifies that distinct game views share the persistent local origin. This tests module loading and storage behavior in WebKit; it does not replace a complete gameplay or accessibility review.
+The test target includes 24 test methods covering Central-date boundaries and daylight-saving changes, native catalog membership, bridge input validation, terminal result preservation, stale-statistics recovery, local persistence and reset, resource traversal/symlink protection, disabled commerce, and the actual bundled WebKit runtime. The WebKit smoke test opens all 14 games through the production custom scheme handler, waits for a validated progress message, checks rendered puzzle content and native styling, and verifies that distinct game views share the persistent local origin. This tests module loading and storage behavior in WebKit; it does not replace a complete gameplay or accessibility review.
 
 ### Run on a device or archive
 
@@ -50,7 +50,7 @@ In the app target's **Signing & Capabilities**, select your development team and
 
 Use **Product → Archive** with a physical-device destination for a distribution build. App Store Connect configuration, certificates, screenshots, privacy disclosures, legal details, product metadata, review, and distribution are separate release steps. This source does not create an App Store listing or purchase product.
 
-## The six games
+## The 14 games
 
 | Game | Mechanic | Prepared collection |
 | --- | --- | ---: |
@@ -60,6 +60,14 @@ Use **Product → Archive** with a physical-device destination for a distributio
 | Shortlist | Identify a hidden word from twelve candidates using three letter-presence scans, then commit to an answer. | 90 |
 | Second Sense | Match a noun definition and verb definition, then type the single word fitting both senses. | 30 |
 | Sideways | Shift word rows horizontally so their selected letters satisfy the vertical clue. | 90 |
+| Tradeoff (ChatGPT) | Trade letters between six clued words. | 90 |
+| Inbetween (ChatGPT) | Insert two-letter pairs into clued words. | 60 |
+| Cairn (Kimi) | Five growing anagrams. | 839 |
+| Morph (Kimi) | One-letter word ladders. | 450 |
+| Tangle (Kimi) | Trace words through a grid to reach gold. | 430 |
+| Hunch (Kimi) | Five-letter deduction with six guesses. | 937 |
+| Circuit (Kimi) | Chain words across four arcs and cover every letter. | 286 |
+| Quartet (Kimi) | Find four groups of related words. | 420 |
 
 These are finite, prepared collections. The daily index is deterministic and repeats after each game's collection length. The app does not promise an infinite supply of unseen puzzles. Practice remains separate from daily results. Game-specific rules, explanations, score sharing, and saved-state validation remain in each bundled JavaScript engine.
 
@@ -67,7 +75,7 @@ These are finite, prepared collections. The daily index is deterministic and rep
 
 `AlfordDaily/AlfordDailyApp.swift` owns the services and three native tabs. Feature views live in `Features/`; date, catalog, bridge, and progress models live in `Core/`. `Web/` contains the resource resolver, scheme handler, and `WKWebView` adapter. `Services/` contains reminders, haptics, and the gated StoreKit manager.
 
-The Today summary shows how many of the six daily games are finished and how many are solved. A reveal or loss counts as finished and never as a solve. The native daily streak counts consecutive Central dates with at least one daily solve across the six games. Yesterday's streak remains available while today is unfinished; completing all six without a solve ends it. Per-game streaks use the same daily result ledger.
+The Today summary shows how many of the 14 daily games are finished and how many are solved. A reveal or loss counts as finished and never as a solve. The native daily streak counts consecutive Central dates with at least one daily solve across the 14 games. Yesterday's streak remains available while today is unfinished; completing all 14 without a solve ends it. Per-game streaks use the same daily result ledger.
 
 The first terminal result for a game and date is preserved. Later reloads, practice messages, and queued messages from a game view predating a user reset cannot replace it. Cumulative played/won/best counters cannot shrink because of a stale web save; the current streak may decrease as days pass. The app writes its ledger and preferences to `UserDefaults`. Game engines retain their detailed daily/practice state in WebKit local storage through `WKWebsiteDataStore.default()`.
 
@@ -89,7 +97,7 @@ Web/games/<slug>/styles.css
 Web/games/<slug>/fonts/...
 ```
 
-All games share `alford://app/`. The resolver accepts only the six whitelisted game directories, rejects path traversal and encoded separators, resolves symlinks, and checks containment within the bundle. HTML receives `text/html`; `.mjs` and `.js` receive `text/javascript`. The response adds a restrictive Content Security Policy and forbids network connections, frames, objects, and forms. The navigation delegate permits only bundled game documents and translates local home/game navigation to the native navigation stack.
+All games share `alford://app/`. The resolver accepts only the 14 whitelisted game directories and the explicitly permitted shared Kimi asset paths, rejects path traversal and encoded separators, resolves symlinks, and checks containment within the bundle. HTML receives `text/html`; `.mjs` and `.js` receive `text/javascript`. The response adds a restrictive Content Security Policy and forbids network connections, frames, objects, and forms. The navigation delegate permits only bundled game documents and translates local home/game navigation to the native navigation stack.
 
 The JavaScript shell uses `window.webkit.messageHandlers.alford.postMessage(...)`. The native receiver accepts only messages from the main frame, the local origin, and the active game's exact document route. Payloads are bounded and type-checked; date keys, count relationships, known modes, statuses, and game names are validated. The bridge cannot evaluate arbitrary scripts, open arbitrary URLs, request notification permission, or initiate purchases.
 
@@ -105,7 +113,7 @@ The shell's progress message includes full daily statistics even while playing p
 
 The app never requests notification permission on launch. The user must explicitly enable **Daily reminder** in Settings. Only then does it ask for authorization and schedule one repeating local notification at the chosen Central time. Disabling the setting removes that request. If permission is denied or later revoked in iOS Settings, the app reflects that state and offers an explicit Settings link.
 
-There is no push token, notification server, marketing audience, or remote scheduling service. The reminder is a generic invitation to the daily six; it does not contain puzzle answers or personal data. iOS notification-delivery settings still control whether and when the alert is visible.
+There is no push token, notification server, marketing audience, or remote scheduling service. The reminder is a generic invitation to the daily collection; it does not contain puzzle answers or personal data. iOS notification-delivery settings still control whether and when the alert is visible.
 
 ## StoreKit preparation: disabled in the normal app
 
@@ -135,7 +143,7 @@ node scripts/sync-ios-web.mjs --check
 python3 ios/scripts/validate_project.py
 ```
 
-The sync script accepts only the fixed six game runtime allowlists and preserves font-license files. It verifies exact file sets and SHA-256 parity. Do not use the bundle as a separate editable fork of a game's source.
+The sync script accepts only the fixed 14 game runtime allowlists and the shared Kimi resource namespace, and preserves font-license files. It verifies exact file sets and SHA-256 parity. Do not use the bundle as a separate editable fork of a game's source.
 
 After adding or removing a Swift source file, regenerate the dependency-free project and validate it:
 
@@ -144,7 +152,7 @@ python3 ios/scripts/generate_project.py
 python3 ios/scripts/validate_project.py
 ```
 
-The generator uses deterministic identifiers. The validator independently parses the project graph, checks all object/file/target references, verifies each Swift file belongs to a Sources phase, checks both shared schemes, validates Info/privacy/resource metadata, and confirms the six bundled runtimes. It deliberately prints that Swift compilation and WebKit execution require Xcode.
+The generator uses deterministic identifiers. The validator independently parses the project graph, checks all object/file/target references, verifies each Swift file belongs to a Sources phase, checks both shared schemes, validates Info/privacy/resource metadata, and confirms the 14 bundled games and shared Kimi resources. It deliberately prints that Swift compilation and WebKit execution require Xcode.
 
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the source contract and [TESTING.md](docs/TESTING.md) for the device and release checks.
 
@@ -158,3 +166,7 @@ The implementation follows these primary references:
 - [Current StoreKit entitlements](https://developer.apple.com/documentation/storekit/transaction/currententitlements), [transaction updates](https://developer.apple.com/documentation/storekit/transaction/updates), and [explicit App Store synchronization](https://developer.apple.com/documentation/storekit/appstore/sync()).
 - [Setting up local StoreKit testing](https://developer.apple.com/documentation/xcode/setting-up-storekit-testing-in-xcode).
 - [Required-reason API declarations](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitypereasons) and [adding them to a privacy manifest](https://developer.apple.com/documentation/technotes/tn3183-adding-required-reason-api-entries-to-your-privacy-manifest).
+
+## Imported Kimi build
+
+The six Kimi games are compiled from `packages/kimi-pebbles` into six canonical game documents and one shared asset directory. The committed runtime is sufficient to build the native app; Node dependencies are needed only when changing the imported React source. `npm ci --prefix packages/kimi-pebbles --ignore-scripts`, then `npm run build --prefix packages/kimi-pebbles`, followed by the existing sync script regenerates those assets. Original source and attribution live in `sources/kimi/`.

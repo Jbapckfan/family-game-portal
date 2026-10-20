@@ -22,9 +22,25 @@ export const GAMES = Object.freeze([
     description: 'Trade letters between rows to make every clue fit.', motif: 'trade'},
   {slug: 'inbetween', name: 'Inbetween', group: 'classic', category: 'Word building',
     description: 'Find where two missing letters belong. Build the bigger word.', motif: 'insert'},
-].map(game => Object.freeze(game)));
+  {slug: 'kimi-cairn', name: 'Cairn', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Growing anagrams',
+    description: 'Build a five-word tower. Every new level adds just one letter.', detail: 'Five steps to the summit', motif: 'cairn', boards: 839},
+  {slug: 'kimi-morph', name: 'Morph', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Word ladders',
+    description: 'Change one letter at a time. Find your way from the start word to its target.', detail: 'Every rung is a real word', motif: 'morph', boards: 450},
+  {slug: 'kimi-tangle', name: 'Tangle', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Word trails',
+    description: 'Trace words through a field of letters. Keep finding paths until you reach gold.', detail: 'A board full of possibilities', motif: 'tangle', boards: 430},
+  {slug: 'kimi-hunch', name: 'Hunch', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Five-letter deduction',
+    description: 'Six guesses. Follow the letter clues to discover the hidden five-letter word.', detail: 'Trust a hunch. Test it.', motif: 'hunch', boards: 937},
+  {slug: 'kimi-circuit', name: 'Circuit', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Word chains',
+    description: 'Connect words around four arcs. Change arcs with each letter and cover the whole circuit.', detail: 'Make every letter part of the chain', motif: 'circuit', boards: 286},
+  {slug: 'kimi-quartet', name: 'Quartet', creator: 'Kimi', runtime: 'kimi', group: 'word', category: 'Meaning & categories',
+    description: 'Sixteen words belong in four groups. Find the common thread in each quartet.', detail: 'Four groups. Four discoveries.', motif: 'quartet', boards: 420},
+].map(game => Object.freeze({creator: 'ChatGPT', runtime: 'alford', ...game})));
 
-export const LAUNCH_GAMES = Object.freeze(GAMES.filter(game => game.group !== 'classic'));
+export const CREATORS = Object.freeze(['ChatGPT', 'Kimi']);
+export function filterGames(creator = 'All') { return GAMES.filter(game => creator === 'All' || game.creator === creator); }
+
+
+export const LAUNCH_GAMES = GAMES;
 
 /** Resolve from the HTML location so the same home works at / or /games/daily/. */
 export function gameURL(slug, base, documentURL) {
@@ -59,6 +75,13 @@ function path() {
 }
 
 export function motif(type) {
+  if (type === 'cairn') return svg([['A T E',43,90],['L A T E',32,57],['P L A T E',20,24]].map(([text,x,y]) => `<rect x="${x}" y="${y}" width="${150-2*x}" height="27" rx="8" class="motif-tile"/>${label(75,y+14,text,'class="motif-small"')}`).join(''), '0 0 150 140');
+  if (type === 'morph') return svg(`<path d="M29 21v98M121 21v98" class="motif-line"/>${['C O L D','C O R D','W O R D'].map((word,i)=>`<rect x="22" y="${20+i*38}" width="106" height="28" rx="7" class="motif-tile"/>${label(75,34+i*38,word,'class="motif-small"')}`).join('')}`, '0 0 150 140');
+  if (type === 'tangle' || type === 'hunch' || type === 'quartet') {
+    const letters = type === 'tangle' ? 'TRACELINEROUT' : type === 'hunch' ? 'HUNCHGUESSYES' : 'FOURWORDSETS';
+    return svg(Array.from({length:12},(_,i)=>{const x=22+i%4*28,y=24+Math.floor(i/4)*33;return `<rect x="${x}" y="${y}" width="24" height="27" rx="6" class="motif-tile"/>${label(x+12,y+14,letters[i],'class="motif-small"')}`}).join(''), '0 0 150 140');
+  }
+  if (type === 'circuit') return svg(`<circle cx="75" cy="70" r="46" class="ring-track"/>${[...'CIRCUIT'].map((l,i)=>{const a=(i*360/7-90)*Math.PI/180,x=75+Math.cos(a)*46,y=70+Math.sin(a)*46;return `<circle cx="${x}" cy="${y}" r="13" class="motif-tile"/>${label(x,y,l,'class="motif-small"')}`}).join('')}`, '0 0 150 140');
   if (type === 'ring') return ring();
   if (type === 'path') return path();
   if (type === 'pairs') return svg(`<rect x="18" y="21" width="49" height="40" rx="9" class="motif-tile"/><rect x="83" y="21" width="49" height="40" rx="9" class="motif-tile"/><rect x="18" y="80" width="49" height="40" rx="9" class="motif-tile"/><rect x="83" y="80" width="49" height="40" rx="9" class="motif-tile"/><path d="M67 41h16M67 100h16" class="motif-line"/>${label(42, 41, 'A')}${label(108, 41, 'B')}${label(42, 100, 'C')}${label(108, 100, '?')}`, '0 0 150 140');

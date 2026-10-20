@@ -26,10 +26,16 @@ final class DailyCalendarTests: XCTestCase {
         XCTAssertNotNil(DailyCalendar.date(for: "2028-02-29"))
     }
 
-    func testLaunchCatalogContainsOnlyTheSixNativeGames() {
-        XCTAssertEqual(Set(GameID.allCases.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways"]))
+    func testUnifiedCatalogPreservesOriginalIDsAndAttributesEveryGame() {
+        XCTAssertEqual(Set(GameID.allCases.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween", "kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet"]))
         XCTAssertEqual(Array(GameID.allCases.prefix(2)), [.ringcount, .switchpath])
-        XCTAssertNil(GameID(rawValue: "tradeoff"))
-        XCTAssertNil(GameID(rawValue: "inbetween"))
+        XCTAssertEqual(CreatorFilter.all.games.count, 14)
+        XCTAssertEqual(CreatorFilter.chatGPT.games.count, 8)
+        XCTAssertEqual(CreatorFilter.kimi.games.count, 6)
+        XCTAssertTrue(CreatorFilter.chatGPT.games.allSatisfy { $0.creator == .chatGPT })
+        XCTAssertTrue(CreatorFilter.kimi.games.allSatisfy { $0.creator == .kimi && $0.rawValue.hasPrefix("kimi-") })
+        XCTAssertTrue(Set(CreatorFilter.chatGPT.games).isDisjoint(with: Set(CreatorFilter.kimi.games)))
+        XCTAssertNil(GameID(rawValue: "kimi-runtime"))
+        XCTAssertEqual(GameID.inbetween.collectionCount, 60)
     }
 }

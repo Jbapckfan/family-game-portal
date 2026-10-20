@@ -3,16 +3,27 @@
 from __future__ import annotations
 
 import json
+from html.parser import HTMLParser
 from pathlib import Path
+import posixpath
 import plistlib
 import re
 import struct
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-GAMES = {"counterpart", "shortlist", "second-sense", "sideways", "ringcount", "switchpath"}
+ORIGINAL_GAMES = {"counterpart", "shortlist", "second-sense", "sideways", "ringcount", "switchpath"}
+CLASSIC_GAMES = {"tradeoff", "inbetween"}
+KIMI_GAMES = {"kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet"}
+GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES
+BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime"}
+RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
+# Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
+ASSET_EXTENSIONS = {"js", "mjs", "css", "json", "txt", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "avif", "woff", "woff2", "ttf", "otf"}
+FONT_EXTENSIONS = {"woff", "woff2", "ttf", "otf", "txt"}
 
 
 class OpenStepParser:
@@ -64,6 +75,113 @@ class OpenStepParser:
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def bundle_inventory(folder):
+    files, directories = set(), set()
+
+    def visit(directory):
+        require(not directory.is_symlink(), "Bundled directory cannot be a symlink: " + str(directory))
+        for path in directory.iterdir():
+            require(not path.is_symlink(), "Bundled resource cannot be a symlink: " + str(path))
+            require(not path.name.startswith("."), "Hidden bundle path: " + str(path))
+            relative = path.relative_to(folder).as_posix()
+            if path.is_dir():
+                directories.add(relative)
+                visit(path)
+            else:
+                require(path.is_file(), "Unsupported bundled resource: " + str(path))
+                files.add(relative)
+    visit(folder)
+    return files, directories
+
+
+class KimiDocumentReferences(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.references = []
+        self.scripts = []
+
+    def handle_starttag(self, tag, attributes):
+        attributes = dict(attributes)
+        if tag == "script" and attributes.get("src"):
+            self.references.append(attributes["src"])
+            self.scripts.append(attributes["src"])
+        if tag == "link" and attributes.get("href") and set(attributes.get("rel", "").split()) & {"stylesheet", "modulepreload", "preload", "icon"}:
+            self.references.append(attributes["href"])
+        if tag in {"img", "source"} and attributes.get("src"):
+            self.references.append(attributes["src"])
+
+
+def validate_kimi_references(games_dir, files):
+    def check(reference, origin, allow_data=False):
+        parsed = urlsplit(reference)
+        if allow_data and parsed.scheme == "data":
+            return
+        require(not parsed.scheme and not parsed.netloc, f"Kimi resource must be local: {origin}: {reference}")
+        path = unquote(parsed.path)
+        require(path and not any(character in path for character in ["\\", "\0", "%"]), f"Invalid Kimi resource reference: {origin}: {reference}")
+        if path.startswith("/"):
+            require(path.startswith("/games/"), f"Unexpected absolute Kimi resource: {reference}")
+            target = posixpath.normpath(path.removeprefix("/games/"))
+        else:
+            target = posixpath.normpath(posixpath.join(posixpath.dirname(origin), path))
+        require(target.startswith(("kimi-runtime/assets/", "kimi-runtime/fonts/")), f"Kimi resource is outside its shared runtime: {origin}: {reference}")
+        require(target in files, f"Missing Kimi resource: {origin}: {reference}")
+
+    for game in sorted(KIMI_GAMES):
+        origin = f"{game}/index.html"
+        parser = KimiDocumentReferences()
+        parser.feed((games_dir / origin).read_text())
+        require(parser.scripts, "Missing Kimi application script: " + origin)
+        for reference in parser.references:
+            check(reference, origin)
+    for origin in sorted(files):
+        if not origin.startswith("kimi-runtime/"):
+            continue
+        if origin.endswith(".css"):
+            text = (games_dir / origin).read_text()
+            for match in re.finditer(r'''url\(\s*(?:"([^"]+)"|'([^']+)'|([^\s)]+))\s*\)''', text):
+                check(next(value for value in match.groups() if value is not None), origin, allow_data=True)
+            for match in re.finditer(r'''@import\s+["']([^"']+)["']''', text):
+                check(match.group(1), origin)
+        elif origin.endswith((".js", ".mjs")):
+            # Literal compiled module imports are checkable without executing JavaScript.
+            text = (games_dir / origin).read_text()
+            for match in re.finditer(r'''(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s*)["']((?:\.{1,2}/|/)[^"']+)["']''', text):
+                check(match.group(1), origin)
+
+
+def validate_web_bundle(games_dir):
+    games_dir = Path(games_dir)
+    for ancestor in [games_dir, games_dir.parent, games_dir.parent.parent]:
+        require(not ancestor.is_symlink(), "Bundled directory cannot be a symlink: " + str(ancestor))
+    entries = list(games_dir.iterdir())
+    require(all(path.is_dir() and not path.is_symlink() for path in entries), "Every bundle root must be a real directory")
+    require({path.name for path in entries} == BUNDLE_DIRECTORIES, "Bundle must contain exactly 14 game entries and kimi-runtime")
+    all_files = set()
+    for game in sorted(BUNDLE_DIRECTORIES):
+        files, directories = bundle_inventory(games_dir / game)
+        if game in KIMI_GAMES:
+            require(files == {"index.html"} and not directories, f"Kimi entry must contain only index.html: {game}")
+        elif game == "kimi-runtime":
+            require(all(path.split("/")[0] in {"assets", "fonts"} for path in directories), "Unexpected shared Kimi runtime directory")
+            require(any(path.startswith("assets/") for path in files), "Missing compiled Kimi assets")
+            for path in files:
+                parts = path.split("/")
+                allowed = ASSET_EXTENSIONS if parts[0] == "assets" else FONT_EXTENSIONS if parts[0] == "fonts" else set()
+                require(len(parts) >= 2 and Path(path).suffix.lower().removeprefix(".") in allowed, "Unexpected shared Kimi runtime file: " + path)
+        else:
+            runtime = RUNTIME_FILES - ({"shell.mjs"} if game in CLASSIC_GAMES else set())
+            require(runtime <= files, f"Missing runtime files for {game}: {sorted(runtime - files)}")
+            fonts = {path for path in files if path.startswith("fonts/")}
+            require(fonts, "Missing bundled fonts and licenses: " + game)
+            require(files == runtime | fonts, "Unexpected runtime file: " + game)
+            require(all(path == "fonts" or path.startswith("fonts/") for path in directories), "Unexpected runtime directory: " + game)
+            require(all(Path(path).suffix.lower().removeprefix(".") in FONT_EXTENSIONS for path in fonts), "Unexpected font resource: " + game)
+        all_files.update(f"{game}/{path}" for path in files)
+    validate_kimi_references(games_dir, all_files)
+    return len(all_files)
 
 
 def main():
@@ -131,17 +249,7 @@ def main():
     for content in (ROOT / "AlfordDaily/Resources/Assets.xcassets").rglob("Contents.json"):
         json.loads(content.read_text())
 
-    games_dir = ROOT / "Web/games"
-    require({p.name for p in games_dir.iterdir() if p.is_dir()} == GAMES, "Bundle must contain exactly six launch games")
-    count = 0
-    for game in GAMES:
-        folder = games_dir / game
-        for name in ["index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css"]:
-            require((folder / name).is_file(), f"Missing runtime: {game}/{name}")
-        for path in folder.rglob("*"):
-            if path.is_file():
-                require(not path.is_symlink(), "Bundled resource cannot be a symlink")
-                count += 1
+    count = validate_web_bundle(ROOT / "Web/games")
     test_count = sum(len(re.findall(r"\bfunc test\w+\s*\(", p.read_text())) for p in (ROOT / "AlfordDailyTests").glob("*.swift"))
     print(f"Validated project graph: {len(swift)} Swift files, 2 targets, 2 shared schemes, {test_count} XCTest methods, {count} bundled runtime files.")
     print("Structural checks passed. Swift compilation and WebKit/XCTest execution still require Xcode on macOS.")

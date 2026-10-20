@@ -23,3 +23,13 @@
 /* Portal navigation stays secondary to the puzzle. */
 footer{flex-wrap:wrap;gap:8px 18px}.footer-links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px 15px}.footer-links a,.footer-links button{min-height:44px;display:inline-flex;align-items:center;padding:4px 0;font-size:10px;color:#70805c;text-decoration:underline;text-underline-offset:3px}.footer-links a:hover,.footer-links button:hover{color:var(--ink)}
 @media(max-width:480px){footer{align-items:flex-start;gap:5px 12px}.footer-links{gap:2px 12px}.footer-links a,.footer-links button{font-size:9px}}
+
+.game-credit{text-align:right;font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0 0;font-weight:600}.native-app .game-credit{text-align:center;margin:0 0 12px}
+
+/* The native app supplies its own title and navigation. */
+.native-app .hero,.native-app footer,.native-app .sidebar,.native-app .masthead .wordmark,.native-app .brand-line,.native-app .brand-caption{display:none}
+.native-app .page{max-width:760px;padding-top:6px;padding-bottom:14px}
+.native-app .masthead{height:auto;min-height:40px;padding:0 0 8px;justify-content:flex-end;border-bottom:0}
+.native-app .game-layout{display:block}
+
+.game-credit{display:flex;justify-content:space-between;align-items:center;gap:12px}.collection-back{min-height:36px;display:inline-flex;align-items:center}.native-app .game-credit{justify-content:center}.native-app .collection-back{display:none}

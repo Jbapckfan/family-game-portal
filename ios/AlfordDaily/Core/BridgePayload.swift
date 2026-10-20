@@ -71,7 +71,7 @@ enum BridgeDecoder {
                   let dateKey = value["dateKey"] as? String, DailyCalendar.date(for: dateKey) != nil,
                   dateKey >= DailyCalendar.epoch, dateKey <= DailyCalendar.key(for: now),
                   let rawStatus = value["status"] as? String, let status = GameStatus(rawValue: rawStatus),
-                  status != .lost || game == .shortlist,
+                  status != .lost || game.allowsLoss,
                   let rawStats = value["stats"] as? [String: Any], let stats = statistics(rawStats) else { return nil }
             return .progress(ProgressMessage(game: game, mode: mode, dateKey: dateKey, status: status, stats: stats))
         case "share":

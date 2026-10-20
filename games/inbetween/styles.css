@@ -24,3 +24,13 @@ dialog{border:1px solid #dfd3e9;border-radius:15px;padding:0;background:#fcf9f2;
 .gap:not(:disabled){color:#786286}
 .bank{grid-template-columns:repeat(6,minmax(0,1fr))}.pair{min-width:0;padding:8px 0}
 @media(min-width:370px) and (max-width:520px){.row-main{grid-template-columns:minmax(0,1fr) 237px;gap:8px}.word-row{padding:10px 8px}.row-number{display:none}.clue-copy{font-size:11px;line-height:1.45}.clue-copy small{display:block;margin:4px 0 0;font-size:8px;letter-spacing:0}.seed-letter{width:28px;flex-basis:28px;font-size:22px}.gap{width:25px;flex-basis:25px}.answer-letters{gap:3px}.answer-letter{width:33px;font-size:21px}.hero{padding:21px 0}.hero h1{font-size:33px}.bank-card{margin-bottom:13px}.bank-note{font-size:8px}}
+
+.game-credit{text-align:right;font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0 0;font-weight:600}.native-app .game-credit{text-align:center;margin:0 0 12px}
+
+/* The native app supplies its own title and navigation. */
+.native-app .hero,.native-app footer,.native-app .sidebar,.native-app .masthead .wordmark,.native-app .brand-line,.native-app .brand-caption{display:none}
+.native-app .page{max-width:760px;padding-top:6px;padding-bottom:14px}
+.native-app .masthead{height:auto;min-height:40px;padding:0 0 8px;justify-content:flex-end;border-bottom:0}
+.native-app .game-layout{display:block}
+
+.game-credit{display:flex;justify-content:space-between;align-items:center;gap:12px}.collection-back{min-height:36px;display:inline-flex;align-items:center}.native-app .game-credit{justify-content:center}.native-app .collection-back{display:none}

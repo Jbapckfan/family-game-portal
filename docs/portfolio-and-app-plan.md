@@ -1,5 +1,7 @@
 # Alford Daily: portfolio research and app direction
 
+> **Updated collection scope:** the app now includes 14 attributed games (eight ChatGPT, six Kimi). See [Unified collection](unified-collection.md) for the current lineup, source provenance, integration changes, and commercial-release limitations. Earlier six-game choices and projections below remain the original planning record.
+
 Research date: October 20, 2026. This document distinguishes the current NYT product facts from our design recommendations. The proposed games use original rules, puzzle content, presentation, and names; this research is a comparison of play experiences, not a source of puzzle answers or branding.
 
 **Current launch scope:** the iOS app launches with six games: Ringcount and Switchpath as the flagship pair, plus Counterpart, Shortlist, Second Sense, and Sideways. Those six contain 420 prepared boards. Tradeoff and Inbetween remain family-portal classics with 150 additional boards. The web collection can show all eight, for 570 boards total. See the [iOS launch and monetization plan](ios-launch-and-monetization.md) for the app model, StoreKit implementation requirements, ad placement, privacy, and costs.

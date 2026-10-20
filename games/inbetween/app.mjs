@@ -1,6 +1,12 @@
 import { PUZZLES } from './puzzles.mjs';
 import { getDateKey, getDaily, createGame, buildWord, submitPlacement, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
 
+// Optional native bridge; browser rules and existing save keys are unchanged.
+function nativeMessage(payload) {
+  try { const handler = window.webkit?.messageHandlers?.alford; if (!handler?.postMessage) return false; handler.postMessage({...payload,slug:'inbetween'}); return true; } catch {return false;}
+}
+if (window.webkit?.messageHandlers?.alford) document.body.classList.add('native-app');
+
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PREFIX = 'inbetween:v1:';
@@ -84,6 +90,7 @@ function formatDate(key) { return new Intl.DateTimeFormat('en-US',{weekday:'long
 function gapDescription(seed, gap) { return gap === 0 ? `before ${seed[0]}` : gap === seed.length ? `after ${seed.at(-1)}` : `between ${seed[gap-1]} and ${seed[gap]}`; }
 
 function render(options = {}) {
+  nativeMessage({type:'progress',name:'Inbetween',mode,dateKey:daily.dateKey,status:game.status,stats:getStats(records,getDateKey())});
   const used = new Set(game.placements.filter(Boolean).map(p => p.tileId));
   const count = solvedCount();
   const active = game.status === 'playing';
@@ -234,6 +241,7 @@ function restart() {
 }
 async function share() {
   const text=formatShare(puzzle,game,{number:mode==='daily'?daily.number:PUZZLES.indexOf(puzzle)+1,mode});
+  if(nativeMessage({type:'share',text})) return;
   try {
     if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);toast('Copied. A little fit for your friends.');return;}
   } catch {}
@@ -249,6 +257,7 @@ function updateSoundButton(){
   $('sound-button').innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4V4Z"/>${soundOn?'<path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/>':'<path d="m16 9 6 6m0-6-6 6"/>'}</svg>`;
 }
 function playTone(kind){
+  nativeMessage({type:'haptic',kind:kind==='win'?'win':kind==='miss'?'miss':kind==='select'?'select':'fit'});
   if(!soundOn)return;
   try{
     audioContext??=new (window.AudioContext||window.webkitAudioContext)();
@@ -296,6 +305,6 @@ window.addEventListener('storage',event=>{
 setInterval(()=>{$('new-day').hidden=mode!=='daily'||getDateKey()===daily.dateKey;},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)$('new-day').hidden=mode!=='daily'||getDateKey()===daily.dateKey;});
 if(/\/games\/inbetween\/?(?:index\.html)?$/.test(location.pathname)){
-  $('family-link').href='../../';$('tradeoff-link').href='../tradeoff/';
+  $('family-link').href=document.documentElement?.dataset?.collectionHome||'../../';$('tradeoff-link').href='../tradeoff/';
 }
 reconcileDailyResult();updateSoundButton();render();

@@ -17,13 +17,32 @@ final class BundleResourceResolverTests: XCTestCase {
         let rejected = [
             "https://app/games/ringcount/index.html", "alford://evil.example/games/ringcount/index.html",
             "alford://app:80/games/ringcount/index.html", "alford://user@app/games/ringcount/index.html",
-            "alford://app/games/tradeoff/index.html", "alford://app/games/ringcount/%2e%2e/secret",
+            "alford://app/games/unknown-game/index.html", "alford://app/games/ringcount/%2e%2e/secret",
             "alford://app/games/ringcount/%252e%252e/secret", "alford://app/games/ringcount/%2fetc/passwd",
             "alford://app/games/ringcount/%5csecret", "alford://app/games/ringcount/%00secret"
         ]
         for text in rejected {
             guard let url = URL(string: text) else { continue }
             XCTAssertThrowsError(try resolver.fileURL(for: url), text)
+        }
+    }
+
+    func testKimiSharedResourcesAreRestrictedAndNeverNavigableGameDocuments() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("AlfordBundle/Web", isDirectory: true)
+        let resolver = BundleResourceResolver(root: root)
+        for path in ["assets/app-123.js", "assets/nested/chunk.mjs", "assets/styles.css", "fonts/nunito.woff2", "fonts/LICENSE.txt"] {
+            let url = URL(string: "alford://app/games/kimi-runtime/\(path)")!
+            XCTAssertTrue(try resolver.fileURL(for: url).path.hasSuffix("/games/kimi-runtime/\(path)"))
+            XCTAssertNil(LocalRoute.game(at: url))
+            XCTAssertFalse(LocalRoute.isHome(url))
+        }
+        for path in ["", "index.html", "assets/index.html", "assets/main.js/", "fonts/script.js",
+                     "other/app.js", "assets/.private.js", "assets/app.map", "assets/%2e%2e/index.html"] {
+            XCTAssertThrowsError(try resolver.fileURL(for: URL(string: "alford://app/games/kimi-runtime/\(path)")!), path)
+        }
+        for game in CreatorFilter.kimi.games {
+            XCTAssertEqual(LocalRoute.game(at: game.localURL), game)
+            XCTAssertTrue(try resolver.fileURL(for: game.localURL).path.hasSuffix("/games/\(game.rawValue)/index.html"))
         }
     }
 

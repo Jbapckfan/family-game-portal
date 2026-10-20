@@ -17,6 +17,10 @@ docker compose up -d
 
 ---
 
+## Alford Daily: one attributed collection
+
+The daily-puzzle web and iOS app contains **14 games: eight developed by ChatGPT and six developed by Kimi**. Cards and game screens retain their original developer labels, with an All / ChatGPT / Kimi filter. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
+
 ## Games Included
 
 | Game | Type | Description |
@@ -111,7 +115,7 @@ The sync script transfers the root `index.html` catalog along with the `games/` 
 
 ## Alford Daily puzzles
 
-The eight daily puzzles have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
+The 14 daily games have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
 
 | Game | Local portal path | Prepared boards |
 | --- | --- | --- |
@@ -140,7 +144,7 @@ The eight daily puzzles have a local hub at `/games/daily/`, sourced from `games
 
 **Switchpath:** Trace one orthogonal route from Start to End, covering all sixteen cells exactly once. Numbers must alternate higher, lower, higher, lower. Every board has one verified complete route.
 
-All games use relative runtime assets and work directly from their folders; the portal needs no build step. Daily and practice results are separate, hints are tracked, and revealed boards do not count as wins. Daily progress is stored in the current browser. The six newest games share a shell for dialogs, statistics, practice selection, sharing, and storage recovery.
+All games use relative runtime assets and work directly from their folders; the portal needs no build step. Daily and practice results are separate, hints are tracked, and revealed boards do not count as wins. Daily progress is stored in the current browser. Ringcount, Switchpath, Counterpart, Shortlist, Second Sense, and Sideways share a shell for dialogs, statistics, practice selection, sharing, and storage recovery.
 
 Run a packaged game's engine, content, and syntax checks from the repository root, replacing `ringcount` with its folder name:
 
@@ -151,7 +155,7 @@ npm --prefix games/ringcount run check
 
 There are 570 prepared boards across the collection. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [portfolio research and app plan](docs/portfolio-and-app-plan.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
 
-The [iOS app project](ios/README.md) uses the six newest games, led by Ringcount and Switchpath, for 420 prepared boards. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
+The [iOS app project](ios/README.md) includes all 14 attributed games, led by Ringcount and Switchpath, with 3,932 prepared puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
 
 Tradeoff and Inbetween remain in the family portal as earlier games. The [iOS launch and monetization plan](docs/ios-launch-and-monetization.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [release verification record](docs/verification-2026-10-20.md) for executed checks and remaining release gates.
 
@@ -170,7 +174,7 @@ family-game-portal/
 ├── SETUP.md               # Detailed setup guide
 └── games/
     ├── index.html         # Legacy game catalog
-    ├── daily/             # Alford Daily hub for all eight puzzles
+    ├── daily/             # Alford Daily hub for all 14 attributed games
     ├── tradeoff/          # Daily letter-swap game, source, tests, and generator
     ├── inbetween/         # Daily letter-pair insertion game
     ├── counterpart/       # Ordered word relationships

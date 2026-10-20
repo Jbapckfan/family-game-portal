@@ -1,5 +1,7 @@
 # Alford Daily games in the family portal
 
+> **Updated collection scope:** the app now includes 14 attributed games (eight ChatGPT, six Kimi). See [Unified collection](unified-collection.md) for the current lineup, source provenance, integration changes, and commercial-release limitations. Earlier six-game choices and projections below remain the original planning record.
+
 Tradeoff, Inbetween, Counterpart, Shortlist, Second Sense, Sideways, Ringcount, and Switchpath appear as featured games in the active root `index.html` catalog. They also have relative links in the older `games/index.html` catalog. The existing game cards and catalog behavior are retained. A separate header link opens the local Alford Daily hub. The collection is also available as a [private app preview](https://alford-daily.jbapckfan.chatgpt.site).
 
 ## Runtime paths

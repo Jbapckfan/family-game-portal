@@ -79,7 +79,7 @@ final class ReminderManager {
     private func schedule(preferences: AppPreferences) async throws {
         let content = UNMutableNotificationContent()
         content.title = "A little daily challenge"
-        content.body = "Six puzzles are ready. Start with Ringcount or Switchpath."
+        content.body = "Your daily games are ready. Find a fresh challenge in Alford Daily."
         content.sound = .default
         var components = DateComponents()
         components.timeZone = DailyCalendar.timeZone

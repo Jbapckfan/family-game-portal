@@ -3,7 +3,9 @@ import SwiftUI
 struct HomeView: View {
     let store: ProgressStore
     let now: Date
+    @State private var creatorFilter = CreatorFilter.all
     private var today: String { DailyCalendar.key(for: now) }
+    private var gameCount: Int { GameID.allCases.count }
 
     var body: some View {
         ScrollView {
@@ -11,41 +13,47 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(DailyCalendar.display(now).uppercased()).font(.caption.weight(.semibold))
                         .tracking(1.5).foregroundStyle(Theme.muted)
-                    Text("Your daily six.").font(.system(size: 42, weight: .regular, design: .serif))
+                    Text("Your daily games.").font(.system(size: 42, weight: .regular, design: .serif))
                         .minimumScaleFactor(0.8)
                     Text("A fresh way to think, every day.").font(.subheadline).foregroundStyle(Theme.muted)
                 }
 
                 VStack(alignment: .leading, spacing: 16) {
                     HStack(alignment: .top) {
-                        MetricView(value: "\(store.ledger.completed(on: today))/6", label: "finished today")
+                        MetricView(value: "\(store.ledger.completed(on: today))/\(gameCount)", label: "finished today")
                         Spacer()
                         MetricView(value: "\(store.ledger.solved(on: today))", label: "solved today")
                         Spacer()
                         MetricView(value: "\(store.ledger.dailyStreak(today: today))", label: "day streak")
                     }
-                    ProgressView(value: Double(store.ledger.completed(on: today)), total: 6)
+                    ProgressView(value: Double(store.ledger.completed(on: today)), total: Double(gameCount))
                         .tint(Theme.accent).accessibilityLabel("Today’s completion")
-                    Text("Solve at least one daily to keep your streak going.")
+                    Text("Across all \(gameCount) games. Solve at least one daily to keep your streak going.")
                         .font(.caption).foregroundStyle(Theme.muted)
                 }.paperCard()
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("START WITH A NEW CHALLENGE").font(.caption.weight(.semibold)).tracking(1.2)
-                        .foregroundStyle(Theme.muted)
-                    ForEach(GameID.allCases.filter(\.isFlagship)) { game in
-                        NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
-                            .buttonStyle(.plain)
+                Picker("Original developer", selection: $creatorFilter) {
+                    ForEach(CreatorFilter.allCases) { filter in Text(filter.rawValue).tag(filter) }
+                }.pickerStyle(.segmented).accessibilityIdentifier("creator-filter")
+
+                if creatorFilter.games.contains(where: \.isFlagship) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("START WITH A NEW CHALLENGE").font(.caption.weight(.semibold)).tracking(1.2)
+                            .foregroundStyle(Theme.muted)
+                        ForEach(creatorFilter.games.filter(\.isFlagship)) { game in
+                            NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
+                                .buttonStyle(.plain)
+                        }
                     }
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     Text("A WAY WITH WORDS").font(.caption.weight(.semibold)).tracking(1.2).foregroundStyle(Theme.muted)
-                    ForEach(GameID.allCases.filter { !$0.isFlagship }) { game in
+                    ForEach(creatorFilter.games.filter { !$0.isFlagship }) { game in
                         NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
                             .buttonStyle(.plain)
                     }
                 }
-                Text("New dailies arrive at midnight Central. All six games work offline. Prepared collections repeat after 30 or 90 days.")
+                Text("New dailies arrive at midnight Central. All \(gameCount) games work offline. Each prepared collection repeats after its last puzzle.")
                     .font(.footnote).foregroundStyle(Theme.muted).lineSpacing(4)
                 if let error = store.storageError { Text(error).font(.footnote).foregroundStyle(.red) }
             }.padding(20).frame(maxWidth: 680).frame(maxWidth: .infinity)
@@ -70,6 +78,7 @@ private struct GameCard: View {
                     Text(game.name).font(.system(game.isFlagship ? .title2 : .title3, design: .serif).weight(.semibold))
                     if status == .won { Image(systemName: "checkmark.seal.fill").foregroundStyle(game.tint).accessibilityHidden(true) }
                 }
+                Text(game.creator.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
                 Text(game.subtitle).font(.subheadline).foregroundStyle(Theme.muted).fixedSize(horizontal: false, vertical: true)
                 Text(status?.label ?? "Ready when you are").font(.caption.weight(.semibold)).foregroundStyle(game.tint)
             }

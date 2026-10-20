@@ -49,7 +49,7 @@ struct ProgressLedger: Codable, Equatable {
         for (date, entries) in days where date >= DailyCalendar.epoch && DailyCalendar.date(for: date) != nil {
             let valid = entries.filter { key, status in
                 guard let game = GameID(rawValue: key) else { return false }
-                return status != .lost || game == .shortlist
+                return status != .lost || game.allowsLoss
             }
             if !valid.isEmpty { result.days[date] = valid }
         }

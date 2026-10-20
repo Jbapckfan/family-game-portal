@@ -28,6 +28,7 @@ struct RecordView: View {
                     let stats = store.stats(for: game)
                     VStack(alignment: .leading, spacing: 16) {
                         Label(game.name, systemImage: game.symbol).font(.system(.title3, design: .serif)).foregroundStyle(game.tint)
+                        Text(game.creator.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
                         HStack {
                             MetricView(value: "\(stats.won)", label: "solved")
                             Spacer()
@@ -39,7 +40,7 @@ struct RecordView: View {
                             .font(.caption).foregroundStyle(Theme.muted)
                     }.paperCard()
                 }
-                Text("Revealed boards and Shortlist losses count as completed, without extending a winning streak. Clearing local progress resets this record.")
+                Text("Revealed boards and losses count as completed, without extending a winning streak. Clearing local progress resets this record.")
                     .font(.footnote).foregroundStyle(Theme.muted).lineSpacing(4)
             }.padding(20).frame(maxWidth: 680).frame(maxWidth: .infinity)
         }.background(Theme.paper).navigationTitle("Your record").navigationBarTitleDisplayMode(.inline)

@@ -1,0 +1,16 @@
+{
+  "name": "Pebbles — Daily Word Games",
+  "short_name": "Pebbles",
+  "description": "Six tiny mountains of words. CAIRN, MORPH, TANGLE, HUNCH, CIRCUIT and QUARTET — a new puzzle each, every midnight.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f9e8d2",
+  "theme_color": "#f9e8d2",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}

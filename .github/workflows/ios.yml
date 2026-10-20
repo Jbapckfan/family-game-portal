@@ -5,18 +5,15 @@ on:
     branches: [main]
     paths:
       - 'ios/**'
-      - 'games/counterpart/**'
-      - 'games/shortlist/**'
-      - 'games/second-sense/**'
-      - 'games/sideways/**'
-      - 'games/ringcount/**'
-      - 'games/switchpath/**'
+      - 'games/**'
+      - 'packages/kimi-pebbles/**'
       - 'scripts/sync-ios-web*.mjs'
       - '.github/workflows/ios.yml'
   pull_request:
     paths:
       - 'ios/**'
       - 'games/**'
+      - 'packages/kimi-pebbles/**'
       - 'scripts/sync-ios-web*.mjs'
       - '.github/workflows/ios.yml'
   workflow_dispatch:

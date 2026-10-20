@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f8f5ed">
-  <meta name="description" content="A little pause. A good puzzle. Play six daily word and logic games from Alford Daily, plus two family favorites.">
+  <meta name="description" content="A little pause. A good puzzle. Fourteen daily games in one collection, with original developer credits for ChatGPT and Kimi.">
   <title>Alford Daily — A good puzzle, every day</title>
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -34,7 +34,7 @@
           <span class="edition-sun" aria-hidden="true">✳</span>
           <p class="edition-label">The daily collection</p>
           <time id="today-date">Today</time>
-          <p>Six games. Your own pace.</p>
+          <p>14 games. Your own pace.</p>
         </div>
       </section>
       <section class="daily-progress" aria-labelledby="progress-title">
@@ -42,10 +42,18 @@
           <h2 id="progress-title">Your day, in puzzles</h2>
           <p id="progress-count" role="status" aria-live="polite">Checking today’s progress…</p>
         </div>
-        <ol class="progress-marks" id="progress-marks" aria-label="Today’s six games"></ol>
+        <ol class="progress-marks" id="progress-marks" aria-label="All 14 daily games"></ol>
       </section>
       <p class="progress-note" id="progress-note" hidden></p>
-      <section class="game-section" id="today" aria-labelledby="flagships-title">
+      <section class="collection-filter" id="today" tabindex="-1" aria-label="Filter games by developer">
+        <div><p class="eyebrow">One collection. Many ways to play.</p><p id="filter-summary" role="status" aria-live="polite">14 games · 2 developers</p></div>
+        <div class="creator-filters" role="group" aria-label="Game developer">
+          <button type="button" data-creator-filter="All" aria-pressed="true">All</button>
+          <button type="button" data-creator-filter="ChatGPT" aria-pressed="false">ChatGPT</button>
+          <button type="button" data-creator-filter="Kimi" aria-pressed="false">Kimi</button>
+        </div>
+      </section>
+      <section class="game-section" aria-labelledby="flagships-title">
         <div class="section-heading">
           <div><p class="eyebrow">Start with a spark</p><h2 id="flagships-title">Two quick ways in.</h2></div>
           <p>Simple rules. Satisfying turns.</p>
@@ -73,13 +81,14 @@
   <dialog id="about-dialog" aria-labelledby="about-title">
     <div class="dialog-topline"><span class="eyebrow">A note from Alford Daily</span><button id="close-about" class="close-button" type="button" aria-label="Close about dialog">×</button></div>
     <h2 id="about-title">A small daily ritual.</h2>
-    <p>Alford Daily brings together six word and logic games, with Ringcount and Switchpath as the quick first stop. Tradeoff and Inbetween are here as two family favorites, too.</p>
+    <p>Alford Daily brings together 14 word and logic games. Ringcount and Switchpath are quick first stops; choose any game or filter the collection by its original developer.</p>
+    <h3>Original developers, always credited</h3><p>ChatGPT developed Ringcount, Switchpath, Counterpart, Shortlist, Second Sense, Sideways, Tradeoff, and Inbetween. Kimi developed Cairn, Morph, Tangle, Hunch, Circuit, and Quartet in the Pebbles package. Integration and repairs by ChatGPT do not change those credits. More developers can join the collection as games are added.</p>
     <h3>One day, the same puzzles</h3>
     <p>Everyone gets the same daily board for each game. The day changes at midnight in America/Chicago (Central Time). Play at your own pace; there is no hard timer.</p>
     <h3>Pick up where you left off</h3>
     <p>Progress is saved in this browser on this device. This home counts a daily game as solved only when you solve it; revealed answers and practice rounds do not increase the daily count. Separate website addresses have separate saves.</p>
     <h3>More room to play</h3>
-    <p>Each game has a prepared collection of boards and a practice mode. These collections are finite and will eventually repeat. Your unfinished daily board stays reserved for daily play.</p>
+    <p>Each game has a prepared collection of boards and a practice mode. These collections are finite and will eventually repeat. Practice has its own result and never changes your daily record. Imported collections may include familiar word-game formats.</p>
     <h3>Just the puzzles, for now</h3>
     <p>This build has no accounts, advertising, purchase prompts, or tracking code. If browser storage is unavailable, a game can still be played, but progress may not survive closing the page.</p>
     <button class="dialog-done" id="about-done" type="button">Back to the games</button>

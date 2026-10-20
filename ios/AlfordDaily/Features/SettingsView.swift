@@ -45,19 +45,19 @@ struct SettingsView: View {
                 Button("Clear all local game progress", role: .destructive) { confirmReset = true }
                     .disabled(resetting)
             } header: { Text("Your progress") } footer: {
-                Text("Clearing progress removes all six games’ daily and practice saves and native statistics. Your haptic and reminder preferences stay as chosen.")
+                Text("Clearing progress removes every game’s daily and practice saves and native statistics. Your haptic and reminder preferences stay as chosen.")
             }
             if purchases.configuration.isEnabled { commerceSection }
             Section("This collection") {
                 ForEach(GameID.allCases) { game in
-                    LabeledContent(game.name, value: "\(game.collectionCount) puzzles")
+                    LabeledContent("\(game.name) · \(game.creator.rawValue)", value: "\(game.collectionCount) puzzles")
                 }
                 Text("Every daily resets at midnight in America/Chicago. These prepared collections repeat; they do not need a network connection.")
                     .font(.footnote).foregroundStyle(Theme.muted)
             }
             Section {
                 Text("Made for a little daily thinking.").font(.system(.title3, design: .serif))
-                Text("Alford Daily · Version 1.0\nSix games. No ads in this edition.")
+                Text("Alford Daily · Version 1.0\n\(GameID.allCases.count) games. No ads in this edition.")
                     .font(.footnote).foregroundStyle(Theme.muted)
             }
         }

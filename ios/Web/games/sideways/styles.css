@@ -25,3 +25,7 @@ dialog{padding:0;border:1px solid var(--line);border-radius:14px;background:var(
 .native-app .page{max-width:760px;padding-top:6px;padding-bottom:14px}
 .native-app .masthead{min-height:40px;padding:0 0 8px;justify-content:flex-end;border-bottom:0}
 .native-app .game-layout{display:block}
+
+.game-credit{text-align:right;font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0 0;font-weight:600}.native-app .game-credit{text-align:center;margin:0 0 12px}
+
+.game-credit{display:flex;justify-content:space-between;align-items:center;gap:12px}.collection-back{min-height:36px;display:inline-flex;align-items:center}.native-app .game-credit{justify-content:center}.native-app .collection-back{display:none}

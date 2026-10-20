@@ -64,4 +64,32 @@ final class BridgeDecoderTests: XCTestCase {
         XCTAssertNil(BridgeDecoder.decode(["type": "haptic", "kind": "purchase"], context: validContext, now: now))
         XCTAssertNil(BridgeDecoder.decode(["type": "evaluate", "script": "alert(1)"], context: validContext, now: now))
     }
+
+    func testAllFourteenCanonicalGamesCanReportProgressAndOnlyLossGamesCanReportLosses() {
+        for game in GameID.allCases {
+            let context = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0,
+                sourceURL: game.localURL, game: game)
+            var body = payload
+            body["slug"] = game.rawValue
+            body["name"] = game.name
+            XCTAssertNotNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
+            body["status"] = "lost"
+            if [GameID.shortlist, .kimiHunch, .kimiQuartet].contains(game) {
+                XCTAssertNotNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
+            } else {
+                XCTAssertNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
+            }
+        }
+    }
+
+    func testSharedKimiAssetsAndAnotherKimiDocumentCannotClaimTheActiveGame() {
+        for path in ["/games/kimi-runtime/assets/app.js", "/games/kimi-morph/"] {
+            let context = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0,
+                sourceURL: URL(string: "alford://app\(path)"), game: .kimiCairn)
+            var body = payload
+            body["slug"] = "kimi-cairn"
+            body["name"] = "Cairn"
+            XCTAssertNil(BridgeDecoder.decode(body, context: context, now: now), path)
+        }
+    }
 }

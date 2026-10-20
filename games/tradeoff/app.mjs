@@ -1,6 +1,12 @@
 import { PUZZLES } from './puzzles.mjs';
 import { getDateKey, getDaily, createGame, swapLetters, undoMove, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
 
+// Optional native bridge; browser rules and existing save keys are unchanged.
+function nativeMessage(payload) {
+  try { const handler = window.webkit?.messageHandlers?.alford; if (!handler?.postMessage) return false; handler.postMessage({...payload,slug:'tradeoff'}); return true; } catch {return false;}
+}
+if (window.webkit?.messageHandlers?.alford) document.body.classList.add('native-app');
+
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PREFIX = 'tradeoff:v1:';
@@ -68,6 +74,7 @@ function sameCell(a, b) { return a && b && a.row === b.row && a.col === b.col; }
 function cellFromButton(button) { return { row: Number(button.dataset.row), col: Number(button.dataset.col) }; }
 
 function render(options = {}) {
+  nativeMessage({type:'progress',name:'Tradeoff',mode,dateKey:daily.dateKey,status:game.status,stats:getStats(records,getDateKey())});
   const focused = document.activeElement?.closest?.('[data-row][data-col]');
   const focusCell = options.focusCell || (focused ? cellFromButton(focused) : null);
   const solved = game.board.reduce((count, word, i) => count + Number(word === puzzle.rows[i].answer), 0);
@@ -296,6 +303,7 @@ function showAbout() {
 
 async function shareResult() {
   const text = formatShare(puzzle, game, {number: mode === 'daily' ? daily.number : PUZZLES.indexOf(puzzle) + 1, mode, url:''});
+  if (nativeMessage({type:'share',text})) return;
   if (navigator.share) {
     try { await navigator.share({title:'My Tradeoff',text}); return; }
     catch (error) { if (error?.name === 'AbortError') return; }
@@ -318,6 +326,7 @@ function updateSoundButton() {
 }
 
 function playTone(kind) {
+  nativeMessage({type:'haptic',kind:kind==='win'?'win':kind==='select'?'select':'fit'});
   if (!soundOn) return;
   try {
     const Audio = window.AudioContext || window.webkitAudioContext;

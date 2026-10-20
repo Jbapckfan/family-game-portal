@@ -21,3 +21,7 @@ dialog{padding:0;border:1px solid var(--line);border-radius:14px;background:var(
 .native-app .game-layout{display:block}
 
 @media(max-width:520px){.word-bank{grid-template-columns:repeat(2,minmax(0,1fr))}.word-bank .word-tile{font-size:12px;min-height:44px;padding:11px 5px}.word-bank .word-tile:last-child:nth-child(3n+1){grid-column:auto}}
+
+.game-credit{text-align:right;font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0 0;font-weight:600}.native-app .game-credit{text-align:center;margin:0 0 12px}
+
+.game-credit{display:flex;justify-content:space-between;align-items:center;gap:12px}.collection-back{min-height:36px;display:inline-flex;align-items:center}.native-app .game-credit{justify-content:center}.native-app .collection-back{display:none}

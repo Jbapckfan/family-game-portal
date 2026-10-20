@@ -1,0 +1,744 @@
+{
+  "schemaVersion": 1,
+  "packageID": "kimi-pebbles-2026-10-20",
+  "originalDeveloper": "Kimi",
+  "modelVersion": null,
+  "creditBasis": "User-provided Kimi package; no exact model version was supplied.",
+  "originalDisplayName": "Pebbles",
+  "sourceFilename": "Kimi_Agent_iOS 4-Game Monetization.zip",
+  "sourceArchive": "sources/kimi/original/Kimi_Agent_iOS_4-Game_Monetization.zip",
+  "sourceSHA256": "fa7f26863aef94f3fc85131e587312c1ddafcf0fd2f9f053095d4b7b2a8a9c17",
+  "receivedOn": "2026-10-20",
+  "integrationBy": "ChatGPT",
+  "adaptedSource": "packages/kimi-pebbles",
+  "gameIDs": [
+    "kimi-cairn",
+    "kimi-morph",
+    "kimi-tangle",
+    "kimi-hunch",
+    "kimi-circuit",
+    "kimi-quartet"
+  ],
+  "originalFiles": [
+    {
+      "path": "Pebbles 变现策略.md",
+      "bytes": 7059,
+      "sha256": "014d46014a3d4930bfe253182578927d8c7ee036aceca83dc33005af31ed0015"
+    },
+    {
+      "path": "app/.gitignore",
+      "bytes": 253,
+      "sha256": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8"
+    },
+    {
+      "path": "app/README.md",
+      "bytes": 2555,
+      "sha256": "f58b5b17f83db63c09a9f2c059ec435ac8a3feb66f9337391ed5f3f62cff4e63"
+    },
+    {
+      "path": "app/components.json",
+      "bytes": 461,
+      "sha256": "22643b642f17cd817ec94d8439a272dac28119af0aebf8219a96ac1c2f4c61dd"
+    },
+    {
+      "path": "app/eslint.config.js",
+      "bytes": 616,
+      "sha256": "4efe97b16d1200fac0eaf07aa00930a8668b1f96a0be1891ace8c1e712ff0ccb"
+    },
+    {
+      "path": "app/index.html",
+      "bytes": 945,
+      "sha256": "89a2a4a8d8b9a4f05efbde4ffa5196d4826c1a523676a5abe51c3ff2aa2849b3"
+    },
+    {
+      "path": "app/info.md",
+      "bytes": 1385,
+      "sha256": "e86b40922c19326c0d3ddf44ac003359f21f105a38324a471e21ddc678b6eafc"
+    },
+    {
+      "path": "app/package-lock.json",
+      "bytes": 304852,
+      "sha256": "858def8ec5dda580ba3fb04f6590a9862fbcc2349c2db6a9b3bd0022c3ff61e3"
+    },
+    {
+      "path": "app/package.json",
+      "bytes": 2641,
+      "sha256": "b494f3a30d7a5389dbaf3fe577d5161cb404f5adaebb3d1260579cddebece7dd"
+    },
+    {
+      "path": "app/postcss.config.js",
+      "bytes": 80,
+      "sha256": "190c877db466995bf1482f4a16abd06e04a89ede3119341e2a86ff96e1737b27"
+    },
+    {
+      "path": "app/tailwind.config.js",
+      "bytes": 2777,
+      "sha256": "149b62bbe6c8c83d2f3dfb3196bbdb309156a63a7a289acc12f6c9066c763752"
+    },
+    {
+      "path": "app/tsconfig.app.json",
+      "bytes": 815,
+      "sha256": "6adc7ebeabae8e2f7280cacce1778b40a51743c240ffd7733b2efd4eb017c53a"
+    },
+    {
+      "path": "app/tsconfig.json",
+      "bytes": 232,
+      "sha256": "a389bfb0309454cd0828a3c4a7431e56c3d6f50a70e648613fd0f51ae300057c"
+    },
+    {
+      "path": "app/tsconfig.node.json",
+      "bytes": 653,
+      "sha256": "c3dd0fb522feba3596713f51b95bd53d781d845d24aedbfa2ac093d8b39c5120"
+    },
+    {
+      "path": "app/vite.config.ts",
+      "bytes": 387,
+      "sha256": "666ef5896954c79188f186770d38cc8b2e214c6ddc379c20ae91f051fde79c3a"
+    },
+    {
+      "path": "app/src/App.css",
+      "bytes": 606,
+      "sha256": "a0715e0a09edbd0fbde65816a75e0fa0fc8b314c5260c0768c19bf3aac22621a"
+    },
+    {
+      "path": "app/src/App.tsx",
+      "bytes": 1956,
+      "sha256": "c978273b60733fa63194c724cf4941f4653f333712138944d4cb3f55048edbea"
+    },
+    {
+      "path": "app/src/index.css",
+      "bytes": 8255,
+      "sha256": "29b10846fb2c2baf90fe59a30fe9e935a66e84d5bf8dd0ab811ce1f8b5063885"
+    },
+    {
+      "path": "app/src/main.tsx",
+      "bytes": 318,
+      "sha256": "9861e637825001af4f96dbd8b0d3fa551b8b1b2a01bed5e31a9a2eec21454ff8"
+    },
+    {
+      "path": "app/src/pages/Home.tsx",
+      "bytes": 425,
+      "sha256": "a5bce711417781cbdd2ee0426eb5eca10120f263dd054c4a43ac1b7b6d071df5"
+    },
+    {
+      "path": "app/src/lib/utils.ts",
+      "bytes": 166,
+      "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+    },
+    {
+      "path": "app/src/hooks/use-mobile.ts",
+      "bytes": 565,
+      "sha256": "ad0936f84f1df79d3697bfbff9c18f8ad58431c1cbaf2359c6a853b0fcc9f28b"
+    },
+    {
+      "path": "app/src/games/tangle/TangleBoard.tsx",
+      "bytes": 9355,
+      "sha256": "1cf7f5faee948b26fb68ed25c724536518b8f0d260827d2d9291b9a78a2d43ef"
+    },
+    {
+      "path": "app/src/games/tangle/TangleHelpModal.tsx",
+      "bytes": 1584,
+      "sha256": "cb3d058befdb9f9b7f5027a5d1b665f79023eb184db50d3381882f0627ce8e07"
+    },
+    {
+      "path": "app/src/games/tangle/TanglePage.tsx",
+      "bytes": 3794,
+      "sha256": "fb074e4817bda772f024bcdb724e667d17346d43b93e7c579d53f2b419b0764b"
+    },
+    {
+      "path": "app/src/games/tangle/TangleWinModal.tsx",
+      "bytes": 4450,
+      "sha256": "1136700a095ab5ddeb0235bb5940f41cc1add5aa08a9345d5095cee6642caf37"
+    },
+    {
+      "path": "app/src/games/tangle/engine.ts",
+      "bytes": 2295,
+      "sha256": "172f2de2e303cbe05cb005ccc456425d3a9b9411d3c3ffe4f314fcef9765b742"
+    },
+    {
+      "path": "app/src/games/tangle/useTangle.ts",
+      "bytes": 8151,
+      "sha256": "65122d53ca4730244142124f6b526abcbfac229d029db80511dc561456eb0271"
+    },
+    {
+      "path": "app/src/games/tangle/data/puzzles.json",
+      "bytes": 241054,
+      "sha256": "b38de268f0a4257de77877fb3fa58a0a2595899d95f59532b744fa1b82939f3e"
+    },
+    {
+      "path": "app/src/games/suite/Home.tsx",
+      "bytes": 10599,
+      "sha256": "1a4b92507987c1c275bcb840a0b33e68d8a616435267400b0fdf32c56a89811e"
+    },
+    {
+      "path": "app/src/games/suite/PremiumModal.tsx",
+      "bytes": 5249,
+      "sha256": "6e709c0ec2126bf6f2855f46d356317a1f9557aaa9c79660a570648bb242f55c"
+    },
+    {
+      "path": "app/src/games/shared/GameHeader.tsx",
+      "bytes": 2719,
+      "sha256": "b881a06f9f2c79c794837d11ada8c6e90e68ec14e979af0d150dab67210ff3b5"
+    },
+    {
+      "path": "app/src/games/shared/SimpleStatsModal.tsx",
+      "bytes": 1862,
+      "sha256": "2cff9018f9bc297367815409299071ee3c00acf1d635110485ddf8ff0e648e65"
+    },
+    {
+      "path": "app/src/games/shared/dict.ts",
+      "bytes": 529,
+      "sha256": "ce25fc25f113ddf10b9bbb5178b54fdbe95034bd3da68aea36d5fc33decf0314"
+    },
+    {
+      "path": "app/src/games/shared/effects.tsx",
+      "bytes": 2068,
+      "sha256": "9abc663c5f04a82b7e955e2998415c72c1a7567ec2247d01edd106a0c5cb9343"
+    },
+    {
+      "path": "app/src/games/shared/premium.ts",
+      "bytes": 351,
+      "sha256": "32d16eb6d2cfdcb3fd5f6e2dafdcde71fa70d2fd0f5c0a1e749c811eb76ba94b"
+    },
+    {
+      "path": "app/src/games/shared/share.ts",
+      "bytes": 1336,
+      "sha256": "3e5f8b4c38dfc52e7f7d9179361aa16c1b7c699ead9f8888d748ddd5aa4b53b2"
+    },
+    {
+      "path": "app/src/games/shared/sound.ts",
+      "bytes": 1694,
+      "sha256": "79ce1cc8946b448154aafe05ffdd47b8b7aba9c0eb43f72f9213f53799c7255d"
+    },
+    {
+      "path": "app/src/games/shared/stats.ts",
+      "bytes": 1333,
+      "sha256": "f1decf3f86a4897aae8789f8278ccc4cddbf65d586d4a3c1180b2d6a8562a2dc"
+    },
+    {
+      "path": "app/src/games/quartet/QuartetBoard.tsx",
+      "bytes": 5239,
+      "sha256": "5b360ba5a0dda11da2ab3a7b71919877a673d8c3b099c0b9be564fe3530bec12"
+    },
+    {
+      "path": "app/src/games/quartet/QuartetHelpModal.tsx",
+      "bytes": 1603,
+      "sha256": "7045844d8d258601617338c3b50d86d218dee0f86946ed2fdbb93d7c9625ef1c"
+    },
+    {
+      "path": "app/src/games/quartet/QuartetPage.tsx",
+      "bytes": 3922,
+      "sha256": "a7161bd152f799a1550878961b067d9f920b943b985d0990d1b66ac3e5ce4f96"
+    },
+    {
+      "path": "app/src/games/quartet/QuartetWinModal.tsx",
+      "bytes": 4250,
+      "sha256": "5474fe4fd47a52b13516a45a196a4fee12e371a39bfee3fb29ffafaf4eed90d0"
+    },
+    {
+      "path": "app/src/games/quartet/engine.ts",
+      "bytes": 1965,
+      "sha256": "5490cc418ce2272df0261f532c6793b62c1378f6c6e7de6d95f63a0d3bbb5e82"
+    },
+    {
+      "path": "app/src/games/quartet/useQuartet.ts",
+      "bytes": 11555,
+      "sha256": "83fa5408a63b5f6b3005818d3aeee757a32f011dbd928c0c6a7ef5c2fbd45fe3"
+    },
+    {
+      "path": "app/src/games/quartet/data/puzzles.json",
+      "bytes": 139459,
+      "sha256": "36bf83140931c8376ec608bb72860b900a87b26da7ceb2a1aec66dbcc221a5f2"
+    },
+    {
+      "path": "app/src/games/morph/MorphBoard.tsx",
+      "bytes": 8475,
+      "sha256": "b37cd1f3f0e053532f401ee2153268a44d56aef5510b6ca195842d013c6f61bf"
+    },
+    {
+      "path": "app/src/games/morph/MorphHelpModal.tsx",
+      "bytes": 1915,
+      "sha256": "5f67b969f6a7408b74f1eab0e52711bbcd5f8a51e597a892c8abd5baeb89b1be"
+    },
+    {
+      "path": "app/src/games/morph/MorphPage.tsx",
+      "bytes": 3963,
+      "sha256": "f9851931cf34f9eff41f91e03fae11c3ee88425663aa2166660599c8db392cb2"
+    },
+    {
+      "path": "app/src/games/morph/MorphWinModal.tsx",
+      "bytes": 4399,
+      "sha256": "2c800382584f151a3a57f987555a96ce5308c9d5365fc4443b498c980250dce3"
+    },
+    {
+      "path": "app/src/games/morph/engine.ts",
+      "bytes": 2088,
+      "sha256": "d56679e75c9e19fee44f560c04865f05c513867ced472628fdece84ef1ff004a"
+    },
+    {
+      "path": "app/src/games/morph/useMorph.ts",
+      "bytes": 9896,
+      "sha256": "eab09b501d1618b96cdb3c8284db69f92b4f7a52f311c4e9636d62c527c7736b"
+    },
+    {
+      "path": "app/src/games/morph/data/puzzles.json",
+      "bytes": 37296,
+      "sha256": "f26f80343b0dd9da239cba695397988f38735cd5b35d61a61a62e284f79bd475"
+    },
+    {
+      "path": "app/src/games/hunch/HunchBoard.tsx",
+      "bytes": 6064,
+      "sha256": "2bc62fb0c695b40ba39a2c3b5ec23c8b45c979c3323a767a20f72e3f135abe8e"
+    },
+    {
+      "path": "app/src/games/hunch/HunchHelpModal.tsx",
+      "bytes": 2105,
+      "sha256": "6c5fb199ac1ce35e1294454284ee193a2f7504ca037ed3bc151310a588802832"
+    },
+    {
+      "path": "app/src/games/hunch/HunchPage.tsx",
+      "bytes": 3794,
+      "sha256": "7566118ccbbf8f29f1163f01bdee09cf8d3d700dd1f5dc39a2d7bf40b5d3f781"
+    },
+    {
+      "path": "app/src/games/hunch/HunchWinModal.tsx",
+      "bytes": 4533,
+      "sha256": "93ffc0e569021c522ed54df10947794f6fed6279325310bfac4f8937d9dd3e7c"
+    },
+    {
+      "path": "app/src/games/hunch/engine.ts",
+      "bytes": 1766,
+      "sha256": "f4acc51561e87990a16ebef3eee91fd70250e8b010e755f5e5218df1a1a73c64"
+    },
+    {
+      "path": "app/src/games/hunch/useHunch.ts",
+      "bytes": 9000,
+      "sha256": "611700982a12b7af3d5191c97444849dac5849d19aec2757738c319914782a4f"
+    },
+    {
+      "path": "app/src/games/hunch/data/answers.json",
+      "bytes": 8433,
+      "sha256": "900ab5ac0f8dc133b570813d016245314c450ba147f46e4f2ea9e748d6c5d66e"
+    },
+    {
+      "path": "app/src/games/circuit/CircuitBoard.tsx",
+      "bytes": 6875,
+      "sha256": "1c39952c08fc7bcd79ae3cfbee0372871897496ead4e800c9a132878b256fc9d"
+    },
+    {
+      "path": "app/src/games/circuit/CircuitHelpModal.tsx",
+      "bytes": 1640,
+      "sha256": "6272e57c00f1962d7d4218f9b008d9a6c8f6cae12762575c95ace7fa44316447"
+    },
+    {
+      "path": "app/src/games/circuit/CircuitPage.tsx",
+      "bytes": 3931,
+      "sha256": "1ab78d45078869e6a3c1c6761d76e749f0b68a6c323d786530568eec530c5798"
+    },
+    {
+      "path": "app/src/games/circuit/CircuitWinModal.tsx",
+      "bytes": 4509,
+      "sha256": "949c639cd24404c52dbd18d7d19622708a41987f40dfbbbb9caefc831057aad7"
+    },
+    {
+      "path": "app/src/games/circuit/engine.ts",
+      "bytes": 2103,
+      "sha256": "2194524462843e117a164d2e70e393dd28d7851b798fc001083c7e473cdec96b"
+    },
+    {
+      "path": "app/src/games/circuit/useCircuit.ts",
+      "bytes": 9717,
+      "sha256": "39dbe3edc93f11519e1c8fd2de79c4062d2c57d737d1594d29873139d16e27ae"
+    },
+    {
+      "path": "app/src/games/circuit/data/puzzles.json",
+      "bytes": 358063,
+      "sha256": "79af813cfa125e089dacdc1daf22fd2b221d0b4179c9219de4ecb217b52f896b"
+    },
+    {
+      "path": "app/src/games/cairn/CairnPage.tsx",
+      "bytes": 4812,
+      "sha256": "28771c41f02cba25af8adc01a07442a71a140e7e0340598abda870db9f2e5802"
+    },
+    {
+      "path": "app/src/games/cairn/CairnTower.tsx",
+      "bytes": 2610,
+      "sha256": "3115ab9f699f126aa9411568f993e17c7a917a4c7f6625863f46bb093f5dcb9e"
+    },
+    {
+      "path": "app/src/games/cairn/GameBoard.tsx",
+      "bytes": 7465,
+      "sha256": "5b7332cc3d61e075fec8c2533b2a50b13b6ce6034418cf66b54dc7ccbb6ef79b"
+    },
+    {
+      "path": "app/src/games/cairn/HelpModal.tsx",
+      "bytes": 2650,
+      "sha256": "acb0b1519c3a5a154cdfcd5626822fa299684133b04a046a3d6b41d66a545296"
+    },
+    {
+      "path": "app/src/games/cairn/StatsModal.tsx",
+      "bytes": 1739,
+      "sha256": "52d4a2ecb262bd4d64c64b744742ec1e284c8641e76e33c10c07df0876f872be"
+    },
+    {
+      "path": "app/src/games/cairn/WinModal.tsx",
+      "bytes": 5112,
+      "sha256": "4b4630340df5f83b0db2c156f3b3a269992e6783188b9d4aa7e0d634ab109dec"
+    },
+    {
+      "path": "app/src/games/cairn/engine.ts",
+      "bytes": 5139,
+      "sha256": "0978c59a67cb0d5861db667bb73f393bd93cb91bdc26ed3513192774a922bc58"
+    },
+    {
+      "path": "app/src/games/cairn/storage.ts",
+      "bytes": 1915,
+      "sha256": "cd5237001f3cc3f843130a2f292a6e7d6dc2fd3d3b48a2617e68d99c4f56350e"
+    },
+    {
+      "path": "app/src/games/cairn/useGame.ts",
+      "bytes": 14662,
+      "sha256": "89d9f7f6812ccf3d8fd517467f09d1fc6d374b7c3aa975aa027d47f35ffb5902"
+    },
+    {
+      "path": "app/src/games/cairn/data/common.txt",
+      "bytes": 24046,
+      "sha256": "7f5f05f07a804f45605ea27594666d48de89c9e206a6557dd7115588c0fcaaaa"
+    },
+    {
+      "path": "app/src/games/cairn/data/dict.txt",
+      "bytes": 685077,
+      "sha256": "110f85150999e6d0ee57ef23ee3746be2c5e02f93b8444fc258d7592916d525f"
+    },
+    {
+      "path": "app/src/games/cairn/data/puzzles.json",
+      "bytes": 40273,
+      "sha256": "520fce1d3fe82930c207b83323746ffbe7e4373b6956b9154f080f32c6b4ad8f"
+    },
+    {
+      "path": "app/src/components/ui/accordion.tsx",
+      "bytes": 2039,
+      "sha256": "1e00288c7eee72380002164ea3ff7589df5d92f2f1b8c7aa5077596ef680acdb"
+    },
+    {
+      "path": "app/src/components/ui/alert-dialog.tsx",
+      "bytes": 3850,
+      "sha256": "683cf8b6c3b0c29fb0e31f36e8c7794c63ab5b7ab431f7441ea2d478bbf9fe41"
+    },
+    {
+      "path": "app/src/components/ui/alert.tsx",
+      "bytes": 1614,
+      "sha256": "49d8311589b810b106aada8ef7b13f70b2b1f68cfce4e1458b7f31a191f420e9"
+    },
+    {
+      "path": "app/src/components/ui/aspect-ratio.tsx",
+      "bytes": 280,
+      "sha256": "6a75117416aa89200cf31e8d61643b428e812f479caea857c80004b26d893e79"
+    },
+    {
+      "path": "app/src/components/ui/avatar.tsx",
+      "bytes": 1083,
+      "sha256": "e637ab3522c01631eac2e456588ef301314e2bb7940ebf7cd96e698a868d47bc"
+    },
+    {
+      "path": "app/src/components/ui/badge.tsx",
+      "bytes": 1633,
+      "sha256": "e7455feb113b38c59456ba29a9ec264b5ffa1daae8883866332ad637ffd57c31"
+    },
+    {
+      "path": "app/src/components/ui/breadcrumb.tsx",
+      "bytes": 2357,
+      "sha256": "22f3f4c13ed1085c4131379bfccc6fb173a474f861636bc2736506820153aa08"
+    },
+    {
+      "path": "app/src/components/ui/button-group.tsx",
+      "bytes": 2209,
+      "sha256": "ccbf09097f5ebf2eec86f1a96cb92e8dd39d251ebb5867394196c8b4fec68a5c"
+    },
+    {
+      "path": "app/src/components/ui/button.tsx",
+      "bytes": 2218,
+      "sha256": "5a5c4b8b60a8a80ba7b8b5d0319be2d3c61bfd2ce4fc2a645371dee9f6db0a77"
+    },
+    {
+      "path": "app/src/components/ui/calendar.tsx",
+      "bytes": 7793,
+      "sha256": "c8e67d15d8622135b72045d974a3234ea99f5ffcc1b981eafea8847a14ae1f12"
+    },
+    {
+      "path": "app/src/components/ui/card.tsx",
+      "bytes": 1987,
+      "sha256": "2040cdff27cd1ed771e0ebbd15abcd73d31f2f1e4be6664bd6816fffd2a87476"
+    },
+    {
+      "path": "app/src/components/ui/carousel.tsx",
+      "bytes": 5542,
+      "sha256": "10c5388b66d98f0c555dad2e5b89b9bc846fbc1a3de101ee8b98abc305ec2c51"
+    },
+    {
+      "path": "app/src/components/ui/chart.tsx",
+      "bytes": 10069,
+      "sha256": "39a2fde544144e0ed0e3e7f76eb3f3988f570f849f30f62208c6f3e2fc4e3e4f"
+    },
+    {
+      "path": "app/src/components/ui/checkbox.tsx",
+      "bytes": 1219,
+      "sha256": "a8292972a5b81eff164f621ac0bb66f4ed4419d1599e2d4901968e216574677f"
+    },
+    {
+      "path": "app/src/components/ui/collapsible.tsx",
+      "bytes": 786,
+      "sha256": "661444318605c90d19e47e4d21289a68b4c5f7f01782be70dafa80d3f7a4cd08"
+    },
+    {
+      "path": "app/src/components/ui/command.tsx",
+      "bytes": 4804,
+      "sha256": "416cdc19eb9e7301b51f9665b4f1a797534769a6bb58a563808979f460b0b8a2"
+    },
+    {
+      "path": "app/src/components/ui/context-menu.tsx",
+      "bytes": 8274,
+      "sha256": "70e547a9bececcc98adf2fbfb2cae05c99179707ab0edb1ddfb5d2de329dab42"
+    },
+    {
+      "path": "app/src/components/ui/dialog.tsx",
+      "bytes": 3981,
+      "sha256": "6333f1124e85ff25bce5061ac9ab5981e5346782d5535c9dfeeb51b2d535a7cc"
+    },
+    {
+      "path": "app/src/components/ui/drawer.tsx",
+      "bytes": 4255,
+      "sha256": "0c9464ed4f95207ff6ec0b8f433f550388ea0fe57fecd36bbe100b084ee46a3e"
+    },
+    {
+      "path": "app/src/components/ui/dropdown-menu.tsx",
+      "bytes": 8410,
+      "sha256": "ba022169876b487c849d046ac577654ab61a4cfba158305c8790c572b704ed9e"
+    },
+    {
+      "path": "app/src/components/ui/empty.tsx",
+      "bytes": 2396,
+      "sha256": "584b491f9eb69f8041b3d3732a4d139f5af01de19a00b7a97656c7af7a78716a"
+    },
+    {
+      "path": "app/src/components/ui/field.tsx",
+      "bytes": 6145,
+      "sha256": "e9dcb51b16e5f235bdf23a0b4a092e55c05b2bad08a83126ac675b72aae5380d"
+    },
+    {
+      "path": "app/src/components/ui/form.tsx",
+      "bytes": 3764,
+      "sha256": "a12f73507ab613e9d797979b988a15e32d23458fc8dd4ba71b922aeee977a3b6"
+    },
+    {
+      "path": "app/src/components/ui/hover-card.tsx",
+      "bytes": 1532,
+      "sha256": "031f6a309d87c8e42a2282fccc277dde75e373de8c93dad881582c9dc13e05d0"
+    },
+    {
+      "path": "app/src/components/ui/input-group.tsx",
+      "bytes": 5065,
+      "sha256": "c0df02569e483db8ee86bd51b3b392a1ba62b276604d8c7ea90a9efc5faa9e25"
+    },
+    {
+      "path": "app/src/components/ui/input-otp.tsx",
+      "bytes": 2240,
+      "sha256": "7fd7ed5273f849cde558238148ee1bbae729aa1149407c7c732b6c65906933d2"
+    },
+    {
+      "path": "app/src/components/ui/input.tsx",
+      "bytes": 962,
+      "sha256": "56b7fd30208addbcc2468cfda4f5bc0a55342211deaab61ee35b1c352b1622f1"
+    },
+    {
+      "path": "app/src/components/ui/item.tsx",
+      "bytes": 4494,
+      "sha256": "6d64b756260749245b3a1f292e2aaf2774d7ec0b8bb99403eb8c1be31bd26900"
+    },
+    {
+      "path": "app/src/components/ui/kbd.tsx",
+      "bytes": 862,
+      "sha256": "886e04c83aaa016dfce924e461aa38aa68a9f5c83bdaedd6209dc358c32a8f22"
+    },
+    {
+      "path": "app/src/components/ui/label.tsx",
+      "bytes": 611,
+      "sha256": "9ec42c8a57e82311118b794318409ee02b2cebfa49ba6cce8457cff6448cd471"
+    },
+    {
+      "path": "app/src/components/ui/menubar.tsx",
+      "bytes": 8380,
+      "sha256": "b4be4da586ce1288e8259b1e760a9e317eb0ee9183548c762d8b2a222bbdb3e5"
+    },
+    {
+      "path": "app/src/components/ui/navigation-menu.tsx",
+      "bytes": 6664,
+      "sha256": "d71f57fe0f365541fbf5d00196b0b78a461d8c4f38d35293e5754680d93b9245"
+    },
+    {
+      "path": "app/src/components/ui/pagination.tsx",
+      "bytes": 2717,
+      "sha256": "374ad135c3d4ff3ec080a0009cd9745cdd0e12faa89d2b0e86074f11e5127fd1"
+    },
+    {
+      "path": "app/src/components/ui/popover.tsx",
+      "bytes": 1635,
+      "sha256": "29a217781737bbf5c430859b3de46097a44ada81c4143c2d05543d2167de0ee1"
+    },
+    {
+      "path": "app/src/components/ui/progress.tsx",
+      "bytes": 726,
+      "sha256": "9e36ca3f10bc56b69058d8edd342832b72c8c1b2d36cd142a0decb2445c3b724"
+    },
+    {
+      "path": "app/src/components/ui/radio-group.tsx",
+      "bytes": 1466,
+      "sha256": "b12ca5cef859dd75b274337234bae66e413b0f97845243254a1dedcb2d7a7237"
+    },
+    {
+      "path": "app/src/components/ui/resizable.tsx",
+      "bytes": 1980,
+      "sha256": "4634b0a700b91e5d422babc1f068b6d145b5f000c8aff62d5cfc9b5711fbff73"
+    },
+    {
+      "path": "app/src/components/ui/scroll-area.tsx",
+      "bytes": 1645,
+      "sha256": "1c5d0b242d0513848f4bfa9b57ba7f438d9b1120617029941bfaa137196ecead"
+    },
+    {
+      "path": "app/src/components/ui/select.tsx",
+      "bytes": 6344,
+      "sha256": "68fc754d3042f9fec3406895845e6fcc05d44f93a049478a9d3c706919100ebe"
+    },
+    {
+      "path": "app/src/components/ui/separator.tsx",
+      "bytes": 699,
+      "sha256": "e9dddbd8dbbc0eccd683306481b0f0bbc8e2b60ea97817416ebb9fe7fbbbdca8"
+    },
+    {
+      "path": "app/src/components/ui/sheet.tsx",
+      "bytes": 4076,
+      "sha256": "fbe9b257fd95b9865e1aba651489899c959ed5c16cb8493fe8c2733f83b92ee1"
+    },
+    {
+      "path": "app/src/components/ui/sidebar.tsx",
+      "bytes": 21638,
+      "sha256": "6074d8027b4bc9ea2d5eb1527a8528a7fa69df96f6261b9c6441c3980d41700f"
+    },
+    {
+      "path": "app/src/components/ui/skeleton.tsx",
+      "bytes": 276,
+      "sha256": "f2aea81d8baf2b621945382aabac150e3db40f20d19ac1abea7aff805f1dc33c"
+    },
+    {
+      "path": "app/src/components/ui/slider.tsx",
+      "bytes": 1996,
+      "sha256": "640996327017c3977e3c61eee8ec55230fa0bec509d0f4b44bdc9acdd8eca138"
+    },
+    {
+      "path": "app/src/components/ui/sonner.tsx",
+      "bytes": 1020,
+      "sha256": "a3868f2a8aafd8e2dc96b7ae145009939e9d8723cbb5a4b61d7b7d9bed9df478"
+    },
+    {
+      "path": "app/src/components/ui/spinner.tsx",
+      "bytes": 331,
+      "sha256": "3e6e6e8d37fb4069f8e43e55318f8db06fbc36e6c8be0096da3c9337c1c798b9"
+    },
+    {
+      "path": "app/src/components/ui/switch.tsx",
+      "bytes": 1177,
+      "sha256": "17f2390d98e8ce4d9e90155eac1918266914d6a9ada7c276b5d1c917cef0e969"
+    },
+    {
+      "path": "app/src/components/ui/table.tsx",
+      "bytes": 2434,
+      "sha256": "95e3ef5db88b3bbfb68eed12f341fb942e40ca815f4342e1d5dbc8c8d47c783d"
+    },
+    {
+      "path": "app/src/components/ui/tabs.tsx",
+      "bytes": 1969,
+      "sha256": "e8469e599381cf021ce751c27cca3d8cb06440a45665ca9c2ef2efb0acef1fd9"
+    },
+    {
+      "path": "app/src/components/ui/textarea.tsx",
+      "bytes": 759,
+      "sha256": "de4e9fb0fd8e8ed10ea2e475ffe202a922ffe77e3f3edb2c517b0781447ad1b4"
+    },
+    {
+      "path": "app/src/components/ui/toggle-group.tsx",
+      "bytes": 2300,
+      "sha256": "c63c671fe328f2c1e0d58e3df82a474e73834037c5a39a9ff566a4b3b2cf9010"
+    },
+    {
+      "path": "app/src/components/ui/toggle.tsx",
+      "bytes": 1556,
+      "sha256": "ab2e52debb86451889ac9519dfe27daf3a86d70aa2833da8ed8f6cf3146197ff"
+    },
+    {
+      "path": "app/src/components/ui/tooltip.tsx",
+      "bytes": 1892,
+      "sha256": "cbc12f4086448f8a307ed5fbb160f79467c84a44c48ca0dbd2c62e39a2db6f5d"
+    },
+    {
+      "path": "app/public/manifest.webmanifest",
+      "bytes": 678,
+      "sha256": "6e67d895f814aa51b453be3af3795b3c1e248197df05cf0969bdbb299f1cc9db"
+    },
+    {
+      "path": "app/public/icons/apple-touch-icon.png",
+      "bytes": 1519,
+      "sha256": "f210f5fadd107341de8e5f73e89054f1a07ecf43bacb37b45b56862393f79e75"
+    },
+    {
+      "path": "app/public/icons/icon-192.png",
+      "bytes": 1638,
+      "sha256": "623fdfe5eaa60ef958fa826a2c9f914b14e9d8e965844526d7ef13e5c2856a80"
+    },
+    {
+      "path": "app/public/icons/icon-512.png",
+      "bytes": 4596,
+      "sha256": "3981e66887be128cbf2e42da5d9f4e6a07b45e4aa1bf6a0777ebab173c50dfe8"
+    },
+    {
+      "path": "app/public/fonts/baloo2-500.woff2",
+      "bytes": 19556,
+      "sha256": "b533661a076cc6e6ecd387f4665a02e923f94eec48bfe5bcecaf29213eb29a36"
+    },
+    {
+      "path": "app/public/fonts/baloo2-600.woff2",
+      "bytes": 19496,
+      "sha256": "ffc22b431dcb01372be1986bc472bd400bbcb56b712a863c3abec7f8302e1bdd"
+    },
+    {
+      "path": "app/public/fonts/baloo2-700.woff2",
+      "bytes": 19436,
+      "sha256": "8e7ffc9b993aa8caa89bcab81e103c9eb2da4e3e042f37b7a5115d0ddbff12c0"
+    },
+    {
+      "path": "app/public/fonts/baloo2-800.woff2",
+      "bytes": 18632,
+      "sha256": "3e36c57e37bda5b5f28cf10636d6d3aed4de5250df923f1b203b64ad857c79a7"
+    },
+    {
+      "path": "app/public/fonts/nunito-400.woff2",
+      "bytes": 16316,
+      "sha256": "a5906e15ceb68f73d3b2c2076b4057c3f6ed401186d56283b45ce12944ca0735"
+    },
+    {
+      "path": "app/public/fonts/nunito-600.woff2",
+      "bytes": 16556,
+      "sha256": "45f437de32ff5973eb5616b43c1308bf9fe897442f3d78a603c4cd0a06d66573"
+    },
+    {
+      "path": "app/public/fonts/nunito-700.woff2",
+      "bytes": 16228,
+      "sha256": "fa89300b9bbb3bd0f60d6991aa055965d98e2ccca27bf8688fe0c39cdc796846"
+    },
+    {
+      "path": "app/public/fonts/nunito-800.woff2",
+      "bytes": 16520,
+      "sha256": "2363d3ed037283ebb961e8c4b4917e40a8bc8853cf9965cf1ea7b4daa1df630a"
+    }
+  ]
+}

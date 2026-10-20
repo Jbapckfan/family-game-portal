@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-collection-home="../daily/">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5ef">
+  <meta name="description" content="A daily game of give and take. Six real words, six clues, and a handful of letters in the wrong hands. Can you make the perfect trade?">
+  <meta property="og:title" content="Tradeoff — a daily game of give and take">
+  <meta property="og:description" content="Six words. Five swaps. Make every letter count.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Tradeoff — a daily game of give and take</title>
+</head>
+<body data-game-creator="ChatGPT">
+  <a class="skip-link" href="#board">Skip to puzzle</a>
+  <div class="page">
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="Tradeoff home"><svg aria-hidden="true" viewBox="0 0 40 40"><rect width="40" height="40" rx="10"/><path d="M10 14h20l-5-5M30 26H10l5 5"/></svg><span>tradeoff<span class="wordmark-dot">.</span></span></a>
+      <p class="brand-line">A DAILY GAME OF GIVE & TAKE</p>
+      <nav class="header-actions" aria-label="Game tools">
+        <button class="icon-button" id="sound-button" aria-label="Turn sound on" title="Turn sound on"></button>
+        <button class="icon-button" id="stats-button" aria-label="Your statistics" title="Your statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12h4v8M10 20V4h4v16M15 20V9h4v11"/></svg></button>
+        <button class="icon-button" id="help-button" aria-label="How to play" title="How to play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5a2.6 2.6 0 0 1 5 1c0 2-2.5 2-2.5 4M12 16.5v.1"/></svg></button>
+      </nav>
+    </header>
+    <p class="game-credit"><a class="collection-back" href="../daily/">← All games</a><span data-creator-label>Developed by ChatGPT</span></p>
+
+    <main>
+      <div class="hero">
+        <p class="eyebrow"><span class="tiny-spark">✳</span> SMALL PUZZLE. BIG LITTLE AHA.</p>
+        <h1>A little give. A little <em>take.</em></h1>
+        <p class="hero-subtitle">Six words. Five swaps. Make every letter count.</p>
+      </div>
+
+      <div class="game-layout">
+        <section class="game" aria-label="Tradeoff puzzle">
+          <div class="game-topline">
+            <div class="mode-tabs" aria-label="Game mode">
+              <button class="mode-tab active" id="daily-tab" aria-pressed="true">The daily</button>
+              <button class="mode-tab" id="practice-tab" aria-pressed="false">Practice <span aria-hidden="true">↗</span></button>
+            </div>
+            <div class="issue" id="issue">NO. 001</div>
+          </div>
+          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span class="difficulty" id="difficulty">Gentle</span></div>
+          <div class="new-day" id="new-day" hidden>A fresh daily is here. <button id="new-day-button">Play today →</button></div>
+          <div class="compact-rules"><span>Each word starts one letter from its clue.</span><button id="quick-help">How to play <span aria-hidden="true">↗</span></button></div>
+          <div class="board" id="board" tabindex="-1" aria-label="Six words to solve"><p class="loading">Getting your letters in order…</p></div>
+          <div class="board-bottom">
+            <div class="progress-wrap"><div class="progress-dots" id="progress-dots" aria-hidden="true"></div><span id="progress-label">0 of 6 solved</span></div>
+            <div class="swap-count"><strong id="move-count">0</strong> <span id="move-word">swaps</span><span class="par-label">/ 5 is perfect</span></div>
+          </div>
+          <div class="interaction-note" id="interaction-note" aria-live="polite">Tap a letter, then another to trade them.</div>
+          <div class="game-controls" id="game-controls">
+            <button class="secondary-button" id="undo-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 4 11l5 5M4 11h10a5 5 0 0 1 0 10"/></svg>Undo</button>
+            <button class="primary-button" id="hint-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8 13a6 6 0 1 1 8 0c-1 1-1 2-1 3H9c0-1 0-2-1-3Z"/></svg>A little nudge</button>
+            <button class="secondary-button more-button" id="more-button" aria-label="More puzzle options" title="More options">•••</button>
+          </div>
+          <div class="finished-actions" id="finished-actions" hidden><button class="primary-button" id="results-button">See your result <span aria-hidden="true">↗</span></button><button class="secondary-button" id="next-practice-button">Another trade →</button><button class="secondary-button more-button" id="finished-more-button" aria-label="Practice options" hidden>•••</button></div>
+          <p class="board-footnote" id="board-footnote">No rush. No lost lives. Just a good trade.</p>
+        </section>
+
+        <aside class="sidebar" aria-label="Game guide">
+          <section class="the-deal">
+            <div class="deal-heading"><span>HERE’S THE DEAL</span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 14h24l-6-6M32 26H8l6 6"/></svg></div>
+            <h2>Right letters.<br>Wrong hands.</h2>
+            <p>Every word is one letter away from the answer to its clue.</p>
+            <ol><li><span>01</span>Tap two letters to trade them.</li><li><span>02</span>Match a clue. Lock in a word.</li><li><span>03</span>Bring all six words home.</li></ol>
+            <div class="mini-example" aria-label="Example: trade the T in CAT and the R in CAR"><div><span>C</span><span>A</span><span class="example-lime">T</span></div><span class="example-arrow">⇄</span><div><span>C</span><span>A</span><span class="example-peach">R</span></div></div>
+            <p class="example-caption">A small trade changes everything.</p>
+            <div class="perfect-note"><span aria-hidden="true">✦</span><div><strong>Five swaps is a perfect trade.</strong><span>Take as many as you need.</span></div></div>
+          </section>
+          <section class="desk-note"><span class="desk-label">A NOTE FOR YOUR DESK</span><p>Sometimes you have to make a word worse to make the whole puzzle better.</p><span class="note-dash">— Temporary nonsense is welcome.</span></section>
+          <div class="next-edition"><span class="live-dot"></span><div>A fresh trade every day.<small id="reset-label">New puzzle at midnight Central.</small></div></div>
+        </aside>
+      </div>
+    </main>
+
+    <footer><span>Made for your daily <em>aha.</em></span><span class="footer-mark">TRADEOFF <span aria-hidden="true">✳</span> VOL. 01</span><nav class="footer-links" aria-label="More games"><a href="../../">All games</a><a href="../inbetween/">Inbetween</a><button id="about-button">About the game</button></nav></footer>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button class="dialog-close icon-button" id="dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
+  <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript">Tradeoff needs JavaScript to move the letters. Please enable it to play.</p></noscript>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

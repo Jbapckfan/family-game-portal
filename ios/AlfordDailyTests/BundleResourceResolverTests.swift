@@ -35,8 +35,30 @@ final class BundleResourceResolverTests: XCTestCase {
         try FileManager.default.createDirectory(at: game, withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: outside, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: temporary) }
+        try Data("private".utf8).write(to: outside.appendingPathComponent("private.txt"))
+        try Data("public".utf8).write(to: game.appendingPathComponent("public.txt"))
         try FileManager.default.createSymbolicLink(at: game.appendingPathComponent("link"), withDestinationURL: outside)
+        try FileManager.default.createSymbolicLink(at: game.appendingPathComponent("file-link.txt"),
+            withDestinationURL: outside.appendingPathComponent("private.txt"))
+        try FileManager.default.createSymbolicLink(at: game.appendingPathComponent("dangling"),
+            withDestinationURL: temporary.appendingPathComponent("does-not-exist"))
+        try FileManager.default.createSymbolicLink(at: game.appendingPathComponent("internal-link.txt"),
+            withDestinationURL: game.appendingPathComponent("public.txt"))
         let resolver = BundleResourceResolver(root: root)
-        XCTAssertThrowsError(try resolver.fileURL(for: URL(string: "alford://app/games/ringcount/link/private.txt")!))
+        // Existing external targets, missing leaves, missing intermediate
+        // directories, final-component links, and dangling links must all be
+        // rejected by the resolver itself, before any file read is attempted.
+        for path in ["link/private.txt", "link/missing.txt", "link/missing/leaf.txt",
+                     "file-link.txt", "dangling", "dangling/leaf.txt", "internal-link.txt"] {
+            XCTAssertThrowsError(try resolver.fileURL(for: URL(string: "alford://app/games/ringcount/\(path)")!), path) { error in
+                guard let failure = error as? BundleResourceError else { return XCTFail("Unexpected error: \(error)") }
+                switch failure {
+                case .outsideBundle: break
+                default: XCTFail("Expected bundle containment rejection for \(path), got \(failure)")
+                }
+            }
+        }
+        let ordinaryFile = try resolver.fileURL(for: URL(string: "alford://app/games/ringcount/public.txt")!)
+        XCTAssertEqual(try String(contentsOf: ordinaryFile, encoding: .utf8), "public")
     }
 }

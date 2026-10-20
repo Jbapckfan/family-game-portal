@@ -24,8 +24,18 @@ struct BundleResourceResolver {
             throw BundleResourceError.invalidPath
         }
         if parts.count == 2 || components.percentEncodedPath.hasSuffix("/") { parts.append("index.html") }
-        let candidate = parts.reduce(root) { $0.appendingPathComponent($1) }
-            .standardizedFileURL.resolvingSymlinksInPath()
+        var candidate = root
+        for part in parts {
+            candidate.appendPathComponent(part)
+            // Bundled resources contain no symlinks. Inspect every component
+            // before resolving the full path: Darwin may leave that path
+            // unresolved when a later component does not exist. Reading the
+            // link itself also detects a dangling link without following it.
+            if (try? FileManager.default.destinationOfSymbolicLink(atPath: candidate.path)) != nil {
+                throw BundleResourceError.outsideBundle
+            }
+        }
+        candidate = candidate.standardizedFileURL.resolvingSymlinksInPath()
         guard candidate.path.hasPrefix(root.path + "/") else { throw BundleResourceError.outsideBundle }
         return candidate
     }

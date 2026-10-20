@@ -67,8 +67,11 @@ ssh Jbapckfan@192.168.1.155
 cd /volume1/docker/family-game-portal
 git status --short
 git pull --ff-only
+docker compose restart game-portal
 ```
 
-Review local changes before pulling. If Git reports conflicting work, preserve it and resolve the conflict instead of resetting or overwriting it. Static files are mounted directly, so a container restart is not needed for these additions. Open `http://192.168.1.155:8080` and verify both cards after the pull.
+Review local changes before pulling. If Git reports conflicting work, preserve it and resolve the conflict instead of resetting or overwriting it. The homepage is bind-mounted as a single file, so restart the portal service after pulling to refresh that mount. Open `http://192.168.1.155:8080` and verify both cards after the pull.
 
 The existing Mac-to-NAS sync script also transfers the root `index.html` alongside the full `games/` directory and Caddy configuration. Its existing game-import behavior is retained, and no deletion flag has been added.
+
+Docker references: [restart a selected Compose service](https://docs.docker.com/reference/cli/docker/compose/restart/) and [single-file bind-mount replacement behavior](https://github.com/moby/moby/issues/6011).

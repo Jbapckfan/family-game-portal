@@ -78,9 +78,10 @@ ssh Jbapckfan@192.168.1.155
 cd /volume1/docker/family-game-portal
 git status --short
 git pull --ff-only
+docker compose restart game-portal
 ```
 
-Review any local changes shown by `git status` before pulling; keep them intact if Git reports a conflict. Caddy serves the mounted files directly, so these static game and catalog changes do not require a container restart. Pushing to GitHub alone does not update the NAS, and repository checks do not verify a live NAS deployment.
+Review any local changes shown by `git status` before pulling; keep them intact if Git reports a conflict. The homepage is mounted as a single file. Restart the portal service after updating the catalog so the running container reopens the current homepage file. Pushing to GitHub alone does not update the NAS, and repository checks do not verify a live NAS deployment.
 
 When you update a game on your Mac:
 

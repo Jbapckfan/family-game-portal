@@ -35,8 +35,8 @@ enum DailyCalendar {
     }
 
     static func number(for key: String) -> Int? {
-        guard let date = date(for: key), let first = date(for: epoch),
-              let distance = calendar.dateComponents([.day], from: first, to: date).day else { return nil }
+        guard let requestedDate = date(for: key), let first = date(for: epoch),
+              let distance = calendar.dateComponents([.day], from: first, to: requestedDate).day else { return nil }
         return distance + 1
     }
 

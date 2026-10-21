@@ -1,5 +1,6 @@
 import XCTest
 import WebKit
+import UIKit
 @testable import AlfordDaily
 
 @MainActor
@@ -9,6 +10,27 @@ final class OfflineGamesSmokeTests: XCTestCase {
         let ruleIdentifier = "alford-offline-smoke-\(UUID().uuidString)"
         let offlineRules = try await compileOfflineRules(identifier: ruleIdentifier)
         defer { WKContentRuleListStore.default().removeContentRuleList(forIdentifier: ruleIdentifier) { _ in } }
+        // An unattached WKWebView is background content and can be suspended.
+        // Give the test the same visible-window lifecycle as the real app.
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive },
+            "The app must have a foreground scene for the offline game smoke test")
+        let previousKeyWindow = scene.windows.first { $0.isKeyWindow }
+        let hostWindow = UIWindow(windowScene: scene)
+        let hostController = UIViewController()
+        hostWindow.frame = scene.coordinateSpace.bounds
+        hostWindow.rootViewController = hostController
+        defer {
+            hostWindow.isHidden = true
+            hostWindow.rootViewController = nil
+            previousKeyWindow?.makeKey()
+        }
+        hostWindow.makeKeyAndVisible()
+        hostWindow.layoutIfNeeded()
+        XCTAssertFalse(hostWindow.isHidden)
+        XCTAssertTrue(hostWindow.isKeyWindow)
+        print("ALFORD_SMOKE host: foreground scene, visible key window")
         for (index, game) in GameID.allCases.enumerated() {
             let ready = expectation(description: "\(game.name) initializes its actual module and bridge")
             let probe = MessageProbe(game: game, ready: ready)
@@ -16,13 +38,18 @@ final class OfflineGamesSmokeTests: XCTestCase {
             // Exercise the actual bundle with HTTP(S) resources blocked, even
             // when the simulator itself has a working network connection.
             configuration.userContentController.add(offlineRules)
-            let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 390, height: 844), configuration: configuration)
+            let webView = WKWebView(frame: hostController.view.bounds, configuration: configuration)
+            webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             webView.navigationDelegate = probe
             defer {
                 webView.navigationDelegate = nil
                 webView.stopLoading()
+                webView.removeFromSuperview()
                 configuration.userContentController.removeScriptMessageHandler(forName: "alford")
             }
+            hostController.view.addSubview(webView)
+            hostController.view.layoutIfNeeded()
+            XCTAssertTrue(webView.window === hostWindow, "\(game.name) must be attached to the visible test window before loading")
             // The first cold Simulator launch needed 27.1 seconds just to start
             // WebKit's Networking process in CI. Keep later games at 20 seconds;
             // readiness still requires the actual game's trusted progress message.

@@ -4,7 +4,7 @@
 
 Target: 32 playable daily games with five creator labels. Eight ChatGPT games and six Kimi games retain their original IDs. Six DeepSeek concepts are completed by ChatGPT. Quadra retains Qwen development credit; five other Qwen concepts receive separate ChatGPT completion credit. Six implemented Claude games retain Claude development credit.
 
-The 32-game implementation is complete and has passed the web, engine, source-preservation, and native resource checks below. The older fourteen-game native pass is a baseline only. It is not evidence for the expanded native build. Publication and exact-commit native CI are recorded separately below.
+The 32-game implementation is complete and has passed the web, engine, source-preservation, and native resource checks below. The expanded app now also passes exact-commit native CI, including real offline WKWebView initialization of all 32 games. The earlier fourteen-game pass is historical context only. Publication, the two diagnosed failures, and the successful expanded native run are recorded separately below.
 
 ## Completed new rule and runtime checks
 
@@ -72,11 +72,26 @@ The existing owner-private Site was successfully updated to all 32 games. Its au
 - Saved version: `appgprj_6ad77f0216348191a061da38c4a431c4~appgver_a82f89d6765c819199406cf3f2381606`
 - Terminal result: succeeded, October 20, 2026 at 8:33 p.m. Central.
 
-The expanded private GitHub implementation commit is being finalized. The live NAS has not been updated through the currently offline local Mac connection.
+The private GitHub implementation is committed at `5cd338c6c417bcd7c571b6bb5323e92d642b3a45`. Its tree contains all 763 intended local source files and preserves 214 remote-only legacy files. File paths, Git blob hashes, and modes were checked against the final remote tree before updating `main` with an expected-head check. The repository remains private. The live NAS has not been updated through the currently offline local Mac connection.
 
 ## Expanded native CI
 
-Pending the exact-source 32-game macOS workflow. The expected suite contains 29 XCTest methods, including a real offline WKWebView pass across all 32 game documents, exact creator credit checks, native progress validation, and preserved fourteen-game saved records.
+The first expanded run, [39544590981](https://github.com/Jbapckfan/family-game-portal/actions/runs/39544590981), compiled implementation commit `5cd338c6c417bcd7c571b6bb5323e92d642b3a45` and ran all 29 XCTest methods. Twenty-eight passed; the offline game smoke test failed before its first game became ready. WebKit's Networking process took 27.1 seconds to start, exceeding that test's initial 20-second deadline.
+
+A bounded first-launch allowance and navigation diagnostics were added in test-only commit `a627441c13257a6099c4b22e71655d654bf32986`. Its [run 39546424484](https://github.com/Jbapckfan/family-game-portal/actions/runs/39546424484) again compiled and passed the other 28 methods, but the first game received no navigation or bridge events within 90 seconds. This time WebContent launched in 2.602 seconds and Networking in 5.051 seconds, so slow process startup alone did not explain the failure. The log also recorded a Simulator lockdown-service timeout before the tests started. Neither failed run verified the full collection: both emitted zero completed-game markers.
+
+Inspection found that the smoke test had never attached its WKWebView to a window. [WebKit's documented background scheduling behavior](https://bugs.webkit.org/show_bug.cgi?id=283794) explains why an unattached view can suspend under newer SDKs. Test-only commit `7ea81e2e56cb37a57e39d110624c6d461e55f607` mounts every view in a retained visible window, asserts attachment, and restores the original host afterward. It preserves the production configuration, HTTP(S) blocker, trusted progress and origin validation, all 32 games, creator labels, storage checks, and the same bounded deadlines. The patch received independent review and passed the structural and bundle validation checks.
+
+The exact-source follow-up, [run 39549135766](https://github.com/Jbapckfan/family-game-portal/actions/runs/39549135766), **passed** for commit `7ea81e2e56cb37a57e39d110624c6d461e55f607` on October 21, 2026 at 05:31:35 UTC. Its actual XCTest log reports **29 tests executed, zero failures**, and includes the full ordered sequence of **32 completed-game markers**, from Ringcount through Claude Tumbler. Each marker follows real bundled-game initialization, trusted progress, populated/native layout, creator validation, and persistent-origin checks, with HTTP(S) resources blocked. The visible-host correction resolved the reproduced failure without changing production game or app code.
+
+The verified environment was an iPhone 17 Pro Simulator running iOS 26.4.1 (23E254a), with Xcode 26.6 (17F113) on the macOS 26 Intel runner. Platform metadata was independently read from the downloaded result bundle. Code signing was disabled for this simulator build.
+
+The run produced these GitHub Actions artifacts, currently retained through November 4, 2026:
+
+- `AlfordDaily-iOS-Simulator`: artifact `12322374541`, 8,840,950 bytes.
+- `AlfordDaily-iOS-test-results`: artifact `12323071433`, 134,916 bytes.
+
+The final documentation update does not change the tested app, resources, or tests. The portable source package identifies that final documentation commit while this report retains the exact commit that passed native CI.
 
 ## Release boundaries
 

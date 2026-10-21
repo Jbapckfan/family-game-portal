@@ -13,7 +13,7 @@ The 29 XCTest methods cover:
 - An explicitly disabled commerce configuration remaining inactive.
 - All 32 actual bundled games loading through the production custom scheme handler with HTTP(S) blocked, posting trusted progress, displaying their game titles and developer labels, rendering the puzzle, activating native layout, and sharing a persistent same-origin localStorage value across distinct web views.
 
-These are the suite's coverage requirements, not a claim that a particular revision has passed. Consult the actual workflow for that revision and the current [unified verification report](../../docs/verification-unified-2026-10-20.md). The portable Python validator checks source/project/resource structure. It cannot replace Swift compilation or simulator execution. The smoke test does not prove process-relaunch persistence, a full native gameplay session, StoreKit behavior, or accessibility quality; use the checks below for those remaining behaviors.
+These are the suite's coverage requirements, not a claim that a particular revision has passed. Consult the actual workflow for that revision and the current [expanded verification report](../../docs/verification-expanded-2026-10-20.md). The portable Python validator checks source/project/resource structure. It cannot replace Swift compilation or simulator execution. The smoke test does not prove process-relaunch persistence, a full native gameplay session, StoreKit behavior, or accessibility quality; use the checks below for those remaining behaviors.
 
 ## Device and Simulator checks
 

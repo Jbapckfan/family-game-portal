@@ -76,7 +76,20 @@ All 32 initial screens were measured and visually reviewed at narrow phone width
 
 Interactive browser checks verified a correct Second Sense noun/verb match, creator filtering with exact Claude credits, and the timed game's Statistics dialog. Syntax Siege retained 19 seconds and 100HP while its statistics were open, then resumed from 19 seconds when the panel closed.
 
-The local runtime has no Xcode or iOS Simulator. Native compilation and XCTest execution are supplied by the repository's [iOS CI workflow](https://github.com/Jbapckfan/family-game-portal/actions/workflows/ios.yml) for the release commit; the structural inventory above is not an execution result.
+## Release closeout — October 21, 2026
+
+The implementation is committed in the private repository as [`3f96437deab6bc0333dce4fb4aa8bded6b1e0f55`](https://github.com/Jbapckfan/family-game-portal/commit/3f96437deab6bc0333dce4fb4aa8bded6b1e0f55). The redesigned collection is live at [Alford Daily](https://alford-daily.jbapckfan.chatgpt.site), published version 4, with its existing owner-only access.
+
+Native verification is complete for that implementation commit. [iOS verification run 39590688901](https://github.com/Jbapckfan/family-game-portal/actions/runs/39590688901) completed successfully on its first attempt:
+
+- The simulator app compiled and the complete XCTest suite passed: **29 tests, zero failures**.
+- The offline smoke test initialized **all 32 games** with HTTP(S) blocked, checking populated puzzles, native layout, visible creator credits, trusted daily progress, and the shared persistent origin.
+- Bundle verification confirmed **263 matching runtime files**, covering 32 game entries and two shared runtimes.
+- The workflow saved the simulator app and test-result artifacts.
+
+The release closeout independently rechecked the successful deployment and CI job, reran native asset parity and Xcode project structural validation, and compared 300 game assets in the retained publication archive with canonical game source with no differences. The 427 web checks and visual review above describe the earlier executed redesign validation; they were not rerun during closeout.
+
+This verifies the web release and iOS Simulator build. A signed physical-device distribution, App Store submission, and deployment to the separate home NAS are outside this UI release verification.
 
 ## Maintenance
 

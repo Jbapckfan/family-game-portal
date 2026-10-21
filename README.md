@@ -19,7 +19,7 @@ docker compose up -d
 
 ## Alford Daily: one attributed collection
 
-The daily-puzzle web and iOS app contains **14 games: eight developed by ChatGPT and six developed by Kimi**. Cards and game screens retain their original developer labels, with an All / ChatGPT / Kimi filter. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
+The daily-puzzle web and iOS app contains **32 games with ChatGPT, Kimi, DeepSeek, Qwen, and Claude creator labels**. Cards and game screens retain their original developer labels, with filters for all five creators and separate concept/completion credit where applicable. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
 
 ## Games Included
 
@@ -115,7 +115,7 @@ The sync script transfers the root `index.html` catalog along with the `games/` 
 
 ## Alford Daily puzzles
 
-The 14 daily games have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
+The 32 daily games have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
 
 | Game | Local portal path | Prepared boards |
 | --- | --- | --- |
@@ -153,11 +153,11 @@ npm --prefix games/ringcount test
 npm --prefix games/ringcount run check
 ```
 
-There are 570 prepared boards across the collection. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [portfolio research and app plan](docs/portfolio-and-app-plan.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
+The original eight games contain 570 prepared boards; the full 32-game collection contains 5,842 prepared daily puzzle/answer records. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [current collection record](docs/unified-collection.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
 
-The [iOS app project](ios/README.md) includes all 14 attributed games, led by Ringcount and Switchpath, with 3,932 prepared puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
+The [iOS app project](ios/README.md) includes all 32 attributed games, led by Ringcount and Switchpath, with 5,842 prepared daily puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
 
-Tradeoff and Inbetween remain in the family portal as earlier games. The [iOS launch and monetization plan](docs/ios-launch-and-monetization.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [release verification record](docs/verification-2026-10-20.md) for executed checks and remaining release gates.
+Tradeoff and Inbetween remain in the family portal as earlier games. The [current monetization plan](docs/monetization-unified.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [expanded release verification record](docs/verification-expanded-2026-10-20.md) for executed checks and remaining release gates.
 
 ---
 
@@ -174,7 +174,7 @@ family-game-portal/
 ├── SETUP.md               # Detailed setup guide
 └── games/
     ├── index.html         # Legacy game catalog
-    ├── daily/             # Alford Daily hub for all 14 attributed games
+    ├── daily/             # Alford Daily hub for all 32 attributed games
     ├── tradeoff/          # Daily letter-swap game, source, tests, and generator
     ├── inbetween/         # Daily letter-pair insertion game
     ├── counterpart/       # Ordered word relationships

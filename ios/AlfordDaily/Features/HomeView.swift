@@ -32,9 +32,21 @@ struct HomeView: View {
                         .font(.caption).foregroundStyle(Theme.muted)
                 }.paperCard()
 
-                Picker("Original developer", selection: $creatorFilter) {
-                    ForEach(CreatorFilter.allCases) { filter in Text(filter.rawValue).tag(filter) }
-                }.pickerStyle(.segmented).accessibilityIdentifier("creator-filter")
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(CreatorFilter.allCases) { filter in
+                            Button { creatorFilter = filter } label: {
+                                Text(filter.rawValue).font(.subheadline.weight(.semibold))
+                                    .padding(.horizontal, 15).frame(minHeight: 44)
+                                    .foregroundStyle(creatorFilter == filter ? Theme.card : Theme.ink)
+                                    .background(creatorFilter == filter ? Theme.accent : Theme.card, in: Capsule())
+                                    .overlay(Capsule().stroke(Theme.line, lineWidth: 0.7))
+                            }.buttonStyle(.plain)
+                                .accessibilityLabel("\(filter.rawValue) games")
+                                .accessibilityAddTraits(creatorFilter == filter ? .isSelected : [])
+                        }
+                    }
+                }.accessibilityLabel("Filter games by creator").accessibilityIdentifier("creator-filter")
 
                 if creatorFilter.games.contains(where: \.isFlagship) {
                     VStack(alignment: .leading, spacing: 12) {
@@ -47,7 +59,7 @@ struct HomeView: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("A WAY WITH WORDS").font(.caption.weight(.semibold)).tracking(1.2).foregroundStyle(Theme.muted)
+                    Text("MORE WAYS TO PLAY").font(.caption.weight(.semibold)).tracking(1.2).foregroundStyle(Theme.muted)
                     ForEach(creatorFilter.games.filter { !$0.isFlagship }) { game in
                         NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
                             .buttonStyle(.plain)
@@ -78,7 +90,8 @@ private struct GameCard: View {
                     Text(game.name).font(.system(game.isFlagship ? .title2 : .title3, design: .serif).weight(.semibold))
                     if status == .won { Image(systemName: "checkmark.seal.fill").foregroundStyle(game.tint).accessibilityHidden(true) }
                 }
-                Text(game.creator.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+                Text(game.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(game.subtitle).font(.subheadline).foregroundStyle(Theme.muted).fixedSize(horizontal: false, vertical: true)
                 Text(status?.label ?? "Ready when you are").font(.caption.weight(.semibold)).foregroundStyle(game.tint)
             }

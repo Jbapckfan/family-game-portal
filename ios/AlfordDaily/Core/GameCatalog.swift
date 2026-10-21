@@ -3,14 +3,22 @@ import Foundation
 enum GameCreator: String, CaseIterable, Identifiable, Hashable {
     case chatGPT = "ChatGPT"
     case kimi = "Kimi"
+    case deepSeek = "DeepSeek"
+    case qwen = "Qwen"
+    case claude = "Claude"
     var id: String { rawValue }
-    var credit: String { "Developed by \(rawValue)" }
+    var credit: String {
+        self == .deepSeek ? "Concept by DeepSeek · Built by ChatGPT" : "Developed by \(rawValue)"
+    }
 }
 
 enum CreatorFilter: String, CaseIterable, Identifiable, Hashable {
     case all = "All"
     case chatGPT = "ChatGPT"
     case kimi = "Kimi"
+    case deepSeek = "DeepSeek"
+    case qwen = "Qwen"
+    case claude = "Claude"
     var id: String { rawValue }
     var games: [GameID] {
         GameID.allCases.filter { self == .all || $0.creator.rawValue == rawValue }
@@ -32,6 +40,24 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
     case kimiHunch = "kimi-hunch"
     case kimiCircuit = "kimi-circuit"
     case kimiQuartet = "kimi-quartet"
+    case deepSeekTwinHive = "deepseek-twin-hive"
+    case deepSeekSpare = "deepseek-spare"
+    case deepSeekRung = "deepseek-rung"
+    case deepSeekCipher = "deepseek-cipher"
+    case deepSeekTrail = "deepseek-trail"
+    case deepSeekSplit = "deepseek-split"
+    case qwenQuadra = "qwen-quadra"
+    case qwenLogicLattice = "qwen-logic-lattice"
+    case qwenSyntaxSiege = "qwen-syntax-siege"
+    case qwenMemoryMaze = "qwen-memory-maze"
+    case qwenPatternPrism = "qwen-pattern-prism"
+    case qwenTerritoryTactics = "qwen-territory-tactics"
+    case claudeDovetail = "claude-dovetail"
+    case claudeSplice = "claude-splice"
+    case claudeSprout = "claude-sprout"
+    case claudeTangle = "claude-tangle"
+    case claudeKeystone = "claude-keystone"
+    case claudeTumbler = "claude-tumbler"
 
     var id: String { rawValue }
 
@@ -51,6 +77,24 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .kimiHunch: "Hunch"
         case .kimiCircuit: "Circuit"
         case .kimiQuartet: "Quartet"
+        case .deepSeekTwinHive: "Twin Hive"
+        case .deepSeekSpare: "Spare"
+        case .deepSeekRung: "Rung"
+        case .deepSeekCipher: "Cipher"
+        case .deepSeekTrail: "Trail"
+        case .deepSeekSplit: "Split"
+        case .qwenQuadra: "Quadra"
+        case .qwenLogicLattice: "Logic Lattice"
+        case .qwenSyntaxSiege: "Syntax Siege"
+        case .qwenMemoryMaze: "Memory Maze"
+        case .qwenPatternPrism: "Pattern Prism"
+        case .qwenTerritoryTactics: "Territory Tactics"
+        case .claudeDovetail: "Dovetail"
+        case .claudeSplice: "Splice"
+        case .claudeSprout: "Sprout"
+        case .claudeTangle: "Tangle"
+        case .claudeKeystone: "Keystone"
+        case .claudeTumbler: "Tumbler"
         }
     }
 
@@ -70,6 +114,24 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .kimiHunch: "Follow your clues to the hidden word."
         case .kimiCircuit: "Chain words around the letter arcs."
         case .kimiQuartet: "Sixteen words. Four connections."
+        case .deepSeekTwinHive: "Every word needs both golden letters."
+        case .deepSeekSpare: "Four meaning pairs. One word left over."
+        case .deepSeekRung: "One letter at a time. Reach the target."
+        case .deepSeekCipher: "One secret alphabet. Decode the phrase."
+        case .deepSeekTrail: "Nine tiles. One winding word."
+        case .deepSeekSplit: "Ten letters. Two clued words."
+        case .qwenQuadra: "Four words. One category. Sixteen letters."
+        case .qwenLogicLattice: "Fill the grid. Satisfy every clue."
+        case .qwenSyntaxSiege: "Build words before the wave reaches you."
+        case .qwenMemoryMaze: "Study the route. Find it from memory."
+        case .qwenPatternPrism: "Find the rule. Predict what comes next."
+        case .qwenTerritoryTactics: "Two moves. Surround and capture."
+        case .claudeDovetail: "Fill the missing links in a compound-word chain."
+        case .claudeSplice: "Twelve word halves. Six complete words."
+        case .claudeSprout: "Add a letter. Grow an eight-letter bloom."
+        case .claudeTangle: "Three words. One string. Keep their letter order."
+        case .claudeKeystone: "One hidden word connects every clue."
+        case .claudeTumbler: "Read the alphabet ranges. Crack the lock."
         }
     }
 
@@ -89,6 +151,24 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .kimiHunch: "lightbulb"
         case .kimiCircuit: "circle.hexagongrid"
         case .kimiQuartet: "square.grid.2x2"
+        case .deepSeekTwinHive: "hexagon"
+        case .deepSeekSpare: "rectangle.split.2x2"
+        case .deepSeekRung: "arrow.up.right"
+        case .deepSeekCipher: "lock.open"
+        case .deepSeekTrail: "point.topleft.down.curvedto.point.bottomright.up"
+        case .deepSeekSplit: "rectangle.split.2x1"
+        case .qwenQuadra: "square.grid.2x2"
+        case .qwenLogicLattice: "square.grid.3x3"
+        case .qwenSyntaxSiege: "shield"
+        case .qwenMemoryMaze: "brain.head.profile"
+        case .qwenPatternPrism: "diamond"
+        case .qwenTerritoryTactics: "flag"
+        case .claudeDovetail: "link"
+        case .claudeSplice: "rectangle.split.2x1"
+        case .claudeSprout: "leaf"
+        case .claudeTangle: "line.3.horizontal"
+        case .claudeKeystone: "building.columns"
+        case .claudeTumbler: "lock"
         }
     }
 
@@ -96,10 +176,25 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
     var creator: GameCreator {
         switch self {
         case .kimiCairn, .kimiMorph, .kimiTangle, .kimiHunch, .kimiCircuit, .kimiQuartet: .kimi
+        case .deepSeekTwinHive, .deepSeekSpare, .deepSeekRung, .deepSeekCipher, .deepSeekTrail, .deepSeekSplit: .deepSeek
+        case .qwenQuadra, .qwenLogicLattice, .qwenSyntaxSiege, .qwenMemoryMaze, .qwenPatternPrism, .qwenTerritoryTactics: .qwen
+        case .claudeDovetail, .claudeSplice, .claudeSprout, .claudeTangle, .claudeKeystone, .claudeTumbler: .claude
         default: .chatGPT
         }
     }
-    var allowsLoss: Bool { self == .shortlist || self == .kimiHunch || self == .kimiQuartet }
+    var credit: String {
+        creator == .qwen && self != .qwenQuadra ? "Concept by Qwen · Built by ChatGPT" : creator.credit
+    }
+    var attributionDescription: String {
+        if creator == .deepSeek || (creator == .qwen && self != .qwenQuadra) {
+            return "Original concept: \(creator.rawValue). Playable implementation and integration: ChatGPT. Both contributions remain credited in this collection."
+        }
+        return "Original developer: \(creator.rawValue). Included in the Alford Daily collection with its original attribution."
+    }
+    var allowsLoss: Bool {
+        [GameID.shortlist, .kimiHunch, .kimiQuartet, .deepSeekSpare, .qwenQuadra, .qwenSyntaxSiege,
+         .claudeDovetail, .claudeSplice, .claudeSprout, .claudeTangle, .claudeKeystone, .claudeTumbler].contains(self)
+    }
     var collectionCount: Int {
         switch self {
         case .counterpart, .secondSense: 30
@@ -110,6 +205,14 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .kimiHunch: 937
         case .kimiCircuit: 286
         case .kimiQuartet: 420
+        case .deepSeekTwinHive, .deepSeekSpare, .deepSeekRung, .deepSeekCipher, .deepSeekTrail, .deepSeekSplit,
+             .qwenQuadra, .qwenLogicLattice, .qwenSyntaxSiege, .qwenMemoryMaze, .qwenPatternPrism, .qwenTerritoryTactics: 30
+        case .claudeDovetail: 77
+        case .claudeSplice: 73
+        case .claudeSprout: 128
+        case .claudeTangle: 160
+        case .claudeKeystone: 58
+        case .claudeTumbler: 1054
         default: 90
         }
     }

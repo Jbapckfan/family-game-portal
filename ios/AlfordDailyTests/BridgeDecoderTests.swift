@@ -65,7 +65,7 @@ final class BridgeDecoderTests: XCTestCase {
         XCTAssertNil(BridgeDecoder.decode(["type": "evaluate", "script": "alert(1)"], context: validContext, now: now))
     }
 
-    func testAllFourteenCanonicalGamesCanReportProgressAndOnlyLossGamesCanReportLosses() {
+    func testAllThirtyTwoCanonicalGamesCanReportProgressAndOnlyLossGamesCanReportLosses() {
         for game in GameID.allCases {
             let context = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0,
                 sourceURL: game.localURL, game: game)
@@ -74,7 +74,8 @@ final class BridgeDecoderTests: XCTestCase {
             body["name"] = game.name
             XCTAssertNotNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
             body["status"] = "lost"
-            if [GameID.shortlist, .kimiHunch, .kimiQuartet].contains(game) {
+            if [GameID.shortlist, .kimiHunch, .kimiQuartet, .deepSeekSpare, .qwenQuadra, .qwenSyntaxSiege,
+                .claudeDovetail, .claudeSplice, .claudeSprout, .claudeTangle, .claudeKeystone, .claudeTumbler].contains(game) {
                 XCTAssertNotNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
             } else {
                 XCTAssertNil(BridgeDecoder.decode(body, context: context, now: now), game.rawValue)
@@ -90,6 +91,20 @@ final class BridgeDecoderTests: XCTestCase {
             body["slug"] = "kimi-cairn"
             body["name"] = "Cairn"
             XCTAssertNil(BridgeDecoder.decode(body, context: context, now: now), path)
+        }
+    }
+
+    func testSharedModulesAndOtherImportedDocumentsCannotClaimActiveProgress() {
+        for game in CreatorFilter.deepSeek.games + CreatorFilter.qwen.games + CreatorFilter.claude.games {
+            let otherGame: GameID = game == .deepSeekCipher ? .qwenQuadra : .deepSeekCipher
+            for path in ["/games/deepseek-runtime/core.mjs", "/games/deepseek-runtime/common.mjs", "/games/\(otherGame.rawValue)/"] {
+                let context = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0,
+                    sourceURL: URL(string: "alford://app\(path)"), game: game)
+                var body = payload
+                body["slug"] = game.rawValue
+                body["name"] = game.name
+                XCTAssertNil(BridgeDecoder.decode(body, context: context, now: now), path)
+            }
         }
     }
 }

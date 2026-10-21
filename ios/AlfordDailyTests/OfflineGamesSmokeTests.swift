@@ -26,14 +26,18 @@ final class OfflineGamesSmokeTests: XCTestCase {
             let progress = try XCTUnwrap(probe.progress, "No trusted progress message from \(game.name)")
             XCTAssertEqual(progress.game, game)
             XCTAssertEqual(progress.mode, .daily)
-            let boardSelector = game.creator == .kimi ? "#root [data-game-ready='true']" : game == .tradeoff ? "#board" : "#puzzle"
-            let nativeCheck = game.creator == .kimi ? "document.documentElement.dataset.native === 'true'" : "document.body.classList.contains('native-app') || document.documentElement.classList.contains('native-app')"
-            let raw = try await evaluate("({ title: document.title, populated: document.querySelector(\"\(boardSelector)\")?.childElementCount > 0, native: (\(nativeCheck)), creator: document.body.dataset.gameCreator })", in: webView, game: game)
+            let usesSharedModules = game.creator == .deepSeek || game.creator == .qwen || game.creator == .claude
+            let boardSelector = game.creator == .kimi ? "#root [data-game-ready='true']" : usesSharedModules ? "#puzzle[data-game-ready='true']" : game == .tradeoff ? "#board" : "#puzzle"
+            let nativeCheck = game.creator == .kimi ? "document.documentElement.dataset.native === 'true'" : usesSharedModules ? "document.body.classList.contains('native-app') && document.documentElement.dataset.native === 'true'" : "document.body.classList.contains('native-app') || document.documentElement.classList.contains('native-app')"
+            let raw = try await evaluate("({ title: document.title, populated: document.querySelector(\"\(boardSelector)\")?.childElementCount > 0, native: (\(nativeCheck)), creator: document.body.dataset.gameCreator, credit: document.querySelector('[data-creator-label]')?.textContent?.trim() })", in: webView, game: game)
             let state = try XCTUnwrap(raw as? [String: Any])
             XCTAssertTrue((state["title"] as? String)?.contains(game.name) == true)
             XCTAssertEqual(state["populated"] as? Bool, true, game.rawValue)
             XCTAssertEqual(state["native"] as? Bool, true, game.rawValue)
             XCTAssertEqual(state["creator"] as? String, game.creator.rawValue, game.rawValue)
+            if usesSharedModules {
+                XCTAssertEqual(state["credit"] as? String, game.credit, game.rawValue)
+            }
             if index == 0 {
                 _ = try await evaluate("localStorage.setItem('\(probeKey)', 'retained')", in: webView, game: game)
             } else {

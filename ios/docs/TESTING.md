@@ -4,25 +4,25 @@
 
 Run the repository's iOS macOS workflow, or the `xcodebuild test` command in the iOS README. The shared `AlfordDaily` scheme builds the app and runs the hosted `AlfordDailyTests` target on an iPhone Simulator. Keep the `.xcresult` and full build log when diagnosing a failure.
 
-The 20 XCTest methods cover:
+The 29 XCTest methods cover:
 
-- Central midnight, calendar validity, daylight-saving transitions, daily numbering, and the six-game catalog.
+- Central midnight, calendar validity, daylight-saving transitions, daily numbering, the 32-game catalog, creator filtering, original Claude collection counts, distinct IDs for both Tangle games, and separate concept/implementation credits.
 - Bridge rejection of untrusted frames/origins/ports, another game's document, malformed dates, future dates, Boolean/string/fractional counters, inconsistent totals, unknown actions, and oversized share text.
-- First-terminal-result preservation, practice separation, global/per-game streak rules, stale-statistics regression, UserDefaults restoration, and clearing progress while retaining preferences.
-- Bundle document resolution, JavaScript/font MIME types, path traversal/encoded separator rejection, and symlink escape rejection.
+- First-terminal-result preservation, practice separation, global/per-game streak rules, stale-statistics regression, UserDefaults restoration, migration of existing six- and fourteen-game results, and clearing progress while retaining preferences.
+- Bundle document resolution, constrained shared Kimi resources, the exact three-file shared module namespace, JavaScript/font MIME types, path traversal/encoded separator rejection, and symlink escape rejection.
 - An explicitly disabled commerce configuration remaining inactive.
-- All six actual bundled games loading through the production custom scheme handler, posting trusted progress, rendering the puzzle, activating native layout, and sharing a persistent same-origin localStorage value across distinct web views.
+- All 32 actual bundled games loading through the production custom scheme handler with HTTP(S) blocked, posting trusted progress, displaying their game titles and developer labels, rendering the puzzle, activating native layout, and sharing a persistent same-origin localStorage value across distinct web views.
 
-The portable Python validator checks source/project/resource structure. It cannot replace Swift compilation or simulator execution. The smoke test does not prove process-relaunch persistence, a full native gameplay session, StoreKit behavior, or accessibility quality; use the checks below for those remaining behaviors.
+These are the suite's coverage requirements, not a claim that a particular revision has passed. Consult the actual workflow for that revision and the current [unified verification report](../../docs/verification-unified-2026-10-20.md). The portable Python validator checks source/project/resource structure. It cannot replace Swift compilation or simulator execution. The smoke test does not prove process-relaunch persistence, a full native gameplay session, StoreKit behavior, or accessibility quality; use the checks below for those remaining behaviors.
 
 ## Device and Simulator checks
 
 | Area | Procedure | Expected result |
 | --- | --- | --- |
-| First launch | Install a clean normal build and open it. | Today shows the two flagship games and four word games; no account, network, notification, tracking, or purchase prompt appears. |
+| First launch | Install a clean normal build and open it. | Today shows all 32 games and All / ChatGPT / Kimi / DeepSeek / Qwen / Claude filters. Eight are developed by ChatGPT, six by Kimi, six by Claude, six are DeepSeek concepts built by ChatGPT, Quadra is developed by Qwen, and the other five Qwen concepts are built by ChatGPT; no account, network, notification, tracking, or purchase prompt appears. |
 | Offline gameplay | Enable Airplane Mode on a device, launch each game, make several moves, and finish a puzzle. | All rules, fonts, content, explanations, and game controls work without a remote origin. |
 | Process persistence | Make a partial move in each game, terminate the app, and reopen it. | Each game resumes its own daily/practice state; a terminal daily result remains terminal. |
-| Daily results | Solve one daily, reveal another, finish a Shortlist loss, and play practice. | Today counts only daily terminal results as completed; only daily wins as solved; practice leaves the daily ledger unchanged. |
+| Daily results | Solve one daily, reveal another, finish unsuccessful daily rounds in Shortlist, Hunch, Quartet, Spare, Quadra, Syntax Siege, and the six Claude games, and play practice. | Today counts only daily terminal results as completed; only daily wins as solved; practice leaves the daily ledger unchanged. Claude's Tangle result does not change Kimi's Tangle result. |
 | Midnight | Test the Central date boundary, including a daylight-saving boundary, using a disposable Simulator. | Home date and daily numbering agree with the engines; no future record inflates today's count. Restore the correct clock after testing. |
 | Native navigation | Open each game, use its local home link if visible, use the native Back button, and switch tabs. | Navigation stays in the bundled collection; Record and Settings remain native. |
 | Native share | Finish a puzzle and tap Share; cancel once, then choose an available destination. | System share sheet contains the spoiler-free score; canceling does not change the result. |

@@ -18,8 +18,15 @@ ROOT = Path(__file__).resolve().parents[1]
 ORIGINAL_GAMES = {"counterpart", "shortlist", "second-sense", "sideways", "ringcount", "switchpath"}
 CLASSIC_GAMES = {"tradeoff", "inbetween"}
 KIMI_GAMES = {"kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet"}
-GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES
-BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime"}
+DEEPSEEK_GAMES = {"deepseek-twin-hive", "deepseek-spare", "deepseek-rung", "deepseek-cipher", "deepseek-trail", "deepseek-split"}
+QWEN_GAMES = {"qwen-quadra", "qwen-logic-lattice", "qwen-syntax-siege", "qwen-memory-maze", "qwen-pattern-prism", "qwen-territory-tactics"}
+CLAUDE_GAMES = {"claude-dovetail", "claude-splice", "claude-sprout", "claude-tangle", "claude-keystone", "claude-tumbler"}
+SHARED_MODULE_GAMES = DEEPSEEK_GAMES | QWEN_GAMES | CLAUDE_GAMES
+GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES
+BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
+SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
+SHARED_GAME_OPTIONAL_FILES = {"styles.css"}
+DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
 ASSET_EXTENSIONS = {"js", "mjs", "css", "json", "txt", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "avif", "woff", "woff2", "ttf", "otf"}
@@ -152,13 +159,101 @@ def validate_kimi_references(games_dir, files):
                 check(match.group(1), origin)
 
 
+def literal_module_references(text):
+    """Find literal dependencies without treating dictionary strings as syntax."""
+    token_pattern = re.compile(r'''
+        (?P<comment>//[^\r\n]*|/\*.*?\*/)
+        |(?P<string>"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')
+        |(?P<word>[A-Za-z_$][\w$]*)
+        |(?P<punct>[^\s])
+    ''', re.S | re.X)
+    tokens = [(match.lastgroup, match.group()[1:-1] if match.lastgroup == "string" else match.group())
+              for match in token_pattern.finditer(text) if match.lastgroup != "comment"]
+
+    def at(index):
+        return tokens[index] if 0 <= index < len(tokens) else (None, None)
+
+    for index, token in enumerate(tokens):
+        if token not in {("word", "import"), ("word", "export")} or at(index - 1) == ("punct", "."):
+            continue
+        cursor = index + 1
+        if token == ("word", "import"):
+            if at(cursor)[0] == "string":
+                yield at(cursor)[1]  # Side-effect import.
+                continue
+            if at(cursor) == ("punct", "("):
+                if at(cursor + 1)[0] == "string":
+                    yield at(cursor + 1)[1]  # Literal dynamic import.
+                continue
+            if at(cursor)[0] == "word":
+                cursor += 1  # Optional default import binding.
+                if at(cursor) == ("punct", ","):
+                    cursor += 1
+        elif at(cursor) not in {("punct", "{"), ("punct", "*")}:
+            continue  # Exported declarations and their data are not dependencies.
+
+        if at(cursor) == ("punct", "*"):
+            cursor += 1
+            if at(cursor) == ("word", "as"):
+                cursor += 2
+        elif at(cursor) == ("punct", "{"):
+            cursor += 1
+            while at(cursor) not in {("punct", "}"), (None, None)}:
+                cursor += 1
+            cursor += 1
+        if at(cursor) == ("word", "from") and at(cursor + 1)[0] == "string":
+            yield at(cursor + 1)[1]
+
+
+def validate_shared_module_references(games_dir, files):
+    shared = {f"deepseek-runtime/{name}" for name in DEEPSEEK_SHARED_FILES}
+
+    def check(reference, origin, allow_data=False):
+        parsed = urlsplit(reference)
+        if allow_data and parsed.scheme == "data":
+            return
+        require(not parsed.scheme and not parsed.netloc, f"Game module resource must be local: {origin}: {reference}")
+        path = unquote(parsed.path)
+        require(path and not any(character in path for character in ["\\", "\0", "%"]), f"Invalid game module resource: {origin}: {reference}")
+        if path.startswith("/"):
+            require(path.startswith("/games/"), f"Unexpected absolute game module resource: {reference}")
+            target = posixpath.normpath(path.removeprefix("/games/"))
+        else:
+            target = posixpath.normpath(posixpath.join(posixpath.dirname(origin), path))
+        owner = origin.split("/")[0]
+        own_files = {f"{owner}/{name}" for name in SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES} if owner in SHARED_MODULE_GAMES else set()
+        require(target in shared | own_files, f"Game module resource is outside its runtime: {origin}: {reference}")
+        require(target in files, f"Missing game module resource: {origin}: {reference}")
+
+    for game in sorted(SHARED_MODULE_GAMES):
+        origin = f"{game}/index.html"
+        parser = KimiDocumentReferences()
+        parser.feed((games_dir / origin).read_text())
+        require(parser.scripts, "Missing game application script: " + origin)
+        for reference in parser.references:
+            check(reference, origin)
+    for origin in sorted(files):
+        if origin.split("/")[0] not in SHARED_MODULE_GAMES | {"deepseek-runtime"}:
+            continue
+        text = (games_dir / origin).read_text()
+        if origin.endswith(".css"):
+            for match in re.finditer(r'''url\(\s*(?:"([^"]+)"|'([^']+)'|([^\s)]+))\s*\)''', text):
+                check(next(value for value in match.groups() if value is not None), origin, allow_data=True)
+            for match in re.finditer(r'''@import\s+["']([^"']+)["']''', text):
+                check(match.group(1), origin)
+        elif origin.endswith(".mjs"):
+            # Validate literal static, re-export, side-effect, and dynamic imports.
+            for reference in literal_module_references(text):
+                check(reference, origin)
+
+
 def validate_web_bundle(games_dir):
     games_dir = Path(games_dir)
     for ancestor in [games_dir, games_dir.parent, games_dir.parent.parent]:
         require(not ancestor.is_symlink(), "Bundled directory cannot be a symlink: " + str(ancestor))
     entries = list(games_dir.iterdir())
     require(all(path.is_dir() and not path.is_symlink() for path in entries), "Every bundle root must be a real directory")
-    require({path.name for path in entries} == BUNDLE_DIRECTORIES, "Bundle must contain exactly 14 game entries and kimi-runtime")
+    require({path.name for path in entries} == BUNDLE_DIRECTORIES, "Bundle must contain exactly 32 game entries and both shared runtimes")
     all_files = set()
     for game in sorted(BUNDLE_DIRECTORIES):
         files, directories = bundle_inventory(games_dir / game)
@@ -171,6 +266,11 @@ def validate_web_bundle(games_dir):
                 parts = path.split("/")
                 allowed = ASSET_EXTENSIONS if parts[0] == "assets" else FONT_EXTENSIONS if parts[0] == "fonts" else set()
                 require(len(parts) >= 2 and Path(path).suffix.lower().removeprefix(".") in allowed, "Unexpected shared Kimi runtime file: " + path)
+        elif game == "deepseek-runtime":
+            require(files == DEEPSEEK_SHARED_FILES and not directories, "Shared module runtime must contain only core.mjs, common.mjs and styles.css")
+        elif game in SHARED_MODULE_GAMES:
+            require(SHARED_GAME_REQUIRED_FILES <= files, f"Missing runtime files for {game}: {sorted(SHARED_GAME_REQUIRED_FILES - files)}")
+            require(files <= SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES and not directories, "Unexpected game runtime file: " + game)
         else:
             runtime = RUNTIME_FILES - ({"shell.mjs"} if game in CLASSIC_GAMES else set())
             require(runtime <= files, f"Missing runtime files for {game}: {sorted(runtime - files)}")
@@ -181,6 +281,7 @@ def validate_web_bundle(games_dir):
             require(all(Path(path).suffix.lower().removeprefix(".") in FONT_EXTENSIONS for path in fonts), "Unexpected font resource: " + game)
         all_files.update(f"{game}/{path}" for path in files)
     validate_kimi_references(games_dir, all_files)
+    validate_shared_module_references(games_dir, all_files)
     return len(all_files)
 
 

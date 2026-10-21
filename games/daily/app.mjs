@@ -41,7 +41,7 @@ export function readDailyStatus({slug, engine, puzzles, storage, now = new Date(
 }
 
 
-/** Imported game snapshots contain status only; detailed Kimi saves stay namespaced. */
+/** Imported game snapshots contain status only; each game's detailed saves stay namespaced. */
 export function readKimiStatus({slug, storage, now = new Date()}) {
   const key = dateKey(now);
   const saved = readJSON(storage, `${slug}:v1:status:${key}`);
@@ -63,10 +63,10 @@ const STATUS = Object.freeze({
 });
 
 function card(game, url) {
-  return `<a class="game-card ${game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
+  return `<a class="game-card ${game.group === 'logic' ? 'word' : game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
     <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
     <div class="card-motif">${motif(game.motif)}</div>
-    <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">Developed by ${escape(game.creator)}</span><p>${escape(game.description)}</p></div>
+    <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">${escape(game.credit || `Developed by ${game.creator}`)}</span><p>${escape(game.description)}</p></div>
     <div class="card-bottom"><span class="card-detail">${escape(game.detail || game.category)}</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
   </a>`;
 }
@@ -75,7 +75,7 @@ export function startHome(doc = document, win = window) {
   const $ = id => doc.getElementById(id);
   const base = doc.documentElement.dataset.gameBase || './games/';
   const urls = new Map(GAMES.map(game => [game.slug, gameURL(game.slug, base, doc.baseURI)]));
-  for (const group of ['flagship', 'word', 'classic']) {
+  for (const group of ['flagship', 'word', 'logic', 'classic']) {
     $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
   }
   $('progress-marks').innerHTML = LAUNCH_GAMES.map(game => `<li class="progress-mark game-${game.slug}" data-mark="${game.slug}" title="${escape(game.name)}"><span class="mark-symbol" aria-hidden="true"></span><span class="sr-only">${escape(game.name)}: checking progress</span></li>`).join('');
@@ -85,11 +85,11 @@ export function startHome(doc = document, win = window) {
     const selected = CREATORS.includes(value) ? value : 'All';
     filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.creatorFilter === selected)));
     doc.querySelectorAll('[data-game]').forEach(card => { card.hidden = selected !== 'All' && card.dataset.creator !== selected; });
-    for (const group of ['flagship','word','classic']) {
+    for (const group of ['flagship','word','logic','classic']) {
       $(`${group}-games`).closest('section').hidden = !GAMES.some(game => game.group === group && (selected === 'All' || game.creator === selected));
     }
     const count = GAMES.filter(game => selected === 'All' || game.creator === selected).length;
-    $('filter-summary').textContent = `${count} games${selected === 'All' ? ' · 2 developers' : ` developed by ${selected}`}`;
+    $('filter-summary').textContent = `${count} games${selected === 'All' ? ` · ${CREATORS.length} creators` : ` · ${selected}`}`;
     if (announce) { try {win.localStorage.setItem('alford:catalog:creator',selected);} catch {} }
   }
   filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.creatorFilter)));
@@ -117,7 +117,7 @@ export function startHome(doc = document, win = window) {
     let storage;
     try {storage = win.localStorage;} catch {storage = null;}
     const results = await Promise.all(GAMES.map(async game => {
-      try {return {slug: game.slug, ...(game.runtime === 'kimi' ? readKimiStatus({slug:game.slug, storage, now}) : readDailyStatus({slug: game.slug, ...await runtime(game.slug), storage, now}))};}
+      try {return {slug: game.slug, ...(game.runtime !== 'alford' ? readKimiStatus({slug:game.slug, storage, now}) : readDailyStatus({slug: game.slug, ...await runtime(game.slug), storage, now}))};}
       catch {return {slug: game.slug, status: 'unavailable', dateKey: shownDate};}
     }));
     if (current !== sequence) return;

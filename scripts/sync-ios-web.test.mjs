@@ -12,9 +12,15 @@ const validator = fileURLToPath(new URL('../ios/scripts/validate_project.py', im
 const originals = ['counterpart', 'shortlist', 'second-sense', 'sideways', 'ringcount', 'switchpath'];
 const classics = ['tradeoff', 'inbetween'];
 const kimi = ['kimi-cairn', 'kimi-morph', 'kimi-tangle', 'kimi-hunch', 'kimi-circuit', 'kimi-quartet'];
-const slugs = [...originals, ...classics, ...kimi];
+const deepseek = ['deepseek-twin-hive', 'deepseek-spare', 'deepseek-rung', 'deepseek-cipher', 'deepseek-trail', 'deepseek-split'];
+const qwen = ['qwen-quadra', 'qwen-logic-lattice', 'qwen-syntax-siege', 'qwen-memory-maze', 'qwen-pattern-prism', 'qwen-territory-tactics'];
+const claude = ['claude-dovetail', 'claude-splice', 'claude-sprout', 'claude-tangle', 'claude-keystone', 'claude-tumbler'];
+const sharedModuleGames = [...deepseek, ...qwen, ...claude];
+const slugs = [...originals, ...classics, ...kimi, ...sharedModuleGames];
 const runtime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs', 'styles.css', 'icon.svg', 'manifest.webmanifest', 'fonts/test.ttf', 'fonts/LICENSE.txt'];
 const sharedRuntime = ['assets/index.js', 'assets/index.css', 'assets/chunks/game.mjs', 'assets/puzzles.json', 'assets/images/icon.avif', 'fonts/test.woff2', 'fonts/LICENSE.txt'];
+const deepseekRuntime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs'];
+const deepseekShared = ['core.mjs', 'common.mjs', 'styles.css'];
 
 function writeFixture(root, relative, content = relative) {
   const target = join(root, relative);
@@ -53,6 +59,19 @@ function fixture(run) {
   for (const slug of kimi) writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="stylesheet" href="../kimi-runtime/assets/index.css">');
   for (const name of sharedRuntime) writeFixture(root, `games/kimi-runtime/${name}`);
   writeFixture(root, 'games/kimi-runtime/assets/index.js', 'export { value } from "./chunks/game.mjs"; const text = "Climb from ";');
+  for (const slug of sharedModuleGames) {
+    writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="./app.mjs"></script><link rel="stylesheet" href="../deepseek-runtime/styles.css">');
+    writeFixture(root, `games/${slug}/app.mjs`, 'import "./engine.mjs"; import "./puzzles.mjs"; import "../deepseek-runtime/common.mjs";');
+    writeFixture(root, `games/${slug}/engine.mjs`, 'import "../deepseek-runtime/core.mjs";');
+    writeFixture(root, `games/${slug}/puzzles.mjs`, 'export const puzzles = [];');
+    writeFixture(root, `games/${slug}/engine.test.mjs`, 'throw new Error("Development tests must never be staged.");');
+    writeFixture(root, `games/${slug}/README.md`, 'Development documentation stays out.');
+  }
+  writeFixture(root, 'games/deepseek-runtime/core.mjs', 'export const version = 1;');
+  writeFixture(root, 'games/deepseek-runtime/common.mjs', 'import "./core.mjs";');
+  writeFixture(root, 'games/deepseek-runtime/styles.css', 'body { font-family: system-ui; }');
+  writeFixture(root, 'games/deepseek-runtime/core.test.mjs', 'throw new Error("Do not bundle this test.");');
+  writeFixture(root, 'games/deepseek-runtime/common.test.mjs', 'throw new Error("Do not bundle this test either.");');
   const command = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
   try { run({ root, temporary, command }); }
   finally { rmSync(temporary, { recursive: true, force: true }); }
@@ -62,13 +81,15 @@ test('ordinary sync copies the fixed runtime set and check is read-only', () => 
   assert.equal(command().status, 0);
   const directory = join(root, 'ios', 'Web', 'games');
   const before = snapshot(directory);
-  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length);
-  assert.equal(readdirSync(directory).length, 15);
+  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length);
+  assert.equal(readdirSync(directory).length, slugs.length + 2);
   assert.ok(Object.keys(before).every(path => !path.endsWith('/README.md')));
   assert.ok(Object.keys(before).every(path => !path.includes('/tests/')));
   for (const slug of classics) assert.equal(existsSync(join(directory, slug, 'shell.mjs')), false);
   for (const slug of kimi) assert.deepEqual(readdirSync(join(directory, slug)), ['index.html']);
   assert.equal(existsSync(join(directory, 'kimi-runtime', 'index.html')), false);
+  for (const slug of sharedModuleGames) assert.deepEqual(readdirSync(join(directory, slug)).sort(), [...deepseekRuntime].sort());
+  assert.deepEqual(readdirSync(join(directory, 'deepseek-runtime')).sort(), [...deepseekShared].sort());
   assert.equal(command('--check').status, 0);
   assert.deepEqual(snapshot(directory), before);
 }));
@@ -108,8 +129,8 @@ test('sync and check reject a destination ancestor link before any output mutati
   }
 }));
 
-test('source game, font, Kimi wrapper and shared directory links fail before creating any bundle', () => {
-  for (const relative of ['games/switchpath', 'games/switchpath/fonts', 'games/kimi-cairn', 'games/kimi-runtime', 'games/kimi-runtime/assets', 'games/kimi-runtime/fonts']) fixture(({ root, temporary, command }) => {
+test('source game, font, wrapper and shared directory links fail before creating any bundle', () => {
+  for (const relative of ['games/switchpath', 'games/switchpath/fonts', 'games/kimi-cairn', 'games/kimi-runtime', 'games/kimi-runtime/assets', 'games/kimi-runtime/fonts', 'games/deepseek-runtime', 'games/deepseek-cipher', 'games/qwen-quadra', 'games/claude-tangle']) fixture(({ root, temporary, command }) => {
     const directory = join(root, relative);
     const outside = join(temporary, 'outside-source');
     renameSync(directory, outside);
@@ -138,11 +159,11 @@ test('Kimi sources reject documents, hidden paths, unknown extensions and extra 
 });
 
 test('shared runtime file symlinks are rejected in both source and destination before any bundle changes', () => {
-  for (const side of ['games', 'ios/Web/games']) fixture(({ root, temporary, command }) => {
+  for (const resource of ['kimi-runtime/assets/index.js', 'deepseek-runtime/core.mjs', 'deepseek-twin-hive/engine.mjs', 'qwen-quadra/app.mjs', 'claude-keystone/puzzles.mjs']) for (const side of ['games', 'ios/Web/games']) fixture(({ root, temporary, command }) => {
     assert.equal(command().status, 0);
     const outside = join(temporary, 'external.js');
     writeFileSync(outside, 'External content stays untouched.');
-    const target = join(root, side, 'kimi-runtime/assets/index.js');
+    const target = join(root, side, resource);
     rmSync(target);
     symlinkSync(outside, target);
     const earlier = join(root, 'ios/Web/games/counterpart');
@@ -202,5 +223,92 @@ test('structural validation rejects shared documents and missing local wrapper a
     const checked = validateFixture(root);
     assert.notEqual(checked.status, 0);
     assert.match(checked.stderr, issue === 'document' ? /Unexpected shared Kimi runtime file/ : /Missing Kimi resource/);
+  });
+});
+
+test('DeepSeek, Qwen and Claude stage optional local styles while excluding development files and requiring no fonts', () => fixture(({ root, command }) => {
+  for (const slug of sharedModuleGames) {
+    writeFixture(root, 'games/' + slug + '/styles.css', '@import "../deepseek-runtime/styles.css";');
+    writeFixture(root, 'games/' + slug + '/index.html', '<script type="module" src="./app.mjs"></script><link rel="stylesheet" href="./styles.css">');
+  }
+  assert.equal(command().status, 0);
+  for (const slug of sharedModuleGames) {
+    assert.deepEqual(readdirSync(join(root, 'ios/Web/games', slug)).sort(), [...deepseekRuntime, 'styles.css'].sort());
+  }
+  const checked = validateFixture(root);
+  assert.equal(checked.status, 0, checked.stderr);
+  assert.equal(command('--check').status, 0);
+}));
+
+test('flat shared modules reject documents, data, nested paths and empty directories before changing bundles', () => {
+  for (const side of ['games', 'ios/Web/games']) for (const path of ['index.html', 'puzzles.json', 'nested/core.mjs', '.hidden.mjs', 'empty/']) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    const extra = join(root, side, 'deepseek-runtime', path);
+    if (path.endsWith('/')) mkdirSync(extra, { recursive: true });
+    else writeFixture(root, side + '/deepseek-runtime/' + path, 'Must not be served.');
+    const before = snapshot(join(root, 'ios/Web/games'));
+    for (const args of [[], ['--check']]) {
+      const result = command(...args);
+      assert.notEqual(result.status, 0, side + '/' + path);
+      assert.deepEqual(snapshot(join(root, 'ios/Web/games')), before);
+    }
+  });
+});
+
+test('shared module check detects missing and changed files and sync repairs only generated output', () => {
+  for (const path of ['deepseek-runtime/core.mjs', 'deepseek-cipher/engine.mjs', 'qwen-quadra/puzzles.mjs', 'claude-tumbler/engine.mjs']) for (const issue of ['missing', 'changed']) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    const directory = join(root, 'ios/Web/games');
+    const file = join(directory, path);
+    if (issue === 'missing') rmSync(file);
+    else writeFileSync(file, 'Changed file.');
+    const before = snapshot(directory);
+    const checked = command('--check');
+    assert.notEqual(checked.status, 0);
+    assert.match(checked.stderr, issue === 'missing' ? /missing bundle file/ : /content differs/);
+    assert.deepEqual(snapshot(directory), before);
+    assert.equal(command().status, 0);
+    assert.equal(command('--check').status, 0);
+    assert.equal(validateFixture(root).status, 0);
+  });
+});
+
+test('structural validation treats dictionary words and quoted import examples as data', () => fixture(({ root, command }) => {
+  assert.equal(command().status, 0);
+  writeFixture(root, 'ios/Web/games/claude-dovetail/puzzles.mjs', [
+    'export const words = ["import","important","from","front","export"];',
+    'export const clue = \'The words import and from belong in this dictionary.\';',
+    'export const example = \'import "https://example.com/not-code.mjs"\';',
+    '// import "https://example.com/comment.mjs";',
+    '/* export { value } from "https://example.com/comment.mjs"; */',
+    'export { version as helper } from "../deepseek-runtime/core.mjs";',
+  ].join('\n'));
+  const checked = validateFixture(root);
+  assert.equal(checked.status, 0, checked.stderr);
+}));
+
+test('structural validation checks local game module imports and rejects remote, missing and cross-game references', () => {
+  const cases = [
+    ['deepseek-cipher/app.mjs', 'import "./missing.mjs";', /outside its runtime|Missing game module resource/],
+    ['deepseek-cipher/app.mjs', 'export { value } from "../deepseek-runtime/missing.mjs";', /outside its runtime|Missing game module resource/],
+    ['qwen-quadra/app.mjs', 'import "https://example.com/module.mjs";', /must be local/],
+    ['qwen-logic-lattice/app.mjs', 'const later = import("//example.com/module.mjs");', /must be local/],
+    ['deepseek-cipher/app.mjs', 'import "../deepseek-split/puzzles.mjs";', /outside its runtime/],
+    ['deepseek-runtime/common.mjs', 'import "../qwen-quadra/engine.mjs";', /outside its runtime/],
+    ['qwen-memory-maze/index.html', '<script type="module" src="../kimi-runtime/assets/index.js"></script>', /outside its runtime/],
+    ['claude-dovetail/app.mjs', 'import "https://example.com/module.mjs";', /must be local/],
+    ['claude-splice/app.mjs', 'import "../claude-sprout/engine.mjs";', /outside its runtime/],
+    ['claude-tangle/index.html', '<script type="module" src="../kimi-tangle/index.html"></script>', /outside its runtime/],
+    ['claude-sprout/app.mjs', 'import/* dependency */"https://example.com/module.mjs";', /must be local/],
+    ['claude-tumbler/app.mjs', 'const later = import /* dependency */ ("//example.com/module.mjs");', /must be local/],
+    ['claude-keystone/engine.mjs', 'export /* dependency */ * as other from "../claude-tangle/engine.mjs";', /outside its runtime/],
+    ['deepseek-runtime/styles.css', '@import "https://example.com/style.css";', /must be local/],
+  ];
+  for (const [path, contents, error] of cases) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    writeFixture(root, 'ios/Web/games/' + path, contents);
+    const checked = validateFixture(root);
+    assert.notEqual(checked.status, 0, path);
+    assert.match(checked.stderr, error, path);
   });
 });

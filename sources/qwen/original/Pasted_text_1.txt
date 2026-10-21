@@ -1,0 +1,570 @@
+import os
+import json
+
+def create_file(path, content):
+    """Creates a directory if needed and writes the file."""
+    dir_name = os.path.dirname(path)
+    if dir_name and not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f"Created: {path}")
+
+def main():
+    root_dir = "HEX_MIND_Suite"
+    
+    # 1. README.md
+    readme_content = """# HEX MIND: The Ultimate Daily Puzzle Suite
+
+**Tagline:** Six Daily Workouts for Your Brain.
+
+This package contains the conceptual blueprints, technical specifications, and playable prototypes for **HEX MIND**, a mobile app featuring six distinct cognitive games designed to maximize retention through varied mental loads.
+
+## Contents
+
+1. **QUADRA.html**: A fully functional single-file web prototype for Game 1 (Category-based Anagram Solver).
+2. **GAME_BLUEPRINTS.md**: Detailed mechanics, psychology, and design specs for all 6 games.
+3. **iOS_ARCHITECTURE.md**: Technical stack, data models, and monetization strategy for the native iOS app.
+4. **CODE_SNIPPETS/**: Reference implementations for key components in SwiftUI/Swift.
+
+## How to Use
+
+- Open `QUADRA.html` in any modern browser to play the first game immediately.
+- Review `GAME_BLUEPRINTS.md` for the full product vision.
+- Use `iOS_ARCHITECTURE.md` as the foundation for development.
+"""
+
+    # 2. QUADRA.html (The Playable Prototype)
+    quadra_html = r'''<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QUADRA — Daily 4-Word Category Puzzle</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #181b21;
+      --text: #e9edf2;
+      --muted: #9aa4b2;
+      --accent: #5cc8ff;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --tile: #252a34;
+      --border: #2d3340;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    main { width: min(520px, 100%); padding: 16px; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    h1 { margin: 0; letter-spacing: 2px; font-size: 30px; line-height: 1; }
+    .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    #date { color: var(--muted); font-size: 13px; text-align: right; padding-top: 4px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin: 12px 0; }
+    #categoryBox { font-size: 15px; }
+    #category { color: var(--accent); letter-spacing: 1px; }
+    #rules { color: var(--muted); font-size: 13px; margin: 8px 0 0; line-height: 1.35; }
+    #found { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .foundword { background: #11141a; border: 1px solid var(--border); border-radius: 10px; padding: 10px 4px; text-align: center; font-weight: 800; letter-spacing: 2px; font-size: 14px; min-height: 42px; display: flex; align-items: center; justify-content: center; }
+    .foundword.solved { border-color: rgba(34, 197, 94, 0.5); color: #86efac; background: rgba(34, 197, 94, 0.08); }
+    .foundword.revealed { border-color: rgba(234, 179, 8, 0.45); color: #fde68a; background: rgba(234, 179, 8, 0.08); }
+    .foundword.empty { color: #4b5563; }
+    #grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 4px 0 12px; }
+    .tile { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--border); background: var(--tile); color: var(--text); font-size: clamp(18px, 6vw, 26px); font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease; user-select: none; }
+    .tile:hover:not(:disabled) { transform: translateY(-1px); border-color: #3b4252; }
+    .tile.selected { background: rgba(92, 200, 255, 0.18); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(92, 200, 255, 0.25) inset; }
+    .tile.locked { background: rgba(34, 197, 94, 0.16); border-color: rgba(34, 197, 94, 0.45); color: #86efac; cursor: default; }
+    #slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .slot { aspect-ratio: 1; border-radius: 12px; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: clamp(18px, 6vw, 26px); font-weight: 800; color: var(--text); cursor: pointer; user-select: none; }
+    .slot.filled { border-style: solid; border-color: var(--accent); background: rgba(92, 200, 255, 0.10); }
+    .buttons { display: flex; gap: 8px; }
+    button.action { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: #20242d; color: var(--text); font-weight: 800; cursor: pointer; font-size: 14px; }
+    button.primary { background: var(--accent); color: #06121a; border-color: transparent; }
+    button.secondary { background: transparent; color: var(--muted); }
+    button.action:hover { filter: brightness(1.08); }
+    #message { min-height: 20px; margin: 10px 0 6px; font-size: 14px; text-align: center; color: var(--muted); }
+    #message.good { color: #86efac; }
+    #message.bad { color: #fca5a5; }
+    #message.warn { color: #fde68a; }
+    #strikes { text-align: center; font-size: 15px; margin-bottom: 2px; }
+    footer { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 12px; flex-wrap: wrap; }
+    footer .buttons { min-width: 180px; }
+    #end { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+    #end.hidden { display: none; }
+    .modal { width: min(420px, 100%); background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 18px; text-align: center; }
+    .modal h2 { margin: 0 0 10px; font-size: 24px; }
+    .modal p { margin: 8px 0; color: var(--text); line-height: 1.35; }
+    .answers { font-weight: 800; letter-spacing: 1px; color: #86efac !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>QUADRA</h1>
+        <div class="sub">Daily 4-word category puzzle</div>
+      </div>
+      <div id="date"></div>
+    </header>
+    <section class="panel">
+      <div id="categoryBox">Category: <strong id="category"></strong></div>
+      <p id="rules">Make four 4-letter words in the category. Use all 16 tiles exactly once. Tap tiles or type letters. Enter to submit. Four lives.</p>
+    </section>
+    <section class="panel"><div id="found"></div></section>
+    <section class="panel">
+      <div id="grid"></div>
+      <div id="slots"></div>
+      <div class="buttons">
+        <button id="clear" class="action secondary">Clear</button>
+        <button id="submit" class="action primary">Submit</button>
+      </div>
+      <div id="message" aria-live="polite"></div>
+      <div id="strikes"></div>
+    </section>
+    <footer>
+      <div id="stats"></div>
+      <div class="buttons">
+        <button id="share" class="action">Share</button>
+        <button id="reset" class="action secondary">Reset</button>
+      </div>
+    </footer>
+    <div id="end" class="hidden">
+      <div class="modal">
+        <h2 id="endTitle"></h2>
+        <div id="endBody"></div>
+        <div class="buttons" style="margin-top: 14px;">
+          <button id="shareEnd" class="action primary">Copy result</button>
+          <button id="closeEnd" class="action secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    const puzzles = [
+      { category: "Weather", answers: ["RAIN", "SNOW", "WIND", "HAIL"] },
+      { category: "Money", answers: ["CASH", "COIN", "NOTE", "BILL"] },
+      { category: "Animals", answers: ["BEAR", "LION", "WOLF", "DEER"] },
+      { category: "Colors", answers: ["BLUE", "CYAN", "GOLD", "TEAL"] },
+      { category: "Fruits", answers: ["PEAR", "PLUM", "KIWI", "LIME"] },
+      { category: "Vehicles", answers: ["BOAT", "SHIP", "TAXI", "TRAM"] },
+      { category: "Car parts", answers: ["HOOD", "DOOR", "SEAT", "TIRE"] },
+      { category: "Communication", answers: ["CHAT", "TEXT", "CALL", "MAIL"] },
+      { category: "Grammar", answers: ["NOUN", "VERB", "CASE", "MOOD"] },
+      { category: "Chess", answers: ["KING", "ROOK", "PAWN", "MATE"] },
+      { category: "Gemstones", answers: ["OPAL", "RUBY", "JADE", "ONYX"] },
+      { category: "Music genres", answers: ["JAZZ", "ROCK", "SOUL", "FUNK"] },
+      { category: "Length units", answers: ["MILE", "YARD", "FOOT", "INCH"] },
+      { category: "Beverages", answers: ["BEER", "WINE", "COLA", "MILK"] },
+      { category: "Shapes", answers: ["CUBE", "CONE", "OVAL", "STAR"] },
+      { category: "Birds", answers: ["CROW", "DOVE", "SWAN", "HAWK"] }
+    ];
+    const $ = (id) => document.getElementById(id);
+    function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }}
+    function shuffle(arr, seed) { const rng = mulberry32(seed); const a = arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+    function toKey(d) { return d.toISOString().slice(0, 10); }
+    function getTodayKey() { return toKey(new Date()); }
+    function dayIndexFromKey(key) { return Math.floor(Date.parse(key + "T00:00:00Z") / 86400000); }
+    function yesterdayKey(key) { const d = new Date(Date.parse(key + "T00:00:00Z")); d.setUTCDate(d.getUTCDate() - 1); return toKey(d); }
+    const todayKey = getTodayKey();
+    const dayIndex = dayIndexFromKey(todayKey);
+    const params = new URLSearchParams(location.search);
+    let puzzleIndex = dayIndex % puzzles.length;
+    if (params.has("p")) { const n = parseInt(params.get("p"), 10); if (!Number.isNaN(n)) { puzzleIndex = ((n % puzzles.length) + puzzles.length) % puzzles.length; } }
+    const puzzle = puzzles[puzzleIndex];
+    const seed = dayIndex * 1000 + puzzleIndex + 17;
+    const letters = shuffle(puzzle.answers.join("").split(""), seed);
+    const stateKey = "quadra-state-" + todayKey;
+    const statsKey = "quadra-stats";
+    function defaultState() { return { selected: [], locked: new Array(16).fill(false), found: [], strikes: 0, gameOver: false, won: false }; }
+    function loadState() { try { const raw = localStorage.getItem(stateKey); if (!raw) return defaultState(); const parsed = JSON.parse(raw); return { ...defaultState(), ...parsed }; } catch (e) { return defaultState(); } }
+    const useSaved = !params.has("p");
+    const saved = useSaved ? loadState() : defaultState();
+    let locked = Array.from({ length: 16 }, (_, i) => !!saved.locked[i]);
+    let found = [...new Set((saved.found || []).filter((w) => puzzle.answers.includes(w)))];
+    let strikes = Math.min(4, Math.max(0, saved.strikes || 0));
+    let gameOver = !!saved.gameOver;
+    let won = !!saved.won;
+    let selected = (saved.selected || []).filter((i) => Number.isInteger(i) && i >= 0 && i < 16 && !locked[i]).slice(0, 4);
+    if (found.length === 4) { won = true; gameOver = true; }
+    if (strikes >= 4) { gameOver = true; if (found.length < 4) won = false; }
+    function saveState() { localStorage.setItem(stateKey, JSON.stringify({ selected, locked, found, strikes, gameOver, won })); }
+    function loadStats() { try { return JSON.parse(localStorage.getItem(statsKey)) || {}; } catch (e) { return {}; } }
+    function updateStats(win) { const s = loadStats(); if (s.lastPlayedDate === todayKey) return; s.played = (s.played || 0) + 1; if (win) { s.wins = (s.wins || 0) + 1; s.streak = s.lastWinDate === yesterdayKey(todayKey) ? (s.streak || 0) + 1 : 1; s.lastWinDate = todayKey; s.best = Math.max(s.best || 0, s.streak); } else { s.streak = 0; } s.lastPlayedDate = todayKey; localStorage.setItem(statsKey, JSON.stringify(s)); }
+    function setMessage(text, kind = "") { const m = $("message"); m.textContent = text; m.className = kind; }
+    function renderHeader() { $("date").textContent = new Date(todayKey + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" }); $("category").textContent = puzzle.category; }
+    function renderFound() { const el = $("found"); el.innerHTML = ""; const display = gameOver && !won ? puzzle.answers : found; for (let i = 0; i < 4; i++) { const div = document.createElement("div"); div.className = "foundword"; const w = display[i]; if (w) { div.textContent = w; div.classList.add(found.includes(w) ? "solved" : "revealed"); } else { div.textContent = "????"; div.classList.add("empty"); } el.appendChild(div); } }
+    function renderGrid() { const el = $("grid"); el.innerHTML = ""; letters.forEach((letter, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.textContent = letter; b.setAttribute("aria-label", `Letter ${letter}, tile ${i + 1}`); if (locked[i]) b.classList.add("locked"); if (selected.includes(i)) b.classList.add("selected"); b.disabled = locked[i] || gameOver; b.addEventListener("click", () => toggleTile(i)); el.appendChild(b); }); }
+    function renderSlots() { const el = $("slots"); el.innerHTML = ""; for (let n = 0; n < 4; n++) { const div = document.createElement("div"); div.className = "slot"; const idx = selected[n]; if (idx != null) { div.textContent = letters[idx]; div.classList.add("filled"); div.title = "Click to remove"; div.addEventListener("click", () => { if (gameOver) return; selected.splice(n, 1); renderAll(); saveState(); }); } else { div.textContent = ""; } el.appendChild(div); } }
+    function renderStrikes() { const lives = Math.max(0, 4 - strikes); $("strikes").textContent = `Lives: ${"❤️".repeat(lives)}${"🖤".repeat(strikes)}`; }
+    function renderStats() { const s = loadStats(); $("stats").textContent = `Played ${s.played || 0} · Wins ${s.wins || 0} · Streak ${s.streak || 0} · Best ${s.best || 0}`; }
+    function renderAll() { renderHeader(); renderFound(); renderGrid(); renderSlots(); renderStrikes(); renderStats(); }
+    function toggleTile(i) { if (gameOver || locked[i]) return; const pos = selected.indexOf(i); if (pos >= 0) { selected.splice(pos, 1); } else if (selected.length < 4) { selected.push(i); } renderAll(); saveState(); }
+    function submit() { if (gameOver) return; if (selected.length !== 4) { setMessage("Pick 4 tiles.", "warn"); return; } const guess = selected.map((i) => letters[i]).join(""); const remaining = puzzle.answers.filter((a) => !found.includes(a)); if (remaining.includes(guess)) { found.push(guess); selected.forEach((i) => (locked[i] = true)); selected = []; if (found.length === 4) { won = true; gameOver = true; updateStats(true); setMessage("Solved! 🎉", "good"); showEnd(); } else { setMessage(`${guess} locked in.`, "good"); } } else { strikes += 1; selected = []; if (strikes >= 4) { gameOver = true; won = false; updateStats(false); setMessage("Out of lives. Today’s words revealed.", "bad"); showEnd(); } else { setMessage(`Not one of today’s four. ${4 - strikes} lives left.`, "bad"); } } saveState(); renderAll(); }
+    function showEnd() { const modal = $("end"); modal.classList.remove("hidden"); $("endTitle").textContent = won ? "Solved!" : "Revealed"; $("endBody").innerHTML = `<p>Category: <strong>${puzzle.category}</strong></p><p class="answers">${puzzle.answers.join(" · ")}</p><p>${won ? `Finished with ${strikes} miss${strikes === 1 ? "" : "es"}.` : "The four words use all 16 tiles. Try again tomorrow."}</p>`; }
+    function shareText() { const progress = "🟩".repeat(found.length) + "⬛".repeat(4 - found.length); const lives = "❤️".repeat(Math.max(0, 4 - strikes)) + "🖤".repeat(Math.min(4, strikes)); let text = `QUADRA ${todayKey}\n${progress}  ${lives}\nCategory: ${puzzle.category}\n`; if (gameOver) { text += puzzle.answers.join(" ") + "\n"; } text += "Can you find all four?"; return text; }
+    async function shareResult() { const text = shareText(); try { await navigator.clipboard.writeText(text); setMessage("Result copied to clipboard.", "good"); } catch (e) { window.prompt("Copy your result:", text); } }
+    $("clear").addEventListener("click", () => { if (gameOver) return; selected = []; setMessage("Cleared."); renderAll(); saveState(); });
+    $("submit").addEventListener("click", submit);
+    $("share").addEventListener("click", shareResult);
+    $("shareEnd").addEventListener("click", shareResult);
+    $("closeEnd").addEventListener("click", () => { $("end").classList.add("hidden"); });
+    $("reset").addEventListener("click", () => { if (confirm("Reset today’s puzzle and stats?")) { localStorage.removeItem(stateKey); localStorage.removeItem(statsKey); location.reload(); } });
+    window.addEventListener("keydown", (e) => { if (e.ctrlKey || e.metaKey || e.altKey) return; const active = document.activeElement; const activeIsButton = active && active.tagName === "BUTTON"; if (e.key === "Enter") { if (activeIsButton) return; submit(); return; } if (e.key === "Backspace") { if (!gameOver && selected.length) { selected.pop(); renderAll(); saveState(); } return; } if (/^[a-zA-Z]$/.test(e.key)) { if (gameOver) return; const ch = e.key.toUpperCase(); const idx = letters.findIndex((l, i) => l === ch && !locked[i] && !selected.includes(i)); if (idx !== -1 && selected.length < 4) { selected.push(idx); renderAll(); saveState(); } } });
+    renderAll();
+    setMessage("Tap tiles or type letters. Enter to submit.");
+    if (gameOver) { const s = loadStats(); if (s.lastPlayedDate !== todayKey) updateStats(won); showEnd(); }
+    saveState();
+  </script>
+</body>
+</html>'''
+
+    # 3. GAME_BLUEPRINTS.md
+    blueprints_md = """# HEX MIND: Game Blueprints
+
+## Overview
+Six daily games targeting different cognitive domains: Linguistics, Logic, Action/Reaction, Memory, Pattern Recognition, and Strategy.
+
+---
+
+## 1. QUADRA (Linguistic Deduction)
+**Status:** Prototype Complete (`QUADRA.html`)
+**Concept:** 16 letters, 4 hidden words, 1 category.
+**Hook:** Combines Wordle's brevity with Connections' semantic grouping.
+**Mechanics:**
+- Grid of 16 shuffled letters from 4 target words.
+- Player forms 4-letter words matching the daily category.
+- Correct words lock tiles. Incorrect guesses cost lives (max 4).
+- Win by finding all 4 words.
+
+---
+
+## 2. LOGIC LATTICE (Deductive Reasoning)
+**Concept:** Sudoku meets Nonogram via logical statements.
+**Hook:** Pure deduction without language barriers. High flow state potential.
+**Mechanics:**
+- 5x5 or 6x6 binary grid (Black/White cells).
+- Clues are logical propositions (e.g., "Row 2 has 3 Black cells," "No diagonal touches").
+- Player toggles cells to satisfy all clues simultaneously.
+- Limited undos create tension.
+**Difficulty Scaling:** From simple counting to complex relational logic.
+
+---
+
+## 3. SYNTAX SIEGE (Action-Lexical)
+**Concept:** Anagrams meet Tower Defense.
+**Hook:** Adrenaline-driven word formation. Tests speed and vocabulary under pressure.
+**Mechanics:**
+- Central Core with HP. Enemies approach carrying letters.
+- Letters enter player's "Hand" when enemies reach a threshold.
+- Form valid English words to damage/destroy enemies.
+- Longer words = more damage. Specific categories (verbs/nouns) have effects.
+- Letters expire quickly (10s), forcing rapid recall.
+**Daily Twist:** Modifiers change rules (e.g., "Only 4-letter words," "Vowels worth double").
+
+---
+
+## 4. MEMORY MAZE (Visuospatial Working Memory)
+**Concept:** Navigate a memorized path.
+**Hook:** Direct training of spatial memory. Zen-like focus.
+**Mechanics:**
+- Phase 1: A glowing path appears on a 7x7 grid for 5-8 seconds.
+- Phase 2: Path vanishes. Obstacles appear.
+- Player taps cells to retrace the exact original path.
+- Errors cause red flashes/time penalties.
+**Twist:** Moving targets in advanced levels require dynamic updating.
+
+---
+
+## 5. PATTERN PRISM (Inductive Reasoning)
+**Concept:** Sequence prediction (Raven's Matrices style).
+**Hook:** IQ-test feel. Visual satisfaction. Fluid intelligence training.
+**Mechanics:**
+- Animated sequence of shapes/colors/sizes.
+- Identify the underlying rule (rotation, color shift, progression).
+- Predict the next 3 elements from multiple choices.
+- "Glitch" mode: Find the outlier that breaks the rule.
+**Complexity:** Multi-dimensional attributes (shape + color + position + rotation).
+
+---
+
+## 6. TERRITORY TACTICS (Strategic Planning)
+**Concept:** Lightweight Go/Risk hybrid.
+**Hook:** Long-term thinking and spatial control.
+**Mechanics:**
+- Hexagonal grid board.
+- Place stones to surround opponent territory.
+- Captured stones removed.
+- Daily Puzzle: Specific board states requiring optimal moves (e.g., "Capture 3 stones in 2 moves").
+**AI:** Adaptive difficulty based on win rate.
+"""
+
+    # 4. iOS_ARCHITECTURE.md
+    architecture_md = """# HEX MIND: iOS Architecture & Monetization
+
+## Tech Stack
+- **Frontend:** SwiftUI (Native performance, smooth animations, Apple Health/Game Center integration).
+- **Backend:** Firebase (Auth, Firestore for leaderboards/stats, Cloud Functions for puzzle generation/validation).
+- **Data Sync:** Offline-first architecture. Local storage for core gameplay; sync when online.
+
+## User Experience Flow
+1. **Onboarding:** Cognitive assessment quiz to recommend starting game order.
+2. **Home Screen:** Honeycomb layout of 6 games. Completed games glow gold.
+3. **Streak Engine:** Global streak (any game) + Individual mastery streaks.
+4. **Social Layer:** Spoiler-free "Hex Codes" for sharing. Friend challenges.
+
+## Monetization Strategy
+
+### Tier 1: Free (Acquisition)
+- Full access to all 6 daily puzzles.
+- Basic stats (streak, total solved).
+- No ads during gameplay.
+- Optional rewarded video ads for hints/revives (limited to 1/day).
+
+### Tier 2: HEX PRO Subscription ($4.99/mo or $39.99/yr)
+- **Archive Access:** Play past 30 days of missed puzzles.
+- **Advanced Analytics:** Skill breakdown charts (e.g., "Spatial Recall +12%"). Exportable PDF reports.
+- **Custom Themes:** Dark/Light modes, colorblind palettes, minimalist skins.
+- **Unlimited Hints/Undos:** Remove friction for struggling players.
+- **Early Access:** Beta features.
+
+### Tier 3: One-Time Purchases
+- **Themed Puzzle Packs:** e.g., "Shakespearean Insults" for Syntax Siege, "Cold War Espionage" for Logic Lattice ($1.99 each).
+- **Cosmetics:** Rare avatars/badges.
+
+### B2B Expansion
+- **Corporate Wellness Licenses:** Bulk subscriptions for employee "Brain Breaks" integrated into Slack/Teams.
+
+## Retention Loops
+1. **Variable Rewards:** Daily difficulty fluctuation.
+2. **Social Proof:** Leaderboards showing friend scores.
+3. **Loss Aversion:** Streak preservation motivation.
+4. **Identity Formation:** Users identify as "Word People" or "Logic People," encouraged to balance via weekly quests.
+
+## Launch Plan
+1. **Soft Launch:** Release QUADRA + LOGIC LATTICE only to test server load.
+2. **Influencer Seeding:** Codes for educational TikTok/YouTube creators.
+3. **ASO Keywords:** "brain training," "daily puzzle," "logic games."
+4. **Full Rollout:** Introduce remaining 4 games after stabilization.
+"""
+
+    # 5. CODE_SNIPPETS/LogicLatticeView.swift
+    swift_logic = '''import SwiftUI
+
+struct CellState: Equatable {
+    enum Type { case unknown, black, white }
+    var type: Type
+    var isMarked: Bool = false
+}
+
+struct LogicClue: Identifiable {
+    let id = UUID()
+    let text: String
+    let validator: ([[CellState]]) -> Bool
+}
+
+struct LogicLatticeView: View {
+    @State private var grid: [[CellState]] = Array(repeating: Array(repeating: CellState(type: .unknown), count: 5), count: 5)
+    let clues: [LogicClue]
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // Grid Display
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 4) {
+                ForEach(grid.indices, id: \\.self) { row in
+                    ForEach(grid[row].indices, id: \\.self) { col in
+                        Button(action: { toggleCell(row: row, col: col) }) {
+                            Rectangle()
+                                .foregroundColor(colorForState(grid[row][col].type))
+                                .frame(width: 60, height: 60)
+                                .cornerRadius(8)
+                                .overlay(
+                                    Text(grid[row][col].isMarked ? "?" : "")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                )
+                        }
+                    }
+                }
+            }
+            
+            // Clues List
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(clues) { clue in
+                        ClueCard(clue: clue, isSatisfied: clue.validator(grid))
+                    }
+                }
+                .padding()
+            }
+        }
+        .padding()
+        .background(Color.black.opacity(0.05))
+    }
+    
+    func toggleCell(row: Int, col: Int) {
+        var newState = grid[row][col]
+        switch newState.type {
+        case .unknown: newState.type = .black
+        case .black: newState.type = .white
+        case .white: newState.type = .unknown
+        }
+        grid[row][col] = newState
+    }
+    
+    func colorForState(_ state: CellState.Type) -> Color {
+        switch state {
+        case .unknown: return Color.gray.opacity(0.3)
+        case .black: return Color.black
+        case .white: return Color.white
+        }
+    }
+}
+
+struct ClueCard: View {
+    let clue: LogicClue
+    let isSatisfied: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(clue.text)
+                .font(.callout)
+                .multilineTextAlignment(.leading)
+            Spacer()
+            Image(systemName: isSatisfied ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(isSatisfied ? .green : .gray)
+        }
+        .padding()
+        .frame(width: 150, height: 100)
+        .background(RoundedRectangle(cornerRadius: 12).strokeBorder(isSatisfied ? Color.green : Color.gray, lineWidth: 2))
+    }
+}'''
+
+    # 6. CODE_SNIPPETS/SyntaxSiegeEngine.swift
+    swift_syntax = '''import Foundation
+import Combine
+
+// Simplified engine concept for Syntax Siege
+
+class Enemy: ObservableObject {
+    let id = UUID()
+    let letter: Character
+    @Published var distance: CGFloat = 100.0 // Distance from core
+    @Published var hp: Int = 1
+    
+    init(letter: Character) {
+        self.letter = letter
+    }
+    
+    func move(deltaTime: TimeInterval) {
+        distance -= 10.0 * deltaTime // Speed constant
+    }
+}
+
+class SyntaxSiegeViewModel: ObservableObject {
+    @Published var enemies: [Enemy] = []
+    @Published var hand: [Character] = []
+    @Published var coreHP: Int = 100
+    @Published var score: Int = 0
+    
+    private var timer: AnyCancellable?
+    private let dictionary: Set<String> // Load from bundled plist/json
+    
+    init(dictionary: Set<String>) {
+        self.dictionary = dictionary
+        startGameLoop()
+    }
+    
+    func startGameLoop() {
+        timer = Timer.publish(every: 0.1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.update(dt: 0.1)
+            }
+    }
+    
+    func update(dt: TimeInterval) {
+        // Move enemies
+        for enemy in enemies {
+            enemy.move(deltaTime: dt)
+            if enemy.distance <= 0 {
+                coreHP -= 10
+                removeEnemy(enemy.id)
+            }
+        }
+        
+        // Spawn new enemies randomly
+        if Double.random(in: 0...1) < 0.05 {
+            let randomChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".randomElement()!
+            enemies.append(Enemy(letter: randomChar))
+        }
+        
+        // Handle letter expiration from hand (simple timestamp check in real impl)
+    }
+    
+    func submitWord(_ word: String) {
+        guard word.count >= 2 else { return }
+        guard dictionary.contains(word.uppercased()) else { 
+            // Penalty for invalid word?
+            return 
+        }
+        
+        // Check if letters exist in hand
+        var tempHand = hand
+        var valid = true
+        for char in word.uppercased() {
+            if let index = tempHand.firstIndex(of: char) {
+                tempHand.remove(at: index)
+            } else {
+                valid = false
+                break
+            }
+        }
+        
+        if valid {
+            hand = tempHand
+            score += word.count * 10
+            // Damage nearest enemies or specific types based on word properties
+            dealDamage(amount: word.count)
+        }
+    }
+    
+    func dealDamage(amount: Int) {
+        // Logic to reduce enemy HP or push them back
+        for i in 0..<min(amount, enemies.count) {
+            enemies[i].hp -= 1
+            if enemies[i].hp <= 0 {
+                removeEnemy(enemies[i].id)
+            }
+        }
+    }
+    
+    func removeEnemy(_ id: UUID) {
+        enemies.removeAll { $0.id == id }
+    }
+}'''
+
+    # Execute Creation
+    print(f"Creating project structure in '{root_dir}'...")
+    create_file(os.path.join(root_dir, "README.md"), readme_content)
+    create_file(os.path.join(root_dir, "QUADRA.html"), quadra_html)
+    create_file(os.path.join(root_dir, "GAME_BLUEPRINTS.md"), blueprints_md)
+    create_file(os.path.join(root_dir, "iOS_ARCHITECTURE.md"), architecture_md)
+    create_file(os.path.join(root_dir, "CODE_SNIPPETS", "LogicLatticeView.swift"), swift_logic)
+    create_file(os.path.join(root_dir, "CODE_SNIPPETS", "SyntaxSiegeEngine.swift"), swift_syntax)
+    
+    print("\n✅ Success! All files created.")
+    print("📂 Folder: HEX_MIND_Suite/")
+    print("▶️ Next Step: Open QUADRA.html in your browser to play!")
+
+if __name__ == "__main__":
+    main()

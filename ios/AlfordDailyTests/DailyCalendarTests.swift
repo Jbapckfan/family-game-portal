@@ -27,15 +27,61 @@ final class DailyCalendarTests: XCTestCase {
     }
 
     func testUnifiedCatalogPreservesOriginalIDsAndAttributesEveryGame() {
-        XCTAssertEqual(Set(GameID.allCases.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween", "kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet"]))
+        XCTAssertEqual(Set(GameID.allCases.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween", "kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet", "deepseek-twin-hive", "deepseek-spare", "deepseek-rung", "deepseek-cipher", "deepseek-trail", "deepseek-split", "qwen-quadra", "qwen-logic-lattice", "qwen-syntax-siege", "qwen-memory-maze", "qwen-pattern-prism", "qwen-territory-tactics", "claude-dovetail", "claude-splice", "claude-sprout", "claude-tangle", "claude-keystone", "claude-tumbler"]))
         XCTAssertEqual(Array(GameID.allCases.prefix(2)), [.ringcount, .switchpath])
-        XCTAssertEqual(CreatorFilter.all.games.count, 14)
+        XCTAssertEqual(CreatorFilter.all.games.count, 32)
         XCTAssertEqual(CreatorFilter.chatGPT.games.count, 8)
         XCTAssertEqual(CreatorFilter.kimi.games.count, 6)
         XCTAssertTrue(CreatorFilter.chatGPT.games.allSatisfy { $0.creator == .chatGPT })
         XCTAssertTrue(CreatorFilter.kimi.games.allSatisfy { $0.creator == .kimi && $0.rawValue.hasPrefix("kimi-") })
         XCTAssertTrue(Set(CreatorFilter.chatGPT.games).isDisjoint(with: Set(CreatorFilter.kimi.games)))
         XCTAssertNil(GameID(rawValue: "kimi-runtime"))
+        XCTAssertNil(GameID(rawValue: "deepseek-runtime"))
         XCTAssertEqual(GameID.inbetween.collectionCount, 60)
+    }
+
+    func testConceptCreditsDistinguishOriginalPrototypesFromNewImplementations() {
+        XCTAssertEqual(CreatorFilter.deepSeek.games.count, 6)
+        XCTAssertEqual(CreatorFilter.qwen.games.count, 6)
+        XCTAssertEqual(GameID.qwenQuadra.credit, "Developed by Qwen")
+        XCTAssertEqual(GameID.kimiCairn.credit, "Developed by Kimi")
+        XCTAssertEqual(GameID.ringcount.credit, "Developed by ChatGPT")
+        for game in CreatorFilter.deepSeek.games {
+            XCTAssertEqual(game.creator, .deepSeek)
+            XCTAssertTrue(game.rawValue.hasPrefix("deepseek-"))
+            XCTAssertEqual(game.credit, "Concept by DeepSeek · Built by ChatGPT")
+            XCTAssertEqual(game.collectionCount, 30)
+            XCTAssertEqual(game.allowsLoss, game == .deepSeekSpare)
+        }
+        for game in CreatorFilter.qwen.games {
+            XCTAssertEqual(game.creator, .qwen)
+            XCTAssertTrue(game.rawValue.hasPrefix("qwen-"))
+            if game != .qwenQuadra {
+                XCTAssertEqual(game.credit, "Concept by Qwen · Built by ChatGPT")
+            }
+            XCTAssertEqual(game.allowsLoss, game == .qwenQuadra || game == .qwenSyntaxSiege)
+        }
+        let creatorGames = CreatorFilter.allCases.filter { $0 != .all }.flatMap(\.games)
+        XCTAssertEqual(Set(creatorGames), Set(GameID.allCases))
+        XCTAssertEqual(creatorGames.count, GameID.allCases.count)
+    }
+
+    func testClaudeGamesRetainDevelopmentCreditDistinctIDsAndOriginalCollectionCounts() {
+        let expectedCounts: [GameID: Int] = [.claudeDovetail: 77, .claudeSplice: 73, .claudeSprout: 128,
+                                           .claudeTangle: 160, .claudeKeystone: 58, .claudeTumbler: 1054]
+        XCTAssertEqual(Set(CreatorFilter.claude.games), Set(expectedCounts.keys))
+        for game in CreatorFilter.claude.games {
+            XCTAssertEqual(game.creator, .claude)
+            XCTAssertTrue(game.rawValue.hasPrefix("claude-"))
+            XCTAssertEqual(game.credit, "Developed by Claude")
+            XCTAssertTrue(game.attributionDescription.contains("Original developer: Claude"))
+            XCTAssertEqual(game.collectionCount, expectedCounts[game])
+            XCTAssertTrue(game.allowsLoss)
+        }
+        XCTAssertEqual(GameID.claudeTangle.name, GameID.kimiTangle.name)
+        XCTAssertNotEqual(GameID.claudeTangle.localURL, GameID.kimiTangle.localURL)
+        XCTAssertTrue(Set(CreatorFilter.claude.games).isDisjoint(with: Set(CreatorFilter.kimi.games)))
+        XCTAssertEqual(CreatorFilter.allCases.count, 6)
+        XCTAssertEqual(GameCreator.allCases.count, 5)
     }
 }

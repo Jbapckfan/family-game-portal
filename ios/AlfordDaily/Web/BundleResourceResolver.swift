@@ -25,6 +25,9 @@ struct BundleResourceResolver {
         }
         if parts[1] == "kimi-runtime" {
             guard !components.percentEncodedPath.hasSuffix("/"), Self.isSharedKimiResource(parts) else { throw BundleResourceError.invalidPath }
+        } else if parts[1] == "deepseek-runtime" {
+            guard !components.percentEncodedPath.hasSuffix("/"), parts.count == 3,
+                  ["core.mjs", "common.mjs", "styles.css"].contains(parts[2]) else { throw BundleResourceError.invalidPath }
         } else {
             guard GameID(rawValue: parts[1]) != nil else { throw BundleResourceError.invalidPath }
             if parts.count == 2 || components.percentEncodedPath.hasSuffix("/") { parts.append("index.html") }

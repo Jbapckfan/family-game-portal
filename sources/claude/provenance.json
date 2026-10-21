@@ -1,0 +1,295 @@
+{
+  "creator": "Claude",
+  "modelVersion": null,
+  "originalRole": "Six implemented web and SwiftUI games in Foreword",
+  "sourceArchive": "original/Foreword.zip",
+  "sourceSHA256": "312ff2309fd09d9f342b4352b0d2dc59c0f8f48fcd4a619d23843ed66868ad29",
+  "sourceBytes": 674504,
+  "visibleCredit": "Developed by Claude",
+  "integrationBy": "ChatGPT",
+  "games": [
+    "Dovetail",
+    "Splice",
+    "Sprout",
+    "Tangle",
+    "Keystone",
+    "Tumbler"
+  ],
+  "originalFiles": [
+    {
+      "path": "Foreword/web/dovetail.html",
+      "bytes": 303713,
+      "sha256": "7b20aafd70718c568ab497f027b0d0cae319ee76e4f2d2ce854a42e4bdea8dbb"
+    },
+    {
+      "path": "Foreword/web/splice.html",
+      "bytes": 66389,
+      "sha256": "4924049265e6d9d8ab6c0bb10187b0f3792ca045689ede07491c8982218beeab"
+    },
+    {
+      "path": "Foreword/web/foreword.html",
+      "bytes": 490689,
+      "sha256": "963af70b53feaabd1afd40a03b9dd399e00712b441324b85b90c739ae3511bee"
+    },
+    {
+      "path": "Foreword/web/sprout.html",
+      "bytes": 60211,
+      "sha256": "46b5854a15c89e9811b0351cb43990475f5e92a36c9b97d0a42687a874d63d89"
+    },
+    {
+      "path": "Foreword/web/tangle.html",
+      "bytes": 144813,
+      "sha256": "30c2239619772e011ba7c0cb8f8e294f3bb64c7049c235e295a444aa8e86e01c"
+    },
+    {
+      "path": "Foreword/Foreword.xcodeproj/xcshareddata/xcschemes/Foreword.xcscheme",
+      "bytes": 2503,
+      "sha256": "b757261239955c5b1f318bfa2f91640a8f7e48527803537b0277496664b46088"
+    },
+    {
+      "path": "Foreword/Foreword.xcodeproj/project.pbxproj",
+      "bytes": 8790,
+      "sha256": "69ac5e6c74935028fd0a0f3346a62903a7bd45a27b875c58baa4f34932abf6a4"
+    },
+    {
+      "path": "Foreword/README.md",
+      "bytes": 5668,
+      "sha256": "40069087ee6b7257c883cf40649cc818945ac521016e9f658e5df48ff7541c31"
+    },
+    {
+      "path": "Foreword/Foreword.storekit",
+      "bytes": 2753,
+      "sha256": "34b8da61b704aafd83d048daf813f5c2a8dc161dfe7f40cc10e1696c4c23b035"
+    },
+    {
+      "path": "Foreword/Foreword/UI/Components.swift",
+      "bytes": 9656,
+      "sha256": "3de36e4197daaef7a4a55f818aca50649f9c66a30d1e6350c3946cedd2afd49b"
+    },
+    {
+      "path": "Foreword/Foreword/ForewordApp.swift",
+      "bytes": 267,
+      "sha256": "817d4bc20306068afb4f825b2a9c28a7afb72f09aad216bc57f75c91d425e875"
+    },
+    {
+      "path": "Foreword/Foreword/Monetization/StoreManager.swift",
+      "bytes": 4844,
+      "sha256": "d1134ab735fd3c7980e8588bddd17d765132ad8ce33be57e3d7c00a62ce0b92b"
+    },
+    {
+      "path": "Foreword/Foreword/Monetization/PaywallView.swift",
+      "bytes": 7273,
+      "sha256": "aacb02c0893ca1970f96718ff9bbd8cf7d5388bfe81e4e565ab0c4f76bdc7c02"
+    },
+    {
+      "path": "Foreword/Foreword/Core/Core.swift",
+      "bytes": 12337,
+      "sha256": "c808465cb31b80fd73fc5a61e6aad5a497775e4f7dddcc38398714ef08fc14ee"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Tangle/TangleView.swift",
+      "bytes": 11341,
+      "sha256": "3a551bc41b810d558206b3c9fe4e642ac978694db31054477f3fbcdcc104b9b2"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Tangle/TangleModel.swift",
+      "bytes": 5962,
+      "sha256": "414be198413cd153259db15a0f9cdfaefd629bf97cd96318576b27c383d6b46d"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Tumbler/TumblerModel.swift",
+      "bytes": 5634,
+      "sha256": "0ba5e4172f9a6df4659abfe599ab60bb32bb6862f62ee1a594b8797de099d076"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Tumbler/TumblerView.swift",
+      "bytes": 10292,
+      "sha256": "21d4c35a9ffb453f404e2ae0ef4822685898438864cc652df9d08e8ec4736271"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Dovetail/DovetailView.swift",
+      "bytes": 12653,
+      "sha256": "ae26f1542adf291a7a73b1847b4ddceba3a51b4f28f7cfe67ac387f8dd4bbee3"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Dovetail/DovetailModel.swift",
+      "bytes": 7535,
+      "sha256": "fd46e0df3421039aaa1f6a4243265b83d41755e0fff9caea3732215071eac31c"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Keystone/KeystoneView.swift",
+      "bytes": 10517,
+      "sha256": "af185d626e8cfd1e8abd68957eaab264cb977945c520cd363fbb417e4d9f5e45"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Keystone/KeystoneModel.swift",
+      "bytes": 6664,
+      "sha256": "3324c9b9d2b2218d14189e6284066781e4d532ab38f0e42bebd16eef6865f732"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Splice/SpliceModel.swift",
+      "bytes": 5492,
+      "sha256": "122f1cadb6fba11bc5a6764d32a37f9c2e070c11f279917caf82205a403d9c69"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Splice/SpliceView.swift",
+      "bytes": 10268,
+      "sha256": "52a49e8ec9c13681609db29250afd0b05432de7c89d60eb903b92495b9232ec8"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Sprout/SproutView.swift",
+      "bytes": 11649,
+      "sha256": "f88fad9bcdb9da2cedb7fae3b2a6ceb171b069368669357f4f098154e4235664"
+    },
+    {
+      "path": "Foreword/Foreword/Games/Sprout/SproutModel.swift",
+      "bytes": 8293,
+      "sha256": "46a4d655dad9345d442112f8cbafc5bf9a5bfd6b1b1c8966b4e9528cf086ad34"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/tangle.json",
+      "bytes": 151614,
+      "sha256": "3818d72aeeb9cf92fe8d118ecd41543b2e200bf7a112e5c1c407039efe6eb7f6"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/dovetail.json",
+      "bytes": 336198,
+      "sha256": "7daf10fcdea3a441c33991c602aa2e66b2f2b7d0d14aa34c16e5f1e0f8a00501"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/splice.json",
+      "bytes": 52610,
+      "sha256": "6475980a82cfc4f68befe8cb542ec733eb1913b548b53e91f5ce391af08d2eae"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/sprout.json",
+      "bytes": 34703,
+      "sha256": "c20e52586293fc10f950e71f747c8e64d81a84114b1de52b1ea57b0935618345"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/keystone.json",
+      "bytes": 26593,
+      "sha256": "f67876afaec9f745ea5f1f8e1f23043ec3608b69e56d5570b4789db9bc0218bd"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Puzzles/tumbler.json",
+      "bytes": 38055,
+      "sha256": "cba5ed70fb1cc4e7361ecb67a67d48d116d5628c1e0ed3d5409f937579ec7574"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "bytes": 22004,
+      "sha256": "a3fe59c0836638ddb999f824e0f8133fcd14c566880c30efb67c887af555ab24"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 202,
+      "sha256": "9239900ca4c37dc860feb154216409f05d906e26f2d79550e1e8e8b8db6324c7"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Assets.xcassets/Contents.json",
+      "bytes": 59,
+      "sha256": "a3393322cd7b4c1e0aa93bebe09abaa91ad891290d1225b0b5d10b5c6f216025"
+    },
+    {
+      "path": "Foreword/Foreword/Resources/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "bytes": 671,
+      "sha256": "c336362f7a18dffc95d24e17e06d2bd106197902728fbf002d168f2bd38c3ae0"
+    },
+    {
+      "path": "Foreword/Foreword/HomeView.swift",
+      "bytes": 12236,
+      "sha256": "badf6358d9e3bf1c8ab4d91ce7559b53553c8d9de94963d2f002de0f8b84005e"
+    },
+    {
+      "path": "Foreword/tools/gen_keystone.py",
+      "bytes": 7231,
+      "sha256": "f6ccb53331966b457f7c5299b7712d2c25160ffeee616a7a5e563907fb5ac16e"
+    },
+    {
+      "path": "Foreword/tools/gen_sprout.py",
+      "bytes": 6464,
+      "sha256": "816f3a322ca6258d7bbfe3d5bb1cb85e5d47f925d694cfd328b2c46f7e7ae799"
+    },
+    {
+      "path": "Foreword/tools/hub/part7_sprout.js",
+      "bytes": 10532,
+      "sha256": "ce9fd09e2212b51c25d55c75bdc338aa0ae785cc2bdfabc83af480f3c2d812f6"
+    },
+    {
+      "path": "Foreword/tools/hub/part3_body.html",
+      "bytes": 2079,
+      "sha256": "f850a7236971a7a7d28c037e95792a38850740d93e64f809c424a0bc6fb36c71"
+    },
+    {
+      "path": "Foreword/tools/hub/part10_tumbler.js",
+      "bytes": 7080,
+      "sha256": "8ae0285ed67c5329700fd876ba2bcfc246e68a8a653eb8c02dddfbfa18d123a1"
+    },
+    {
+      "path": "Foreword/tools/hub/part5_dovetail.js",
+      "bytes": 9293,
+      "sha256": "6b0047d5c1e4626479aa8fad9b77bc18cd5f1fd07e47a3a91ec00c354914efe3"
+    },
+    {
+      "path": "Foreword/tools/hub/part4_shell.js",
+      "bytes": 13348,
+      "sha256": "4d80945b67315e342d98672cb6ee2b954e17cc8c4f1359ee1a3feae5a940833b"
+    },
+    {
+      "path": "Foreword/tools/hub/build_hub.py",
+      "bytes": 8383,
+      "sha256": "6aac3c00fef87cc0b40e16613ff7496c77f1089358581d7337a3210313bddc63"
+    },
+    {
+      "path": "Foreword/tools/hub/part1_head.html",
+      "bytes": 10387,
+      "sha256": "b097422a3a15999ef98ffae6a97355f8af68157e88020fd916316351edbcb751"
+    },
+    {
+      "path": "Foreword/tools/hub/part2_gamecss.css",
+      "bytes": 17522,
+      "sha256": "64407532af991e59587fb31e5d365ccc13948f89e9daf4c37e2050b38ff22e91"
+    },
+    {
+      "path": "Foreword/tools/hub/part6_splice.js",
+      "bytes": 7878,
+      "sha256": "13b8ac4438f6b9cc9f2b73f5f82c081d1c2847c74f971d06b717e4a50b5d5ae4"
+    },
+    {
+      "path": "Foreword/tools/hub/part8_tangle.js",
+      "bytes": 8650,
+      "sha256": "bae59e4cf68fb5de694b626edda9613d8250dcc01fc4aaee0a112ea497c23d5c"
+    },
+    {
+      "path": "Foreword/tools/hub/part9_keystone.js",
+      "bytes": 8307,
+      "sha256": "75ae1355f5556974d440ff30915ab6fa34d18358e56926d510659957896d7c74"
+    },
+    {
+      "path": "Foreword/tools/gen_tangle.py",
+      "bytes": 4568,
+      "sha256": "7f44a942edfa793d4e8ba916d9fcfc5757eef3a6f42ec3a450177720db190e3a"
+    },
+    {
+      "path": "Foreword/tools/gen_splice.py",
+      "bytes": 4273,
+      "sha256": "6d545e3b991f8491bf1b405a1990207b6b10cb70d4547a4c9a53fb11cf7a8f82"
+    },
+    {
+      "path": "Foreword/tools/gen_dovetail.py",
+      "bytes": 6712,
+      "sha256": "e0279f14628ab4f722fb8bce1060a2c8d827dbb4d8d67fb4162bcff4a0518cd2"
+    },
+    {
+      "path": "Foreword/tools/gen_tumbler.py",
+      "bytes": 2515,
+      "sha256": "77e035eae7349330427f14fac5a13ca965cb7d9dde662827758a28a07cea15bf"
+    },
+    {
+      "path": "Foreword/MONETIZATION.md",
+      "bytes": 7452,
+      "sha256": "dc2b4225f742f607ad4b82106555b53163a7aa475bf73545aebc233656348a55"
+    }
+  ]
+}

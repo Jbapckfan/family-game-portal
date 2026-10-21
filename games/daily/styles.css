@@ -162,5 +162,23 @@ dialog p{font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:0}
 .game-kimi-hunch{--accent:#9b6b28;--wash:#f1e9d7;--soft:#f7f1e5;--tile:#fffbf1;--edge:#dfd0ad}
 .game-kimi-circuit{--accent:#8b4a42;--wash:#f1e2de;--soft:#f8eeeb;--tile:#fff8f5;--edge:#dfbfb9}
 .game-kimi-quartet{--accent:#655f9a;--wash:#e8e5f3;--soft:#f1eef8;--tile:#f9f7ff;--edge:#cbc4e3}
+.game-deepseek-twin-hive,.game-qwen-quadra{--accent:#936c22;--wash:#f2e8cb;--soft:#faf5e7;--tile:#fffaf0;--edge:#d9c68f}
+.game-deepseek-spare,.game-qwen-pattern-prism{--accent:#805a85;--wash:#eee0ef;--soft:#f6edf6;--tile:#fff8ff;--edge:#d6bdd9}
+.game-deepseek-rung,.game-qwen-memory-maze{--accent:#3d7383;--wash:#deedf0;--soft:#edf5f6;--tile:#f4fcfd;--edge:#b5d4da}
+.game-deepseek-cipher,.game-qwen-logic-lattice{--accent:#59648f;--wash:#e4e7f2;--soft:#eef0f8;--tile:#f9faff;--edge:#c3cae2}
+.game-deepseek-trail,.game-qwen-territory-tactics{--accent:#4b755b;--wash:#e0ecdf;--soft:#eff6ed;--tile:#f9fff5;--edge:#bcd3b8}
+.game-deepseek-split,.game-qwen-syntax-siege{--accent:#965a40;--wash:#f0e2d8;--soft:#f8f0ea;--tile:#fff9f3;--edge:#ddc3b0}
+.territory-dot{fill:var(--accent);opacity:.35}.territory-target{opacity:1}
+.game-claude-dovetail{--accent:#8a5e39;--wash:#eee2d4;--soft:#f8f1e9;--tile:#fffaf4;--edge:#d8bfa5}
+.game-claude-splice{--accent:#397d7a;--wash:#dceeea;--soft:#edf8f5;--tile:#f8fffd;--edge:#afd1c9}
+.game-claude-sprout{--accent:#587a3d;--wash:#e5eedb;--soft:#f1f7e8;--tile:#fbfff4;--edge:#c5d6ae}
+.game-claude-tangle{--accent:#985a76;--wash:#f1e0e8;--soft:#f9edf3;--tile:#fff7fb;--edge:#dcb9cb}
+.game-claude-keystone{--accent:#8b7045;--wash:#eee8da;--soft:#f8f5eb;--tile:#fffdf4;--edge:#d6c9ad}
+.game-claude-tumbler{--accent:#526680;--wash:#e1e8f0;--soft:#eff3f8;--tile:#f9fcff;--edge:#bccbdc}
+.creator-filters{flex-wrap:wrap;justify-content:flex-end;border-radius:24px;max-width:100%}
+.creator-filters button{flex:0 0 auto}
+.word-card .creator-credit{line-height:1.45}
 @media(max-width:680px){.daily-progress{align-items:flex-start}.progress-marks{grid-template-columns:repeat(7,22px);gap:5px}.collection-filter{margin-top:27px;gap:12px}.creator-filters button{padding:9px 13px}.creator-credit{font-size:10px}}
 @media(max-width:460px){.daily-progress{display:block}.progress-marks{margin-top:12px;display:flex;flex-wrap:wrap;gap:5px}.progress-mark{width:19px;height:19px}.collection-filter{align-items:flex-start;flex-direction:column;padding-bottom:18px}.creator-filters{width:100%;justify-content:stretch}.creator-filters button{flex:1}.creator-credit{margin:0 0 8px}}
+@media(max-width:680px){.collection-filter{flex-wrap:wrap}.creator-filters{justify-content:flex-start}.creator-filters button{padding:9px 12px}}
+@media(max-width:460px){.creator-filters button{flex:1 0 auto;min-width:68px}.word-card .card-copy h3{overflow-wrap:anywhere}}

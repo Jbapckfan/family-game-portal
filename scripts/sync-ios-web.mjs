@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Stage 14 game documents and one shared Kimi runtime, or verify offline parity. */
+/** Stage 32 game documents and two shared runtimes, or verify offline parity. */
 import { createHash } from 'node:crypto';
 import { lstat, mkdir, readdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -12,8 +12,16 @@ const ORIGINAL_GAMES = Object.freeze([
 ]);
 const CLASSIC_GAMES = Object.freeze(['tradeoff', 'inbetween']);
 const KIMI_GAMES = Object.freeze(['kimi-cairn', 'kimi-morph', 'kimi-tangle', 'kimi-hunch', 'kimi-circuit', 'kimi-quartet']);
-const GAME_SLUGS = Object.freeze([...ORIGINAL_GAMES, ...CLASSIC_GAMES, ...KIMI_GAMES]);
-const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime']);
+const DEEPSEEK_GAMES = Object.freeze(['deepseek-twin-hive', 'deepseek-spare', 'deepseek-rung', 'deepseek-cipher', 'deepseek-trail', 'deepseek-split']);
+const QWEN_GAMES = Object.freeze(['qwen-quadra', 'qwen-logic-lattice', 'qwen-syntax-siege', 'qwen-memory-maze', 'qwen-pattern-prism', 'qwen-territory-tactics']);
+const CLAUDE_GAMES = Object.freeze(['claude-dovetail', 'claude-splice', 'claude-sprout', 'claude-tangle', 'claude-keystone', 'claude-tumbler']);
+const SHARED_MODULE_GAMES = Object.freeze([...DEEPSEEK_GAMES, ...QWEN_GAMES, ...CLAUDE_GAMES]);
+const GAME_SLUGS = Object.freeze([...ORIGINAL_GAMES, ...CLASSIC_GAMES, ...KIMI_GAMES, ...SHARED_MODULE_GAMES]);
+const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime', 'deepseek-runtime']);
+const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
+const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css']);
+const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'styles.css']);
+const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs']);
 const RUNTIME_FILES = Object.freeze([
   'index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs',
   'styles.css', 'icon.svg', 'manifest.webmanifest',
@@ -80,12 +88,44 @@ async function validateKimiLayout(slug, directory, files, { source = false } = {
   }
 }
 
+async function validateSharedModuleLayout(slug, directory, files, { source = false } = {}) {
+  if (slug === 'deepseek-runtime') {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const allowed = source ? [...DEEPSEEK_SHARED_FILES, ...DEEPSEEK_SHARED_TESTS] : DEEPSEEK_SHARED_FILES;
+    if (entries.some(entry => !entry.isFile() || !allowed.includes(entry.name)) ||
+        files.some(name => !allowed.includes(name)) || (source && DEEPSEEK_SHARED_FILES.some(name => !files.includes(name)))) {
+      throw new Error(`${slug}: shared runtime must contain only core.mjs, common.mjs and styles.css`);
+    }
+  } else if (SHARED_MODULE_GAMES.includes(slug)) {
+    const allowed = [...SHARED_GAME_REQUIRED_FILES, ...SHARED_GAME_OPTIONAL_FILES];
+    const entries = await readdir(directory, { withFileTypes: true });
+    if (files.some(name => !allowed.includes(name)) || entries.some(entry => !entry.isFile() || !allowed.includes(entry.name))) {
+      throw new Error(`${slug}: unexpected game runtime file`);
+    }
+  }
+}
+
 async function readRuntime(slug) {
   const directory = join(REPO, 'games', slug);
   let files;
   if (KIMI_GAMES.includes(slug) || slug === 'kimi-runtime') {
     files = await collectTree(directory);
     await validateKimiLayout(slug, directory, files, { source: true });
+  } else if (slug === 'deepseek-runtime') {
+    files = await collectTree(directory);
+    await validateSharedModuleLayout(slug, directory, files, { source: true });
+    files = [...DEEPSEEK_SHARED_FILES];
+  } else if (SHARED_MODULE_GAMES.includes(slug)) {
+    await assertDirectoryChain(directory);
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) throw new Error(`Symbolic links are not bundle files: ${join(directory, entry.name)}`);
+    }
+    files = [...SHARED_GAME_REQUIRED_FILES];
+    for (const name of SHARED_GAME_OPTIONAL_FILES) {
+      try { await lstat(join(directory, name)); files.push(name); }
+      catch (error) { if (error.code !== 'ENOENT') throw error; }
+    }
+    files.sort();
   } else {
     const fonts = await collectTree(join(directory, 'fonts'));
     if (!fonts.length) throw new Error(`${slug}: missing bundled fonts and licenses`);
@@ -123,6 +163,7 @@ async function inspectDestination({ slug }) {
   try {
     const files = await collectTree(directory);
     await validateKimiLayout(slug, directory, files);
+    await validateSharedModuleLayout(slug, directory, files);
     return files;
   }
   catch (error) {
@@ -160,12 +201,12 @@ async function main() {
   if (args.includes('--check')) {
     const failures = (await Promise.all(games.map((game, index) => checkBundle(game, actual[index])))).flat();
     if (failures.length) throw new Error(`iOS web bundle differs from its portable sources:\n${failures.join('\n')}`);
-    console.log(`Verified ${GAME_SLUGS.length} iOS game entries and one shared runtime: ${count} runtime files, matching SHA-256 hashes and file sets.`);
+    console.log(`Verified ${GAME_SLUGS.length} iOS game entries and two shared runtimes: ${count} runtime files, matching SHA-256 hashes and file sets.`);
     return;
   }
   for (const { slug, contents } of games) {
     const destination = join(REPO, 'ios', 'Web', 'games', slug);
-    // These fixed 15 directories are generated output. Nothing else in ios/ is touched.
+    // These fixed 28 directories are generated output. Nothing else in ios/ is touched.
     await assertDirectoryChain(destination, { allowMissing: true });
     await rm(destination, { recursive: true, force: true });
     for (const [name, bytes] of contents) {
@@ -174,7 +215,7 @@ async function main() {
       await writeFile(target, bytes);
     }
   }
-  console.log(`Synced ${GAME_SLUGS.length} iOS game entries and one shared runtime: ${count} runtime files. Tests, scripts, and documentation were excluded.`);
+  console.log(`Synced ${GAME_SLUGS.length} iOS game entries and two shared runtimes: ${count} runtime files. Tests, scripts, and documentation were excluded.`);
 }
 
 await main();

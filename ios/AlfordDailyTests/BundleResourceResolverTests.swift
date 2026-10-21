@@ -46,6 +46,26 @@ final class BundleResourceResolverTests: XCTestCase {
         }
     }
 
+    func testFlatSharedModulesResolveWithoutCreatingNavigableDocuments() throws {
+        let resolver = BundleResourceResolver(root: FileManager.default.temporaryDirectory.appendingPathComponent("AlfordBundle/Web"))
+        for path in ["core.mjs", "common.mjs", "styles.css"] {
+            let url = URL(string: "alford://app/games/deepseek-runtime/\(path)")!
+            XCTAssertTrue(try resolver.fileURL(for: url).path.hasSuffix("/games/deepseek-runtime/\(path)"))
+            XCTAssertNil(LocalRoute.game(at: url))
+            XCTAssertFalse(LocalRoute.isHome(url))
+        }
+        for path in ["", "index.html", "puzzles.json", "other.mjs", "core.mjs/", "nested/core.mjs",
+                     ".core.mjs", "%2e%2e/core.mjs", "%252e%252e/core.mjs"] {
+            let url = URL(string: "alford://app/games/deepseek-runtime/\(path)")!
+            XCTAssertThrowsError(try resolver.fileURL(for: url), path)
+            XCTAssertNil(LocalRoute.game(at: url))
+        }
+        for game in CreatorFilter.deepSeek.games + CreatorFilter.qwen.games + CreatorFilter.claude.games {
+            XCTAssertEqual(LocalRoute.game(at: game.localURL), game)
+            XCTAssertTrue(try resolver.fileURL(for: game.localURL).path.hasSuffix("/games/\(game.rawValue)/index.html"))
+        }
+    }
+
     func testSymlinksCannotEscapeTheWebBundle() throws {
         let temporary = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         let root = temporary.appendingPathComponent("Web", isDirectory: true)

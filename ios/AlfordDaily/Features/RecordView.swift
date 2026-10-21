@@ -28,7 +28,7 @@ struct RecordView: View {
                     let stats = store.stats(for: game)
                     VStack(alignment: .leading, spacing: 16) {
                         Label(game.name, systemImage: game.symbol).font(.system(.title3, design: .serif)).foregroundStyle(game.tint)
-                        Text(game.creator.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+                        Text(game.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
                         HStack {
                             MetricView(value: "\(stats.won)", label: "solved")
                             Spacer()

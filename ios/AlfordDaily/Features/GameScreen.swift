@@ -31,8 +31,9 @@ struct GameScreen: View {
         }
         .navigationTitle(game.name).navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .top, spacing: 0) {
-            Text(game.creator.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
-                .frame(maxWidth: .infinity).padding(.vertical, 7).background(Theme.paper)
+            Text(game.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+                .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity).padding(.horizontal, 16).padding(.vertical, 7).background(Theme.paper)
                 .accessibilityIdentifier("game-developer-credit")
         }
         .toolbar {
@@ -59,9 +60,9 @@ private struct GameAboutView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     Label(game.name, systemImage: game.symbol).font(.system(.largeTitle, design: .serif))
                         .foregroundStyle(game.tint)
-                    Text(game.creator.credit).font(.headline)
+                    Text(game.credit).font(.headline)
                     Text(game.subtitle).font(.title3).foregroundStyle(Theme.muted)
-                    Text("Original developer: \(game.creator.rawValue). Included in the Alford Daily collection with its original attribution.")
+                    Text(game.attributionDescription)
                     Text("\(game.collectionCount) prepared puzzles. Daily play changes at midnight Central and repeats after the collection ends. Practice stays separate from your daily record.")
                     Text("This game works offline. Progress is stored locally on this device.")
                         .font(.footnote).foregroundStyle(Theme.muted)

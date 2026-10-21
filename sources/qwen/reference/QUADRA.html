@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QUADRA — Daily 4-Word Category Puzzle</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #181b21;
+      --text: #e9edf2;
+      --muted: #9aa4b2;
+      --accent: #5cc8ff;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --tile: #252a34;
+      --border: #2d3340;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    main { width: min(520px, 100%); padding: 16px; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    h1 { margin: 0; letter-spacing: 2px; font-size: 30px; line-height: 1; }
+    .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    #date { color: var(--muted); font-size: 13px; text-align: right; padding-top: 4px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin: 12px 0; }
+    #categoryBox { font-size: 15px; }
+    #category { color: var(--accent); letter-spacing: 1px; }
+    #rules { color: var(--muted); font-size: 13px; margin: 8px 0 0; line-height: 1.35; }
+    #found { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .foundword { background: #11141a; border: 1px solid var(--border); border-radius: 10px; padding: 10px 4px; text-align: center; font-weight: 800; letter-spacing: 2px; font-size: 14px; min-height: 42px; display: flex; align-items: center; justify-content: center; }
+    .foundword.solved { border-color: rgba(34, 197, 94, 0.5); color: #86efac; background: rgba(34, 197, 94, 0.08); }
+    .foundword.revealed { border-color: rgba(234, 179, 8, 0.45); color: #fde68a; background: rgba(234, 179, 8, 0.08); }
+    .foundword.empty { color: #4b5563; }
+    #grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 4px 0 12px; }
+    .tile { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--border); background: var(--tile); color: var(--text); font-size: clamp(18px, 6vw, 26px); font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease; user-select: none; }
+    .tile:hover:not(:disabled) { transform: translateY(-1px); border-color: #3b4252; }
+    .tile.selected { background: rgba(92, 200, 255, 0.18); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(92, 200, 255, 0.25) inset; }
+    .tile.locked { background: rgba(34, 197, 94, 0.16); border-color: rgba(34, 197, 94, 0.45); color: #86efac; cursor: default; }
+    #slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .slot { aspect-ratio: 1; border-radius: 12px; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: clamp(18px, 6vw, 26px); font-weight: 800; color: var(--text); cursor: pointer; user-select: none; }
+    .slot.filled { border-style: solid; border-color: var(--accent); background: rgba(92, 200, 255, 0.10); }
+    .buttons { display: flex; gap: 8px; }
+    button.action { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: #20242d; color: var(--text); font-weight: 800; cursor: pointer; font-size: 14px; }
+    button.primary { background: var(--accent); color: #06121a; border-color: transparent; }
+    button.secondary { background: transparent; color: var(--muted); }
+    button.action:hover { filter: brightness(1.08); }
+    #message { min-height: 20px; margin: 10px 0 6px; font-size: 14px; text-align: center; color: var(--muted); }
+    #message.good { color: #86efac; }
+    #message.bad { color: #fca5a5; }
+    #message.warn { color: #fde68a; }
+    #strikes { text-align: center; font-size: 15px; margin-bottom: 2px; }
+    footer { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-top: 12px; color: var(--muted); font-size: 12px; flex-wrap: wrap; }
+    footer .buttons { min-width: 180px; }
+    #end { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+    #end.hidden { display: none; }
+    .modal { width: min(420px, 100%); background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 18px; text-align: center; }
+    .modal h2 { margin: 0 0 10px; font-size: 24px; }
+    .modal p { margin: 8px 0; color: var(--text); line-height: 1.35; }
+    .answers { font-weight: 800; letter-spacing: 1px; color: #86efac !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>QUADRA</h1>
+        <div class="sub">Daily 4-word category puzzle</div>
+      </div>
+      <div id="date"></div>
+    </header>
+    <section class="panel">
+      <div id="categoryBox">Category: <strong id="category"></strong></div>
+      <p id="rules">Make four 4-letter words in the category. Use all 16 tiles exactly once. Tap tiles or type letters. Enter to submit. Four lives.</p>
+    </section>
+    <section class="panel"><div id="found"></div></section>
+    <section class="panel">
+      <div id="grid"></div>
+      <div id="slots"></div>
+      <div class="buttons">
+        <button id="clear" class="action secondary">Clear</button>
+        <button id="submit" class="action primary">Submit</button>
+      </div>
+      <div id="message" aria-live="polite"></div>
+      <div id="strikes"></div>
+    </section>
+    <footer>
+      <div id="stats"></div>
+      <div class="buttons">
+        <button id="share" class="action">Share</button>
+        <button id="reset" class="action secondary">Reset</button>
+      </div>
+    </footer>
+    <div id="end" class="hidden">
+      <div class="modal">
+        <h2 id="endTitle"></h2>
+        <div id="endBody"></div>
+        <div class="buttons" style="margin-top: 14px;">
+          <button id="shareEnd" class="action primary">Copy result</button>
+          <button id="closeEnd" class="action secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    const puzzles = [
+      { category: "Weather", answers: ["RAIN", "SNOW", "WIND", "HAIL"] },
+      { category: "Money", answers: ["CASH", "COIN", "NOTE", "BILL"] },
+      { category: "Animals", answers: ["BEAR", "LION", "WOLF", "DEER"] },
+      { category: "Colors", answers: ["BLUE", "CYAN", "GOLD", "TEAL"] },
+      { category: "Fruits", answers: ["PEAR", "PLUM", "KIWI", "LIME"] },
+      { category: "Vehicles", answers: ["BOAT", "SHIP", "TAXI", "TRAM"] },
+      { category: "Car parts", answers: ["HOOD", "DOOR", "SEAT", "TIRE"] },
+      { category: "Communication", answers: ["CHAT", "TEXT", "CALL", "MAIL"] },
+      { category: "Grammar", answers: ["NOUN", "VERB", "CASE", "MOOD"] },
+      { category: "Chess", answers: ["KING", "ROOK", "PAWN", "MATE"] },
+      { category: "Gemstones", answers: ["OPAL", "RUBY", "JADE", "ONYX"] },
+      { category: "Music genres", answers: ["JAZZ", "ROCK", "SOUL", "FUNK"] },
+      { category: "Length units", answers: ["MILE", "YARD", "FOOT", "INCH"] },
+      { category: "Beverages", answers: ["BEER", "WINE", "COLA", "MILK"] },
+      { category: "Shapes", answers: ["CUBE", "CONE", "OVAL", "STAR"] },
+      { category: "Birds", answers: ["CROW", "DOVE", "SWAN", "HAWK"] }
+    ];
+    const $ = (id) => document.getElementById(id);
+    function mulberry32(a) { return function() { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }}
+    function shuffle(arr, seed) { const rng = mulberry32(seed); const a = arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+    function toKey(d) { return d.toISOString().slice(0, 10); }
+    function getTodayKey() { return toKey(new Date()); }
+    function dayIndexFromKey(key) { return Math.floor(Date.parse(key + "T00:00:00Z") / 86400000); }
+    function yesterdayKey(key) { const d = new Date(Date.parse(key + "T00:00:00Z")); d.setUTCDate(d.getUTCDate() - 1); return toKey(d); }
+    const todayKey = getTodayKey();
+    const dayIndex = dayIndexFromKey(todayKey);
+    const params = new URLSearchParams(location.search);
+    let puzzleIndex = dayIndex % puzzles.length;
+    if (params.has("p")) { const n = parseInt(params.get("p"), 10); if (!Number.isNaN(n)) { puzzleIndex = ((n % puzzles.length) + puzzles.length) % puzzles.length; } }
+    const puzzle = puzzles[puzzleIndex];
+    const seed = dayIndex * 1000 + puzzleIndex + 17;
+    const letters = shuffle(puzzle.answers.join("").split(""), seed);
+    const stateKey = "quadra-state-" + todayKey;
+    const statsKey = "quadra-stats";
+    function defaultState() { return { selected: [], locked: new Array(16).fill(false), found: [], strikes: 0, gameOver: false, won: false }; }
+    function loadState() { try { const raw = localStorage.getItem(stateKey); if (!raw) return defaultState(); const parsed = JSON.parse(raw); return { ...defaultState(), ...parsed }; } catch (e) { return defaultState(); } }
+    const useSaved = !params.has("p");
+    const saved = useSaved ? loadState() : defaultState();
+    let locked = Array.from({ length: 16 }, (_, i) => !!saved.locked[i]);
+    let found = [...new Set((saved.found || []).filter((w) => puzzle.answers.includes(w)))];
+    let strikes = Math.min(4, Math.max(0, saved.strikes || 0));
+    let gameOver = !!saved.gameOver;
+    let won = !!saved.won;
+    let selected = (saved.selected || []).filter((i) => Number.isInteger(i) && i >= 0 && i < 16 && !locked[i]).slice(0, 4);
+    if (found.length === 4) { won = true; gameOver = true; }
+    if (strikes >= 4) { gameOver = true; if (found.length < 4) won = false; }
+    function saveState() { localStorage.setItem(stateKey, JSON.stringify({ selected, locked, found, strikes, gameOver, won })); }
+    function loadStats() { try { return JSON.parse(localStorage.getItem(statsKey)) || {}; } catch (e) { return {}; } }
+    function updateStats(win) { const s = loadStats(); if (s.lastPlayedDate === todayKey) return; s.played = (s.played || 0) + 1; if (win) { s.wins = (s.wins || 0) + 1; s.streak = s.lastWinDate === yesterdayKey(todayKey) ? (s.streak || 0) + 1 : 1; s.lastWinDate = todayKey; s.best = Math.max(s.best || 0, s.streak); } else { s.streak = 0; } s.lastPlayedDate = todayKey; localStorage.setItem(statsKey, JSON.stringify(s)); }
+    function setMessage(text, kind = "") { const m = $("message"); m.textContent = text; m.className = kind; }
+    function renderHeader() { $("date").textContent = new Date(todayKey + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" }); $("category").textContent = puzzle.category; }
+    function renderFound() { const el = $("found"); el.innerHTML = ""; const display = gameOver && !won ? puzzle.answers : found; for (let i = 0; i < 4; i++) { const div = document.createElement("div"); div.className = "foundword"; const w = display[i]; if (w) { div.textContent = w; div.classList.add(found.includes(w) ? "solved" : "revealed"); } else { div.textContent = "????"; div.classList.add("empty"); } el.appendChild(div); } }
+    function renderGrid() { const el = $("grid"); el.innerHTML = ""; letters.forEach((letter, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.textContent = letter; b.setAttribute("aria-label", `Letter ${letter}, tile ${i + 1}`); if (locked[i]) b.classList.add("locked"); if (selected.includes(i)) b.classList.add("selected"); b.disabled = locked[i] || gameOver; b.addEventListener("click", () => toggleTile(i)); el.appendChild(b); }); }
+    function renderSlots() { const el = $("slots"); el.innerHTML = ""; for (let n = 0; n < 4; n++) { const div = document.createElement("div"); div.className = "slot"; const idx = selected[n]; if (idx != null) { div.textContent = letters[idx]; div.classList.add("filled"); div.title = "Click to remove"; div.addEventListener("click", () => { if (gameOver) return; selected.splice(n, 1); renderAll(); saveState(); }); } else { div.textContent = ""; } el.appendChild(div); } }
+    function renderStrikes() { const lives = Math.max(0, 4 - strikes); $("strikes").textContent = `Lives: ${"❤️".repeat(lives)}${"🖤".repeat(strikes)}`; }
+    function renderStats() { const s = loadStats(); $("stats").textContent = `Played ${s.played || 0} · Wins ${s.wins || 0} · Streak ${s.streak || 0} · Best ${s.best || 0}`; }
+    function renderAll() { renderHeader(); renderFound(); renderGrid(); renderSlots(); renderStrikes(); renderStats(); }
+    function toggleTile(i) { if (gameOver || locked[i]) return; const pos = selected.indexOf(i); if (pos >= 0) { selected.splice(pos, 1); } else if (selected.length < 4) { selected.push(i); } renderAll(); saveState(); }
+    function submit() { if (gameOver) return; if (selected.length !== 4) { setMessage("Pick 4 tiles.", "warn"); return; } const guess = selected.map((i) => letters[i]).join(""); const remaining = puzzle.answers.filter((a) => !found.includes(a)); if (remaining.includes(guess)) { found.push(guess); selected.forEach((i) => (locked[i] = true)); selected = []; if (found.length === 4) { won = true; gameOver = true; updateStats(true); setMessage("Solved! 🎉", "good"); showEnd(); } else { setMessage(`${guess} locked in.`, "good"); } } else { strikes += 1; selected = []; if (strikes >= 4) { gameOver = true; won = false; updateStats(false); setMessage("Out of lives. Today’s words revealed.", "bad"); showEnd(); } else { setMessage(`Not one of today’s four. ${4 - strikes} lives left.`, "bad"); } } saveState(); renderAll(); }
+    function showEnd() { const modal = $("end"); modal.classList.remove("hidden"); $("endTitle").textContent = won ? "Solved!" : "Revealed"; $("endBody").innerHTML = `<p>Category: <strong>${puzzle.category}</strong></p><p class="answers">${puzzle.answers.join(" · ")}</p><p>${won ? `Finished with ${strikes} miss${strikes === 1 ? "" : "es"}.` : "The four words use all 16 tiles. Try again tomorrow."}</p>`; }
+    function shareText() { const progress = "🟩".repeat(found.length) + "⬛".repeat(4 - found.length); const lives = "❤️".repeat(Math.max(0, 4 - strikes)) + "🖤".repeat(Math.min(4, strikes)); let text = `QUADRA ${todayKey}\n${progress}  ${lives}\nCategory: ${puzzle.category}\n`; if (gameOver) { text += puzzle.answers.join(" ") + "\n"; } text += "Can you find all four?"; return text; }
+    async function shareResult() { const text = shareText(); try { await navigator.clipboard.writeText(text); setMessage("Result copied to clipboard.", "good"); } catch (e) { window.prompt("Copy your result:", text); } }
+    $("clear").addEventListener("click", () => { if (gameOver) return; selected = []; setMessage("Cleared."); renderAll(); saveState(); });
+    $("submit").addEventListener("click", submit);
+    $("share").addEventListener("click", shareResult);
+    $("shareEnd").addEventListener("click", shareResult);
+    $("closeEnd").addEventListener("click", () => { $("end").classList.add("hidden"); });
+    $("reset").addEventListener("click", () => { if (confirm("Reset today’s puzzle and stats?")) { localStorage.removeItem(stateKey); localStorage.removeItem(statsKey); location.reload(); } });
+    window.addEventListener("keydown", (e) => { if (e.ctrlKey || e.metaKey || e.altKey) return; const active = document.activeElement; const activeIsButton = active && active.tagName === "BUTTON"; if (e.key === "Enter") { if (activeIsButton) return; submit(); return; } if (e.key === "Backspace") { if (!gameOver && selected.length) { selected.pop(); renderAll(); saveState(); } return; } if (/^[a-zA-Z]$/.test(e.key)) { if (gameOver) return; const ch = e.key.toUpperCase(); const idx = letters.findIndex((l, i) => l === ch && !locked[i] && !selected.includes(i)); if (idx !== -1 && selected.length < 4) { selected.push(idx); renderAll(); saveState(); } } });
+    renderAll();
+    setMessage("Tap tiles or type letters. Enter to submit.");
+    if (gameOver) { const s = loadStats(); if (s.lastPlayedDate !== todayKey) updateStats(won); showEnd(); }
+    saveState();
+  </script>
+</body>
+</html>

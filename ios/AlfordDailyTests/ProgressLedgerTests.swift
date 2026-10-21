@@ -82,7 +82,7 @@ final class ProgressLedgerTests: XCTestCase {
         XCTAssertFalse(store.preferences.hapticsEnabled)
         XCTAssertEqual(store.preferences.reminderHour, 7)
         XCTAssertEqual(store.preferences.reminderMinute, 45)
-        for game in [GameID.tradeoff, .inbetween] + CreatorFilter.kimi.games {
+        for game in [GameID.tradeoff, .inbetween] + CreatorFilter.kimi.games + CreatorFilter.deepSeek.games + CreatorFilter.qwen.games + CreatorFilter.claude.games {
             XCTAssertNil(store.ledger.status(for: game, on: "2026-10-20"))
             XCTAssertEqual(store.stats(for: game), .empty)
         }
@@ -91,6 +91,42 @@ final class ProgressLedgerTests: XCTestCase {
         XCTAssertEqual(restored.ledger.status(for: .kimiHunch, on: "2026-10-20"), .lost)
         XCTAssertEqual(restored.ledger.status(for: .ringcount, on: "2026-10-20"), .won)
         XCTAssertEqual(restored.stats(for: .ringcount).won, 1)
+    }
+
+    @MainActor
+    func testFourteenGameSnapshotRetainsResultsWhenMoreCreatorsAreAdded() throws {
+        let suite = "AlfordDailyTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let snapshot = #"{"version":1,"ledger":{"days":{"2026-10-20":{"ringcount":"won","switchpath":"won","counterpart":"won","shortlist":"lost","second-sense":"won","sideways":"won","tradeoff":"won","inbetween":"won","kimi-cairn":"won","kimi-morph":"won","kimi-tangle":"won","kimi-hunch":"lost","kimi-circuit":"revealed","kimi-quartet":"won"}}},"statistics":{"ringcount":{"played":1,"won":1,"streak":1,"bestStreak":1},"kimi-cairn":{"played":1,"won":1,"streak":1,"bestStreak":1}}}"#
+        let preferences = #"{"hapticsEnabled":false,"reminderEnabled":false,"reminderHour":20,"reminderMinute":15}"#
+        defaults.set(Data(snapshot.utf8), forKey: "alford.native.progress.v1")
+        defaults.set(Data(preferences.utf8), forKey: "alford.native.preferences.v1")
+        let store = ProgressStore(defaults: defaults)
+        XCTAssertEqual(store.ledger.completed(on: "2026-10-20"), 14)
+        XCTAssertEqual(store.ledger.solved(on: "2026-10-20"), 11)
+        XCTAssertEqual(store.ledger.status(for: .kimiHunch, on: "2026-10-20"), .lost)
+        XCTAssertEqual(store.ledger.status(for: .kimiCircuit, on: "2026-10-20"), .revealed)
+        XCTAssertEqual(store.stats(for: .kimiCairn).won, 1)
+        for game in CreatorFilter.deepSeek.games + CreatorFilter.qwen.games + CreatorFilter.claude.games {
+            XCTAssertNil(store.ledger.status(for: game, on: "2026-10-20"))
+            XCTAssertEqual(store.stats(for: game), .empty)
+        }
+        store.accept(message(.deepSeekSpare, "2026-10-20", .lost))
+        store.accept(message(.qwenLogicLattice, "2026-10-20", .won))
+        store.accept(message(.claudeTangle, "2026-10-20", .lost))
+        let restored = ProgressStore(defaults: defaults)
+        XCTAssertEqual(restored.ledger.completed(on: "2026-10-20"), 17)
+        XCTAssertEqual(restored.ledger.solved(on: "2026-10-20"), 12)
+        XCTAssertEqual(restored.ledger.status(for: .deepSeekSpare, on: "2026-10-20"), .lost)
+        XCTAssertEqual(restored.ledger.status(for: .qwenLogicLattice, on: "2026-10-20"), .won)
+        XCTAssertEqual(restored.ledger.status(for: .claudeTangle, on: "2026-10-20"), .lost)
+        XCTAssertEqual(restored.ledger.status(for: .kimiTangle, on: "2026-10-20"), .won)
+        XCTAssertEqual(restored.ledger.status(for: .kimiCairn, on: "2026-10-20"), .won)
+        XCTAssertEqual(restored.stats(for: .kimiCairn).won, 1)
+        XCTAssertFalse(restored.preferences.hapticsEnabled)
+        XCTAssertEqual(restored.preferences.reminderHour, 20)
+        XCTAssertEqual(restored.preferences.reminderMinute, 15)
     }
 
     @MainActor

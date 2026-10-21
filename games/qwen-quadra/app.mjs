@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,chooseTile,selectWord,submitWord,hint,reveal,analyze} from './engine.mjs';
 
 mountDailyGame({
- id:'qwen-quadra',name:'Quadra',creator:'Qwen',credit:'Developed by Qwen',accent:'#387991',
+ id:'qwen-quadra',name:'Quadra',creator:'Qwen',credit:'Developed by Qwen',accent:'#594ab5',
  intro:'One category. Sixteen letters. Four words waiting to click.',
  instructions:[
   'Find today’s four 4-letter words in the displayed category. Together they use all 16 letter tiles exactly once.',

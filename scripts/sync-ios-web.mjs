@@ -18,8 +18,9 @@ const CLAUDE_GAMES = Object.freeze(['claude-dovetail', 'claude-splice', 'claude-
 const SHARED_MODULE_GAMES = Object.freeze([...DEEPSEEK_GAMES, ...QWEN_GAMES, ...CLAUDE_GAMES]);
 const GAME_SLUGS = Object.freeze([...ORIGINAL_GAMES, ...CLASSIC_GAMES, ...KIMI_GAMES, ...SHARED_MODULE_GAMES]);
 const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime', 'deepseek-runtime']);
+const KIMI_WRAPPER_FILES = Object.freeze(['index.html', 'icon.svg']);
 const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
-const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css']);
+const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css', 'icon.svg']);
 const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'styles.css']);
 const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs']);
 const RUNTIME_FILES = Object.freeze([
@@ -82,8 +83,8 @@ async function validateKimiLayout(slug, directory, files, { source = false } = {
     }
     if (source && !files.some(name => name.startsWith('assets/'))) throw new Error(`${slug}: missing compiled assets`);
   } else if (KIMI_GAMES.includes(slug)) {
-    if (entries.some(entry => entry.name !== 'index.html' || !entry.isFile()) || (source && files.length !== 1)) {
-      throw new Error(`${slug}: a Kimi wrapper must contain only index.html`);
+    if (entries.some(entry => !KIMI_WRAPPER_FILES.includes(entry.name) || !entry.isFile()) || (source && !files.includes('index.html'))) {
+      throw new Error(`${slug}: a Kimi wrapper must contain index.html and only an optional icon.svg`);
     }
   }
 }

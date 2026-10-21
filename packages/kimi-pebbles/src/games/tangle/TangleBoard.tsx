@@ -124,7 +124,7 @@ export function TangleBoard({ state, actions }: Props) {
     .join(' ')
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board tangle-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       {/* score row */}
       <div className="mt-4 flex w-full items-end justify-between">
         <div>
@@ -140,12 +140,12 @@ export function TangleBoard({ state, actions }: Props) {
       </div>
 
       {/* progress bar with tier ticks */}
-      <div className="relative mt-2 h-4 w-full rounded-full bg-secondary">
+      <div className="tangle-growth relative mt-2 h-4 w-full rounded-full bg-secondary">
         <div
           className="h-full rounded-full transition-all duration-300"
           style={{
             width: `${Math.min(100, (score / puzzle.max) * 100)}%`,
-            background: 'linear-gradient(90deg, hsl(24 92% 58%), hsl(45 95% 52%))',
+            background: 'var(--identity)',
           }}
         />
         {puzzle.targets.map((t, i) => (
@@ -203,7 +203,7 @@ export function TangleBoard({ state, actions }: Props) {
       {/* grid */}
       <div
         ref={containerRef}
-        className={cn('relative mt-3 w-full max-w-95 select-none', shaking && 'anim-shake')}
+        className={cn('tangle-field relative mt-3 w-full max-w-95 select-none', shaking && 'anim-shake')}
         style={{ touchAction: 'none' }}
         onPointerMove={handleMove}
         onPointerUp={handleUp}
@@ -219,7 +219,7 @@ export function TangleBoard({ state, actions }: Props) {
             <polyline
               points={points}
               fill="none"
-              stroke="hsl(24 92% 58% / 0.55)"
+              stroke="var(--identity)"
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -262,7 +262,7 @@ export function TangleBoard({ state, actions }: Props) {
       </div>
 
       {/* found words */}
-      <div className="mt-4 w-full max-w-md">
+      <div className="tangle-found mt-4 w-full max-w-md">
         <div className="mb-1 font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
           Found ({found.length})
         </div>

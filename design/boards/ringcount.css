@@ -1,0 +1,10 @@
+/* Ringcount: a brass instrument, with movable cuts around a porcelain dial. */
+.ringcount .ring-board{background:radial-gradient(circle at center,#fffefa 0 31%,#f2e3bd 31.5% 33%,#fff9e9 33.5% 52%,#f4e8cd 52.5% 54%,transparent 54.5%);border:1px solid #e7d4a6;box-shadow:inset 0 0 0 7px #fcf6e5,0 8px 24px #86642310;margin:10px auto 18px}
+.ringcount .ring-number{border:1px solid color-mix(in srgb,var(--arc) 45%,#e4d5b1);background:#fffefa;box-shadow:0 3px 0 #d6c398;font-family:var(--serif);font-size:27px}
+.ringcount .ring-center{width:33%;aspect-ratio:1;justify-content:center;border:1px solid #e3ce9c;border-radius:50%;background:#fffefa;box-shadow:0 3px 10px #9a753010}
+.ringcount .ring-center>strong{font-size:52px}.ringcount .ring-center>small{font-size:10px}.ringcount .ring-center>span{font-size:9px}
+.ringcount .ring-gap>span{border-color:#b79552;color:#775522;background:#fffaf0;box-shadow:0 2px 0 #d8c393}
+.ringcount .ring-gap.selected>span{background:var(--accent);box-shadow:0 0 0 4px #fffaf0}
+.ringcount .arc-total{border-radius:12px;border-color:#d8caa9;background:#fffcf4;padding:11px 4px}
+.ringcount .arc-total strong{font-family:var(--serif);font-weight:400;font-size:26px}.ringcount .ring-intro{font-size:12px}
+@media(max-width:520px){.ringcount .ring-center>strong{font-size:41px}.ringcount .ring-number{width:36px;height:36px;font-size:23px}.ringcount .ring-center>small{font-size:8px}.ringcount .ring-center>span{font-size:8px}.ringcount .ring-intro{font-size:10px}.ringcount .ring-intro p{max-width:65%}.ringcount .arc-total strong{font-size:23px}.ringcount .ring-actions{flex-wrap:wrap}.ringcount .ring-actions .primary-button{flex-basis:100%}}

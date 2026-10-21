@@ -77,9 +77,9 @@ export function GameBoard({ state, actions }: Props) {
   const locked = phase !== 'playing'
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board cairn-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       {/* progress row */}
-      <div className="mt-4 flex w-full items-center justify-between gap-3">
+      <div className="cairn-progress mt-4 flex w-full items-center justify-between gap-3">
         <div className="flex items-center gap-1.5" aria-label={`Level ${level + 1} of ${LEVELS}`}>
           {Array.from({ length: LEVELS }).map((_, i) => (
             <Pebble key={i} result={results[i]} current={i === level && !state.finished} />
@@ -92,14 +92,14 @@ export function GameBoard({ state, actions }: Props) {
       </div>
 
       {/* level label */}
-      <div className="mt-3 font-display text-lg font-bold text-foreground/80">
+      <div className="cairn-level mt-3 font-display text-lg font-bold text-foreground/80">
         Level {level + 1} · {word.length} letters
       </div>
       {hints > 0 && !state.finished && <p className="mt-1 text-sm font-bold text-muted-foreground">Saved hint: one answer starts with {word.slice(0, hints).toUpperCase()}.</p>}
 
       {/* slots */}
       <div
-        className={cn('mt-2 flex items-center justify-center gap-1 sm:gap-2', shaking && 'anim-shake')}
+        className={cn('cairn-slots mt-2 flex items-center justify-center gap-1 sm:gap-2', shaking && 'anim-shake')}
         aria-live="polite"
       >
         {slots.map((rackIdx, pos) =>
@@ -134,7 +134,7 @@ export function GameBoard({ state, actions }: Props) {
       )}
 
       {/* rack */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-1 sm:gap-2" aria-label="Letter rack">
+      <div className="cairn-rack mt-6 flex flex-wrap items-center justify-center gap-1 sm:gap-2" aria-label="Letter rack">
         {rack.map((ch, i) => {
           const used = usedInSlots.includes(i)
           const isNew = i === newLetterIdx

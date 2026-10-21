@@ -10,16 +10,6 @@ import { HelpModal } from './HelpModal'
 import { StatsModal } from './StatsModal'
 import { WinModal } from './WinModal'
 
-function CairnLogo() {
-  return (
-    <div className="flex flex-col-reverse items-center" style={{ gap: 2 }} aria-hidden="true">
-      <div className="rounded-full" style={{ width: 30, height: 8, background: 'hsl(200 82% 66%)', transform: 'rotate(-2deg)' }} />
-      <div className="rounded-full" style={{ width: 22, height: 8, background: 'hsl(24 92% 58%)', transform: 'rotate(1.5deg)' }} />
-      <div className="rounded-full" style={{ width: 14, height: 8, background: 'hsl(340 75% 58%)', transform: 'rotate(-1.5deg)' }} />
-    </div>
-  )
-}
-
 export default function CairnPage() {
   const { state, actions } = useGame()
   useUnifiedProgress('cairn', state)
@@ -42,17 +32,21 @@ export default function CairnPage() {
   }, [state.finished, state.mode])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="kimi-page kimi-cairn flex min-h-dvh flex-col">
       <GameHeader
-        title="CAIRN"
+        title="Cairn"
+        mode={state.mode}
+        busy={state.phase === 'loading'}
+        onPractice={actions.startPractice}
+        onDaily={actions.exitPractice}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
-        logo={<CairnLogo />}
+
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
       />
       <ToastHost toast={state.toast} />
 
-      <main className="flex flex-1 flex-col">
+      <main className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <div className="anim-sway flex flex-col-reverse items-center" style={{ gap: 4 }} aria-hidden="true">
@@ -66,22 +60,14 @@ export default function CairnPage() {
         ) : (
           <>
             {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
-            <div className="my-auto w-full" data-game-ready="true">
+            <div className="kimi-stage my-auto w-full" data-game-ready="true">
               <GameBoard state={state} actions={actions} />
-              {state.finished ? (
-                <div className="mb-8 flex justify-center">
+              {state.finished && (
+                <div className="mb-5 flex justify-center">
                   <button type="button" onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
                     See results
                   </button>
                 </div>
-              ) : (
-                state.mode === 'daily' && (
-                  <div className="mb-6 flex justify-center">
-                    <button type="button" onClick={actions.startPractice} className="btn3d btn3d-soft h-10 px-4 text-sm">
-                      ∞ Practice round
-                    </button>
-                  </div>
-                )
               )}
             </div>
           </>

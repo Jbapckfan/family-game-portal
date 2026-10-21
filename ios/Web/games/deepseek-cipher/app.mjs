@@ -3,7 +3,7 @@ import { PUZZLES } from './puzzles.mjs';
 import * as E from './engine.mjs';
 
 mountDailyGame({
-  id: 'deepseek-cipher', name: 'Cipher', accent: '#76539b',
+  id: 'deepseek-cipher', name: 'Cipher', accent:'#6c4bb3',
   intro: 'One hidden phrase. Every letter has a double life.',
   instructions: [
     'Each coded letter stands for one different letter. The same code always has the same answer throughout the phrase.',

@@ -4,7 +4,7 @@ import * as E from './engine.mjs';
 const glyph=f=>f===0?'●':f>0?'▲':'▼';
 const feedbackLabel=f=>f===0?'exact':f>0?'secret letter is later':'secret letter is earlier';
 mountDailyGame({
- id:'claude-tumbler',name:'Tumbler',creator:'Claude',credit:'Developed by Claude',accent:'#99783b',
+ id:'claude-tumbler',name:'Tumbler',creator:'Claude',credit:'Developed by Claude',accent:'#385d85',
  intro:'Five dials. Six turns. Feel your way to the word.',hintLabel:'Lock one dial · assisted',
  instructions:[
   'Guess the hidden five-letter word in six tries. Each position gives its own alphabetical feedback.',

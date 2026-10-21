@@ -4,101 +4,169 @@ struct HomeView: View {
     let store: ProgressStore
     let now: Date
     @State private var creatorFilter = CreatorFilter.all
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private var today: String { DailyCalendar.key(for: now) }
     private var gameCount: Int { GameID.allCases.count }
+    private var columns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize
+            ? [GridItem(.flexible(minimum: 0), spacing: 14)]
+            : [GridItem(.adaptive(minimum: 270), spacing: 14)]
+    }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(DailyCalendar.display(now).uppercased()).font(.caption.weight(.semibold))
-                        .tracking(1.5).foregroundStyle(Theme.muted)
-                    Text("Your daily games.").font(.system(size: 42, weight: .regular, design: .serif))
-                        .minimumScaleFactor(0.8)
-                    Text("A fresh way to think, every day.").font(.subheadline).foregroundStyle(Theme.muted)
-                }
-
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(alignment: .top) {
-                        MetricView(value: "\(store.ledger.completed(on: today))/\(gameCount)", label: "finished today")
-                        Spacer()
-                        MetricView(value: "\(store.ledger.solved(on: today))", label: "solved today")
-                        Spacer()
-                        MetricView(value: "\(store.ledger.dailyStreak(today: today))", label: "day streak")
-                    }
-                    ProgressView(value: Double(store.ledger.completed(on: today)), total: Double(gameCount))
-                        .tint(Theme.accent).accessibilityLabel("Today’s completion")
-                    Text("Across all \(gameCount) games. Solve at least one daily to keep your streak going.")
-                        .font(.caption).foregroundStyle(Theme.muted)
-                }.paperCard()
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(CreatorFilter.allCases) { filter in
-                            Button { creatorFilter = filter } label: {
-                                Text(filter.rawValue).font(.subheadline.weight(.semibold))
-                                    .padding(.horizontal, 15).frame(minHeight: 44)
-                                    .foregroundStyle(creatorFilter == filter ? Theme.card : Theme.ink)
-                                    .background(creatorFilter == filter ? Theme.accent : Theme.card, in: Capsule())
-                                    .overlay(Capsule().stroke(Theme.line, lineWidth: 0.7))
-                            }.buttonStyle(.plain)
-                                .accessibilityLabel("\(filter.rawValue) games")
-                                .accessibilityAddTraits(creatorFilter == filter ? .isSelected : [])
-                        }
-                    }
-                }.accessibilityLabel("Filter games by creator").accessibilityIdentifier("creator-filter")
+            LazyVStack(alignment: .leading, spacing: 26) {
+                introduction
+                dailyProgress
+                creatorPicker
 
                 if creatorFilter.games.contains(where: \.isFlagship) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("START WITH A NEW CHALLENGE").font(.caption.weight(.semibold)).tracking(1.2)
-                            .foregroundStyle(Theme.muted)
-                        ForEach(creatorFilter.games.filter(\.isFlagship)) { game in
-                            NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
-                                .buttonStyle(.plain)
-                        }
-                    }
+                    gameSection(title: "Start with a new challenge", games: creatorFilter.games.filter(\.isFlagship))
                 }
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("MORE WAYS TO PLAY").font(.caption.weight(.semibold)).tracking(1.2).foregroundStyle(Theme.muted)
-                    ForEach(creatorFilter.games.filter { !$0.isFlagship }) { game in
-                        NavigationLink(value: game) { GameCard(game: game, status: store.ledger.status(for: game, on: today)) }
-                            .buttonStyle(.plain)
-                    }
-                }
+                gameSection(title: "More ways to play", games: creatorFilter.games.filter { !$0.isFlagship })
+
                 Text("New dailies arrive at midnight Central. All \(gameCount) games work offline. Each prepared collection repeats after its last puzzle.")
                     .font(.footnote).foregroundStyle(Theme.muted).lineSpacing(4)
+                    .padding(.top, 4)
                 if let error = store.storageError { Text(error).font(.footnote).foregroundStyle(.red) }
-            }.padding(20).frame(maxWidth: 680).frame(maxWidth: .infinity)
+            }
+            .padding(20).frame(maxWidth: 760).frame(maxWidth: .infinity)
         }
         .background(Theme.paper)
         .navigationTitle("Alford Daily")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.paper, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+    }
+
+    private var introduction: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(DailyCalendar.display(now).uppercased())
+                .font(.caption.weight(.semibold)).tracking(1.4).foregroundStyle(Theme.muted)
+            Text("A little pause.\nA good puzzle.")
+                .font(.system(.largeTitle, design: .serif)).foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 8) {
+                Image(systemName: "square.grid.2x2").accessibilityHidden(true)
+                Text("\(gameCount) daily games. Your own pace.")
+            }
+            .font(.subheadline).foregroundStyle(Theme.muted)
+        }
+        .padding(.top, 4)
+    }
+
+    private var dailyProgress: some View {
+        VStack(alignment: .leading, spacing: 17) {
+            Text("YOUR DAY, IN PUZZLES")
+                .font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(Theme.muted)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 15) { progressMetrics }
+            } else {
+                HStack(alignment: .top, spacing: 12) { progressMetrics }
+            }
+            ProgressView(value: Double(store.ledger.completed(on: today)), total: Double(gameCount))
+                .tint(Theme.ink).accessibilityLabel("Today’s completion")
+            Text("Across all \(gameCount) games. Solve at least one daily to keep your streak going.")
+                .font(.caption).foregroundStyle(Theme.muted).fixedSize(horizontal: false, vertical: true)
+        }.paperCard()
+    }
+
+    @ViewBuilder private var progressMetrics: some View {
+        MetricView(value: "\(store.ledger.completed(on: today))/\(gameCount)", label: "finished today")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        MetricView(value: "\(store.ledger.solved(on: today))", label: "solved today")
+            .frame(maxWidth: .infinity, alignment: .leading)
+        MetricView(value: "\(store.ledger.dailyStreak(today: today))", label: "day streak")
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var creatorPicker: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("The collection").font(.system(.title2, design: .serif))
+                Spacer(minLength: 8)
+                Text("\(creatorFilter.games.count) games")
+                    .font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(CreatorFilter.allCases) { filter in
+                        Button { creatorFilter = filter } label: {
+                            Text(filter.rawValue).font(.subheadline.weight(.semibold))
+                                .padding(.horizontal, 15).frame(minHeight: 44)
+                                .foregroundStyle(creatorFilter == filter ? Theme.card : Theme.ink)
+                                .background(creatorFilter == filter ? Theme.ink : Theme.card, in: Capsule())
+                                .overlay(Capsule().stroke(creatorFilter == filter ? Theme.ink : Theme.line, lineWidth: 1))
+                        }.buttonStyle(.plain)
+                            .accessibilityLabel("\(filter.rawValue) games")
+                            .accessibilityAddTraits(creatorFilter == filter ? .isSelected : [])
+                    }
+                }
+                .padding(.vertical, 2)
+            }.accessibilityLabel("Filter games by creator").accessibilityIdentifier("creator-filter")
+        }
+    }
+
+    @ViewBuilder private func gameSection(title: String, games: [GameID]) -> some View {
+        if !games.isEmpty {
+            VStack(alignment: .leading, spacing: 13) {
+                Text(title.uppercased()).font(.caption.weight(.semibold)).tracking(1.1)
+                    .foregroundStyle(Theme.muted)
+                LazyVGrid(columns: columns, alignment: .leading, spacing: 14) {
+                    ForEach(games) { game in
+                        NavigationLink(value: game) {
+                            GameCard(game: game, status: store.ledger.status(for: game, on: today))
+                        }.buttonStyle(.plain)
+                    }
+                }
+            }
+        }
     }
 }
 
 private struct GameCard: View {
     let game: GameID
     let status: GameStatus?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var actionTitle: String {
+        if status?.isTerminal == true { return "View result" }
+        return status == .playing ? "Continue" : "Play"
+    }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
-            Image(systemName: game.symbol).font(.system(size: game.isFlagship ? 29 : 24, weight: .medium))
-                .foregroundStyle(game.tint).frame(width: 52, height: 60)
-                .background(game.tint.opacity(0.09), in: RoundedRectangle(cornerRadius: 14))
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text(game.name).font(.system(game.isFlagship ? .title2 : .title3, design: .serif).weight(.semibold))
-                    if status == .won { Image(systemName: "checkmark.seal.fill").foregroundStyle(game.tint).accessibilityHidden(true) }
+        VStack(alignment: .leading, spacing: 15) {
+            HStack(alignment: .top, spacing: 14) {
+                GameEmblem(game: game, size: dynamicTypeSize.isAccessibilitySize ? 48 : 58)
+                VStack(alignment: .leading, spacing: 7) {
+                    Text(game.name).font(.system(.title2, design: .serif).weight(.semibold))
+                        .foregroundStyle(game.palette.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(game.subtitle).font(.subheadline).foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(game.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(game.subtitle).font(.subheadline).foregroundStyle(Theme.muted).fixedSize(horizontal: false, vertical: true)
-                Text(status?.label ?? "Ready when you are").font(.caption.weight(.semibold)).foregroundStyle(game.tint)
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
-            Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Theme.muted).accessibilityHidden(true)
-        }.paperCard()
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("game-card-\(game.rawValue)")
+            Text(game.credit).font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            Rectangle().fill(game.palette.edge).frame(height: 1).accessibilityHidden(true)
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Label(status?.label ?? "Ready when you are", systemImage: status == .won ? "checkmark.circle.fill" : "circle.dotted")
+                    .font(.caption.weight(.semibold)).foregroundStyle(game.palette.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                HStack(spacing: 5) {
+                    Text(actionTitle)
+                    Image(systemName: "arrow.up.right").accessibilityHidden(true)
+                }.font(.caption.weight(.bold)).foregroundStyle(game.palette.ink)
+            }
+        }
+        .padding(18).frame(maxWidth: .infinity, alignment: .leading)
+        .background(game.palette.wash, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(game.palette.edge, lineWidth: 1))
+        .shadow(color: game.palette.ink.opacity(0.07), radius: 0, x: 0, y: 4)
+        .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("game-card-\(game.rawValue)")
     }
 }

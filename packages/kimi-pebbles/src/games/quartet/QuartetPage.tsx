@@ -11,17 +11,6 @@ import { QuartetWinModal } from './QuartetWinModal'
 
 const HELP_KEY = 'kimi:quartet:seen-help'
 
-function GridLogo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="12" height="12" rx="3.5" fill="hsl(43 92% 55%)" />
-      <rect x="15" y="1" width="12" height="12" rx="3.5" fill="hsl(145 55% 55%)" />
-      <rect x="1" y="15" width="12" height="12" rx="3.5" fill="hsl(200 82% 60%)" />
-      <rect x="15" y="15" width="12" height="12" rx="3.5" fill="hsl(275 58% 60%)" />
-    </svg>
-  )
-}
-
 export default function QuartetPage() {
   const { state, actions } = useQuartet()
   useUnifiedProgress('quartet', state)
@@ -44,17 +33,21 @@ export default function QuartetPage() {
   }, [state.finished, state.won])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="kimi-page kimi-quartet flex min-h-dvh flex-col">
       <GameHeader
-        title="QUARTET"
+        title="Quartet"
+        mode={state.mode}
+        busy={state.phase === 'loading'}
+        onPractice={actions.startPractice}
+        onDaily={actions.exitPractice}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
-        logo={<GridLogo />}
+
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
       />
       <ToastHost toast={state.toast} />
 
-      <main className="flex flex-1 flex-col">
+      <main className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="font-display text-lg font-bold text-muted-foreground">Shuffling sixteen words…</p>
@@ -62,7 +55,7 @@ export default function QuartetPage() {
         ) : (
           <>
             {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
-            <div className="my-auto w-full" data-game-ready={state.phase === 'playing' || state.phase === 'finished' ? 'true' : undefined}>
+            <div className="kimi-stage my-auto w-full" data-game-ready={state.phase === 'playing' || state.phase === 'finished' ? 'true' : undefined}>
               <QuartetBoard state={state} actions={actions} />
               {state.finished && (
                 <div className="mt-4 mb-8 flex justify-center">

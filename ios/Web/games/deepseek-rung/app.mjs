@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,submitWord,undo,restart,hint,reveal,findRoute,LEXICON} from './engine.mjs';
 const tiles=(word,previous='')=>[...word].map((c,i)=>`<span class="rung-letter ${previous&&previous[i]!==c?'changed':''}">${esc(c)}</span>`).join('');
 mountDailyGame({
- id:'deepseek-rung',name:'Rung',accent:'#4e8267',intro:'Change a letter. Find a new word. Climb all the way to the target.',
+ id:'deepseek-rung',name:'Rung',accent:'#287a73',intro:'Change a letter. Find a new word. Climb all the way to the target.',
  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:['Turn the start word into the target word by changing exactly one letter each step. Every rung must be a four-letter word.','The target shown is the shortest possible route in this game’s curated dictionary. You can still solve the daily if your route takes more steps.','Use Undo rung or Restart ladder whenever you need a different route. There is no strike limit.','A little hint suggests a next word on a shortest route from your current rung. This edition accepts a curated list of '+LEXICON.length+' four-letter words, rather than every English word.'],
  summarize:(p,s)=>`${getStatus(p,s)==='revealed'?'Route revealed. ':''}${s.chain.length-1} ${s.chain.length===2?'step':'steps'} · shortest route ${p.par}${s.hints?` · ${s.hints} ${s.hints===1?'hint':'hints'}`:''}`,

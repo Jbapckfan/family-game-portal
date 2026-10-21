@@ -1,1 +1,35 @@
-.dovetail-progress{justify-content:space-between;gap:10px;font-size:13px}.dovetail-progress .pill{font-size:13px;letter-spacing:1px}.dovetail-note{font-size:12px;line-height:1.5;margin:13px 0 20px}.dovetail-board{display:flex;flex-direction:column;gap:7px;margin-bottom:22px}.dovetail-row{display:flex;align-items:center;gap:7px;width:100%;min-height:48px;padding:8px;border:1px solid #d7cbbd;border-radius:9px;background:#faf6ef;color:#624e3c;font-family:inherit;cursor:pointer}.dovetail-row:disabled{opacity:1;cursor:default}.dovetail-row.given{background:#e9dfd2;border-color:#c9b9a5}.dovetail-row.solved{background:#e8eddb;border-color:#bac7a2;color:#4d6238}.dovetail-row.revealed{background:#fbefd7;border-color:#dcc38d;color:#846630}.dovetail-row.active{border-color:#ad7b50;box-shadow:0 0 0 2px #cfac8029;background:#fffdf6}.dovetail-row-number,.dovetail-row-size{width:14px;flex:none;font-size:10px;color:#a49481;font-weight:600}.dovetail-letters{display:flex;justify-content:center;gap:4px;flex:1;min-width:0}.dovetail-letter{display:flex;align-items:center;justify-content:center;width:28px;min-width:0;flex-shrink:1;height:28px;font-size:17px;font-weight:750;border-bottom:1px solid #d7cbbd;text-transform:uppercase}.dovetail-row.given .dovetail-letter,.dovetail-row.solved .dovetail-letter,.dovetail-row.revealed .dovetail-letter{border-color:transparent}.dovetail-letter.hinted{color:#a06f23;background:#fcf0c9;border-radius:4px}.dovetail-join{align-self:center;font-size:11px;line-height:1;letter-spacing:.3px;color:#a0805f;padding:1px 0 2px}.dovetail-guesses{display:flex;flex-wrap:wrap;gap:5px;margin:5px 5px 2px}.dovetail-guesses span{font-size:10px;border-radius:5px;padding:4px 6px;background:#eae5dd;color:#8d8275}.dovetail-guesses span.fits{background:#f3e4be;color:#8e7332}.dovetail-panel form label{display:block;font-size:12px;font-weight:650;margin:0 0 8px}.dovetail-panel .word-input{letter-spacing:4px;text-transform:uppercase;text-align:center}.dovetail-panel form .actions{margin-top:12px}.dovetail-hint-cost{font-size:11px;color:#957958;text-align:center;line-height:1.6;margin:18px 0 0}.dovetail-row:focus-visible{outline:3px solid #b9954b;outline-offset:2px}@media(max-width:350px){.dovetail-progress{font-size:11px}.dovetail-row{padding:7px 5px;gap:4px}.dovetail-letters{gap:3px}.dovetail-letter{font-size:15px;height:25px}.dovetail-row-number,.dovetail-row-size{width:12px}}
+/* Dovetail · a wordworker's bench. */
+body[data-game-id="claude-dovetail"]{--accent:#9d543b;--accent-soft:#f3e4da;--game-ink:#593829;--soft:#f3e4da}
+.dovetail-panel{background:#fcf8f1;border-color:#d8c5b2;box-shadow:0 5px 0 #e7d9ca}
+.dovetail-progress{justify-content:space-between;gap:10px;font-size:13px;color:#593829}
+.dovetail-progress .pill{font-size:12px;letter-spacing:2px;background:#ead7c6;color:#754127}
+.dovetail-note{font-size:12px;line-height:1.6;margin:12px 0 20px;color:#725b4c}
+.dovetail-board{display:flex;flex-direction:column;gap:9px;margin:0 0 24px;padding:16px 12px;background:#efe3d4;border:1px solid #d8c2ab;border-radius:14px;position:relative;box-shadow:inset 0 2px 5px #6746270a}
+.dovetail-row-wrap{position:relative;z-index:1}
+.dovetail-row-wrap:not(:last-child)::after{content:"";position:absolute;width:14px;height:13px;bottom:-10px;left:calc(50% - 7px);border-left:2px solid #ba9673;border-right:2px solid #ba9673;z-index:-1}
+.dovetail-row{display:flex;align-items:center;gap:7px;width:100%;min-height:54px;padding:10px 8px;border:1px solid #c9b197;border-radius:5px 12px 5px 12px;background:#fffcf6;color:#593829;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 #cdb69b;transition:background .16s,transform .16s,border-color .16s}
+.dovetail-row:disabled{opacity:1;cursor:default}
+.dovetail-row.given{background:#71503b;border-color:#71503b;color:#fff6e8;box-shadow:0 3px 0 #493425}
+.dovetail-row.solved{background:#e7efe4;border-color:#9bb38d;color:#31553a;box-shadow:0 3px 0 #afc39f}
+.dovetail-row.revealed{background:#faeccb;border-color:#cfb46e;color:#70531b;box-shadow:0 3px 0 #dbc68f}
+.dovetail-row.active{border:2px solid #9d543b;padding:9px 7px;background:#fffaf3;box-shadow:0 3px 0 #9d543b}
+.dovetail-row-number,.dovetail-row-size{width:14px;flex:none;font-size:10px;color:#806e60;font-weight:700}
+.dovetail-row.given .dovetail-row-number,.dovetail-row.given .dovetail-row-size{color:#ecd8c4}
+.dovetail-letters{display:flex;justify-content:center;gap:4px;flex:1;min-width:0}
+.dovetail-letter{display:flex;align-items:center;justify-content:center;width:30px;min-width:0;flex-shrink:1;height:30px;font-size:19px;font-weight:750;border-bottom:2px solid #cfb49c;text-transform:uppercase}
+.dovetail-row.given .dovetail-letter,.dovetail-row.solved .dovetail-letter,.dovetail-row.revealed .dovetail-letter{border-color:transparent}
+.dovetail-letter.hinted{color:#765019;background:#f8e5b5;border-radius:4px;border-bottom-color:#bd8b39}
+.dovetail-join{align-self:center;position:relative;z-index:2;font-size:11px;line-height:1.3;font-weight:650;letter-spacing:.03em;color:#744a30;background:#efe3d4;padding:3px 9px;border:1px solid #d4baa1;border-radius:20px}
+.dovetail-guesses{display:flex;flex-wrap:wrap;gap:5px;margin:8px 2px 2px}
+.dovetail-guesses span{font-size:11px;border-radius:5px;padding:4px 6px;background:#e0d3c4;color:#584c42}
+.dovetail-guesses span.fits{background:#f4e0a9;color:#6c5217}
+.dovetail-panel form{padding-top:2px}
+.dovetail-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#593829}
+.dovetail-panel .word-input{letter-spacing:4px;text-transform:uppercase;text-align:center;border-color:#cbb59f;background:#fffcf6;color:#593829;font-size:22px;min-height:54px;border-radius:10px}
+.dovetail-panel form .actions{margin-top:12px}
+.dovetail-panel .button.primary{background:#9d543b;border-color:#9d543b}
+.dovetail-hint-cost{font-size:11px;color:#745b48;text-align:center;line-height:1.6;margin:17px 0 0}
+.dovetail-row:focus-visible{outline:3px solid #9d543b;outline-offset:4px}
+@media(hover:hover){.dovetail-row:not(:disabled):hover{transform:translateY(-2px);border-color:#9d543b}}
+@media(max-width:350px){.dovetail-progress{font-size:12px}.dovetail-board{padding:12px 7px}.dovetail-row{padding:9px 4px;gap:4px;min-height:51px}.dovetail-row.active{padding:8px 3px}.dovetail-letters{gap:3px}.dovetail-letter{font-size:16px;height:27px}.dovetail-row-number,.dovetail-row-size{width:12px}}
+@media(prefers-reduced-motion:reduce){.dovetail-row{transition:none}}

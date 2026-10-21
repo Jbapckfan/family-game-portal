@@ -50,7 +50,7 @@ function Tile({
       onClick={onClick}
       disabled={disabled || !onClick}
       className={cn(
-        'tile3d h-14 w-12 text-2xl sm:w-13',
+        'morph-letter tile3d h-14 w-12 text-2xl sm:w-13',
         VARIANT_CLASS[variant],
         onClick && !disabled && 'cursor-pointer',
         !onClick && 'cursor-default',
@@ -93,7 +93,7 @@ export function MorphBoard({ state, actions }: Props) {
   const locked = phase !== 'playing'
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board morph-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       {/* meta row */}
       <div className="mt-4 flex w-full items-center justify-between text-sm font-bold text-muted-foreground">
         <span>
@@ -104,7 +104,7 @@ export function MorphBoard({ state, actions }: Props) {
       </div>
 
       {/* ladder */}
-      <div className={cn('mt-4 flex flex-col items-center gap-1.5', shaking && 'anim-shake')} aria-live="polite">
+      <div className={cn('morph-ladder mt-4 flex flex-col items-center gap-1.5', shaking && 'anim-shake')} aria-live="polite">
         <div className="flex items-center gap-3">
           <span className="w-14 text-right text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">
             start

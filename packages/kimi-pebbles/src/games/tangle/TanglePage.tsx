@@ -11,18 +11,6 @@ import { TangleWinModal } from './TangleWinModal'
 
 const HELP_KEY = 'kimi:tangle:seen-help'
 
-function WebLogo() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-      <circle cx="7" cy="7" r="4" fill="hsl(24 92% 58%)" />
-      <circle cx="23" cy="7" r="4" fill="hsl(145 55% 55%)" />
-      <circle cx="7" cy="23" r="4" fill="hsl(275 58% 60%)" />
-      <circle cx="23" cy="23" r="4" fill="hsl(200 82% 66%)" />
-      <path d="M10 8 L20 22 M20 8 L10 22 M7 11 L7 19 M23 11 L23 19" stroke="hsl(340 28% 35%)" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 export default function TanglePage() {
   const { state, actions } = useTangle()
   useUnifiedProgress('tangle', state)
@@ -48,19 +36,23 @@ export default function TanglePage() {
   }, [state.goldReached, state.winShownOnce])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="kimi-page kimi-tangle flex min-h-dvh flex-col">
       <GameHeader
-        title="TANGLE"
+        title="Tangle"
+        mode={state.mode}
+        busy={state.phase === 'loading'}
+        onPractice={actions.startPractice}
+        onDaily={actions.exitPractice}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
-        logo={<WebLogo />}
+
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
       />
       <ToastHost toast={state.toast} />
 
-      <main className="flex flex-1 flex-col">
+      <main className="kimi-main flex flex-1 flex-col">
         {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
-        <div className="my-auto w-full" data-game-ready={state.phase === 'playing' ? 'true' : undefined}>
+        <div className="kimi-stage my-auto w-full" data-game-ready={state.phase === 'playing' ? 'true' : undefined}>
           <TangleBoard state={state} actions={actions} />
           {state.goldReached && (
             <div className="mb-8 flex justify-center">

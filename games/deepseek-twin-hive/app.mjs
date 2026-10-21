@@ -2,7 +2,7 @@ import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,submitWord,hint,reveal,score} from './engine.mjs';
 mountDailyGame({
- id:'deepseek-twin-hive',name:'Twin Hive',accent:'#9b751b',intro:'Two gold letters. One busy little hive. Find six words that bring them together.',
+ id:'deepseek-twin-hive',name:'Twin Hive',accent:'#916719',intro:'Two gold letters. One busy little hive. Find six words that bring them together.',
  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:['Make six different words of at least four letters. Every word must include both gold letters.','Use only the eight displayed letters. You may reuse a letter as often as needed. Tap letters or type on your keyboard.','Each accepted word earns one point per letter beyond three. Six words complete the daily goal.','This edition uses an authored word list for each puzzle, not a full dictionary. A little hint gives one accepted word without submitting it.'],
  summarize:(p,s)=>`${getStatus(p,s)==='revealed'?'Solution revealed. ':''}${s.found.length} of ${p.target} words · ${score(s)} points${s.hinted.length?` · ${s.hinted.length} word ${s.hinted.length===1?'hint':'hints'}`:''}`,

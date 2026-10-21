@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,startStudy,chooseCell,tick,hint,reveal,STUDY_MS,scoreSeconds} from './engine.mjs';
 
 mountDailyGame({
- id:'qwen-memory-maze',name:'Memory Maze',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#716293',
+ id:'qwen-memory-maze',name:'Memory Maze',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#405caa',
  intro:'See the route. Hold it in your mind. Bring it back, one square at a time.',
  instructions:[
   'Choose Study the route. A numbered path appears for six seconds on the 7 × 7 grid. Remember the order, including every turn.',

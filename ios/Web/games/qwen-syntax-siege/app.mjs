@@ -22,7 +22,7 @@ function updateClock() {
   clock.classList.toggle('urgent',!untimed&&s.started&&status==='playing'&&s.remainingMs<=5000);
 }
 mountDailyGame({
-  id:'qwen-syntax-siege',name:'Syntax Siege',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#9c4d34',
+  id:'qwen-syntax-siege',name:'Syntax Siege',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#b7562a',
   intro:'Build a word. Break the wave. Defend the core.',
   instructions:[
     'Defend your 100-HP core against six fixed letter waves. Tap Start defense when you are ready; each daily wave has a 20-second clock.',

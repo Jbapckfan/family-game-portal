@@ -215,6 +215,54 @@ test('structural validation accepts assets-only Kimi runtime and optional separa
   });
 });
 
+test('Kimi wrappers stage their own optional icon.svg and validate its local reference', () => fixture(({ root, command }) => {
+  for (const slug of kimi) {
+    writeFixture(root, `games/${slug}/icon.svg`, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="10"/></svg>');
+    writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="icon" href="./icon.svg">');
+  }
+  const synced = command();
+  assert.equal(synced.status, 0, synced.stderr);
+  for (const slug of kimi) assert.deepEqual(readdirSync(join(root, 'ios/Web/games', slug)).sort(), ['icon.svg', 'index.html']);
+  const checked = validateFixture(root);
+  assert.equal(checked.status, 0, checked.stderr);
+  assert.equal(command('--check').status, 0);
+}));
+
+test('Kimi icon allowance still rejects other wrapper files and nested resources', () => {
+  for (const extra of ['other.svg', 'icon.png', 'nested/icon.svg']) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    const destination = join(root, 'ios/Web/games');
+    const before = snapshot(destination);
+    writeFixture(root, `games/kimi-cairn/${extra}`, '<svg/>');
+    for (const args of [[], ['--check']]) {
+      const rejected = command(...args);
+      assert.notEqual(rejected.status, 0, extra);
+      assert.deepEqual(snapshot(destination), before, extra);
+    }
+    writeFixture(root, `ios/Web/games/kimi-cairn/${extra}`, '<svg/>');
+    const checked = validateFixture(root);
+    assert.notEqual(checked.status, 0, extra);
+    assert.match(checked.stderr, /Kimi entry must contain/);
+  });
+});
+
+test('Kimi icon references remain local to their own wrapper and must exist', () => {
+  const cases = [
+    ['kimi-cairn/index.html', '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="icon" href="../kimi-morph/icon.svg">', /outside its shared runtime/],
+    ['kimi-cairn/index.html', '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="icon" href="https://example.com/icon.svg">', /must be local/],
+    ['kimi-cairn/index.html', '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="icon" href="./icon.svg">', /Missing Kimi resource/],
+    ['kimi-runtime/assets/index.js', 'import "../../kimi-morph/icon.svg";', /outside its shared runtime/],
+  ];
+  for (const [path, content, error] of cases) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    writeFixture(root, 'ios/Web/games/kimi-morph/icon.svg', '<svg/>');
+    writeFixture(root, 'ios/Web/games/' + path, content);
+    const checked = validateFixture(root);
+    assert.notEqual(checked.status, 0, path);
+    assert.match(checked.stderr, error, path);
+  });
+});
+
 test('structural validation rejects shared documents and missing local wrapper assets', () => {
   for (const issue of ['document', 'missing reference']) fixture(({ root, command }) => {
     assert.equal(command().status, 0);
@@ -226,19 +274,36 @@ test('structural validation rejects shared documents and missing local wrapper a
   });
 });
 
-test('DeepSeek, Qwen and Claude stage optional local styles while excluding development files and requiring no fonts', () => fixture(({ root, command }) => {
+test('DeepSeek, Qwen and Claude stage optional local styles and icons while excluding development files', () => fixture(({ root, command }) => {
   for (const slug of sharedModuleGames) {
     writeFixture(root, 'games/' + slug + '/styles.css', '@import "../deepseek-runtime/styles.css";');
-    writeFixture(root, 'games/' + slug + '/index.html', '<script type="module" src="./app.mjs"></script><link rel="stylesheet" href="./styles.css">');
+    writeFixture(root, 'games/' + slug + '/icon.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>');
+    writeFixture(root, 'games/' + slug + '/index.html', '<script type="module" src="./app.mjs"></script><link rel="stylesheet" href="./styles.css"><link rel="icon" href="./icon.svg">');
   }
   assert.equal(command().status, 0);
   for (const slug of sharedModuleGames) {
-    assert.deepEqual(readdirSync(join(root, 'ios/Web/games', slug)).sort(), [...deepseekRuntime, 'styles.css'].sort());
+    assert.deepEqual(readdirSync(join(root, 'ios/Web/games', slug)).sort(), [...deepseekRuntime, 'styles.css', 'icon.svg'].sort());
   }
   const checked = validateFixture(root);
   assert.equal(checked.status, 0, checked.stderr);
   assert.equal(command('--check').status, 0);
 }));
+
+test('shared-module icon allowance rejects extra bundled files', () => {
+  for (const slug of ['deepseek-cipher', 'qwen-quadra', 'claude-keystone']) fixture(({ root, command }) => {
+    assert.equal(command().status, 0);
+    writeFixture(root, `ios/Web/games/${slug}/other.svg`, '<svg/>');
+    const before = snapshot(join(root, 'ios/Web/games'));
+    for (const args of [[], ['--check']]) {
+      const rejected = command(...args);
+      assert.notEqual(rejected.status, 0, slug);
+      assert.deepEqual(snapshot(join(root, 'ios/Web/games')), before, slug);
+    }
+    const checked = validateFixture(root);
+    assert.notEqual(checked.status, 0, slug);
+    assert.match(checked.stderr, /Unexpected game runtime file/);
+  });
+});
 
 test('flat shared modules reject documents, data, nested paths and empty directories before changing bundles', () => {
   for (const side of ['games', 'ios/Web/games']) for (const path of ['index.html', 'puzzles.json', 'nested/core.mjs', '.hidden.mjs', 'empty/']) fixture(({ root, command }) => {
@@ -302,6 +367,9 @@ test('structural validation checks local game module imports and rejects remote,
     ['claude-sprout/app.mjs', 'import/* dependency */"https://example.com/module.mjs";', /must be local/],
     ['claude-tumbler/app.mjs', 'const later = import /* dependency */ ("//example.com/module.mjs");', /must be local/],
     ['claude-keystone/engine.mjs', 'export /* dependency */ * as other from "../claude-tangle/engine.mjs";', /outside its runtime/],
+    ['deepseek-cipher/index.html', '<script type="module" src="./app.mjs"></script><link rel="icon" href="./icon.svg">', /Missing game module resource/],
+    ['qwen-quadra/index.html', '<script type="module" src="./app.mjs"></script><link rel="icon" href="../qwen-logic-lattice/icon.svg">', /outside its runtime/],
+    ['claude-splice/index.html', '<script type="module" src="./app.mjs"></script><link rel="icon" href="https://example.com/icon.svg">', /must be local/],
     ['deepseek-runtime/styles.css', '@import "https://example.com/style.css";', /must be local/],
   ];
   for (const [path, contents, error] of cases) fixture(({ root, command }) => {

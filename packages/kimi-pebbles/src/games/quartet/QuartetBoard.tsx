@@ -1,5 +1,5 @@
 import { Lightbulb, Shuffle, X } from 'lucide-react'
-import { MAX_MISSES, TIER_STYLE } from './engine'
+import { MAX_MISSES } from './engine'
 import type { Tile } from './useQuartet'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
@@ -30,11 +30,11 @@ interface Props {
 }
 
 function GroupBanner({ label, members, tier }: { label: string; members: string[]; tier: number }) {
-  const style = TIER_STYLE[tier]
+  const face = ['#887221', '#427357', '#3f7192', '#78578d'][tier] ?? '#78578d'
   return (
     <div
-      className="anim-pop flex w-full flex-col items-center rounded-2xl px-3 py-2.5 text-white"
-      style={{ background: style.face }}
+      className="quartet-solved anim-pop flex w-full flex-col items-center rounded-2xl px-3 py-2.5 text-white"
+      style={{ background: face }}
     >
       <span className="font-display text-sm font-extrabold uppercase tracking-widest">{label}</span>
       <span className="text-xs font-bold uppercase tracking-wider opacity-90">{members.join(' · ')}</span>
@@ -52,7 +52,7 @@ export function QuartetBoard({ state, actions }: Props) {
     .sort((a, b) => a.tier - b.tier)
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board quartet-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       <div className="mt-4 flex w-full items-center justify-between text-sm font-bold text-muted-foreground">
         <span>
           Groups <span className="font-display text-lg text-foreground">{state.solvedGroups.length}/4</span>
@@ -79,7 +79,7 @@ export function QuartetBoard({ state, actions }: Props) {
 
       {/* grid */}
       {state.tiles.some((t) => t !== null) && (
-        <div className={cn('mt-4 grid w-full grid-cols-4 gap-1.5', state.shaking && 'anim-shake')} aria-live="polite">
+        <div className={cn('quartet-cabinet mt-4 grid w-full grid-cols-4 gap-1.5', state.shaking && 'anim-shake')} aria-live="polite">
           {state.tiles.map((t, i) => {
             if (!t) return <span key={i} />
             const sel = state.selected.includes(i)
@@ -89,11 +89,12 @@ export function QuartetBoard({ state, actions }: Props) {
                 key={i}
                 type="button"
                 data-tile={i}
+                data-long-word={t.word.length >= 10 || undefined}
                 aria-pressed={sel}
                 aria-label={`Word ${t.word}${sel ? ', selected' : ''}`}
                 onClick={() => actions.toggleTile(i)}
                 className={cn(
-                  'tile3d h-16 w-full px-0.5 text-[13px] leading-tight font-extrabold break-words sm:text-[15px]',
+                  'quartet-card tile3d h-16 w-full px-0.5 text-[13px] leading-tight font-extrabold break-words sm:text-[15px]',
                   sel && 'tile-slot scale-[1.04]',
                   hinted && 'animate-pulse',
                 )}

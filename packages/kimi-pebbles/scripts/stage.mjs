@@ -7,7 +7,7 @@ const games = resolve(root, '../../games');
 const names = { cairn:'Cairn', morph:'Morph', tangle:'Tangle', hunch:'Hunch', circuit:'Circuit', quartet:'Quartet' };
 const assets = join(root, 'dist/assets');
 const html = await readFile(join(root, 'dist/index.html'), 'utf8');
-const noticeNames = ['Baloo2-LICENSE.txt', 'Nunito-LICENSE.txt'];
+const noticeNames = ['Baloo2-LICENSE.txt', 'Nunito-LICENSE.txt', 'DM-Sans-LICENSE.txt', 'DM-Serif-Display-LICENSE.txt'];
 const notices = await Promise.all(noticeNames.map(name => readFile(join(root, 'public/fonts', name), 'utf8')));
 if (notices.some(text => !text.includes('SIL OPEN FONT LICENSE'))) throw new Error('Missing complete font license notices');
 if (!html.includes('__GAME_ID__') || !html.includes('__GAME_NAME__')) throw new Error('Missing canonical game placeholders');

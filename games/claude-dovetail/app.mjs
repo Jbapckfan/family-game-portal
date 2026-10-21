@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,analyze,chooseRow,setTyped,submitWord,hint,reveal} from './engine.mjs';
 
 mountDailyGame({
- id:'claude-dovetail',name:'Dovetail',creator:'Claude',credit:'Developed by Claude',accent:'#a37149',
+ id:'claude-dovetail',name:'Dovetail',creator:'Claude',credit:'Developed by Claude',accent:'#9d543b',
  intro:'Make every word meet its neighbor. One satisfying join at a time.',
  hintLabel:'Reveal a letter · costs 1 miss',puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:[

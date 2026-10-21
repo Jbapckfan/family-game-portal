@@ -32,12 +32,12 @@ function environment(){
  return {doc,win,elements,messages,timers,config,advance(ms){now+=ms;for(const fn of [...timers.values()])fn();},restore(){for(const [k,d]of Object.entries(saved)){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}};
 }
 
-test('clock pauses while hidden or in either dialog, without charging that time later',()=>{
+test('clock pauses while hidden or in help, statistics, and reveal dialogs, without charging that time later',()=>{
  const e=environment();let shell;try{
   shell=mountDailyGame(e.config);e.advance(500);assert.equal(shell.session.state.elapsed,500);
   e.doc.hidden=true;e.doc.emit('visibilitychange');e.advance(9000);assert.equal(shell.session.state.elapsed,500);
   e.doc.hidden=false;e.doc.emit('visibilitychange');e.advance(500);assert.equal(shell.session.state.elapsed,1000);
-  for(const [open,close]of [['game-help','close-help'],['game-reveal','cancel-reveal']]){e.elements.get(open).emit('click');e.advance(8000);assert.equal(shell.session.state.elapsed,1000);e.elements.get(close).emit('click');}
+  for(const [open,close]of [['game-help','close-help'],['game-stats','close-stats'],['game-reveal','cancel-reveal']]){e.elements.get(open).emit('click');e.advance(8000);assert.equal(shell.session.state.elapsed,1000);e.elements.get(close).emit('click');}
   e.advance(500);assert.equal(shell.session.state.elapsed,1500);
  }finally{shell?.destroy();e.restore();}
 });

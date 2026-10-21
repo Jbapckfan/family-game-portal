@@ -25,7 +25,7 @@ SHARED_MODULE_GAMES = DEEPSEEK_GAMES | QWEN_GAMES | CLAUDE_GAMES
 GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
-SHARED_GAME_OPTIONAL_FILES = {"styles.css"}
+SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg"}
 DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
@@ -133,7 +133,9 @@ def validate_kimi_references(games_dir, files):
             target = posixpath.normpath(path.removeprefix("/games/"))
         else:
             target = posixpath.normpath(posixpath.join(posixpath.dirname(origin), path))
-        require(target.startswith(("kimi-runtime/assets/", "kimi-runtime/fonts/")), f"Kimi resource is outside its shared runtime: {origin}: {reference}")
+        owner = origin.split("/")[0]
+        own_icon = owner in KIMI_GAMES and origin == f"{owner}/index.html" and target == f"{owner}/icon.svg"
+        require(own_icon or target.startswith(("kimi-runtime/assets/", "kimi-runtime/fonts/")), f"Kimi resource is outside its shared runtime: {origin}: {reference}")
         require(target in files, f"Missing Kimi resource: {origin}: {reference}")
 
     for game in sorted(KIMI_GAMES):
@@ -258,7 +260,7 @@ def validate_web_bundle(games_dir):
     for game in sorted(BUNDLE_DIRECTORIES):
         files, directories = bundle_inventory(games_dir / game)
         if game in KIMI_GAMES:
-            require(files == {"index.html"} and not directories, f"Kimi entry must contain only index.html: {game}")
+            require("index.html" in files and files <= {"index.html", "icon.svg"} and not directories, f"Kimi entry must contain index.html and only an optional icon.svg: {game}")
         elif game == "kimi-runtime":
             require(all(path.split("/")[0] in {"assets", "fonts"} for path in directories), "Unexpected shared Kimi runtime directory")
             require(any(path.startswith("assets/") for path in files), "Missing compiled Kimi assets")

@@ -56,12 +56,12 @@ export function ToastHost({ toast }: { toast: { id: number; msg: string; kind: '
 
 export function PracticeBanner({ onExit }: { onExit: () => void }) {
   return (
-    <div className="mx-auto mt-3 flex items-center gap-2 rounded-full bg-primary/15 px-4 py-2 text-sm font-bold text-primary">
-      Practice round — stats untouched
+    <div className="collection-practice-banner mx-auto mt-3 flex items-center gap-2 rounded-full bg-primary/15 px-4 py-2 text-sm font-bold text-primary">
+      Practice puzzle
       <button
         type="button"
         onClick={onExit}
-        className="ml-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring"
+        className="ml-1 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring"
         aria-label="Exit practice"
       >
         <X className="h-4 w-4" />

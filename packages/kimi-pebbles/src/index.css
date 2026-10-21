@@ -2,304 +2,202 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------- fonts ---------- */
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('../public/fonts/baloo2-500.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
+@font-face{font-family:'DM Sans';src:url('../public/fonts/dm-sans-regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'DM Sans';src:url('../public/fonts/dm-sans-semibold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'DM Sans';src:url('../public/fonts/dm-sans-bold.ttf') format('truetype');font-weight:700 900;font-style:normal;font-display:swap}
+@font-face{font-family:'DM Serif Display';src:url('../public/fonts/dm-serif-display-regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+
+/* The same paper, ink, type and controls anchor six different game tables. */
+:root{
+  --identity:#39766f;--identity-hsl:173 35% 34%;--identity-soft:#e6eeeb;--identity-dark:#244d48;
+  --background:42 36% 95%;--foreground:205 25% 17%;--card:42 55% 99%;--card-foreground:205 25% 17%;
+  --popover:42 55% 99%;--popover-foreground:205 25% 17%;--primary:var(--identity-hsl);--primary-foreground:0 0% 100%;
+  --secondary:39 25% 90%;--secondary-foreground:205 20% 25%;--muted:39 25% 90%;--muted-foreground:203 10% 40%;
+  --accent:var(--identity-hsl);--accent-foreground:0 0% 100%;--destructive:5 57% 43%;--destructive-foreground:0 0% 100%;
+  --border:37 19% 80%;--input:37 19% 80%;--ring:var(--identity-hsl);--radius:.875rem;
+  --tile-face:42 45% 97%;--tile-edge:39 19% 76%;--tile-text:205 25% 17%;--slot-face:var(--identity-hsl);--slot-edge:173 37% 22%;
+  --ok-face:153 33% 33%;--ok-edge:153 32% 23%;--berry-face:13 45% 43%;--berry-edge:13 42% 29%;
+  --grape-face:var(--identity-hsl);--grape-edge:173 37% 22%;--sky-face:198 36% 39%;--sky-edge:198 36% 26%;
+  --gold-face:43 69% 33%;--gold-edge:43 61% 23%;--dim-face:200 8% 40%;--dim-edge:200 8% 27%;
 }
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('../public/fonts/baloo2-600.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('../public/fonts/baloo2-700.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('../public/fonts/baloo2-800.woff2') format('woff2');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nunito';
-  src: url('../public/fonts/nunito-400.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nunito';
-  src: url('../public/fonts/nunito-600.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nunito';
-  src: url('../public/fonts/nunito-700.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Nunito';
-  src: url('../public/fonts/nunito-800.woff2') format('woff2');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
+html[data-game-id='kimi-morph']{--identity:#7054a1;--identity-hsl:262 31% 48%;--identity-soft:#eee8f5;--identity-dark:#4d376f;--slot-edge:262 34% 30%;--grape-edge:262 34% 30%}
+html[data-game-id='kimi-tangle']{--identity:#527b35;--identity-hsl:95 40% 35%;--identity-soft:#e8eedc;--identity-dark:#355225;--slot-edge:95 38% 24%;--grape-edge:95 38% 24%}
+html[data-game-id='kimi-hunch']{--identity:#94701c;--identity-hsl:43 68% 35%;--identity-soft:#f0e8d0;--identity-dark:#65501d;--slot-edge:43 56% 24%;--grape-edge:43 56% 24%}
+html[data-game-id='kimi-circuit']{--identity:#287d8a;--identity-hsl:188 55% 35%;--identity-soft:#e0eeed;--identity-dark:#1d5058;--slot-edge:188 47% 23%;--grape-edge:188 47% 23%}
+html[data-game-id='kimi-quartet']{--identity:#9a4f74;--identity-hsl:330 32% 46%;--identity-soft:#f0e3e9;--identity-dark:#6b3650;--slot-edge:330 33% 30%;--grape-edge:330 33% 30%}
+
+@layer base{
+  *{@apply border-border;box-sizing:border-box}
+  html{background:#f6f3ec;color:#202c35}
+  body{margin:0;min-width:280px;background:#f6f3ec;color:#202c35;font-family:'DM Sans',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;font-size:15px;line-height:1.5}
+  button,a,input{-webkit-tap-highlight-color:transparent}
+  button{touch-action:manipulation}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--identity);outline-offset:3px}
+  .font-display{font-family:'DM Serif Display',Georgia,serif;font-weight:400}
 }
 
-/* ---------- theme ---------- */
-@layer base {
-  :root {
-    --background: 36 62% 94%;
-    --foreground: 340 28% 20%;
-    --card: 0 0% 100%;
-    --card-foreground: 340 28% 20%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 340 28% 20%;
-    --primary: 275 55% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 36 55% 88%;
-    --secondary-foreground: 340 28% 24%;
-    --muted: 36 30% 88%;
-    --muted-foreground: 340 12% 42%;
-    --accent: 24 90% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 52%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 340 20% 84%;
-    --input: 340 20% 84%;
-    --ring: 275 55% 55%;
-    --radius: 0.9rem;
-
-    /* game tokens */
-    --tile-face: 44 95% 89%;
-    --tile-edge: 32 82% 71%;
-    --tile-text: 28 65% 27%;
-    --slot-face: 24 92% 58%;
-    --slot-edge: 20 85% 43%;
-    --ok-face: 145 55% 52%;
-    --ok-edge: 145 60% 37%;
-    --berry-face: 340 75% 58%;
-    --berry-edge: 340 78% 43%;
-    --grape-face: 275 58% 58%;
-    --grape-edge: 275 60% 42%;
-    --sky-face: 200 82% 66%;
-    --sky-edge: 205 75% 48%;
-    --gold-face: 43 92% 55%;
-    --gold-edge: 38 85% 40%;
-    --dim-face: 340 14% 60%;
-    --dim-edge: 340 17% 44%;
-  }
+/* Common tactile controls; functional states retain their own meaning. */
+@layer components{
+  .tile3d{@apply relative flex select-none items-center justify-center uppercase;font-family:'DM Sans',system-ui,sans-serif;font-weight:700;width:clamp(40px,11.5vw,54px);height:52px;border:1px solid #cfcabf;border-radius:10px;background:hsl(var(--tile-face));color:hsl(var(--tile-text));font-size:clamp(1.2rem,5vw,1.65rem);box-shadow:0 3px 0 hsl(var(--tile-edge));transition:transform 120ms ease,box-shadow 120ms ease,background 140ms ease;cursor:pointer}
+  .tile3d:active{transform:translateY(2px);box-shadow:0 1px 0 hsl(var(--tile-edge))}
+  .tile3d:disabled{cursor:default}
+  .tile-slot{background:hsl(var(--slot-face));color:#fff;border-color:var(--identity-dark);box-shadow:0 3px 0 hsl(var(--slot-edge))}
+  .tile-ok{background:hsl(var(--ok-face));color:#fff;border-color:hsl(var(--ok-edge));box-shadow:0 3px 0 hsl(var(--ok-edge))}
+  .tile-new{background:hsl(var(--berry-face));color:#fff;border-color:hsl(var(--berry-edge));box-shadow:0 3px 0 hsl(var(--berry-edge))}
+  .tile-sky{background:hsl(var(--sky-face));color:#fff;border-color:hsl(var(--sky-edge));box-shadow:0 3px 0 hsl(var(--sky-edge))}
+  .tile-gold{background:hsl(var(--gold-face));color:#fff;border-color:hsl(var(--gold-edge));box-shadow:0 3px 0 hsl(var(--gold-edge))}
+  .tile-dim{background:hsl(var(--dim-face));color:#fff;border-color:hsl(var(--dim-edge));box-shadow:0 3px 0 hsl(var(--dim-edge))}
+  .slot-empty{display:flex;align-items:center;justify-content:center;width:clamp(40px,11.5vw,54px);height:52px;border:1.5px dashed #a5b8af;border-radius:10px;background:#fff9}
+  .btn3d{@apply inline-flex select-none items-center justify-center gap-2;font-family:'DM Sans',system-ui,sans-serif;font-weight:700;min-height:44px;border:1px solid var(--identity-dark);border-radius:12px;background:var(--identity);color:#fff;box-shadow:0 2px 0 var(--identity-dark);transition:transform 120ms ease,box-shadow 120ms ease,background 140ms ease;cursor:pointer;letter-spacing:0}
+  .btn3d:hover{filter:brightness(1.04)}
+  .btn3d:active{transform:translateY(2px);box-shadow:none}
+  .btn3d:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
+  .btn3d-accent{background:var(--identity);border-color:var(--identity-dark);box-shadow:0 2px 0 var(--identity-dark)}
+  .btn3d-soft{background:#faf8f3;color:#3d474a;border-color:#d7d1c5;box-shadow:0 2px 0 #e0dacf;font-weight:600}
+  .btn3d-soft:active{box-shadow:none}
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Nunito', ui-rounded, system-ui, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .font-display {
-    font-family: 'Baloo 2', 'Nunito', ui-rounded, system-ui, sans-serif;
-  }
-}
+#root{min-height:100dvh}
+.kimi-page{width:100%;min-width:0}
+.collection-header{position:relative;width:100%;padding:0 14px 15px;background:#f6f3ec}
+.collection-header-inner{max-width:600px;margin:0 auto}
+.collection-credit-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;border-bottom:1px solid #ded8cb;margin-bottom:12px;color:#626861;font-size:10px;font-weight:600}
+.collection-credit-row a{display:inline-flex;align-items:center;gap:5px;min-height:44px;color:#384740;text-decoration:none;white-space:nowrap}
+.collection-series{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:#202c35;white-space:nowrap}
+.collection-credit-row [data-creator-label]{text-align:right;white-space:nowrap}
+.collection-game-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.collection-game-name{display:flex;align-items:center;gap:12px;min-width:0}
+.collection-game-name h1{font-family:'DM Serif Display',Georgia,serif;font-size:38px;line-height:1;letter-spacing:-1.2px;font-weight:400;color:#202c35;margin:0}
+.collection-category{color:var(--identity);font-size:9px;line-height:1.4;letter-spacing:1.25px;text-transform:uppercase;font-weight:700;margin:0 0 3px}
+.collection-emblem{display:flex;width:46px;height:46px;flex:0 0 auto;align-items:center;justify-content:center;background:var(--identity-soft);border-radius:14px;overflow:hidden}
+.collection-emblem>img{display:block;width:100%;height:100%;object-fit:contain}
+.collection-controls{display:flex;flex-shrink:0;gap:1px}
+.collection-icon-button{border:1px solid transparent;border-radius:50%;color:#56615c}
+.collection-icon-button:hover{background:#fffaf2;border-color:#d8d2c6}
+.collection-rule{font-size:13px;color:#5b625c;margin:8px 0 10px;line-height:1.4}
+.collection-edition-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.collection-modes{display:inline-flex;flex-shrink:0;padding:3px;background:#eae6dd;border:1px solid #dcd7cb;border-radius:13px;gap:2px}
+.collection-modes button{min-height:44px;padding:0 14px;color:#60665e;font-size:12px;font-weight:700;border-radius:9px}
+.collection-modes button[aria-pressed=true]{background:#fffdf7;color:var(--identity);box-shadow:0 1px 3px #242f3512}
+.collection-subtitle{font-size:11px;color:#62675f;text-align:right;line-height:1.4;font-weight:500;margin:0}
+.collection-storage-note{margin:0 auto 12px;max-width:600px;padding:10px 14px;background:#fff0ca;color:#60461d;font-size:12px;text-align:center}
+.kimi-main{width:min(calc(100% - 28px),600px);margin:0 auto;min-width:0;padding-bottom:14px}
+.kimi-stage{margin:0 auto 18px;background:#fffcf6;border:1px solid #d7d2c7;border-radius:22px;box-shadow:0 5px 0 #e4dfd4;min-width:0;position:relative;padding:0 0 18px}
+.kimi-board{max-width:none;padding:18px 20px 4px;min-width:0}
+.kimi-board>div:first-child{margin-top:0}
+.kimi-page>footer{padding:0 24px 24px;color:#697066;font-size:10px;font-weight:400;line-height:1.6}
+.kimi-board .btn3d{font-size:12px}
+.kimi-board .btn3d-accent{font-size:14px}
+.kimi-board .text-muted-foreground{color:#626a62}
+.kimi-board .font-display.text-lg,.kimi-board .font-display.text-3xl{font-family:'DM Sans',sans-serif;font-weight:700;font-variant-numeric:tabular-nums}
+.collection-practice-banner{margin-top:0;margin-bottom:12px;background:var(--identity-soft);font-size:12px;min-height:44px;padding:0 8px 0 16px}
+.integration-loading,.integration-error{padding:40px 24px;text-align:center}
+.integration-error h1{font-family:'DM Serif Display',Georgia,serif;font-size:28px;margin-bottom:14px}
+.integration-error a,.integration-error button{display:block;margin:20px auto;text-decoration:underline;min-height:44px}
+html[data-native=true] .collection-credit-row a{visibility:hidden}
+[data-slot=dialog-content]{max-width:calc(100vw - 24px);max-height:calc(100dvh - 40px);overflow-y:auto;background:#fffcf6;border:1px solid #d4cfc2;border-radius:22px;box-shadow:0 24px 80px #1b2d3a33;padding-top:32px}
+[data-slot=dialog-content]>button[data-slot=dialog-close]{min-width:44px;min-height:44px;top:8px;right:8px;border-radius:50%;display:flex;justify-content:center;align-items:center}
+[data-slot=dialog-title]{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.4px}
+[data-slot=dialog-content] .font-display{font-family:'DM Sans',sans-serif}
+[data-slot=dialog-content] .btn3d{font-size:13px}
 
-/* ---------- chunky toy tiles ---------- */
-@layer components {
-  .tile3d {
-    @apply font-display relative flex select-none items-center justify-center rounded-2xl font-extrabold uppercase;
-    width: clamp(44px, 11.5vw, 56px);
-    height: clamp(48px, 13vw, 62px);
-    font-size: clamp(1.25rem, 5.4vw, 1.75rem);
-    background: hsl(var(--tile-face));
-    color: hsl(var(--tile-text));
-    box-shadow: 0 5px 0 hsl(var(--tile-edge));
-    transition: transform 90ms ease-out, box-shadow 90ms ease-out, background 120ms ease-out;
-    cursor: pointer;
-  }
-  .tile3d:active {
-    transform: translateY(4px);
-    box-shadow: 0 1px 0 hsl(var(--tile-edge));
-  }
-  .tile3d:focus-visible {
-    outline: 3px solid hsl(var(--ring));
-    outline-offset: 2px;
-  }
-  .tile-slot {
-    background: hsl(var(--slot-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--slot-edge));
-  }
-  .tile-slot:active {
-    box-shadow: 0 1px 0 hsl(var(--slot-edge));
-  }
-  .tile-ok {
-    background: hsl(var(--ok-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--ok-edge));
-  }
-  .tile-new {
-    background: hsl(var(--berry-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--berry-edge));
-  }
-  .tile-new:active {
-    box-shadow: 0 1px 0 hsl(var(--berry-edge));
-  }
-  .tile-sky {
-    background: hsl(var(--sky-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--sky-edge));
-  }
-  .tile-sky:active {
-    box-shadow: 0 1px 0 hsl(var(--sky-edge));
-  }
-  .tile-gold {
-    background: hsl(var(--gold-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--gold-edge));
-  }
-  .tile-dim {
-    background: hsl(var(--dim-face));
-    color: #fff;
-    box-shadow: 0 5px 0 hsl(var(--dim-edge));
-  }
+/* CAIRN — pale stone, irregular edges, a sheltered word terrace. */
+.kimi-cairn .kimi-stage{background:#f8faf4;border-color:#cbd6ce}
+.cairn-progress{padding-bottom:12px;border-bottom:1px solid #dce4db}
+.cairn-level{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:#34584e}
+.cairn-slots{width:100%;min-height:94px;background:#e5ece5;padding:18px 8px;border:1px solid #ccd8ce;border-radius:24px 21px 25px 18px;box-shadow:inset 0 2px 0 #d5e0d6;gap:4px}
+.cairn-slots .tile3d,.cairn-slots .slot-empty{width:46px;flex:0 1 46px;min-width:0;height:49px;font-size:clamp(17px,5vw,25px);border-radius:13px 15px 12px 11px}
+.cairn-slots .slot-empty{border-style:dashed;background:#f6f9f1;border-color:#9fb5a6}
+.cairn-rack{gap:8px;margin-top:24px;max-width:100%}
+.cairn-rack .tile3d{background:#f4eee0;border-color:#d1c5ae;border-radius:17px 15px 19px 14px;box-shadow:0 3px 0 #c6bfae;width:44px;height:48px;color:#3f5147}
+.cairn-rack .tile-new{background:#a85439;border-color:#88432f;box-shadow:0 3px 0 #88432f;color:#fff}
+.cairn-board>div:last-child{flex-wrap:wrap;justify-content:center;gap:6px 12px;margin-bottom:12px;font-size:10px}
 
-  .slot-empty {
-    @apply flex items-center justify-center rounded-2xl;
-    width: clamp(44px, 11.5vw, 56px);
-    height: clamp(48px, 13vw, 62px);
-    border: 3px dashed hsl(340 18% 75%);
-    background: hsl(36 60% 97% / 0.6);
-  }
+/* MORPH — a measured sequence of violet stepping blocks. */
+.kimi-morph .kimi-stage{background:#fcf9ff;border-color:#d5cce0}
+.morph-ladder{position:relative;isolation:isolate;padding:4px 0 8px;width:100%;gap:8px}
+.morph-ladder:before{content:'';position:absolute;z-index:-1;left:27px;top:24px;bottom:24px;border-left:1px dashed #baa8d0}
+.morph-ladder>div{width:100%;justify-content:center;gap:10px;padding:5px 0}
+.morph-ladder>div>span{width:38px;flex-shrink:0;font-size:8px;letter-spacing:1px;color:#6c597f}
+.morph-letter{width:clamp(38px,10vw,50px);height:50px;border-radius:8px 15px 8px 15px}
+.morph-letter.tile-sky{background:#e9e1f1;color:#5f487c;border-color:#c5b5d7;box-shadow:0 3px 0 #cabddd}
+.morph-letter.tile-ok{background:#f4f0f8;color:#5a447b;border-color:#bdaaD0;box-shadow:0 3px 0 #d2c5e2}
+.morph-letter.tile-ok>span{background:#7054a1}
+.morph-letter.tile-slot{background:#7054a1;color:#fff;border-color:#4d376f;box-shadow:0 3px 0 #4d376f}
+.morph-letter.tile-new{background:#fcf9ff;color:#7054a1;border:2px solid #7054a1;box-shadow:0 3px 0 #d2c3e2}
+.morph-board>.mt-6{gap:12px}
+.morph-board .flex.items-center.justify-center.gap-2{flex-wrap:wrap}
 
-  .btn3d {
-    @apply font-display inline-flex select-none items-center justify-center gap-2 rounded-2xl font-bold text-white;
-    background: hsl(var(--grape-face));
-    box-shadow: 0 4px 0 hsl(var(--grape-edge));
-    transition: transform 90ms ease-out, box-shadow 90ms ease-out, filter 120ms ease-out;
-    cursor: pointer;
-  }
-  .btn3d:hover {
-    filter: brightness(1.06);
-  }
-  .btn3d:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 hsl(var(--grape-edge));
-  }
-  .btn3d:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    transform: none;
-  }
-  .btn3d:focus-visible {
-    outline: 3px solid hsl(var(--ring));
-    outline-offset: 2px;
-  }
-  .btn3d-accent {
-    background: hsl(var(--slot-face));
-    box-shadow: 0 4px 0 hsl(var(--slot-edge));
-  }
-  .btn3d-accent:active {
-    box-shadow: 0 1px 0 hsl(var(--slot-edge));
-  }
-  .btn3d-soft {
-    background: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    box-shadow: 0 4px 0 hsl(33 45% 74%);
-  }
-  .btn3d-soft:active {
-    box-shadow: 0 1px 0 hsl(33 45% 74%);
-  }
-}
+/* TANGLE — a planted field with leaf-shaped letter tiles and a live trail. */
+.kimi-tangle .kimi-stage{background:#fbfcf4;border-color:#d3dcc2}
+.tangle-growth{height:7px;background:#e4e9d7;margin-top:12px}
+.tangle-growth>div:first-child{background:#527b35}
+.tangle-growth>.absolute{width:2px;height:13px;top:-3px;background:#87976e}
+.tangle-field{width:calc(100% - 24px);max-width:340px;margin-top:26px;margin-bottom:14px;box-shadow:0 0 0 11px #e6edd9,0 0 0 12px #c6d2b3;border-radius:17px}
+.tangle-field .tile3d{width:100%;height:auto;aspect-ratio:1;border-radius:15px 5px 15px 5px;background:#f9fbef;border:1px solid #bdcba9;box-shadow:0 3px 0 #b6c59e;color:#36552c;font-size:clamp(23px,6vw,31px)}
+.tangle-field .tile-slot{background:#527b35;color:#fff;border-color:#3e5f2c;box-shadow:0 3px 0 #3e5f2c}
+.tangle-field .tile-new{background:#9a782d;color:#fff;border-color:#735b23;box-shadow:0 3px 0 #735b23}
+.tangle-field polyline{opacity:.38}
+.tangle-found{border-top:1px solid #dae2ca;padding-top:14px}
+.tangle-found>div:first-child{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px}
+.tangle-found .rounded-full{background:#e8efdc;border:1px solid #d4dfc3;font-family:'DM Sans',sans-serif;color:#465e35;font-size:11px}
 
-/* ---------- animations ---------- */
-@keyframes tile-pop {
-  0% { transform: scale(0.4); }
-  60% { transform: scale(1.12); }
-  100% { transform: scale(1); }
-}
-@keyframes tile-shake {
-  10%, 90% { transform: translateX(-2px); }
-  20%, 80% { transform: translateX(4px); }
-  30%, 50%, 70% { transform: translateX(-6px); }
-  40%, 60% { transform: translateX(6px); }
-}
-@keyframes tile-drop {
-  0% { transform: translateY(-180%) rotate(-14deg); opacity: 0; }
-  60% { transform: translateY(6%) rotate(3deg); opacity: 1; }
-  100% { transform: translateY(0) rotate(0); opacity: 1; }
-}
-@keyframes stone-drop {
-  0% { transform: translateY(-260%) rotate(-10deg) scale(0.6); opacity: 0; }
-  55% { transform: translateY(8%) rotate(2deg) scale(1.05); opacity: 1; }
-  80% { transform: translateY(-3%) rotate(-1deg); }
-  100% { transform: translateY(0) rotate(var(--tilt, 0deg)) scale(1); opacity: 1; }
-}
-@keyframes toast-in {
-  from { transform: translateY(-10px) scale(0.92); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes cairn-sway {
-  from { transform: rotate(-1.1deg); }
-  to { transform: rotate(1.1deg); }
-}
-@keyframes flag-wave {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(6deg); }
-}
-@keyframes pulse-ring {
-  0% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 0 hsl(var(--berry-face) / 0.55); }
-  70% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 12px hsl(var(--berry-face) / 0); }
-  100% { box-shadow: 0 5px 0 hsl(var(--berry-edge)), 0 0 0 0 hsl(var(--berry-face) / 0); }
-}
+/* HUNCH — a mustard-edged letterpress case, with compact mechanical keys. */
+.kimi-hunch .kimi-stage{background:#fffdf5;border-color:#daceac}
+.hunch-typecase{padding:12px;background:#eee7d0;border:1px solid #cbbd94;border-radius:13px;box-shadow:inset 0 2px 0 #e0d5b7;gap:7px}
+.hunch-typecase>div{gap:7px}
+.hunch-typecase .tile3d{width:clamp(35px,10.8vw,48px);height:47px;border-radius:4px;background:#fffcf4;border-color:#c4b996;box-shadow:0 2px 0 #c0b48e;font-family:'DM Sans',sans-serif;font-size:25px}
+.hunch-typecase .tile-slot{background:#fff7d7;color:#574916;border-color:#9c7c2b;box-shadow:0 2px 0 #b49a53}
+.hunch-typecase .tile-ok{background:#39725a;color:#fff;border-color:#2c5745;box-shadow:0 2px 0 #2c5745}
+.hunch-typecase .tile-gold{background:#94701c;color:#fff;border-color:#6d5215;box-shadow:0 2px 0 #6d5215}
+.hunch-typecase .tile-dim{background:#626b6b;color:#fff;border-color:#465050;box-shadow:0 2px 0 #465050}
+.hunch-keyboard{margin-top:24px;padding-top:14px;border-top:1px solid #e4dbc3;gap:8px}
+.hunch-keyboard .tile3d{width:0;min-width:0;flex:1;height:46px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:16px;box-shadow:0 2px 0 #c7c0ae}
+.hunch-keyboard .btn3d{height:46px;font-size:10px;padding:0 4px;border-radius:8px;min-width:36px}
+.hunch-keyboard>.btn3d{font-size:12px;padding-inline:14px}
 
-.anim-pop { animation: tile-pop 180ms ease-out both; }
-.anim-shake { animation: tile-shake 480ms ease both; }
-.anim-drop { animation: tile-drop 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
-.anim-toast { animation: toast-in 160ms ease-out both; }
-.anim-stone { animation: stone-drop 600ms cubic-bezier(0.2, 0.9, 0.3, 1.15) both; }
-.anim-sway { animation: cairn-sway 3.2s ease-in-out infinite alternate; transform-origin: bottom center; }
-.anim-flag { animation: flag-wave 1.6s ease-in-out infinite; transform-origin: bottom left; }
-.anim-pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
+/* CIRCUIT — four colored arcs around a dark instrument dial. */
+.kimi-circuit .kimi-stage{background:#f8fcf9;border-color:#c4d6d2}
+.circuit-coverage{width:100%;padding:9px 12px;background:#e3edE7;border:1px solid #cbdad4;border-radius:12px;margin-top:12px;gap:5px}
+.circuit-coverage>span{height:7px}
+.circuit-instrument{width:min(320px,calc(100vw - 80px));height:min(320px,calc(100vw - 80px));flex-shrink:0;background:#173b40;border-radius:50%;box-shadow:0 0 0 10px #dce9e5,0 0 0 11px #bccfca;margin-top:28px;margin-bottom:14px}
+.circuit-instrument:before{content:'';position:absolute;inset:20%;border:1px dashed #588080;border-radius:50%;pointer-events:none}
+.circuit-instrument:after{content:'';position:absolute;inset:8%;border:1px solid #436567;border-radius:50%;pointer-events:none}
+.circuit-readout{color:#eaf6ef}
+.circuit-readout>div:first-child{font-family:'DM Sans',sans-serif;font-size:22px;max-width:46%;overflow-wrap:anywhere;text-align:center;line-height:1.4;letter-spacing:1px;color:#f3fbf3}
+.circuit-readout .text-muted-foreground{color:#c1d5cc;max-width:45%;font-size:10px}
+.circuit-node{width:48px;height:48px;z-index:2;border-radius:50%;font-family:'DM Sans',sans-serif;font-size:21px;border-width:2px!important;box-shadow:0 2px 0 #102d31!important}
+.circuit-board>.flex.items-center.justify-center.gap-2{flex-wrap:wrap}
 
-@media (prefers-reduced-motion: reduce) {
-  .anim-pop, .anim-shake, .anim-drop, .anim-toast, .anim-stone, .anim-sway, .anim-flag, .anim-pulse-ring {
-    animation: none !important;
-  }
-  .tile3d, .btn3d { transition: none !important; }
+/* QUARTET — a plum-lined cabinet of crisp, numbered-looking word cards. */
+.kimi-quartet .kimi-stage{background:#fff9fc;border-color:#ddcbd5}
+.quartet-board{padding-inline:8px}
+.quartet-cabinet{padding:6px;background:#eee2e9;border:1px solid #d8c2cf;border-radius:15px;gap:6px}
+.quartet-card{height:74px;min-width:0;width:100%;padding:9px 1px 6px;border-radius:4px 4px 12px 12px;border:1px solid #cbb6c3;border-top:4px solid #c9a8bb;box-shadow:0 3px 0 #c6b2bf;background:#fffafd;color:#4f3745;font-family:'DM Sans',sans-serif;font-size:clamp(10.5px,2.2vw,15px);letter-spacing:-.15px;line-height:1.2;white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.quartet-card[data-long-word]{font-size:clamp(9.5px,2.1vw,14px);letter-spacing:-.2px}
+.quartet-card.tile-slot{background:#9a4f74;color:#fff;border-color:#713a55;border-top-color:#713a55;box-shadow:0 3px 0 #713a55;transform:translateY(-2px)}
+.quartet-solved{border-radius:10px;border:1px solid #0002;padding:12px 10px;box-shadow:0 2px 0 #0001}
+.quartet-solved>span:first-child{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.6px}
+.quartet-solved>span:last-child{font-size:10px;line-height:1.6}
+
+/* Small, purposeful feedback; no perpetual motion on the board. */
+@keyframes tile-pop{from{transform:translateY(3px) scale(.97);opacity:.5}to{transform:translateY(0) scale(1);opacity:1}}
+@keyframes tile-shake{20%,60%{transform:translateX(-3px)}40%,80%{transform:translateX(3px)}}
+@keyframes tile-drop{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes stone-drop{from{transform:translateY(-22px);opacity:0}to{transform:rotate(var(--tilt,0deg));opacity:1}}
+@keyframes toast-in{from{transform:translateY(-6px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes flag-wave{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.anim-pop{animation:tile-pop 180ms ease-out both}.anim-shake{animation:tile-shake 280ms ease both}.anim-drop{animation:tile-drop 220ms ease-out both}.anim-toast{animation:toast-in 160ms ease-out both}.anim-stone{animation:stone-drop 300ms ease-out both}.anim-flag{animation:flag-wave 600ms ease-in-out 2;transform-origin:bottom left}.anim-pulse-ring{outline:2px solid #a8543940;outline-offset:4px}
+@media(max-width:380px){
+  .collection-header{padding-inline:12px}.collection-credit-row{font-size:9px;gap:6px}.collection-series{font-size:13px}
+  .collection-game-name{gap:8px}.collection-game-name h1{font-size:31px}.collection-emblem{width:38px;height:38px;border-radius:11px}
+  .collection-category{font-size:8px;letter-spacing:.7px}.collection-controls{gap:0}.collection-icon-button{width:44px}
+  .collection-subtitle{font-size:10px}.collection-modes button{padding-inline:12px}.collection-rule{font-size:11px}
+  .kimi-main{width:calc(100% - 24px)}.kimi-board{padding:16px 16px 4px}.kimi-board .btn3d{font-size:11px}.kimi-board .btn3d-accent{font-size:12px}
+  .quartet-board{padding-inline:4px}.quartet-cabinet{padding:3px;gap:3px}.quartet-card{font-size:clamp(10px,calc(2.5vw + 2px),11.5px);height:68px;padding-inline:0}
+  .quartet-card[data-long-word]{font-size:clamp(9.5px,calc(2.5vw + 1.5px),11px);letter-spacing:-.8px}
+  .morph-ladder>div{gap:8px}.morph-ladder>div>span{width:33px}.morph-ladder:before{left:20px}
+  .cairn-progress{gap:6px}.cairn-progress>.text-right{width:50px}.cairn-progress>.flex{gap:4px}.cairn-progress .w-7{width:22px}
 }
-
-/* Shared collection navigation and attribution; game colors remain Kimi's. */
-.collection-header { padding: 8px 14px 10px; }
-.collection-header-inner { max-width: 512px; margin: 0 auto; }
-.collection-credit-row { display:flex; justify-content:space-between; align-items:center; min-height:36px; gap:12px; font-size:11px; font-weight:700; color:hsl(var(--muted-foreground)); }
-.collection-credit-row a { display:inline-flex; align-items:center; gap:6px; min-height:36px; }
-.collection-game-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.collection-game-name { display:flex; align-items:center; gap:9px; min-width:0; }
-.collection-game-name h1 { font-family:'Baloo 2',sans-serif; font-size:27px; font-weight:800; line-height:1.1; }
-.collection-subtitle { font-size:11px; font-weight:600; margin-top:3px; }
-.collection-controls { display:flex; flex-shrink:0; }
-.collection-storage-note { text-align:center; padding:8px 14px; font-size:12px; background:#fff3ce; color:#573b11; }
-.integration-loading,.integration-error { padding:40px 24px; text-align:center; }
-.integration-error h1 { font-size:24px; margin-bottom:14px; }
-.integration-error a,.integration-error button { display:block; margin:20px auto; text-decoration:underline; }
-html[data-native=true] .collection-credit-row a { visibility:hidden; }
-[data-slot=dialog-content] { max-width:calc(100vw - 24px); max-height:calc(100dvh - 40px); overflow-y:auto; }
-[data-slot=dialog-content] > button[data-slot=dialog-close] { min-width:44px; min-height:44px; }
-@media(max-width:360px) { .collection-header { padding-inline:10px; } .collection-game-name h1 { font-size:23px; } .collection-subtitle { font-size:10px; } .collection-game-name > svg { display:none; } }
+@media(min-width:700px){.collection-header{padding-top:10px;padding-bottom:20px}.collection-credit-row{margin-bottom:22px}.collection-game-name h1{font-size:43px}.collection-rule{font-size:14px}.kimi-board{padding:24px 30px 8px}.kimi-stage{padding-bottom:24px}.hunch-keyboard{max-width:440px}.quartet-card{font-size:15px;height:90px}.cairn-slots .tile3d,.cairn-slots .slot-empty{width:46px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

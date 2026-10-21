@@ -2,7 +2,7 @@ import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,chooseTile,submitPair,shuffle,hint,reveal} from './engine.mjs';
 mountDailyGame({
- id:'deepseek-spare',name:'Spare',accent:'#52759d',intro:'Four perfect opposites. One word without a partner. Find what belongs together.',
+ id:'deepseek-spare',name:'Spare',accent:'#9d4868',intro:'Four perfect opposites. One word without a partner. Find what belongs together.',
  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:['The nine words contain four pairs with opposite meanings and one spare word.','Select two words, then choose Match pair. Correct pairs move above the board.','Three different wrong pairings end the round. Repeating a wrong pairing never costs another strike.','Find all four pairs to expose the spare and solve the puzzle. A little hint highlights one pair; it stays highlighted when you shuffle.'],
  summarize:(p,s)=>`${s.solved.length} of 4 pairs found · ${s.mistakes.length} ${s.mistakes.length===1?'miss':'misses'}${s.hinted.length?` · ${s.hinted.length} ${s.hinted.length===1?'hint':'hints'}`:''}${getStatus(p,s)==='revealed'?' · solution revealed':''}. The spare was ${p.spare}.`,

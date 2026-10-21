@@ -11,18 +11,6 @@ import { CircuitWinModal } from './CircuitWinModal'
 
 const HELP_KEY = 'kimi:circuit:seen-help'
 
-function RingLogo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <circle cx="14" cy="4" r="3" fill="hsl(24 92% 58%)" />
-      <circle cx="24" cy="14" r="3" fill="hsl(145 55% 55%)" />
-      <circle cx="14" cy="24" r="3" fill="hsl(200 82% 60%)" />
-      <circle cx="4" cy="14" r="3" fill="hsl(275 58% 62%)" />
-      <circle cx="14" cy="14" r="3.5" fill="none" stroke="hsl(340 25% 40%)" strokeWidth="2" strokeDasharray="2 2.5" />
-    </svg>
-  )
-}
-
 export default function CircuitPage() {
   const { state, actions } = useCircuit()
   useUnifiedProgress('circuit', state)
@@ -45,17 +33,21 @@ export default function CircuitPage() {
   }, [state.finished, state.gaveUp])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="kimi-page kimi-circuit flex min-h-dvh flex-col">
       <GameHeader
-        title="CIRCUIT"
+        title="Circuit"
+        mode={state.mode}
+        busy={state.phase === 'loading'}
+        onPractice={actions.startPractice}
+        onDaily={actions.exitPractice}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
-        logo={<RingLogo />}
+
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
       />
       <ToastHost toast={state.toast} />
 
-      <main className="flex flex-1 flex-col">
+      <main className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="font-display text-lg font-bold text-muted-foreground">Spinning up the ring…</p>
@@ -63,7 +55,7 @@ export default function CircuitPage() {
         ) : (
           <>
             {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
-            <div className="my-auto w-full" data-game-ready={state.phase === 'playing' || state.phase === 'finished' ? 'true' : undefined}>
+            <div className="kimi-stage my-auto w-full" data-game-ready={state.phase === 'playing' || state.phase === 'finished' ? 'true' : undefined}>
               <CircuitBoard state={state} actions={actions} />
               {state.finished && (
                 <div className="mt-4 mb-8 flex justify-center">

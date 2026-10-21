@@ -77,7 +77,7 @@ export function HunchBoard({ state, actions }: Props) {
   while (rows.length < MAX_GUESSES) rows.push(null)
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board hunch-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       <div className="mt-4 text-sm font-bold text-muted-foreground">
         Guess {Math.min(state.guesses.length + (state.finished ? 0 : 1), MAX_GUESSES)} of {MAX_GUESSES}
         {state.hintLetters.length > 0 && (
@@ -89,7 +89,7 @@ export function HunchBoard({ state, actions }: Props) {
       </div>
 
       {/* grid */}
-      <div className={cn('mt-4 flex flex-col gap-1.5', state.shaking && 'anim-shake')} aria-live="polite">
+      <div className={cn('hunch-typecase mt-4 flex flex-col gap-1.5', state.shaking && 'anim-shake')} aria-live="polite">
         {rows.map((word, r) => (
           <div key={r} className="flex gap-1.5" aria-label={word ? `Guess ${r + 1}: ${word}` : `Row ${r + 1} empty`}>
             {Array.from({ length: WORD_LEN }).map((_, i) => {
@@ -124,7 +124,7 @@ export function HunchBoard({ state, actions }: Props) {
 
       {/* keyboard */}
       {!state.finished && (
-        <div className="mt-6 flex w-full max-w-md flex-col items-center gap-1.5">
+        <div className="hunch-keyboard mt-6 flex w-full max-w-md flex-col items-center gap-1.5">
           {KB_ROWS.map((row, ri) => (
             <div key={ri} className="flex w-full justify-center gap-1">
               {ri === 2 && (

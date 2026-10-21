@@ -2,7 +2,7 @@ import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
 mountDailyGame({
- id:'claude-tangle',name:'Tangle',creator:'Claude',credit:'Developed by Claude',accent:'#796099',
+ id:'claude-tangle',name:'Tangle',creator:'Claude',credit:'Developed by Claude',accent:'#83529b',
  intro:'Three words, woven together. Find the loose ends.',hintLabel:'Loose end · 1 knot',
  instructions:[
   'Three words are interleaved into one string. Each word keeps its original letter order. Find and pull all three.',

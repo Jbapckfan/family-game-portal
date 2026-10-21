@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
 const keyboard=()=>`<div class="keystone-keyboard" role="group" aria-label="Word keyboard">${['qwertyuiop','asdfghjkl','zxcvbnm'].map((row,i)=>`<div class="key-row">${i===2?'<button id="keystone-key-enter" type="button" class="word-key wide" data-key="ENTER" aria-label="Submit word">Enter</button>':''}${[...row].map(c=>`<button id="keystone-key-${c}" type="button" class="word-key" data-key="${c}" aria-label="Letter ${c.toUpperCase()}">${c.toUpperCase()}</button>`).join('')}${i===2?'<button id="keystone-key-back" type="button" class="word-key wide" data-key="BACK" aria-label="Delete last letter">⌫</button>':''}</div>`).join('')}</div>`;
 mountDailyGame({
- id:'claude-keystone',name:'Keystone',creator:'Claude',credit:'Developed by Claude',accent:'#55788f',
+ id:'claude-keystone',name:'Keystone',creator:'Claude',credit:'Developed by Claude',accent:'#936b2a',
  intro:'One hidden word holds five others together.',hintLabel:'Hint · clues affect score',
  instructions:[
   'Find a hidden word that joins each of five clue words. It may go before or after a clue. A join can be a compound or pure spelling: CAR + PET makes CARPET.',

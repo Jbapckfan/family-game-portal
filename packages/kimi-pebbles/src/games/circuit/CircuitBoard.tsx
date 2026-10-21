@@ -1,6 +1,10 @@
 import { useMemo } from 'react'
 import { Delete, Eraser, Flag, Lightbulb, Undo2, RotateCcw } from 'lucide-react'
-import { ARC_COLORS, ARC_EDGES, arcOf, medalForChain } from './engine'
+import { arcOf, medalForChain } from './engine'
+
+// Presentation colors preserve the four distinct arc identities.
+const ARC_COLORS = ['#a65d37', '#2a7379', '#737a42', '#8a587a']
+const ARC_EDGES = ['#794022', '#19545a', '#52572d', '#633d58']
 import { coverage } from './progress'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
@@ -46,7 +50,7 @@ export function CircuitBoard({ state, actions }: Props) {
   const medal = medalForChain(state.played.length, puzzle.par, state.gaveUp)
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div className="kimi-board circuit-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       <div className="mt-4 flex w-full items-center justify-between text-sm font-bold text-muted-foreground">
         <span>
           Words <span className="font-display text-lg text-foreground">{state.played.length}</span>
@@ -58,7 +62,7 @@ export function CircuitBoard({ state, actions }: Props) {
       </div>
 
       {/* coverage meter */}
-      <div className="mt-2 flex gap-1" aria-label={`${coveredCount} of 12 letters lit`}>
+      <div className="circuit-coverage mt-2 flex gap-1" aria-label={`${coveredCount} of 12 letters lit`}>
         {letters.map((_, i) => (
           <span
             key={i}
@@ -71,9 +75,9 @@ export function CircuitBoard({ state, actions }: Props) {
       </div>
 
       {/* the ring */}
-      <div className={cn('relative mx-auto mt-6 h-72 w-72 sm:h-80 sm:w-80', state.shaking && 'anim-shake')}>
+      <div className={cn('circuit-instrument relative mx-auto mt-6 h-72 w-72 sm:h-80 sm:w-80', state.shaking && 'anim-shake')}>
         {/* current word in the middle */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="circuit-readout absolute inset-0 flex flex-col items-center justify-center">
           <div className="font-display text-2xl font-extrabold uppercase tracking-[0.2em]" aria-live="polite">
             {currentWord || (needStart ? `${needStart}…` : ' ')}
           </div>
@@ -98,18 +102,18 @@ export function CircuitBoard({ state, actions }: Props) {
               disabled={state.finished}
               onClick={() => actions.tapLetter(i)}
               className={cn(
-                'tile3d absolute h-14 w-14 text-2xl transition-all duration-150',
+                'circuit-node tile3d absolute h-14 w-14 text-2xl transition-all duration-150',
                 picked && 'scale-110',
                 !lit && !picked && 'opacity-95',
               )}
               style={{
-                left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 42}% - 28px)`,
-                top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 42}% - 28px)`,
+                left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 40}% - 24px)`,
+                top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 40}% - 24px)`,
                 background: lit || picked ? ARC_COLORS[arcOf(i)] : 'hsl(var(--tile-face))',
                 color: lit || picked ? '#fff' : ARC_EDGES[arcOf(i)],
                 border: `3px solid ${lit || picked ? 'transparent' : ARC_COLORS[arcOf(i)]}`,
                 boxShadow: `0 5px 0 ${lit || picked ? ARC_EDGES[arcOf(i)] : 'hsl(var(--tile-edge))'}`,
-                opacity: disabledArc || mustPick ? 0.35 : undefined,
+                opacity: disabledArc || mustPick ? 0.58 : undefined,
               }}
             >
               {ch}

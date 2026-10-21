@@ -36,7 +36,7 @@ export function HelpModal({ open, onOpenChange }: Props) {
           </div>
           <div>
             <p className="mb-2">
-              Solve it, and a <span style={{ color: 'hsl(340 75% 50%)' }} className="font-bold">new letter</span> drops
+              Solve it, and a <span style={{ color: '#a85439' }} className="font-bold">new letter</span> drops
               in. Use all of them again:
             </p>
             <div className="flex items-center gap-2">
@@ -55,7 +55,7 @@ export function HelpModal({ open, onOpenChange }: Props) {
           </ul>
           <p className="text-muted-foreground">
             Tap tiles or use your keyboard. A new puzzle stacks up every day at midnight — finish it to grow your
-            streak. The ∞ button opens unlimited practice rounds that don't touch your stats.
+            streak. Choose Practice above the board for an extra puzzle; your daily result stays separate.
           </p>
         </div>
       </DialogContent>

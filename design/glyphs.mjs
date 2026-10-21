@@ -1,0 +1,38 @@
+// A shared visual grammar; every silhouette describes its game's mechanic.
+const dot = (x,y,r=3) => `<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" stroke="none"/>`;
+const tile = (x,y,w=13,h=13) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"/>`;
+const line = d => `<path d="${d}"/>`;
+export const GLYPHS = {
+  ringcount: `<circle cx="32" cy="32" r="17"/><circle cx="32" cy="32" r="7"/>${line('M32 11v6m21 15h-6M32 53v-6M11 32h6')}${dot(20,20,2)}${dot(44,20,2)}${dot(20,44,2)}${dot(44,44,2)}`,
+  switchpath: `${line('M17 17h30v15H17v15h30')}${[[17,17],[32,17],[47,17],[17,32],[32,32],[47,32],[17,47],[32,47],[47,47]].map(([x,y])=>dot(x,y,3.5)).join('')}`,
+  counterpart: `${tile(12,16,17,32)}${tile(35,16,17,32)}${line('M18 25h5m-5 7h5m-5 7h5m18-14h5m-5 7h5m-5 7h5M29 32h6')}`,
+  shortlist: `${line('M18 18h27M18 27h20M18 36h14M18 45h9')}${dot(46,43,8)}${line('m42 43 3 3 5-6')}`,
+  'second-sense': `${line('M32 18c-7-5-13-5-21-3v33c8-2 14-2 21 3 7-5 13-5 21-3V15c-8-2-14-2-21 3Zm0 0v33M17 24h9m-9 7h9m12-7h9m-9 7h9')}`,
+  sideways: `${tile(19,13,28,10)}${tile(17,27,28,10)}${tile(19,41,28,10)}${line('m12 15-4 3 4 3m40 8 4 3-4 3m-40 8-4 3 4 3')}`,
+  tradeoff: `${tile(12,13,16,16)}${tile(36,35,16,16)}${line('M34 18h14v10m-5-5 5 5 5-5M30 46H16V36m-5 5 5-5 5 5')}`,
+  inbetween: `${tile(10,24,12,20)}${tile(42,24,12,20)}${tile(26,13,12,20)}${line('M32 38v12m-5-5 5 5 5-5')}`,
+  'kimi-cairn': `${line('M22 18c1-8 19-8 20 0 1 6-21 6-20 0Zm-5 13c1-9 29-9 30 0 1 8-31 8-30 0Zm-5 16c0-10 40-10 40 0 0 9-40 9-40 0Z')}`,
+  'kimi-morph': `${tile(10,39,13,13)}${tile(25,26,13,13)}${tile(40,13,13,13)}${line('m17 31 14-14h8M28 13l4 4-4 4')}`,
+  'kimi-tangle': `${[[18,18],[32,18],[46,18],[18,32],[32,32],[46,32],[18,46],[32,46],[46,46]].map(([x,y])=>dot(x,y,3)).join('')}${line('M18 18h28v28H18V32h14')}`,
+  'kimi-hunch': `${tile(12,13,40,38)}${line('M12 26h40M25 13v38m14-38v38M12 39h40')}${dot(32,32,3.2)}`,
+  'kimi-circuit': `<circle cx="32" cy="32" r="19"/>${dot(32,13,4)}${dot(49,41,4)}${dot(15,41,4)}${line('m28 25 9 7-9 7Z')}`,
+  'kimi-quartet': `${tile(12,12,17,17)}${tile(35,12,17,17)}${tile(12,35,17,17)}${tile(35,35,17,17)}${line('M29 21h6M21 29v6m22-6v6M29 43h6')}`,
+  'deepseek-twin-hive': `${line('m23 12 10 6v12l-10 6-10-6V18Zm20 0 10 6v12l-10 6-10-6V18ZM33 30l10 6v12l-10 6-10-6V36Z')}${dot(23,24,2)}${dot(43,24,2)}`,
+  'deepseek-spare': `${tile(9,17,13,30)}${tile(26,17,13,30)}${line('M9 32h13m4 0h13')}${dot(49,32,6)}${line('m46 32 2 2 4-5')}`,
+  'deepseek-rung': `${line('M20 12v40m24-40v40M20 18h24M20 32h24M20 46h24')}${dot(32,18,3)}${dot(32,32,3)}${dot(32,46,3)}`,
+  'deepseek-cipher': `${tile(13,12,38,40)}${line('M21 21h5m7 0h10M21 29h10m6 0h6M21 37h5m7 0h10M21 45h22')}`,
+  'deepseek-trail': `${line('M14 44 22 19l20-3 10 25-20 8-10-30')}${[[14,44],[22,19],[42,16],[52,41],[32,49]].map(([x,y])=>dot(x,y,4)).join('')}`,
+  'deepseek-split': `${line('M32 12v17m-16 2v-7h32v7M9 36h15v16H9Zm31 0h15v16H40Z')}${dot(32,15,4)}${line('m13 42 3 3 5-5m23 2 3 3 5-5')}`,
+  'qwen-quadra': `${tile(12,12,40,40)}${line('M32 12v40M12 32h40')}${dot(22,22,3)}${dot(42,22,3)}${dot(22,42,3)}${dot(42,42,3)}`,
+  'qwen-logic-lattice': `${tile(13,13,38,38)}${line('M26 13v38m12-38v38M13 26h38M13 38h38')}<path d="M26 13h12v13H26ZM13 38h13v13H13Zm25 0h13v13H38Z" fill="currentColor" stroke="none"/>`,
+  'qwen-syntax-siege': `${line('M11 43V28h9v15m24 0V28h9v15M20 46h24V26H20ZM15 17v-6m17 5V9m17 8v-6')}${dot(32,35,4)}${line('M8 51h48')}`,
+  'qwen-memory-maze': `${tile(11,11,42,42)}${line('M25 11v15H11m29-15v29H25V26m15 14h13M25 40v13')}${dot(18,18,3)}${dot(46,46,3)}`,
+  'qwen-pattern-prism': `${line('M32 10 52 44H12Z M32 10v34M12 44l20-12 20 12M32 32v20')}`,
+  'qwen-territory-tactics': `${line('m21 11 11 6v13l-11 6-11-6V17Zm22 0 11 6v13l-11 6-11-6V17ZM32 30l11 6v13l-11 6-11-6V36Z')}${dot(21,23,4)}${dot(43,23,4)}${dot(32,43,4)}`,
+  'claude-dovetail': `${line('M10 18h18l-4 9h16l-4-9h18v28H36l4-9H24l4 9H10Z')}`,
+  'claude-splice': `${line('M10 17h18v30H10Zm26 0h18v30H36ZM28 24h8m-8 16h8')}${line('M16 25h6m-6 7h6m-6 7h6m20-14h6m-6 7h6m-6 7h6')}`,
+  'claude-sprout': `${line('M32 52V29m0 10C12 40 12 21 12 21s20-3 20 18Zm0-10c0-18 20-18 20-18s1 20-20 18ZM20 52h24')}`,
+  'claude-tangle': `${line('M14 18c0 12 36 16 36 28M50 18c0 12-36 16-36 28')}${dot(14,18,5)}${dot(50,18,5)}${dot(14,46,5)}${dot(50,46,5)}${dot(32,32,4)}`,
+  'claude-keystone': `${line('M11 52V33c0-28 42-28 42 0v19H42V33c0-14-20-14-20 0v19ZM28 13l-2 12h12l-2-12M12 30l11 3m18 0 11-3M11 42h11m20 0h11')}`,
+  'claude-tumbler': `${tile(9,15,14,34)}${tile(25,15,14,34)}${tile(41,15,14,34)}${line('M9 26h14m2 0h14m2 0h14M9 38h14m2 0h14m2 0h14')}${dot(16,32,2)}${dot(32,32,2)}${dot(48,32,2)}`,
+};

@@ -1,4 +1,4 @@
-import {GAMES, LAUNCH_GAMES, CREATORS, gameURL, motif} from './catalog.mjs';
+import {GAMES, LAUNCH_GAMES, CREATORS, gameURL} from './catalog.mjs';
 
 const escape = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
 const dateParts = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit'});
@@ -65,7 +65,7 @@ const STATUS = Object.freeze({
 function card(game, url) {
   return `<a class="game-card ${game.group === 'logic' ? 'word' : game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
     <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
-    <div class="card-motif">${motif(game.motif)}</div>
+    <div class="card-motif"><img src="${escape(new URL('icon.svg', url).href)}" width="96" height="96" alt="" loading="lazy"></div>
     <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">${escape(game.credit || `Developed by ${game.creator}`)}</span><p>${escape(game.description)}</p></div>
     <div class="card-bottom"><span class="card-detail">${escape(game.detail || game.category)}</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
   </a>`;

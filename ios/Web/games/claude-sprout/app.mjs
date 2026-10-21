@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,analyze,typedWord,chooseTile,selectWord,submitWord,undo,restart,hint,reveal,solutionPath} from './engine.mjs';
 
 mountDailyGame({
- id:'claude-sprout',name:'Sprout',creator:'Claude',credit:'Developed by Claude',accent:'#64834d',
+ id:'claude-sprout',name:'Sprout',creator:'Claude',credit:'Developed by Claude',accent:'#37735a',
  intro:'One seed, five letters in the soil, and a word waiting to bloom.',
  hintLabel:'Which letter? · costs 1 wilt',puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:[

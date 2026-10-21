@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,analyze,chooseTile,submitPair,shuffle,hint,reveal,solutionPairs} from './engine.mjs';
 
 mountDailyGame({
- id:'claude-splice',name:'Splice',creator:'Claude',credit:'Developed by Claude',accent:'#527a86',
+ id:'claude-splice',name:'Splice',creator:'Claude',credit:'Developed by Claude',accent:'#3258b7',
  intro:'Twelve halves. Six words. Leave a partner for every piece.',
  hintLabel:'Show a safe splice',puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
  instructions:[

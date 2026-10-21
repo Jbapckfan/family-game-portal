@@ -2,18 +2,18 @@ import type { LevelResult } from './engine'
 import { cn } from '@/lib/utils'
 
 const STONE_COLORS = [
-  'hsl(200 82% 66%)',
-  'hsl(145 55% 55%)',
-  'hsl(24 92% 58%)',
-  'hsl(340 75% 58%)',
-  'hsl(275 58% 60%)',
+  '#567e76',
+  '#66846c',
+  '#9a8762',
+  '#927b73',
+  '#7b7d94',
 ]
 const STONE_DARK = [
-  'hsl(205 75% 48%)',
-  'hsl(145 58% 40%)',
-  'hsl(20 85% 43%)',
-  'hsl(340 78% 43%)',
-  'hsl(275 60% 44%)',
+  '#36544f',
+  '#48604b',
+  '#706144',
+  '#6b554f',
+  '#57596e',
 ]
 const WIDTHS = [104, 90, 76, 62, 48]
 const RADII = [

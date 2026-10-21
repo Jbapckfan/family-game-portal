@@ -11,18 +11,6 @@ import { MorphWinModal } from './MorphWinModal'
 
 const HELP_KEY = 'kimi:morph:seen-help'
 
-function LadderLogo() {
-  return (
-    <svg width="26" height="30" viewBox="0 0 26 30" fill="none" aria-hidden="true">
-      <rect x="2" y="2" width="4" height="26" rx="2" fill="hsl(200 82% 60%)" />
-      <rect x="20" y="2" width="4" height="26" rx="2" fill="hsl(340 75% 58%)" />
-      <rect x="4" y="5" width="18" height="4" rx="2" fill="hsl(145 55% 55%)" />
-      <rect x="4" y="13" width="18" height="4" rx="2" fill="hsl(24 92% 58%)" />
-      <rect x="4" y="21" width="18" height="4" rx="2" fill="hsl(275 58% 60%)" />
-    </svg>
-  )
-}
-
 export default function MorphPage() {
   const { state, actions } = useMorph()
   useUnifiedProgress('morph', state)
@@ -45,17 +33,21 @@ export default function MorphPage() {
   }, [state.finished, state.gaveUp])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="kimi-page kimi-morph flex min-h-dvh flex-col">
       <GameHeader
-        title="MORPH"
+        title="Morph"
+        mode={state.mode}
+        busy={state.phase === 'loading'}
+        onPractice={actions.startPractice}
+        onDaily={actions.exitPractice}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
-        logo={<LadderLogo />}
+
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
       />
       <ToastHost toast={state.toast} />
 
-      <main className="flex flex-1 flex-col">
+      <main className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="font-display text-lg font-bold text-muted-foreground">Building ladder…</p>
@@ -63,7 +55,7 @@ export default function MorphPage() {
         ) : (
           <>
             {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
-            <div className="my-auto w-full" data-game-ready="true">
+            <div className="kimi-stage my-auto w-full" data-game-ready="true">
               <MorphBoard state={state} actions={actions} />
               {state.finished && (
                 <div className="mt-4 mb-8 flex justify-center">

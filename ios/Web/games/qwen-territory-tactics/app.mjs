@@ -2,7 +2,7 @@ import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
 mountDailyGame({
-  id:'qwen-territory-tactics',name:'Territory Tactics',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#527e88',
+  id:'qwen-territory-tactics',name:'Territory Tactics',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#356f58',
   intro:'Two moves. One opening. Make the capture count.',
   instructions:[
     'Capture at least three amber enemy stones using no more than two blue placements. This is a prepared position puzzle; there is no opposing player taking turns.',

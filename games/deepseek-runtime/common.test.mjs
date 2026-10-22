@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountDailyGame} from './common.mjs';
+import {createSession} from './core.mjs';
 
 // A small DOM/event harness exercises the real shell's lifecycle, not a copy
 // of its clock logic. Real layouts and game interactions are checked in-browser.
@@ -58,4 +59,20 @@ test('ready native board has correct attribution and shares no solution text',()
   shell=mountDailyGame({...e.config,summarize:()=> 'SECRET ANSWER'});assert.match(e.elements.get('app').innerHTML,/Developed by Qwen/);assert.equal(e.doc.body.dataset.gameCreator,'Qwen');assert.equal(e.doc.documentElement.dataset.native,'true');assert.equal(e.elements.get('puzzle').dataset.gameReady,'true');assert.equal(e.messages[0].type,'progress');
   e.elements.get('game-reveal').emit('click');e.elements.get('confirm-reveal').emit('click');e.elements.get('game-share').emit('click');const share=e.messages.find(m=>m.type==='share');assert.ok(share);assert.match(share.text,/Revealed/);assert.doesNotMatch(share.text,/SECRET|ANSWER/);assert.equal(shell.session.stats.won,0);
  }finally{shell?.destroy();e.restore();}
+});
+
+test('completed daily from another tab refreshes on storage, visibility, and cached-page return',()=>{
+ for(const trigger of ['storage','visibilitychange','pageshow']){
+  const e=environment();let shell;try{
+   shell=mountDailyGame(e.config);
+   const other=createSession(e.config,{storage:e.win.localStorage});
+   other.commit({elapsed:20000,revealed:false});
+   if(trigger==='visibilitychange')e.doc.emit(trigger);
+   else e.win.emit(trigger,{key:`${e.config.id}:v1:records`,persisted:true});
+   assert.equal(shell.session.state.elapsed,20000,trigger);
+   assert.equal(e.elements.get('result').hidden,false,trigger);
+   assert.equal(e.elements.get('stats-won').textContent,1,trigger);
+  }finally{shell?.destroy();e.restore();}
+  assert.equal(e.win.listeners.get('storage')?.size||0,0,'disposed games release their storage listener');
+ }
 });

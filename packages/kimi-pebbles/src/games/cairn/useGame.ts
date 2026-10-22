@@ -270,6 +270,7 @@ export function useGame() {
       const transition = completeCairnLevel({ ...prev, countedPlayed: true }, result, setup.rack)
       const results = transition.results
       if (isLast) {
+        const summit = results.every((r) => r.status === 'clean' || r.status === 'messy')
         const perfect = results.every((r) => r.status === 'clean')
         let stats = prev.stats
         if (prev.mode === 'daily') {
@@ -277,17 +278,17 @@ export function useGame() {
           const streak = stats.lastCompletedDay === day - 1 ? stats.currentStreak + 1 : 1
           stats = {
             ...stats,
-            completed: stats.completed + 1,
+            completed: stats.completed + (summit ? 1 : 0),
             perfect: stats.perfect + (perfect ? 1 : 0),
-            currentStreak: streak,
-            maxStreak: Math.max(stats.maxStreak, streak),
-            lastCompletedDay: day,
+            currentStreak: summit ? streak : 0,
+            maxStreak: summit ? Math.max(stats.maxStreak, streak) : stats.maxStreak,
+            lastCompletedDay: summit ? day : stats.lastCompletedDay,
             totalMisses: stats.totalMisses + results.reduce((a, r) => a + r.misses, 0),
           }
           saveStats(stats)
         }
         setS((p) => ({ ...p, ...transition, phase: 'finished', perfect, stats }))
-        sfx.win()
+        if (summit) sfx.win()
         return
       }
       setS((p) => ({

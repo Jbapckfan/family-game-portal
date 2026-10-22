@@ -186,7 +186,7 @@ export function useMorph() {
   const finish = useCallback(
     (prev: MorphState, finalRows: string[], gaveUp: boolean) => {
       let stats = prev.stats
-      if (prev.mode === 'daily') {
+      if (prev.mode === 'daily' && !gaveUp) {
         const day = prev.dayNumber
         const streak = stats.lastCompletedDay === day - 1 ? stats.currentStreak + 1 : 1
         stats = {
@@ -196,6 +196,9 @@ export function useMorph() {
           maxStreak: Math.max(stats.maxStreak, streak),
           lastCompletedDay: day,
         }
+        saveGameStats('morph', stats)
+      } else if (prev.mode === 'daily') {
+        stats = { ...stats, currentStreak: 0 }
         saveGameStats('morph', stats)
       }
       setS((p) => ({
@@ -209,7 +212,7 @@ export function useMorph() {
         paletteOpen: false,
         showPath: gaveUp,
       }))
-      sfx.win()
+      if (!gaveUp) sfx.win()
     },
     [],
   )

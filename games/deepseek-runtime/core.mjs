@@ -114,19 +114,33 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
     if(mode==='daily'){index=dailyIndex(config.id,date,config.puzzles.length);load();}
     return true;
   }
+  function refreshSavedResult() {
+    if(mode!=='daily')return false;
+    const saved=store.read(stateKey());
+    if(saved?.version!==1||saved.puzzleId!==puzzleID())return false;
+    if(JSON.stringify(saved.state)===JSON.stringify(state))return false;
+    const restored=restore(saved.state);
+    if(!restored)return false;
+    const status=config.getStatus(puzzle,restored),record=records()[date];
+    if(!terminal.has(status)||(record&&record.status!==status))return false;
+    if(JSON.stringify(restored)===JSON.stringify(state))return false;
+    // Another tab may have saved the board but failed to write its ledger.
+    // Adopt the validated terminal board before any stale move can replace it.
+    state=restored;persist();return true;
+  }
   function commit(next) {
-    if(refreshDate()||terminal.has(outcome()))return false;
+    if(refreshDate()||refreshSavedResult()||terminal.has(outcome()))return false;
     const valid=restore(next);if(!valid)return false;state=valid;persist();return true;
   }
   function apply(action) {
-    if(refreshDate()||terminal.has(outcome())||typeof action!=='function')return false;
+    if(refreshDate()||refreshSavedResult()||terminal.has(outcome())||typeof action!=='function')return false;
     const next=action(puzzle,clone(state));return next?commit(next):false;
   }
   index=dailyIndex(config.id,date,config.puzzles.length);load();
   return {
     get puzzle(){return puzzle;},get state(){return clone(state);},get mode(){return mode;},get dateKey(){return date;},get outcome(){return outcome();},
     get stats(){return recordStatistics(records(),centralDateKey(now()));},get storageAvailable(){return store.available;},
-    commit,hint:()=>apply(config.hint),reveal:()=>apply(config.reveal),refreshDate,
+    commit,hint:()=>apply(config.hint),reveal:()=>apply(config.reveal),refreshDate,refreshSavedResult,
     daily(){date=centralDateKey(now());mode='daily';index=dailyIndex(config.id,date,config.puzzles.length);load();},
     practice(){
       const advancing=mode==='practice';let previous=advancing?index:null;

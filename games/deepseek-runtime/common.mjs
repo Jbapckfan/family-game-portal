@@ -32,6 +32,7 @@ export function mountDailyGame(config) {
   function announce(message){$('game-message').textContent=message||'';}
   function emit(){const payload=session.progress(),json=JSON.stringify(payload);if(json!==lastPayload){lastPayload=json;sendNative(payload);}}
   function render(message, preserveFocus=false) {
+    session.refreshSavedResult();
     const state=session.state,puzzle=session.puzzle,status=session.outcome,finished=status!=='playing';
     const focused=preserveFocus&&board.contains(doc.activeElement)?doc.activeElement:null;
     const focusId=focused?.id;
@@ -87,19 +88,28 @@ export function mountDailyGame(config) {
     try{await navigator.clipboard.writeText(text);announce('Spoiler-free result copied.');}catch{announce(text);}
   });
   let lastTick=performance.now();
-  function visibility(){lastTick=performance.now();if(!doc.hidden&&session.refreshDate())render('A new daily puzzle is ready.');}
+  function refreshSaved(){
+    if(session.refreshDate()){render('A new daily puzzle is ready.');return true;}
+    if(session.refreshSavedResult()){render('Your saved daily result was restored.');return true;}
+    return false;
+  }
+  function visibility(){lastTick=performance.now();if(!doc.hidden)refreshSaved();}
+  function storageChanged(event){
+    if(!doc.hidden&&(event.key===null||event.key?.startsWith(`${config.id}:v1:`)))refreshSaved();
+  }
   doc.addEventListener('visibilitychange',visibility);
+  win.addEventListener('storage',storageChanged);
   const clock=win.setInterval(()=>{
     const now=performance.now(),delta=Math.min(2500,Math.max(0,now-lastTick));lastTick=now;
     if(stopped||doc.hidden||dialogPause)return;
-    if(session.refreshDate()){render('A new daily puzzle is ready.');return;}
+    if(refreshSaved())return;
     if(typeof config.tick==='function'&&session.outcome==='playing'){
       const next=config.tick(session.puzzle,session.state,delta,session.mode);
       if(next&&JSON.stringify(next)!==JSON.stringify(session.state)){session.commit(next);render(undefined,true);}
     }
   },500);
-  const cleanup=()=>{stopped=true;win.clearInterval(clock);doc.removeEventListener('visibilitychange',visibility);win.removeEventListener('pageshow',pageShow);win.removeEventListener('pagehide',pageHide);};
-  const pageShow=()=>{lastTick=performance.now();if(!stopped&&session.refreshDate())render('A new daily puzzle is ready.');};
+  const cleanup=()=>{stopped=true;win.clearInterval(clock);doc.removeEventListener('visibilitychange',visibility);win.removeEventListener('storage',storageChanged);win.removeEventListener('pageshow',pageShow);win.removeEventListener('pagehide',pageHide);};
+  const pageShow=()=>{lastTick=performance.now();if(!stopped)refreshSaved();};
   const pageHide=event=>{if(!event.persisted)cleanup();};
   win.addEventListener('pageshow',pageShow);
   // A back/forward cache restore keeps this document and its interval alive.

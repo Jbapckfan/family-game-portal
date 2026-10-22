@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile} from 'node:fs/promises';
+import {cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -9,7 +9,9 @@ import {fileURLToPath} from 'node:url';
 const source = fileURLToPath(new URL('../', import.meta.url));
 
 test('public staging includes all 32 games, excludes unrelated portal files, and refuses stale runtime copies before mutation', async () => {
-  const temporary = await mkdtemp(join(tmpdir(), 'alford-public-stage-'));
+  // macOS exposes its temporary directory through /var -> /private/var.
+  // Exercise a real output path without weakening the production symlink guard.
+  const temporary = await mkdtemp(join(await realpath(tmpdir()), 'alford-public-stage-'));
   const fixture = join(temporary, 'source'), output = join(temporary, 'public');
   try {
     await mkdir(join(fixture, 'scripts'), {recursive:true});

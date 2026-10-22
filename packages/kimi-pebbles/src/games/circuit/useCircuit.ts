@@ -177,6 +177,9 @@ export function useCircuit() {
         lastCompletedDay: day,
       }
       saveGameStats('circuit', stats)
+    } else if (prev.mode === 'daily') {
+      stats = { ...stats, currentStreak: 0 }
+      saveGameStats('circuit', stats)
     }
     if (gaveUp) sfx.remove()
     else sfx.win()

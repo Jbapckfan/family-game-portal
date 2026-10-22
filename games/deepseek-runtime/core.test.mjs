@@ -103,3 +103,40 @@ test('unfinished practice survives appended puzzles and can reach every added bo
  for(let i=1;i<updated.puzzles.length;i++){after.practice();visited.add(after.puzzle.id);}
  assert.equal(visited.size,updated.puzzles.length);assert.equal(after.stats.played,0);
 });
+
+test('a stale tab cannot overwrite a finished daily when its ledger write failed',()=>{
+ const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
+ const winner=createSession(c,{storage:s,now}),stale=createSession(c,{storage:s,now});
+ const write=s.setItem;s.setItem=(key,value)=>{if(key.endsWith(':records'))throw Error('quota');write(key,value);};
+ winner.hint();const finished=s.getItem(`${c.id}:v1:daily:2026-10-22`);
+ s.setItem=write;
+ assert.equal(stale.commit({value:0,revealed:false}),false);
+ assert.equal(s.getItem(`${c.id}:v1:daily:2026-10-22`),finished);
+ assert.equal(stale.state.value,winner.puzzle.answer);
+ assert.equal(stale.outcome,'won');assert.equal(stale.stats.won,1);
+});
+
+test('stale hint and reveal actions adopt the other tab’s completed board',()=>{
+ for(const action of ['hint','reveal']){
+  const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
+  const winner=createSession(c,{storage:s,now}),stale=createSession(c,{storage:s,now});
+  winner.hint();
+  assert.equal(stale[action](),false);
+  assert.deepEqual(stale.state,winner.state);
+  assert.equal(stale.outcome,'won');assert.equal(stale.stats.won,1);
+ }
+});
+
+test('refreshing another tab’s result preserves practice and rejects invalid terminal snapshots',()=>{
+ const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
+ const winner=createSession(c,{storage:s,now}),stale=createSession(c,{storage:s,now});
+ winner.reveal();
+ assert.equal(stale.refreshSavedResult(),true);
+ assert.equal(stale.outcome,'revealed');assert.deepEqual(stale.state,winner.state);
+ assert.equal(stale.refreshSavedResult(),false);
+ stale.practice();const practice=stale.state;
+ assert.equal(stale.refreshSavedResult(),false);assert.deepEqual(stale.state,practice);
+ const freshStorage=storage(),fresh=createSession(c,{storage:freshStorage,now});
+ freshStorage.setItem(`${c.id}:v1:daily:2026-10-22`,JSON.stringify({version:1,puzzleId:fresh.puzzle.id,state:{value:999,revealed:false}}));
+ assert.equal(fresh.refreshSavedResult(),false);assert.equal(fresh.outcome,'playing');
+});

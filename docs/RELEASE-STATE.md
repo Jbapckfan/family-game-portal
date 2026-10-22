@@ -6,6 +6,8 @@ Prepared October 22, 2026. This is the source and local-verification record for 
 
 The isolated October 22 Mac review starts from revision `6b5a09b4896aa606e6b668aaab2f917786d81911`. It adds completion/save regressions and verifies the rebuilt 32-game app with Xcode and an isolated iOS simulator. See [the reliability review](reviews/2026-10-22-alford-daily-reliability.md) for exact test counts, launch instructions, local artifacts, and remaining commercial gates. This follow-up is local and does not change the published release or deployment status recorded below.
 
+The subsequent local [dialog and input polish review](reviews/2026-10-22-alford-daily-overlay-polish.md) resolves competing delayed results/Statistics dialogs in the six Kimi games, restores keyboard focus, and checks the Morph picker at phone widths. It has a separate local patch/package and exact final-build verification. The first local review ZIP remains unchanged; neither follow-up changes published deployment status.
+
 ## Outcome
 
 **32 playable games, 8,001 prepared puzzle or daily-set records, at least 120 in every game.** All 32 real daily selectors were executed for **October 23 through November 21, 2026**. Each selected 30 different puzzle IDs: **960 daily selections** in total. The generators preserve published puzzle prefixes and historical assignments. Practice exposes the full banks immediately.

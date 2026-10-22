@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { isNativeEnter } from '../shared/keyboard'
 import { Delete, Lightbulb } from 'lucide-react'
 import { MAX_GUESSES, WORD_LEN, type Eval } from './engine'
 import { isPremium } from '../shared/premium'
@@ -46,6 +47,7 @@ export function HunchBoard({ state, actions }: Props) {
     const onKey = (e: KeyboardEvent) => {
       if (document.querySelector('[role="dialog"]')) return
       if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (isNativeEnter(e)) return
       if (e.key === 'Enter') {
         e.preventDefault()
         actions.submit()

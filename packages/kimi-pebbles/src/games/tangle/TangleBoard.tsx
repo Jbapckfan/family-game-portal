@@ -4,6 +4,7 @@ import { TIER_META, isAdjacent, tierFor } from './engine'
 import type { TangleState } from './useTangle'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
+import { isNativeEnter } from '../shared/keyboard'
 
 interface Props {
   state: TangleState
@@ -96,9 +97,15 @@ export function TangleBoard({ state, actions }: Props) {
     moved.current = false
   }, [actions])
 
+  const handleCancel = useCallback(() => {
+    dragging.current = false
+    moved.current = false
+  }, [])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (document.querySelector('[role="dialog"]')) return
+      if (isNativeEnter(e)) return
       if (e.key === 'Enter') {
         e.preventDefault()
         actions.submitPath()
@@ -211,7 +218,7 @@ export function TangleBoard({ state, actions }: Props) {
         style={{ touchAction: 'none' }}
         onPointerMove={handleMove}
         onPointerUp={handleUp}
-        onPointerCancel={handleUp}
+        onPointerCancel={handleCancel}
       >
         <svg
           className="pointer-events-none absolute inset-0 z-10 h-full w-full"

@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
+import { isNativeEnter } from '../shared/keyboard'
 import { Flag, Lightbulb, X } from 'lucide-react'
 import { changedIndex } from './engine'
 import type { MorphState } from './useMorph'
 import { cn } from '@/lib/utils'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 
 interface Props {
   state: MorphState
@@ -72,6 +74,7 @@ export function MorphBoard({ state, actions }: Props) {
     const onKey = (e: KeyboardEvent) => {
       if (document.querySelector('[role="dialog"]')) return
       if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (isNativeEnter(e)) return
       if (e.key === 'Enter') {
         e.preventDefault()
         actions.submit()
@@ -232,26 +235,19 @@ export function MorphBoard({ state, actions }: Props) {
       )}
 
       {/* letter palette */}
-      {state.paletteOpen && focusCell !== null && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 sm:items-center"
-          onClick={actions.closePalette}
-          role="presentation"
-        >
-          <div
-            className="anim-toast m-3 grid w-full max-w-md grid-cols-6 gap-2 rounded-3xl bg-card p-4 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-label="Choose a letter"
-          >
+      <Dialog open={state.paletteOpen && focusCell !== null} onOpenChange={(open) => { if (!open) actions.closePalette() }}>
+        <DialogContent className="morph-letter-palette max-w-md rounded-3xl p-4">
+          <DialogTitle className="sr-only">Choose a letter</DialogTitle>
+          <DialogDescription className="sr-only">Choose a replacement for the selected letter position.</DialogDescription>
+          <div className="grid grid-cols-5 gap-2 min-[360px]:grid-cols-6">
             {ALPHABET.map((c) => (
               <button key={c} type="button" onClick={() => actions.pickLetter(c)} className="tile3d h-12 w-full text-xl">
                 {c}
               </button>
             ))}
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

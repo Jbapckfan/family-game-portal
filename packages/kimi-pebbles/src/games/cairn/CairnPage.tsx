@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useGameOverlays } from '../shared/useGameOverlays'
 import { useGame } from './useGame'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
 import { dateLabel } from '../shared/share'
@@ -13,9 +14,11 @@ import { WinModal } from './WinModal'
 export default function CairnPage() {
   const { state, actions } = useGame()
   useUnifiedProgress('cairn', state)
-  const [helpOpen, setHelpOpen] = useState(false)
-  const [statsOpen, setStatsOpen] = useState(false)
-  const [winOpen, setWinOpen] = useState(false)
+  const { helpOpen, statsOpen, winOpen, setHelpOpen, setStatsOpen, setWinOpen, reset } = useGameOverlays(
+    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished, state.mode === 'daily' ? 900 : 500,
+  )
+  const startPractice = () => { reset(); actions.startPractice() }
+  const backToDaily = () => { reset(); actions.exitPractice() }
 
   useEffect(() => {
     if (state.phase === 'playing' && !hasSeenHelp()) {
@@ -26,9 +29,7 @@ export default function CairnPage() {
 
   useEffect(() => {
     if (!state.finished) return
-    const t = window.setTimeout(() => setWinOpen(true), state.mode === 'daily' ? 900 : 500)
     fireConfetti()
-    return () => window.clearTimeout(t)
   }, [state.finished, state.mode])
 
   return (
@@ -37,8 +38,8 @@ export default function CairnPage() {
         title="Cairn"
         mode={state.mode}
         busy={state.phase === 'loading'}
-        onPractice={actions.startPractice}
-        onDaily={actions.exitPractice}
+        onPractice={startPractice}
+        onDaily={backToDaily}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
@@ -46,7 +47,7 @@ export default function CairnPage() {
       />
       <ToastHost toast={state.toast} />
 
-      <main className="kimi-main flex flex-1 flex-col">
+      <main data-game-focus tabIndex={-1} className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <div className="anim-sway flex flex-col-reverse items-center" style={{ gap: 4 }} aria-hidden="true">
@@ -59,12 +60,12 @@ export default function CairnPage() {
           </div>
         ) : (
           <>
-            {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
+            {state.mode === 'practice' && <PracticeBanner onExit={backToDaily} />}
             <div className="kimi-stage my-auto w-full" data-game-ready="true">
               <GameBoard state={state} actions={actions} />
               {state.finished && (
                 <div className="mb-5 flex justify-center">
-                  <button type="button" onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
+                  <button type="button" data-game-results onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
                     See results
                   </button>
                 </div>
@@ -89,15 +90,15 @@ export default function CairnPage() {
         perfect={state.perfect}
         onPractice={() => {
           setWinOpen(false)
-          actions.startPractice()
+          startPractice()
         }}
         onNewPractice={() => {
           setWinOpen(false)
-          actions.startPractice()
+          startPractice()
         }}
         onBackToDaily={() => {
           setWinOpen(false)
-          actions.exitPractice()
+          backToDaily()
         }}
       />
     </div>

@@ -97,6 +97,7 @@ html[data-game-id='kimi-quartet']{--identity:#9a4f74;--identity-hsl:330 32% 46%;
 html[data-native=true] .collection-credit-row a{visibility:hidden}
 [data-slot=dialog-content]{max-width:calc(100vw - 24px);max-height:calc(100dvh - 40px);overflow-y:auto;background:#fffcf6;border:1px solid #d4cfc2;border-radius:22px;box-shadow:0 24px 80px #1b2d3a33;padding-top:32px}
 [data-slot=dialog-content]>button[data-slot=dialog-close]{min-width:44px;min-height:44px;top:8px;right:8px;border-radius:50%;display:flex;justify-content:center;align-items:center}
+[data-slot=dialog-content].morph-letter-palette{padding-top:64px}
 [data-slot=dialog-title]{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.4px}
 [data-slot=dialog-content] .font-display{font-family:'DM Sans',sans-serif}
 [data-slot=dialog-content] .btn3d{font-size:13px}

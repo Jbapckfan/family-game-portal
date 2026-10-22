@@ -5,6 +5,7 @@ import type { GameState } from './useGame'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
 import { CairnTower } from './CairnTower'
+import { isNativeEnter } from '../shared/keyboard'
 
 interface Props {
   state: GameState
@@ -48,6 +49,7 @@ export function GameBoard({ state, actions }: Props) {
     const onKey = (e: KeyboardEvent) => {
       if (document.querySelector('[role="dialog"]')) return
       if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (isNativeEnter(e)) return
       if (e.key === 'Enter') {
         e.preventDefault()
         actions.submit()

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useGameOverlays } from '../shared/useGameOverlays'
 import { useCircuit } from './useCircuit'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
 import { dateLabel } from '../shared/share'
@@ -14,9 +15,11 @@ const HELP_KEY = 'kimi:circuit:seen-help'
 export default function CircuitPage() {
   const { state, actions } = useCircuit()
   useUnifiedProgress('circuit', state)
-  const [helpOpen, setHelpOpen] = useState(false)
-  const [statsOpen, setStatsOpen] = useState(false)
-  const [winOpen, setWinOpen] = useState(false)
+  const { helpOpen, statsOpen, winOpen, setHelpOpen, setStatsOpen, setWinOpen, reset } = useGameOverlays(
+    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished, 900,
+  )
+  const startPractice = () => { reset(); actions.startPractice() }
+  const backToDaily = () => { reset(); actions.exitPractice() }
 
   useEffect(() => {
     if (state.phase === 'playing' && !localStorage.getItem(HELP_KEY)) {
@@ -27,9 +30,7 @@ export default function CircuitPage() {
 
   useEffect(() => {
     if (!state.finished) return
-    const t = window.setTimeout(() => setWinOpen(true), 900)
     if (!state.gaveUp) fireConfetti()
-    return () => window.clearTimeout(t)
   }, [state.finished, state.gaveUp])
 
   return (
@@ -38,8 +39,8 @@ export default function CircuitPage() {
         title="Circuit"
         mode={state.mode}
         busy={state.phase === 'loading'}
-        onPractice={actions.startPractice}
-        onDaily={actions.exitPractice}
+        onPractice={startPractice}
+        onDaily={backToDaily}
         subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
@@ -47,19 +48,19 @@ export default function CircuitPage() {
       />
       <ToastHost toast={state.toast} />
 
-      <main className="kimi-main flex flex-1 flex-col">
+      <main data-game-focus tabIndex={-1} className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 items-center justify-center">
             <p className="font-display text-lg font-bold text-muted-foreground">Spinning up the ring…</p>
           </div>
         ) : (
           <>
-            {state.mode === 'practice' && <PracticeBanner onExit={actions.exitPractice} />}
+            {state.mode === 'practice' && <PracticeBanner onExit={backToDaily} />}
             <div className="kimi-stage my-auto w-full" data-game-ready={state.phase === 'playing' || state.phase === 'finished' ? 'true' : undefined}>
               <CircuitBoard state={state} actions={actions} />
               {state.finished && (
                 <div className="mt-4 mb-8 flex justify-center">
-                  <button type="button" onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
+                  <button type="button" data-game-results onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
                     See results
                   </button>
                 </div>
@@ -86,15 +87,15 @@ export default function CircuitPage() {
           gaveUp={state.gaveUp}
           onPractice={() => {
             setWinOpen(false)
-            actions.startPractice()
+            startPractice()
           }}
           onNewPractice={() => {
             setWinOpen(false)
-            actions.startPractice()
+            startPractice()
           }}
           onBackToDaily={() => {
             setWinOpen(false)
-            actions.exitPractice()
+            backToDaily()
           }}
         />
       )}

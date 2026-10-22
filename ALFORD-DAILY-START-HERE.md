@@ -1,5 +1,21 @@
 # Alford Daily — start here
 
+## Current collection — October 22, 2026
+
+Alford Daily now includes **32 games and 8,001 prepared puzzles**, with **at least 120 in every game**. The individual game designs from the completed UI release are retained. Puzzle counts appear on the collection cards; Practice makes the full banks available immediately. Existing boards and IDs are preserved, and the shared runtime keeps saved daily boards attached to their original puzzle when a bank grows.
+
+The small imported banks enter their expanded daily rotation on October 23 at midnight in America/Chicago. Earlier daily assignments remain unchanged. The [full inventory](docs/puzzle-inventory.json) and [content and verification record](docs/verification-puzzles-2026-10-22.md) describe the finite curated pools and meaningful combinations.
+
+The current [reviewed release state](docs/RELEASE-STATE.md) records actual GPT-6 Astra play of all 32 games, targeted balance fixes, 509 passing automated tests and the executed 30-day daily schedule. The independent Opus 5.5 review remains pending. Use the [complete Codex terminal prompt](docs/CODEX-TERMINAL-PROMPT.md), [NAS/domain guide](docs/NAS-AND-DOMAIN-DEPLOYMENT.md) and [commercial launch plan](docs/COMMERCIAL-LAUNCH-PLAN.md) to continue from this release.
+
+The [brand and monetization strategy](docs/BRAND-AND-MONETIZATION-STRATEGY.md) recommends Alford Daily as the product, Cursed Toaster Studios as publisher, and a free beta followed by a defined Collection One purchase. Naming alternatives were screened for obvious conflicts; no legal clearance or paid-feature implementation is claimed.
+
+**NAS publishing is pending a working connection.** The connected Mac was offline during this handoff; a direct request from the workspace returned a gateway error. The private Site and GitHub source do not establish a live NAS deployment. Use the [reviewed NAS deployment procedure](docs/integration.md#nas-deployment) from a connected Mac; its HTTP checks verify all game assets before it reports success.
+
+## Archived October 20 launch handoff
+
+The following six-game launch record is historical. Current game counts and release status are in the section above.
+
 Release handoff: October 20, 2026.
 
 **Status: six playable games and a successfully compiled iOS development app. Not yet a signed device build, TestFlight release, App Store release, or revenue-generating product.**

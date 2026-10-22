@@ -12,9 +12,9 @@ Shifts and undo are available while playing. Each shift stays in the move total,
 
 ## Prepared collection and solvability
 
-There are **90 boards** with **360 distinct answer words**; no answer repeats in this collection. The generator contains 548 original clues from which the collection is constructed. The daily collection repeats after 90 days.
+There are **180 boards** with **543 distinct answer words**; each answer appears at most twice in this collection. The generator contains 548 original clues from which the collection is constructed. The daily collection repeats after 180 days.
 
-Every board has exactly one arrangement for its four answers among all **4⁵ = 1,024 row orientations**. Tests enumerate all 92,160 collection orientations. A separate recovery check starts the real engine at every orientation, rotates to the solution, and wins through an explicit check. Every reachable arrangement remains solvable; there are no lives, timer, or irreversible wrong shifts.
+Every board has exactly one arrangement for its four answers among all **4⁵ = 1,024 row orientations**. Tests enumerate all 184,320 collection orientations. A separate recovery check starts the real engine at every orientation, rotates to the solution, and wins through an explicit check. Every reachable arrangement remains solvable; there are no lives, timer, or irreversible wrong shifts.
 
 Every starting board has four or five shifted rows, no correct starting column, and at least three rows with repeated letters. One clue alone leaves multiple row arrangements. Difficulty labels describe the initial scramble and are not player-calibrated ratings.
 
@@ -76,3 +76,7 @@ This portable project lives at `games/sideways/`. Serve this directory at `/game
 There is no application server, database, API key, or runtime network scoring. Access restrictions belong to the serving host; this static app does not implement authentication. This README describes the source and integration path, not a claim that this copy has already been published.
 
 Preserve published puzzle IDs and the daily epoch when extending the collection so existing saves remain meaningful. Changes to scoring or save schema should have an explicit migration or storage-version change.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

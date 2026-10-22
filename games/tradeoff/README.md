@@ -11,7 +11,7 @@ A daily word game of give and take. Six real words each hold one letter that bel
 - Five swaps, no nudges, and no undo earns a perfect trade.
 - Revealing a board ends it as revealed, not won.
 
-The daily date uses America/Chicago and begins at number 1 on October 20, 2026. The first edition contains 90 static boards; the schedule repeats after the collection is exhausted. Practice uses the same collection and has its own saved progress. Today's daily remains reserved from practice until it is completed.
+The daily date uses America/Chicago and begins at number 1 on October 20, 2026. The first edition contains 180 static boards; the schedule repeats after the collection is exhausted. Practice uses the same collection and has its own saved progress. Today's daily remains reserved from practice until it is completed.
 
 ## Development
 
@@ -33,7 +33,7 @@ npm run generate
 npm test
 ```
 
-Content checks prove letter conservation, exactly one initial mismatch per row, one six-letter cycle, and an executable five-swap solution for all 90 boards. Difficulty estimates are editorial, not calibrated against player data. Human clue review and playtesting remain useful before a broad public launch.
+Content checks prove letter conservation, exactly one initial mismatch per row, one six-letter cycle, and an executable five-swap solution for all 180 boards. Difficulty estimates are editorial, not calibrated against player data. Human clue review and playtesting remain useful before a broad public launch.
 
 ## Persistence and access
 
@@ -48,3 +48,7 @@ The game is backed up inside the private `family-game-portal` GitHub repository.
 ## Product positioning
 
 This is a first playable candidate for a daily habit. Letter-swapping and circular word-repair mechanics have established neighbors, including Waffle and Borrowed Letters. Tradeoff emphasizes intact starting words, semantic clues, unrestricted trades, and a short optimization target. It does not claim an unprecedented mechanic or proven audience retention.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

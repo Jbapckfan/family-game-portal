@@ -1,9 +1,10 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createState,restoreState,getStatus,startStudy,chooseCell,tick,hint,reveal,adjacent,STUDY_MS,scoreSeconds} from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
-test('thirty distinct paths are self-avoiding, orthogonal, 8–14 cells, and never blocked',()=>{
- assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.path.join(','))).size,30);
+test('all prepared paths are self-avoiding, orthogonal, 8–14 cells, and never blocked',()=>{
+ assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.path.join(','))).size,PUZZLES.length);
  for(const p of PUZZLES){assert.ok(p.path.length>=8&&p.path.length<=14,p.id);assert.equal(new Set(p.path).size,p.path.length);assert.ok(p.path.every(i=>Number.isInteger(i)&&i>=0&&i<49));assert.ok(p.path.slice(1).every((i,n)=>adjacent(p.path[n],i)),p.id);assert.equal(new Set(p.obstacles).size,p.obstacles.length);assert.ok(p.obstacles.every(i=>!p.path.includes(i)&&i>=0&&i<49));}
 });
 test('the full six-second study phase precedes recall and paused time is not wall-clock time',()=>{
@@ -20,4 +21,10 @@ test('a replay preserves progress, pauses recall time, and marks the solve assis
 });
 test('restoration rejects fabricated progress, phases, timers, and impossible ready states',()=>{
  const p=PUZZLES[0],s=createState(p);assert.equal(restoreState(p,{...s,phase:'won'}),null);assert.equal(restoreState(p,{...s,trail:p.path}),null);assert.equal(restoreState(p,{...s,phase:'recall',trail:[p.path[1]]}),null);assert.equal(restoreState(p,{...s,phase:'study',remainingMs:STUDY_MS+1}),null);assert.equal(restoreState(p,{...s,elapsedMs:NaN}),null);assert.equal(restoreState(p,{...s,mistakes:-1}),null);assert.equal(getStatus(p,restoreState(p,{...s,status:'won'})),'playing');
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('qwen-memory-maze preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'2300c11c50597bb8abacbd996eecd69e308d3530f66e0a4b1feeb905df2ea5b9');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

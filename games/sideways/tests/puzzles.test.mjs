@@ -6,11 +6,11 @@ import { createGame, getRows, getColumns, rotateRow, useHint, checkBoard, restor
 const rotate = (strip, right) => right ? strip.slice(4 - right) + strip.slice(0, 4 - right) : strip;
 const targetRows = puzzle => Array.from({ length: 5 }, (_, row) => puzzle.columns.map(column => column.answer[row]).join(''));
 
-test('collection contains ninety distinct boards with authored clues and four or five shifted rows', () => {
-  assert.equal(PUZZLES.length, 90);
-  assert.equal(COLLECTION.boards, 90);
-  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.id)).size, 90);
-  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.columns.map(column => column.answer).sort().join(','))).size, 90);
+test('collection contains 180 distinct boards with authored clues and four or five shifted rows', () => {
+  assert.equal(PUZZLES.length, 180);
+  assert.equal(COLLECTION.boards, 180);
+  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.id)).size, 180);
+  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.columns.map(column => column.answer).sort().join(','))).size, 180);
   for (const puzzle of PUZZLES) {
     assert.equal(puzzle.strips.length, 5, puzzle.id);
     assert.equal(puzzle.columns.length, 4, puzzle.id);
@@ -56,7 +56,7 @@ test('exhaustive enumeration proves exactly one full solution among all 1024 ori
     }
     assert.equal(solutions, 1, puzzle.id);
   }
-  assert.equal(inspected, 92160);
+  assert.equal(inspected, 184320);
 });
 
 test('every reachable orientation can recover through actual row rotations and finish with an explicit check', () => {
@@ -82,7 +82,7 @@ test('every reachable orientation can recover through actual row rotations and f
       recovered++;
     }
   }
-  assert.equal(recovered, 92160);
+  assert.equal(recovered, 184320);
 });
 
 test('hints monotonically orient wrong rows from every initial puzzle without locking them', () => {

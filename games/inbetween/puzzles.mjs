@@ -3780,5 +3780,7565 @@ export const PUZZLES = [
         "letters": "RE"
       }
     ]
+  },
+  {
+    "id": "inbetween-061",
+    "title": "A little room, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TEST",
+        "answer": "ATTEST",
+        "clue": "Confirm that something is true"
+      },
+      {
+        "seed": "CAST",
+        "answer": "CASTLE",
+        "clue": "A fortified building with towers"
+      },
+      {
+        "seed": "SING",
+        "answer": "CASING",
+        "clue": "A protective outer covering"
+      },
+      {
+        "seed": "MOLE",
+        "answer": "MOBILE",
+        "clue": "Able to move around"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      },
+      {
+        "seed": "LION",
+        "answer": "LEGION",
+        "clue": "A vast number of people"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "BI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-062",
+    "title": "Room to grow, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "DARK",
+        "answer": "DARKEN",
+        "clue": "Make less bright"
+      },
+      {
+        "seed": "PAST",
+        "answer": "PASTEL",
+        "clue": "A soft, pale color"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      },
+      {
+        "seed": "SONG",
+        "answer": "STRONG",
+        "clue": "Able to exert plenty of force"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESULT",
+        "clue": "The outcome"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EB"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-063",
+    "title": "The right place, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LAND",
+        "answer": "ISLAND",
+        "clue": "Land surrounded by water"
+      },
+      {
+        "seed": "TURN",
+        "answer": "RETURN",
+        "clue": "Come back"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANTLE",
+        "clue": "A cloak, or a layer surrounding Earth's core"
+      },
+      {
+        "seed": "LION",
+        "answer": "LOTION",
+        "clue": "A liquid used to soothe the skin"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSCLE",
+        "clue": "Body tissue that contracts to move you"
+      },
+      {
+        "seed": "FIRE",
+        "answer": "FIGURE",
+        "clue": "A number, or an illustration"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "OT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-064",
+    "title": "Small wonders, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "LINE",
+        "answer": "ONLINE",
+        "clue": "Connected to the internet"
+      },
+      {
+        "seed": "NOTE",
+        "answer": "NOTICE",
+        "clue": "Written announcement"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COURTS",
+        "clue": "Places where tennis is played"
+      },
+      {
+        "seed": "LATE",
+        "answer": "LOCATE",
+        "clue": "Find the position of"
+      },
+      {
+        "seed": "MALT",
+        "answer": "MALLET",
+        "clue": "A hammer with a large wooden or rubber head"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MINGLE",
+        "clue": "Mix with others at a party"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IC"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "OC"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-065",
+    "title": "A fresh opening, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "BUST",
+        "answer": "ROBUST",
+        "clue": "Strong and sturdy"
+      },
+      {
+        "seed": "LINE",
+        "answer": "LINEUP",
+        "clue": "The players picked for a team"
+      },
+      {
+        "seed": "CORN",
+        "answer": "CORNET",
+        "clue": "A small brass instrument"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      },
+      {
+        "seed": "SING",
+        "answer": "SPRING",
+        "clue": "The season after winter"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "ET"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-066",
+    "title": "Piece by piece, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "PORTAL",
+        "clue": "A doorway or gateway"
+      },
+      {
+        "seed": "FAST",
+        "answer": "FASTEN",
+        "clue": "Fix securely in place"
+      },
+      {
+        "seed": "RING",
+        "answer": "ROWING",
+        "clue": "Moving a boat with oars"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PARENT",
+        "clue": "A mother or father"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARROT",
+        "clue": "Orange root vegetable"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DILATE",
+        "clue": "Grow wider"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-067",
+    "title": "A quiet moment, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CAMP",
+        "answer": "CAMPUS",
+        "clue": "The grounds of a college"
+      },
+      {
+        "seed": "TURN",
+        "answer": "UPTURN",
+        "clue": "A change for the better"
+      },
+      {
+        "seed": "SEAL",
+        "answer": "SERIAL",
+        "clue": "A story told in episodes"
+      },
+      {
+        "seed": "SEEN",
+        "answer": "SCREEN",
+        "clue": "A display for films or pictures"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARPET",
+        "clue": "Soft floor covering"
+      },
+      {
+        "seed": "COLT",
+        "answer": "COBALT",
+        "clue": "A metallic element that lends its name to a deep blue"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "US"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-3",
+        "letters": "PE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-068",
+    "title": "Just enough space, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CARE",
+        "answer": "CAREER",
+        "clue": "A long-term profession"
+      },
+      {
+        "seed": "FIST",
+        "answer": "FINEST",
+        "clue": "Of the highest quality"
+      },
+      {
+        "seed": "TONE",
+        "answer": "TONGUE",
+        "clue": "The organ used for tasting"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEELER",
+        "clue": "A kitchen tool that removes potato skins"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DONATE",
+        "clue": "Give to a good cause"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MIDDLE",
+        "clue": "Halfway between the ends"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DD"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-069",
+    "title": "Something new, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TAIL",
+        "answer": "TAILOR",
+        "clue": "Someone who alters clothes"
+      },
+      {
+        "seed": "REST",
+        "answer": "FOREST",
+        "clue": "A large area of trees"
+      },
+      {
+        "seed": "COVE",
+        "answer": "COVERT",
+        "clue": "Hidden or secret"
+      },
+      {
+        "seed": "MOST",
+        "answer": "MODEST",
+        "clue": "Not inclined to boast"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CARAFE",
+        "clue": "A glass container for serving drinks"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "OR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-2",
+        "letters": "FO"
+      },
+      {
+        "id": "tile-3",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AF"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-070",
+    "title": "An extra thought, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "SING",
+        "answer": "RISING",
+        "clue": "Moving upward"
+      },
+      {
+        "seed": "PORT",
+        "answer": "REPORT",
+        "clue": "Give an account of what happened"
+      },
+      {
+        "seed": "MART",
+        "answer": "MARKET",
+        "clue": "A place to buy and sell"
+      },
+      {
+        "seed": "RENT",
+        "answer": "REGENT",
+        "clue": "A ruler acting for a monarch"
+      },
+      {
+        "seed": "MITE",
+        "answer": "MINUTE",
+        "clue": "Sixty seconds"
+      },
+      {
+        "seed": "DART",
+        "answer": "DEPART",
+        "clue": "Leave for a destination"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "KE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EP"
+      },
+      {
+        "id": "tile-4",
+        "letters": "NU"
+      },
+      {
+        "id": "tile-5",
+        "letters": "GE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-071",
+    "title": "A neat fit, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PLAN",
+        "answer": "PLANET",
+        "clue": "World orbiting a star"
+      },
+      {
+        "seed": "FORM",
+        "answer": "INFORM",
+        "clue": "Give someone the facts"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANGLE",
+        "clue": "Twist badly out of shape"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      },
+      {
+        "seed": "BATH",
+        "answer": "BREATH",
+        "clue": "Air taken into your lungs"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ET"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-072",
+    "title": "Look a little closer, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "LESS",
+        "answer": "LESSEN",
+        "clue": "Make smaller in amount"
+      },
+      {
+        "seed": "FINE",
+        "answer": "FINITE",
+        "clue": "Having an end or limit"
+      },
+      {
+        "seed": "CURE",
+        "answer": "CURATE",
+        "clue": "Select items for an exhibition"
+      },
+      {
+        "seed": "TILE",
+        "answer": "TINGLE",
+        "clue": "A prickly sensation"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESIST",
+        "clue": "Push back against"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-073",
+    "title": "The little things, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "RENT",
+        "answer": "RENTAL",
+        "clue": "Something borrowed for a fee"
+      },
+      {
+        "seed": "KING",
+        "answer": "BAKING",
+        "clue": "Cooking with dry oven heat"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSEUM",
+        "clue": "A home for exhibits"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      },
+      {
+        "seed": "BARE",
+        "answer": "BEWARE",
+        "clue": "Be on your guard"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TIMBER",
+        "clue": "Wood prepared for building"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UM"
+      },
+      {
+        "id": "tile-5",
+        "letters": "MB"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-074",
+    "title": "A change of pace, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CART",
+        "answer": "CARTON",
+        "clue": "A box for milk or eggs"
+      },
+      {
+        "seed": "TEST",
+        "answer": "ATTEST",
+        "clue": "Confirm that something is true"
+      },
+      {
+        "seed": "TREE",
+        "answer": "TREBLE",
+        "clue": "The high notes on a stereo dial"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TANGLE",
+        "clue": "A confused knot of threads"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CLIENT",
+        "clue": "Someone using a professional's services"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SALINE",
+        "clue": "Containing dissolved salt"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-4",
+        "letters": "BL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-075",
+    "title": "Make yourself at home, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TURN",
+        "answer": "RETURN",
+        "clue": "Come back"
+      },
+      {
+        "seed": "TEND",
+        "answer": "EXTEND",
+        "clue": "Make longer"
+      },
+      {
+        "seed": "BONE",
+        "answer": "BOVINE",
+        "clue": "Relating to cattle"
+      },
+      {
+        "seed": "SAND",
+        "answer": "STRAND",
+        "clue": "A single thread in a rope"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TATTLE",
+        "clue": "Tell on someone"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEPPER",
+        "clue": "The seasoning next to salt"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "PP"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EX"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-076",
+    "title": "Words in bloom, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CENT",
+        "answer": "ACCENT",
+        "clue": "A distinctive way of pronouncing words"
+      },
+      {
+        "seed": "TENT",
+        "answer": "TALENT",
+        "clue": "A natural skill"
+      },
+      {
+        "seed": "FIRE",
+        "answer": "FIGURE",
+        "clue": "A number, or an illustration"
+      },
+      {
+        "seed": "MIST",
+        "answer": "MISFIT",
+        "clue": "Someone who feels out of place"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DONATE",
+        "clue": "Give to a good cause"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANTLE",
+        "clue": "A cloak, or a layer surrounding Earth's core"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AC"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "FI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-077",
+    "title": "A welcome addition, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TEST",
+        "answer": "DETEST",
+        "clue": "Dislike very strongly"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "UNSUNG",
+        "clue": "Not given deserved praise"
+      },
+      {
+        "seed": "PORT",
+        "answer": "REPORT",
+        "clue": "Give an account of what happened"
+      },
+      {
+        "seed": "TIED",
+        "answer": "TIDIED",
+        "clue": "Put things neatly away"
+      },
+      {
+        "seed": "PACE",
+        "answer": "PALACE",
+        "clue": "A ruler's grand residence"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LA"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-078",
+    "title": "A bit of breathing room, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "SING",
+        "answer": "CASING",
+        "clue": "A protective outer covering"
+      },
+      {
+        "seed": "CAST",
+        "answer": "CASTLE",
+        "clue": "A fortified building with towers"
+      },
+      {
+        "seed": "BETS",
+        "answer": "BEASTS",
+        "clue": "Animals, especially large ones"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      },
+      {
+        "seed": "BEST",
+        "answer": "BEHEST",
+        "clue": "A person's request or command"
+      },
+      {
+        "seed": "LION",
+        "answer": "LOTION",
+        "clue": "A liquid used to soothe the skin"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-3",
+        "letters": "HE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "OT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-079",
+    "title": "The space between, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "PORTAL",
+        "clue": "A doorway or gateway"
+      },
+      {
+        "seed": "KING",
+        "answer": "HIKING",
+        "clue": "Walking on countryside trails"
+      },
+      {
+        "seed": "TONE",
+        "answer": "TONGUE",
+        "clue": "The organ used for tasting"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TACKLE",
+        "clue": "Deal with a difficult problem"
+      },
+      {
+        "seed": "NOTE",
+        "answer": "NOTICE",
+        "clue": "Written announcement"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "SCREAM",
+        "clue": "A loud, piercing cry"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CK"
+      },
+      {
+        "id": "tile-1",
+        "letters": "HI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IC"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "GU"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-080",
+    "title": "A small surprise, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CASH",
+        "answer": "CASHEW",
+        "clue": "A curved edible nut"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSCLE",
+        "clue": "Body tissue that contracts to move you"
+      },
+      {
+        "seed": "MOLE",
+        "answer": "MOBILE",
+        "clue": "Able to move around"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESULT",
+        "clue": "The outcome"
+      },
+      {
+        "seed": "FIST",
+        "answer": "FINEST",
+        "clue": "Of the highest quality"
+      },
+      {
+        "seed": "FACE",
+        "answer": "FACADE",
+        "clue": "The front of a building"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "BI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "NE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-081",
+    "title": "Perfectly placed, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "PAST",
+        "answer": "PASTRY",
+        "clue": "A flaky baked treat"
+      },
+      {
+        "seed": "FORM",
+        "answer": "FORMAT",
+        "clue": "Layout or arrangement"
+      },
+      {
+        "seed": "DATE",
+        "answer": "SEDATE",
+        "clue": "Calm and unhurried"
+      },
+      {
+        "seed": "LENT",
+        "answer": "LAMENT",
+        "clue": "Express sorrow or regret"
+      },
+      {
+        "seed": "LION",
+        "answer": "LEGION",
+        "clue": "A vast number of people"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COUNTS",
+        "clue": "Adds up the total"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EG"
+      },
+      {
+        "id": "tile-2",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RY"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-082",
+    "title": "Take a second look, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "DARK",
+        "answer": "DARKEN",
+        "clue": "Make less bright"
+      },
+      {
+        "seed": "RING",
+        "answer": "DARING",
+        "clue": "Bold enough to take a risk"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MIDDLE",
+        "clue": "Halfway between the ends"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CLIENT",
+        "clue": "Someone using a professional's services"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANINE",
+        "clue": "Related to dogs"
+      },
+      {
+        "seed": "DART",
+        "answer": "DEPART",
+        "clue": "Leave for a destination"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-1",
+        "letters": "DA"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-3",
+        "letters": "DD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-083",
+    "title": "A new beginning, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LESS",
+        "answer": "UNLESS",
+        "clue": "Except if"
+      },
+      {
+        "seed": "TEND",
+        "answer": "ATTEND",
+        "clue": "Be present at an event"
+      },
+      {
+        "seed": "PART",
+        "answer": "PARROT",
+        "clue": "A bird known for copying sounds"
+      },
+      {
+        "seed": "LATE",
+        "answer": "LOCATE",
+        "clue": "Find the position of"
+      },
+      {
+        "seed": "MALT",
+        "answer": "MALLET",
+        "clue": "A hammer with a large wooden or rubber head"
+      },
+      {
+        "seed": "BARN",
+        "answer": "BARREN",
+        "clue": "Too poor to support much vegetation"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "OC"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-084",
+    "title": "A gentle stretch, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "DATE",
+        "answer": "UPDATE",
+        "clue": "Bring up to date"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "STREAM",
+        "clue": "A small flowing waterway"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COURTS",
+        "clue": "Places where tennis is played"
+      },
+      {
+        "seed": "BONE",
+        "answer": "BOVINE",
+        "clue": "Relating to cattle"
+      },
+      {
+        "seed": "TENT",
+        "answer": "TALENT",
+        "clue": "A natural skill"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MISUSE",
+        "clue": "Use in the wrong way"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-085",
+    "title": "Every little bit, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "FORM",
+        "answer": "FORMAL",
+        "clue": "Suited to a black-tie occasion"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "RETIRE",
+        "clue": "Stop working at the end of a career"
+      },
+      {
+        "seed": "FAST",
+        "answer": "FASTEN",
+        "clue": "Fix securely in place"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      },
+      {
+        "seed": "SEEN",
+        "answer": "SCREEN",
+        "clue": "A display for films or pictures"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "VI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-086",
+    "title": "Right where it belongs, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LINE",
+        "answer": "ONLINE",
+        "clue": "Connected to the internet"
+      },
+      {
+        "seed": "FORM",
+        "answer": "REFORM",
+        "clue": "Make changes to improve something"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      },
+      {
+        "seed": "CUES",
+        "answer": "CURVES",
+        "clue": "Smooth bends"
+      },
+      {
+        "seed": "MOST",
+        "answer": "MODEST",
+        "clue": "Not inclined to boast"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MUTATE",
+        "clue": "Undergo a genetic change"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RV"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-087",
+    "title": "An open invitation, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FINE",
+        "answer": "DEFINE",
+        "clue": "Explain the meaning of a word"
+      },
+      {
+        "seed": "TAIL",
+        "answer": "TAILOR",
+        "clue": "Someone who alters clothes"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SHRINE",
+        "clue": "A sacred place"
+      },
+      {
+        "seed": "MITE",
+        "answer": "MINUTE",
+        "clue": "Sixty seconds"
+      },
+      {
+        "seed": "FISH",
+        "answer": "FINISH",
+        "clue": "Bring to an end"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEELER",
+        "clue": "A kitchen tool that removes potato skins"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "OR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "HR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NU"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-088",
+    "title": "A brighter idea, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "POST",
+        "answer": "POSTER",
+        "clue": "A large printed notice"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PATENT",
+        "clue": "An inventor's exclusive legal right"
+      },
+      {
+        "seed": "COLT",
+        "answer": "COBALT",
+        "clue": "A metallic element that lends its name to a deep blue"
+      },
+      {
+        "seed": "SING",
+        "answer": "STRING",
+        "clue": "A thin cord"
+      },
+      {
+        "seed": "TREE",
+        "answer": "TREBLE",
+        "clue": "The high notes on a stereo dial"
+      },
+      {
+        "seed": "SEAL",
+        "answer": "SERIAL",
+        "clue": "A story told in episodes"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-4",
+        "letters": "BL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-089",
+    "title": "One thing at a time, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "BEST",
+        "answer": "BESTOW",
+        "clue": "Give as an honor or gift"
+      },
+      {
+        "seed": "NEST",
+        "answer": "HONEST",
+        "clue": "Truthful and sincere"
+      },
+      {
+        "seed": "LESS",
+        "answer": "LESSEN",
+        "clue": "Make smaller in amount"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      },
+      {
+        "seed": "RENT",
+        "answer": "REGENT",
+        "clue": "A ruler acting for a monarch"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINDER",
+        "clue": "Dry material used to start a fire"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "HO"
+      },
+      {
+        "id": "tile-1",
+        "letters": "ND"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "GE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "OW"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-090",
+    "title": "A touch of curiosity, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BAND",
+        "answer": "BANDIT",
+        "clue": "A robber or outlaw"
+      },
+      {
+        "seed": "PORT",
+        "answer": "EXPORT",
+        "clue": "Send goods to another country"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TATTLE",
+        "clue": "Tell on someone"
+      },
+      {
+        "seed": "SONG",
+        "answer": "STRONG",
+        "clue": "Able to exert plenty of force"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DILATE",
+        "clue": "Grow wider"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EX"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-091",
+    "title": "A little more to say, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "KING",
+        "answer": "BAKING",
+        "clue": "Cooking with dry oven heat"
+      },
+      {
+        "seed": "SOFT",
+        "answer": "SOFTEN",
+        "clue": "Make less hard"
+      },
+      {
+        "seed": "NEST",
+        "answer": "NEWEST",
+        "clue": "Most recently made"
+      },
+      {
+        "seed": "BORE",
+        "answer": "BEFORE",
+        "clue": "Earlier than"
+      },
+      {
+        "seed": "CUED",
+        "answer": "CURLED",
+        "clue": "Formed into coils"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TIMBER",
+        "clue": "Wood prepared for building"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "MB"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-3",
+        "letters": "WE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EF"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-092",
+    "title": "A pocket of time, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "PANT",
+        "answer": "PANTRY",
+        "clue": "A food-storage cupboard"
+      },
+      {
+        "seed": "FINE",
+        "answer": "FINITE",
+        "clue": "Having an end or limit"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEWTER",
+        "clue": "A metal alloy often used for tankards"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RELENT",
+        "clue": "Finally give in"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CARAFE",
+        "clue": "A glass container for serving drinks"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CEMENT",
+        "clue": "The binding ingredient in concrete"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "WT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RY"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ME"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AF"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-093",
+    "title": "Find your footing, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "IMPORT",
+        "clue": "Bring goods into a country"
+      },
+      {
+        "seed": "SUNK",
+        "answer": "SUNKEN",
+        "clue": "Below the surrounding surface"
+      },
+      {
+        "seed": "FREE",
+        "answer": "FREEZE",
+        "clue": "Turn liquid into solid ice"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      },
+      {
+        "seed": "TRUE",
+        "answer": "TRUDGE",
+        "clue": "Walk slowly with heavy steps"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MINGLE",
+        "clue": "Mix with others at a party"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "IM"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DG"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ZE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-094",
+    "title": "Room for two, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LAND",
+        "answer": "ISLAND",
+        "clue": "Land surrounded by water"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "ENTIRE",
+        "clue": "Whole, with nothing left out"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEPPER",
+        "clue": "The seasoning next to salt"
+      },
+      {
+        "seed": "REST",
+        "answer": "RECAST",
+        "clue": "Give a role to a different actor"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MARBLE",
+        "clue": "A small glass toy, or a veined stone"
+      },
+      {
+        "seed": "CURE",
+        "answer": "CURATE",
+        "clue": "Select items for an exhibition"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RB"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "PP"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-095",
+    "title": "A fresh pair of eyes, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FINE",
+        "answer": "REFINE",
+        "clue": "Improve by making small changes"
+      },
+      {
+        "seed": "COVE",
+        "answer": "COVERT",
+        "clue": "Hidden or secret"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARPET",
+        "clue": "Soft floor covering"
+      },
+      {
+        "seed": "BARE",
+        "answer": "BEWARE",
+        "clue": "Be on your guard"
+      },
+      {
+        "seed": "BOND",
+        "answer": "BEYOND",
+        "clue": "On the far side of"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EY"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-4",
+        "letters": "PE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-096",
+    "title": "The finishing touch, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "BESIDE",
+        "clue": "Next to"
+      },
+      {
+        "seed": "TILE",
+        "answer": "TINGLE",
+        "clue": "A prickly sensation"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PARENT",
+        "clue": "A mother or father"
+      },
+      {
+        "seed": "MART",
+        "answer": "MARKET",
+        "clue": "A place to buy and sell"
+      },
+      {
+        "seed": "LAST",
+        "answer": "LATEST",
+        "clue": "Most recent"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANDLE",
+        "clue": "A light with a wick and wax"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-2",
+        "letters": "BE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "KE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-097",
+    "title": "A place for everything, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SAND",
+        "answer": "SANDAL",
+        "clue": "An open shoe with straps"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CAREER",
+        "clue": "A long-term profession"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "SATIRE",
+        "clue": "Humor used to expose foolishness"
+      },
+      {
+        "seed": "BATH",
+        "answer": "BREATH",
+        "clue": "Air taken into your lungs"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARROT",
+        "clue": "Orange root vegetable"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PLIANT",
+        "clue": "Easily bent"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-5",
+        "letters": "SA"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-098",
+    "title": "Something to ponder, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BUST",
+        "answer": "BUSTLE",
+        "clue": "Move about with busy energy"
+      },
+      {
+        "seed": "KING",
+        "answer": "JOKING",
+        "clue": "Speaking in fun"
+      },
+      {
+        "seed": "POTS",
+        "answer": "POINTS",
+        "clue": "Units added to a score"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      },
+      {
+        "seed": "LONG",
+        "answer": "LOVING",
+        "clue": "Affectionate and caring"
+      },
+      {
+        "seed": "SAND",
+        "answer": "STRAND",
+        "clue": "A single thread in a rope"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-1",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-3",
+        "letters": "JO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-099",
+    "title": "A slight adjustment, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "NEST",
+        "answer": "NESTLE",
+        "clue": "Settle into a snug spot"
+      },
+      {
+        "seed": "USED",
+        "answer": "AMUSED",
+        "clue": "Entertained by something funny"
+      },
+      {
+        "seed": "RING",
+        "answer": "ROWING",
+        "clue": "Moving a boat with oars"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RECENT",
+        "clue": "Not long ago"
+      },
+      {
+        "seed": "SEND",
+        "answer": "SECOND",
+        "clue": "The position after first"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TANGLE",
+        "clue": "A confused knot of threads"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-1",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-2",
+        "letters": "CO"
+      },
+      {
+        "id": "tile-3",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "NG"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-100",
+    "title": "The next little step, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "REST",
+        "answer": "FOREST",
+        "clue": "A large area of trees"
+      },
+      {
+        "seed": "SIDE",
+        "answer": "STRIDE",
+        "clue": "A long walking step"
+      },
+      {
+        "seed": "SING",
+        "answer": "SPRING",
+        "clue": "The season after winter"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANGLE",
+        "clue": "Twist badly out of shape"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SALINE",
+        "clue": "Containing dissolved salt"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CARAFE",
+        "clue": "A glass container for serving drinks"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "FO"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AF"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-101",
+    "title": "A dash of possibility, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "INSIDE",
+        "clue": "On the inner side"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARTON",
+        "clue": "A box for milk or eggs"
+      },
+      {
+        "seed": "SENT",
+        "answer": "ABSENT",
+        "clue": "Not here"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESIST",
+        "clue": "Push back against"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MINGLE",
+        "clue": "Mix with others at a party"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AB"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-4",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-102",
+    "title": "An easy rhythm, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LINE",
+        "answer": "LINEUP",
+        "clue": "The players picked for a team"
+      },
+      {
+        "seed": "PAST",
+        "answer": "PASTEL",
+        "clue": "A soft, pale color"
+      },
+      {
+        "seed": "NOTE",
+        "answer": "NOTICE",
+        "clue": "Written announcement"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TATTLE",
+        "clue": "Tell on someone"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COURTS",
+        "clue": "Places where tennis is played"
+      },
+      {
+        "seed": "PART",
+        "answer": "PARROT",
+        "clue": "A bird known for copying sounds"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IC"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RO"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-103",
+    "title": "A natural fit, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TEND",
+        "answer": "INTEND",
+        "clue": "Have a plan to do something"
+      },
+      {
+        "seed": "TAIL",
+        "answer": "DETAIL",
+        "clue": "A small individual feature"
+      },
+      {
+        "seed": "TILE",
+        "answer": "TINGLE",
+        "clue": "A prickly sensation"
+      },
+      {
+        "seed": "LION",
+        "answer": "LOTION",
+        "clue": "A liquid used to soothe the skin"
+      },
+      {
+        "seed": "MOLE",
+        "answer": "MOBILE",
+        "clue": "Able to move around"
+      },
+      {
+        "seed": "COLT",
+        "answer": "COBALT",
+        "clue": "A metallic element that lends its name to a deep blue"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "OT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "BI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-104",
+    "title": "A well-kept secret, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "PEAR",
+        "answer": "APPEAR",
+        "clue": "Come into view"
+      },
+      {
+        "seed": "MART",
+        "answer": "MARKET",
+        "clue": "A place to buy and sell"
+      },
+      {
+        "seed": "PACE",
+        "answer": "PALACE",
+        "clue": "A ruler's grand residence"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DILATE",
+        "clue": "Grow wider"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEELER",
+        "clue": "A kitchen tool that removes potato skins"
+      },
+      {
+        "seed": "SONG",
+        "answer": "STRONG",
+        "clue": "Able to exert plenty of force"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AP"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "KE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LA"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-105",
+    "title": "Words taking shape, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TAIL",
+        "answer": "RETAIL",
+        "clue": "Selling goods to the public"
+      },
+      {
+        "seed": "CAMP",
+        "answer": "CAMPUS",
+        "clue": "The grounds of a college"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSEUM",
+        "clue": "A home for exhibits"
+      },
+      {
+        "seed": "BORE",
+        "answer": "BEFORE",
+        "clue": "Earlier than"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MUTATE",
+        "clue": "Undergo a genetic change"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CLIENT",
+        "clue": "Someone using a professional's services"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UM"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "US"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EF"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-106",
+    "title": "A moment of clarity, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PLAN",
+        "answer": "PLANET",
+        "clue": "World orbiting a star"
+      },
+      {
+        "seed": "FORM",
+        "answer": "INFORM",
+        "clue": "Give someone the facts"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MISUSE",
+        "clue": "Use in the wrong way"
+      },
+      {
+        "seed": "LATE",
+        "answer": "LOCATE",
+        "clue": "Find the position of"
+      },
+      {
+        "seed": "SEEN",
+        "answer": "SCREEN",
+        "clue": "A display for films or pictures"
+      },
+      {
+        "seed": "BOND",
+        "answer": "BEYOND",
+        "clue": "On the far side of"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-1",
+        "letters": "OC"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EY"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ET"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-107",
+    "title": "Two of a kind, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FOLD",
+        "answer": "UNFOLD",
+        "clue": "Open something that was bent over"
+      },
+      {
+        "seed": "TURN",
+        "answer": "UPTURN",
+        "clue": "A change for the better"
+      },
+      {
+        "seed": "SING",
+        "answer": "SPRING",
+        "clue": "The season after winter"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANDLE",
+        "clue": "A light with a wick and wax"
+      },
+      {
+        "seed": "CURE",
+        "answer": "CURATE",
+        "clue": "Select items for an exhibition"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-5",
+        "letters": "PR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-108",
+    "title": "The missing piece, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CORN",
+        "answer": "CORNET",
+        "clue": "A small brass instrument"
+      },
+      {
+        "seed": "TENT",
+        "answer": "TALENT",
+        "clue": "A natural skill"
+      },
+      {
+        "seed": "POTS",
+        "answer": "POINTS",
+        "clue": "Units added to a score"
+      },
+      {
+        "seed": "NEST",
+        "answer": "NEWEST",
+        "clue": "Most recently made"
+      },
+      {
+        "seed": "DART",
+        "answer": "DEPART",
+        "clue": "Leave for a destination"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "SCREAM",
+        "clue": "A loud, piercing cry"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "WE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EP"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ET"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-109",
+    "title": "A little discovery, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SING",
+        "answer": "RISING",
+        "clue": "Moving upward"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RENTAL",
+        "clue": "Something borrowed for a fee"
+      },
+      {
+        "seed": "USED",
+        "answer": "UNUSED",
+        "clue": "Still waiting to be put to work"
+      },
+      {
+        "seed": "CUED",
+        "answer": "CURLED",
+        "clue": "Formed into coils"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SHRINE",
+        "clue": "A sacred place"
+      },
+      {
+        "seed": "RING",
+        "answer": "ROWING",
+        "clue": "Moving a boat with oars"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "HR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-110",
+    "title": "Full of possibilities, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "LONG",
+        "answer": "BELONG",
+        "clue": "Be in the right place"
+      },
+      {
+        "seed": "BUST",
+        "answer": "ROBUST",
+        "clue": "Strong and sturdy"
+      },
+      {
+        "seed": "BATH",
+        "answer": "BREATH",
+        "clue": "Air taken into your lungs"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TANGLE",
+        "clue": "A confused knot of threads"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MARBLE",
+        "clue": "A small glass toy, or a veined stone"
+      },
+      {
+        "seed": "FISH",
+        "answer": "FINISH",
+        "clue": "Bring to an end"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "BE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-111",
+    "title": "A change in the air, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CURE",
+        "answer": "SECURE",
+        "clue": "Safe and firmly protected"
+      },
+      {
+        "seed": "FINE",
+        "answer": "REFINE",
+        "clue": "Improve by making small changes"
+      },
+      {
+        "seed": "BEST",
+        "answer": "BEHEST",
+        "clue": "A person's request or command"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARROT",
+        "clue": "Orange root vegetable"
+      },
+      {
+        "seed": "MOST",
+        "answer": "MODEST",
+        "clue": "Not inclined to boast"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANINE",
+        "clue": "Related to dogs"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-2",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "HE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-112",
+    "title": "In good company, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "TEST",
+        "answer": "ATTEST",
+        "clue": "Confirm that something is true"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TIMBER",
+        "clue": "Wood prepared for building"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "STREAM",
+        "clue": "A small flowing waterway"
+      },
+      {
+        "seed": "TONE",
+        "answer": "TONGUE",
+        "clue": "The organ used for tasting"
+      },
+      {
+        "seed": "BETS",
+        "answer": "BEASTS",
+        "clue": "Animals, especially large ones"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PATENT",
+        "clue": "An inventor's exclusive legal right"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "MB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-113",
+    "title": "The shape of things, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "POST",
+        "answer": "POSTER",
+        "clue": "A large printed notice"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSEUM",
+        "clue": "A home for exhibits"
+      },
+      {
+        "seed": "TURN",
+        "answer": "RETURN",
+        "clue": "Come back"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESIST",
+        "clue": "Push back against"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UM"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-114",
+    "title": "A pleasant diversion, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CAST",
+        "answer": "CASTLE",
+        "clue": "A fortified building with towers"
+      },
+      {
+        "seed": "LINE",
+        "answer": "LINEUP",
+        "clue": "The players picked for a team"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PLIANT",
+        "clue": "Easily bent"
+      },
+      {
+        "seed": "BARN",
+        "answer": "BARREN",
+        "clue": "Too poor to support much vegetation"
+      },
+      {
+        "seed": "SIDE",
+        "answer": "STRIDE",
+        "clue": "A long walking step"
+      },
+      {
+        "seed": "TRUE",
+        "answer": "TRUDGE",
+        "clue": "Walk slowly with heavy steps"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-4",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-115",
+    "title": "At your own pace, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TEND",
+        "answer": "INTEND",
+        "clue": "Have a plan to do something"
+      },
+      {
+        "seed": "SENT",
+        "answer": "ABSENT",
+        "clue": "Not here"
+      },
+      {
+        "seed": "MITE",
+        "answer": "MINUTE",
+        "clue": "Sixty seconds"
+      },
+      {
+        "seed": "LAST",
+        "answer": "LATEST",
+        "clue": "Most recent"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      },
+      {
+        "seed": "FINE",
+        "answer": "FINITE",
+        "clue": "Having an end or limit"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EB"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NU"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AB"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-116",
+    "title": "A new perspective, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "USED",
+        "answer": "UNUSED",
+        "clue": "Still waiting to be put to work"
+      },
+      {
+        "seed": "SING",
+        "answer": "STRING",
+        "clue": "A thin cord"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PARENT",
+        "clue": "A mother or father"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANGLE",
+        "clue": "Twist badly out of shape"
+      },
+      {
+        "seed": "REST",
+        "answer": "RECAST",
+        "clue": "Give a role to a different actor"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "NG"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-117",
+    "title": "The art of fitting in, a new fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TIRE",
+        "answer": "ENTIRE",
+        "clue": "Whole, with nothing left out"
+      },
+      {
+        "seed": "KING",
+        "answer": "JOKING",
+        "clue": "Speaking in fun"
+      },
+      {
+        "seed": "PLAN",
+        "answer": "PLANET",
+        "clue": "World orbiting a star"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RECENT",
+        "clue": "Not long ago"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESULT",
+        "clue": "The outcome"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "JO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ET"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-118",
+    "title": "A thoughtful pause, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PAST",
+        "answer": "PASTEL",
+        "clue": "A soft, pale color"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PANTRY",
+        "clue": "A food-storage cupboard"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINDER",
+        "clue": "Dry material used to start a fire"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SALINE",
+        "clue": "Containing dissolved salt"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DONATE",
+        "clue": "Give to a good cause"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ND"
+      },
+      {
+        "id": "tile-3",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RY"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-119",
+    "title": "A little ingenuity, a new fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "BESIDE",
+        "clue": "Next to"
+      },
+      {
+        "seed": "REST",
+        "answer": "FOREST",
+        "clue": "A large area of trees"
+      },
+      {
+        "seed": "LENT",
+        "answer": "LAMENT",
+        "clue": "Express sorrow or regret"
+      },
+      {
+        "seed": "TREE",
+        "answer": "TREBLE",
+        "clue": "The high notes on a stereo dial"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RELENT",
+        "clue": "Finally give in"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEPPER",
+        "clue": "The seasoning next to salt"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "BE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-3",
+        "letters": "FO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "BL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "PP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-120",
+    "title": "All in its place, a new fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "SAND",
+        "answer": "SANDAL",
+        "clue": "An open shoe with straps"
+      },
+      {
+        "seed": "MIST",
+        "answer": "MISFIT",
+        "clue": "Someone who feels out of place"
+      },
+      {
+        "seed": "LONG",
+        "answer": "LOVING",
+        "clue": "Affectionate and caring"
+      },
+      {
+        "seed": "LION",
+        "answer": "LEGION",
+        "clue": "A vast number of people"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      },
+      {
+        "seed": "FIRE",
+        "answer": "FIGURE",
+        "clue": "A number, or an illustration"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-4",
+        "letters": "FI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "VI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-121",
+    "title": "A little room, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "INSIDE",
+        "clue": "On the inner side"
+      },
+      {
+        "seed": "PAST",
+        "answer": "PASTRY",
+        "clue": "A flaky baked treat"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARTON",
+        "clue": "A box for milk or eggs"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSCLE",
+        "clue": "Body tissue that contracts to move you"
+      },
+      {
+        "seed": "TIED",
+        "answer": "TIDIED",
+        "clue": "Put things neatly away"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TACKLE",
+        "clue": "Deal with a difficult problem"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-1",
+        "letters": "DI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "CL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CK"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RY"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-122",
+    "title": "Room to grow, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TIRE",
+        "answer": "RETIRE",
+        "clue": "Stop working at the end of a career"
+      },
+      {
+        "seed": "FORM",
+        "answer": "INFORM",
+        "clue": "Give someone the facts"
+      },
+      {
+        "seed": "SEAL",
+        "answer": "SERIAL",
+        "clue": "A story told in episodes"
+      },
+      {
+        "seed": "SEND",
+        "answer": "SECOND",
+        "clue": "The position after first"
+      },
+      {
+        "seed": "BARE",
+        "answer": "BEWARE",
+        "clue": "Be on your guard"
+      },
+      {
+        "seed": "MALT",
+        "answer": "MALLET",
+        "clue": "A hammer with a large wooden or rubber head"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-2",
+        "letters": "CO"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-123",
+    "title": "The right place, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "NEST",
+        "answer": "HONEST",
+        "clue": "Truthful and sincere"
+      },
+      {
+        "seed": "SING",
+        "answer": "RISING",
+        "clue": "Moving upward"
+      },
+      {
+        "seed": "CUES",
+        "answer": "CURVES",
+        "clue": "Smooth bends"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      },
+      {
+        "seed": "RENT",
+        "answer": "REGENT",
+        "clue": "A ruler acting for a monarch"
+      },
+      {
+        "seed": "SAND",
+        "answer": "STRAND",
+        "clue": "A single thread in a rope"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "HO"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RV"
+      },
+      {
+        "id": "tile-5",
+        "letters": "GE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-124",
+    "title": "Small wonders, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "FINE",
+        "answer": "DEFINE",
+        "clue": "Explain the meaning of a word"
+      },
+      {
+        "seed": "FACE",
+        "answer": "FACADE",
+        "clue": "The front of a building"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARPET",
+        "clue": "Soft floor covering"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CEMENT",
+        "clue": "The binding ingredient in concrete"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEWTER",
+        "clue": "A metal alloy often used for tankards"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MIDDLE",
+        "clue": "Halfway between the ends"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "PE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "DD"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ME"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "WT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-125",
+    "title": "A fresh opening, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "EXPORT",
+        "clue": "Send goods to another country"
+      },
+      {
+        "seed": "FREE",
+        "answer": "FREEZE",
+        "clue": "Turn liquid into solid ice"
+      },
+      {
+        "seed": "DATE",
+        "answer": "UPDATE",
+        "clue": "Bring up to date"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANTLE",
+        "clue": "A cloak, or a layer surrounding Earth's core"
+      },
+      {
+        "seed": "FIST",
+        "answer": "FINEST",
+        "clue": "Of the highest quality"
+      },
+      {
+        "seed": "BONE",
+        "answer": "BOVINE",
+        "clue": "Relating to cattle"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EX"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ZE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-126",
+    "title": "Piece by piece, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CORN",
+        "answer": "CORNET",
+        "clue": "A small brass instrument"
+      },
+      {
+        "seed": "TAIL",
+        "answer": "DETAIL",
+        "clue": "A small individual feature"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COUNTS",
+        "clue": "Adds up the total"
+      },
+      {
+        "seed": "DART",
+        "answer": "DEPART",
+        "clue": "Leave for a destination"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MINGLE",
+        "clue": "Mix with others at a party"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RECENT",
+        "clue": "Not long ago"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EP"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ET"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "CE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-127",
+    "title": "A quiet moment, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BUST",
+        "answer": "ROBUST",
+        "clue": "Strong and sturdy"
+      },
+      {
+        "seed": "USED",
+        "answer": "AMUSED",
+        "clue": "Entertained by something funny"
+      },
+      {
+        "seed": "COLT",
+        "answer": "COBALT",
+        "clue": "A metallic element that lends its name to a deep blue"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESULT",
+        "clue": "The outcome"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EB"
+      },
+      {
+        "id": "tile-4",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AM"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-128",
+    "title": "Just enough space, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "LESS",
+        "answer": "UNLESS",
+        "clue": "Except if"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MARBLE",
+        "clue": "A small glass toy, or a veined stone"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      },
+      {
+        "seed": "LION",
+        "answer": "LEGION",
+        "clue": "A vast number of people"
+      },
+      {
+        "seed": "FINE",
+        "answer": "FINITE",
+        "clue": "Having an end or limit"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CARAFE",
+        "clue": "A glass container for serving drinks"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RB"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AF"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-129",
+    "title": "Something new, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "LAND",
+        "answer": "ISLAND",
+        "clue": "Land surrounded by water"
+      },
+      {
+        "seed": "LONG",
+        "answer": "BELONG",
+        "clue": "Be in the right place"
+      },
+      {
+        "seed": "SING",
+        "answer": "CASING",
+        "clue": "A protective outer covering"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "STREAM",
+        "clue": "A small flowing waterway"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SHRINE",
+        "clue": "A sacred place"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-3",
+        "letters": "HR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "BE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AD"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-130",
+    "title": "An extra thought, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TEND",
+        "answer": "EXTEND",
+        "clue": "Make longer"
+      },
+      {
+        "seed": "CENT",
+        "answer": "ACCENT",
+        "clue": "A distinctive way of pronouncing words"
+      },
+      {
+        "seed": "CURE",
+        "answer": "CURATE",
+        "clue": "Select items for an exhibition"
+      },
+      {
+        "seed": "MOST",
+        "answer": "MODEST",
+        "clue": "Not inclined to boast"
+      },
+      {
+        "seed": "CUED",
+        "answer": "CURLED",
+        "clue": "Formed into coils"
+      },
+      {
+        "seed": "SING",
+        "answer": "SPRING",
+        "clue": "The season after winter"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AC"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EX"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-131",
+    "title": "A neat fit, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BAND",
+        "answer": "BANDIT",
+        "clue": "A robber or outlaw"
+      },
+      {
+        "seed": "FOLD",
+        "answer": "UNFOLD",
+        "clue": "Open something that was bent over"
+      },
+      {
+        "seed": "FIRE",
+        "answer": "FIGURE",
+        "clue": "A number, or an illustration"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PLIANT",
+        "clue": "Easily bent"
+      },
+      {
+        "seed": "SING",
+        "answer": "STRING",
+        "clue": "A thin cord"
+      },
+      {
+        "seed": "LONG",
+        "answer": "LOVING",
+        "clue": "Affectionate and caring"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-132",
+    "title": "Look a little closer, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "NEST",
+        "answer": "NESTLE",
+        "clue": "Settle into a snug spot"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TACKLE",
+        "clue": "Deal with a difficult problem"
+      },
+      {
+        "seed": "BORE",
+        "answer": "BEFORE",
+        "clue": "Earlier than"
+      },
+      {
+        "seed": "TONE",
+        "answer": "TONGUE",
+        "clue": "The organ used for tasting"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DONATE",
+        "clue": "Give to a good cause"
+      },
+      {
+        "seed": "SEND",
+        "answer": "SECOND",
+        "clue": "The position after first"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CO"
+      },
+      {
+        "id": "tile-1",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-3",
+        "letters": "CK"
+      },
+      {
+        "id": "tile-4",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EF"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-133",
+    "title": "The little things, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SOFT",
+        "answer": "SOFTEN",
+        "clue": "Make less hard"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "SATIRE",
+        "clue": "Humor used to expose foolishness"
+      },
+      {
+        "seed": "BEST",
+        "answer": "BESTOW",
+        "clue": "Give as an honor or gift"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COURTS",
+        "clue": "Places where tennis is played"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MISUSE",
+        "clue": "Use in the wrong way"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-3",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "SA"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-134",
+    "title": "A change of pace, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "COVE",
+        "answer": "COVERT",
+        "clue": "Hidden or secret"
+      },
+      {
+        "seed": "KING",
+        "answer": "HIKING",
+        "clue": "Walking on countryside trails"
+      },
+      {
+        "seed": "TRUE",
+        "answer": "TRUDGE",
+        "clue": "Walk slowly with heavy steps"
+      },
+      {
+        "seed": "BETS",
+        "answer": "BEASTS",
+        "clue": "Animals, especially large ones"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CLIENT",
+        "clue": "Someone using a professional's services"
+      },
+      {
+        "seed": "NEST",
+        "answer": "NEWEST",
+        "clue": "Most recently made"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "WE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DG"
+      },
+      {
+        "id": "tile-3",
+        "letters": "HI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-135",
+    "title": "Make yourself at home, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "RING",
+        "answer": "DARING",
+        "clue": "Bold enough to take a risk"
+      },
+      {
+        "seed": "FORM",
+        "answer": "REFORM",
+        "clue": "Make changes to improve something"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TATTLE",
+        "clue": "Tell on someone"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANINE",
+        "clue": "Related to dogs"
+      },
+      {
+        "seed": "MALT",
+        "answer": "MALLET",
+        "clue": "A hammer with a large wooden or rubber head"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-136",
+    "title": "Words in bloom, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "FAST",
+        "answer": "FASTEN",
+        "clue": "Fix securely in place"
+      },
+      {
+        "seed": "TILE",
+        "answer": "TINGLE",
+        "clue": "A prickly sensation"
+      },
+      {
+        "seed": "SIDE",
+        "answer": "STRIDE",
+        "clue": "A long walking step"
+      },
+      {
+        "seed": "FISH",
+        "answer": "FINISH",
+        "clue": "Bring to an end"
+      },
+      {
+        "seed": "LAST",
+        "answer": "LATEST",
+        "clue": "Most recent"
+      },
+      {
+        "seed": "BOND",
+        "answer": "BEYOND",
+        "clue": "On the far side of"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EY"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NI"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-137",
+    "title": "A welcome addition, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TEND",
+        "answer": "ATTEND",
+        "clue": "Be present at an event"
+      },
+      {
+        "seed": "BUST",
+        "answer": "BUSTLE",
+        "clue": "Move about with busy energy"
+      },
+      {
+        "seed": "LINE",
+        "answer": "ONLINE",
+        "clue": "Connected to the internet"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEPPER",
+        "clue": "The seasoning next to salt"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANDLE",
+        "clue": "A light with a wick and wax"
+      },
+      {
+        "seed": "TENT",
+        "answer": "TALENT",
+        "clue": "A natural skill"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "PP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-138",
+    "title": "A bit of breathing room, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "REPORT",
+        "clue": "Give an account of what happened"
+      },
+      {
+        "seed": "DARK",
+        "answer": "DARKEN",
+        "clue": "Make less bright"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DILATE",
+        "clue": "Grow wider"
+      },
+      {
+        "seed": "SONG",
+        "answer": "STRONG",
+        "clue": "Able to exert plenty of force"
+      },
+      {
+        "seed": "FACE",
+        "answer": "FACADE",
+        "clue": "The front of a building"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "SCREAM",
+        "clue": "A loud, piercing cry"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-139",
+    "title": "The space between, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "KING",
+        "answer": "BAKING",
+        "clue": "Cooking with dry oven heat"
+      },
+      {
+        "seed": "TEST",
+        "answer": "DETEST",
+        "clue": "Dislike very strongly"
+      },
+      {
+        "seed": "BARN",
+        "answer": "BARREN",
+        "clue": "Too poor to support much vegetation"
+      },
+      {
+        "seed": "BEST",
+        "answer": "BEHEST",
+        "clue": "A person's request or command"
+      },
+      {
+        "seed": "PACE",
+        "answer": "PALACE",
+        "clue": "A ruler's grand residence"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MIDDLE",
+        "clue": "Halfway between the ends"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "HE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-4",
+        "letters": "LA"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DD"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-140",
+    "title": "A small surprise, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "TAIL",
+        "answer": "TAILOR",
+        "clue": "Someone who alters clothes"
+      },
+      {
+        "seed": "MART",
+        "answer": "MARKET",
+        "clue": "A place to buy and sell"
+      },
+      {
+        "seed": "LATE",
+        "answer": "LOCATE",
+        "clue": "Find the position of"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINDER",
+        "clue": "Dry material used to start a fire"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESIST",
+        "clue": "Push back against"
+      },
+      {
+        "seed": "MOLE",
+        "answer": "MOBILE",
+        "clue": "Able to move around"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "KE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "ND"
+      },
+      {
+        "id": "tile-2",
+        "letters": "OC"
+      },
+      {
+        "id": "tile-3",
+        "letters": "BI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "OR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IS"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-141",
+    "title": "Perfectly placed, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SUNG",
+        "answer": "UNSUNG",
+        "clue": "Not given deserved praise"
+      },
+      {
+        "seed": "FORM",
+        "answer": "FORMAL",
+        "clue": "Suited to a black-tie occasion"
+      },
+      {
+        "seed": "CAMP",
+        "answer": "CAMPUS",
+        "clue": "The grounds of a college"
+      },
+      {
+        "seed": "POTS",
+        "answer": "POINTS",
+        "clue": "Units added to a score"
+      },
+      {
+        "seed": "BARE",
+        "answer": "BEWARE",
+        "clue": "Be on your guard"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARPET",
+        "clue": "Soft floor covering"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "US"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "PE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-142",
+    "title": "Take a second look, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FORM",
+        "answer": "FORMAT",
+        "clue": "Layout or arrangement"
+      },
+      {
+        "seed": "PORT",
+        "answer": "IMPORT",
+        "clue": "Bring goods into a country"
+      },
+      {
+        "seed": "MITE",
+        "answer": "MINUTE",
+        "clue": "Sixty seconds"
+      },
+      {
+        "seed": "SEAL",
+        "answer": "SERIAL",
+        "clue": "A story told in episodes"
+      },
+      {
+        "seed": "LION",
+        "answer": "LOTION",
+        "clue": "A liquid used to soothe the skin"
+      },
+      {
+        "seed": "MIST",
+        "answer": "MISFIT",
+        "clue": "Someone who feels out of place"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "FI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IM"
+      },
+      {
+        "id": "tile-4",
+        "letters": "NU"
+      },
+      {
+        "id": "tile-5",
+        "letters": "OT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-143",
+    "title": "A new beginning, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PEAR",
+        "answer": "APPEAR",
+        "clue": "Come into view"
+      },
+      {
+        "seed": "SUNK",
+        "answer": "SUNKEN",
+        "clue": "Below the surrounding surface"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PARENT",
+        "clue": "A mother or father"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      },
+      {
+        "seed": "FIST",
+        "answer": "FINEST",
+        "clue": "Of the highest quality"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANTLE",
+        "clue": "A cloak, or a layer surrounding Earth's core"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AP"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-144",
+    "title": "A gentle stretch, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "LESS",
+        "answer": "LESSEN",
+        "clue": "Make smaller in amount"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      },
+      {
+        "seed": "BONE",
+        "answer": "BOVINE",
+        "clue": "Relating to cattle"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANGLE",
+        "clue": "Twist badly out of shape"
+      },
+      {
+        "seed": "SEEN",
+        "answer": "SCREEN",
+        "clue": "A display for films or pictures"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COUNTS",
+        "clue": "Adds up the total"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "VI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-145",
+    "title": "Every little bit, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "CARE",
+        "answer": "CAREER",
+        "clue": "A long-term profession"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RENTAL",
+        "clue": "Something borrowed for a fee"
+      },
+      {
+        "seed": "CURE",
+        "answer": "SECURE",
+        "clue": "Safe and firmly protected"
+      },
+      {
+        "seed": "LENT",
+        "answer": "LAMENT",
+        "clue": "Express sorrow or regret"
+      },
+      {
+        "seed": "TIED",
+        "answer": "TIDIED",
+        "clue": "Put things neatly away"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-1",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "VI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-146",
+    "title": "Right where it belongs, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "PORTAL",
+        "clue": "A doorway or gateway"
+      },
+      {
+        "seed": "TURN",
+        "answer": "UPTURN",
+        "clue": "A change for the better"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TANGLE",
+        "clue": "A confused knot of threads"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MUTATE",
+        "clue": "Undergo a genetic change"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CEMENT",
+        "clue": "The binding ingredient in concrete"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "ME"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AD"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-147",
+    "title": "An open invitation, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TAIL",
+        "answer": "RETAIL",
+        "clue": "Selling goods to the public"
+      },
+      {
+        "seed": "DATE",
+        "answer": "SEDATE",
+        "clue": "Calm and unhurried"
+      },
+      {
+        "seed": "RING",
+        "answer": "ROWING",
+        "clue": "Moving a boat with oars"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PATENT",
+        "clue": "An inventor's exclusive legal right"
+      },
+      {
+        "seed": "REST",
+        "answer": "RECAST",
+        "clue": "Give a role to a different actor"
+      },
+      {
+        "seed": "PART",
+        "answer": "PARROT",
+        "clue": "A bird known for copying sounds"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-2",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-3",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-4",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-148",
+    "title": "A brighter idea, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CASH",
+        "answer": "CASHEW",
+        "clue": "A curved edible nut"
+      },
+      {
+        "seed": "CUES",
+        "answer": "CURVES",
+        "clue": "Smooth bends"
+      },
+      {
+        "seed": "BATH",
+        "answer": "BREATH",
+        "clue": "Air taken into your lungs"
+      },
+      {
+        "seed": "SAND",
+        "answer": "STRAND",
+        "clue": "A single thread in a rope"
+      },
+      {
+        "seed": "RENT",
+        "answer": "REGENT",
+        "clue": "A ruler acting for a monarch"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARROT",
+        "clue": "Orange root vegetable"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RV"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-3",
+        "letters": "GE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EW"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-149",
+    "title": "One thing at a time, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "DATE",
+        "answer": "UPDATE",
+        "clue": "Bring up to date"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARTON",
+        "clue": "A box for milk or eggs"
+      },
+      {
+        "seed": "TEST",
+        "answer": "DETEST",
+        "clue": "Dislike very strongly"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEELER",
+        "clue": "A kitchen tool that removes potato skins"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSCLE",
+        "clue": "Body tissue that contracts to move you"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SALINE",
+        "clue": "Containing dissolved salt"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-150",
+    "title": "A touch of curiosity, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CAST",
+        "answer": "CASTLE",
+        "clue": "A fortified building with towers"
+      },
+      {
+        "seed": "TURN",
+        "answer": "RETURN",
+        "clue": "Come back"
+      },
+      {
+        "seed": "NOTE",
+        "answer": "NOTICE",
+        "clue": "Written announcement"
+      },
+      {
+        "seed": "TREE",
+        "answer": "TREBLE",
+        "clue": "The high notes on a stereo dial"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEWTER",
+        "clue": "A metal alloy often used for tankards"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TIMBER",
+        "clue": "Wood prepared for building"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "BL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "MB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "WT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IC"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-151",
+    "title": "A little more to say, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FORM",
+        "answer": "INFORM",
+        "clue": "Give someone the facts"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "UNSUNG",
+        "clue": "Not given deserved praise"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RELENT",
+        "clue": "Finally give in"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "SCREAM",
+        "clue": "A loud, piercing cry"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESIST",
+        "clue": "Push back against"
+      },
+      {
+        "seed": "DART",
+        "answer": "DEPART",
+        "clue": "Leave for a destination"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EP"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "LE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-152",
+    "title": "A pocket of time, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "CORN",
+        "answer": "CORNET",
+        "clue": "A small brass instrument"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANDLE",
+        "clue": "A light with a wick and wax"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANGLE",
+        "clue": "Twist badly out of shape"
+      },
+      {
+        "seed": "CUED",
+        "answer": "CURLED",
+        "clue": "Formed into coils"
+      },
+      {
+        "seed": "SIDE",
+        "answer": "STRIDE",
+        "clue": "A long walking step"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MIDDLE",
+        "clue": "Halfway between the ends"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-4",
+        "letters": "ET"
+      },
+      {
+        "id": "tile-5",
+        "letters": "DD"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-153",
+    "title": "Find your footing, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "NEST",
+        "answer": "HONEST",
+        "clue": "Truthful and sincere"
+      },
+      {
+        "seed": "FORM",
+        "answer": "FORMAT",
+        "clue": "Layout or arrangement"
+      },
+      {
+        "seed": "PORT",
+        "answer": "REPORT",
+        "clue": "Give an account of what happened"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CLIENT",
+        "clue": "Someone using a professional's services"
+      },
+      {
+        "seed": "POTS",
+        "answer": "POINTS",
+        "clue": "Units added to a score"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MISUSE",
+        "clue": "Use in the wrong way"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "HO"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-154",
+    "title": "Room for two, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BUST",
+        "answer": "BUSTLE",
+        "clue": "Move about with busy energy"
+      },
+      {
+        "seed": "LONG",
+        "answer": "BELONG",
+        "clue": "Be in the right place"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PLIANT",
+        "clue": "Easily bent"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MUTATE",
+        "clue": "Undergo a genetic change"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SHRINE",
+        "clue": "A sacred place"
+      },
+      {
+        "seed": "PART",
+        "answer": "PARROT",
+        "clue": "A bird known for copying sounds"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "LI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "BE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "HR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-155",
+    "title": "A fresh pair of eyes, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "INSIDE",
+        "clue": "On the inner side"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "ENTIRE",
+        "clue": "Whole, with nothing left out"
+      },
+      {
+        "seed": "LENT",
+        "answer": "LAMENT",
+        "clue": "Express sorrow or regret"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      },
+      {
+        "seed": "MITE",
+        "answer": "MINUTE",
+        "clue": "Sixty seconds"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "NU"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-4",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-5",
+        "letters": "IN"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-156",
+    "title": "The finishing touch, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "PORT",
+        "answer": "EXPORT",
+        "clue": "Send goods to another country"
+      },
+      {
+        "seed": "BETS",
+        "answer": "BEASTS",
+        "clue": "Animals, especially large ones"
+      },
+      {
+        "seed": "MIST",
+        "answer": "MISFIT",
+        "clue": "Someone who feels out of place"
+      },
+      {
+        "seed": "FISH",
+        "answer": "FINISH",
+        "clue": "Bring to an end"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      },
+      {
+        "seed": "MOLE",
+        "answer": "MOBILE",
+        "clue": "Able to move around"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AS"
+      },
+      {
+        "id": "tile-1",
+        "letters": "BI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NI"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "EX"
+      },
+      {
+        "id": "tile-5",
+        "letters": "FI"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-157",
+    "title": "A place for everything, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "TURN",
+        "answer": "UPTURN",
+        "clue": "A change for the better"
+      },
+      {
+        "seed": "KING",
+        "answer": "HIKING",
+        "clue": "Walking on countryside trails"
+      },
+      {
+        "seed": "TAIL",
+        "answer": "DETAIL",
+        "clue": "A small individual feature"
+      },
+      {
+        "seed": "TILE",
+        "answer": "TINGLE",
+        "clue": "A prickly sensation"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEWTER",
+        "clue": "A metal alloy often used for tankards"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "WT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UP"
+      },
+      {
+        "id": "tile-3",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "HI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "NG"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-158",
+    "title": "Something to ponder, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PAST",
+        "answer": "PASTEL",
+        "clue": "A soft, pale color"
+      },
+      {
+        "seed": "PORT",
+        "answer": "PORTAL",
+        "clue": "A doorway or gateway"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COURTS",
+        "clue": "Places where tennis is played"
+      },
+      {
+        "seed": "MUSE",
+        "answer": "MUSCLE",
+        "clue": "Body tissue that contracts to move you"
+      },
+      {
+        "seed": "FINE",
+        "answer": "FINITE",
+        "clue": "Having an end or limit"
+      },
+      {
+        "seed": "FIRE",
+        "answer": "FIGURE",
+        "clue": "A number, or an illustration"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-159",
+    "title": "A slight adjustment, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "KING",
+        "answer": "BAKING",
+        "clue": "Cooking with dry oven heat"
+      },
+      {
+        "seed": "FREE",
+        "answer": "FREEZE",
+        "clue": "Turn liquid into solid ice"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PATENT",
+        "clue": "An inventor's exclusive legal right"
+      },
+      {
+        "seed": "SEAM",
+        "answer": "STREAM",
+        "clue": "A small flowing waterway"
+      },
+      {
+        "seed": "FACE",
+        "answer": "FACADE",
+        "clue": "The front of a building"
+      },
+      {
+        "seed": "NEST",
+        "answer": "NEWEST",
+        "clue": "Most recently made"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "ZE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-2",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "WE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-160",
+    "title": "The next little step, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "BUST",
+        "answer": "ROBUST",
+        "clue": "Strong and sturdy"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TANGLE",
+        "clue": "A confused knot of threads"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      },
+      {
+        "seed": "COLT",
+        "answer": "COBALT",
+        "clue": "A metallic element that lends its name to a deep blue"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RECENT",
+        "clue": "Not long ago"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NG"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "BA"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "RO"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-161",
+    "title": "A dash of possibility, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "FINE",
+        "answer": "REFINE",
+        "clue": "Improve by making small changes"
+      },
+      {
+        "seed": "PORT",
+        "answer": "IMPORT",
+        "clue": "Bring goods into a country"
+      },
+      {
+        "seed": "LESS",
+        "answer": "UNLESS",
+        "clue": "Except if"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINDER",
+        "clue": "Dry material used to start a fire"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MARBLE",
+        "clue": "A small glass toy, or a veined stone"
+      },
+      {
+        "seed": "MALT",
+        "answer": "MALLET",
+        "clue": "A hammer with a large wooden or rubber head"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IM"
+      },
+      {
+        "id": "tile-2",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RB"
+      },
+      {
+        "id": "tile-5",
+        "letters": "ND"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-162",
+    "title": "An easy rhythm, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "PANT",
+        "answer": "PANTRY",
+        "clue": "A food-storage cupboard"
+      },
+      {
+        "seed": "SENT",
+        "answer": "ABSENT",
+        "clue": "Not here"
+      },
+      {
+        "seed": "LAST",
+        "answer": "LATEST",
+        "clue": "Most recent"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEPPER",
+        "clue": "The seasoning next to salt"
+      },
+      {
+        "seed": "TREE",
+        "answer": "TREBLE",
+        "clue": "The high notes on a stereo dial"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RY"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AB"
+      },
+      {
+        "id": "tile-3",
+        "letters": "BL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "PP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-163",
+    "title": "A natural fit, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FORM",
+        "answer": "REFORM",
+        "clue": "Make changes to improve something"
+      },
+      {
+        "seed": "LAND",
+        "answer": "ISLAND",
+        "clue": "Land surrounded by water"
+      },
+      {
+        "seed": "TIED",
+        "answer": "TIDIED",
+        "clue": "Put things neatly away"
+      },
+      {
+        "seed": "TONE",
+        "answer": "TONGUE",
+        "clue": "The organ used for tasting"
+      },
+      {
+        "seed": "RENT",
+        "answer": "REGENT",
+        "clue": "A ruler acting for a monarch"
+      },
+      {
+        "seed": "SINE",
+        "answer": "SALINE",
+        "clue": "Containing dissolved salt"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IS"
+      },
+      {
+        "id": "tile-2",
+        "letters": "DI"
+      },
+      {
+        "id": "tile-3",
+        "letters": "GU"
+      },
+      {
+        "id": "tile-4",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-5",
+        "letters": "GE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-164",
+    "title": "A well-kept secret, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "MUSE",
+        "answer": "MUSEUM",
+        "clue": "A home for exhibits"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CARAFE",
+        "clue": "A glass container for serving drinks"
+      },
+      {
+        "seed": "LONG",
+        "answer": "LOVING",
+        "clue": "Affectionate and caring"
+      },
+      {
+        "seed": "BORE",
+        "answer": "BEFORE",
+        "clue": "Earlier than"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DONATE",
+        "clue": "Give to a good cause"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TACKLE",
+        "clue": "Deal with a difficult problem"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AF"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UM"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ON"
+      },
+      {
+        "id": "tile-3",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CK"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EF"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-165",
+    "title": "Words taking shape, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "REST",
+        "answer": "FOREST",
+        "clue": "A large area of trees"
+      },
+      {
+        "seed": "TEND",
+        "answer": "ATTEND",
+        "clue": "Be present at an event"
+      },
+      {
+        "seed": "TAIL",
+        "answer": "RETAIL",
+        "clue": "Selling goods to the public"
+      },
+      {
+        "seed": "NOTE",
+        "answer": "NOTICE",
+        "clue": "Written announcement"
+      },
+      {
+        "seed": "TRUE",
+        "answer": "TRUDGE",
+        "clue": "Walk slowly with heavy steps"
+      },
+      {
+        "seed": "TALE",
+        "answer": "TATTLE",
+        "clue": "Tell on someone"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "IC"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-3",
+        "letters": "TT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DG"
+      },
+      {
+        "id": "tile-5",
+        "letters": "FO"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-166",
+    "title": "A moment of clarity, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TAIL",
+        "answer": "TAILOR",
+        "clue": "Someone who alters clothes"
+      },
+      {
+        "seed": "LINE",
+        "answer": "LINEUP",
+        "clue": "The players picked for a team"
+      },
+      {
+        "seed": "SING",
+        "answer": "SPRING",
+        "clue": "The season after winter"
+      },
+      {
+        "seed": "LION",
+        "answer": "LEGION",
+        "clue": "A vast number of people"
+      },
+      {
+        "seed": "SEAL",
+        "answer": "SERIAL",
+        "clue": "A story told in episodes"
+      },
+      {
+        "seed": "BARE",
+        "answer": "BEWARE",
+        "clue": "Be on your guard"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-2",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EG"
+      },
+      {
+        "id": "tile-4",
+        "letters": "OR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UP"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-167",
+    "title": "Two of a kind, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TIRE",
+        "answer": "SATIRE",
+        "clue": "Humor used to expose foolishness"
+      },
+      {
+        "seed": "DARK",
+        "answer": "DARKEN",
+        "clue": "Make less bright"
+      },
+      {
+        "seed": "CENT",
+        "answer": "CEMENT",
+        "clue": "The binding ingredient in concrete"
+      },
+      {
+        "seed": "CUES",
+        "answer": "CURVES",
+        "clue": "Smooth bends"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RELENT",
+        "clue": "Finally give in"
+      },
+      {
+        "seed": "BEST",
+        "answer": "BEHEST",
+        "clue": "A person's request or command"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "SA"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RV"
+      },
+      {
+        "id": "tile-2",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "ME"
+      },
+      {
+        "id": "tile-5",
+        "letters": "HE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-168",
+    "title": "The missing piece, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "KING",
+        "answer": "JOKING",
+        "clue": "Speaking in fun"
+      },
+      {
+        "seed": "REST",
+        "answer": "RECAST",
+        "clue": "Give a role to a different actor"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TIMBER",
+        "clue": "Wood prepared for building"
+      },
+      {
+        "seed": "PANT",
+        "answer": "PARENT",
+        "clue": "A mother or father"
+      },
+      {
+        "seed": "SING",
+        "answer": "STRING",
+        "clue": "A thin cord"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "JO"
+      },
+      {
+        "id": "tile-1",
+        "letters": "MB"
+      },
+      {
+        "id": "tile-2",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-169",
+    "title": "A little discovery, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "FOLD",
+        "answer": "UNFOLD",
+        "clue": "Open something that was bent over"
+      },
+      {
+        "seed": "USED",
+        "answer": "AMUSED",
+        "clue": "Entertained by something funny"
+      },
+      {
+        "seed": "DATE",
+        "answer": "SEDATE",
+        "clue": "Calm and unhurried"
+      },
+      {
+        "seed": "MALE",
+        "answer": "MANTLE",
+        "clue": "A cloak, or a layer surrounding Earth's core"
+      },
+      {
+        "seed": "MOST",
+        "answer": "MODEST",
+        "clue": "Not inclined to boast"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-1",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AM"
+      },
+      {
+        "id": "tile-3",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "NT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-170",
+    "title": "Full of possibilities, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BEST",
+        "answer": "BESTOW",
+        "clue": "Give as an honor or gift"
+      },
+      {
+        "seed": "CENT",
+        "answer": "ACCENT",
+        "clue": "A distinctive way of pronouncing words"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      },
+      {
+        "seed": "BOND",
+        "answer": "BEYOND",
+        "clue": "On the far side of"
+      },
+      {
+        "seed": "MART",
+        "answer": "MARKET",
+        "clue": "A place to buy and sell"
+      },
+      {
+        "seed": "COTS",
+        "answer": "COUNTS",
+        "clue": "Adds up the total"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AC"
+      },
+      {
+        "id": "tile-1",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "KE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-4",
+        "letters": "PR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EY"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-171",
+    "title": "A change in the air, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "SING",
+        "answer": "CASING",
+        "clue": "A protective outer covering"
+      },
+      {
+        "seed": "TEND",
+        "answer": "EXTEND",
+        "clue": "Make longer"
+      },
+      {
+        "seed": "BONE",
+        "answer": "BOVINE",
+        "clue": "Relating to cattle"
+      },
+      {
+        "seed": "MILE",
+        "answer": "MINGLE",
+        "clue": "Mix with others at a party"
+      },
+      {
+        "seed": "BARN",
+        "answer": "BARREN",
+        "clue": "Too poor to support much vegetation"
+      },
+      {
+        "seed": "FIST",
+        "answer": "FINEST",
+        "clue": "Of the highest quality"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EX"
+      },
+      {
+        "id": "tile-1",
+        "letters": "CA"
+      },
+      {
+        "id": "tile-2",
+        "letters": "NE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-5",
+        "letters": "NG"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-172",
+    "title": "In good company, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "TIRE",
+        "answer": "RETIRE",
+        "clue": "Stop working at the end of a career"
+      },
+      {
+        "seed": "LION",
+        "answer": "LOTION",
+        "clue": "A liquid used to soothe the skin"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANINE",
+        "clue": "Related to dogs"
+      },
+      {
+        "seed": "SAND",
+        "answer": "STRAND",
+        "clue": "A single thread in a rope"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEELER",
+        "clue": "A kitchen tool that removes potato skins"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARPET",
+        "clue": "Soft floor covering"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "EL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-2",
+        "letters": "PE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "OT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-173",
+    "title": "The shape of things, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "USED",
+        "answer": "UNUSED",
+        "clue": "Still waiting to be put to work"
+      },
+      {
+        "seed": "SUNK",
+        "answer": "SUNKEN",
+        "clue": "Below the surrounding surface"
+      },
+      {
+        "seed": "NEST",
+        "answer": "NESTLE",
+        "clue": "Settle into a snug spot"
+      },
+      {
+        "seed": "SEEN",
+        "answer": "SCREEN",
+        "clue": "A display for films or pictures"
+      },
+      {
+        "seed": "BATH",
+        "answer": "BREATH",
+        "clue": "Air taken into your lungs"
+      },
+      {
+        "seed": "SONG",
+        "answer": "STRONG",
+        "clue": "Able to exert plenty of force"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "LE"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RE"
+      },
+      {
+        "id": "tile-2",
+        "letters": "CR"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-4",
+        "letters": "UN"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-174",
+    "title": "A pleasant diversion, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "TEST",
+        "answer": "ATTEST",
+        "clue": "Confirm that something is true"
+      },
+      {
+        "seed": "FORM",
+        "answer": "FORMAL",
+        "clue": "Suited to a black-tie occasion"
+      },
+      {
+        "seed": "CART",
+        "answer": "CARROT",
+        "clue": "Orange root vegetable"
+      },
+      {
+        "seed": "LATE",
+        "answer": "LOCATE",
+        "clue": "Find the position of"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DILATE",
+        "clue": "Grow wider"
+      },
+      {
+        "seed": "SEND",
+        "answer": "SECOND",
+        "clue": "The position after first"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "OC"
+      },
+      {
+        "id": "tile-1",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-3",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-4",
+        "letters": "CO"
+      },
+      {
+        "id": "tile-5",
+        "letters": "AT"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-175",
+    "title": "At your own pace, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "CASH",
+        "answer": "CASHEW",
+        "clue": "A curved edible nut"
+      },
+      {
+        "seed": "COVE",
+        "answer": "COVERT",
+        "clue": "Hidden or secret"
+      },
+      {
+        "seed": "CURE",
+        "answer": "CURATE",
+        "clue": "Select items for an exhibition"
+      },
+      {
+        "seed": "TENT",
+        "answer": "TALENT",
+        "clue": "A natural skill"
+      },
+      {
+        "seed": "REST",
+        "answer": "RESULT",
+        "clue": "The outcome"
+      },
+      {
+        "seed": "RING",
+        "answer": "ROWING",
+        "clue": "Moving a boat with oars"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "AT"
+      },
+      {
+        "id": "tile-1",
+        "letters": "AL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "OW"
+      },
+      {
+        "id": "tile-3",
+        "letters": "EW"
+      },
+      {
+        "id": "tile-4",
+        "letters": "RT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "UL"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-176",
+    "title": "A new perspective, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "SIDE",
+        "answer": "BESIDE",
+        "clue": "Next to"
+      },
+      {
+        "seed": "PACE",
+        "answer": "PALACE",
+        "clue": "A ruler's grand residence"
+      },
+      {
+        "seed": "PARE",
+        "answer": "PARADE",
+        "clue": "A procession with floats and bands"
+      },
+      {
+        "seed": "SENT",
+        "answer": "SILENT",
+        "clue": "Making no sound"
+      },
+      {
+        "seed": "LASH",
+        "answer": "LAVISH",
+        "clue": "Generous or extravagant"
+      },
+      {
+        "seed": "PART",
+        "answer": "PARROT",
+        "clue": "A bird known for copying sounds"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RO"
+      },
+      {
+        "id": "tile-1",
+        "letters": "VI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-3",
+        "letters": "IL"
+      },
+      {
+        "id": "tile-4",
+        "letters": "LA"
+      },
+      {
+        "id": "tile-5",
+        "letters": "BE"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-177",
+    "title": "The art of fitting in, another fit",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "seed": "SOFT",
+        "answer": "SOFTEN",
+        "clue": "Make less hard"
+      },
+      {
+        "seed": "CURE",
+        "answer": "SECURE",
+        "clue": "Safe and firmly protected"
+      },
+      {
+        "seed": "FINE",
+        "answer": "DEFINE",
+        "clue": "Explain the meaning of a word"
+      },
+      {
+        "seed": "PEER",
+        "answer": "PEWTER",
+        "clue": "A metal alloy often used for tankards"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PUREST",
+        "clue": "Least mixed with anything else"
+      },
+      {
+        "seed": "SIDE",
+        "answer": "STRIDE",
+        "clue": "A long walking step"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-1",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-2",
+        "letters": "SE"
+      },
+      {
+        "id": "tile-3",
+        "letters": "WT"
+      },
+      {
+        "id": "tile-4",
+        "letters": "DE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "TR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-178",
+    "title": "A thoughtful pause, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "FAST",
+        "answer": "FASTEN",
+        "clue": "Fix securely in place"
+      },
+      {
+        "seed": "RING",
+        "answer": "DARING",
+        "clue": "Bold enough to take a risk"
+      },
+      {
+        "seed": "REST",
+        "answer": "RECAST",
+        "clue": "Give a role to a different actor"
+      },
+      {
+        "seed": "SING",
+        "answer": "STRING",
+        "clue": "A thin cord"
+      },
+      {
+        "seed": "TIER",
+        "answer": "TINKER",
+        "clue": "Make small experimental repairs"
+      },
+      {
+        "seed": "RENT",
+        "answer": "RECENT",
+        "clue": "Not long ago"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "NK"
+      },
+      {
+        "id": "tile-1",
+        "letters": "DA"
+      },
+      {
+        "id": "tile-2",
+        "letters": "EN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "CE"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TR"
+      },
+      {
+        "id": "tile-5",
+        "letters": "CA"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-179",
+    "title": "A little ingenuity, another fit",
+    "difficulty": "Medium",
+    "rows": [
+      {
+        "seed": "BAND",
+        "answer": "BANDIT",
+        "clue": "A robber or outlaw"
+      },
+      {
+        "seed": "CARE",
+        "answer": "CAREER",
+        "clue": "A long-term profession"
+      },
+      {
+        "seed": "MATE",
+        "answer": "MATURE",
+        "clue": "Fully grown"
+      },
+      {
+        "seed": "CUES",
+        "answer": "CURVES",
+        "clue": "Smooth bends"
+      },
+      {
+        "seed": "PEST",
+        "answer": "PRIEST",
+        "clue": "A member of the clergy"
+      },
+      {
+        "seed": "SUNG",
+        "answer": "SPRUNG",
+        "clue": "Jumped suddenly"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "RV"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RI"
+      },
+      {
+        "id": "tile-2",
+        "letters": "ER"
+      },
+      {
+        "id": "tile-3",
+        "letters": "UR"
+      },
+      {
+        "id": "tile-4",
+        "letters": "IT"
+      },
+      {
+        "id": "tile-5",
+        "letters": "PR"
+      }
+    ]
+  },
+  {
+    "id": "inbetween-180",
+    "title": "All in its place, another fit",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "seed": "TEND",
+        "answer": "INTEND",
+        "clue": "Have a plan to do something"
+      },
+      {
+        "seed": "CUED",
+        "answer": "CURLED",
+        "clue": "Formed into coils"
+      },
+      {
+        "seed": "CANE",
+        "answer": "CANDLE",
+        "clue": "A light with a wick and wax"
+      },
+      {
+        "seed": "LAST",
+        "answer": "LATEST",
+        "clue": "Most recent"
+      },
+      {
+        "seed": "TIRE",
+        "answer": "TIRADE",
+        "clue": "A long, angry speech"
+      },
+      {
+        "seed": "DATE",
+        "answer": "DEBATE",
+        "clue": "A structured exchange of opposing views"
+      }
+    ],
+    "tiles": [
+      {
+        "id": "tile-0",
+        "letters": "DL"
+      },
+      {
+        "id": "tile-1",
+        "letters": "RL"
+      },
+      {
+        "id": "tile-2",
+        "letters": "IN"
+      },
+      {
+        "id": "tile-3",
+        "letters": "AD"
+      },
+      {
+        "id": "tile-4",
+        "letters": "TE"
+      },
+      {
+        "id": "tile-5",
+        "letters": "EB"
+      }
+    ]
   }
 ];

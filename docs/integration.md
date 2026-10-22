@@ -1,6 +1,6 @@
 # Alford Daily games in the family portal
 
-> **Updated collection scope:** the app now includes 14 attributed games (eight ChatGPT, six Kimi). See [Unified collection](unified-collection.md) for the current lineup, source provenance, integration changes, and commercial-release limitations. Earlier six-game choices and projections below remain the original planning record.
+> **Current collection — October 22, 2026:** 32 attributed games, 8,001 prepared puzzles, and at least 120 records per game. See [release state](RELEASE-STATE.md), [NAS and domain deployment](NAS-AND-DOMAIN-DEPLOYMENT.md), and the [commercial launch plan](COMMERCIAL-LAUNCH-PLAN.md) for the current release. The historical integration details and earlier launch choices below remain an archived planning record; their smaller counts and six-game scope are superseded.
 
 Tradeoff, Inbetween, Counterpart, Shortlist, Second Sense, Sideways, Ringcount, and Switchpath appear as featured games in the active root `index.html` catalog. They also have relative links in the older `games/index.html` catalog. The existing game cards and catalog behavior are retained. A separate header link opens the local Alford Daily hub. The collection is also available as a [private app preview](https://alford-daily.jbapckfan.chatgpt.site).
 
@@ -94,18 +94,28 @@ Game-source checks and local asset-resolution checks verify the packaged files. 
 
 The checked-in Docker configuration mounts the root `index.html` as `/srv/index.html` and `games/` as `/srv/games`. Caddy serves `/srv` on container port 80, exposed at NAS port 8080. A GitHub commit is a source backup; the NAS requires its own update.
 
-From a device on the home network:
+The reviewed deployment helper requires a clean checkout of `Jbapckfan/family-game-portal` on `main`, a working Docker daemon, Python 3, and a fast-forward to the selected release. It checks the target puzzle inventory before changing files, recreates only `game-portal`, and then downloads every expected game runtime asset. Every response must have the correct bytes and, for scripts, styles, documents, JSON, and SVG, the correct content type. A missing script served as the portal homepage cannot pass the check. The helper never resets, stashes, deletes, or force-pushes local work.
+
+From an updated Mac checkout, use the exact verified commit SHA shown in the release handoff:
 
 ```sh
-ssh Jbapckfan@192.168.1.155
-cd /volume1/docker/family-game-portal
-git status --short
-git pull --ff-only
-docker compose restart game-portal
+ssh Jbapckfan@192.168.1.155 \
+  'cd /volume1/docker/family-game-portal && bash -s -- VERIFIED_COMMIT_SHA' \
+  < scripts/deploy-nas.sh
 ```
 
-Review local changes before pulling. If Git reports conflicting work, preserve it and resolve the conflict instead of resetting or overwriting it. The homepage is bind-mounted as a single file, so restart the portal service after pulling to refresh that mount. Open `http://192.168.1.155:8080` and verify the hub and all eight daily-game links after the pull.
+Streaming the helper lets it preflight an older NAS checkout before fetching and fast-forwarding it. Replace `VERIFIED_COMMIT_SHA` with the full 40-character commit SHA. If the NAS already has this helper, run it there as `bash scripts/deploy-nas.sh VERIFIED_COMMIT_SHA`.
 
-The existing Mac-to-NAS sync script also transfers the root `index.html` alongside the full `games/` directory and Caddy configuration. Its existing game-import behavior is retained, and no deletion flag has been added.
+If local work or divergent history is reported, preserve it and resolve the conflict before retrying. Do not reset or overwrite it. An HTTP verification failure leaves the new revision available for diagnosis and prints the previous revision; the helper does not silently report success or roll back other work.
 
-Docker references: [restart a selected Compose service](https://docs.docker.com/reference/cli/docker/compose/restart/) and [single-file bind-mount replacement behavior](https://github.com/moby/moby/issues/6011).
+After a successful deployment, home-network testers can open `http://192.168.1.155:8080/games/daily/`. A private LAN address is not an Internet sharing URL. Inspect the NAS's existing reverse proxy or tunnel before sharing with remote testers, and verify that specific public HTTPS route independently:
+
+```sh
+python3 scripts/verify-nas.py https://EXISTING_GAME_HOST
+```
+
+Only the game service should be exposed by that route. No public route, router change, or NAS administration exposure is configured by this source release. The October 22 deployment attempt was blocked because the connected Mac was offline; the direct workspace request reached a gateway error, not a verified game page. See [the release verification record](verification-puzzles-2026-10-22.md).
+
+The older Mac-to-NAS sync script retains its existing import behavior. This release does not run that broad import script or remove unrelated portal games.
+
+Docker references: [recreate a selected Compose service](https://docs.docker.com/reference/cli/docker/compose/up/) and [single-file bind-mount replacement behavior](https://github.com/moby/moby/issues/6011).

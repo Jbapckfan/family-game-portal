@@ -13,7 +13,15 @@ export interface CircuitPuzzle {
   sol: string[]
 }
 
-const PUZZLES = puzzlesData as CircuitPuzzle[]
+/** Editorial correction: PLUM is an ordinary word omitted by the original web-frequency list. */
+const SUPPLEMENTAL_WORDS = ['plum']
+export function withReviewedWords(puzzle: CircuitPuzzle): CircuitPuzzle {
+  const additions = SUPPLEMENTAL_WORDS.filter(word => !puzzle.words.includes(word) &&
+    [...word].every((letter, i) => puzzle.l.includes(letter) &&
+      (i === 0 || arcOf(puzzle.l.indexOf(letter)) !== arcOf(puzzle.l.indexOf(word[i - 1])))))
+  return additions.length ? { ...puzzle, words: [...puzzle.words, ...additions].sort(), n: puzzle.n + additions.length } : puzzle
+}
+const PUZZLES = (puzzlesData as CircuitPuzzle[]).map(withReviewedWords)
 
 export function dailyCircuit(dayNumber = todayDayNumber()): { puzzle: CircuitPuzzle; puzzleNo: number } {
   const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length

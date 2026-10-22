@@ -1,4 +1,33 @@
 /** Shared completion runtime by ChatGPT; individual concept credits stay in the catalog. */
+/** Published daily rotations. Append releases here when expanding a bank again.
+ * Keeping the previous sizes makes old dates independent of future additions.
+ * Practice always uses the complete installed bank.
+ */
+const expanded = {
+  'deepseek-twin-hive': [30, 140],
+  'deepseek-spare': [30, 120],
+  'deepseek-rung': [30, 120],
+  'deepseek-cipher': [30, 120],
+  'deepseek-trail': [30, 120],
+  'deepseek-split': [30, 120],
+  'qwen-quadra': [30, 120],
+  'qwen-logic-lattice': [30, 120],
+  'qwen-syntax-siege': [30, 120],
+  'qwen-memory-maze': [30, 120],
+  'qwen-pattern-prism': [30, 150],
+  'qwen-territory-tactics': [30, 120],
+  'claude-dovetail': [77, 120],
+  'claude-splice': [73, 120],
+  'claude-keystone': [58, 120],
+};
+
+export const DAILY_BANK_SCHEDULES = Object.freeze(Object.fromEntries(
+  Object.entries(expanded).map(([id, [initialCount, count]]) => [id, Object.freeze({
+    initialCount,
+    releases: Object.freeze([Object.freeze({from: '2026-10-23', count, startIndex: initialCount})]),
+  })]),
+));
+
 const dateFormat = new Intl.DateTimeFormat('en-US', {timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'});
 const terminal = new Set(['won','lost','revealed']);
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -10,6 +39,12 @@ export function dayNumber(key) { return Date.parse(`${key}T00:00:00Z`)/86400000;
 function validDate(key) {const n=dayNumber(key);return /^\d{4}-\d{2}-\d{2}$/.test(key)&&Number.isInteger(n)&&new Date(n*86400000).toISOString().slice(0,10)===key;}
 export function dailyIndex(id,key,count) {
   if(!validDate(key)||!Number.isSafeInteger(count)||count<1)throw new Error('Invalid daily collection');
+  const schedule=DAILY_BANK_SCHEDULES[id];
+  if(schedule){
+    let release;for(const candidate of schedule.releases)if(candidate.from<=key&&candidate.count<=count)release=candidate;
+    if(release)return (release.startIndex+dayNumber(key)-dayNumber(release.from))%release.count;
+    count=Math.min(count,schedule.initialCount);
+  }
   let hash=2166136261;for(const char of id)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;
   return ((dayNumber(key)+hash)%count+count)%count;
 }
@@ -61,8 +96,15 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
     }
   }
   function load(fresh=false) {
-    puzzle=config.puzzles[index];const saved=fresh?null:store.read(stateKey());
-    state=saved?.version===1&&saved.puzzleId===puzzleID()?restore(saved.state):null;
+    const saved=fresh?null:store.read(stateKey()),scheduledIndex=index;
+    puzzle=config.puzzles[index];state=null;
+    if(saved?.version===1&&typeof saved.puzzleId==='string'){
+      // A saved date belongs to its original puzzle even when a bank grows.
+      // Resolve by ID; a stale or malformed numeric index cannot redirect it.
+      const candidate=config.puzzles.findIndex((p,i)=>String(p.id??i)===saved.puzzleId);
+      if(candidate>=0){index=candidate;puzzle=config.puzzles[index];state=restore(saved.state);}
+      if(!state){index=scheduledIndex;puzzle=config.puzzles[index];}
+    }
     if(!state)state=clone(config.createState(puzzle));
     if(!restore(state))throw Error(`${config.id}: createState is not restorable`);
     persist();

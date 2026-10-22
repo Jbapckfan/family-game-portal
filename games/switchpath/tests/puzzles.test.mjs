@@ -29,11 +29,11 @@ function layoutKey(board) {
 }
 const shapeKey = path => transforms.map(transform => path.map(transform).join(',')).sort()[0];
 
-test('ninety puzzles use every number once, fixed marked endpoints, and distinct layouts even under symmetry', () => {
-  assert.equal(PUZZLES.length, 90);
-  assert.equal(COLLECTION.boards, 90);
-  assert.equal(new Set(PUZZLES.map(board => board.id)).size, 90);
-  assert.equal(new Set(PUZZLES.map(layoutKey)).size, 90);
+test('187 puzzles use every number once, fixed marked endpoints, and distinct layouts even under symmetry', () => {
+  assert.equal(PUZZLES.length, 187);
+  assert.equal(COLLECTION.boards, 187);
+  assert.equal(new Set(PUZZLES.map(board => board.id)).size, 187);
+  assert.equal(new Set(PUZZLES.map(layoutKey)).size, 187);
   for (const board of PUZZLES) {
     assert.deepEqual([...board.values].sort((a, b) => a - b), Array.from({ length: 16 }, (_, index) => index + 1), board.id);
     assert.ok(Number.isInteger(board.start) && board.start >= 0 && board.start < 16);
@@ -104,7 +104,7 @@ test('a hint from every legal partial path returns to a correct prefix and remai
       checked++;
     });
   }
-  assert.equal(checked, COLLECTION.reachablePaths - 90);
+  assert.equal(checked, COLLECTION.reachablePaths - 187);
 });
 
 test('opening puzzle stays stable and the collection uses many genuinely different route shapes', () => {

@@ -98,7 +98,7 @@ export function CircuitBoard({ state, actions }: Props) {
               key={i}
               type="button"
               data-letter={i}
-              aria-label={`Letter ${ch}${lit ? ', lit' : ''}`}
+              aria-label={`Letter ${ch}, arc ${arcOf(i) + 1}${lit ? ', lit' : ''}`}
               disabled={state.finished}
               onClick={() => actions.tapLetter(i)}
               className={cn(

@@ -1,9 +1,10 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as E from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
-test('30 different Trail targets occupy a legal nine-cell path',()=>{
- assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.answer)).size,30);
+test('all prepared Trail targets occupy a legal nine-cell path',()=>{
+ assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.answer)).size,PUZZLES.length);
  for(const p of PUZZLES){assert.match(p.answer,/^[A-Z]{9}$/);assert.equal(p.grid.length,9);assert.equal(p.path.length,9);assert.ok(E.validPath(p.path));
   assert.equal(E.wordAt(p,p.path),p.answer);let s=E.createState(p);
   for(const index of p.path)s=E.selectTile(p,s,index).state;
@@ -32,4 +33,10 @@ test('Trail reveal is not a win; malformed terminal saves cannot forge completio
  assert.equal(E.restoreState(p,{...s,revealed:true}),null);
  assert.equal(E.restoreState(p,{...s,checks:Infinity}),null);
  const r=E.reveal(p,s);assert.equal(E.getStatus(p,r),'revealed');assert.deepEqual(E.restoreState(p,r),r);
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('deepseek-trail preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'c810621f47db3fb25f0dd9f33a212262552eb1875407568dd34d6704a87ab41b');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

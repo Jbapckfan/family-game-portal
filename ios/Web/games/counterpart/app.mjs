@@ -16,7 +16,7 @@ const app = createShell({
   reset(){rowIndex=0;draft=[null,null];slotIndex=0;rejected=false;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedRows.length}),
   help,
-  about:'Counterpart is a game of analogies: different words, the same relationship. Each board uses ten words once across five directed pairs. The challenge is to recognize a relationship and carry it into a new context. All explanations were written for this collection.',
+  about:'Counterpart is a game of analogies: different words, the same relationship. Each board uses ten words once across five directed pairs. The challenge is to recognize a relationship and carry it into a new context. This edition combines 90 curated analogies into 180 different boards. Familiar relationships return with different word banks.',
   statsExtra:stats=>`<div class="stats-detail"><span>Perfect counterparts</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average checks when solved</span><strong>${stats.won ? stats.averageAttempts.toFixed(1) : '—'}</strong></div>`,
   result(api){
     const {game,mode,daily}=api;

@@ -1,10 +1,10 @@
-import {writeFile} from 'node:fs/promises';
+import {writeFile, readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {solvePuzzle, getSegments} from '../engine.mjs';
 
 const SEED = 0x71c0a26;
-const COUNT = 90;
+const COUNT = 180;
 const LENGTH_PATTERNS = [[2, 2, 3, 5], [2, 2, 4, 4], [2, 3, 3, 4]];
 const FIRST = [5, 4, 6, 9, 6, 7, 2, 5, 1, 8, 3, 4];
 
@@ -98,7 +98,10 @@ export function generatePuzzles() {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const boards = generatePuzzles();
-  const source = `/** 90 deterministic boards; each has one certified four-cut solution. */\nexport const PUZZLES = Object.freeze(${JSON.stringify(boards, null, 2)}.map(puzzle => Object.freeze({\n  ...puzzle, numbers: Object.freeze(puzzle.numbers), solution: Object.freeze(puzzle.solution),\n})));\n`;
-  await writeFile(new URL('../puzzles.mjs', import.meta.url), source);
+  const source = `/** ${COUNT} deterministic boards; each has one certified four-cut solution. */\nexport const PUZZLES = Object.freeze(${JSON.stringify(boards, null, 2)}.map(puzzle => Object.freeze({\n  ...puzzle, numbers: Object.freeze(puzzle.numbers), solution: Object.freeze(puzzle.solution),\n})));\n`;
+  const destination = new URL('../puzzles.mjs', import.meta.url);
+  if (process.argv.includes('--check')) {
+    if (await readFile(destination, 'utf8') !== source) throw new Error('Generated collection differs from the checked-in file.');
+  } else await writeFile(destination, source);
   console.log(`Generated ${boards.length} unique rings; all ${boards.length * 495} cut sets certified.`);
 }

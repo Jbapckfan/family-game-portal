@@ -16,7 +16,7 @@ mountDailyGame({
   id:'qwen-pattern-prism',name:'Pattern Prism',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#8c4a90',
   intro:'Follow the shape. Find the rhythm. See what comes next.',
   instructions:[
-    'Study the five examples in order. Shape, color, size, and direction each follow a repeating cycle; some attributes stay the same.',
+    'Study the five examples in order. Shape, color, size, and direction each follow a repeating cycle of at most four elements; some attributes stay the same.',
     'Predict the next three elements, one at a time. Choose the option that continues all four attributes.',
     'The small arrow shows direction, even when a shape looks the same after rotation. Every color and size is also named below its symbol.',
     'Wrong choices are marked and you can keep trying. A first hint explains one changing attribute; a second outlines the correct option for that step.',

@@ -1,10 +1,11 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as E from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
 
-test('all 30 Cipher phrases have an exact reversible derangement and solvable givens', () => {
-  assert.equal(PUZZLES.length,30); assert.equal(new Set(PUZZLES.map(p=>p.phrase)).size,30);
+test('all prepared Cipher phrases have an exact reversible derangement and solvable givens', () => {
+  assert.ok(PUZZLES.length>=120); assert.equal(new Set(PUZZLES.map(p=>p.phrase)).size,PUZZLES.length);
   for(const p of PUZZLES){
     assert.match(p.phrase,/^[A-Z ,.!?]+$/);assert.ok(p.clue.length>10);
     assert.equal(new Set(Object.values(p.key)).size,26);
@@ -40,4 +41,10 @@ test('Cipher clear retains earned hints; reveal remains a reveal after restorati
  const revealed=E.reveal(p,c);assert.equal(E.getStatus(p,revealed),'revealed');
  assert.equal(E.getStatus(p,E.restoreState(p,revealed)),'revealed');
  assert.deepEqual(E.hint(p,revealed),revealed);
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('deepseek-cipher preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'42d7df93b52da56433b0fa2a5fa260b41c4d344ef6c212bdc0e907e6806fe440');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { PUZZLES, COLLECTION } from '../puzzles.mjs';
 import { createGame, submitPair, useHint, revealGame, restoreGame, isPerfect } from '../engine.mjs';
 
-test('collection has thirty distinct boards from seventy-five original double meanings',()=>{
-  assert.equal(PUZZLES.length,30);assert.equal(COLLECTION.uniqueWords,75);assert.equal(COLLECTION.totalPairAppearances,150);
-  assert.equal(new Set(PUZZLES.map(p=>p.id)).size,30);assert.equal(new Set(PUZZLES.flatMap(p=>p.pairs.map(x=>x.word))).size,75);
-  assert.equal(new Set(PUZZLES.map(p=>p.pairs.map(x=>x.word).sort().join('|'))).size,30);
+test('collection has 180 distinct combinations from seventy-five original double meanings',()=>{
+  assert.equal(PUZZLES.length,180);assert.equal(COLLECTION.uniqueWords,75);assert.equal(COLLECTION.totalPairAppearances,900);
+  assert.equal(new Set(PUZZLES.map(p=>p.id)).size,180);assert.equal(new Set(PUZZLES.flatMap(p=>p.pairs.map(x=>x.word))).size,75);
+  assert.equal(new Set(PUZZLES.map(p=>p.pairs.map(x=>x.word).sort().join('|'))).size,180);
 });
 test('opening contains the three requested examples plus two less obvious shifts',()=>{
   assert.deepEqual(PUZZLES[0].pairs.map(p=>p.word),['FENCE','BARK','WIND','TENDER','COURT']);
@@ -24,11 +24,14 @@ test('every board has five unique noun cards, verb cards and answer pairings',()
     const aligned=p.nouns.map(n=>p.pairs.find(x=>x.nounId===n.id).verbId).join('|');assert.notEqual(aligned,p.verbs.map(v=>v.id).join('|'),p.id);
   }
 });
-test('each word appears twice with at least eleven days between appearances including wrap',()=>{
+test('each word appears twelve times with at least eleven boards between appearances including wrap',()=>{
   const appearances=new Map();PUZZLES.forEach((p,i)=>p.pairs.forEach(pair=>appearances.set(pair.word,[...(appearances.get(pair.word)||[]),i])));
-  for(const [word,days] of appearances){assert.equal(days.length,2,word);assert.ok(Math.min(days[1]-days[0],30-days[1]+days[0])>=11,`${word}: ${days}`);}
+  for(const [word,days] of appearances){
+    assert.equal(days.length,12,word);
+    for(let at=0;at<days.length;at++){const gap=(days[(at+1)%days.length]-days[at]+PUZZLES.length)%PUZZLES.length;assert.ok(gap>=11,`${word}: ${days}`);}
+  }
 });
-test('all thirty puzzles can finish from every one of the thirty-two solved-pair subsets',()=>{
+test('all prepared puzzles can finish from every one of the thirty-two solved-pair subsets',()=>{
   let checked=0;
   for(const puzzle of PUZZLES)for(let mask=0;mask<32;mask++) {
     let state=createGame(puzzle);for(let i=0;i<5;i++)if(mask&(1<<i))state=submitPair(puzzle,state,puzzle.pairs[i]).state;
@@ -36,7 +39,7 @@ test('all thirty puzzles can finish from every one of the thirty-two solved-pair
     for(let i=4;i>=0;i--)if(!state.placements.some(x=>x.nounId===puzzle.pairs[i].nounId)){const result=submitPair(puzzle,state,puzzle.pairs[i]);assert.equal(result.accepted,true,puzzle.id);state=result.state;}
     assert.equal(state.status,'won');assert.equal(state.attempts,5);assert.equal(isPerfect(state),true);checked++;
   }
-  assert.equal(checked,960);
+  assert.equal(checked,PUZZLES.length*32);
 });
 test('all noun/verb pairings accept only their encoded word from the full collection',()=>{
   const words=[...new Set(PUZZLES.flatMap(p=>p.pairs.flatMap(x=>x.answers)))];let accepted=0,checked=0;
@@ -44,7 +47,7 @@ test('all noun/verb pairings accept only their encoded word from the full collec
     const result=submitPair(puzzle,createGame(puzzle),{nounId:noun.id,verbId:verb.id,word});const expected=puzzle.pairs.some(p=>p.nounId===noun.id&&p.verbId===verb.id&&p.answers.includes(word));
     assert.equal(result.accepted,expected,`${puzzle.id} ${noun.id} ${verb.id} ${word}`);assert.equal(result.state.attempts,1);if(result.accepted)accepted++;checked++;
   }
-  assert.equal(accepted,150);assert.equal(checked,56250);
+  assert.equal(accepted,PUZZLES.length*5);assert.equal(checked,PUZZLES.length*25*75);
 });
 test('all hints identify only their noun answer initial and length, and reveals restore',()=>{
   for(const puzzle of PUZZLES) {

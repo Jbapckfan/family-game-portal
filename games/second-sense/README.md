@@ -12,9 +12,9 @@ Answers use established English senses and an explicit acceptance table. Input i
 
 ## Prepared collection
 
-There are **30 boards** drawn from **75 original noun/verb pairs**, for **150 pair appearances**. Every pair appears exactly twice, 11–19 board positions apart including the collection boundary. The daily collection repeats after 30 days. Clues identify U.S. usage when needed, and explanations note relevant pronunciation changes.
+There are **180 distinct five-word combinations** drawn from **75 original noun/verb pairs**, for **900 pair appearances**. Familiar meanings return beside different clues; this is not 900 newly authored meanings. Every pair appears exactly twelve times, 11–19 board positions apart including the collection boundary. Every added board differs in at least three of its five words from every earlier board. The daily collection repeats after 180 days. Clues identify U.S. usage when needed, and explanations note relevant pronunciation changes.
 
-Tests cover all 960 board/solved-pair subsets and 56,250 combinations of noun card, verb card, and collection word. They verify the accepted table, recoverability, hints, restoration, and alias handling. Human editorial review remains necessary for the quality and ambiguity of definitions. Difficulty labels are editorial rather than measured player ratings.
+Tests cover all 5,760 board/solved-pair subsets and 337,500 combinations of noun card, verb card, and collection word. They verify the accepted table, recoverability, hints, restoration, and alias handling. Human editorial review remains necessary for the quality and ambiguity of definitions. Difficulty labels are editorial rather than measured player ratings.
 
 The detailed schema, engine API, lexical review, and content decisions are in [contentnotes/ENGINE.md](contentnotes/ENGINE.md).
 
@@ -68,3 +68,7 @@ This portable project lives at `games/second-sense/`. Serve this directory at `/
 There is no application server, database, API key, or runtime network scoring. Access restrictions belong to the serving host; this static app does not implement authentication. This README describes the source and integration path, not a claim that this copy has already been published.
 
 Preserve published puzzle IDs and the daily epoch when extending the collection so existing saves remain meaningful. Changes to scoring or save schema should have an explicit migration or storage-version change.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

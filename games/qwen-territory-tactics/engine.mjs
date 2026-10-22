@@ -50,7 +50,7 @@ export function place(p,s,key){
   const after=applyMove(p,before,key);
   if(!after)return {state:s,message:'That stone would have no liberty. Find another placement.'};
   const state={...s,moves:[...s.moves,key],lastHint:null};
-  return {state,message:after.captured>=p.target?`${after.captured} stones captured. A clean tactical finish!`:state.moves.length===p.maxMoves?'No capture yet. Undo or restart to investigate another route.':`${p.maxMoves-state.moves.length} move left. Close the remaining liberties.`};
+  return {state,message:after.captured>=p.target?`${after.captured} stones captured. A clean tactical finish!`:state.moves.length===p.maxMoves?`${after.captured} ${after.captured===1?'stone':'stones'} captured; ${p.target} needed. Undo or restart to investigate another route.`:`${p.maxMoves-state.moves.length} move left. Close the remaining liberties.`};
 }
 export const undo=(p,s)=>getStatus(p,s)==='playing'?{...s,moves:s.moves.slice(0,-1),lastHint:null}:s;
 export const restart=(p,s)=>getStatus(p,s)==='playing'?{...s,moves:[],lastHint:null}:s;

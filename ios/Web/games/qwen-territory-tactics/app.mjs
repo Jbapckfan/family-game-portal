@@ -5,7 +5,7 @@ mountDailyGame({
   id:'qwen-territory-tactics',name:'Territory Tactics',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#356f58',
   intro:'Two moves. One opening. Make the capture count.',
   instructions:[
-    'Capture at least three amber enemy stones using no more than two blue placements. This is a prepared position puzzle; there is no opposing player taking turns.',
+    'Capture at least the number of amber enemy stones shown in the capture goal, using no more than two blue placements. This is a prepared position puzzle; there is no opposing player taking turns.',
     'Tap an empty hex to place a blue stone. Stones of the same side that touch form a connected group.',
     'A group’s liberties are the empty hexes touching it. Close every liberty of an enemy group to capture and remove the whole group. Board edges do not count as liberties.',
     'You cannot place a stone that leaves its own group without a liberty, unless the move captures enemy stones and creates an opening.',

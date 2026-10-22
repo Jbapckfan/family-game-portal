@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { PUZZLES, COLLECTION } from '../puzzles.mjs';
 import { createGame, submitPair, useHint, revealGame, restoreGame, isPerfect } from '../engine.mjs';
 
-test('collection contains thirty distinct authored boards and ninety distinct analogies',()=>{
-  assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,30);
-  assert.equal(COLLECTION.uniqueAnalogies,90);assert.equal(COLLECTION.totalRowAppearances,150);
+test('collection contains 180 distinct curated combinations and ninety distinct analogies',()=>{
+  assert.equal(PUZZLES.length,180);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,180);
+  assert.equal(COLLECTION.uniqueAnalogies,90);assert.equal(COLLECTION.totalRowAppearances,900);
   assert.equal(new Set(PUZZLES.flatMap(p=>p.rows.map(r=>r.sourceId))).size,90);
-  assert.equal(new Set(PUZZLES.map(p=>p.rows.map(r=>r.sourceId).sort().join('|'))).size,30);
+  assert.equal(new Set(PUZZLES.map(p=>p.rows.map(r=>r.sourceId).sort().join('|'))).size,180);
 });
 test('each board has five explained directed relationships and ten distinct words',()=>{
   for(const puzzle of PUZZLES) {
@@ -24,15 +24,18 @@ test('each board has five explained directed relationships and ten distinct word
     }
   }
 });
-test('every curated analogy appears once or twice with no close daily repeat',()=>{
+test('curated analogies recur in new combinations with no close daily repeat',()=>{
   const appearances=new Map();
   PUZZLES.forEach((p,i)=>p.rows.forEach(row=>appearances.set(row.sourceId,[...(appearances.get(row.sourceId)||[]),i])));
   for(const [id,days] of appearances) {
-    assert.ok(days.length>=1&&days.length<=2,id);
-    if(days.length===2)assert.ok(Math.min(days[1]-days[0],30-days[1]+days[0])>=6,`${id}: ${days}`);
+    assert.ok(days.length >= 1, id);
+    for(let at=0;at<days.length;at++) {
+      const gap=(days[(at+1)%days.length]-days[at]+PUZZLES.length)%PUZZLES.length;
+      assert.ok(gap>=6,`${id}: ${days}`);
+    }
   }
 });
-test('all thirty puzzles can finish from all thirty-two solved-row subsets',()=>{
+test('all prepared puzzles can finish from all thirty-two solved-row subsets',()=>{
   let states=0;
   for(const puzzle of PUZZLES)for(let mask=0;mask<32;mask++) {
     let state=createGame(puzzle);
@@ -43,7 +46,7 @@ test('all thirty puzzles can finish from all thirty-two solved-row subsets',()=>
     }
     assert.equal(state.status,'won');assert.equal(state.attempts,5);assert.equal(isPerfect(state),true);states++;
   }
-  assert.equal(states,960);
+  assert.equal(states,PUZZLES.length*32);
 });
 test('all ninety ordered bank pairs have exactly one scored solution per row',()=>{
   for(const puzzle of PUZZLES)for(let row=0;row<5;row++) {

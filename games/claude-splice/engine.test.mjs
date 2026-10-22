@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PUZZLES,FUSED} from './puzzles.mjs';
+import {PUZZLES as ALL_PUZZLES,FUSED} from './puzzles.mjs';
 import {createState,restoreState,getStatus,analyze,chooseTile,submitPair,shuffle,hint,reveal,findMatchings} from './engine.mjs';
 import {createSession} from '../deepseek-runtime/core.mjs';
+// Preserve the original orientation regression cases; new bins are exhaustively
+// validated separately by scripts/claude-expansion.test.mjs.
+const PUZZLES=ALL_PUZZLES.slice(0,73);
 const indices=Array.from({length:12},(_,i)=>i);
 function pair(p,s,a,b){return submitPair(p,chooseTile(p,chooseTile(p,s,a),b)).state;}
 test('all 73 bins have a complete matching; three original bins allow two orientations',()=>{

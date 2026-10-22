@@ -6,8 +6,8 @@ const contentURL = new URL('../puzzles.mjs', import.meta.url);
 const { PUZZLES = [] } = existsSync(contentURL) ? await import(contentURL) : {};
 const letters = rows => rows.join('').split('').sort().join('');
 
-test('ships at least ninety distinct, authored puzzle boards', () => {
-  assert.ok(PUZZLES.length >= 90, 'The ninety-board starter collection must exist');
+test('ships at least 180 distinct, authored puzzle boards', () => {
+  assert.ok(PUZZLES.length >= 180, 'The 180-board collection must exist');
   assert.equal(new Set(PUZZLES.map(p => p.id)).size, PUZZLES.length);
   const signatures = PUZZLES.map(p => p.rows.map(r => `${r.start}:${r.answer}`).sort().join('|'));
   assert.equal(new Set(signatures).size, PUZZLES.length, 'Reordering a board does not create a new puzzle');

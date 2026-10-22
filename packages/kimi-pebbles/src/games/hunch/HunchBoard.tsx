@@ -32,6 +32,11 @@ const EVAL_CLASS: Record<Eval, string> = {
   present: 'tile-gold',
   absent: 'tile-dim',
 }
+const EVAL_LABEL: Record<Eval, string> = {
+  correct: 'correct position',
+  present: 'in the word, different position',
+  absent: 'not in the word, or no additional copy',
+}
 
 const KB_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
@@ -91,7 +96,7 @@ export function HunchBoard({ state, actions }: Props) {
       {/* grid */}
       <div className={cn('hunch-typecase mt-4 flex flex-col gap-1.5', state.shaking && 'anim-shake')} aria-live="polite">
         {rows.map((word, r) => (
-          <div key={r} className="flex gap-1.5" aria-label={word ? `Guess ${r + 1}: ${word}` : `Row ${r + 1} empty`}>
+          <div key={r} className="flex gap-1.5" role="group" aria-label={word ? `Guess ${r + 1}: ${word}` : `Row ${r + 1} empty`}>
             {Array.from({ length: WORD_LEN }).map((_, i) => {
               const ch = word?.[i] ?? ''
               const ev = r < state.evals.length ? state.evals[r][i] : null
@@ -99,6 +104,8 @@ export function HunchBoard({ state, actions }: Props) {
               return (
                 <div
                   key={i}
+                  role="img"
+                  aria-label={`Position ${i + 1}: ${ch ? ch.toUpperCase() : 'empty'}${ev ? `, ${EVAL_LABEL[ev]}` : ''}`}
                   className={cn(
                     'tile3d h-14 w-12 text-2xl sm:w-13',
                     ev ? EVAL_CLASS[ev] : isCurrent && ch ? 'tile-slot' : '',
@@ -142,7 +149,7 @@ export function HunchBoard({ state, actions }: Props) {
                   <button
                     key={ch}
                     type="button"
-                    aria-label={`Letter ${ch}`}
+                    aria-label={`Letter ${ch}${st ? `, ${EVAL_LABEL[st]}` : ''}`}
                     onClick={() => actions.keyLetter(ch)}
                     className={cn(
                       'tile3d h-12 min-w-0 flex-1 text-lg sm:text-xl',

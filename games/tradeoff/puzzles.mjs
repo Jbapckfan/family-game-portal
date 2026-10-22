@@ -1,4 +1,4 @@
-// Tradeoff starter collection. Ninety deterministic boards from an authored word/clue bank.
+// Tradeoff collection. 180 deterministic boards from an authored word/clue bank.
 // Each board conserves letters and forms one six-letter cycle: five swaps is optimal.
 // Generated offline with scripts/generate-puzzles.mjs; no runtime content generation.
 export const PUZZLES = [
@@ -3958,6 +3958,3966 @@ export const PUZZLES = [
         "answer": "GLADE",
         "clue": "A clearing with trees all around",
         "hint": "An open space in a forest."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p091",
+    "title": "Good connections",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "WHINE",
+        "answer": "WHITE",
+        "clue": "The color of fresh snow",
+        "hint": "The palest color."
+      },
+      {
+        "start": "FLASH",
+        "answer": "CLASH",
+        "clue": "A loud meeting of things that do not agree",
+        "hint": "A collision or conflict between opposing things."
+      },
+      {
+        "start": "GLIDE",
+        "answer": "SLIDE",
+        "clue": "A playground ride with gravity on its side",
+        "hint": "A smooth sloping surface for moving downward."
+      },
+      {
+        "start": "CROSS",
+        "answer": "GROSS",
+        "clue": "The amount before deductions",
+        "hint": "A total before costs or taxes are removed."
+      },
+      {
+        "start": "YEARS",
+        "answer": "YEARN",
+        "clue": "Want something with your whole heart",
+        "hint": "To have a strong longing."
+      },
+      {
+        "start": "TRAIL",
+        "answer": "FRAIL",
+        "clue": "Handle this person with extra care",
+        "hint": "Physically weak or easily injured."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p092",
+    "title": "A fair exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "BRAVE",
+        "answer": "BRAKE",
+        "clue": "The pedal that asks a car to slow down",
+        "hint": "A mechanism used to slow or stop a vehicle."
+      },
+      {
+        "start": "COAST",
+        "answer": "TOAST",
+        "clue": "Bread after a trip through the heater",
+        "hint": "Bread browned by exposure to heat."
+      },
+      {
+        "start": "TAPER",
+        "answer": "PAPER",
+        "clue": "A printer's favorite blank canvas",
+        "hint": "A thin material used for writing and printing."
+      },
+      {
+        "start": "SKIRT",
+        "answer": "SHIRT",
+        "clue": "A top with sleeves and a collar, perhaps",
+        "hint": "A garment worn on the upper body."
+      },
+      {
+        "start": "SHAPE",
+        "answer": "SHAVE",
+        "clue": "Give your whiskers a close call",
+        "hint": "To remove hair with a razor."
+      },
+      {
+        "start": "HATCH",
+        "answer": "CATCH",
+        "clue": "What a fielder hopes to make",
+        "hint": "To stop and hold something moving through the air."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p093",
+    "title": "Changing hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "CLANK",
+        "answer": "CLINK",
+        "clue": "The little sound of glasses meeting",
+        "hint": "A short ringing sound made by glass or metal."
+      },
+      {
+        "start": "SHORE",
+        "answer": "SHORT",
+        "clue": "The opposite of tall or lengthy",
+        "hint": "Small in height or length."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "FLOOR",
+        "answer": "FLOUR",
+        "clue": "A baker's powdery starting point",
+        "hint": "Powder made by grinding grain."
+      },
+      {
+        "start": "BUNCH",
+        "answer": "BENCH",
+        "clue": "A seat with room for company",
+        "hint": "A long seat for several people."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p094",
+    "title": "Pass it on",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SHADE",
+        "answer": "SHAKE",
+        "clue": "A milk drink, or a nervous movement",
+        "hint": "To move back and forth rapidly."
+      },
+      {
+        "start": "GRADE",
+        "answer": "TRADE",
+        "clue": "A deal with something on both sides",
+        "hint": "An exchange of goods or services."
+      },
+      {
+        "start": "STALL",
+        "answer": "SMALL",
+        "clue": "Not taking up much room",
+        "hint": "Little in size or amount."
+      },
+      {
+        "start": "FLOAT",
+        "answer": "GLOAT",
+        "clue": "Enjoy winning a little too obviously",
+        "hint": "To take excessive pleasure in one's own success."
+      },
+      {
+        "start": "LEAKY",
+        "answer": "LEAFY",
+        "clue": "Full of the green parts of plants",
+        "hint": "Covered with many leaves."
+      },
+      {
+        "start": "BLAME",
+        "answer": "BLADE",
+        "clue": "The business end of a knife",
+        "hint": "The sharp cutting part of a tool."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p095",
+    "title": "Small change",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "STUNT",
+        "answer": "SHUNT",
+        "clue": "Move something onto a different track",
+        "hint": "To divert something onto another path."
+      },
+      {
+        "start": "VERSE",
+        "answer": "TERSE",
+        "clue": "Using very few words",
+        "hint": "Brief and direct in expression."
+      },
+      {
+        "start": "LATCH",
+        "answer": "BATCH",
+        "clue": "One oven load of cookies",
+        "hint": "A group of things made at the same time."
+      },
+      {
+        "start": "GLOBE",
+        "answer": "GLOVE",
+        "clue": "A hand covering with room for every finger",
+        "hint": "A fitted covering for the hand."
+      },
+      {
+        "start": "SPICE",
+        "answer": "SLICE",
+        "clue": "A pizza's most shareable unit",
+        "hint": "A thin piece cut from something larger."
+      },
+      {
+        "start": "HOUND",
+        "answer": "POUND",
+        "clue": "Sixteen ounces, or a heavy thump",
+        "hint": "A unit of weight equal to sixteen ounces."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p096",
+    "title": "The long way round",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "TRUCK",
+        "answer": "TRICK",
+        "clue": "A magician's secret ingredient",
+        "hint": "An action designed to deceive or surprise."
+      },
+      {
+        "start": "WHITE",
+        "answer": "WRITE",
+        "clue": "Turn thoughts into marks on a page",
+        "hint": "To form words on a surface or screen."
+      },
+      {
+        "start": "HORSE",
+        "answer": "HOUSE",
+        "clue": "A building that can become a home",
+        "hint": "A building in which people live."
+      },
+      {
+        "start": "SHIRK",
+        "answer": "SHARK",
+        "clue": "An ocean predator with a fin to announce it",
+        "hint": "A large fish with a skeleton made of cartilage."
+      },
+      {
+        "start": "SWEAT",
+        "answer": "SWEET",
+        "clue": "The flavor sugar brings to the party",
+        "hint": "Having a taste like sugar or honey."
+      },
+      {
+        "start": "PEACE",
+        "answer": "PEACH",
+        "clue": "A fuzzy fruit with a stone inside",
+        "hint": "A sweet fruit with velvety skin and a large pit."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p097",
+    "title": "A clever exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "CHUNK",
+        "answer": "CHUCK",
+        "clue": "Throw it without much ceremony",
+        "hint": "To toss something carelessly."
+      },
+      {
+        "start": "LIGHT",
+        "answer": "TIGHT",
+        "clue": "Not leaving much wiggle room",
+        "hint": "Firmly held or fitting very closely."
+      },
+      {
+        "start": "BOAST",
+        "answer": "ROAST",
+        "clue": "Cook with dry heat",
+        "hint": "To cook food in an oven or over a fire."
+      },
+      {
+        "start": "CROOK",
+        "answer": "BROOK",
+        "clue": "A stream on the smaller side",
+        "hint": "A small natural stream of water."
+      },
+      {
+        "start": "FRAME",
+        "answer": "FLAME",
+        "clue": "The bright moving part of a fire",
+        "hint": "A stream of burning gas that gives off heat and light."
+      },
+      {
+        "start": "PITCH",
+        "answer": "PINCH",
+        "clue": "A cook's smallest finger measurement",
+        "hint": "A small amount held between finger and thumb."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p098",
+    "title": "In good hands",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "PLANE",
+        "answer": "PLACE",
+        "clue": "A spot that can be on the map",
+        "hint": "A particular position or location."
+      },
+      {
+        "start": "CHAIR",
+        "answer": "CHAIN",
+        "clue": "Links that stick together",
+        "hint": "A series of connected metal links."
+      },
+      {
+        "start": "WAFER",
+        "answer": "WAGER",
+        "clue": "Put money behind your prediction",
+        "hint": "A bet on an uncertain result."
+      },
+      {
+        "start": "STAGE",
+        "answer": "STALE",
+        "clue": "Past its prime, like yesterday's bread",
+        "hint": "No longer fresh."
+      },
+      {
+        "start": "GLASS",
+        "answer": "GRASS",
+        "clue": "The green carpet that needs mowing",
+        "hint": "A plant with narrow green blades."
+      },
+      {
+        "start": "CROWN",
+        "answer": "FROWN",
+        "clue": "A smile turned upside down",
+        "hint": "An unhappy expression with lowered eyebrows."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p099",
+    "title": "A fresh perspective",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SHINE",
+        "answer": "SWINE",
+        "clue": "Pigs, collectively speaking",
+        "hint": "Domestic pigs considered as a group."
+      },
+      {
+        "start": "BLINK",
+        "answer": "CLINK",
+        "clue": "The little sound of glasses meeting",
+        "hint": "A short ringing sound made by glass or metal."
+      },
+      {
+        "start": "STILL",
+        "answer": "SKILL",
+        "clue": "Practice is how you earn this",
+        "hint": "An ability to do something well."
+      },
+      {
+        "start": "WRING",
+        "answer": "BRING",
+        "clue": "Carry it toward the person asking",
+        "hint": "To take something to a place or person."
+      },
+      {
+        "start": "FLASK",
+        "answer": "FLASH",
+        "clue": "A very quick burst of light",
+        "hint": "A sudden brief bright light."
+      },
+      {
+        "start": "CRUST",
+        "answer": "TRUST",
+        "clue": "Believe someone will come through",
+        "hint": "Confidence in someone's honesty or reliability."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p100",
+    "title": "Trading places",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "SLEEP",
+        "answer": "SLEET",
+        "clue": "Winter weather that cannot quite pick a side",
+        "hint": "Rain that freezes into ice pellets."
+      },
+      {
+        "start": "STINK",
+        "answer": "STING",
+        "clue": "A bee's painful parting gift",
+        "hint": "A sharp painful jab from an insect."
+      },
+      {
+        "start": "BLOOM",
+        "answer": "BROOM",
+        "clue": "A floor cleaner with no battery",
+        "hint": "A brush on a long handle used for sweeping."
+      },
+      {
+        "start": "FLARE",
+        "answer": "FLAKE",
+        "clue": "One small piece of falling snow",
+        "hint": "A thin, flat piece that has broken off something."
+      },
+      {
+        "start": "GEARS",
+        "answer": "PEARS",
+        "clue": "Fruits with narrow tops and wide bottoms",
+        "hint": "Sweet fruits related to apples."
+      },
+      {
+        "start": "STATE",
+        "answer": "SLATE",
+        "clue": "A rock that once did classroom duty",
+        "hint": "A fine-grained rock used for roofing and writing boards."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p101",
+    "title": "A little give and take",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "BRACE",
+        "answer": "GRACE",
+        "clue": "Elegance that makes effort look easy",
+        "hint": "Smoothness and beauty of movement."
+      },
+      {
+        "start": "ROOTS",
+        "answer": "BOOTS",
+        "clue": "Footwear that rises above the ankle",
+        "hint": "Sturdy shoes that cover the ankles or lower legs."
+      },
+      {
+        "start": "PUNCH",
+        "answer": "LUNCH",
+        "clue": "The meal in the middle",
+        "hint": "A meal usually eaten around midday."
+      },
+      {
+        "start": "GLOOM",
+        "answer": "GROOM",
+        "clue": "One half of a wedding couple",
+        "hint": "A man on his wedding day."
+      },
+      {
+        "start": "LEANS",
+        "answer": "LEAPS",
+        "clue": "Jumps with a little extra ambition",
+        "hint": "Large jumps through the air."
+      },
+      {
+        "start": "GOOSE",
+        "answer": "NOOSE",
+        "clue": "A loop that tightens when pulled",
+        "hint": "A sliding loop at the end of a rope."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p102",
+    "title": "The missing piece",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "BROAD",
+        "answer": "BREAD",
+        "clue": "What sandwiches are built on",
+        "hint": "Food baked from flour, water, and usually yeast."
+      },
+      {
+        "start": "CURVE",
+        "answer": "CARVE",
+        "clue": "Turn wood into a sculpture",
+        "hint": "To shape material by cutting pieces away."
+      },
+      {
+        "start": "BLACK",
+        "answer": "BLOCK",
+        "clue": "A cube, or a way to stop someone",
+        "hint": "A solid piece with flat sides."
+      },
+      {
+        "start": "HORSE",
+        "answer": "HOUSE",
+        "clue": "A building that can become a home",
+        "hint": "A building in which people live."
+      },
+      {
+        "start": "NIGHT",
+        "answer": "RIGHT",
+        "clue": "A direction that is also correct",
+        "hint": "Correct, or the opposite of left."
+      },
+      {
+        "start": "TEETH",
+        "answer": "TENTH",
+        "clue": "The place just after ninth",
+        "hint": "The ordinal number after ninth."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p103",
+    "title": "One good turn",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "SENSE",
+        "answer": "TENSE",
+        "clue": "Not exactly relaxed",
+        "hint": "Nervous or tightly stretched."
+      },
+      {
+        "start": "TAINT",
+        "answer": "PAINT",
+        "clue": "Color that comes in a can",
+        "hint": "A colored coating applied with a brush or roller."
+      },
+      {
+        "start": "SPILL",
+        "answer": "SKILL",
+        "clue": "Practice is how you earn this",
+        "hint": "An ability to do something well."
+      },
+      {
+        "start": "TRACK",
+        "answer": "TRACE",
+        "clue": "Follow the faintest outline",
+        "hint": "To copy a drawing by following its lines."
+      },
+      {
+        "start": "CLASH",
+        "answer": "CLASS",
+        "clue": "A group gathered to learn",
+        "hint": "A group of students taught together."
+      },
+      {
+        "start": "PEACE",
+        "answer": "PEACH",
+        "clue": "A fuzzy fruit with a stone inside",
+        "hint": "A sweet fruit with velvety skin and a large pit."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p104",
+    "title": "New arrangements",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "DRANK",
+        "answer": "DRINK",
+        "clue": "A toast's liquid companion",
+        "hint": "A beverage, or the act of consuming one."
+      },
+      {
+        "start": "ROAST",
+        "answer": "COAST",
+        "clue": "The edge of a country facing the sea",
+        "hint": "The land beside an ocean."
+      },
+      {
+        "start": "CLOCK",
+        "answer": "CLOAK",
+        "clue": "A cape with something to hide",
+        "hint": "A loose outer garment worn over the shoulders."
+      },
+      {
+        "start": "MOOSE",
+        "answer": "MOUSE",
+        "clue": "A tiny rodent, or a computer companion",
+        "hint": "A small rodent with a long tail."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p105",
+    "title": "A change of heart",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "BOOTH",
+        "answer": "TOOTH",
+        "clue": "A smile's individual piece",
+        "hint": "A hard structure in the mouth used for biting."
+      },
+      {
+        "start": "GLOVE",
+        "answer": "GLOBE",
+        "clue": "The world you can spin on a desk",
+        "hint": "A spherical model of Earth."
+      },
+      {
+        "start": "WORDS",
+        "answer": "WORMS",
+        "clue": "Garden residents that work underground",
+        "hint": "Long, soft-bodied animals with no limbs."
+      },
+      {
+        "start": "SHIRT",
+        "answer": "SHIRK",
+        "clue": "Avoid doing your fair share",
+        "hint": "To evade a duty or responsibility."
+      },
+      {
+        "start": "MERGE",
+        "answer": "VERGE",
+        "clue": "Right on the edge of happening",
+        "hint": "The edge or brink of something."
+      },
+      {
+        "start": "LEAKS",
+        "answer": "LEADS",
+        "clue": "What the person in front does",
+        "hint": "Guides others by going first."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p106",
+    "title": "Passing thoughts",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "FLUTE",
+        "answer": "FLUKE",
+        "clue": "A lucky result that is hard to repeat",
+        "hint": "An unlikely chance occurrence."
+      },
+      {
+        "start": "YEARS",
+        "answer": "YEARN",
+        "clue": "Want something with your whole heart",
+        "hint": "To have a strong longing."
+      },
+      {
+        "start": "FIGHT",
+        "answer": "SIGHT",
+        "clue": "The sense that lets you enjoy a view",
+        "hint": "The ability to see."
+      },
+      {
+        "start": "MOUND",
+        "answer": "FOUND",
+        "clue": "What a successful search finally did",
+        "hint": "Discovered something that had been missing."
+      },
+      {
+        "start": "SHAKE",
+        "answer": "SHAME",
+        "clue": "The feeling after a regrettable choice",
+        "hint": "A painful feeling about something dishonorable."
+      },
+      {
+        "start": "CRANE",
+        "answer": "CRATE",
+        "clue": "A box with a shipping label",
+        "hint": "A sturdy container used to transport goods."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p107",
+    "title": "Give it a spin",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "BLOOD",
+        "answer": "BROOD",
+        "clue": "A group of newly hatched chicks",
+        "hint": "A family of young birds hatched together."
+      },
+      {
+        "start": "TERSE",
+        "answer": "TENSE",
+        "clue": "Not exactly relaxed",
+        "hint": "Nervous or tightly stretched."
+      },
+      {
+        "start": "PAGES",
+        "answer": "WAGES",
+        "clue": "What working hours should bring in",
+        "hint": "Money paid to someone for their work."
+      },
+      {
+        "start": "SHEET",
+        "answer": "SHEEP",
+        "clue": "A woolly member of the flock",
+        "hint": "A farm animal raised for wool and meat."
+      },
+      {
+        "start": "WATER",
+        "answer": "LATER",
+        "clue": "The time procrastinators prefer",
+        "hint": "At a time after the present."
+      },
+      {
+        "start": "SNARE",
+        "answer": "STARE",
+        "clue": "A look that overstays its welcome",
+        "hint": "To look at something for a long time."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p108",
+    "title": "A quiet shuffle",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "SHINE",
+        "answer": "WHINE",
+        "clue": "Complain in a high, unhappy voice",
+        "hint": "To make a long, high-pitched complaining sound."
+      },
+      {
+        "start": "STUNT",
+        "answer": "SHUNT",
+        "clue": "Move something onto a different track",
+        "hint": "To divert something onto another path."
+      },
+      {
+        "start": "WHEAT",
+        "answer": "CHEAT",
+        "clue": "Break the rules to gain an advantage",
+        "hint": "To act dishonestly in a game or test."
+      },
+      {
+        "start": "HOUND",
+        "answer": "SOUND",
+        "clue": "What your ears are tuned to",
+        "hint": "Vibrations that can be heard."
+      },
+      {
+        "start": "PLANE",
+        "answer": "PLATE",
+        "clue": "Dinner's landing pad",
+        "hint": "A flat dish used to hold food."
+      },
+      {
+        "start": "BLACK",
+        "answer": "BLANK",
+        "clue": "What a mind sometimes draws",
+        "hint": "Empty, with nothing written or marked."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p109",
+    "title": "Good connections",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "SLIDE",
+        "answer": "GLIDE",
+        "clue": "Move smoothly with very little effort",
+        "hint": "To travel with a smooth, continuous motion."
+      },
+      {
+        "start": "TIRED",
+        "answer": "TIRES",
+        "clue": "The four rubber rings under most cars",
+        "hint": "Rubber coverings around wheels."
+      },
+      {
+        "start": "GRATE",
+        "answer": "GRADE",
+        "clue": "A teacher's final letter",
+        "hint": "A mark given for schoolwork."
+      },
+      {
+        "start": "FRAIL",
+        "answer": "TRAIL",
+        "clue": "A hiker's line through the woods",
+        "hint": "A marked path through natural surroundings."
+      },
+      {
+        "start": "BEARS",
+        "answer": "FEARS",
+        "clue": "Things that keep courage busy",
+        "hint": "Feelings of being afraid."
+      },
+      {
+        "start": "GLADE",
+        "answer": "BLADE",
+        "clue": "The business end of a knife",
+        "hint": "The sharp cutting part of a tool."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p110",
+    "title": "A fair exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "TRICK",
+        "answer": "TRUCK",
+        "clue": "A vehicle with a working bed",
+        "hint": "A road vehicle built to carry goods."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "FLUSH",
+        "answer": "FLESH",
+        "clue": "The soft part beneath the skin",
+        "hint": "The soft tissue of a body."
+      },
+      {
+        "start": "TALES",
+        "answer": "TILES",
+        "clue": "Pieces that make a mosaic",
+        "hint": "Flat pieces used to cover floors or walls."
+      },
+      {
+        "start": "FARES",
+        "answer": "FARMS",
+        "clue": "Places where crops are a main event",
+        "hint": "Areas of land used for growing food or raising animals."
+      },
+      {
+        "start": "SMALL",
+        "answer": "STALL",
+        "clue": "A market seller's little space",
+        "hint": "A booth or compartment used for selling goods."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p111",
+    "title": "Changing hands",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "GEARS",
+        "answer": "YEARS",
+        "clue": "A birthday counts these",
+        "hint": "Periods of twelve months."
+      },
+      {
+        "start": "ROOST",
+        "answer": "BOOST",
+        "clue": "A helpful little lift",
+        "hint": "An increase or encouraging push."
+      },
+      {
+        "start": "BLOOD",
+        "answer": "FLOOD",
+        "clue": "Water that ignores its usual boundaries",
+        "hint": "An overflow of water onto normally dry land."
+      },
+      {
+        "start": "YEARN",
+        "answer": "LEARN",
+        "clue": "Turn curiosity into knowledge",
+        "hint": "To gain knowledge or a new skill."
+      },
+      {
+        "start": "FLAME",
+        "answer": "FRAME",
+        "clue": "A picture's finishing border",
+        "hint": "A structure that surrounds and supports a picture."
+      },
+      {
+        "start": "WAFER",
+        "answer": "WAGER",
+        "clue": "Put money behind your prediction",
+        "hint": "A bet on an uncertain result."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p112",
+    "title": "Pass it on",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "GRAIN",
+        "answer": "TRAIN",
+        "clue": "A ride that sticks to its rails",
+        "hint": "A connected series of railroad cars."
+      },
+      {
+        "start": "TAPER",
+        "answer": "PAPER",
+        "clue": "A printer's favorite blank canvas",
+        "hint": "A thin material used for writing and printing."
+      },
+      {
+        "start": "VERSE",
+        "answer": "VERGE",
+        "clue": "Right on the edge of happening",
+        "hint": "The edge or brink of something."
+      },
+      {
+        "start": "SHARP",
+        "answer": "SHARK",
+        "clue": "An ocean predator with a fin to announce it",
+        "hint": "A large fish with a skeleton made of cartilage."
+      },
+      {
+        "start": "LEAKS",
+        "answer": "LEADS",
+        "clue": "What the person in front does",
+        "hint": "Guides others by going first."
+      },
+      {
+        "start": "DENSE",
+        "answer": "SENSE",
+        "clue": "One of the ways you notice the world",
+        "hint": "A faculty such as sight, hearing, or touch."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p113",
+    "title": "Small change",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GRACE",
+        "answer": "GRAPE",
+        "clue": "A little fruit with big wine ambitions",
+        "hint": "A small fruit that grows in bunches."
+      },
+      {
+        "start": "PATCH",
+        "answer": "MATCH",
+        "clue": "A tiny stick that starts a flame",
+        "hint": "A small stick with a head that ignites when struck."
+      },
+      {
+        "start": "HATCH",
+        "answer": "WATCH",
+        "clue": "A little timekeeper on your wrist",
+        "hint": "A small clock worn on the body."
+      },
+      {
+        "start": "SMELL",
+        "answer": "SHELL",
+        "clue": "A turtle's built-in protection",
+        "hint": "A hard outer covering that protects an animal."
+      },
+      {
+        "start": "WRING",
+        "answer": "BRING",
+        "clue": "Carry it toward the person asking",
+        "hint": "To take something to a place or person."
+      },
+      {
+        "start": "BRUSH",
+        "answer": "CRUSH",
+        "clue": "Press until the original shape is gone",
+        "hint": "To squeeze or smash with force."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p114",
+    "title": "The long way round",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SPICE",
+        "answer": "SPITE",
+        "clue": "The urge to annoy just for the sake of it",
+        "hint": "A desire to hurt or upset another person."
+      },
+      {
+        "start": "GROSS",
+        "answer": "CROSS",
+        "clue": "Go from one side to the other",
+        "hint": "To pass across something."
+      },
+      {
+        "start": "STACK",
+        "answer": "SLACK",
+        "clue": "Not pulled tight",
+        "hint": "Loose rather than taut."
+      },
+      {
+        "start": "MOOSE",
+        "answer": "GOOSE",
+        "clue": "A honking bird with a long neck",
+        "hint": "A large waterbird related to ducks."
+      },
+      {
+        "start": "ROUND",
+        "answer": "MOUND",
+        "clue": "A pitcher's little hill",
+        "hint": "A raised pile of earth."
+      },
+      {
+        "start": "GLASS",
+        "answer": "GRASS",
+        "clue": "The green carpet that needs mowing",
+        "hint": "A plant with narrow green blades."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p115",
+    "title": "A clever exchange",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "LEAKY",
+        "answer": "LEAFY",
+        "clue": "Full of the green parts of plants",
+        "hint": "Covered with many leaves."
+      },
+      {
+        "start": "TIGHT",
+        "answer": "MIGHT",
+        "clue": "Strength, or a word that leaves room for doubt",
+        "hint": "Power or great strength."
+      },
+      {
+        "start": "BROOM",
+        "answer": "BROOK",
+        "clue": "A stream on the smaller side",
+        "hint": "A small natural stream of water."
+      },
+      {
+        "start": "FLEET",
+        "answer": "SLEET",
+        "clue": "Winter weather that cannot quite pick a side",
+        "hint": "Rain that freezes into ice pellets."
+      },
+      {
+        "start": "BEARS",
+        "answer": "TEARS",
+        "clue": "What onions sometimes bring out",
+        "hint": "Drops of liquid that come from the eyes."
+      },
+      {
+        "start": "SLINK",
+        "answer": "BLINK",
+        "clue": "The shortest break your eyes take",
+        "hint": "To close and reopen your eyes quickly."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p116",
+    "title": "In good hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "WHEAT",
+        "answer": "CHEAT",
+        "clue": "Break the rules to gain an advantage",
+        "hint": "To act dishonestly in a game or test."
+      },
+      {
+        "start": "SWEET",
+        "answer": "SWEAT",
+        "clue": "Your body's built-in cooling system",
+        "hint": "Moisture produced by the skin to cool the body."
+      },
+      {
+        "start": "GROAN",
+        "answer": "GROWN",
+        "clue": "No longer the little version",
+        "hint": "Having developed into an adult or full size."
+      },
+      {
+        "start": "CROWN",
+        "answer": "FROWN",
+        "clue": "A smile turned upside down",
+        "hint": "An unhappy expression with lowered eyebrows."
+      },
+      {
+        "start": "SWING",
+        "answer": "SWINE",
+        "clue": "Pigs, collectively speaking",
+        "hint": "Domestic pigs considered as a group."
+      },
+      {
+        "start": "FLOAT",
+        "answer": "GLOAT",
+        "clue": "Enjoy winning a little too obviously",
+        "hint": "To take excessive pleasure in one's own success."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p117",
+    "title": "A fresh perspective",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "FOUND",
+        "answer": "BOUND",
+        "clue": "Headed somewhere, as in homeward",
+        "hint": "Going toward a particular destination."
+      },
+      {
+        "start": "CHUNK",
+        "answer": "CHUCK",
+        "clue": "Throw it without much ceremony",
+        "hint": "To toss something carelessly."
+      },
+      {
+        "start": "BOOTS",
+        "answer": "ROOTS",
+        "clue": "A plant's underground anchors",
+        "hint": "The parts of a plant that absorb water from soil."
+      },
+      {
+        "start": "CHAIR",
+        "answer": "CHAIN",
+        "clue": "Links that stick together",
+        "hint": "A series of connected metal links."
+      },
+      {
+        "start": "CRUST",
+        "answer": "TRUST",
+        "clue": "Believe someone will come through",
+        "hint": "Confidence in someone's honesty or reliability."
+      },
+      {
+        "start": "TAINT",
+        "answer": "FAINT",
+        "clue": "So weak you can barely see it",
+        "hint": "Very slight or hard to detect."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p118",
+    "title": "Trading places",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "CARVE",
+        "answer": "CURVE",
+        "clue": "A line that refuses to go straight",
+        "hint": "A smoothly bending line."
+      },
+      {
+        "start": "PLACE",
+        "answer": "PEACE",
+        "clue": "The quiet after everyone agrees",
+        "hint": "Freedom from war or conflict."
+      },
+      {
+        "start": "BRUSH",
+        "answer": "BLUSH",
+        "clue": "A face's pink response to embarrassment",
+        "hint": "To become red in the face."
+      },
+      {
+        "start": "BREAD",
+        "answer": "BROAD",
+        "clue": "Wide enough to make room",
+        "hint": "Having a large width."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "CROOK",
+        "answer": "CROAK",
+        "clue": "A frog's contribution to the choir",
+        "hint": "The rough sound a frog makes."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p119",
+    "title": "A little give and take",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "BRIDE",
+        "answer": "BRINE",
+        "clue": "A salty bath for pickles",
+        "hint": "Water containing a large amount of dissolved salt."
+      },
+      {
+        "start": "FIRES",
+        "answer": "TIRES",
+        "clue": "The four rubber rings under most cars",
+        "hint": "Rubber coverings around wheels."
+      },
+      {
+        "start": "NIGHT",
+        "answer": "SIGHT",
+        "clue": "The sense that lets you enjoy a view",
+        "hint": "The ability to see."
+      },
+      {
+        "start": "SLATE",
+        "answer": "PLATE",
+        "clue": "Dinner's landing pad",
+        "hint": "A flat dish used to hold food."
+      },
+      {
+        "start": "PEARS",
+        "answer": "FEARS",
+        "clue": "Things that keep courage busy",
+        "hint": "Feelings of being afraid."
+      },
+      {
+        "start": "HEART",
+        "answer": "HEARD",
+        "clue": "Caught it with your ears",
+        "hint": "Perceived a sound."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p120",
+    "title": "The missing piece",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SLATE",
+        "answer": "STATE",
+        "clue": "Kansas is one; so is Maine",
+        "hint": "A political division of a country."
+      },
+      {
+        "start": "SHAVE",
+        "answer": "SHAME",
+        "clue": "The feeling after a regrettable choice",
+        "hint": "A painful feeling about something dishonorable."
+      },
+      {
+        "start": "BRACE",
+        "answer": "BRAVE",
+        "clue": "Afraid, perhaps, but doing it anyway",
+        "hint": "Showing courage in the face of danger."
+      },
+      {
+        "start": "MATCH",
+        "answer": "LATCH",
+        "clue": "A little catch that keeps a gate shut",
+        "hint": "A fastening device for a door or gate."
+      },
+      {
+        "start": "CRATE",
+        "answer": "CRANE",
+        "clue": "A bird that shares its name with a lifting machine",
+        "hint": "A tall wading bird, or a machine that lifts heavy loads."
+      },
+      {
+        "start": "TRUNK",
+        "answer": "TRUCK",
+        "clue": "A vehicle with a working bed",
+        "hint": "A road vehicle built to carry goods."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p121",
+    "title": "One good turn",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "FLOUR",
+        "answer": "FLOOR",
+        "clue": "The part of a room beneath your feet",
+        "hint": "The lower surface of a room."
+      },
+      {
+        "start": "BROAD",
+        "answer": "BREAD",
+        "clue": "What sandwiches are built on",
+        "hint": "Food baked from flour, water, and usually yeast."
+      },
+      {
+        "start": "BENCH",
+        "answer": "BEACH",
+        "clue": "Where sand meets the sea",
+        "hint": "A sandy or pebbly shore beside water."
+      },
+      {
+        "start": "PINCH",
+        "answer": "PUNCH",
+        "clue": "A party drink with a fighting name",
+        "hint": "A drink often made with several fruit juices."
+      },
+      {
+        "start": "TEETH",
+        "answer": "TENTH",
+        "clue": "The place just after ninth",
+        "hint": "The ordinal number after ninth."
+      },
+      {
+        "start": "CLANK",
+        "answer": "CLINK",
+        "clue": "The little sound of glasses meeting",
+        "hint": "A short ringing sound made by glass or metal."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p122",
+    "title": "New arrangements",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "TOOTH",
+        "answer": "BOOTH",
+        "clue": "A cozy restaurant seat with its own sides",
+        "hint": "A small enclosed seating area or stall."
+      },
+      {
+        "start": "FLUKE",
+        "answer": "FLUTE",
+        "clue": "A wind instrument held sideways",
+        "hint": "A woodwind instrument played by blowing across a hole."
+      },
+      {
+        "start": "BUNCH",
+        "answer": "LUNCH",
+        "clue": "The meal in the middle",
+        "hint": "A meal usually eaten around midday."
+      },
+      {
+        "start": "LIGHT",
+        "answer": "FIGHT",
+        "clue": "A contest where fists may do the talking",
+        "hint": "A physical struggle or serious argument."
+      },
+      {
+        "start": "FLARE",
+        "answer": "GLARE",
+        "clue": "A harsh light, or a harsher look",
+        "hint": "An intense, dazzling light."
+      },
+      {
+        "start": "STING",
+        "answer": "STINK",
+        "clue": "Offend the nose",
+        "hint": "To have a very unpleasant smell."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p123",
+    "title": "A change of heart",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "TAPES",
+        "answer": "TALES",
+        "clue": "Stories told around the campfire",
+        "hint": "Narratives, especially imaginative ones."
+      },
+      {
+        "start": "SHAME",
+        "answer": "SHAPE",
+        "clue": "A circle is one; so is a square",
+        "hint": "The outline or form of an object."
+      },
+      {
+        "start": "TOAST",
+        "answer": "COAST",
+        "clue": "The edge of a country facing the sea",
+        "hint": "The land beside an ocean."
+      },
+      {
+        "start": "WORDS",
+        "answer": "WORMS",
+        "clue": "Garden residents that work underground",
+        "hint": "Long, soft-bodied animals with no limbs."
+      },
+      {
+        "start": "WHILE",
+        "answer": "WHITE",
+        "clue": "The color of fresh snow",
+        "hint": "The palest color."
+      },
+      {
+        "start": "TRACE",
+        "answer": "TRADE",
+        "clue": "A deal with something on both sides",
+        "hint": "An exchange of goods or services."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p124",
+    "title": "Passing thoughts",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "PEARS",
+        "answer": "GEARS",
+        "clue": "Teeth that help a machine change speed",
+        "hint": "Toothed wheels that transmit motion."
+      },
+      {
+        "start": "SLEEP",
+        "answer": "SHEEP",
+        "clue": "A woolly member of the flock",
+        "hint": "A farm animal raised for wool and meat."
+      },
+      {
+        "start": "SOUND",
+        "answer": "POUND",
+        "clue": "Sixteen ounces, or a heavy thump",
+        "hint": "A unit of weight equal to sixteen ounces."
+      },
+      {
+        "start": "GROOM",
+        "answer": "GLOOM",
+        "clue": "A room's mood when the light gives up",
+        "hint": "Darkness or a feeling of sadness."
+      },
+      {
+        "start": "CLASH",
+        "answer": "CLASS",
+        "clue": "A group gathered to learn",
+        "hint": "A group of students taught together."
+      },
+      {
+        "start": "STAGE",
+        "answer": "STARE",
+        "clue": "A look that overstays its welcome",
+        "hint": "To look at something for a long time."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p125",
+    "title": "Give it a spin",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "TRAIN",
+        "answer": "BRAIN",
+        "clue": "The headquarters inside your head",
+        "hint": "The organ responsible for thought and memory."
+      },
+      {
+        "start": "SNORE",
+        "answer": "SPORE",
+        "clue": "A fungus's tiny reproductive package",
+        "hint": "A reproductive cell produced by fungi and some plants."
+      },
+      {
+        "start": "BLADE",
+        "answer": "GLADE",
+        "clue": "A clearing with trees all around",
+        "hint": "An open space in a forest."
+      },
+      {
+        "start": "GLOVE",
+        "answer": "CLOVE",
+        "clue": "A little aromatic bud with a strong flavor",
+        "hint": "A dried flower bud used as a spice."
+      },
+      {
+        "start": "SPILL",
+        "answer": "STILL",
+        "clue": "Not moving, even a little",
+        "hint": "Remaining motionless."
+      },
+      {
+        "start": "SPICE",
+        "answer": "SPINE",
+        "clue": "A book and a body both have one",
+        "hint": "The backbone, or the bound edge of a book."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p126",
+    "title": "A quiet shuffle",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "BOAST",
+        "answer": "TOAST",
+        "clue": "Bread after a trip through the heater",
+        "hint": "Bread browned by exposure to heat."
+      },
+      {
+        "start": "LEANS",
+        "answer": "LEAKS",
+        "clue": "Drips where there should not be drips",
+        "hint": "Unwanted escapes of liquid or gas."
+      },
+      {
+        "start": "LATER",
+        "answer": "WATER",
+        "clue": "What a thirsty plant is waiting for",
+        "hint": "The clear liquid essential for life."
+      },
+      {
+        "start": "STAKE",
+        "answer": "STALE",
+        "clue": "Past its prime, like yesterday's bread",
+        "hint": "No longer fresh."
+      },
+      {
+        "start": "STARE",
+        "answer": "SNARE",
+        "clue": "A trap with a loop in its plan",
+        "hint": "A loop of wire or cord used as a trap."
+      },
+      {
+        "start": "WATCH",
+        "answer": "BATCH",
+        "clue": "One oven load of cookies",
+        "hint": "A group of things made at the same time."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p127",
+    "title": "Good connections",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "FLOUR",
+        "answer": "FLOUT",
+        "clue": "Openly disregard a rule",
+        "hint": "To show deliberate disregard for a law or convention."
+      },
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "PATCH",
+        "answer": "PITCH",
+        "clue": "A sales talk, or a baseball delivery",
+        "hint": "A throw of the ball toward a batter."
+      },
+      {
+        "start": "SHOCK",
+        "answer": "SHUCK",
+        "clue": "Peel the husk off an ear of corn",
+        "hint": "To remove an outer husk or shell."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p128",
+    "title": "A fair exchange",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "PAINT",
+        "answer": "FAINT",
+        "clue": "So weak you can barely see it",
+        "hint": "Very slight or hard to detect."
+      },
+      {
+        "start": "GRAIN",
+        "answer": "DRAIN",
+        "clue": "Where the bathwater goes",
+        "hint": "A pipe that carries water away."
+      },
+      {
+        "start": "TAPER",
+        "answer": "PAPER",
+        "clue": "A printer's favorite blank canvas",
+        "hint": "A thin material used for writing and printing."
+      },
+      {
+        "start": "GRAVE",
+        "answer": "GRATE",
+        "clue": "Make cheese fall like snow",
+        "hint": "To shred food against a rough metal surface."
+      },
+      {
+        "start": "WAFER",
+        "answer": "WAGER",
+        "clue": "Put money behind your prediction",
+        "hint": "A bet on an uncertain result."
+      },
+      {
+        "start": "SHADE",
+        "answer": "SHAVE",
+        "clue": "Give your whiskers a close call",
+        "hint": "To remove hair with a razor."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p129",
+    "title": "Changing hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "HORSE",
+        "answer": "HOUSE",
+        "clue": "A building that can become a home",
+        "hint": "A building in which people live."
+      },
+      {
+        "start": "STAGE",
+        "answer": "STARE",
+        "clue": "A look that overstays its welcome",
+        "hint": "To look at something for a long time."
+      },
+      {
+        "start": "SMALL",
+        "answer": "SMELL",
+        "clue": "The sense that finds fresh cookies first",
+        "hint": "The ability to detect odors."
+      },
+      {
+        "start": "PUNCH",
+        "answer": "PINCH",
+        "clue": "A cook's smallest finger measurement",
+        "hint": "A small amount held between finger and thumb."
+      },
+      {
+        "start": "SWINE",
+        "answer": "SWING",
+        "clue": "A playground seat that goes back and forth",
+        "hint": "A seat suspended by ropes or chains."
+      },
+      {
+        "start": "FIRES",
+        "answer": "FARES",
+        "clue": "The prices of getting there",
+        "hint": "Charges paid to ride public transportation."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p130",
+    "title": "Pass it on",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "BRACE",
+        "answer": "BRAKE",
+        "clue": "The pedal that asks a car to slow down",
+        "hint": "A mechanism used to slow or stop a vehicle."
+      },
+      {
+        "start": "CHUNK",
+        "answer": "CHUCK",
+        "clue": "Throw it without much ceremony",
+        "hint": "To toss something carelessly."
+      },
+      {
+        "start": "GOOSE",
+        "answer": "NOOSE",
+        "clue": "A loop that tightens when pulled",
+        "hint": "A sliding loop at the end of a rope."
+      },
+      {
+        "start": "TRADE",
+        "answer": "GRADE",
+        "clue": "A teacher's final letter",
+        "hint": "A mark given for schoolwork."
+      },
+      {
+        "start": "SHUNT",
+        "answer": "STUNT",
+        "clue": "A daring feat for the cameras",
+        "hint": "A dangerous or impressive physical performance."
+      },
+      {
+        "start": "FLASK",
+        "answer": "FLASH",
+        "clue": "A very quick burst of light",
+        "hint": "A sudden brief bright light."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p131",
+    "title": "Small change",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "DRANK",
+        "answer": "DRINK",
+        "clue": "A toast's liquid companion",
+        "hint": "A beverage, or the act of consuming one."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "MOOSE",
+        "answer": "MOUSE",
+        "clue": "A tiny rodent, or a computer companion",
+        "hint": "A small rodent with a long tail."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "SHIRT",
+        "answer": "SHORT",
+        "clue": "The opposite of tall or lengthy",
+        "hint": "Small in height or length."
+      },
+      {
+        "start": "RIGHT",
+        "answer": "TIGHT",
+        "clue": "Not leaving much wiggle room",
+        "hint": "Firmly held or fitting very closely."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p132",
+    "title": "The long way round",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "FRAME",
+        "answer": "FLAME",
+        "clue": "The bright moving part of a fire",
+        "hint": "A stream of burning gas that gives off heat and light."
+      },
+      {
+        "start": "CLOCK",
+        "answer": "BLOCK",
+        "clue": "A cube, or a way to stop someone",
+        "hint": "A solid piece with flat sides."
+      },
+      {
+        "start": "WHILE",
+        "answer": "WHINE",
+        "clue": "Complain in a high, unhappy voice",
+        "hint": "To make a long, high-pitched complaining sound."
+      },
+      {
+        "start": "BROWN",
+        "answer": "FROWN",
+        "clue": "A smile turned upside down",
+        "hint": "An unhappy expression with lowered eyebrows."
+      },
+      {
+        "start": "BLANK",
+        "answer": "BLACK",
+        "clue": "The color of a moonless sky",
+        "hint": "The darkest color."
+      },
+      {
+        "start": "FOUND",
+        "answer": "ROUND",
+        "clue": "No corners here",
+        "hint": "Having a circular shape."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p133",
+    "title": "A clever exchange",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "BRAKE",
+        "answer": "BRAVE",
+        "clue": "Afraid, perhaps, but doing it anyway",
+        "hint": "Showing courage in the face of danger."
+      },
+      {
+        "start": "VERGE",
+        "answer": "MERGE",
+        "clue": "Become one where two used to be",
+        "hint": "To combine two things into one."
+      },
+      {
+        "start": "STING",
+        "answer": "STINK",
+        "clue": "Offend the nose",
+        "hint": "To have a very unpleasant smell."
+      },
+      {
+        "start": "CROSS",
+        "answer": "GROSS",
+        "clue": "The amount before deductions",
+        "hint": "A total before costs or taxes are removed."
+      },
+      {
+        "start": "SLIDE",
+        "answer": "SLICE",
+        "clue": "A pizza's most shareable unit",
+        "hint": "A thin piece cut from something larger."
+      },
+      {
+        "start": "BLAME",
+        "answer": "BLADE",
+        "clue": "The business end of a knife",
+        "hint": "The sharp cutting part of a tool."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p134",
+    "title": "In good hands",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "FLOAT",
+        "answer": "GLOAT",
+        "clue": "Enjoy winning a little too obviously",
+        "hint": "To take excessive pleasure in one's own success."
+      },
+      {
+        "start": "BLOOM",
+        "answer": "BLOOD",
+        "clue": "The red delivery system inside you",
+        "hint": "The fluid that circulates through the body."
+      },
+      {
+        "start": "BRING",
+        "answer": "BRINE",
+        "clue": "A salty bath for pickles",
+        "hint": "Water containing a large amount of dissolved salt."
+      },
+      {
+        "start": "FARES",
+        "answer": "FARMS",
+        "clue": "Places where crops are a main event",
+        "hint": "Areas of land used for growing food or raising animals."
+      },
+      {
+        "start": "DENSE",
+        "answer": "SENSE",
+        "clue": "One of the ways you notice the world",
+        "hint": "A faculty such as sight, hearing, or touch."
+      },
+      {
+        "start": "SLEET",
+        "answer": "FLEET",
+        "clue": "A group of ships under one command",
+        "hint": "A collection of ships or vehicles."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p135",
+    "title": "A fresh perspective",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SHIRT",
+        "answer": "SKIRT",
+        "clue": "A garment that hangs from the waist",
+        "hint": "Clothing that covers the body below the waist."
+      },
+      {
+        "start": "SHARE",
+        "answer": "SHARP",
+        "clue": "Ready to cut, or quick to understand",
+        "hint": "Having an edge that can slice easily."
+      },
+      {
+        "start": "BOOST",
+        "answer": "ROOST",
+        "clue": "A bird's place to settle for the night",
+        "hint": "A place where birds rest or sleep."
+      },
+      {
+        "start": "PEACH",
+        "answer": "BEACH",
+        "clue": "Where sand meets the sea",
+        "hint": "A sandy or pebbly shore beside water."
+      },
+      {
+        "start": "WRITE",
+        "answer": "WHITE",
+        "clue": "The color of fresh snow",
+        "hint": "The palest color."
+      },
+      {
+        "start": "TRACK",
+        "answer": "TRACE",
+        "clue": "Follow the faintest outline",
+        "hint": "To copy a drawing by following its lines."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p136",
+    "title": "Trading places",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GRASS",
+        "answer": "GLASS",
+        "clue": "A clear material that can shatter",
+        "hint": "A hard transparent material used in windows."
+      },
+      {
+        "start": "SPITE",
+        "answer": "SPINE",
+        "clue": "A book and a body both have one",
+        "hint": "The backbone, or the bound edge of a book."
+      },
+      {
+        "start": "LEARN",
+        "answer": "YEARN",
+        "clue": "Want something with your whole heart",
+        "hint": "To have a strong longing."
+      },
+      {
+        "start": "MOUND",
+        "answer": "ROUND",
+        "clue": "No corners here",
+        "hint": "Having a circular shape."
+      },
+      {
+        "start": "NIGHT",
+        "answer": "MIGHT",
+        "clue": "Strength, or a word that leaves room for doubt",
+        "hint": "Power or great strength."
+      },
+      {
+        "start": "YEARS",
+        "answer": "TEARS",
+        "clue": "What onions sometimes bring out",
+        "hint": "Drops of liquid that come from the eyes."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p137",
+    "title": "A little give and take",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "TRUCK",
+        "answer": "TRICK",
+        "clue": "A magician's secret ingredient",
+        "hint": "An action designed to deceive or surprise."
+      },
+      {
+        "start": "SHARP",
+        "answer": "SHARE",
+        "clue": "Give someone a piece",
+        "hint": "To let another person have or use part of something."
+      },
+      {
+        "start": "GROAN",
+        "answer": "GROWN",
+        "clue": "No longer the little version",
+        "hint": "Having developed into an adult or full size."
+      },
+      {
+        "start": "WAGES",
+        "answer": "PAGES",
+        "clue": "The leaves of a book",
+        "hint": "The individual sheets in a book."
+      },
+      {
+        "start": "FLESH",
+        "answer": "FLUSH",
+        "clue": "Send the toilet's water on its way",
+        "hint": "To wash away with a rush of water."
+      },
+      {
+        "start": "TILES",
+        "answer": "TALES",
+        "clue": "Stories told around the campfire",
+        "hint": "Narratives, especially imaginative ones."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p138",
+    "title": "The missing piece",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "FLARE",
+        "answer": "GLARE",
+        "clue": "A harsh light, or a harsher look",
+        "hint": "An intense, dazzling light."
+      },
+      {
+        "start": "TRAIL",
+        "answer": "FRAIL",
+        "clue": "Handle this person with extra care",
+        "hint": "Physically weak or easily injured."
+      },
+      {
+        "start": "TAPES",
+        "answer": "TALES",
+        "clue": "Stories told around the campfire",
+        "hint": "Narratives, especially imaginative ones."
+      },
+      {
+        "start": "GRACE",
+        "answer": "GRAPE",
+        "clue": "A little fruit with big wine ambitions",
+        "hint": "A small fruit that grows in bunches."
+      },
+      {
+        "start": "SLACK",
+        "answer": "STACK",
+        "clue": "A neat pile with one thing on another",
+        "hint": "A pile of objects arranged on top of each other."
+      },
+      {
+        "start": "GLOVE",
+        "answer": "CLOVE",
+        "clue": "A little aromatic bud with a strong flavor",
+        "hint": "A dried flower bud used as a spice."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p139",
+    "title": "One good turn",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "ROAST",
+        "answer": "TOAST",
+        "clue": "Bread after a trip through the heater",
+        "hint": "Bread browned by exposure to heat."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "SHARK",
+        "answer": "SHIRK",
+        "clue": "Avoid doing your fair share",
+        "hint": "To evade a duty or responsibility."
+      },
+      {
+        "start": "FLOOR",
+        "answer": "FLOUR",
+        "clue": "A baker's powdery starting point",
+        "hint": "Powder made by grinding grain."
+      },
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p140",
+    "title": "New arrangements",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "STALL",
+        "answer": "STALE",
+        "clue": "Past its prime, like yesterday's bread",
+        "hint": "No longer fresh."
+      },
+      {
+        "start": "PINCH",
+        "answer": "PUNCH",
+        "clue": "A party drink with a fighting name",
+        "hint": "A drink often made with several fruit juices."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "PATCH",
+        "answer": "PITCH",
+        "clue": "A sales talk, or a baseball delivery",
+        "hint": "A throw of the ball toward a batter."
+      },
+      {
+        "start": "SWEET",
+        "answer": "SWEAT",
+        "clue": "Your body's built-in cooling system",
+        "hint": "Moisture produced by the skin to cool the body."
+      },
+      {
+        "start": "CROAK",
+        "answer": "CLOAK",
+        "clue": "A cape with something to hide",
+        "hint": "A loose outer garment worn over the shoulders."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p141",
+    "title": "A change of heart",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "CRANE",
+        "answer": "CRATE",
+        "clue": "A box with a shipping label",
+        "hint": "A sturdy container used to transport goods."
+      },
+      {
+        "start": "FLAKE",
+        "answer": "FLUKE",
+        "clue": "A lucky result that is hard to repeat",
+        "hint": "An unlikely chance occurrence."
+      },
+      {
+        "start": "BROAD",
+        "answer": "BREAD",
+        "clue": "What sandwiches are built on",
+        "hint": "Food baked from flour, water, and usually yeast."
+      },
+      {
+        "start": "TEETH",
+        "answer": "TENTH",
+        "clue": "The place just after ninth",
+        "hint": "The ordinal number after ninth."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "SHUCK",
+        "answer": "SHOCK",
+        "clue": "A jolt that catches you off guard",
+        "hint": "A sudden unexpected surprise or electrical jolt."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p142",
+    "title": "Passing thoughts",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "SHARE",
+        "answer": "SHAPE",
+        "clue": "A circle is one; so is a square",
+        "hint": "The outline or form of an object."
+      },
+      {
+        "start": "BROOK",
+        "answer": "BROOD",
+        "clue": "A group of newly hatched chicks",
+        "hint": "A family of young birds hatched together."
+      },
+      {
+        "start": "FLASH",
+        "answer": "FLASK",
+        "clue": "A small bottle built for carrying",
+        "hint": "A small container used to hold liquids."
+      },
+      {
+        "start": "POUND",
+        "answer": "HOUND",
+        "clue": "A dog with a nose for the chase",
+        "hint": "A type of dog bred for hunting."
+      },
+      {
+        "start": "CHAIN",
+        "answer": "CHAIR",
+        "clue": "A table's usual companion",
+        "hint": "A seat for one person, usually with a back."
+      },
+      {
+        "start": "BRIDE",
+        "answer": "BRINE",
+        "clue": "A salty bath for pickles",
+        "hint": "Water containing a large amount of dissolved salt."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p143",
+    "title": "Give it a spin",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "CLASS",
+        "answer": "CLASH",
+        "clue": "A loud meeting of things that do not agree",
+        "hint": "A collision or conflict between opposing things."
+      },
+      {
+        "start": "LEAFY",
+        "answer": "LEAKY",
+        "clue": "Not doing a great job holding water",
+        "hint": "Allowing liquid to escape through holes."
+      },
+      {
+        "start": "BLINK",
+        "answer": "SLINK",
+        "clue": "Move quietly, hoping nobody notices",
+        "hint": "To move stealthily or furtively."
+      },
+      {
+        "start": "SHAKE",
+        "answer": "SHADE",
+        "clue": "A tree's gift on a hot day",
+        "hint": "A place sheltered from direct sunlight."
+      },
+      {
+        "start": "DRAIN",
+        "answer": "BRAIN",
+        "clue": "The headquarters inside your head",
+        "hint": "The organ responsible for thought and memory."
+      },
+      {
+        "start": "HOUND",
+        "answer": "FOUND",
+        "clue": "What a successful search finally did",
+        "hint": "Discovered something that had been missing."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p144",
+    "title": "A quiet shuffle",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "TRUST",
+        "answer": "CRUST",
+        "clue": "The outside edge of a loaf",
+        "hint": "The hard outer layer of bread."
+      },
+      {
+        "start": "WORMS",
+        "answer": "WORDS",
+        "clue": "A sentence's building blocks",
+        "hint": "Units of language that carry meaning."
+      },
+      {
+        "start": "BATCH",
+        "answer": "HATCH",
+        "clue": "A chick's first escape",
+        "hint": "To come out of an egg."
+      },
+      {
+        "start": "HEARD",
+        "answer": "HEART",
+        "clue": "A tireless pump with a romantic reputation",
+        "hint": "The organ that pumps blood through the body."
+      },
+      {
+        "start": "CROWN",
+        "answer": "BROWN",
+        "clue": "Chocolate, color-wise",
+        "hint": "The color of chocolate or dark wood."
+      },
+      {
+        "start": "SHELL",
+        "answer": "SMELL",
+        "clue": "The sense that finds fresh cookies first",
+        "hint": "The ability to detect odors."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p145",
+    "title": "Good connections",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "FEARS",
+        "answer": "BEARS",
+        "clue": "Large animals that may sleep through winter",
+        "hint": "Large mammals including grizzlies and polar varieties."
+      },
+      {
+        "start": "GRAVE",
+        "answer": "GRAPE",
+        "clue": "A little fruit with big wine ambitions",
+        "hint": "A small fruit that grows in bunches."
+      },
+      {
+        "start": "TERSE",
+        "answer": "VERSE",
+        "clue": "A poem's lines, or part of a song",
+        "hint": "A section of poetry or song lyrics."
+      },
+      {
+        "start": "PAINT",
+        "answer": "FAINT",
+        "clue": "So weak you can barely see it",
+        "hint": "Very slight or hard to detect."
+      },
+      {
+        "start": "BLOOM",
+        "answer": "GLOOM",
+        "clue": "A room's mood when the light gives up",
+        "hint": "Darkness or a feeling of sadness."
+      },
+      {
+        "start": "WAGER",
+        "answer": "WATER",
+        "clue": "What a thirsty plant is waiting for",
+        "hint": "The clear liquid essential for life."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p146",
+    "title": "A fair exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SKILL",
+        "answer": "STILL",
+        "clue": "Not moving, even a little",
+        "hint": "Remaining motionless."
+      },
+      {
+        "start": "SLIDE",
+        "answer": "GLIDE",
+        "clue": "Move smoothly with very little effort",
+        "hint": "To travel with a smooth, continuous motion."
+      },
+      {
+        "start": "BOUND",
+        "answer": "SOUND",
+        "clue": "What your ears are tuned to",
+        "hint": "Vibrations that can be heard."
+      },
+      {
+        "start": "GLOAT",
+        "answer": "FLOAT",
+        "clue": "Stay on top of the water",
+        "hint": "To remain on the surface of a liquid."
+      },
+      {
+        "start": "LEAFY",
+        "answer": "LEAKY",
+        "clue": "Not doing a great job holding water",
+        "hint": "Allowing liquid to escape through holes."
+      },
+      {
+        "start": "TOOTH",
+        "answer": "BOOTH",
+        "clue": "A cozy restaurant seat with its own sides",
+        "hint": "A small enclosed seating area or stall."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p147",
+    "title": "Changing hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "BLOOD",
+        "answer": "FLOOD",
+        "clue": "Water that ignores its usual boundaries",
+        "hint": "An overflow of water onto normally dry land."
+      },
+      {
+        "start": "COAST",
+        "answer": "BOAST",
+        "clue": "Talk yourself up a little too much",
+        "hint": "To speak with excessive pride."
+      },
+      {
+        "start": "FIGHT",
+        "answer": "LIGHT",
+        "clue": "The opposite of heavy, or what a lamp gives",
+        "hint": "Something that makes objects visible."
+      },
+      {
+        "start": "WHEAT",
+        "answer": "CHEAT",
+        "clue": "Break the rules to gain an advantage",
+        "hint": "To act dishonestly in a game or test."
+      },
+      {
+        "start": "STALE",
+        "answer": "STATE",
+        "clue": "Kansas is one; so is Maine",
+        "hint": "A political division of a country."
+      },
+      {
+        "start": "STING",
+        "answer": "SWING",
+        "clue": "A playground seat that goes back and forth",
+        "hint": "A seat suspended by ropes or chains."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p148",
+    "title": "Pass it on",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "LEAPS",
+        "answer": "LEADS",
+        "clue": "What the person in front does",
+        "hint": "Guides others by going first."
+      },
+      {
+        "start": "SMALL",
+        "answer": "STALL",
+        "clue": "A market seller's little space",
+        "hint": "A booth or compartment used for selling goods."
+      },
+      {
+        "start": "SLINK",
+        "answer": "CLINK",
+        "clue": "The little sound of glasses meeting",
+        "hint": "A short ringing sound made by glass or metal."
+      },
+      {
+        "start": "CATCH",
+        "answer": "MATCH",
+        "clue": "A tiny stick that starts a flame",
+        "hint": "A small stick with a head that ignites when struck."
+      },
+      {
+        "start": "TIRED",
+        "answer": "TIRES",
+        "clue": "The four rubber rings under most cars",
+        "hint": "Rubber coverings around wheels."
+      },
+      {
+        "start": "SHEET",
+        "answer": "SHEEP",
+        "clue": "A woolly member of the flock",
+        "hint": "A farm animal raised for wool and meat."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p149",
+    "title": "Small change",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "PLACE",
+        "answer": "PLATE",
+        "clue": "Dinner's landing pad",
+        "hint": "A flat dish used to hold food."
+      },
+      {
+        "start": "SHINE",
+        "answer": "SWINE",
+        "clue": "Pigs, collectively speaking",
+        "hint": "Domestic pigs considered as a group."
+      },
+      {
+        "start": "TAPER",
+        "answer": "PAPER",
+        "clue": "A printer's favorite blank canvas",
+        "hint": "A thin material used for writing and printing."
+      },
+      {
+        "start": "SPORE",
+        "answer": "SHORE",
+        "clue": "Where the water comes to land",
+        "hint": "The edge of a sea, lake, or river."
+      },
+      {
+        "start": "WRING",
+        "answer": "BRING",
+        "clue": "Carry it toward the person asking",
+        "hint": "To take something to a place or person."
+      },
+      {
+        "start": "BRUSH",
+        "answer": "CRUSH",
+        "clue": "Press until the original shape is gone",
+        "hint": "To squeeze or smash with force."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p150",
+    "title": "The long way round",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "WHILE",
+        "answer": "WHINE",
+        "clue": "Complain in a high, unhappy voice",
+        "hint": "To make a long, high-pitched complaining sound."
+      },
+      {
+        "start": "NOOSE",
+        "answer": "GOOSE",
+        "clue": "A honking bird with a long neck",
+        "hint": "A large waterbird related to ducks."
+      },
+      {
+        "start": "CLANK",
+        "answer": "BLANK",
+        "clue": "What a mind sometimes draws",
+        "hint": "Empty, with nothing written or marked."
+      },
+      {
+        "start": "BOOTS",
+        "answer": "ROOTS",
+        "clue": "A plant's underground anchors",
+        "hint": "The parts of a plant that absorb water from soil."
+      },
+      {
+        "start": "GROSS",
+        "answer": "CROSS",
+        "clue": "Go from one side to the other",
+        "hint": "To pass across something."
+      },
+      {
+        "start": "CROAK",
+        "answer": "CLOAK",
+        "clue": "A cape with something to hide",
+        "hint": "A loose outer garment worn over the shoulders."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p151",
+    "title": "A clever exchange",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "STAGE",
+        "answer": "STAKE",
+        "clue": "A pointed post with something riding on it",
+        "hint": "A pointed piece of wood driven into the ground."
+      },
+      {
+        "start": "SKILL",
+        "answer": "SPILL",
+        "clue": "A drink's unexpected escape",
+        "hint": "To let liquid accidentally run out of its container."
+      },
+      {
+        "start": "TRAIN",
+        "answer": "TRAIL",
+        "clue": "A hiker's line through the woods",
+        "hint": "A marked path through natural surroundings."
+      },
+      {
+        "start": "LUNCH",
+        "answer": "BUNCH",
+        "clue": "How bananas like to hang out",
+        "hint": "A group of things gathered together."
+      },
+      {
+        "start": "SPORE",
+        "answer": "SNORE",
+        "clue": "An unwanted solo from a sleeping person",
+        "hint": "To breathe noisily while asleep."
+      },
+      {
+        "start": "BROOM",
+        "answer": "GROOM",
+        "clue": "One half of a wedding couple",
+        "hint": "A man on his wedding day."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p152",
+    "title": "In good hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "MIGHT",
+        "answer": "NIGHT",
+        "clue": "The sun's daily absence",
+        "hint": "The dark period between sunset and sunrise."
+      },
+      {
+        "start": "CARVE",
+        "answer": "CURVE",
+        "clue": "A line that refuses to go straight",
+        "hint": "A smoothly bending line."
+      },
+      {
+        "start": "BENCH",
+        "answer": "BEACH",
+        "clue": "Where sand meets the sea",
+        "hint": "A sandy or pebbly shore beside water."
+      },
+      {
+        "start": "FLAKE",
+        "answer": "FLAME",
+        "clue": "The bright moving part of a fire",
+        "hint": "A stream of burning gas that gives off heat and light."
+      },
+      {
+        "start": "TRACE",
+        "answer": "TRACK",
+        "clue": "Where runners go in circles",
+        "hint": "A prepared course for running races."
+      },
+      {
+        "start": "FLUSH",
+        "answer": "FLESH",
+        "clue": "The soft part beneath the skin",
+        "hint": "The soft tissue of a body."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p153",
+    "title": "A fresh perspective",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "DENSE",
+        "answer": "TENSE",
+        "clue": "Not exactly relaxed",
+        "hint": "Nervous or tightly stretched."
+      },
+      {
+        "start": "SPITE",
+        "answer": "SPICE",
+        "clue": "A little seasoning with a big personality",
+        "hint": "An aromatic substance used to flavor food."
+      },
+      {
+        "start": "FARES",
+        "answer": "FARMS",
+        "clue": "Places where crops are a main event",
+        "hint": "Areas of land used for growing food or raising animals."
+      },
+      {
+        "start": "TENTH",
+        "answer": "TEETH",
+        "clue": "A smile's complete cutting crew",
+        "hint": "The hard structures used for biting and chewing."
+      },
+      {
+        "start": "CHUCK",
+        "answer": "CHUNK",
+        "clue": "A piece that is too big to call a crumb",
+        "hint": "A large, thick piece of something."
+      },
+      {
+        "start": "BLAME",
+        "answer": "BLADE",
+        "clue": "The business end of a knife",
+        "hint": "The sharp cutting part of a tool."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p154",
+    "title": "Trading places",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "FLOOR",
+        "answer": "FLOUR",
+        "clue": "A baker's powdery starting point",
+        "hint": "Powder made by grinding grain."
+      },
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "RIGHT",
+        "answer": "NIGHT",
+        "clue": "The sun's daily absence",
+        "hint": "The dark period between sunset and sunrise."
+      },
+      {
+        "start": "BENCH",
+        "answer": "BEACH",
+        "clue": "Where sand meets the sea",
+        "hint": "A sandy or pebbly shore beside water."
+      },
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "DRANK",
+        "answer": "DRINK",
+        "clue": "A toast's liquid companion",
+        "hint": "A beverage, or the act of consuming one."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p155",
+    "title": "A little give and take",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "PLATE",
+        "answer": "PLANE",
+        "clue": "A passenger ride above the clouds",
+        "hint": "An aircraft with fixed wings."
+      },
+      {
+        "start": "SWINE",
+        "answer": "SPINE",
+        "clue": "A book and a body both have one",
+        "hint": "The backbone, or the bound edge of a book."
+      },
+      {
+        "start": "GRAVE",
+        "answer": "GRATE",
+        "clue": "Make cheese fall like snow",
+        "hint": "To shred food against a rough metal surface."
+      },
+      {
+        "start": "SHAPE",
+        "answer": "SHAVE",
+        "clue": "Give your whiskers a close call",
+        "hint": "To remove hair with a razor."
+      },
+      {
+        "start": "CATCH",
+        "answer": "WATCH",
+        "clue": "A little timekeeper on your wrist",
+        "hint": "A small clock worn on the body."
+      },
+      {
+        "start": "TRUNK",
+        "answer": "TRUCK",
+        "clue": "A vehicle with a working bed",
+        "hint": "A road vehicle built to carry goods."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p156",
+    "title": "The missing piece",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "VERGE",
+        "answer": "MERGE",
+        "clue": "Become one where two used to be",
+        "hint": "To combine two things into one."
+      },
+      {
+        "start": "ROOST",
+        "answer": "BOOST",
+        "clue": "A helpful little lift",
+        "hint": "An increase or encouraging push."
+      },
+      {
+        "start": "FLASK",
+        "answer": "FLASH",
+        "clue": "A very quick burst of light",
+        "hint": "A sudden brief bright light."
+      },
+      {
+        "start": "GLOBE",
+        "answer": "GLOVE",
+        "clue": "A hand covering with room for every finger",
+        "hint": "A fitted covering for the hand."
+      },
+      {
+        "start": "WHITE",
+        "answer": "WRITE",
+        "clue": "Turn thoughts into marks on a page",
+        "hint": "To form words on a surface or screen."
+      },
+      {
+        "start": "BROOM",
+        "answer": "BROOK",
+        "clue": "A stream on the smaller side",
+        "hint": "A small natural stream of water."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p157",
+    "title": "One good turn",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "FLUTE",
+        "answer": "FLUKE",
+        "clue": "A lucky result that is hard to repeat",
+        "hint": "An unlikely chance occurrence."
+      },
+      {
+        "start": "GLOVE",
+        "answer": "GLOBE",
+        "clue": "The world you can spin on a desk",
+        "hint": "A spherical model of Earth."
+      },
+      {
+        "start": "BRAKE",
+        "answer": "BRAVE",
+        "clue": "Afraid, perhaps, but doing it anyway",
+        "hint": "Showing courage in the face of danger."
+      },
+      {
+        "start": "BATCH",
+        "answer": "LATCH",
+        "clue": "A little catch that keeps a gate shut",
+        "hint": "A fastening device for a door or gate."
+      },
+      {
+        "start": "SHUNT",
+        "answer": "STUNT",
+        "clue": "A daring feat for the cameras",
+        "hint": "A dangerous or impressive physical performance."
+      },
+      {
+        "start": "SLEEP",
+        "answer": "SHEEP",
+        "clue": "A woolly member of the flock",
+        "hint": "A farm animal raised for wool and meat."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p158",
+    "title": "New arrangements",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "SHIRT",
+        "answer": "SHORT",
+        "clue": "The opposite of tall or lengthy",
+        "hint": "Small in height or length."
+      },
+      {
+        "start": "CLOCK",
+        "answer": "CLOAK",
+        "clue": "A cape with something to hide",
+        "hint": "A loose outer garment worn over the shoulders."
+      },
+      {
+        "start": "SHARK",
+        "answer": "SHIRK",
+        "clue": "Avoid doing your fair share",
+        "hint": "To evade a duty or responsibility."
+      },
+      {
+        "start": "SHOCK",
+        "answer": "SHUCK",
+        "clue": "Peel the husk off an ear of corn",
+        "hint": "To remove an outer husk or shell."
+      },
+      {
+        "start": "ROAST",
+        "answer": "COAST",
+        "clue": "The edge of a country facing the sea",
+        "hint": "The land beside an ocean."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p159",
+    "title": "A change of heart",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "MOUSE",
+        "answer": "MOOSE",
+        "clue": "A huge deer with broad antlers",
+        "hint": "A large deer found in northern forests."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "CRUSH",
+        "answer": "CRUST",
+        "clue": "The outside edge of a loaf",
+        "hint": "The hard outer layer of bread."
+      },
+      {
+        "start": "PEACE",
+        "answer": "PEACH",
+        "clue": "A fuzzy fruit with a stone inside",
+        "hint": "A sweet fruit with velvety skin and a large pit."
+      },
+      {
+        "start": "FLOAT",
+        "answer": "FLOUT",
+        "clue": "Openly disregard a rule",
+        "hint": "To show deliberate disregard for a law or convention."
+      },
+      {
+        "start": "BROAD",
+        "answer": "BREAD",
+        "clue": "What sandwiches are built on",
+        "hint": "Food baked from flour, water, and usually yeast."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p160",
+    "title": "Passing thoughts",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "FAINT",
+        "answer": "TAINT",
+        "clue": "Spoil an otherwise good reputation",
+        "hint": "To contaminate or damage the quality of something."
+      },
+      {
+        "start": "SIGHT",
+        "answer": "FIGHT",
+        "clue": "A contest where fists may do the talking",
+        "hint": "A physical struggle or serious argument."
+      },
+      {
+        "start": "GRAIN",
+        "answer": "DRAIN",
+        "clue": "Where the bathwater goes",
+        "hint": "A pipe that carries water away."
+      },
+      {
+        "start": "TRADE",
+        "answer": "GRADE",
+        "clue": "A teacher's final letter",
+        "hint": "A mark given for schoolwork."
+      },
+      {
+        "start": "GLADE",
+        "answer": "GLARE",
+        "clue": "A harsh light, or a harsher look",
+        "hint": "An intense, dazzling light."
+      },
+      {
+        "start": "WAGER",
+        "answer": "WAGES",
+        "clue": "What working hours should bring in",
+        "hint": "Money paid to someone for their work."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p161",
+    "title": "Give it a spin",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GROAN",
+        "answer": "GROWN",
+        "clue": "No longer the little version",
+        "hint": "Having developed into an adult or full size."
+      },
+      {
+        "start": "SNORT",
+        "answer": "SNORE",
+        "clue": "An unwanted solo from a sleeping person",
+        "hint": "To breathe noisily while asleep."
+      },
+      {
+        "start": "WATER",
+        "answer": "LATER",
+        "clue": "The time procrastinators prefer",
+        "hint": "At a time after the present."
+      },
+      {
+        "start": "BLOCK",
+        "answer": "BLACK",
+        "clue": "The color of a moonless sky",
+        "hint": "The darkest color."
+      },
+      {
+        "start": "BREAD",
+        "answer": "BROAD",
+        "clue": "Wide enough to make room",
+        "hint": "Having a large width."
+      },
+      {
+        "start": "SLACK",
+        "answer": "STACK",
+        "clue": "A neat pile with one thing on another",
+        "hint": "A pile of objects arranged on top of each other."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p162",
+    "title": "A quiet shuffle",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "PEACE",
+        "answer": "PLACE",
+        "clue": "A spot that can be on the map",
+        "hint": "A particular position or location."
+      },
+      {
+        "start": "LIGHT",
+        "answer": "TIGHT",
+        "clue": "Not leaving much wiggle room",
+        "hint": "Firmly held or fitting very closely."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      },
+      {
+        "start": "MOOSE",
+        "answer": "MOUSE",
+        "clue": "A tiny rodent, or a computer companion",
+        "hint": "A small rodent with a long tail."
+      },
+      {
+        "start": "CROAK",
+        "answer": "CROOK",
+        "clue": "A thief, or a bend in a shepherd's staff",
+        "hint": "A dishonest person who steals."
+      },
+      {
+        "start": "FLUSH",
+        "answer": "FLESH",
+        "clue": "The soft part beneath the skin",
+        "hint": "The soft tissue of a body."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p163",
+    "title": "Good connections",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "FLEET",
+        "answer": "SLEET",
+        "clue": "Winter weather that cannot quite pick a side",
+        "hint": "Rain that freezes into ice pellets."
+      },
+      {
+        "start": "CHAIR",
+        "answer": "CHAIN",
+        "clue": "Links that stick together",
+        "hint": "A series of connected metal links."
+      },
+      {
+        "start": "GLASS",
+        "answer": "GRASS",
+        "clue": "The green carpet that needs mowing",
+        "hint": "A plant with narrow green blades."
+      },
+      {
+        "start": "CRANE",
+        "answer": "CRATE",
+        "clue": "A box with a shipping label",
+        "hint": "A sturdy container used to transport goods."
+      },
+      {
+        "start": "TEARS",
+        "answer": "FEARS",
+        "clue": "Things that keep courage busy",
+        "hint": "Feelings of being afraid."
+      },
+      {
+        "start": "SIGHT",
+        "answer": "LIGHT",
+        "clue": "The opposite of heavy, or what a lamp gives",
+        "hint": "Something that makes objects visible."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p164",
+    "title": "A fair exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SENSE",
+        "answer": "DENSE",
+        "clue": "Packed in very closely",
+        "hint": "Containing many things in a small space."
+      },
+      {
+        "start": "HEARD",
+        "answer": "HEART",
+        "clue": "A tireless pump with a romantic reputation",
+        "hint": "The organ that pumps blood through the body."
+      },
+      {
+        "start": "TAPER",
+        "answer": "TAPES",
+        "clue": "Old-school music holders with two reels",
+        "hint": "Magnetic strips used to record sound or video."
+      },
+      {
+        "start": "YEARN",
+        "answer": "LEARN",
+        "clue": "Turn curiosity into knowledge",
+        "hint": "To gain knowledge or a new skill."
+      },
+      {
+        "start": "TEARS",
+        "answer": "YEARS",
+        "clue": "A birthday counts these",
+        "hint": "Periods of twelve months."
+      },
+      {
+        "start": "BLUSH",
+        "answer": "BRUSH",
+        "clue": "A tool for hair, teeth, or paint",
+        "hint": "A tool with bristles used for cleaning or grooming."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p165",
+    "title": "Changing hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "SPILL",
+        "answer": "STILL",
+        "clue": "Not moving, even a little",
+        "hint": "Remaining motionless."
+      },
+      {
+        "start": "GRATE",
+        "answer": "GRACE",
+        "clue": "Elegance that makes effort look easy",
+        "hint": "Smoothness and beauty of movement."
+      },
+      {
+        "start": "CLANK",
+        "answer": "BLANK",
+        "clue": "What a mind sometimes draws",
+        "hint": "Empty, with nothing written or marked."
+      },
+      {
+        "start": "SOUND",
+        "answer": "POUND",
+        "clue": "Sixteen ounces, or a heavy thump",
+        "hint": "A unit of weight equal to sixteen ounces."
+      },
+      {
+        "start": "BEARS",
+        "answer": "GEARS",
+        "clue": "Teeth that help a machine change speed",
+        "hint": "Toothed wheels that transmit motion."
+      },
+      {
+        "start": "GLIDE",
+        "answer": "SLIDE",
+        "clue": "A playground ride with gravity on its side",
+        "hint": "A smooth sloping surface for moving downward."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p166",
+    "title": "Pass it on",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "BROAD",
+        "answer": "BREAD",
+        "clue": "What sandwiches are built on",
+        "hint": "Food baked from flour, water, and usually yeast."
+      },
+      {
+        "start": "FLOUR",
+        "answer": "FLOOR",
+        "clue": "The part of a room beneath your feet",
+        "hint": "The lower surface of a room."
+      },
+      {
+        "start": "PINCH",
+        "answer": "PUNCH",
+        "clue": "A party drink with a fighting name",
+        "hint": "A drink often made with several fruit juices."
+      },
+      {
+        "start": "TALES",
+        "answer": "TILES",
+        "clue": "Pieces that make a mosaic",
+        "hint": "Flat pieces used to cover floors or walls."
+      },
+      {
+        "start": "SHORE",
+        "answer": "SHORT",
+        "clue": "The opposite of tall or lengthy",
+        "hint": "Small in height or length."
+      },
+      {
+        "start": "STINT",
+        "answer": "SAINT",
+        "clue": "A very holy person, or an unusually patient one",
+        "hint": "A person recognized for exceptional holiness."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p167",
+    "title": "Small change",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "BRIDE",
+        "answer": "BRINE",
+        "clue": "A salty bath for pickles",
+        "hint": "Water containing a large amount of dissolved salt."
+      },
+      {
+        "start": "WORMS",
+        "answer": "WORDS",
+        "clue": "A sentence's building blocks",
+        "hint": "Units of language that carry meaning."
+      },
+      {
+        "start": "SWEET",
+        "answer": "SHEET",
+        "clue": "A bed's thin layer of fabric",
+        "hint": "A large rectangular piece of cloth used on a bed."
+      },
+      {
+        "start": "CHEAT",
+        "answer": "WHEAT",
+        "clue": "The grain behind many loaves",
+        "hint": "A cereal grain commonly ground into flour."
+      },
+      {
+        "start": "HATCH",
+        "answer": "MATCH",
+        "clue": "A tiny stick that starts a flame",
+        "hint": "A small stick with a head that ignites when struck."
+      },
+      {
+        "start": "PLANE",
+        "answer": "PLACE",
+        "clue": "A spot that can be on the map",
+        "hint": "A particular position or location."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p168",
+    "title": "The long way round",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "SLICE",
+        "answer": "SPICE",
+        "clue": "A little seasoning with a big personality",
+        "hint": "An aromatic substance used to flavor food."
+      },
+      {
+        "start": "LEAPS",
+        "answer": "LEANS",
+        "clue": "Tilts without quite falling",
+        "hint": "Slants or rests at an angle."
+      },
+      {
+        "start": "SNARE",
+        "answer": "STARE",
+        "clue": "A look that overstays its welcome",
+        "hint": "To look at something for a long time."
+      },
+      {
+        "start": "FRAME",
+        "answer": "FLAME",
+        "clue": "The bright moving part of a fire",
+        "hint": "A stream of burning gas that gives off heat and light."
+      },
+      {
+        "start": "TRAIN",
+        "answer": "BRAIN",
+        "clue": "The headquarters inside your head",
+        "hint": "The organ responsible for thought and memory."
+      },
+      {
+        "start": "BOOTS",
+        "answer": "ROOTS",
+        "clue": "A plant's underground anchors",
+        "hint": "The parts of a plant that absorb water from soil."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p169",
+    "title": "A clever exchange",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GLARE",
+        "answer": "FLARE",
+        "clue": "A bright signal for someone in trouble",
+        "hint": "A bright burning light used as a signal."
+      },
+      {
+        "start": "WAFER",
+        "answer": "WATER",
+        "clue": "What a thirsty plant is waiting for",
+        "hint": "The clear liquid essential for life."
+      },
+      {
+        "start": "HOUND",
+        "answer": "BOUND",
+        "clue": "Headed somewhere, as in homeward",
+        "hint": "Going toward a particular destination."
+      },
+      {
+        "start": "STAKE",
+        "answer": "SHAKE",
+        "clue": "A milk drink, or a nervous movement",
+        "hint": "To move back and forth rapidly."
+      },
+      {
+        "start": "BROWN",
+        "answer": "CROWN",
+        "clue": "A ruler's fancy headwear",
+        "hint": "A ceremonial headpiece worn by a monarch."
+      },
+      {
+        "start": "CLASS",
+        "answer": "GLASS",
+        "clue": "A clear material that can shatter",
+        "hint": "A hard transparent material used in windows."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p170",
+    "title": "In good hands",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "STALE",
+        "answer": "STALL",
+        "clue": "A market seller's little space",
+        "hint": "A booth or compartment used for selling goods."
+      },
+      {
+        "start": "TIGHT",
+        "answer": "RIGHT",
+        "clue": "A direction that is also correct",
+        "hint": "Correct, or the opposite of left."
+      },
+      {
+        "start": "HORSE",
+        "answer": "HOUSE",
+        "clue": "A building that can become a home",
+        "hint": "A building in which people live."
+      },
+      {
+        "start": "CURVE",
+        "answer": "CARVE",
+        "clue": "Turn wood into a sculpture",
+        "hint": "To shape material by cutting pieces away."
+      },
+      {
+        "start": "SWEAT",
+        "answer": "SWEET",
+        "clue": "The flavor sugar brings to the party",
+        "hint": "Having a taste like sugar or honey."
+      },
+      {
+        "start": "SLATE",
+        "answer": "STATE",
+        "clue": "Kansas is one; so is Maine",
+        "hint": "A political division of a country."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p171",
+    "title": "A fresh perspective",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "FLOOD",
+        "answer": "BLOOD",
+        "clue": "The red delivery system inside you",
+        "hint": "The fluid that circulates through the body."
+      },
+      {
+        "start": "WAGES",
+        "answer": "PAGES",
+        "clue": "The leaves of a book",
+        "hint": "The individual sheets in a book."
+      },
+      {
+        "start": "FLUKE",
+        "answer": "FLUTE",
+        "clue": "A wind instrument held sideways",
+        "hint": "A woodwind instrument played by blowing across a hole."
+      },
+      {
+        "start": "SHARP",
+        "answer": "SHARK",
+        "clue": "An ocean predator with a fin to announce it",
+        "hint": "A large fish with a skeleton made of cartilage."
+      },
+      {
+        "start": "BRING",
+        "answer": "WRING",
+        "clue": "Twist the water out of a towel",
+        "hint": "To squeeze liquid out by twisting."
+      },
+      {
+        "start": "TRAIL",
+        "answer": "FRAIL",
+        "clue": "Handle this person with extra care",
+        "hint": "Physically weak or easily injured."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p172",
+    "title": "Trading places",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "CHUNK",
+        "answer": "CHUCK",
+        "clue": "Throw it without much ceremony",
+        "hint": "To toss something carelessly."
+      },
+      {
+        "start": "STINK",
+        "answer": "SLINK",
+        "clue": "Move quietly, hoping nobody notices",
+        "hint": "To move stealthily or furtively."
+      },
+      {
+        "start": "GLOOM",
+        "answer": "GROOM",
+        "clue": "One half of a wedding couple",
+        "hint": "A man on his wedding day."
+      },
+      {
+        "start": "BOOTH",
+        "answer": "TOOTH",
+        "clue": "A smile's individual piece",
+        "hint": "A hard structure in the mouth used for biting."
+      },
+      {
+        "start": "TERSE",
+        "answer": "TENSE",
+        "clue": "Not exactly relaxed",
+        "hint": "Nervous or tightly stretched."
+      },
+      {
+        "start": "CLINK",
+        "answer": "BLINK",
+        "clue": "The shortest break your eyes take",
+        "hint": "To close and reopen your eyes quickly."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p173",
+    "title": "A little give and take",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "PAINT",
+        "answer": "TAINT",
+        "clue": "Spoil an otherwise good reputation",
+        "hint": "To contaminate or damage the quality of something."
+      },
+      {
+        "start": "LEADS",
+        "answer": "LEAKS",
+        "clue": "Drips where there should not be drips",
+        "hint": "Unwanted escapes of liquid or gas."
+      },
+      {
+        "start": "SHAME",
+        "answer": "SHADE",
+        "clue": "A tree's gift on a hot day",
+        "hint": "A place sheltered from direct sunlight."
+      },
+      {
+        "start": "SHINE",
+        "answer": "SPINE",
+        "clue": "A book and a body both have one",
+        "hint": "The backbone, or the bound edge of a book."
+      },
+      {
+        "start": "SKIRT",
+        "answer": "SHIRT",
+        "clue": "A top with sleeves and a collar, perhaps",
+        "hint": "A garment worn on the upper body."
+      },
+      {
+        "start": "STALL",
+        "answer": "SMALL",
+        "clue": "Not taking up much room",
+        "hint": "Little in size or amount."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p174",
+    "title": "The missing piece",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "MIGHT",
+        "answer": "TIGHT",
+        "clue": "Not leaving much wiggle room",
+        "hint": "Firmly held or fitting very closely."
+      },
+      {
+        "start": "TIRES",
+        "answer": "FIRES",
+        "clue": "What campgrounds allow only in certain spots",
+        "hint": "Burning flames that produce heat."
+      },
+      {
+        "start": "BLADE",
+        "answer": "BLAME",
+        "clue": "Point the finger over what went wrong",
+        "hint": "To hold someone responsible for a fault."
+      },
+      {
+        "start": "BRACE",
+        "answer": "BRAKE",
+        "clue": "The pedal that asks a car to slow down",
+        "hint": "A mechanism used to slow or stop a vehicle."
+      },
+      {
+        "start": "BROOK",
+        "answer": "BROOD",
+        "clue": "A group of newly hatched chicks",
+        "hint": "A family of young birds hatched together."
+      },
+      {
+        "start": "FROWN",
+        "answer": "CROWN",
+        "clue": "A ruler's fancy headwear",
+        "hint": "A ceremonial headpiece worn by a monarch."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p175",
+    "title": "One good turn",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GEARS",
+        "answer": "PEARS",
+        "clue": "Fruits with narrow tops and wide bottoms",
+        "hint": "Sweet fruits related to apples."
+      },
+      {
+        "start": "SHEEP",
+        "answer": "SLEEP",
+        "clue": "What an alarm clock rudely interrupts",
+        "hint": "A natural state of rest with reduced awareness."
+      },
+      {
+        "start": "BLOOM",
+        "answer": "GLOOM",
+        "clue": "A room's mood when the light gives up",
+        "hint": "Darkness or a feeling of sadness."
+      },
+      {
+        "start": "LUNCH",
+        "answer": "BUNCH",
+        "clue": "How bananas like to hang out",
+        "hint": "A group of things gathered together."
+      },
+      {
+        "start": "SMELL",
+        "answer": "SHELL",
+        "clue": "A turtle's built-in protection",
+        "hint": "A hard outer covering that protects an animal."
+      },
+      {
+        "start": "SHAPE",
+        "answer": "SHAME",
+        "clue": "The feeling after a regrettable choice",
+        "hint": "A painful feeling about something dishonorable."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p176",
+    "title": "New arrangements",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "GROAN",
+        "answer": "GROWN",
+        "clue": "No longer the little version",
+        "hint": "Having developed into an adult or full size."
+      },
+      {
+        "start": "SNORT",
+        "answer": "SNORE",
+        "clue": "An unwanted solo from a sleeping person",
+        "hint": "To breathe noisily while asleep."
+      },
+      {
+        "start": "FLESH",
+        "answer": "FLUSH",
+        "clue": "Send the toilet's water on its way",
+        "hint": "To wash away with a rush of water."
+      },
+      {
+        "start": "DRINK",
+        "answer": "DRANK",
+        "clue": "Made a beverage disappear",
+        "hint": "The past tense of consuming a liquid."
+      },
+      {
+        "start": "SWING",
+        "answer": "STING",
+        "clue": "A bee's painful parting gift",
+        "hint": "A sharp painful jab from an insect."
+      },
+      {
+        "start": "TRUCK",
+        "answer": "TRICK",
+        "clue": "A magician's secret ingredient",
+        "hint": "An action designed to deceive or surprise."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p177",
+    "title": "A change of heart",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "HOUSE",
+        "answer": "HORSE",
+        "clue": "A rider's four-legged partner",
+        "hint": "A large hoofed animal used for riding."
+      },
+      {
+        "start": "PATCH",
+        "answer": "PITCH",
+        "clue": "A sales talk, or a baseball delivery",
+        "hint": "A throw of the ball toward a batter."
+      },
+      {
+        "start": "STICK",
+        "answer": "STOCK",
+        "clue": "A shop's supply of things to sell",
+        "hint": "Goods kept ready for sale or use."
+      },
+      {
+        "start": "BENCH",
+        "answer": "BEACH",
+        "clue": "Where sand meets the sea",
+        "hint": "A sandy or pebbly shore beside water."
+      },
+      {
+        "start": "MOOSE",
+        "answer": "MOUSE",
+        "clue": "A tiny rodent, or a computer companion",
+        "hint": "A small rodent with a long tail."
+      },
+      {
+        "start": "CHAIR",
+        "answer": "CHAIN",
+        "clue": "Links that stick together",
+        "hint": "A series of connected metal links."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p178",
+    "title": "Passing thoughts",
+    "difficulty": "Tricky",
+    "rows": [
+      {
+        "start": "SOUND",
+        "answer": "MOUND",
+        "clue": "A pitcher's little hill",
+        "hint": "A raised pile of earth."
+      },
+      {
+        "start": "STUNT",
+        "answer": "SHUNT",
+        "clue": "Move something onto a different track",
+        "hint": "To divert something onto another path."
+      },
+      {
+        "start": "VERSE",
+        "answer": "TERSE",
+        "clue": "Using very few words",
+        "hint": "Brief and direct in expression."
+      },
+      {
+        "start": "TAPER",
+        "answer": "TAPES",
+        "clue": "Old-school music holders with two reels",
+        "hint": "Magnetic strips used to record sound or video."
+      },
+      {
+        "start": "MERGE",
+        "answer": "VERGE",
+        "clue": "Right on the edge of happening",
+        "hint": "The edge or brink of something."
+      },
+      {
+        "start": "WHITE",
+        "answer": "WRITE",
+        "clue": "Turn thoughts into marks on a page",
+        "hint": "To form words on a surface or screen."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p179",
+    "title": "Give it a spin",
+    "difficulty": "Clever",
+    "rows": [
+      {
+        "start": "SLEET",
+        "answer": "FLEET",
+        "clue": "A group of ships under one command",
+        "hint": "A collection of ships or vehicles."
+      },
+      {
+        "start": "FLOAT",
+        "answer": "GLOAT",
+        "clue": "Enjoy winning a little too obviously",
+        "hint": "To take excessive pleasure in one's own success."
+      },
+      {
+        "start": "SLACK",
+        "answer": "STACK",
+        "clue": "A neat pile with one thing on another",
+        "hint": "A pile of objects arranged on top of each other."
+      },
+      {
+        "start": "WHINE",
+        "answer": "WHILE",
+        "clue": "A little stretch of time",
+        "hint": "A period of time."
+      },
+      {
+        "start": "GOOSE",
+        "answer": "NOOSE",
+        "clue": "A loop that tightens when pulled",
+        "hint": "A sliding loop at the end of a rope."
+      },
+      {
+        "start": "TENSE",
+        "answer": "SENSE",
+        "clue": "One of the ways you notice the world",
+        "hint": "A faculty such as sight, hearing, or touch."
+      }
+    ],
+    "par": 5
+  },
+  {
+    "id": "p180",
+    "title": "A quiet shuffle",
+    "difficulty": "Gentle",
+    "rows": [
+      {
+        "start": "CRUST",
+        "answer": "TRUST",
+        "clue": "Believe someone will come through",
+        "hint": "Confidence in someone's honesty or reliability."
+      },
+      {
+        "start": "FLAKE",
+        "answer": "FLARE",
+        "clue": "A bright signal for someone in trouble",
+        "hint": "A bright burning light used as a signal."
+      },
+      {
+        "start": "ROOST",
+        "answer": "BOOST",
+        "clue": "A helpful little lift",
+        "hint": "An increase or encouraging push."
+      },
+      {
+        "start": "TRADE",
+        "answer": "GRADE",
+        "clue": "A teacher's final letter",
+        "hint": "A mark given for schoolwork."
+      },
+      {
+        "start": "BOAST",
+        "answer": "COAST",
+        "clue": "The edge of a country facing the sea",
+        "hint": "The land beside an ocean."
+      },
+      {
+        "start": "STING",
+        "answer": "STINK",
+        "clue": "Offend the nose",
+        "hint": "To have a very unpleasant smell."
       }
     ],
     "par": 5

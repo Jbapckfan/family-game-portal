@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PUZZLES,COMMON,FUSED} from './puzzles.mjs';
+import {PUZZLES as ALL_PUZZLES,COMMON,FUSED} from './puzzles.mjs';
 import {createState,restoreState,getStatus,analyze,chooseRow,setTyped,submitWord,hint,reveal} from './engine.mjs';
 import {createSession} from '../deepseek-runtime/core.mjs';
+// Keep the original-content regression contract; the expanded bank is exhaustively
+// validated separately by scripts/claude-expansion.test.mjs.
+const PUZZLES=ALL_PUZZLES.slice(0,77);
 function solveRow(p,s,row,word=p.words[row]){return submitWord(p,chooseRow(p,s,row),word).state;}
 test('all 77 original chains retain valid words and every neighboring compound',()=>{
  assert.equal(PUZZLES.length,77);assert.equal(COMMON.size,28743);assert.equal(FUSED.size,4447);

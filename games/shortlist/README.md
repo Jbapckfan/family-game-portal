@@ -12,9 +12,9 @@ The exact hint and its original scan context are saved with the round, so the su
 
 ## Prepared collection and solvability
 
-There are **90 boards**, **90 distinct designated answers**, and **1,035 distinct displayed words** across 1,080 candidate slots. A displayed word appears no more than twice. The daily collection repeats after 90 days.
+There are **180 boards**, **180 distinct designated answers**, and **1,051 distinct displayed words** across 2,160 candidate slots. A displayed word appears no more than three times. The daily collection repeats after 180 days.
 
-Every starting board has an exact decision tree that identifies **any of its twelve candidate words within three scans**. Tests follow all 1,080 certified answer paths through actual engine actions. The guarantee applies to an informative strategy; arbitrary or uninformative scans can leave several candidates and force a final guess. Pencil marks do not influence the engine's hint evidence.
+Every starting board has an exact decision tree that identifies **any of its twelve candidate words within three scans**. Tests follow all 2,160 certified answer paths through actual engine actions. The guarantee applies to an informative strategy; arbitrary or uninformative scans can leave several candidates and force a final guess. Pencil marks do not influence the engine's hint evidence.
 
 The vocabulary and deterministic construction live in `scripts/generate-puzzles.mjs`. Check that the committed collection reproduces exactly with:
 
@@ -74,3 +74,7 @@ This portable project lives at `games/shortlist/`. Serve this directory at `/gam
 There is no application server, database, API key, or runtime network scoring. Access restrictions belong to the serving host; this static app does not implement authentication. This README describes the source and integration path, not a claim that this copy has already been published.
 
 Preserve published puzzle IDs and the daily epoch when extending the collection so existing saves remain meaningful. Changes to scoring or save schema should have an explicit migration or storage-version change.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

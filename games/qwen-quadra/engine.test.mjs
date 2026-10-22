@@ -1,10 +1,11 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createState,restoreState,getStatus,chooseTile,selectWord,submitWord,hint,reveal,analyze} from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
 function play(p,s,word){const selection=selectWord(p,s,word);assert.ok(selection.state,selection.message);return submitWord(p,selection.state).state;}
-test('all 30 category boards use each of their 16 tiles exactly once',()=>{
- assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,30);
+test('all prepared category boards use each of their 16 tiles exactly once',()=>{
+ assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
  for(const p of PUZZLES){assert.equal(p.answers.length,4);assert.equal(new Set(p.answers).size,4);assert.ok(p.answers.every(w=>/^[A-Z]{4}$/.test(w)));assert.equal([...p.answers.join('')].sort().join(''),[...p.tiles].sort().join(''));let s=createState(p);for(const word of p.answers){s=play(p,s,word);s=restoreState(p,JSON.parse(JSON.stringify(s)));assert.ok(s,p.id);}assert.equal(getStatus(p,s),'won',p.id);assert.equal(analyze(p,s).used.size,16);}
 });
 test('the sixteen original Qwen boards and answers remain in order',()=>{
@@ -27,4 +28,10 @@ test('restoration rejects duplicate, overlapping, terminal-after-terminal, and f
  assert.equal(getStatus(p,restoreState(p,{...initial,won:true,found:p.answers})),'playing');
  let solved=initial;for(const word of p.answers)solved=play(p,solved,word);assert.equal(restoreState(p,{...solved,attempts:[...solved.attempts,{tiles:selected}]}),null);
  assert.equal(restoreState(p,{...initial,hinted:['FAKE']}),null);
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('qwen-quadra preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'d781f6b33b51c17e597b39b4c15b47e8fd25be0037a360eda9f2e297c27afacc');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

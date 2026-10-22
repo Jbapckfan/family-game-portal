@@ -1,7 +1,7 @@
 // Offline editorial tool. No dictionary, generator, or network is used at play time.
 // The word bank and clues below are authored for Tradeoff. Board composition is
 // deterministic and checked by tests/puzzles.test.mjs.
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 
 const BANK = `
 CRANE|A bird that shares its name with a lifting machine|A tall wading bird, or a machine that lifts heavy loads.
@@ -349,7 +349,7 @@ function findCycle() {
   return null;
 }
 
-while (output.length < 90) {
+while (output.length < 180) {
   const cycle = findCycle();
   if (!cycle) throw new Error(`Could not produce board ${output.length+1}`);
   const rows = cycle.map(({start,answer,clue,hint}) => ({start,answer,clue,hint}));
@@ -359,5 +359,9 @@ while (output.length < 90) {
   output.push({id:`p${String(count+1).padStart(3,'0')}`,title:titles[(count-1)%titles.length],difficulty:difficulty(rows),rows,par:5});
 }
 
-writeFileSync(new URL('../puzzles.mjs',import.meta.url), `// Tradeoff starter collection. Ninety deterministic boards from an authored word/clue bank.\n// Each board conserves letters and forms one six-letter cycle: five swaps is optimal.\n// Generated offline with scripts/generate-puzzles.mjs; no runtime content generation.\nexport const PUZZLES = ${JSON.stringify(output,null,2)};\n`);
+const destination = new URL('../puzzles.mjs', import.meta.url);
+const source = `// Tradeoff collection. 180 deterministic boards from an authored word/clue bank.\n// Each board conserves letters and forms one six-letter cycle: five swaps is optimal.\n// Generated offline with scripts/generate-puzzles.mjs; no runtime content generation.\nexport const PUZZLES = ${JSON.stringify(output,null,2)};\n`;
+if (process.argv.includes('--check')) {
+  if (readFileSync(destination, 'utf8') !== source) throw new Error('Generated collection differs from the checked-in file.');
+} else writeFileSync(destination, source);
 console.log(JSON.stringify({boards:output.length,authoredWords:BANK.length,eligibleDirectedPairs:edges.length,usedWords:usage.size,mostUsed:Math.max(...usage.values())}));

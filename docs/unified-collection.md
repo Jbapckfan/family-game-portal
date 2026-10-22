@@ -8,40 +8,40 @@ The supplied packages contain different levels of implementation. Kimi supplied 
 
 | Creator | Game | Visible credit | Stable ID | Prepared records |
 |---|---|---|---|---:|
-| ChatGPT | Ringcount | Developed by ChatGPT | `ringcount` | 90 |
-| ChatGPT | Switchpath | Developed by ChatGPT | `switchpath` | 90 |
-| ChatGPT | Counterpart | Developed by ChatGPT | `counterpart` | 30 |
-| ChatGPT | Shortlist | Developed by ChatGPT | `shortlist` | 90 |
-| ChatGPT | Second Sense | Developed by ChatGPT | `second-sense` | 30 |
-| ChatGPT | Sideways | Developed by ChatGPT | `sideways` | 90 |
-| ChatGPT | Tradeoff | Developed by ChatGPT | `tradeoff` | 90 |
-| ChatGPT | Inbetween | Developed by ChatGPT | `inbetween` | 60 |
+| ChatGPT | Ringcount | Developed by ChatGPT | `ringcount` | 180 |
+| ChatGPT | Switchpath | Developed by ChatGPT | `switchpath` | 187 |
+| ChatGPT | Counterpart | Developed by ChatGPT | `counterpart` | 180 |
+| ChatGPT | Shortlist | Developed by ChatGPT | `shortlist` | 180 |
+| ChatGPT | Second Sense | Developed by ChatGPT | `second-sense` | 180 |
+| ChatGPT | Sideways | Developed by ChatGPT | `sideways` | 180 |
+| ChatGPT | Tradeoff | Developed by ChatGPT | `tradeoff` | 180 |
+| ChatGPT | Inbetween | Developed by ChatGPT | `inbetween` | 180 |
 | Kimi | Cairn | Developed by Kimi | `kimi-cairn` | 839 |
 | Kimi | Morph | Developed by Kimi | `kimi-morph` | 450 |
 | Kimi | Tangle | Developed by Kimi | `kimi-tangle` | 430 |
 | Kimi | Hunch | Developed by Kimi | `kimi-hunch` | 937 |
 | Kimi | Circuit | Developed by Kimi | `kimi-circuit` | 286 |
 | Kimi | Quartet | Developed by Kimi | `kimi-quartet` | 420 |
-| DeepSeek | Twin Hive | Concept by DeepSeek · Built by ChatGPT | `deepseek-twin-hive` | 30 |
-| DeepSeek | Spare | Concept by DeepSeek · Built by ChatGPT | `deepseek-spare` | 30 |
-| DeepSeek | Rung | Concept by DeepSeek · Built by ChatGPT | `deepseek-rung` | 30 |
-| DeepSeek | Cipher | Concept by DeepSeek · Built by ChatGPT | `deepseek-cipher` | 30 |
-| DeepSeek | Trail | Concept by DeepSeek · Built by ChatGPT | `deepseek-trail` | 30 |
-| DeepSeek | Split | Concept by DeepSeek · Built by ChatGPT | `deepseek-split` | 30 |
-| Qwen | Quadra | Developed by Qwen | `qwen-quadra` | 30 |
-| Qwen | Logic Lattice | Concept by Qwen · Built by ChatGPT | `qwen-logic-lattice` | 30 |
-| Qwen | Syntax Siege | Concept by Qwen · Built by ChatGPT | `qwen-syntax-siege` | 30 |
-| Qwen | Memory Maze | Concept by Qwen · Built by ChatGPT | `qwen-memory-maze` | 30 |
-| Qwen | Pattern Prism | Concept by Qwen · Built by ChatGPT | `qwen-pattern-prism` | 30 |
-| Qwen | Territory Tactics | Concept by Qwen · Built by ChatGPT | `qwen-territory-tactics` | 30 |
-| Claude | Dovetail | Developed by Claude | `claude-dovetail` | 77 |
-| Claude | Splice | Developed by Claude | `claude-splice` | 73 |
+| DeepSeek | Twin Hive | Concept by DeepSeek · Built by ChatGPT | `deepseek-twin-hive` | 140 |
+| DeepSeek | Spare | Concept by DeepSeek · Built by ChatGPT | `deepseek-spare` | 120 |
+| DeepSeek | Rung | Concept by DeepSeek · Built by ChatGPT | `deepseek-rung` | 120 |
+| DeepSeek | Cipher | Concept by DeepSeek · Built by ChatGPT | `deepseek-cipher` | 120 |
+| DeepSeek | Trail | Concept by DeepSeek · Built by ChatGPT | `deepseek-trail` | 120 |
+| DeepSeek | Split | Concept by DeepSeek · Built by ChatGPT | `deepseek-split` | 120 |
+| Qwen | Quadra | Developed by Qwen | `qwen-quadra` | 120 |
+| Qwen | Logic Lattice | Concept by Qwen · Built by ChatGPT | `qwen-logic-lattice` | 120 |
+| Qwen | Syntax Siege | Concept by Qwen · Built by ChatGPT | `qwen-syntax-siege` | 120 |
+| Qwen | Memory Maze | Concept by Qwen · Built by ChatGPT | `qwen-memory-maze` | 120 |
+| Qwen | Pattern Prism | Concept by Qwen · Built by ChatGPT | `qwen-pattern-prism` | 150 |
+| Qwen | Territory Tactics | Concept by Qwen · Built by ChatGPT | `qwen-territory-tactics` | 120 |
+| Claude | Dovetail | Developed by Claude | `claude-dovetail` | 120 |
+| Claude | Splice | Developed by Claude | `claude-splice` | 120 |
 | Claude | Sprout | Developed by Claude | `claude-sprout` | 128 |
 | Claude | Tangle | Developed by Claude | `claude-tangle` | 160 |
-| Claude | Keystone | Developed by Claude | `claude-keystone` | 58 |
+| Claude | Keystone | Developed by Claude | `claude-keystone` | 120 |
 | Claude | Tumbler | Developed by Claude | `claude-tumbler` | 1,054 |
 
-Total: **5,842 prepared daily puzzle/answer records**. Keystone contributes 58 daily sets, each containing three arches. Each bank is finite and repeats independently; this total is not 5,842 fresh days in every game. The twelve completed DeepSeek/Qwen games each have a thirty-record rotation. Hunch and Quartet use familiar Wordle and Connections formats. Importing them is not a claim of new mechanics or commercial exclusivity.
+Total: **8,001 prepared daily puzzle/answer records**. Keystone contributes 120 daily sets, each containing three arches drawn from 174 curated arches. Each bank is finite and repeats independently; this total is not 8,001 fresh days in every game. Every game now has at least 120 prepared boards. Twin Hive has 140, Pattern Prism has 150, and the other ten DeepSeek/Qwen games have 120 each. See [the October 22 puzzle expansion](verification-puzzles-2026-10-22.md) for content-pool sizes, validation, and deployment status. Hunch and Quartet use familiar Wordle and Connections formats. Importing them is not a claim of new mechanics or commercial exclusivity.
 
 Kimi's Tangle traces adjacent letters on a grid. Claude's Tangle separates interleaved words while preserving letter order. They have separate IDs, credits, saves, and native catalog entries.
 
@@ -85,13 +85,13 @@ Mechanical validation is not a complete editorial review. The supplied dictionar
 
 ## Completed concepts and shared behavior
 
-DeepSeek's six implementations now include actual gameplay, thirty prepared records per game, explicit hints and reveal states, validated saves, and finite daily rotations. Rung computes shortest pars against its actual 1,353-word curated lexicon. Trail and Split preserve distinct physical letter identities. Cipher enforces a one-to-one substitution alphabet. Spare records three distinct failed pairs as a loss.
+DeepSeek's six implementations now include actual gameplay, at least 120 prepared records per game, explicit hints and reveal states, validated saves, and finite daily rotations. Rung computes shortest pars against its actual 1,353-word curated lexicon. Trail and Split preserve distinct physical letter identities. Cipher enforces a one-to-one substitution alphabet. Spare records three distinct failed pairs as a loss.
 
-Qwen's Quadra preserves all sixteen supplied category boards and adds fourteen prepared boards. The other five games implement the supplied blueprints: uniquely solvable binary grids, timed anagram defense, path recall, multidimensional pattern prediction, and two-move hex captures. Syntax Siege starts only when the player chooses Start; practice is untimed and daily play offers a recorded untimed assist. The common clock pauses while hidden or in a help/reveal dialog and resumes correctly after back/forward-cache restoration.
+Qwen's Quadra preserves its first thirty boards (including all sixteen supplied category boards) and adds ninety prepared boards. The other five games implement the supplied blueprints: uniquely solvable binary grids, timed anagram defense, path recall, multidimensional pattern prediction, and two-move hex captures. Syntax Siege starts only when the player chooses Start; practice is untimed and daily play offers a recorded untimed assist. The common clock pauses while hidden or in a help/reveal dialog and resumes correctly after back/forward-cache restoration.
 
 All eighteen new modular games share the same Central-date, record, storage-fallback, practice, hint/reveal, spoiler-free sharing, and native-progress contract. A native resource namespace retains the internal name `deepseek-runtime` because it was introduced for that first import; it does not determine the visible creator credit. Game rules and prepared content remain in separate creator-qualified directories.
 
-Claude's original game mechanics and prepared banks are adapted into this contract. Dovetail preserves 64 eight-word and 13 seven-word chains. Splice has seventy uniquely oriented matchings and three boards with a second valid orientation; both are accepted, so the UI does not promise one unique orientation on every board. Imported SwiftUI hubs and duplicated subscriptions are retained in the preserved source only. Repair details and verification for the expanded release are recorded in `verification-expanded-2026-10-20.md`.
+Claude's original game mechanics and prepared banks are adapted into this contract. Dovetail preserves 64 eight-word and 13 seven-word chains and adds 43 distinct eight-word chains from approved joins. Splice preserves seventy uniquely oriented matchings and three boards with a second valid orientation, then adds 47 uniquely matched boards; both are accepted, so the UI does not promise one unique orientation on every board. Imported SwiftUI hubs and duplicated subscriptions are retained in the preserved source only. Repair details and verification for the expanded release are recorded in `verification-expanded-2026-10-20.md`.
 
 ## Web and iOS packaging
 

@@ -1,5 +1,6 @@
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
+import { medalTargets } from './progress'
 
 export interface TanglePuzzle {
   g: string // 16 letters, row-major 4x4
@@ -10,7 +11,7 @@ export interface TanglePuzzle {
   targets: [number, number, number] // bronze, silver, gold thresholds
 }
 
-const PUZZLES = puzzlesData as TanglePuzzle[]
+const PUZZLES = (puzzlesData as TanglePuzzle[]).map(puzzle => ({ ...puzzle, targets: medalTargets(puzzle.max) }))
 
 export function dailyTangle(dayNumber = todayDayNumber()): { puzzle: TanglePuzzle; puzzleNo: number } {
   const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length

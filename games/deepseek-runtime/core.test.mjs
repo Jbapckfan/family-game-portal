@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {centralDateKey, dailyIndex, makeStore, cleanRecords, recordStatistics, createSession} from './core.mjs';
+import {centralDateKey, dailyIndex, makeStore, cleanRecords, recordStatistics, createSession, DAILY_BANK_SCHEDULES} from './core.mjs';
 
 function storage(){const data=new Map();return {data,getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};}
 function config(){return {id:'deepseek-fixture',name:'Fixture',puzzles:[{id:'a',answer:1},{id:'b',answer:2},{id:'c',answer:3}],createState:()=>({value:0,revealed:false}),restoreState:(p,s)=>s&&Number.isInteger(s.value)&&s.value>=0&&s.value<=3&&typeof s.revealed==='boolean'?{value:s.value,revealed:s.revealed}:null,getStatus:(p,s)=>s.revealed?'revealed':s.value===p.answer?'won':'playing',hint:(p,s)=>({...s,value:p.answer}),reveal:(p,s)=>({...s,value:p.answer,revealed:true})};}
@@ -52,4 +52,54 @@ test('completed practice advances on re-entry while malformed practice envelopes
  g.practice();g.hint();const id=g.puzzle.id;g.daily();g.practice();assert.notEqual(g.puzzle.id,id);assert.equal(g.outcome,'playing');
  s.setItem('deepseek-fixture:v1:practice',JSON.stringify({version:1,puzzleIndex:999,puzzleId:'a',state:{value:1,revealed:false}}));
  const fresh=createSession(c,{storage:s,now});fresh.practice();assert.equal(fresh.outcome,'playing');assert.equal(fresh.stats.played,0);
+});
+
+test('expanded banks preserve every old daily assignment and expose the new rotation at Central midnight',()=>{
+ for(const [id,schedule]of Object.entries(DAILY_BANK_SCHEDULES)){
+  const release=schedule.releases[0],oldCount=schedule.initialCount,newCount=release.count;
+  for(const key of ['2026-01-01','2026-10-20','2026-10-21','2026-10-22'])
+   assert.equal(dailyIndex(id,key,newCount),dailyIndex(id,key,oldCount),`${id}: ${key}`);
+  assert.equal(dailyIndex(id,release.from,newCount),oldCount,`${id}: first added board`);
+  const visited=new Set();
+  for(let offset=0;offset<newCount;offset++){
+   const key=new Date(Date.parse(release.from+'T00:00:00Z')+offset*86400000).toISOString().slice(0,10);
+   visited.add(dailyIndex(id,key,newCount));
+   assert.equal(dailyIndex(id,key,newCount+50),dailyIndex(id,key,newCount),`${id}: unpublished additions cannot change a date`);
+  }
+  assert.equal(visited.size,newCount,`${id}: a complete rotation visits every board`);
+ }
+});
+
+test('bank expansion and reordering retain the saved daily puzzle, state, and completed result',()=>{
+ for(const finish of [false,true]){
+  const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
+  const before=createSession(c,{storage:s,now}),id=before.puzzle.id;
+  const value=finish?before.puzzle.answer:(before.puzzle.answer===3?2:3);
+  before.commit({value,revealed:false});
+  const updated={...c,puzzles:[{id:'new',answer:1},...c.puzzles].reverse()};
+  const after=createSession(updated,{storage:s,now});
+  assert.equal(after.puzzle.id,id);assert.equal(after.state.value,value);
+  assert.equal(after.outcome,finish?'won':'playing');assert.equal(after.stats.played,finish?1:0);
+  after.practice();after.daily();assert.equal(after.puzzle.id,id);assert.equal(after.state.value,value);
+ }
+});
+
+test('invalid saved daily state falls back to the scheduled board without creating a result',()=>{
+ const s=storage(),c=config(),key='2026-10-22',index=dailyIndex(c.id,key,c.puzzles.length);
+ const different=c.puzzles[(index+1)%c.puzzles.length];
+ s.setItem(`${c.id}:v1:daily:${key}`,JSON.stringify({version:1,puzzleId:different.id,puzzleIndex:index,state:{value:999,revealed:false}}));
+ const g=createSession(c,{storage:s,now:()=>new Date(key+'T18:00:00Z')});
+ assert.equal(g.puzzle.id,c.puzzles[index].id);assert.equal(g.outcome,'playing');assert.equal(g.stats.played,0);
+});
+
+test('unfinished practice survives appended puzzles and can reach every added board',()=>{
+ const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
+ const before=createSession(c,{storage:s,now});before.practice();
+ const id=before.puzzle.id,value=before.puzzle.answer===3?2:3;before.commit({value,revealed:false});
+ const updated={...c,puzzles:[...c.puzzles,{id:'d',answer:1},{id:'e',answer:2}]};
+ const after=createSession(updated,{storage:s,now});assert.equal(after.practice(),'resumed');
+ assert.equal(after.puzzle.id,id);assert.equal(after.state.value,value);
+ const visited=new Set([after.puzzle.id]);
+ for(let i=1;i<updated.puzzles.length;i++){after.practice();visited.add(after.puzzle.id);}
+ assert.equal(visited.size,updated.puzzles.length);assert.equal(after.stats.played,0);
 });

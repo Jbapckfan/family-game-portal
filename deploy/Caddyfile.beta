@@ -1,0 +1,16 @@
+{
+  admin off
+  auto_https off
+}
+
+:8080 {
+  root * /srv
+  encode gzip
+  header {
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    X-Robots-Tag "noindex, nofollow"
+  }
+  # Missing modules must remain 404s. There is no homepage fallback or listing.
+  file_server
+}

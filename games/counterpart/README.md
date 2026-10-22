@@ -10,9 +10,9 @@ A hint exposes a row's relationship label and is counted once for that row. A pe
 
 ## Prepared collection
 
-There are **30 boards**, with **90 original analogies** across **150 row appearances**. Each analogy appears once or twice; repeated analogies are separated by at least six board positions, including the cycle boundary. The daily collection repeats after 30 days. Difficulty labels are editorial judgments rather than measured player ratings.
+There are **180 distinct five-analogy combinations**, with **90 original curated analogies** across **900 row appearances**. The same relationships recur with different word banks; this is not 900 newly written analogies. Every added board differs in at least three of its five analogies from every earlier board. Repeated analogies are separated by at least six board positions, including the cycle boundary. The daily collection repeats after 180 days. Difficulty labels are editorial judgments rather than measured player ratings.
 
-Content tests cover all 960 board/solved-row subsets and all 13,500 ordered pair checks. Those checks establish the encoded solution and guarantee that correct partial progress does not block completion. Editorial review is still necessary for semantic ambiguity; mechanical uniqueness alone cannot prove every possible interpretation of English.
+Content tests cover all 5,760 board/solved-row subsets and all 13,500 ordered pair checks. Those checks establish the encoded solution and guarantee that correct partial progress does not block completion. Editorial review is still necessary for semantic ambiguity; mechanical uniqueness alone cannot prove every possible interpretation of English.
 
 The detailed schema, API, editorial notes, and related-mechanic research are in [contentnotes/ENGINE.md](contentnotes/ENGINE.md).
 
@@ -66,3 +66,7 @@ This portable project lives at `games/counterpart/`. Serve this directory at `/g
 There is no application server, database, API key, or runtime network scoring. Access restrictions belong to the serving host; this static app does not implement authentication. This README describes the source and integration path, not a claim that this copy has already been published.
 
 Preserve published puzzle IDs and the daily epoch when extending the collection so existing saves remain meaningful. Changes to scoring or save schema should have an explicit migration or storage-version change.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

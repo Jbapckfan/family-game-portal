@@ -1,4 +1,7 @@
-import test from 'node:test';import assert from 'node:assert/strict';import * as E from './engine.mjs';import {PUZZLES,COMMON,FUSED} from './puzzles.mjs';import {createSession} from '../deepseek-runtime/core.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import * as E from './engine.mjs';import {PUZZLES as ALL_PUZZLES,COMMON,FUSED} from './puzzles.mjs';import {createSession} from '../deepseek-runtime/core.mjs';
+// Preserve the 58 original daily sets; all 120 sets and their 174 distinct arches
+// are validated separately by scripts/claude-expansion.test.mjs.
+const PUZZLES=ALL_PUZZLES.slice(0,58);
 const wrongs=r=>COMMON.filter(w=>/^[a-z]{3,9}$/.test(w)&&w!==r.k&&!r.clues.some(c=>c.w===w)).slice(0,5);
 const guess=(p,s,word)=>E.submit(p,E.setDraft(p,s,word)).state;
 test('all 58 Keystone days preserve 174 five-join arches and admit a perfect score of six',()=>{assert.equal(PUZZLES.length,58);assert.equal(COMMON.length,28743);assert.equal(FUSED.length,4447);for(const p of PUZZLES){assert.equal(p.rounds.length,3);let s=E.createState(p);for(let i=0;i<3;i++){const r=p.rounds[i];assert.equal(r.clues.length,5);for(const clue of r.clues){assert.ok(['before','after'].includes(clue.d));assert.ok(FUSED.includes(E.fused(r.k,clue)));assert.equal(E.joins(r.k,clue.w),true);}s=guess(p,s,r.k);assert.ok(E.restoreState(p,s));if(i<2){assert.equal(E.getStatus(p,s),'playing');assert.equal(s.awaitingNext,true);s=E.nextArch(p,s);}}assert.equal(E.getStatus(p,s),'won');assert.equal(E.total(p,s),6);}});

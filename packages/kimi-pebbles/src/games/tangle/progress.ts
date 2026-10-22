@@ -1,4 +1,19 @@
 import type { TanglePuzzle } from './engine'
+import type { GameStats } from '../shared/stats'
+
+/** The full dictionary includes rare words; medals reward an approachable word hunt. */
+export function medalTargets(max: number): [number, number, number] {
+  const gold = Math.min(18, Math.max(8, Math.round(max * 0.2)))
+  return [Math.ceil(gold / 3), Math.ceil(gold * 2 / 3), gold]
+}
+
+/** A saved round can qualify under the revised targets; count that achievement once. */
+export function reconcileTangleCompletion(stats: GameStats, progress: TangleProgress | null, day: number): GameStats {
+  if (!progress?.goldReached || stats.lastCompletedDay === day) return stats
+  const currentStreak = stats.lastCompletedDay === day - 1 ? stats.currentStreak + 1 : 1
+  return { ...stats, played: stats.played + (progress.countedPlayed ? 0 : 1), completed: stats.completed + 1,
+    currentStreak, maxStreak: Math.max(stats.maxStreak, currentStreak), lastCompletedDay: day }
+}
 
 export interface TangleProgress {
   found: string[]

@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { PUZZLES, COLLECTION } from '../puzzles.mjs';
 import { MAX_SCANS, solveDecisionTree, createGame, submitScan, submitPick, possibleWords, restoreGame } from '../engine.mjs';
 
-test('collection has ninety distinct twelve-word boards and ninety distinct answers', () => {
-  assert.equal(PUZZLES.length, 90);
-  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.id)).size, 90);
-  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.answer)).size, 90);
-  assert.equal(new Set(PUZZLES.map(puzzle => [...puzzle.words].sort().join(','))).size, 90);
-  assert.equal(COLLECTION.boards, 90);
+test('collection has 180 distinct twelve-word boards and 180 distinct answers', () => {
+  assert.equal(PUZZLES.length, 180);
+  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.id)).size, 180);
+  assert.equal(new Set(PUZZLES.map(puzzle => puzzle.answer)).size, 180);
+  assert.equal(new Set(PUZZLES.map(puzzle => [...puzzle.words].sort().join(','))).size, 180);
+  assert.equal(COLLECTION.boards, 180);
   assert.equal(COLLECTION.maxScans, 3);
   for (const puzzle of PUZZLES) {
     assert.equal(puzzle.words.length, 12, puzzle.id);
@@ -21,7 +21,7 @@ test('collection has ninety distinct twelve-word boards and ninety distinct answ
   }
 });
 
-test('each of all 1080 possible board answers has a fully verified strategy of at most three scans', () => {
+test('each of all 2160 possible board answers has a fully verified strategy of at most three scans', () => {
   let paths = 0;
   for (const puzzle of PUZZLES) {
     const tree = solveDecisionTree(puzzle.words, MAX_SCANS);
@@ -53,7 +53,7 @@ test('each of all 1080 possible board answers has a fully verified strategy of a
       paths++;
     }
   }
-  assert.equal(paths, 1080);
+  assert.equal(paths, 2160);
 });
 
 test('opening board and answer remain stable while future boards use varied words and positions', () => {

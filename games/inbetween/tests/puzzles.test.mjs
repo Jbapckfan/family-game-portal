@@ -31,8 +31,8 @@ function countAssignments(rows, tiles, rowIndex = 0, used = new Set()) {
 
 const rowKey = row => `${row.seed}:${row.answer}`;
 
-test('the edition has 60 complete, uniquely identified daily boards', () => {
-  assert.equal(PUZZLES.length, 60);
+test('the edition has 180 complete, uniquely identified daily boards', () => {
+  assert.equal(PUZZLES.length, 180);
   assert.equal(new Set(PUZZLES.map(puzzle => puzzle.id)).size, PUZZLES.length);
   assert.equal(new Set(PUZZLES.map(puzzle => puzzle.title)).size, PUZZLES.length);
   PUZZLES.forEach((puzzle, index) => {

@@ -67,7 +67,7 @@ function card(game, url) {
     <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
     <div class="card-motif"><img src="${escape(new URL('icon.svg', url).href)}" width="96" height="96" alt="" loading="lazy"></div>
     <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">${escape(game.credit || `Developed by ${game.creator}`)}</span><p>${escape(game.description)}</p></div>
-    <div class="card-bottom"><span class="card-detail">${escape(game.detail || game.category)}</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
+    <div class="card-bottom"><span class="card-detail">${game.boards.toLocaleString('en-US')} puzzles · Practice anytime</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
   </a>`;
 }
 
@@ -88,8 +88,9 @@ export function startHome(doc = document, win = window) {
     for (const group of ['flagship','word','logic','classic']) {
       $(`${group}-games`).closest('section').hidden = !GAMES.some(game => game.group === group && (selected === 'All' || game.creator === selected));
     }
-    const count = GAMES.filter(game => selected === 'All' || game.creator === selected).length;
-    $('filter-summary').textContent = `${count} games${selected === 'All' ? ` · ${CREATORS.length} creators` : ` · ${selected}`}`;
+    const visible = GAMES.filter(game => selected === 'All' || game.creator === selected);
+    const puzzles = visible.reduce((sum,game) => sum+game.boards,0);
+    $('filter-summary').textContent = `${visible.length} games · ${puzzles.toLocaleString('en-US')} puzzles${selected === 'All' ? ` · ${CREATORS.length} creators` : ` · ${selected}`}`;
     if (announce) { try {win.localStorage.setItem('alford:catalog:creator',selected);} catch {} }
   }
   filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.creatorFilter)));

@@ -30,17 +30,9 @@ export function TangleBoard({ state, actions }: Props) {
     return Number.isInteger(idx) ? idx : null
   }, [])
 
-  const handleDown = useCallback(
-    (e: React.PointerEvent, i: number) => {
+  const selectCell = useCallback(
+    (i: number) => {
       if (!puzzle) return
-      e.preventDefault()
-      dragging.current = true
-      moved.current = false
-      try {
-        containerRef.current?.setPointerCapture?.(e.pointerId)
-      } catch {
-        // synthetic or already-released pointers have no capture target
-      }
       const p = pathRef.current
       const last = p[p.length - 1]
       if (p.length === 0) {
@@ -61,6 +53,18 @@ export function TangleBoard({ state, actions }: Props) {
     },
     [actions, puzzle],
   )
+
+  const handleDown = useCallback((e: React.PointerEvent, i: number) => {
+    e.preventDefault()
+    dragging.current = true
+    moved.current = false
+    try {
+      containerRef.current?.setPointerCapture?.(e.pointerId)
+    } catch {
+      // synthetic or already-released pointers have no capture target
+    }
+    selectCell(i)
+  }, [selectCell])
 
   const handleMove = useCallback(
     (e: React.PointerEvent) => {
@@ -239,12 +243,18 @@ export function TangleBoard({ state, actions }: Props) {
                 type="button"
                 data-cell={i}
                 onPointerDown={(e) => handleDown(e, i)}
+                onKeyDown={(e) => {
+                  if (e.key !== 'Enter' && e.key !== ' ') return
+                  e.preventDefault()
+                  e.stopPropagation()
+                  selectCell(i)
+                }}
                 className={cn(
                   'tile3d aspect-square h-auto w-full text-2xl sm:text-3xl',
                   isSel && 'tile-slot',
                   isSel && isLast && 'tile-new',
                 )}
-                aria-label={`Letter ${ch}`}
+                aria-label={`Letter ${ch}, row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${isSel ? `, selected ${sel + 1}` : ''}`}
               >
                 {ch}
               </button>

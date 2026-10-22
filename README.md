@@ -119,14 +119,14 @@ The 32 daily games have a local hub at `/games/daily/`, sourced from `games/dail
 
 | Game | Local portal path | Prepared boards |
 | --- | --- | --- |
-| Tradeoff | `/games/tradeoff/` | 90 |
-| Inbetween | `/games/inbetween/` | 60 |
-| Counterpart | `/games/counterpart/` | 30 |
-| Shortlist | `/games/shortlist/` | 90 |
-| Second Sense | `/games/second-sense/` | 30 |
-| Sideways | `/games/sideways/` | 90 |
-| Ringcount | `/games/ringcount/` | 90 |
-| Switchpath | `/games/switchpath/` | 90 |
+| Tradeoff | `/games/tradeoff/` | 180 |
+| Inbetween | `/games/inbetween/` | 180 |
+| Counterpart | `/games/counterpart/` | 180 |
+| Shortlist | `/games/shortlist/` | 180 |
+| Second Sense | `/games/second-sense/` | 180 |
+| Sideways | `/games/sideways/` | 180 |
+| Ringcount | `/games/ringcount/` | 180 |
+| Switchpath | `/games/switchpath/` | 187 |
 
 **Tradeoff:** Open `/games/tradeoff/`. Trade letters between six five-letter words until all six clues match. Correct words lock, and every supplied board has a five-swap solution. Daily and practice progress are stored in the current browser.
 
@@ -153,9 +153,9 @@ npm --prefix games/ringcount test
 npm --prefix games/ringcount run check
 ```
 
-The original eight games contain 570 prepared boards; the full 32-game collection contains 5,842 prepared daily puzzle/answer records. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [current collection record](docs/unified-collection.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
+The original eight games contain 1,447 prepared boards; the full 32-game collection contains 8,001 prepared daily puzzle/answer records. Every game has at least 120 boards, available through daily and practice play. Some word games use distinct combinations of a finite curated word or clue pool. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [current collection record](docs/unified-collection.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
 
-The [iOS app project](ios/README.md) includes all 32 attributed games, led by Ringcount and Switchpath, with 5,842 prepared daily puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
+The [iOS app project](ios/README.md) includes all 32 attributed games, led by Ringcount and Switchpath, with 8,001 prepared daily puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
 
 Tradeoff and Inbetween remain in the family portal as earlier games. The [current monetization plan](docs/monetization-unified.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [expanded release verification record](docs/verification-expanded-2026-10-20.md) for executed checks and remaining release gates.
 

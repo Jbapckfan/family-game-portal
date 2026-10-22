@@ -1,9 +1,10 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as E from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
-test('all 30 Split boards have ten conserved letters and two distinct clued answers',()=>{
- assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.words.join('/'))).size,30);
+test('all prepared Split boards have ten conserved letters and two distinct clued answers',()=>{
+ assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.words.join('/'))).size,PUZZLES.length);
  for(const p of PUZZLES){assert.equal(p.rack.length,10);assert.equal(p.words.join('').length,10);assert.equal(new Set(p.words).size,2);
   assert.deepEqual([...p.rack].sort(),[...p.words.join('')].sort());
   let s=E.createState(p);
@@ -36,4 +37,10 @@ test('Split undo/restart preserve assistance and reveal never becomes a win',()=
  s=E.clearAll(p,s);assert.equal(s.hints,hints);
  assert.equal(E.restoreState(p,{...s,submitted:true}),null);
  const r=E.reveal(p,s);assert.equal(E.getStatus(p,r),'revealed');assert.deepEqual(E.restoreState(p,r),r);
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('deepseek-split preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'b18445719bd50d4cf85d0bf2c7baf7e7fa281bb66149da8bcc180358c86c0484');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

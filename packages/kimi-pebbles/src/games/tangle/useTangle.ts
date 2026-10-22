@@ -4,7 +4,7 @@ import { loadDayProgress, loadGameStats, saveDayProgress, saveGameStats, type Ga
 import { todayDayNumber } from '../shared/share'
 import { sfx } from '../shared/sound'
 import { isPremium } from '../shared/premium'
-import { restoreTangleProgress, type TangleProgress } from './progress'
+import { restoreTangleProgress, reconcileTangleCompletion, type TangleProgress } from './progress'
 
 export type TanglePhase = 'loading' | 'playing'
 export type TangleMode = 'daily' | 'practice'
@@ -72,7 +72,12 @@ export function useTangle() {
     const day = todayDayNumber()
     const { puzzle, puzzleNo } = dailyTangle(day)
     const saved = restoreTangleProgress(loadDayProgress<unknown>('tangle', day), puzzle)
-    const stats = loadGameStats('tangle')
+    const previousStats = loadGameStats('tangle')
+    const stats = reconcileTangleCompletion(previousStats, saved, day)
+    if (stats !== previousStats && saved) {
+      saveGameStats('tangle', stats)
+      saveDayProgress('tangle', day, { ...saved, countedPlayed: true })
+    }
     setS((prev) => ({
       ...prev,
       phase: 'playing',

@@ -16,7 +16,7 @@ For example, `SING + PR → SPRING`: insert PR after the first S to answer “Se
 
 ## Daily edition
 
-The daily date uses **America/Chicago**, with puzzle 1 on October 20, 2026. This edition has **60 prepared boards** and repeats after the collection is exhausted. Practice uses the same collection with separate saved progress. Today's uncompleted daily is reserved from practice.
+The daily date uses **America/Chicago**, with puzzle 1 on October 20, 2026. This edition has **180 prepared boards** and repeats after the collection is exhausted. Practice uses the same collection with separate saved progress. Today's uncompleted daily is reserved from practice.
 
 The editorial bank has **174 curated transformations**, **100 distinct four-letter seeds**, and **96 different letter pairs**. Every board has six unique seeds, answers, and pairs, at least three insertion positions, and an independently correct home for every tile. No transformation repeats within six daily boards, including the collection's wraparound. The labels Gentle, Medium, and Tricky describe increasing numbers of internal insertions; they are not based on player timing studies.
 
@@ -49,3 +49,9 @@ All runtime URLs are relative, so the files also work at `/games/inbetween/` in 
 ## Related games
 
 Word insertion is an established puzzle mechanic. [Squeezy](https://imsqueezy.com/) and [Meldle](https://meldle.com/) are related games. Inbetween combines six real seed words, six semantic clues, and a shared bank of ordered pairs; it does not claim to have invented word insertion or demonstrated audience retention.
+
+The 180 boards use 174 curated seed/answer transformations in different six-row combinations. No two boards share more than three rows, and a transformation never recurs within six board positions, including the cycle boundary. The first 60 boards retain their original content and tile IDs.
+
+## Expanded collection verification
+
+Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.

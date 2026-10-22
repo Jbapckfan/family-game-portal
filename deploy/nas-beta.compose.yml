@@ -1,0 +1,21 @@
+services:
+  alford-beta:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "${ALFORD_BIND_ADDRESS:-127.0.0.1}:${ALFORD_BETA_PORT:-8082}:8080"
+    volumes:
+      - type: bind
+        source: ${ALFORD_WEB_ROOT:?Set ALFORD_WEB_ROOT to the absolute staged web directory}
+        target: /srv
+        read_only: true
+      - type: bind
+        source: ./Caddyfile.beta
+        target: /etc/caddy/Caddyfile
+        read_only: true
+    read_only: true
+    tmpfs:
+      - /data
+      - /config
+    security_opt:
+      - no-new-privileges:true

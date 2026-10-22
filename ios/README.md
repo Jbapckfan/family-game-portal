@@ -54,42 +54,42 @@ Use **Product → Archive** with a physical-device destination for a distributio
 
 | Game | Mechanic | Prepared collection |
 | --- | --- | ---: |
-| Ringcount | Place four cuts around a numbered ring so the four arcs meet the required totals. | 90 |
-| Switchpath | Trace a route through a number grid using the alternating higher/lower rule. | 90 |
-| Counterpart | Complete five directed analogies using one shared ten-word bank. | 30 |
-| Shortlist | Identify a hidden word from twelve candidates using three letter-presence scans, then commit to an answer. | 90 |
-| Second Sense | Match a noun definition and verb definition, then type the single word fitting both senses. | 30 |
-| Sideways | Shift word rows horizontally so their selected letters satisfy the vertical clue. | 90 |
-| Tradeoff (ChatGPT) | Trade letters between six clued words. | 90 |
-| Inbetween (ChatGPT) | Insert two-letter pairs into clued words. | 60 |
+| Ringcount | Place four cuts around a numbered ring so the four arcs meet the required totals. | 180 |
+| Switchpath | Trace a route through a number grid using the alternating higher/lower rule. | 187 |
+| Counterpart | Complete five directed analogies using one shared ten-word bank. | 180 |
+| Shortlist | Identify a hidden word from twelve candidates using three letter-presence scans, then commit to an answer. | 180 |
+| Second Sense | Match a noun definition and verb definition, then type the single word fitting both senses. | 180 |
+| Sideways | Shift word rows horizontally so their selected letters satisfy the vertical clue. | 180 |
+| Tradeoff (ChatGPT) | Trade letters between six clued words. | 180 |
+| Inbetween (ChatGPT) | Insert two-letter pairs into clued words. | 180 |
 | Cairn (Kimi) | Five growing anagrams. | 839 |
 | Morph (Kimi) | One-letter word ladders. | 450 |
 | Tangle (Kimi) | Trace words through a grid to reach gold. | 430 |
 | Hunch (Kimi) | Five-letter deduction with six guesses. | 937 |
 | Circuit (Kimi) | Chain words across four arcs and cover every letter. | 286 |
 | Quartet (Kimi) | Find four groups of related words. | 420 |
-| Twin Hive (DeepSeek) | Make words using both required letters. | 30 |
-| Spare (DeepSeek) | Find four meaning pairs and the one word left over. | 30 |
-| Rung (DeepSeek) | Change one letter at a time to reach the target. | 30 |
-| Cipher (DeepSeek) | Decode a phrase using a substitution alphabet. | 30 |
-| Trail (DeepSeek) | Trace one word through nine tiles. | 30 |
-| Split (DeepSeek) | Divide ten letters into two clued words. | 30 |
-| Quadra (Qwen) | Find four words in one category using sixteen letters. | 30 |
-| Logic Lattice (Qwen) | Fill a grid to satisfy every counting clue. | 30 |
-| Syntax Siege (Qwen) | Build words before a wave reaches the core. | 30 |
-| Memory Maze (Qwen) | Study a route and retrace it from memory. | 30 |
-| Pattern Prism (Qwen) | Find a visual rule and predict the next steps. | 30 |
-| Territory Tactics (Qwen) | Place two stones to surround and capture a target. | 30 |
-| Dovetail (Claude) | Fill the missing links in a compound-word chain. | 77 |
-| Splice (Claude) | Match twelve word halves into six words. | 73 |
+| Twin Hive (DeepSeek) | Make words using both required letters. | 140 |
+| Spare (DeepSeek) | Find four meaning pairs and the one word left over. | 120 |
+| Rung (DeepSeek) | Change one letter at a time to reach the target. | 120 |
+| Cipher (DeepSeek) | Decode a phrase using a substitution alphabet. | 120 |
+| Trail (DeepSeek) | Trace one word through nine tiles. | 120 |
+| Split (DeepSeek) | Divide ten letters into two clued words. | 120 |
+| Quadra (Qwen) | Find four words in one category using sixteen letters. | 120 |
+| Logic Lattice (Qwen) | Fill a grid to satisfy every counting clue. | 120 |
+| Syntax Siege (Qwen) | Build words before a wave reaches the core. | 120 |
+| Memory Maze (Qwen) | Study a route and retrace it from memory. | 120 |
+| Pattern Prism (Qwen) | Find a visual rule and predict the next steps. | 150 |
+| Territory Tactics (Qwen) | Place two stones to surround and capture a target. | 120 |
+| Dovetail (Claude) | Fill the missing links in a compound-word chain. | 120 |
+| Splice (Claude) | Match twelve word halves into six words. | 120 |
 | Sprout (Claude) | Add one letter and rearrange to grow an eight-letter word. | 128 |
 | Tangle (Claude) | Separate three interleaved words while preserving their letter order. | 160 |
-| Keystone (Claude) | Find the hidden compound-word link in each of three arches. | 58 |
+| Keystone (Claude) | Find the hidden compound-word link in each of three arches. | 120 |
 | Tumbler (Claude) | Use alphabet-range clues to find a five-letter word. | 1,054 |
 
 The six DeepSeek entries carry **Concept by DeepSeek · Built by ChatGPT**. Quadra carries **Developed by Qwen**; the other five Qwen entries carry **Concept by Qwen · Built by ChatGPT**. The six Claude entries carry **Developed by Claude**, retaining their supplied playable games and original puzzle banks. Claude's Tangle and Kimi's Tangle have different mechanics, IDs, routes, and saved results despite sharing a display name.
 
-These are finite, prepared collections. The daily index is deterministic and repeats after each game's collection length. The app does not promise an infinite supply of unseen puzzles. Practice remains separate from daily results. Game-specific rules, explanations, score sharing, and saved-state validation remain in each bundled JavaScript engine.
+Every game has at least 120 prepared puzzles. Some word games reuse a finite curated pool in distinct combinations; see the [content expansion record](../docs/verification-puzzles-2026-10-22.md). These are finite, prepared collections. The daily index is deterministic and repeats after each game's collection length. The app does not promise an infinite supply of unseen puzzles. Practice remains separate from daily results. Game-specific rules, explanations, score sharing, and saved-state validation remain in each bundled JavaScript engine.
 
 ## Native structure and local progress
 

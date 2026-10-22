@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createState,getStatus,chooseTile,submitPair,shuffle,hint,reveal,restoreState} from './engine.mjs';
@@ -31,7 +32,13 @@ test('reveal is distinct from a win and corrupt saves are refused',()=>{
  assert.equal(restoreState(sample,{...initial,mistakes:['0:1']}),null);
  assert.equal(getStatus(sample,restoreState(sample,{...initial,status:'won'})),'playing');
 });
-test('thirty complete authored boards have four disjoint pairs and one distinct spare',()=>{
- assert.equal(PUZZLES.length,30);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,30);
+test('All prepared authored boards have four disjoint pairs and one distinct spare',()=>{
+ assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
  for(const p of PUZZLES){assert.equal(p.pairs.length,4);const words=[...p.pairs.flat(),p.spare];assert.equal(words.length,9);assert.equal(new Set(words).size,9,p.id);assert.ok(words.every(w=>/^[A-Z]+$/.test(w)));let s=createState(p);for(let i=0;i<4;i++)s=pair(p,s,i*2,i*2+1);assert.equal(getStatus(p,s),'won',p.id);}
+});
+
+// The initial thirty records are an append-only compatibility contract.
+test('deepseek-spare preserves every original puzzle and stable ID',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'989b40acb0a5d95732ddce10019710ce3a831167f1e6d1000b2022be0221d80a');
+ assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });

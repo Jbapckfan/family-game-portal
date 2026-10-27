@@ -43,6 +43,7 @@ private struct AppRootView: View {
                 .tabItem { Label("Settings", systemImage: "slider.horizontal.3") }.tag(2)
         }
         .onReceive(calendarPulse) { now = $0 }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in now = Date() }
         .onChange(of: store.resetGeneration) { _, _ in path.removeAll() }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }

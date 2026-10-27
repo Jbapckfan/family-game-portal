@@ -23,3 +23,23 @@ dialog{width:min(560px,calc(100% - 32px));max-height:85dvh;padding:28px;border:1
 @media(max-width:760px){.flagship-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.word-grid,.classics-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.game-card:hover,.game-card:hover .card-motif img{transform:none}}
+/* The daily ritual uses the collection's existing paper, ink and type. */
+.three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.featured-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.ritual-section{border-top:1px solid var(--line);margin-top:28px}
+.three-grid .game-card{display:flex;flex-direction:column;gap:12px;padding:20px}
+.three-grid .card-motif{display:none}.three-grid .card-copy h3{font-size:30px}
+.three-grid .card-copy p{font-size:13px}.three-grid .card-bottom{margin-top:auto}.three-grid .card-detail{display:none}
+.ritual-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:18px}
+.ritual-actions button{min-height:44px;padding:10px 18px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--paper);font:600 13px var(--sans);cursor:pointer}
+.ritual-actions button:disabled{opacity:.6;cursor:wait}.ritual-actions a{padding:10px 0;font-size:13px;font-weight:600;min-height:44px}
+.share-status{font-size:13px;line-height:1.5;margin:10px 0;color:var(--muted)}
+#share-fallback label{display:block;font-size:13px;margin:10px 0}#share-text{display:block;width:100%;max-width:520px;font:14px/1.6 var(--sans);padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--ink);background:var(--paper)}
+@media(max-width:760px){.three-grid{grid-template-columns:1fr}.three-grid .game-card{padding:18px}.three-grid .card-copy h3{font-size:28px}.three-grid .card-topline{flex-wrap:wrap}.featured-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .three-grid .game-card{display:grid;grid-template-columns:1fr auto;gap:8px 14px;padding:15px 18px}
+  .three-grid .card-topline{grid-column:1/-1}.three-grid .card-copy{grid-column:1}
+  .three-grid .card-copy p,.three-grid .creator-credit{display:none}
+  .three-grid .card-bottom{grid-column:2;grid-row:2;border:0;padding:0;align-self:center}
+  .three-grid .card-action{min-height:44px}.three-grid .card-copy h3{font-size:26px;margin:0}
+}

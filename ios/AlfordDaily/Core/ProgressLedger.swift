@@ -21,6 +21,25 @@ struct ProgressLedger: Codable, Equatable {
         GameID.allCases.filter { status(for: $0, on: dateKey) == .won }.count
     }
 
+    func todayShare(now: Date = Date()) -> String {
+        todayShare(on: DailyCalendar.key(for: now))
+    }
+
+    func todayShare(on dateKey: String) -> String {
+        let rows = GameID.todaysThree(on: dateKey).map { game in
+            let label: String
+            switch status(for: game, on: dateKey) {
+            case .won: label = "Solved"
+            case .lost: label = "Not solved"
+            case .revealed: label = "Revealed"
+            case .playing: label = "In progress"
+            case nil: label = "Ready"
+            }
+            return "\(game.name): \(label)"
+        }
+        return (["Alford Daily · \(dateKey)", "Today’s Three"] + rows).joined(separator: "\n")
+    }
+
     func dailyStreak(today: String) -> Int {
         guard DailyCalendar.date(for: today) != nil else { return 0 }
         if completed(on: today) == GameID.allCases.count && solved(on: today) == 0 { return 0 }

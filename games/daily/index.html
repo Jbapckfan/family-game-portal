@@ -46,6 +46,18 @@
         <ol class="progress-marks" id="progress-marks" aria-label="All 32 daily games"></ol>
       </section>
       <p class="progress-note" id="progress-note" hidden></p>
+      <section class="game-section ritual-section" aria-labelledby="three-title">
+        <div class="section-heading"><div><p class="eyebrow">A little rhythm for your day</p><h2 id="three-title">Today’s Three</h2></div><p id="three-progress" role="status">Three small challenges. Your own pace.</p></div>
+        <div id="todays-three" class="three-grid"></div>
+        <div class="ritual-actions"><button type="button" id="share-today" disabled>Share today’s result</button><a id="browse-all" href="#today">Browse all 32 games <span aria-hidden="true">↗</span></a></div>
+        <p class="share-status" id="share-status" role="status" aria-live="polite"></p>
+        <div id="share-fallback" hidden><label for="share-text">Your spoiler-free result</label><textarea id="share-text" rows="6" readonly></textarea></div>
+      </section>
+      <section class="game-section featured-section" aria-labelledby="featured-title">
+        <div class="section-heading"><div><p class="eyebrow">Four places to begin</p><h2 id="featured-title">Featured games</h2></div><p>Two ways with numbers and paths. Two ways with words.</p></div>
+        <div id="featured-games" class="featured-grid"></div>
+      </section>
+      <div data-collection>
       <section class="collection-filter" id="today" tabindex="-1" aria-label="Filter games by creator">
         <div><p class="eyebrow">One collection. Many ways to play.</p><p id="filter-summary" role="status" aria-live="polite">32 games · 5 creators</p></div>
         <div class="creator-filters" role="group" aria-label="Game creator">
@@ -79,6 +91,7 @@
         <div class="classics-heading"><h2 id="classics-title">The family favorites</h2><p>Two earlier games, always welcome at the table.</p></div>
         <div class="classics-grid" id="classic-games"></div>
       </section>
+      </div>
       <noscript><p class="noscript-note">Turn on JavaScript to load the collection and play the games. Alford Daily saves progress on this device.</p></noscript>
     </main>
     <footer class="footer">

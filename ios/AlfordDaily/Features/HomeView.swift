@@ -4,6 +4,7 @@ struct HomeView: View {
     let store: ProgressStore
     let now: Date
     @State private var creatorFilter = CreatorFilter.all
+    @State private var share: ShareRequest?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private var today: String { DailyCalendar.key(for: now) }
     private var gameCount: Int { GameID.allCases.count }
@@ -18,6 +19,8 @@ struct HomeView: View {
             LazyVStack(alignment: .leading, spacing: 26) {
                 introduction
                 dailyProgress
+                todaysThree
+                gameSection(title: "Featured games", games: GameID.featured)
                 creatorPicker
 
                 if creatorFilter.games.contains(where: \.isFlagship) {
@@ -37,6 +40,7 @@ struct HomeView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.paper, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .sheet(item: $share) { request in ShareSheet(text: request.text).presentationDetents([.medium, .large]) }
     }
 
     private var introduction: some View {
@@ -69,6 +73,38 @@ struct HomeView: View {
             Text("Across all \(gameCount) games. Solve at least one daily to keep your streak going.")
                 .font(.caption).foregroundStyle(Theme.muted).fixedSize(horizontal: false, vertical: true)
         }.paperCard()
+    }
+
+    private var todaysThree: some View {
+        let games = GameID.todaysThree(on: today)
+        let solved = games.filter { store.ledger.status(for: $0, on: today) == .won }.count
+        return VStack(alignment: .leading, spacing: 14) {
+            Text("Today’s Three").font(.system(.title2, design: .serif))
+            Text("\(solved) of \(games.count) solved · a small daily ritual")
+                .font(.subheadline).foregroundStyle(Theme.muted)
+            ForEach(games) { game in
+                NavigationLink(value: game) {
+                    HStack(alignment: .center, spacing: 14) {
+                        GameEmblem(game: game, size: 40).accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(game.name).font(.headline)
+                            Text(store.ledger.status(for: game, on: today)?.label ?? "Ready for today")
+                                .font(.subheadline).foregroundStyle(Theme.muted)
+                        }
+                        Spacer(minLength: 8)
+                        Image(systemName: "arrow.up.right").accessibilityHidden(true)
+                    }.padding(14).frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+                        .background(game.palette.wash, in: RoundedRectangle(cornerRadius: 14))
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain).accessibilityIdentifier("today-three-\(game.rawValue)")
+            }
+            Button { share = ShareRequest(text: store.ledger.todayShare()) } label: {
+                Label("Share today’s result", systemImage: "square.and.arrow.up")
+                    .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
+            }.accessibilityHint("Shares game names and result labels without answers")
+            Text("Four featured games rotate through this daily set. All 32 games remain in the collection below.")
+                .font(.caption).foregroundStyle(Theme.muted)
+        }.accessibilityIdentifier("todays-three")
     }
 
     @ViewBuilder private var progressMetrics: some View {

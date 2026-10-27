@@ -2,6 +2,36 @@ import XCTest
 @testable import AlfordDaily
 
 final class DailyCalendarTests: XCTestCase {
+    func testCuratedSelectionMatchesWebAcrossRolloverAndRollback() {
+        XCTAssertEqual(GameID.featured, [.ringcount, .switchpath, .counterpart, .shortlist])
+        XCTAssertEqual(GameID.todaysThree(on: "2026-10-20"), [.ringcount, .switchpath, .counterpart])
+        XCTAssertEqual(GameID.todaysThree(on: "2026-10-21"), [.switchpath, .counterpart, .shortlist])
+        XCTAssertEqual(GameID.todaysThree(on: "2026-11-01"), [.ringcount, .switchpath, .counterpart])
+        XCTAssertEqual(GameID.todaysThree(on: "2026-10-19"), [.shortlist, .ringcount, .switchpath])
+        XCTAssertEqual(GameID.todaysThree(on: "bad"), [])
+        let available = GameID.allCases.filter { ![GameID.ringcount, .counterpart, .shortlist].contains($0) }
+        let selected = GameID.todaysThree(on: "2026-10-20", available: available)
+        XCTAssertEqual(Set(selected).count, 3)
+        XCTAssertTrue(selected.allSatisfy(available.contains))
+        XCTAssertEqual(GameID.allCases.count, 32)
+    }
+
+    func testHomeShareUsesOnlyStatusAndDoesNotMutateLedger() {
+        var ledger = ProgressLedger()
+        ledger.record(ProgressMessage(game: .ringcount, mode: .daily, dateKey: "2026-10-20", status: .won, stats: .empty))
+        let before = ledger
+        XCTAssertEqual(ledger.todayShare(on: "2026-10-20"), "Alford Daily · 2026-10-20\nToday’s Three\nRingcount: Solved\nSwitchpath: Ready\nCounterpart: Ready")
+        XCTAssertEqual(ledger, before)
+    }
+
+    func testShareActivationUsesCurrentCentralDateRatherThanTheLastViewTick() {
+        let ledger = ProgressLedger()
+        let before = ledger
+        XCTAssertTrue(ledger.todayShare(now: instant("2026-11-01T04:59:59Z")).contains("2026-10-31"))
+        XCTAssertTrue(ledger.todayShare(now: instant("2026-11-01T05:00:01Z")).contains("2026-11-01"))
+        XCTAssertEqual(ledger, before)
+    }
+
     private func instant(_ text: String) -> Date { ISO8601DateFormatter().date(from: text)! }
 
     func testCentralMidnightUsesTheCorrectDaily() {

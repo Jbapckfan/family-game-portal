@@ -60,6 +60,38 @@ export function filterGames(creator = 'All') { return GAMES.filter(game => creat
 
 export const LAUNCH_GAMES = GAMES;
 
+export const FEATURED_GAME_IDS = Object.freeze(['ringcount', 'switchpath', 'counterpart', 'shortlist']);
+export function featuredGames(available = GAMES) {
+  const ids = new Set(available.map(game => game.slug));
+  return FEATURED_GAME_IDS.map(id => GAMES.find(game => game.slug === id)).filter(game => ids.has(game.slug));
+}
+function dateOffset(key) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(key) || key.startsWith('0000')) return null;
+  const time = Date.parse(`${key}T12:00:00Z`);
+  if (!Number.isFinite(time) || new Date(time).toISOString().slice(0, 10) !== key) return null;
+  return Math.round((time - Date.parse('2026-10-20T12:00:00Z')) / 86400000);
+}
+/** A read-only ritual. Existing engines continue to select their own date-keyed puzzle. */
+export function todayThree(key, available = GAMES) {
+  const day = dateOffset(key);
+  if (day === null) return [];
+  const ids = new Set(available.map(game => game.slug));
+  const preferred = featuredGames(available);
+  const pool = preferred.length >= 3 ? preferred : [...preferred, ...GAMES.filter(game => ids.has(game.slug) && !FEATURED_GAME_IDS.includes(game.slug))];
+  if (!pool.length) return [];
+  const start = ((day % pool.length) + pool.length) % pool.length;
+  return Array.from({length: Math.min(3, pool.length)}, (_, index) => pool[(start + index) % pool.length]);
+}
+/** Only catalog names, Central date and public status labels may leave the home. */
+export function buildDailyShare(key, results = []) {
+  if (dateOffset(key) === null) throw new RangeError('A valid daily date is required');
+  const labels = {won: 'Solved', lost: 'Not solved', revealed: 'Revealed', playing: 'In progress'};
+  return [`Alford Daily · ${key}`, 'Today’s Three', ...todayThree(key).map(game => {
+    const status = results.find(result => result.slug === game.slug)?.status;
+    return `${game.name}: ${Object.hasOwn(labels, status) ? labels[status] : 'Ready'}`;
+  })].join('\n');
+}
+
 /** Resolve from the HTML location so the same home works at / or /games/daily/. */
 export function gameURL(slug, base, documentURL) {
   return new URL(`${slug}/`, new URL(base || './games/', documentURL)).href;

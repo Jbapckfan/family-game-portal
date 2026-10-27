@@ -1,4 +1,4 @@
-import {GAMES, LAUNCH_GAMES, CREATORS, gameURL} from './catalog.mjs';
+import {GAMES, LAUNCH_GAMES, CREATORS, gameURL, featuredGames, todayThree, buildDailyShare} from './catalog.mjs';
 
 const escape = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
 const dateParts = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit'});
@@ -78,13 +78,14 @@ export function startHome(doc = document, win = window) {
   for (const group of ['flagship', 'word', 'logic', 'classic']) {
     $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
   }
+  $('featured-games').innerHTML = featuredGames().map(game => card(game, urls.get(game.slug))).join('');
   $('progress-marks').innerHTML = LAUNCH_GAMES.map(game => `<li class="progress-mark game-${game.slug}" data-mark="${game.slug}" title="${escape(game.name)}"><span class="mark-symbol" aria-hidden="true"></span><span class="sr-only">${escape(game.name)}: checking progress</span></li>`).join('');
 
   const filterButtons = doc.querySelectorAll('[data-creator-filter]');
   function applyFilter(value, announce = true) {
     const selected = CREATORS.includes(value) ? value : 'All';
     filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.creatorFilter === selected)));
-    doc.querySelectorAll('[data-game]').forEach(card => { card.hidden = selected !== 'All' && card.dataset.creator !== selected; });
+    doc.querySelectorAll('[data-collection] [data-game]').forEach(card => { card.hidden = selected !== 'All' && card.dataset.creator !== selected; });
     for (const group of ['flagship','word','logic','classic']) {
       $(`${group}-games`).closest('section').hidden = !GAMES.some(game => game.group === group && (selected === 'All' || game.creator === selected));
     }
@@ -94,6 +95,7 @@ export function startHome(doc = document, win = window) {
     if (announce) { try {win.localStorage.setItem('alford:catalog:creator',selected);} catch {} }
   }
   filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.creatorFilter)));
+  $('browse-all').addEventListener('click', () => { applyFilter('All'); $('today').focus(); });
   let savedFilter = 'All'; try {savedFilter = win.localStorage.getItem('alford:catalog:creator') || 'All';} catch {}
   applyFilter(savedFilter, false);
 
@@ -109,10 +111,19 @@ export function startHome(doc = document, win = window) {
 
   let sequence = 0;
   let shownDate;
+  let shareSnapshot = null;
+  let shareGeneration = 0;
   async function refresh() {
     const current = ++sequence;
     const now = new Date();
-    shownDate = dateKey(now);
+    const nextDate = dateKey(now), dayChanged = nextDate !== shownDate;
+    shownDate = nextDate;
+    $('share-today').disabled = true;
+    if (dayChanged) {
+      shareGeneration++;
+      $('todays-three').innerHTML = todayThree(shownDate).map(game => card(game, urls.get(game.slug))).join('');
+      $('share-fallback').hidden = true; $('share-text').value = ''; $('share-status').textContent = '';
+    }
     $('today-date').dateTime = shownDate;
     $('today-date').textContent = dateLabel.format(now);
     let storage;
@@ -124,10 +135,11 @@ export function startHome(doc = document, win = window) {
     if (current !== sequence) return;
     for (const result of results) {
       const state = STATUS[result.status] || STATUS.unavailable;
-      const item = doc.querySelector(`[data-game="${result.slug}"]`);
-      item.querySelector('[data-status]').dataset.status = result.status;
-      item.querySelector('[data-status-label]').textContent = state.label;
-      item.querySelector('[data-action-label]').textContent = state.action;
+      doc.querySelectorAll(`[data-game="${result.slug}"]`).forEach(item => {
+        item.querySelector('[data-status]').dataset.status = result.status;
+        item.querySelector('[data-status-label]').textContent = state.label;
+        item.querySelector('[data-action-label]').textContent = state.action;
+      });
       const mark = doc.querySelector(`[data-mark="${result.slug}"]`);
       if (mark) {
         const game = GAMES.find(item => item.slug === result.slug);
@@ -145,7 +157,32 @@ export function startHome(doc = document, win = window) {
       : solved === GAMES.length ? `${GAMES.length} of ${GAMES.length} solved. A day well played.` : `${solved} of ${GAMES.length} solved today`;
     $('progress-note').hidden = !unavailable;
     $('progress-note').textContent = unavailable ? 'You can still choose a game. This page could not read every saved result on this device.' : '';
+    const selected = todayThree(shownDate);
+    const finished = selected.filter(game => results.find(result => result.slug === game.slug)?.status === 'won').length;
+    $('three-progress').textContent = `${finished} of ${selected.length} solved · a small daily ritual`;
+    shareSnapshot = {date: shownDate, results};
+    $('share-today').disabled = false;
   }
+
+  $('share-today').addEventListener('click', async () => {
+    if (!shareSnapshot || shareSnapshot.date !== dateKey()) {
+      await refresh(); $('share-status').textContent = 'A new day is ready. Tap Share again for today’s result.'; return;
+    }
+    const capturedDate = shareSnapshot.date, request = ++shareGeneration;
+    const isCurrentShare = () => request === shareGeneration && capturedDate === dateKey() && shareSnapshot?.date === capturedDate;
+    const text = buildDailyShare(capturedDate, shareSnapshot.results);
+    $('share-status').textContent = '';
+    try {
+      if (win.navigator.share) { await win.navigator.share({title: 'Alford Daily', text}); return; }
+      if (win.navigator.clipboard?.writeText) { await win.navigator.clipboard.writeText(text); if (isCurrentShare()) $('share-status').textContent = 'Result copied. No answers included.'; return; }
+    } catch (error) {
+      if (error?.name === 'AbortError') return;
+    }
+    if (!isCurrentShare()) return;
+    $('share-text').value = text; $('share-fallback').hidden = false;
+    $('share-status').textContent = 'Select and copy your result below. No answers included.';
+    $('share-text').focus(); $('share-text').select();
+  });
 
   const dialog = $('about-dialog');
   let returnFocus;
@@ -167,6 +204,7 @@ export function startHome(doc = document, win = window) {
     if (event.key === null || GAMES.some(game => event.key.startsWith(`${game.slug}:v1:`))) void refresh();
   });
   win.addEventListener('pageshow', () => {void refresh();});
+  win.addEventListener('focus', () => {if (dateKey() !== shownDate) void refresh();});
   doc.addEventListener('visibilitychange', () => {if (doc.visibilityState === 'visible') void refresh();});
   win.setInterval(() => {if (doc.visibilityState === 'visible' && dateKey() !== shownDate) void refresh();}, 30_000);
   void refresh();

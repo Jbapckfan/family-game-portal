@@ -173,6 +173,18 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
     }
 
     var isFlagship: Bool { self == .ringcount || self == .switchpath }
+
+    static let featured: [GameID] = [.ringcount, .switchpath, .counterpart, .shortlist]
+
+    static func todaysThree(on dateKey: String, available: [GameID] = allCases) -> [GameID] {
+        guard let number = DailyCalendar.number(for: dateKey) else { return [] }
+        let allowed = Set(available)
+        let preferred = featured.filter(allowed.contains)
+        let pool = preferred.count >= 3 ? preferred : preferred + allCases.filter { allowed.contains($0) && !featured.contains($0) }
+        guard !pool.isEmpty else { return [] }
+        let start = ((number - 1) % pool.count + pool.count) % pool.count
+        return (0..<min(3, pool.count)).map { pool[(start + $0) % pool.count] }
+    }
     var creator: GameCreator {
         switch self {
         case .kimiCairn, .kimiMorph, .kimiTangle, .kimiHunch, .kimiCircuit, .kimiQuartet: .kimi

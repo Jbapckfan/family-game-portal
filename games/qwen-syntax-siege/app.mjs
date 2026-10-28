@@ -1,7 +1,7 @@
 import {mountDailyGame, escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
-let live, boardStamp='';
+let live, boardStamp='',clockRound='',lastImpacts=0;
 function act(fn, ...args) {
   const {puzzle:p,state:s,commit,announce,root}=live;
   const result=fn(p,s,...args), next=result?.state||result;
@@ -27,7 +27,7 @@ mountDailyGame({
   instructions:[
     'Defend your 100-HP core against six fixed letter waves. Tap Start defense when you are ready; each daily wave has a 20-second clock.',
     'Tap the six letter tiles to form a word of three or more letters, then Fire word. Each tile can be used once in a word. Every wave has a six-letter solution.',
-    'Each letter deals 10 damage. Defeat a 60-HP enemy with one six-letter word or several different shorter words. Longer words earn more points.',
+    'Each letter deals 10 damage. Defeat a 60-HP enemy with one six-letter word or several different shorter words. Points equal the square of each accepted word’s length; damage is 10 per letter.',
     'Only words in the wave’s prepared word list count. An unlisted word costs 10 core HP; an expired clock costs 20 HP. A repeated accepted word deals no extra damage.',
     'A hint adds the next letter of a six-letter solution and records assistance. Untimed assist stops the clock for the rest of the puzzle. Practice is always untimed.',
     'Help and leaving the screen pause the timer. Clear and Undo change your current word; damage to the core remains. Defeat all six waves before core HP reaches zero.'
@@ -37,6 +37,9 @@ mountDailyGame({
   render(context) {
     live=context;
     const {root,puzzle:p,state:s,mode}=context;
+    const round=`${p.id}:${mode}`;
+    if(clockRound===round&&s.timeouts>lastImpacts)context.announce(E.getStatus(p,s)==='lost'?'Clock expired. The core took 20 damage and was breached.':'Clock expired. The core took 20 damage. Your word cleared; the same wave has a fresh 20-second clock.');
+    clockRound=round;lastImpacts=s.timeouts;
     const stamp=JSON.stringify([p.id,mode,{...s,remainingMs:0}]);
     // Clock-only renders keep the current buttons and their focus intact.
     if(stamp===boardStamp&&root.querySelector('#siege-clock')){updateClock();return;}
@@ -53,9 +56,9 @@ mountDailyGame({
       <div class="siege-time" aria-hidden="true"><span id="siege-time-fill"></span></div>
       ${wave?`<p class="muted siege-rule">${s.started?'Make words of 3–6 letters. A full anagram clears the wave.':'Six waves. One core. Your clock starts when you are ready.'}</p>
       <div class="siege-word" role="status" aria-label="Your word: ${word||'empty'}">${word?esc(word):'<span>BUILD A WORD</span>'}</div>
-      <div class="siege-rack" role="group" aria-label="Current letter rack">${wave.rack.map((letter,i)=>`<button id="siege-letter-${i}" type="button" class="tile ${s.selected.includes(i)?'selected':''}" data-letter="${i}" aria-label="${letter}, tile ${i+1}${s.selected.includes(i)?', used':''}" ${finished||!s.started||s.selected.includes(i)?'disabled':''}>${esc(letter)}</button>`).join('')}</div>
-      <div class="actions siege-word-actions"><button id="siege-undo" class="button" type="button" data-action="undo" ${!s.selected.length||finished?'disabled':''}>Undo</button><button id="siege-clear" class="button" type="button" data-action="clear" ${!s.selected.length||finished?'disabled':''}>Clear</button><button id="siege-fire" class="button primary" type="button" data-action="fire" ${!s.started||word.length<3||finished?'disabled':''}>Fire word${word.length>=3?` · ${word.length*10}`:''}</button></div>
-      ${s.played[index].length?`<ul class="word-list" aria-label="Words already fired">${s.played[index].map(w=>`<li>${esc(w)} <small>+${w.length*10}</small></li>`).join('')}</ul>`:''}`:''}
+      <div class="siege-rack" role="group" aria-label="Current letter rack">${wave.rack.map((letter,i)=>`<button id="siege-letter-${i}" type="button" class="tile ${s.selected.includes(i)?'selected':''}" data-letter="${i}" aria-label="${letter}, tile ${i+1}${s.selected.includes(i)?`, selected letter ${s.selected.indexOf(i)+1}`:''}" ${finished||!s.started||s.selected.includes(i)?'disabled':''}>${esc(letter)}${s.selected.includes(i)?`<small class="siege-order" aria-hidden="true">${s.selected.indexOf(i)+1}</small>`:''}</button>`).join('')}</div>
+      <p class="siege-keys muted">After Start: type letters · Backspace undoes · Enter fires. Each tile is used once.</p><div class="actions siege-word-actions"><button id="siege-undo" class="button" type="button" data-action="undo" ${!s.selected.length||finished?'disabled':''}>Undo</button><button id="siege-clear" class="button" type="button" data-action="clear" ${!s.selected.length||finished?'disabled':''}>Clear</button><button id="siege-fire" class="button primary" type="button" data-action="fire" ${!s.started||word.length<3||finished?'disabled':''}>Fire word${word.length>=3?` · ${word.length*10} damage`:''}</button></div>
+      ${s.played[index].length?`<ul class="word-list" aria-label="Words already fired">${s.played[index].map(w=>`<li>${esc(w)} <small>${w.length*10} damage · +${w.length**2} points</small></li>`).join('')}</ul>`:''}`:''}
       ${!s.started&&!finished?'<button id="siege-start" type="button" class="button primary siege-start" data-action="start">Start defense</button>':''}
       <div class="siege-assist">${!finished&&!untimed?'<button id="siege-assist" type="button" class="button subtle" data-action="assist">Use untimed assist</button>':`<span class="pill">${mode==='practice'?'Untimed practice':s.untimed?'Untimed assist':'Round complete'}</span>`}<span class="muted">${s.hints} hint${s.hints===1?'':'s'} · ${s.misses} miss${s.misses===1?'':'es'} · ${s.timeouts} impact${s.timeouts===1?'':'s'}</span></div>
       ${status==='revealed'?`<p class="clue">Wave solutions</p><ul class="word-list">${p.waves.map(w=>`<li>${esc(w.words[0])}</li>`).join('')}</ul>`:''}

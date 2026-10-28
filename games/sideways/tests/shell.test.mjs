@@ -173,3 +173,91 @@ test('practice reservation follows the new Central day before the daily tab is r
   app.click('new-day-button');
   assert.equal(app.shell.daily.dateKey,'2026-10-21');assert.equal(app.shell.puzzle.id,'practice-two');
 });
+
+
+test('a delayed storage event cannot overwrite another window unfinished daily',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  advance(first);advance(first);
+  const key=prefix+'daily:2026-10-20',saved=shared.values.get(key);
+  advance(stale);
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+  assert.match(stale.nodes.get('feedback').textContent,/another (tab|window)|updated elsewhere/i);
+  advance(stale);
+  assert.deepEqual(JSON.parse(shared.values.get(key)),plain(stale.shell.game));
+  assert.notEqual(shared.values.get(key),saved);
+});
+
+test('a stale finish cannot replace newer unfinished play or claim daily credit',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  advance(first);
+  const key=prefix+'daily:2026-10-20',saved=shared.values.get(key);
+  stale.shell.commit(solved());
+  assert.equal(shared.values.get(key),saved);
+  assert.equal(stale.shell.game.status,'playing');
+  assert.equal(stale.stats().played,0);
+});
+
+test('dirty memory cannot overwrite a different unfinished save',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  shared.denyWrites=true;advance(stale);advance(stale);shared.denyWrites=false;
+  advance(first);
+  const key=prefix+'daily:2026-10-20',saved=shared.values.get(key);
+  advance(stale);
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+});
+
+test('a stale practice restart preserves the other window progress',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  first.choosePractice(1);stale.choosePractice(1);
+  advance(first);advance(first);
+  const key=prefix+'practice:practice-two',saved=shared.values.get(key);
+  stale.action('restart');
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+  stale.action('restart');
+  assert.deepEqual(plain(stale.shell.game),plain(engine.createGame(stale.shell.puzzle)));
+  assert.equal(stale.stats().played,0);
+});
+
+test('blocked reads never overwrite an unreadable save and recovery saves memory',()=>{
+  const app=openShell();advance(app);
+  const key=prefix+'daily:2026-10-20',saved=app.saved.values.get(key);
+  app.saved.denyReads=true;advance(app);
+  assert.equal(app.saved.values.get(key),saved);
+  const memory=plain(app.shell.game);
+  assert.notDeepEqual(memory,JSON.parse(saved));
+  app.saved.denyReads=false;advance(app);
+  assert.deepEqual(JSON.parse(app.saved.values.get(key)),plain(app.shell.game));
+  assert.notDeepEqual(plain(app.shell.game),memory);
+});
+
+test('recovered reads adopt a previously unreadable save before any write',()=>{
+  const shared=storage(),first=openShell(shared);advance(first);
+  const key=prefix+'daily:2026-10-20',saved=shared.values.get(key);
+  shared.denyReads=true;const app=openShell(shared);advance(app);
+  assert.equal(shared.values.get(key),saved);
+  shared.denyReads=false;advance(app);
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(app.shell.game),plain(first.shell.game));
+});
+
+
+test('a finished daily in this window cannot be rolled back by an older unfinished save',()=>{
+  const app=openShell();app.shell.commit(solved());
+  const finished=plain(app.shell.game),key=prefix+'daily:2026-10-20';
+  app.saved.values.set(key,JSON.stringify(engine.createGame(app.shell.puzzle)));
+  app.shell.commit(engine.createGame(app.shell.puzzle));
+  assert.deepEqual(plain(app.shell.game),finished);
+  assert.deepEqual(JSON.parse(app.saved.values.get(key)),finished);
+  assert.equal(app.stats().won,1);
+});
+
+test('a storage event adopts different unfinished progress over dirty memory',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  shared.denyWrites=true;advance(stale);advance(stale);shared.denyWrites=false;
+  advance(first);
+  stale.storageEvent(prefix+'daily:2026-10-20');
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+});

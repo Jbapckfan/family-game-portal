@@ -9,6 +9,7 @@ export function createShell(config) {
   const prefix = slug + ':v1:';
   const memory = new Map();
   const dirtyKeys = new Set();
+  const acceptedSaves = new Map();
   const dialog = $('game-dialog');
   let mode = 'daily';
   let daily = engine.getDaily(puzzles);
@@ -52,14 +53,24 @@ export function createShell(config) {
   }
   function read(key, fallback) {
     if (dirtyKeys.has(key) && memory.has(key)) return memory.get(key);
-    const value = storedValue(key);
+    let value;
+    try {
+      const raw = localStorage.getItem(prefix + key);
+      value = raw === null ? null : JSON.parse(raw);
+      acceptedSaves.set(key, raw);
+    } catch { value = null; }
     if (value !== null) { memory.set(key, value); return value; }
     return memory.has(key) ? memory.get(key) : fallback;
   }
   function write(key, value) {
     memory.set(key, value);
     try {
-      localStorage.setItem(prefix + key, JSON.stringify(value));
+      // A denied read is not evidence that this key is empty. Stay in memory
+      // until storage can be checked, even when the browser still allows writes.
+      localStorage.getItem(prefix + key);
+      const raw = JSON.stringify(value);
+      localStorage.setItem(prefix + key, raw);
+      acceptedSaves.set(key, raw);
       dirtyKeys.delete(key);
       storageWarning = dirtyKeys.size > 0;
       return true;
@@ -97,15 +108,32 @@ export function createShell(config) {
   function isTerminal(state) { return state.status !== 'playing'; }
   function save(nextState) {
     const key = gameKey();
-    let adopted = false;
+    let raw;
+    try { raw = localStorage.getItem(prefix + key); } catch {}
+    let persisted = null;
+    try { persisted = engine.restoreGame(puzzle, raw === null ? null : JSON.parse(raw)); } catch {}
+    const changed = raw !== undefined && (acceptedSaves.has(key) ? raw !== acceptedSaves.get(key) : raw !== null);
+    if (changed && persisted && !(mode === 'daily' && isTerminal(game) && !isTerminal(persisted))) {
+      // Storage events can arrive late in suspended tabs. Check the accepted
+      // snapshot again at the write boundary, including before practice resets.
+      game = persisted;
+      memory.set(key, game);
+      acceptedSaves.set(key, raw);
+      dirtyKeys.delete(key);
+      storageWarning = dirtyKeys.size > 0;
+      if (mode === 'daily') { mergeRecords(); recordTerminal(daily.dateKey, game); }
+      return isTerminal(game) && mode === 'daily'
+        ? 'This daily was already finished. Your saved result is restored.'
+        : 'Progress changed in another window. Your saved board is restored; try your move again.';
+    }
+    let adopted = null;
     if (mode === 'daily') {
       // Consult persisted data even if this tab has dirty memory: the first
       // finished daily wins across sequential tab actions. localStorage does
       // not provide a transaction for literally simultaneous writes.
-      const persisted = engine.restoreGame(puzzle, storedValue(key));
-      const existing = isTerminal(persisted) ? persisted : isTerminal(game) ? game : null;
+      const existing = persisted && isTerminal(persisted) ? persisted : isTerminal(game) ? game : null;
       if (existing) {
-        adopted = JSON.stringify(existing) !== JSON.stringify(nextState);
+        if (JSON.stringify(existing) !== JSON.stringify(nextState)) adopted = 'This daily was already finished. Your saved result is restored.';
         nextState = existing;
       }
       mergeRecords();
@@ -120,9 +148,10 @@ export function createShell(config) {
     const adopted = save(nextState);
     if (adopted) {
       config.reset?.();
-      feedback = 'This daily was already finished. Your saved result is restored.';
+      feedback = adopted;
       feedbackTone = null;
       toast(feedback);
+      if (dialog.open) closeDialog();
     } else if (message) {
       feedback = message;
       feedbackTone = tone === 'miss' || tone === 'error' ? 'error' : tone === 'win' || tone === 'fit' || tone === 'success' ? 'success' : null;
@@ -265,9 +294,10 @@ export function createShell(config) {
   }
   function restart() {
     if (mode !== 'practice') return;
-    game = engine.createGame(puzzle);
-    resetView(); save(game); render(); lastFocus = null; closeDialog();
-    announce('Practice restarted. A fresh board is ready.');
+    const adopted = save(engine.createGame(puzzle));
+    resetView(); render(); lastFocus = null; closeDialog();
+    if (adopted) notice(adopted);
+    else announce('Practice restarted. A fresh board is ready.');
   }
   async function share() {
     if (!isTerminal(game)) return;
@@ -307,11 +337,17 @@ export function createShell(config) {
     if (event.key === prefix + 'records') { mergeRecords(); return; }
     if (event.key === prefix + 'settings') { soundOn = read('settings', {})?.sound === true; updateSound(); return; }
     if (event.key !== prefix + gameKey()) return;
-    const persisted = engine.restoreGame(puzzle, storedValue(gameKey()));
-    const restored = isTerminal(persisted) ? persisted : engine.restoreGame(puzzle, read(gameKey(), null));
-    if (isTerminal(game) && !isTerminal(restored)) return;
+    const key = gameKey();
+    let raw, restored;
+    try {
+      raw = localStorage.getItem(prefix + key);
+      if (acceptedSaves.has(key) && raw === acceptedSaves.get(key)) return;
+      restored = engine.restoreGame(puzzle, raw === null ? null : JSON.parse(raw));
+    } catch { return; }
+    if (mode === 'daily' && isTerminal(game) && !isTerminal(restored)) return;
     game = restored;
-    if (isTerminal(persisted)) { memory.set(gameKey(), persisted); dirtyKeys.delete(gameKey()); }
+    memory.set(key, game); acceptedSaves.set(key, raw); dirtyKeys.delete(key);
+    storageWarning = dirtyKeys.size > 0;
     resetView(); reconcile(); notice('Progress updated from another tab.'); render();
     if (dialog.open) { lastFocus = null; closeDialog(); }
   }

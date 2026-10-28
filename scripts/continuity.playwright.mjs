@@ -46,6 +46,8 @@ for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')) {
     await page.locator('#scan-button').click();
     const wordKey='shortlist:v1:daily:2026-10-28';
     const saved=await page.evaluate(key=>localStorage.getItem(key),wordKey);
+    await stale.locator('#stats-button').click();
+    await stale.locator('#dialog-close').click();
     await stale.locator('[data-letter="B"]').click();
     await stale.locator('[data-letter="C"]').click();
     await stale.locator('#scan-button').click();

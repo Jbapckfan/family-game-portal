@@ -14,7 +14,7 @@ export function createShell(config) {
   let mode = 'daily';
   let daily = engine.getDaily(puzzles);
   let puzzle = daily.puzzle;
-  let game = engine.restoreGame(puzzle, read('daily:' + daily.dateKey, null));
+  let game = engine.restoreGame(puzzle, read('daily:' + daily.dateKey, null, true));
   let records = {};
   let feedback = '';
   let feedbackTone = null;
@@ -51,13 +51,15 @@ export function createShell(config) {
       return raw === null ? null : JSON.parse(raw);
     } catch { return null; }
   }
-  function read(key, fallback) {
+  function read(key, fallback, acceptGame = false) {
     if (dirtyKeys.has(key) && memory.has(key)) return memory.get(key);
     let value;
     try {
       const raw = localStorage.getItem(prefix + key);
       value = raw === null ? null : JSON.parse(raw);
-      acceptedSaves.set(key, raw);
+      // Statistics and practice availability inspect saves without loading them
+      // into the active board. Only an actual board load acknowledges its bytes.
+      if (acceptGame) acceptedSaves.set(key, raw);
     } catch { value = null; }
     if (value !== null) { memory.set(key, value); return value; }
     return memory.has(key) ? memory.get(key) : fallback;
@@ -258,7 +260,7 @@ export function createShell(config) {
   function loadPractice(index) {
     if (!Number.isInteger(index) || !canPractice(index)) return;
     mode = 'practice'; puzzle = puzzles[index];
-    game = engine.restoreGame(puzzle, read('practice:' + puzzle.id, null));
+    game = engine.restoreGame(puzzle, read('practice:' + puzzle.id, null, true));
     resetView(); render(); lastFocus = null; closeDialog();
     ($('game-topline') || document.querySelector('.game-topline'))?.scrollIntoView({block:'start', behavior:reducedMotion() ? 'instant' : 'smooth'});
     announce(`Practice ${index + 1}. ${puzzle.title}.`);
@@ -272,7 +274,7 @@ export function createShell(config) {
   }
   function loadDaily() {
     mode = 'daily'; daily = engine.getDaily(puzzles); puzzle = daily.puzzle;
-    game = engine.restoreGame(puzzle, read('daily:' + daily.dateKey, null));
+    game = engine.restoreGame(puzzle, read('daily:' + daily.dateKey, null, true));
     resetView(); reconcile(); render();
     if (dialog.open) { lastFocus = null; closeDialog(); }
   }

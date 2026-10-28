@@ -31,11 +31,11 @@
 
 **Interfaces:** Consumes `engine.restoreGame(puzzle,value)` and existing game keys; produces unchanged shell API and save schema with pre-write conflict protection.
 
-- [ ] Add real-shell regressions for missed events, dirty memory, practice conflicts/restart, blocked reads, recovery and unchanged storage after a rejected stale action.
-- [ ] Run `node --test games/{counterpart,shortlist,second-sense,sideways}/tests/shell.test.mjs`; expect new cases to fail because the current save boundary overwrites progress.
-- [ ] Track the accepted persisted snapshot per game key. Compare a successful read before writing; adopt valid changed state, reset transient selections and give a clear notice. Skip unverified writes when reads fail. Keep failed-write memory and terminal daily precedence.
-- [ ] Run the same tests; expect all passing. Synchronize the six shared shell copies and iOS resources.
-- [ ] Commit the verified fix.
+- [x] Add real-shell regressions for missed events, dirty memory, practice conflicts/restart, blocked reads, recovery and unchanged storage after a rejected stale action.
+- [x] Run `node --test games/{counterpart,shortlist,second-sense,sideways}/tests/shell.test.mjs`; expect new cases to fail because the current save boundary overwrites progress.
+- [x] Track the accepted persisted snapshot per game key. Compare a successful read before writing; adopt valid changed state, reset transient selections and give a clear notice. Skip unverified writes when reads fail. Keep failed-write memory and terminal daily precedence.
+- [x] Run the same tests; expect all passing. Synchronize the six shared shell copies and iOS resources.
+- [x] Commit the verified fix.
 
 ### Task 2: Explain and inspect the last nine-board move
 
@@ -43,9 +43,9 @@
 
 **Interfaces:** Consumes the existing `state.history`, `state.cells`, and selected-board view; produces a recent-move summary/inspection control without new match state.
 
-- [ ] Add browser assertions for the move's actor/location, overview marker, inspect action, forced-board return, reload, restart and no save changes on inspection.
-- [ ] Run the focused harness; expect absent recent-move feedback to fail.
-- [ ] Add a textual last-move summary and explicit inspection/return controls; mark the last square in the overview using shape as well as color. Preserve routing, AI and sharing.
-- [ ] Run focused and existing bonus/word browser flows in Chromium and WebKit, including small phone widths; expect passing and no page errors.
-- [ ] Synchronize native resources, run the full daily JS suite, bundle parity, native structural validation and a fresh standalone export. Inspect screenshots, write exact evidence and package the local candidate.
-- [ ] Commit and perform one independent final review; fix Important findings in one test-first pass.
+- [x] Add browser assertions for the move's actor/location, overview marker, inspect action, forced-board return, reload, restart and no save changes on inspection.
+- [x] Run the focused harness; expect absent recent-move feedback to fail.
+- [x] Add a textual last-move summary and explicit inspection/return controls; mark the last square in the overview using shape as well as color. Preserve routing, AI and sharing.
+- [x] Run focused and existing bonus/word browser flows in Chromium and WebKit, including small phone widths; expect passing and no page errors.
+- [x] Synchronize native resources, run the full daily JS suite, bundle parity, native structural validation and a fresh standalone export. Inspect screenshots, write exact evidence and package the local candidate.
+- [x] Commit and perform one independent final review; fix Important findings in one test-first pass.

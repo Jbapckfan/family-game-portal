@@ -274,3 +274,25 @@ test('even a single failed pre-write read keeps that action in memory only',()=>
   advance(app);
   assert.deepEqual(JSON.parse(app.saved.values.get(key)),plain(app.shell.game));
 });
+
+
+test('opening statistics cannot acknowledge an unseen newer daily save',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  advance(first);advance(first);
+  const key=prefix+'daily:2026-10-20',saved=shared.values.get(key);
+  stale.click('stats-button');stale.action('close');
+  advance(stale);
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+});
+
+test('opening the practice picker cannot acknowledge unseen active practice progress',()=>{
+  const shared=storage(),first=openShell(shared),stale=openShell(shared);
+  first.choosePractice(1);stale.choosePractice(1);
+  advance(first);advance(first);
+  const key=prefix+'practice:practice-two',saved=shared.values.get(key);
+  stale.click('practice-tab');stale.action('close');
+  advance(stale);
+  assert.equal(shared.values.get(key),saved);
+  assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
+});

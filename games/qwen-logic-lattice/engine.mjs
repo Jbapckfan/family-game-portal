@@ -17,7 +17,11 @@ export function getStatus(p,s){return s.revealed?'revealed':constraintsSatisfied
 function remember(s,cells,lastHint=null){return {...s,cells,history:[...s.history.slice(-99),[...s.cells]],lastHint};}
 export function toggleCell(p,s,index){
  if(getStatus(p,s)!=='playing'||!indexOK(index)||givenMap(p).has(index))return s;
- const cells=[...s.cells];cells[index]=cells[index]===-1?1:cells[index]===1?0:-1;return remember(s,cells);
+ return markCell(p,s,index,s.cells[index]===-1?1:s.cells[index]===1?0:-1);
+}
+export function markCell(p,s,index,value){
+ if(getStatus(p,s)!=='playing'||!indexOK(index)||givenMap(p).has(index)||!cellOK(value)||s.cells[index]===value)return s;
+ const cells=[...s.cells];cells[index]=value;return remember(s,cells);
 }
 export function undo(p,s){if(getStatus(p,s)!=='playing'||!s.history.length)return s;return {...s,cells:[...s.history.at(-1)],history:s.history.slice(0,-1),lastHint:null};}
 export function restart(p,s){return getStatus(p,s)==='playing'?{...createState(p),hinted:[...s.hinted]}:s;}

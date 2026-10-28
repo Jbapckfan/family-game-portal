@@ -26,6 +26,7 @@ export interface TangleState {
   score: number
   misses: number
   hintsUsed: number
+  hintPrefix: string | null
   goldReached: boolean
   winShownOnce: boolean
   toast: MorphToastAlias | null
@@ -46,6 +47,7 @@ const initial = (): TangleState => ({
   score: 0,
   misses: 0,
   hintsUsed: 0,
+  hintPrefix: null,
   goldReached: false,
   winShownOnce: false,
   toast: null,
@@ -91,6 +93,7 @@ export function useTangle() {
       score: saved?.score ?? 0,
       misses: saved?.misses ?? 0,
       hintsUsed: saved?.hintsUsed ?? 0,
+      hintPrefix: saved?.hintPrefix ?? null,
       goldReached: saved?.goldReached ?? false,
       winShownOnce: false,
       toast: null,
@@ -111,10 +114,11 @@ export function useTangle() {
       score: s.score,
       misses: s.misses,
       hintsUsed: s.hintsUsed,
+      hintPrefix: s.hintPrefix,
       goldReached: s.goldReached,
       countedPlayed: saved?.countedPlayed === true,
     } satisfies TangleProgress)
-  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.found, s.score, s.misses, s.hintsUsed, s.goldReached])
+  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.found, s.score, s.misses, s.hintsUsed, s.hintPrefix, s.goldReached])
 
   useEffect(() => {
     const onVis = () => {
@@ -145,6 +149,7 @@ export function useTangle() {
       score: prev.score,
       misses: prev.misses,
       hintsUsed: prev.hintsUsed,
+      hintPrefix: prev.hintPrefix,
       goldReached: prev.goldReached,
       countedPlayed: true,
     } satisfies TangleProgress)
@@ -242,6 +247,7 @@ export function useTangle() {
     setS({
       ...prev,
       hintsUsed: prev.hintsUsed + 1,
+      hintPrefix: pick.slice(0, 2),
       toast: makeToast(`An unfound word starts with “${pick.slice(0, 2).toUpperCase()}”`, 'info'),
     })
   }, [makeToast])
@@ -260,6 +266,7 @@ export function useTangle() {
       score: 0,
       misses: 0,
       hintsUsed: 0,
+      hintPrefix: null,
       goldReached: false,
       winShownOnce: false,
       toast: null,

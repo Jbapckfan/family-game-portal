@@ -103,7 +103,7 @@ export function useHunch() {
       stats,
       guesses: saved?.guesses ?? [],
       evals: saved?.evals ?? [],
-      current: '',
+      current: saved?.current ?? '',
       hintLetters: saved?.hintLetters ?? [],
       hintsUsed: saved?.hintsUsed ?? 0,
       finished: false,
@@ -129,6 +129,7 @@ export function useHunch() {
     const saved = loadDayProgress<HunchProgress>('hunch', s.dayNumber)
     saveDayProgress('hunch', s.dayNumber, {
       guesses: s.guesses,
+      current: s.current,
       evals: s.evals,
       hintLetters: s.hintLetters,
       hintsUsed: s.hintsUsed,
@@ -136,7 +137,7 @@ export function useHunch() {
       won: s.won,
       countedPlayed: saved?.countedPlayed === true,
     } satisfies HunchProgress)
-  }, [s.mode, s.phase, s.dayNumber, s.guesses, s.evals, s.hintLetters, s.hintsUsed, s.finished, s.won])
+  }, [s.mode, s.phase, s.dayNumber, s.guesses, s.current, s.evals, s.hintLetters, s.hintsUsed, s.finished, s.won])
 
   /* midnight rollover */
   useEffect(() => {
@@ -165,6 +166,7 @@ export function useHunch() {
     if (saved?.countedPlayed === true) return prev.stats
     saveDayProgress('hunch', prev.dayNumber, {
       guesses: prev.guesses,
+      current: prev.current,
       evals: prev.evals,
       hintLetters: prev.hintLetters,
       hintsUsed: prev.hintsUsed,

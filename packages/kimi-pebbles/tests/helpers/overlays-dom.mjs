@@ -50,7 +50,7 @@ async function escape() {
   await act(flush);
 }
 
-async function mount(game = 'morph', completed = true, { firstHelp = false, rolloverChanges = null } = {}) {
+async function mount(game = 'morph', completed = true, { firstHelp = false, rolloverChanges = null, blockedStorage = false } = {}) {
   document.body.innerHTML = '<div id="root"></div>';
   Object.defineProperty(document, 'hidden', { configurable: true, value: false });
   Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' });
@@ -111,7 +111,17 @@ async function mount(game = 'morph', completed = true, { firstHelp = false, roll
     if (!document.hidden && rolloverChanges) { state = { ...state, ...rolloverChanges }; render(); }
   };
   document.addEventListener('visibilitychange', rollover);
-  await act(async () => { render(); await flush(); });
+  const storage = globalThis.localStorage;
+  if (blockedStorage) globalThis.localStorage = { getItem() { throw new Error('Storage blocked'); }, setItem() { throw new Error('Storage blocked'); } };
+  try {
+    await act(async () => { render(); await flush(); });
+  } catch (error) {
+    globalThis.localStorage = storage;
+    document.removeEventListener('visibilitychange', rollover);
+    await act(async () => root.unmount());
+    window.setTimeout = set; window.clearTimeout = clear;
+    throw error;
+  }
   return {
     async advance(milliseconds = 1000) {
       await act(async () => {
@@ -134,10 +144,24 @@ async function mount(game = 'morph', completed = true, { firstHelp = false, roll
       await act(async () => { root.unmount(); await flush(); });
       await act(flush);
       window.setTimeout = set; window.clearTimeout = clear;
+      globalThis.localStorage = storage;
       document.body.innerHTML = '';
       assert.equal(timers.size, 0, 'result timers cleaned up on unmount');
     },
   };
+}
+
+for (const game of games) {
+  test(`${game}: blocked storage does not crash first help or its return to the board`, async () => {
+    const fixture = await mount(game, false, { firstHelp: true, blockedStorage: true });
+    try {
+      assert.equal(openDialogs().length, 1);
+      await escape();
+      assert.equal(openDialogs().length, 0);
+      assert.ok(document.querySelector('[data-game-ready="true"]'));
+      assert.ok(document.activeElement === document.querySelector('[data-game-focus]'));
+    } finally { await fixture.close(); }
+  });
 }
 
 for (const game of games) {

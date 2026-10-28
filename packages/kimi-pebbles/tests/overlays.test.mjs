@@ -14,7 +14,7 @@ test('real React/Radix overlay, interruption and keyboard-focus regressions', t 
   });
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stdout + result.stderr);
-  assert.match(result.stdout, /# tests 17\b/, 'all nested DOM regressions must execute');
-  assert.match(result.stdout, /# pass 17\b/, 'all nested DOM regressions must pass');
+  assert.match(result.stdout, /# tests 23\b/, 'all nested DOM regressions must execute');
+  assert.match(result.stdout, /# pass 23\b/, 'all nested DOM regressions must pass');
   t.diagnostic(result.stdout.trim());
 });

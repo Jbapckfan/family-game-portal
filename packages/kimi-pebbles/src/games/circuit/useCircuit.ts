@@ -98,7 +98,7 @@ export function useCircuit() {
       dayNumber: day,
       stats,
       played: saved?.played ?? [],
-      current: [],
+      current: saved?.current ?? [],
       revealed: saved?.revealed ?? 0,
       hintsUsed: saved?.hintsUsed ?? 0,
       finished: false,
@@ -118,13 +118,14 @@ export function useCircuit() {
     const saved = loadDayProgress<CircuitProgress>('circuit', s.dayNumber)
     saveDayProgress('circuit', s.dayNumber, {
       played: s.played,
+      current: s.current,
       revealed: s.revealed,
       hintsUsed: s.hintsUsed,
       finished: s.finished,
       gaveUp: s.gaveUp,
       countedPlayed: saved?.countedPlayed === true,
     } satisfies CircuitProgress)
-  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.played, s.revealed, s.hintsUsed, s.finished, s.gaveUp])
+  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.played, s.current, s.revealed, s.hintsUsed, s.finished, s.gaveUp])
 
   /* midnight rollover */
   useEffect(() => {
@@ -153,6 +154,7 @@ export function useCircuit() {
     if (saved?.countedPlayed === true) return prev.stats
     saveDayProgress('circuit', prev.dayNumber, {
       played: prev.played,
+      current: prev.current,
       revealed: prev.revealed,
       hintsUsed: prev.hintsUsed,
       finished: prev.finished,

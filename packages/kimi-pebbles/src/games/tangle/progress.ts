@@ -20,6 +20,7 @@ export interface TangleProgress {
   score: number
   misses: number
   hintsUsed: number
+  hintPrefix?: string | null
   goldReached: boolean
   countedPlayed: boolean
 }
@@ -39,5 +40,7 @@ export function restoreTangleProgress(value: unknown, puzzle: TanglePuzzle): Tan
     typeof saved.countedPlayed !== 'boolean') return null
   const found = [...saved.found] as string[]
   const score = found.reduce((total, word) => total + pointsFor(word), 0)
-  return { found: found.sort(), score, misses: saved.misses, hintsUsed: saved.hintsUsed, goldReached: score >= puzzle.targets[2], countedPlayed: saved.countedPlayed }
+  const hintPrefix = saved.hintsUsed > 0 && typeof saved.hintPrefix === 'string' && /^[a-z]{2}$/.test(saved.hintPrefix) &&
+    puzzle.words.some(word => word.length >= 4 && word.startsWith(saved.hintPrefix as string)) ? saved.hintPrefix : null
+  return { found: found.sort(), score, misses: saved.misses, hintsUsed: saved.hintsUsed, hintPrefix, goldReached: score >= puzzle.targets[2], countedPlayed: saved.countedPlayed }
 }

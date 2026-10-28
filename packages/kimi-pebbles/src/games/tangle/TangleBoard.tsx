@@ -249,6 +249,7 @@ export function TangleBoard({ state, actions }: Props) {
                 key={i}
                 type="button"
                 data-cell={i}
+                aria-pressed={isSel}
                 onPointerDown={(e) => handleDown(e, i)}
                 onKeyDown={(e) => {
                   if (e.key !== 'Enter' && e.key !== ' ') return
@@ -264,11 +265,16 @@ export function TangleBoard({ state, actions }: Props) {
                 aria-label={`Letter ${ch}, row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${isSel ? `, selected ${sel + 1}` : ''}`}
               >
                 {ch}
+                {isSel && <span data-path-order className="absolute bottom-1 right-2 text-[10px] font-bold leading-none" aria-hidden="true">{sel + 1}</span>}
               </button>
             )
           })}
         </div>
       </div>
+
+      {state.hintPrefix && <p data-tangle-clue className="mt-3 max-w-sm text-center text-sm font-bold text-muted-foreground">
+        Saved clue: a word starts with <span className="font-display text-foreground">{state.hintPrefix.toUpperCase()}</span>.
+      </p>}
 
       {/* hint */}
       <div className="mt-4 flex items-center gap-2">

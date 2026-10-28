@@ -61,6 +61,11 @@ export function CircuitBoard({ state, actions }: Props) {
         </span>
       </div>
 
+      {!state.finished && <p id="circuit-instructions" className="mt-3 max-w-sm text-center text-sm font-semibold text-muted-foreground" role="status">
+        {needStart ? `Start the next word with ${needStart.toUpperCase()}. ` : lastArc === null ? 'Start with any letter. ' : ''}
+        {lastArc === null ? 'Switch arcs after every letter; use all 12 in your chain.' : `Next: choose a different arc from ${lastArc + 1}.`}
+      </p>}
+
       {/* coverage meter */}
       <div className="circuit-coverage mt-2 flex gap-1" aria-label={`${coveredCount} of 12 letters lit`}>
         {letters.map((_, i) => (
@@ -99,6 +104,8 @@ export function CircuitBoard({ state, actions }: Props) {
               type="button"
               data-letter={i}
               aria-label={`Letter ${ch}, arc ${arcOf(i) + 1}${lit ? ', lit' : ''}`}
+              aria-describedby={!state.finished ? 'circuit-instructions' : undefined}
+              aria-description={disabledArc ? 'Choose a different arc for the next letter' : mustPick ? `Next word must start with ${needStart?.toUpperCase()}` : undefined}
               disabled={state.finished}
               onClick={() => actions.tapLetter(i)}
               className={cn(
@@ -117,6 +124,7 @@ export function CircuitBoard({ state, actions }: Props) {
               }}
             >
               {ch}
+              <span className="circuit-arc-label absolute bottom-1 right-1.5 text-[9px] font-bold leading-none" aria-hidden="true">{arcOf(i) + 1}</span>
             </button>
           )
         })}

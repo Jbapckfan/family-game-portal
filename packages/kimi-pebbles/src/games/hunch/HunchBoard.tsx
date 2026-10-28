@@ -38,6 +38,7 @@ const EVAL_LABEL: Record<Eval, string> = {
   present: 'in the word, different position',
   absent: 'not in the word, or no additional copy',
 }
+const EVAL_MARK: Record<Eval, string> = { correct: '✓', present: '↔', absent: '·' }
 
 const KB_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm']
 
@@ -117,12 +118,17 @@ export function HunchBoard({ state, actions }: Props) {
                   style={ev ? { animationDelay: `${i * 90}ms` } : undefined}
                 >
                   {ch}
+                  {ev && <span className="hunch-result-mark absolute bottom-0.5 text-[10px] leading-none" aria-hidden="true">{EVAL_MARK[ev]}</span>}
                 </div>
               )
             })}
           </div>
         ))}
       </div>
+
+      <p data-hunch-legend className="mt-3 flex max-w-sm flex-wrap justify-center gap-x-3 gap-y-1 text-center text-xs font-semibold text-muted-foreground">
+        <span>✓ correct position</span><span>↔ different position</span><span>· absent / no extra copy</span>
+      </p>
 
       {/* revealed answer on loss */}
       {state.finished && !state.won && (

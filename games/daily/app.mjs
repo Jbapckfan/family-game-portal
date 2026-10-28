@@ -1,4 +1,4 @@
-import {GAMES, LAUNCH_GAMES, CREATORS, gameURL, featuredGames, todayThree, buildDailyShare} from './catalog.mjs';
+import {GAMES, LAUNCH_GAMES, CREATORS, BONUS_GAMES, gameURL, featuredGames, todayThree, dailyJourney, buildDailyShare} from './catalog.mjs';
 import {startPlaytest} from './playtest.mjs';
 
 const escape = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
@@ -81,6 +81,7 @@ export function startHome(doc = document, win = window) {
     $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
   }
   $('featured-games').innerHTML = featuredGames().map(game => card(game, urls.get(game.slug))).join('');
+  $('bonus-games').innerHTML=BONUS_GAMES.map(game=>`<a class="bonus-card" href="${escape(new URL(game.slug+'/',new URL(base,doc.baseURI)).href)}" data-bonus="${game.slug}"><img src="${escape(new URL(game.slug+'/icon.svg',new URL(base,doc.baseURI)).href)}" width="56" height="56" alt=""><div><span class="eyebrow">A change of pace · Local AI</span><h3>${escape(game.name)}</h3><p>${escape(game.description)}</p></div><span class="card-action">Play a match ↗</span></a>`).join('');
   $('progress-marks').innerHTML = LAUNCH_GAMES.map(game => `<li class="progress-mark game-${game.slug}" data-mark="${game.slug}" title="${escape(game.name)}"><span class="mark-symbol" aria-hidden="true"></span><span class="sr-only">${escape(game.name)}: checking progress</span></li>`).join('');
 
   const filterButtons = doc.querySelectorAll('[data-creator-filter]');
@@ -160,9 +161,11 @@ export function startHome(doc = document, win = window) {
       : solved === GAMES.length ? `${GAMES.length} of ${GAMES.length} solved. A day well played.` : `${solved} of ${GAMES.length} solved today`;
     $('progress-note').hidden = !unavailable;
     $('progress-note').textContent = unavailable ? 'You can still choose a game. This page could not read every saved result on this device.' : '';
-    const selected = todayThree(shownDate);
-    const finished = selected.filter(game => results.find(result => result.slug === game.slug)?.status === 'won').length;
-    $('three-progress').textContent = `${finished} of ${selected.length} solved · a small daily ritual`;
+    const journey=dailyJourney(shownDate,results);
+    $('three-progress').textContent = journey.complete?`Daily set complete · ${journey.solved} of ${journey.games.length} solved`:`${journey.finished} of ${journey.games.length} finished · ${journey.solved} solved`;
+    const next=$('next-daily');next.hidden=!journey.next;
+    if(journey.next){const continuing=results.find(result=>result.slug===journey.next.slug)?.status==='playing';next.href=urls.get(journey.next.slug);$('next-daily-label').textContent=`${continuing?'Continue':'Play'} ${journey.next.name}`;$('next-daily-note').textContent=continuing?'Your unfinished daily is ready.':'One good puzzle is enough to begin.';}
+    $('daily-set-note').textContent=journey.complete?'A set well played. Share your result, try Practice, or return for a fresh set tomorrow.':'No timer. No need to play everything. Start one, and return whenever you like.';
     shareSnapshot = {date: shownDate, results};
     $('share-today').disabled = false;
   }

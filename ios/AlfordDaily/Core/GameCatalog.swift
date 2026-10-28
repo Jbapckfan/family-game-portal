@@ -21,7 +21,7 @@ enum CreatorFilter: String, CaseIterable, Identifiable, Hashable {
     case claude = "Claude"
     var id: String { rawValue }
     var games: [GameID] {
-        GameID.allCases.filter { self == .all || $0.creator.rawValue == rawValue }
+        GameID.dailyGames.filter { self == .all || $0.creator.rawValue == rawValue }
     }
 }
 
@@ -58,6 +58,7 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
     case claudeTangle = "claude-tangle"
     case claudeKeystone = "claude-keystone"
     case claudeTumbler = "claude-tumbler"
+    case nestedTicTacToe = "nested-tic-tac-toe"
 
     var id: String { rawValue }
 
@@ -95,6 +96,7 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .claudeTangle: "Tangle"
         case .claudeKeystone: "Keystone"
         case .claudeTumbler: "Tumbler"
+        case .nestedTicTacToe: "Tic-Tac-Toe"
         }
     }
 
@@ -132,6 +134,7 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .claudeTangle: "Three words. One string. Keep their letter order."
         case .claudeKeystone: "One hidden word connects every clue."
         case .claudeTumbler: "Read the alphabet ranges. Crack the lock."
+        case .nestedTicTacToe: "Nine boards. Your move chooses the next."
         }
     }
 
@@ -169,18 +172,23 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .claudeTangle: "line.3.horizontal"
         case .claudeKeystone: "building.columns"
         case .claudeTumbler: "lock"
+        case .nestedTicTacToe: "square.grid.3x3"
         }
     }
 
     var isFlagship: Bool { self == .ringcount || self == .switchpath }
 
-    static let featured: [GameID] = [.ringcount, .switchpath, .counterpart, .shortlist]
+    var isDaily: Bool { self != .nestedTicTacToe }
+    static var dailyGames: [GameID] { allCases.filter(\.isDaily) }
+    static let bonusGames: [GameID] = [.nestedTicTacToe]
+    static let featured: [GameID] = [.counterpart, .shortlist, .secondSense, .sideways]
 
-    static func todaysThree(on dateKey: String, available: [GameID] = allCases) -> [GameID] {
+    static func todaysThree(on dateKey: String, available: [GameID] = dailyGames) -> [GameID] {
         guard let number = DailyCalendar.number(for: dateKey) else { return [] }
-        let allowed = Set(available)
-        let preferred = featured.filter(allowed.contains)
-        let pool = preferred.count >= 3 ? preferred : preferred + allCases.filter { allowed.contains($0) && !featured.contains($0) }
+        let allowed = Set(available.filter(\.isDaily))
+        let selected: [GameID] = dateKey < "2026-10-28" ? [.ringcount, .switchpath, .counterpart, .shortlist] : featured
+        let preferred = selected.filter(allowed.contains)
+        let pool = preferred.count >= 3 ? preferred : preferred + dailyGames.filter { allowed.contains($0) && !selected.contains($0) }
         guard !pool.isEmpty else { return [] }
         let start = ((number - 1) % pool.count + pool.count) % pool.count
         return (0..<min(3, pool.count)).map { pool[(start + $0) % pool.count] }
@@ -226,6 +234,7 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         case .claudeTangle: 160
         case .claudeKeystone: 120
         case .claudeTumbler: 1054
+        case .nestedTicTacToe: 0
         default: 180
         }
     }

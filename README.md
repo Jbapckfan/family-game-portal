@@ -19,7 +19,7 @@ docker compose up -d
 
 ## Alford Daily: one attributed collection
 
-The daily-puzzle web and iOS app contains **32 games with ChatGPT, Kimi, DeepSeek, Qwen, and Claude creator labels**. Cards and game screens retain their original developer labels, with filters for all five creators and separate concept/completion credit where applicable. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
+The daily-puzzle web and iOS app contains **32 daily games with ChatGPT, Kimi, DeepSeek, Qwen, and Claude creator labels**, plus a separate local-AI nine-board Tic-Tac-Toe bonus. Counterpart, Shortlist, Second Sense and Sideways lead the word edition; all daily games remain accessible. Cards and game screens retain their original developer labels, with filters for all five creators and separate concept/completion credit where applicable. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
 
 ## Games Included
 
@@ -155,7 +155,7 @@ npm --prefix games/ringcount run check
 
 The original eight games contain 1,447 prepared boards; the full 32-game collection contains 8,001 prepared daily puzzle/answer records. Every game has at least 120 boards, available through daily and practice play. Some word games use distinct combinations of a finite curated word or clue pool. Each finite game library repeats once exhausted. Run the corresponding tests after changing content or regenerating a collection. A future commercial daily app needs an ongoing editorial schedule; see the [current collection record](docs/unified-collection.md). See [integration notes](docs/integration.md) for paths, validation, and NAS deployment details.
 
-The [iOS app project](ios/README.md) includes all 32 attributed games, led by Ringcount and Switchpath, with 8,001 prepared daily puzzle/answer records. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
+The [iOS app project](ios/README.md) includes all 32 attributed daily games and the separate nine-board Tic-Tac-Toe bonus, with 8,001 prepared daily puzzle/answer records. The four original word games lead the collection. The bonus has Casual and Tactical local AI, a separate resumable match and no daily credit. It includes native navigation, records, offline bundled games, sharing, haptics, and optional local reminders. Open `ios/AlfordDaily.xcodeproj` in Xcode and select the `AlfordDaily` scheme. The private repository's `iOS app verification` workflow compiles and tests the simulator build; consult its result for the current commit. Signed device distribution and App Store submission require Apple account configuration.
 
 Tradeoff and Inbetween remain in the family portal as earlier games. The [current monetization plan](docs/monetization-unified.md) describes permanent ad removal, restrained advertising, and content requirements. Commerce is disabled in the normal app build and no ad SDK is included. See the [expanded release verification record](docs/verification-expanded-2026-10-20.md) for executed checks and remaining release gates.
 

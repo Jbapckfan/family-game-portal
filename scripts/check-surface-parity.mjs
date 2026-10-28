@@ -4,7 +4,7 @@ import {spawnSync} from 'node:child_process';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {GAMES,todayThree,featuredGames,buildDailyShare} from '../games/daily/catalog.mjs';
+import {GAMES,BONUS_GAMES,todayThree,featuredGames,dailyJourney,buildDailyShare} from '../games/daily/catalog.mjs';
 import {dateKey} from '../games/daily/app.mjs';
 const root=path.resolve(import.meta.dirname,'..'),scratch=await mkdtemp(path.join(tmpdir(),'daily-surface-parity-'));
 const dates=Array.from({length:30},(_,i)=>new Date(Date.parse('2026-10-28T18:00:00Z')+i*86400000).toISOString().slice(0,10));
@@ -18,15 +18,19 @@ try{
  var shares: [String: String] = [:]
  for date in dates {
    var ledger = ProgressLedger()
-   for (index, game) in GameID.allCases.enumerated() {
+   for (index, game) in GameID.dailyGames.enumerated() {
      ledger.record(ProgressMessage(game: game, mode: .daily, dateKey: date, status: states[index % 4], stats: .empty))
    }
    let before = ledger
    shares[date] = ledger.todayShare(on: date)
    precondition(ledger == before)
  }
+ let bonusContext = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0, sourceURL: GameID.nestedTicTacToe.localURL, game: .nestedTicTacToe)
+ let bonusPayload: [String: Any] = ["type":"progress", "slug":"nested-tic-tac-toe", "name":"Tic-Tac-Toe", "mode":"daily", "dateKey":"2026-10-28", "status":"won", "stats":["played":1,"won":1,"streak":1,"bestStreak":1]]
+ let bonusRejected = BridgeDecoder.decode(bonusPayload, context: bonusContext, now: ISO8601DateFormatter().date(from:"2026-10-28T18:00:00Z")!) == nil
  let result: [String: Any] = [
-   "games": GameID.allCases.map { ["slug": $0.rawValue, "name": $0.name, "creator": $0.creator.rawValue, "boards": $0.collectionCount] as [String: Any] },
+   "bonus": GameID.bonusGames.map { $0.rawValue }, "bonusRejected": bonusRejected,
+   "games": GameID.dailyGames.map { ["slug": $0.rawValue, "name": $0.name, "creator": $0.creator.rawValue, "boards": $0.collectionCount] as [String: Any] },
    "featured": GameID.featured.map(\\.rawValue),
    "three": Dictionary(uniqueKeysWithValues: dates.map { ($0, GameID.todaysThree(on: $0).map(\\.rawValue)) }),
    "shares": shares,
@@ -43,6 +47,7 @@ try{
  const actual=JSON.parse(executed.stdout);
  assert.deepEqual(actual.games,GAMES.map(({slug,name,creator,boards})=>({slug,name,creator,boards})));
  assert.deepEqual(actual.featured,featuredGames().map(game=>game.slug));
+ assert.deepEqual(actual.bonus,BONUS_GAMES.map(game=>game.slug));assert.equal(actual.bonusRejected,true,"bonus progress bridge must reject daily credit");
  const states=['won','playing','revealed','lost'];
  for(const date of dates){assert.deepEqual(actual.three[date],todayThree(date).map(game=>game.slug));assert.equal(actual.shares[date],buildDailyShare(date,GAMES.map((game,index)=>({slug:game.slug,status:states[index%4]}))));}
  assert.deepEqual(actual.keys,instants.map(instant=>dateKey(new Date(instant))));

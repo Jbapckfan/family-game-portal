@@ -24,7 +24,7 @@ struct RecordView: View {
                         }
                     }
                 }.paperCard()
-                ForEach(GameID.allCases) { game in
+                ForEach(GameID.dailyGames) { game in
                     let stats = store.stats(for: game)
                     VStack(alignment: .leading, spacing: 16) {
                         Label(game.name, systemImage: game.symbol).font(.system(.title3, design: .serif)).foregroundStyle(game.tint)

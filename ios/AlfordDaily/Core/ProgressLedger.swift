@@ -4,7 +4,7 @@ struct ProgressLedger: Codable, Equatable {
     private(set) var days: [String: [String: GameStatus]] = [:]
 
     mutating func record(_ message: ProgressMessage) {
-        guard message.mode == .daily else { return }
+        guard message.mode == .daily, message.game.isDaily else { return }
         var day = days[message.dateKey] ?? [:]
         guard day[message.game.rawValue]?.isTerminal != true else { return }
         day[message.game.rawValue] = message.status
@@ -14,11 +14,11 @@ struct ProgressLedger: Codable, Equatable {
     func status(for game: GameID, on dateKey: String) -> GameStatus? { days[dateKey]?[game.rawValue] }
 
     func completed(on dateKey: String) -> Int {
-        GameID.allCases.filter { status(for: $0, on: dateKey)?.isTerminal == true }.count
+        GameID.dailyGames.filter { status(for: $0, on: dateKey)?.isTerminal == true }.count
     }
 
     func solved(on dateKey: String) -> Int {
-        GameID.allCases.filter { status(for: $0, on: dateKey) == .won }.count
+        GameID.dailyGames.filter { status(for: $0, on: dateKey) == .won }.count
     }
 
     func todayShare(now: Date = Date()) -> String {
@@ -40,9 +40,15 @@ struct ProgressLedger: Codable, Equatable {
         return (["Alford Daily · \(dateKey)", "Today’s Three"] + rows).joined(separator: "\n")
     }
 
+    func nextDaily(on dateKey: String) -> GameID? {
+        let selected = GameID.todaysThree(on: dateKey)
+        return selected.first { status(for: $0, on: dateKey) == .playing }
+            ?? selected.first { status(for: $0, on: dateKey)?.isTerminal != true }
+    }
+
     func dailyStreak(today: String) -> Int {
         guard DailyCalendar.date(for: today) != nil else { return 0 }
-        if completed(on: today) == GameID.allCases.count && solved(on: today) == 0 { return 0 }
+        if completed(on: today) == GameID.dailyGames.count && solved(on: today) == 0 { return 0 }
         var cursor = solved(on: today) > 0 ? today : DailyCalendar.shifted(today, days: -1)
         var count = 0
         while let day = cursor, solved(on: day) > 0 {
@@ -67,7 +73,7 @@ struct ProgressLedger: Codable, Equatable {
         var result = ProgressLedger()
         for (date, entries) in days where date >= DailyCalendar.epoch && DailyCalendar.date(for: date) != nil {
             let valid = entries.filter { key, status in
-                guard let game = GameID(rawValue: key) else { return false }
+                guard let game = GameID(rawValue: key), game.isDaily else { return false }
                 return status != .lost || game.allowsLoss
             }
             if !valid.isEmpty { result.days[date] = valid }

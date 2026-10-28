@@ -65,6 +65,7 @@ enum BridgeDecoder {
         }
         switch type {
         case "progress":
+            guard context.game.isDaily else { return nil }
             guard let slug = value["slug"] as? String, let game = GameID(rawValue: slug), game == context.game,
                   value["name"] as? String == game.name,
                   let rawMode = value["mode"] as? String, let mode = GameMode(rawValue: rawMode),

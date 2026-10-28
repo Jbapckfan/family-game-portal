@@ -66,7 +66,7 @@ final class BridgeDecoderTests: XCTestCase {
     }
 
     func testAllThirtyTwoCanonicalGamesCanReportProgressAndOnlyLossGamesCanReportLosses() {
-        for game in GameID.allCases {
+        for game in GameID.dailyGames {
             let context = BridgeContext(isMainFrame: true, scheme: "alford", host: "app", port: 0,
                 sourceURL: game.localURL, game: game)
             var body = payload

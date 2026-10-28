@@ -33,7 +33,7 @@ const inventory = JSON.parse(await readFile(path.join(root,'docs/puzzle-inventor
 if (inventory.games?.length !== 32 || new Set(inventory.games.map(game=>game.slug)).size !== 32 || inventory.games.some(game=>game.puzzles<120)) {
   throw new Error('Expected 32 games with at least 120 prepared puzzles each.');
 }
-const allowed = new Set([...inventory.games.map(game=>game.slug),'kimi-runtime','deepseek-runtime']);
+const allowed = new Set([...inventory.games.map(game=>game.slug),'nested-tic-tac-toe','kimi-runtime','deepseek-runtime']);
 const bundle = path.join(root,'ios/Web/games');
 const entries = await readdir(bundle,{withFileTypes:true});
 if (entries.length !== allowed.size || entries.some(entry=>!entry.isDirectory() || !allowed.has(entry.name))) throw new Error('Unexpected offline bundle directories; run sync-ios-web.mjs first.');
@@ -91,4 +91,4 @@ for (const [name,bytes] of files) {
   await mkdir(path.dirname(target),{recursive:true});
   await writeFile(target,bytes,{flag:'wx'});
 }
-console.log(`Staged only Alford Daily: 32 games, ${inventory.totalPuzzles.toLocaleString('en-US')} puzzles, ${files.size} runtime files in ${output}`);
+console.log(`Staged only Alford Daily: 32 daily games + 1 local-AI bonus, ${inventory.totalPuzzles.toLocaleString('en-US')} puzzles, ${files.size} runtime files in ${output}`);

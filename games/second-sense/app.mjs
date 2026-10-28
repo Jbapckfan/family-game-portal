@@ -5,6 +5,7 @@ import { createShell, esc } from './shell.mjs';
 const $=id=>document.getElementById(id);
 let nounId=null,verbId=null,draft='',error='';
 const app=createShell({
+  lesson:{question:'A kitchen vessel · Put a plant in a container. Which one word fits both meanings?',choices:[{label:'POT',correct:true,why:'A pot is a vessel; to pot is to put a plant in a container.'},{label:'PAN',correct:false,why:'A pan can be a vessel, but that does not fit the plant action here.'},{label:'PLANT',correct:false,why:'Plant fits the action, but it is not the kitchen vessel in this example.'}]},
   slug:'second-sense',name:'Second Sense',puzzles:PUZZLES,engine,
   sibling:{slug:'sideways',name:'Sideways',url:'https://alford-daily.jbapckfan.chatgpt.site/games/sideways/'},
   reset(){nounId=null;verbId=null;draft='';error='';},
@@ -61,7 +62,7 @@ function check(event){
   if(!result.changed){app.notice('Select a noun clue and a verb clue, then enter one word using letters only.');return;}
   let message;
   if(result.accepted){message=`${result.word}. Two senses, one word.`;nounId=null;verbId=null;draft='';error='';}
-  else{error='That word doesn’t fit both selected meanings. Try another word or clue pairing.';message=error;}
+  else{error=({'noun-only':'That word fits the noun clue. Try pairing it with a different verb.', 'verb-only':'That word fits the verb clue. Try pairing it with a different noun.', 'pair-only':'Those clues form a pair. Look for one spelling that fits both meanings.'})[result.feedback]||'That word doesn’t fit both selected meanings. Try another word or clue pairing.';message=error;}
   app.commit(result.state,{message,tone:result.accepted?(result.state.status==='won'?'win':'fit'):'miss',opts:result.accepted?{}:{type:true}});
   if(result.accepted&&app.game.status==='playing')$('noun-clues').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }

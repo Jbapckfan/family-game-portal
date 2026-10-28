@@ -194,7 +194,17 @@ export function createShell(config) {
       else (isTerminal(game) ? $('results-button') : $('puzzle')).focus({preventScroll:true});
     });
   }
-  function showResult() { if (isTerminal(game)) openDialog(config.result(api)); }
+  function showResult() {
+    if (!isTerminal(game)) return;
+    const home = window.webkit?.messageHandlers?.alford ? 'alford://app/' : ($('family-link').href || '../daily/');
+    openDialog(config.result(api) + `<a class="return-to-daily" href="${esc(home)}">Back to today’s set →</a>`);
+  }
+  function showHelp() {
+    if (!config.lesson) { openDialog(config.help); return; }
+    const lesson=config.lesson;
+    const rules=config.help.replaceAll('id="dialog-title"','').replace(/<div class="dialog-actions">[\s\S]*?<\/div>/g,'');
+    openDialog(`<p class="dialog-kicker">TRY THE RULE</p><h2 class="dialog-title" id="dialog-title">A small ${esc(name)} warm-up.</h2><p class="lesson-question">${esc(lesson.question)}</p><div class="lesson-choices">${lesson.choices.map((choice,index)=>`<button type="button" data-lesson-choice="${index}" aria-describedby="lesson-feedback">${esc(choice.label)}</button>`).join('')}</div><p id="lesson-feedback" class="lesson-feedback" role="status">Choose an answer. This example never changes your Daily or hints.</p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Play the puzzle →</button></div><details class="full-rules"><summary>Read all the rules</summary>${rules}</details>`);
+  }
   function showStats() {
     reconcile();
     const stats = engine.getStats(records, engine.getDateKey());
@@ -315,7 +325,7 @@ export function createShell(config) {
     on('daily-tab', loadDaily); on('new-day-button', loadDaily);
     on('practice-tab', showPractice); on('next-button', randomPractice);
     on('results-button', showResult); on('stats-button', showStats);
-    on('help-button', () => openDialog(config.help)); on('quick-help', () => openDialog(config.help));
+    on('help-button', showHelp); on('quick-help', showHelp);
     on('about-button', showAbout); on('more-button', showOptions); on('finished-more-button', showOptions);
     on('dialog-close', closeDialog);
     on('sound-button', () => { soundOn = !soundOn; write('settings', {sound:soundOn}); updateSound(); if (soundOn) sound('fit'); });
@@ -326,11 +336,17 @@ export function createShell(config) {
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog();
     });
     $('dialog-content').addEventListener('click', event => {
+      const answer=event.target.closest('[data-lesson-choice]');
+      if(answer && config.lesson) {
+        const choice=config.lesson.choices[Number(answer.dataset.lessonChoice)];
+        if(choice) { const feedback=$('lesson-feedback');feedback.textContent=`${choice.correct?'Exactly':'Try again'} — ${choice.why} This warm-up never changes your Daily.`;feedback.dataset.tone=choice.correct?'correct':'retry'; }
+        return;
+      }
       const choice = event.target.closest('[data-practice]');
       if (choice) { loadPractice(Number(choice.dataset.practice)); return; }
       const action = event.target.closest('[data-action]')?.dataset.action;
       const actions = {close:closeDialog, share, practice:showPractice, random:randomPractice,
-        help:() => openDialog(config.help), 'confirm-reveal':confirmReveal, reveal,
+        help:showHelp, 'confirm-reveal':confirmReveal, reveal,
         'confirm-restart':confirmRestart, restart,
         'select-share':() => { $('share-text')?.focus(); $('share-text')?.select(); },
       };

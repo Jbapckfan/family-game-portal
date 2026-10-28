@@ -11,12 +11,14 @@ const ORIGINAL_GAMES = Object.freeze([
   'counterpart', 'shortlist', 'second-sense', 'sideways', 'ringcount', 'switchpath',
 ]);
 const CLASSIC_GAMES = Object.freeze(['tradeoff', 'inbetween']);
+const BONUS_GAMES=Object.freeze(['nested-tic-tac-toe']);
+const BONUS_FILES=Object.freeze(['index.html','app.mjs','engine.mjs','ai.mjs','styles.css','icon.svg']);
 const KIMI_GAMES = Object.freeze(['kimi-cairn', 'kimi-morph', 'kimi-tangle', 'kimi-hunch', 'kimi-circuit', 'kimi-quartet']);
 const DEEPSEEK_GAMES = Object.freeze(['deepseek-twin-hive', 'deepseek-spare', 'deepseek-rung', 'deepseek-cipher', 'deepseek-trail', 'deepseek-split']);
 const QWEN_GAMES = Object.freeze(['qwen-quadra', 'qwen-logic-lattice', 'qwen-syntax-siege', 'qwen-memory-maze', 'qwen-pattern-prism', 'qwen-territory-tactics']);
 const CLAUDE_GAMES = Object.freeze(['claude-dovetail', 'claude-splice', 'claude-sprout', 'claude-tangle', 'claude-keystone', 'claude-tumbler']);
 const SHARED_MODULE_GAMES = Object.freeze([...DEEPSEEK_GAMES, ...QWEN_GAMES, ...CLAUDE_GAMES]);
-const GAME_SLUGS = Object.freeze([...ORIGINAL_GAMES, ...CLASSIC_GAMES, ...KIMI_GAMES, ...SHARED_MODULE_GAMES]);
+const GAME_SLUGS = Object.freeze([...ORIGINAL_GAMES, ...CLASSIC_GAMES, ...KIMI_GAMES, ...SHARED_MODULE_GAMES, ...BONUS_GAMES]);
 const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime', 'deepseek-runtime']);
 const KIMI_WRAPPER_FILES = Object.freeze(['index.html', 'icon.svg']);
 const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
@@ -112,6 +114,9 @@ async function readRuntime(slug) {
   if (KIMI_GAMES.includes(slug) || slug === 'kimi-runtime') {
     files = await collectTree(directory);
     await validateKimiLayout(slug, directory, files, { source: true });
+  } else if (BONUS_GAMES.includes(slug)) {
+    await assertDirectoryChain(directory);
+    files=[...BONUS_FILES];
   } else if (slug === 'deepseek-runtime') {
     files = await collectTree(directory);
     await validateSharedModuleLayout(slug, directory, files, { source: true });

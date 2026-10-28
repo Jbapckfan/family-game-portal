@@ -16,7 +16,9 @@ const deepseek = ['deepseek-twin-hive', 'deepseek-spare', 'deepseek-rung', 'deep
 const qwen = ['qwen-quadra', 'qwen-logic-lattice', 'qwen-syntax-siege', 'qwen-memory-maze', 'qwen-pattern-prism', 'qwen-territory-tactics'];
 const claude = ['claude-dovetail', 'claude-splice', 'claude-sprout', 'claude-tangle', 'claude-keystone', 'claude-tumbler'];
 const sharedModuleGames = [...deepseek, ...qwen, ...claude];
-const slugs = [...originals, ...classics, ...kimi, ...sharedModuleGames];
+const bonus=['nested-tic-tac-toe'];
+const bonusFiles=['index.html','app.mjs','engine.mjs','ai.mjs','styles.css','icon.svg'];
+const slugs = [...originals, ...classics, ...kimi, ...sharedModuleGames, ...bonus];
 const runtime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs', 'styles.css', 'icon.svg', 'manifest.webmanifest', 'fonts/test.ttf', 'fonts/LICENSE.txt'];
 const sharedRuntime = ['assets/index.js', 'assets/index.css', 'assets/chunks/game.mjs', 'assets/puzzles.json', 'assets/images/icon.avif', 'fonts/test.woff2', 'fonts/LICENSE.txt'];
 const deepseekRuntime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs'];
@@ -56,6 +58,10 @@ function fixture(run) {
     writeFileSync(join(root, 'games', slug, 'README.md'), 'Development files stay out of the bundle.');
     writeFixture(root, `games/${slug}/tests/engine.test.mjs`, 'Development tests stay out too.');
   }
+  for(const slug of bonus){
+    for(const name of bonusFiles)writeFixture(root,`games/${slug}/${name}`,name==='index.html'?'<script type="module" src="./app.mjs"></script>':name==='app.mjs'?'import "./engine.mjs"; import "./ai.mjs";':name==='ai.mjs'?'import "./engine.mjs";':'');
+    writeFixture(root,`games/${slug}/README.md`,'Not a runtime file');
+  }
   for (const slug of kimi) writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="stylesheet" href="../kimi-runtime/assets/index.css">');
   for (const name of sharedRuntime) writeFixture(root, `games/kimi-runtime/${name}`);
   writeFixture(root, 'games/kimi-runtime/assets/index.js', 'export { value } from "./chunks/game.mjs"; const text = "Climb from ";');
@@ -81,7 +87,7 @@ test('ordinary sync copies the fixed runtime set and check is read-only', () => 
   assert.equal(command().status, 0);
   const directory = join(root, 'ios', 'Web', 'games');
   const before = snapshot(directory);
-  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length);
+  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length);
   assert.equal(readdirSync(directory).length, slugs.length + 2);
   assert.ok(Object.keys(before).every(path => !path.endsWith('/README.md')));
   assert.ok(Object.keys(before).every(path => !path.includes('/tests/')));

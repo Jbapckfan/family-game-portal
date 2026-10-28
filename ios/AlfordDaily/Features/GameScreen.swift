@@ -113,9 +113,9 @@ private struct GameAboutView: View {
                     Text(game.subtitle).font(.title3).foregroundStyle(Theme.ink)
                     Text(game.attributionDescription).font(.body).foregroundStyle(Theme.muted)
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("\(game.collectionCount) prepared puzzles", systemImage: "calendar")
+                        Label(game.isDaily ? "\(game.collectionCount) prepared puzzles" : "Local AI · Casual or Tactical", systemImage: game.isDaily ? "calendar" : "square.grid.3x3")
                             .font(.headline).foregroundStyle(game.palette.ink)
-                        Text("Daily play changes at midnight Central and repeats after the collection ends. Practice stays separate from your daily record.")
+                        Text(game.isDaily ? "Daily play changes at midnight Central and repeats after the collection ends. Practice stays separate from your daily record." : "Win mini boards to claim the big squares. Your chosen square sends the next turn to that board. Matches save separately and never change daily streaks.")
                             .font(.subheadline).foregroundStyle(Theme.ink)
                     }
                     .padding(18).frame(maxWidth: .infinity, alignment: .leading)

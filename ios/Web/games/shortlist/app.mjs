@@ -6,11 +6,13 @@ const $ = id => document.getElementById(id);
 let selected=[];
 let restoredHintKey=null;
 let pendingPick=null;
+let markMode=false;
 const help=`<p class="dialog-kicker">A LITTLE INFORMATION GOES A LONG WAY</p><h2 class="dialog-title" id="dialog-title">Make the shortlist.</h2><p class="dialog-body">One of the twelve visible words is the secret. You have <strong>three scans and one final pick.</strong></p><div class="help-example">A + E <span class="arrow">→</span> 1<br><small>Exactly one of these letters appears in the secret.</small></div><ol class="help-list"><li><strong>Pick two different letters.</strong> A scan returns 0, 1 or 2 letters present. It never tells you which letter or where. Repeated letters in a word still count once.</li><li><strong>Narrow the field.</strong> Compare every candidate with all your scan results. The little × lets you cross words off; tap it again to restore them.</li><li><strong>Make your final pick.</strong> Tap a word and confirm. You can do this early, but you get only one pick.</li></ol><p class="dialog-body">Every starting board has a strategy that identifies any secret in at most three scans. Your questions matter: uninformative scans can leave more than one possibility. One optional hint suggests a useful scan and marks the result as assisted.</p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Start narrowing it down →</button></div>`;
 const app=createShell({
+  lesson:{question:'A + E gives 1. Which word fits that result?',choices:[{label:'MATCH',correct:true,why:'MATCH has A but no E: exactly one of the two letters.'},{label:'TABLE',correct:false,why:'TABLE contains both A and E, so its count would be 2.'},{label:'STORY',correct:false,why:'STORY contains neither A nor E, so its count would be 0.'}]},
   slug:'shortlist',name:'Shortlist',puzzles:PUZZLES,engine,
   sibling:{slug:'counterpart',name:'Counterpart',url:'https://counterpart-daily.jbapckfan.chatgpt.site'},
-  reset(){selected=[];restoredHintKey=null;pendingPick=null;},
+  reset(){selected=[];restoredHintKey=null;pendingPick=null;markMode=false;},
   record:game=>({status:game.status,scans:game.scans.length,hints:game.hints}),
   help,
   about:'Shortlist is a quick deduction game about asking useful questions. Twelve words, three scans of two letters, and one final pick. Every prepared starting board is checked by an exact decision-tree solver: there is a strategy to distinguish every candidate within three scans. Different choices can use up information, so a win is earned, not automatic.',
@@ -43,14 +45,18 @@ function renderGame(api,opts={}){
   $('letter-bank').innerHTML=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(letter=>`<button class="letter-key${selected.includes(letter)?' selected':''}" data-letter="${letter}" aria-label="Letter ${letter}" aria-pressed="${selected.includes(letter)}" ${canScan?'':'disabled'}>${letter}</button>`).join('');
   $('scan-button').disabled=!canScan||selected.length!==2;
   $('scan-button').innerHTML=!active?'Round complete':selected.length===2?`Scan ${selected.join(' + ')} <span aria-hidden="true">↗</span>`:game.scans.length===3?'Make your pick ↓':'Scan letters ↗';
-  $('scan-history').innerHTML=Array.from({length:3},(_,index)=>{
+  $('scan-history').innerHTML=Array.from({length:active?Math.min(3,game.scans.length+1):game.scans.length},(_,index)=>{
     const scan=game.scans[index];
     return scan?`<div class="scan-result" aria-label="Scan ${index+1}: ${scan.letters.split('').join(' and ')}, ${scan.count} present"><span class="scan-index">${index+1}</span><span class="scan-letters">${scan.letters[0]} <b>+</b> ${scan.letters[1]}</span><span class="scan-count count-${scan.count}">${scan.count}</span><span class="scan-explanation">${esc(scanDescription(scan))}</span></div>`:`<div class="scan-result empty" aria-label="Scan ${index+1} not yet used"><span class="scan-index">${index+1}</span><span class="scan-letters">— + —</span><span class="scan-count">?</span><span class="scan-explanation">${index===game.scans.length&&canScan?'Your next question.':'A little more to learn.'}</span></div>`;
   }).join('');
   $('candidate-count').textContent=active?`${12-game.eliminated.length} on your list · 1 secret`:`The secret: ${puzzle.answer}`;
+  $('notes-mode').hidden=!active;
+  $('notes-mode').setAttribute('aria-pressed',String(markMode));
+  $('notes-mode').textContent=markMode?'Pencil marks on':'Pencil marks off';
   $('puzzle').innerHTML=puzzle.words.map(word=>{
-    const off=game.eliminated.includes(word);const answer=!active&&word===puzzle.answer;const wrong=game.status==='lost'&&word===game.pick;
-    return `<div class="candidate${off&&active?' crossed':''}${answer?' answer':''}${wrong?' wrong-pick':''}"><button class="candidate-word" data-pick="${word}" aria-label="Choose ${word} as your final pick${off?', crossed off':''}${answer?', secret word':''}" ${!active||off?'disabled':''}>${word}${answer?'<span class="word-badge" aria-hidden="true">✓</span>':wrong?'<span class="word-badge" aria-hidden="true">×</span>':''}</button>${active?`<button class="pencil-button" data-mark="${word}" aria-label="${off?'Restore':'Cross off'} ${word}" aria-pressed="${off}">${off?'↶':'×'}</button>`:''}</div>`;
+    const off=game.eliminated.includes(word),answer=!active&&word===puzzle.answer,wrong=game.status==='lost'&&word===game.pick;
+    const label=markMode?`${off?'Restore':'Cross off'} ${word}`:`Choose ${word} as your final pick${off?', crossed off':''}${answer?', secret word':''}`;
+    return `<div class="candidate${off&&active?' crossed':''}${answer?' answer':''}${wrong?' wrong-pick':''}"><button class="candidate-word" ${markMode?`data-mark="${word}" aria-pressed="${off}"`:`data-pick="${word}"`} aria-label="${label}" ${!active||(!markMode&&off)?'disabled':''}>${word}${answer?'<span class="word-badge" aria-hidden="true">✓</span>':wrong?'<span class="word-badge" aria-hidden="true">×</span>':''}${active&&markMode?`<span class="pencil-symbol" aria-hidden="true">${off?'↶':'×'}</span>`:''}</button></div>`;
   }).join('');
   $('hint-button').disabled=game.hints>0||!active;
   $('hint-button').textContent=game.hints?'✦ Hint used':'✦ Suggest a scan';
@@ -99,7 +105,8 @@ function hint(){
   app.commit(result.state,{message:result.hint.message});
   if(result.hint.letters)$('scan-button').focus({preventScroll:true});
 }
-$('letter-bank').addEventListener('click',event=>{const key=event.target.closest('[data-letter]');if(key)chooseLetter(key.dataset.letter);});
+$('notes-mode').addEventListener('click',()=>{if(app.game.status!=='playing')return;markMode=!markMode;app.render();app.notice(markMode?'Pencil marks on. Tap a word to cross it off or restore it; turn pencil marks off to make a final pick.':'Pencil marks off. Tap a word when you are ready for your final pick.');});
+$('letter-bank').addEventListener('click' ,event=>{const key=event.target.closest('[data-letter]');if(key)chooseLetter(key.dataset.letter);});
 $('scan-button').addEventListener('click',scan);
 $('hint-button').addEventListener('click',hint);
 $('puzzle').addEventListener('click',event=>{const pencil=event.target.closest('[data-mark]');if(pencil){mark(pencil.dataset.mark);return;}const word=event.target.closest('[data-pick]');if(word)confirmPick(word.dataset.pick);});

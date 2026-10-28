@@ -3,17 +3,17 @@ import XCTest
 
 final class DailyCalendarTests: XCTestCase {
     func testCuratedSelectionMatchesWebAcrossRolloverAndRollback() {
-        XCTAssertEqual(GameID.featured, [.ringcount, .switchpath, .counterpart, .shortlist])
+        XCTAssertEqual(GameID.featured, [.counterpart, .shortlist, .secondSense, .sideways])
         XCTAssertEqual(GameID.todaysThree(on: "2026-10-20"), [.ringcount, .switchpath, .counterpart])
         XCTAssertEqual(GameID.todaysThree(on: "2026-10-21"), [.switchpath, .counterpart, .shortlist])
-        XCTAssertEqual(GameID.todaysThree(on: "2026-11-01"), [.ringcount, .switchpath, .counterpart])
+        XCTAssertEqual(GameID.todaysThree(on: "2026-11-01"), [.counterpart, .shortlist, .secondSense])
         XCTAssertEqual(GameID.todaysThree(on: "2026-10-19"), [.shortlist, .ringcount, .switchpath])
         XCTAssertEqual(GameID.todaysThree(on: "bad"), [])
-        let available = GameID.allCases.filter { ![GameID.ringcount, .counterpart, .shortlist].contains($0) }
+        let available = GameID.dailyGames.filter { ![GameID.ringcount, .counterpart, .shortlist].contains($0) }
         let selected = GameID.todaysThree(on: "2026-10-20", available: available)
         XCTAssertEqual(Set(selected).count, 3)
         XCTAssertTrue(selected.allSatisfy(available.contains))
-        XCTAssertEqual(GameID.allCases.count, 32)
+        XCTAssertEqual(GameID.dailyGames.count, 32)
     }
 
     func testHomeShareUsesOnlyStatusAndDoesNotMutateLedger() {
@@ -57,8 +57,8 @@ final class DailyCalendarTests: XCTestCase {
     }
 
     func testUnifiedCatalogPreservesOriginalIDsAndAttributesEveryGame() {
-        XCTAssertEqual(Set(GameID.allCases.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween", "kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet", "deepseek-twin-hive", "deepseek-spare", "deepseek-rung", "deepseek-cipher", "deepseek-trail", "deepseek-split", "qwen-quadra", "qwen-logic-lattice", "qwen-syntax-siege", "qwen-memory-maze", "qwen-pattern-prism", "qwen-territory-tactics", "claude-dovetail", "claude-splice", "claude-sprout", "claude-tangle", "claude-keystone", "claude-tumbler"]))
-        XCTAssertEqual(Array(GameID.allCases.prefix(2)), [.ringcount, .switchpath])
+        XCTAssertEqual(Set(GameID.dailyGames.map(\.rawValue)), Set(["ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween", "kimi-cairn", "kimi-morph", "kimi-tangle", "kimi-hunch", "kimi-circuit", "kimi-quartet", "deepseek-twin-hive", "deepseek-spare", "deepseek-rung", "deepseek-cipher", "deepseek-trail", "deepseek-split", "qwen-quadra", "qwen-logic-lattice", "qwen-syntax-siege", "qwen-memory-maze", "qwen-pattern-prism", "qwen-territory-tactics", "claude-dovetail", "claude-splice", "claude-sprout", "claude-tangle", "claude-keystone", "claude-tumbler"]))
+        XCTAssertEqual(Array(GameID.dailyGames.prefix(2)), [.ringcount, .switchpath])
         XCTAssertEqual(CreatorFilter.all.games.count, 32)
         XCTAssertEqual(CreatorFilter.chatGPT.games.count, 8)
         XCTAssertEqual(CreatorFilter.kimi.games.count, 6)
@@ -68,7 +68,7 @@ final class DailyCalendarTests: XCTestCase {
         XCTAssertNil(GameID(rawValue: "kimi-runtime"))
         XCTAssertNil(GameID(rawValue: "deepseek-runtime"))
         XCTAssertEqual(GameID.inbetween.collectionCount, 180)
-        XCTAssertTrue(GameID.allCases.allSatisfy { $0.collectionCount >= 120 })
+        XCTAssertTrue(GameID.dailyGames.allSatisfy { $0.collectionCount >= 120 })
     }
 
     func testConceptCreditsDistinguishOriginalPrototypesFromNewImplementations() {
@@ -93,8 +93,8 @@ final class DailyCalendarTests: XCTestCase {
             XCTAssertEqual(game.allowsLoss, game == .qwenQuadra || game == .qwenSyntaxSiege)
         }
         let creatorGames = CreatorFilter.allCases.filter { $0 != .all }.flatMap(\.games)
-        XCTAssertEqual(Set(creatorGames), Set(GameID.allCases))
-        XCTAssertEqual(creatorGames.count, GameID.allCases.count)
+        XCTAssertEqual(Set(creatorGames), Set(GameID.dailyGames))
+        XCTAssertEqual(creatorGames.count, GameID.dailyGames.count)
     }
 
     func testClaudeGamesRetainDevelopmentCreditDistinctIDsAndExpandedCollectionCounts() {

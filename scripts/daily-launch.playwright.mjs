@@ -6,7 +6,7 @@ const pw=await import(process.env.DAILY_PLAYWRIGHT_MODULE?pathToFileURL(process.
 const root=path.resolve(import.meta.dirname,'..'),out=process.env.DAILY_LAUNCH_OUTPUT||path.join(root,'output/launch-quality');await mkdir(out,{recursive:true});
 const rows=[];
 for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')){
- const browser=await pw[engine].launch(engine==='chromium'?{channel:'chrome'}:{});
+ const browser=await pw[engine].launch(engine==='chromium'?{channel:'chrome',args:['--disable-gpu','--disable-gpu-compositing']}:{});
  try{
   const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),p=await context.newPage(),errors=[];
   p.setDefaultTimeout(8000);p.on('pageerror',e=>errors.push(e.message));
@@ -37,15 +37,15 @@ for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')){
   assert.equal(await p.locator('[data-collection] [data-game]:visible').count(),6);
   assert.equal(await p.locator('#todays-three [data-game]:visible').count(),3);
   await p.locator('#browse-all').click();assert.equal(await p.locator('[data-collection] [data-game]:visible').count(),32);
-  await p.evaluate(()=>{localStorage.setItem('ringcount:v1:records',JSON.stringify({'2026-11-01':{status:'won',checks:1,moves:4,hints:0}}));localStorage.setItem('qa-preserved-wallet','213');});
+  await p.evaluate(()=>{localStorage.setItem('counterpart:v1:records',JSON.stringify({'2026-11-01':{status:'won',attempts:5,hints:0}}));localStorage.setItem('qa-preserved-wallet','213');});
   await p.clock.fastForward(30000);await p.waitForFunction(()=>document.getElementById('today-date').dateTime==='2026-11-01');
   const after=await p.locator('#todays-three [data-game]').evaluateAll(es=>es.map(e=>e.dataset.game));
-  assert.deepEqual(after,['ringcount','switchpath','counterpart']);assert.notDeepEqual(after,before);
-  await p.waitForFunction(()=>document.querySelector('#todays-three [data-game="ringcount"] [data-status-label]').textContent==='Solved');
+  assert.deepEqual(after,['counterpart','shortlist','second-sense']);assert.notDeepEqual(after,before);
+  await p.waitForFunction(()=>document.querySelector('#todays-three [data-game="counterpart"] [data-status-label]').textContent==='Solved');
   const saved=await p.evaluate(()=>Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])));
   await p.evaluate(()=>{window.__cancelShare=true;window.__writeFailure=true;});await p.locator('#share-today').click();
   assert.deepEqual(await p.evaluate(()=>Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)]))),saved);
-  const share=await p.evaluate(()=>window.__shares.at(-1));assert.match(share.text,/2026-11-01/);assert.match(share.text,/Ringcount: Solved/);assert.doesNotMatch(share.text,/solution|cuts|MAPLE|ACORN|\[\d+(?:,\d+)+\]/i);
+  const share=await p.evaluate(()=>window.__shares.at(-1));assert.match(share.text,/2026-11-01/);assert.match(share.text,/Counterpart: Solved/);assert.doesNotMatch(share.text,/solution|cuts|MAPLE|ACORN|\[\d+(?:,\d+)+\]/i);
   await p.evaluate(()=>{navigator.share=async()=>{throw new Error('QA share unavailable');};});await p.locator('#share-today').click();
   assert.equal(await p.locator('#share-text').inputValue(),share.text);
   await p.clock.setSystemTime(new Date('2026-11-02T06:00:00Z'));await p.evaluate(()=>window.dispatchEvent(new Event('pageshow')));

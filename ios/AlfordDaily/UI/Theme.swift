@@ -69,6 +69,7 @@ extension GameID {
         case .claudeTangle: GamePalette(accent: 0x83529b, ink: 0x633975, wash: 0xefe3f5, edge: 0xd5b9e0)
         case .claudeKeystone: GamePalette(accent: 0x936b2a, ink: 0x70501b, wash: 0xf5ead5, edge: 0xdfc597)
         case .claudeTumbler: GamePalette(accent: 0x385d85, ink: 0x284663, wash: 0xe4edf5, edge: 0xbacfe0)
+        case .nestedTicTacToe: GamePalette(accent: 0x355fa7, ink: 0x264a86, wash: 0xe5edfb, edge: 0xbed0ed)
         }
     }
 }

@@ -60,7 +60,9 @@ export function filterGames(creator = 'All') { return GAMES.filter(game => creat
 
 export const LAUNCH_GAMES = GAMES;
 
-export const FEATURED_GAME_IDS = Object.freeze(['ringcount', 'switchpath', 'counterpart', 'shortlist']);
+export const FEATURED_GAME_IDS = Object.freeze(['counterpart', 'shortlist', 'second-sense', 'sideways']);
+const LEGACY_FEATURED_IDS=Object.freeze(['ringcount','switchpath','counterpart','shortlist']);
+export const BONUS_GAMES=Object.freeze([Object.freeze({slug:'nested-tic-tac-toe',name:'Tic-Tac-Toe',description:'Nine boards. Your move sends the AI to its next board.',creator:'ChatGPT',category:'Local AI · Nine boards'})]);
 export function featuredGames(available = GAMES) {
   const ids = new Set(available.map(game => game.slug));
   return FEATURED_GAME_IDS.map(id => GAMES.find(game => game.slug === id)).filter(game => ids.has(game.slug));
@@ -76,11 +78,21 @@ export function todayThree(key, available = GAMES) {
   const day = dateOffset(key);
   if (day === null) return [];
   const ids = new Set(available.map(game => game.slug));
-  const preferred = featuredGames(available);
-  const pool = preferred.length >= 3 ? preferred : [...preferred, ...GAMES.filter(game => ids.has(game.slug) && !FEATURED_GAME_IDS.includes(game.slug))];
+  const featuredIds=key<'2026-10-28'?LEGACY_FEATURED_IDS:FEATURED_GAME_IDS;
+  const preferred = featuredIds.map(id=>GAMES.find(game=>game.slug===id)).filter(game=>ids.has(game.slug));
+  const pool = preferred.length >= 3 ? preferred : [...preferred, ...GAMES.filter(game => ids.has(game.slug) && !featuredIds.includes(game.slug))];
   if (!pool.length) return [];
   const start = ((day % pool.length) + pool.length) % pool.length;
   return Array.from({length: Math.min(3, pool.length)}, (_, index) => pool[(start + index) % pool.length]);
+}
+
+/** No writes. A finished/revealed set is complete even when it is not three wins. */
+export function dailyJourney(key,results=[]) {
+  const games=todayThree(key),status=slug=>results.find(result=>result.slug===slug)?.status||'new';
+  const terminal=value=>['won','lost','revealed'].includes(value);
+  const finished=games.filter(game=>terminal(status(game.slug))).length;
+  const next=games.find(game=>status(game.slug)==='playing')||games.find(game=>!terminal(status(game.slug))&&status(game.slug)!=='unavailable')||null;
+  return {games,finished,solved:games.filter(game=>status(game.slug)==='won').length,complete:games.length>0&&finished===games.length,next};
 }
 /** Only catalog names, Central date and public status labels may leave the home. */
 export function buildDailyShare(key, results = []) {

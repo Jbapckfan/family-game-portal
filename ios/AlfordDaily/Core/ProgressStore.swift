@@ -24,7 +24,7 @@ final class ProgressStore {
         if let data = defaults.data(forKey: progressKey),
            let snapshot = try? JSONDecoder().decode(Snapshot.self, from: data), snapshot.version == 1 {
             ledger = snapshot.ledger.sanitized()
-            statistics = snapshot.statistics.filter { GameID(rawValue: $0.key) != nil && $0.value.isValid }
+            statistics = snapshot.statistics.filter { GameID(rawValue: $0.key)?.isDaily == true && $0.value.isValid }
         }
         if let data = defaults.data(forKey: preferencesKey),
            let stored = try? JSONDecoder().decode(AppPreferences.self, from: data) {
@@ -33,6 +33,7 @@ final class ProgressStore {
     }
 
     func accept(_ progress: ProgressMessage) {
+        guard progress.game.isDaily else { return }
         let previousLedger = ledger
         let previousStats = statistics[progress.game.rawValue]
         ledger.record(progress)

@@ -56,7 +56,12 @@ export function submitPair(puzzle, state, selection) {
   if (state.placements.some(pair => pair.nounId === nounId || pair.verbId === verbId)) return reject('used');
   const attempts = Math.min(Number.MAX_SAFE_INTEGER, state.attempts + 1);
   if (!validPair(puzzle, nounId, verbId, word)) {
-    return { state: { ...state, attempts }, accepted: false, changed: true, reason: 'no-match', word };
+    const accepts=pair=>(pair.answers||[pair.word]).includes(word);
+    const noun=puzzle.pairs.some(pair=>pair.nounId===nounId&&accepts(pair));
+    const verb=puzzle.pairs.some(pair=>pair.verbId===verbId&&accepts(pair));
+    const paired=puzzle.pairs.some(pair=>pair.nounId===nounId&&pair.verbId===verbId);
+    return { state: { ...state, attempts }, accepted: false, changed: true, reason: 'no-match', word,
+      feedback:noun&&!verb?'noun-only':verb&&!noun?'verb-only':paired?'pair-only':'mismatch' };
   }
   const placements = [...state.placements, { nounId, verbId, word }];
   return {

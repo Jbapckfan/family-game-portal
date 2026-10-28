@@ -2,6 +2,20 @@ import XCTest
 @testable import AlfordDaily
 
 final class ProgressLedgerTests: XCTestCase {
+    func testBonusCannotCreateDailyCreditAndNextActionHandlesFinishedSet() {
+        var ledger = ProgressLedger()
+        ledger.record(message(.nestedTicTacToe, "2026-10-28", .won))
+        XCTAssertEqual(ledger.completed(on: "2026-10-28"), 0)
+        XCTAssertEqual(ledger.dailyStreak(today: "2026-10-28"), 0)
+        ledger.record(message(.shortlist, "2026-10-28", .playing))
+        XCTAssertEqual(ledger.nextDaily(on: "2026-10-28"), .shortlist)
+        ledger.record(message(.counterpart, "2026-10-28", .revealed))
+        ledger.record(message(.shortlist, "2026-10-28", .lost))
+        ledger.record(message(.secondSense, "2026-10-28", .won))
+        XCTAssertNil(ledger.nextDaily(on: "2026-10-28"))
+        XCTAssertEqual(ledger.solved(on: "2026-10-28"), 1)
+    }
+
     private func message(_ game: GameID, _ date: String, _ status: GameStatus, mode: GameMode = .daily) -> ProgressMessage {
         ProgressMessage(game: game, mode: mode, dateKey: date, status: status, stats: .empty)
     }
@@ -33,8 +47,8 @@ final class ProgressLedgerTests: XCTestCase {
     func testRevealsNeverCreateWinsAndAllFinishedWithoutAWinBreaksToday() {
         var ledger = ProgressLedger()
         ledger.record(message(.ringcount, "2026-10-20", .won))
-        for game in GameID.allCases { ledger.record(message(game, "2026-10-21", .revealed)) }
-        XCTAssertEqual(ledger.completed(on: "2026-10-21"), GameID.allCases.count)
+        for game in GameID.dailyGames { ledger.record(message(game, "2026-10-21", .revealed)) }
+        XCTAssertEqual(ledger.completed(on: "2026-10-21"), GameID.dailyGames.count)
         XCTAssertEqual(ledger.solved(on: "2026-10-21"), 0)
         XCTAssertEqual(ledger.dailyStreak(today: "2026-10-21"), 0)
         XCTAssertEqual(ledger.gameStreak(.ringcount, today: "2026-10-21"), 0)

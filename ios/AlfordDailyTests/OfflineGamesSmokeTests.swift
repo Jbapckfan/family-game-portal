@@ -61,6 +61,22 @@ final class OfflineGamesSmokeTests: XCTestCase {
                 XCTFail("\(game.rawValue): \(failure). \(probe.diagnostics)")
                 return
             }
+            if !game.isDaily {
+                let raw = try await evaluate("({ title: document.title, populated: document.querySelector('#puzzle[data-game-ready=true]')?.childElementCount > 0, native: document.body.classList.contains('native-app'), choices: document.querySelectorAll('#macro-board button').length, squares: document.querySelectorAll('#detail-board button').length, retained: localStorage.getItem('\(probeKey)') })", in: webView, game: game)
+                let state = try XCTUnwrap(raw as? [String: Any])
+                XCTAssertEqual(state["populated"] as? Bool, true)
+                XCTAssertEqual(state["native"] as? Bool, true)
+                XCTAssertEqual(state["choices"] as? Int, 9)
+                XCTAssertEqual(state["squares"] as? Int, 9)
+                XCTAssertEqual(state["retained"] as? String, "retained")
+                XCTAssertNil(probe.progress, "Bonus must not publish daily progress")
+                _ = try await evaluate("document.querySelectorAll('#macro-board button')[0].click()", in: webView, game: game)
+                let selectedTitle = try await evaluate("document.getElementById('selected-board-title').textContent", in: webView, game: game)
+                XCTAssertEqual(selectedTitle as? String, "Top left board")
+                _ = try await evaluate("localStorage.removeItem('\(probeKey)')", in: webView, game: game)
+                print("ALFORD_SMOKE bonus: populated, native controls, board selection and persistent origin; no daily progress; HTTP(S) blocked")
+                continue
+            }
             let progress = try XCTUnwrap(probe.progress, "No trusted progress message from \(game.name). \(probe.diagnostics)")
             XCTAssertEqual(progress.game, game)
             XCTAssertEqual(progress.mode, .daily)
@@ -151,6 +167,19 @@ final class OfflineGamesSmokeTests: XCTestCase {
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             record("Navigation finished")
+            if !game.isDaily {
+                Task { @MainActor [weak self, weak webView] in
+                    guard let self, let webView else { return }
+                    for _ in 0..<100 {
+                        if self.completed { return }
+                        do {
+                            let value = try await webView.evaluateJavaScript("document.querySelector('#puzzle[data-game-ready=true]')?.childElementCount > 0")
+                            if value as? Bool == true { self.record("Actual bonus initialized"); self.complete(); return }
+                        } catch { self.fail("Bonus initialization failed", error: error); return }
+                        try? await Task.sleep(for: .milliseconds(100))
+                    }
+                }
+            }
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {

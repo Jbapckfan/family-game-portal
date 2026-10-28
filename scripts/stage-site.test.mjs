@@ -27,7 +27,7 @@ test('public staging includes all 32 games, excludes unrelated portal files, and
     const first = run();
     assert.equal(first.status, 0, first.stderr);
     const inventory = JSON.parse(await readFile(join(fixture,'docs/puzzle-inventory.json'),'utf8'));
-    const expected = [...inventory.games.map(game=>game.slug), 'daily', 'kimi-runtime', 'deepseek-runtime'].sort();
+    const expected = [...inventory.games.map(game=>game.slug), 'nested-tic-tac-toe', 'daily', 'kimi-runtime', 'deepseek-runtime'].sort();
     assert.deepEqual((await readdir(join(output,'games'))).sort(), expected, 'unrelated portal games must never enter the public build');
     const originalFiles = await readdir(join(output,'games/ringcount'));
     assert.ok(!originalFiles.includes('scripts') && !originalFiles.includes('tests') && !originalFiles.includes('package.json'));
@@ -36,6 +36,7 @@ test('public staging includes all 32 games, excludes unrelated portal files, and
     assert.match(manifest.buildId,/^[a-f0-9]{16}$/);
     assert.ok(manifest.bytes>0);
     assert.ok(manifest.assets.some(asset=>asset.url==='playtest.mjs'));
+    assert.ok(manifest.assets.some(asset=>asset.url==='games/nested-tic-tac-toe/ai.mjs'));
     for(const game of inventory.games)assert.ok(manifest.assets.some(asset=>asset.url===`games/${game.slug}/index.html`));
     assert.ok(manifest.assets.every(asset=>/^[a-f0-9]{64}$/.test(asset.sha256)));
     assert.ok(!manifest.assets.some(asset=>asset.url.includes('private-portal-fixture')));

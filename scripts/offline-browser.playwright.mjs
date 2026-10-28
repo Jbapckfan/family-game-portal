@@ -5,7 +5,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {GAMES} from '../games/daily/catalog.mjs';
 const root=path.resolve(import.meta.dirname,'..'),stage=path.resolve(process.env.DAILY_STAGE||path.join(root,'dist/private-playtest-prefix-20261028'));
-const out=path.join(root,'output/playwright/playtest-20261028');await mkdir(out,{recursive:true});
+const out=path.resolve(process.env.DAILY_OFFLINE_OUTPUT||path.join(root,'output/playwright/playtest-20261028'));await mkdir(out,{recursive:true});
 const {chromium}=await import(pathToFileURL(process.env.DAILY_PLAYWRIGHT_MODULE||'/Users/jamesalford/.npm/_npx/31e32ef8478fbf80/node_modules/playwright/index.mjs').href);
 const manifest=JSON.parse(await readFile(path.join(stage,'playtest-build.json'),'utf8'));
 const workerSource=await readFile(path.join(stage,'offline-worker.js'),'utf8');
@@ -53,7 +53,8 @@ try {
   await p.waitForFunction(selector=>document.querySelector(selector)?.childElementCount>0,selector);
   assert.ok((await p.locator('body').innerText()).length>100,game.slug);
  }
- checks.push('All 32 actual game pages boot with browser offline and no test routing');
+ checks.push('All 32 actual daily game pages boot with browser offline and no test routing');
+ await p.goto('https://daily.test/games/nested-tic-tac-toe/');await p.waitForFunction(()=>document.getElementById('puzzle')?.dataset.gameReady==='true');await p.locator('#detail-board [data-cell="0"]').click();await p.waitForFunction(()=>JSON.parse(localStorage.getItem('alford:tic-tac-toe:v1:match'))?.history?.length===2);const bonusSaved=await p.evaluate(()=>localStorage.getItem('alford:tic-tac-toe:v1:match'));await p.reload();assert.equal(await p.evaluate(()=>localStorage.getItem('alford:tic-tac-toe:v1:match')),bonusSaved);checks.push('Bonus boots, completes a human/AI turn and restores the match offline');
  await p.goto('https://daily.test/games/shortlist/');await p.locator('[data-letter="A"]').click();await p.locator('[data-letter="E"]').click();await p.locator('#scan-button').click();
  const saved=await p.evaluate(()=>localStorage.getItem('shortlist:v1:daily:2026-10-28'));await p.reload();assert.equal(await p.evaluate(()=>localStorage.getItem('shortlist:v1:daily:2026-10-28')),saved);checks.push('Real scan and unfinished save survive offline reload');
  await p.goto('https://daily.test/');await p.waitForFunction(()=>!document.getElementById('share-today').disabled);

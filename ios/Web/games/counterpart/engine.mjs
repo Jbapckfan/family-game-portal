@@ -46,7 +46,8 @@ export function submitPair(puzzle, state, selection) {
   if (tileIds.some(id => used.has(id))) return reject('used');
   const attempts = Math.min(Number.MAX_SAFE_INTEGER, state.attempts + 1);
   if (!tileIds.every((id, index) => id === puzzle.rows[row].answer[index])) {
-    return { state: { ...state, attempts }, accepted: false, changed: true, reason: 'no-match' };
+    const reverse=tileIds.every((id,index)=>id===puzzle.rows[row].answer[1-index]);
+    return { state: { ...state, attempts }, accepted: false, changed: true, reason: 'no-match', feedback: reverse?'reverse':'relationship' };
   }
   const placements = state.placements.map((pair, index) => index === row ? [...tileIds] : pair);
   return {

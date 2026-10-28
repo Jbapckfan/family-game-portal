@@ -7,7 +7,7 @@ struct HomeView: View {
     @State private var share: ShareRequest?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private var today: String { DailyCalendar.key(for: now) }
-    private var gameCount: Int { GameID.allCases.count }
+    private var gameCount: Int { GameID.dailyGames.count }
     private var columns: [GridItem] {
         dynamicTypeSize.isAccessibilitySize
             ? [GridItem(.flexible(minimum: 0), spacing: 14)]
@@ -18,9 +18,10 @@ struct HomeView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 26) {
                 introduction
-                dailyProgress
                 todaysThree
-                gameSection(title: "Featured games", games: GameID.featured)
+                gameSection(title: "Original word games", games: GameID.featured)
+                DisclosureGroup("Your collection record") { dailyProgress }
+                gameSection(title: "Bonus · Local AI", games: GameID.bonusGames)
                 creatorPicker
 
                 if creatorFilter.games.contains(where: \.isFlagship) {
@@ -52,7 +53,7 @@ struct HomeView: View {
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 8) {
                 Image(systemName: "square.grid.2x2").accessibilityHidden(true)
-                Text("\(gameCount) daily games. Your own pace.")
+                Text("Four original word games. Your own pace.")
             }
             .font(.subheadline).foregroundStyle(Theme.muted)
         }
@@ -82,6 +83,23 @@ struct HomeView: View {
             Text("Today’s Three").font(.system(.title2, design: .serif))
             Text("\(solved) of \(games.count) solved · a small daily ritual")
                 .font(.subheadline).foregroundStyle(Theme.muted)
+            if let next = store.ledger.nextDaily(on: today) {
+                NavigationLink(value: next) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("\(store.ledger.status(for: next, on: today) == .playing ? "Continue" : "Play") \(next.name)")
+                                .font(.system(.title3, design: .serif).weight(.semibold))
+                            Text("Your next good puzzle.").font(.subheadline)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right").accessibilityHidden(true)
+                    }.padding(18).frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
+                        .background(Theme.ink, in: RoundedRectangle(cornerRadius: 14)).foregroundStyle(Theme.card)
+                }.buttonStyle(.plain).accessibilityIdentifier("next-daily")
+            } else if games.allSatisfy({ store.ledger.status(for: $0, on: today)?.isTerminal == true }) {
+                Text("Daily set complete. Share your result, try Practice, or return for a fresh set tomorrow.")
+                    .font(.subheadline).foregroundStyle(Theme.muted)
+            }
             ForEach(games) { game in
                 NavigationLink(value: game) {
                     HStack(alignment: .center, spacing: 14) {
@@ -102,7 +120,7 @@ struct HomeView: View {
                 Label("Share today’s result", systemImage: "square.and.arrow.up")
                     .font(.subheadline.weight(.semibold)).frame(minHeight: 44)
             }.accessibilityHint("Shares game names and result labels without answers")
-            Text("Four featured games rotate through this daily set. All 32 games remain in the collection below.")
+            Text("Choose one good puzzle, then return whenever you like. All 32 daily games remain in the collection below.")
                 .font(.caption).foregroundStyle(Theme.muted)
         }.accessibilityIdentifier("todays-three")
     }
@@ -166,6 +184,7 @@ private struct GameCard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var actionTitle: String {
+        if !game.isDaily { return "Open match" }
         if status?.isTerminal == true { return "View result" }
         return status == .playing ? "Continue" : "Play"
     }

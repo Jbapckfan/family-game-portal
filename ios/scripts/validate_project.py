@@ -22,7 +22,9 @@ DEEPSEEK_GAMES = {"deepseek-twin-hive", "deepseek-spare", "deepseek-rung", "deep
 QWEN_GAMES = {"qwen-quadra", "qwen-logic-lattice", "qwen-syntax-siege", "qwen-memory-maze", "qwen-pattern-prism", "qwen-territory-tactics"}
 CLAUDE_GAMES = {"claude-dovetail", "claude-splice", "claude-sprout", "claude-tangle", "claude-keystone", "claude-tumbler"}
 SHARED_MODULE_GAMES = DEEPSEEK_GAMES | QWEN_GAMES | CLAUDE_GAMES
-GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES
+BONUS_GAMES = {"nested-tic-tac-toe"}
+BONUS_FILES = {"index.html", "app.mjs", "engine.mjs", "ai.mjs", "styles.css", "icon.svg"}
+GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES | BONUS_GAMES
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
 SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg"}
@@ -224,10 +226,12 @@ def validate_shared_module_references(games_dir, files):
             target = posixpath.normpath(posixpath.join(posixpath.dirname(origin), path))
         owner = origin.split("/")[0]
         own_files = {f"{owner}/{name}" for name in SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES} if owner in SHARED_MODULE_GAMES else set()
-        require(target in shared | own_files, f"Game module resource is outside its runtime: {origin}: {reference}")
+        if owner in BONUS_GAMES:
+            own_files = {f"{owner}/{name}" for name in BONUS_FILES}
+        require(target in (own_files if owner in BONUS_GAMES else shared | own_files), f"Game module resource is outside its runtime: {origin}: {reference}")
         require(target in files, f"Missing game module resource: {origin}: {reference}")
 
-    for game in sorted(SHARED_MODULE_GAMES):
+    for game in sorted(SHARED_MODULE_GAMES | BONUS_GAMES):
         origin = f"{game}/index.html"
         parser = KimiDocumentReferences()
         parser.feed((games_dir / origin).read_text())
@@ -235,7 +239,7 @@ def validate_shared_module_references(games_dir, files):
         for reference in parser.references:
             check(reference, origin)
     for origin in sorted(files):
-        if origin.split("/")[0] not in SHARED_MODULE_GAMES | {"deepseek-runtime"}:
+        if origin.split("/")[0] not in SHARED_MODULE_GAMES | BONUS_GAMES | {"deepseek-runtime"}:
             continue
         text = (games_dir / origin).read_text()
         if origin.endswith(".css"):
@@ -255,7 +259,7 @@ def validate_web_bundle(games_dir):
         require(not ancestor.is_symlink(), "Bundled directory cannot be a symlink: " + str(ancestor))
     entries = list(games_dir.iterdir())
     require(all(path.is_dir() and not path.is_symlink() for path in entries), "Every bundle root must be a real directory")
-    require({path.name for path in entries} == BUNDLE_DIRECTORIES, "Bundle must contain exactly 32 game entries and both shared runtimes")
+    require({path.name for path in entries} == BUNDLE_DIRECTORIES, "Bundle must contain32 daily games, one bonus and both shared runtimes")
     all_files = set()
     for game in sorted(BUNDLE_DIRECTORIES):
         files, directories = bundle_inventory(games_dir / game)
@@ -270,6 +274,8 @@ def validate_web_bundle(games_dir):
                 require(len(parts) >= 2 and Path(path).suffix.lower().removeprefix(".") in allowed, "Unexpected shared Kimi runtime file: " + path)
         elif game == "deepseek-runtime":
             require(files == DEEPSEEK_SHARED_FILES and not directories, "Shared module runtime must contain only core.mjs, common.mjs and styles.css")
+        elif game in BONUS_GAMES:
+            require(files == BONUS_FILES and not directories, "Unexpected bonus runtime file: " + game)
         elif game in SHARED_MODULE_GAMES:
             require(SHARED_GAME_REQUIRED_FILES <= files, f"Missing runtime files for {game}: {sorted(SHARED_GAME_REQUIRED_FILES - files)}")
             require(files <= SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES and not directories, "Unexpected game runtime file: " + game)

@@ -1,0 +1,855 @@
+{
+  "date": "2026-10-28",
+  "qualification": "Source-assisted normal-control recipes, not blind play. Use a fresh origin/context, freeze Central date at 2026-10-28, reload after action index 0, then finish and reload again. submit means click the submit button inside that form, press means focus selector and press its key. Never inject game state.",
+  "games": [
+    {
+      "id": "deepseek-twin-hive",
+      "puzzleId": "twin-expanded-036",
+      "answers": [
+        "ACORN",
+        "ACORNS",
+        "ANTE",
+        "ARENA",
+        "ARENAS",
+        "ARSON"
+      ],
+      "actions": [
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ACORN"
+          },
+          "submit": "#hive-form"
+        },
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ACORNS"
+          },
+          "submit": "#hive-form"
+        },
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ANTE"
+          },
+          "submit": "#hive-form"
+        },
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ARENA"
+          },
+          "submit": "#hive-form"
+        },
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ARENAS"
+          },
+          "submit": "#hive-form"
+        },
+        {
+          "fill": {
+            "selector": "#hive-word",
+            "value": "ARSON"
+          },
+          "submit": "#hive-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "deepseek-rung",
+      "puzzleId": "rung-036",
+      "answers": [
+        "BODY",
+        "BONY",
+        "BOND",
+        "BAND",
+        "SAND",
+        "SAID",
+        "SAIL",
+        "SOIL"
+      ],
+      "actions": [
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "BONY"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "BOND"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "BAND"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "SAND"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "SAID"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "SAIL"
+          },
+          "submit": "#rung-form"
+        },
+        {
+          "fill": {
+            "selector": "#rung-word",
+            "value": "SOIL"
+          },
+          "submit": "#rung-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "deepseek-spare",
+      "puzzleId": "spare-036",
+      "answers": {
+        "pairs": [
+          [
+            "SUPERIOR",
+            "INFERIOR"
+          ],
+          [
+            "COMPULSORY",
+            "OPTIONAL"
+          ],
+          [
+            "NATIVE",
+            "FOREIGN"
+          ],
+          [
+            "DELIBERATE",
+            "ACCIDENTAL"
+          ]
+        ],
+        "spare": "THIMBLE"
+      },
+      "actions": [
+        {
+          "clicks": [
+            "[data-word=\"0\"]",
+            "[data-word=\"1\"]",
+            "#spare-submit"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-word=\"2\"]",
+            "[data-word=\"3\"]",
+            "#spare-submit"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-word=\"4\"]",
+            "[data-word=\"5\"]",
+            "#spare-submit"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-word=\"6\"]",
+            "[data-word=\"7\"]",
+            "#spare-submit"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "deepseek-cipher",
+      "puzzleId": "cipher-036",
+      "answers": {
+        "phrase": "RAIN GIVES THE DUSTY PATH A FRESH START",
+        "mapping": {
+          "Q": "A",
+          "D": "B",
+          "H": "C",
+          "E": "D",
+          "L": "E",
+          "Z": "F",
+          "P": "G",
+          "J": "H",
+          "M": "I",
+          "F": "J",
+          "I": "K",
+          "T": "L",
+          "Y": "M",
+          "W": "N",
+          "G": "O",
+          "R": "P",
+          "V": "Q",
+          "U": "R",
+          "X": "S",
+          "B": "T",
+          "K": "U",
+          "S": "V",
+          "C": "W",
+          "N": "X",
+          "A": "Y",
+          "O": "Z"
+        }
+      },
+      "actions": [
+        {
+          "clicks": [
+            "[data-code=\"U\"]",
+            "[data-letter=\"R\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"M\"]",
+            "[data-letter=\"I\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"W\"]",
+            "[data-letter=\"N\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"P\"]",
+            "[data-letter=\"G\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"S\"]",
+            "[data-letter=\"V\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"L\"]",
+            "[data-letter=\"E\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"X\"]",
+            "[data-letter=\"S\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"J\"]",
+            "[data-letter=\"H\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"E\"]",
+            "[data-letter=\"D\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"K\"]",
+            "[data-letter=\"U\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"A\"]",
+            "[data-letter=\"Y\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"R\"]",
+            "[data-letter=\"P\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-code=\"Z\"]",
+            "[data-letter=\"F\"]"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "deepseek-trail",
+      "puzzleId": "trail-036",
+      "answers": {
+        "word": "ASTRONAUT",
+        "path": [
+          5,
+          7,
+          8,
+          4,
+          6,
+          3,
+          0,
+          1,
+          2
+        ]
+      },
+      "actions": [
+        {
+          "clicks": [
+            "[data-index=\"5\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"7\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"8\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"4\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"6\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"3\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"0\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"1\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-index=\"2\"]"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-action=\"check\"]"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "deepseek-split",
+      "puzzleId": "split-036",
+      "answers": {
+        "words": [
+          "RINGS",
+          "SPARK"
+        ],
+        "rack": [
+          "N",
+          "R",
+          "A",
+          "K",
+          "I",
+          "P",
+          "S",
+          "R",
+          "S",
+          "G"
+        ]
+      },
+      "actions": [
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "R"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "I"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "N"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "G"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "S"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "S"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "P"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "A"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "R"
+          }
+        },
+        {
+          "press": {
+            "selector": "#puzzle",
+            "key": "K"
+          }
+        },
+        {
+          "clicks": [
+            "[data-action=\"check\"]"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-dovetail",
+      "puzzleId": "dovetail-83",
+      "answers": [
+        "mid",
+        "week",
+        "day",
+        "break",
+        "fast",
+        "ball",
+        "room",
+        "mate"
+      ],
+      "actions": [
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "week"
+          },
+          "submit": "#dovetail-form"
+        },
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "day"
+          },
+          "submit": "#dovetail-form"
+        },
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "break"
+          },
+          "submit": "#dovetail-form"
+        },
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "fast"
+          },
+          "submit": "#dovetail-form"
+        },
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "ball"
+          },
+          "submit": "#dovetail-form"
+        },
+        {
+          "fill": {
+            "selector": "#dovetail-entry",
+            "value": "room"
+          },
+          "submit": "#dovetail-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-splice",
+      "puzzleId": "splice-79",
+      "answers": [
+        [
+          "show",
+          "down"
+        ],
+        [
+          "bed",
+          "side"
+        ],
+        [
+          "air",
+          "ways"
+        ],
+        [
+          "sub",
+          "titles"
+        ],
+        [
+          "business",
+          "men"
+        ],
+        [
+          "water",
+          "fall"
+        ]
+      ],
+      "actions": [
+        {
+          "clicks": [
+            "[data-tile=\"0\"]",
+            "[data-tile=\"1\"]",
+            "#splice-go"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-tile=\"2\"]",
+            "[data-tile=\"3\"]",
+            "#splice-go"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-tile=\"4\"]",
+            "[data-tile=\"5\"]",
+            "#splice-go"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-tile=\"6\"]",
+            "[data-tile=\"7\"]",
+            "#splice-go"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-tile=\"8\"]",
+            "[data-tile=\"9\"]",
+            "#splice-go"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-tile=\"10\"]",
+            "[data-tile=\"11\"]",
+            "#splice-go"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-sprout",
+      "puzzleId": "sprout-18",
+      "answers": [
+        "arc",
+        "acre",
+        "caper",
+        "parcel",
+        "caliper",
+        "particle"
+      ],
+      "actions": [
+        {
+          "fill": {
+            "selector": "#sprout-entry",
+            "value": "acre"
+          },
+          "submit": "#sprout-form"
+        },
+        {
+          "fill": {
+            "selector": "#sprout-entry",
+            "value": "caper"
+          },
+          "submit": "#sprout-form"
+        },
+        {
+          "fill": {
+            "selector": "#sprout-entry",
+            "value": "parcel"
+          },
+          "submit": "#sprout-form"
+        },
+        {
+          "fill": {
+            "selector": "#sprout-entry",
+            "value": "caliper"
+          },
+          "submit": "#sprout-form"
+        },
+        {
+          "fill": {
+            "selector": "#sprout-entry",
+            "value": "particle"
+          },
+          "submit": "#sprout-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-tangle",
+      "puzzleId": "tangle-072",
+      "answers": {
+        "words": [
+          "doctor",
+          "needle",
+          "divine"
+        ],
+        "beads": [
+          [
+            0,
+            1,
+            7,
+            9,
+            12,
+            16
+          ],
+          [
+            4,
+            6,
+            8,
+            13,
+            15,
+            17
+          ],
+          [
+            2,
+            3,
+            5,
+            10,
+            11,
+            14
+          ]
+        ]
+      },
+      "actions": [
+        {
+          "clicks": [
+            "[data-bead=\"0\"]",
+            "[data-bead=\"1\"]",
+            "[data-bead=\"7\"]",
+            "[data-bead=\"9\"]",
+            "[data-bead=\"12\"]",
+            "[data-bead=\"16\"]",
+            "#tangle-pull"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-bead=\"4\"]",
+            "[data-bead=\"6\"]",
+            "[data-bead=\"8\"]",
+            "[data-bead=\"13\"]",
+            "[data-bead=\"15\"]",
+            "[data-bead=\"17\"]",
+            "#tangle-pull"
+          ]
+        },
+        {
+          "clicks": [
+            "[data-bead=\"2\"]",
+            "[data-bead=\"3\"]",
+            "[data-bead=\"5\"]",
+            "[data-bead=\"10\"]",
+            "[data-bead=\"11\"]",
+            "[data-bead=\"14\"]",
+            "#tangle-pull"
+          ]
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-keystone",
+      "puzzleId": "keystone-064",
+      "answers": [
+        "light",
+        "rest",
+        "key"
+      ],
+      "actions": [
+        {
+          "fill": {
+            "selector": "#keystone-input",
+            "value": "light"
+          },
+          "submit": "#keystone-form"
+        },
+        {
+          "clicks": [
+            "#keystone-next"
+          ]
+        },
+        {
+          "fill": {
+            "selector": "#keystone-input",
+            "value": "rest"
+          },
+          "submit": "#keystone-form"
+        },
+        {
+          "clicks": [
+            "#keystone-next"
+          ]
+        },
+        {
+          "fill": {
+            "selector": "#keystone-input",
+            "value": "key"
+          },
+          "submit": "#keystone-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    },
+    {
+      "id": "claude-tumbler",
+      "puzzleId": "tumbler-0390",
+      "answers": "bread",
+      "actions": [
+        {
+          "fill": {
+            "selector": "#tumbler-input",
+            "value": "br"
+          }
+        },
+        {
+          "fill": {
+            "selector": "#tumbler-input",
+            "value": "bread"
+          },
+          "submit": "#tumbler-form"
+        }
+      ],
+      "restoreAfterAction": 0,
+      "terminal": {
+        "selector": "#result",
+        "heading": "That’s the one.",
+        "share": "#game-share",
+        "stats": "1 daily played · 1 solved"
+      }
+    }
+  ]
+}

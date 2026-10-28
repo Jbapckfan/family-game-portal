@@ -31,11 +31,16 @@ export function mountDailyGame(config) {
   const dateFormat=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',month:'short',day:'numeric'});
   function announce(message){$('game-message').textContent=message||'';}
   function emit(){const payload=session.progress(),json=JSON.stringify(payload);if(json!==lastPayload){lastPayload=json;sendNative(payload);}}
-  function render(message, preserveFocus=false) {
+  function render(message, preserveFocus=true, preserveDrafts=false) {
     session.refreshSavedResult();
     const state=session.state,puzzle=session.puzzle,status=session.outcome,finished=status!=='playing';
     const focused=preserveFocus&&board.contains(doc.activeElement)?doc.activeElement:null;
     const focusId=focused?.id;
+    const focusData=focused?Object.entries(focused.dataset):[];
+    const focusText=focused?.textContent;
+    // Inputs with a value attribute are owned by their engine. Only keep
+    // unsubmitted DOM drafts for a hint, never after submission or mode changes.
+    const drafts=preserveDrafts?[...board.querySelectorAll('input:not([value])')].filter(el=>el.id&&el.type==='text').map(el=>({id:el.id,value:el.value,start:el.selectionStart,end:el.selectionEnd})):[];
     const selection=focused&&['INPUT','TEXTAREA'].includes(focused.tagName)&&Number.isInteger(focused.selectionStart)?[focused.selectionStart,focused.selectionEnd]:null;
     $('game-edition').textContent=dateFormat.format(new Date(`${session.dateKey}T12:00:00Z`));
     $('game-mode').textContent=session.mode==='daily'?'Daily puzzle':'Practice';
@@ -46,13 +51,14 @@ export function mountDailyGame(config) {
       const changed=session.commit(next);render(note||(!changed&&session.outcome==='playing'?'The puzzle changed. Try that move again.':''));return changed;
     }});
     board.dataset.gameReady='true';
+    for(const draft of drafts){const input=$(draft.id);if(input&&board.contains(input)){input.value=draft.value;try{input.setSelectionRange(draft.start,draft.end);}catch{}input.dispatchEvent(new win.Event('input',{bubbles:true}));}}
     if(finished)board.querySelectorAll('button,input,textarea,select').forEach(el=>{el.disabled=true;});
-    if(focusId&&!finished){
-      const replacement=$(focusId);
+    if(focused&&!finished){
+      const replacement=focusId?$(focusId):[...board.querySelectorAll('button,input,textarea,select')].find(el=>el.tagName===focused.tagName&&(focusData.length?focusData.every(([key,value])=>el.dataset[key]===value):el.textContent===focusText));
       if(replacement&&board.contains(replacement)&&!replacement.disabled){
         replacement.focus({preventScroll:true});
         if(selection)try{replacement.setSelectionRange(...selection);}catch{}
-      }
+      }else{board.tabIndex=-1;board.focus({preventScroll:true});}
     }
     $('game-hint').hidden=typeof config.hint!=='function';$('game-hint').disabled=finished;
     $('game-reveal').hidden=typeof config.reveal!=='function';$('game-reveal').disabled=finished;
@@ -61,6 +67,7 @@ export function mountDailyGame(config) {
       $('result-heading').textContent=status==='won'?'That’s the one.':status==='lost'?'A good challenge.':'A new way to see it.';
       $('result-summary').textContent=config.summarize?.(puzzle,state)||(status==='won'?'Puzzle solved.':status==='lost'?'This round is complete.':'Solution revealed.');
       $('result-next').textContent=session.mode==='daily'?'Your daily result is saved. Another puzzle is ready in Practice.':'Try another practice puzzle, or return to Today.';
+      if(lastOutcome==='playing'){$('result').tabIndex=-1;$('result').focus({preventScroll:true});}
     }
     if(status==='won'&&lastOutcome==='playing')sendNative({type:'haptic',kind:'win'});
     lastOutcome=status;
@@ -72,7 +79,7 @@ export function mountDailyGame(config) {
   }
   $('daily-mode').addEventListener('click',()=>{session.daily();lastOutcome=session.outcome;render('Today’s puzzle.');});
   $('practice-mode').addEventListener('click',()=>{const result=session.practice();lastOutcome=session.outcome;render(result==='resumed'?'Practice resumed. Your daily result is unchanged.':'A new practice puzzle. Your daily result is unchanged.');});
-  $('game-hint').addEventListener('click',()=>{const changed=session.hint();render(changed?'A little help. Follow the clue.':'No further hint is available for this position.');});
+  $('game-hint').addEventListener('click',()=>{const changed=session.hint();render(changed?'A little help. Follow the clue.':'No further hint is available for this position.',true,true);});
   $('game-reveal').addEventListener('click',()=>{dialogPause=true;$('reveal-dialog').showModal();});
   $('cancel-reveal').addEventListener('click',()=>$('reveal-dialog').close());
   $('confirm-reveal').addEventListener('click',()=>{$('reveal-dialog').close();session.reveal();render('Solution revealed.');});

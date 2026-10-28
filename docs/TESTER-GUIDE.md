@@ -1,5 +1,7 @@
 # Alford Daily — friends beta guide
 
+Updated October 28, 2026. This is a prepared local candidate, not a live invitation. James must confirm the exact tested link before sharing. The previous NAS addresses below are historical and were unreachable in this pass; use [the current private-sharing plan](PRIVATE-PLAYTEST-2026-10-28.md).
+
 The collection has 32 games. You do not need to play all 32 every day. Start with Ringcount or Switchpath, then try one word game and one game you would not normally choose. Choose three favorites to revisit during the month.
 
 ## Opening the games
@@ -22,6 +24,8 @@ Two games are called Tangle: **Tangle by Kimi** is a letter-grid word hunt, and 
 
 ## A useful report takes one minute
 
+On the website, use **Leave a playtest note** near Today’s Three. Choose the game and your reaction, add a short note without answers or personal details, then **Prepare note**. Review the game/date/result/edition, add your device and whether you played Daily or Practice, and copy it into your existing conversation with James. It is not sent automatically. Your unsent draft disappears when you leave. App testers can use the template below; app and browser histories remain separate.
+
 Copy this template to your usual conversation with James. Do not post puzzle answers where other testers will see spoilers.
 
 ```text
@@ -40,6 +44,14 @@ Screenshot, if helpful (hide unrelated personal information):
 For a rejected word, include the word and the displayed rack/clues. For an unclear instruction, quote the confusing sentence. For a layout issue, say whether the keyboard was open and whether any control was hidden or too small to tap. For a blank page, include the full game address and whether the collection still opens.
 
 ## The 30-day test
+
+For the current candidate, the actual schedules were checked for October 28 through November 26, 2026: all 32 games have 30 different daily puzzle IDs. This is scheduling evidence, not a human review of every clue.
+
+## Taking the website offline
+
+In the standalone website, open **Take the games offline** and choose **Save games for offline play** while online. Wait for **Ready offline** before disconnecting. If the download fails, stay online and retry; the app does not erase your progress. Use the same address/browser to reopen the games. An update downloads separately and waits until all collection tabs close. A browser may clear downloads to free space; saves and downloads are separate browser data. A home-network HTTP NAS address usually cannot install a service worker, so use the confirmed HTTPS route (or localhost for a local package).
+
+The iPhone app already includes all game resources and needs no website download. No cloud account or cross-device sync is provided. Downloaded private games remain on a device until its site data is cleared, even if that device later loses hosting access; use a trusted personal device.
 
 During the first week, focus on understanding the rules and finding favorites. In weeks two and three, tell James what makes you return, which clues feel unfair, and whether hints help. In the final week, describe the three games you would keep and the one improvement that would matter most.
 

@@ -3,7 +3,7 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 const pw=await import(process.env.DAILY_PLAYWRIGHT_MODULE?pathToFileURL(process.env.DAILY_PLAYWRIGHT_MODULE).href:'playwright');
-const root=path.resolve(import.meta.dirname,'..'),out=path.join(root,'output/launch-quality');await mkdir(out,{recursive:true});
+const root=path.resolve(import.meta.dirname,'..'),out=process.env.DAILY_LAUNCH_OUTPUT||path.join(root,'output/launch-quality');await mkdir(out,{recursive:true});
 const rows=[];
 for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')){
  const browser=await pw[engine].launch(engine==='chromium'?{channel:'chrome'}:{});

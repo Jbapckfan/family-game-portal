@@ -1,4 +1,5 @@
 import {GAMES, LAUNCH_GAMES, CREATORS, gameURL, featuredGames, todayThree, buildDailyShare} from './catalog.mjs';
+import {startPlaytest} from './playtest.mjs';
 
 const escape = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
 const dateParts = new Intl.DateTimeFormat('en-US', {timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit'});
@@ -75,6 +76,7 @@ export function startHome(doc = document, win = window) {
   const $ = id => doc.getElementById(id);
   const base = doc.documentElement.dataset.gameBase || './games/';
   const urls = new Map(GAMES.map(game => [game.slug, gameURL(game.slug, base, doc.baseURI)]));
+  doc.querySelectorAll('[data-first-game]').forEach(link=>{link.href=urls.get(link.dataset.firstGame);});
   for (const group of ['flagship', 'word', 'logic', 'classic']) {
     $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
   }
@@ -113,6 +115,7 @@ export function startHome(doc = document, win = window) {
   let shownDate;
   let shareSnapshot = null;
   let shareGeneration = 0;
+  startPlaytest(doc,win,()=>({date:dateKey(),results:shareSnapshot?.date===dateKey()?shareSnapshot.results:[]}));
   async function refresh() {
     const current = ++sequence;
     const now = new Date();

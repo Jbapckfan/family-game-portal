@@ -339,7 +339,7 @@ export function createShell(config) {
     window.addEventListener('storage', storageChanged);
     setInterval(updateNewDay, 30000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNewDay(); });
-    const onPortal = location.pathname === '/games/' + slug || location.pathname === '/games/' + slug + '/' || location.pathname === '/games/' + slug + '/index.html';
+    const onPortal = new RegExp('/games/' + slug + '(?:/(?:index\\.html)?)?$').test(location.pathname);
     $('family-link').href = onPortal ? (document.documentElement?.dataset?.collectionHome || '../../') : 'https://alford-daily.jbapckfan.chatgpt.site';
     if (config.sibling) {
       $('sibling-link').href = onPortal ? '../' + config.sibling.slug + '/' : config.sibling.url;

@@ -43,3 +43,11 @@ dialog{width:min(560px,calc(100% - 32px));max-height:85dvh;padding:28px;border:1
   .three-grid .card-bottom{grid-column:2;grid-row:2;border:0;padding:0;align-self:center}
   .three-grid .card-action{min-height:44px}.three-grid .card-copy h3{font-size:26px;margin:0}
 }
+/* Private playtest tools follow the collection's existing paper and ink system. */
+.first-visit{margin:0 0 24px;border-block:1px solid var(--line)}
+.first-visit summary,.playtest-tools summary{min-height:48px;padding:13px 0;cursor:pointer;font-weight:600}
+.welcome-content{max-width:70ch;padding-bottom:12px}.welcome-content li{margin-block:7px}.welcome-content a{color:var(--olive);text-underline-offset:3px}
+.playtest-tools{border-top:1px solid var(--line);padding-block:32px;margin-top:32px}.playtest-tools>p{max-width:70ch;color:var(--muted)}
+.playtest-tools details{border-bottom:1px solid var(--line);padding-bottom:10px}.playtest-tools p,.playtest-tools label{font-size:14px}.playtest-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding-block:12px}.playtest-form label{display:grid;gap:6px;font-weight:600}.playtest-form .wide{grid-column:1/-1}
+.playtest-tools select,.playtest-tools textarea{display:block;width:100%;max-width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit;background:var(--white);color:var(--ink)}.playtest-tools textarea{resize:vertical;margin-block:7px 12px}.playtest-tools button{min-height:44px;border:1px solid var(--olive);border-radius:8px;padding:10px 16px;background:var(--olive);color:var(--white);font-weight:600;justify-self:start}.playtest-tools button:disabled{opacity:.6;cursor:wait}.playtest-tools select:focus-visible,.playtest-tools textarea:focus-visible,.playtest-tools summary:focus-visible,.first-visit summary:focus-visible{outline:3px solid var(--olive);outline-offset:3px}
+@media(max-width:600px){.playtest-form{grid-template-columns:1fr}.playtest-tools .section-heading{align-items:start;gap:10px;flex-direction:column}.playtest-tools textarea{font-size:16px}.playtest-tools select{font-size:16px}}

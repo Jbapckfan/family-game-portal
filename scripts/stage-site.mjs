@@ -4,6 +4,7 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const destination = process.argv[2];
@@ -60,7 +61,7 @@ for (const name of await walk(bundle)) {
 }
 const daily = path.join(root,'games/daily');
 if ((await lstat(daily)).isSymbolicLink()) throw new Error('The collection directory cannot be a symbolic link.');
-const dailyFiles = ['index.html','app.mjs','catalog.mjs','styles.css','identities.css','icon.svg','manifest.webmanifest',...(await walk(path.join(daily,'fonts'))).map(name=>`fonts/${name}`)];
+const dailyFiles = ['index.html','app.mjs','catalog.mjs','playtest.mjs','styles.css','identities.css','icon.svg','manifest.webmanifest',...(await walk(path.join(daily,'fonts'))).map(name=>`fonts/${name}`)];
 for (const name of dailyFiles) {
   const source=path.join(daily,name),stat=await lstat(source);
   if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`Not a regular collection runtime file: ${name}`);
@@ -70,6 +71,15 @@ for (const name of dailyFiles) {
 }
 files.set('release.json',Buffer.from(JSON.stringify(inventory,null,2)+'\n'));
 files.set('404.html',Buffer.from('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found · Alford Daily</title><h1>Page not found</h1><p>This address does not contain a game. Open the collection link your host shared.</p></html>\n'));
+// Content identity is independent of Git paths, source secrets and the output directory.
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const assets=[...files].map(([url,bytes])=>({url,sha256:hash(bytes)})).sort((a,b)=>a.url.localeCompare(b.url));
+const workerSource=await readFile(path.join(daily,'offline-worker.js'),'utf8');
+const buildId=hash(JSON.stringify(assets)+workerSource).slice(0,16);
+const manifest={buildId,bytes:[...files.values()].reduce((sum,bytes)=>sum+bytes.length,0),assets};
+const manifestBytes=Buffer.from(JSON.stringify(manifest,null,2)+'\n');
+files.set('playtest-build.json',manifestBytes);
+files.set('offline-worker.js',Buffer.from(workerSource.replace('/* OFFLINE_MANIFEST */ null',JSON.stringify({...manifest,assets:[...assets,{url:'playtest-build.json',sha256:hash(manifestBytes)}]}))));
 // A fresh directory prevents leftover private files and nested output symlinks.
 // Callers can stage into a new versioned sibling and promote it after verification.
 try {

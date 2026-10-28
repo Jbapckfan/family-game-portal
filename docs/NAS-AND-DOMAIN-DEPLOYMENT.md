@@ -1,5 +1,7 @@
 # Publish Alford Daily on the NAS and the studio domain
 
+**Historical environment record.** For the October 28 candidate, start with [the current private-playtest plan](PRIVATE-PLAYTEST-2026-10-28.md). The two documented NAS routes conflict and were unreachable; do not run these old deployment commands without re-verifying the actual target. The existing Site remains owner-private and no deployment is authorized by the current task.
+
 Verified environment and deployment choices, October 22, 2026.
 
 ## Yes, the studio domain can host or link to the games

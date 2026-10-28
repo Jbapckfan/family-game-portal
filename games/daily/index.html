@@ -38,6 +38,10 @@
           <p>32 games. Your own pace.</p>
         </div>
       </section>
+      <details class="first-visit">
+        <summary>First visit? Find your first good puzzle.</summary>
+        <div class="welcome-content"><p>Start with <a href="../shortlist/" data-first-game="shortlist">Shortlist</a> for word deduction, or <a href="../ringcount/" data-first-game="ringcount">Ringcount</a> for number logic. Each game has its own How to play and optional hints. There is no need to finish all 32.</p><ol><li>Try one Daily. Leave and return whenever you like.</li><li>Use Practice for another round; your Daily result stays separate.</li><li>Return here and leave a playtest note about what felt good or confusing.</li></ol><p class="fineprint">Daily puzzles change at midnight Central. Use the same browser and website address to keep your saves. No account or automatic feedback collection.</p></div>
+      </details>
       <section class="daily-progress" aria-labelledby="progress-title">
         <div class="progress-caption">
           <h2 id="progress-title">Your day, in puzzles</h2>
@@ -49,7 +53,7 @@
       <section class="game-section ritual-section" aria-labelledby="three-title">
         <div class="section-heading"><div><p class="eyebrow">A little rhythm for your day</p><h2 id="three-title">Today’s Three</h2></div><p id="three-progress" role="status">Three small challenges. Your own pace.</p></div>
         <div id="todays-three" class="three-grid"></div>
-        <div class="ritual-actions"><button type="button" id="share-today" disabled>Share today’s result</button><a id="browse-all" href="#today">Browse all 32 games <span aria-hidden="true">↗</span></a></div>
+        <div class="ritual-actions"><button type="button" id="share-today" disabled>Share today’s result</button><a id="browse-all" href="#today">Browse all 32 games <span aria-hidden="true">↗</span></a><a href="#playtest-title">Leave a playtest note</a></div>
         <p class="share-status" id="share-status" role="status" aria-live="polite"></p>
         <div id="share-fallback" hidden><label for="share-text">Your spoiler-free result</label><textarea id="share-text" rows="6" readonly></textarea></div>
       </section>
@@ -93,6 +97,21 @@
       </section>
       </div>
       <noscript><p class="noscript-note">Turn on JavaScript to load the collection and play the games. Alford Daily saves progress on this device.</p></noscript>
+      <section class="playtest-tools" aria-labelledby="playtest-title">
+        <div class="section-heading"><div><p class="eyebrow">Help shape the collection</p><h2 id="playtest-title">A note for the next round.</h2></div><span id="playtest-build" class="fineprint">Private playtest tools</span></div>
+        <p>Found a favorite, a confusing rule, or something that broke? Prepare a short note for James. Nothing is sent automatically.</p>
+        <details><summary>Leave a playtest note</summary>
+          <form id="playtest-form" class="playtest-form">
+            <label>Game<select id="playtest-game" required></select></label>
+            <label>Your reaction<select id="playtest-feeling"><option value="again">I would play again</option><option value="favorite">A favorite</option><option value="confusing">Something was confusing</option><option value="problem">Something broke</option></select></label>
+            <label class="wide">What stood out? <span class="fineprint">Optional · 600 characters · leave out answers and personal details</span><textarea id="playtest-note" rows="3" maxlength="600" placeholder="What did you expect? What happened?"></textarea></label>
+            <button type="submit">Prepare note</button>
+          </form>
+          <div id="playtest-report" hidden><label for="playtest-text">Review your note before sharing</label><textarea id="playtest-text" rows="11" readonly></textarea><button type="button" id="copy-playtest">Copy note</button></div>
+          <p id="playtest-status" role="status" aria-live="polite"></p>
+        </details>
+        <details class="offline-tools"><summary>Take the games offline</summary><p id="offline-status" role="status" aria-live="polite">Checking offline availability…</p><button id="save-offline" type="button" disabled>Save games for offline play</button><p class="fineprint">Download on a trusted personal device. Shared devices keep the downloaded game content until site data is cleared. Your unsent note is not saved when you leave this page.</p></details>
+      </section>
     </main>
     <footer class="footer">
       <p><span class="footer-brand">Alford Daily</span><span class="footer-divider" aria-hidden="true">/</span>A little play goes a long way.</p>

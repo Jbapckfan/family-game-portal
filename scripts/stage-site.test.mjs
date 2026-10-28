@@ -32,6 +32,14 @@ test('public staging includes all 32 games, excludes unrelated portal files, and
     const originalFiles = await readdir(join(output,'games/ringcount'));
     assert.ok(!originalFiles.includes('scripts') && !originalFiles.includes('tests') && !originalFiles.includes('package.json'));
     assert.match(await readFile(join(output,'index.html'),'utf8'), /data-game-base="\.\/games\/"/);
+    const manifest=JSON.parse(await readFile(join(output,'playtest-build.json'),'utf8'));
+    assert.match(manifest.buildId,/^[a-f0-9]{16}$/);
+    assert.ok(manifest.bytes>0);
+    assert.ok(manifest.assets.some(asset=>asset.url==='playtest.mjs'));
+    for(const game of inventory.games)assert.ok(manifest.assets.some(asset=>asset.url===`games/${game.slug}/index.html`));
+    assert.ok(manifest.assets.every(asset=>/^[a-f0-9]{64}$/.test(asset.sha256)));
+    assert.ok(!manifest.assets.some(asset=>asset.url.includes('private-portal-fixture')));
+    assert.match(await readFile(join(output,'offline-worker.js'),'utf8'),/alford-offline:/);
     for (const game of inventory.games) assert.match(await readFile(join(output,'games',game.slug,'index.html'),'utf8'), /<!doctype html>/i);
     assert.deepEqual(JSON.parse(await readFile(join(output,'release.json'),'utf8')), inventory);
     await writeFile(join(output,'private-leftover.txt'),'must not become a published file');

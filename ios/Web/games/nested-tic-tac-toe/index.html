@@ -36,6 +36,10 @@
           <span id="turn-mark" class="turn-mark mark-x" aria-hidden="true">×</span>
           <div><h2 id="turn-title">Your turn</h2><p id="turn-instruction">Choose any board, then a small square.</p></div>
         </div>
+        <div id="recent-move" class="recent-move" hidden>
+          <p id="last-move" role="status" aria-live="polite" aria-atomic="true"></p>
+          <div class="recent-move-actions"><button id="inspect-last-move" class="secondary-button">Inspect last move</button><button id="return-to-play" class="secondary-button" hidden>Back to your move</button></div>
+        </div>
         <p id="storage-warning" class="storage-warning" role="status" hidden></p>
         <button id="reload-match-button" class="secondary-button" hidden>Reload saved match <span aria-hidden="true">↻</span></button>
         <div class="boards-layout">
@@ -44,7 +48,7 @@
             <div id="macro-board" class="macro-board" role="group" aria-label="Nine mini boards. Select a board to inspect or play."></div>
             <p id="board-choice-note" class="board-choice-note">9 open boards · select one below</p>
           </section>
-          <section id="detail-panel" class="detail-panel" aria-labelledby="selected-board-title">
+          <section id="detail-panel" class="detail-panel" tabindex="-1" aria-labelledby="selected-board-title">
             <p class="detail-kicker">A CLOSER LOOK <span aria-hidden="true">↘</span></p>
             <h3 id="selected-board-title">Center board</h3>
             <p id="selected-board-status" class="selected-board-status">Choose your square</p>

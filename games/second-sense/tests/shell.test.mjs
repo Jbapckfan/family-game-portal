@@ -263,3 +263,16 @@ test('a storage event adopts different unfinished progress over dirty memory',()
   stale.storageEvent(prefix+'daily:2026-10-20');
   assert.deepEqual(plain(stale.shell.game),plain(first.shell.game));
 });
+
+
+test('even a single failed pre-write read keeps that action in memory only',()=>{
+  const app=openShell();advance(app);
+  const key=prefix+'daily:2026-10-20',saved=app.saved.values.get(key);
+  const get=app.saved.getItem;let failNext=true;
+  app.saved.getItem=function(key){if(failNext){failNext=false;throw new Error('temporary read failure');}return get.call(this,key);};
+  advance(app);
+  assert.equal(app.saved.values.get(key),saved);
+  assert.notDeepEqual(plain(app.shell.game),JSON.parse(saved));
+  advance(app);
+  assert.deepEqual(JSON.parse(app.saved.values.get(key)),plain(app.shell.game));
+});

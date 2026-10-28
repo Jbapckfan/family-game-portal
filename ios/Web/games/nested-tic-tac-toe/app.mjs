@@ -228,6 +228,15 @@ function boot() {
     $('board-choice-note').textContent = conflicted ? 'Reload to see the current saved match' : playing && state.forcedBoard === null ? `${new Set(moves.map(move => move.board)).size} open boards · select one below` : playing ? 'The outlined board is the next destination' : 'The finished match';
     const claimedX = state.boards.filter(board => board === 'X').length;
     const claimedO = state.boards.filter(board => board === 'O').length;
+    const last = state.history.at(-1);
+    const lastPlayer = last ? state.cells[last.board][last.cell] : null;
+    $('recent-move').hidden = !last;
+    const recentText = last ? `${lastPlayer === 'X' ? 'You' : 'AI'} played ${symbol(lastPlayer)} in the ${POSITIONS[last.board].toLowerCase()} board, ${POSITIONS[last.cell].toLowerCase()} square.` : '';
+    if ($('last-move').textContent !== recentText) $('last-move').textContent = recentText;
+    $('inspect-last-move').disabled = conflicted;
+    if (last) $('inspect-last-move').setAttribute('aria-label',`Inspect the last move in the ${POSITIONS[last.board].toLowerCase()} board`);
+    $('return-to-play').hidden = !human || openBoards.has(selectedBoard);
+    if (human && !openBoards.has(selectedBoard)) $('return-to-play').setAttribute('aria-label',state.forcedBoard === null ? 'Return to an open board to make your move' : `Return to the ${POSITIONS[state.forcedBoard].toLowerCase()} board to make your move`);
     $('claim-x').textContent = `${claimedX}`;
     $('claim-o').textContent = `${claimedO}`;
     for (let board = 0; board < 9; board++) {
@@ -235,15 +244,15 @@ function boot() {
       const result = state.boards[board];
       const available = openBoards.has(board);
       const status = result === 'draw' ? 'Drawn' : result === 'X' ? 'You claimed' : result === 'O' ? 'AI claimed' : conflicted ? 'Paused' : state.forcedBoard === board && playing ? (human ? 'Play here' : 'AI here') : available && playing ? 'Open' : 'Waiting';
-      button.className = `mini-board${available ? ' available' : ''}${selectedBoard === board ? ' selected' : ''}${state.forcedBoard === board && playing ? ' forced' : ''}${result ? ` closed result-${result.toLowerCase()}` : ''}`;
+      button.className = `mini-board${available ? ' available' : ''}${selectedBoard === board ? ' selected' : ''}${state.forcedBoard === board && playing ? ' forced' : ''}${result ? ` closed result-${result.toLowerCase()}` : ''}${last?.board === board ? ' has-last-move' : ''}`;
       button.setAttribute('aria-pressed',String(board === selectedBoard));
-      button.setAttribute('aria-label',`${POSITIONS[board]} board. ${status}. ${selectedBoard === board ? 'Selected.' : 'Select to inspect.'}`);
+      button.setAttribute('aria-label',`${POSITIONS[board]} board. ${status}. ${selectedBoard === board ? 'Selected.' : 'Select to inspect.'}${last?.board === board ? ` Last move: ${lastPlayer === 'X' ? 'you' : 'AI'} played the ${POSITIONS[last.cell].toLowerCase()} square.` : ''}`);
       button.querySelector('.board-state').textContent = status;
       for (let cell = 0; cell < 9; cell++) {
         const mark = button.querySelectorAll('.mini-mark')[cell];
         const value = state.cells[board][cell];
         mark.textContent = symbol(value);
-        mark.className = `mini-mark${value ? ` mark-${value.toLowerCase()}` : ''}`;
+        mark.className = `mini-mark${value ? ` mark-${value.toLowerCase()}` : ''}${last?.board === board && last.cell === cell ? ' last-move' : ''}`;
       }
       const overlay = button.querySelector('.board-overlay');
       overlay.hidden = !result;
@@ -256,7 +265,6 @@ function boot() {
     $('selected-board-status').textContent = conflicted ? 'Paused · reload to continue' : selectedResult === 'draw' ? 'Drawn · closed' : selectedResult ? `${selectedResult === 'X' ? 'You' : 'AI'} claimed this board` : !playing ? 'Match finished' : playable ? 'Choose your square' : human ? 'Inspecting · play in the outlined board' : 'AI turn · please wait';
     $('detail-panel').classList.toggle('can-play', playable);
     $('detail-panel').classList.toggle('is-closed', Boolean(selectedResult));
-    const last = state.history.at(-1);
     for (let cell = 0; cell < 9; cell++) {
       const button = cellButtons[cell];
       const value = state.cells[selectedBoard][cell];
@@ -273,19 +281,19 @@ function boot() {
     $('puzzle').dataset.gameReady = 'true';
   }
 
+  function inspectBoard(board) {
+    selectedBoard = board;
+    render(controller.view);
+    $('detail-panel').scrollIntoView({block:'nearest',behavior:'auto'});
+    const playable = cellButtons.find(cell => !cell.disabled);
+    (playable || $('detail-panel')).focus({preventScroll:true});
+  }
   for (let board = 0; board < 9; board++) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'mini-board';
     button.innerHTML = `<span class="board-state"></span><span class="mini-grid" aria-hidden="true">${'<span class="mini-mark"></span>'.repeat(9)}</span><span class="board-overlay" aria-hidden="true" hidden><b></b><span></span></span><span class="board-name">${POSITIONS[board]}</span>`;
-    button.addEventListener('click',() => {
-      selectedBoard = board;
-      render(controller.view);
-      $('detail-panel').scrollIntoView({block:'nearest',behavior:'auto'});
-      if (controller.view.state.turn === 'X' && controller.view.state.boards[board] === null && (controller.view.state.forcedBoard === null || controller.view.state.forcedBoard === board)) {
-        cellButtons.find(cell => !cell.disabled)?.focus({preventScroll:true});
-      }
-    });
+    button.addEventListener('click',() => inspectBoard(board));
     boardButtons.push(button);
     $('macro-board').append(button);
   }
@@ -314,6 +322,15 @@ function boot() {
     $('detail-board').append(button);
   }
   const controller = createMatchController({changed:render});
+  $('inspect-last-move').addEventListener('click',() => {
+    const last = controller.view.state.history.at(-1);
+    if (last) inspectBoard(last.board);
+  });
+  $('return-to-play').addEventListener('click',() => {
+    const state = controller.view.state;
+    const move = legalMoves(state)[0];
+    if (state.turn === 'X' && move) inspectBoard(move.board);
+  });
   $('reload-match-button').addEventListener('click',() => window.location.reload());
   $('dismiss-guide').addEventListener('click',() => controller.dismissGuide());
   $('help-button').addEventListener('click',event => openDialog('help-dialog',event.currentTarget));

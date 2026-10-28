@@ -62,11 +62,12 @@ export function createShell(config) {
     if (value !== null) { memory.set(key, value); return value; }
     return memory.has(key) ? memory.get(key) : fallback;
   }
-  function write(key, value) {
+  function write(key, value, storageReadable = true) {
     memory.set(key, value);
     try {
       // A denied read is not evidence that this key is empty. Stay in memory
       // until storage can be checked, even when the browser still allows writes.
+      if (!storageReadable) throw new Error('Storage could not be verified for this action.');
       localStorage.getItem(prefix + key);
       const raw = JSON.stringify(value);
       localStorage.setItem(prefix + key, raw);
@@ -139,7 +140,7 @@ export function createShell(config) {
       mergeRecords();
     }
     game = nextState;
-    write(key, game);
+    write(key, game, raw !== undefined);
     if (mode === 'daily') recordTerminal(daily.dateKey, game);
     return adopted;
   }

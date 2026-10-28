@@ -10,3 +10,8 @@
 
 /* The native navigation already carries the developer credit. */
 .native-app .native-credit{display:none}
+
+.recent-move{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:0 0 16px;background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:7px}.recent-move p{margin:0;font-size:12px;line-height:1.6;min-width:0}.recent-move-actions{display:flex;flex-wrap:wrap;gap:8px;flex:none}.recent-move-actions button{font-size:11px;padding:8px 12px;min-height:44px}.mini-mark.last-move{outline:2px solid currentColor;outline-offset:-3px;border-radius:4px;background:var(--cream)}.mini-board.has-last-move .board-name{font-weight:800}.mini-board.has-last-move .board-name::before{content:'● ';font-size:6px;vertical-align:middle}
+@media(max-width:700px){.recent-move{align-items:flex-start;flex-direction:column;padding:11px 12px}.recent-move-actions{flex:none;width:100%}.recent-move-actions button{flex:1;white-space:normal}}
+@media(forced-colors:active){.mini-mark.last-move{outline-color:Highlight}.recent-move{border-left-color:Highlight}}
+.mini-grid{grid-template-rows:repeat(3,minmax(0,1fr))}

@@ -8,7 +8,8 @@ mountDailyGame({
     'Find a nine-letter word by joining neighboring tiles. Horizontal, vertical, and diagonal steps all count.',
     'Use each tile at most once. The meaning clue points to a longest word hidden in the board.',
     'Tap an earlier tile to shorten your trail back to that point. Undo removes the last tile; Clear starts a fresh path.',
-    'Check your trail when it uses all nine tiles. A hint keeps the correct opening of one solution and adds its next step.'
+    'Check your trail when it uses all nine tiles. A hint keeps the correct opening of one solution and adds its next step.',
+    'On a keyboard, use the arrow keys to move between tiles, then Space or Enter to select one. Backspace undoes a step and Escape clears the trail.'
   ],
   puzzles: PUZZLES, createState: E.createState, restoreState: E.restoreState,
   getStatus: E.getStatus, hint: E.hint, reveal: E.reveal, summarize: E.summarize,
@@ -19,7 +20,7 @@ mountDailyGame({
     root.innerHTML = `<section class="panel trail-panel">
       <p class="clue">${esc(p.clue)}</p>
       <div class="trail-word" aria-label="Your current trail" aria-live="polite">${word ? esc(word) : '<span class="muted">Choose your first letter</span>'}</div>
-      <p class="muted trail-count">${s.path.length} of ${p.answer.length} letters</p>
+      <p class="muted trail-count">${s.path.length} of ${p.answer.length} letters · arrows move focus; Space selects</p>
       <div class="trail-board">
         <svg class="trail-lines" viewBox="0 0 300 300" aria-hidden="true"><polyline points="${points}"/></svg>
         <div class="trail-grid" role="group" aria-label="Trail letter grid">
@@ -36,5 +37,14 @@ mountDailyGame({
     root.querySelector('[data-action="undo"]').onclick = () => commit(E.undo(p, s), 'Last step removed.');
     root.querySelector('[data-action="clear"]').onclick = () => commit(E.clear(p, s), 'A fresh trail.');
     root.querySelector('[data-action="check"]').onclick = () => { const result=E.submit(p,s);if(result.state===s)announce(result.message);else commit(result.state,result.message); };
+    root.onkeydown = event => {
+      if(finished||event.ctrlKey||event.metaKey||event.altKey)return;
+      const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];
+      if(delta&&event.target.hasAttribute('data-index')){
+        event.preventDefault();const i=Number(event.target.dataset.index),row=Math.floor(i/3)+delta[0],col=i%3+delta[1];
+        if(row>=0&&row<3&&col>=0&&col<3)root.querySelector(`[data-index="${row*3+col}"]`)?.focus({preventScroll:true});
+      }else if(event.key==='Backspace'){event.preventDefault();if(s.path.length)commit(E.undo(p,s),'Last step removed.');}
+      else if(event.key==='Escape'){event.preventDefault();if(s.path.length)commit(E.clear(p,s),'A fresh trail.');}
+    };
   }
 });

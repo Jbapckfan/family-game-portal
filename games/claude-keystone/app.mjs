@@ -28,7 +28,11 @@ mountDailyGame({
   </section>`;
   function act(fn,...args){const result=fn(p,s,...args),next=result?.state||result;if(!next||next===s)announce(result?.message||'');else commit(next,result?.message);}
   if(active){
-   root.querySelector('#keystone-input').oninput=event=>commit(E.setDraft(p,s,event.target.value));
+   root.querySelector('#keystone-input').oninput=event=>{
+    const source=event.target,raw=source.value,sanitize=value=>value.toLowerCase().replace(/[^a-z]/g,'');
+    const start=sanitize(raw.slice(0,source.selectionStart??raw.length)).length,end=sanitize(raw.slice(0,source.selectionEnd??raw.length)).length,direction=source.selectionDirection||'none';
+    commit(E.setDraft(p,s,raw));const input=root.querySelector('#keystone-input');input?.focus({preventScroll:true});input?.setSelectionRange(Math.min(start,input.value.length),Math.min(end,input.value.length),direction);
+   };
    root.querySelector('#keystone-form').onsubmit=event=>{event.preventDefault();act(E.submit);};
    for(const b of root.querySelectorAll('[data-key]'))b.onclick=()=>b.dataset.key==='ENTER'?act(E.submit):b.dataset.key==='BACK'?act(E.backspace):act(E.typeKey,b.dataset.key);
   }

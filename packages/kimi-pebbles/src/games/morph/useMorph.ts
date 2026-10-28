@@ -108,7 +108,7 @@ export function useMorph() {
       dayNumber: day,
       stats,
       rows,
-      edit: rows[rows.length - 1].split(''),
+      edit: saved?.edit ?? rows[rows.length - 1].split(''),
       misses: saved?.misses ?? 0,
       hintsUsed: saved?.hintsUsed ?? 0,
       finished: false,
@@ -137,13 +137,14 @@ export function useMorph() {
     const saved = loadDayProgress<MorphProgress>('morph', s.dayNumber)
     saveDayProgress('morph', s.dayNumber, {
       rows: s.rows,
+      edit: s.edit,
       misses: s.misses,
       hintsUsed: s.hintsUsed,
       finished: s.finished,
       gaveUp: s.gaveUp,
       countedPlayed: saved?.countedPlayed === true,
     } satisfies MorphProgress)
-  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.rows, s.misses, s.hintsUsed, s.finished, s.gaveUp])
+  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.rows, s.edit, s.misses, s.hintsUsed, s.finished, s.gaveUp])
 
   /* rollover at midnight */
   useEffect(() => {
@@ -172,6 +173,7 @@ export function useMorph() {
     if (saved?.countedPlayed === true) return prev.stats
     saveDayProgress('morph', prev.dayNumber, {
       rows: prev.rows,
+      edit: prev.edit,
       misses: prev.misses,
       hintsUsed: prev.hintsUsed,
       finished: prev.finished,

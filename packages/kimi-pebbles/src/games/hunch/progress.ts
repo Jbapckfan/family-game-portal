@@ -2,6 +2,7 @@ import type { Eval } from './engine'
 
 export interface HunchProgress {
   guesses: string[]
+  current?: string
   evals: Eval[][]
   hintLetters: string[]
   hintsUsed: number
@@ -19,5 +20,7 @@ export function restoreHunchProgress(raw: unknown, answer: string, evaluate: (gu
   const answerAt = p.guesses.indexOf(answer)
   if (answerAt !== -1 && answerAt !== p.guesses.length - 1) return null
   const won = answerAt !== -1
-  return { guesses: [...p.guesses], evals: p.guesses.map(guess => evaluate(guess, answer)), hintLetters: [...p.hintLetters], hintsUsed: p.hintsUsed, finished: won || p.guesses.length === 6, won, countedPlayed: p.countedPlayed }
+  const finished = won || p.guesses.length === 6
+  const current = !finished && typeof p.current === 'string' && /^[a-z]{0,5}$/.test(p.current) ? p.current : ''
+  return { guesses: [...p.guesses], current, evals: p.guesses.map(guess => evaluate(guess, answer)), hintLetters: [...p.hintLetters], hintsUsed: p.hintsUsed, finished, won, countedPlayed: p.countedPlayed }
 }

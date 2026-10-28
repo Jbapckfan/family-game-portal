@@ -38,6 +38,7 @@ function Tile({
   onClick,
   ring,
   disabled,
+  position,
 }: {
   ch: string
   variant: keyof typeof VARIANT_CLASS
@@ -45,6 +46,7 @@ function Tile({
   ring?: boolean
   onClick?: () => void
   disabled?: boolean
+  position?: number
 }) {
   return (
     <button
@@ -59,6 +61,8 @@ function Tile({
         ring && 'ring-4 ring-ring ring-offset-2 ring-offset-background',
       )}
       aria-label={onClick ? `Edit letter ${ch}` : `Letter ${ch}`}
+      aria-description={position !== undefined ? `Position ${position + 1} of 4` : undefined}
+      aria-describedby={onClick ? 'morph-instructions' : undefined}
       tabIndex={onClick ? 0 : -1}
     >
       {ch}
@@ -106,6 +110,10 @@ export function MorphBoard({ state, actions }: Props) {
         <span>{misses > 0 ? `${misses} miss${misses === 1 ? '' : 'es'}` : '\u00A0'}</span>
       </div>
 
+      {!state.finished && <p id="morph-instructions" className="mt-3 max-w-sm text-center text-sm font-semibold text-muted-foreground">
+        Tap an editing letter to replace it, then lock in a word with exactly one letter changed.
+      </p>}
+
       {/* ladder */}
       <div className={cn('morph-ladder mt-4 flex flex-col items-center gap-1.5', shaking && 'anim-shake')} aria-live="polite">
         <div className="flex items-center gap-3">
@@ -147,6 +155,7 @@ export function MorphBoard({ state, actions }: Props) {
                   variant="active"
                   ring={focusCell === i}
                   onClick={() => actions.openCell(i)}
+                  position={i}
                   disabled={locked}
                 />
               ))}

@@ -2,6 +2,7 @@ import type { CircuitPuzzle } from './engine'
 
 export interface CircuitProgress {
   played: string[]
+  current?: number[]
   revealed: number
   hintsUsed: number
   finished: boolean
@@ -46,5 +47,9 @@ export function restoreCircuitProgress(value: unknown, puzzle: CircuitPuzzle): C
   })) return null
   const complete = coverage(played, puzzle.l) === (1 << 12) - 1
   if (saved.gaveUp && !saved.finished || saved.finished !== (saved.gaveUp || complete)) return null
-  return { played: [...played], revealed: saved.revealed, hintsUsed: saved.hintsUsed, finished: saved.finished, gaveUp: saved.gaveUp, countedPlayed: saved.countedPlayed }
+  const current = !saved.finished && Array.isArray(saved.current) &&
+    saved.current.every((index, pos, draft) => count(index, 11) &&
+      (pos === 0 ? played.length === 0 || puzzle.l[index] === played.at(-1)!.at(-1)
+        : Math.floor(draft[pos - 1] / 3) !== Math.floor(index / 3))) ? [...saved.current] as number[] : []
+  return { played: [...played], ...(saved.current !== undefined ? { current } : {}), revealed: saved.revealed, hintsUsed: saved.hintsUsed, finished: saved.finished, gaveUp: saved.gaveUp, countedPlayed: saved.countedPlayed }
 }

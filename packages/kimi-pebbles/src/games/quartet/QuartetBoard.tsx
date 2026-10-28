@@ -68,6 +68,13 @@ export function QuartetBoard({ state, actions }: Props) {
         </span>
       </div>
 
+      {!state.finished && <p id="quartet-selection" className="mt-3 text-center text-sm font-semibold text-muted-foreground" role="status">
+        Choose four words with a shared connection. {state.selected.length} of 4 selected.
+      </p>}
+      {state.hintPair && <p id="quartet-hint" className="mt-2 max-w-sm text-center text-sm font-bold text-muted-foreground">
+        Pair clue: <span className="text-foreground">{state.hintPair[0].toUpperCase()}</span> and <span className="text-foreground">{state.hintPair[1].toUpperCase()}</span> belong together.
+      </p>}
+
       {/* solved banners */}
       <div className="mt-3 flex w-full flex-col gap-1.5">
         {state.solvedGroups.map((gi) => (
@@ -91,7 +98,8 @@ export function QuartetBoard({ state, actions }: Props) {
                 data-tile={i}
                 data-long-word={t.word.length >= 10 || undefined}
                 aria-pressed={sel}
-                aria-label={`Word ${t.word}${sel ? ', selected' : ''}`}
+                aria-label={`Word ${t.word}${sel ? ', selected' : ''}${hinted ? ', hint pair' : ''}`}
+                aria-describedby={hinted ? 'quartet-hint' : 'quartet-selection'}
                 onClick={() => actions.toggleTile(i)}
                 className={cn(
                   'quartet-card tile3d h-16 w-full px-0.5 text-[13px] leading-tight font-extrabold break-words sm:text-[15px]',
@@ -100,6 +108,7 @@ export function QuartetBoard({ state, actions }: Props) {
                 )}
               >
                 {t.word.toUpperCase()}
+                {hinted && <span className="absolute bottom-1 text-[9px] font-bold leading-none" aria-hidden="true">PAIR</span>}
               </button>
             )
           })}

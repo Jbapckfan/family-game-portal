@@ -97,6 +97,10 @@ export function GameBoard({ state, actions }: Props) {
       <div className="cairn-level mt-3 font-display text-lg font-bold text-foreground/80">
         Level {level + 1} · {word.length} letters
       </div>
+      {!state.finished && <p id="cairn-instructions" className="mt-1 max-w-sm text-center text-sm font-semibold text-muted-foreground">
+        Tap the rack to use all {word.length} letters. Tap a placed letter to remove it.
+        <span className="block text-xs" role="status">{usedInSlots.length} of {word.length} placed</span>
+      </p>}
       {hints > 0 && !state.finished && <p className="mt-1 text-sm font-bold text-muted-foreground">Saved hint: one answer starts with {word.slice(0, hints).toUpperCase()}.</p>}
 
       {/* slots */}
@@ -106,7 +110,7 @@ export function GameBoard({ state, actions }: Props) {
       >
         {slots.map((rackIdx, pos) =>
           rackIdx === null ? (
-            <div key={pos} className="slot-empty" />
+            <div key={pos} className="slot-empty" role="img" aria-label={`Position ${pos + 1}: empty`} />
           ) : (
             <button
               key={pos}
@@ -114,7 +118,7 @@ export function GameBoard({ state, actions }: Props) {
               onClick={() => actions.tapSlot(pos)}
               disabled={locked}
               className={cn('tile3d anim-pop', solvedFlash ? 'tile-ok' : 'tile-slot')}
-              aria-label={`Remove letter ${rack[rackIdx]}`}
+              aria-label={`Remove letter ${rack[rackIdx]} from position ${pos + 1}`}
             >
               {rack[rackIdx]}
             </button>
@@ -136,7 +140,7 @@ export function GameBoard({ state, actions }: Props) {
       )}
 
       {/* rack */}
-      <div className="cairn-rack mt-6 flex flex-wrap items-center justify-center gap-1 sm:gap-2" aria-label="Letter rack">
+      <div className="cairn-rack mt-6 flex flex-wrap items-center justify-center gap-1 sm:gap-2" aria-label="Letter rack" aria-describedby={!state.finished ? 'cairn-instructions' : undefined}>
         {rack.map((ch, i) => {
           const used = usedInSlots.includes(i)
           const isNew = i === newLetterIdx

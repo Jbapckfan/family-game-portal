@@ -1,4 +1,5 @@
 import type { DayProgress } from './progress'
+import { readIntegrationValue, writeIntegrationValue } from '../shared/integration'
 export type { DayProgress } from './progress'
 
 export interface Stats {
@@ -26,20 +27,11 @@ const SEEN_KEY = 'kimi:cairn:v1:seen-help'
 const SOUND_KEY = 'kimi:cairn:v1:sound'
 
 function read<T>(key: string): T | null {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? (JSON.parse(raw) as T) : null
-  } catch {
-    return null
-  }
+  return readIntegrationValue(key) as T | null
 }
 
 function write(key: string, value: unknown) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    /* storage unavailable */
-  }
+  writeIntegrationValue(key, value)
 }
 
 export function loadStats(): Stats {

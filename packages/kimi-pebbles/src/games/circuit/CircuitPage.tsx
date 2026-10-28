@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useCircuit } from './useCircuit'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
+import { readIntegrationValue, writeIntegrationValue } from '../shared/integration'
 import { dateLabel } from '../shared/share'
 import { GameHeader } from '../shared/GameHeader'
 import { SimpleStatsModal } from '../shared/SimpleStatsModal'
@@ -22,9 +23,9 @@ export default function CircuitPage() {
   const backToDaily = () => { reset(); actions.exitPractice() }
 
   useEffect(() => {
-    if (state.phase === 'playing' && !localStorage.getItem(HELP_KEY)) {
+    if (state.phase === 'playing' && !readIntegrationValue(HELP_KEY)) {
       setHelpOpen(true)
-      localStorage.setItem(HELP_KEY, '1')
+      writeIntegrationValue(HELP_KEY, 1)
     }
   }, [state.phase])
 

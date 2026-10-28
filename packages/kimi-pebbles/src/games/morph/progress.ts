@@ -2,6 +2,7 @@ import type { MorphPuzzle } from './engine'
 
 export interface MorphProgress {
   rows: string[]
+  edit?: string[]
   misses: number
   hintsUsed: number
   finished: boolean
@@ -22,7 +23,10 @@ export function restoreMorphProgress(raw: unknown, puzzle: MorphPuzzle, validWor
   if (targetIndex !== -1 && targetIndex !== p.rows.length - 1) return null
   if (p.gaveUp && (!p.finished || targetIndex !== -1)) return null
   if (p.finished !== (p.gaveUp || targetIndex !== -1)) return null
-  return { rows: [...p.rows], misses: p.misses, hintsUsed: p.hintsUsed, finished: p.finished, gaveUp: p.gaveUp, countedPlayed: p.countedPlayed }
+  const edit = !p.finished && Array.isArray(p.edit) && p.edit.length === puzzle.s.length &&
+    p.edit.every(letter => typeof letter === 'string' && /^[a-z]$/.test(letter))
+    ? [...p.edit] : [...p.rows[p.rows.length - 1]]
+  return { rows: [...p.rows], edit, misses: p.misses, hintsUsed: p.hintsUsed, finished: p.finished, gaveUp: p.gaveUp, countedPlayed: p.countedPlayed }
 }
 
 /** Recovery keeps the same puzzle, mistakes, and previously consumed help. */

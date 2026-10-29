@@ -86,6 +86,7 @@ export default function MorphPage() {
           rows={state.rows}
           misses={state.misses}
           gaveUp={state.gaveUp}
+          hintsUsed={state.hintsUsed}
           onPractice={() => {
             setWinOpen(false)
             startPractice()

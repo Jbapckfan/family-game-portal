@@ -22,6 +22,17 @@ declare global {
 const formatter = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' })
 const memory = new Map<string, unknown>()
 const dirtyKeys = new Set<string>()
+let memoryPersistence = 0
+/** Keep a round playable when reading storage is forbidden, even if writes work. */
+export function withMemoryPersistence<T>(memoryOnly: boolean, write: () => T): T {
+  if (memoryOnly) memoryPersistence++
+  try { return write() } finally { if (memoryOnly) memoryPersistence-- }
+}
+/** An explicitly validated external snapshot supersedes this tab's fallback. */
+export function acceptIntegrationValue(key: string, value: unknown): void {
+  memory.set(key, value)
+  dirtyKeys.delete(key)
+}
 export function centralDateKey(now = new Date()): string {
   const parts = Object.fromEntries(formatter.formatToParts(now).map(p => [p.type, p.value]))
   return `${parts.year}-${parts.month}-${parts.day}`
@@ -96,7 +107,10 @@ export function readIntegrationValue(key: string): unknown {
 }
 export function writeIntegrationValue(key: string, value: unknown): void {
   memory.set(key, value)
-  try { localStorage.setItem(key, JSON.stringify(value)); dirtyKeys.delete(key) }
+  try {
+    if (memoryPersistence) throw new Error('Storage is unreadable')
+    localStorage.setItem(key, JSON.stringify(value)); dirtyKeys.delete(key)
+  }
   catch { dirtyKeys.add(key); if (typeof window !== 'undefined') window.dispatchEvent(new Event('alford:storage-unavailable')) }
 }
 export function makeProgress(game: KimiGame, state: UnifiedState, now = new Date()): ProgressPayload | null {

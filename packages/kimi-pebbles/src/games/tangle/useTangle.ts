@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyTangle, pointsFor, practiceTangle, tierFor, type TanglePuzzle } from './engine'
 import { loadDayProgress, loadGameStats, saveDayProgress, saveGameStats, type GameStats } from '../shared/stats'
@@ -57,6 +58,7 @@ const initial = (): TangleState => ({
 
 export function useTangle() {
   const [s, setS] = useState<TangleState>(initial)
+  const dailySession = useDailySession('tangle')
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
@@ -80,6 +82,7 @@ export function useTangle() {
       saveGameStats('tangle', stats)
       saveDayProgress('tangle', day, { ...saved, countedPlayed: true })
     }
+    dailySession.acknowledge(day)
     setS((prev) => ({
       ...prev,
       phase: 'playing',
@@ -101,6 +104,8 @@ export function useTangle() {
     }))
   }, [])
 
+  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle && restoreTangleProgress(raw, ref.current.puzzle), startDaily)
+
   useEffect(() => {
     // no dictionary fetch needed — tangle validates against per-grid word lists
     startDaily()
@@ -108,16 +113,19 @@ export function useTangle() {
 
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
-    const saved = loadDayProgress<TangleProgress>('tangle', s.dayNumber)
-    saveDayProgress('tangle', s.dayNumber, {
-      found: s.found,
-      score: s.score,
-      misses: s.misses,
-      hintsUsed: s.hintsUsed,
-      hintPrefix: s.hintPrefix,
-      goldReached: s.goldReached,
-      countedPlayed: saved?.countedPlayed === true,
-    } satisfies TangleProgress)
+    dailySession.commit(() => {
+      const saved = loadDayProgress<TangleProgress>('tangle', s.dayNumber)
+      saveDayProgress('tangle', s.dayNumber, {
+        found: s.found,
+        score: s.score,
+        misses: s.misses,
+        hintsUsed: s.hintsUsed,
+        hintPrefix: s.hintPrefix,
+        goldReached: s.goldReached,
+        countedPlayed: saved?.countedPlayed === true,
+      } satisfies TangleProgress)
+      saveGameStats('tangle', s.stats)
+    })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.found, s.score, s.misses, s.hintsUsed, s.hintPrefix, s.goldReached])
 
   useEffect(() => {
@@ -144,17 +152,19 @@ export function useTangle() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress<TangleProgress>('tangle', prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress('tangle', prev.dayNumber, {
-      found: prev.found,
-      score: prev.score,
-      misses: prev.misses,
-      hintsUsed: prev.hintsUsed,
-      hintPrefix: prev.hintPrefix,
-      goldReached: prev.goldReached,
-      countedPlayed: true,
-    } satisfies TangleProgress)
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveGameStats('tangle', stats)
+    dailySession.commit(() => {
+      saveDayProgress('tangle', prev.dayNumber, {
+        found: prev.found,
+        score: prev.score,
+        misses: prev.misses,
+        hintsUsed: prev.hintsUsed,
+        hintPrefix: prev.hintPrefix,
+        goldReached: prev.goldReached,
+        countedPlayed: true,
+      } satisfies TangleProgress)
+      saveGameStats('tangle', stats)
+    })
     return stats
   }, [])
 
@@ -206,7 +216,6 @@ export function useTangle() {
           maxStreak: Math.max(stats.maxStreak, streak),
           lastCompletedDay: day,
         }
-        saveGameStats('tangle', stats)
       }
       sfx.win()
     } else if (tier > prevTier && tier > 0) {
@@ -278,6 +287,6 @@ export function useTangle() {
 
   return {
     state: s,
-    actions: { setPath, submitPath, clearPath, hint, startPractice, exitPractice },
+    actions: dailySession.actions({ setPath, submitPath, clearPath, hint, startPractice, exitPractice }),
   }
 }

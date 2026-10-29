@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyQuartet, practiceQuartet, seededOrder, MAX_MISSES, type QuartetPuzzle } from './engine'
 import { todayDayNumber } from '../shared/share'
@@ -74,6 +75,7 @@ function shuffle(n: number): number[] {
 
 export function useQuartet() {
   const [s, setS] = useState<QuartetState>(initial)
+  const dailySession = useDailySession('quartet')
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
@@ -92,6 +94,7 @@ export function useQuartet() {
     const { puzzle, puzzleNo } = dailyQuartet(day)
     const saved = restoreQuartetProgress(loadDayProgress<unknown>('quartet', day), puzzle)
     const stats = loadGameStats('quartet')
+    dailySession.acknowledge(day)
     if (saved?.finished) {
       setS((prev) => ({
         ...prev,
@@ -137,6 +140,8 @@ export function useQuartet() {
     }))
   }, [])
 
+  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle && restoreQuartetProgress(raw, ref.current.puzzle), startDaily)
+
   useEffect(() => {
     startDaily()
   }, [startDaily])
@@ -144,18 +149,21 @@ export function useQuartet() {
   /* persist */
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
-    const saved = loadDayProgress<QuartetProgress>('quartet', s.dayNumber)
-    saveDayProgress('quartet', s.dayNumber, {
-      tiles: s.tiles,
-      solvedGroups: s.solvedGroups,
-      misses: s.misses,
-      history: s.history,
-      hintPair: s.hintPair,
-      hintsUsed: s.hintsUsed,
-      finished: s.finished,
-      won: s.won,
-      countedPlayed: saved?.countedPlayed === true,
-    } satisfies QuartetProgress)
+    dailySession.commit(() => {
+      const saved = loadDayProgress<QuartetProgress>('quartet', s.dayNumber)
+      saveDayProgress('quartet', s.dayNumber, {
+        tiles: s.tiles,
+        solvedGroups: s.solvedGroups,
+        misses: s.misses,
+        history: s.history,
+        hintPair: s.hintPair,
+        hintsUsed: s.hintsUsed,
+        finished: s.finished,
+        won: s.won,
+        countedPlayed: saved?.countedPlayed === true,
+      } satisfies QuartetProgress)
+      saveGameStats('quartet', s.stats)
+    })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.tiles, s.solvedGroups, s.misses, s.history, s.hintPair, s.hintsUsed, s.finished, s.won])
 
   /* midnight rollover */
@@ -183,19 +191,21 @@ export function useQuartet() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress<QuartetProgress>('quartet', prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress('quartet', prev.dayNumber, {
-      tiles: prev.tiles,
-      solvedGroups: prev.solvedGroups,
-      misses: prev.misses,
-      history: prev.history,
-      hintPair: prev.hintPair,
-      hintsUsed: prev.hintsUsed,
-      finished: prev.finished,
-      won: prev.won,
-      countedPlayed: true,
-    } satisfies QuartetProgress)
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveGameStats('quartet', stats)
+    dailySession.commit(() => {
+      saveDayProgress('quartet', prev.dayNumber, {
+        tiles: prev.tiles,
+        solvedGroups: prev.solvedGroups,
+        misses: prev.misses,
+        history: prev.history,
+        hintPair: prev.hintPair,
+        hintsUsed: prev.hintsUsed,
+        finished: prev.finished,
+        won: prev.won,
+        countedPlayed: true,
+      } satisfies QuartetProgress)
+      saveGameStats('quartet', stats)
+    })
     return stats
   }, [])
 
@@ -215,7 +225,6 @@ export function useQuartet() {
       } else {
         stats = { ...stats, currentStreak: 0 }
       }
-      saveGameStats('quartet', stats)
     }
     if (won) sfx.win()
     else sfx.remove()
@@ -376,6 +385,6 @@ export function useQuartet() {
 
   return {
     state: s,
-    actions: { toggleTile, deselectAll, shuffleBoard, submit, hint, startPractice, exitPractice },
+    actions: dailySession.actions({ toggleTile, deselectAll, shuffleBoard, submit, hint, startPractice, exitPractice }),
   }
 }

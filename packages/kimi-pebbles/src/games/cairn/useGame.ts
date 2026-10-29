@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   LEVELS,
@@ -88,6 +89,7 @@ function levelSetup(puzzle: Puzzle, level: number, seedBase: number) {
 
 export function useGame() {
   const [s, setS] = useState<GameState>(() => ({ ...initialState, stats: loadStats(), soundOn: loadSoundOn() }))
+  const dailySession = useDailySession('cairn')
   const ref = useRef(s)
   ref.current = s
   const timers = useRef<number[]>([])
@@ -128,6 +130,7 @@ export function useGame() {
     const { puzzle, puzzleNo } = dailyPuzzle(day)
     const saved = restoreCairnProgress(loadDayProgress(day), puzzle, isValidWord)
     const stats = loadStats()
+    dailySession.acknowledge(day)
     if (saved?.finished) {
       setS((prev) => ({
         ...prev,
@@ -179,6 +182,8 @@ export function useGame() {
     }))
   }, [cancelPending])
 
+  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle && restoreCairnProgress(raw, ref.current.puzzle, isValidWord), startDaily)
+
   /* ---------- boot ---------- */
   useEffect(() => {
     let alive = true
@@ -214,16 +219,19 @@ export function useGame() {
   /* ---------- persist daily progress ---------- */
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
-    const saved = loadDayProgress(s.dayNumber)
-    saveDayProgress(s.dayNumber, {
-      level: s.level,
-      results: s.results,
-      rack: s.rack,
-      misses: s.misses,
-      hints: s.hints,
-      slots: s.slots,
-      finished: s.finished,
-      countedPlayed: saved?.countedPlayed === true,
+    dailySession.commit(() => {
+      const saved = loadDayProgress(s.dayNumber)
+      saveDayProgress(s.dayNumber, {
+        level: s.level,
+        results: s.results,
+        rack: s.rack,
+        misses: s.misses,
+        hints: s.hints,
+        slots: s.slots,
+        finished: s.finished,
+        countedPlayed: saved?.countedPlayed === true,
+      })
+      saveStats(s.stats)
     })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.level, s.results, s.rack, s.misses, s.hints, s.slots, s.finished])
 
@@ -244,24 +252,27 @@ export function useGame() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress(prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress(prev.dayNumber, {
-      level: prev.level,
-      results: prev.results,
-      rack: prev.rack,
-      misses: prev.misses,
-      hints: prev.hints,
-      slots: prev.slots,
-      finished: prev.finished,
-      countedPlayed: true,
-    })
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveStats(stats)
+    dailySession.commit(() => {
+      saveDayProgress(prev.dayNumber, {
+        level: prev.level,
+        results: prev.results,
+        rack: prev.rack,
+        misses: prev.misses,
+        hints: prev.hints,
+        slots: prev.slots,
+        finished: prev.finished,
+        countedPlayed: true,
+      })
+      saveStats(stats)
+    })
     return stats
   }, [])
 
   /* ---------- advance to next level / finish ---------- */
   const advance = useCallback(
     (result: LevelResult, prev: GameState) => {
+      if (!dailySession.before()) return
       if (!prev.puzzle || prev.finished || prev.results.length !== prev.level) return
       const isLast = prev.level === LEVELS - 1
       const nextLevel = Math.min(prev.level + 1, LEVELS - 1)
@@ -285,7 +296,6 @@ export function useGame() {
             lastCompletedDay: summit ? day : stats.lastCompletedDay,
             totalMisses: stats.totalMisses + results.reduce((a, r) => a + r.misses, 0),
           }
-          saveStats(stats)
         }
         setS((p) => ({ ...p, ...transition, phase: 'finished', perfect, stats }))
         if (summit) sfx.win()
@@ -489,7 +499,7 @@ export function useGame() {
   return {
     state: s,
     currentWord,
-    actions: {
+    actions: dailySession.actions({
       tapRack,
       tapSlot,
       del,
@@ -500,6 +510,6 @@ export function useGame() {
       startPractice,
       exitPractice,
       toggleSound,
-    },
+    }),
   }
 }

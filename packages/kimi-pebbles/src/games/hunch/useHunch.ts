@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyHunch, practiceHunch, evaluate, WORD_LEN, MAX_GUESSES, type Eval } from './engine'
 import { loadDict, isValidWord } from '../shared/dict'
@@ -54,6 +55,7 @@ const initial: HunchState = {
 
 export function useHunch() {
   const [s, setS] = useState<HunchState>(() => ({ ...initial, stats: loadGameStats('hunch') }))
+  const dailySession = useDailySession('hunch')
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
@@ -72,6 +74,7 @@ export function useHunch() {
     const { answer, puzzleNo } = dailyHunch(day)
     const saved = restoreHunchProgress(loadDayProgress<unknown>('hunch', day), answer, evaluate, isValidWord)
     const stats = loadGameStats('hunch')
+    dailySession.acknowledge(day)
     if (saved?.finished) {
       setS((prev) => ({
         ...prev,
@@ -113,6 +116,8 @@ export function useHunch() {
     }))
   }, [])
 
+  dailySession.configure(() => ref.current, (raw) => restoreHunchProgress(raw, ref.current.answer, evaluate, isValidWord), startDaily)
+
   useEffect(() => {
     let alive = true
     loadDict()
@@ -126,17 +131,20 @@ export function useHunch() {
   /* persist daily progress */
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || s.dayNumber === 0) return
-    const saved = loadDayProgress<HunchProgress>('hunch', s.dayNumber)
-    saveDayProgress('hunch', s.dayNumber, {
-      guesses: s.guesses,
-      current: s.current,
-      evals: s.evals,
-      hintLetters: s.hintLetters,
-      hintsUsed: s.hintsUsed,
-      finished: s.finished,
-      won: s.won,
-      countedPlayed: saved?.countedPlayed === true,
-    } satisfies HunchProgress)
+    dailySession.commit(() => {
+      const saved = loadDayProgress<HunchProgress>('hunch', s.dayNumber)
+      saveDayProgress('hunch', s.dayNumber, {
+        guesses: s.guesses,
+        current: s.current,
+        evals: s.evals,
+        hintLetters: s.hintLetters,
+        hintsUsed: s.hintsUsed,
+        finished: s.finished,
+        won: s.won,
+        countedPlayed: saved?.countedPlayed === true,
+      } satisfies HunchProgress)
+      saveGameStats('hunch', s.stats)
+    })
   }, [s.mode, s.phase, s.dayNumber, s.guesses, s.current, s.evals, s.hintLetters, s.hintsUsed, s.finished, s.won])
 
   /* midnight rollover */
@@ -164,18 +172,20 @@ export function useHunch() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress<HunchProgress>('hunch', prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress('hunch', prev.dayNumber, {
-      guesses: prev.guesses,
-      current: prev.current,
-      evals: prev.evals,
-      hintLetters: prev.hintLetters,
-      hintsUsed: prev.hintsUsed,
-      finished: prev.finished,
-      won: prev.won,
-      countedPlayed: true,
-    } satisfies HunchProgress)
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveGameStats('hunch', stats)
+    dailySession.commit(() => {
+      saveDayProgress('hunch', prev.dayNumber, {
+        guesses: prev.guesses,
+        current: prev.current,
+        evals: prev.evals,
+        hintLetters: prev.hintLetters,
+        hintsUsed: prev.hintsUsed,
+        finished: prev.finished,
+        won: prev.won,
+        countedPlayed: true,
+      } satisfies HunchProgress)
+      saveGameStats('hunch', stats)
+    })
     return stats
   }, [])
 
@@ -191,10 +201,8 @@ export function useHunch() {
         maxStreak: Math.max(stats.maxStreak, streak),
         lastCompletedDay: day,
       }
-      saveGameStats('hunch', stats)
     } else if (prev.mode === 'daily') {
       stats = { ...stats, currentStreak: 0, lastCompletedDay: stats.lastCompletedDay }
-      saveGameStats('hunch', stats)
     }
     if (won) sfx.win()
     else sfx.remove()
@@ -298,7 +306,7 @@ export function useHunch() {
 
   return {
     state: s,
-    actions: { keyLetter, backspace, submit, hint, startPractice, exitPractice },
+    actions: dailySession.actions({ keyLetter, backspace, submit, hint, startPractice, exitPractice }),
   }
 }
 

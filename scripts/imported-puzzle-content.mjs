@@ -225,3 +225,171 @@ Ways to move on foot | WALK JUMP SKIP STEP PACE TROT LIMP RUSH
 Feelings | FEAR LOVE HOPE RAGE CALM ENVY GLEE HATE
 Periods of time | DAYS WEEK HOUR YEAR EONS AGES
 ` ).map(([category, words]) => ({category, words: words.split(' ')}));
+
+// Six-month continuation: original phrases and precise nine-letter definitions.
+// Kept separate so the already published generator prefix is reproducible.
+export const SIX_MONTH_CIPHER_CONTENT = rows(`
+THE VIOLIN CASE HOLDS A CONCERT WAITING TO BEGIN | A portable instrument is ready for its next performance.
+A TRAFFIC LIGHT GIVES A BUSY CROSSING A SHARED RHYTHM | Colored signals coordinate travelers at an intersection.
+THE POTTER LEAVES A THUMBPRINT BENEATH THE GLAZE | A handmade vessel retains a small mark of its maker.
+A TICKET STUB CAN BRING BACK THE WHOLE PERFORMANCE | A little souvenir recalls an evening of entertainment.
+THE MUSEUM LABEL OPENS A DOOR INTO ANOTHER CENTURY | A short explanation gives an old object historical context.
+A SINGLE LOOSE SCREW CAN GIVE THE CHAIR A VOICE | An unstable piece of furniture may announce itself with a squeak.
+THE JUGGLER MAKES A CAREFUL PATTERN LOOK LIKE CHAOS | A skilled performer controls several objects in the air.
+A FRESH SHEET OF MUSIC HOLDS A ROOM FULL OF SOUND | Written notes await the musicians who will play them.
+THE COMPASS NEEDLE KEEPS ITS PROMISE WHEN THE PATH TURNS | A direction finder remains useful along a winding route.
+A PAIR OF BINOCULARS BRINGS THE FAR HILLS CLOSER | An optical tool enlarges a distant view.
+THE ELEVATOR CARRIES A SMALL CROWD BETWEEN FLOORS | A moving compartment provides a vertical journey.
+A WELL FITTED LID CAN MAKE A SIMPLE JAR USEFUL AGAIN | Repairing a closure restores an everyday container.
+THE WHEELBARROW MAKES ONE TRIP OUT OF SEVERAL ARMLOADS | A wheeled garden tool moves a heavy collection efficiently.
+A MARBLE FINDS EVERY SLOPE IN AN OLD WOODEN FLOOR | A rolling toy reveals small changes in level.
+THE CHESSBOARD TURNS A QUIET TABLE INTO A CONTEST | A game creates a strategic struggle in a peaceful room.
+A NEW BRIDGE CHANGES THE MEANING OF THE OTHER SIDE | A crossing makes previously separated places easier to reach.
+THE REHEARSAL MAKES ROOM FOR MISTAKES BEFORE THE SHOW | Practice allows performers to improve away from an audience.
+A ZIPPER JOINS TWO EDGES WITH A SINGLE SMALL JOURNEY | A sliding fastener brings separated sides together.
+THE PIANO NEEDS MANY KEYS TO OPEN ITS KIND OF DOOR | An instrument offers access to music through its keyboard.
+A HELMET TAKES UP LITTLE SPACE BESIDE A BICYCLE | Protective equipment fits easily with a two-wheeled vehicle.
+THE LIBRARY RETURNS SILENCE WITH EVERY BORROWED BOOK | A shared reading place offers a quiet kind of exchange.
+A ROW OF OARS TURNS SEPARATE EFFORTS INTO ONE MOTION | Coordinated rowing drives a boat forward.
+THE STAGE CURTAIN HIDES A WORLD UNTIL THE LIGHTS DIM | A theater waits to reveal its prepared scene.
+A STITCH CAN JOIN FABRIC AND SAVE A FAVORITE SHIRT | A small repair preserves a familiar garment.
+THE TELESCOPE MAKES A DISTANT MOON PART OF THE EVENING | An astronomical instrument improves a night-sky view.
+A SCALED DRAWING LETS A LARGE BUILDING FIT ON A DESK | A plan represents a full-sized structure on paper.
+THE COFFEE GRINDER ANNOUNCES THE MORNING IN A NEW WAY | A kitchen appliance provides a familiar early sound.
+A SIMPLE LEVER GIVES A SMALL PUSH A LARGER EFFECT | A basic machine changes how force is applied.
+THE SHIP LEAVES THE HARBOR WITH A CITY AT ITS BACK | A vessel begins a voyage away from an urban waterfront.
+A LABEL ON A SEED PACKET DESCRIBES A FUTURE FLOWER | Gardening packaging shows what its contents may become.
+THE KNITTING NEEDLES TURN A LINE INTO A SURFACE | Repeated loops transform yarn into fabric.
+A PARKING METER MEASURES A VERY SMALL PIECE OF THE CITY | A roadside device regulates time spent in one space.
+THE SCULPTOR FINDS A FIGURE INSIDE A ROUGH BLOCK | An artist removes material to reveal a shape.
+A WET PAINT SIGN PROTECTS MORE THAN THE WALL | A warning also helps keep clothing clean.
+THE HIKER COUNTS SWITCHBACKS WHILE THE VALLEY GROWS SMALL | A winding climb increases the distance from low ground.
+A HINGE DOES ITS BEST WORK WHEN NOBODY NOTICES IT | A well-functioning joint lets a door move quietly.
+THE SURVEYOR MEASURES THE HILL BEFORE THE ROAD ARRIVES | Careful land measurement precedes construction.
+A BALANCED SCALE MAKES TWO DIFFERENT PILES AGREE | Equal weights can be shown despite different contents.
+THE TRUMPET TURNS A BREATH INTO A BRIGHT ANNOUNCEMENT | A brass instrument transforms air into a strong sound.
+A PLUMB LINE GIVES GRAVITY A VISIBLE DIRECTION | A hanging weight helps identify the vertical.
+THE STATION CLOCK BELONGS TO EVERYONE WHO IS WAITING | A shared timepiece matters to many travelers.
+A BOOK SPINE IS A SMALL SIGNPOST ON A CROWDED SHELF | A narrow label helps a reader locate a volume.
+THE OVEN DOOR HOLDS BACK THE WARMTH OF AN UNFINISHED MEAL | Cooking continues inside a heated enclosure.
+A MAGNET FINDS THE STEEL PINS AMONG THE WOODEN SHAVINGS | A tool separates certain metal objects from debris.
+THE CABIN WINDOW TURNS A SNOWSTORM INTO A PICTURE | Shelter makes wintry weather something to watch comfortably.
+A CAMERA TRIPOD LENDS A STEADY HAND TO THE PHOTOGRAPHER | Three legs support a device during a picture.
+THE TENNIS NET DIVIDES THE COURT AND CONNECTS THE GAME | A sporting barrier defines play between opponents.
+A RAILWAY TUNNEL GIVES THE MOUNTAIN A SHORTCUT | Engineering provides a route through high ground.
+THE DRUMMER KEEPS THE DANCERS TALKING WITH THEIR FEET | A steady beat guides movement without words.
+A FOUNTAIN PEN CARRIES A SMALL RESERVOIR OF STORIES | A writing instrument holds ink for future sentences.
+THE FISHING FLOAT WAITS WHERE TWO WORLDS MEET | A small indicator rests at the surface of water.
+A SKETCH OF A FACE BEGINS WITH A FEW CHOSEN LINES | A portrait can emerge from very simple marks.
+THE STAIR RAIL OFFERS A HAND ALL THE WAY UP | A fixed support accompanies a climb indoors.
+A WAX SEAL TURNS A CLOSED LETTER INTO A SMALL CEREMONY | A traditional finish makes correspondence feel formal.
+THE TRACTOR LEAVES PARALLEL LINES ACROSS THE FIELD | Farm machinery produces an orderly pattern on the land.
+A BELL TOWER SENDS THE HOUR ACROSS THE ROOFTOPS | A high structure announces time to a neighborhood.
+THE ACROBAT TRUSTS THE ROPE AND THE HOURS OF PRACTICE | A performer relies on equipment and preparation.
+A WOVEN BASKET MAKES MANY THIN STRIPS WORK TOGETHER | Interlaced material forms a useful container.
+THE TAILOR READS A MEASURING TAPE LIKE A MAP | A clothing maker uses dimensions to plan a fit.
+A WATER WHEEL TURNS A PASSING STREAM INTO WORK | Flowing liquid powers a rotating mechanism.
+THE ROWING BOAT LEAVES TWO TRAILS THAT SOON DISAPPEAR | Oars briefly mark the water behind a small craft.
+A GLASS PRISM SHOWS HOW MANY COLORS HID IN THE LIGHT | An optical object separates a beam into a spectrum.
+THE CRANE LIFTS A BEAM TOWARD AN UNFINISHED SKYLINE | Heavy equipment helps a building take shape.
+A DRY STONE WALL HOLDS TOGETHER WITHOUT A DROP OF MORTAR | Carefully placed rocks form a boundary on their own.
+THE SUNDIAL READS THE DAY FROM THE SHAPE OF A SHADOW | A timekeeping device relies on the position of sunlight.
+A ROLL OF FILM ONCE HELD A HOLIDAY IN THE DARK | Photographic material stored unseen pictures before development.
+THE CABLE CAR BORROWS A ROAD FROM THE AIR | A suspended vehicle travels above the ground.
+A HAND PUMP ASKS FOR EFFORT BEFORE IT OFFERS WATER | A manually operated device lifts liquid for use.
+THE EMBROIDERY HOOP HOLDS A LITTLE GARDEN OF THREAD | A sewing frame supports a decorative floral design.
+A TURNING WINDMILL MAKES THE INVISIBLE BREEZE VISIBLE | Moving blades reveal the action of air.
+THE POSTCARD FITS A FARAWAY VIEW INTO ONE HAND | A small mailed picture represents a distant place.
+A SHOPPING BASKET GROWS HEAVIER AS THE LIST GROWS SHORTER | Collecting groceries makes two measures move oppositely.
+THE SAILOR TRIMS THE SAIL TO MAKE A FRIEND OF THE WIND | Adjusting canvas helps a boat use the breeze.
+A MOSAIC MAKES A WHOLE PICTURE FROM SMALL DIFFERENCES | Separate colored pieces form one image.
+THE ARCH HOLDS ITS STONES IN A CAREFUL CONVERSATION | A curved structure depends on the relationship of its parts.
+A READING LAMP CAN MAKE A LATE TRAIN FEEL LIKE HOME | A little directed light gives a journey familiar comfort.
+THE WEAVER CHANGES DIRECTION WITHOUT LEAVING THE LOOM | Repeated passes create cloth within a fixed frame.
+A COMPASS AND A MAP MAKE BETTER PARTNERS THAN RIVALS | Two navigation tools provide complementary information.
+THE WORKSHOP SMELLS OF WOOD BEFORE THE FIRST CUT | Stored timber gives a craft space a recognizable scent.
+A QUIET APPLAUSE STILL TELLS THE PERFORMER THANK YOU | A modest response can express appreciation for a show.
+`);
+
+export const SIX_MONTH_TRAIL_CONTENT = rows(`
+NEWSPAPER | A printed publication containing current reports and articles.
+NIGHTFALL | The time when daylight fades and darkness begins.
+ORCHESTRA | A large ensemble of string, wind, and percussion musicians.
+ACCORDION | A portable instrument with a bellows and a keyboard.
+PASSENGER | A traveler in a vehicle who is not driving it.
+PATCHWORK | Fabric made by sewing smaller pieces together.
+AEROPLANE | A winged flying vehicle, using the British spelling.
+PERISCOPE | A viewing instrument used to look above a submarine.
+AVALANCHE | A large mass of snow rapidly descending a mountainside.
+BADMINTON | A racket sport played by hitting a shuttlecock over a net.
+POLICEMAN | A male officer who enforces the law.
+PORCUPINE | A rodent protected by a coat of sharp quills.
+POSTCARDS | Small cards mailed with a picture and a written message.
+POTTERIES | Workshops where clay vessels are made and fired.
+PRACTICAL | Useful and suited to real tasks rather than theory alone.
+PRESCHOOL | An educational setting for children below primary school age.
+PRINTABLE | Suitable for putting on paper with a printer.
+PROJECTOR | A device that casts enlarged images onto a screen.
+BALLERINA | A woman who performs classical ballet.
+QUICKSAND | Loose wet ground that can yield beneath a person's weight.
+RAINCOATS | Waterproof outer garments worn during wet weather.
+RECYCLING | Processing used materials so they can be used again.
+DOLLHOUSE | A miniature home furnished for small toy figures.
+ROADBLOCK | A barrier placed across a route to stop traffic.
+BARRICADE | An improvised barrier blocking a road or entrance.
+SAILBOATS | Boats propelled primarily by wind caught in canvas.
+SANDPAPER | Abrasive sheets used to smooth a surface.
+SATELLITE | An object that travels in orbit around a planet.
+SCRAPBOOK | An album containing pasted photographs and other keepsakes.
+BEEKEEPER | Someone who maintains colonies of honey-producing insects.
+SEASHELLS | Hard outer coverings of marine mollusks found on beaches.
+SHIPWRECK | The remains of a vessel destroyed or sunk at sea.
+SHOEMAKER | A craftsperson who constructs or repairs footwear.
+SHOPFRONT | The outward-facing entrance and windows of a store.
+SHOULDERS | Body parts where the arms connect to the torso.
+SIDEWALKS | Paved paths for pedestrians alongside roads.
+SNOWBOARD | A single wide board ridden downhill over packed snow.
+SNOWSTORM | Severe weather with falling flakes and often strong wind.
+SOMETHING | An unspecified object, action, or matter.
+SPAGHETTI | Pasta made in long thin cylindrical strands.
+SPARKLING | Shining with small bright flashes of light.
+SPECTACLE | An impressive or unusual sight attracting attention.
+SPOTLIGHT | A lamp producing a focused beam on a performer or object.
+STAIRCASE | A connected set of steps between different floor levels.
+BILINGUAL | Able to speak two languages.
+STEAMBOAT | A vessel driven by an engine powered with heated water vapor.
+STORYBOOK | A volume containing tales, often for young readers.
+STRONGBOX | A sturdy locked container for valuables.
+SUBMARINE | A vessel designed to operate beneath the sea.
+LAMPSHADE | A covering that diffuses and directs light from a lamp.
+SURFBOARD | A long narrow board ridden on breaking waves.
+SWEETCORN | A variety of maize eaten for its tender sugary kernels.
+BOARDWALK | A path made of wooden planks, often beside a beach.
+TANGERINE | A small orange citrus fruit with easily removed peel.
+TEACHABLE | Able and willing to learn from instruction.
+TELEGRAPH | A system for transmitting coded messages over a wire.
+THUMBNAIL | The hard covering on the end of the broadest finger.
+TIMETABLE | A schedule giving planned times for events or journeys.
+BRIEFCASE | A flat handled case used to carry work documents.
+TOOTHACHE | Pain felt in a tooth or the area surrounding it.
+BUTTERCUP | A small wildflower with glossy yellow petals.
+CASSEROLE | A dish of mixed ingredients cooked together in an oven.
+CENTIPEDE | A many-legged arthropod with one pair of legs per body segment.
+TREASURED | Held in high personal value and cared for closely.
+TREEHOUSE | A small structure built among the branches above ground.
+TRIATHLON | A race combining swimming, cycling, and running.
+UMBRELLAS | Portable canopies held overhead to keep off rain.
+UNDERPASS | A route that travels beneath another road or railway.
+VEGETABLE | An edible plant or plant part served in savory meals.
+VOLUNTEER | Someone who offers to help without being required to do so.
+WALLPAPER | Decorative paper applied to the inside walls of a room.
+WANDERING | Moving from place to place without a fixed route.
+WASHCLOTH | A small piece of fabric used for cleaning the body.
+CHOPSTICK | One of a pair of slender sticks used to pick up food.
+CROISSANT | A flaky buttery pastry traditionally shaped like a crescent.
+WHEELBASE | The distance between the front and rear axles of a vehicle.
+WHIRLPOOL | Water rotating rapidly around a central depression.
+DRIFTWOOD | Timber carried and deposited by moving water.
+WINDBREAK | A barrier of trees or fencing that reduces the force of air.
+WORKBENCH | A sturdy table used for practical craft or repair tasks.
+`);

@@ -21,11 +21,11 @@ function symmetryKey(p,includeFriendly=true){
  return variants.sort()[0];
 }
 
-test('ninety new Territory boards add a genuine smaller capture choice without changing the published thirty',()=>{
- assert.equal(PUZZLES.length,120);
- assert.equal(new Set(PUZZLES.map(p=>symmetryKey(p))).size,120,'boards must differ under every hex rotation and reflection');
+test('expanded Territory boards add a genuine smaller capture choice without changing the published thirty',()=>{
+ assert.equal(PUZZLES.length,200);
+ assert.equal(new Set(PUZZLES.map(p=>symmetryKey(p))).size,200,'boards must differ under every hex rotation and reflection');
  const additions=PUZZLES.slice(30);
- assert.equal(new Set(additions.map(p=>symmetryKey(p,false))).size,90,'enemy geometry must differ, not only friendly padding');
+ assert.equal(new Set(additions.map(p=>symmetryKey(p,false))).size,170,'enemy geometry must differ, not only friendly padding');
  for(const p of additions){
   const groups=E.groups(p,p.enemy).sort((a,b)=>b.length-a.length);
   assert.equal(groups.length,2,p.id);

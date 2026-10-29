@@ -22,15 +22,15 @@ const pairKey=pair=>[...pair].sort().join('/');
 function squareTransforms(size){return Array.from({length:8},(_,n)=>index=>{let row=Math.floor(index/size),col=index%size;if(n>=4)col=size-1-col;for(let k=0;k<n%4;k++)[row,col]=[col,size-1-row];return row*size+col;});}
 function hexKey(p){const variants=[];for(let flip=0;flip<2;flip++)for(let turn=0;turn<6;turn++){const transform=cell=>{let[q,r]=cell.split(',').map(Number);if(flip)[q,r]=[r,q];for(let n=0;n<turn;n++)[q,r]=[-r,q+r];return `${q},${r}`;};variants.push(JSON.stringify([p.radius,p.friendly.map(transform).sort(),p.enemy.map(transform).sort(),p.target,p.maxMoves]));}return variants.sort()[0];}
 
-test('every imported concept offers at least 120 immediately selectable prepared boards',async()=>{
+test('every imported concept offers at least 200 immediately selectable prepared boards',async()=>{
  const slugs=(await readdir(new URL('../games/',import.meta.url))).filter(name=>/^(deepseek|qwen)-/.test(name)&&name!=='deepseek-runtime');
  assert.equal(slugs.length,12);
- for(const slug of slugs){const {PUZZLES}=await import(`../games/${slug}/puzzles.mjs`);assert.ok(PUZZLES.length>=120,slug);unique(PUZZLES.map(p=>p.id),slug);}
+ for(const slug of slugs){const {PUZZLES}=await import(`../games/${slug}/puzzles.mjs`);assert.ok(PUZZLES.length>=200,slug);unique(PUZZLES.map(p=>p.id),slug);}
 });
-test('Twin Hive uses every distinct gold pair, each with a generous accepted answer bank',()=>{
- assert.equal(hive.length,140);unique(hive.map(p=>p.letters+pairKey(p.gold)));
+test('Twin Hive uses distinct gold pairs on eight racks, each with a generous accepted answer bank',()=>{
+ assert.equal(hive.length,200);unique(hive.map(p=>p.letters+pairKey(p.gold)));
  for(const p of hive)assert.ok(p.answers.length>=12,p.id);
- assert.equal(new Set(hive.map(p=>p.letters)).size,5);
+ assert.equal(new Set(hive.map(p=>p.letters)).size,8);
 });
 test('Rung expansion never counts the same ladder backwards as a new puzzle',()=>{unique(ladders.map(p=>pairKey([p.start,p.target])));});
 test('Spare additions use four distinct existing pairs and do not repeat most of an old board',()=>{
@@ -49,8 +49,8 @@ test('Lattice grids stay distinct after reflection, rotation, and black-white in
 test('Maze additions have distinct route shapes, beyond relocation, reversal, and mirror images',()=>{
  const key=p=>[p.path,[...p.path].reverse()].flatMap(path=>squareTransforms(7).map(transform=>{const coordinates=path.map(transform).map(i=>[Math.floor(i/7),i%7]);const row=Math.min(...coordinates.map(x=>x[0])),col=Math.min(...coordinates.map(x=>x[1]));return JSON.stringify(coordinates.map(([r,c])=>[r-row,c-col]));})).sort()[0];unique(maze.map(key));
 });
-test('Prism has at least 120 actual rule structures and no recolored additions',()=>{
- assert.ok(new Set(prism.map(structure)).size>=120);
+test('Prism has at least 200 actual rule structures and no recolored additions',()=>{
+ assert.ok(new Set(prism.map(structure)).size>=200);
  const seen=new Set(prism.slice(0,30).map(structure));
  for(const p of prism.slice(30)){assert.ok(!seen.has(structure(p)),p.id);seen.add(structure(p));}
 });

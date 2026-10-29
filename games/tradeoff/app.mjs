@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 import { PUZZLES } from './puzzles.mjs';
 import { getDateKey, getDaily, createGame, swapLetters, undoMove, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
 
@@ -252,31 +253,44 @@ function showResult() {
   openModal(`<p class="dialog-eyebrow">${label}</p><div class="result-icon${revealed ? ' revealed' : ''}" aria-hidden="true">${revealed ? '↗' : perfect ? '✳' : '✓'}</div><h2 class="dialog-title" id="dialog-title">${title}</h2><p class="result-message">${message}</p><div class="result-squares${revealed ? ' revealed' : ''}" aria-hidden="true">${'<span></span>'.repeat(6)}</div><div class="result-metrics"><div><strong>${game.moves}</strong><span>${game.moves === 1 ? 'swap' : 'swaps'}</span></div><div><strong>${game.hints}</strong><span>${game.hints === 1 ? 'nudge' : 'nudges'}</span></div><div><strong>${game.undos}</strong><span>${game.undos === 1 ? 'undo' : 'undos'}</span></div></div><button class="primary-button share-button" data-action="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>Share your trade</button><div class="result-bottom"><button class="text-button" data-action="next">${mode === 'daily' ? 'Can’t wait? Make a practice trade →' : 'One more? Another practice →'}</button><button class="text-button" data-action="close">Look at the finished board</button></div><p class="stats-fineprint">${mode === 'daily' ? 'A fresh daily arrives at midnight Central.' : 'Just for the joy of it. Your daily record stays separate.'}</p>`);
 }
 
-function isDailyLocked(candidate) {
-  const today = getDaily(PUZZLES);
-  if (candidate.id !== today.puzzle.id) return false;
-  const saved = candidate.id === puzzle.id && mode === 'daily' ? game : restoreGame(candidate, readData(`daily:${today.dateKey}`, null));
-  return saved.status === 'playing';
+function savedPractice(index, acceptGame=false) {
+  const candidate=PUZZLES[index];if(!candidate)return null;
+  const raw=readData('practice:'+candidate.id,null,acceptGame);
+  if(raw?.puzzleId!==candidate.id)return null;
+  const saved=restoreGame(candidate,raw);
+  // Reject validator fallbacks instead of treating malformed data as a saved round.
+  if(JSON.stringify(saved)!==JSON.stringify(createGame(candidate)))return saved;
+  return Object.keys(saved).every(key=>JSON.stringify(raw[key])===JSON.stringify(saved[key]))?saved:null;
 }
-
+function unfinishedPractice(index) {
+  const saved=savedPractice(index);
+  return saved?.status==='playing';
+}
+function practiceIndices() {
+  const current=getDaily(PUZZLES),todayIndex=PUZZLES.findIndex(item=>item.id===current.puzzle.id);
+  const indices=practiceCandidates('tradeoff',current.dateKey,PUZZLES.length,{excludeIndices:[todayIndex]});
+  const saved=readData('daily:'+current.dateKey,null);
+  if(todayIndex>=0&&saved?.puzzleId===current.puzzle.id&&restoreGame(current.puzzle,saved).status!=='playing'&&!indices.includes(todayIndex))indices.push(todayIndex);
+  return indices;
+}
+function canPractice(index) {return Number.isInteger(index)&&Boolean(PUZZLES[index])&&(practiceIndices().includes(index)||unfinishedPractice(index));}
 function showPractice() {
-  const cards = PUZZLES.map((candidate, index) => {
-    const saved = readData(`practice:${candidate.id}`, null);
-    const done = saved?.status === 'won';
-    const locked = isDailyLocked(candidate);
-    return `<button class="practice-choice${mode === 'practice' && puzzle.id === candidate.id ? ' current' : ''}${done ? ' done' : ''}${locked ? ' daily-locked' : ''}" data-action="practice" data-index="${index}" aria-label="${locked ? 'Today’s daily, play it in The daily tab' : `Practice ${index + 1}, ${esc(candidate.title)}, ${esc(candidate.difficulty)}${done ? ', solved' : ''}`}" ${locked ? 'disabled title="Today’s daily is waiting in The daily tab"' : ''}>${locked ? '☀' : String(index + 1).padStart(2,'0')}</button>`;
+  const fresh=new Set(practiceIndices()),available=PUZZLES.map((_,index)=>index).filter(index=>fresh.has(index)||unfinishedPractice(index));
+  const cards=available.map(index=>{
+    const candidate=PUZZLES[index],saved=savedPractice(index),done=saved?.status==='won',resume=unfinishedPractice(index);
+    return `<button class="practice-choice${mode==='practice'&&puzzle.id===candidate.id?' current':''}${done?' done':''}" data-action="practice" data-index="${index}" aria-label="${resume?'Resume practice':'Practice'} ${index+1}, ${esc(candidate.title)}, ${esc(candidate.difficulty)}${done?', solved':''}">${String(index+1).padStart(2,'0')}</button>`;
   }).join('');
-  openModal(`<p class="dialog-eyebrow">FOR THE ONE-MORE-PUZZLE PEOPLE</p><h2 class="dialog-title" id="dialog-title">Keep the letters moving.</h2><p class="practice-heading">${PUZZLES.length} boards. All the time you need.</p><button class="primary-button practice-random" data-action="next">Pick one for me <span aria-hidden="true">↗</span></button><div class="practice-grid">${cards}</div><p class="puzzle-preview-label">✓ = solved · ☀ = today’s daily · Your progress saves as you go.</p>`);
+  openModal(`<p class="dialog-eyebrow">FOR THE ONE-MORE-PUZZLE PEOPLE</p><h2 class="dialog-title" id="dialog-title">Keep the letters moving.</h2><p class="practice-heading">${available.length} boards available now.</p><button class="primary-button practice-random" data-action="next">Pick one for me <span aria-hidden="true">↗</span></button><div class="practice-grid">${cards}</div><p class="puzzle-preview-label">✓ = solved · Upcoming dailies stay fresh. Saved rounds can be resumed; finish today’s daily to replay it.</p>`);
 }
 
 function loadPractice(index) {
   const candidate = PUZZLES[index];
-  if (!candidate || isDailyLocked(candidate)) return;
+  if (!candidate || !canPractice(index)) return;
   clearTimeout(resultTimer);
   clearTimeout(feedbackTimer);
   mode = 'practice';
   puzzle = candidate;
-  game = restoreGame(puzzle, readData(`practice:${puzzle.id}`, null, true));
+  game = savedPractice(index, true) || createGame(puzzle);
   selected = null; hinted = []; feedback = '';
   closeModal();
   render();
@@ -285,8 +299,8 @@ function loadPractice(index) {
 }
 
 function nextPractice() {
-  let candidates = PUZZLES.map((p,i) => ({p,i})).filter(({p}) => p.id !== puzzle.id && !isDailyLocked(p));
-  const unseen = candidates.filter(({p}) => readData(`practice:${p.id}`, null)?.status !== 'won');
+  let candidates = practiceIndices().map(i => ({p:PUZZLES[i],i})).filter(({p}) => p.id !== puzzle.id);
+  const unseen = candidates.filter(({i}) => savedPractice(i)?.status !== 'won');
   if (unseen.length) candidates = unseen;
   if (!candidates.length) return;
   const choice = candidates[Math.floor(Math.random() * candidates.length)];
@@ -305,7 +319,7 @@ function loadDaily() {
 }
 
 function showOptions() {
-  openModal(`<p class="dialog-eyebrow">A LITTLE ROOM TO THINK</p><h2 class="dialog-title" id="dialog-title">Your next move.</h2><div class="option-list"><button data-action="help"><span>How to play<small>The rules, the swaps, and the perfect trade.</small></span><span>↗</span></button><button data-action="browse"><span>Explore practice<small>${PUZZLES.length} boards to get your letters around.</small></span><span>↗</span></button>${mode === 'practice' ? '<button data-action="restart"><span>Restart this practice<small>Clear this board’s moves and progress.</small></span><span>↺</span></button>' : ''}${game.status === 'playing' ? '<button data-action="confirm-reveal" class="danger-option"><span>Reveal the answers<small>This puzzle will be marked as revealed.</small></span><span>↗</span></button>' : ''}</div><div class="dialog-action"><button class="secondary-button" data-action="close">Back to the board</button></div>`);
+  openModal(`<p class="dialog-eyebrow">A LITTLE ROOM TO THINK</p><h2 class="dialog-title" id="dialog-title">Your next move.</h2><div class="option-list"><button data-action="help"><span>How to play<small>The rules, the swaps, and the perfect trade.</small></span><span>↗</span></button><button data-action="browse"><span>Explore practice<small>Available boards and saved rounds, with upcoming dailies kept fresh.</small></span><span>↗</span></button>${mode === 'practice' ? '<button data-action="restart"><span>Restart this practice<small>Clear this board’s moves and progress.</small></span><span>↺</span></button>' : ''}${game.status === 'playing' ? '<button data-action="confirm-reveal" class="danger-option"><span>Reveal the answers<small>This puzzle will be marked as revealed.</small></span><span>↗</span></button>' : ''}</div><div class="dialog-action"><button class="secondary-button" data-action="close">Back to the board</button></div>`);
 }
 
 function confirmReveal() {

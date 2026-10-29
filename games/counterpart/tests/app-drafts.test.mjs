@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../../deepseek-runtime/practice-calendar.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -30,13 +31,13 @@ function openApp(saved = memoryStorage(), session = memoryStorage()) {
   };
   const now = new Date('2026-10-20T12:00:00Z');
   const engine = {...rules, getDaily: items => rules.getDaily(items, now), getDateKey: () => rules.getDateKey(now)};
-  const context = createContext({PUZZLES, engine, localStorage:saved, sessionStorage:session,
+  const context = createContext({practiceCandidates,PUZZLES, engine, localStorage:saved, sessionStorage:session,
     document:{getElementById:node, querySelector:node, addEventListener(){}, documentElement:{dataset:{}}, body:node('body')},
     window:{addEventListener(){}}, navigator:{}, location:{pathname:`/games/${slug}/`},
     CSS:{escape:value=>value}, matchMedia:()=>({matches:true}), requestAnimationFrame:fn=>fn(),
     setTimeout:()=>1, clearTimeout(){}, setInterval:()=>1,
   });
-  runInContext(readFileSync(new URL('../shell.mjs',import.meta.url),'utf8').replace(/^export /gm,''), context);
+  runInContext(readFileSync(new URL('../shell.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,''), context);
   runInContext(readFileSync(new URL('../app.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,''), context);
   function dispatch(attribute, value) {
     node('dialog-content').emit('click',{target:{closest:selector => selector===`[${attribute}]` ? {dataset:{[attribute.slice(5)]:String(value)}} : null}});

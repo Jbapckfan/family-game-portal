@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../../deepseek-runtime/practice-calendar.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -65,7 +66,7 @@ function openApp(storage) {
     addEventListener() {},
   };
   document.activeElement = element();
-  const context = createContext({
+  const context = createContext({practiceCandidates,
     ...engine, PUZZLES, document, localStorage: storage,
     window: { addEventListener() {} },
     navigator: {},

@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../../deepseek-runtime/practice-calendar.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -8,7 +9,7 @@ import * as engine from '../engine.mjs';
 // Exercise the actual adapter, shell, and engine together. The stand-ins model
 // only browser facilities; rules, rendering, scoring, and storage are production code.
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const shellSource = readFileSync(new URL('../shell.mjs', import.meta.url), 'utf8').replace(/^export /gm, '');
+const shellSource = readFileSync(new URL('../shell.mjs', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
 const appSource = readFileSync(new URL('../app.mjs', import.meta.url), 'utf8').replace(/^import .+;\n/gm, '');
 const prefix = 'switchpath:v1:';
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -68,7 +69,7 @@ function openApp(saved = new Map()) {
     getDaily: puzzles => engine.getDaily(puzzles, new Date('2026-10-20T12:00:00Z')),
     getDateKey: () => '2026-10-20',
   };
-  const context = createContext({
+  const context = createContext({practiceCandidates,
     PUZZLES, engine: timedEngine, document,
     localStorage: { getItem: key => saved.get(key) ?? null, setItem: (key, value) => saved.set(key, value) },
     navigator: {}, window: { addEventListener() {} }, location: { pathname: '/games/switchpath/' },

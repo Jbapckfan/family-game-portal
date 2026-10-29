@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 /** Shared daily/practice shell. Game rules and game-specific rendering stay in the adapter. */
 export const esc = value => String(value).replace(/[&<>"']/g, character => ({
   '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
@@ -242,32 +243,52 @@ export function createShell(config) {
     const stats = engine.getStats(records, engine.getDateKey());
     openDialog(`<p class="dialog-kicker">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">Your ${esc(name)} record.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played ? Math.round(stats.won / stats.played * 100) : 0}%</div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div>${config.statsExtra?.(stats) || ''}<p class="fineprint">Daily results are saved in this browser.<br>Only solved daily puzzles extend a streak.<br>Practice is separate. Clearing browser data removes progress.</p>`);
   }
-  function canPractice(index) {
+  function savedPractice(index, acceptGame = false) {
     const candidate = puzzles[index];
-    if (!candidate) return false;
-    const current = engine.getDaily(puzzles);
-    return candidate.id !== current.puzzle.id || isTerminal(engine.restoreGame(current.puzzle, read('daily:' + current.dateKey, null)));
+    if (!candidate) return null;
+    const raw = read('practice:' + candidate.id, null, acceptGame);
+    if (raw?.puzzleId !== candidate.id) return null;
+    const saved = engine.restoreGame(candidate, raw);
+    // Validators return a fresh state for malformed saves; that fallback must
+    // not count as an already-opened round that can bypass the reservation.
+    if (JSON.stringify(saved) !== JSON.stringify(engine.createGame(candidate))) return saved;
+    return Object.keys(saved).every(key => JSON.stringify(raw[key]) === JSON.stringify(saved[key])) ? saved : null;
+  }
+  function unfinishedPractice(index) {
+    const saved = savedPractice(index);
+    return saved?.status === 'playing';
+  }
+  function practiceIndices() {
+    const current = engine.getDaily(puzzles), todayIndex = puzzles.findIndex(item => item.id === current.puzzle.id);
+    const indices = practiceCandidates(slug, current.dateKey, puzzles.length, {excludeIndices:[todayIndex]});
+    const saved = read('daily:' + current.dateKey, null);
+    if (todayIndex >= 0 && saved?.puzzleId === current.puzzle.id && isTerminal(engine.restoreGame(current.puzzle, saved)) && !indices.includes(todayIndex)) indices.push(todayIndex);
+    return indices;
+  }
+  function canPractice(index) {
+    return Number.isInteger(index) && Boolean(puzzles[index]) && (practiceIndices().includes(index) || unfinishedPractice(index));
   }
   function showPractice() {
-    openDialog(`<p class="dialog-kicker">ANOTHER GOOD CHALLENGE</p><h2 class="dialog-title" id="dialog-title">Pick your next puzzle.</h2><p class="result-copy">Practice at your own pace.<br>Your daily score stays separate.</p><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${puzzles.map((item,index) => {
-      const done = isTerminal(engine.restoreGame(item, read('practice:' + item.id, null)));
-      const allowed = canPractice(index);
-      return `<button class="practice-choice${done ? ' done' : ''}" data-practice="${index}" ${allowed ? '' : 'disabled'} aria-label="Practice ${index + 1}: ${esc(item.title)}${done ? ', completed' : ''}${allowed ? '' : ', reserved for today’s daily'}">${String(index + 1).padStart(2, '0')}</button>`;
-    }).join('')}</div><p class="fineprint">${puzzles.length} prepared puzzles in this edition. The daily collection eventually repeats. Today’s board stays reserved until you finish it.</p>`);
+    const fresh = new Set(practiceIndices());
+    const available = puzzles.map((_, index) => index).filter(index => fresh.has(index) || unfinishedPractice(index));
+    openDialog(`<p class="dialog-kicker">ANOTHER GOOD CHALLENGE</p><h2 class="dialog-title" id="dialog-title">Pick your next puzzle.</h2><p class="result-copy">Practice at your own pace.<br>Your daily score stays separate.</p><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${available.map(index => {
+      const item = puzzles[index], saved = savedPractice(index), done = saved && isTerminal(saved), resume = unfinishedPractice(index);
+      return `<button class="practice-choice${done ? ' done' : ''}" data-practice="${index}" aria-label="${resume ? 'Resume practice' : 'Practice'} ${index + 1}: ${esc(item.title)}${done ? ', completed' : ''}">${String(index + 1).padStart(2, '0')}</button>`;
+    }).join('')}</div><p class="fineprint">${available.length} available now. Upcoming dailies stay fresh. Saved rounds can be resumed; finish today’s daily to replay it.</p>`);
   }
   function reducedMotion() { return matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function resetView(clearDraft = false) { config.reset?.({clearDraft}); feedback = ''; feedbackTone = null; clearTimeout(resultTimer); }
   function loadPractice(index) {
     if (!Number.isInteger(index) || !canPractice(index)) return;
     mode = 'practice'; puzzle = puzzles[index];
-    game = engine.restoreGame(puzzle, read('practice:' + puzzle.id, null, true));
+    game = savedPractice(index, true) || engine.createGame(puzzle);
     resetView(); render(); lastFocus = null; closeDialog();
     ($('game-topline') || document.querySelector('.game-topline'))?.scrollIntoView({block:'start', behavior:reducedMotion() ? 'instant' : 'smooth'});
     announce(`Practice ${index + 1}. ${puzzle.title}.`);
   }
   function randomPractice() {
-    const available = puzzles.map((item,index) => ({item,index})).filter(({item,index}) => canPractice(index) && item.id !== puzzle.id);
-    const fresh = available.filter(({item}) => !isTerminal(engine.restoreGame(item, read('practice:' + item.id, null))));
+    const available = practiceIndices().map(index => ({item:puzzles[index],index})).filter(({item}) => item.id !== puzzle.id);
+    const fresh = available.filter(({index}) => {const saved = savedPractice(index); return !saved || !isTerminal(saved);});
     const choices = fresh.length ? fresh : available;
     if (choices.length) loadPractice(choices[Math.floor(Math.random() * choices.length)].index);
     else showPractice();

@@ -4,11 +4,12 @@ import { createShell, esc } from './shell.mjs';
 
 const $=id=>document.getElementById(id);
 let nounId=null,verbId=null,draft='',error='';
+let draftKey=null;
 const app=createShell({
   lesson:{question:'A kitchen vessel · Put a plant in a container. Which one word fits both meanings?',choices:[{label:'POT',correct:true,why:'A pot is a vessel; to pot is to put a plant in a container.'},{label:'PAN',correct:false,why:'A pan can be a vessel, but that does not fit the plant action here.'},{label:'PLANT',correct:false,why:'Plant fits the action, but it is not the kitchen vessel in this example.'}]},
   slug:'second-sense',name:'Second Sense',puzzles:PUZZLES,engine,
   sibling:{slug:'sideways',name:'Sideways',url:'https://alford-daily.jbapckfan.chatgpt.site/games/sideways/'},
-  reset(){nounId=null;verbId=null;draft='';error='';},
+  reset(){nounId=null;verbId=null;draft='';error='';draftKey=null;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedNouns.length}),
   help:`<p class="dialog-kicker">ONE WORD. TWO WAYS TO READ IT.</p><h2 class="dialog-title" id="dialog-title">Find its second sense.</h2><p class="dialog-body">Five common words are hiding behind ten meanings. Each word has <strong>one noun sense and one verb sense</strong> on the board.</p><div class="help-example">A kitchen vessel<br><strong>POT</strong><br>Put a plant in a container</div><ol class="help-list"><li>Pick a noun clue from the left and a verb clue from the right.</li><li>Type the single word that fits both. The spelling must be the same; the pronunciation may change.</li><li>Check your word. A correct answer locks both meanings and explains the connection.</li></ol><p class="dialog-body">Wrong checks leave every clue available. Change your selections freely. A first-letter hint also shows the word length and is noted in your result. <strong>Five checks without hints is perfect.</strong></p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Look twice →</button></div>`,
   about:'Second Sense pairs two different meanings of the same spelling. Match a noun definition with a verb definition, then retrieve the shared word yourself. Some words, such as WIND, change pronunciation between senses. This edition combines 75 curated noun/verb pairs into 180 different boards. Familiar meanings recur beside different clues; matching spelling is what matters.',
@@ -19,9 +20,19 @@ const app=createShell({
   },
   render:renderGame,
 });
+function rememberDraft(){try{sessionStorage.setItem(draftKey,JSON.stringify({nounId,verbId,draft}));}catch{}}
 function renderGame(api,opts={}){
   const {game,puzzle}=api;const active=game.status==='playing';
   const usedNouns=new Set(game.placements.map(item=>item.nounId));const usedVerbs=new Set(game.placements.map(item=>item.verbId));
+  const key=`second-sense:ui:v1:${api.mode==='daily'?api.daily.dateKey:'practice'}:${puzzle.id}`;
+  if(draftKey!==key){
+    draftKey=key;let saved;try{saved=JSON.parse(sessionStorage.getItem(key));}catch{}
+    nounId=puzzle.nouns.some(item=>item.id===saved?.nounId)?saved.nounId:null;
+    verbId=puzzle.verbs.some(item=>item.id===saved?.verbId)?saved.verbId:null;
+    draft=typeof saved?.draft==='string'?saved.draft.slice(0,24):'';
+  }
+  if(usedNouns.has(nounId))nounId=null;if(usedVerbs.has(verbId))verbId=null;
+  if(!active){nounId=null;verbId=null;draft='';rememberDraft();}
   const card=(item,type)=>{
     const used=(type==='noun'?usedNouns:usedVerbs).has(item.id);const chosen=(type==='noun'?nounId:verbId)===item.id;
     const pair=type==='noun'&&game.hintedNouns.includes(item.id)?puzzle.pairs.find(row=>row.nounId===item.id):null;
@@ -52,7 +63,7 @@ function renderGame(api,opts={}){
 function select(type,id){
   if(app.game.status!=='playing')return;
   if(type==='noun')nounId=nounId===id?null:id;else verbId=verbId===id?null:id;
-  error='';app.sound('select');app.render({clue:{type,id}});
+  error='';rememberDraft();app.sound('select');app.render({clue:{type,id}});
   if(nounId&&verbId)app.notice('Two meanings selected. What single word fits both?');
   else app.notice(`Choose ${nounId?'a verb':verbId?'a noun':'one noun and one verb'} clue to make your pair.`);
 }
@@ -63,7 +74,7 @@ function check(event){
   let message;
   if(result.accepted){message=`${result.word}. Two senses, one word.`;nounId=null;verbId=null;draft='';error='';}
   else{error=({'noun-only':'That word fits the noun clue. Try pairing it with a different verb.', 'verb-only':'That word fits the verb clue. Try pairing it with a different noun.', 'pair-only':'Those clues form a pair. Look for one spelling that fits both meanings.'})[result.feedback]||'That word doesn’t fit both selected meanings. Try another word or clue pairing.';message=error;}
-  app.commit(result.state,{message,tone:result.accepted?(result.state.status==='won'?'win':'fit'):'miss',opts:result.accepted?{}:{type:true}});
+  rememberDraft();app.commit(result.state,{message,tone:result.accepted?(result.state.status==='won'?'win':'fit'):'miss',opts:result.accepted?{}:{type:true}});
   if(result.accepted&&app.game.status==='playing')$('noun-clues').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }
 function hint(){
@@ -72,7 +83,7 @@ function hint(){
 }
 $('noun-clues').addEventListener('click',event=>{const clue=event.target.closest('[data-noun]');if(clue)select('noun',clue.dataset.noun);});
 $('verb-clues').addEventListener('click',event=>{const clue=event.target.closest('[data-verb]');if(clue)select('verb',clue.dataset.verb);});
-$('answer-input').addEventListener('input',event=>{draft=event.target.value;error='';$('sense-error').hidden=true;$('sense-check').disabled=!nounId||!verbId||!draft.trim();});
+$('answer-input').addEventListener('input',event=>{draft=event.target.value;rememberDraft();error='';$('sense-error').hidden=true;$('sense-check').disabled=!nounId||!verbId||!draft.trim();});
 $('answer-form').addEventListener('submit',check);
 $('sense-hint').addEventListener('click',hint);
 $('feedback').textContent='Read the clues twice. A familiar word is living two lives.';

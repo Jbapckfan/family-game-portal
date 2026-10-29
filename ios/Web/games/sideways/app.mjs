@@ -50,6 +50,16 @@ function hint(){
 }
 $('column-clues').addEventListener('click',event=>{const choice=event.target.closest('[data-follow-column]');if(!choice)return;const column=Number(choice.dataset.followColumn);if(column>=0&&column<4){followedColumn=column;app.render();$('column-clues').querySelector(`[data-follow-column="${column}"]`)?.focus({preventScroll:true});}});
 $('puzzle').addEventListener('click',event=>{const button=event.target.closest('[data-rotate]');if(button)rotate(Number(button.dataset.rotate),Number(button.dataset.direction));});
+$('puzzle').addEventListener('keydown',event=>{
+  const button=event.target.closest('[data-rotate]');
+  if(!button||event.ctrlKey||event.metaKey||event.altKey||app.game.status!=='playing')return;
+  const row=Number(button.dataset.rotate),direction=Number(button.dataset.direction);
+  if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();rotate(row,event.key==='ArrowLeft'?-1:1);}
+  else if(event.key==='ArrowUp'||event.key==='ArrowDown'){
+    event.preventDefault();const next=Math.max(0,Math.min(4,row+(event.key==='ArrowUp'?-1:1)));
+    $('puzzle').querySelector(`[data-rotate="${next}"][data-direction="${direction}"]`)?.focus({preventScroll:true});
+  }
+});
 $('shift-check').addEventListener('click',check);
 $('shift-hint').addEventListener('click',hint);
 $('shift-undo').addEventListener('click',()=>{const next=engine.undoMove(app.puzzle,app.game);if(next!==app.game){hintMessage='';app.commit(next,{message:'Last shift undone. Your move and hint counts are not reduced.'});}});

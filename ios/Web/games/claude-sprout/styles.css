@@ -1,4 +1,5 @@
 /* Sprout · an ascending garden of words, with a seed bed below. */
+.sprout-rack-tile.soil.chosen{opacity:1;outline:2px solid #664b29;outline-offset:2px}.sprout-build-status{text-align:center}
 body[data-game-id="claude-sprout"]{--accent:#37735a;--accent-soft:#e3eedf;--game-ink:#27503f;--soft:#e3eedf}
 .sprout-panel{background:#f9fbf5;border-color:#c3d4bc;box-shadow:0 5px 0 #dce6d4}
 .sprout-progress{justify-content:space-between;gap:8px;font-size:13px;margin-bottom:20px;color:#27503f}

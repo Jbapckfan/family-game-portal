@@ -1,4 +1,5 @@
 /* Tangle · three spools and a numbered string of tactile beads. */
+.tangle-selection-detail{text-align:center;overflow-wrap:anywhere}
 body[data-game-id="claude-tangle"]{--accent:#83529b;--accent-soft:#efe4f5;--game-ink:#573264;--soft:#efe4f5}
 .tangle-panel{background:#fcf8fd;border-color:#d4bfdf;box-shadow:0 5px 0 #e7d9ee}
 .tangle-hud{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;font-weight:700;margin-bottom:19px;color:#573264}

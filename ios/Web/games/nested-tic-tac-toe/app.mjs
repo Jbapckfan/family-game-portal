@@ -253,8 +253,12 @@ function boot() {
         const value = state.cells[board][cell];
         mark.textContent = symbol(value);
         mark.className = `mini-mark${value ? ` mark-${value.toLowerCase()}` : ''}${last?.board === board && last.cell === cell ? ' last-move' : ''}`;
+        mark.style.gridArea = `${Math.floor(cell/3)+1} / ${cell%3+1}`;
       }
       const overlay = button.querySelector('.board-overlay');
+      const recentSquare = button.querySelector('.recent-square-marker');
+      recentSquare.hidden = last?.board !== board;
+      if(last?.board === board){recentSquare.style.gridArea=`${Math.floor(last.cell/3)+1} / ${last.cell%3+1}`;recentSquare.className=`recent-square-marker mark-${lastPlayer.toLowerCase()}`;}
       overlay.hidden = !result;
       overlay.querySelector('b').textContent = result === 'draw' ? '—' : symbol(result);
       overlay.querySelector('span').textContent = result === 'draw' ? 'Drawn' : result === 'X' ? 'Yours' : 'AI';
@@ -292,7 +296,7 @@ function boot() {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'mini-board';
-    button.innerHTML = `<span class="board-state"></span><span class="mini-grid" aria-hidden="true">${'<span class="mini-mark"></span>'.repeat(9)}</span><span class="board-overlay" aria-hidden="true" hidden><b></b><span></span></span><span class="board-name">${POSITIONS[board]}</span>`;
+    button.innerHTML = `<span class="board-state"></span><span class="mini-grid" aria-hidden="true">${'<span class="mini-mark"></span>'.repeat(9)}<span class="recent-square-marker" hidden></span></span><span class="board-overlay" aria-hidden="true" hidden><b></b><span></span></span><span class="board-name">${POSITIONS[board]}</span>`;
     button.addEventListener('click',() => inspectBoard(board));
     boardButtons.push(button);
     $('macro-board').append(button);

@@ -15,3 +15,5 @@
 @media(max-width:700px){.recent-move{align-items:flex-start;flex-direction:column;padding:11px 12px}.recent-move-actions{flex:none;width:100%}.recent-move-actions button{flex:1;white-space:normal}}
 @media(forced-colors:active){.mini-mark.last-move{outline-color:Highlight}.recent-move{border-left-color:Highlight}}
 .mini-grid{grid-template-rows:repeat(3,minmax(0,1fr))}
+.mini-mark.last-move{outline:0;background:transparent}.recent-square-marker{position:relative;z-index:3;border:2px solid currentColor;border-radius:4px;min-width:0;min-height:0;margin:1px}
+@media(forced-colors:active){.recent-square-marker{border-color:Highlight}}

@@ -15,10 +15,10 @@ mountDailyGame({
   getStatus: E.getStatus, hint: E.hint, reveal: E.reveal, summarize: E.summarize,
   render({ root, puzzle: p, state: s, commit, announce }) {
     const status = E.getStatus(p, s), finished = status !== 'playing';
-    const codes = E.cipherLetters(p);
+    const codes = E.cipherLetters(p),assigned=Object.fromEntries(Object.entries(s.guesses).map(([code,plain])=>[plain,code]));
     root.tabIndex = 0;
     root.setAttribute('aria-label', 'Cipher puzzle. Select a coded letter, then choose its answer.');
-    const phrase = p.encoded.split(' ').map(word => `<span class="cipher-word">${[...word].map(code => {
+    const phrase = p.encoded.split(' ').map((word,index) => `<span class="cipher-word" role="group" aria-label="Word ${index+1}, ${(word.match(/[A-Z]/g)||[]).length} coded letters">${[...word].map(code => {
       if (!/^[A-Z]$/.test(code)) return `<span class="cipher-punctuation">${esc(code)}</span>`;
       const known = s.locked.includes(code), guessed = s.guesses[code] || '·';
       return `<button type="button" class="cipher-cell ${code === s.selected ? 'selected' : ''} ${known ? 'given' : ''} ${finished ? 'complete' : ''}" data-code="${code}" aria-pressed="${code === s.selected}" aria-label="Code ${code}, ${known ? 'confirmed ' : 'guess '}${guessed === '·' ? 'blank' : guessed}" ${finished || known ? 'disabled' : ''}><span class="cipher-guess">${guessed}</span><span class="cipher-code">${code}</span></button>`;
@@ -29,12 +29,12 @@ mountDailyGame({
       <p class="muted cipher-caption">${p.givens.length} given letters · ${s.hints} hint${s.hints === 1 ? '' : 's'} used</p>
       ${finished ? `<p class="cipher-answer">${esc(p.phrase)}</p>` : `<p class="status-note">Selected code: <strong>${esc(s.selected || '—')}</strong>${s.selected ? ` → ${esc(s.guesses[s.selected] || '?')}` : ''}</p>`}
       <div class="cipher-keyboard" role="group" aria-label="Answer alphabet">
-        ${[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(letter => `<button type="button" class="button cipher-key ${Object.values(s.guesses).includes(letter) ? 'assigned' : ''}" data-letter="${letter}" aria-label="Answer letter ${letter}" ${finished ? 'disabled' : ''}>${letter}</button>`).join('')}
+        ${[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(letter => `<button type="button" class="button cipher-key ${assigned[letter] ? 'assigned' : ''}" data-letter="${letter}" aria-label="Answer letter ${letter}${assigned[letter]?`, assigned to code ${assigned[letter]}${s.locked.includes(assigned[letter])?', confirmed':', unconfirmed guess'}`:', available'}" ${finished ? 'disabled' : ''}>${letter}</button>`).join('')}
       </div>
       <div class="actions"><button type="button" class="button" data-action="erase" ${finished ? 'disabled' : ''}>Erase guess</button><button type="button" class="button" data-action="clear" ${finished ? 'disabled' : ''}>Clear guesses</button></div>
       <p class="muted">Confirmed letters stay put. The other letters are yours to work out.</p>
     </section>`;
-    const keepFocus = () => root.focus({ preventScroll: true });
+    const keepFocus = () => { if(root.querySelector('button:not(:disabled)'))root.focus({ preventScroll: true }); };
     const enter = letter => {
       const result = E.guess(p, s, s.selected, letter);
       if (result.state === s) announce(result.message); else { commit(result.state, result.message); keepFocus(); }

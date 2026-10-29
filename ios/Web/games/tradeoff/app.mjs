@@ -10,6 +10,7 @@ if (window.webkit?.messageHandlers?.alford) document.body.classList.add('native-
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PREFIX = 'tradeoff:v1:';
+const memory=new Map(),dirtyKeys=new Set(),acceptedSaves=new Map();
 const dialog = $('game-dialog');
 let storageWarning = false;
 let toastTimer;
@@ -23,22 +24,26 @@ let feedback = '';
 let mode = 'daily';
 let daily = getDaily(PUZZLES);
 let puzzle = daily.puzzle;
-let game = restoreGame(puzzle, readData(`daily:${daily.dateKey}`, null));
+let game = restoreGame(puzzle, readData(`daily:${daily.dateKey}`, null, true));
 let records = readData('records', {});
 if (!records || typeof records !== 'object' || Array.isArray(records)) records = {};
 const settings = readData('settings', {});
 let soundOn = settings?.sound === true;
 
-function readData(key, fallback) {
-  try {
-    const value = localStorage.getItem(PREFIX + key);
-    return value === null ? fallback : JSON.parse(value);
-  } catch { return fallback; }
+function readData(key, fallback, acceptGame=false) {
+  if(dirtyKeys.has(key)&&memory.has(key))return memory.get(key);
+  try { const raw=localStorage.getItem(PREFIX+key);const value=raw===null?null:JSON.parse(raw);
+    if(acceptGame)acceptedSaves.set(key,raw);
+    if(value!==null){memory.set(key,value);return value;}
+  }catch{}
+  return memory.has(key)?memory.get(key):fallback;
 }
 
-function writeData(key, value) {
-  try { localStorage.setItem(PREFIX + key, JSON.stringify(value)); return true; }
+function writeData(key, value, readable=true) {
+  memory.set(key,value);
+  try { if(!readable)throw Error('Unverified storage');localStorage.getItem(PREFIX+key);const raw=JSON.stringify(value);localStorage.setItem(PREFIX+key,raw);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;return true; }
   catch {
+    dirtyKeys.add(key);
     if (!storageWarning) {
       storageWarning = true;
       toast('You can play, but this browser couldn’t save your progress.');
@@ -49,6 +54,11 @@ function writeData(key, value) {
 
 function saveGame() {
   const key = mode === 'daily' ? `daily:${daily.dateKey}` : `practice:${puzzle.id}`;
+  let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
+  if(raw===undefined){writeData(key,game,false);return;}
+  if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
+    try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;selected=null;hinted=[];feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
+  }
   // The first completed daily is final, including when another tab gets there first.
   if (mode === 'daily') {
     const saved = restoreGame(puzzle, readData(key, null));
@@ -191,7 +201,8 @@ function takeHint() {
   hinted = [outcome.hint.a, outcome.hint.b];
   setFeedback('Trade the two glowing letters. You’ve got this.');
   saveGame();
-  render();
+  render({focusCell:outcome.hint.a});
+  $('board').querySelector('.hinted')?.scrollIntoView({block:'nearest',behavior:'auto'});
   announce(`Nudge ${game.hints}: trade ${game.board[outcome.hint.a.row][outcome.hint.a.col]}, letter ${outcome.hint.a.col + 1} in word ${outcome.hint.a.row + 1}, with ${game.board[outcome.hint.b.row][outcome.hint.b.col]}, letter ${outcome.hint.b.col + 1} in word ${outcome.hint.b.row + 1}.`);
 }
 
@@ -258,7 +269,7 @@ function loadPractice(index) {
   clearTimeout(feedbackTimer);
   mode = 'practice';
   puzzle = candidate;
-  game = restoreGame(puzzle, readData(`practice:${puzzle.id}`, null));
+  game = restoreGame(puzzle, readData(`practice:${puzzle.id}`, null, true));
   selected = null; hinted = []; feedback = '';
   closeModal();
   render();
@@ -279,7 +290,7 @@ function loadDaily() {
   clearTimeout(resultTimer);
   clearTimeout(feedbackTimer);
   mode = 'daily'; daily = getDaily(PUZZLES); puzzle = daily.puzzle;
-  game = restoreGame(puzzle, readData(`daily:${daily.dateKey}`, null));
+  game = restoreGame(puzzle, readData(`daily:${daily.dateKey}`, null, true));
   selected = null; hinted = []; feedback = '';
   closeModal(); render();
   announce(`The daily, number ${daily.number}. ${formatDate(daily.dateKey)}.`);

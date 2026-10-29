@@ -43,8 +43,10 @@ function renderGame(api,opts={}){
   $('scan-preview').innerHTML=`<span class="${selected[0]?'chosen':''}">${selected[0]||'?'}</span><b>+</b><span class="${selected[1]?'chosen':''}">${selected[1]||'?'}</span>`;
   $('scan-preview').setAttribute('aria-label',selected.length?`Selected letters: ${selected.join(' and ')}`:'Choose two letters');
   $('letter-bank').innerHTML=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(letter=>`<button class="letter-key${selected.includes(letter)?' selected':''}" data-letter="${letter}" aria-label="Letter ${letter}" aria-pressed="${selected.includes(letter)}" ${canScan?'':'disabled'}>${letter}</button>`).join('');
-  $('scan-button').disabled=!canScan||selected.length!==2;
-  $('scan-button').innerHTML=!active?'Round complete':selected.length===2?`Scan ${selected.join(' + ')} <span aria-hidden="true">↗</span>`:game.scans.length===3?'Make your pick ↓':'Scan letters ↗';
+  $('letter-bank').hidden=!canScan;
+  $('scan-preview').hidden=!canScan;
+  $('scan-button').disabled=!active||(canScan&&selected.length!==2);
+  $('scan-button').innerHTML=!active?'Round complete':!canScan?'Back to the words ↑':selected.length===2?`Scan ${selected.join(' + ')} <span aria-hidden="true">↗</span>`:'Scan letters ↗';
   $('scan-history').innerHTML=Array.from({length:active?Math.min(3,game.scans.length+1):game.scans.length},(_,index)=>{
     const scan=game.scans[index];
     return scan?`<div class="scan-result" aria-label="Scan ${index+1}: ${scan.letters.split('').join(' and ')}, ${scan.count} present"><span class="scan-index">${index+1}</span><span class="scan-letters">${scan.letters[0]} <b>+</b> ${scan.letters[1]}</span><span class="scan-count count-${scan.count}">${scan.count}</span><span class="scan-explanation">${esc(scanDescription(scan))}</span></div>`:`<div class="scan-result empty" aria-label="Scan ${index+1} not yet used"><span class="scan-index">${index+1}</span><span class="scan-letters">— + —</span><span class="scan-count">?</span><span class="scan-explanation">${index===game.scans.length&&canScan?'Your next question.':'A little more to learn.'}</span></div>`;
@@ -59,7 +61,7 @@ function renderGame(api,opts={}){
     return `<div class="candidate${off&&active?' crossed':''}${answer?' answer':''}${wrong?' wrong-pick':''}"><button class="candidate-word" ${markMode?`data-mark="${word}" aria-pressed="${off}"`:`data-pick="${word}"`} aria-label="${label}" ${!active||(!markMode&&off)?'disabled':''}>${word}${answer?'<span class="word-badge" aria-hidden="true">✓</span>':wrong?'<span class="word-badge" aria-hidden="true">×</span>':''}${active&&markMode?`<span class="pencil-symbol" aria-hidden="true">${off?'↶':'×'}</span>`:''}</button></div>`;
   }).join('');
   $('hint-button').disabled=game.hints>0||!active;
-  $('hint-button').textContent=game.hints?'✦ Hint used':'✦ Suggest a scan';
+  $('hint-button').textContent=game.hints?'✦ Hint used':canScan?'✦ Suggest a scan':'✦ Read the evidence';
   $('hint-preview').hidden=!savedHint||!active;
   $('hint-preview').textContent=savedHint?`Your hint · ${savedHint.scanCount===0?'before your first scan':`after scan ${savedHint.scanCount}`}: ${savedHint.message}`:'';
   if(opts.letter)$('letter-bank').querySelector(`[data-letter="${opts.letter}"]`)?.focus({preventScroll:true});
@@ -74,6 +76,12 @@ function chooseLetter(letter){
   app.notice(selected.length===2?`${selected.join(' + ')} ready. Scan when you’re sure.`:'Choose two different letters to scan.');
 }
 function scan(){
+  if(app.game.status==='playing'&&app.game.scans.length===3){
+    $('puzzle').scrollIntoView({block:'nearest',behavior:'auto'});
+    $('puzzle').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+    app.notice('All three scans are recorded. Compare the words with every result, then confirm your final pick.');
+    return;
+  }
   const result=engine.submitScan(app.puzzle,app.game,selected.join(''));
   if(!result.changed){if(result.reason==='repeated')app.notice('You already scanned that pair. Pick a different question; no scan was used.');return;}
   selected=[];

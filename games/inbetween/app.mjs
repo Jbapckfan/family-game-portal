@@ -13,11 +13,12 @@ const PREFIX = 'inbetween:v1:';
 const dialog = $('game-dialog');
 const memory = new Map();
 const dirtyKeys = new Set();
+const acceptedSaves = new Map();
 let mode = 'daily';
 let daily = getDaily(PUZZLES);
 let puzzle = daily.puzzle;
 let storageWarning = false;
-let game = restoreGame(puzzle, read('daily:' + daily.dateKey, null));
+let game = restoreGame(puzzle, read('daily:' + daily.dateKey, null, true));
 let records = readRecords();
 let selectedTile = null;
 let preview = null;
@@ -30,10 +31,11 @@ let resultTimer;
 let audioContext;
 let soundOn = read('settings', {})?.sound === true;
 
-function read(key, fallback) {
+function read(key, fallback, acceptGame=false) {
   if(dirtyKeys.has(key)&&memory.has(key))return memory.get(key);
   try {
     const value = localStorage.getItem(PREFIX + key);
+    if(acceptGame)acceptedSaves.set(key,value);
     if(value===null)return memory.has(key)?memory.get(key):fallback;
     const parsed=JSON.parse(value);memory.set(key,parsed);return parsed;
   }
@@ -43,9 +45,9 @@ function readRecords() {
   const value = read('records', {});
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 }
-function write(key, value) {
+function write(key, value, readable=true) {
   memory.set(key,value);
-  try { localStorage.setItem(PREFIX + key, JSON.stringify(value)); dirtyKeys.delete(key); return true; }
+  try { if(!readable)throw Error('Unverified storage');localStorage.getItem(PREFIX+key);const raw=JSON.stringify(value);localStorage.setItem(PREFIX+key,raw);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;return true; }
   catch {
     dirtyKeys.add(key);
     if (!storageWarning) { storageWarning = true; toast('You can play, but this browser couldn’t save your progress.'); }
@@ -67,6 +69,11 @@ function reconcileDailyResult() {
 }
 function saveGame() {
   const key = keyForGame();
+  let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
+  if(raw===undefined){write(key,game,false);return;}
+  if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
+    try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;clearSelection();feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
+  }
   if (mode === 'daily') {
     const stored = restoreGame(puzzle, read(key, null));
     if (stored.status !== 'playing') {
@@ -209,7 +216,7 @@ function showPractice() {
 }
 function loadPractice(index) {
   if(!Number.isInteger(index)||!PUZZLES[index]||!canPractice(index))return;
-  clearTimeout(resultTimer);mode='practice';puzzle=PUZZLES[index];game=restoreGame(puzzle,read('practice:'+puzzle.id,null));
+  clearTimeout(resultTimer);mode='practice';puzzle=PUZZLES[index];game=restoreGame(puzzle,read('practice:'+puzzle.id,null,true));
   clearSelection();feedback='';render();lastFocus=null;closeDialog();document.querySelector('.game-topline').scrollIntoView({block:'start',behavior:reducedMotion()?'instant':'smooth'});
 }
 function randomPractice() {
@@ -219,7 +226,7 @@ function randomPractice() {
   if(pool.length)loadPractice(pool[Math.floor(Math.random()*pool.length)].i);
 }
 function loadDaily() {
-  clearTimeout(resultTimer);mode='daily';daily=getDaily(PUZZLES);puzzle=daily.puzzle;game=restoreGame(puzzle,read('daily:'+daily.dateKey,null));
+  clearTimeout(resultTimer);mode='daily';daily=getDaily(PUZZLES);puzzle=daily.puzzle;game=restoreGame(puzzle,read('daily:'+daily.dateKey,null,true));
   clearSelection();feedback='';reconcileDailyResult();render();if(dialog.open)closeDialog();
 }
 function showOptions() {
@@ -273,6 +280,21 @@ $('puzzle').addEventListener('click',event=>{
   if(event.target.closest('[data-fit]'))placePair();
 });
 $('hint-button').addEventListener('click',takeHint);
+$('puzzle').addEventListener('keydown',event=>{
+  const button=event.target.closest('[data-row][data-gap]');
+  if(!button||event.ctrlKey||event.metaKey||event.altKey||game.status!=='playing')return;
+  const row=Number(button.dataset.row),gap=Number(button.dataset.gap);
+  let nextRow=row,nextGap=gap;
+  if(event.key==='ArrowLeft')nextGap=Math.max(0,gap-1);
+  else if(event.key==='ArrowRight')nextGap=Math.min(4,gap+1);
+  else if(event.key==='ArrowUp'||event.key==='ArrowDown'){
+    const step=event.key==='ArrowUp'?-1:1;
+    for(let candidate=row+step;candidate>=0&&candidate<puzzle.rows.length;candidate+=step){if(!game.placements[candidate]){nextRow=candidate;break;}}
+  }else if(event.key==='Home')nextGap=0;
+  else if(event.key==='End')nextGap=4;
+  else return;
+  event.preventDefault();$('puzzle').querySelector(`[data-row="${nextRow}"][data-gap="${nextGap}"]`)?.focus({preventScroll:true});
+});
 $('clear-button').addEventListener('click',()=>{clearSelection();feedback='Choice cleared. Try any pair.';render();$('bank').querySelector('button:not(:disabled)')?.focus({preventScroll:true});});
 $('daily-tab').addEventListener('click',loadDaily);
 $('new-day-button').addEventListener('click',loadDaily);

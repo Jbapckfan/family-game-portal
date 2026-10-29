@@ -6,6 +6,7 @@ const $ = id => document.getElementById(id);
 const COLORS = ['#a45e2c','#4a746c','#786392','#9b684f'];
 const point = (angle, radius=126) => ({x:200+Math.cos(angle*Math.PI/180)*radius,y:200+Math.sin(angle*Math.PI/180)*radius});
 const app = createShell({
+  lesson:{question:'The target is 15. Which arc has the right total?',choices:[{label:'4 + 6 + 5',correct:true,why:'4 + 6 + 5 is 15. Arc length can vary; its sum is what matters.'},{label:'4 + 6 + 6',correct:false,why:'That totals 16. Each arc must equal the target exactly.'},{label:'5 + 5',correct:false,why:'That totals 10. There is no fixed count of numbers per arc.'}]},
   slug:'ringcount', name:'Ringcount', puzzles:PUZZLES, engine,
   sibling:{slug:'switchpath',name:'Switchpath',url:'https://alford-daily.jbapckfan.chatgpt.site/games/switchpath/'},
   record:game=>({status:game.status,checks:game.checks,moves:game.moves,hints:game.hints}),

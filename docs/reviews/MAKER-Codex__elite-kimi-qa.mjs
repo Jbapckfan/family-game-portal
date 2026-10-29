@@ -54,6 +54,7 @@ async function dismissHelp(page) {
   }
 }
 async function result(page, puzzleId, title) {
+  await page.clock.runFor(1000);
   const heading = page.locator('[role="dialog"] [data-slot="dialog-title"]');
   await heading.waitFor({ timeout: 10000 });
   const terminalText = await heading.innerText();
@@ -95,6 +96,7 @@ export async function playGame(page, slug, { checkpoint } = {}) {
         if (level === 1 && i === 1) { await checkpoint(); await dismissHelp(page); }
       }
       await page.getByRole('button', { name: 'ENTER', exact: true }).click();
+      await page.clock.runFor(700);
     }
     return result(page, puzzleId, /Perfect summit/);
   }

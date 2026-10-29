@@ -24,7 +24,7 @@ const KIMI_WRAPPER_FILES = Object.freeze(['index.html', 'icon.svg']);
 const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
 const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css', 'icon.svg']);
 const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'styles.css']);
-const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs']);
+const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs', 'elite-ui.test.mjs']);
 const RUNTIME_FILES = Object.freeze([
   'index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs',
   'styles.css', 'icon.svg', 'manifest.webmanifest',

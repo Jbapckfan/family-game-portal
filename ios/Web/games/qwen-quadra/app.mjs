@@ -24,9 +24,10 @@ mountDailyGame({
    commit(next,'');root.querySelector(`[data-tile="${index}"]`)?.focus({preventScroll:true});
   }));
   root.querySelector('#quadra-word').addEventListener('input',event=>{
-   const value=event.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4),result=selectWord(p,s,value);
-   if(!result.state){event.target.value=currentWord;announce(result.message);return;}
-   commit(result.state,'');const input=root.querySelector('#quadra-word');input?.focus({preventScroll:true});input?.setSelectionRange(value.length,value.length);
+   const raw=event.target.value,clean=value=>value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
+   const value=clean(raw),selection=[event.target.selectionStart,event.target.selectionEnd].map(position=>clean(raw.slice(0,position??raw.length)).length),result=selectWord(p,s,value);
+   if(!result.state){event.target.value=currentWord;event.target.setSelectionRange(...selection.map(position=>Math.min(position,currentWord.length)));announce(result.message);return;}
+   commit(result.state,'');const input=root.querySelector('#quadra-word');input?.focus({preventScroll:true});input?.setSelectionRange(...selection);
   });
   root.querySelector('#quadra-form').addEventListener('submit',event=>{event.preventDefault();const focused=document.activeElement?.id==='quadra-word',result=submitWord(p,s);commit(result.state,result.message);if(focused)root.querySelector('#quadra-word')?.focus({preventScroll:true});});
   root.querySelector('#quadra-delete').addEventListener('click',()=>commit({...s,selected:s.selected.slice(0,-1)},''));

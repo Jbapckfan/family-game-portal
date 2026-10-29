@@ -195,6 +195,49 @@ try {
     assert.equal(a.value.state.stats.completed, 1);
     assert.equal(JSON.parse(disk.getItem(key)).countedPlayed, true);
   }
+  if (scenario === 'event-draft-batch') {
+    await run(a, 'hint');
+    const accepted = disk.getItem(key);
+    const mutate = {
+      cairn: () => b.value.actions.tapRack(0),
+      morph: () => b.value.actions.keyboardLetter('x'),
+      hunch: () => b.value.actions.keyLetter('p'),
+      tangle: () => b.value.actions.setPath([0]),
+      circuit: () => b.value.actions.tapLetter(0),
+      quartet: () => b.value.actions.toggleTile(0),
+    }[game];
+    await act(async () => {
+      window.dispatchEvent(new window.StorageEvent('storage', { key }));
+      mutate(); mutate();
+    });
+    assert.equal(b.value.state[game === 'cairn' ? 'hints' : 'hintsUsed'], 1, 'same-batch stale input cannot erase the queued draft adoption');
+    assert.equal(disk.getItem(key), accepted, 'same-batch stale input cannot overwrite saved assistance');
+    await run(b, 'startPractice');
+    assert.equal(b.value.state.mode, 'practice', 'input resumes after the adopted draft renders');
+  }
+  if (scenario === 'event-batch') {
+    await solve(a);
+    const accepted = disk.getItem(key);
+    const statistics = disk.getItem(`kimi:${game}:v1:stats`);
+    await act(async () => {
+      window.dispatchEvent(new window.StorageEvent('storage', { key }));
+      // Both calls run before React renders the setState queued by the event.
+      b.value.actions.hint();
+      b.value.actions.hint();
+    });
+    assert.ok(b.value.state.finished || b.value.state.goldReached, 'input before adoption renders cannot replace the queued terminal state');
+    assert.equal(disk.getItem(key), accepted, 'same-batch input preserves the first terminal record');
+    assert.equal(disk.getItem(`kimi:${game}:v1:stats`), statistics, 'same-batch adoption cannot change statistics');
+    assert.deepEqual(b.value.state.stats, a.value.state.stats);
+    if (game === 'tangle') {
+      const word = b.value.state.puzzle.words.find(word => !b.value.state.found.includes(word));
+      await run(b, 'setPath', pathFor(word, b.value.state.puzzle.g)); await run(b, 'submitPath');
+      assert.ok(b.value.state.found.includes(word), 'normal post-gold input resumes after adoption renders');
+    } else {
+      await run(b, 'startPractice');
+      assert.equal(b.value.state.mode, 'practice', 'normal input resumes after adoption renders');
+    }
+  }
   if (scenario === 'terminal' || scenario === 'assisted') {
     if (scenario === 'assisted') await run(a, 'hint');
     await solve(a);

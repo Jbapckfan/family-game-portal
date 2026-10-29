@@ -35,10 +35,21 @@ Completion cases use actual actions: Cairn submits every rack; Morph follows its
 
 Existing focused action-only scoring tests now explicitly inspect computed state statistics; real-hook tests verify persisted statistics after effects. No fake React effect is presented as persistence evidence.
 
-Strict TypeScript source check passed using the existing TypeScript 5.9 installation, bundler resolution, ES2022, React JSX, JSON imports, the existing `@/*` alias and Vite client types. Original project-reference build configs are incomplete; this is a source type check, not a claim that the original `npm run build` passed. Dependencies were reused through an ignored local node_modules symlink; nothing was installed.
+The original ad hoc strict TypeScript source check passed, but did not match the production configuration. It missed `erasableSyntaxOnly`; root's actual build caught the constructor parameter property. The earlier report incorrectly described the project-reference configs as incomplete. They exist and must be used. Root changed the constructor to a plain field/assignment; the followup below includes the same compatible syntax. Dependencies are reused through an ignored local node_modules symlink; nothing was installed.
 
 ## Bounds and integration
 
 Root owns actual browser multi-tab QA and selector integration. No browser/server or provider was launched. Tests cover stale controllers, delayed storage notifications and injected conflicts at both write boundaries. LocalStorage has no cross-process compare-and-swap transaction; this does not claim serialization of two OS processes executing the read/write instructions at the exact same instant. Progress and aggregate statistics remain separate keys, as before.
 
 Production files: six hooks; new `shared/useDailySession.ts`; Kimi-local `shared/integration.ts`; `morph/MorphPage.tsx`; `morph/MorphWinModal.tsx`; only lower medal/share functions of `morph/engine.ts`. Root's imports/daily/practice selectors should merge independently.
+
+
+## Followup: storage adoption before React renders
+
+Opus identified a real gap in the first fix. A storage event updated the acknowledged snapshot and queued React state, but the hook's current-state ref still pointed at the old state. An input in the same batch could pass the snapshot check and replace the queued adoption. The previous test awaited `act` after the storage event, which hid this interval.
+
+Reproduced before this followup: actual Hunch hooks; A completes; within one `act` callback, dispatch a storage event and call stale B's hint twice before React renders. The assertion that B retained the terminal state failed. The corrected guard marks adoption pending from the old state object. Actions, persistence and delayed callbacks remain blocked until a hook render supplies a replacement state. Acknowledging storage alone never clears the pending marker.
+
+Added two real-hook scenarios per game (12 total): same-batch storage event plus stale draft input, and same-batch event plus stale terminal input. They verify saved hints/results/statistics, retained rendered state, and input recovery after the adoption renders. Tangle accepts further words after gold; other games can enter practice afterward.
+
+Final verification on the followup: package suite 128 passed, zero failed/skipped, including the existing blocked-storage, quota, Cairn delayed-callback and Morph assistance cases. Production compiler checks passed with both actual `tsconfig.app.json` and `tsconfig.node.json` (including `erasableSyntaxOnly`); Vite's actual production build passed. Temporary build-info output was redirected outside the shared dependency directory. The runtime staging script was left to root because it writes outside this subtask's allowed source/test scope. No browser or server was launched.

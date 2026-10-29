@@ -12,6 +12,8 @@ export class DailySession {
   private dayNumber = 0
   private acknowledged: Snapshot | null = null
   private readable = true
+  private pendingAdoptionFrom: State | null = null
+  private game: KimiGame
   private actionDepth = 0
   private readonly interrupted = Symbol('daily session changed')
   private guarded = new WeakMap<(...args: never[]) => unknown, (...args: never[]) => unknown>()
@@ -19,13 +21,16 @@ export class DailySession {
   private validate: (raw: unknown) => unknown = () => null
   private reload: () => void = () => undefined
 
-  constructor(private game: KimiGame) {}
+  constructor(game: KimiGame) { this.game = game }
   private get dayKey() { return `kimi:${this.game}:v1:day:${this.dayNumber}` }
   private get statsKey() { return `kimi:${this.game}:v1:stats` }
   configure(current: () => State, validate: (raw: unknown) => unknown, reload: () => void) {
     this.current = current
     this.validate = validate
     this.reload = reload
+    // reload queues React state; acknowledging storage is not a render. Keep
+    // inputs/effects blocked until this hook observes the replacement state.
+    if (this.pendingAdoptionFrom && current() !== this.pendingAdoptionFrom) this.pendingAdoptionFrom = null
   }
   private read(): Snapshot | null {
     try {
@@ -44,6 +49,7 @@ export class DailySession {
     if (snapshot) this.acknowledged = snapshot
   }
   before(): boolean {
+    if (this.pendingAdoptionFrom) return false
     const state = this.current()
     if (state.mode !== 'daily' || state.phase === 'loading' || !state.dayNumber) return true
     const snapshot = this.read()
@@ -55,6 +61,7 @@ export class DailySession {
     acceptIntegrationValue(this.dayKey, raw)
     try { acceptIntegrationValue(this.statsKey, snapshot.stats ? JSON.parse(snapshot.stats) : null) } catch { /* stats loader sanitizes */ }
     this.acknowledged = snapshot
+    this.pendingAdoptionFrom = state
     this.reload()
     return false
   }

@@ -30,12 +30,12 @@ for(const slug of Object.keys(bank)){
     const original=source.split(MARKER)[0];
     assert.equal(createHash('sha256').update(original).digest('hex'),originalHashes[slug]);
   });
-  test(`${slug} offers 120 uniquely identified boards with honest source-pool metadata`,()=>{
+  test(`${slug} offers 200 uniquely identified boards with honest source-pool metadata`,()=>{
     const {PUZZLES,CONTENT_INFO}=bank[slug];
-    assert.equal(PUZZLES.length,120);
-    assert.equal(new Set(PUZZLES.map(p=>p.id)).size,120);
+    assert.equal(PUZZLES.length,200);
+    assert.equal(new Set(PUZZLES.map(p=>p.id)).size,200);
     assert.equal(CONTENT_INFO.originalRecords,originalCounts[slug]);
-    assert.equal(CONTENT_INFO.preparedRecords,120);
+    assert.equal(CONTENT_INFO.preparedRecords,200);
   });
 }
 
@@ -99,7 +99,7 @@ test('Keystone has distinct three-arch sets drawn from 174 uniquely solvable ori
     assert.deepEqual(answers,[r.k],r.k);
   }
   assert.equal(arches.size,174);
-  assert.ok([...used.values()].every(n=>n<=3));
+  assert.ok([...used.values()].every(n=>n<=4));
   assert.equal(K.CONTENT_INFO.uniqueArches,174);
 });
 

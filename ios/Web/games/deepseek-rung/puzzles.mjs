@@ -15,7 +15,7 @@ const ORIGINAL_PUZZLES=Object.freeze(endpoints.map(([start,target],index)=>{
 }));
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
-// The first thirty records retain their original values, IDs, and ordering.
+// All published records retain their original values, IDs, and ordering.
 // Additional prepared content by ChatGPT. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
@@ -557,10 +557,490 @@ export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
     "start": "FIND",
     "target": "GIVE",
     "par": 3
+  },
+  {
+    "id": "rung-121",
+    "start": "MIND",
+    "target": "TAKE",
+    "par": 4
+  },
+  {
+    "id": "rung-122",
+    "start": "PLAY",
+    "target": "POOR",
+    "par": 7
+  },
+  {
+    "id": "rung-123",
+    "start": "GAME",
+    "target": "WORD",
+    "par": 5
+  },
+  {
+    "id": "rung-124",
+    "start": "RICH",
+    "target": "SOFT",
+    "par": 6
+  },
+  {
+    "id": "rung-125",
+    "start": "DEAD",
+    "target": "WORK",
+    "par": 5
+  },
+  {
+    "id": "rung-126",
+    "start": "FOUL",
+    "target": "SLOW",
+    "par": 5
+  },
+  {
+    "id": "rung-127",
+    "start": "LIFE",
+    "target": "STAR",
+    "par": 7
+  },
+  {
+    "id": "rung-128",
+    "start": "GOOD",
+    "target": "REST",
+    "par": 6
+  },
+  {
+    "id": "rung-129",
+    "start": "MOON",
+    "target": "WAVE",
+    "par": 5
+  },
+  {
+    "id": "rung-130",
+    "start": "BOOK",
+    "target": "WARM",
+    "par": 5
+  },
+  {
+    "id": "rung-131",
+    "start": "FAST",
+    "target": "LAMB",
+    "par": 5
+  },
+  {
+    "id": "rung-132",
+    "start": "DARK",
+    "target": "TAIL",
+    "par": 5
+  },
+  {
+    "id": "rung-133",
+    "start": "BIRD",
+    "target": "SOIL",
+    "par": 6
+  },
+  {
+    "id": "rung-134",
+    "start": "HATE",
+    "target": "RAIN",
+    "par": 5
+  },
+  {
+    "id": "rung-135",
+    "start": "GOLD",
+    "target": "LION",
+    "par": 5
+  },
+  {
+    "id": "rung-136",
+    "start": "DOGS",
+    "target": "PINK",
+    "par": 6
+  },
+  {
+    "id": "rung-137",
+    "start": "DUSK",
+    "target": "LEAF",
+    "par": 6
+  },
+  {
+    "id": "rung-138",
+    "start": "EAST",
+    "target": "FIRE",
+    "par": 5
+  },
+  {
+    "id": "rung-139",
+    "start": "SAND",
+    "target": "WEST",
+    "par": 4
+  },
+  {
+    "id": "rung-140",
+    "start": "CATS",
+    "target": "WILD",
+    "par": 6
+  },
+  {
+    "id": "rung-141",
+    "start": "BEAR",
+    "target": "WOLF",
+    "par": 7
+  },
+  {
+    "id": "rung-142",
+    "start": "HARD",
+    "target": "LAMP",
+    "par": 5
+  },
+  {
+    "id": "rung-143",
+    "start": "LEAD",
+    "target": "TREE",
+    "par": 7
+  },
+  {
+    "id": "rung-144",
+    "start": "BODY",
+    "target": "COLD",
+    "par": 4
+  },
+  {
+    "id": "rung-145",
+    "start": "LOST",
+    "target": "SAFE",
+    "par": 5
+  },
+  {
+    "id": "rung-146",
+    "start": "AWAY",
+    "target": "BLUE",
+    "par": 7
+  },
+  {
+    "id": "rung-147",
+    "start": "LOVE",
+    "target": "TIDE",
+    "par": 4
+  },
+  {
+    "id": "rung-148",
+    "start": "GIVE",
+    "target": "HEAD",
+    "par": 5
+  },
+  {
+    "id": "rung-149",
+    "start": "FISH",
+    "target": "HOME",
+    "par": 6
+  },
+  {
+    "id": "rung-150",
+    "start": "DAWN",
+    "target": "FIND",
+    "par": 6
+  },
+  {
+    "id": "rung-151",
+    "start": "CATS",
+    "target": "WORD",
+    "par": 4
+  },
+  {
+    "id": "rung-152",
+    "start": "TAKE",
+    "target": "WEST",
+    "par": 6
+  },
+  {
+    "id": "rung-153",
+    "start": "LAMB",
+    "target": "WORK",
+    "par": 6
+  },
+  {
+    "id": "rung-154",
+    "start": "DEAD",
+    "target": "TIDE",
+    "par": 6
+  },
+  {
+    "id": "rung-155",
+    "start": "BIRD",
+    "target": "FOUL",
+    "par": 6
+  },
+  {
+    "id": "rung-156",
+    "start": "PLAY",
+    "target": "SOFT",
+    "par": 5
+  },
+  {
+    "id": "rung-157",
+    "start": "COLD",
+    "target": "MOON",
+    "par": 3
+  },
+  {
+    "id": "rung-158",
+    "start": "SLOW",
+    "target": "WAVE",
+    "par": 7
+  },
+  {
+    "id": "rung-159",
+    "start": "FIND",
+    "target": "STAR",
+    "par": 6
+  },
+  {
+    "id": "rung-160",
+    "start": "EAST",
+    "target": "GOOD",
+    "par": 5
+  },
+  {
+    "id": "rung-161",
+    "start": "BODY",
+    "target": "RICH",
+    "par": 7
+  },
+  {
+    "id": "rung-162",
+    "start": "LAMP",
+    "target": "POOR",
+    "par": 7
+  },
+  {
+    "id": "rung-163",
+    "start": "DUSK",
+    "target": "LION",
+    "par": 6
+  },
+  {
+    "id": "rung-164",
+    "start": "AWAY",
+    "target": "BOOK",
+    "par": 7
+  },
+  {
+    "id": "rung-165",
+    "start": "GIVE",
+    "target": "SOIL",
+    "par": 7
+  },
+  {
+    "id": "rung-166",
+    "start": "RAIN",
+    "target": "REST",
+    "par": 7
+  },
+  {
+    "id": "rung-167",
+    "start": "HOME",
+    "target": "TAIL",
+    "par": 5
+  },
+  {
+    "id": "rung-168",
+    "start": "FIRE",
+    "target": "SAFE",
+    "par": 4
+  },
+  {
+    "id": "rung-169",
+    "start": "BEAR",
+    "target": "MIND",
+    "par": 4
+  },
+  {
+    "id": "rung-170",
+    "start": "HEAD",
+    "target": "TREE",
+    "par": 6
+  },
+  {
+    "id": "rung-171",
+    "start": "LIFE",
+    "target": "SAND",
+    "par": 4
+  },
+  {
+    "id": "rung-172",
+    "start": "DOGS",
+    "target": "LEAD",
+    "par": 6
+  },
+  {
+    "id": "rung-173",
+    "start": "HATE",
+    "target": "WILD",
+    "par": 5
+  },
+  {
+    "id": "rung-174",
+    "start": "GOLD",
+    "target": "PINK",
+    "par": 5
+  },
+  {
+    "id": "rung-175",
+    "start": "DAWN",
+    "target": "GAME",
+    "par": 5
+  },
+  {
+    "id": "rung-176",
+    "start": "DARK",
+    "target": "LOVE",
+    "par": 5
+  },
+  {
+    "id": "rung-177",
+    "start": "FISH",
+    "target": "LOST",
+    "par": 3
+  },
+  {
+    "id": "rung-178",
+    "start": "LEAF",
+    "target": "WOLF",
+    "par": 6
+  },
+  {
+    "id": "rung-179",
+    "start": "FAST",
+    "target": "WARM",
+    "par": 4
+  },
+  {
+    "id": "rung-180",
+    "start": "BLUE",
+    "target": "SOIL",
+    "par": 5
+  },
+  {
+    "id": "rung-181",
+    "start": "DUSK",
+    "target": "HARD",
+    "par": 6
+  },
+  {
+    "id": "rung-182",
+    "start": "LION",
+    "target": "WORD",
+    "par": 5
+  },
+  {
+    "id": "rung-183",
+    "start": "EAST",
+    "target": "SOFT",
+    "par": 4
+  },
+  {
+    "id": "rung-184",
+    "start": "FAST",
+    "target": "TIDE",
+    "par": 6
+  },
+  {
+    "id": "rung-185",
+    "start": "FOUL",
+    "target": "GOLD",
+    "par": 4
+  },
+  {
+    "id": "rung-186",
+    "start": "DEAD",
+    "target": "FISH",
+    "par": 7
+  },
+  {
+    "id": "rung-187",
+    "start": "DARK",
+    "target": "STAR",
+    "par": 6
+  },
+  {
+    "id": "rung-188",
+    "start": "PLAY",
+    "target": "SLOW",
+    "par": 3
+  },
+  {
+    "id": "rung-189",
+    "start": "FIND",
+    "target": "RAIN",
+    "par": 6
+  },
+  {
+    "id": "rung-190",
+    "start": "BIRD",
+    "target": "REST",
+    "par": 5
+  },
+  {
+    "id": "rung-191",
+    "start": "LEAD",
+    "target": "POOR",
+    "par": 6
+  },
+  {
+    "id": "rung-192",
+    "start": "RICH",
+    "target": "SAND",
+    "par": 6
+  },
+  {
+    "id": "rung-193",
+    "start": "BODY",
+    "target": "GAME",
+    "par": 6
+  },
+  {
+    "id": "rung-194",
+    "start": "BOOK",
+    "target": "WOLF",
+    "par": 4
+  },
+  {
+    "id": "rung-195",
+    "start": "LIFE",
+    "target": "MOON",
+    "par": 5
+  },
+  {
+    "id": "rung-196",
+    "start": "CATS",
+    "target": "TAKE",
+    "par": 4
+  },
+  {
+    "id": "rung-197",
+    "start": "BEAR",
+    "target": "LEAF",
+    "par": 3
+  },
+  {
+    "id": "rung-198",
+    "start": "LAMP",
+    "target": "WILD",
+    "par": 6
+  },
+  {
+    "id": "rung-199",
+    "start": "COLD",
+    "target": "LAMB",
+    "par": 5
+  },
+  {
+    "id": "rung-200",
+    "start": "SAFE",
+    "target": "TAIL",
+    "par": 4
   }
 ]]);
 export const CONTENT_INFO = Object.freeze({
-  "preparedPuzzles": 120,
+  "preparedPuzzles": 200,
   "curatedEndpointWords": 60,
   "minimumPar": 3,
   "maximumAddedPar": 7

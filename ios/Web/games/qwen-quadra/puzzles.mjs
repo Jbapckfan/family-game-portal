@@ -40,7 +40,7 @@ function shuffle(letters,seed){
 const ORIGINAL_PUZZLES=BOARDS.map(([category,answers],i)=>({id:`quadra-${i+1}`,category,answers,tiles:shuffle(answers.join(''),0x716c39+i*104729)}));
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
-// The first thirty records retain their original values, IDs, and ordering.
+// All published records retain their original values, IDs, and ordering.
 // Additional prepared content by ChatGPT. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
@@ -2562,12 +2562,2252 @@ export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
       "T",
       "G"
     ]
+  },
+  {
+    "id": "quadra-121",
+    "category": "Money and banking",
+    "answers": [
+      "BILL",
+      "CENT",
+      "DIME",
+      "DEBT"
+    ],
+    "tiles": [
+      "D",
+      "E",
+      "T",
+      "C",
+      "T",
+      "I",
+      "B",
+      "M",
+      "D",
+      "I",
+      "L",
+      "E",
+      "N",
+      "B",
+      "L",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-122",
+    "category": "Animals",
+    "answers": [
+      "LION",
+      "HARE",
+      "NEWT",
+      "FROG"
+    ],
+    "tiles": [
+      "E",
+      "R",
+      "R",
+      "E",
+      "N",
+      "W",
+      "T",
+      "F",
+      "A",
+      "I",
+      "N",
+      "L",
+      "O",
+      "G",
+      "H",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-123",
+    "category": "Colors",
+    "answers": [
+      "GOLD",
+      "PINK",
+      "GRAY",
+      "LIME"
+    ],
+    "tiles": [
+      "R",
+      "L",
+      "M",
+      "N",
+      "L",
+      "P",
+      "D",
+      "A",
+      "E",
+      "I",
+      "K",
+      "I",
+      "Y",
+      "O",
+      "G",
+      "G"
+    ]
+  },
+  {
+    "id": "quadra-124",
+    "category": "Vehicles",
+    "answers": [
+      "TAXI",
+      "TRAM",
+      "CART",
+      "BIKE"
+    ],
+    "tiles": [
+      "K",
+      "R",
+      "M",
+      "A",
+      "E",
+      "R",
+      "A",
+      "I",
+      "T",
+      "C",
+      "A",
+      "T",
+      "T",
+      "X",
+      "B",
+      "I"
+    ]
+  },
+  {
+    "id": "quadra-125",
+    "category": "Car parts",
+    "answers": [
+      "HOOD",
+      "TIRE",
+      "AXLE",
+      "GEAR"
+    ],
+    "tiles": [
+      "A",
+      "O",
+      "T",
+      "X",
+      "R",
+      "E",
+      "E",
+      "E",
+      "O",
+      "H",
+      "D",
+      "I",
+      "A",
+      "L",
+      "G",
+      "R"
+    ]
+  },
+  {
+    "id": "quadra-126",
+    "category": "Communication",
+    "answers": [
+      "CHAT",
+      "TEXT",
+      "TALK",
+      "SIGN"
+    ],
+    "tiles": [
+      "C",
+      "T",
+      "L",
+      "S",
+      "N",
+      "K",
+      "T",
+      "I",
+      "A",
+      "A",
+      "T",
+      "E",
+      "G",
+      "T",
+      "H",
+      "X"
+    ]
+  },
+  {
+    "id": "quadra-127",
+    "category": "Grammar and language",
+    "answers": [
+      "CASE",
+      "MOOD",
+      "STEM",
+      "WORD"
+    ],
+    "tiles": [
+      "M",
+      "E",
+      "T",
+      "D",
+      "R",
+      "C",
+      "W",
+      "M",
+      "O",
+      "S",
+      "E",
+      "S",
+      "O",
+      "A",
+      "D",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-128",
+    "category": "Chess",
+    "answers": [
+      "KING",
+      "ROOK",
+      "DRAW",
+      "FORK"
+    ],
+    "tiles": [
+      "R",
+      "W",
+      "O",
+      "D",
+      "A",
+      "R",
+      "N",
+      "O",
+      "K",
+      "K",
+      "O",
+      "K",
+      "I",
+      "R",
+      "G",
+      "F"
+    ]
+  },
+  {
+    "id": "quadra-129",
+    "category": "Beverages",
+    "answers": [
+      "COLA",
+      "MILK",
+      "MEAD",
+      "SAKE"
+    ],
+    "tiles": [
+      "E",
+      "C",
+      "A",
+      "L",
+      "M",
+      "M",
+      "S",
+      "O",
+      "K",
+      "I",
+      "E",
+      "K",
+      "A",
+      "L",
+      "D",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-130",
+    "category": "Shapes",
+    "answers": [
+      "CUBE",
+      "CONE",
+      "KITE",
+      "RING"
+    ],
+    "tiles": [
+      "E",
+      "T",
+      "B",
+      "O",
+      "C",
+      "U",
+      "R",
+      "K",
+      "I",
+      "G",
+      "N",
+      "I",
+      "N",
+      "E",
+      "C",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-131",
+    "category": "Birds",
+    "answers": [
+      "SWAN",
+      "IBIS",
+      "LOON",
+      "DUCK"
+    ],
+    "tiles": [
+      "A",
+      "N",
+      "S",
+      "B",
+      "D",
+      "I",
+      "C",
+      "N",
+      "I",
+      "K",
+      "L",
+      "O",
+      "U",
+      "W",
+      "S",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-132",
+    "category": "Body parts",
+    "answers": [
+      "HAND",
+      "BACK",
+      "LUNG",
+      "FACE"
+    ],
+    "tiles": [
+      "N",
+      "F",
+      "C",
+      "E",
+      "A",
+      "A",
+      "D",
+      "A",
+      "L",
+      "K",
+      "N",
+      "U",
+      "C",
+      "H",
+      "G",
+      "B"
+    ]
+  },
+  {
+    "id": "quadra-133",
+    "category": "Kitchen verbs",
+    "answers": [
+      "BOIL",
+      "STIR",
+      "DICE",
+      "SEAR"
+    ],
+    "tiles": [
+      "A",
+      "E",
+      "S",
+      "R",
+      "L",
+      "B",
+      "R",
+      "S",
+      "E",
+      "O",
+      "I",
+      "T",
+      "I",
+      "C",
+      "I",
+      "D"
+    ]
+  },
+  {
+    "id": "quadra-134",
+    "category": "Things in the sky",
+    "answers": [
+      "STAR",
+      "BIRD",
+      "MIST",
+      "HAZE"
+    ],
+    "tiles": [
+      "S",
+      "A",
+      "R",
+      "R",
+      "Z",
+      "T",
+      "T",
+      "I",
+      "E",
+      "A",
+      "S",
+      "D",
+      "M",
+      "I",
+      "B",
+      "H"
+    ]
+  },
+  {
+    "id": "quadra-135",
+    "category": "At the beach",
+    "answers": [
+      "WAVE",
+      "CLAM",
+      "GULL",
+      "KELP"
+    ],
+    "tiles": [
+      "L",
+      "E",
+      "G",
+      "C",
+      "K",
+      "V",
+      "U",
+      "L",
+      "L",
+      "W",
+      "A",
+      "A",
+      "P",
+      "E",
+      "L",
+      "M"
+    ]
+  },
+  {
+    "id": "quadra-136",
+    "category": "Reading and writing",
+    "answers": [
+      "READ",
+      "PAGE",
+      "POEM",
+      "TALE"
+    ],
+    "tiles": [
+      "A",
+      "E",
+      "E",
+      "O",
+      "E",
+      "A",
+      "P",
+      "T",
+      "M",
+      "R",
+      "L",
+      "G",
+      "P",
+      "A",
+      "D",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-137",
+    "category": "Clothing",
+    "answers": [
+      "COAT",
+      "SOCK",
+      "GOWN",
+      "CAPE"
+    ],
+    "tiles": [
+      "O",
+      "G",
+      "T",
+      "S",
+      "P",
+      "K",
+      "N",
+      "A",
+      "E",
+      "O",
+      "C",
+      "W",
+      "A",
+      "O",
+      "C",
+      "C"
+    ]
+  },
+  {
+    "id": "quadra-138",
+    "category": "Cooking ingredients",
+    "answers": [
+      "SALT",
+      "OATS",
+      "LARD",
+      "LIME"
+    ],
+    "tiles": [
+      "M",
+      "R",
+      "L",
+      "D",
+      "T",
+      "A",
+      "O",
+      "L",
+      "E",
+      "S",
+      "S",
+      "L",
+      "A",
+      "A",
+      "I",
+      "T"
+    ]
+  },
+  {
+    "id": "quadra-139",
+    "category": "Parts of a home",
+    "answers": [
+      "HALL",
+      "DOOR",
+      "STEP",
+      "FLUE"
+    ],
+    "tiles": [
+      "D",
+      "O",
+      "E",
+      "O",
+      "A",
+      "P",
+      "E",
+      "T",
+      "F",
+      "L",
+      "L",
+      "L",
+      "H",
+      "R",
+      "U",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-140",
+    "category": "Computer terms",
+    "answers": [
+      "DATA",
+      "CODE",
+      "DISK",
+      "CHIP"
+    ],
+    "tiles": [
+      "D",
+      "P",
+      "A",
+      "T",
+      "K",
+      "D",
+      "H",
+      "C",
+      "E",
+      "I",
+      "D",
+      "O",
+      "I",
+      "C",
+      "A",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-141",
+    "category": "On a farm",
+    "answers": [
+      "HENS",
+      "GOAT",
+      "PIGS",
+      "SOIL"
+    ],
+    "tiles": [
+      "O",
+      "I",
+      "L",
+      "O",
+      "G",
+      "S",
+      "P",
+      "A",
+      "N",
+      "S",
+      "G",
+      "I",
+      "T",
+      "E",
+      "H",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-142",
+    "category": "In the garden",
+    "answers": [
+      "RAKE",
+      "PLOW",
+      "SOIL",
+      "SHED"
+    ],
+    "tiles": [
+      "I",
+      "L",
+      "W",
+      "P",
+      "R",
+      "A",
+      "D",
+      "O",
+      "E",
+      "O",
+      "K",
+      "H",
+      "S",
+      "L",
+      "S",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-143",
+    "category": "At the bakery",
+    "answers": [
+      "LOAF",
+      "BUNS",
+      "PIES",
+      "FLAN"
+    ],
+    "tiles": [
+      "S",
+      "L",
+      "L",
+      "N",
+      "U",
+      "A",
+      "O",
+      "B",
+      "N",
+      "E",
+      "I",
+      "F",
+      "S",
+      "F",
+      "P",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-144",
+    "category": "Musical instruments",
+    "answers": [
+      "HORN",
+      "DRUM",
+      "GONG",
+      "PIPE"
+    ],
+    "tiles": [
+      "U",
+      "P",
+      "D",
+      "R",
+      "H",
+      "I",
+      "R",
+      "E",
+      "G",
+      "M",
+      "O",
+      "N",
+      "N",
+      "P",
+      "G",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-145",
+    "category": "Things used in sports",
+    "answers": [
+      "NETS",
+      "PADS",
+      "PINS",
+      "PUCK"
+    ],
+    "tiles": [
+      "I",
+      "D",
+      "U",
+      "C",
+      "A",
+      "P",
+      "S",
+      "P",
+      "T",
+      "K",
+      "P",
+      "S",
+      "S",
+      "N",
+      "E",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-146",
+    "category": "Ways to move on foot",
+    "answers": [
+      "WALK",
+      "PACE",
+      "TROT",
+      "RUSH"
+    ],
+    "tiles": [
+      "L",
+      "R",
+      "A",
+      "E",
+      "P",
+      "O",
+      "K",
+      "W",
+      "T",
+      "S",
+      "T",
+      "C",
+      "R",
+      "A",
+      "H",
+      "U"
+    ]
+  },
+  {
+    "id": "quadra-147",
+    "category": "Feelings",
+    "answers": [
+      "FEAR",
+      "RAGE",
+      "CALM",
+      "ENVY"
+    ],
+    "tiles": [
+      "M",
+      "E",
+      "C",
+      "F",
+      "A",
+      "E",
+      "R",
+      "A",
+      "Y",
+      "L",
+      "G",
+      "V",
+      "A",
+      "R",
+      "N",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-148",
+    "category": "Weather",
+    "answers": [
+      "RAIN",
+      "WIND",
+      "GALE",
+      "GUST"
+    ],
+    "tiles": [
+      "G",
+      "W",
+      "E",
+      "I",
+      "G",
+      "R",
+      "A",
+      "U",
+      "N",
+      "N",
+      "T",
+      "D",
+      "S",
+      "L",
+      "I",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-149",
+    "category": "Money and banking",
+    "answers": [
+      "CASH",
+      "NOTE",
+      "DIME",
+      "DEBT"
+    ],
+    "tiles": [
+      "M",
+      "E",
+      "O",
+      "I",
+      "H",
+      "C",
+      "A",
+      "B",
+      "T",
+      "E",
+      "T",
+      "S",
+      "E",
+      "D",
+      "D",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-150",
+    "category": "Animals",
+    "answers": [
+      "WOLF",
+      "DEER",
+      "LAMB",
+      "MULE"
+    ],
+    "tiles": [
+      "A",
+      "L",
+      "O",
+      "W",
+      "B",
+      "E",
+      "D",
+      "L",
+      "M",
+      "M",
+      "R",
+      "E",
+      "F",
+      "U",
+      "L",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-151",
+    "category": "Colors",
+    "answers": [
+      "CYAN",
+      "TEAL",
+      "PINK",
+      "ROSE"
+    ],
+    "tiles": [
+      "T",
+      "Y",
+      "N",
+      "O",
+      "E",
+      "C",
+      "E",
+      "S",
+      "A",
+      "P",
+      "A",
+      "L",
+      "R",
+      "K",
+      "N",
+      "I"
+    ]
+  },
+  {
+    "id": "quadra-152",
+    "category": "Vehicles",
+    "answers": [
+      "SHIP",
+      "TRAM",
+      "SLED",
+      "RAFT"
+    ],
+    "tiles": [
+      "A",
+      "R",
+      "P",
+      "A",
+      "T",
+      "E",
+      "S",
+      "F",
+      "R",
+      "S",
+      "L",
+      "H",
+      "D",
+      "M",
+      "I",
+      "T"
+    ]
+  },
+  {
+    "id": "quadra-153",
+    "category": "Car parts",
+    "answers": [
+      "DOOR",
+      "SEAT",
+      "HORN",
+      "RIMS"
+    ],
+    "tiles": [
+      "R",
+      "D",
+      "T",
+      "S",
+      "O",
+      "O",
+      "R",
+      "S",
+      "H",
+      "O",
+      "E",
+      "I",
+      "R",
+      "M",
+      "N",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-154",
+    "category": "Communication",
+    "answers": [
+      "TEXT",
+      "CALL",
+      "TELL",
+      "HEAR"
+    ],
+    "tiles": [
+      "L",
+      "L",
+      "R",
+      "L",
+      "C",
+      "E",
+      "T",
+      "A",
+      "E",
+      "T",
+      "L",
+      "H",
+      "T",
+      "X",
+      "E",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-155",
+    "category": "Grammar and language",
+    "answers": [
+      "NOUN",
+      "VERB",
+      "STEM",
+      "ROOT"
+    ],
+    "tiles": [
+      "E",
+      "R",
+      "E",
+      "S",
+      "O",
+      "M",
+      "N",
+      "T",
+      "U",
+      "V",
+      "T",
+      "O",
+      "O",
+      "N",
+      "B",
+      "R"
+    ]
+  },
+  {
+    "id": "quadra-156",
+    "category": "Chess",
+    "answers": [
+      "KING",
+      "PAWN",
+      "FILE",
+      "RANK"
+    ],
+    "tiles": [
+      "F",
+      "L",
+      "I",
+      "E",
+      "A",
+      "R",
+      "N",
+      "A",
+      "P",
+      "G",
+      "W",
+      "K",
+      "K",
+      "I",
+      "N",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-157",
+    "category": "Shapes",
+    "answers": [
+      "CUBE",
+      "OVAL",
+      "RING",
+      "LINE"
+    ],
+    "tiles": [
+      "L",
+      "R",
+      "O",
+      "B",
+      "E",
+      "V",
+      "I",
+      "N",
+      "I",
+      "U",
+      "E",
+      "C",
+      "A",
+      "N",
+      "L",
+      "G"
+    ]
+  },
+  {
+    "id": "quadra-158",
+    "category": "Birds",
+    "answers": [
+      "HAWK",
+      "LARK",
+      "KIWI",
+      "RHEA"
+    ],
+    "tiles": [
+      "W",
+      "I",
+      "R",
+      "I",
+      "W",
+      "A",
+      "H",
+      "E",
+      "K",
+      "K",
+      "K",
+      "H",
+      "R",
+      "L",
+      "A",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-159",
+    "category": "Body parts",
+    "answers": [
+      "HEAD",
+      "KNEE",
+      "NOSE",
+      "PALM"
+    ],
+    "tiles": [
+      "A",
+      "E",
+      "E",
+      "P",
+      "N",
+      "K",
+      "S",
+      "M",
+      "E",
+      "N",
+      "O",
+      "H",
+      "A",
+      "L",
+      "D",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-160",
+    "category": "Kitchen verbs",
+    "answers": [
+      "BAKE",
+      "PEEL",
+      "DICE",
+      "WHIP"
+    ],
+    "tiles": [
+      "E",
+      "E",
+      "W",
+      "K",
+      "A",
+      "I",
+      "H",
+      "P",
+      "C",
+      "P",
+      "B",
+      "L",
+      "E",
+      "D",
+      "E",
+      "I"
+    ]
+  },
+  {
+    "id": "quadra-161",
+    "category": "Things in the sky",
+    "answers": [
+      "MOON",
+      "STAR",
+      "MIST",
+      "SNOW"
+    ],
+    "tiles": [
+      "A",
+      "T",
+      "N",
+      "S",
+      "O",
+      "S",
+      "M",
+      "O",
+      "R",
+      "O",
+      "T",
+      "M",
+      "N",
+      "I",
+      "W",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-162",
+    "category": "At the beach",
+    "answers": [
+      "SURF",
+      "WAVE",
+      "DUNE",
+      "CRAB"
+    ],
+    "tiles": [
+      "U",
+      "F",
+      "E",
+      "U",
+      "A",
+      "N",
+      "C",
+      "R",
+      "S",
+      "A",
+      "V",
+      "W",
+      "D",
+      "B",
+      "E",
+      "R"
+    ]
+  },
+  {
+    "id": "quadra-163",
+    "category": "Reading and writing",
+    "answers": [
+      "BOOK",
+      "PAGE",
+      "TALE",
+      "EDIT"
+    ],
+    "tiles": [
+      "D",
+      "T",
+      "K",
+      "A",
+      "B",
+      "I",
+      "L",
+      "E",
+      "E",
+      "O",
+      "E",
+      "T",
+      "O",
+      "G",
+      "P",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-164",
+    "category": "Clothing",
+    "answers": [
+      "VEST",
+      "ROBE",
+      "KILT",
+      "SUIT"
+    ],
+    "tiles": [
+      "V",
+      "E",
+      "B",
+      "K",
+      "R",
+      "O",
+      "I",
+      "L",
+      "T",
+      "U",
+      "S",
+      "E",
+      "S",
+      "T",
+      "I",
+      "T"
+    ]
+  },
+  {
+    "id": "quadra-165",
+    "category": "Cooking ingredients",
+    "answers": [
+      "RICE",
+      "OATS",
+      "HERB",
+      "MILK"
+    ],
+    "tiles": [
+      "R",
+      "R",
+      "A",
+      "C",
+      "B",
+      "S",
+      "M",
+      "I",
+      "K",
+      "E",
+      "I",
+      "L",
+      "T",
+      "O",
+      "E",
+      "H"
+    ]
+  },
+  {
+    "id": "quadra-166",
+    "category": "Parts of a home",
+    "answers": [
+      "ROOM",
+      "WALL",
+      "DOOR",
+      "STEP"
+    ],
+    "tiles": [
+      "A",
+      "S",
+      "W",
+      "D",
+      "O",
+      "M",
+      "E",
+      "L",
+      "L",
+      "R",
+      "O",
+      "O",
+      "P",
+      "T",
+      "R",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-167",
+    "category": "Computer terms",
+    "answers": [
+      "CODE",
+      "DISK",
+      "FONT",
+      "ICON"
+    ],
+    "tiles": [
+      "O",
+      "O",
+      "O",
+      "E",
+      "D",
+      "I",
+      "N",
+      "I",
+      "F",
+      "C",
+      "K",
+      "T",
+      "D",
+      "S",
+      "C",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-168",
+    "category": "On a farm",
+    "answers": [
+      "BARN",
+      "HENS",
+      "COWS",
+      "CROP"
+    ],
+    "tiles": [
+      "R",
+      "R",
+      "S",
+      "C",
+      "C",
+      "P",
+      "B",
+      "N",
+      "O",
+      "W",
+      "S",
+      "N",
+      "H",
+      "E",
+      "O",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-169",
+    "category": "In the garden",
+    "answers": [
+      "HOSE",
+      "FORK",
+      "SEED",
+      "POTS"
+    ],
+    "tiles": [
+      "P",
+      "E",
+      "S",
+      "O",
+      "E",
+      "O",
+      "D",
+      "K",
+      "H",
+      "R",
+      "S",
+      "O",
+      "E",
+      "F",
+      "T",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-170",
+    "category": "At the bakery",
+    "answers": [
+      "CAKE",
+      "TART",
+      "LOAF",
+      "BUNS"
+    ],
+    "tiles": [
+      "B",
+      "F",
+      "T",
+      "L",
+      "E",
+      "A",
+      "U",
+      "T",
+      "A",
+      "O",
+      "C",
+      "K",
+      "R",
+      "N",
+      "S",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-171",
+    "category": "Musical instruments",
+    "answers": [
+      "HARP",
+      "OBOE",
+      "DRUM",
+      "PIPE"
+    ],
+    "tiles": [
+      "R",
+      "P",
+      "O",
+      "B",
+      "P",
+      "D",
+      "E",
+      "A",
+      "U",
+      "E",
+      "R",
+      "O",
+      "M",
+      "I",
+      "P",
+      "H"
+    ]
+  },
+  {
+    "id": "quadra-172",
+    "category": "Things used in sports",
+    "answers": [
+      "BATS",
+      "NETS",
+      "TEES",
+      "PUCK"
+    ],
+    "tiles": [
+      "S",
+      "T",
+      "P",
+      "K",
+      "C",
+      "S",
+      "E",
+      "T",
+      "A",
+      "E",
+      "B",
+      "N",
+      "T",
+      "E",
+      "U",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-173",
+    "category": "Ways to move on foot",
+    "answers": [
+      "JUMP",
+      "SKIP",
+      "PACE",
+      "TROT"
+    ],
+    "tiles": [
+      "O",
+      "E",
+      "M",
+      "J",
+      "T",
+      "A",
+      "S",
+      "T",
+      "P",
+      "R",
+      "K",
+      "P",
+      "U",
+      "P",
+      "I",
+      "C"
+    ]
+  },
+  {
+    "id": "quadra-174",
+    "category": "Feelings",
+    "answers": [
+      "FEAR",
+      "LOVE",
+      "ENVY",
+      "HATE"
+    ],
+    "tiles": [
+      "N",
+      "O",
+      "A",
+      "V",
+      "T",
+      "A",
+      "E",
+      "F",
+      "H",
+      "E",
+      "R",
+      "L",
+      "E",
+      "V",
+      "E",
+      "Y"
+    ]
+  },
+  {
+    "id": "quadra-175",
+    "category": "Weather",
+    "answers": [
+      "SNOW",
+      "WIND",
+      "GUST",
+      "HAZE"
+    ],
+    "tiles": [
+      "S",
+      "W",
+      "O",
+      "Z",
+      "N",
+      "S",
+      "A",
+      "G",
+      "U",
+      "W",
+      "D",
+      "T",
+      "E",
+      "I",
+      "H",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-176",
+    "category": "Money and banking",
+    "answers": [
+      "COIN",
+      "BILL",
+      "LOAN",
+      "BANK"
+    ],
+    "tiles": [
+      "A",
+      "O",
+      "O",
+      "I",
+      "K",
+      "L",
+      "B",
+      "N",
+      "B",
+      "I",
+      "N",
+      "L",
+      "N",
+      "C",
+      "A",
+      "L"
+    ]
+  },
+  {
+    "id": "quadra-177",
+    "category": "Animals",
+    "answers": [
+      "BEAR",
+      "LYNX",
+      "SEAL",
+      "NEWT"
+    ],
+    "tiles": [
+      "L",
+      "S",
+      "X",
+      "E",
+      "W",
+      "Y",
+      "E",
+      "N",
+      "T",
+      "A",
+      "L",
+      "B",
+      "E",
+      "A",
+      "R",
+      "N"
+    ]
+  },
+  {
+    "id": "quadra-178",
+    "category": "Colors",
+    "answers": [
+      "BLUE",
+      "GOLD",
+      "JADE",
+      "AQUA"
+    ],
+    "tiles": [
+      "G",
+      "L",
+      "U",
+      "D",
+      "D",
+      "B",
+      "O",
+      "L",
+      "J",
+      "A",
+      "E",
+      "E",
+      "Q",
+      "A",
+      "A",
+      "U"
+    ]
+  },
+  {
+    "id": "quadra-179",
+    "category": "Vehicles",
+    "answers": [
+      "BOAT",
+      "JEEP",
+      "SLED",
+      "BIKE"
+    ],
+    "tiles": [
+      "K",
+      "B",
+      "P",
+      "B",
+      "E",
+      "L",
+      "E",
+      "S",
+      "J",
+      "E",
+      "D",
+      "E",
+      "I",
+      "T",
+      "A",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-180",
+    "category": "Car parts",
+    "answers": [
+      "HOOD",
+      "SEAT",
+      "GEAR",
+      "RIMS"
+    ],
+    "tiles": [
+      "G",
+      "E",
+      "M",
+      "H",
+      "I",
+      "T",
+      "R",
+      "A",
+      "S",
+      "R",
+      "O",
+      "D",
+      "E",
+      "O",
+      "A",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-181",
+    "category": "Communication",
+    "answers": [
+      "CHAT",
+      "CALL",
+      "SIGN",
+      "HEAR"
+    ],
+    "tiles": [
+      "C",
+      "S",
+      "L",
+      "N",
+      "G",
+      "A",
+      "A",
+      "L",
+      "H",
+      "T",
+      "C",
+      "A",
+      "R",
+      "H",
+      "I",
+      "E"
+    ]
+  },
+  {
+    "id": "quadra-182",
+    "category": "Grammar and language",
+    "answers": [
+      "NOUN",
+      "MOOD",
+      "PAST",
+      "STEM"
+    ],
+    "tiles": [
+      "N",
+      "M",
+      "P",
+      "A",
+      "S",
+      "E",
+      "T",
+      "T",
+      "O",
+      "S",
+      "M",
+      "D",
+      "N",
+      "U",
+      "O",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-183",
+    "category": "Chess",
+    "answers": [
+      "ROOK",
+      "PAWN",
+      "DRAW",
+      "FILE"
+    ],
+    "tiles": [
+      "R",
+      "N",
+      "F",
+      "I",
+      "W",
+      "E",
+      "L",
+      "O",
+      "D",
+      "O",
+      "R",
+      "A",
+      "A",
+      "K",
+      "W",
+      "P"
+    ]
+  },
+  {
+    "id": "quadra-184",
+    "category": "Shapes",
+    "answers": [
+      "CONE",
+      "OVAL",
+      "KITE",
+      "LINE"
+    ],
+    "tiles": [
+      "V",
+      "A",
+      "L",
+      "N",
+      "E",
+      "I",
+      "O",
+      "E",
+      "T",
+      "E",
+      "N",
+      "L",
+      "C",
+      "O",
+      "I",
+      "K"
+    ]
+  },
+  {
+    "id": "quadra-185",
+    "category": "Birds",
+    "answers": [
+      "CROW",
+      "SWAN",
+      "WREN",
+      "LOON"
+    ],
+    "tiles": [
+      "O",
+      "E",
+      "R",
+      "N",
+      "O",
+      "W",
+      "R",
+      "N",
+      "C",
+      "W",
+      "S",
+      "O",
+      "N",
+      "W",
+      "A",
+      "L"
+    ]
+  },
+  {
+    "id": "quadra-186",
+    "category": "Body parts",
+    "answers": [
+      "HAND",
+      "KNEE",
+      "BACK",
+      "CHIN"
+    ],
+    "tiles": [
+      "C",
+      "K",
+      "H",
+      "D",
+      "K",
+      "N",
+      "A",
+      "N",
+      "H",
+      "A",
+      "N",
+      "B",
+      "C",
+      "E",
+      "E",
+      "I"
+    ]
+  },
+  {
+    "id": "quadra-187",
+    "category": "Kitchen verbs",
+    "answers": [
+      "STIR",
+      "CHOP",
+      "BEAT",
+      "SEAR"
+    ],
+    "tiles": [
+      "R",
+      "C",
+      "B",
+      "P",
+      "T",
+      "I",
+      "A",
+      "R",
+      "H",
+      "A",
+      "O",
+      "E",
+      "T",
+      "E",
+      "S",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-188",
+    "category": "Things in the sky",
+    "answers": [
+      "MOON",
+      "KITE",
+      "MIST",
+      "HAZE"
+    ],
+    "tiles": [
+      "K",
+      "E",
+      "S",
+      "I",
+      "E",
+      "I",
+      "N",
+      "Z",
+      "M",
+      "O",
+      "A",
+      "T",
+      "M",
+      "H",
+      "T",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-189",
+    "category": "At the beach",
+    "answers": [
+      "SAND",
+      "TIDE",
+      "DUNE",
+      "GULL"
+    ],
+    "tiles": [
+      "S",
+      "T",
+      "E",
+      "D",
+      "U",
+      "D",
+      "U",
+      "N",
+      "D",
+      "N",
+      "L",
+      "E",
+      "I",
+      "L",
+      "G",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-190",
+    "category": "Reading and writing",
+    "answers": [
+      "BOOK",
+      "READ",
+      "POEM",
+      "EDIT"
+    ],
+    "tiles": [
+      "E",
+      "O",
+      "K",
+      "O",
+      "R",
+      "T",
+      "P",
+      "B",
+      "A",
+      "M",
+      "E",
+      "D",
+      "D",
+      "E",
+      "I",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-191",
+    "category": "Clothing",
+    "answers": [
+      "COAT",
+      "VEST",
+      "CAPE",
+      "SUIT"
+    ],
+    "tiles": [
+      "V",
+      "C",
+      "T",
+      "P",
+      "E",
+      "E",
+      "I",
+      "C",
+      "S",
+      "T",
+      "O",
+      "S",
+      "T",
+      "U",
+      "A",
+      "A"
+    ]
+  },
+  {
+    "id": "quadra-192",
+    "category": "Cooking ingredients",
+    "answers": [
+      "RICE",
+      "CORN",
+      "LARD",
+      "MILK"
+    ],
+    "tiles": [
+      "R",
+      "R",
+      "O",
+      "M",
+      "D",
+      "K",
+      "R",
+      "C",
+      "I",
+      "I",
+      "E",
+      "L",
+      "L",
+      "A",
+      "N",
+      "C"
+    ]
+  },
+  {
+    "id": "quadra-193",
+    "category": "Parts of a home",
+    "answers": [
+      "WALL",
+      "ROOF",
+      "DOOR",
+      "FLUE"
+    ],
+    "tiles": [
+      "U",
+      "R",
+      "O",
+      "R",
+      "A",
+      "L",
+      "O",
+      "L",
+      "F",
+      "D",
+      "O",
+      "O",
+      "F",
+      "E",
+      "L",
+      "W"
+    ]
+  },
+  {
+    "id": "quadra-194",
+    "category": "Computer terms",
+    "answers": [
+      "BYTE",
+      "DATA",
+      "DISK",
+      "FONT"
+    ],
+    "tiles": [
+      "A",
+      "I",
+      "K",
+      "N",
+      "O",
+      "E",
+      "S",
+      "B",
+      "F",
+      "T",
+      "D",
+      "D",
+      "T",
+      "Y",
+      "A",
+      "T"
+    ]
+  },
+  {
+    "id": "quadra-195",
+    "category": "On a farm",
+    "answers": [
+      "GOAT",
+      "COWS",
+      "PIGS",
+      "SEED"
+    ],
+    "tiles": [
+      "S",
+      "S",
+      "W",
+      "E",
+      "P",
+      "G",
+      "G",
+      "S",
+      "D",
+      "E",
+      "A",
+      "T",
+      "O",
+      "I",
+      "C",
+      "O"
+    ]
+  },
+  {
+    "id": "quadra-196",
+    "category": "In the garden",
+    "answers": [
+      "HOSE",
+      "PLOW",
+      "SOIL",
+      "POTS"
+    ],
+    "tiles": [
+      "E",
+      "O",
+      "H",
+      "I",
+      "S",
+      "L",
+      "W",
+      "O",
+      "S",
+      "P",
+      "P",
+      "L",
+      "O",
+      "O",
+      "T",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-197",
+    "category": "Musical instruments",
+    "answers": [
+      "DRUM",
+      "LUTE",
+      "BASS",
+      "PIPE"
+    ],
+    "tiles": [
+      "A",
+      "E",
+      "E",
+      "T",
+      "S",
+      "I",
+      "U",
+      "P",
+      "D",
+      "U",
+      "L",
+      "B",
+      "R",
+      "M",
+      "P",
+      "S"
+    ]
+  },
+  {
+    "id": "quadra-198",
+    "category": "Things used in sports",
+    "answers": [
+      "BALL",
+      "PADS",
+      "GOAL",
+      "PINS"
+    ],
+    "tiles": [
+      "A",
+      "G",
+      "I",
+      "A",
+      "S",
+      "P",
+      "S",
+      "L",
+      "N",
+      "A",
+      "L",
+      "O",
+      "L",
+      "D",
+      "B",
+      "P"
+    ]
+  },
+  {
+    "id": "quadra-199",
+    "category": "Ways to move on foot",
+    "answers": [
+      "WALK",
+      "STEP",
+      "PACE",
+      "LIMP"
+    ],
+    "tiles": [
+      "A",
+      "L",
+      "P",
+      "K",
+      "W",
+      "E",
+      "M",
+      "E",
+      "T",
+      "I",
+      "S",
+      "L",
+      "A",
+      "P",
+      "C",
+      "P"
+    ]
+  },
+  {
+    "id": "quadra-200",
+    "category": "Feelings",
+    "answers": [
+      "HOPE",
+      "RAGE",
+      "CALM",
+      "GLEE"
+    ],
+    "tiles": [
+      "E",
+      "H",
+      "E",
+      "E",
+      "M",
+      "O",
+      "C",
+      "P",
+      "L",
+      "L",
+      "G",
+      "A",
+      "R",
+      "E",
+      "G",
+      "A"
+    ]
   }
 ]]);
 export const CONTENT_INFO = Object.freeze({
-  "preparedPuzzles": 120,
+  "preparedPuzzles": 200,
   "additionalEditorialCategoryPools": 30,
   "distinctPoolWords": 237,
   "maxSharedWordsPerAddedBoard": 2,
-  "addedRacksWithUniqueCategoryPartition": 90
+  "addedRacksWithUniqueCategoryPartition": 170
 });

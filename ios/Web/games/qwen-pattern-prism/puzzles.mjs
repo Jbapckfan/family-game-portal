@@ -657,7 +657,7 @@ const ORIGINAL_PUZZLES = [
 ];
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
-// The first thirty records retain their original values, IDs, and ordering.
+// All published records retain their original values, IDs, and ordering.
 // Additional prepared content by ChatGPT. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
@@ -3579,11 +3579,1838 @@ export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
       ]
     },
     "offset": 2
+  },
+  {
+    "id": "prism-151",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        90,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-152",
+    "cycles": {
+      "shape": [
+        "circle",
+        "triangle",
+        "star",
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        270,
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-153",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "ocean",
+        "gold",
+        "ocean",
+        "rose"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        180,
+        180
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-154",
+    "cycles": {
+      "shape": [
+        "star",
+        "square",
+        "circle"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        180,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-155",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "ocean",
+        "ocean",
+        "leaf"
+      ],
+      "size": [
+        0,
+        1,
+        0
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-156",
+    "cycles": {
+      "shape": [
+        "circle",
+        "triangle"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        0,
+        1,
+        0
+      ],
+      "rotation": [
+        0,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-157",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "circle",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "ocean"
+      ],
+      "size": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "rotation": [
+        0
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-158",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "star",
+        "star"
+      ],
+      "color": [
+        "rose",
+        "rose",
+        "rose",
+        "gold"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        90,
+        0
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-159",
+    "cycles": {
+      "shape": [
+        "square",
+        "circle",
+        "square",
+        "star"
+      ],
+      "color": [
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        90,
+        0
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-160",
+    "cycles": {
+      "shape": [
+        "star",
+        "circle"
+      ],
+      "color": [
+        "gold",
+        "rose"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        180,
+        180,
+        270,
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-161",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "gold",
+        "rose",
+        "gold",
+        "ocean"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        90,
+        0,
+        180,
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-162",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "triangle",
+        "triangle"
+      ],
+      "color": [
+        "gold",
+        "gold",
+        "leaf",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        0,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-163",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "ocean",
+        "gold",
+        "rose"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        180,
+        0,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-164",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "star",
+        "triangle",
+        "square"
+      ],
+      "color": [
+        "leaf"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        90,
+        90,
+        270,
+        0
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-165",
+    "cycles": {
+      "shape": [
+        "star",
+        "circle",
+        "star"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "ocean",
+        "rose"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        90,
+        0,
+        90,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-166",
+    "cycles": {
+      "shape": [
+        "triangle"
+      ],
+      "color": [
+        "leaf",
+        "gold",
+        "rose",
+        "ocean"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        270,
+        180,
+        0
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-167",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "ocean"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        90,
+        180,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-168",
+    "cycles": {
+      "shape": [
+        "square",
+        "star"
+      ],
+      "color": [
+        "rose",
+        "rose",
+        "ocean",
+        "ocean"
+      ],
+      "size": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-169",
+    "cycles": {
+      "shape": [
+        "star",
+        "square",
+        "triangle"
+      ],
+      "color": [
+        "rose",
+        "ocean"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        180,
+        180,
+        270,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-170",
+    "cycles": {
+      "shape": [
+        "triangle"
+      ],
+      "color": [
+        "leaf",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        90,
+        0,
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-171",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "star",
+        "square"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "leaf",
+        "ocean"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        0,
+        180,
+        0,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-172",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "leaf",
+        "rose"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        180,
+        90,
+        180,
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-173",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "leaf",
+        "gold",
+        "rose"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        270,
+        270,
+        90,
+        0
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-174",
+    "cycles": {
+      "shape": [
+        "star",
+        "triangle"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "gold",
+        "rose"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-175",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "circle",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "leaf",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        0,
+        270,
+        0,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-176",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "ocean",
+        "rose",
+        "leaf",
+        "gold"
+      ],
+      "size": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        270,
+        180,
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-177",
+    "cycles": {
+      "shape": [
+        "star",
+        "triangle",
+        "circle"
+      ],
+      "color": [
+        "ocean",
+        "ocean",
+        "rose",
+        "rose"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        270,
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-178",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "leaf",
+        "ocean"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        0,
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-179",
+    "cycles": {
+      "shape": [
+        "square",
+        "square",
+        "triangle",
+        "circle"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        180,
+        270
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-180",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        90,
+        0
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-181",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "square",
+        "triangle"
+      ],
+      "color": [
+        "rose",
+        "ocean",
+        "gold"
+      ],
+      "size": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "rotation": [
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-182",
+    "cycles": {
+      "shape": [
+        "triangle"
+      ],
+      "color": [
+        "rose",
+        "gold",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        0
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-183",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "circle",
+        "square"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        0,
+        1,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        180,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-184",
+    "cycles": {
+      "shape": [
+        "star",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "gold",
+        "ocean",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        0,
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-185",
+    "cycles": {
+      "shape": [
+        "triangle"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        270,
+        0,
+        270,
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-186",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "triangle",
+        "square",
+        "square"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-187",
+    "cycles": {
+      "shape": [
+        "square",
+        "square",
+        "star",
+        "star"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        180,
+        90,
+        180
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-188",
+    "cycles": {
+      "shape": [
+        "star",
+        "square",
+        "triangle"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "leaf",
+        "ocean"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-189",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "square",
+        "circle",
+        "star"
+      ],
+      "color": [
+        "gold",
+        "leaf",
+        "gold"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        90
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-190",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "triangle",
+        "circle"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        90,
+        90,
+        270,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-191",
+    "cycles": {
+      "shape": [
+        "circle",
+        "triangle",
+        "circle"
+      ],
+      "color": [
+        "leaf",
+        "ocean",
+        "leaf"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        180,
+        0,
+        180,
+        270
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-192",
+    "cycles": {
+      "shape": [
+        "star",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-193",
+    "cycles": {
+      "shape": [
+        "star",
+        "square",
+        "star"
+      ],
+      "color": [
+        "ocean"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        270,
+        0,
+        270,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-194",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "triangle",
+        "triangle",
+        "square"
+      ],
+      "color": [
+        "gold",
+        "ocean"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        270,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-195",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "gold",
+        "leaf",
+        "gold"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        0,
+        180,
+        270
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-196",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "square",
+        "circle"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        0,
+        1,
+        0
+      ],
+      "rotation": [
+        180,
+        180,
+        180,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-197",
+    "cycles": {
+      "shape": [
+        "square",
+        "star",
+        "triangle"
+      ],
+      "color": [
+        "gold",
+        "ocean",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-198",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "triangle",
+        "triangle"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        0,
+        180,
+        270
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-199",
+    "cycles": {
+      "shape": [
+        "square",
+        "triangle",
+        "square",
+        "star"
+      ],
+      "color": [
+        "leaf"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        90,
+        90,
+        270,
+        0
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-200",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "circle",
+        "circle"
+      ],
+      "color": [
+        "leaf",
+        "gold",
+        "ocean"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-201",
+    "cycles": {
+      "shape": [
+        "star",
+        "circle",
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        180,
+        0,
+        0
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-202",
+    "cycles": {
+      "shape": [
+        "square",
+        "star"
+      ],
+      "color": [
+        "gold",
+        "ocean",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "rotation": [
+        270
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-203",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "triangle",
+        "triangle"
+      ],
+      "color": [
+        "rose",
+        "gold",
+        "ocean"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        0,
+        270,
+        0
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-204",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "gold",
+        "gold",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        1,
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        270,
+        180,
+        90
+      ]
+    },
+    "offset": 0
+  },
+  {
+    "id": "prism-205",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "star",
+        "square",
+        "circle"
+      ],
+      "color": [
+        "rose",
+        "ocean"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        90
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-206",
+    "cycles": {
+      "shape": [
+        "star",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "leaf",
+        "ocean"
+      ],
+      "size": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-207",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "gold",
+        "ocean"
+      ],
+      "size": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        180,
+        270,
+        270
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-208",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "circle",
+        "star",
+        "square"
+      ],
+      "color": [
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        90,
+        90,
+        270,
+        180
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-209",
+    "cycles": {
+      "shape": [
+        "square"
+      ],
+      "color": [
+        "leaf"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        0,
+        180
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-210",
+    "cycles": {
+      "shape": [
+        "square",
+        "circle"
+      ],
+      "color": [
+        "rose",
+        "leaf",
+        "rose",
+        "gold"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-211",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "rose",
+        "ocean",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        180,
+        90,
+        0,
+        270
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-212",
+    "cycles": {
+      "shape": [
+        "star"
+      ],
+      "color": [
+        "leaf",
+        "leaf",
+        "leaf",
+        "gold"
+      ],
+      "size": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "rotation": [
+        270,
+        90,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-213",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        0,
+        1,
+        0
+      ],
+      "rotation": [
+        90
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-214",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "star",
+        "square"
+      ],
+      "color": [
+        "ocean",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        1,
+        0
+      ],
+      "rotation": [
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-215",
+    "cycles": {
+      "shape": [
+        "circle",
+        "star",
+        "triangle"
+      ],
+      "color": [
+        "gold"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        270,
+        270,
+        180,
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-216",
+    "cycles": {
+      "shape": [
+        "star",
+        "circle",
+        "star"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        270,
+        270,
+        90,
+        180
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-217",
+    "cycles": {
+      "shape": [
+        "square",
+        "circle",
+        "triangle"
+      ],
+      "color": [
+        "ocean",
+        "ocean",
+        "rose",
+        "rose"
+      ],
+      "size": [
+        0
+      ],
+      "rotation": [
+        180,
+        270,
+        180,
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-218",
+    "cycles": {
+      "shape": [
+        "circle",
+        "circle",
+        "square",
+        "triangle"
+      ],
+      "color": [
+        "leaf",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        0,
+        270,
+        0,
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-219",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "star",
+        "square",
+        "circle"
+      ],
+      "color": [
+        "leaf"
+      ],
+      "size": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "rotation": [
+        270,
+        180
+      ]
+    },
+    "offset": 3
+  },
+  {
+    "id": "prism-220",
+    "cycles": {
+      "shape": [
+        "star",
+        "square"
+      ],
+      "color": [
+        "leaf"
+      ],
+      "size": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        270,
+        0,
+        90
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-221",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "square",
+        "triangle"
+      ],
+      "color": [
+        "ocean"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        90,
+        270,
+        0,
+        180
+      ]
+    },
+    "offset": 1
+  },
+  {
+    "id": "prism-222",
+    "cycles": {
+      "shape": [
+        "circle"
+      ],
+      "color": [
+        "rose",
+        "gold",
+        "leaf"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        180,
+        90,
+        270
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-223",
+    "cycles": {
+      "shape": [
+        "square",
+        "triangle",
+        "square",
+        "star"
+      ],
+      "color": [
+        "rose"
+      ],
+      "size": [
+        0,
+        1
+      ],
+      "rotation": [
+        180,
+        90,
+        180
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-224",
+    "cycles": {
+      "shape": [
+        "triangle",
+        "triangle",
+        "triangle",
+        "star"
+      ],
+      "color": [
+        "rose",
+        "rose",
+        "rose",
+        "leaf"
+      ],
+      "size": [
+        1
+      ],
+      "rotation": [
+        0
+      ]
+    },
+    "offset": 2
+  },
+  {
+    "id": "prism-225",
+    "cycles": {
+      "shape": [
+        "star",
+        "star",
+        "square",
+        "square"
+      ],
+      "color": [
+        "ocean"
+      ],
+      "size": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "rotation": [
+        270,
+        180,
+        0
+      ]
+    },
+    "offset": 3
   }
 ]]);
 export const CONTENT_INFO = Object.freeze({
-  "preparedPuzzles": 150,
-  "structurallyDistinctRules": 125,
+  "preparedPuzzles": 225,
+  "structurallyDistinctRules": 200,
   "maximumCycleLength": 4,
   "displayedExamples": 5,
   "ambiguousSupportedPredictions": 0,

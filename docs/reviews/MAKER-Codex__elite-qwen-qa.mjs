@@ -1,10 +1,9 @@
 /** Real-control, source-assisted recipes. Root owns the browser and fixed clock. */
 import {dailyIndex} from '../../games/deepseek-runtime/core.mjs';
 import assert from 'node:assert/strict';
-const date='2026-10-28';
 const names=new Set(['quadra','logic-lattice','syntax-siege','memory-maze','pattern-prism','territory-tactics']);
 
-export async function playGame(page,slug,{checkpoint=async()=>{}}={}) {
+export async function playGame(page,slug,{checkpoint=async()=>{},date='2026-10-28'}={}) {
  const name=slug.replace(/^qwen-/, '');
  if(!names.has(name))throw new Error(`Unsupported Qwen game: ${slug}`);
  slug=`qwen-${name}`;

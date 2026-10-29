@@ -13,6 +13,7 @@ interface Props {
   rows: string[]
   misses: number
   gaveUp: boolean
+  hintsUsed: number
   onPractice: () => void
   onNewPractice: () => void
   onBackToDaily: () => void
@@ -22,11 +23,11 @@ export function MorphWinModal(props: Props) {
   const [copied, setCopied] = useState(false)
   const countdown = useCountdown(props.open && props.mode === 'daily')
   const moves = props.rows.length - 1
-  const medal = medalFor(moves, props.puzzle.par, props.gaveUp)
+  const medal = medalFor(moves, props.puzzle.par, props.gaveUp, props.hintsUsed)
 
   const shareText = useMemo(
-    () => buildMorphShare(props.puzzleNo, moves, props.puzzle.par, props.gaveUp),
-    [props.puzzleNo, moves, props.puzzle.par, props.gaveUp],
+    () => buildMorphShare(props.puzzleNo, moves, props.puzzle.par, props.gaveUp, props.hintsUsed),
+    [props.puzzleNo, moves, props.puzzle.par, props.gaveUp, props.hintsUsed],
   )
 
   const copy = async () => {
@@ -46,6 +47,7 @@ export function MorphWinModal(props: Props) {
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4">
+          {props.hintsUsed > 0 && <p className="text-center text-sm font-bold">💡 Assisted · route shown during play</p>}
           <div className="grid w-full grid-cols-2 gap-2 text-sm">
             <div className="rounded-2xl bg-secondary p-3">
               <div className="mb-1 font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">

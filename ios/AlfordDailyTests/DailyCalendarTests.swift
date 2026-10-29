@@ -67,8 +67,8 @@ final class DailyCalendarTests: XCTestCase {
         XCTAssertTrue(Set(CreatorFilter.chatGPT.games).isDisjoint(with: Set(CreatorFilter.kimi.games)))
         XCTAssertNil(GameID(rawValue: "kimi-runtime"))
         XCTAssertNil(GameID(rawValue: "deepseek-runtime"))
-        XCTAssertEqual(GameID.inbetween.collectionCount, 180)
-        XCTAssertTrue(GameID.dailyGames.allSatisfy { $0.collectionCount >= 120 })
+        XCTAssertEqual(GameID.inbetween.collectionCount, 210)
+        XCTAssertTrue(GameID.dailyGames.allSatisfy { $0.collectionCount >= 200 })
     }
 
     func testConceptCreditsDistinguishOriginalPrototypesFromNewImplementations() {
@@ -81,7 +81,7 @@ final class DailyCalendarTests: XCTestCase {
             XCTAssertEqual(game.creator, .deepSeek)
             XCTAssertTrue(game.rawValue.hasPrefix("deepseek-"))
             XCTAssertEqual(game.credit, "Concept by DeepSeek · Built by ChatGPT")
-            XCTAssertEqual(game.collectionCount, game == .deepSeekTwinHive ? 140 : 120)
+            XCTAssertEqual(game.collectionCount, 200)
             XCTAssertEqual(game.allowsLoss, game == .deepSeekSpare)
         }
         for game in CreatorFilter.qwen.games {
@@ -98,8 +98,8 @@ final class DailyCalendarTests: XCTestCase {
     }
 
     func testClaudeGamesRetainDevelopmentCreditDistinctIDsAndExpandedCollectionCounts() {
-        let expectedCounts: [GameID: Int] = [.claudeDovetail: 120, .claudeSplice: 120, .claudeSprout: 128,
-                                           .claudeTangle: 160, .claudeKeystone: 120, .claudeTumbler: 1054]
+        let expectedCounts: [GameID: Int] = [.claudeDovetail: 200, .claudeSplice: 202, .claudeSprout: 211,
+                                           .claudeTangle: 200, .claudeKeystone: 200, .claudeTumbler: 1054]
         XCTAssertEqual(Set(CreatorFilter.claude.games), Set(expectedCounts.keys))
         for game in CreatorFilter.claude.games {
             XCTAssertEqual(game.creator, .claude)

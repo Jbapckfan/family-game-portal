@@ -1,4 +1,4 @@
-/** 180 deterministic boards; each has one certified four-cut solution. */
+/** 210 deterministic boards; each has one certified four-cut solution. */
 export const PUZZLES = Object.freeze([
   {
     "id": "ringcount-001",
@@ -5037,6 +5037,846 @@ export const PUZZLES = Object.freeze([
       5,
       7,
       9
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-181",
+    "title": "Circle 181",
+    "difficulty": "Sharp",
+    "numbers": [
+      7,
+      2,
+      9,
+      6,
+      7,
+      8,
+      6,
+      1,
+      3,
+      5,
+      5,
+      1
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      1,
+      3,
+      5,
+      9
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-182",
+    "title": "Circle 182",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      7,
+      8,
+      2,
+      2,
+      4,
+      8,
+      1,
+      1,
+      6,
+      7,
+      9
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      1,
+      5,
+      9,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-183",
+    "title": "Circle 183",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      3,
+      5,
+      8,
+      9,
+      8,
+      9,
+      4,
+      4,
+      2,
+      5,
+      2
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      2,
+      4,
+      6,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-184",
+    "title": "Circle 184",
+    "difficulty": "Sharp",
+    "numbers": [
+      5,
+      2,
+      2,
+      7,
+      9,
+      9,
+      9,
+      9,
+      9,
+      4,
+      6,
+      1
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      1,
+      4,
+      6,
+      8
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-185",
+    "title": "Circle 185",
+    "difficulty": "Sharp",
+    "numbers": [
+      3,
+      8,
+      7,
+      8,
+      8,
+      3,
+      4,
+      2,
+      3,
+      6,
+      4,
+      4
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      1,
+      3,
+      6,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-186",
+    "title": "Circle 186",
+    "difficulty": "Sharp",
+    "numbers": [
+      8,
+      8,
+      8,
+      8,
+      2,
+      3,
+      8,
+      3,
+      1,
+      4,
+      5,
+      6
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      1,
+      3,
+      7,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-187",
+    "title": "Circle 187",
+    "difficulty": "Sharp",
+    "numbers": [
+      1,
+      7,
+      8,
+      1,
+      9,
+      4,
+      4,
+      2,
+      7,
+      8,
+      8,
+      9
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      3,
+      6,
+      9,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-188",
+    "title": "Circle 188",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      9,
+      9,
+      9,
+      3,
+      9,
+      5,
+      1,
+      6,
+      3,
+      8,
+      1
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      1,
+      3,
+      7,
+      11
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-189",
+    "title": "Circle 189",
+    "difficulty": "Sharp",
+    "numbers": [
+      7,
+      5,
+      3,
+      7,
+      8,
+      6,
+      1,
+      3,
+      1,
+      9,
+      2,
+      8
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      0,
+      3,
+      6,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-190",
+    "title": "Circle 190",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      1,
+      1,
+      5,
+      7,
+      2,
+      7,
+      7,
+      9,
+      2,
+      7,
+      7
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      3,
+      6,
+      8,
+      11
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-191",
+    "title": "Circle 191",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      8,
+      9,
+      5,
+      1,
+      6,
+      2,
+      3,
+      8,
+      9,
+      4,
+      4
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      0,
+      2,
+      7,
+      9
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-192",
+    "title": "Circle 192",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      2,
+      5,
+      1,
+      1,
+      6,
+      8,
+      4,
+      9,
+      9,
+      9,
+      9
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      4,
+      7,
+      9,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-193",
+    "title": "Circle 193",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      6,
+      6,
+      1,
+      2,
+      5,
+      1,
+      9,
+      5,
+      1,
+      8,
+      7
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      1,
+      6,
+      9,
+      11
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-194",
+    "title": "Circle 194",
+    "difficulty": "Sharp",
+    "numbers": [
+      2,
+      2,
+      7,
+      3,
+      2,
+      7,
+      9,
+      4,
+      3,
+      9,
+      7,
+      9
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      4,
+      6,
+      9,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-195",
+    "title": "Circle 195",
+    "difficulty": "Sharp",
+    "numbers": [
+      3,
+      1,
+      8,
+      8,
+      8,
+      9,
+      8,
+      9,
+      2,
+      4,
+      2,
+      6
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      0,
+      3,
+      5,
+      7
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-196",
+    "title": "Circle 196",
+    "difficulty": "Sharp",
+    "numbers": [
+      5,
+      6,
+      4,
+      8,
+      9,
+      9,
+      4,
+      2,
+      7,
+      5,
+      6,
+      7
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      0,
+      3,
+      5,
+      9
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-197",
+    "title": "Circle 197",
+    "difficulty": "Sharp",
+    "numbers": [
+      7,
+      1,
+      7,
+      6,
+      1,
+      8,
+      6,
+      1,
+      5,
+      7,
+      3,
+      8
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      0,
+      4,
+      7,
+      10
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-198",
+    "title": "Circle 198",
+    "difficulty": "Sharp",
+    "numbers": [
+      2,
+      2,
+      8,
+      9,
+      7,
+      8,
+      6,
+      2,
+      8,
+      3,
+      5,
+      4
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      2,
+      4,
+      7,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-199",
+    "title": "Circle 199",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      2,
+      6,
+      9,
+      5,
+      5,
+      7,
+      9,
+      8,
+      2,
+      3,
+      3
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      0,
+      3,
+      6,
+      8
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-200",
+    "title": "Circle 200",
+    "difficulty": "Sharp",
+    "numbers": [
+      6,
+      2,
+      1,
+      2,
+      9,
+      9,
+      9,
+      9,
+      8,
+      1,
+      9,
+      7
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-201",
+    "title": "Circle 201",
+    "difficulty": "Sharp",
+    "numbers": [
+      2,
+      4,
+      1,
+      7,
+      1,
+      5,
+      1,
+      7,
+      8,
+      9,
+      6,
+      9
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      1,
+      6,
+      8,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-202",
+    "title": "Circle 202",
+    "difficulty": "Sharp",
+    "numbers": [
+      8,
+      8,
+      3,
+      1,
+      4,
+      8,
+      8,
+      2,
+      7,
+      3,
+      4,
+      8
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      0,
+      4,
+      6,
+      10
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-203",
+    "title": "Circle 203",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      7,
+      1,
+      9,
+      9,
+      8,
+      5,
+      4,
+      8,
+      5,
+      1,
+      2
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      0,
+      3,
+      5,
+      8
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-204",
+    "title": "Circle 204",
+    "difficulty": "Sharp",
+    "numbers": [
+      7,
+      2,
+      9,
+      7,
+      4,
+      7,
+      9,
+      9,
+      5,
+      4,
+      2,
+      7
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      2,
+      5,
+      7,
+      11
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-205",
+    "title": "Circle 205",
+    "difficulty": "Sharp",
+    "numbers": [
+      4,
+      6,
+      9,
+      8,
+      7,
+      7,
+      3,
+      1,
+      4,
+      6,
+      1,
+      4
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      0,
+      2,
+      4,
+      8
+    ],
+    "decoyArcs": 3
+  },
+  {
+    "id": "ringcount-206",
+    "title": "Circle 206",
+    "difficulty": "Sharp",
+    "numbers": [
+      3,
+      3,
+      7,
+      9,
+      7,
+      9,
+      5,
+      8,
+      3,
+      4,
+      5,
+      1
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      1,
+      3,
+      5,
+      8
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-207",
+    "title": "Circle 207",
+    "difficulty": "Sharp",
+    "numbers": [
+      9,
+      8,
+      1,
+      9,
+      1,
+      6,
+      9,
+      8,
+      9,
+      4,
+      2,
+      2
+    ],
+    "target": 17,
+    "sections": 4,
+    "solution": [
+      1,
+      5,
+      7,
+      11
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-208",
+    "title": "Circle 208",
+    "difficulty": "Sharp",
+    "numbers": [
+      8,
+      4,
+      4,
+      9,
+      1,
+      4,
+      9,
+      9,
+      9,
+      9,
+      2,
+      4
+    ],
+    "target": 18,
+    "sections": 4,
+    "solution": [
+      1,
+      5,
+      7,
+      9
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-209",
+    "title": "Circle 209",
+    "difficulty": "Sharp",
+    "numbers": [
+      8,
+      4,
+      2,
+      1,
+      8,
+      8,
+      7,
+      8,
+      7,
+      1,
+      4,
+      2
+    ],
+    "target": 15,
+    "sections": 4,
+    "solution": [
+      0,
+      4,
+      6,
+      8
+    ],
+    "decoyArcs": 2
+  },
+  {
+    "id": "ringcount-210",
+    "title": "Circle 210",
+    "difficulty": "Sharp",
+    "numbers": [
+      4,
+      1,
+      9,
+      1,
+      6,
+      9,
+      7,
+      9,
+      7,
+      1,
+      1,
+      9
+    ],
+    "target": 16,
+    "sections": 4,
+    "solution": [
+      1,
+      4,
+      6,
+      8
     ],
     "decoyArcs": 2
   }

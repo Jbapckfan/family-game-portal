@@ -38,7 +38,7 @@ const ORIGINAL_PUZZLES=Object.freeze(boards.map((board,i)=>Object.freeze({
 })));
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
-// The first thirty records retain their original values, IDs, and ordering.
+// All published records retain their original values, IDs, and ordering.
 // Additional prepared content by ChatGPT. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
@@ -2110,10 +2110,1850 @@ export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
       ]
     ],
     "spare": "SILVER"
+  },
+  {
+    "id": "spare-121",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "STRENGTH",
+        "WEAKNESS"
+      ],
+      [
+        "OPTIMIST",
+        "PESSIMIST"
+      ],
+      [
+        "APPROVE",
+        "DISAPPROVE"
+      ],
+      [
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    ],
+    "spare": "COMPASS"
+  },
+  {
+    "id": "spare-122",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PRIVATE",
+        "PUBLIC"
+      ],
+      [
+        "FLEXIBLE",
+        "INFLEXIBLE"
+      ],
+      [
+        "DORMANT",
+        "ACTIVE"
+      ],
+      [
+        "SECURE",
+        "VULNERABLE"
+      ]
+    ],
+    "spare": "RIBBON"
+  },
+  {
+    "id": "spare-123",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "MAXIMUM",
+        "MINIMUM"
+      ],
+      [
+        "DEFICIT",
+        "SURPLUS"
+      ],
+      [
+        "RARE",
+        "COMMON"
+      ],
+      [
+        "EMPTY",
+        "FULL"
+      ]
+    ],
+    "spare": "MEADOW"
+  },
+  {
+    "id": "spare-124",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "MELT",
+        "FREEZE"
+      ],
+      [
+        "CERTAIN",
+        "DOUBTFUL"
+      ],
+      [
+        "CREATE",
+        "DESTROY"
+      ],
+      [
+        "BROAD",
+        "NARROW"
+      ]
+    ],
+    "spare": "TEAPOT"
+  },
+  {
+    "id": "spare-125",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BRAVERY",
+        "COWARDICE"
+      ],
+      [
+        "EXPAND",
+        "CONTRACT"
+      ],
+      [
+        "AUTHENTIC",
+        "COUNTERFEIT"
+      ],
+      [
+        "ENEMY",
+        "ALLY"
+      ]
+    ],
+    "spare": "ANCHOR"
+  },
+  {
+    "id": "spare-126",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "REWARD",
+        "PUNISHMENT"
+      ],
+      [
+        "COURAGE",
+        "FEAR"
+      ],
+      [
+        "ARRIVAL",
+        "DEPARTURE"
+      ],
+      [
+        "FLOURISH",
+        "WITHER"
+      ]
+    ],
+    "spare": "THIMBLE"
+  },
+  {
+    "id": "spare-127",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "WIDE",
+        "NARROW"
+      ],
+      [
+        "VANISH",
+        "APPEAR"
+      ],
+      [
+        "PROFIT",
+        "LOSS"
+      ],
+      [
+        "DELIBERATE",
+        "ACCIDENTAL"
+      ]
+    ],
+    "spare": "PENCIL"
+  },
+  {
+    "id": "spare-128",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "COMBINE",
+        "SEPARATE"
+      ],
+      [
+        "FRAGILE",
+        "STURDY"
+      ],
+      [
+        "VACANT",
+        "OCCUPIED"
+      ],
+      [
+        "MAJOR",
+        "MINOR"
+      ]
+    ],
+    "spare": "KETTLE"
+  },
+  {
+    "id": "spare-129",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BEGIN",
+        "END"
+      ],
+      [
+        "EAGER",
+        "RELUCTANT"
+      ],
+      [
+        "DRY",
+        "WET"
+      ],
+      [
+        "FINITE",
+        "INFINITE"
+      ]
+    ],
+    "spare": "CANYON"
+  },
+  {
+    "id": "spare-130",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "WIN",
+        "LOSE"
+      ],
+      [
+        "SOLID",
+        "LIQUID"
+      ],
+      [
+        "LITERAL",
+        "FIGURATIVE"
+      ],
+      [
+        "RESIST",
+        "YIELD"
+      ]
+    ],
+    "spare": "BUTTON"
+  },
+  {
+    "id": "spare-131",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "UNITE",
+        "DIVIDE"
+      ],
+      [
+        "PUSH",
+        "PULL"
+      ],
+      [
+        "THRIFT",
+        "WASTE"
+      ],
+      [
+        "COMPULSORY",
+        "OPTIONAL"
+      ]
+    ],
+    "spare": "LANTERN"
+  },
+  {
+    "id": "spare-132",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "VISIBLE",
+        "HIDDEN"
+      ],
+      [
+        "MODERATE",
+        "EXTREME"
+      ],
+      [
+        "INNER",
+        "OUTER"
+      ],
+      [
+        "UPHILL",
+        "DOWNHILL"
+      ]
+    ],
+    "spare": "PEBBLE"
+  },
+  {
+    "id": "spare-133",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EARLY",
+        "LATE"
+      ],
+      [
+        "PRESENT",
+        "ABSENT"
+      ],
+      [
+        "SUPERIOR",
+        "INFERIOR"
+      ],
+      [
+        "LAZY",
+        "DILIGENT"
+      ]
+    ],
+    "spare": "TRUMPET"
+  },
+  {
+    "id": "spare-134",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PROTECT",
+        "ENDANGER"
+      ],
+      [
+        "CAUTIOUS",
+        "RECKLESS"
+      ],
+      [
+        "LEGAL",
+        "ILLEGAL"
+      ],
+      [
+        "ARRIVE",
+        "DEPART"
+      ]
+    ],
+    "spare": "SADDLE"
+  },
+  {
+    "id": "spare-135",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "OPEN",
+        "CLOSED"
+      ],
+      [
+        "VERTICAL",
+        "HORIZONTAL"
+      ],
+      [
+        "EXPORT",
+        "IMPORT"
+      ],
+      [
+        "POLITE",
+        "RUDE"
+      ]
+    ],
+    "spare": "ORCHARD"
+  },
+  {
+    "id": "spare-136",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PEACE",
+        "WAR"
+      ],
+      [
+        "TEMPORARY",
+        "PERMANENT"
+      ],
+      [
+        "CONVEX",
+        "CONCAVE"
+      ],
+      [
+        "INNOCENT",
+        "GUILTY"
+      ]
+    ],
+    "spare": "WINDOW"
+  },
+  {
+    "id": "spare-137",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FREEDOM",
+        "CAPTIVITY"
+      ],
+      [
+        "RIGID",
+        "FLEXIBLE"
+      ],
+      [
+        "BUY",
+        "SELL"
+      ],
+      [
+        "LOOSE",
+        "TIGHT"
+      ]
+    ],
+    "spare": "SPARROW"
+  },
+  {
+    "id": "spare-138",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ALIVE",
+        "DEAD"
+      ],
+      [
+        "TRIUMPH",
+        "DEFEAT"
+      ],
+      [
+        "TIMID",
+        "BOLD"
+      ],
+      [
+        "OPTIMISTIC",
+        "PESSIMISTIC"
+      ]
+    ],
+    "spare": "BUCKET"
+  },
+  {
+    "id": "spare-139",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "HONEST",
+        "DECEITFUL"
+      ],
+      [
+        "NATIVE",
+        "FOREIGN"
+      ],
+      [
+        "REPAIR",
+        "DAMAGE"
+      ],
+      [
+        "DUSK",
+        "DAWN"
+      ]
+    ],
+    "spare": "MARBLE"
+  },
+  {
+    "id": "spare-140",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SOUR",
+        "SWEET"
+      ],
+      [
+        "HUMBLE",
+        "PROUD"
+      ],
+      [
+        "REVEAL",
+        "CONCEAL"
+      ],
+      [
+        "VICTORY",
+        "DEFEAT"
+      ]
+    ],
+    "spare": "BASKET"
+  },
+  {
+    "id": "spare-141",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FUTURE",
+        "PAST"
+      ],
+      [
+        "OBEDIENT",
+        "DEFIANT"
+      ],
+      [
+        "EAST",
+        "WEST"
+      ],
+      [
+        "SMOOTH",
+        "ROUGH"
+      ]
+    ],
+    "spare": "HARBOR"
+  },
+  {
+    "id": "spare-142",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BITTER",
+        "SWEET"
+      ],
+      [
+        "ENCOURAGE",
+        "DISCOURAGE"
+      ],
+      [
+        "PATIENCE",
+        "IMPATIENCE"
+      ],
+      [
+        "RAPID",
+        "SLOW"
+      ]
+    ],
+    "spare": "COBALT"
+  },
+  {
+    "id": "spare-143",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SUCCESS",
+        "FAILURE"
+      ],
+      [
+        "ADVANCE",
+        "RETREAT"
+      ],
+      [
+        "TAME",
+        "WILD"
+      ],
+      [
+        "GENTLE",
+        "HARSH"
+      ]
+    ],
+    "spare": "ACORN"
+  },
+  {
+    "id": "spare-144",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SHALLOW",
+        "DEEP"
+      ],
+      [
+        "NOISY",
+        "SILENT"
+      ],
+      [
+        "ABUNDANT",
+        "SCARCE"
+      ],
+      [
+        "LEADER",
+        "FOLLOWER"
+      ]
+    ],
+    "spare": "GALAXY"
+  },
+  {
+    "id": "spare-145",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "OPAQUE",
+        "TRANSPARENT"
+      ],
+      [
+        "ORDINARY",
+        "UNUSUAL"
+      ],
+      [
+        "ANCIENT",
+        "MODERN"
+      ],
+      [
+        "MATURE",
+        "IMMATURE"
+      ]
+    ],
+    "spare": "CANVAS"
+  },
+  {
+    "id": "spare-146",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LENGTHEN",
+        "SHORTEN"
+      ],
+      [
+        "BORROW",
+        "LEND"
+      ],
+      [
+        "PLENTIFUL",
+        "SPARSE"
+      ],
+      [
+        "RATIONAL",
+        "IRRATIONAL"
+      ]
+    ],
+    "spare": "VIOLIN"
+  },
+  {
+    "id": "spare-147",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ASCEND",
+        "DESCEND"
+      ],
+      [
+        "ACCEPT",
+        "REJECT"
+      ],
+      [
+        "SIMPLE",
+        "COMPLEX"
+      ],
+      [
+        "INHALE",
+        "EXHALE"
+      ]
+    ],
+    "spare": "NEEDLE"
+  },
+  {
+    "id": "spare-148",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ALLOW",
+        "FORBID"
+      ],
+      [
+        "ACCURATE",
+        "INACCURATE"
+      ],
+      [
+        "BEFORE",
+        "AFTER"
+      ],
+      [
+        "STEEP",
+        "GRADUAL"
+      ]
+    ],
+    "spare": "TURTLE"
+  },
+  {
+    "id": "spare-149",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SHRINK",
+        "GROW"
+      ],
+      [
+        "EXTERIOR",
+        "INTERIOR"
+      ],
+      [
+        "GENEROUS",
+        "STINGY"
+      ],
+      [
+        "FRESH",
+        "STALE"
+      ]
+    ],
+    "spare": "WAFFLE"
+  },
+  {
+    "id": "spare-150",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "CONFIDENT",
+        "UNCERTAIN"
+      ],
+      [
+        "FLOAT",
+        "SINK"
+      ],
+      [
+        "MODEST",
+        "ARROGANT"
+      ],
+      [
+        "INCREASE",
+        "DECREASE"
+      ]
+    ],
+    "spare": "SILVER"
+  },
+  {
+    "id": "spare-151",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BROAD",
+        "NARROW"
+      ],
+      [
+        "OPTIMIST",
+        "PESSIMIST"
+      ],
+      [
+        "ABUNDANT",
+        "SCARCE"
+      ],
+      [
+        "INNOCENT",
+        "GUILTY"
+      ]
+    ],
+    "spare": "COMPASS"
+  },
+  {
+    "id": "spare-152",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LEGAL",
+        "ILLEGAL"
+      ],
+      [
+        "FINITE",
+        "INFINITE"
+      ],
+      [
+        "ADVANCE",
+        "RETREAT"
+      ],
+      [
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    ],
+    "spare": "RIBBON"
+  },
+  {
+    "id": "spare-153",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "WIDE",
+        "NARROW"
+      ],
+      [
+        "PEACE",
+        "WAR"
+      ],
+      [
+        "PUSH",
+        "PULL"
+      ],
+      [
+        "POLITE",
+        "RUDE"
+      ]
+    ],
+    "spare": "MEADOW"
+  },
+  {
+    "id": "spare-154",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EARLY",
+        "LATE"
+      ],
+      [
+        "PRESENT",
+        "ABSENT"
+      ],
+      [
+        "CREATE",
+        "DESTROY"
+      ],
+      [
+        "ACCURATE",
+        "INACCURATE"
+      ]
+    ],
+    "spare": "TEAPOT"
+  },
+  {
+    "id": "spare-155",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "STEEP",
+        "GRADUAL"
+      ],
+      [
+        "APPROVE",
+        "DISAPPROVE"
+      ],
+      [
+        "REPAIR",
+        "DAMAGE"
+      ],
+      [
+        "BITTER",
+        "SWEET"
+      ]
+    ],
+    "spare": "ANCHOR"
+  },
+  {
+    "id": "spare-156",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PROTECT",
+        "ENDANGER"
+      ],
+      [
+        "MODERATE",
+        "EXTREME"
+      ],
+      [
+        "RARE",
+        "COMMON"
+      ],
+      [
+        "UPHILL",
+        "DOWNHILL"
+      ]
+    ],
+    "spare": "THIMBLE"
+  },
+  {
+    "id": "spare-157",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SOLID",
+        "LIQUID"
+      ],
+      [
+        "ASCEND",
+        "DESCEND"
+      ],
+      [
+        "INNER",
+        "OUTER"
+      ],
+      [
+        "VACANT",
+        "OCCUPIED"
+      ]
+    ],
+    "spare": "PENCIL"
+  },
+  {
+    "id": "spare-158",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LITERAL",
+        "FIGURATIVE"
+      ],
+      [
+        "VANISH",
+        "APPEAR"
+      ],
+      [
+        "OPTIMISTIC",
+        "PESSIMISTIC"
+      ],
+      [
+        "FRAGILE",
+        "STURDY"
+      ]
+    ],
+    "spare": "KETTLE"
+  },
+  {
+    "id": "spare-159",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ARRIVE",
+        "DEPART"
+      ],
+      [
+        "REWARD",
+        "PUNISHMENT"
+      ],
+      [
+        "WIN",
+        "LOSE"
+      ],
+      [
+        "LOOSE",
+        "TIGHT"
+      ]
+    ],
+    "spare": "CANYON"
+  },
+  {
+    "id": "spare-160",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PRIVATE",
+        "PUBLIC"
+      ],
+      [
+        "OBEDIENT",
+        "DEFIANT"
+      ],
+      [
+        "TEMPORARY",
+        "PERMANENT"
+      ],
+      [
+        "SHALLOW",
+        "DEEP"
+      ]
+    ],
+    "spare": "BUTTON"
+  },
+  {
+    "id": "spare-161",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EXPORT",
+        "IMPORT"
+      ],
+      [
+        "DUSK",
+        "DAWN"
+      ],
+      [
+        "ENEMY",
+        "ALLY"
+      ],
+      [
+        "DELIBERATE",
+        "ACCIDENTAL"
+      ]
+    ],
+    "spare": "LANTERN"
+  },
+  {
+    "id": "spare-162",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "TRIUMPH",
+        "DEFEAT"
+      ],
+      [
+        "COURAGE",
+        "FEAR"
+      ],
+      [
+        "SECURE",
+        "VULNERABLE"
+      ],
+      [
+        "PROFIT",
+        "LOSS"
+      ]
+    ],
+    "spare": "PEBBLE"
+  },
+  {
+    "id": "spare-163",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EMPTY",
+        "FULL"
+      ],
+      [
+        "CERTAIN",
+        "DOUBTFUL"
+      ],
+      [
+        "HUMBLE",
+        "PROUD"
+      ],
+      [
+        "SIMPLE",
+        "COMPLEX"
+      ]
+    ],
+    "spare": "TRUMPET"
+  },
+  {
+    "id": "spare-164",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "CONVEX",
+        "CONCAVE"
+      ],
+      [
+        "NATIVE",
+        "FOREIGN"
+      ],
+      [
+        "GENTLE",
+        "HARSH"
+      ],
+      [
+        "BRAVERY",
+        "COWARDICE"
+      ]
+    ],
+    "spare": "SADDLE"
+  },
+  {
+    "id": "spare-165",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BUY",
+        "SELL"
+      ],
+      [
+        "DEFICIT",
+        "SURPLUS"
+      ],
+      [
+        "PATIENCE",
+        "IMPATIENCE"
+      ],
+      [
+        "ACCEPT",
+        "REJECT"
+      ]
+    ],
+    "spare": "ORCHARD"
+  },
+  {
+    "id": "spare-166",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LENGTHEN",
+        "SHORTEN"
+      ],
+      [
+        "FLOURISH",
+        "WITHER"
+      ],
+      [
+        "ANCIENT",
+        "MODERN"
+      ],
+      [
+        "VISIBLE",
+        "HIDDEN"
+      ]
+    ],
+    "spare": "WINDOW"
+  },
+  {
+    "id": "spare-167",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "CONFIDENT",
+        "UNCERTAIN"
+      ],
+      [
+        "NOISY",
+        "SILENT"
+      ],
+      [
+        "FREEDOM",
+        "CAPTIVITY"
+      ],
+      [
+        "DRY",
+        "WET"
+      ]
+    ],
+    "spare": "SPARROW"
+  },
+  {
+    "id": "spare-168",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "UNITE",
+        "DIVIDE"
+      ],
+      [
+        "TIMID",
+        "BOLD"
+      ],
+      [
+        "VICTORY",
+        "DEFEAT"
+      ],
+      [
+        "MAJOR",
+        "MINOR"
+      ]
+    ],
+    "spare": "BUCKET"
+  },
+  {
+    "id": "spare-169",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SUPERIOR",
+        "INFERIOR"
+      ],
+      [
+        "ARRIVAL",
+        "DEPARTURE"
+      ],
+      [
+        "RAPID",
+        "SLOW"
+      ],
+      [
+        "SUCCESS",
+        "FAILURE"
+      ]
+    ],
+    "spare": "MARBLE"
+  },
+  {
+    "id": "spare-170",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "MELT",
+        "FREEZE"
+      ],
+      [
+        "ORDINARY",
+        "UNUSUAL"
+      ],
+      [
+        "CAUTIOUS",
+        "RECKLESS"
+      ],
+      [
+        "FLEXIBLE",
+        "INFLEXIBLE"
+      ]
+    ],
+    "spare": "BASKET"
+  },
+  {
+    "id": "spare-171",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EXPAND",
+        "CONTRACT"
+      ],
+      [
+        "RIGID",
+        "FLEXIBLE"
+      ],
+      [
+        "FLOAT",
+        "SINK"
+      ],
+      [
+        "AUTHENTIC",
+        "COUNTERFEIT"
+      ]
+    ],
+    "spare": "HARBOR"
+  },
+  {
+    "id": "spare-172",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ENCOURAGE",
+        "DISCOURAGE"
+      ],
+      [
+        "GENEROUS",
+        "STINGY"
+      ],
+      [
+        "SMOOTH",
+        "ROUGH"
+      ],
+      [
+        "FUTURE",
+        "PAST"
+      ]
+    ],
+    "spare": "COBALT"
+  },
+  {
+    "id": "spare-173",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "SOUR",
+        "SWEET"
+      ],
+      [
+        "REVEAL",
+        "CONCEAL"
+      ],
+      [
+        "BEGIN",
+        "END"
+      ],
+      [
+        "LEADER",
+        "FOLLOWER"
+      ]
+    ],
+    "spare": "ACORN"
+  },
+  {
+    "id": "spare-174",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "OPEN",
+        "CLOSED"
+      ],
+      [
+        "COMPULSORY",
+        "OPTIONAL"
+      ],
+      [
+        "RATIONAL",
+        "IRRATIONAL"
+      ],
+      [
+        "SHRINK",
+        "GROW"
+      ]
+    ],
+    "spare": "GALAXY"
+  },
+  {
+    "id": "spare-175",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "DORMANT",
+        "ACTIVE"
+      ],
+      [
+        "INCREASE",
+        "DECREASE"
+      ],
+      [
+        "LAZY",
+        "DILIGENT"
+      ],
+      [
+        "STRENGTH",
+        "WEAKNESS"
+      ]
+    ],
+    "spare": "CANVAS"
+  },
+  {
+    "id": "spare-176",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EAGER",
+        "RELUCTANT"
+      ],
+      [
+        "VERTICAL",
+        "HORIZONTAL"
+      ],
+      [
+        "EXTERIOR",
+        "INTERIOR"
+      ],
+      [
+        "ALIVE",
+        "DEAD"
+      ]
+    ],
+    "spare": "VIOLIN"
+  },
+  {
+    "id": "spare-177",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "PLENTIFUL",
+        "SPARSE"
+      ],
+      [
+        "BEFORE",
+        "AFTER"
+      ],
+      [
+        "INHALE",
+        "EXHALE"
+      ],
+      [
+        "OPAQUE",
+        "TRANSPARENT"
+      ]
+    ],
+    "spare": "NEEDLE"
+  },
+  {
+    "id": "spare-178",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "MATURE",
+        "IMMATURE"
+      ],
+      [
+        "MODEST",
+        "ARROGANT"
+      ],
+      [
+        "FRESH",
+        "STALE"
+      ],
+      [
+        "MAXIMUM",
+        "MINIMUM"
+      ]
+    ],
+    "spare": "TURTLE"
+  },
+  {
+    "id": "spare-179",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "ALLOW",
+        "FORBID"
+      ],
+      [
+        "EAST",
+        "WEST"
+      ],
+      [
+        "BORROW",
+        "LEND"
+      ],
+      [
+        "TAME",
+        "WILD"
+      ]
+    ],
+    "spare": "WAFFLE"
+  },
+  {
+    "id": "spare-180",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "THRIFT",
+        "WASTE"
+      ],
+      [
+        "COMBINE",
+        "SEPARATE"
+      ],
+      [
+        "RESIST",
+        "YIELD"
+      ],
+      [
+        "HONEST",
+        "DECEITFUL"
+      ]
+    ],
+    "spare": "SILVER"
+  },
+  {
+    "id": "spare-181",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FINITE",
+        "INFINITE"
+      ],
+      [
+        "POLITE",
+        "RUDE"
+      ],
+      [
+        "INNER",
+        "OUTER"
+      ],
+      [
+        "COURAGE",
+        "FEAR"
+      ]
+    ],
+    "spare": "COMPASS"
+  },
+  {
+    "id": "spare-182",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "BEFORE",
+        "AFTER"
+      ],
+      [
+        "CERTAIN",
+        "DOUBTFUL"
+      ],
+      [
+        "OPEN",
+        "CLOSED"
+      ],
+      [
+        "BITTER",
+        "SWEET"
+      ]
+    ],
+    "spare": "RIBBON"
+  },
+  {
+    "id": "spare-183",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "RIGID",
+        "FLEXIBLE"
+      ],
+      [
+        "BRAVERY",
+        "COWARDICE"
+      ],
+      [
+        "ENCOURAGE",
+        "DISCOURAGE"
+      ],
+      [
+        "HONEST",
+        "DECEITFUL"
+      ]
+    ],
+    "spare": "MEADOW"
+  },
+  {
+    "id": "spare-184",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FREEDOM",
+        "CAPTIVITY"
+      ],
+      [
+        "EARLY",
+        "LATE"
+      ],
+      [
+        "ASCEND",
+        "DESCEND"
+      ],
+      [
+        "DEFICIT",
+        "SURPLUS"
+      ]
+    ],
+    "spare": "TEAPOT"
+  },
+  {
+    "id": "spare-185",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EAST",
+        "WEST"
+      ],
+      [
+        "RARE",
+        "COMMON"
+      ],
+      [
+        "VACANT",
+        "OCCUPIED"
+      ],
+      [
+        "OPTIMIST",
+        "PESSIMIST"
+      ]
+    ],
+    "spare": "ANCHOR"
+  },
+  {
+    "id": "spare-186",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "CONVEX",
+        "CONCAVE"
+      ],
+      [
+        "ARRIVAL",
+        "DEPARTURE"
+      ],
+      [
+        "RESIST",
+        "YIELD"
+      ],
+      [
+        "VERTICAL",
+        "HORIZONTAL"
+      ]
+    ],
+    "spare": "THIMBLE"
+  },
+  {
+    "id": "spare-187",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LOOSE",
+        "TIGHT"
+      ],
+      [
+        "LEADER",
+        "FOLLOWER"
+      ],
+      [
+        "BEGIN",
+        "END"
+      ],
+      [
+        "ACCEPT",
+        "REJECT"
+      ]
+    ],
+    "spare": "PENCIL"
+  },
+  {
+    "id": "spare-188",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "INNOCENT",
+        "GUILTY"
+      ],
+      [
+        "SOUR",
+        "SWEET"
+      ],
+      [
+        "VANISH",
+        "APPEAR"
+      ],
+      [
+        "EAGER",
+        "RELUCTANT"
+      ]
+    ],
+    "spare": "KETTLE"
+  },
+  {
+    "id": "spare-189",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "DORMANT",
+        "ACTIVE"
+      ],
+      [
+        "SOLID",
+        "LIQUID"
+      ],
+      [
+        "COMBINE",
+        "SEPARATE"
+      ],
+      [
+        "VISIBLE",
+        "HIDDEN"
+      ]
+    ],
+    "spare": "CANYON"
+  },
+  {
+    "id": "spare-190",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "REPAIR",
+        "DAMAGE"
+      ],
+      [
+        "DUSK",
+        "DAWN"
+      ],
+      [
+        "MAJOR",
+        "MINOR"
+      ],
+      [
+        "SUPERIOR",
+        "INFERIOR"
+      ]
+    ],
+    "spare": "BUTTON"
+  },
+  {
+    "id": "spare-191",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "DELIBERATE",
+        "ACCIDENTAL"
+      ],
+      [
+        "ALLOW",
+        "FORBID"
+      ],
+      [
+        "INCREASE",
+        "DECREASE"
+      ],
+      [
+        "PLENTIFUL",
+        "SPARSE"
+      ]
+    ],
+    "spare": "LANTERN"
+  },
+  {
+    "id": "spare-192",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "WIDE",
+        "NARROW"
+      ],
+      [
+        "HUMBLE",
+        "PROUD"
+      ],
+      [
+        "FUTURE",
+        "PAST"
+      ],
+      [
+        "PROFIT",
+        "LOSS"
+      ]
+    ],
+    "spare": "PEBBLE"
+  },
+  {
+    "id": "spare-193",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FRAGILE",
+        "STURDY"
+      ],
+      [
+        "TRIUMPH",
+        "DEFEAT"
+      ],
+      [
+        "MELT",
+        "FREEZE"
+      ],
+      [
+        "ACCURATE",
+        "INACCURATE"
+      ]
+    ],
+    "spare": "TRUMPET"
+  },
+  {
+    "id": "spare-194",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "GENTLE",
+        "HARSH"
+      ],
+      [
+        "BORROW",
+        "LEND"
+      ],
+      [
+        "CREATE",
+        "DESTROY"
+      ],
+      [
+        "COMPULSORY",
+        "OPTIONAL"
+      ]
+    ],
+    "spare": "SADDLE"
+  },
+  {
+    "id": "spare-195",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "GENEROUS",
+        "STINGY"
+      ],
+      [
+        "BROAD",
+        "NARROW"
+      ],
+      [
+        "MODEST",
+        "ARROGANT"
+      ],
+      [
+        "EXPORT",
+        "IMPORT"
+      ]
+    ],
+    "spare": "ORCHARD"
+  },
+  {
+    "id": "spare-196",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "AUTHENTIC",
+        "COUNTERFEIT"
+      ],
+      [
+        "SECURE",
+        "VULNERABLE"
+      ],
+      [
+        "RAPID",
+        "SLOW"
+      ],
+      [
+        "INHALE",
+        "EXHALE"
+      ]
+    ],
+    "spare": "WINDOW"
+  },
+  {
+    "id": "spare-197",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "NATIVE",
+        "FOREIGN"
+      ],
+      [
+        "LAZY",
+        "DILIGENT"
+      ],
+      [
+        "PATIENCE",
+        "IMPATIENCE"
+      ],
+      [
+        "STRENGTH",
+        "WEAKNESS"
+      ]
+    ],
+    "spare": "SPARROW"
+  },
+  {
+    "id": "spare-198",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "LITERAL",
+        "FIGURATIVE"
+      ],
+      [
+        "BUY",
+        "SELL"
+      ],
+      [
+        "EXPAND",
+        "CONTRACT"
+      ],
+      [
+        "EMPTY",
+        "FULL"
+      ]
+    ],
+    "spare": "BUCKET"
+  },
+  {
+    "id": "spare-199",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "EXTERIOR",
+        "INTERIOR"
+      ],
+      [
+        "ALIVE",
+        "DEAD"
+      ],
+      [
+        "ADVANCE",
+        "RETREAT"
+      ],
+      [
+        "REWARD",
+        "PUNISHMENT"
+      ]
+    ],
+    "spare": "MARBLE"
+  },
+  {
+    "id": "spare-200",
+    "prompt": "Find four pairs with opposite meanings. One word has no partner.",
+    "pairs": [
+      [
+        "FLEXIBLE",
+        "INFLEXIBLE"
+      ],
+      [
+        "UNITE",
+        "DIVIDE"
+      ],
+      [
+        "MAXIMUM",
+        "MINIMUM"
+      ],
+      [
+        "REVEAL",
+        "CONCEAL"
+      ]
+    ],
+    "spare": "BASKET"
   }
 ]]);
 export const CONTENT_INFO = Object.freeze({
-  "preparedPuzzles": 120,
+  "preparedPuzzles": 200,
   "curatedAntonymPairs": 120,
   "neutralSpareWords": 30,
   "maxSharedPairsPerAddedBoard": 2

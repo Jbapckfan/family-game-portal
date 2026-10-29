@@ -65,10 +65,10 @@ test('every supplied original is preserved byte for byte',async()=>{
 test('prepared counts match every modular imported bank',async()=>{
   for(const game of GAMES.filter(g=>['deepseek','qwen','claude'].includes(g.runtime))){const {PUZZLES}=await import(`../games/${game.slug}/puzzles.mjs`);assert.equal(PUZZLES.length,game.boards,game.slug);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length,`${game.slug}: unique prepared IDs`);}
 });
-test('all 32 games have at least 120 available puzzles and the deployment inventory matches the banks',async()=>{
+test('all 32 games have at least 200 available puzzles and the deployment inventory matches the banks',async()=>{
   const inventory=await puzzleInventory();
   assert.equal(inventory.gameCount,32);
-  assert.ok(inventory.minimumPerGame>=120);
+  assert.ok(inventory.minimumPerGame>=200);
   const published=JSON.parse(await readFile(new URL('../docs/puzzle-inventory.json',import.meta.url),'utf8'));
   assert.deepEqual(inventory,published);
 });

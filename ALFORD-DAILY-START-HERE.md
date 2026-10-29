@@ -1,3 +1,5 @@
+> **October29,2026 verified build:** all32 daily games + nine-board bonus; six-month calendar through April28,2027. Start with [the current verification report](docs/SIX-MONTH-VERIFICATION.md). Older release notes below describe earlier checkpoints.
+
 # Alford Daily — start here
 
 ## Local full-collection candidate — October 28, 2026

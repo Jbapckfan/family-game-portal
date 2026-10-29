@@ -1,3 +1,5 @@
+import { choosePracticeIndex } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import answersData from './data/answers.json'
 import { todayDayNumber } from '../shared/share'
 
@@ -9,13 +11,12 @@ export type Eval = 'correct' | 'present' | 'absent'
 const ANSWERS = answersData as string[]
 
 export function dailyHunch(dayNumber = todayDayNumber()): { answer: string; puzzleNo: number } {
-  const idx = ((dayNumber % ANSWERS.length) + ANSWERS.length) % ANSWERS.length
+  const idx = publishedDailyIndex(dayNumber, ANSWERS.length, 937)
   return { answer: ANSWERS[idx], puzzleNo: idx + 1 }
 }
 
 export function practiceHunch(excludeNo = -1): { answer: string; puzzleNo: number } {
-  let idx = Math.floor(Math.random() * ANSWERS.length)
-  while (idx === excludeNo) idx = Math.floor(Math.random() * ANSWERS.length)
+  const idx = choosePracticeIndex('kimi-hunch', ANSWERS.length, excludeNo)
   return { answer: ANSWERS[idx], puzzleNo: idx + 1 }
 }
 

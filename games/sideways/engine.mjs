@@ -1,3 +1,4 @@
+import {originalDailyIndex} from '../deepseek-runtime/daily-rotations.mjs';
 /** Pure Sideways rules. Every row is a cyclic strip shared by all four answer columns. */
 export const EPOCH = '2026-10-20';
 export const HISTORY_LIMIT = 64;
@@ -26,7 +27,7 @@ export function getDaily(puzzles, now = new Date()) {
   if (!Array.isArray(puzzles) || puzzles.length === 0) throw new RangeError('A daily puzzle collection is required.');
   const dateKey = getDateKey(now);
   const number = getDayNumber(dateKey);
-  const index = mod(number - 1, puzzles.length);
+  const index = originalDailyIndex('sideways', dateKey, number - 1, puzzles.length);
   return { puzzle: puzzles[index], dateKey, number };
 }
 

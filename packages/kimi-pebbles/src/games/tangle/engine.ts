@@ -1,6 +1,9 @@
+import { reviewTanglePuzzle, reviewTanglePuzzleForDay, TANGLE_REVIEWED_EXCLUSIONS } from './reviewed-words'
+import { choosePracticeIndex } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
-import { medalTargets } from './progress'
+import { medalTargets, restoreTangleProgress } from './progress'
 
 export interface TanglePuzzle {
   g: string // 16 letters, row-major 4x4
@@ -13,17 +16,19 @@ export interface TanglePuzzle {
 
 const PUZZLES = (puzzlesData as TanglePuzzle[]).map(puzzle => ({ ...puzzle, targets: medalTargets(puzzle.max) }))
 
-export function dailyTangle(dayNumber = todayDayNumber()): { puzzle: TanglePuzzle; puzzleNo: number } {
-  const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length
-  return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
+export function dailyTangle(dayNumber = todayDayNumber(), savedProgress?: unknown): { puzzle: TanglePuzzle; puzzleNo: number } {
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 430)
+  const original = PUZZLES[idx]
+  // A cached older client may already have played this day's original edition.
+  // Preserve a fully valid such round, including earned points and medals.
+  const legacy = savedProgress === undefined ? null : restoreTangleProgress(savedProgress, original)
+  const keepEdition = legacy && legacy.found.some(word => TANGLE_REVIEWED_EXCLUSIONS.includes(word))
+  return { puzzle: keepEdition ? original : reviewTanglePuzzleForDay(original, dayNumber), puzzleNo: idx + 1 }
 }
 
 export function practiceTangle(excludeIdx = -1): { puzzle: TanglePuzzle; puzzleNo: number } {
-  let idx = Math.floor(Math.random() * PUZZLES.length)
-  if (PUZZLES.length > 1) {
-    while (idx === excludeIdx) idx = Math.floor(Math.random() * PUZZLES.length)
-  }
-  return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
+  const idx = choosePracticeIndex('kimi-tangle', PUZZLES.length, excludeIdx)
+  return { puzzle: reviewTanglePuzzle(PUZZLES[idx]), puzzleNo: idx + 1 }
 }
 
 export { pointsFor } from './progress'

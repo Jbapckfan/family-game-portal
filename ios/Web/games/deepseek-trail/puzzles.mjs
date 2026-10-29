@@ -903,7 +903,7 @@ const ORIGINAL_PUZZLES = [
 ];
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
-// The first thirty records retain their original values, IDs, and ordering.
+// All published records retain their original values, IDs, and ordering.
 // Additional prepared content by ChatGPT. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
@@ -3605,10 +3605,2410 @@ export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
     "accepted": [
       "NEIGHBORS"
     ]
+  },
+  {
+    "id": "trail-121",
+    "answer": "NEWSPAPER",
+    "clue": "A printed publication containing current reports and articles.",
+    "grid": [
+      "E",
+      "R",
+      "N",
+      "P",
+      "S",
+      "E",
+      "A",
+      "P",
+      "W"
+    ],
+    "path": [
+      2,
+      5,
+      8,
+      4,
+      7,
+      6,
+      3,
+      0,
+      1
+    ],
+    "accepted": [
+      "NEWSPAPER"
+    ]
+  },
+  {
+    "id": "trail-122",
+    "answer": "NIGHTFALL",
+    "clue": "The time when daylight fades and darkness begins.",
+    "grid": [
+      "H",
+      "T",
+      "F",
+      "G",
+      "N",
+      "A",
+      "I",
+      "L",
+      "L"
+    ],
+    "path": [
+      4,
+      6,
+      3,
+      0,
+      1,
+      2,
+      5,
+      8,
+      7
+    ],
+    "accepted": [
+      "NIGHTFALL"
+    ]
+  },
+  {
+    "id": "trail-123",
+    "answer": "ORCHESTRA",
+    "clue": "A large ensemble of string, wind, and percussion musicians.",
+    "grid": [
+      "A",
+      "R",
+      "T",
+      "C",
+      "H",
+      "S",
+      "R",
+      "O",
+      "E"
+    ],
+    "path": [
+      7,
+      6,
+      3,
+      4,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "ORCHESTRA"
+    ]
+  },
+  {
+    "id": "trail-124",
+    "answer": "ACCORDION",
+    "clue": "A portable instrument with a bellows and a keyboard.",
+    "grid": [
+      "A",
+      "C",
+      "O",
+      "O",
+      "C",
+      "R",
+      "N",
+      "I",
+      "D"
+    ],
+    "path": [
+      0,
+      1,
+      4,
+      2,
+      5,
+      8,
+      7,
+      3,
+      6
+    ],
+    "accepted": [
+      "ACCORDION"
+    ]
+  },
+  {
+    "id": "trail-125",
+    "answer": "PASSENGER",
+    "clue": "A traveler in a vehicle who is not driving it.",
+    "grid": [
+      "N",
+      "G",
+      "E",
+      "E",
+      "S",
+      "R",
+      "S",
+      "P",
+      "A"
+    ],
+    "path": [
+      7,
+      8,
+      4,
+      6,
+      3,
+      0,
+      1,
+      2,
+      5
+    ],
+    "accepted": [
+      "PASSENGER"
+    ]
+  },
+  {
+    "id": "trail-126",
+    "answer": "PATCHWORK",
+    "clue": "Fabric made by sewing smaller pieces together.",
+    "grid": [
+      "O",
+      "R",
+      "P",
+      "K",
+      "W",
+      "A",
+      "H",
+      "C",
+      "T"
+    ],
+    "path": [
+      2,
+      5,
+      8,
+      7,
+      6,
+      4,
+      0,
+      1,
+      3
+    ],
+    "accepted": [
+      "PATCHWORK"
+    ]
+  },
+  {
+    "id": "trail-127",
+    "answer": "AEROPLANE",
+    "clue": "A winged flying vehicle, using the British spelling.",
+    "grid": [
+      "E",
+      "R",
+      "O",
+      "A",
+      "P",
+      "L",
+      "E",
+      "N",
+      "A"
+    ],
+    "path": [
+      3,
+      0,
+      1,
+      2,
+      4,
+      5,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "AEROPLANE"
+    ]
+  },
+  {
+    "id": "trail-128",
+    "answer": "PERISCOPE",
+    "clue": "A viewing instrument used to look above a submarine.",
+    "grid": [
+      "S",
+      "I",
+      "R",
+      "C",
+      "E",
+      "P",
+      "O",
+      "P",
+      "E"
+    ],
+    "path": [
+      5,
+      4,
+      2,
+      1,
+      0,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "PERISCOPE"
+    ]
+  },
+  {
+    "id": "trail-129",
+    "answer": "AVALANCHE",
+    "clue": "A large mass of snow rapidly descending a mountainside.",
+    "grid": [
+      "A",
+      "C",
+      "H",
+      "N",
+      "L",
+      "E",
+      "A",
+      "V",
+      "A"
+    ],
+    "path": [
+      8,
+      7,
+      6,
+      4,
+      0,
+      3,
+      1,
+      2,
+      5
+    ],
+    "accepted": [
+      "AVALANCHE"
+    ]
+  },
+  {
+    "id": "trail-130",
+    "answer": "BADMINTON",
+    "clue": "A racket sport played by hitting a shuttlecock over a net.",
+    "grid": [
+      "N",
+      "O",
+      "T",
+      "A",
+      "B",
+      "N",
+      "D",
+      "M",
+      "I"
+    ],
+    "path": [
+      4,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "BADMINTON"
+    ]
+  },
+  {
+    "id": "trail-131",
+    "answer": "POLICEMAN",
+    "clue": "A male officer who enforces the law.",
+    "grid": [
+      "I",
+      "P",
+      "O",
+      "C",
+      "L",
+      "A",
+      "E",
+      "M",
+      "N"
+    ],
+    "path": [
+      1,
+      2,
+      4,
+      0,
+      3,
+      6,
+      7,
+      5,
+      8
+    ],
+    "accepted": [
+      "POLICEMAN"
+    ]
+  },
+  {
+    "id": "trail-132",
+    "answer": "PORCUPINE",
+    "clue": "A rodent protected by a coat of sharp quills.",
+    "grid": [
+      "N",
+      "I",
+      "P",
+      "E",
+      "U",
+      "R",
+      "P",
+      "O",
+      "C"
+    ],
+    "path": [
+      6,
+      7,
+      5,
+      8,
+      4,
+      2,
+      1,
+      0,
+      3
+    ],
+    "accepted": [
+      "PORCUPINE"
+    ]
+  },
+  {
+    "id": "trail-133",
+    "answer": "POSTCARDS",
+    "clue": "Small cards mailed with a picture and a written message.",
+    "grid": [
+      "R",
+      "D",
+      "S",
+      "A",
+      "P",
+      "S",
+      "C",
+      "T",
+      "O"
+    ],
+    "path": [
+      4,
+      8,
+      5,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "POSTCARDS"
+    ]
+  },
+  {
+    "id": "trail-134",
+    "answer": "POTTERIES",
+    "clue": "Workshops where clay vessels are made and fired.",
+    "grid": [
+      "T",
+      "O",
+      "S",
+      "P",
+      "T",
+      "E",
+      "E",
+      "R",
+      "I"
+    ],
+    "path": [
+      3,
+      1,
+      0,
+      4,
+      6,
+      7,
+      8,
+      5,
+      2
+    ],
+    "accepted": [
+      "POTTERIES"
+    ]
+  },
+  {
+    "id": "trail-135",
+    "answer": "PRACTICAL",
+    "clue": "Useful and suited to real tasks rather than theory alone.",
+    "grid": [
+      "P",
+      "C",
+      "A",
+      "L",
+      "R",
+      "T",
+      "A",
+      "C",
+      "I"
+    ],
+    "path": [
+      0,
+      4,
+      2,
+      1,
+      5,
+      8,
+      7,
+      6,
+      3
+    ],
+    "accepted": [
+      "PRACTICAL"
+    ]
+  },
+  {
+    "id": "trail-136",
+    "answer": "PRESCHOOL",
+    "clue": "An educational setting for children below primary school age.",
+    "grid": [
+      "L",
+      "R",
+      "P",
+      "O",
+      "S",
+      "E",
+      "O",
+      "H",
+      "C"
+    ],
+    "path": [
+      2,
+      1,
+      5,
+      4,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "PRESCHOOL"
+    ]
+  },
+  {
+    "id": "trail-137",
+    "answer": "PRINTABLE",
+    "clue": "Suitable for putting on paper with a printer.",
+    "grid": [
+      "N",
+      "A",
+      "B",
+      "I",
+      "T",
+      "L",
+      "P",
+      "R",
+      "E"
+    ],
+    "path": [
+      6,
+      7,
+      3,
+      0,
+      4,
+      1,
+      2,
+      5,
+      8
+    ],
+    "accepted": [
+      "PRINTABLE"
+    ]
+  },
+  {
+    "id": "trail-138",
+    "answer": "PROJECTOR",
+    "clue": "A device that casts enlarged images onto a screen.",
+    "grid": [
+      "R",
+      "R",
+      "P",
+      "O",
+      "O",
+      "J",
+      "T",
+      "C",
+      "E"
+    ],
+    "path": [
+      2,
+      1,
+      4,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "PROJECTOR"
+    ]
+  },
+  {
+    "id": "trail-139",
+    "answer": "BALLERINA",
+    "clue": "A woman who performs classical ballet.",
+    "grid": [
+      "I",
+      "R",
+      "E",
+      "N",
+      "A",
+      "L",
+      "B",
+      "A",
+      "L"
+    ],
+    "path": [
+      6,
+      4,
+      8,
+      5,
+      2,
+      1,
+      0,
+      3,
+      7
+    ],
+    "accepted": [
+      "BALLERINA"
+    ]
+  },
+  {
+    "id": "trail-140",
+    "answer": "QUICKSAND",
+    "clue": "Loose wet ground that can yield beneath a person's weight.",
+    "grid": [
+      "K",
+      "C",
+      "I",
+      "S",
+      "Q",
+      "U",
+      "A",
+      "N",
+      "D"
+    ],
+    "path": [
+      4,
+      5,
+      2,
+      1,
+      0,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "QUICKSAND"
+    ]
+  },
+  {
+    "id": "trail-141",
+    "answer": "RAINCOATS",
+    "clue": "Waterproof outer garments worn during wet weather.",
+    "grid": [
+      "S",
+      "R",
+      "I",
+      "T",
+      "A",
+      "N",
+      "A",
+      "O",
+      "C"
+    ],
+    "path": [
+      1,
+      4,
+      2,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "RAINCOATS"
+    ]
+  },
+  {
+    "id": "trail-142",
+    "answer": "RECYCLING",
+    "clue": "Processing used materials so they can be used again.",
+    "grid": [
+      "G",
+      "N",
+      "I",
+      "E",
+      "R",
+      "L",
+      "C",
+      "Y",
+      "C"
+    ],
+    "path": [
+      4,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "RECYCLING"
+    ]
+  },
+  {
+    "id": "trail-143",
+    "answer": "DOLLHOUSE",
+    "clue": "A miniature home furnished for small toy figures.",
+    "grid": [
+      "H",
+      "O",
+      "U",
+      "L",
+      "S",
+      "D",
+      "L",
+      "O",
+      "E"
+    ],
+    "path": [
+      5,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "accepted": [
+      "DOLLHOUSE"
+    ]
+  },
+  {
+    "id": "trail-144",
+    "answer": "ROADBLOCK",
+    "clue": "A barrier placed across a route to stop traffic.",
+    "grid": [
+      "O",
+      "L",
+      "B",
+      "C",
+      "D",
+      "O",
+      "K",
+      "R",
+      "A"
+    ],
+    "path": [
+      7,
+      5,
+      8,
+      4,
+      2,
+      1,
+      0,
+      3,
+      6
+    ],
+    "accepted": [
+      "ROADBLOCK"
+    ]
+  },
+  {
+    "id": "trail-145",
+    "answer": "BARRICADE",
+    "clue": "An improvised barrier blocking a road or entrance.",
+    "grid": [
+      "A",
+      "B",
+      "R",
+      "D",
+      "R",
+      "I",
+      "E",
+      "A",
+      "C"
+    ],
+    "path": [
+      1,
+      0,
+      4,
+      2,
+      5,
+      8,
+      7,
+      3,
+      6
+    ],
+    "accepted": [
+      "BARRICADE"
+    ]
+  },
+  {
+    "id": "trail-146",
+    "answer": "SAILBOATS",
+    "clue": "Boats propelled primarily by wind caught in canvas.",
+    "grid": [
+      "S",
+      "T",
+      "A",
+      "S",
+      "I",
+      "O",
+      "A",
+      "L",
+      "B"
+    ],
+    "path": [
+      3,
+      6,
+      4,
+      7,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "SAILBOATS"
+    ]
+  },
+  {
+    "id": "trail-147",
+    "answer": "SANDPAPER",
+    "clue": "Abrasive sheets used to smooth a surface.",
+    "grid": [
+      "P",
+      "E",
+      "P",
+      "R",
+      "A",
+      "D",
+      "S",
+      "A",
+      "N"
+    ],
+    "path": [
+      6,
+      7,
+      8,
+      5,
+      2,
+      4,
+      0,
+      1,
+      3
+    ],
+    "accepted": [
+      "SANDPAPER"
+    ]
+  },
+  {
+    "id": "trail-148",
+    "answer": "SATELLITE",
+    "clue": "An object that travels in orbit around a planet.",
+    "grid": [
+      "I",
+      "S",
+      "E",
+      "L",
+      "T",
+      "A",
+      "L",
+      "E",
+      "T"
+    ],
+    "path": [
+      1,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0,
+      4,
+      2
+    ],
+    "accepted": [
+      "SATELLITE"
+    ]
+  },
+  {
+    "id": "trail-149",
+    "answer": "SCRAPBOOK",
+    "clue": "An album containing pasted photographs and other keepsakes.",
+    "grid": [
+      "S",
+      "O",
+      "K",
+      "C",
+      "A",
+      "O",
+      "R",
+      "P",
+      "B"
+    ],
+    "path": [
+      0,
+      3,
+      6,
+      4,
+      7,
+      8,
+      5,
+      1,
+      2
+    ],
+    "accepted": [
+      "SCRAPBOOK"
+    ]
+  },
+  {
+    "id": "trail-150",
+    "answer": "BEEKEEPER",
+    "clue": "Someone who maintains colonies of honey-producing insects.",
+    "grid": [
+      "K",
+      "E",
+      "B",
+      "E",
+      "E",
+      "E",
+      "R",
+      "E",
+      "P"
+    ],
+    "path": [
+      2,
+      1,
+      3,
+      0,
+      4,
+      5,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "BEEKEEPER"
+    ]
+  },
+  {
+    "id": "trail-151",
+    "answer": "SEASHELLS",
+    "clue": "Hard outer coverings of marine mollusks found on beaches.",
+    "grid": [
+      "H",
+      "A",
+      "S",
+      "S",
+      "E",
+      "E",
+      "S",
+      "L",
+      "L"
+    ],
+    "path": [
+      2,
+      5,
+      1,
+      3,
+      0,
+      4,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "SEASHELLS"
+    ]
+  },
+  {
+    "id": "trail-152",
+    "answer": "SHIPWRECK",
+    "clue": "The remains of a vessel destroyed or sunk at sea.",
+    "grid": [
+      "P",
+      "I",
+      "R",
+      "H",
+      "W",
+      "E",
+      "S",
+      "K",
+      "C"
+    ],
+    "path": [
+      6,
+      3,
+      1,
+      0,
+      4,
+      2,
+      5,
+      8,
+      7
+    ],
+    "accepted": [
+      "SHIPWRECK"
+    ]
+  },
+  {
+    "id": "trail-153",
+    "answer": "SHOEMAKER",
+    "clue": "A craftsperson who constructs or repairs footwear.",
+    "grid": [
+      "A",
+      "K",
+      "R",
+      "M",
+      "O",
+      "E",
+      "E",
+      "S",
+      "H"
+    ],
+    "path": [
+      7,
+      8,
+      4,
+      6,
+      3,
+      0,
+      1,
+      5,
+      2
+    ],
+    "accepted": [
+      "SHOEMAKER"
+    ]
+  },
+  {
+    "id": "trail-154",
+    "answer": "SHOPFRONT",
+    "clue": "The outward-facing entrance and windows of a store.",
+    "grid": [
+      "F",
+      "R",
+      "O",
+      "H",
+      "P",
+      "N",
+      "O",
+      "S",
+      "T"
+    ],
+    "path": [
+      7,
+      3,
+      6,
+      4,
+      0,
+      1,
+      2,
+      5,
+      8
+    ],
+    "accepted": [
+      "SHOPFRONT"
+    ]
+  },
+  {
+    "id": "trail-155",
+    "answer": "SHOULDERS",
+    "clue": "Body parts where the arms connect to the torso.",
+    "grid": [
+      "E",
+      "R",
+      "S",
+      "D",
+      "O",
+      "H",
+      "U",
+      "L",
+      "S"
+    ],
+    "path": [
+      8,
+      5,
+      4,
+      6,
+      7,
+      3,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "SHOULDERS"
+    ]
+  },
+  {
+    "id": "trail-156",
+    "answer": "SIDEWALKS",
+    "clue": "Paved paths for pedestrians alongside roads.",
+    "grid": [
+      "E",
+      "W",
+      "S",
+      "A",
+      "D",
+      "I",
+      "L",
+      "K",
+      "S"
+    ],
+    "path": [
+      2,
+      5,
+      4,
+      0,
+      1,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "SIDEWALKS"
+    ]
+  },
+  {
+    "id": "trail-157",
+    "answer": "SNOWBOARD",
+    "clue": "A single wide board ridden downhill over packed snow.",
+    "grid": [
+      "D",
+      "A",
+      "O",
+      "R",
+      "S",
+      "B",
+      "N",
+      "O",
+      "W"
+    ],
+    "path": [
+      4,
+      6,
+      7,
+      8,
+      5,
+      2,
+      1,
+      3,
+      0
+    ],
+    "accepted": [
+      "SNOWBOARD"
+    ]
+  },
+  {
+    "id": "trail-158",
+    "answer": "SNOWSTORM",
+    "clue": "Severe weather with falling flakes and often strong wind.",
+    "grid": [
+      "W",
+      "O",
+      "M",
+      "N",
+      "S",
+      "R",
+      "S",
+      "O",
+      "T"
+    ],
+    "path": [
+      6,
+      3,
+      1,
+      0,
+      4,
+      8,
+      7,
+      5,
+      2
+    ],
+    "accepted": [
+      "SNOWSTORM"
+    ]
+  },
+  {
+    "id": "trail-159",
+    "answer": "SOMETHING",
+    "clue": "An unspecified object, action, or matter.",
+    "grid": [
+      "S",
+      "I",
+      "H",
+      "O",
+      "T",
+      "N",
+      "E",
+      "M",
+      "G"
+    ],
+    "path": [
+      0,
+      3,
+      7,
+      6,
+      4,
+      2,
+      1,
+      5,
+      8
+    ],
+    "accepted": [
+      "SOMETHING"
+    ]
+  },
+  {
+    "id": "trail-160",
+    "answer": "SPAGHETTI",
+    "clue": "Pasta made in long thin cylindrical strands.",
+    "grid": [
+      "H",
+      "G",
+      "A",
+      "E",
+      "P",
+      "S",
+      "T",
+      "T",
+      "I"
+    ],
+    "path": [
+      5,
+      4,
+      2,
+      1,
+      0,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "SPAGHETTI"
+    ]
+  },
+  {
+    "id": "trail-161",
+    "answer": "SPARKLING",
+    "clue": "Shining with small bright flashes of light.",
+    "grid": [
+      "G",
+      "S",
+      "A",
+      "N",
+      "P",
+      "R",
+      "I",
+      "L",
+      "K"
+    ],
+    "path": [
+      1,
+      4,
+      2,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "SPARKLING"
+    ]
+  },
+  {
+    "id": "trail-162",
+    "answer": "SPECTACLE",
+    "clue": "An impressive or unusual sight attracting attention.",
+    "grid": [
+      "E",
+      "E",
+      "L",
+      "C",
+      "P",
+      "C",
+      "S",
+      "T",
+      "A"
+    ],
+    "path": [
+      6,
+      4,
+      0,
+      3,
+      7,
+      8,
+      5,
+      2,
+      1
+    ],
+    "accepted": [
+      "SPECTACLE"
+    ]
+  },
+  {
+    "id": "trail-163",
+    "answer": "SPOTLIGHT",
+    "clue": "A lamp producing a focused beam on a performer or object.",
+    "grid": [
+      "P",
+      "T",
+      "L",
+      "S",
+      "O",
+      "I",
+      "T",
+      "H",
+      "G"
+    ],
+    "path": [
+      3,
+      0,
+      4,
+      1,
+      2,
+      5,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "SPOTLIGHT"
+    ]
+  },
+  {
+    "id": "trail-164",
+    "answer": "STAIRCASE",
+    "clue": "A connected set of steps between different floor levels.",
+    "grid": [
+      "A",
+      "S",
+      "E",
+      "S",
+      "C",
+      "I",
+      "T",
+      "A",
+      "R"
+    ],
+    "path": [
+      3,
+      6,
+      7,
+      5,
+      8,
+      4,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "STAIRCASE"
+    ]
+  },
+  {
+    "id": "trail-165",
+    "answer": "BILINGUAL",
+    "clue": "Able to speak two languages.",
+    "grid": [
+      "U",
+      "G",
+      "N",
+      "A",
+      "I",
+      "I",
+      "L",
+      "B",
+      "L"
+    ],
+    "path": [
+      7,
+      4,
+      8,
+      5,
+      2,
+      1,
+      0,
+      3,
+      6
+    ],
+    "accepted": [
+      "BILINGUAL"
+    ]
+  },
+  {
+    "id": "trail-166",
+    "answer": "STEAMBOAT",
+    "clue": "A vessel driven by an engine powered with heated water vapor.",
+    "grid": [
+      "M",
+      "A",
+      "E",
+      "B",
+      "S",
+      "T",
+      "O",
+      "A",
+      "T"
+    ],
+    "path": [
+      4,
+      5,
+      2,
+      1,
+      0,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "STEAMBOAT"
+    ]
+  },
+  {
+    "id": "trail-167",
+    "answer": "STORYBOOK",
+    "clue": "A volume containing tales, often for young readers.",
+    "grid": [
+      "Y",
+      "S",
+      "O",
+      "B",
+      "R",
+      "T",
+      "O",
+      "O",
+      "K"
+    ],
+    "path": [
+      1,
+      5,
+      2,
+      4,
+      0,
+      3,
+      6,
+      7,
+      8
+    ],
+    "accepted": [
+      "STORYBOOK"
+    ]
+  },
+  {
+    "id": "trail-168",
+    "answer": "STRONGBOX",
+    "clue": "A sturdy locked container for valuables.",
+    "grid": [
+      "X",
+      "R",
+      "T",
+      "O",
+      "S",
+      "O",
+      "B",
+      "G",
+      "N"
+    ],
+    "path": [
+      4,
+      2,
+      1,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "STRONGBOX"
+    ]
+  },
+  {
+    "id": "trail-169",
+    "answer": "SUBMARINE",
+    "clue": "A vessel designed to operate beneath the sea.",
+    "grid": [
+      "E",
+      "N",
+      "I",
+      "U",
+      "S",
+      "R",
+      "B",
+      "M",
+      "A"
+    ],
+    "path": [
+      4,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "SUBMARINE"
+    ]
+  },
+  {
+    "id": "trail-170",
+    "answer": "LAMPSHADE",
+    "clue": "A covering that diffuses and directs light from a lamp.",
+    "grid": [
+      "L",
+      "A",
+      "H",
+      "A",
+      "D",
+      "S",
+      "E",
+      "M",
+      "P"
+    ],
+    "path": [
+      0,
+      3,
+      7,
+      8,
+      5,
+      2,
+      1,
+      4,
+      6
+    ],
+    "accepted": [
+      "LAMPSHADE"
+    ]
+  },
+  {
+    "id": "trail-171",
+    "answer": "SURFBOARD",
+    "clue": "A long narrow board ridden on breaking waves.",
+    "grid": [
+      "D",
+      "R",
+      "A",
+      "U",
+      "S",
+      "O",
+      "R",
+      "F",
+      "B"
+    ],
+    "path": [
+      4,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "SURFBOARD"
+    ]
+  },
+  {
+    "id": "trail-172",
+    "answer": "SWEETCORN",
+    "clue": "A variety of maize eaten for its tender sugary kernels.",
+    "grid": [
+      "T",
+      "C",
+      "O",
+      "E",
+      "R",
+      "S",
+      "E",
+      "W",
+      "N"
+    ],
+    "path": [
+      5,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "accepted": [
+      "SWEETCORN"
+    ]
+  },
+  {
+    "id": "trail-173",
+    "answer": "BOARDWALK",
+    "clue": "A path made of wooden planks, often beside a beach.",
+    "grid": [
+      "B",
+      "R",
+      "D",
+      "O",
+      "A",
+      "W",
+      "K",
+      "L",
+      "A"
+    ],
+    "path": [
+      0,
+      3,
+      4,
+      1,
+      2,
+      5,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "BOARDWALK"
+    ]
+  },
+  {
+    "id": "trail-174",
+    "answer": "TANGERINE",
+    "clue": "A small orange citrus fruit with easily removed peel.",
+    "grid": [
+      "I",
+      "N",
+      "E",
+      "R",
+      "A",
+      "T",
+      "E",
+      "G",
+      "N"
+    ],
+    "path": [
+      5,
+      4,
+      8,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "TANGERINE"
+    ]
+  },
+  {
+    "id": "trail-175",
+    "answer": "TEACHABLE",
+    "clue": "Able and willing to learn from instruction.",
+    "grid": [
+      "A",
+      "B",
+      "T",
+      "H",
+      "L",
+      "E",
+      "E",
+      "C",
+      "A"
+    ],
+    "path": [
+      2,
+      5,
+      8,
+      7,
+      3,
+      0,
+      1,
+      4,
+      6
+    ],
+    "accepted": [
+      "TEACHABLE"
+    ]
+  },
+  {
+    "id": "trail-176",
+    "answer": "TELEGRAPH",
+    "clue": "A system for transmitting coded messages over a wire.",
+    "grid": [
+      "E",
+      "T",
+      "H",
+      "E",
+      "L",
+      "P",
+      "G",
+      "R",
+      "A"
+    ],
+    "path": [
+      1,
+      0,
+      4,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2
+    ],
+    "accepted": [
+      "TELEGRAPH"
+    ]
+  },
+  {
+    "id": "trail-177",
+    "answer": "THUMBNAIL",
+    "clue": "The hard covering on the end of the broadest finger.",
+    "grid": [
+      "I",
+      "L",
+      "H",
+      "A",
+      "U",
+      "T",
+      "N",
+      "B",
+      "M"
+    ],
+    "path": [
+      5,
+      2,
+      4,
+      8,
+      7,
+      6,
+      3,
+      0,
+      1
+    ],
+    "accepted": [
+      "THUMBNAIL"
+    ]
+  },
+  {
+    "id": "trail-178",
+    "answer": "TIMETABLE",
+    "clue": "A schedule giving planned times for events or journeys.",
+    "grid": [
+      "E",
+      "M",
+      "T",
+      "T",
+      "I",
+      "L",
+      "A",
+      "B",
+      "E"
+    ],
+    "path": [
+      2,
+      4,
+      1,
+      0,
+      3,
+      6,
+      7,
+      5,
+      8
+    ],
+    "accepted": [
+      "TIMETABLE"
+    ]
+  },
+  {
+    "id": "trail-179",
+    "answer": "BRIEFCASE",
+    "clue": "A flat handled case used to carry work documents.",
+    "grid": [
+      "E",
+      "B",
+      "A",
+      "R",
+      "S",
+      "C",
+      "I",
+      "E",
+      "F"
+    ],
+    "path": [
+      1,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2,
+      4,
+      0
+    ],
+    "accepted": [
+      "BRIEFCASE"
+    ]
+  },
+  {
+    "id": "trail-180",
+    "answer": "TOOTHACHE",
+    "clue": "Pain felt in a tooth or the area surrounding it.",
+    "grid": [
+      "C",
+      "H",
+      "E",
+      "A",
+      "O",
+      "T",
+      "H",
+      "T",
+      "O"
+    ],
+    "path": [
+      5,
+      4,
+      8,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "TOOTHACHE"
+    ]
+  },
+  {
+    "id": "trail-181",
+    "answer": "BUTTERCUP",
+    "clue": "A small wildflower with glossy yellow petals.",
+    "grid": [
+      "T",
+      "U",
+      "P",
+      "T",
+      "E",
+      "C",
+      "B",
+      "U",
+      "R"
+    ],
+    "path": [
+      6,
+      7,
+      3,
+      0,
+      4,
+      8,
+      5,
+      1,
+      2
+    ],
+    "accepted": [
+      "BUTTERCUP"
+    ]
+  },
+  {
+    "id": "trail-182",
+    "answer": "CASSEROLE",
+    "clue": "A dish of mixed ingredients cooked together in an oven.",
+    "grid": [
+      "S",
+      "C",
+      "E",
+      "S",
+      "A",
+      "L",
+      "E",
+      "R",
+      "O"
+    ],
+    "path": [
+      1,
+      4,
+      0,
+      3,
+      6,
+      7,
+      8,
+      5,
+      2
+    ],
+    "accepted": [
+      "CASSEROLE"
+    ]
+  },
+  {
+    "id": "trail-183",
+    "answer": "CENTIPEDE",
+    "clue": "A many-legged arthropod with one pair of legs per body segment.",
+    "grid": [
+      "I",
+      "P",
+      "E",
+      "T",
+      "C",
+      "D",
+      "N",
+      "E",
+      "E"
+    ],
+    "path": [
+      4,
+      7,
+      6,
+      3,
+      0,
+      1,
+      2,
+      5,
+      8
+    ],
+    "accepted": [
+      "CENTIPEDE"
+    ]
+  },
+  {
+    "id": "trail-184",
+    "answer": "TREASURED",
+    "clue": "Held in high personal value and cared for closely.",
+    "grid": [
+      "T",
+      "A",
+      "E",
+      "S",
+      "R",
+      "E",
+      "U",
+      "R",
+      "D"
+    ],
+    "path": [
+      0,
+      4,
+      2,
+      1,
+      3,
+      6,
+      7,
+      5,
+      8
+    ],
+    "accepted": [
+      "TREASURED"
+    ]
+  },
+  {
+    "id": "trail-185",
+    "answer": "TREEHOUSE",
+    "clue": "A small structure built among the branches above ground.",
+    "grid": [
+      "U",
+      "T",
+      "E",
+      "O",
+      "S",
+      "R",
+      "H",
+      "E",
+      "E"
+    ],
+    "path": [
+      1,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0,
+      4,
+      2
+    ],
+    "accepted": [
+      "TREEHOUSE"
+    ]
+  },
+  {
+    "id": "trail-186",
+    "answer": "TRIATHLON",
+    "clue": "A race combining swimming, cycling, and running.",
+    "grid": [
+      "N",
+      "O",
+      "R",
+      "L",
+      "I",
+      "T",
+      "H",
+      "T",
+      "A"
+    ],
+    "path": [
+      5,
+      2,
+      4,
+      8,
+      7,
+      6,
+      3,
+      1,
+      0
+    ],
+    "accepted": [
+      "TRIATHLON"
+    ]
+  },
+  {
+    "id": "trail-187",
+    "answer": "UMBRELLAS",
+    "clue": "Portable canopies held overhead to keep off rain.",
+    "grid": [
+      "S",
+      "B",
+      "U",
+      "R",
+      "A",
+      "M",
+      "E",
+      "L",
+      "L"
+    ],
+    "path": [
+      2,
+      5,
+      1,
+      3,
+      6,
+      7,
+      8,
+      4,
+      0
+    ],
+    "accepted": [
+      "UMBRELLAS"
+    ]
+  },
+  {
+    "id": "trail-188",
+    "answer": "UNDERPASS",
+    "clue": "A route that travels beneath another road or railway.",
+    "grid": [
+      "A",
+      "U",
+      "S",
+      "P",
+      "S",
+      "N",
+      "R",
+      "E",
+      "D"
+    ],
+    "path": [
+      1,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0,
+      4,
+      2
+    ],
+    "accepted": [
+      "UNDERPASS"
+    ]
+  },
+  {
+    "id": "trail-189",
+    "answer": "VEGETABLE",
+    "clue": "An edible plant or plant part served in savory meals.",
+    "grid": [
+      "G",
+      "E",
+      "T",
+      "V",
+      "E",
+      "A",
+      "E",
+      "L",
+      "B"
+    ],
+    "path": [
+      3,
+      4,
+      0,
+      1,
+      2,
+      5,
+      8,
+      7,
+      6
+    ],
+    "accepted": [
+      "VEGETABLE"
+    ]
+  },
+  {
+    "id": "trail-190",
+    "answer": "VOLUNTEER",
+    "clue": "Someone who offers to help without being required to do so.",
+    "grid": [
+      "E",
+      "E",
+      "R",
+      "T",
+      "N",
+      "V",
+      "U",
+      "L",
+      "O"
+    ],
+    "path": [
+      5,
+      8,
+      7,
+      6,
+      4,
+      3,
+      0,
+      1,
+      2
+    ],
+    "accepted": [
+      "VOLUNTEER"
+    ]
+  },
+  {
+    "id": "trail-191",
+    "answer": "WALLPAPER",
+    "clue": "Decorative paper applied to the inside walls of a room.",
+    "grid": [
+      "P",
+      "A",
+      "P",
+      "E",
+      "L",
+      "W",
+      "R",
+      "A",
+      "L"
+    ],
+    "path": [
+      5,
+      7,
+      8,
+      4,
+      2,
+      1,
+      0,
+      3,
+      6
+    ],
+    "accepted": [
+      "WALLPAPER"
+    ]
+  },
+  {
+    "id": "trail-192",
+    "answer": "WANDERING",
+    "clue": "Moving from place to place without a fixed route.",
+    "grid": [
+      "D",
+      "N",
+      "G",
+      "A",
+      "E",
+      "N",
+      "W",
+      "R",
+      "I"
+    ],
+    "path": [
+      6,
+      3,
+      1,
+      0,
+      4,
+      7,
+      8,
+      5,
+      2
+    ],
+    "accepted": [
+      "WANDERING"
+    ]
+  },
+  {
+    "id": "trail-193",
+    "answer": "WASHCLOTH",
+    "clue": "A small piece of fabric used for cleaning the body.",
+    "grid": [
+      "H",
+      "O",
+      "W",
+      "T",
+      "A",
+      "L",
+      "S",
+      "H",
+      "C"
+    ],
+    "path": [
+      2,
+      4,
+      6,
+      7,
+      8,
+      5,
+      1,
+      3,
+      0
+    ],
+    "accepted": [
+      "WASHCLOTH"
+    ]
+  },
+  {
+    "id": "trail-194",
+    "answer": "CHOPSTICK",
+    "clue": "One of a pair of slender sticks used to pick up food.",
+    "grid": [
+      "T",
+      "I",
+      "K",
+      "H",
+      "S",
+      "C",
+      "C",
+      "O",
+      "P"
+    ],
+    "path": [
+      6,
+      3,
+      7,
+      8,
+      4,
+      0,
+      1,
+      5,
+      2
+    ],
+    "accepted": [
+      "CHOPSTICK"
+    ]
+  },
+  {
+    "id": "trail-195",
+    "answer": "CROISSANT",
+    "clue": "A flaky buttery pastry traditionally shaped like a crescent.",
+    "grid": [
+      "I",
+      "S",
+      "A",
+      "S",
+      "O",
+      "N",
+      "R",
+      "C",
+      "T"
+    ],
+    "path": [
+      7,
+      6,
+      4,
+      0,
+      3,
+      1,
+      2,
+      5,
+      8
+    ],
+    "accepted": [
+      "CROISSANT"
+    ]
+  },
+  {
+    "id": "trail-196",
+    "answer": "WHEELBASE",
+    "clue": "The distance between the front and rear axles of a vehicle.",
+    "grid": [
+      "L",
+      "B",
+      "A",
+      "W",
+      "E",
+      "S",
+      "E",
+      "H",
+      "E"
+    ],
+    "path": [
+      3,
+      7,
+      6,
+      4,
+      0,
+      1,
+      2,
+      5,
+      8
+    ],
+    "accepted": [
+      "WHEELBASE"
+    ]
+  },
+  {
+    "id": "trail-197",
+    "answer": "WHIRLPOOL",
+    "clue": "Water rotating rapidly around a central depression.",
+    "grid": [
+      "L",
+      "I",
+      "H",
+      "O",
+      "W",
+      "R",
+      "O",
+      "P",
+      "L"
+    ],
+    "path": [
+      4,
+      2,
+      1,
+      5,
+      8,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "WHIRLPOOL"
+    ]
+  },
+  {
+    "id": "trail-198",
+    "answer": "DRIFTWOOD",
+    "clue": "Timber carried and deposited by moving water.",
+    "grid": [
+      "D",
+      "I",
+      "F",
+      "O",
+      "R",
+      "T",
+      "O",
+      "W",
+      "D"
+    ],
+    "path": [
+      8,
+      4,
+      1,
+      2,
+      5,
+      7,
+      6,
+      3,
+      0
+    ],
+    "accepted": [
+      "DRIFTWOOD"
+    ]
+  },
+  {
+    "id": "trail-199",
+    "answer": "WINDBREAK",
+    "clue": "A barrier of trees or fencing that reduces the force of air.",
+    "grid": [
+      "W",
+      "E",
+      "R",
+      "A",
+      "I",
+      "B",
+      "K",
+      "N",
+      "D"
+    ],
+    "path": [
+      0,
+      4,
+      7,
+      8,
+      5,
+      2,
+      1,
+      3,
+      6
+    ],
+    "accepted": [
+      "WINDBREAK"
+    ]
+  },
+  {
+    "id": "trail-200",
+    "answer": "WORKBENCH",
+    "clue": "A sturdy table used for practical craft or repair tasks.",
+    "grid": [
+      "H",
+      "C",
+      "N",
+      "W",
+      "K",
+      "E",
+      "R",
+      "O",
+      "B"
+    ],
+    "path": [
+      3,
+      7,
+      6,
+      4,
+      8,
+      5,
+      2,
+      1,
+      0
+    ],
+    "accepted": [
+      "WORKBENCH"
+    ]
   }
 ]]);
 export const CONTENT_INFO = Object.freeze({
-  "preparedPuzzles": 120,
-  "uniqueCluedAnswers": 120,
-  "newAuthoredAnswers": 90
+  "preparedPuzzles": 200,
+  "uniqueCluedAnswers": 200,
+  "newAuthoredAnswers": 170
 });

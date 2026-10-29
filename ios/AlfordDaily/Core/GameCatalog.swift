@@ -217,25 +217,25 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
     }
     var collectionCount: Int {
         switch self {
-        case .switchpath: 187
+        case .switchpath: 217
         case .kimiCairn: 839
         case .kimiMorph: 450
         case .kimiTangle: 430
         case .kimiHunch: 937
         case .kimiCircuit: 286
         case .kimiQuartet: 420
-        case .deepSeekTwinHive: 140
-        case .qwenPatternPrism: 150
+        case .deepSeekTwinHive: 200
+        case .qwenPatternPrism: 225
         case .deepSeekSpare, .deepSeekRung, .deepSeekCipher, .deepSeekTrail, .deepSeekSplit,
-             .qwenQuadra, .qwenLogicLattice, .qwenSyntaxSiege, .qwenMemoryMaze, .qwenTerritoryTactics: 120
-        case .claudeDovetail: 120
-        case .claudeSplice: 120
-        case .claudeSprout: 128
-        case .claudeTangle: 160
-        case .claudeKeystone: 120
+             .qwenQuadra, .qwenLogicLattice, .qwenSyntaxSiege, .qwenMemoryMaze, .qwenTerritoryTactics: 200
+        case .claudeDovetail: 200
+        case .claudeSplice: 202
+        case .claudeSprout: 211
+        case .claudeTangle: 200
+        case .claudeKeystone: 200
         case .claudeTumbler: 1054
         case .nestedTicTacToe: 0
-        default: 180
+        default: 210
         }
     }
     var localURL: URL { URL(string: "alford://app/games/\(rawValue)/")! }

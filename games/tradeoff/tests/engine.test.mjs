@@ -214,3 +214,8 @@ test('share text exposes results but never clue answers', () => {
   assert.ok(practice.includes('2 undos'));
   assert.ok(!practice.includes('undefined'));
 });
+
+test('future-dated records do not inflate current statistics', () => {
+  const win={status:'won',moves:4,hints:0,undos:0,par:5};
+  assert.deepEqual(getStats({'2026-10-29':win,'2027-01-01':win},'2026-10-29'),getStats({'2026-10-29':win},'2026-10-29'));
+});

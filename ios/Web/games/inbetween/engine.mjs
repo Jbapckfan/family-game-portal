@@ -1,3 +1,4 @@
+import {originalDailyIndex} from '../deepseek-runtime/daily-rotations.mjs';
 /** Pure Inbetween rules. No browser or storage dependencies. */
 export const EPOCH = '2026-10-20';
 const DAY_MS = 86_400_000;
@@ -24,7 +25,7 @@ export function getDaily(puzzles, now = new Date()) {
   if (!Array.isArray(puzzles) || puzzles.length === 0) throw new RangeError('A daily puzzle collection is required.');
   const dateKey = getDateKey(now);
   const number = getDayNumber(dateKey);
-  const index = ((number - 1) % puzzles.length + puzzles.length) % puzzles.length;
+  const index = originalDailyIndex('inbetween', dateKey, number - 1, puzzles.length);
   return { puzzle: puzzles[index], dateKey, number };
 }
 
@@ -154,6 +155,7 @@ export function getStats(records, todayKey) {
   const stats = { played: 0, won: 0, streak: 0, bestStreak: 0, perfect: 0, averageAttempts: 0 };
   if (!records || typeof records !== 'object' || Array.isArray(records)) return stats;
   const entries = Object.entries(records).filter(([key, record]) => Number.isFinite(calendarTime(key))
+    && (!Number.isFinite(calendarTime(todayKey)) || key <= todayKey)
     && record && (record.status === 'won' || record.status === 'revealed')
     && nonnegativeInteger(record.attempts) && nonnegativeInteger(record.hints)
     && (record.status !== 'won' || record.attempts >= 6))

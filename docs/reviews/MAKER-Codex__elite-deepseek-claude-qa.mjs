@@ -5,10 +5,10 @@ export const QA_DATE='2026-10-28';
 export const GAME_IDS=['deepseek-twin-hive','deepseek-rung','deepseek-spare','deepseek-cipher','deepseek-trail','deepseek-split','claude-dovetail','claude-splice','claude-sprout','claude-tangle','claude-keystone','claude-tumbler'];
 const text=(selector,value,submit)=>({selector,value,submit}),clicks=(...clicks)=>({clicks});
 
-async function recipe(slug){
+async function recipe(slug,date=QA_DATE){
  assert.ok(GAME_IDS.includes(slug),`Owned game: ${slug}`);
  const {PUZZLES}=await import(`../../games/${slug}/puzzles.mjs`),E=await import(`../../games/${slug}/engine.mjs`);
- const p=PUZZLES[dailyIndex(slug,QA_DATE,PUZZLES.length)];let actions;
+ const p=PUZZLES[dailyIndex(slug,date,PUZZLES.length)];let actions;
  switch(slug){
   case 'deepseek-twin-hive':actions=E.acceptedWords(p).slice(0,p.target).map(w=>text('#hive-word',w,'#hive-form'));break;
   case 'deepseek-rung':actions=E.findRoute(p.start,p.target).slice(1).map(w=>text('#rung-word',w,'#rung-form'));break;
@@ -35,8 +35,8 @@ async function perform(page,action){
 /** Root supplies a fresh daily origin with Date frozen at 2026-10-28T18:00Z.
  * Each move uses the public UI; checkpoint reloads after an unfinished move.
  */
-export async function playGame(page,slug,{checkpoint=async()=>{}}={}){
- const {p,actions}=await recipe(slug);
+export async function playGame(page,slug,{checkpoint=async()=>{},date=QA_DATE}={}){
+ const {p,actions}=await recipe(slug,date);
  await page.locator('#puzzle[data-game-ready="true"]').waitFor();
  for(let i=0;i<actions.length;i++){
   await perform(page,actions[i]);
@@ -51,10 +51,15 @@ export async function playGame(page,slug,{checkpoint=async()=>{}}={}){
  * It reaches the prepared record through Next practice, without saved-state injection.
  * evaluate only reads geometry; it never makes a move.
  */
-export async function checkLongCipherWord(page){
+export async function checkLongCipherWord(page,{date=QA_DATE}={}){
  const slug='deepseek-cipher',{PUZZLES}=await import('../../games/deepseek-cipher/puzzles.mjs');
  const longest=PUZZLES.flatMap((p,index)=>p.encoded.split(' ').map(word=>({p,index,word}))).sort((a,b)=>b.word.length-a.word.length)[0];
- const start=dailyIndex(slug,QA_DATE,PUZZLES.length),steps=(longest.index-start+PUZZLES.length)%PUZZLES.length||PUZZLES.length;
+ const {practiceCandidates}=await import('../../games/deepseek-runtime/practice-calendar.mjs');
+ // Move beyond the protected window to exercise the longest authored word.
+ await page.clock.setFixedTime(new Date('2027-04-29T18:00:00Z'));
+ await page.reload();
+ const available=practiceCandidates(slug,'2027-04-29',PUZZLES.length,{excludeIndices:[dailyIndex(slug,'2027-04-29',PUZZLES.length)]});
+ const steps=available.indexOf(longest.index)+1;assert.ok(steps>0,'longest-word fixture remains available');
  await page.setViewportSize({width:320,height:844});
  for(let i=0;i<steps;i++)await page.locator('#practice-mode').click();
  assert.equal(await page.locator('.cipher-panel > .clue').textContent(),longest.p.clue);

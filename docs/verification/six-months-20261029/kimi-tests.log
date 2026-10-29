@@ -1,0 +1,322 @@
+
+> @alford-daily/kimi-pebbles@1.0.0 test
+> node --import tsx --test --test-isolation=none tests/*.test.mjs tests/*.test.ts
+
+(node:46280) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ all 430 Tangle boards retain their data and have ordered, achievable capped medals (4.589ms)
+✔ newly qualifying Tangle saves receive exactly one completion and preserve the streak (0.192583ms)
+✔ PLUM is accepted and restorable only on Circuit boards where it satisfies arc rules (5.105666ms)
+✔ Hunch announces each letter result without relying on color (9.97625ms)
+✔ Cairn retains the latest active-session progress and count when persistent storage fails (0.363042ms)
+✔ Cairn restores the actual shuffled rack, preserving entered letters (0.190958ms)
+✔ Cairn commits each completed level and next rack together through all five levels (0.172083ms)
+✔ Cairn rejects incomplete, mismatched, and duplicate-tile saves without throwing (0.068709ms)
+✔ Morph can rewind the audited legal dead end and restart the same daily puzzle (0.548ms)
+✔ Morph rejects malformed and impossible saved ladders (0.149625ms)
+✔ Morph daily give-up records play without awarding a completion, streak, or win sound (43.44375ms)
+✔ Morph practice give-up leaves daily statistics unchanged and has no win sound (11.510833ms)
+✔ Morph solving the target still awards the daily completion and win sound (8.743625ms)
+✔ Cairn all skipped finishes without awarding a summit, streak, or win sound (11.24525ms)
+✔ Cairn last word skipped finishes without awarding a summit, streak, or win sound (9.688334ms)
+✔ Cairn earlier word skipped finishes without awarding a summit, streak, or win sound (8.049208ms)
+✔ Cairn a fully solved tower still earns a summit and streak with hints and misses (7.985416ms)
+✔ Cairn practice skips leave daily statistics unchanged (16.099459ms)
+✔ Circuit daily give-up resets only the current streak, without awarding a completion (12.800542ms)
+✔ Circuit practice give-up leaves daily statistics unchanged (7.457875ms)
+✔ Circuit solved daily chain still earns a completion and extends the streak (7.692041ms)
+✔ Hunch recomputes evaluations and terminal status from validated guesses (0.27675ms)
+✔ Every bundled Cairn, Morph, and Hunch solution survives the new save validators (8.763833ms)
+✔ appending practice records cannot silently remap any Kimi published daily (61.079125ms)
+✔ all six real Kimi practice selectors protect every upcoming reserved challenge (523.890125ms)
+✔ Cairn bounded-search exhaustion falls back only to a nonreserved bank entry (25.765083ms)
+✔ all six published Kimi bank bytes still match the pre-update source baseline (1.523458ms)
+✔ Cairn explains rack placement and distinguishes each empty or removable position (94.155208ms)
+✔ Morph identifies the edit position and explains tapping before opening the letter sheet (77.013375ms)
+✔ Hunch gives visible non-color result marks and a persistent interpretation key (24.53325ms)
+✔ Tangle keeps its consumed clue visible and numbers the selected route without color (27.406375ms)
+✔ Circuit names arcs visibly and describes the next legal action before an error (48.920417ms)
+✔ Quartet makes its saved pair clue available as text and names both hinted cards (16.534125ms)
+✔ morph: actual hook persists and resumes unfinished work without scoring it (950.872584ms)
+✔ hunch: actual hook persists and resumes unfinished work without scoring it (831.815458ms)
+✔ circuit: actual hook persists and resumes unfinished work without scoring it (796.335083ms)
+✔ tangle: actual hook persists and resumes unfinished work without scoring it (760.039917ms)
+✔ Morph resumes an unfinished letter edit without accepting it as a rung (0.214583ms)
+✔ Hunch resumes partial typing but never treats draft text as a submitted guess (0.128042ms)
+✔ Circuit restores a legal unfinished word including the auto-seeded chain letter (1.459ms)
+✔ Tangle keeps the consumed clue available after its transient toast and reload (1.347833ms)
+✔ Central daily keys advance once at midnight across both DST boundaries (0.322584ms)
+✔ reveals, losses and Tangle gold map to truthful daily outcomes (0.101084ms)
+✔ only terminal wins extend streaks, and malformed records do not count (0.27325ms)
+✔ practice and loading never create a daily result; the first terminal result is final (0.316792ms)
+✔ a failed storage write keeps newer in-memory progress and its first terminal result (0.5065ms)
+✔ cairn/GameBoard: Enter preserves focused button activation instead of submitting a game move (3.969083ms)
+✔ cairn/GameBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.973084ms)
+✔ hunch/HunchBoard: Enter preserves focused button activation instead of submitting a game move (1.321417ms)
+✔ hunch/HunchBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.8955ms)
+✔ morph/MorphBoard: Enter preserves focused button activation instead of submitting a game move (1.476417ms)
+✔ morph/MorphBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.655167ms)
+✔ tangle/TangleBoard: Enter preserves focused button activation instead of submitting a game move (1.391167ms)
+✔ tangle/TangleBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.724542ms)
+✔ cairn/GameBoard: letter typing still works with body or a board tile focused (6.717542ms)
+✔ hunch/HunchBoard: letter typing still works with body or a board tile focused (1.5735ms)
+✔ morph/MorphBoard: letter typing still works with body or a board tile focused (1.301791ms)
+✔ Tangle pointer cancellation ends the gesture without submitting a word (0.8065ms)
+✔ Tangle an ordinary completed drag still submits exactly once (1.5205ms)
+✔ Morph letter palette: escape works with real React DOM (653.004208ms)
+✔ Morph letter palette: choice works with real React DOM (637.230542ms)
+✔ Morph letter palette: focus works with real React DOM (682.92575ms)
+✔ real React/Radix overlay, interruption and keyboard-focus regressions (2123.0585ms)
+ℹ TAP version 13
+# (node:46489) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+# (Use `node --trace-deprecation ...` to show where the warning was created)
+# Subtest: cairn: blocked storage does not crash first help or its return to the board
+ok 1 - cairn: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 194.537709
+  type: 'test'
+  ...
+# Subtest: morph: blocked storage does not crash first help or its return to the board
+ok 2 - morph: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 82.456209
+  type: 'test'
+  ...
+# Subtest: hunch: blocked storage does not crash first help or its return to the board
+ok 3 - hunch: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 48.493416
+  type: 'test'
+  ...
+# Subtest: circuit: blocked storage does not crash first help or its return to the board
+ok 4 - circuit: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 51.788584
+  type: 'test'
+  ...
+# Subtest: tangle: blocked storage does not crash first help or its return to the board
+ok 5 - tangle: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 53.093625
+  type: 'test'
+  ...
+# Subtest: quartet: blocked storage does not crash first help or its return to the board
+ok 6 - quartet: blocked storage does not crash first help or its return to the board
+  ---
+  duration_ms: 46.377291
+  type: 'test'
+  ...
+# Subtest: cairn: statistics chosen before the result delay stays the only overlay
+ok 7 - cairn: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 43.288792
+  type: 'test'
+  ...
+# Subtest: morph: statistics chosen before the result delay stays the only overlay
+ok 8 - morph: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 39.299709
+  type: 'test'
+  ...
+# Subtest: hunch: statistics chosen before the result delay stays the only overlay
+ok 9 - hunch: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 38.25225
+  type: 'test'
+  ...
+# Subtest: circuit: statistics chosen before the result delay stays the only overlay
+ok 10 - circuit: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 37.17075
+  type: 'test'
+  ...
+# Subtest: tangle: statistics chosen before the result delay stays the only overlay
+ok 11 - tangle: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 36.728708
+  type: 'test'
+  ...
+# Subtest: quartet: statistics chosen before the result delay stays the only overlay
+ok 12 - quartet: statistics chosen before the result delay stays the only overlay
+  ---
+  duration_ms: 36.146167
+  type: 'test'
+  ...
+# Subtest: Escape restores Statistics focus and the dismissed result timer does not reopen
+ok 13 - Escape restores Statistics focus and the dismissed result timer does not reopen
+  ---
+  duration_ms: 62.235042
+  type: 'test'
+  ...
+# Subtest: manual See results cancels its automatic timer and restores keyboard focus on close
+ok 14 - manual See results cancels its automatic timer and restores keyboard focus on close
+  ---
+  duration_ms: 53.669958
+  type: 'test'
+  ...
+# Subtest: automatically opened results restore focus to the visible See results control
+ok 15 - automatically opened results restore focus to the visible See results control
+  ---
+  duration_ms: 47.262916
+  type: 'test'
+  ...
+# Subtest: a hidden completion waits for visibility and opens only once
+ok 16 - a hidden completion waits for visibility and opens only once
+  ---
+  duration_ms: 70.059417
+  type: 'test'
+  ...
+# Subtest: interrupted pages defer results until pageshow and discard a previous day
+ok 17 - interrupted pages defer results until pageshow and discard a previous day
+  ---
+  duration_ms: 68.989625
+  type: 'test'
+  ...
+# Subtest: new practice rounds close results even if the selected puzzle number repeats
+ok 18 - new practice rounds close results even if the selected puzzle number repeats
+  ---
+  duration_ms: 89.244542
+  type: 'test'
+  ...
+# Subtest: manually opened help restores focus to its opening control
+ok 19 - manually opened help restores focus to its opening control
+  ---
+  duration_ms: 41.203583
+  type: 'test'
+  ...
+# Subtest: first-visit automatic Help closes to the game focus target
+ok 20 - first-visit automatic Help closes to the game focus target
+  ---
+  duration_ms: 37.996792
+  type: 'test'
+  ...
+# Subtest: visibility rollover in the same event discards a previous day result
+ok 21 - visibility rollover in the same event discards a previous day result
+  ---
+  duration_ms: 47.511875
+  type: 'test'
+  ...
+# Subtest: a completed new day resumed in the same event receives its own delay
+ok 22 - a completed new day resumed in the same event receives its own delay
+  ---
+  duration_ms: 52.207583
+  type: 'test'
+  ...
+# Subtest: replacing Help with Statistics keeps focus inside the replacement dialog
+ok 23 - replacing Help with Statistics keeps focus inside the replacement dialog
+  ---
+  duration_ms: 41.75825
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2034.9
+✔ Circuit can undo the legal dead end BECOME and restart its chain (0.139083ms)
+✔ Circuit rejects malformed or impossible saved chains and accepts a complete solution (0.090833ms)
+✔ Quartet hint identity survives shuffled tiles and persisted restoration (0.216333ms)
+✔ Quartet restores the fourth miss from history, including older saves with a stale counter (0.086333ms)
+✔ Quartet rejects malformed groups, tile identities, histories, and impossible wins (0.070166ms)
+✔ Tangle restores only accepted unique words and recomputes score and gold from them (0.061833ms)
+✔ Quartet editorial corrections preserve board structure and remove the two identified mistakes (0.563708ms)
+✔ Save validation accepts every bundled complete solution without changing its score (5.372459ms)
+✔ circuit rereads current statistics when its already-imported hook mounts again (0.605125ms)
+✔ tangle rereads current statistics when its already-imported hook mounts again (0.267792ms)
+✔ quartet rereads current statistics when its already-imported hook mounts again (0.20025ms)
+✔ all six rollover effects advance a visible daily at midnight and remove their timers (1.466541ms)
+✔ cairn: at least 200 substantive challenges, excluding cosmetic equivalents (1.290166ms)
+✔ morph: at least 200 substantive challenges, excluding cosmetic equivalents (0.472125ms)
+✔ tangle: at least 200 substantive challenges, excluding cosmetic equivalents (4.324ms)
+✔ hunch: at least 200 substantive challenges, excluding cosmetic equivalents (0.254959ms)
+✔ circuit: at least 200 substantive challenges, excluding cosmetic equivalents (1.587458ms)
+✔ quartet: at least 200 substantive challenges, excluding cosmetic equivalents (1.099083ms)
+✔ every Cairn tower has legal one-letter additions and survives each completed-level save (16.165917ms)
+✔ every Morph has a dictionary-valid nonrepeating route accepted at every saved prefix (56.941125ms)
+Tangle: traced 30688 accepted words through all 430 grids.
+✔ every listed Tangle word has a real non-reusing eight-way grid path; all medals are reachable (333.18125ms)
+✔ every Circuit accepted word obeys arcs; every solution prefix restores and covers all twelve letters (298.900917ms)
+✔ every Quartet can solve all four groups with valid remaining tiles and history after each save (185.686458ms)
+Hunch: 937 answers solved from feedback alone; maximum 5 guesses.
+✔ Hunch feedback-only decision tree solves every bundled answer within six guesses (4592.716958ms)
+✔ cairn: real isolated hook controllers protect draft (580.667167ms)
+✔ cairn: real isolated hook controllers protect terminal (593.291375ms)
+✔ cairn: real isolated hook controllers protect event (584.419167ms)
+✔ cairn: real isolated hook controllers protect blocked (577.399042ms)
+✔ cairn: real isolated hook controllers protect quota (581.214417ms)
+✔ cairn: real isolated hook controllers protect persist (565.556041ms)
+✔ cairn: real isolated hook controllers protect corrupt-terminal (544.352042ms)
+✔ cairn: real isolated hook controllers protect event-batch (571.208417ms)
+✔ cairn: real isolated hook controllers protect event-draft-batch (545.602958ms)
+✔ morph: real isolated hook controllers protect draft (531.16775ms)
+✔ morph: real isolated hook controllers protect terminal (538.181833ms)
+✔ morph: real isolated hook controllers protect event (534.01975ms)
+✔ morph: real isolated hook controllers protect blocked (533.885583ms)
+✔ morph: real isolated hook controllers protect quota (531.836291ms)
+✔ morph: real isolated hook controllers protect persist (524.271042ms)
+✔ morph: real isolated hook controllers protect corrupt-terminal (531.746291ms)
+✔ morph: real isolated hook controllers protect event-batch (537.304667ms)
+✔ morph: real isolated hook controllers protect event-draft-batch (535.514584ms)
+✔ hunch: real isolated hook controllers protect draft (533.702084ms)
+✔ hunch: real isolated hook controllers protect terminal (544.636292ms)
+✔ hunch: real isolated hook controllers protect event (554.475875ms)
+✔ hunch: real isolated hook controllers protect blocked (548.174375ms)
+✔ hunch: real isolated hook controllers protect quota (528.273958ms)
+✔ hunch: real isolated hook controllers protect persist (547.306875ms)
+✔ hunch: real isolated hook controllers protect corrupt-terminal (559.105292ms)
+✔ hunch: real isolated hook controllers protect event-batch (523.453458ms)
+✔ hunch: real isolated hook controllers protect event-draft-batch (528.401708ms)
+✔ tangle: real isolated hook controllers protect draft (499.791667ms)
+✔ tangle: real isolated hook controllers protect terminal (502.711833ms)
+✔ tangle: real isolated hook controllers protect event (501.480417ms)
+✔ tangle: real isolated hook controllers protect blocked (499.11225ms)
+✔ tangle: real isolated hook controllers protect quota (502.743666ms)
+✔ tangle: real isolated hook controllers protect persist (504.237833ms)
+✔ tangle: real isolated hook controllers protect corrupt-terminal (494.399125ms)
+✔ tangle: real isolated hook controllers protect event-batch (499.033709ms)
+✔ tangle: real isolated hook controllers protect event-draft-batch (505.192459ms)
+✔ circuit: real isolated hook controllers protect draft (494.879625ms)
+✔ circuit: real isolated hook controllers protect terminal (494.037416ms)
+✔ circuit: real isolated hook controllers protect event (498.167333ms)
+✔ circuit: real isolated hook controllers protect blocked (500.969167ms)
+✔ circuit: real isolated hook controllers protect quota (506.985791ms)
+✔ circuit: real isolated hook controllers protect persist (501.0565ms)
+✔ circuit: real isolated hook controllers protect corrupt-terminal (501.015875ms)
+✔ circuit: real isolated hook controllers protect event-batch (502.067625ms)
+✔ circuit: real isolated hook controllers protect event-draft-batch (513.2545ms)
+✔ quartet: real isolated hook controllers protect draft (498.703541ms)
+✔ quartet: real isolated hook controllers protect terminal (506.653458ms)
+✔ quartet: real isolated hook controllers protect event (497.693ms)
+✔ quartet: real isolated hook controllers protect blocked (501.6535ms)
+✔ quartet: real isolated hook controllers protect quota (499.85875ms)
+✔ quartet: real isolated hook controllers protect persist (493.806167ms)
+✔ quartet: real isolated hook controllers protect corrupt-terminal (515.383625ms)
+✔ quartet: real isolated hook controllers protect event-batch (518.804667ms)
+✔ quartet: real isolated hook controllers protect event-draft-batch (500.424542ms)
+✔ cairn: real hook delayed regression (526.72325ms)
+✔ morph: real hook assisted regression (633.8995ms)
+✔ hunch: real hook checkpoint regression (540.566292ms)
+✔ real Tangle hook preserves a same-day older-client save across reload (538.235875ms)
+✔ review starts October 30 and preserves every historical puzzle and actual threshold (0.100583ms)
+✔ new practice and future daily puzzles remove exactly the twelve reviewed spellings (4.530291ms)
+Reviewed Tangle: 430 practice boards; 30599 legal word paths
+✔ every reviewed practice word has a legal path and all boards can still reach actual gold (14.823916ms)
+Reviewed Tangle dated coverage: 182 days; 12909 legal word paths
+✔ all 182 dated selections reach gold and restore with reviewed future words and actual targets (32.526875ms)
+✔ historical saves containing reviewed-out words retain their score and gold state (0.129542ms)
+✔ review does not mutate original records or change daily board identity (0.516583ms)
+✔ real daily and practice entry points apply the dated review without changing selected indices (3.386583ms)
+✔ valid older-client daily saves retain their vocabulary edition and score (0.787541ms)
+(node:46280) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+ℹ tests 153
+ℹ suites 0
+ℹ pass 153
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45962.6415

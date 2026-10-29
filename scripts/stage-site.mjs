@@ -30,8 +30,8 @@ try { await promisify(execFile)(process.execPath,[path.join(root,'scripts/sync-i
 catch (error) { throw new Error(`Runtime bundle is stale or invalid. ${error.stderr || error.message}`); }
 
 const inventory = JSON.parse(await readFile(path.join(root,'docs/puzzle-inventory.json'),'utf8'));
-if (inventory.games?.length !== 32 || new Set(inventory.games.map(game=>game.slug)).size !== 32 || inventory.games.some(game=>game.puzzles<120)) {
-  throw new Error('Expected 32 games with at least 120 prepared puzzles each.');
+if (inventory.games?.length !== 32 || new Set(inventory.games.map(game=>game.slug)).size !== 32 || inventory.games.some(game=>game.puzzles<200)) {
+  throw new Error('Expected 32 games with at least 200 prepared puzzles each.');
 }
 const allowed = new Set([...inventory.games.map(game=>game.slug),'nested-tic-tac-toe','kimi-runtime','deepseek-runtime']);
 const bundle = path.join(root,'ios/Web/games');

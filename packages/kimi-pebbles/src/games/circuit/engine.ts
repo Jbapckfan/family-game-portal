@@ -1,3 +1,5 @@
+import { choosePracticeIndex } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
 
@@ -24,13 +26,12 @@ export function withReviewedWords(puzzle: CircuitPuzzle): CircuitPuzzle {
 const PUZZLES = (puzzlesData as CircuitPuzzle[]).map(withReviewedWords)
 
 export function dailyCircuit(dayNumber = todayDayNumber()): { puzzle: CircuitPuzzle; puzzleNo: number } {
-  const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 286)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 
 export function practiceCircuit(excludeNo = -1): { puzzle: CircuitPuzzle; puzzleNo: number } {
-  let idx = Math.floor(Math.random() * PUZZLES.length)
-  while (idx === excludeNo) idx = Math.floor(Math.random() * PUZZLES.length)
+  const idx = choosePracticeIndex('kimi-circuit', PUZZLES.length, excludeNo)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 

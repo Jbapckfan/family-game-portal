@@ -1,3 +1,5 @@
+import { choosePracticeIndex } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
 
@@ -11,15 +13,12 @@ export interface MorphPuzzle {
 const PUZZLES = puzzlesData as MorphPuzzle[]
 
 export function dailyMorph(dayNumber = todayDayNumber()): { puzzle: MorphPuzzle; puzzleNo: number } {
-  const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 450)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 
 export function practiceMorph(excludeNo = -1): { puzzle: MorphPuzzle; puzzleNo: number } {
-  let idx = Math.floor(Math.random() * PUZZLES.length)
-  if (PUZZLES.length > 1) {
-    while (idx === excludeNo) idx = Math.floor(Math.random() * PUZZLES.length)
-  }
+  const idx = choosePracticeIndex('kimi-morph', PUZZLES.length, excludeNo)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 
@@ -36,12 +35,13 @@ export function changedIndex(prev: string, next: string): number {
   return -1
 }
 
-export function medalFor(moves: number, par: number, gaveUp: boolean): { icon: string; label: string } {
-  if (gaveUp) return { icon: '⬛', label: 'Gave up' }
-  if (moves <= par) return { icon: '🥇', label: 'Gold — target met' }
-  if (moves === par + 1) return { icon: '🥈', label: 'Silver — 1 over target' }
-  if (moves === par + 2) return { icon: '🥉', label: 'Bronze — 2 over target' }
-  return { icon: '✅', label: 'Finished' }
+export function medalFor(moves: number, par: number, gaveUp: boolean, hintsUsed = 0): { icon: string; label: string } {
+  const medal = gaveUp ? { icon: '⬛', label: 'Gave up' }
+    : moves <= par ? { icon: '🥇', label: 'Gold — target met' }
+      : moves === par + 1 ? { icon: '🥈', label: 'Silver — 1 over target' }
+        : moves === par + 2 ? { icon: '🥉', label: 'Bronze — 2 over target' }
+          : { icon: '✅', label: 'Finished' }
+  return { ...medal, label: medal.label + (hintsUsed > 0 ? ' · Assisted' : '') }
 }
 
 export function buildMorphShare(
@@ -49,9 +49,11 @@ export function buildMorphShare(
   moves: number,
   par: number,
   gaveUp: boolean,
+  hintsUsed = 0,
 ): string {
   const medal = medalFor(moves, par, gaveUp)
-  return gaveUp
+  const result = gaveUp
     ? `MORPH No.${puzzleNo}\n⬛ Route revealed (target ${par})`
     : `MORPH No.${puzzleNo}\n${medal.icon} ${moves} move${moves === 1 ? '' : 's'} · target ${par}`
+  return result + (hintsUsed > 0 ? '\n💡 Assisted · route shown' : '')
 }

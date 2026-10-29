@@ -1,0 +1,23 @@
+{
+  "effectiveFrom": "2026-10-30",
+  "policy": "Retain source records and historical IDs; exclude these records from future daily rotations and newly selected practice.",
+  "games": {
+    "claude-splice": {
+      "splice-8": "Contains a dated derogatory answer identified in the Kimi K3.1 review.",
+      "splice-24": "Contains a derogatory answer identified in the Kimi K3.1 review."
+    },
+    "claude-sprout": {
+      "sprout-7": "Legacy graph contains TRNA, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-12": "Legacy graph contains IVER, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-54": "Legacy graph contains LIAO, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-58": "Legacy graph contains MRNA, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-61": "Legacy graph contains CLIT, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-62": "Legacy graph contains TRNA, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-86": "Legacy graph contains HEROIN (unreachable dead entry), already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-88": "Legacy graph contains ELISA, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-116": "Legacy graph contains MRNA, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-124": "Legacy graph contains IVER, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections.",
+      "sprout-128": "Legacy graph contains OLED, already excluded from newly prepared Sprout vocabulary; retain history, omit future selections."
+    }
+  }
+}

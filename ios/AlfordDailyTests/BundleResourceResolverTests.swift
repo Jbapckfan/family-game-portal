@@ -48,7 +48,7 @@ final class BundleResourceResolverTests: XCTestCase {
 
     func testFlatSharedModulesResolveWithoutCreatingNavigableDocuments() throws {
         let resolver = BundleResourceResolver(root: FileManager.default.temporaryDirectory.appendingPathComponent("AlfordBundle/Web"))
-        for path in ["core.mjs", "common.mjs", "styles.css"] {
+        for path in ["core.mjs", "common.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"] {
             let url = URL(string: "alford://app/games/deepseek-runtime/\(path)")!
             XCTAssertTrue(try resolver.fileURL(for: url).path.hasSuffix("/games/deepseek-runtime/\(path)"))
             XCTAssertNil(LocalRoute.game(at: url))

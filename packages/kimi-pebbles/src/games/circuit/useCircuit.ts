@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyCircuit, practiceCircuit, arcOf, type CircuitPuzzle } from './engine'
 import { todayDayNumber } from '../shared/share'
@@ -51,6 +52,7 @@ const initial = (): CircuitState => ({
 
 export function useCircuit() {
   const [s, setS] = useState<CircuitState>(initial)
+  const dailySession = useDailySession('circuit')
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
@@ -69,6 +71,7 @@ export function useCircuit() {
     const { puzzle, puzzleNo } = dailyCircuit(day)
     const saved = restoreCircuitProgress(loadDayProgress<unknown>('circuit', day), puzzle)
     const stats = loadGameStats('circuit')
+    dailySession.acknowledge(day)
     if (saved?.finished) {
       setS((prev) => ({
         ...prev,
@@ -108,6 +111,8 @@ export function useCircuit() {
     }))
   }, [])
 
+  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle && restoreCircuitProgress(raw, ref.current.puzzle), startDaily)
+
   useEffect(() => {
     startDaily()
   }, [startDaily])
@@ -115,16 +120,19 @@ export function useCircuit() {
   /* persist */
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
-    const saved = loadDayProgress<CircuitProgress>('circuit', s.dayNumber)
-    saveDayProgress('circuit', s.dayNumber, {
-      played: s.played,
-      current: s.current,
-      revealed: s.revealed,
-      hintsUsed: s.hintsUsed,
-      finished: s.finished,
-      gaveUp: s.gaveUp,
-      countedPlayed: saved?.countedPlayed === true,
-    } satisfies CircuitProgress)
+    dailySession.commit(() => {
+      const saved = loadDayProgress<CircuitProgress>('circuit', s.dayNumber)
+      saveDayProgress('circuit', s.dayNumber, {
+        played: s.played,
+        current: s.current,
+        revealed: s.revealed,
+        hintsUsed: s.hintsUsed,
+        finished: s.finished,
+        gaveUp: s.gaveUp,
+        countedPlayed: saved?.countedPlayed === true,
+      } satisfies CircuitProgress)
+      saveGameStats('circuit', s.stats)
+    })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.played, s.current, s.revealed, s.hintsUsed, s.finished, s.gaveUp])
 
   /* midnight rollover */
@@ -152,17 +160,19 @@ export function useCircuit() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress<CircuitProgress>('circuit', prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress('circuit', prev.dayNumber, {
-      played: prev.played,
-      current: prev.current,
-      revealed: prev.revealed,
-      hintsUsed: prev.hintsUsed,
-      finished: prev.finished,
-      gaveUp: prev.gaveUp,
-      countedPlayed: true,
-    } satisfies CircuitProgress)
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveGameStats('circuit', stats)
+    dailySession.commit(() => {
+      saveDayProgress('circuit', prev.dayNumber, {
+        played: prev.played,
+        current: prev.current,
+        revealed: prev.revealed,
+        hintsUsed: prev.hintsUsed,
+        finished: prev.finished,
+        gaveUp: prev.gaveUp,
+        countedPlayed: true,
+      } satisfies CircuitProgress)
+      saveGameStats('circuit', stats)
+    })
     return stats
   }, [])
 
@@ -178,10 +188,8 @@ export function useCircuit() {
         maxStreak: Math.max(stats.maxStreak, streak),
         lastCompletedDay: day,
       }
-      saveGameStats('circuit', stats)
     } else if (prev.mode === 'daily') {
       stats = { ...stats, currentStreak: 0 }
-      saveGameStats('circuit', stats)
     }
     if (gaveUp) sfx.remove()
     else sfx.win()
@@ -325,6 +333,6 @@ export function useCircuit() {
 
   return {
     state: s,
-    actions: { tapLetter, backspace, clearWord, undoWord, restartChain, submit, hint, giveUp, startPractice, exitPractice },
+    actions: dailySession.actions({ tapLetter, backspace, clearWord, undoWord, restartChain, submit, hint, giveUp, startPractice, exitPractice }),
   }
 }

@@ -1,7 +1,9 @@
 /** Shared completion runtime by ChatGPT; individual concept credits stay in the catalog. */
+import {releasedDailyIndex} from './daily-rotations.mjs';
+import {practiceCandidates} from './practice-calendar.mjs';
 /** Published daily rotations. Append releases here when expanding a bank again.
  * Keeping the previous sizes makes old dates independent of future additions.
- * Practice always uses the complete installed bank.
+ * Fresh Practice excludes remaining protected dailies and noncanonical boards.
  */
 const expanded = {
   'deepseek-twin-hive': [30, 140],
@@ -25,7 +27,11 @@ export const DAILY_BANK_SCHEDULES = Object.freeze(Object.fromEntries(
   Object.entries(expanded).map(([id, [initialCount, count]]) => [id, Object.freeze({
     initialCount,
     releases: Object.freeze([Object.freeze({from: '2026-10-23', count, startIndex: initialCount})]),
-  })]),
+  })]).concat([
+    ['claude-sprout',Object.freeze({initialCount:128,releases:Object.freeze([])})],
+    ['claude-tangle',Object.freeze({initialCount:160,releases:Object.freeze([])})],
+    ['claude-tumbler',Object.freeze({initialCount:1054,releases:Object.freeze([])})],
+  ]),
 ));
 
 const dateFormat = new Intl.DateTimeFormat('en-US', {timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -39,6 +45,8 @@ export function dayNumber(key) { return Date.parse(`${key}T00:00:00Z`)/86400000;
 function validDate(key) {const n=dayNumber(key);return /^\d{4}-\d{2}-\d{2}$/.test(key)&&Number.isInteger(n)&&new Date(n*86400000).toISOString().slice(0,10)===key;}
 export function dailyIndex(id,key,count) {
   if(!validDate(key)||!Number.isSafeInteger(count)||count<1)throw new Error('Invalid daily collection');
+  const fresh=releasedDailyIndex(id,key,count);
+  if(fresh!==null)return fresh;
   const schedule=DAILY_BANK_SCHEDULES[id];
   if(schedule){
     let release;for(const candidate of schedule.releases)if(candidate.from<=key&&candidate.count<=count)release=candidate;
@@ -156,7 +164,8 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
         }
       }
       cursor=(cursor+1)%1_000_000;store.write(prefix+'practice-cursor',cursor);
-      index=((previous??dailyIndex(config.id,date,config.puzzles.length))+1)%config.puzzles.length;
+      const candidates=practiceCandidates(config.id,date,config.puzzles.length,{excludeIndices:[dailyIndex(config.id,date,config.puzzles.length)]});
+      index=candidates[(candidates.indexOf(previous)+1)%candidates.length];
       load(true);return 'new';
     },
     progress(){const today=centralDateKey(now());return {type:'progress',slug:config.id,name:config.name,mode,dateKey:mode==='daily'?date:today,status:outcome(),stats:recordStatistics(records(),today)};},

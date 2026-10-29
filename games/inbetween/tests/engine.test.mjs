@@ -434,3 +434,8 @@ test('every published board can finish by hints from all 64 solved-row subsets',
     }
   }
 });
+
+test('future-dated records do not inflate current statistics', () => {
+  const win={status:'won',attempts:6,hints:0};
+  assert.deepEqual(getStats({'2026-10-29':win,'2027-01-01':win},'2026-10-29'),getStats({'2026-10-29':win},'2026-10-29'));
+});

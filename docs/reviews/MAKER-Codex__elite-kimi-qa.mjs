@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 export const QA_DATE = '2026-10-28T18:00:00.000Z';
-const day = Math.floor(Date.parse('2026-10-28T00:00:00Z') / 86400000);
 const source = new URL('../../packages/kimi-pebbles/src/games/', import.meta.url);
-function daily(game) {
+function daily(game, date = '2026-10-28') {
+  const day = Math.floor(Date.parse(`${date}T00:00:00Z`) / 86400000);
   const bank = JSON.parse(readFileSync(new URL(`${game}/data/${game === 'hunch' ? 'answers' : 'puzzles'}.json`, source), 'utf8'));
   const index = day % bank.length;
   return { puzzleId: index + 1, puzzle: bank[index] };
@@ -29,17 +29,20 @@ function pathFor(grid, word) {
 }
 
 export const sourceAssistedSolutions = Object.fromEntries(['cairn', 'morph', 'tangle', 'hunch', 'circuit', 'quartet'].map(game => [game, daily(game)]));
-const tangle = sourceAssistedSolutions.tangle;
-tangle.gold = Math.min(18, Math.max(8, Math.round(tangle.puzzle.max * .2)));
-tangle.route = [];
-let score = 0;
-const candidates = [tangle.puzzle.best, ...[...tangle.puzzle.words].sort((a, b) => points(b) - points(a) || a.localeCompare(b))];
-for (const word of new Set(candidates)) {
-  if (score >= tangle.gold) break;
-  tangle.route.push({ word, path: pathFor(tangle.puzzle.g, word), points: points(word) });
-  score += points(word);
+function prepareTangle(tangle) {
+ tangle.gold = Math.min(18, Math.max(8, Math.round(tangle.puzzle.max * .2)));
+ tangle.route = [];
+ let score = 0;
+ // A short first word leaves a real unfinished checkpoint before gold.
+ const first=[...tangle.puzzle.words].sort((a,b)=>points(a)-points(b)||a.localeCompare(b))[0];
+ const candidates = [first,tangle.puzzle.best,...[...tangle.puzzle.words].sort((a,b)=>points(b)-points(a)||a.localeCompare(b))];
+ for(const word of new Set(candidates)) {
+  if(score>=tangle.gold)break;
+  tangle.route.push({word,path:pathFor(tangle.puzzle.g,word),points:points(word)});score+=points(word);
+ }
+ assert.ok(tangle.route.length>1&&tangle.route[0].points<tangle.gold,'checkpoint must precede gold');
 }
-assert.ok(tangle.route.length > 1 && tangle.route[0].points < tangle.gold, 'checkpoint must precede gold');
+prepareTangle(sourceAssistedSolutions.tangle);
 
 async function dismissHelp(page) {
   await page.locator('[data-game-ready="true"]').waitFor();
@@ -80,10 +83,16 @@ async function tangleWord(page, entry) {
 }
 
 /** Root navigates with the fixed clock, then supplies its reload/storage audit. */
-export async function playGame(page, slug, { checkpoint } = {}) {
+export async function playGame(page, slug, { checkpoint, date = '2026-10-28' } = {}) {
   assert.equal(typeof checkpoint, 'function', 'Provide the real reload checkpoint callback');
   const game = slug.replace(/^kimi-/, '');
-  const fixture = sourceAssistedSolutions[game];
+  const fixture = daily(game,date);
+  if(game==='tangle'){
+    const {loadDailyAudit}=await import('../../scripts/daily-audit-lib.mjs');
+    const audit=await loadDailyAudit();
+    try{fixture.puzzle=audit.games.find(row=>row.slug==='kimi-tangle').select(date).puzzle;}finally{await audit.cleanup();}
+    prepareTangle(fixture);
+  }
   assert.ok(fixture, `Unknown Kimi game: ${slug}`);
   await dismissHelp(page);
   const { puzzle, puzzleId } = fixture;

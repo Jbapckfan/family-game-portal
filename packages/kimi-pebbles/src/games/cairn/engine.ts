@@ -1,3 +1,5 @@
+import { availablePracticeIndices } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import commonRaw from './data/common.txt?raw'
 import { loadDict as loadSharedDict, isValidWord as sharedIsValidWord } from '../shared/dict'
@@ -24,7 +26,7 @@ const PUZZLES: Puzzle[] = (puzzlesData as { w: string[] }[]).map((p) => ({ words
 /* ---------------- dates & daily selection ---------------- */
 
 export function dailyPuzzle(dayNumber: number): { puzzle: Puzzle; puzzleNo: number } {
-  const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 839)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 
@@ -90,6 +92,10 @@ function ensureCommonIndex() {
 
 export function generatePracticePuzzle(): Puzzle {
   ensureCommonIndex()
+  const available = availablePracticeIndices('kimi-cairn', PUZZLES.length)
+  const allowed = new Set(available)
+  const key = (words: string[]) => words.map(word => [...word].sort().join('')).join('/')
+  const reserved = new Set(PUZZLES.filter((_, i) => !allowed.has(i)).map(puzzle => key(puzzle.words)))
   const words = commonWords!
   const index = sigIndex!
   const starters = words.filter((w) => w.length === 3)
@@ -121,10 +127,10 @@ export function generatePracticePuzzle(): Puzzle {
       if (!found) break
       chain.push(found)
     }
-    if (chain.length === LEVELS) return { words: chain }
+    if (chain.length === LEVELS && !reserved.has(key(chain))) return { words: chain }
   }
-  // fallback: reuse a random daily puzzle
-  return PUZZLES[Math.floor(Math.random() * PUZZLES.length)]
+  // Keep even the bounded-search fallback outside upcoming dailies.
+  return PUZZLES[available[Math.floor(Math.random() * available.length)]]
 }
 
 /* ---------------- share text ---------------- */

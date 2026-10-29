@@ -1,3 +1,4 @@
+import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyMorph, diffCount, practiceMorph, type MorphPuzzle } from './engine'
 import { isValidWord, loadDict } from '../shared/dict'
@@ -57,6 +58,7 @@ const initial: MorphState = {
 
 export function useMorph() {
   const [s, setS] = useState<MorphState>(() => ({ ...initial, stats: loadGameStats('morph') }))
+  const dailySession = useDailySession('morph')
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
@@ -75,6 +77,7 @@ export function useMorph() {
     const { puzzle, puzzleNo } = dailyMorph(day)
     const saved = restoreMorphProgress(loadDayProgress<unknown>('morph', day), puzzle, isValidWord)
     const stats = loadGameStats('morph')
+    dailySession.acknowledge(day)
     if (saved?.finished) {
       setS((prev) => ({
         ...prev,
@@ -121,6 +124,8 @@ export function useMorph() {
     }))
   }, [])
 
+  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle && restoreMorphProgress(raw, ref.current.puzzle, isValidWord), startDaily)
+
   useEffect(() => {
     let alive = true
     loadDict()
@@ -134,16 +139,19 @@ export function useMorph() {
   /* persist */
   useEffect(() => {
     if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
-    const saved = loadDayProgress<MorphProgress>('morph', s.dayNumber)
-    saveDayProgress('morph', s.dayNumber, {
-      rows: s.rows,
-      edit: s.edit,
-      misses: s.misses,
-      hintsUsed: s.hintsUsed,
-      finished: s.finished,
-      gaveUp: s.gaveUp,
-      countedPlayed: saved?.countedPlayed === true,
-    } satisfies MorphProgress)
+    dailySession.commit(() => {
+      const saved = loadDayProgress<MorphProgress>('morph', s.dayNumber)
+      saveDayProgress('morph', s.dayNumber, {
+        rows: s.rows,
+        edit: s.edit,
+        misses: s.misses,
+        hintsUsed: s.hintsUsed,
+        finished: s.finished,
+        gaveUp: s.gaveUp,
+        countedPlayed: saved?.countedPlayed === true,
+      } satisfies MorphProgress)
+      saveGameStats('morph', s.stats)
+    })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.rows, s.edit, s.misses, s.hintsUsed, s.finished, s.gaveUp])
 
   /* rollover at midnight */
@@ -171,17 +179,19 @@ export function useMorph() {
     if (prev.mode !== 'daily') return prev.stats
     const saved = loadDayProgress<MorphProgress>('morph', prev.dayNumber)
     if (saved?.countedPlayed === true) return prev.stats
-    saveDayProgress('morph', prev.dayNumber, {
-      rows: prev.rows,
-      edit: prev.edit,
-      misses: prev.misses,
-      hintsUsed: prev.hintsUsed,
-      finished: prev.finished,
-      gaveUp: prev.gaveUp,
-      countedPlayed: true,
-    } satisfies MorphProgress)
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
-    saveGameStats('morph', stats)
+    dailySession.commit(() => {
+      saveDayProgress('morph', prev.dayNumber, {
+        rows: prev.rows,
+        edit: prev.edit,
+        misses: prev.misses,
+        hintsUsed: prev.hintsUsed,
+        finished: prev.finished,
+        gaveUp: prev.gaveUp,
+        countedPlayed: true,
+      } satisfies MorphProgress)
+      saveGameStats('morph', stats)
+    })
     return stats
   }, [])
 
@@ -198,10 +208,8 @@ export function useMorph() {
           maxStreak: Math.max(stats.maxStreak, streak),
           lastCompletedDay: day,
         }
-        saveGameStats('morph', stats)
       } else if (prev.mode === 'daily') {
         stats = { ...stats, currentStreak: 0 }
-        saveGameStats('morph', stats)
       }
       setS((p) => ({
         ...p,
@@ -346,6 +354,6 @@ export function useMorph() {
 
   return {
     state: s,
-    actions: { openCell, closePalette, pickLetter, keyboardLetter, submit, hint, closePath, undo, restart, giveUp, startPractice, exitPractice },
+    actions: dailySession.actions({ openCell, closePalette, pickLetter, keyboardLetter, submit, hint, closePath, undo, restart, giveUp, startPractice, exitPractice }),
   }
 }

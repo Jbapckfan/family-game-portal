@@ -12,7 +12,7 @@ export async function puzzleInventory() {
       const name=game.slug.slice(5),file=name==='hunch'?'answers':'puzzles';
       puzzles=JSON.parse(await readFile(new URL(`../packages/kimi-pebbles/src/games/${name}/data/${file}.json`,import.meta.url),'utf8'));
     }else ({PUZZLES:puzzles}=await import(new URL(`../games/${game.slug}/puzzles.mjs`,import.meta.url)));
-    if(!Array.isArray(puzzles)||puzzles.length<120)throw Error(`${game.slug}: at least 120 playable puzzles are required`);
+    if(!Array.isArray(puzzles)||puzzles.length<200)throw Error(`${game.slug}: at least 200 playable puzzles are required`);
     if(game.runtime!=='kimi'&&new Set(puzzles.map(p=>p.id)).size!==puzzles.length)throw Error(`${game.slug}: duplicate puzzle IDs`);
     if(game.boards!==puzzles.length)throw Error(`${game.slug}: catalog says ${game.boards}, actual bank has ${puzzles.length}`);
     games.push({slug:game.slug,name:game.name,creator:game.creator,puzzles:puzzles.length});

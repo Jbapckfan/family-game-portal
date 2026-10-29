@@ -28,7 +28,7 @@ GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES | BONU
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
 SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg"}
-DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "styles.css"}
+DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
 ASSET_EXTENSIONS = {"js", "mjs", "css", "json", "txt", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "avif", "woff", "woff2", "ttf", "otf"}
@@ -273,7 +273,7 @@ def validate_web_bundle(games_dir):
                 allowed = ASSET_EXTENSIONS if parts[0] == "assets" else FONT_EXTENSIONS if parts[0] == "fonts" else set()
                 require(len(parts) >= 2 and Path(path).suffix.lower().removeprefix(".") in allowed, "Unexpected shared Kimi runtime file: " + path)
         elif game == "deepseek-runtime":
-            require(files == DEEPSEEK_SHARED_FILES and not directories, "Shared module runtime must contain only core.mjs, common.mjs and styles.css")
+            require(files == DEEPSEEK_SHARED_FILES and not directories, "Shared module runtime must contain only the approved runtime modules and stylesheet")
         elif game in BONUS_GAMES:
             require(files == BONUS_FILES and not directories, "Unexpected bonus runtime file: " + game)
         elif game in SHARED_MODULE_GAMES:

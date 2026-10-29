@@ -17,10 +17,10 @@ const app = createShell({
   lesson:{question:'PEN → WRITER is a tool → its user. Which pair has the same direction?',choices:[{label:'BRUSH → PAINTER',correct:true,why:'A painter uses a brush, just as a writer uses a pen.'},{label:'PAINTER → BRUSH',correct:false,why:'Those words have the relationship, but the direction is reversed.'},{label:'BRUSH → CANVAS',correct:false,why:'Canvas is the surface used, rather than the person using the tool.'}]},
   slug:'counterpart', name:'Counterpart', puzzles:PUZZLES, engine,
   sibling:{slug:'shortlist', name:'Shortlist', url:'https://shortlist-daily.jbapckfan.chatgpt.site'},
-  reset(){rowIndex=0;draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';rowDrafts=[];draftKey=null;},
+  reset({clearDraft=false}={}){if(clearDraft&&draftKey){try{sessionStorage.removeItem(draftKey);}catch{}}rowIndex=0;draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';rowDrafts=[];draftKey=null;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedRows.length}),
   help,
-  about:'Counterpart is a game of analogies: different words, the same relationship. Each board uses ten words once across five directed pairs. The challenge is to recognize a relationship and carry it into a new context. This edition combines 90 curated analogies into 180 different boards. Familiar relationships return with different word banks.',
+  about:'Counterpart is a game of analogies: different words, the same relationship. Each board uses ten words once across five directed pairs. The challenge is to recognize a relationship and carry it into a new context. This edition combines 90 curated analogies into 210 different boards. Familiar relationships return with different word banks.',
   statsExtra:stats=>`<div class="stats-detail"><span>Perfect counterparts</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average checks when solved</span><strong>${stats.won ? stats.averageAttempts.toFixed(1) : '—'}</strong></div>`,
   result(api){
     const {game,mode,daily}=api;

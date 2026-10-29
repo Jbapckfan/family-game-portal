@@ -61,7 +61,9 @@ test('Morph rejects malformed and impossible saved ladders', () => {
 });
 
 // Exercise the production hook's action callbacks without mounting a browser.
-// Storage and audio are the external boundaries; scoring and transitions run unchanged.
+// These focused action tests inspect the computed state statistics. Persistence,
+// conflict adoption and statistics on disk are exercised with real React effects
+// and separate tab module caches in stale-session.test.mjs.
 function morphActions(mode = 'daily') {
   const stats = { played: 8, completed: 5, currentStreak: 2, maxStreak: 4, lastCompletedDay: 99 };
   let state = { phase: 'playing', mode, dayNumber: 100, puzzle: { s: 'cold', t: 'cord' },
@@ -73,6 +75,7 @@ function morphActions(mode = 'daily') {
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
   const actions = new Script(`${executable}\nuseMorph().actions`).runInNewContext({
     EMPTY_GAME_STATS: stats,
+    useDailySession: () => ({ configure() {}, before: () => true, actions: value => value, commit: fn => { fn(); return true; } }),
     useState: () => [state, next => { state = typeof next === 'function' ? next(state) : next; }],
     useRef: value => ({ current: value }),
     useCallback: fn => fn,
@@ -85,7 +88,7 @@ function morphActions(mode = 'daily') {
     diffCount: (a, b) => [...a].filter((letter, i) => letter !== b[i]).length,
     sfx: Object.fromEntries(['remove', 'win', 'levelUp'].map(name => [name, () => sounds.push(name)])),
   });
-  return { actions, sounds, originalStats: stats, get state() { return state; }, get stats() { return storedStats; } };
+  return { actions, sounds, originalStats: stats, get state() { return state; }, get stats() { return structuredClone(state.stats); } };
 }
 
 test('Morph daily give-up records play without awarding a completion, streak, or win sound', () => {
@@ -129,6 +132,7 @@ function cairnActions(previousStatuses, mode = 'daily') {
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
   const actions = new Script(`${executable}\nuseGame().actions`).runInNewContext({
     EMPTY_STATS: stats, LEVELS: 5, completeCairnLevel,
+    useDailySession: () => ({ configure() {}, before: () => true, actions: value => value, commit: fn => { fn(); return true; } }),
     useState: () => [state, next => { state = typeof next === 'function' ? next(state) : next; }],
     useRef: value => ({ current: value }), useCallback: fn => fn, useEffect: () => {}, useMemo: fn => fn(),
     loadDayProgress: () => ({ countedPlayed: true }),
@@ -141,7 +145,7 @@ function cairnActions(previousStatuses, mode = 'daily') {
   });
   return { actions, sounds, originalStats: stats,
     flush() { while (timers.length) timers.shift()(); },
-    get state() { return state; }, get stats() { return storedStats; } };
+    get state() { return state; }, get stats() { return structuredClone(state.stats); } };
 }
 
 for (const [label, statuses, action] of [
@@ -189,13 +193,14 @@ function circuitActions(mode = 'daily') {
     { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
   const actions = new Script(`${executable}\nuseCircuit().actions`).runInNewContext({
     coverage,
+    useDailySession: () => ({ configure() {}, before: () => true, actions: value => value, commit: fn => { fn(); return true; } }),
     useState: () => [state, next => { state = typeof next === 'function' ? next(state) : next; }],
     useRef: value => ({ current: value }), useCallback: fn => fn, useEffect: () => {},
     loadDayProgress: () => ({ countedPlayed: true }),
     saveGameStats: (_game, value) => { storedStats = structuredClone(value); },
     sfx: Object.fromEntries(['remove', 'win', 'levelUp'].map(name => [name, () => sounds.push(name)])),
   });
-  return { actions, sounds, originalStats: stats, get state() { return state; }, get stats() { return storedStats; } };
+  return { actions, sounds, originalStats: stats, get state() { return state; }, get stats() { return structuredClone(state.stats); } };
 }
 
 test('Circuit daily give-up resets only the current streak, without awarding a completion', () => {

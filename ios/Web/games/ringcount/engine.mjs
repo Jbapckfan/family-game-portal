@@ -1,3 +1,4 @@
+import {originalDailyIndex} from '../deepseek-runtime/daily-rotations.mjs';
 /** Ringcount's pure rules and exhaustive ring-partition solver. */
 export const EPOCH = '2026-10-20';
 export const SECTIONS = 4;
@@ -28,7 +29,7 @@ export function getDaily(puzzles, now = new Date()) {
   if (!Array.isArray(puzzles) || puzzles.length === 0) throw new RangeError('A daily puzzle collection is required.');
   const dateKey = getDateKey(now);
   const number = getDayNumber(dateKey);
-  const index = ((number - 1) % puzzles.length + puzzles.length) % puzzles.length;
+  const index = originalDailyIndex('ringcount', dateKey, number - 1, puzzles.length);
   return {puzzle: puzzles[index], dateKey, number};
 }
 

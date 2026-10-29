@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import {createHash} from 'node:crypto'
 import {medalTargets, pointsFor, restoreTangleProgress} from '../src/games/tangle/progress.ts'
 import type {TanglePuzzle} from '../src/games/tangle/engine.ts'
+import {dailyTangle, practiceTangle} from '../src/games/tangle/engine.ts'
 import {reviewTanglePuzzle, reviewTanglePuzzleForDay, TANGLE_REVIEWED_EXCLUSIONS} from '../src/games/tangle/reviewed-words.ts'
 
 const raw = JSON.parse(fs.readFileSync(new URL('../src/games/tangle/data/puzzles.json',import.meta.url),'utf8')) as TanglePuzzle[]
@@ -103,4 +104,30 @@ test('review does not mutate original records or change daily board identity',()
     assert.equal(puzzles[i].max,raw[i].max)
     assert.equal(puzzles[i].best,raw[i].best)
   }
+})
+
+test('real daily and practice entry points apply the dated review without changing selected indices',()=>{
+  for(let day=20746;day<20937;day++){
+    const {puzzle,puzzleNo}=dailyTangle(day),index=day%430
+    assert.equal(puzzleNo,index+1)
+    assert.deepEqual(puzzle,reviewTanglePuzzleForDay(puzzles[index],day))
+  }
+  for(let i=0;i<100;i++){
+    const {puzzle,puzzleNo}=practiceTangle()
+    assert.deepEqual(puzzle,reviewTanglePuzzle(puzzles[puzzleNo-1]))
+  }
+})
+
+
+test('valid older-client daily saves retain their vocabulary edition and score',()=>{
+ for(let day=20756;day<20937;day++){
+  const index=day%430,p=puzzles[index],removed=p.words.find(word=>TANGLE_REVIEWED_EXCLUSIONS.includes(word))
+  if(!removed)continue
+  const saved={found:[removed,...p.words.filter(word=>word!==removed).slice(0,20)],misses:2,hintsUsed:0,countedPlayed:true}
+  const actual=dailyTangle(day,saved)
+  assert.equal(actual.puzzleNo,index+1);assert.deepEqual(actual.puzzle,p)
+  assert.deepEqual(restoreTangleProgress(saved,actual.puzzle),restoreTangleProgress(saved,p))
+  assert.deepEqual(dailyTangle(day).puzzle,reviewTanglePuzzle(p))
+  assert.deepEqual(dailyTangle(day,{...saved,found:[removed,'invalidzzzz']}).puzzle,reviewTanglePuzzle(p))
+ }
 })

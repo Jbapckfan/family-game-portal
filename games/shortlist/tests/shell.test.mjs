@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../../deepseek-runtime/practice-calendar.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -7,7 +8,7 @@ import * as engine from '../engine.mjs';
 // Run the actual shared browser shell with the real game engine. Only browser
 // facilities (DOM, timers and storage) are stand-ins; persistence is production code.
 const shellURL = new URL('../shell.mjs', import.meta.url);
-const source = readFileSync(shellURL, 'utf8').replace(/^export /gm, '');
+const source = readFileSync(shellURL, 'utf8').replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
 const meaningGame = typeof engine.submitPair === 'function';
 const slug = meaningGame ? 'counterpart' : 'shortlist';
 const prefix = slug + ':v1:';
@@ -59,7 +60,7 @@ function openShell(saved=storage()) {
   document.activeElement=element();
   document.getElementById('feedback').textContent='Think it through.';
   document.getElementById('board-note').textContent='Your daily puzzle.';
-  const context=createContext({document,localStorage:saved,navigator:{},
+  const context=createContext({practiceCandidates,document,localStorage:saved,navigator:{},
     window:{addEventListener(type,fn){windowEvents.set(type,fn);}},location:{pathname:`/games/${slug}/`},
     matchMedia:()=>({matches:true}),requestAnimationFrame:fn=>fn(),
     setTimeout(fn){const id=++timerId;timerCallbacks.set(id,fn);return id;},clearTimeout(id){timerCallbacks.delete(id);},setInterval:()=>1,

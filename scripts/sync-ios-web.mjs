@@ -23,8 +23,8 @@ const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime', 'deepseek-run
 const KIMI_WRAPPER_FILES = Object.freeze(['index.html', 'icon.svg']);
 const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
 const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css', 'icon.svg']);
-const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'styles.css']);
-const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs', 'elite-ui.test.mjs']);
+const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css']);
+const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs', 'elite-ui.test.mjs', 'practice-calendar.test.mjs']);
 const RUNTIME_FILES = Object.freeze([
   'index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs',
   'styles.css', 'icon.svg', 'manifest.webmanifest',
@@ -97,7 +97,7 @@ async function validateSharedModuleLayout(slug, directory, files, { source = fal
     const allowed = source ? [...DEEPSEEK_SHARED_FILES, ...DEEPSEEK_SHARED_TESTS] : DEEPSEEK_SHARED_FILES;
     if (entries.some(entry => !entry.isFile() || !allowed.includes(entry.name)) ||
         files.some(name => !allowed.includes(name)) || (source && DEEPSEEK_SHARED_FILES.some(name => !files.includes(name)))) {
-      throw new Error(`${slug}: shared runtime must contain only core.mjs, common.mjs and styles.css`);
+      throw new Error(`${slug}: shared runtime must contain only the approved runtime modules and stylesheet`);
     }
   } else if (SHARED_MODULE_GAMES.includes(slug)) {
     const allowed = [...SHARED_GAME_REQUIRED_FILES, ...SHARED_GAME_OPTIONAL_FILES];

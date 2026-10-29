@@ -1,3 +1,5 @@
+import { choosePracticeIndex } from '../shared/practice'
+import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
 
@@ -24,13 +26,12 @@ export const TIER_STYLE: Record<number, { face: string; name: string; emoji: str
 }
 
 export function dailyQuartet(dayNumber = todayDayNumber()): { puzzle: QuartetPuzzle; puzzleNo: number } {
-  const idx = ((dayNumber % PUZZLES.length) + PUZZLES.length) % PUZZLES.length
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 420)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 
 export function practiceQuartet(excludeNo = -1): { puzzle: QuartetPuzzle; puzzleNo: number } {
-  let idx = Math.floor(Math.random() * PUZZLES.length)
-  while (idx === excludeNo) idx = Math.floor(Math.random() * PUZZLES.length)
+  const idx = choosePracticeIndex('kimi-quartet', PUZZLES.length, excludeNo)
   return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
 }
 

@@ -1,3 +1,4 @@
+import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 import { PUZZLES } from './puzzles.mjs';
 import { getDateKey, getDaily, createGame, buildWord, submitPlacement, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
 
@@ -210,21 +211,42 @@ function showStats() {
   records=readRecords();reconcileDailyResult();const stats=getStats(records,getDateKey());
   openDialog(`<p class="dialog-kicker">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">A place in your day.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played?Math.round(stats.won/stats.played*100):0}%</div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div><div class="stats-detail"><span>Perfect fits</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average attempts when solved</span><strong>${stats.averageAttempts===null?'—':Number(stats.averageAttempts).toFixed(1)}</strong></div><p class="fineprint">Daily results are saved in this browser.<br>Practice and revealed boards don’t extend a streak.<br>Clearing browser data removes your progress.</p>`);
 }
-function canPractice(index) {const current=getDaily(PUZZLES);return PUZZLES[index].id!==current.puzzle.id||restoreGame(current.puzzle,read('daily:'+current.dateKey,null)).status!=='playing';}
+function savedPractice(index, acceptGame=false) {
+  const candidate=PUZZLES[index];if(!candidate)return null;
+  const raw=read('practice:'+candidate.id,null,acceptGame);
+  if(raw?.puzzleId!==candidate.id)return null;
+  const saved=restoreGame(candidate,raw);
+  // Reject validator fallbacks instead of treating malformed data as a saved round.
+  if(JSON.stringify(saved)!==JSON.stringify(createGame(candidate)))return saved;
+  return Object.keys(saved).every(key=>JSON.stringify(raw[key])===JSON.stringify(saved[key]))?saved:null;
+}
+function unfinishedPractice(index) {
+  const saved=savedPractice(index);
+  return saved?.status==='playing';
+}
+function practiceIndices() {
+  const current=getDaily(PUZZLES),todayIndex=PUZZLES.findIndex(item=>item.id===current.puzzle.id);
+  const indices=practiceCandidates('inbetween',current.dateKey,PUZZLES.length,{excludeIndices:[todayIndex]});
+  const saved=read('daily:'+current.dateKey,null);
+  if(todayIndex>=0&&saved?.puzzleId===current.puzzle.id&&restoreGame(current.puzzle,saved).status!=='playing'&&!indices.includes(todayIndex))indices.push(todayIndex);
+  return indices;
+}
+function canPractice(index) {return Number.isInteger(index)&&Boolean(PUZZLES[index])&&(practiceIndices().includes(index)||unfinishedPractice(index));}
 function showPractice() {
-  openDialog(`<p class="dialog-kicker">MAKE A LITTLE MORE ROOM</p><h2 class="dialog-title" id="dialog-title">A little practice.</h2><p class="result-copy">Pick a puzzle. Take your time.<br>Practice never changes your daily score.</p><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${PUZZLES.map((p,i)=>{
-    const saved=restoreGame(p,read('practice:'+p.id,null));const done=saved.status!=='playing';const allowed=canPractice(i);
-    return `<button class="practice-choice${done?' done':''}" data-practice="${i}" ${allowed?'':'disabled'} aria-label="Practice ${i+1}: ${esc(p.title)}${done?', completed':''}${allowed?'':', reserved for today’s daily'}">${String(i+1).padStart(2,'0')}</button>`;
-  }).join('')}</div><p class="fineprint">${PUZZLES.length} puzzles in this edition. Today’s puzzle stays reserved until you finish the daily.</p>`);
+  const fresh=new Set(practiceIndices()),available=PUZZLES.map((_,i)=>i).filter(i=>fresh.has(i)||unfinishedPractice(i));
+  openDialog(`<p class="dialog-kicker">MAKE A LITTLE MORE ROOM</p><h2 class="dialog-title" id="dialog-title">A little practice.</h2><p class="result-copy">Pick a puzzle. Take your time.<br>Practice never changes your daily score.</p><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${available.map(i=>{
+    const p=PUZZLES[i],saved=savedPractice(i),done=saved&&saved.status!=='playing',resume=unfinishedPractice(i);
+    return `<button class="practice-choice${done?' done':''}" data-practice="${i}" aria-label="${resume?'Resume practice':'Practice'} ${i+1}: ${esc(p.title)}${done?', completed':''}">${String(i+1).padStart(2,'0')}</button>`;
+  }).join('')}</div><p class="fineprint">${available.length} available now. Upcoming dailies stay fresh. Saved rounds can be resumed; finish today’s daily to replay it.</p>`);
 }
 function loadPractice(index) {
   if(!Number.isInteger(index)||!PUZZLES[index]||!canPractice(index))return;
-  clearTimeout(resultTimer);mode='practice';puzzle=PUZZLES[index];game=restoreGame(puzzle,read('practice:'+puzzle.id,null,true));
+  clearTimeout(resultTimer);mode='practice';puzzle=PUZZLES[index];game=savedPractice(index,true)||createGame(puzzle);
   clearSelection();feedback='';render();lastFocus=null;closeDialog();document.querySelector('.game-topline').scrollIntoView({block:'start',behavior:reducedMotion()?'instant':'smooth'});
 }
 function randomPractice() {
-  const possible=PUZZLES.map((p,i)=>({p,i})).filter(({p,i})=>canPractice(i)&&p.id!==puzzle.id);
-  const fresh=possible.filter(({p})=>restoreGame(p,read('practice:'+p.id,null)).status==='playing');
+  const possible=practiceIndices().map(i=>({p:PUZZLES[i],i})).filter(({p})=>p.id!==puzzle.id);
+  const fresh=possible.filter(({i})=>{const saved=savedPractice(i);return !saved||saved.status==='playing';});
   const pool=fresh.length?fresh:possible;
   if(pool.length)loadPractice(pool[Math.floor(Math.random()*pool.length)].i);
 }

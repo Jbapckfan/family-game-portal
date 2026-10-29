@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {solvePuzzle, getSegments} from '../engine.mjs';
 
 const SEED = 0x71c0a26;
-const COUNT = 180;
+const COUNT = 210;
 const LENGTH_PATTERNS = [[2, 2, 3, 5], [2, 2, 4, 4], [2, 3, 3, 4]];
 const FIRST = [5, 4, 6, 9, 6, 7, 2, 5, 1, 8, 3, 4];
 

@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { PUZZLES, COLLECTION } from '../puzzles.mjs';
 import { createGame, submitPair, useHint, revealGame, restoreGame, isPerfect } from '../engine.mjs';
 
-test('collection contains 180 distinct curated combinations and ninety distinct analogies',()=>{
-  assert.equal(PUZZLES.length,180);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,180);
-  assert.equal(COLLECTION.uniqueAnalogies,90);assert.equal(COLLECTION.totalRowAppearances,900);
+test('collection contains 210 distinct curated combinations and ninety distinct analogies',()=>{
+  assert.equal(PUZZLES.length,210);assert.equal(new Set(PUZZLES.map(p=>p.id)).size,210);
+  assert.equal(COLLECTION.uniqueAnalogies,90);assert.equal(COLLECTION.totalRowAppearances,1050);
   assert.equal(new Set(PUZZLES.flatMap(p=>p.rows.map(r=>r.sourceId))).size,90);
-  assert.equal(new Set(PUZZLES.map(p=>p.rows.map(r=>r.sourceId).sort().join('|'))).size,180);
+  assert.equal(new Set(PUZZLES.map(p=>p.rows.map(r=>r.sourceId).sort().join('|'))).size,210);
 });
 test('each board has five explained directed relationships and ten distinct words',()=>{
   for(const puzzle of PUZZLES) {

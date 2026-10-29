@@ -10,9 +10,9 @@ A hint exposes a row's relationship label and is counted once for that row. A pe
 
 ## Prepared collection
 
-There are **180 distinct five-analogy combinations**, with **90 original curated analogies** across **900 row appearances**. The same relationships recur with different word banks; this is not 900 newly written analogies. Every added board differs in at least three of its five analogies from every earlier board. Repeated analogies are separated by at least six board positions, including the cycle boundary. The daily collection repeats after 180 days. Difficulty labels are editorial judgments rather than measured player ratings.
+There are **210 distinct five-analogy combinations**, with **90 original curated analogies** across **1,050 row appearances**. The same relationships recur with different word banks; this is not 1,050 newly written analogies. Every added board differs in at least three of its five analogies from every earlier board. Repeated analogies are separated by at least six board positions, including the cycle boundary. The daily collection repeats after 210 days. Difficulty labels are editorial judgments rather than measured player ratings.
 
-Content tests cover all 5,760 board/solved-row subsets and all 13,500 ordered pair checks. Those checks establish the encoded solution and guarantee that correct partial progress does not block completion. Editorial review is still necessary for semantic ambiguity; mechanical uniqueness alone cannot prove every possible interpretation of English.
+Content tests cover all 6,720 board/solved-row subsets and all 94,500 ordered pair checks. Those checks establish the encoded solution and guarantee that correct partial progress does not block completion. Editorial review is still necessary for semantic ambiguity; mechanical uniqueness alone cannot prove every possible interpretation of English.
 
 The detailed schema, API, editorial notes, and related-mechanic research are in [contentnotes/ENGINE.md](contentnotes/ENGINE.md).
 

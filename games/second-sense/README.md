@@ -12,9 +12,9 @@ Answers use established English senses and an explicit acceptance table. Input i
 
 ## Prepared collection
 
-There are **180 distinct five-word combinations** drawn from **75 original noun/verb pairs**, for **900 pair appearances**. Familiar meanings return beside different clues; this is not 900 newly authored meanings. Every pair appears exactly twelve times, 11–19 board positions apart including the collection boundary. Every added board differs in at least three of its five words from every earlier board. The daily collection repeats after 180 days. Clues identify U.S. usage when needed, and explanations note relevant pronunciation changes.
+There are **210 distinct five-word combinations** drawn from **75 original noun/verb pairs**, for **1,050 pair appearances**. Familiar meanings return beside different clues; this is not 1,050 newly authored meanings. Every pair appears exactly fourteen times, 11–19 board positions apart including the collection boundary. Every added board differs in at least three of its five words from every earlier board. The daily collection repeats after 210 days. Clues identify U.S. usage when needed, and explanations note relevant pronunciation changes.
 
-Tests cover all 5,760 board/solved-pair subsets and 337,500 combinations of noun card, verb card, and collection word. They verify the accepted table, recoverability, hints, restoration, and alias handling. Human editorial review remains necessary for the quality and ambiguity of definitions. Difficulty labels are editorial rather than measured player ratings.
+Tests cover all 6,720 board/solved-pair subsets and 393,750 combinations of noun card, verb card, and collection word. They verify the accepted table, recoverability, hints, restoration, and alias handling. Human editorial review remains necessary for the quality and ambiguity of definitions. Difficulty labels are editorial rather than measured player ratings.
 
 The detailed schema, engine API, lexical review, and content decisions are in [contentnotes/ENGINE.md](contentnotes/ENGINE.md).
 

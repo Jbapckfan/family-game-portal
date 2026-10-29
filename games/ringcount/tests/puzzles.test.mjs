@@ -29,10 +29,10 @@ function referenceSolutions(puzzle) {
   });
 }
 
-test('180 distinct boards use small numbers, varied arc lengths, and rotation/reflection deduplication', () => {
-  assert.equal(PUZZLES.length, 180);
-  assert.equal(new Set(PUZZLES.map(p => p.id)).size, 180);
-  assert.equal(new Set(PUZZLES.map(p => canonical(p.numbers))).size, 180);
+test('210 distinct boards use small numbers, varied arc lengths, and rotation/reflection deduplication', () => {
+  assert.equal(PUZZLES.length, 210);
+  assert.equal(new Set(PUZZLES.map(p => p.id)).size, 210);
+  assert.equal(new Set(PUZZLES.map(p => canonical(p.numbers))).size, 210);
   assert.deepEqual(new Set(PUZZLES.map(p => p.target)), new Set([15, 16, 17, 18]));
   for (const puzzle of PUZZLES) {
     assert.equal(puzzle.sections, 4);
@@ -44,8 +44,8 @@ test('180 distinct boards use small numbers, varied arc lengths, and rotation/re
   }
 });
 
-test('an independent prefix-sum validator checks all 89,100 cut sets and proves one solution per board', () => {
-  assert.equal(PUZZLES.length, 180);
+test('an independent prefix-sum validator checks all 103,950 cut sets and proves one solution per board', () => {
+  assert.equal(PUZZLES.length, 210);
   assert.equal(cutSets.length, 495);
   for (const puzzle of PUZZLES) {
     const reference = referenceSolutions(puzzle);
@@ -55,7 +55,7 @@ test('an independent prefix-sum validator checks all 89,100 cut sets and proves 
 });
 
 test('every complete placement is recoverable with at most four hints and an explicit winning check', () => {
-  assert.equal(PUZZLES.length, 180);
+  assert.equal(PUZZLES.length, 210);
   for (const puzzle of PUZZLES) for (const cuts of cutSets) {
     let state = createGame(puzzle);
     for (const gap of cuts) state = toggleCut(puzzle, state, gap).state;
@@ -78,6 +78,6 @@ test('every complete placement is recoverable with at most four hints and an exp
 });
 
 test('the deterministic generator reproduces the checked-in collection exactly', () => {
-  assert.equal(PUZZLES.length, 180);
+  assert.equal(PUZZLES.length, 210);
   assert.deepEqual(generatePuzzles(), PUZZLES);
 });

@@ -6,8 +6,8 @@ import { getDaily } from '../engine.mjs';
 
 const key = p => p.rows.map(row => row.sourceId).sort().join('|');
 
-test('at least 180 substantive challenges are available; permutations do not increase the count', () => {
-  assert.ok(new Set(PUZZLES.map(key)).size >= 180, 'Need at least 180 different challenges');
+test('at least 210 substantive challenges are available; permutations do not increase the count', () => {
+  assert.ok(new Set(PUZZLES.map(key)).size >= 210, 'Need at least 210 different challenges');
   const seen = new Set(PUZZLES.slice(0, 30).map(key));
   for (const puzzle of PUZZLES.slice(30)) {
     assert.ok(!seen.has(key(puzzle)), `${puzzle.id} repeats an earlier challenge`);
@@ -20,8 +20,8 @@ test('every previously published puzzle retains its exact content, IDs, and posi
   assert.equal(digest, '3e36a6a84d2f1998812c2dea7549b6fe354f742fe95ba3d513a508a2cfc5026b');
 });
 
-test('the launch dates keep their daily identities after the bank grows', () => {
-  for (let offset = 0; offset < 3; offset++) {
+test('published daily dates through October 29 keep their identities after the bank grows', () => {
+  for (let offset = 0; offset < 10; offset++) {
     const day = new Date(Date.UTC(2026, 9, 20 + offset, 18));
     const today = getDaily(PUZZLES, day);
     assert.equal(today.puzzle.id, PUZZLES[offset].id);
@@ -75,4 +75,8 @@ test('new boards avoid interchangeable answer pairs from the same relationship f
         `${puzzle.id}: interchangeable analogy family ${family}`);
     }
   }
+});
+
+test('October 29 expansion preserves every previously published record', () => {
+  assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0, 180))).digest('hex'), '08076f67e777dd47c48c357aef787c812732444ceaf8d0b2b882bd4cb1350ba4');
 });

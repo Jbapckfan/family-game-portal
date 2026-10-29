@@ -256,7 +256,7 @@ export function createShell(config) {
     }).join('')}</div><p class="fineprint">${puzzles.length} prepared puzzles in this edition. The daily collection eventually repeats. Today’s board stays reserved until you finish it.</p>`);
   }
   function reducedMotion() { return matchMedia('(prefers-reduced-motion: reduce)').matches; }
-  function resetView() { config.reset?.(); feedback = ''; feedbackTone = null; clearTimeout(resultTimer); }
+  function resetView(clearDraft = false) { config.reset?.({clearDraft}); feedback = ''; feedbackTone = null; clearTimeout(resultTimer); }
   function loadPractice(index) {
     if (!Number.isInteger(index) || !canPractice(index)) return;
     mode = 'practice'; puzzle = puzzles[index];
@@ -298,7 +298,8 @@ export function createShell(config) {
   function restart() {
     if (mode !== 'practice') return;
     const adopted = save(engine.createGame(puzzle));
-    resetView(); render(); lastFocus = null; closeDialog();
+    // An adopted newer save cancels the restart, including draft deletion.
+    resetView(!adopted); render(); lastFocus = null; closeDialog();
     if (adopted) notice(adopted);
     else announce('Practice restarted. A fresh board is ready.');
   }

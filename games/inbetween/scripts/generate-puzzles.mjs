@@ -324,11 +324,13 @@ function appendBoards(published) {
   const output = [...published];
   const uses = new Map(TRANSFORMATIONS.map(row => [transformKey(row), 0]));
   for (const puzzle of output) for (const row of puzzle.rows) uses.set(transformKey(row), uses.get(transformKey(row)) + 1);
-  while (output.length < 180) {
+  while (output.length < 210) {
     const index = output.length;
     const forbidden = new Set(output.slice(-6).flatMap(puzzle => puzzle.rows.map(transformKey)));
     // Protect six days of separation across the enlarged collection's seam.
-    const wrapCount = Math.max(0, index + 7 - 180);
+    // Reconstruct the published 180-board edition unchanged before extending.
+    const editionEnd = index < 180 ? 180 : 210;
+    const wrapCount = Math.max(0, index + 7 - editionEnd);
     for (const puzzle of output.slice(0, wrapCount)) for (const row of puzzle.rows) forbidden.add(transformKey(row));
     let chosen;
     const desiredInternal = [3, 4, 4, 5][index % 4];
@@ -355,7 +357,7 @@ function appendBoards(published) {
     const interior = internalCount(chosen);
     output.push({
       id: `inbetween-${String(index + 1).padStart(3, '0')}`,
-      title: `${TITLES[index % TITLES.length]}, ${index < 120 ? 'a new fit' : 'another fit'}`,
+      title: `${TITLES[index % TITLES.length]}, ${index < 120 ? 'a new fit' : index < 180 ? 'another fit' : 'a fresh fit'}`,
       difficulty: interior <= 3 ? 'Gentle' : interior === 4 ? 'Medium' : 'Tricky',
       rows: chosen.map(({ seed, answer, clue }) => ({ seed, answer, clue })),
       tiles: tileRows.map(({ letters }, tileIndex) => ({ id: `tile-${tileIndex}`, letters })),

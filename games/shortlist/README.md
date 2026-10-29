@@ -12,9 +12,9 @@ The exact hint and its original scan context are saved with the round, so the su
 
 ## Prepared collection and solvability
 
-There are **180 boards**, **180 distinct designated answers**, and **1,051 distinct displayed words** across 2,160 candidate slots. A displayed word appears no more than three times. The daily collection repeats after 180 days.
+There are **210 boards**, **210 distinct designated answers**, and **1,051 distinct displayed words** across 2,520 candidate slots. A displayed word appears no more than four times. The daily collection repeats after 210 days.
 
-Every starting board has an exact decision tree that identifies **any of its twelve candidate words within three scans**. Tests follow all 2,160 certified answer paths through actual engine actions. The guarantee applies to an informative strategy; arbitrary or uninformative scans can leave several candidates and force a final guess. Pencil marks do not influence the engine's hint evidence.
+Every starting board has an exact decision tree that identifies **any of its twelve candidate words within three scans**. Tests follow all 2,520 certified answer paths through actual engine actions. The guarantee applies to an informative strategy; arbitrary or uninformative scans can leave several candidates and force a final guess. Pencil marks do not influence the engine's hint evidence.
 
 The vocabulary and deterministic construction live in `scripts/generate-puzzles.mjs`. Check that the committed collection reproduces exactly with:
 

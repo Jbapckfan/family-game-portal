@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { PUZZLES, COLLECTION } from '../puzzles.mjs';
 import { createGame, submitPair, useHint, revealGame, restoreGame, isPerfect } from '../engine.mjs';
 
-test('collection has 180 distinct combinations from seventy-five original double meanings',()=>{
-  assert.equal(PUZZLES.length,180);assert.equal(COLLECTION.uniqueWords,75);assert.equal(COLLECTION.totalPairAppearances,900);
-  assert.equal(new Set(PUZZLES.map(p=>p.id)).size,180);assert.equal(new Set(PUZZLES.flatMap(p=>p.pairs.map(x=>x.word))).size,75);
-  assert.equal(new Set(PUZZLES.map(p=>p.pairs.map(x=>x.word).sort().join('|'))).size,180);
+test('collection has 210 distinct combinations from seventy-five original double meanings',()=>{
+  assert.equal(PUZZLES.length,210);assert.equal(COLLECTION.uniqueWords,75);assert.equal(COLLECTION.totalPairAppearances,1050);
+  assert.equal(new Set(PUZZLES.map(p=>p.id)).size,210);assert.equal(new Set(PUZZLES.flatMap(p=>p.pairs.map(x=>x.word))).size,75);
+  assert.equal(new Set(PUZZLES.map(p=>p.pairs.map(x=>x.word).sort().join('|'))).size,210);
 });
 test('opening contains the three requested examples plus two less obvious shifts',()=>{
   assert.deepEqual(PUZZLES[0].pairs.map(p=>p.word),['FENCE','BARK','WIND','TENDER','COURT']);
@@ -24,10 +24,10 @@ test('every board has five unique noun cards, verb cards and answer pairings',()
     const aligned=p.nouns.map(n=>p.pairs.find(x=>x.nounId===n.id).verbId).join('|');assert.notEqual(aligned,p.verbs.map(v=>v.id).join('|'),p.id);
   }
 });
-test('each word appears twelve times with at least eleven boards between appearances including wrap',()=>{
+test('each word appears fourteen times with at least eleven boards between appearances including wrap',()=>{
   const appearances=new Map();PUZZLES.forEach((p,i)=>p.pairs.forEach(pair=>appearances.set(pair.word,[...(appearances.get(pair.word)||[]),i])));
   for(const [word,days] of appearances){
-    assert.equal(days.length,12,word);
+    assert.equal(days.length,14,word);
     for(let at=0;at<days.length;at++){const gap=(days[(at+1)%days.length]-days[at]+PUZZLES.length)%PUZZLES.length;assert.ok(gap>=11,`${word}: ${days}`);}
   }
 });

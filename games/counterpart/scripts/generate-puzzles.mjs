@@ -5,7 +5,8 @@ import { resolve } from 'node:path';
 import { PUZZLES } from '../puzzles.mjs';
 
 const KIND = 'counterpart';
-const TARGET = 180;
+const TARGET = 210;
+const PUBLISHED_COUNT = 180;
 const ORIGINAL_COUNT = 30;
 const MIN_GAP = 6;
 const sourceId = row => KIND === 'counterpart' ? row.sourceId : row.word;
@@ -61,7 +62,10 @@ export function generateBoards() {
   while (output.length < TARGET) {
     const index = output.length;
     const blocked = new Set(output.slice(-(MIN_GAP - 1)).flat());
-    const wrapCount = Math.max(0, index + MIN_GAP - TARGET);
+    // Reconstruct the former cycle before appending; its seam constraints are
+    // part of the deterministic published prefix and must not be rerolled.
+    const editionEnd = index < PUBLISHED_COUNT ? PUBLISHED_COUNT : TARGET;
+    const wrapCount = Math.max(0, index + MIN_GAP - editionEnd);
     for (const id of output.slice(0, wrapCount).flat()) blocked.add(id);
     const uses = new Map(ids.map(id => [id, 0]));
     for (const id of output.flat()) uses.set(id, uses.get(id) + 1);
@@ -69,7 +73,11 @@ export function generateBoards() {
     tried.set(index, rejected);
     let chosen;
     for (let attempt = 0; attempt < 800; attempt++) {
-      const eligible = shuffle(ids.filter(id => !blocked.has(id))).sort((a, b) => uses.get(a) - uses.get(b));
+      const eligible = shuffle(ids.filter(id => !blocked.has(id)));
+      // The old use-count ordering has exhausted its feasible combinations by
+      // this point. New boards search the same reviewed pool without forcing
+      // its least-used relationships to occur together on every attempt.
+      if (index < PUBLISHED_COUNT) eligible.sort((a, b) => uses.get(a) - uses.get(b));
       const candidate = [], words = new Set(), relations = new Set(), families = new Set();
       for (const id of eligible) {
         const entry = entries.get(id);
@@ -91,7 +99,7 @@ export function generateBoards() {
       break;
     }
     if (chosen) { output.push(chosen); tried.delete(index + 1); continue; }
-    if (output.length <= ORIGINAL_COUNT || ++backtracks > 20000) throw new Error(`Could not compose board ${index + 1}`);
+    if (output.length <= (index >= PUBLISHED_COUNT ? PUBLISHED_COUNT : ORIGINAL_COUNT) || ++backtracks > 20000) throw new Error(`Could not compose board ${index + 1}`);
     const removed = output.pop();
     const at = output.length;
     if (!tried.has(at)) tried.set(at, new Set());

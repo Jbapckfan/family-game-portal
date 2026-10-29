@@ -11,7 +11,7 @@ A daily word game of give and take. Six real words each hold one letter that bel
 - Five swaps, no nudges, and no undo earns a perfect trade.
 - Revealing a board ends it as revealed, not won.
 
-The daily date uses America/Chicago and begins at number 1 on October 20, 2026. The first edition contains 180 static boards; the schedule repeats after the collection is exhausted. Practice uses the same collection and has its own saved progress. Today's daily remains reserved from practice until it is completed.
+The daily date uses America/Chicago and begins at number 1 on October 20, 2026. The first edition contains 210 static boards; the schedule repeats after the collection is exhausted. Practice uses the same collection and has its own saved progress. Today's daily remains reserved from practice until it is completed.
 
 ## Development
 
@@ -33,7 +33,7 @@ npm run generate
 npm test
 ```
 
-Content checks prove letter conservation, exactly one initial mismatch per row, one six-letter cycle, and an executable five-swap solution for all 180 boards. Difficulty estimates are editorial, not calibrated against player data. Human clue review and playtesting remain useful before a broad public launch.
+Content checks prove letter conservation, exactly one initial mismatch per row, one six-letter cycle, and an executable five-swap solution for all 210 boards. Difficulty estimates are editorial, not calibrated against player data. Human clue review and playtesting remain useful before a broad public launch.
 
 ## Persistence and access
 

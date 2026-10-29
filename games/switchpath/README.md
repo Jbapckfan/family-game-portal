@@ -28,11 +28,11 @@ Daily puzzles change at midnight in `America/Chicago`. Progress and records use 
 
 ## Puzzle collection
 
-The current edition has **187 prepared puzzles** and repeats after 187 days. The deterministic generator enumerates all 552 directed Hamiltonian routes on the 4 × 4 grid, assigns alternating ranked values, and retains only boards with a unique complete solution and at least four locally branching choices.
+The current edition has **217 prepared puzzles** and repeats after 217 days. The deterministic generator enumerates all 552 directed Hamiltonian routes on the 4 × 4 grid, assigns alternating ranked values, and retains only boards with a unique complete solution and at least four locally branching choices.
 
-The collection contains 60 route shapes after accounting for rotations and reflections. All 187 numbered layouts remain distinct under those symmetries, and starting cells cover all sixteen grid positions. Difficulty labels reflect branching counts; they are not based on measured human solving times.
+The collection contains 63 route shapes after accounting for rotations and reflections. All 217 numbered layouts remain distinct under those symmetries, and starting cells cover all sixteen grid positions. Difficulty labels reflect branching counts; they are not based on measured human solving times.
 
-Independent exhaustive verification checks all **52,258 legal partial or complete paths** in the collection. Every partial state is restored through the actual engine, rewound, and solved. Hints are separately checked from all **52,071 unfinished paths**.
+Independent exhaustive verification checks all **59,693 legal partial or complete paths** in the collection. Every partial state is restored through the actual engine, rewound, and solved. Hints are separately checked from all **59,476 unfinished paths**.
 
 ## Run locally
 
@@ -76,7 +76,7 @@ The tests cover the engine, exhaustive content validation, immutable published p
 
 This is an authored puzzle variant, without a claim that the title or broad genre has never appeared elsewhere.
 
-The bank contains **180 distinct comparison challenges** after considering only rule-relevant neighboring inequalities and allowing rotations/reflections. Seven equivalent challenges in the original 90 boards remain in place to preserve existing saved games. Every appended board has a new comparison challenge; renumberings of an existing challenge are rejected.
+The bank contains **210 distinct comparison challenges** after considering only rule-relevant neighboring inequalities and allowing rotations/reflections. Seven equivalent challenges in the original 90 boards remain in place to preserve existing saved games. Every appended board has a new comparison challenge; renumberings of an existing challenge are rejected.
 
 ## Expanded collection verification
 

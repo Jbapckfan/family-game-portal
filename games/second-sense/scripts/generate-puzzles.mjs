@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { PUZZLES } from '../puzzles.mjs';
 
 const KIND = 'second-sense';
-const TARGET = 180;
+const TARGET = 210;
 const ORIGINAL_COUNT = 30;
 const MIN_GAP = 11;
 
@@ -19,7 +19,8 @@ export function generateBoards() {
   // quadratic has at most two roots. The original second round is (a=0,b=1).
   // Each family partitions all 75 words into 15 boards, preserving 11–19-board
   // repeat spacing, including the final-to-first boundary.
-  const families = [[0,2],[0,3],[0,4],[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0]];
+  // The final two families append thirty boards without revising the first 180.
+  const families = [[0,2],[0,3],[0,4],[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[2,0],[2,1],[2,2]];
   for (const [a, b] of families) for (let group = 0; group < 3; group++) {
     for (let offset = 0; offset < 5; offset++) {
       additional.push(Array.from({ length: 5 }, (_, row) =>

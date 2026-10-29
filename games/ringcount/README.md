@@ -13,11 +13,11 @@ A daily game of perfect balance from Alford Family Games. Place four cuts around
 
 ## Collection and solvability
 
-This edition contains **180 prepared boards**, with targets from 15 to 18 and numbers from 1 to 9. All rings differ under rotation and reflection. Each solution has at least two different arc lengths, and each board includes plausible partial arcs that do not form a complete solution.
+This edition contains **210 prepared boards**, with targets from 15 to 18 and numbers from 1 to 9. All rings differ under rotation and reflection. Each solution has at least two different arc lengths, and each board includes plausible partial arcs that do not form a complete solution.
 
-An independent prefix-sum validator enumerates all **89,100 complete four-cut arrangements** across the collection. Every board has exactly one solution. The recovery test starts from each complete arrangement and confirms that at most four hints preserve already-correct cuts and produce a board that wins on an explicit check. These checks establish structural solvability; session length, difficulty, and enjoyment still require human playtesting.
+An independent prefix-sum validator enumerates all **103,950 complete four-cut arrangements** across the collection. Every board has exactly one solution. The recovery test starts from each complete arrangement and confirms that at most four hints preserve already-correct cuts and produce a board that wins on an explicit check. These checks establish structural solvability; session length, difficulty, and enjoyment still require human playtesting.
 
-Everyone receives the same daily at midnight in **America/Chicago**, beginning October 20, 2026. The finite collection repeats after 180 days. It is not an ongoing editorial feed.
+Everyone receives the same daily at midnight in **America/Chicago**, beginning October 20, 2026. The finite collection repeats after 210 days. It is not an ongoing editorial feed.
 
 ## Run and verify
 

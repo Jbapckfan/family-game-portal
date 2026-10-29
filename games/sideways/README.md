@@ -12,9 +12,9 @@ Shifts and undo are available while playing. Each shift stays in the move total,
 
 ## Prepared collection and solvability
 
-There are **180 boards** with **543 distinct answer words**; each answer appears at most twice in this collection. The generator contains 548 original clues from which the collection is constructed. The daily collection repeats after 180 days.
+There are **210 boards** with **546 distinct answer words**; each answer appears at most twice in this collection. The generator contains 548 original clues from which the collection is constructed. The daily collection repeats after 210 days.
 
-Every board has exactly one arrangement for its four answers among all **4⁵ = 1,024 row orientations**. Tests enumerate all 184,320 collection orientations. A separate recovery check starts the real engine at every orientation, rotates to the solution, and wins through an explicit check. Every reachable arrangement remains solvable; there are no lives, timer, or irreversible wrong shifts.
+Every board has exactly one arrangement for its four answers among all **4⁵ = 1,024 row orientations**. Tests enumerate all 215,040 collection orientations. A separate recovery check starts the real engine at every orientation, rotates to the solution, and wins through an explicit check. Every reachable arrangement remains solvable; there are no lives, timer, or irreversible wrong shifts.
 
 Every starting board has four or five shifted rows, no correct starting column, and at least three rows with repeated letters. One clue alone leaves multiple row arrangements. Difficulty labels describe the initial scramble and are not player-calibrated ratings.
 

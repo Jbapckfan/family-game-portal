@@ -27,8 +27,8 @@ function key(board) {
   return variants.sort()[0];
 }
 
-test('at least 180 substantive challenges are available; permutations do not increase the count', () => {
-  assert.ok(new Set(PUZZLES.map(key)).size >= 180, 'Need at least 180 different challenges');
+test('at least 210 substantive challenges are available; permutations do not increase the count', () => {
+  assert.ok(new Set(PUZZLES.map(key)).size >= 210, 'Need at least 210 different challenges');
   const seen = new Set(PUZZLES.slice(0, 90).map(key));
   for (const puzzle of PUZZLES.slice(90)) {
     assert.ok(!seen.has(key(puzzle)), `${puzzle.id} repeats an earlier challenge`);
@@ -41,11 +41,15 @@ test('every previously published puzzle retains its exact content, IDs, and posi
   assert.equal(digest, '3ebf6991c5b527c674db1d127217241d8ef1ff0491ae0debd7db375c5f75ffba');
 });
 
-test('the launch dates keep their daily identities after the bank grows', () => {
-  for (let offset = 0; offset < 3; offset++) {
+test('published daily dates through October 29 keep their identities after the bank grows', () => {
+  for (let offset = 0; offset < 10; offset++) {
     const day = new Date(Date.UTC(2026, 9, 20 + offset, 18));
     const today = getDaily(PUZZLES, day);
     assert.equal(today.puzzle.id, PUZZLES[offset].id);
     assert.equal(today.number, offset + 1);
   }
+});
+
+test('October 29 expansion preserves every previously published record', () => {
+  assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0, 187))).digest('hex'), '6be9368a99f036f8951b77079c0ff0812320a80801c6387fbab24975ea15d6b1');
 });

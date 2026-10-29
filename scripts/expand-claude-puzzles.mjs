@@ -13,7 +13,7 @@ import * as S from '../games/claude-splice/puzzles.mjs';
 import * as K from '../games/claude-keystone/puzzles.mjs';
 import {findMatchings} from '../games/claude-splice/engine.mjs';
 
-const TARGET=120;
+const TARGET=200;
 const MARKER='// BEGIN ALFORD DAILY PREPARED EXPANSION';
 const hashes={
   dovetail:'7160d19bd64e70b259fd3b90a62e22129a2f4b25235446e0d181208ab930eee7',
@@ -74,6 +74,7 @@ function splice(){
   // Preserve original records exactly, while keeping this dated source answer out
   // of newly prepared content. Dictionary membership is not editorial approval.
   const excludedAdditionalAnswers=new Set(['midget']);
+  const excludedSixMonthAnswers=new Set(['redskins']);
   const pairs=[...new Map(source.flatMap(p=>p.parts.map(pair=>[pair.join('|'),pair]))).values()].sort((a,b)=>a.join('|').localeCompare(b.join('|')));
   const partner=new Map();
   const tiles=[...new Set(pairs.flat())].sort();
@@ -98,6 +99,7 @@ function splice(){
     if(seen.has(signature))continue;
     const words=new Set(parts.map(pair=>pair.join('')));
     if([...words].some(word=>excludedAdditionalAnswers.has(word)))continue;
+    if(source.length+added.length>=120&&[...words].some(word=>excludedSixMonthAnswers.has(word)))continue;
     if(!previous.every(old=>intersection(words,old)<=3))continue;
     const flat=parts.flat(),degrees=flat.map(()=>new Set());let directed=0;
     for(let i=0;i<12;i++)for(let j=0;j<12;j++)if(i!==j&&S.FUSED.has(flat[i]+flat[j])){directed++;degrees[i].add(j);degrees[j].add(i);}
@@ -107,7 +109,7 @@ function splice(){
     added.push(p);seen.add(signature);previous.push(words);for(const word of words)wordUse.set(word,(wordUse.get(word)||0)+1);
   }
   if(source.length+added.length<TARGET)throw Error(`Splice: only ${source.length+added.length} substantive bins satisfy unique matching and trap constraints.`);
-  return {added,info:{originalRecords:source.length,preparedRecords:TARGET,approvedWords:379,approvedFragmentPairs:pairs.length,approvedFragments:tiles.length,excludedAdditionalAnswers:[...excludedAdditionalAnswers],attempts,maxSharedAnswers:3,minimumWordJoins:11,maximumIsolatedTiles:2,contentNote:'New bins recombine source fragment pairs after an additional editorial exclusion; each new bin has exactly one oriented complete matching.'}};
+  return {added,info:{originalRecords:source.length,preparedRecords:TARGET,approvedWords:379,approvedFragmentPairs:pairs.length,approvedFragments:tiles.length,excludedAdditionalAnswers:[...excludedAdditionalAnswers],excludedSixMonthAnswers:[...excludedSixMonthAnswers],attempts,maxSharedAnswers:3,minimumWordJoins:11,maximumIsolatedTiles:2,contentNote:'New bins recombine source fragment pairs after editorial exclusions; published records 1–120 are preserved and each new bin has exactly one oriented complete matching.'}};
 }
 
 function keystone(){
@@ -116,11 +118,11 @@ function keystone(){
   // extra cycle uses every arch once. New combinations never reuse a pair of arches.
   for(let i=0;source.length+added.length<TARGET;i++){
     const cycle=Math.floor(i/source.length),base=i%source.length;
-    const offsets=cycle===0?[0,19,37]:[0,7,29];
+    const offsets=[[0,19,37],[0,7,29],[0,13,43]][cycle];
     const rounds=offsets.map((offset,slot)=>clone(source[(base+offset)%source.length].rounds[slot]));
     added.push({id:`keystone-${String(source.length+added.length+1).padStart(3,'0')}`,rounds});
   }
-  return {added,info:{originalRecords:source.length,preparedRecords:TARGET,uniqueArches:174,archesPerDay:3,maxSharedArchesBetweenNewDays:1,maxArchUses:3,contentNote:'120 different three-arch sets drawn from the original 174 approved arches; arches recur in new combinations.'}};
+  return {added,info:{originalRecords:source.length,preparedRecords:TARGET,uniqueArches:174,archesPerDay:3,maxSharedArchesBetweenNewDays:1,maxArchUses:4,contentNote:'200 different three-arch sets drawn from the original 174 approved arches; arches recur in new combinations.'}};
 }
 
 const output=[];

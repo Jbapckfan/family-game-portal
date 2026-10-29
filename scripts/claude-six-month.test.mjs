@@ -37,6 +37,18 @@ test('Splice preserves the prepared 200 and has 200 eligible bins after legacy e
   assert.equal(new Set(eligible.map(p=>claudePuzzleSignature('claude-splice',p))).size,200);
 });
 
+test('Sprout preserves the prepared 200 and supplies 200 distinct boards after reviewed legacy holds',()=>{
+  const {PUZZLES}=banks.sprout;
+  assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,200))).digest('hex'),'28eac2883970646c4b32de08875921fa6ec0350c29045872831531a00993f334');
+  const reviewedIds=['sprout-7','sprout-12','sprout-54','sprout-58','sprout-61','sprout-62','sprout-86','sprout-88','sprout-116','sprout-124','sprout-128'];
+  const eligible=PUZZLES.filter(p=>!reviewedIds.includes(p.id));
+  assert.equal(eligible.length,200);
+  assert.equal(new Set(eligible.map(p=>claudePuzzleSignature('claude-sprout',p))).size,200);
+  for(const p of eligible)for(const word of Object.values(p.levels).flatMap(l=>[...l.a,...l.d])){
+    assert.ok(!sproutNewContentExclusions.has(word),`${p.id}: eligible record contains reviewed exclusion ${word}`);
+  }
+});
+
 test('new Splice content avoids identified dated slurs from the inherited pool',()=>{
   for(const p of banks.splice.PUZZLES.slice(120)){
     assert.ok(!p.parts.some(pair=>['midget','redskins'].includes(pair.join(''))),p.id);
@@ -67,7 +79,7 @@ test('new Sprout graphs admit ROBE, TEAR and EATER and complete their surviving 
 });
 
 test('Sprout dictionary repair retains every new ID and final ecosystem',()=>{
-  const identities=banks.sprout.PUZZLES.slice(128).map(p=>({id:p.id,letters:sortLetters(p.seed+p.pool)}));
+  const identities=banks.sprout.PUZZLES.slice(128,200).map(p=>({id:p.id,letters:sortLetters(p.seed+p.pool)}));
   assert.equal(createHash('sha256').update(JSON.stringify(identities)).digest('hex'),'453af012e9260311129a3981fbe430ac71ff60954028596681336e3148c8d46a');
 });
 

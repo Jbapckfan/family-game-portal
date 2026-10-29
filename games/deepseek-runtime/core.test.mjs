@@ -92,7 +92,7 @@ test('invalid saved daily state falls back to the scheduled board without creati
  assert.equal(g.puzzle.id,c.puzzles[index].id);assert.equal(g.outcome,'playing');assert.equal(g.stats.played,0);
 });
 
-test('unfinished practice survives appended puzzles and can reach every added board',()=>{
+test('unfinished practice survives appended puzzles and reaches every board except today',()=>{
  const s=storage(),c=config(),now=()=>new Date('2026-10-22T18:00:00Z');
  const before=createSession(c,{storage:s,now});before.practice();
  const id=before.puzzle.id,value=before.puzzle.answer===3?2:3;before.commit({value,revealed:false});
@@ -101,7 +101,9 @@ test('unfinished practice survives appended puzzles and can reach every added bo
  assert.equal(after.puzzle.id,id);assert.equal(after.state.value,value);
  const visited=new Set([after.puzzle.id]);
  for(let i=1;i<updated.puzzles.length;i++){after.practice();visited.add(after.puzzle.id);}
- assert.equal(visited.size,updated.puzzles.length);assert.equal(after.stats.played,0);
+ const today=dailyIndex(c.id,'2026-10-22',updated.puzzles.length);
+ const expected=new Set([id,...updated.puzzles.filter((_,index)=>index!==today).map(p=>p.id)]);
+ assert.deepEqual(visited,expected);assert.equal(after.stats.played,0);
 });
 
 test('a stale tab cannot overwrite a finished daily when its ledger write failed',()=>{
@@ -139,4 +141,55 @@ test('refreshing another tab’s result preserves practice and rejects invalid t
  const freshStorage=storage(),fresh=createSession(c,{storage:freshStorage,now});
  freshStorage.setItem(`${c.id}:v1:daily:2026-10-22`,JSON.stringify({version:1,puzzleId:fresh.puzzle.id,state:{value:999,revealed:false}}));
  assert.equal(fresh.refreshSavedResult(),false);assert.equal(fresh.outcome,'playing');
+});
+
+test('fresh Tumbler Practice never reveals tomorrow or another protected future daily',async()=>{
+ const E=await import('../claude-tumbler/engine.mjs'),{PUZZLES}=await import('../claude-tumbler/puzzles.mjs');
+ const c={...E,id:'claude-tumbler',name:'Tumbler',puzzles:PUZZLES},date='2026-10-30';
+ assert.equal(dailyIndex(c.id,date,PUZZLES.length),391);
+ assert.equal(dailyIndex(c.id,'2026-10-31',PUZZLES.length),392);
+ const protectedIndices=new Set();
+ for(let t=Date.parse(date);t<=Date.parse('2027-04-28');t+=86400000)protectedIndices.add(dailyIndex(c.id,new Date(t).toISOString().slice(0,10),PUZZLES.length));
+ const g=createSession(c,{storage:storage(),now:()=>new Date(`${date}T17:00:00Z`)});
+ for(let n=0;n<PUZZLES.length;n++){g.practice();assert.ok(!protectedIndices.has(PUZZLES.indexOf(g.puzzle)),`${g.puzzle.id} is a protected daily`);}
+ assert.equal(g.stats.played,0);
+});
+
+test('a valid unfinished saved Practice round keeps progress even when its board is now reserved',async()=>{
+ const E=await import('../claude-tumbler/engine.mjs'),{PUZZLES}=await import('../claude-tumbler/puzzles.mjs');
+ const c={...E,id:'claude-tumbler',name:'Tumbler',puzzles:PUZZLES},s=storage(),now=()=>new Date('2026-10-30T17:00:00Z');
+ const index=392,p=PUZZLES[index],state=E.setDraft(p,E.createState(p),'ab');
+ s.setItem(`${c.id}:v1:practice`,JSON.stringify({version:1,puzzleId:p.id,puzzleIndex:index,state}));
+ const g=createSession(c,{storage:s,now});assert.equal(g.practice(),'resumed');
+ assert.equal(g.puzzle.id,p.id);assert.deepEqual(g.state,state);assert.equal(g.stats.played,0);
+ assert.equal(g.practice(),'new');assert.notEqual(g.puzzle.id,p.id);
+ const {practiceCandidates}=await import('./practice-calendar.mjs');
+ assert.ok(practiceCandidates(c.id,'2026-10-30',PUZZLES.length).includes(PUZZLES.indexOf(g.puzzle)));
+});
+test('finished reserved Practice is replaced and a legacy Prism draft is preserved only until Next',async()=>{
+ const {practiceCandidates}=await import('./practice-calendar.mjs');
+ for(const slug of ['claude-tumbler','qwen-pattern-prism']){
+  const E=await import(`../${slug}/engine.mjs`),{PUZZLES}=await import(`../${slug}/puzzles.mjs`);
+  const c={...E,id:slug,name:slug,puzzles:PUZZLES},s=storage(),now=()=>new Date('2026-10-30T17:00:00Z');
+  const index=slug==='claude-tumbler'?392:PUZZLES.findIndex((_,i)=>!practiceCandidates(slug,'2027-04-29',PUZZLES.length).includes(i));
+  const p=PUZZLES[index],state=slug==='claude-tumbler'?E.reveal(p,E.createState(p)):E.hint(p,E.createState(p));
+  s.setItem(`${slug}:v1:practice`,JSON.stringify({version:1,puzzleId:p.id,puzzleIndex:index,state}));
+  const g=createSession(c,{storage:s,now});
+  if(slug==='qwen-pattern-prism'){assert.equal(g.practice(),'resumed');assert.equal(g.puzzle.id,p.id);assert.deepEqual(g.state,state);}
+  assert.equal(g.practice(),'new');
+  assert.ok(practiceCandidates(slug,'2026-10-30',PUZZLES.length).includes(PUZZLES.indexOf(g.puzzle)));
+ }
+});
+test('one-board solve fixtures can enter and advance Practice without writing daily results',()=>{
+ const c={...config(),puzzles:[{id:'only',answer:1}]},g=createSession(c,{storage:storage(),now:()=>new Date('2026-10-30T17:00:00Z')});
+ assert.equal(g.practice(),'new');assert.equal(g.puzzle.id,'only');g.hint();assert.equal(g.outcome,'won');
+ assert.equal(g.practice(),'new');assert.equal(g.outcome,'playing');assert.equal(g.stats.played,0);
+});
+test('Prism Next Practice stays canonical and traverses the entire nonreserved pool',async()=>{
+ const E=await import('../qwen-pattern-prism/engine.mjs'),{PUZZLES}=await import('../qwen-pattern-prism/puzzles.mjs');
+ const {practiceCandidates}=await import('./practice-calendar.mjs'),slug='qwen-pattern-prism',date='2026-10-30';
+ const c={...E,id:slug,name:slug,puzzles:PUZZLES},g=createSession(c,{storage:storage(),now:()=>new Date(`${date}T17:00:00Z`)});
+ const expected=practiceCandidates(slug,date,PUZZLES.length,{excludeIndices:[dailyIndex(slug,date,PUZZLES.length)]}),visited=new Set();
+ for(let i=0;i<expected.length;i++){g.practice();visited.add(PUZZLES.indexOf(g.puzzle));}
+ assert.deepEqual([...visited],expected);g.practice();assert.equal(PUZZLES.indexOf(g.puzzle),expected[0]);
 });

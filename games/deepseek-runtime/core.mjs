@@ -1,7 +1,8 @@
 /** Shared completion runtime by ChatGPT; individual concept credits stay in the catalog. */
+import {practiceCandidates} from './practice-calendar.mjs';
 /** Published daily rotations. Append releases here when expanding a bank again.
  * Keeping the previous sizes makes old dates independent of future additions.
- * Practice always uses the complete installed bank.
+ * Fresh Practice excludes remaining protected dailies and noncanonical boards.
  */
 const expanded = {
   'deepseek-twin-hive': [30, 140],
@@ -151,12 +152,15 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
           index=candidate;puzzle=config.puzzles[index];const restored=restore(saved.state);
           if(restored){
             previous=index;
+            // Grandfather a valid unfinished saved round: an update must not
+            // erase existing progress, even if its board is now reserved or held.
             if(config.getStatus(puzzle,restored)==='playing'){state=restored;persist();return 'resumed';}
           }
         }
       }
       cursor=(cursor+1)%1_000_000;store.write(prefix+'practice-cursor',cursor);
-      index=((previous??dailyIndex(config.id,date,config.puzzles.length))+1)%config.puzzles.length;
+      const candidates=practiceCandidates(config.id,date,config.puzzles.length,{excludeIndices:[dailyIndex(config.id,date,config.puzzles.length)]});
+      index=candidates[(candidates.indexOf(previous)+1)%candidates.length];
       load(true);return 'new';
     },
     progress(){const today=centralDateKey(now());return {type:'progress',slug:config.id,name:config.name,mode,dateKey:mode==='daily'?date:today,status:outcome(),stats:recordStatistics(records(),today)};},

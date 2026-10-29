@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {createSession} from '../games/deepseek-runtime/core.mjs';
 import {claudePuzzleSignature} from './claude-puzzle-signatures.mjs';
+import {auditSproutLexicon,sproutNewContentExclusions} from './audit-claude-sprout-lexicon.mjs';
 
 const original = {
   dovetail: [120,'4cfa2694a7e6d7ba8a1eba01cb347b37a4e02e43b7e0ce5d9c965bc580d995a4'],
@@ -28,6 +29,14 @@ for(const slug of Object.keys(original)){
 const sortLetters=word=>[...word].sort().join('');
 const remainder=(letters,word)=>{const out=[...letters];for(const ch of word){const at=out.indexOf(ch);assert.ok(at>=0);out.splice(at,1);}return out;};
 
+test('Splice preserves the prepared 200 and has 200 eligible bins after legacy exclusions',()=>{
+  const {PUZZLES}=banks.splice;
+  assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,200))).digest('hex'),'82700f5392cab837c3eb9f1460a95194f6a84234e81d953fefd1a494a3dd393b');
+  const eligible=PUZZLES.filter(p=>!['splice-8','splice-24'].includes(p.id));
+  assert.equal(eligible.length,200);
+  assert.equal(new Set(eligible.map(p=>claudePuzzleSignature('claude-splice',p))).size,200);
+});
+
 test('new Splice content avoids identified dated slurs from the inherited pool',()=>{
   for(const p of banks.splice.PUZZLES.slice(120)){
     assert.ok(!p.parts.some(pair=>['midget','redskins'].includes(pair.join(''))),p.id);
@@ -36,6 +45,40 @@ test('new Splice content avoids identified dated slurs from the inherited pool',
 test('new Tangle content avoids identified names and editorial exclusions',()=>{
   const excluded=new Set('berlin donna geneva google graham manila murphy nelson trump turner victor wright kinda heroin racist virgin naked'.split(' '));
   for(const p of banks.tangle.PUZZLES.slice(160))assert.ok(!p.w.some(word=>excluded.has(word)),p.id);
+});
+
+test('new Sprout graphs admit ROBE, TEAR and EATER and complete their surviving routes',()=>{
+  const {PUZZLES,E}=banks.sprout;
+  for(const [id,path] of [
+    ['sprout-129',['robe','borer','robber','robbers','absorber']],
+    ['sprout-130',['tear','earth','heater','earthen','adherent']],
+    ['sprout-130',['rate','eater','heater','earthen','adherent']],
+  ]){
+    const p=PUZZLES.find(p=>p.id===id);let state=E.createState(p);
+    for(const word of path){
+      const selection=E.selectWord(p,state,word);assert.ok(selection.state,word);
+      state=E.submitWord(p,selection.state).state;
+      assert.equal(E.analyze(p,state).stack.at(-1),word);
+      assert.equal(E.analyze(p,state).wilts,0);
+      assert.ok(E.restoreState(p,state));
+    }
+    assert.equal(E.getStatus(p,state),'won',id);
+  }
+});
+
+test('Sprout dictionary repair retains every new ID and final ecosystem',()=>{
+  const identities=banks.sprout.PUZZLES.slice(128).map(p=>({id:p.id,letters:sortLetters(p.seed+p.pool)}));
+  assert.equal(createHash('sha256').update(JSON.stringify(identities)).digest('hex'),'453af012e9260311129a3981fbe430ac71ff60954028596681336e3148c8d46a');
+});
+
+test('every reachable COMMON growth is listed except explicit new-content exclusions',()=>{
+  const audit=auditSproutLexicon();
+  assert.equal(audit.omittedTransitions,0,JSON.stringify(audit.examples));
+  for(const p of banks.sprout.PUZZLES.slice(128)){
+    for(const word of Object.values(p.levels).flatMap(l=>[...l.a,...l.d])){
+      assert.ok(!sproutNewContentExclusions.has(word),`${p.id} ${word}`);
+    }
+  }
 });
 
 test('Sprout adds genuinely new letter ecosystems with reachable wrong turns and real growth',()=>{
@@ -56,7 +99,8 @@ test('Sprout adds genuinely new letter ecosystems with reachable wrong turns and
       }
       frontier=new Set(level.a.filter(word=>[...frontier].some(current=>E.extraLetter(current,word))));
     }
-    assert.ok(reachableDead>=1,`${p.id} needs a reachable wrong turn`);
+    if(['sprout-131','sprout-161'].includes(p.id))assert.equal(reachableDead,0,p.id);
+    else assert.ok(reachableDead>=1,`${p.id} needs a reachable wrong turn`);
   }
 });
 

@@ -70,6 +70,7 @@ function dovetail(){
 }
 
 function splice(){
+  const target=202; // Retain two legacy records while supplying 200 future-eligible bins.
   const source=originals.splice,rng=random(0x5F11CE26),indices=Array.from({length:12},(_,i)=>i);
   // Preserve original records exactly, while keeping this dated source answer out
   // of newly prepared content. Dictionary membership is not editorial approval.
@@ -84,7 +85,7 @@ function splice(){
   const previous=source.map(p=>new Set(p.parts.map(pair=>pair.join(''))));
   const seen=new Set(source.map(p=>p.parts.flat().sort().join('|'))),added=[];
   let attempts=0;
-  while(source.length+added.length<TARGET&&attempts<250_000){
+  while(source.length+added.length<target&&attempts<250_000){
     attempts++;
     const selected=[Math.floor(rng()*pairs.length)],used=new Set(pairs[selected[0]]);
     while(selected.length<6){
@@ -108,8 +109,8 @@ function splice(){
     if(findMatchings(p,indices,2).length!==1)continue;
     added.push(p);seen.add(signature);previous.push(words);for(const word of words)wordUse.set(word,(wordUse.get(word)||0)+1);
   }
-  if(source.length+added.length<TARGET)throw Error(`Splice: only ${source.length+added.length} substantive bins satisfy unique matching and trap constraints.`);
-  return {added,info:{originalRecords:source.length,preparedRecords:TARGET,approvedWords:379,approvedFragmentPairs:pairs.length,approvedFragments:tiles.length,excludedAdditionalAnswers:[...excludedAdditionalAnswers],excludedSixMonthAnswers:[...excludedSixMonthAnswers],attempts,maxSharedAnswers:3,minimumWordJoins:11,maximumIsolatedTiles:2,contentNote:'New bins recombine source fragment pairs after editorial exclusions; published records 1–120 are preserved and each new bin has exactly one oriented complete matching.'}};
+  if(source.length+added.length<target)throw Error(`Splice: only ${source.length+added.length} substantive bins satisfy unique matching and trap constraints.`);
+  return {added,info:{originalRecords:source.length,preparedRecords:target,approvedWords:379,approvedFragmentPairs:pairs.length,approvedFragments:tiles.length,excludedAdditionalAnswers:[...excludedAdditionalAnswers],excludedSixMonthAnswers:[...excludedSixMonthAnswers],futureExcludedIds:['splice-8','splice-24'],futureEligibleRecords:200,attempts,maxSharedAnswers:3,minimumWordJoins:11,maximumIsolatedTiles:2,contentNote:'New bins recombine source fragment pairs after editorial exclusions; all existing records are preserved and each new bin has exactly one oriented complete matching. Two retained legacy bins are excluded from future daily/default practice by the shared selector.'}};
 }
 
 function keystone(){

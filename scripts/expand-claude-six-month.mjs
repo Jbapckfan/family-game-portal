@@ -10,6 +10,8 @@ import * as Tangle from '../games/claude-tangle/puzzles.mjs';
 import * as TE from '../games/claude-tangle/engine.mjs';
 
 const TARGET=200,MARKER='// BEGIN ALFORD DAILY SIX MONTH EXPANSION';
+const sproutEditorial=JSON.parse(await readFile(new URL('./claude-sprout-editorial-exclusions.json',import.meta.url),'utf8'));
+const excludedSproutWords=new Set(Object.values(sproutEditorial).filter(Array.isArray).flat());
 const hashes={sprout:'edac3e85a0b66a065fad327d727e5037322bd00ceab1550a27fb78e1ba018dfc',tangle:'e19ec5ceb420a069e14f40e4b330923b98a9319e82212b7569b5afafab803288'};
 const sha=text=>createHash('sha256').update(text).digest('hex');
 const sorted=word=>[...word].sort().join('');
@@ -193,6 +195,7 @@ uncle under undue union unite until upper urban usage usual valid value video vi
 function sprout(){
   const source=Sprout.PUZZLES.slice(0,128),dictionary=new Set(COMMON);
   const words=[...new Set([...routes.flat(),...extraWords.filter(w=>dictionary.has(w))])];
+  const acceptedWords=COMMON.filter(w=>/^[a-z]{4,8}$/.test(w)&&!excludedSproutWords.has(w));
   for(const w of words)assert.ok(dictionary.has(w),`Unapproved source word: ${w}`);
   for(const route of routes){assert.deepEqual(route.map(w=>w.length),[3,4,5,6,7,8]);for(let i=1;i<6;i++)assert.ok(SE.extraLetter(route[i-1],route[i]),route.join(' > '));}
   const seen=new Set(source.map(p=>sorted(p.seed+p.pool))),added=[],skipped=[];
@@ -219,10 +222,31 @@ function sprout(){
       if(dead){chosen=p;break;}
     }
     if(!chosen){skipped.push(route.at(-1));continue;}
+    // Keep prepared IDs and ecosystem selection stable.
+    // The smaller reviewed pool selects ecosystems, but cannot be the acceptance
+    // dictionary: it omitted ordinary valid alternatives such as ROBE and TEAR.
+    // Enumerate the same existing COMMON contract as the original 128 boards,
+    // with only the closed, documented new-content exclusions.
+    for(let n=4;n<=8;n++)chosen.levels[n]={a:acceptedWords.filter(w=>w.length===n&&subset(w,total)).sort(),d:[]};
+    for(let n=7;n>=4;n--){
+      const all=chosen.levels[n].a;chosen.levels[n]={a:[],d:[]};
+      for(const word of all)(SE.findRoute(chosen,word,[...remainder(total,word)])?chosen.levels[n].a:chosen.levels[n].d).push(word);
+    }
+    assert.ok(SE.findRoute(chosen),`${chosen.id}: complete COMMON graph lost its growth path`);
     added.push(chosen);seen.add(total);seedUse.set(chosen.seed,(seedUse.get(chosen.seed)||0)+1);
   }
   assert.equal(source.length+added.length,TARGET,`Only ${added.length} new Sprout ecosystems`);
-  return {added,info:{originalRecords:128,preparedRecords:TARGET,newLetterMultisets:added.length,reviewedPoolWords:words.length,minimumReachableDeadEnds:1,skippedWithoutReachableTrap:skipped,contentNote:'New eight-letter multisets, supplied COMMON words selected into an explicit reviewed pool, complete graph classification and at least one reachable wrong turn per new seed.'}};
+  // Restoring omitted valid continuations removed artificial traps. Sixteen
+  // ecosystems retain genuine traps from another familiar seed. Two ecosystems
+  // have no dead entries at all and are explicitly easy rather than restricting
+  // valid vocabulary to manufacture difficulty.
+  const seedRepairs={132:'dot',133:'dig',138:'sit',141:'see',143:'men',146:'age',148:'sad',149:'aim',153:'lap',164:'cat',165:'ice',166:'pin',167:'red',175:'bat',179:'let',184:'sun'};
+  for(const p of added){
+    const seed=seedRepairs[Number(p.id.split('-').at(-1))];
+    if(seed){const letters=sorted(p.seed+p.pool);p.seed=seed;p.pool=remainder(letters,seed);}
+    assert.ok(SE.findRoute(p),`${p.id}: repaired seed has no complete route`);
+  }
+  return {added,info:{originalRecords:128,preparedRecords:TARGET,newLetterMultisets:added.length,ecosystemSelectionPoolWords:words.length,acceptanceLexicon:'Existing supplied COMMON, except documented new-content editorial exclusions',excludedNewWords:[...excludedSproutWords].sort(),minimumReachableDeadEnds:0,nonEasyMinimumReachableDeadEnds:1,easyPuzzleIds:['sprout-131','sprout-161'],seedRepairs,skippedWithoutReachableTrap:skipped,contentNote:'New eight-letter multisets selected using reviewed routes; every fitting COMMON word except explicit editorial exclusions is graph-classified as alive/dead. Prepared IDs/final ecosystems are preserved. Sixteen familiar seeds restore genuine traps; two explicitly easy boards have no dead-end branches.'}};
 }
 
 function tangle(){

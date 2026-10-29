@@ -30,12 +30,13 @@ for(const slug of Object.keys(bank)){
     const original=source.split(MARKER)[0];
     assert.equal(createHash('sha256').update(original).digest('hex'),originalHashes[slug]);
   });
-  test(`${slug} offers 200 uniquely identified boards with honest source-pool metadata`,()=>{
+  test(`${slug} offers its complete uniquely identified reserve with honest source-pool metadata`,()=>{
     const {PUZZLES,CONTENT_INFO}=bank[slug];
-    assert.equal(PUZZLES.length,200);
-    assert.equal(new Set(PUZZLES.map(p=>p.id)).size,200);
+    const expected=slug==='splice'?202:200;
+    assert.equal(PUZZLES.length,expected);
+    assert.equal(new Set(PUZZLES.map(p=>p.id)).size,expected);
     assert.equal(CONTENT_INFO.originalRecords,originalCounts[slug]);
-    assert.equal(CONTENT_INFO.preparedRecords,200);
+    assert.equal(CONTENT_INFO.preparedRecords,expected);
   });
 }
 

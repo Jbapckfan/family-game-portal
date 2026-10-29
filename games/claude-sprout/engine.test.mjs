@@ -6,7 +6,7 @@ import {createSession} from '../deepseek-runtime/core.mjs';
 function remainder(all,word){const letters=[...all];for(const ch of word){const i=letters.indexOf(ch);assert.ok(i>=0,word);letters.splice(i,1);}return letters;}
 function play(p,s,word){const selection=selectWord(p,s,word);assert.ok(selection.state,selection.message);return submitWord(p,selection.state).state;}
 test('all prepared seeds bloom and every supplied alive/dead entry has the correct graph classification',()=>{
- assert.equal(PUZZLES.length,200);let alive=0,dead=0;
+ assert.ok(PUZZLES.length>=200);let alive=0,dead=0;
  for(const p of PUZZLES){assert.equal(p.seed.length,3);assert.equal(p.pool.length,5);const path=findRoute(p);assert.equal(path.length,6,p.id);assert.equal(path.at(-1).length,8);for(let n=4;n<=8;n++){for(const word of p.levels[n].a){assert.equal(word.length,n);assert.ok(findRoute(p,word,remainder(p.seed+p.pool,word)),`${p.id} ${word}`);alive++;}for(const word of p.levels[n].d){assert.equal(word.length,n);assert.equal(findRoute(p,word,remainder(p.seed+p.pool,word)),null,`${p.id} ${word}`);dead++;}}}
  assert.ok(alive>=1706);assert.ok(dead>=399);
 });

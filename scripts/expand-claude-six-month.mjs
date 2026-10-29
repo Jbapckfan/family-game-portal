@@ -22,8 +22,8 @@ function shuffled(items,rng){const a=[...items];for(let i=a.length-1;i>0;i--){co
 
 // Each line is an editorially selected common-word route, not an arbitrary
 // dictionary hit. All words must also exist in the unchanged supplied COMMON.
-// The generator exposes all fitting words from this small reviewed pool, then
-// classifies them by a complete graph search rather than declaring them alive.
+// This reviewed pool selects ecosystems; the final level graph exposes every
+// fitting COMMON entry apart from the explicit new-content exclusions.
 const routes=`
 tea ante agent eating beating abetting
 den done boned bonded bounded abounded
@@ -155,6 +155,19 @@ ear rate crate create created carpeted
 cat cast coast actors cartons cartoons
 ear ears share search reaches cashmere
 `.trim().split('\n').map(line=>line.split(' '));
+// Appended reserve routes do not participate in selecting any of the first 200
+// records. Their words are familiar and independently required to be in COMMON.
+const reserveRoutes=[
+  'ear ears spare scrape scraper scrapers',
+  'ear ears spare spread praised paradise',
+  'ear ears stare stream masters steamers',
+  'ear ears stare astern retains painters',
+  'tie tire inert retain terrain strainer',
+  'rid arid drain daring reading readings',
+  'ear ears stare astern retains strained',
+  'ear earn anger regain earning learning',
+  'ear earn anger ranger grander gardener',
+].map(line=>line.split(' '));
 const extraWords=`
 act add age ago aid air all and ant any ape apt arc are arm art ash ask ate awe
 bad bag ban bar bat bay bed bee beg bet bid big bin bit bog bow box boy bud bug bun bus but buy
@@ -193,21 +206,25 @@ uncle under undue union unite until upper urban usage usual valid value video vi
 `.trim().split(/\s+/);
 
 function sprout(){
+  const target=211; // Preserve all 200 prepared records; eleven legacy holds leave 200 eligible.
+  const futureExcludedIds=['sprout-7','sprout-12','sprout-54','sprout-58','sprout-61','sprout-62','sprout-86','sprout-88','sprout-116','sprout-124','sprout-128'];
   const source=Sprout.PUZZLES.slice(0,128),dictionary=new Set(COMMON);
   const words=[...new Set([...routes.flat(),...extraWords.filter(w=>dictionary.has(w))])];
+  const reserveWords=[...new Set([...words,...reserveRoutes.flat()])];
   const acceptedWords=COMMON.filter(w=>/^[a-z]{4,8}$/.test(w)&&!excludedSproutWords.has(w));
-  for(const w of words)assert.ok(dictionary.has(w),`Unapproved source word: ${w}`);
-  for(const route of routes){assert.deepEqual(route.map(w=>w.length),[3,4,5,6,7,8]);for(let i=1;i<6;i++)assert.ok(SE.extraLetter(route[i-1],route[i]),route.join(' > '));}
+  for(const w of reserveWords)assert.ok(dictionary.has(w),`Unapproved source word: ${w}`);
+  for(const route of [...routes,...reserveRoutes]){assert.deepEqual(route.map(w=>w.length),[3,4,5,6,7,8]);for(let i=1;i<6;i++)assert.ok(SE.extraLetter(route[i-1],route[i]),route.join(' > '));}
   const seen=new Set(source.map(p=>sorted(p.seed+p.pool))),added=[],skipped=[];
   const seedUse=new Map(source.map(p=>[p.seed,source.filter(q=>q.seed===p.seed).length]));
-  for(const route of routes){
-    if(source.length+added.length===TARGET)break;
+  for(const route of [...routes,...reserveRoutes]){
+    if(source.length+added.length===target)break;
     const total=sorted(route.at(-1));if(seen.has(total))continue;
-    const seeds=words.filter(w=>w.length===3&&subset(w,route[1])).sort((a,b)=>(seedUse.get(a)||0)-(seedUse.get(b)||0)||a.localeCompare(b));
+    const selectionWords=source.length+added.length>=200?reserveWords:words;
+    const seeds=selectionWords.filter(w=>w.length===3&&subset(w,route[1])).sort((a,b)=>(seedUse.get(a)||0)-(seedUse.get(b)||0)||a.localeCompare(b));
     let chosen=null;
     for(const seed of seeds){
       const p={id:`sprout-${source.length+added.length+1}`,seed,pool:remainder(total,seed),levels:{}};
-      for(let n=4;n<=8;n++)p.levels[n]={a:words.filter(w=>w.length===n&&subset(w,total)).sort(),d:[]};
+      for(let n=4;n<=8;n++)p.levels[n]={a:selectionWords.filter(w=>w.length===n&&subset(w,total)).sort(),d:[]};
       // All eight-letter anagrams in this reviewed pool are valid flowers.
       for(let n=7;n>=4;n--){
         const all=p.levels[n].a;p.levels[n]={a:[],d:[]};
@@ -233,9 +250,27 @@ function sprout(){
       for(const word of all)(SE.findRoute(chosen,word,[...remainder(total,word)])?chosen.levels[n].a:chosen.levels[n].d).push(word);
     }
     assert.ok(SE.findRoute(chosen),`${chosen.id}: complete COMMON graph lost its growth path`);
+    if(source.length+added.length>=200){
+      const hasReachableDead=p=>{
+        let frontier=[p.seed];
+        for(let n=4;n<=8;n++){
+          if(p.levels[n].d.some(w=>frontier.some(current=>SE.extraLetter(current,w))))return true;
+          frontier=p.levels[n].a.filter(w=>frontier.some(current=>SE.extraLetter(current,w)));
+        }
+        return false;
+      };
+      if(!hasReachableDead(chosen)){
+        const replacement=selectionWords.filter(w=>w.length===3&&subset(w,total)).sort((a,b)=>(seedUse.get(a)||0)-(seedUse.get(b)||0)||a.localeCompare(b)).find(seed=>{
+          const p={...chosen,seed,pool:remainder(total,seed)};
+          return SE.findRoute(p)&&hasReachableDead(p);
+        });
+        if(!replacement){skipped.push(route.at(-1));continue;}
+        chosen.seed=replacement;chosen.pool=remainder(total,replacement);
+      }
+    }
     added.push(chosen);seen.add(total);seedUse.set(chosen.seed,(seedUse.get(chosen.seed)||0)+1);
   }
-  assert.equal(source.length+added.length,TARGET,`Only ${added.length} new Sprout ecosystems`);
+  assert.equal(source.length+added.length,target,`Only ${added.length} new Sprout ecosystems`);
   // Restoring omitted valid continuations removed artificial traps. Sixteen
   // ecosystems retain genuine traps from another familiar seed. Two ecosystems
   // have no dead entries at all and are explicitly easy rather than restricting
@@ -246,7 +281,8 @@ function sprout(){
     if(seed){const letters=sorted(p.seed+p.pool);p.seed=seed;p.pool=remainder(letters,seed);}
     assert.ok(SE.findRoute(p),`${p.id}: repaired seed has no complete route`);
   }
-  return {added,info:{originalRecords:128,preparedRecords:TARGET,newLetterMultisets:added.length,ecosystemSelectionPoolWords:words.length,acceptanceLexicon:'Existing supplied COMMON, except documented new-content editorial exclusions',excludedNewWords:[...excludedSproutWords].sort(),minimumReachableDeadEnds:0,nonEasyMinimumReachableDeadEnds:1,easyPuzzleIds:['sprout-131','sprout-161'],seedRepairs,skippedWithoutReachableTrap:skipped,contentNote:'New eight-letter multisets selected using reviewed routes; every fitting COMMON word except explicit editorial exclusions is graph-classified as alive/dead. Prepared IDs/final ecosystems are preserved. Sixteen familiar seeds restore genuine traps; two explicitly easy boards have no dead-end branches.'}};
+  assert.equal(sha(JSON.stringify([...source,...added].slice(0,200))),'28eac2883970646c4b32de08875921fa6ec0350c29045872831531a00993f334','Sprout: first 200 prepared records changed');
+  return {added,info:{originalRecords:128,preparedRecords:target,newLetterMultisets:added.length,futureExcludedIds,futureEligibleRecords:200,ecosystemSelectionPoolWords:words.length,reserveSelectionPoolWords:reserveWords.length,acceptanceLexicon:'Existing supplied COMMON, except documented new-content editorial exclusions',excludedNewWords:[...excludedSproutWords].sort(),minimumReachableDeadEnds:0,nonEasyMinimumReachableDeadEnds:1,easyPuzzleIds:['sprout-131','sprout-161'],seedRepairs,skippedWithoutReachableTrap:skipped,contentNote:'New eight-letter multisets selected using reviewed routes; every fitting COMMON word except explicit editorial exclusions is graph-classified as alive/dead. All first 200 prepared records are preserved. Eleven additional ecosystems supply 200 eligible records after reviewed legacy holds. Sixteen familiar seeds restore genuine traps; two explicitly easy boards have no dead-end branches.'}};
 }
 
 function tangle(){

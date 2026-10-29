@@ -1,5 +1,6 @@
 /** Real-control, source-assisted recipes. Root owns the browser and fixed clock. */
 import {dailyIndex} from '../../games/deepseek-runtime/core.mjs';
+import assert from 'node:assert/strict';
 const date='2026-10-28';
 const names=new Set(['quadra','logic-lattice','syntax-siege','memory-maze','pattern-prism','territory-tactics']);
 
@@ -43,6 +44,7 @@ export async function playGame(page,slug,{checkpoint=async()=>{}}={}) {
   await page.locator('#maze-start').click();
   await page.clock.runFor(6000);
   await page.locator(`[data-cell="${p.path[0]}"]:not([disabled])`).waitFor();
+  assert.equal(await page.evaluate(()=>document.activeElement?.dataset.cell),String(p.path[0]),'recall hands keyboard focus to the known starting square');
   for(let i=0;i<p.path.length;i++){
    await page.locator(`[data-cell="${p.path[i]}"]`).click();
    if(i===1)await checkpoint();

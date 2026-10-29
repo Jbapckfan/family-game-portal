@@ -17,6 +17,10 @@ await stale.locator('#stats-button').click();await stale.locator('#dialog-close'
 await stale.evaluate(prefix=>{const get=Storage.prototype.getItem;Storage.prototype.getItem=function(k){if(window.__denyRead&&k.startsWith(prefix))throw Error('QA blocked read');return get.call(this,k);};window.__denyRead=true;},`${slug}:v1:`);
 await action(stale,steps[2]);assert.equal(await first.evaluate(k=>localStorage.getItem(k),key),saved,'unreadable existing save cannot receive an unverified write');
 await stale.locator('#daily-tab').click();await stale.evaluate(()=>window.__denyRead=false);await action(stale,steps[3]);assert.notEqual(await first.evaluate(k=>localStorage.getItem(k),key),saved,'verified read resumes persistence from memory');
+let finish=E.restoreGame(puzzle,JSON.parse(await first.evaluate(k=>localStorage.getItem(k),key)));await stale.evaluate(()=>window.__denyRead=true);
+while(finish.status==='playing'){const move=E.findHint(puzzle,finish);await action(stale,move);finish=slug==='tradeoff'?E.swapLetters(puzzle,finish,move.a,move.b).state:E.submitPlacement(puzzle,finish,move).state;}
+await stale.locator('#stats-button').click();assert.equal(await stale.locator('#dialog-content .stat-number').first().innerText(),'1','a memory-only completed daily is counted during this visit');await stale.locator('#dialog-close').click();
+await stale.evaluate(()=>window.__denyRead=false);await stale.locator('#daily-tab').click();assert.equal(JSON.parse(await first.evaluate(k=>localStorage.getItem(k),key)).status,'won','a recovered read flushes the completed memory board');
 rows.push({engine,slug,passed:true});
 }catch(error){rows.push({engine,slug,error:error.stack});process.exitCode=1;}finally{await ctx.close();}
 }}finally{await browser.close();}}

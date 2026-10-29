@@ -1,5 +1,11 @@
 # Alford Daily — start here
 
+## Local full-collection candidate — October 28, 2026
+
+All 32 daily games and the nine-board bonus received individual input, feedback, keyboard or save-recovery refinements. The [33-game change and verification report](docs/reviews/MAKER-Codex__2026-10-28-full-collection.md) records 66 completed browser cases with unfinished/completed reloads, 617 JavaScript tests, real offline lifecycle checks and the matching unsigned iPhone bundle. The exact packaged source revision is in `SOURCE-COMMIT.txt` inside the new local ZIP.
+
+This candidate has not been deployed or installed on a device. Human puzzle review and physical-device/assistive-technology comfort checks remain open. The report also records the known Minor practice-draft restart issue. The October 22 release history below remains historical.
+
 ## Current collection — October 22, 2026
 
 Alford Daily now includes **32 games and 8,001 prepared puzzles**, with **at least 120 in every game**. The individual game designs from the completed UI release are retained. Puzzle counts appear on the collection cards; Practice makes the full banks available immediately. Existing boards and IDs are preserved, and the shared runtime keeps saved daily boards attached to their original puzzle when a bank grows.

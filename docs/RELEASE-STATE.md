@@ -1,5 +1,11 @@
 # Alford Daily — reviewed release state
 
+## Local full-collection candidate — October 28, 2026
+
+The [full 33-game quality pass](reviews/MAKER-Codex__2026-10-28-full-collection.md) supersedes earlier local-only follow-ups for this candidate. Each daily game and the nine-board bonus has an individual change and real Chromium/WebKit play-and-reload evidence. Final results: 617 JavaScript tests, 66 full browser cases, 11 offline lifecycle checks, an unsigned iPhone build and 270 matching bundled runtime files. Source-assisted QA does not replace human editorial, device or assistive-technology review. One Minor practice-draft restart issue remains documented.
+
+No publication, provider review transmission, audience change or device installation occurred. Published-release and earlier reviewer statements below are historical, not fresh evidence for this local candidate.
+
 Prepared October 22, 2026. This is the source and local-verification record for the downloadable launch handoff. The package's `RELEASE-COMMIT.txt` identifies its exact published GitHub revision.
 
 ## Local Mac reliability follow-up

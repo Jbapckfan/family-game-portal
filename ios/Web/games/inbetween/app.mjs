@@ -55,12 +55,14 @@ function write(key, value, readable=true) {
   }
 }
 function keyForGame() { return mode === 'daily' ? 'daily:' + daily.dateKey : 'practice:' + puzzle.id; }
-function recordDailyResult(dateKey,state) {
+function recordDailyResult(dateKey,state,readable=true) {
   if(state.status==='playing')return;
-  if(getStats({[dateKey]:records[dateKey]},dateKey).played)return;
-  records[dateKey]={status:state.status,attempts:state.attempts,hints:state.hints};
-  write('records',records);
+  if(!getStats({[dateKey]:records[dateKey]},dateKey).played){
+    records[dateKey]={status:state.status,attempts:state.attempts,hints:state.hints};
+    write('records',records,readable);
+  }else if(dirtyKeys.has('records'))write('records',records,readable);
 }
+function flushPendingGame() {if(dirtyKeys.has(keyForGame())){saveGame();render();}}
 function reconcileDailyResult() {
   records={...records,...readRecords()};
   if(mode==='daily')recordDailyResult(daily.dateKey,game);
@@ -70,7 +72,7 @@ function reconcileDailyResult() {
 function saveGame() {
   const key = keyForGame();
   let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
-  if(raw===undefined){write(key,game,false);return;}
+  if(raw===undefined){write(key,game,false);if(mode==='daily')recordDailyResult(daily.dateKey,game,false);return;}
   if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
     try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;clearSelection();feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
   }
@@ -204,6 +206,7 @@ function showResult() {
   openDialog(`<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A LITTLE PRACTICE'}</p><div class="result-symbol${perfect?' perfect':''}" aria-hidden="true">[ ${perfect?'✳':won?'✓':'·'} ]</div><h2 class="dialog-title" id="dialog-title">${perfect?'A perfect fit.':won?'Right where they belong.':'A little perspective.'}</h2><p class="result-copy">${perfect?'Six pairs. Six placements. No room for improvement.':won?'A few little letters. Six entirely new possibilities.':'Answers revealed. This board doesn’t count as a win.'}</p><div class="result-dots${won?'':' revealed'}" aria-hidden="true">${'<span></span>'.repeat(6)}</div><div class="result-metrics"><div><strong>${game.attempts}</strong><span>${game.attempts===1?'attempt':'attempts'}</span></div><div><strong>${game.hints}</strong><span>${game.hints===1?'nudge':'nudges'}</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="share" autofocus>Share your fit ↗</button><button class="secondary-button" data-action="practice">${mode==='daily'?'Try a practice':'Another puzzle'} →</button></div><p class="fineprint">${mode==='daily'?'A fresh puzzle at midnight Central.':'Practice is separate from your daily streak.'}<br>Your result never shares the answers.</p>`);
 }
 function showStats() {
+  flushPendingGame();
   records=readRecords();reconcileDailyResult();const stats=getStats(records,getDateKey());
   openDialog(`<p class="dialog-kicker">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">A place in your day.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played?Math.round(stats.won/stats.played*100):0}%</div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div><div class="stats-detail"><span>Perfect fits</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average attempts when solved</span><strong>${stats.averageAttempts===null?'—':Number(stats.averageAttempts).toFixed(1)}</strong></div><p class="fineprint">Daily results are saved in this browser.<br>Practice and revealed boards don’t extend a streak.<br>Clearing browser data removes your progress.</p>`);
 }
@@ -226,6 +229,7 @@ function randomPractice() {
   if(pool.length)loadPractice(pool[Math.floor(Math.random()*pool.length)].i);
 }
 function loadDaily() {
+  flushPendingGame();
   clearTimeout(resultTimer);mode='daily';daily=getDaily(PUZZLES);puzzle=daily.puzzle;game=restoreGame(puzzle,read('daily:'+daily.dateKey,null,true));
   clearSelection();feedback='';reconcileDailyResult();render();if(dialog.open)closeDialog();
 }
@@ -321,7 +325,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!dialog.ope
 window.addEventListener('storage',event=>{
   if(event.key===PREFIX+'records'){records=readRecords();return;}
   if(event.key!==PREFIX+keyForGame())return;
-  game=restoreGame(puzzle,read(keyForGame(),null));clearSelection();feedback='Progress updated from another tab.';render();
+  game=restoreGame(puzzle,read(keyForGame(),null,true));clearSelection();feedback='Progress updated from another tab.';render();
   if(dialog.open)closeDialog();announce(feedback);
 });
 setInterval(()=>{$('new-day').hidden=mode!=='daily'||getDateKey()===daily.dateKey;},30000);

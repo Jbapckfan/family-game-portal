@@ -52,10 +52,22 @@ function writeData(key, value, readable=true) {
   }
 }
 
+function recordDailyResult(readable=true) {
+  if(mode!=='daily'||game.status==='playing')return;
+  const old=records[daily.dateKey];
+  if(!old||old.status!=='won'){
+    records[daily.dateKey]={status:game.status,moves:game.moves,hints:game.hints,undos:game.undos,par:puzzle.par};
+    writeData('records',records,readable);
+  }else if(dirtyKeys.has('records'))writeData('records',records,readable);
+}
+function flushPendingGame() {
+  const key=mode==='daily'?`daily:${daily.dateKey}`:`practice:${puzzle.id}`;
+  if(dirtyKeys.has(key)){saveGame();render();}
+}
 function saveGame() {
   const key = mode === 'daily' ? `daily:${daily.dateKey}` : `practice:${puzzle.id}`;
   let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
-  if(raw===undefined){writeData(key,game,false);return;}
+  if(raw===undefined){writeData(key,game,false);recordDailyResult(false);return;}
   if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
     try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;selected=null;hinted=[];feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
   }
@@ -70,13 +82,7 @@ function saveGame() {
     if (storedRecords && typeof storedRecords === 'object' && !Array.isArray(storedRecords)) records = {...records, ...storedRecords};
   }
   writeData(key, game);
-  if (mode === 'daily' && game.status !== 'playing') {
-    const old = records[daily.dateKey];
-    if (!old || old.status !== 'won') {
-      records[daily.dateKey] = { status: game.status, moves: game.moves, hints: game.hints, undos: game.undos, par: puzzle.par };
-      writeData('records', records);
-    }
-  }
+  recordDailyResult();
 }
 
 function solvedRow(index) { return game.board[index] === puzzle.rows[index].answer; }
@@ -231,6 +237,7 @@ function showHelp() {
 }
 
 function showStats() {
+  flushPendingGame();
   const stats = getStats(records, getDateKey());
   openModal(`<p class="dialog-eyebrow">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">The trading record.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played ? Math.round(stats.won / stats.played * 100) : 0}<small style="font:13px var(--sans)">%</small></div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div><div class="stats-details"><div class="stats-detail"><span>Perfect trades</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average swaps on wins</span><strong>${stats.won ? Number(stats.averageSwaps).toFixed(1) : '—'}</strong></div><div class="stats-detail"><span>Daily puzzles solved</span><strong>${stats.won}</strong></div></div><p class="stats-fineprint">Daily results live in this browser. Practice doesn’t affect your record. Revealed puzzles count as completed, but never as wins or streaks.</p><div class="dialog-action"><button class="primary-button" data-action="close">Back to the letters</button></div>`);
 }
@@ -287,6 +294,7 @@ function nextPractice() {
 }
 
 function loadDaily() {
+  flushPendingGame();
   clearTimeout(resultTimer);
   clearTimeout(feedbackTimer);
   mode = 'daily'; daily = getDaily(PUZZLES); puzzle = daily.puzzle;
@@ -443,7 +451,7 @@ window.addEventListener('storage', (event) => {
   }
   const currentKey = PREFIX + (mode === 'daily' ? `daily:${daily.dateKey}` : `practice:${puzzle.id}`);
   if (event.key === currentKey && event.newValue) {
-    const restored = restoreGame(puzzle, readData(currentKey.slice(PREFIX.length), null));
+    const restored = restoreGame(puzzle, readData(currentKey.slice(PREFIX.length), null, true));
     game = restored; selected = null; hinted = []; feedback = '';
     render();
     toast('Your progress was updated from another tab.');

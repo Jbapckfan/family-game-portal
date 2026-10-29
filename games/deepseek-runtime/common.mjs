@@ -53,7 +53,10 @@ export function mountDailyGame(config) {
     board.dataset.gameReady='true';
     for(const draft of drafts){const input=$(draft.id);if(input&&board.contains(input)){input.value=draft.value;try{input.setSelectionRange(draft.start,draft.end);}catch{}input.dispatchEvent(new win.Event('input',{bubbles:true}));}}
     if(finished)board.querySelectorAll('button,input,textarea,select').forEach(el=>{el.disabled=true;});
-    if(focused&&!finished){
+    // A renderer may move focus to the next interaction (for example, when
+    // Memory Maze ends its study phase). Keep that deliberate handoff.
+    const assignedFocus=doc.activeElement!==focused&&doc.activeElement!==doc.body&&board.contains(doc.activeElement);
+    if(focused&&!finished&&!assignedFocus){
       const replacement=focusId?$(focusId):[...board.querySelectorAll('button,input,textarea,select')].find(el=>el.tagName===focused.tagName&&(focusData.length?focusData.every(([key,value])=>el.dataset[key]===value):el.textContent===focusText));
       if(replacement&&board.contains(replacement)&&!replacement.disabled){
         replacement.focus({preventScroll:true});

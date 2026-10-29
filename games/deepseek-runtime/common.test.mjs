@@ -54,6 +54,16 @@ test('clock renders retain the focused word input and caret',()=>{
   assert.notEqual(e.elements.get('fixture-word'),old);assert.equal(e.doc.activeElement,e.elements.get('fixture-word'));assert.equal(e.doc.activeElement.selectionStart,2);assert.equal(e.doc.activeElement.selectionEnd,3);
  }finally{shell?.destroy();e.restore();}
 });
+test('an adapter can deliberately hand focus to its next interaction during a clock transition',()=>{
+ const e=environment();let shell;try{
+  shell=mountDailyGame({...e.config,render:({root,state})=>{
+   root.innerHTML='<input id="fixture-word"><button id="next-interaction">Begin recall</button>';
+   if(state.elapsed>0)e.elements.get('next-interaction').focus();
+  }});
+  e.elements.get('fixture-word').focus();e.advance(500);
+  assert.equal(e.doc.activeElement,e.elements.get('next-interaction'),'the shell must not restore obsolete focus over the adapter handoff');
+ }finally{shell?.destroy();e.restore();}
+});
 test('ready native board has correct attribution and shares no solution text',()=>{
  const e=environment();let shell;try{
   shell=mountDailyGame({...e.config,summarize:()=> 'SECRET ANSWER'});assert.match(e.elements.get('app').innerHTML,/Developed by Qwen/);assert.equal(e.doc.body.dataset.gameCreator,'Qwen');assert.equal(e.doc.documentElement.dataset.native,'true');assert.equal(e.elements.get('puzzle').dataset.gameReady,'true');assert.equal(e.messages[0].type,'progress');

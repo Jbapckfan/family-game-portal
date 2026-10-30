@@ -1,0 +1,38 @@
+✔ hint confirmation is inert until approval; visible paid advice survives reload without another charge (47.363584ms)
+✔ a stale swap adopts newer progress without stale solve animation or announcement (21.502458ms)
+✔ a stale hint adoption never announces an uncharged suggested pair (19.074083ms)
+✔ adopting a terminal daily repairs a missing result record immediately (8.049167ms)
+✔ a completed daily cannot roll back when an older unfinished storage event arrives (20.443667ms)
+✖ a valid terminal storage event supersedes dirty unsaved local play (10.201834ms)
+✔ a revealed daily remains the first terminal when a stale tab attempts its final winning trade (26.277875ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 335.432375
+
+✖ failing tests:
+
+test at scripts/tradeoff-ui.test.mjs:45:1
+✖ a valid terminal storage event supersedes dirty unsaved local play (10.201834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'playing' !== 'won'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:48:196)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'playing',
+    expected: 'won',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

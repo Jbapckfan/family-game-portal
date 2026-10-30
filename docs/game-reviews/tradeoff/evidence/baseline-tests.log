@@ -1,0 +1,34 @@
+✔ the schedule identity exposes at least 210 substantive challenges (0.607666ms)
+✔ renaming a puzzle cannot create a fresh daily challenge (0.504959ms)
+✔ equivalent puzzle presentations keep the same schedule identity (0.361167ms)
+✔ new games contain the original board and zero counters (0.293542ms)
+✔ five trades solve the six-cycle while conserving every letter (0.203541ms)
+✔ invalid and no-op trades do not count or mutate the game (0.077375ms)
+✔ solved rows lock, but a same-row swap can rescue the final word (0.127666ms)
+✔ undo restores the board and preserves total swap count (0.065125ms)
+✔ hints strictly reduce mismatches even after many exploratory swaps (0.401166ms)
+✔ won and revealed games cannot be changed or treated as fresh wins (0.185625ms)
+✔ restore validates the complete board, counters, identity and history (0.178292ms)
+✔ undo history retains at most one hundred previous boards (0.501375ms)
+✔ every published puzzle can recover from seeded exploratory trades (104.720333ms)
+✔ Chicago dates cross midnight correctly on both sides of DST (0.347167ms)
+✔ statistics count actual wins, perfect solves, and calendar streaks (0.560041ms)
+✔ share text exposes results but never clue answers (0.090625ms)
+✔ future-dated records do not inflate current statistics (0.041166ms)
+✔ at least 210 substantive challenges are available; permutations do not increase the count (0.2715ms)
+✔ every previously published puzzle retains its exact content, IDs, and position (0.437625ms)
+✔ published daily dates through October 29 keep their identities after the bank grows (0.070875ms)
+✔ October 29 expansion preserves every previously published record (0.153125ms)
+✔ new boards replace substantial content, not only order or presentation (2.545458ms)
+✔ ships at least 210 distinct, authored puzzle boards (0.166708ms)
+✔ the opening puzzle preserves the agreed approachable wordplay (0.032875ms)
+✔ every board has exactly six valid rows, useful clues, and conserved letters (3.157459ms)
+✔ every board is one six-letter cycle, proving the five-swap target is reachable (1.4235ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.746209

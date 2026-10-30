@@ -1,0 +1,122 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Clues are 16px+, all 30 letter controls are 44px+ and no horizontal overflow at 320–1440",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Same-letter attempts, same-cell deselection and Escape spend no swaps",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Correct words lock; Home/End navigate and keyboard Undo restores letters without refunding swaps or perfect eligibility",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Hint cancel is inert; confirmed advice costs one nudge and survives reload without another charge, then clears after a real trade",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A five-swap assisted win is solved, never perfect",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A valid restored final-word position can be rescued by a same-row swap while the other five words remain locked",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Five real optimal swaps finish perfectly, lock all words, keep a terminal result and record its actual score",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real portrait/square PNG downloads contain frozen aggregate scores and no answer words",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened sharing keeps played date after midnight; mocked cancellation preserves focus and denied clipboard selects manual copy",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed Practice remains explicit and cannot replace a Daily win",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A real second-tab write with delayed storage events discards the stale trade without false solve animation or announcement",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Clues are 16px+, all 30 letter controls are 44px+ and no horizontal overflow at 320–1440",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Same-letter attempts, same-cell deselection and Escape spend no swaps",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Correct words lock; Home/End navigate and keyboard Undo restores letters without refunding swaps or perfect eligibility",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Hint cancel is inert; confirmed advice costs one nudge and survives reload without another charge, then clears after a real trade",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A five-swap assisted win is solved, never perfect",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A valid restored final-word position can be rescued by a same-row swap while the other five words remain locked",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Five real optimal swaps finish perfectly, lock all words, keep a terminal result and record its actual score",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real portrait/square PNG downloads contain frozen aggregate scores and no answer words",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened sharing keeps played date after midnight; mocked cancellation preserves focus and denied clipboard selects manual copy",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed Practice remains explicit and cannot replace a Daily win",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A real second-tab write with delayed storage events discards the stale trade without false solve animation or announcement",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

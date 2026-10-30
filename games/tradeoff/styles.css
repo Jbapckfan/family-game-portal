@@ -106,3 +106,35 @@ body.tradeoff .word-row{border:1px solid #e1c7cc;border-radius:15px;background:#
 @media(max-width:520px){body.tradeoff .word-row{grid-template-columns:1fr;gap:9px;padding:12px;min-height:0}.tradeoff .clue-block{display:flex;gap:8px;align-items:center}.tradeoff .row-number{display:block;font-size:11px;min-width:13px}.tradeoff .clue-text{font-size:12px;line-height:1.45;display:flex;flex-wrap:wrap;gap:7px}.tradeoff .row-transform{font-size:9px;display:inline;margin:0}.tradeoff .tiles{gap:6px;justify-content:center}.tradeoff .tile{width:44px;height:46px;font-size:24px}.tradeoff .compact-rules{font-size:10px;align-items:start}.tradeoff .compact-rules button{font-size:10px}.tradeoff .par-label{font-size:9px}}
 @media(max-width:360px){.tradeoff .tile{width:40px}.tradeoff .tiles{gap:5px}}
 
+
+/* Individual review: readable clues, clear selection and honest score goals. */
+body.tradeoff{--accent:#2f59b6;--accent-dark:#24498d;--wash:#e7efff;--soft:#c7d8f5}
+.tradeoff .wordmark svg rect{fill:#dceaff}.tradeoff .wordmark svg path{stroke:#24498d}
+body.tradeoff .word-row{background:#f9fcff;border-color:#c7d7e8;box-shadow:0 3px 0 #dce5ef}
+.tradeoff .row-number{color:#24498d;font:700 13px var(--sans)}
+.tradeoff .clue-text{font-size:16px;line-height:1.5;color:#273640;max-width:none;overflow-wrap:anywhere}
+.tradeoff .row-transform{font-size:13px;color:#466152}
+.tradeoff .tile{width:46px;min-width:44px;height:48px;flex-shrink:0;font-size:25px;background:#fffefa;color:#273640;border-color:#b7cbdc;box-shadow:0 3px 0 #c7d7e8}
+.tradeoff .tile:not(:disabled):hover{background:#edf4ff;border-color:#8fabd3}
+.tradeoff .tile.hinted{background:#d8eeeb;color:#00545b;border-color:#006b73;outline-color:#006b73;box-shadow:0 3px 0 #a9cdc8}
+.tradeoff .tile.selected{background:#2f59b6;color:white;border-color:#24498d;box-shadow:0 3px 0 #24498d}
+.tradeoff .word-row.solved .tile{background:#dce9d2;border-color:#a5be94;color:#34543a;box-shadow:0 3px 0 #b5c9a6}
+.tradeoff .compact-rules{font-size:14px;color:#24498d;background:#edf3ff;flex-wrap:wrap;gap:8px}
+.tradeoff .compact-rules button{font-size:14px;min-height:44px}
+.tradeoff .board-bottom{flex-wrap:wrap;gap:10px}
+.tradeoff .swap-count{display:flex;flex-wrap:wrap;gap:5px;font-size:13px}
+.tradeoff .par-label{display:inline;font-size:12px;margin:0;color:var(--muted)}
+.tradeoff .progress-wrap,.tradeoff .progress-label{font-size:12px}
+.tradeoff .interaction-note,.tradeoff .board-footnote{font-size:14px;line-height:1.65}
+.tradeoff .game-controls,.tradeoff .finished-actions{flex-wrap:wrap}
+.tradeoff .game-controls button,.tradeoff .finished-actions button{font-size:14px;min-height:44px}
+.tradeoff .confirm-copy{font-size:16px;line-height:1.65}
+.tradeoff .share-formats{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.tradeoff .share-formats button{min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 14px}
+.tradeoff .share-formats button[aria-pressed=true]{background:var(--accent);color:white}
+.tradeoff #result-card{display:block;width:min(100%,360px);height:auto;margin:16px auto;border-radius:12px}
+.tradeoff .share-caption summary{min-height:44px;cursor:pointer;padding:12px 0;font-size:14px}
+.tradeoff .share-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tradeoff .share-fallback{min-height:150px;font-size:14px}
+@media(max-width:600px){.tradeoff .hero{padding:14px 0 18px}.tradeoff .hero .eyebrow,.tradeoff .hero-subtitle{display:none}.tradeoff .hero h1{font-size:30px}body.tradeoff .word-row{grid-template-columns:1fr;padding:11px;gap:10px}.tradeoff .clue-text{font-size:16px}.tradeoff .tiles{gap:5px}.tradeoff .tile{width:44px;min-width:44px;height:48px}.tradeoff .clue-block{gap:7px}.tradeoff .row-number{min-width:16px;font-size:12px}}
+
+.tradeoff .tile.hinted:focus-visible{outline:3px solid #24498d;outline-offset:3px}

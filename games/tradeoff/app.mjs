@@ -1,6 +1,7 @@
 import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 import { PUZZLES } from './puzzles.mjs';
-import { getDateKey, getDaily, createGame, swapLetters, undoMove, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
+import { getDateKey, getDaily, createGame, swapLetters, undoMove, findHint, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
+import { openResultShare } from './share-card.mjs';
 
 // Optional native bridge; browser rules and existing save keys are unchanged.
 function nativeMessage(payload) {
@@ -56,21 +57,33 @@ function writeData(key, value, readable=true) {
 function recordDailyResult(readable=true) {
   if(mode!=='daily'||game.status==='playing')return;
   const old=records[daily.dateKey];
-  if(!old||old.status!=='won'){
-    records[daily.dateKey]={status:game.status,moves:game.moves,hints:game.hints,undos:game.undos,par:puzzle.par};
+  const next={status:game.status,moves:game.moves,hints:game.hints,undos:game.undos,par:puzzle.par};
+  if(JSON.stringify(old)!==JSON.stringify(next)){
+    records[daily.dateKey]=next;
     writeData('records',records,readable);
   }else if(dirtyKeys.has('records'))writeData('records',records,readable);
 }
+function mergeRecords(){const stored=readData('records',{});if(stored&&typeof stored==='object'&&!Array.isArray(stored))records={...records,...stored};}
+function hintViewKey(){return `tradeoff:ui:v1:${mode==='daily'?daily.dateKey:'practice'}:${puzzle.id}`;}
+function rememberHintView(){try{if(hinted.length)sessionStorage.setItem(hintViewKey(),JSON.stringify({board:game.board,hints:game.hints,pair:hinted}));else sessionStorage.removeItem(hintViewKey());}catch{}}
+function restoreHintView(){
+ hinted=[];if(game.status!=='playing'||!game.hints)return;
+ try{const saved=JSON.parse(sessionStorage.getItem(hintViewKey()));if(saved?.hints!==game.hints||JSON.stringify(saved.board)!==JSON.stringify(game.board))return;const expected=findHint(puzzle,game);if(expected&&JSON.stringify(saved.pair)===JSON.stringify([expected.a,expected.b]))hinted=[expected.a,expected.b];}catch{}
+}
+function adoptedFeedback(){if(dialog.open)closeModal();clearTimeout(feedbackTimer);clearTimeout(resultTimer);selected=null;hinted=[];rememberHintView();feedback=game.status==='playing'?'Progress changed in another window. Your saved board is restored; try your move again.':'This board was completed in another window. Your saved result is restored.';toast(feedback);if(mode==='daily'){mergeRecords();recordDailyResult();}}
 function flushPendingGame() {
   const key=mode==='daily'?`daily:${daily.dateKey}`:`practice:${puzzle.id}`;
   if(dirtyKeys.has(key)){saveGame();render();}
 }
-function saveGame() {
+function saveGame(previous=game) {
   const key = mode === 'daily' ? `daily:${daily.dateKey}` : `practice:${puzzle.id}`;
   let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
-  if(raw===undefined){writeData(key,game,false);recordDailyResult(false);return;}
+  if(raw===undefined){writeData(key,game,false);recordDailyResult(false);return true;}
   if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
-    try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;selected=null;hinted=[];feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
+    try{const restored=restoreGame(puzzle,raw===null?null:JSON.parse(raw));
+      if(mode==='daily'&&previous.status!=='playing'&&restored.status==='playing')game=previous;
+      else{game=restored;memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;adoptedFeedback();return false;}
+    }catch{}
   }
   // The first completed daily is final, including when another tab gets there first.
   if (mode === 'daily') {
@@ -82,8 +95,9 @@ function saveGame() {
     const storedRecords = readData('records', {});
     if (storedRecords && typeof storedRecords === 'object' && !Array.isArray(storedRecords)) records = {...records, ...storedRecords};
   }
-  writeData(key, game);
-  recordDailyResult();
+  const saved=writeData(key, game);
+  recordDailyResult(saved);
+  return true;
 }
 
 function solvedRow(index) { return game.board[index] === puzzle.rows[index].answer; }
@@ -121,13 +135,16 @@ function render(options = {}) {
   $('puzzle-date').textContent = mode === 'daily' ? formatDate(daily.dateKey) : puzzle.title;
   $('difficulty').textContent = puzzle.difficulty;
   $('undo-button').disabled = !game.history.length || game.status !== 'playing';
-  $('hint-button').disabled = game.status !== 'playing';
+  $('hint-button').disabled = game.status !== 'playing'||hinted.length>0;
+  $('hint-button').textContent=hinted.length?'✦ Nudge shown':'✦ A little nudge';
   $('hint-button').title = 'Highlight a useful trade. This counts as a nudge.';
   $('undo-button').title = 'Undo the last trade. Swaps already made still count.';
   $('game-controls').hidden = game.status !== 'playing';
   $('finished-actions').hidden = game.status === 'playing';
   $('results-button').textContent = game.status === 'revealed' ? 'See the result ↗' : 'See your result ↗';
   $('next-practice-button').textContent = mode === 'daily' ? 'Try a practice →' : 'Another trade →';
+  const perfect=game.status==='won'&&game.moves<=puzzle.par&&!game.hints&&!game.undos;
+  document.querySelector('.par-label').textContent=game.status==='revealed'?'· shown, not solved':perfect?'· perfect':game.status==='won'?'· solved':game.hints||game.undos?'· assisted':game.moves>puzzle.par?'· extra swaps':`Goal: ${puzzle.par} swaps · 0 nudges · 0 undos`;
   $('finished-more-button').hidden = mode !== 'practice';
   const info = $('interaction-note');
   info.className = `interaction-note${selected ? ' has-selection' : ''}${game.status === 'won' ? ' success' : ''}`;
@@ -141,7 +158,7 @@ function render(options = {}) {
   if (focusCell) {
     let next = $('board').querySelector(`[data-row="${focusCell.row}"][data-col="${focusCell.col}"]:not(:disabled)`);
     if (!next) next = $('board').querySelector('.tile:not(:disabled)');
-    next?.focus({preventScroll:true});
+    next?.focus({preventScroll:true});next?.scrollIntoView({block:'nearest',behavior:'auto'});if(!next&&game.status!=='playing')$('results-button').focus({preventScroll:true});
   }
 }
 
@@ -178,6 +195,7 @@ function handleTile(cell) {
     return;
   }
   const from = selected;
+  const before=game;
   const outcome = swapLetters(puzzle, game, from, cell);
   if (!outcome.changed) {
     toast(outcome.reason === 'same-letter' ? 'Same letter. Choose a different trading partner.' : 'Choose two unlocked letters to trade.');
@@ -189,7 +207,8 @@ function handleTile(cell) {
   const count = outcome.newlySolved.length;
   const message = count === 2 ? 'Two words home. That’s a good trade.' : count === 1 ? `${puzzle.rows[outcome.newlySolved[0]].answer} is home. Keep the letters moving.` : 'Trade made. Temporary nonsense is welcome.';
   setFeedback(game.status === 'won' ? 'Every letter, right where it belongs.' : message);
-  saveGame();
+  if(!saveGame(before)){render();announce(feedback);return;}
+  rememberHintView();
   render({newlySolved:outcome.newlySolved,swapped:[from,cell],focusCell:cell});
   announce(`${message} ${game.moves} swaps.`);
   playTone(game.status === 'won' ? 'win' : count ? 'solve' : 'swap');
@@ -201,26 +220,36 @@ function handleTile(cell) {
 }
 
 function takeHint() {
+  if(game.status!=='playing'||hinted.length)return;
+  const before=game;
   const outcome = useHint(puzzle, game);
   if (!outcome.hint) { toast('All the letters are already home.'); return; }
   game = outcome.state;
   selected = null;
   hinted = [outcome.hint.a, outcome.hint.b];
   setFeedback('Trade the two glowing letters. You’ve got this.');
-  saveGame();
+  if(!saveGame(before)){render();announce(feedback);return;}
+  rememberHintView();
   render({focusCell:outcome.hint.a});
   $('board').querySelector('.hinted')?.scrollIntoView({block:'nearest',behavior:'auto'});
   announce(`Nudge ${game.hints}: trade ${game.board[outcome.hint.a.row][outcome.hint.a.col]}, letter ${outcome.hint.a.col + 1} in word ${outcome.hint.a.row + 1}, with ${game.board[outcome.hint.b.row][outcome.hint.b.col]}, letter ${outcome.hint.b.col + 1} in word ${outcome.hint.b.row + 1}.`);
 }
+function confirmHint(){
+ if(game.status!=='playing'||hinted.length)return;
+ openModal(`<p class="dialog-eyebrow">A SCORED NUDGE</p><h2 class="dialog-title" id="dialog-title">Highlight a useful trade?</h2><p class="confirm-copy">This records <strong>1 nudge</strong> and makes this an assisted round. It highlights two letters; you still make the swap. Your swap count stays the same. The advice remains available on this board until you trade or undo.</p><div class="dialog-action"><button class="secondary-button" data-action="close">Keep thinking</button><button class="primary-button" data-action="use-hint">Use this nudge</button></div>`);
+}
 
 function takeUndo() {
   if (!game.history.length || game.status !== 'playing') return;
+  const before=game;
   game = undoMove(puzzle, game);
   selected = null;
   hinted = [];
   setFeedback('Trade undone. Your swap count keeps the full story.');
-  saveGame();
+  if(!saveGame(before)){render();announce(feedback);return;}
+  rememberHintView();
   render();
+  const focus=$('board').querySelector('.tile:not(:disabled)');focus?.focus({preventScroll:true});focus?.scrollIntoView({block:'nearest',behavior:'auto'});
   announce('Last trade undone. Earlier solved words are restored.');
 }
 
@@ -234,7 +263,7 @@ function openModal(html) {
 function closeModal() { if (dialog.open) dialog.close(); }
 
 function showHelp() {
-  openModal(`<p class="dialog-eyebrow">A DAILY GAME OF GIVE & TAKE</p><h2 class="dialog-title" id="dialog-title">Here’s the deal.</h2><div class="dialog-body"><p>Six real words. Six clues. Each word starts <strong>one letter away</strong> from its answer. Every letter you need is already on the board.</p><ol><li><strong>Tap two letters</strong> to trade them.</li><li>Match a clue and the word <strong>locks in</strong>.</li><li>Solve all six. <strong>Five swaps is perfect.</strong></li></ol><div class="help-demo"><div class="help-pair"><span class="help-clue">A vehicle</span><span>C</span><span>A</span><span class="marked">T</span></div><div class="help-pair"><span class="help-clue">A feline</span><span>C</span><span>A</span><span class="marked">R</span></div><p class="help-demo-caption">Trade T and R. CAT → CAR. CAR → CAT.</p></div><p><strong>Temporary nonsense is welcome.</strong> A trade can set up your next move. Letters can also trade within an unsolved word.</p><p class="help-note">Take as many swaps as you need. Undo restores the board, but swaps already made still count. Nudges and undos appear in your result; a perfect trade uses neither.</p><p>Keyboard: Tab to a letter, arrow keys to move, Enter or Space to select, Escape to cancel. Ctrl/⌘ Z undoes a trade.</p></div><div class="dialog-action"><button class="primary-button" data-action="close">Let’s trade <span aria-hidden="true">↗</span></button></div>`);
+  openModal(`<p class="dialog-eyebrow">A DAILY GAME OF GIVE & TAKE</p><h2 class="dialog-title" id="dialog-title">Here’s the deal.</h2><div class="dialog-body"><p>Six real words. Six clues. Each word starts <strong>one letter away</strong> from its answer. Every letter you need is already on the board.</p><ol><li><strong>Tap two letters</strong> to trade them.</li><li>Match a clue and the word <strong>locks in</strong>.</li><li>Solve all six. <strong>Five swaps without nudges or undo is perfect.</strong></li></ol><div class="help-demo"><div class="help-pair"><span class="help-clue">A vehicle</span><span>C</span><span>A</span><span class="marked">T</span></div><div class="help-pair"><span class="help-clue">A feline</span><span>C</span><span>A</span><span class="marked">R</span></div><p class="help-demo-caption">Trade T and R. CAT → CAR. CAR → CAT.</p></div><p><strong>Temporary nonsense is welcome.</strong> A trade can set up your next move. Letters can also trade within an unsolved word.</p><p class="help-note">Take as many swaps as you need. Undo restores the board, but swaps already made still count. Nudges and undos appear in your result; a perfect trade uses neither.</p><p>Keyboard: Tab to a letter, arrow keys to move, Enter or Space to select, Escape to cancel. Ctrl/⌘ Z undoes a trade.</p></div><div class="dialog-action"><button class="primary-button" data-action="close">Let’s trade <span aria-hidden="true">↗</span></button></div>`);
 }
 
 function showStats() {
@@ -292,6 +321,7 @@ function loadPractice(index) {
   puzzle = candidate;
   game = savedPractice(index, true) || createGame(puzzle);
   selected = null; hinted = []; feedback = '';
+  restoreHintView();
   closeModal();
   render();
   announce(`Practice ${index + 1}. ${puzzle.title}. ${puzzle.difficulty}.`);
@@ -314,6 +344,7 @@ function loadDaily() {
   mode = 'daily'; daily = getDaily(PUZZLES); puzzle = daily.puzzle;
   game = restoreGame(puzzle, readData(`daily:${daily.dateKey}`, null, true));
   selected = null; hinted = []; feedback = '';
+  restoreHintView();
   closeModal(); render();
   announce(`The daily, number ${daily.number}. ${formatDate(daily.dateKey)}.`);
 }
@@ -335,20 +366,10 @@ function showAbout() {
 }
 
 async function shareResult() {
+  if(game.status==='playing')return;
   const text = formatShare(puzzle, game, {number: mode === 'daily' ? daily.number : PUZZLES.indexOf(puzzle) + 1, mode, url:''});
   if (nativeMessage({type:'share',text})) return;
-  if (navigator.share) {
-    try { await navigator.share({title:'My Tradeoff',text}); return; }
-    catch (error) { if (error?.name === 'AbortError') return; }
-  }
-  try {
-    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-    await navigator.clipboard.writeText(text);
-    toast('Copied. Your clues and answers stay secret.');
-  } catch {
-    openModal(`<p class="dialog-eyebrow">A GOOD TRADE IS WORTH SHARING</p><h2 class="dialog-title" id="dialog-title">Take your result.</h2><p class="confirm-copy">Select and copy the text below. No answers, no spoilers.</p><textarea class="share-fallback" id="share-text" readonly aria-label="Your spoiler-free result">${esc(text)}</textarea><div class="dialog-action"><button class="primary-button" data-action="select-share">Select result text</button><button class="secondary-button" data-action="result">Back to result</button></div>`);
-    $('share-text').focus(); $('share-text').select();
-  }
+  try{openResultShare({game,mode,daily,par:puzzle.par,openDialog:openModal});}catch{toast('This saved result needs a valid score before it can be shared.');}return;
 }
 
 function updateSoundButton() {
@@ -421,6 +442,8 @@ dialog.addEventListener('close', () => {
     lastFocus.focus({preventScroll:true});
   } else if (game.status !== 'playing') {
     $('results-button').focus({preventScroll:true});
+  } else if(hinted.length) {
+    const target=$('board').querySelector(`[data-row="${hinted[0].row}"][data-col="${hinted[0].col}"]`);target?.focus({preventScroll:true});target?.scrollIntoView({block:'nearest',behavior:'auto'});
   } else {
     $('board').focus({preventScroll:true});
   }
@@ -435,18 +458,19 @@ $('dialog-content').addEventListener('click', (event) => {
   else if (action === 'practice') loadPractice(Number(button.dataset.index));
   else if (action === 'next') nextPractice();
   else if (action === 'share') shareResult();
+  else if(action==='use-hint'){button.disabled=true;closeModal();takeHint();}
   else if (action === 'result') showResult();
   else if (action === 'confirm-reveal') confirmReveal();
   else if (action === 'restart') confirmRestart();
-  else if (action === 'do-restart' && mode === 'practice') { game = createGame(puzzle); selected = null; hinted = []; feedback = ''; saveGame(); render(); closeModal(); $('board').focus({preventScroll:true}); }
-  else if (action === 'reveal') { game = revealGame(puzzle,game); selected = null; hinted = []; feedback = ''; saveGame(); render(); showResult(); }
+  else if (action === 'do-restart' && mode === 'practice') { const before=game;game = createGame(puzzle); selected = null; hinted = []; feedback = ''; saveGame(before);rememberHintView();render();closeModal();$('board').focus({preventScroll:true}); }
+  else if (action === 'reveal') {const before=game;game = revealGame(puzzle,game); selected = null; hinted = []; feedback = ''; saveGame(before);rememberHintView();render();showResult();}
   else if (action === 'select-share') { $('share-text').focus(); $('share-text').select(); }
 });
 $('help-button').addEventListener('click',showHelp);
 $('quick-help').addEventListener('click',showHelp);
 $('stats-button').addEventListener('click',showStats);
 $('about-button').addEventListener('click',showAbout);
-$('hint-button').addEventListener('click',takeHint);
+$('hint-button').addEventListener('click',confirmHint);
 $('undo-button').addEventListener('click',takeUndo);
 $('more-button').addEventListener('click',showOptions);
 $('finished-more-button').addEventListener('click',showOptions);
@@ -465,13 +489,17 @@ window.addEventListener('storage', (event) => {
   }
   const currentKey = PREFIX + (mode === 'daily' ? `daily:${daily.dateKey}` : `practice:${puzzle.id}`);
   if (event.key === currentKey && event.newValue) {
-    const restored = restoreGame(puzzle, readData(currentKey.slice(PREFIX.length), null, true));
+    let restored,raw;try{raw=localStorage.getItem(currentKey);if(raw===null)return;restored=restoreGame(puzzle,JSON.parse(raw));}catch{return;}
+    if(mode==='daily'&&game.status!=='playing'&&restored.status==='playing'){const saved=writeData(currentKey.slice(PREFIX.length),game);mergeRecords();recordDailyResult(saved);render();return;}
+    memory.set(currentKey.slice(PREFIX.length),restored);acceptedSaves.set(currentKey.slice(PREFIX.length),raw);dirtyKeys.delete(currentKey.slice(PREFIX.length));storageWarning=dirtyKeys.size>0;
     game = restored; selected = null; hinted = []; feedback = '';
+    clearTimeout(feedbackTimer);clearTimeout(resultTimer);if(dialog.open)closeModal();rememberHintView();if(mode==='daily'){mergeRecords();recordDailyResult();}
     render();
     toast('Your progress was updated from another tab.');
   }
 });
 
 updateSoundButton();
-render();
+restoreHintView();
 if (game.status !== 'playing') saveGame();
+render();

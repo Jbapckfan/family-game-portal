@@ -1,0 +1,204 @@
+✖ hint confirmation is inert until approval; visible paid advice survives reload without another charge (36.0255ms)
+✖ a stale swap adopts newer progress without stale solve animation or announcement (23.538ms)
+✖ a stale hint adoption never announces an uncharged suggested pair (16.560167ms)
+✖ adopting a terminal daily repairs a missing result record immediately (10.118917ms)
+✖ a completed daily cannot roll back when an older unfinished storage event arrives (20.534875ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 287.649166
+
+✖ failing tests:
+
+test at scripts/tradeoff-ui.test.mjs:18:1
+✖ hint confirmation is inert until approval; visible paid advice survives reload without another charge (36.0255ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:20:37)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/tradeoff-ui.test.mjs:25:1
+✖ a stale swap adopts newer progress without stale solve animation or announcement (23.538ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + HTMLDivElement {}
+  - null
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:29:75)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/tradeoff-ui.test.mjs:32:1
+✖ a stale hint adoption never announces an uncharged suggested pair (16.560167ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /another window/. Input:
+  
+  'Nudge 0: trade R, letter 2 in word 1, with L, letter 2 in word 2.'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:36:86)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Nudge 0: trade R, letter 2 in word 1, with L, letter 2 in word 2.',
+    expected: /another window/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at scripts/tradeoff-ui.test.mjs:39:1
+✖ adopting a terminal daily repairs a missing result record immediately (10.118917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 'won'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:40:305)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'won',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/tradeoff-ui.test.mjs:42:1
+✖ a completed daily cannot roll back when an older unfinished storage event arrives (20.534875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      board: [
+  +     'GLOOM',
+  +     'WRITE',
+  +     'CRUSH',
+  +     'GRATE',
+  +     'STAGE',
+  +     'CLASS'
+  -     'GROOM',
+  -     'WHITE',
+  -     'CRUST',
+  -     'GRACE',
+  -     'STALE',
+  -     'GLASS'
+      ],
+  +   events: [],
+  -   events: [
+  -     {
+  -       solved: 1
+  -     },
+  -     {
+  -       solved: 1
+  -     },
+  -     {
+  -       solved: 1
+  -     },
+  -     {
+  -       solved: 1
+  -     },
+  -     {
+  -       solved: 2
+  -     }
+  -   ],
+      hints: 0,
+  +   history: [],
+  +   moves: 0,
+  -   history: [
+  -     [
+  -       'GLOOM',
+  -       'WRITE',
+  -       'CRUSH',
+  -       'GRATE',
+  -       'STAGE',
+  -       'CLASS'
+  -     ],
+  -     [
+  -       'GROOM',
+  -       'WLITE',
+  -       'CRUSH',
+  -       'GRATE',
+  -       'STAGE',
+  -       'CLASS'
+  -     ],
+  -     [
+  -       'GROOM',
+  -       'WHITE',
+  -       'CRUSL',
+  -       'GRATE',
+  -       'STAGE',
+  -       'CLASS'
+  -     ],
+  -     [
+  -       'GROOM',
+  -       'WHITE',
+  -       'CRUST',
+  -       'GRALE',
+  -       'STAGE',
+  -       'CLASS'
+  -     ],
+  -     [
+  -       'GROOM',
+  -       'WHITE',
+  -       'CRUST',
+  -       'GRAGE',
+  -       'STALE',
+  -       'CLASS'
+  -     ]
+  -   ],
+  -   moves: 5,
+      puzzleId: 'p011',
+  +   status: 'playing',
+  -   status: 'won',
+      undos: 0
+    }
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/tradeoff-ui.test.mjs:43:377)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { puzzleId: 'p011', board: [ 'GLOOM', 'WRITE', 'CRUSH', 'GRATE', 'STAGE', 'CLASS' ], moves: 0, undos: 0, hints: 0, history: [], events: [], status: 'playing' },
+    expected: { puzzleId: 'p011', board: [ 'GROOM', 'WHITE', 'CRUST', 'GRACE', 'STALE', 'GLASS' ], moves: 5, undos: 0, hints: 0, history: [ [Array], [Array], [Array], [Array], [Array] ], events: [ [Object], [Object], [Object], [Object], [Object] ], status: 'won' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -46,12 +46,12 @@
           <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span class="difficulty" id="difficulty">Gentle</span></div>
           <div class="new-day" id="new-day" hidden>A fresh daily is here. <button id="new-day-button">Play today →</button></div>
           <div class="compact-rules"><span>Each word starts one letter from its clue.</span><button id="quick-help">How to play <span aria-hidden="true">↗</span></button></div>
-          <div class="board" id="board" tabindex="-1" aria-label="Six words to solve"><p class="loading">Getting your letters in order…</p></div>
+          <div class="board" id="board" role="group" tabindex="-1" aria-label="Six words to solve"><p class="loading">Getting your letters in order…</p></div>
           <div class="board-bottom">
             <div class="progress-wrap"><div class="progress-dots" id="progress-dots" aria-hidden="true"></div><span id="progress-label">0 of 6 solved</span></div>
-            <div class="swap-count"><strong id="move-count">0</strong> <span id="move-word">swaps</span><span class="par-label">/ 5 is perfect</span></div>
+            <div class="swap-count"><strong id="move-count">0</strong> <span id="move-word">swaps</span><span class="par-label">Goal: 5 swaps · 0 nudges · 0 undos</span></div>
           </div>
-          <div class="interaction-note" id="interaction-note" aria-live="polite">Tap a letter, then another to trade them.</div>
+          <div class="interaction-note" id="interaction-note">Tap a letter, then another to trade them.</div>
           <div class="game-controls" id="game-controls">
             <button class="secondary-button" id="undo-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 4 11l5 5M4 11h10a5 5 0 0 1 0 10"/></svg>Undo</button>
             <button class="primary-button" id="hint-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8 13a6 6 0 1 1 8 0c-1 1-1 2-1 3H9c0-1 0-2-1-3Z"/></svg>A little nudge</button>
@@ -69,7 +69,7 @@
             <ol><li><span>01</span>Tap two letters to trade them.</li><li><span>02</span>Match a clue. Lock in a word.</li><li><span>03</span>Bring all six words home.</li></ol>
             <div class="mini-example" aria-label="Example: trade the T in CAT and the R in CAR"><div><span>C</span><span>A</span><span class="example-lime">T</span></div><span class="example-arrow">⇄</span><div><span>C</span><span>A</span><span class="example-peach">R</span></div></div>
             <p class="example-caption">A small trade changes everything.</p>
-            <div class="perfect-note"><span aria-hidden="true">✦</span><div><strong>Five swaps is a perfect trade.</strong><span>Take as many as you need.</span></div></div>
+            <div class="perfect-note"><span aria-hidden="true">✦</span><div><strong>Five swaps. No nudges or undo.</strong><span>Take as many as you need.</span></div></div>
           </section>
           <section class="desk-note"><span class="desk-label">A NOTE FOR YOUR DESK</span><p>Sometimes you have to make a word worse to make the whole puzzle better.</p><span class="note-dash">— Temporary nonsense is welcome.</span></section>
           <div class="next-edition"><span class="live-dot"></span><div>A fresh trade every day.<small id="reset-label">New puzzle at midnight Central.</small></div></div>
@@ -77,7 +77,7 @@
       </div>
     </main>
 
-    <footer><span>Made for your daily <em>aha.</em></span><span class="footer-mark">TRADEOFF <span aria-hidden="true">✳</span> VOL. 01</span><nav class="footer-links" aria-label="More games"><a href="../../">All games</a><a href="../inbetween/">Inbetween</a><button id="about-button">About the game</button></nav></footer>
+    <footer><span>Made for your daily <em>aha.</em></span><span class="footer-mark">TRADEOFF <span aria-hidden="true">✳</span> VOL. 01</span><nav class="footer-links" aria-label="More games"><a href="../daily/">All games</a><a href="../inbetween/">Inbetween</a><button id="about-button">About the game</button></nav></footer>
   </div>
   <div class="toast" id="toast" role="status" hidden></div>
   <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button class="dialog-close icon-button" id="dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>

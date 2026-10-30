@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "James’s partial preference groups: Switchpath, Counterpart, Shortlist and Second Sense are keepers; Ringcount and Sideways are replacement candidates. Relative order within either group and numerical ratings are not supplied. Model predictions stay separate.",
+  "rankingBasis": "James’s partial preference groups: Switchpath, Counterpart, Shortlist, Second Sense and Tradeoff are keepers; Ringcount and Sideways are replacement candidates. No relative order or numerical ratings supplied; model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -574,17 +574,97 @@
       "name": "Tradeoff",
       "creator": "ChatGPT",
       "reviewOrder": 7,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
-        "playAgain": null,
+        "playAgain": true,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "tradeoff is a keeper, a bit too easy",
+            "interpretation": "Explicit keeper verdict with an ease concern; numeric score and relative keeper order not supplied."
+          }
+        ],
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "keeper",
+        "difficultyReaction": "a bit too easy"
       },
-      "reviews": [],
-      "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "a5137a47758b489f0a1a5ac69b615fdc2dc94ba7",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Tradeoff before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 4,
+            "ui": 3,
+            "replay": 2,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "tradeoff/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "a5137a47758b489f0a1a5ac69b615fdc2dc94ba7",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Tradeoff before improvements",
+          "scores": {
+            "fun": 3.5,
+            "clarity": 4.5,
+            "ui": 3.5,
+            "replay": 4,
+            "shareability": 4
+          },
+          "scoresArePredictions": true,
+          "report": "tradeoff/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "a5137a47758b489f0a1a5ac69b615fdc2dc94ba7",
+          "method": "Inline engine/app/HTML/audit only; no CSS, screenshots or execution",
+          "scope": "Baseline Tradeoff before improvements",
+          "scores": {
+            "fun": 2,
+            "clarity": 3,
+            "ui": null,
+            "replay": 2,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "tradeoff/MAKER-Opus__initial-review.md"
+        }
+      ],
+      "disposition": "keep",
+      "evidence": [
+        "tradeoff/REPORT.md",
+        "tradeoff/ADJUDICATION.md",
+        "tradeoff/evidence/summary.json",
+        "tradeoff/evidence/cycle-audit.json"
+      ],
+      "nextStep": "Keep; tune difficulty in a future pass while preserving published puzzles. Inbetween is next. Relative keeper ranking not supplied.",
+      "dispositionBasis": "James explicitly called it a keeper, while finding it a bit too easy.",
+      "gameplayFinding": "210 distinct answer sets, 252 answer words, 498 start/answer/clue pairs; every six-cycle has an executable five-swap solution. One answer appears 23 times. These are construction/recurrence facts, not human difficulty measurements.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Updated inline source only; tools disabled, no execution or rendered UI",
+        "report": "tradeoff/MAKER-Opus__final-review.md",
+        "findings": "No Critical finding. Minor issues reproduced/corrected and final tests passed. Important simultaneous conflicting-terminal concurrency concern remains open; normal stale-tab and first-reveal guards verified."
+      },
+      "openFindings": [
+        {
+          "severity": "Important",
+          "subject": "Literally simultaneous conflicting terminal saves are not atomic",
+          "status": "Open; direct terminal-overwrite demonstrated by source review, simultaneous production-UI trigger not reproduced",
+          "decision": "Do not adopt win-priority tiebreak that changes first-finished semantics; coordinated persistence remains a follow-up."
+        }
+      ]
     },
     {
       "slug": "inbetween",

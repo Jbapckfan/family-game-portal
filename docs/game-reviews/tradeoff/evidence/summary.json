@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-30",
+  "catalogTests": {
+    "passed": 873,
+    "failed": 0
+  },
+  "finalTargetedTests": 60,
+  "verificationOrder": "All counts are from final source after Opus minor fixes; focused tests overlap the catalog suite.",
+  "browserChecks": 24,
+  "browserPassed": 24,
+  "browserEngines": [
+    "Chromium",
+    "WebKit"
+  ],
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "compiledRuntimeFiles": 279,
+  "compiledBytesMatch": true,
+  "webBuildId": "3216008bb04376fd",
+  "stagedRuntimeFiles": 313,
+  "contentAudit": {
+    "boards": 210,
+    "distinctAnswerSets": 210,
+    "distinctAnswerWords": 252,
+    "distinctCluePairs": 498,
+    "maxAnswerAppearances": 23,
+    "fiveSwapSolutions": 210,
+    "construction": "Six distinct misplaced letters form one six-cycle on every initial board. A swap can fix at most one of these initially; a five-swap path is executable with correct rows locking. This is structural analysis, not human difficulty or semantic uniqueness."
+  },
+  "jamesVerdict": "keeper; a bit too easy",
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "finalStage": "dist/tradeoff-review-20261030-final-v2/web",
+  "webKitRuntime": "Existing task-local WebKit 26 / Playwright 1.55 runtime restored during Second Sense; no download this turn.",
+  "openFindings": [
+    {
+      "severity": "Important",
+      "subject": "Literally simultaneous conflicting terminal saves are not atomic",
+      "status": "Open; direct terminal-overwrite demonstrated by source review, simultaneous production-UI trigger not reproduced",
+      "decision": "Do not adopt win-priority tiebreak that changes first-finished semantics; coordinated persistence remains a follow-up."
+    }
+  ],
+  "sourceFileSHA256": {
+    "games/tradeoff/README.md": "c63408dae9ca6fd0ca5492dfd25df0cbf2c24a31c472dfd71206a0a94f62fb86",
+    "games/tradeoff/app.mjs": "543c0a9f95991f346111ecaf879ad2d6480d2bc24ae0425c8326a9e5153b2ec3",
+    "games/tradeoff/content-identity.mjs": "f82aab7329d24d0c23c7b639dfda4297c221a645f175e60f9d351e9aec73da94",
+    "games/tradeoff/docs/superpowers/plans/2026-10-20-tradeoff.md": "e9b86a797833b18dff9e9d6edab63bcfebe294b1a0b5a9d3c98f3c1276b99cbf",
+    "games/tradeoff/docs/superpowers/specs/2026-10-20-tradeoff-design.md": "35084a31a2d3e0a761f2cd7f656af8a4408e70f53298cc5c80f028e35b29ce0d",
+    "games/tradeoff/docs/verification.md": "a75966de161f25eb32634b167891934ce42b53cc5c1e14047409bbfaa14c65a7",
+    "games/tradeoff/engine.mjs": "99a4b0f8febee041cdac093a0becfa2268d42043aec921de2cb8ba319d02a8a2",
+    "games/tradeoff/fonts/DM-Sans-LICENSE.txt": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1",
+    "games/tradeoff/fonts/DM-Serif-Display-LICENSE.txt": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231",
+    "games/tradeoff/fonts/dm-sans-bold.ttf": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211",
+    "games/tradeoff/fonts/dm-sans-regular.ttf": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9",
+    "games/tradeoff/fonts/dm-sans-semibold.ttf": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a",
+    "games/tradeoff/fonts/dm-serif-display-italic.ttf": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920",
+    "games/tradeoff/fonts/dm-serif-display-regular.ttf": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1",
+    "games/tradeoff/icon.svg": "e471eeb4ac6ca8523250411f4f9d14af4671ef9e87bc8fd9a8739ef6b286e59b",
+    "games/tradeoff/index.html": "1c306b67d4d76369c93bba456695520f58c6487a16a2b321d4170f7883632f9e",
+    "games/tradeoff/manifest.webmanifest": "6c9b0c06c88ed3d3a7258996dd1823fc4f78093d70bf8b4161759b6c36578737",
+    "games/tradeoff/package.json": "fa7ed39f18536ba34aea409d16b5b53d31c29d8fad24200b0e6ebf9cb86c882b",
+    "games/tradeoff/puzzles.mjs": "95264814dc0a3a6800beaf8d0d73260a951a5fdb73e848bda37f876de3b17688",
+    "games/tradeoff/scripts/generate-puzzles.mjs": "f69d16275b2669988c721ed5f04561cb5744321d1652255e6e5ce0202018fe4e",
+    "games/tradeoff/share-card.mjs": "03c62ce68618fa902c8777a40b438077cee824ea159c0fd7e56f32843d5cb882",
+    "games/tradeoff/styles.css": "8fe4569c1dc9ed4b3f96a5ded1ffdde334d07e4b14d745b686a931bbb7f8b98a",
+    "games/tradeoff/tests/content-identity.test.mjs": "3b61439f8a7a13008b4bea8eedcc4ae23e35d1e499391bca29a92c78bb476b62",
+    "games/tradeoff/tests/engine.test.mjs": "458761e9131a391f4b776f1cf10fb37e2350c218c29e6e8f7800a0b923ff7742",
+    "games/tradeoff/tests/expansion.test.mjs": "76a07b9fd954ae8b0bf2e66b735e28eb736e003353425e6cdab8223b6d11bc94",
+    "games/tradeoff/tests/puzzles.test.mjs": "6d1eb70fb10d165d2dcfe38c06e69b9251b5609360bacecfcdc82d332bce024a",
+    "games/tradeoff/tests/share-card.test.mjs": "f65f4fdaf92adee971cfded46e18225ba2c8ad78de91ebc896b52d0cffea756f"
+  }
+}

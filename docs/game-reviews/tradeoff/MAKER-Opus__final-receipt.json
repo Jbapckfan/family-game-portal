@@ -1,0 +1,36 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "cadbd349f201aaad97c789dfbb597c34bfe4522bdc1d1dba5446b4ae0fa55552",
+  "files": [
+    "games/tradeoff/engine.mjs",
+    "games/tradeoff/app.mjs",
+    "games/tradeoff/share-card.mjs",
+    "games/tradeoff/tests/share-card.test.mjs",
+    "games/tradeoff/index.html",
+    "games/tradeoff/styles.css",
+    "scripts/tradeoff-ui.test.mjs",
+    "scripts/review-tradeoff.mjs",
+    "docs/game-reviews/tradeoff/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 207.15,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 19735,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 56865,
+      "webSearchRequests": 0,
+      "costUSD": 0.8499475999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 17298,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 56865,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+✔ hint confirmation is inert until approval; visible paid advice survives reload without another charge (47.189666ms)
+✔ a stale swap adopts newer progress without stale solve animation or announcement (21.514625ms)
+✔ a stale hint adoption never announces an uncharged suggested pair (18.649583ms)
+✔ adopting a terminal daily repairs a missing result record immediately (7.972917ms)
+✔ a completed daily cannot roll back when an older unfinished storage event arrives (20.007875ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 295.246541

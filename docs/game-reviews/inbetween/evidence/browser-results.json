@@ -1,0 +1,132 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px clues and five non-overlapping 44px gap targets plus 44px pair controls fit at 320–1440 without overflow",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Selecting pairs, previewing, Clear and Escape are free and leave no preview",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A wrong confirmed fit costs one attempt without consuming its pair; completing the board afterward is solved, not perfect",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Nudge cancel is inert; confirmed advice costs one nudge, restores the same preview on reload and cannot be charged twice while visible",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Home/End/arrows and Space preview without charging; correct placement locks a row, restores pair focus, and the pair bank remains visible while scrolling",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Desktop post-placement pair focus and arrow navigation stay visible after working below the fold",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Six actual correct placements win perfectly, lock all rows and return useful focus after closing the result",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A completed saved game restores and repairs a missing daily result record",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real portrait and square PNG downloads carry actual aggregate scores and no answer or seed words",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened sharing keeps the played date after midnight; mocked file-share cancellation and denied clipboard preserve manual caption copy",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed Practice is explicitly shown, never perfect or solved, and leaves the Daily win intact",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real second-tab progress with delayed events discards a stale correct placement without false solve animation or announcement",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px clues and five non-overlapping 44px gap targets plus 44px pair controls fit at 320–1440 without overflow",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Selecting pairs, previewing, Clear and Escape are free and leave no preview",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A wrong confirmed fit costs one attempt without consuming its pair; completing the board afterward is solved, not perfect",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Nudge cancel is inert; confirmed advice costs one nudge, restores the same preview on reload and cannot be charged twice while visible",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Home/End/arrows and Space preview without charging; correct placement locks a row, restores pair focus, and the pair bank remains visible while scrolling",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Desktop post-placement pair focus and arrow navigation stay visible after working below the fold",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Six actual correct placements win perfectly, lock all rows and return useful focus after closing the result",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A completed saved game restores and repairs a missing daily result record",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real portrait and square PNG downloads carry actual aggregate scores and no answer or seed words",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened sharing keeps the played date after midnight; mocked file-share cancellation and denied clipboard preserve manual caption copy",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed Practice is explicitly shown, never perfect or solved, and leaves the Daily win intact",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real second-tab progress with delayed events discards a stale correct placement without false solve animation or announcement",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

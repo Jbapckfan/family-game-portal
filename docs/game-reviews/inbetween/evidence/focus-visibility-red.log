@@ -1,0 +1,62 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px clues and five non-overlapping 44px gap targets plus 44px pair controls fit at 320–1440 without overflow",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Selecting pairs, previewing, Clear and Escape are free and leave no preview",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A wrong confirmed fit costs one attempt without consuming its pair; completing the board afterward is solved, not perfect",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Nudge cancel is inert; confirmed advice costs one nudge, restores the same preview on reload and cannot be charged twice while visible",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Home/End/arrows and Space preview without charging; correct placement locks a row, restores pair focus, and the pair bank remains visible while scrolling",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: {\"id\":\"tile-0\",\"top\":-371.671875,\"bottom\":-314.921875}\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween.mjs:39:528"
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px clues and five non-overlapping 44px gap targets plus 44px pair controls fit at 320–1440 without overflow",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Selecting pairs, previewing, Clear and Escape are free and leave no preview",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A wrong confirmed fit costs one attempt without consuming its pair; completing the board afterward is solved, not perfect",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Nudge cancel is inert; confirmed advice costs one nudge, restores the same preview on reload and cannot be charged twice while visible",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Home/End/arrows and Space preview without charging; correct placement locks a row, restores pair focus, and the pair bank remains visible while scrolling",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: {\"id\":\"tile-0\",\"top\":-367,\"bottom\":-311}\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween.mjs:39:528"
+  }
+]

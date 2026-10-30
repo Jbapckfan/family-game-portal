@@ -44,8 +44,8 @@
           </section>
           <div class="board-heading"><span><b>02</b> FIND ITS PLACE</span><button id="quick-help">How it works ↗</button></div>
           <div id="puzzle" class="puzzle" tabindex="-1" aria-label="Six words to complete"><p>Making a little room…</p></div>
-          <div class="board-bottom"><div class="progress"><span id="progress-dots" class="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 6 fit</span></div><div class="attempt-count"><strong id="attempt-count">0</strong> <span id="attempt-word">attempts</span><span class="par-label"> / 6 is perfect</span></div></div>
-          <p id="feedback" class="feedback" role="status">Pick a pair. Tap a gap. See what fits.</p>
+          <div class="board-bottom"><div class="progress"><span id="progress-dots" class="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 6 fit</span></div><div class="attempt-count"><strong id="attempt-count">0</strong> <span id="attempt-word">attempts</span><span id="perfect-goal" class="par-label">Goal: 6 attempts · 0 nudges</span></div></div>
+          <p id="feedback" class="feedback">Pick a pair. Tap a gap. See what fits.</p>
           <div id="game-controls" class="game-controls"><button id="hint-button" class="primary-button"><span aria-hidden="true">✦</span> A little nudge</button><button id="clear-button" class="secondary-button" disabled>Clear choice</button><button id="more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button></div>
           <div id="finished-actions" class="game-controls" hidden><button id="results-button" class="primary-button">Your result ↗</button><button id="next-button" class="secondary-button">Try a practice →</button><button id="finished-more-button" class="secondary-button more-button" aria-label="Practice options" hidden>•••</button></div>
           <p id="board-note" class="board-note">No timer. No lost lives. There’s room to think.</p>
@@ -67,7 +67,7 @@
         </aside>
       </div>
     </main>
-    <footer><a id="family-link" href="http://192.168.1.155:8080/">← Alford Family Games</a><a id="tradeoff-link" href="https://tradeoff-daily.jbapckfan.chatgpt.site">Play Tradeoff ↗</a><button id="about-button">About Inbetween</button></footer>
+    <footer><a id="family-link" href="../daily/">← Alford Family Games</a><a id="tradeoff-link" href="../tradeoff/">Play Tradeoff ↗</a><button id="about-button">About Inbetween</button></footer>
   </div>
   <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button id="dialog-close" class="icon-button dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>

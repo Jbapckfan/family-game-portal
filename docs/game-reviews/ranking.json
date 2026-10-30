@@ -671,17 +671,79 @@
       "name": "Inbetween",
       "creator": "ChatGPT",
       "reviewOrder": 8,
-      "status": "not_reviewed",
+      "status": "ready_for_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
         "comments": []
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "32a56b9873f8a71e72d582032737c7b0dcc4a5ee",
+          "method": "Static source/CSS/tests/audit; no screenshots or execution. UI score is a source-based prediction.",
+          "scope": "Baseline Inbetween before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 4,
+            "ui": 3,
+            "replay": 2,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "inbetween/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "32a56b9873f8a71e72d582032737c7b0dcc4a5ee",
+          "method": "Static source/CSS/tests/audit; no screenshots or execution. UI score is a source-based prediction.",
+          "scope": "Baseline Inbetween before improvements",
+          "scores": {
+            "fun": 3.5,
+            "clarity": 4.2,
+            "ui": 3.6,
+            "replay": 3.2,
+            "shareability": 3.4
+          },
+          "scoresArePredictions": true,
+          "report": "inbetween/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "32a56b9873f8a71e72d582032737c7b0dcc4a5ee",
+          "method": "Inline engine/app/HTML/audit only; tools disabled, no CSS/images or execution",
+          "scope": "Baseline Inbetween before improvements",
+          "scores": {
+            "fun": 2,
+            "clarity": 4,
+            "ui": null,
+            "replay": 2,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "inbetween/MAKER-Opus__initial-review.md"
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "inbetween/REPORT.md",
+        "inbetween/ADJUDICATION.md",
+        "inbetween/evidence/summary.json",
+        "inbetween/evidence/insertion-audit.json"
+      ],
+      "nextStep": "James playtest and keeper/replay verdict pending. Cairn follows this review; do not infer an Inbetween rating.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Updated inline source only; no execution or rendered UI",
+        "report": "inbetween/MAKER-Opus__final-review.md",
+        "findings": "No Critical defect. Two Important stats-save/focus findings reproduced and corrected after review; final unit/browser checks passed. Atomic simultaneous terminal writes remain a stated architecture limitation."
+      },
+      "gameplayFinding": "210 distinct answer sets but 174 transformations, 100 seeds and 96 pairs; max answer recurrence9. Exactly one intended tile/gap per row; actual engine completed all13,440 solved-row subsets. This is not a human difficulty or semantic uniqueness measurement."
     },
     {
       "slug": "kimi-cairn",

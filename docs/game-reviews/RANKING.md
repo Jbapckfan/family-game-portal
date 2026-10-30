@@ -16,7 +16,7 @@ No numerical enjoyment scores were supplied. The table below is the review queue
 | 5 | Second Sense | ChatGPT | Keep | Play again: yes |
 | 6 | Sideways | ChatGPT | Replacement candidate: too easy | Qualitative feedback |
 | 7 | Tradeoff | ChatGPT | Keep; difficulty follow-up | Keeper; a bit too easy |
-| 8 | Inbetween | ChatGPT | Not yet reviewed individually | — |
+| 8 | Inbetween | ChatGPT | Reviewed build ready for playtest | Verdict pending |
 | 9 | Cairn | Kimi | Not yet reviewed individually | — |
 | 10 | Morph | Kimi | Not yet reviewed individually | — |
 | 11 | Tangle | Kimi | Not yet reviewed individually | — |
@@ -56,5 +56,7 @@ Second Sense reviewer fun predictions before improvements: Kimi **4/5**, Gemini 
 Sideways reviewer fun predictions before improvements: Kimi **3/5**, Gemini **4/5**, Opus **3/5**. James found it too easy and is not a fan; it is a replacement candidate. All 210 boards have at least one pair of exact answers that fixes the whole arrangement. [Review and depth audit](sideways/ADJUDICATION.md).
 
 Tradeoff reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James explicitly called it a keeper, a bit too easy. Difficulty tuning remains a follow-up; relative keeper order is unknown. [Review decisions and open concurrency finding](tradeoff/ADJUDICATION.md).
+
+Inbetween reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James has not rated it. [Review decisions, bank recurrence and final verification](inbetween/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

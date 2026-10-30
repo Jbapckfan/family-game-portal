@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-30",
+  "catalogTests": {
+    "passed": 888,
+    "failed": 0
+  },
+  "finalTargetedTests": 82,
+  "verificationOrder": "All counts are from final source after final Opus fixes. Focused tests overlap the catalog suite. Test-selector correction and controlled guard-disabled reproduction are retained honestly.",
+  "browserChecks": 26,
+  "browserPassed": 26,
+  "browserEngines": [
+    "Chromium",
+    "WebKit"
+  ],
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "compiledRuntimeFiles": 280,
+  "compiledBytesMatch": true,
+  "webBuildId": "5dc7e74858a77d49",
+  "stagedRuntimeFiles": 314,
+  "finalStage": "dist/inbetween-review-20261030-final-v3/web",
+  "contentAudit": {
+    "boards": 210,
+    "distinctAnswerSets": 210,
+    "distinctSeedAnswerClueTriples": 174,
+    "distinctAnswerWords": 174,
+    "distinctSeeds": 100,
+    "distinctPairs": 96,
+    "maxAnswerAppearances": 9,
+    "intermediateSubsetsCompleted": 13440,
+    "rowInstancesWithMultipleEquivalentGaps": 0,
+    "correctPlacementCounts": {
+      "1": 1260
+    },
+    "method": "Independent insertion enumeration checks homes; actual engine completes every 64-subset board. Multiple equivalent gaps create the same exact answer. These are finite construction/recurrence facts, not semantic uniqueness or measured human difficulty."
+  },
+  "jamesVerdict": "pending; no rating or keeper verdict supplied",
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "finalReview": {
+    "provider": "Opus",
+    "model": "claude-opus-5-5",
+    "criticalFindings": 0,
+    "importantFindings": 2,
+    "disposition": "Both Important findings reproduced and corrected after review, with final unit/browser verification."
+  },
+  "limitations": [
+    "Literally simultaneous conflicting terminal writes have no atomic finalization guarantee.",
+    "Semantic uniqueness and human difficulty are not established by the construction audit.",
+    "Native legacy text uses hints; browser UI/cards use nudges.",
+    "Older Canvas implementations without roundRect retain caption fallback; PNG export there is not certified."
+  ],
+  "sourceFileSHA256": {
+    "games/inbetween/README.md": "3ee464406b756fe3896f395b14825391726a4fc2d8336b57414f65b3c4d5c139",
+    "games/inbetween/app.mjs": "64354833fe84d0f5b0847c35e85949e0e6901cb1dd7e7706ebbe2cdf37b506cd",
+    "games/inbetween/content-identity.mjs": "c13c60e395bd9997f6dee6e88e585327deb6f715eb585e222205d895905c651b",
+    "games/inbetween/docs/superpowers/plans/2026-10-20-inbetween.md": "d7b84dc1370954bf2d0b61022cc38ad770ec6c29569b6255df677acf43a165c7",
+    "games/inbetween/docs/superpowers/specs/2026-10-20-inbetween-design.md": "5e3e2bf084285014471fe1ac1ffba3a776418b96aef570a4084428629a86f182",
+    "games/inbetween/docs/verification.md": "fd175674b74bff2f8550167858f65d08d95382bb3446b6afb77ee18dfc1e4c99",
+    "games/inbetween/engine.mjs": "9aad0f2d95e1a54dc9c09b5023a402be5456e10932cc99843be873e8499ba4f1",
+    "games/inbetween/fonts/DM-Sans-LICENSE.txt": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1",
+    "games/inbetween/fonts/DM-Serif-Display-LICENSE.txt": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231",
+    "games/inbetween/fonts/dm-sans-bold.ttf": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211",
+    "games/inbetween/fonts/dm-sans-regular.ttf": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9",
+    "games/inbetween/fonts/dm-sans-semibold.ttf": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a",
+    "games/inbetween/fonts/dm-serif-display-italic.ttf": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920",
+    "games/inbetween/fonts/dm-serif-display-regular.ttf": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1",
+    "games/inbetween/icon.svg": "8996fddb83d8aa1d3f36c1306f9a7a19b8bdf3c1af563d055a96a1ef156a3658",
+    "games/inbetween/index.html": "5432ca911ca8f4f859c15dabebbf96905425449cee113f51beaa6fe32cf71563",
+    "games/inbetween/manifest.webmanifest": "2be1239a0963340a397e063ef0c245da0b978d48df4a4d3f2dc620c785a7d15d",
+    "games/inbetween/package.json": "c63bea968fcdf6e644477128688862d595775ba6925dbebe8c487a11e44a0951",
+    "games/inbetween/puzzles.mjs": "0161fc3b69d0f9443ca3922653d9ab0fd7b54c7265d7d04fbe98797dcf1e8962",
+    "games/inbetween/scripts/generate-puzzles.mjs": "34964bd85d8de80fb73bb5771c720219a97e4976affa9f2a68db5f4ce58dbac8",
+    "games/inbetween/share-card.mjs": "20dcc892c2491dcf9be5c6ff7becc3561ad0b33f56b3fc542f610fba1f873b33",
+    "games/inbetween/styles.css": "620c0a878daac41eac270153542d87cffe45580dea7ea4e29207c109a2534dc9",
+    "games/inbetween/tests/app-persistence.test.mjs": "84432a24b7d5d1066262cd8df142a8dcded3f950385124754c0dcb7520a38d5c",
+    "games/inbetween/tests/content-identity.test.mjs": "144332a5867159fc1294d9b43f32026a8aded96e9047d17a3d96d929af6e6fac",
+    "games/inbetween/tests/engine.test.mjs": "fc68e52071e73ceb55617b596396b99f6ca7f0ff8ef1f37fe82fb8d1cf4b3459",
+    "games/inbetween/tests/expansion.test.mjs": "984030109ed9351e8a5182a9243e7928fbc4d8bd133603bc1ca285b532d6b69e",
+    "games/inbetween/tests/puzzles.test.mjs": "785889510c514ca70b387ca08c16e784bba705614a4a838473e8f05afa655913",
+    "games/inbetween/tests/share-card.test.mjs": "3ed045ea1f2686c8360fdbe588d5c54abe494dfb40be84db7b79d472b753dd37"
+  }
+}

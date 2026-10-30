@@ -1,0 +1,184 @@
+✖ nudge confirmation is inert until approved; same-board paid advice survives reload without another charge (36.524875ms)
+✔ pair/gap previews and clear/Escape spend no attempts (23.536459ms)
+✖ a stale correct placement adopts changed progress before any success animation, speech or haptic (26.365459ms)
+✖ a stale nudge adopts newer progress without announcing uncharged advice (18.559875ms)
+✖ adopting a terminal daily immediately repairs missing or stale records (9.842708ms)
+✖ a completed daily survives an older unfinished storage event (34.988209ms)
+✖ valid external terminal progress supersedes dirty unsaved local progress (12.625458ms)
+✔ an already revealed daily remains final when a stale tab tries its winning placement (39.270208ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 2
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 479.274
+
+✖ failing tests:
+
+test at scripts/inbetween-ui.test.mjs:18:1
+✖ nudge confirmation is inert until approved; same-board paid advice survives reload without another charge (36.524875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:20:37)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:26:1
+✖ a stale correct placement adopts changed progress before any success animation, speech or haptic (26.365459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + HTMLDivElement {}
+  - null
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:30:75)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:33:1
+✖ a stale nudge adopts newer progress without announcing uncharged advice (18.559875ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /another window/. Input:
+  
+  'Nudge 0. Put UL between RES and T in row 1. Confirm with Place pair.'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:34:236)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Nudge 0. Put UL between RES and T in row 1. Confirm with Place pair.',
+    expected: /another window/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:36:1
+✖ adopting a terminal daily immediately repairs missing or stale records (9.842708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'revealed' !== 'won'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:37:298)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'revealed',
+    expected: 'won',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:39:1
+✖ a completed daily survives an older unfinished storage event (34.988209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   attempts: 0,
+  -   attempts: 6,
+      hints: 0,
+      placements: [
+  +     null,
+  +     null,
+  +     null,
+  +     null,
+  +     null,
+  +     null
+  -     {
+  -       gap: 3,
+  -       tileId: 'tile-5'
+  -     },
+  -     {
+  -       gap: 1,
+  -       tileId: 'tile-0'
+  -     },
+  -     {
+  -       gap: 4,
+  -       tileId: 'tile-2'
+  -     },
+  -     {
+  -       gap: 4,
+  -       tileId: 'tile-3'
+  -     },
+  -     {
+  -       gap: 2,
+  -       tileId: 'tile-4'
+  -     },
+  -     {
+  -       gap: 2,
+  -       tileId: 'tile-1'
+  -     }
+      ],
+      puzzleId: 'inbetween-011',
+  +   status: 'playing'
+  -   status: 'won'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:40:314)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { puzzleId: 'inbetween-011', placements: [ null, null, null, null, null, null ], attempts: 0, hints: 0, status: 'playing' },
+    expected: { puzzleId: 'inbetween-011', placements: [ [Object], [Object], [Object], [Object], [Object], [Object] ], attempts: 6, hints: 0, status: 'won' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:42:1
+✖ valid external terminal progress supersedes dirty unsaved local progress (12.625458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'playing' !== 'won'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:43:414)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'playing',
+    expected: 'won',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

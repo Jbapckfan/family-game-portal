@@ -1,0 +1,1583 @@
+{
+  "boards": 210,
+  "distinctAnswerSets": 210,
+  "distinctSeedAnswerClueTriples": 174,
+  "distinctAnswerWords": 174,
+  "distinctSeeds": 100,
+  "distinctPairs": 96,
+  "maxAnswerAppearances": 9,
+  "intermediateSubsetsCompleted": 13440,
+  "rowInstancesWithMultipleEquivalentGaps": 0,
+  "correctPlacementCounts": {
+    "1": 1260
+  },
+  "method": "Independent insertion enumeration checks homes; actual engine completes every 64-subset board. Multiple equivalent gaps create the same exact answer. These are finite construction/recurrence facts, not semantic uniqueness or measured human difficulty.",
+  "transformations": [
+    {
+      "seed": "CART",
+      "answer": "CARPET",
+      "clue": "Soft floor covering",
+      "pair": "PE",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "PLAN",
+      "answer": "PLANET",
+      "clue": "World orbiting a star",
+      "pair": "ET",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "SAND",
+      "answer": "STRAND",
+      "clue": "A single thread in a rope",
+      "pair": "TR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "NOTE",
+      "answer": "NOTICE",
+      "clue": "Written announcement",
+      "pair": "IC",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "FORM",
+      "answer": "FORMAT",
+      "clue": "Layout or arrangement",
+      "pair": "AT",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PAST",
+      "answer": "PASTRY",
+      "clue": "A flaky baked treat",
+      "pair": "RY",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "KING",
+      "answer": "HIKING",
+      "clue": "Walking on countryside trails",
+      "pair": "HI",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "PEAR",
+      "answer": "APPEAR",
+      "clue": "Come into view",
+      "pair": "AP",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "MALE",
+      "answer": "MANGLE",
+      "clue": "Twist badly out of shape",
+      "pair": "NG",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "DATE",
+      "answer": "DONATE",
+      "clue": "Give to a good cause",
+      "pair": "ON",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "LATE",
+      "answer": "LOCATE",
+      "clue": "Find the position of",
+      "pair": "OC",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TIED",
+      "answer": "TIDIED",
+      "clue": "Put things neatly away",
+      "pair": "DI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SING",
+      "answer": "SPRING",
+      "clue": "The season after winter",
+      "pair": "PR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "CURE",
+      "answer": "CURATE",
+      "clue": "Select items for an exhibition",
+      "pair": "AT",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "TRUE",
+      "answer": "TRUDGE",
+      "clue": "Walk slowly with heavy steps",
+      "pair": "DG",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "FORM",
+      "answer": "FORMAL",
+      "clue": "Suited to a black-tie occasion",
+      "pair": "AL",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PAST",
+      "answer": "PASTEL",
+      "clue": "A soft, pale color",
+      "pair": "EL",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "TONE",
+      "answer": "TONGUE",
+      "clue": "The organ used for tasting",
+      "pair": "GU",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "TAIL",
+      "answer": "TAILOR",
+      "clue": "Someone who alters clothes",
+      "pair": "OR",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PANT",
+      "answer": "PLIANT",
+      "clue": "Easily bent",
+      "pair": "LI",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TALE",
+      "answer": "TATTLE",
+      "clue": "Tell on someone",
+      "pair": "TT",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "RENT",
+      "answer": "REGENT",
+      "clue": "A ruler acting for a monarch",
+      "pair": "GE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "DART",
+      "answer": "DEPART",
+      "clue": "Leave for a destination",
+      "pair": "EP",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TENT",
+      "answer": "TALENT",
+      "clue": "A natural skill",
+      "pair": "AL",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "MILE",
+      "answer": "MINGLE",
+      "clue": "Mix with others at a party",
+      "pair": "NG",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SING",
+      "answer": "RISING",
+      "clue": "Moving upward",
+      "pair": "RI",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "NEST",
+      "answer": "NESTLE",
+      "clue": "Settle into a snug spot",
+      "pair": "LE",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "FORM",
+      "answer": "REFORM",
+      "clue": "Make changes to improve something",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SINE",
+      "answer": "SALINE",
+      "clue": "Containing dissolved salt",
+      "pair": "AL",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "MALE",
+      "answer": "MANTLE",
+      "clue": "A cloak, or a layer surrounding Earth's core",
+      "pair": "NT",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "MATE",
+      "answer": "MUTATE",
+      "clue": "Undergo a genetic change",
+      "pair": "UT",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "FIST",
+      "answer": "FINEST",
+      "clue": "Of the highest quality",
+      "pair": "NE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "TALE",
+      "answer": "TACKLE",
+      "clue": "Deal with a difficult problem",
+      "pair": "CK",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "TIER",
+      "answer": "TINDER",
+      "clue": "Dry material used to start a fire",
+      "pair": "ND",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SING",
+      "answer": "CASING",
+      "clue": "A protective outer covering",
+      "pair": "CA",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SENT",
+      "answer": "ABSENT",
+      "clue": "Not here",
+      "pair": "AB",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "MALE",
+      "answer": "MARBLE",
+      "clue": "A small glass toy, or a veined stone",
+      "pair": "RB",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "MOLE",
+      "answer": "MOBILE",
+      "clue": "Able to move around",
+      "pair": "BI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "TEND",
+      "answer": "ATTEND",
+      "clue": "Be present at an event",
+      "pair": "AT",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "PORT",
+      "answer": "PORTAL",
+      "clue": "A doorway or gateway",
+      "pair": "AL",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CENT",
+      "answer": "CLIENT",
+      "clue": "Someone using a professional's services",
+      "pair": "LI",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "PANT",
+      "answer": "PATENT",
+      "clue": "An inventor's exclusive legal right",
+      "pair": "TE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "COVE",
+      "answer": "COVERT",
+      "clue": "Hidden or secret",
+      "pair": "RT",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PEST",
+      "answer": "PUREST",
+      "clue": "Least mixed with anything else",
+      "pair": "UR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "DATE",
+      "answer": "DEBATE",
+      "clue": "A structured exchange of opposing views",
+      "pair": "EB",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "FISH",
+      "answer": "FINISH",
+      "clue": "Bring to an end",
+      "pair": "NI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "MUSE",
+      "answer": "MUSCLE",
+      "clue": "Body tissue that contracts to move you",
+      "pair": "CL",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "SEAL",
+      "answer": "SERIAL",
+      "clue": "A story told in episodes",
+      "pair": "RI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SOFT",
+      "answer": "SOFTEN",
+      "clue": "Make less hard",
+      "pair": "EN",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "RING",
+      "answer": "ROWING",
+      "clue": "Moving a boat with oars",
+      "pair": "OW",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TEST",
+      "answer": "ATTEST",
+      "clue": "Confirm that something is true",
+      "pair": "AT",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "CANE",
+      "answer": "CANINE",
+      "clue": "Related to dogs",
+      "pair": "IN",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "USED",
+      "answer": "UNUSED",
+      "clue": "Still waiting to be put to work",
+      "pair": "UN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SEND",
+      "answer": "SECOND",
+      "clue": "The position after first",
+      "pair": "CO",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LINE",
+      "answer": "LINEUP",
+      "clue": "The players picked for a team",
+      "pair": "UP",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "MATE",
+      "answer": "MATURE",
+      "clue": "Fully grown",
+      "pair": "UR",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "SING",
+      "answer": "STRING",
+      "clue": "A thin cord",
+      "pair": "TR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "CASH",
+      "answer": "CASHEW",
+      "clue": "A curved edible nut",
+      "pair": "EW",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CUES",
+      "answer": "CURVES",
+      "clue": "Smooth bends",
+      "pair": "RV",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "TIER",
+      "answer": "TIMBER",
+      "clue": "Wood prepared for building",
+      "pair": "MB",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "REST",
+      "answer": "RESULT",
+      "clue": "The outcome",
+      "pair": "UL",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "BATH",
+      "answer": "BREATH",
+      "clue": "Air taken into your lungs",
+      "pair": "RE",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "CARE",
+      "answer": "CAREER",
+      "clue": "A long-term profession",
+      "pair": "ER",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "FAST",
+      "answer": "FASTEN",
+      "clue": "Fix securely in place",
+      "pair": "EN",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "NEST",
+      "answer": "NEWEST",
+      "clue": "Most recently made",
+      "pair": "WE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "PEER",
+      "answer": "PEPPER",
+      "clue": "The seasoning next to salt",
+      "pair": "PP",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LAND",
+      "answer": "ISLAND",
+      "clue": "Land surrounded by water",
+      "pair": "IS",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "PACE",
+      "answer": "PALACE",
+      "clue": "A ruler's grand residence",
+      "pair": "LA",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "PEST",
+      "answer": "PRIEST",
+      "clue": "A member of the clergy",
+      "pair": "RI",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "CARE",
+      "answer": "CARAFE",
+      "clue": "A glass container for serving drinks",
+      "pair": "AF",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "LASH",
+      "answer": "LAVISH",
+      "clue": "Generous or extravagant",
+      "pair": "VI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "DATE",
+      "answer": "DILATE",
+      "clue": "Grow wider",
+      "pair": "IL",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "LONG",
+      "answer": "BELONG",
+      "clue": "Be in the right place",
+      "pair": "BE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "PORT",
+      "answer": "IMPORT",
+      "clue": "Bring goods into a country",
+      "pair": "IM",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "CORN",
+      "answer": "CORNET",
+      "clue": "A small brass instrument",
+      "pair": "ET",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PEER",
+      "answer": "PEWTER",
+      "clue": "A metal alloy often used for tankards",
+      "pair": "WT",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "TILE",
+      "answer": "TINGLE",
+      "clue": "A prickly sensation",
+      "pair": "NG",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SEEN",
+      "answer": "SCREEN",
+      "clue": "A display for films or pictures",
+      "pair": "CR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "SUNK",
+      "answer": "SUNKEN",
+      "clue": "Below the surrounding surface",
+      "pair": "EN",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "TURN",
+      "answer": "RETURN",
+      "clue": "Come back",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "BOND",
+      "answer": "BEYOND",
+      "clue": "On the far side of",
+      "pair": "EY",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "MILE",
+      "answer": "MIDDLE",
+      "clue": "Halfway between the ends",
+      "pair": "DD",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "FINE",
+      "answer": "FINITE",
+      "clue": "Having an end or limit",
+      "pair": "IT",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "SONG",
+      "answer": "STRONG",
+      "clue": "Able to exert plenty of force",
+      "pair": "TR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "FOLD",
+      "answer": "UNFOLD",
+      "clue": "Open something that was bent over",
+      "pair": "UN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TIER",
+      "answer": "TINKER",
+      "clue": "Make small experimental repairs",
+      "pair": "NK",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LION",
+      "answer": "LOTION",
+      "clue": "A liquid used to soothe the skin",
+      "pair": "OT",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "LESS",
+      "answer": "LESSEN",
+      "clue": "Make smaller in amount",
+      "pair": "EN",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "SINE",
+      "answer": "SHRINE",
+      "clue": "A sacred place",
+      "pair": "HR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "MALT",
+      "answer": "MALLET",
+      "clue": "A hammer with a large wooden or rubber head",
+      "pair": "LE",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "MIST",
+      "answer": "MISFIT",
+      "clue": "Someone who feels out of place",
+      "pair": "FI",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "MART",
+      "answer": "MARKET",
+      "clue": "A place to buy and sell",
+      "pair": "KE",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "PANT",
+      "answer": "PARENT",
+      "clue": "A mother or father",
+      "pair": "RE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "CAMP",
+      "answer": "CAMPUS",
+      "clue": "The grounds of a college",
+      "pair": "US",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "PEER",
+      "answer": "PEELER",
+      "clue": "A kitchen tool that removes potato skins",
+      "pair": "EL",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "BONE",
+      "answer": "BOVINE",
+      "clue": "Relating to cattle",
+      "pair": "VI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LION",
+      "answer": "LEGION",
+      "clue": "A vast number of people",
+      "pair": "EG",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "BEST",
+      "answer": "BEHEST",
+      "clue": "A person's request or command",
+      "pair": "HE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "DATE",
+      "answer": "UPDATE",
+      "clue": "Bring up to date",
+      "pair": "UP",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TAIL",
+      "answer": "RETAIL",
+      "clue": "Selling goods to the public",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "PORT",
+      "answer": "EXPORT",
+      "clue": "Send goods to another country",
+      "pair": "EX",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "LAST",
+      "answer": "LATEST",
+      "clue": "Most recent",
+      "pair": "TE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LENT",
+      "answer": "LAMENT",
+      "clue": "Express sorrow or regret",
+      "pair": "AM",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "BARN",
+      "answer": "BARREN",
+      "clue": "Too poor to support much vegetation",
+      "pair": "RE",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "FACE",
+      "answer": "FACADE",
+      "clue": "The front of a building",
+      "pair": "AD",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "LESS",
+      "answer": "UNLESS",
+      "clue": "Except if",
+      "pair": "UN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "BAND",
+      "answer": "BANDIT",
+      "clue": "A robber or outlaw",
+      "pair": "IT",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CUED",
+      "answer": "CURLED",
+      "clue": "Formed into coils",
+      "pair": "RL",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "COTS",
+      "answer": "COUNTS",
+      "clue": "Adds up the total",
+      "pair": "UN",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "NEST",
+      "answer": "HONEST",
+      "clue": "Truthful and sincere",
+      "pair": "HO",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "FORM",
+      "answer": "INFORM",
+      "clue": "Give someone the facts",
+      "pair": "IN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "MUSE",
+      "answer": "MISUSE",
+      "clue": "Use in the wrong way",
+      "pair": "IS",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TREE",
+      "answer": "TREBLE",
+      "clue": "The high notes on a stereo dial",
+      "pair": "BL",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "RENT",
+      "answer": "RELENT",
+      "clue": "Finally give in",
+      "pair": "LE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "CART",
+      "answer": "CARTON",
+      "clue": "A box for milk or eggs",
+      "pair": "ON",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CANE",
+      "answer": "CANDLE",
+      "clue": "A light with a wick and wax",
+      "pair": "DL",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "TALE",
+      "answer": "TANGLE",
+      "clue": "A confused knot of threads",
+      "pair": "NG",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "LONG",
+      "answer": "LOVING",
+      "clue": "Affectionate and caring",
+      "pair": "VI",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "FIRE",
+      "answer": "FIGURE",
+      "clue": "A number, or an illustration",
+      "pair": "GU",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "PORT",
+      "answer": "REPORT",
+      "clue": "Give an account of what happened",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TURN",
+      "answer": "UPTURN",
+      "clue": "A change for the better",
+      "pair": "UP",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SUNG",
+      "answer": "UNSUNG",
+      "clue": "Not given deserved praise",
+      "pair": "UN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "MOST",
+      "answer": "MODEST",
+      "clue": "Not inclined to boast",
+      "pair": "DE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "BETS",
+      "answer": "BEASTS",
+      "clue": "Animals, especially large ones",
+      "pair": "AS",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "BEST",
+      "answer": "BESTOW",
+      "clue": "Give as an honor or gift",
+      "pair": "OW",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "FINE",
+      "answer": "REFINE",
+      "clue": "Improve by making small changes",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "BORE",
+      "answer": "BEFORE",
+      "clue": "Earlier than",
+      "pair": "EF",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "RENT",
+      "answer": "RECENT",
+      "clue": "Not long ago",
+      "pair": "CE",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "COTS",
+      "answer": "COURTS",
+      "clue": "Places where tennis is played",
+      "pair": "UR",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "SEAM",
+      "answer": "STREAM",
+      "clue": "A small flowing waterway",
+      "pair": "TR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "SENT",
+      "answer": "SILENT",
+      "clue": "Making no sound",
+      "pair": "IL",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "REST",
+      "answer": "RESIST",
+      "clue": "Push back against",
+      "pair": "IS",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "TEND",
+      "answer": "EXTEND",
+      "clue": "Make longer",
+      "pair": "EX",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TEST",
+      "answer": "DETEST",
+      "clue": "Dislike very strongly",
+      "pair": "DE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "REST",
+      "answer": "RECAST",
+      "clue": "Give a role to a different actor",
+      "pair": "CA",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "DARK",
+      "answer": "DARKEN",
+      "clue": "Make less bright",
+      "pair": "EN",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "SEAM",
+      "answer": "SCREAM",
+      "clue": "A loud, piercing cry",
+      "pair": "CR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TIRE",
+      "answer": "TIRADE",
+      "clue": "A long, angry speech",
+      "pair": "AD",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "BARE",
+      "answer": "BEWARE",
+      "clue": "Be on your guard",
+      "pair": "EW",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "CENT",
+      "answer": "ACCENT",
+      "clue": "A distinctive way of pronouncing words",
+      "pair": "AC",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TAIL",
+      "answer": "DETAIL",
+      "clue": "A small individual feature",
+      "pair": "DE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "MITE",
+      "answer": "MINUTE",
+      "clue": "Sixty seconds",
+      "pair": "NU",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "USED",
+      "answer": "AMUSED",
+      "clue": "Entertained by something funny",
+      "pair": "AM",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "REST",
+      "answer": "FOREST",
+      "clue": "A large area of trees",
+      "pair": "FO",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SIDE",
+      "answer": "STRIDE",
+      "clue": "A long walking step",
+      "pair": "TR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "PANT",
+      "answer": "PANTRY",
+      "clue": "A food-storage cupboard",
+      "pair": "RY",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "COLT",
+      "answer": "COBALT",
+      "clue": "A metallic element that lends its name to a deep blue",
+      "pair": "BA",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "PART",
+      "answer": "PARROT",
+      "clue": "A bird known for copying sounds",
+      "pair": "RO",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "RING",
+      "answer": "DARING",
+      "clue": "Bold enough to take a risk",
+      "pair": "DA",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "CAST",
+      "answer": "CASTLE",
+      "clue": "A fortified building with towers",
+      "pair": "LE",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CENT",
+      "answer": "CEMENT",
+      "clue": "The binding ingredient in concrete",
+      "pair": "ME",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "PARE",
+      "answer": "PARADE",
+      "clue": "A procession with floats and bands",
+      "pair": "AD",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "CART",
+      "answer": "CARROT",
+      "clue": "Orange root vegetable",
+      "pair": "RO",
+      "gaps": [
+        3
+      ]
+    },
+    {
+      "seed": "SUNG",
+      "answer": "SPRUNG",
+      "clue": "Jumped suddenly",
+      "pair": "PR",
+      "gaps": [
+        1
+      ]
+    },
+    {
+      "seed": "TEND",
+      "answer": "INTEND",
+      "clue": "Have a plan to do something",
+      "pair": "IN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "POTS",
+      "answer": "POINTS",
+      "clue": "Units added to a score",
+      "pair": "IN",
+      "gaps": [
+        2
+      ]
+    },
+    {
+      "seed": "FREE",
+      "answer": "FREEZE",
+      "clue": "Turn liquid into solid ice",
+      "pair": "ZE",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "SAND",
+      "answer": "SANDAL",
+      "clue": "An open shoe with straps",
+      "pair": "AL",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "TIRE",
+      "answer": "RETIRE",
+      "clue": "Stop working at the end of a career",
+      "pair": "RE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "RENT",
+      "answer": "RENTAL",
+      "clue": "Something borrowed for a fee",
+      "pair": "AL",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "KING",
+      "answer": "JOKING",
+      "clue": "Speaking in fun",
+      "pair": "JO",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "BUST",
+      "answer": "ROBUST",
+      "clue": "Strong and sturdy",
+      "pair": "RO",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "POST",
+      "answer": "POSTER",
+      "clue": "A large printed notice",
+      "pair": "ER",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "CURE",
+      "answer": "SECURE",
+      "clue": "Safe and firmly protected",
+      "pair": "SE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "TIRE",
+      "answer": "SATIRE",
+      "clue": "Humor used to expose foolishness",
+      "pair": "SA",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "FINE",
+      "answer": "DEFINE",
+      "clue": "Explain the meaning of a word",
+      "pair": "DE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "KING",
+      "answer": "BAKING",
+      "clue": "Cooking with dry oven heat",
+      "pair": "BA",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "LINE",
+      "answer": "ONLINE",
+      "clue": "Connected to the internet",
+      "pair": "ON",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SIDE",
+      "answer": "BESIDE",
+      "clue": "Next to",
+      "pair": "BE",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "BUST",
+      "answer": "BUSTLE",
+      "clue": "Move about with busy energy",
+      "pair": "LE",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "MUSE",
+      "answer": "MUSEUM",
+      "clue": "A home for exhibits",
+      "pair": "UM",
+      "gaps": [
+        4
+      ]
+    },
+    {
+      "seed": "TIRE",
+      "answer": "ENTIRE",
+      "clue": "Whole, with nothing left out",
+      "pair": "EN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "SIDE",
+      "answer": "INSIDE",
+      "clue": "On the inner side",
+      "pair": "IN",
+      "gaps": [
+        0
+      ]
+    },
+    {
+      "seed": "DATE",
+      "answer": "SEDATE",
+      "clue": "Calm and unhurried",
+      "pair": "SE",
+      "gaps": [
+        0
+      ]
+    }
+  ]
+}

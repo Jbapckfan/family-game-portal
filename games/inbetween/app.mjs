@@ -1,6 +1,7 @@
 import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 import { PUZZLES } from './puzzles.mjs';
-import { getDateKey, getDaily, createGame, buildWord, submitPlacement, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
+import { getDateKey, getDaily, createGame, buildWord, submitPlacement, findHint, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
+import { openResultShare } from './share-card.mjs';
 
 // Optional native bridge; browser rules and existing save keys are unchanged.
 function nativeMessage(payload) {
@@ -47,6 +48,8 @@ function readRecords() {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 }
 function write(key, value, readable=true) {
+  // A shared records object must not flush any terminal daily still unsaved.
+  if(key==='records'&&[...dirtyKeys].some(k=>k.startsWith('daily:')))readable=false;
   memory.set(key,value);
   try { if(!readable)throw Error('Unverified storage');localStorage.getItem(PREFIX+key);const raw=JSON.stringify(value);localStorage.setItem(PREFIX+key,raw);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;return true; }
   catch {
@@ -58,8 +61,9 @@ function write(key, value, readable=true) {
 function keyForGame() { return mode === 'daily' ? 'daily:' + daily.dateKey : 'practice:' + puzzle.id; }
 function recordDailyResult(dateKey,state,readable=true) {
   if(state.status==='playing')return;
-  if(!getStats({[dateKey]:records[dateKey]},dateKey).played){
-    records[dateKey]={status:state.status,attempts:state.attempts,hints:state.hints};
+  const next={status:state.status,attempts:state.attempts,hints:state.hints};
+  if(JSON.stringify(records[dateKey])!==JSON.stringify(next)){
+    records[dateKey]=next;
     write('records',records,readable);
   }else if(dirtyKeys.has('records'))write('records',records,readable);
 }
@@ -70,12 +74,26 @@ function reconcileDailyResult() {
   const current=getDaily(PUZZLES);
   recordDailyResult(current.dateKey,restoreGame(current.puzzle,read('daily:'+current.dateKey,null)));
 }
-function saveGame() {
+function hintViewKey(){return `inbetween:ui:v1:${keyForGame()}`;}
+function rememberHintView(){try{if(hinted)sessionStorage.setItem(hintViewKey(),JSON.stringify({placements:game.placements,hints:game.hints,hint:{row:hinted.row,tileId:hinted.tileId,gap:hinted.gap}}));else sessionStorage.removeItem(hintViewKey());}catch{}}
+function restoreHintView(){
+  if(game.status!=='playing'||!game.hints)return;
+  try{const saved=JSON.parse(sessionStorage.getItem(hintViewKey())),expected=findHint(puzzle,game);if(saved?.hints!==game.hints||JSON.stringify(saved.placements)!==JSON.stringify(game.placements)||!expected)return;const expectedKey={row:expected.row,tileId:expected.tileId,gap:expected.gap};if(JSON.stringify(saved.hint)!==JSON.stringify(expectedKey))return;hinted=expected;selectedTile=expected.tileId;preview=expectedKey;}catch{}
+}
+function adoptedFeedback(){
+  clearTimeout(resultTimer);clearSelection();rememberHintView();
+  feedback=game.status==='playing'?'Progress changed in another window. Your saved board is restored; try your move again.':'This board was completed in another window. Your saved result is restored.';
+  if(dialog.open)closeDialog();toast(feedback);if(mode==='daily'){records={...records,...readRecords()};recordDailyResult(daily.dateKey,game);}
+}
+function saveGame(previous=game) {
   const key = keyForGame();
   let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{}
-  if(raw===undefined){write(key,game,false);if(mode==='daily')recordDailyResult(daily.dateKey,game,false);return;}
+  if(raw===undefined){write(key,game,false);if(mode==='daily')recordDailyResult(daily.dateKey,game,false);return true;}
   if(acceptedSaves.has(key)?raw!==acceptedSaves.get(key):raw!==null){
-    try{game=restoreGame(puzzle,raw===null?null:JSON.parse(raw));memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;clearSelection();feedback='Progress changed in another window. Your saved board is restored; try your move again.';toast(feedback);return;}catch{}
+    try{const restored=restoreGame(puzzle,raw===null?null:JSON.parse(raw));
+      if(mode==='daily'&&previous.status!=='playing'&&restored.status==='playing')game=previous;
+      else{game=restored;memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;adoptedFeedback();return false;}
+    }catch{}
   }
   if (mode === 'daily') {
     const stored = restoreGame(puzzle, read(key, null));
@@ -88,8 +106,9 @@ function saveGame() {
     }
     records = { ...records, ...readRecords() };
   }
-  write(key, game);
-  if (mode === 'daily')recordDailyResult(daily.dateKey,game);
+  const saved=write(key, game);
+  if (mode === 'daily')recordDailyResult(daily.dateKey,game,saved);
+  return true;
 }
 function tileById(id) { return puzzle.tiles.find(tile => tile.id === id); }
 function solvedCount() { return game.placements.filter(Boolean).length; }
@@ -116,7 +135,7 @@ function render(options = {}) {
     const word = hasPreview && selected ? buildWord(row.seed, selected.letters, preview.gap) : null;
     const heading = `<div class="clue"><span class="row-number" aria-hidden="true">${placement ? game.status === 'revealed' ? '·' : '✓' : String(r+1).padStart(2,'0')}</span><div class="clue-copy">${esc(row.clue)}${placement ? `<small>${esc(row.seed)} + ${esc(letters)}</small>` : ''}</div></div>`;
     const line = placement ? `<div class="answer-letters" aria-label="${esc(row.answer)}, ${game.status === 'revealed' ? 'revealed' : 'fits'}">${[...row.answer].map((letter,c)=>`<span class="answer-letter${c >= placement.gap && c < placement.gap+2 ? ' inserted' : ''}" aria-hidden="true">${letter}</span>`).join('')}</div>` : `<div class="word-line" role="group" aria-label="${esc(row.seed)}; select an insertion gap">${Array.from({length:5},(_,gap)=>`<button class="gap${hasPreview && preview.gap===gap ? ' active' : ''}${hinted?.row===r && hinted.gap===gap ? ' hinted' : ''}" data-row="${r}" data-gap="${gap}" aria-label="${selected ? `Insert ${esc(selected.letters)}` : 'Pick a pair first, then insert'} ${gapDescription(row.seed,gap)} in ${row.seed}. Clue: ${esc(row.clue)}" aria-pressed="${Boolean(hasPreview && preview.gap===gap)}" ${!selected || !active ? 'disabled' : ''}>+</button>${gap<4 ? `<span class="seed-letter" aria-hidden="true">${row.seed[gap]}</span>` : ''}`).join('')}</div>`;
-    const panel = hasPreview && word ? `<div class="preview-panel"><div><span class="preview-label">Your fit</span><span class="preview-word" aria-label="Preview: ${word}">${word.slice(0,preview.gap)}<mark>${selected.letters}</mark>${word.slice(preview.gap+2)}</span></div><button class="fit-button" data-fit="${r}">Place pair <span aria-hidden="true">↵</span></button></div>${rejected ? '<p class="preview-error">That word doesn’t match the clue. Try another gap or pair.</p>' : ''}` : '';
+    const panel = hasPreview && word ? `<div class="preview-panel"><div><span class="preview-label">Your fit</span><span class="preview-word" aria-label="Preview: ${word}">${word.slice(0,preview.gap)}<mark>${selected.letters}</mark>${word.slice(preview.gap+2)}</span></div><button class="fit-button" data-fit="${r}">Place pair</button></div>${rejected ? '<p class="preview-error">That word doesn’t match the clue. Try another gap or pair.</p>' : ''}` : '';
     return `<div class="word-row${placement?' solved':''}${game.status==='revealed'?' revealed':''}${hasPreview?' previewing':''}${hasPreview && rejected?' rejected':''}${options.solved===r?' just-solved':''}" role="group" aria-label="Word ${r+1}: ${esc(row.clue)}${placement?', completed':''}"><div class="row-main">${heading}${line}</div>${panel}</div>`;
   }).join('');
   $('daily-tab').classList.toggle('active',mode==='daily'); $('daily-tab').setAttribute('aria-pressed',String(mode==='daily'));
@@ -128,10 +147,13 @@ function render(options = {}) {
   $('progress-label').textContent = game.status==='revealed' ? 'Answers revealed' : `${count} of 6 fit`;
   $('attempt-count').textContent = game.attempts;
   $('attempt-word').textContent = game.attempts===1?'attempt':'attempts';
+  $('perfect-goal').textContent=game.status==='revealed'?'· shown, not solved':game.status==='won'?(game.attempts===6&&!game.hints?'· perfect':'· solved'):game.hints?'· assisted':game.attempts>count?'· extra attempts':'Goal: 6 attempts · 0 nudges';
   $('feedback').textContent = feedback || (game.status==='won' ? 'Every pair, perfectly at home.' : game.status==='revealed' ? 'Answers shown. There’s always another way in.' : 'Pick a pair. Tap a gap. See what fits.');
   $('feedback').className = `feedback${game.status==='won'?' success':rejected?' error':''}`;
   $('game-controls').hidden = !active; $('finished-actions').hidden = active;
   $('clear-button').disabled = !selectedTile;
+  $('hint-button').disabled = !active||Boolean(hinted);
+  $('hint-button').textContent=hinted?'✦ Nudge shown':'✦ A little nudge';
   $('finished-more-button').hidden = mode!=='practice';
   $('next-button').textContent = mode==='daily'?'Try a practice →':'Another puzzle →';
   $('results-button').textContent = game.status==='revealed'?'See the result ↗':'Your result ↗';
@@ -148,6 +170,7 @@ function chooseTile(id) {
   if(selectedTile===id){clearSelection();feedback='Choice cleared. Try any pair.';}
   else {selectedTile=id;preview=null;hinted=null;rejected=false;feedback=`Choose a gap for ${tileById(id).letters}. You can preview before placing.`;playTone('select');}
   render({focusTile:id});
+  rememberHintView();
   announce(feedback);
 }
 function chooseGap(row,gap) {
@@ -159,28 +182,38 @@ function chooseGap(row,gap) {
 }
 function placePair() {
   if(!preview)return;
+  const before=game;
   const row=preview.row;
   const outcome=submitPlacement(puzzle,game,preview);
   if(!outcome.changed)return;
   game=outcome.state;
-  if(outcome.accepted){clearSelection();feedback=`${puzzle.rows[row].answer}. A good fit.`;playTone(game.status==='won'?'win':'fit');}
-  else {rejected=true;feedback='Not quite. Your pair is still available. Try another place.';playTone('miss');}
-  saveGame();
+  if(outcome.accepted){clearSelection();feedback=`${puzzle.rows[row].answer}. A good fit.`;}
+  else {rejected=true;feedback='Not quite. Your pair is still available. Try another place.';}
+  if(!saveGame(before)){render();focusAvailable();announce(feedback);return;}
+  rememberHintView();playTone(outcome.accepted?(game.status==='won'?'win':'fit'):'miss');
   render(outcome.accepted?{solved:row}:{focusFit:true});
   announce(`${feedback} ${game.attempts} ${game.attempts===1?'attempt':'attempts'}.`);
-  if(outcome.accepted && game.status==='playing') $('bank').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+  if(outcome.accepted && game.status==='playing')focusAvailable();
   if(game.status!=='playing'){clearTimeout(resultTimer);resultTimer=setTimeout(showResult,650);}
 }
 function takeHint() {
+  if(game.status!=='playing'||hinted)return;
+  const before=game;
   const result=useHint(puzzle,game);
   if(!result.hint)return;
   game=result.state;hinted=result.hint;selectedTile=hinted.tileId;
   preview={row:hinted.row,tileId:hinted.tileId,gap:hinted.gap};rejected=false;
   feedback='Here’s one way in. Place this pair when you’re ready.';
-  saveGame();render({focusFit:true});
-  $('puzzle').querySelector('[data-fit]')?.scrollIntoView({block:'nearest',behavior:reducedMotion()?'instant':'smooth'});
+  if(!saveGame(before)){render();focusAvailable();announce(feedback);return;}
+  rememberHintView();render({focusFit:true});
+  $('puzzle').querySelector('[data-fit]')?.scrollIntoView({block:'center',behavior:reducedMotion()?'instant':'smooth'});
   announce(`Nudge ${game.hints}. ${result.hint.message} Confirm with Place pair.`);
 }
+function confirmHint(){
+  if(game.status!=='playing'||hinted)return;
+  openDialog('<p class="dialog-kicker">A SCORED NUDGE</p><h2 class="dialog-title" id="dialog-title">Show one useful fit?</h2><p class="confirm-copy">This records <strong>1 nudge</strong> and makes this an assisted round. It previews a pair and its gap; you still confirm with Place pair. Your attempt count stays the same. The advice remains until you place it, clear your choice or choose another pair.</p><div class="dialog-actions"><button class="secondary-button" data-action="close" autofocus>Keep thinking</button><button class="primary-button" data-action="use-hint">Use this nudge</button></div>');
+}
+function focusAvailable(){const target=game.status!=='playing'?$('results-button'):$('bank').querySelector('button:not(:disabled)');target?.focus({preventScroll:true});target?.scrollIntoView({block:'nearest'});}
 
 function openDialog(content) {
   clearTimeout(resultTimer);
@@ -192,9 +225,10 @@ function openDialog(content) {
 function closeDialog() {
   dialog.close();
   requestAnimationFrame(()=>{
-    if(lastFocus?.isConnected&&!lastFocus.disabled&&lastFocus.getClientRects().length)lastFocus.focus({preventScroll:true});
+    if(lastFocus?.isConnected&&lastFocus.matches?.('button,a,input,textarea,select')&&!lastFocus.disabled&&lastFocus.getClientRects().length)lastFocus.focus({preventScroll:true});
     else if(game.status!=='playing')$('results-button').focus({preventScroll:true});
-    else $('bank').focus({preventScroll:true});
+    else if(preview)$('puzzle').querySelector('[data-fit]')?.focus({preventScroll:true});
+    else focusAvailable();
   });
 }
 function showHelp() {
@@ -204,12 +238,12 @@ function showResult() {
   if(game.status==='playing')return;
   const won=game.status==='won';
   const perfect=won&&game.attempts===6&&game.hints===0;
-  openDialog(`<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A LITTLE PRACTICE'}</p><div class="result-symbol${perfect?' perfect':''}" aria-hidden="true">[ ${perfect?'✳':won?'✓':'·'} ]</div><h2 class="dialog-title" id="dialog-title">${perfect?'A perfect fit.':won?'Right where they belong.':'A little perspective.'}</h2><p class="result-copy">${perfect?'Six pairs. Six placements. No room for improvement.':won?'A few little letters. Six entirely new possibilities.':'Answers revealed. This board doesn’t count as a win.'}</p><div class="result-dots${won?'':' revealed'}" aria-hidden="true">${'<span></span>'.repeat(6)}</div><div class="result-metrics"><div><strong>${game.attempts}</strong><span>${game.attempts===1?'attempt':'attempts'}</span></div><div><strong>${game.hints}</strong><span>${game.hints===1?'nudge':'nudges'}</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="share" autofocus>Share your fit ↗</button><button class="secondary-button" data-action="practice">${mode==='daily'?'Try a practice':'Another puzzle'} →</button></div><p class="fineprint">${mode==='daily'?'A fresh puzzle at midnight Central.':'Practice is separate from your daily streak.'}<br>Your result never shares the answers.</p>`);
+  openDialog(`<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A LITTLE PRACTICE'}</p><div class="result-symbol${perfect?' perfect':''}" aria-hidden="true">[ ${perfect?'✳':won?'✓':'·'} ]</div><h2 class="dialog-title" id="dialog-title">${perfect?'A perfect fit.':won?'Right where they belong.':'A little perspective.'}</h2><p class="result-copy">${perfect?'Six pairs. Six placements. No nudges needed.':won?'A few little letters. Six entirely new possibilities.':'Answers revealed. This board doesn’t count as a win.'}</p><div class="result-dots${won?'':' revealed'}" aria-hidden="true">${'<span></span>'.repeat(6)}</div><div class="result-metrics"><div><strong>${game.attempts}</strong><span>${game.attempts===1?'attempt':'attempts'}</span></div><div><strong>${game.hints}</strong><span>${game.hints===1?'nudge':'nudges'}</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="share" autofocus>Share your fit ↗</button><button class="secondary-button" data-action="practice">${mode==='daily'?'Try a practice':'Another puzzle'} →</button></div><p class="fineprint">${mode==='daily'?'A fresh puzzle at midnight Central.':'Practice is separate from your daily streak.'}<br>Your result never shares the answers.</p>`);
 }
 function showStats() {
   flushPendingGame();
   records=readRecords();reconcileDailyResult();const stats=getStats(records,getDateKey());
-  openDialog(`<p class="dialog-kicker">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">A place in your day.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played?Math.round(stats.won/stats.played*100):0}%</div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div><div class="stats-detail"><span>Perfect fits</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average attempts when solved</span><strong>${stats.averageAttempts===null?'—':Number(stats.averageAttempts).toFixed(1)}</strong></div><p class="fineprint">Daily results are saved in this browser.<br>Practice and revealed boards don’t extend a streak.<br>Clearing browser data removes your progress.</p>`);
+  openDialog(`<p class="dialog-kicker">YOUR DAILY RITUAL</p><h2 class="dialog-title" id="dialog-title">A place in your day.</h2><div class="stats-grid"><div><div class="stat-number">${stats.played}</div><div class="stat-label">Completed</div></div><div><div class="stat-number">${stats.played?Math.round(stats.won/stats.played*100):0}%</div><div class="stat-label">Solved</div></div><div><div class="stat-number">${stats.streak}</div><div class="stat-label">Current streak</div></div><div><div class="stat-number">${stats.bestStreak}</div><div class="stat-label">Best streak</div></div></div><div class="stats-detail"><span>Perfect fits</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average attempts when solved</span><strong>${!stats.won?'—':Number(stats.averageAttempts).toFixed(1)}</strong></div><p class="fineprint">Daily results are saved in this browser.<br>Practice and revealed boards don’t extend a streak.<br>Clearing browser data removes your progress.</p>`);
 }
 function savedPractice(index, acceptGame=false) {
   const candidate=PUZZLES[index];if(!candidate)return null;
@@ -242,7 +276,7 @@ function showPractice() {
 function loadPractice(index) {
   if(!Number.isInteger(index)||!PUZZLES[index]||!canPractice(index))return;
   clearTimeout(resultTimer);mode='practice';puzzle=PUZZLES[index];game=savedPractice(index,true)||createGame(puzzle);
-  clearSelection();feedback='';render();lastFocus=null;closeDialog();document.querySelector('.game-topline').scrollIntoView({block:'start',behavior:reducedMotion()?'instant':'smooth'});
+  clearSelection();restoreHintView();feedback='';render();lastFocus=null;closeDialog();document.querySelector('.game-topline').scrollIntoView({block:'start',behavior:reducedMotion()?'instant':'smooth'});
 }
 function randomPractice() {
   const possible=practiceIndices().map(i=>({p:PUZZLES[i],i})).filter(({p})=>p.id!==puzzle.id);
@@ -253,7 +287,7 @@ function randomPractice() {
 function loadDaily() {
   flushPendingGame();
   clearTimeout(resultTimer);mode='daily';daily=getDaily(PUZZLES);puzzle=daily.puzzle;game=restoreGame(puzzle,read('daily:'+daily.dateKey,null,true));
-  clearSelection();feedback='';reconcileDailyResult();render();if(dialog.open)closeDialog();
+  clearSelection();restoreHintView();feedback='';reconcileDailyResult();render();if(dialog.open)closeDialog();
 }
 function showOptions() {
   openDialog(`<p class="dialog-kicker">A LITTLE BREATHING ROOM</p><h2 class="dialog-title" id="dialog-title">Your way to play.</h2><div class="option-list">${game.status==='playing'?'<button data-action="confirm-reveal">Reveal the answers →<small>Ends this board as revealed, not solved.</small></button>':''}${mode==='practice'?'<button data-action="confirm-restart">Start this practice over ↻<small>Clears this practice’s progress and score.</small></button>':''}<button data-action="practice">Choose another practice →<small>Your current progress stays saved.</small></button><button data-action="help">A refresher on the rules ↗</button></div>`);
@@ -262,7 +296,7 @@ function confirmReveal() {
   openDialog('<p class="dialog-kicker">CURIOUS HOW IT FITS?</p><h2 class="dialog-title" id="dialog-title">Show the answers?</h2><p class="confirm-copy">This ends the puzzle as revealed. It won’t count as a win or extend your streak.</p><div class="dialog-actions"><button class="secondary-button" data-action="close" autofocus>Keep thinking</button><button class="primary-button" data-action="reveal">Reveal this board</button></div>');
 }
 function reveal() {
-  game=revealGame(puzzle,game);clearSelection();feedback='';saveGame();render();showResult();announce('Answers revealed. This board is not recorded as a win.');
+  const before=game;game=revealGame(puzzle,game);clearSelection();feedback='';const saved=saveGame(before);rememberHintView();render();showResult();announce(saved?'Answers revealed. This board is not recorded as a win.':feedback);
 }
 function confirmRestart() {
   if(mode!=='practice')return;
@@ -270,15 +304,13 @@ function confirmRestart() {
 }
 function restart() {
   if(mode!=='practice')return;
-  game=createGame(puzzle);clearSelection();feedback='A fresh start. Find where they fit.';saveGame();render();lastFocus=null;closeDialog();announce('Practice restarted. Six pairs ready.');
+  const before=game;game=createGame(puzzle);clearSelection();feedback='A fresh start. Find where they fit.';const saved=saveGame(before);rememberHintView();render();lastFocus=null;closeDialog();announce(saved?'Practice restarted. Six pairs ready.':feedback);
 }
 async function share() {
+  if(game.status==='playing')return;
   const text=formatShare(puzzle,game,{number:mode==='daily'?daily.number:PUZZLES.indexOf(puzzle)+1,mode});
   if(nativeMessage({type:'share',text})) return;
-  try {
-    if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);toast('Copied. A little fit for your friends.');return;}
-  } catch {}
-  openDialog(`<p class="dialog-kicker">PASS IT ALONG</p><h2 class="dialog-title" id="dialog-title">Share your fit.</h2><p class="result-copy">Copy the text below. No answers, just your result.</p><textarea class="share-fallback" id="share-text" readonly aria-label="Your spoiler-free result">${esc(text)}</textarea><div class="dialog-actions"><button class="primary-button" data-action="select-share" autofocus>Select result</button></div>`);
+  try{openResultShare({game,mode,daily,openDialog});}catch{toast('This saved result needs a valid score before it can be shared.');}
 }
 function showAbout() {
   openDialog(`<p class="dialog-kicker">AN ALFORD FAMILY GAME</p><h2 class="dialog-title" id="dialog-title">A little more possibility.</h2><p class="dialog-body">Inbetween is a daily word puzzle about making room: six real words, six two-letter pairs, six new meanings.</p><p class="dialog-body">This edition has <strong>${PUZZLES.length} prepared puzzles</strong>. The daily rotates through the collection and eventually repeats. Everyone gets the same puzzle at midnight Central.</p><p class="dialog-body">Progress is saved on this browser, with no account or tracking. Your scores don’t sync across devices. This is a new game in the established family of word-insertion puzzles.</p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Back to the spaces →</button></div>`);
@@ -305,7 +337,7 @@ $('puzzle').addEventListener('click',event=>{
   const gap=event.target.closest('[data-gap]');if(gap){chooseGap(Number(gap.dataset.row),Number(gap.dataset.gap));return;}
   if(event.target.closest('[data-fit]'))placePair();
 });
-$('hint-button').addEventListener('click',takeHint);
+$('hint-button').addEventListener('click',confirmHint);
 $('puzzle').addEventListener('keydown',event=>{
   const button=event.target.closest('[data-row][data-gap]');
   if(!button||event.ctrlKey||event.metaKey||event.altKey||game.status!=='playing')return;
@@ -319,9 +351,9 @@ $('puzzle').addEventListener('keydown',event=>{
   }else if(event.key==='Home')nextGap=0;
   else if(event.key==='End')nextGap=4;
   else return;
-  event.preventDefault();$('puzzle').querySelector(`[data-row="${nextRow}"][data-gap="${nextGap}"]`)?.focus({preventScroll:true});
+  event.preventDefault();const target=$('puzzle').querySelector(`[data-row="${nextRow}"][data-gap="${nextGap}"]`);target?.focus({preventScroll:true});target?.scrollIntoView({block:'center'});
 });
-$('clear-button').addEventListener('click',()=>{clearSelection();feedback='Choice cleared. Try any pair.';render();$('bank').querySelector('button:not(:disabled)')?.focus({preventScroll:true});});
+$('clear-button').addEventListener('click',()=>{clearSelection();rememberHintView();feedback='Choice cleared. Try any pair.';render();focusAvailable();});
 $('daily-tab').addEventListener('click',loadDaily);
 $('new-day-button').addEventListener('click',loadDaily);
 $('practice-tab').addEventListener('click',showPractice);
@@ -339,20 +371,23 @@ dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog
 $('dialog-content').addEventListener('click',event=>{
   const practice=event.target.closest('[data-practice]');if(practice){loadPractice(Number(practice.dataset.practice));return;}
   const action=event.target.closest('[data-action]')?.dataset.action;
+  if(action==='use-hint'){event.target.closest('[data-action]').disabled=true;closeDialog();takeHint();return;}
   const actions={close:closeDialog,share,practice:showPractice,random:randomPractice,help:showHelp,'confirm-reveal':confirmReveal,reveal,'confirm-restart':confirmRestart,restart,'select-share':()=>{$('share-text')?.focus();$('share-text')?.select();}};
   actions[action]?.();
 });
 $('sound-button').addEventListener('click',()=>{soundOn=!soundOn;write('settings',{sound:soundOn});updateSoundButton();if(soundOn)playTone('fit');});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!dialog.open&&selectedTile){clearSelection();feedback='Choice cleared.';render();$('bank').focus({preventScroll:true});}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!dialog.open&&selectedTile){clearSelection();rememberHintView();feedback='Choice cleared.';render();focusAvailable();}});
 window.addEventListener('storage',event=>{
   if(event.key===PREFIX+'records'){records=readRecords();return;}
   if(event.key!==PREFIX+keyForGame())return;
-  game=restoreGame(puzzle,read(keyForGame(),null,true));clearSelection();feedback='Progress updated from another tab.';render();
-  if(dialog.open)closeDialog();announce(feedback);
+  const key=keyForGame();let raw;try{raw=localStorage.getItem(PREFIX+key);}catch{return;}
+  let restored;try{restored=restoreGame(puzzle,raw===null?null:JSON.parse(raw));}catch{return;}
+  if(mode==='daily'&&game.status!=='playing'&&restored.status==='playing'){const saved=write(key,game);recordDailyResult(daily.dateKey,game,saved);return;}
+  game=restored;memory.set(key,game);acceptedSaves.set(key,raw);dirtyKeys.delete(key);storageWarning=dirtyKeys.size>0;adoptedFeedback();render();focusAvailable();announce(feedback);
 });
 setInterval(()=>{$('new-day').hidden=mode!=='daily'||getDateKey()===daily.dateKey;},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)$('new-day').hidden=mode!=='daily'||getDateKey()===daily.dateKey;});
 if(/\/games\/inbetween\/?(?:index\.html)?$/.test(location.pathname)){
   $('family-link').href=document.documentElement?.dataset?.collectionHome||'../../';$('tradeoff-link').href='../tradeoff/';
 }
-reconcileDailyResult();updateSoundButton();render();
+reconcileDailyResult();restoreHintView();updateSoundButton();render();

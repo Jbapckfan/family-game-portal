@@ -1,0 +1,36 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "a2319317b464485dcdf4cc3f42667a9929d7e68fff391da140d895eafb490ada",
+  "files": [
+    "games/inbetween/engine.mjs",
+    "games/inbetween/app.mjs",
+    "games/inbetween/share-card.mjs",
+    "games/inbetween/tests/share-card.test.mjs",
+    "games/inbetween/index.html",
+    "games/inbetween/styles.css",
+    "scripts/inbetween-ui.test.mjs",
+    "scripts/review-inbetween.mjs",
+    "docs/game-reviews/inbetween/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 215.33,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 20913,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 57075,
+      "webSearchRequests": 0,
+      "costUSD": 0.8751876000000001,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 18773,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 57075,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

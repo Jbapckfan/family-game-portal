@@ -281,7 +281,7 @@ def validate_web_bundle(games_dir):
             require(files <= SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES and not directories, "Unexpected game runtime file: " + game)
         else:
             runtime = RUNTIME_FILES - ({"shell.mjs"} if game in CLASSIC_GAMES else set())
-            if game in {"ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff"}:
+            if game in {"ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween"}:
                 runtime = runtime | {"share-card.mjs"}
             require(runtime <= files, f"Missing runtime files for {game}: {sorted(runtime - files)}")
             fonts = {path for path in files if path.startswith("fonts/")}

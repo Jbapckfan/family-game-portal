@@ -1,0 +1,44 @@
+✔ nudge confirmation is inert until approved; same-board paid advice survives reload without another charge (52.792625ms)
+✔ pair/gap previews and clear/Escape spend no attempts (22.842ms)
+✔ a stale correct placement adopts changed progress before any success animation, speech or haptic (28.184291ms)
+✔ a stale nudge adopts newer progress without announcing uncharged advice (20.671917ms)
+✔ adopting a terminal daily immediately repairs missing or stale records (12.693417ms)
+✔ a completed daily survives an older unfinished storage event (35.955208ms)
+✔ valid external terminal progress supersedes dirty unsaved local progress (13.793041ms)
+✔ an already revealed daily remains final when a stale tab tries its winning placement (42.806292ms)
+✖ result close restores its button when the previous focus was only a page container (36.041875ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 464.134875
+
+✖ failing tests:
+
+test at scripts/inbetween-ui.test.mjs:48:1
+✖ result close restores its button when the previous focus was only a page container (36.041875ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be reference-equal to "expected":
+  + actual - expected
+  
+  + HTMLDivElement {
+  +   getClientRects: [Function (anonymous)]
+  + }
+  - HTMLButtonElement {}
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:49:245)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [HTMLDivElement],
+    expected: HTMLButtonElement {},
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

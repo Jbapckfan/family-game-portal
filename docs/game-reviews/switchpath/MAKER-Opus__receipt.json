@@ -1,0 +1,35 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "8b8ecbd2d51fed1ef62392049fcb64c1dd969c66311127f22e3ccd920a640515",
+  "files": [
+    "games/switchpath/share-card.mjs",
+    "games/switchpath/app.mjs",
+    "games/switchpath/engine.mjs",
+    "games/switchpath/index.html",
+    "games/switchpath/tests/share-card.test.mjs",
+    "games/switchpath/tests/app.test.mjs",
+    "scripts/review-switchpath.mjs",
+    "docs/game-reviews/switchpath/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 110.51,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 9823,
+      "cacheReadInputTokens": 649,
+      "cacheCreationInputTokens": 32334,
+      "webSearchRequests": 0,
+      "costUSD": 0.45526980000000006,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 7506,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 32334,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

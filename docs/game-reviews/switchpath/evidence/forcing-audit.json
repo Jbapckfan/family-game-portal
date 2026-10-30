@@ -1,0 +1,1756 @@
+{
+  "date": "2026-10-30",
+  "humanDifficulty": false,
+  "method": "Filter adjacent edges by checkerboard valley/peak comparison. Repeatedly include all remaining edges when a vertex has exactly its required degree, or exclude extras once its required edges are selected. S/E require degree1, others degree2. No guessing, connectivity deduction or subtour pruning. Every conclusion cross-checked against the previously exhaustive unique solution.",
+  "boards": 217,
+  "solvedByDegreeOnly": 58,
+  "requireMoreThanDegreeOnly": 159,
+  "minForcedEdges": 6,
+  "maxForcedEdges": 15,
+  "daily": {
+    "id": "switchpath-011",
+    "initialEdges": 22,
+    "forcedEdges": 15,
+    "undecidedEdges": 0,
+    "solvedByDegreeOnly": true,
+    "rounds": 4
+  },
+  "perBoard": [
+    {
+      "id": "switchpath-001",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-002",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-003",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-004",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-005",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-006",
+      "initialEdges": 22,
+      "forcedEdges": 12,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-007",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-008",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-009",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-010",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-011",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-012",
+      "initialEdges": 24,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-013",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-014",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-015",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-016",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-017",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-018",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-019",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-020",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-021",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-022",
+      "initialEdges": 24,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-023",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-024",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-025",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-026",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-027",
+      "initialEdges": 23,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-028",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-029",
+      "initialEdges": 24,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-030",
+      "initialEdges": 19,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-031",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-032",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-033",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-034",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-035",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-036",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-037",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-038",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-039",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-040",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-041",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-042",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 13,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-043",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-044",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-045",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-046",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 9,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-047",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-048",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-049",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-050",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-051",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-052",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 13,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-053",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-054",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-055",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-056",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-057",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-058",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-059",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-060",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-061",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-062",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-063",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-064",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-065",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-066",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-067",
+      "initialEdges": 20,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-068",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-069",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 14,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-070",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-071",
+      "initialEdges": 21,
+      "forcedEdges": 8,
+      "undecidedEdges": 13,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-072",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-073",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-074",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-075",
+      "initialEdges": 21,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-076",
+      "initialEdges": 21,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-077",
+      "initialEdges": 23,
+      "forcedEdges": 12,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-078",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-079",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-080",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-081",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-082",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-083",
+      "initialEdges": 20,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-084",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-085",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-086",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-087",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-088",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-089",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-090",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-091",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-092",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-093",
+      "initialEdges": 23,
+      "forcedEdges": 6,
+      "undecidedEdges": 17,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-094",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-095",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-096",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-097",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-098",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-099",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-100",
+      "initialEdges": 23,
+      "forcedEdges": 12,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-101",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-102",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 7
+    },
+    {
+      "id": "switchpath-103",
+      "initialEdges": 19,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-104",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-105",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-106",
+      "initialEdges": 20,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-107",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-108",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-109",
+      "initialEdges": 21,
+      "forcedEdges": 10,
+      "undecidedEdges": 9,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-110",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-111",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-112",
+      "initialEdges": 23,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-113",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-114",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-115",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-116",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 14,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-117",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-118",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-119",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-120",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-121",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 6
+    },
+    {
+      "id": "switchpath-122",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 13,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-123",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 6
+    },
+    {
+      "id": "switchpath-124",
+      "initialEdges": 23,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-125",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-126",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-127",
+      "initialEdges": 22,
+      "forcedEdges": 10,
+      "undecidedEdges": 9,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-128",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-129",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-130",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-131",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-132",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-133",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-134",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-135",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 6
+    },
+    {
+      "id": "switchpath-136",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-137",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-138",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-139",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-140",
+      "initialEdges": 23,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-141",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-142",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-143",
+      "initialEdges": 22,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-144",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-145",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-146",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-147",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-148",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-149",
+      "initialEdges": 23,
+      "forcedEdges": 6,
+      "undecidedEdges": 17,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-150",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-151",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-152",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-153",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-154",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-155",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-156",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 14,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-157",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-158",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-159",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-160",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-161",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-162",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-163",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-164",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-165",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-166",
+      "initialEdges": 22,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-167",
+      "initialEdges": 20,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-168",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-169",
+      "initialEdges": 23,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-170",
+      "initialEdges": 22,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-171",
+      "initialEdges": 22,
+      "forcedEdges": 7,
+      "undecidedEdges": 15,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-172",
+      "initialEdges": 20,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-173",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-174",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-175",
+      "initialEdges": 21,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-176",
+      "initialEdges": 21,
+      "forcedEdges": 8,
+      "undecidedEdges": 13,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-177",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-178",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-179",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-180",
+      "initialEdges": 20,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-181",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-182",
+      "initialEdges": 20,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-183",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-184",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-185",
+      "initialEdges": 22,
+      "forcedEdges": 8,
+      "undecidedEdges": 14,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-186",
+      "initialEdges": 23,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 6
+    },
+    {
+      "id": "switchpath-187",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-188",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-189",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-190",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-191",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-192",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-193",
+      "initialEdges": 21,
+      "forcedEdges": 10,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-194",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-195",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 12,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-196",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-197",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-198",
+      "initialEdges": 21,
+      "forcedEdges": 11,
+      "undecidedEdges": 10,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-199",
+      "initialEdges": 20,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-200",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-201",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-202",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-203",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-204",
+      "initialEdges": 22,
+      "forcedEdges": 9,
+      "undecidedEdges": 11,
+      "solvedByDegreeOnly": false,
+      "rounds": 1
+    },
+    {
+      "id": "switchpath-205",
+      "initialEdges": 21,
+      "forcedEdges": 10,
+      "undecidedEdges": 9,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-206",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-207",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-208",
+      "initialEdges": 22,
+      "forcedEdges": 12,
+      "undecidedEdges": 7,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    },
+    {
+      "id": "switchpath-209",
+      "initialEdges": 23,
+      "forcedEdges": 11,
+      "undecidedEdges": 8,
+      "solvedByDegreeOnly": false,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-210",
+      "initialEdges": 20,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-211",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-212",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-213",
+      "initialEdges": 22,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 4
+    },
+    {
+      "id": "switchpath-214",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-215",
+      "initialEdges": 21,
+      "forcedEdges": 15,
+      "undecidedEdges": 0,
+      "solvedByDegreeOnly": true,
+      "rounds": 3
+    },
+    {
+      "id": "switchpath-216",
+      "initialEdges": 22,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 5
+    },
+    {
+      "id": "switchpath-217",
+      "initialEdges": 21,
+      "forcedEdges": 13,
+      "undecidedEdges": 4,
+      "solvedByDegreeOnly": false,
+      "rounds": 2
+    }
+  ]
+}

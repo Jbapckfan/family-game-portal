@@ -1,19 +1,27 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "James\u2019s stated preferences; reviewer predictions tracked separately",
+  "rankingBasis": "James’s stated preferences; reviewer predictions tracked separately",
   "games": [
     {
       "slug": "ringcount",
       "name": "Ringcount",
       "creator": "ChatGPT",
       "reviewOrder": 1,
-      "status": "ready_for_james_playtest",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "pretty easy and boring game, okay, next gae",
+            "interpretation": "Low enjoyment; felt easy. Numeric rating and replay answer not supplied."
+          }
+        ],
+        "difficultyReaction": "easy",
+        "enjoymentReaction": "boring"
       },
       "reviews": [
         {
@@ -65,37 +73,90 @@
           "report": "ringcount/MAKER-Gemini__initial-review.md"
         }
       ],
-      "disposition": "improve",
+      "disposition": "replacement_candidate",
       "evidence": [
         "ringcount/ADJUDICATION.md",
         "ringcount/REPORT.md",
         "ringcount/evidence/summary.json"
       ],
-      "nextStep": "James playtest: rate enjoyment and replay interest before assigning preference rank",
+      "nextStep": "Keep available while comparing later games; revisit only if redesign or replacement is requested",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
         "method": "Static inline source review; no execution",
         "findings": "Two important findings reproduced and corrected; accessible number roles also corrected",
         "report": "ringcount/MAKER-Opus__final-review.md"
-      }
+      },
+      "dispositionBasis": "Suggested from James’s low-enjoyment feedback; removal not authorized"
     },
     {
       "slug": "switchpath",
       "name": "Switchpath",
       "creator": "ChatGPT",
       "reviewOrder": 2,
-      "status": "not_reviewed",
+      "status": "ready_for_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
         "comments": []
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "method": "Static source and screenshot inspection; no execution",
+          "scope": "Pre-improvement Switchpath",
+          "scores": {
+            "fun": 2,
+            "clarity": 4,
+            "ui": 4,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "switchpath/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "method": "Static source and screenshot inspection; no execution",
+          "scope": "Pre-improvement Switchpath",
+          "scores": {
+            "fun": 2.5,
+            "clarity": 4,
+            "ui": 4,
+            "replay": 2.5,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "switchpath/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "method": "Static inline source; no execution or screenshots",
+          "scope": "Updated Switchpath source",
+          "scores": {
+            "fun": 3,
+            "clarity": 4,
+            "ui": null,
+            "replay": 3,
+            "shareability": 3.5
+          },
+          "scoresArePredictions": true,
+          "report": "switchpath/MAKER-Opus__final-review.md"
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "switchpath/REPORT.md",
+        "switchpath/ADJUDICATION.md",
+        "switchpath/evidence/summary.json",
+        "switchpath/evidence/forcing-audit.json"
+      ],
+      "nextStep": "James playtest: enjoyment, play again, comparison with Ringcount; Counterpart next",
+      "gameplayFinding": "58/217 boards fully solved by basic static degree forcing; 159 require more than that technique. Not a human difficulty or fun rating."
     },
     {
       "slug": "counterpart",

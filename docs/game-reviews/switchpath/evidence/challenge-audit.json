@@ -1,0 +1,1544 @@
+{
+  "date": "2026-10-30",
+  "method": "Independent orthogonal/alternating move enumeration along each authored unique solution; wrong-branch length includes the wrong step",
+  "humanDifficulty": false,
+  "boards": 217,
+  "branches": {
+    "min": 4,
+    "max": 7,
+    "mean": 4.62
+  },
+  "wrongBranchDepth": {
+    "min": 9,
+    "max": 14,
+    "mean": 12.7
+  },
+  "daily": {
+    "id": "switchpath-011",
+    "label": "Sharp",
+    "branches": 5,
+    "wrongChoices": 6,
+    "longestWrongBranch": 13
+  },
+  "perBoard": [
+    {
+      "id": "switchpath-001",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-002",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-003",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-004",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-005",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-006",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-007",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-008",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-009",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-010",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-011",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-012",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-013",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-014",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-015",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-016",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-017",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-018",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-019",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-020",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-021",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-022",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-023",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-024",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-025",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-026",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-027",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-028",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-029",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-030",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-031",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-032",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-033",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-034",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-035",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-036",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-037",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-038",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-039",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-040",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-041",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-042",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-043",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-044",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-045",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-046",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-047",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-048",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 7,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-049",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-050",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-051",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-052",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-053",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-054",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-055",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-056",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-057",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-058",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-059",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-060",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-061",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-062",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-063",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-064",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-065",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-066",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-067",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-068",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-069",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-070",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-071",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-072",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-073",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-074",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-075",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-076",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-077",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-078",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-079",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-080",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-081",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-082",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-083",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-084",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-085",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-086",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-087",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-088",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-089",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-090",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-091",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-092",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-093",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-094",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-095",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-096",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-097",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-098",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-099",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-100",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-101",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-102",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-103",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-104",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-105",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-106",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 10
+    },
+    {
+      "id": "switchpath-107",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-108",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-109",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-110",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-111",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-112",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-113",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-114",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-115",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 9
+    },
+    {
+      "id": "switchpath-116",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-117",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-118",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-119",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-120",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-121",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-122",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-123",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-124",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-125",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-126",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-127",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-128",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-129",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-130",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-131",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-132",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-133",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-134",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-135",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-136",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-137",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-138",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-139",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-140",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-141",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-142",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-143",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-144",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-145",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-146",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-147",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-148",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-149",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-150",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-151",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-152",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 9
+    },
+    {
+      "id": "switchpath-153",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-154",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-155",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-156",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-157",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-158",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-159",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-160",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-161",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-162",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-163",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-164",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-165",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-166",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-167",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-168",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-169",
+      "label": "Tricky",
+      "branches": 7,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-170",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 7,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-171",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-172",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-173",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-174",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-175",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-176",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-177",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-178",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-179",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-180",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-181",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-182",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-183",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-184",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-185",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-186",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-187",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-188",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-189",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-190",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-191",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-192",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-193",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-194",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-195",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-196",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-197",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-198",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-199",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 4,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-200",
+      "label": "Tricky",
+      "branches": 6,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-201",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-202",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-203",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-204",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-205",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 14
+    },
+    {
+      "id": "switchpath-206",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-207",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-208",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-209",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-210",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-211",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-212",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-213",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 11
+    },
+    {
+      "id": "switchpath-214",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-215",
+      "label": "Sharp",
+      "branches": 5,
+      "wrongChoices": 6,
+      "longestWrongBranch": 13
+    },
+    {
+      "id": "switchpath-216",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 12
+    },
+    {
+      "id": "switchpath-217",
+      "label": "Sharp",
+      "branches": 4,
+      "wrongChoices": 5,
+      "longestWrongBranch": 13
+    }
+  ]
+}

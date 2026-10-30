@@ -10,6 +10,7 @@ import * as engine from '../engine.mjs';
 // only browser facilities; rules, rendering, scoring, and storage are production code.
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const shellSource = readFileSync(new URL('../shell.mjs', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '').replace(/^export /gm, '');
+const shareSource = readFileSync(new URL('../share-card.mjs', import.meta.url), 'utf8').replace(/^export /gm, '');
 const appSource = readFileSync(new URL('../app.mjs', import.meta.url), 'utf8').replace(/^import .+;\n/gm, '');
 const prefix = 'switchpath:v1:';
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -78,6 +79,7 @@ function openApp(saved = new Map()) {
     clearTimeout: id => timers.delete(id), setInterval: () => 1,
   });
   runInContext(shellSource, context, { filename: 'shell.mjs' });
+  runInContext(shareSource, context, { filename: 'share-card.mjs' });
   runInContext(appSource, context, { filename: 'app.mjs' });
   const app = runInContext('app', context);
   return {
@@ -86,6 +88,7 @@ function openApp(saved = new Map()) {
     key(cell, key) { nodes.get('puzzle').emit('keydown', { key, target: nodes.get('puzzle').cells.get(cell) }); },
     click(id) { nodes.get(id).click(); },
     action(action) { nodes.get('dialog-content').emit('click', { target: { closest: selector => selector === '[data-action]' ? { dataset: { action } } : null } }); },
+    confirmHint() { nodes.get('dialog-content').emit('click', { target: { closest: selector => selector === '[data-hint-confirm]' ? {} : null } }); },
     resetPath() { nodes.get('dialog-content').emit('click', { target: { closest: selector => selector === '[data-reset-path]' ? {} : null } }); },
     showPendingResult() { for (const fn of [...timers.values()]) fn(); },
     stats() { return engine.getStats(JSON.parse(saved.get(prefix + 'records') || '{}'), '2026-10-20'); },
@@ -128,6 +131,12 @@ test('hint correction, undo, and confirmed path reset preserve honest assistance
   const view = openApp();
   view.tap(1);
   view.click('hint-button');
+  assert.match(view.nodes.get('dialog-content').innerHTML, /1 move and 1 hint/);
+  assert.match(view.nodes.get('dialog-content').innerHTML, /rewind/);
+  assert.equal(view.app.game.hints, 0);
+  view.action('close');
+  assert.deepEqual(plain(view.app.game.path), [0, 1]);
+  view.click('hint-button'); view.confirmHint();
   assert.deepEqual(plain(view.app.game.path), [0, 4]);
   assert.equal(view.app.game.moves, 2);
   assert.equal(view.app.game.hints, 1);
@@ -191,4 +200,37 @@ test('arrow keys move board focus without a move and Backspace rewinds one actua
   assert.deepEqual(plain(view.app.game.path), [0]);
   assert.equal(view.app.game.moves, 2);
   assert.equal(view.document.activeElement.dataset.cell, '0');
+});
+
+
+test('dead ends remain clear after reload and disappear after undo without revealing a move', () => {
+  const view = openApp(), puzzle = view.app.puzzle;
+  function deadEnd(state) {
+    if (state.status !== 'playing') return null;
+    const next = engine.legalNextCells(puzzle, state);
+    if (!next.length) return state;
+    for (const cell of next) { const found = deadEnd(engine.selectCell(puzzle,state,cell).state); if(found) return found; }
+    return null;
+  }
+  const dead = deadEnd(view.app.game); assert.ok(dead);
+  for(const cell of dead.path.slice(1)) view.tap(cell);
+  const reloaded = openApp(view.saved);
+  assert.equal(reloaded.nodes.get('direction-kicker').textContent, 'DEAD END');
+  assert.equal(reloaded.nodes.get('direction-label').textContent, 'No next step.');
+  assert.match(reloaded.nodes.get('movement-note').textContent, /Undo/);
+  reloaded.click('undo-button');
+  assert.notEqual(reloaded.nodes.get('direction-kicker').textContent, 'DEAD END');
+});
+
+test('finished route has ordered readable coordinates and is absent during play', () => {
+  const view = openApp();
+  assert.equal(view.nodes.get('route-inspection').hidden, true);
+  assert.equal(view.nodes.get('route-steps').innerHTML, '');
+  view.action('reveal');
+  assert.equal(view.nodes.get('route-inspection').hidden, false);
+  assert.equal((view.nodes.get('route-steps').innerHTML.match(/<li>/g)||[]).length, 16);
+  assert.match(view.nodes.get('route-steps').innerHTML, /row 1, column 1/);
+  assert.match(view.nodes.get('route-steps').innerHTML, /higher/);
+  view.action('random');
+  assert.equal(view.nodes.get('route-steps').innerHTML, '');
 });

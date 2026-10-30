@@ -25,7 +25,7 @@ async function openGame(slug,{saved={},date='2026-10-30'}={}){
  Object.assign(w,engine,{engine,PUZZLES,practiceCandidates});
  const context=dom.getInternalVMContext(),shell=!['tradeoff','inbetween'].includes(slug);
  if(shell)runInContext(strip(await readFile(new URL('shell.mjs',root),'utf8')),context);
- if(slug==='ringcount')runInContext(strip(await readFile(new URL('share-card.mjs',root),'utf8')),context);
+ if(['ringcount','switchpath'].includes(slug))runInContext(strip(await readFile(new URL('share-card.mjs',root),'utf8')),context);
  runInContext(strip(await readFile(new URL('app.mjs',root),'utf8')),context);
  const state=()=>runInContext(shell?'({mode:app.mode,puzzle:app.puzzle,game:app.game})':'({mode,puzzle,game})',context);
  const $=q=>w.document.querySelector(q);

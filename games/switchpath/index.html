@@ -29,7 +29,7 @@
     <main>
       <section class="hero" aria-label="Welcome">
         <p class="eyebrow"><span aria-hidden="true">↗↘</span>A LITTLE RHYTHM. A LITTLE REASON.</p>
-        <h1>Higher. Lower. <em>Find your flow.</em></h1>
+        <h1><span class="hero-lead">Higher. Lower. </span><em>Find your flow.</em></h1>
         <p>Sixteen numbers. One unbroken path.</p>
       </section>
       <div class="game-layout">
@@ -48,11 +48,6 @@
               <div class="rhythm" aria-hidden="true"><span id="rhythm-higher" class="rhythm-step current">↑</span><span class="rhythm-divider">·</span><span id="rhythm-lower" class="rhythm-step">↓</span></div>
             </div>
             <div id="puzzle" class="puzzle route-board" tabindex="-1" role="group" aria-label="Sixteen numbers to connect" aria-describedby="quick-rules movement-note keyboard-note"><p>Finding your next path…</p></div>
-            <div class="route-progress"><div id="progress-track" class="progress-track" role="progressbar" aria-label="Cells connected" aria-valuemin="1" aria-valuemax="16" aria-valuenow="1"><span id="progress-fill"></span></div><span id="progress-label">1 of 16 connected</span></div>
-            <div class="route-score"><span><strong id="move-count">0</strong> <span id="move-label">moves</span></span><span id="par-label">15 moves is perfect</span><span><strong id="hint-count">0</strong> <span id="hint-label">hints</span></span></div>
-            <p id="movement-note" class="movement-note">Move up, down, left or right. Tap an earlier step to rewind.</p>
-            <p id="keyboard-note" class="sr-only">Use arrow keys to move focus around the board. Press Enter or Space to select a cell. Backspace undoes the last step.</p>
-            <p id="feedback" class="feedback" role="status"></p>
             <div id="game-controls" class="game-controls">
               <button id="undo-button" class="secondary-button" aria-label="Undo one path step">↶ Undo</button>
               <button id="reset-path-button" class="secondary-button">Reset path</button>
@@ -64,6 +59,13 @@
               <button id="results-button" class="secondary-button">Your result ↗</button>
               <button id="finished-more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button>
             </div>
+            <p id="action-costs" class="action-costs">Undo or reset: +1 move · Hint: +1 move, +1 hint</p>
+            <div class="route-progress"><div id="progress-track" class="progress-track" role="progressbar" aria-label="Cells connected" aria-valuemin="1" aria-valuemax="16" aria-valuenow="1"><span id="progress-fill"></span></div><span id="progress-label">1 of 16 connected</span></div>
+            <div class="route-score"><span><strong id="move-count">0</strong> <span id="move-label">moves</span></span><span id="par-label">15 moves is perfect</span><span><strong id="hint-count">0</strong> <span id="hint-label">hints</span></span></div>
+            <p id="movement-note" class="movement-note">Move up, down, left or right. Tap an earlier step to rewind.</p>
+            <p id="keyboard-note" class="sr-only">Use arrow keys to move focus around the board. Press Enter or Space to select a cell. Backspace undoes the last step.</p>
+            <p id="feedback" class="feedback"></p>
+            <details id="route-inspection" class="route-inspection" hidden><summary>Inspect finished route</summary><ol id="route-steps"></ol></details>
             <p id="board-note" class="board-note">Your route is saved in this browser.</p>
           </div>
         </section>

@@ -112,3 +112,40 @@ body.switchpath{--accent:#355fa7;--accent-dark:#264a86;--wash:#e5edfb;--soft:#be
 
 /* Native GameScreen already displays the developer credit above its WebView. */
 .native-app .game-credit{display:none}
+
+/* Game-by-game review: keep decisions and recovery within reach. */
+.switchpath .game-controls{margin-top:16px;gap:7px;flex-wrap:nowrap}
+.switchpath .game-controls button{padding-inline:11px;white-space:nowrap}
+.switchpath .action-costs{font-size:11px;line-height:1.5;text-align:center;color:var(--muted);margin:10px 0 14px}
+.switchpath .direction-blocked{background:#fff0d4;border-color:#ceac69}
+.switchpath .direction-blocked .direction-icon{background:#8a5d1b}
+.switchpath .direction-blocked .rhythm{opacity:.4}
+.switchpath .route-inspection{margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:0 14px}
+.switchpath .route-inspection summary{min-height:44px;display:list-item;padding-block:12px;cursor:pointer;font-size:13px;font-weight:600}
+.switchpath .route-inspection ol{padding-left:24px;font-size:13px;line-height:1.9}
+@media(max-width:520px){
+ .switchpath .masthead{min-height:62px}
+ .switchpath .hero{padding:8px 0 14px}
+ .switchpath .hero .eyebrow,.switchpath .hero-lead,.switchpath .hero>p:last-child{display:none}
+ .switchpath .hero h1{font-size:29px}
+ .switchpath .puzzle-meta{padding:9px 0}
+ .switchpath .quick-rules{margin-top:0;margin-bottom:10px}
+ .switchpath .route-board{margin-top:12px}
+ .switchpath .game-controls{margin-top:13px;gap:6px}
+ .switchpath .game-controls button{padding-inline:10px}
+ .switchpath .action-costs{font-size:10px}
+}
+@media(max-width:360px){.switchpath .game-controls button{padding-inline:7px;font-size:10px}}
+.share-formats{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.share-formats button{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 16px;background:var(--white);font:600 12px var(--sans);cursor:pointer}
+.share-formats button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+#result-card{display:block;width:min(100%,270px);height:auto;margin:0 auto;border-radius:14px;box-shadow:0 8px 32px #2736401c}
+.share-actions{flex-wrap:wrap;gap:8px}
+.share-actions button{min-height:44px}
+.share-caption{margin-top:12px;font-size:12px}
+.share-caption summary{cursor:pointer;padding:12px 0}
+.share-caption textarea{width:100%;box-sizing:border-box;min-height:120px}
+@media(max-width:520px){
+ .share-actions{display:grid;grid-template-columns:1fr 1fr}
+ .share-actions #share-card{grid-column:1/-1}
+}

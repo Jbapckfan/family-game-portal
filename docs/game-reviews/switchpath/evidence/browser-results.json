@@ -1,0 +1,102 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Actual wrong route reaches a dead end; reload preserves it and Undo recovers with honest cost",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Hint cancel is inert; confirmation discloses rewind and adds exactly one move and hint",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Keyboard focus does not spend a move; Enter and Backspace perform scored actions",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "320–1440 widths have no horizontal overflow; 44px cells and actions immediately below board",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Perfect win is immutable and its finished route can be inspected with keyboard",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Actual perfect win exports 1080×1350 PNG with played date and score",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Square export is 1080×1080 and midnight cannot relabel an existing result",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Mocked share cancellation preserves focus without download; blocked clipboard selects caption manually",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Practice clears old route inspection; revealed export is honest and daily win persists",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Actual wrong route reaches a dead end; reload preserves it and Undo recovers with honest cost",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Hint cancel is inert; confirmation discloses rewind and adds exactly one move and hint",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Keyboard focus does not spend a move; Enter and Backspace perform scored actions",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "320–1440 widths have no horizontal overflow; 44px cells and actions immediately below board",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Perfect win is immutable and its finished route can be inspected with keyboard",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Actual perfect win exports 1080×1350 PNG with played date and score",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Square export is 1080×1080 and midnight cannot relabel an existing result",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Mocked share cancellation preserves focus without download; blocked clipboard selects caption manually",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Practice clears old route inspection; revealed export is honest and daily win persists",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

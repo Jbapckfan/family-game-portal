@@ -1,6 +1,7 @@
 import { PUZZLES } from './puzzles.mjs';
 import * as engine from './engine.mjs';
 import { createShell, esc } from './shell.mjs';
+import { openResultShare } from './share-card.mjs';
 
 const $ = id => document.getElementById(id);
 let focusedCell = null;
@@ -22,6 +23,7 @@ const app = createShell({
   reset() { focusedCell = null; },
   record: game => ({ status: game.status, moves: game.moves, hints: game.hints }),
   help,
+  share: openResultShare,
   about: 'Switchpath is a daily path puzzle about rhythm and planning. Move between neighboring numbers, alternating higher and lower, until all sixteen cells form one route. Every prepared board is checked by an exhaustive solver and has exactly one complete solution. Wrong turns stay recoverable through rewinding. A perfect route takes fifteen moves without hints.',
   statsExtra: stats => `<div class="stats-detail"><span>Perfect routes</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average moves when solved</span><strong>${stats.won ? stats.averageMoves.toFixed(1) : '—'}</strong></div>`,
   result(api) {
@@ -70,15 +72,16 @@ function renderGame(api, opts = {}) {
   const active = game.status === 'playing';
   const tip = game.path.at(-1);
   const direction = engine.nextDirection(game);
+  const deadEnd = active && engine.legalNextCells(puzzle, game).length === 0;
   if (Number.isInteger(opts.focus)) focusedCell = opts.focus;
   if (!Number.isInteger(focusedCell)) focusedCell = tip;
   $('puzzle').className = `puzzle route-board${game.status === 'won' ? ' is-complete' : game.status === 'revealed' ? ' is-revealed' : ''}${opts.complete && game.status === 'won' ? ' celebrate' : ''}`;
   $('puzzle').innerHTML = routeMarkup(puzzle, game, opts);
   $('puzzle').setAttribute('aria-label', active ? `Switchpath board. ${game.path.length} of 16 cells connected. Next number must be ${direction} than ${puzzle.values[tip]}.` : `Switchpath ${game.status === 'won' ? 'solved' : 'revealed'} route: ${game.path.map(cell => puzzle.values[cell]).join(', ')}.`);
-  $('direction-panel').className = `direction-panel${active ? ` direction-${direction}` : game.status === 'won' ? ' direction-finished' : ' direction-revealed'}`;
-  $('direction-icon').textContent = active ? direction === 'higher' ? '↑' : '↓' : game.status === 'won' ? '✓' : '⌁';
-  $('direction-kicker').textContent = active ? game.path.length === 15 ? 'YOUR FINAL STEP' : 'YOUR NEXT STEP' : game.status === 'won' ? perfect(game) ? 'PERFECT ROUTE' : 'ROUTE COMPLETE' : 'ROUTE REVEALED';
-  $('direction-label').textContent = active ? `Go ${direction} than ${puzzle.values[tip]}` : game.status === 'won' ? 'One unbroken path.' : 'Follow the numbered steps.';
+  $('direction-panel').className = `direction-panel${deadEnd ? ' direction-blocked' : active ? ` direction-${direction}` : game.status === 'won' ? ' direction-finished' : ' direction-revealed'}`;
+  $('direction-icon').textContent = deadEnd ? '↶' : active ? direction === 'higher' ? '↑' : '↓' : game.status === 'won' ? '✓' : '⌁';
+  $('direction-kicker').textContent = deadEnd ? 'DEAD END' : active ? game.path.length === 15 ? 'YOUR FINAL STEP' : 'YOUR NEXT STEP' : game.status === 'won' ? perfect(game) ? 'PERFECT ROUTE' : 'ROUTE COMPLETE' : 'ROUTE REVEALED';
+  $('direction-label').textContent = deadEnd ? 'No next step.' : active ? `Go ${direction} than ${puzzle.values[tip]}` : game.status === 'won' ? 'One unbroken path.' : 'Follow the numbered steps.';
   $('rhythm-higher').className = `rhythm-step${active && direction === 'higher' ? ' current' : ''}`;
   $('rhythm-lower').className = `rhythm-step${active && direction === 'lower' ? ' current' : ''}`;
   $('progress-label').textContent = `${game.path.length} of 16 connected`;
@@ -93,7 +96,12 @@ function renderGame(api, opts = {}) {
   $('undo-button').disabled = !active || game.path.length <= 1;
   $('reset-path-button').disabled = !active || game.path.length <= 1;
   $('hint-button').disabled = !active;
-  $('movement-note').textContent = active ? 'Move up, down, left or right. Tap an earlier step to rewind.' : 'The small numbers mark each step along the complete route.';
+  $('movement-note').textContent = deadEnd ? 'Use Undo or tap an earlier step to try another route.' : active ? 'Move up, down, left or right. Tap an earlier step to rewind.' : 'The small numbers mark each step along the complete route.';
+  $('action-costs').hidden = !active;
+  $('route-inspection').hidden = active;
+  if (active) $('route-inspection').open = false;
+  $('route-steps').innerHTML = active ? '' : game.path.map((cell, step) => `<li><strong>${puzzle.values[cell]}</strong> — row ${Math.floor(cell / 4) + 1}, column ${cell % 4 + 1}${step ? ` · ${puzzle.values[cell] > puzzle.values[game.path[step - 1]] ? 'higher' : 'lower'}` : ' · Start'}${cell === puzzle.end ? ' · End' : ''}</li>`).join('');
+  $('keyboard-note').textContent = active ? 'Use arrow keys to move focus around the board. Press Enter or Space to select a cell. Backspace undoes the last step.' : 'Open Inspect finished route below the board for an ordered list of values and positions.';
   if (Number.isInteger(opts.focus) && active) requestAnimationFrame(() => $('puzzle').querySelector(`[data-cell="${opts.focus}"]`)?.focus({ preventScroll: true }));
 }
 
@@ -155,6 +163,11 @@ function hint() {
   });
 }
 
+function confirmHint() {
+  if (app.game.status !== 'playing') return;
+  app.openDialog(`<p class="dialog-kicker">A LITTLE HELP WITH THE NEXT TURN</p><h2 class="dialog-title" id="dialog-title">Take an assisted step?</h2><p class="confirm-copy">This adds <strong>1 move and 1 hint</strong>. If you took a wrong branch, it may rewind part of your route before adding one correct step.</p><div class="dialog-actions"><button class="secondary-button" data-action="close" autofocus>Keep exploring</button><button class="primary-button" data-hint-confirm>Use hint</button></div>`);
+}
+
 $('puzzle').addEventListener('click', event => {
   const button = event.target.closest('[data-cell]');
   if (button) select(Number(button.dataset.cell));
@@ -181,8 +194,13 @@ $('puzzle').addEventListener('keydown', event => {
 });
 $('undo-button').addEventListener('click', undo);
 $('reset-path-button').addEventListener('click', confirmReset);
-$('hint-button').addEventListener('click', hint);
+$('hint-button').addEventListener('click', confirmHint);
 $('dialog-content').addEventListener('click', event => {
+  if (event.target.closest('[data-hint-confirm]')) {
+    app.closeDialog();
+    if (app.game.status === 'playing') hint();
+    return;
+  }
   if (!event.target.closest('[data-reset-path]')) return;
   app.closeDialog();
   if (app.game.status === 'playing') select(app.puzzle.start);

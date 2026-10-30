@@ -1,11 +1,11 @@
 # Preference ranking and review queue
 
-No preference rank is assigned yet. James’s enjoyment ratings and play-again decisions are pending. Queue position below is not a fun ranking.
+Ringcount: James found it “pretty easy and boring.” It is a replacement candidate, still available. No numerical rating or comparative rank was invented. Queue position below is not a fun ranking.
 
 | Review order | Game | Creator | Status | James rating |
 |---:|---|---|---|---|
-| 1 | Ringcount | ChatGPT | Ready to play | — |
-| 2 | Switchpath | ChatGPT | Not yet reviewed individually | — |
+| 1 | Ringcount | ChatGPT | Replacement candidate: easy, boring | Qualitative feedback |
+| 2 | Switchpath | ChatGPT | Revised; ready for James | Pending playtest |
 | 3 | Counterpart | ChatGPT | Not yet reviewed individually | — |
 | 4 | Shortlist | ChatGPT | Not yet reviewed individually | — |
 | 5 | Second Sense | ChatGPT | Not yet reviewed individually | — |
@@ -39,5 +39,7 @@ No preference rank is assigned yet. James’s enjoyment ratings and play-again d
 | 33 | Tic-Tac-Toe | ChatGPT | Not yet reviewed individually | — |
 
 Ringcount reviewer predictions before improvements: Kimi fun **4/5**, Opus **2.5/5**, Gemini **4/5**. These are not James’s ratings. See [full comparison and decisions](ringcount/ADJUDICATION.md).
+
+Switchpath reviewer fun predictions: Kimi **2/5**, Gemini **2.5/5**, Opus **3/5**. Opus saw the updated source; Kimi/Gemini saw the baseline. No player preference is inferred. [Review and gameplay-depth audit](switchpath/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

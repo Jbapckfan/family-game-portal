@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "Partial ranking from James: Switchpath, Counterpart and Shortlist are keepers with no supplied relative order; Ringcount is a replacement candidate. No numerical enjoyment scores invented. Model predictions remain separate.",
+  "rankingBasis": "James’s partial preference groups: Switchpath, Counterpart, Shortlist and Second Sense are keepers; Ringcount and Sideways are replacement candidates. Relative order within either group and numerical ratings are not supplied. Model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -200,7 +200,7 @@
         "switchpath/CLEAR-DIRECTIONS.md",
         "switchpath/teal-evidence/browser-results.json"
       ],
-      "nextStep": "Compact board delivered; 5x5 shown as a non-playable sizing concept. Consider optional longer practice mode; Counterpart remains next game in queue.",
+      "nextStep": "Keep available; compare keeper preferences after more playtests. No relative order supplied.",
       "gameplayFinding": "58/217 boards fully solved by basic static degree forcing; 159 require more than that technique. Not a human difficulty or fun rating.",
       "dispositionBasis": "James said yes to playing again and explicitly likes it."
     },
@@ -282,7 +282,7 @@
         "counterpart/ADJUDICATION.md",
         "counterpart/evidence/summary.json"
       ],
-      "nextStep": "Keep available; compare keeper games later. Review Shortlist now.",
+      "nextStep": "Keep available; compare keeper preferences after more playtests. No relative order supplied.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -369,7 +369,7 @@
         "shortlist/evidence/summary.json",
         "shortlist/evidence/strategy-audit.json"
       ],
-      "nextStep": "Keep available and compare keepers later; review Second Sense now.",
+      "nextStep": "Keep available; compare keeper preferences after more playtests. No relative order supplied.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -385,12 +385,20 @@
       "name": "Second Sense",
       "creator": "ChatGPT",
       "reviewOrder": 5,
-      "status": "awaiting_james_verdict",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
-        "playAgain": null,
+        "playAgain": true,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "yes, next game",
+            "interpretation": "Yes to playing Second Sense again; requests Sideways next. No numeric or relative preference supplied."
+          }
+        ],
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "would play again"
       },
       "reviews": [
         {
@@ -449,14 +457,14 @@
           }
         }
       ],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "second-sense/REPORT.md",
         "second-sense/ADJUDICATION.md",
         "second-sense/evidence/summary.json",
         "second-sense/evidence/co-board-review.json"
       ],
-      "nextStep": "Await James’s replay/enjoyment verdict, then review Sideways. Human editorial ambiguity questions remain documented.",
+      "nextStep": "Keep available; compare keeper preferences after more playtests. No relative order supplied.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -464,24 +472,102 @@
         "report": "second-sense/MAKER-Opus__final-review.md",
         "findings": "No Critical/Important issue found. Two Minor adoption focus/obsolete-draft cases corrected with unit and browser evidence afterward."
       },
-      "gameplayFinding": "210 combinations reuse 75 noun/verb pairs 14 times each. Exact-answer tests do not establish semantic uniqueness; actual co-board overlaps are documented."
+      "gameplayFinding": "210 combinations reuse 75 noun/verb pairs 14 times each. Exact-answer tests do not establish semantic uniqueness; actual co-board overlaps are documented.",
+      "dispositionBasis": "James said yes to playing again."
     },
     {
       "slug": "sideways",
       "name": "Sideways",
       "creator": "ChatGPT",
       "reviewOrder": 6,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "if you solve the first 3 the fourth is already lined up right?",
+            "interpretation": "Asks whether three correct current columns force the fourth; yes by the fixed row-letter multiset. This is not a supplied enjoyment rating or replay verdict."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "not a big fan of this game, it's too easy",
+            "interpretation": "Low enjoyment and too easy; supports replacement-candidate tier. No numeric rating or explicit replay answer supplied."
+          }
+        ],
+        "preferenceTier": "replacement_candidate",
+        "enjoymentReaction": "not a big fan",
+        "difficultyReaction": "too easy"
       },
-      "reviews": [],
-      "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "bc6381c9c07e9cb7b6da90dbf38924bae10c6c0f",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Sideways before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 3,
+            "ui": 3,
+            "replay": 4,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "sideways/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "bc6381c9c07e9cb7b6da90dbf38924bae10c6c0f",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Sideways before improvements",
+          "scores": {
+            "fun": 4,
+            "clarity": 3,
+            "ui": 3,
+            "replay": 4,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "sideways/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "bc6381c9c07e9cb7b6da90dbf38924bae10c6c0f",
+          "method": "Inline source/audit only; tools disabled, no execution or screenshots",
+          "scope": "Baseline Sideways before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 3,
+            "ui": null,
+            "replay": 3,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "sideways/MAKER-Opus__initial-review.md"
+        }
+      ],
+      "disposition": "replacement_candidate",
+      "evidence": [
+        "sideways/REPORT.md",
+        "sideways/ADJUDICATION.md",
+        "sideways/evidence/summary.json",
+        "sideways/evidence/depth-audit.json"
+      ],
+      "nextStep": "Keep available while comparing other games; Tradeoff is next.",
+      "dispositionBasis": "James dislikes it and finds it too easy; retained for comparison, no removal authorized.",
+      "gameplayFinding": "All 840 three-clue cases force the fourth. 855/1260 two-clue cases uniquely fix the board; all 210 boards have at least one such pair, 42 have all six. Exact known-answer constraints are not human solving-time measurements.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Updated inline source including CSS, no execution or images",
+        "report": "sideways/MAKER-Opus__final-review.md",
+        "findings": "No Critical/Important regression found. A minor between-frame progress race was reproduced in both engines and fixed afterward; accessibility/badge/status clarifications also applied."
+      }
     },
     {
       "slug": "tradeoff",

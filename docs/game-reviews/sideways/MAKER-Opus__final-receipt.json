@@ -1,0 +1,36 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "84b178acb7ee1d86981824a5cca919c2262dcec6ba1d7bd82996b943d0a819e7",
+  "files": [
+    "games/sideways/engine.mjs",
+    "games/sideways/app.mjs",
+    "games/sideways/shell.mjs",
+    "games/sideways/share-card.mjs",
+    "games/sideways/tests/share-card.test.mjs",
+    "games/sideways/index.html",
+    "games/sideways/styles.css",
+    "scripts/review-sideways.mjs",
+    "docs/game-reviews/sideways/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 155.42,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 14913,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 54428,
+      "webSearchRequests": 0,
+      "costUSD": 0.7340115999999999,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 12747,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 54428,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

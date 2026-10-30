@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: A scored nudge must ask before changing moves/hints
+
+false !== true
+
+    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/sideways-review-20261030/nudge-red.mjs:19:97 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.11.0

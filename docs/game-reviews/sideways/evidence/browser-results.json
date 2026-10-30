@@ -1,0 +1,142 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px+ clues/current words, 44px+ arrows and no overflow at 320/390/768/1440",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Following marks only the selected column; keyboard wraps a row and navigates rows; undo restores letters without refunding the move",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A check costs one; moving expires its feedback and undo reuses the same checked arrangement without another charge",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Actual partial correctness expires and returns with its exact layout; correct columns never lock row controls",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Nudge cancel is inert, approval spends exactly one move/hint but no check; undo and reload preserve assistance/counters",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Nudges can align every row but never auto-win; explicit check completes an assisted result, not a perfect one",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Double activation of the same confirmation cannot charge two nudges",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A complete manual solve requires its first explicit check, reports perfection without an optimal-move claim, and preserves terminal state/focus",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real portrait/square PNG downloads contain factual date/check/move/nudge totals, with no answer words in the caption",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened share retains played date after midnight; mocked cancel keeps focus and denied clipboard selects manual copy",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed Practice remains explicit and separate from the saved Daily win",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A real second-tab change with delayed storage events cancels a stale nudge at the write boundary without charging or claiming row correctness",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Storage delivery between approval and its frame cancels the nudge against changed progress",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px+ clues/current words, 44px+ arrows and no overflow at 320/390/768/1440",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Following marks only the selected column; keyboard wraps a row and navigates rows; undo restores letters without refunding the move",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A check costs one; moving expires its feedback and undo reuses the same checked arrangement without another charge",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Actual partial correctness expires and returns with its exact layout; correct columns never lock row controls",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Nudge cancel is inert, approval spends exactly one move/hint but no check; undo and reload preserve assistance/counters",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Nudges can align every row but never auto-win; explicit check completes an assisted result, not a perfect one",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Double activation of the same confirmation cannot charge two nudges",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A complete manual solve requires its first explicit check, reports perfection without an optimal-move claim, and preserves terminal state/focus",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real portrait/square PNG downloads contain factual date/check/move/nudge totals, with no answer words in the caption",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened share retains played date after midnight; mocked cancel keeps focus and denied clipboard selects manual copy",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed Practice remains explicit and separate from the saved Daily win",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A real second-tab change with delayed storage events cancels a stale nudge at the write boundary without charging or claiming row correctness",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Storage delivery between approval and its frame cancels the nudge against changed progress",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

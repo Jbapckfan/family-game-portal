@@ -15,7 +15,7 @@ The current persistent profile is `output/counterpart-review-20261030/readable-p
 
 ## Reusable controller
 
-The current controller is `node scripts/review-preview.mjs second-sense`, using the same Counterpart readable-profile storage, with a PTY. Commands on its existing stdin:
+The reusable controller is `scripts/review-preview.mjs` with the initial game slug as its argument, using the same Counterpart readable-profile storage, with a PTY. Commands on its existing stdin:
 - `game shortlist` (or another exact catalog slug): navigate the existing game tab.
 - `reload`: update that tab from current source, retaining saved progress.
 - `sample output/<review-folder>/<image>.png`: reuse/create only the second tab for a labelled automated-test image example.

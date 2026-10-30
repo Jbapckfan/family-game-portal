@@ -1,6 +1,6 @@
 # Second Sense — fifth individual review, October 30, 2026
 
-Second Sense is ready in the reused preview window. Choose a noun definition and a verb definition, then type the single word that fits both. Five correct checks with no hints is perfect; wrong valid checks cost one but leave clues available. First-letter hints disclose their cost, and reveal stays separate from a win.
+James answered “yes, next game” after this review. Second Sense is a keeper alongside Switchpath, Counterpart and Shortlist, without a supplied numerical rating or relative order. Choose a noun definition and a verb definition, then type the single word that fits both. Five correct checks with no hints is perfect; wrong valid checks cost one but leave clues available. First-letter hints disclose their cost, and reveal stays separate from a win.
 
 Definitions are larger, with blue/teal cues. Selecting both clues brings typing into view; successful checks return to the clue board. Fixed a reproduced cross-tab draft loss, accessible hint labels, stale error feedback and dialog focus. Added spoiler-free image sharing. Exact engine rules, scoring, published content, calendar/save identities and all 32 daily games plus the bonus are retained.
 
@@ -20,6 +20,6 @@ The initial collection run caught an outdated sync-fixture total after adding th
 
 ## Continue
 
-Ask whether James would play Second Sense again and record his words without inventing a number. Sideways is next after his verdict. Switchpath, Counterpart and Shortlist are keepers without a supplied relative order; Ringcount remains available as a replacement candidate.
+James's replay approval is recorded in the ranking. Sideways was reviewed next. Switchpath, Counterpart and Shortlist are keepers without a supplied relative order; Ringcount remains available as a replacement candidate.
 
 Use the existing `scripts/review-preview.mjs` PTY with `reload`, `game <slug>` and optional `sample <image>`; at most two task tabs. Preserve the readable-profile storage. Final stage: `dist/second-sense-review-20261030-final-v3/web`. Exact build ID, hashes and QA runtime provenance are in the evidence summary. Branch: `codex/game-by-game-2026-10-29`.

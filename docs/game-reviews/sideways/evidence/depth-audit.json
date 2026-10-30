@@ -1,0 +1,4852 @@
+{
+  "boards": 210,
+  "singleClueCases": 840,
+  "singleCluesWithUniqueArrangement": 0,
+  "twoClueCases": 1260,
+  "twoCluesWithUniqueArrangement": 855,
+  "boardsWithAnyUniqueTwoCluePair": 210,
+  "boardsWithAllSixTwoCluePairsUnique": 42,
+  "threeClueCases": 840,
+  "threeClueCasesWithUniqueArrangement": 840,
+  "method": "Independent enumeration of exact intended column answers as constraints. Any three matching columns force the fourth by each row’s fixed letter multiset. Knowing exact answers is not a human solving-time or fun measurement.",
+  "pairOrder": [
+    "AB",
+    "AC",
+    "AD",
+    "BC",
+    "BD",
+    "CD"
+  ],
+  "perBoard": [
+    {
+      "id": "sideways-001",
+      "singleClueOrientations": [
+        16,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-002",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-003",
+      "singleClueOrientations": [
+        8,
+        6,
+        24,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        8,
+        1,
+        2,
+        4,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-004",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-005",
+      "singleClueOrientations": [
+        2,
+        8,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-006",
+      "singleClueOrientations": [
+        2,
+        12,
+        12,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        4,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-007",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-008",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-009",
+      "singleClueOrientations": [
+        48,
+        6,
+        2,
+        12
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-010",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-011",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-012",
+      "singleClueOrientations": [
+        2,
+        2,
+        8,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-013",
+      "singleClueOrientations": [
+        6,
+        6,
+        4,
+        3
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-014",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-015",
+      "singleClueOrientations": [
+        3,
+        24,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-016",
+      "singleClueOrientations": [
+        4,
+        2,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-017",
+      "singleClueOrientations": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-018",
+      "singleClueOrientations": [
+        4,
+        4,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-019",
+      "singleClueOrientations": [
+        2,
+        16,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-020",
+      "singleClueOrientations": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-021",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-022",
+      "singleClueOrientations": [
+        4,
+        8,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-023",
+      "singleClueOrientations": [
+        3,
+        2,
+        12,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-024",
+      "singleClueOrientations": [
+        2,
+        6,
+        24,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-025",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-026",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-027",
+      "singleClueOrientations": [
+        2,
+        6,
+        6,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        4,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-028",
+      "singleClueOrientations": [
+        12,
+        2,
+        6,
+        3
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        2,
+        1,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-029",
+      "singleClueOrientations": [
+        8,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-030",
+      "singleClueOrientations": [
+        8,
+        2,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        8,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-031",
+      "singleClueOrientations": [
+        6,
+        6,
+        2,
+        6
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-032",
+      "singleClueOrientations": [
+        6,
+        6,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-033",
+      "singleClueOrientations": [
+        8,
+        8,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-034",
+      "singleClueOrientations": [
+        2,
+        4,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-035",
+      "singleClueOrientations": [
+        6,
+        12,
+        6,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-036",
+      "singleClueOrientations": [
+        8,
+        8,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-037",
+      "singleClueOrientations": [
+        6,
+        6,
+        4,
+        12
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-038",
+      "singleClueOrientations": [
+        2,
+        2,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-039",
+      "singleClueOrientations": [
+        12,
+        6,
+        36,
+        18
+      ],
+      "twoClueOrientations": [
+        1,
+        8,
+        2,
+        2,
+        4,
+        4
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-040",
+      "singleClueOrientations": [
+        6,
+        12,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-041",
+      "singleClueOrientations": [
+        2,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-042",
+      "singleClueOrientations": [
+        4,
+        8,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-043",
+      "singleClueOrientations": [
+        6,
+        6,
+        12,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-044",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-045",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-046",
+      "singleClueOrientations": [
+        18,
+        2,
+        18,
+        18
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        4,
+        1,
+        1,
+        4
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-047",
+      "singleClueOrientations": [
+        8,
+        8,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-048",
+      "singleClueOrientations": [
+        4,
+        4,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-049",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-050",
+      "singleClueOrientations": [
+        6,
+        3,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-051",
+      "singleClueOrientations": [
+        6,
+        6,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-052",
+      "singleClueOrientations": [
+        8,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-053",
+      "singleClueOrientations": [
+        2,
+        3,
+        12,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-054",
+      "singleClueOrientations": [
+        2,
+        8,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-055",
+      "singleClueOrientations": [
+        3,
+        3,
+        8,
+        24
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-056",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-057",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-058",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-059",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-060",
+      "singleClueOrientations": [
+        2,
+        8,
+        4,
+        16
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-061",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-062",
+      "singleClueOrientations": [
+        16,
+        4,
+        8,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-063",
+      "singleClueOrientations": [
+        6,
+        9,
+        18,
+        3
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        4,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-064",
+      "singleClueOrientations": [
+        16,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-065",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-066",
+      "singleClueOrientations": [
+        6,
+        12,
+        3,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-067",
+      "singleClueOrientations": [
+        2,
+        8,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-068",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-069",
+      "singleClueOrientations": [
+        8,
+        4,
+        16,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        8,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-070",
+      "singleClueOrientations": [
+        18,
+        18,
+        3,
+        3
+      ],
+      "twoClueOrientations": [
+        4,
+        2,
+        2,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-071",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-072",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-073",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-074",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-075",
+      "singleClueOrientations": [
+        2,
+        24,
+        3,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        2,
+        8,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-076",
+      "singleClueOrientations": [
+        2,
+        6,
+        6,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-077",
+      "singleClueOrientations": [
+        12,
+        2,
+        12,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        2,
+        1,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-078",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-079",
+      "singleClueOrientations": [
+        8,
+        8,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-080",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-081",
+      "singleClueOrientations": [
+        4,
+        3,
+        12,
+        3
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-082",
+      "singleClueOrientations": [
+        3,
+        12,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-083",
+      "singleClueOrientations": [
+        4,
+        8,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-084",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-085",
+      "singleClueOrientations": [
+        3,
+        12,
+        4,
+        3
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-086",
+      "singleClueOrientations": [
+        18,
+        3,
+        3,
+        18
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        4,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-087",
+      "singleClueOrientations": [
+        12,
+        3,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-088",
+      "singleClueOrientations": [
+        8,
+        2,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-089",
+      "singleClueOrientations": [
+        9,
+        4,
+        36,
+        9
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        4,
+        1,
+        1,
+        4
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-090",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-091",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-092",
+      "singleClueOrientations": [
+        9,
+        6,
+        72,
+        12
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        2,
+        2,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-093",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-094",
+      "singleClueOrientations": [
+        2,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-095",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-096",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-097",
+      "singleClueOrientations": [
+        6,
+        6,
+        2,
+        6
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-098",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-099",
+      "singleClueOrientations": [
+        2,
+        8,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-100",
+      "singleClueOrientations": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-101",
+      "singleClueOrientations": [
+        2,
+        16,
+        2,
+        16
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        16,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-102",
+      "singleClueOrientations": [
+        2,
+        2,
+        16,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-103",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-104",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-105",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-106",
+      "singleClueOrientations": [
+        12,
+        2,
+        6,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-107",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-108",
+      "singleClueOrientations": [
+        8,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-109",
+      "singleClueOrientations": [
+        4,
+        8,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-110",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-111",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-112",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-113",
+      "singleClueOrientations": [
+        3,
+        12,
+        3,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-114",
+      "singleClueOrientations": [
+        3,
+        2,
+        6,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-115",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-116",
+      "singleClueOrientations": [
+        2,
+        2,
+        16,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-117",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-118",
+      "singleClueOrientations": [
+        6,
+        6,
+        2,
+        6
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-119",
+      "singleClueOrientations": [
+        2,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-120",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-121",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-122",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-123",
+      "singleClueOrientations": [
+        6,
+        6,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-124",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-125",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-126",
+      "singleClueOrientations": [
+        4,
+        2,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-127",
+      "singleClueOrientations": [
+        12,
+        4,
+        6,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-128",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-129",
+      "singleClueOrientations": [
+        2,
+        8,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-130",
+      "singleClueOrientations": [
+        4,
+        8,
+        4,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-131",
+      "singleClueOrientations": [
+        6,
+        12,
+        2,
+        3
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-132",
+      "singleClueOrientations": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-133",
+      "singleClueOrientations": [
+        3,
+        6,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-134",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-135",
+      "singleClueOrientations": [
+        12,
+        3,
+        12,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-136",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-137",
+      "singleClueOrientations": [
+        4,
+        8,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-138",
+      "singleClueOrientations": [
+        4,
+        8,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-139",
+      "singleClueOrientations": [
+        2,
+        8,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-140",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-141",
+      "singleClueOrientations": [
+        2,
+        8,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-142",
+      "singleClueOrientations": [
+        4,
+        2,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-143",
+      "singleClueOrientations": [
+        2,
+        4,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-144",
+      "singleClueOrientations": [
+        16,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-145",
+      "singleClueOrientations": [
+        4,
+        4,
+        8,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-146",
+      "singleClueOrientations": [
+        2,
+        2,
+        8,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-147",
+      "singleClueOrientations": [
+        2,
+        3,
+        24,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-148",
+      "singleClueOrientations": [
+        3,
+        2,
+        6,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-149",
+      "singleClueOrientations": [
+        24,
+        48,
+        4,
+        24
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        2,
+        1,
+        16,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-150",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-151",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-152",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-153",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-154",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-155",
+      "singleClueOrientations": [
+        2,
+        6,
+        6,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-156",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-157",
+      "singleClueOrientations": [
+        4,
+        2,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-158",
+      "singleClueOrientations": [
+        2,
+        12,
+        24,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        2,
+        4,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-159",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-160",
+      "singleClueOrientations": [
+        6,
+        2,
+        3,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-161",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-162",
+      "singleClueOrientations": [
+        4,
+        6,
+        48,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-163",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-164",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-165",
+      "singleClueOrientations": [
+        12,
+        6,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        8,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-166",
+      "singleClueOrientations": [
+        2,
+        4,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-167",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-168",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-169",
+      "singleClueOrientations": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        4,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-170",
+      "singleClueOrientations": [
+        6,
+        6,
+        12,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-171",
+      "singleClueOrientations": [
+        6,
+        12,
+        6,
+        4
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-172",
+      "singleClueOrientations": [
+        3,
+        2,
+        6,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-173",
+      "singleClueOrientations": [
+        24,
+        24,
+        6,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        4,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-174",
+      "singleClueOrientations": [
+        6,
+        4,
+        12,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-175",
+      "singleClueOrientations": [
+        24,
+        12,
+        12,
+        2
+      ],
+      "twoClueOrientations": [
+        2,
+        8,
+        1,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-176",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-177",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-178",
+      "singleClueOrientations": [
+        18,
+        18,
+        3,
+        3
+      ],
+      "twoClueOrientations": [
+        4,
+        2,
+        2,
+        2,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-179",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-180",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-181",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-182",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-183",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-184",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-185",
+      "singleClueOrientations": [
+        6,
+        2,
+        6,
+        6
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        2,
+        1,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-186",
+      "singleClueOrientations": [
+        4,
+        4,
+        8,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-187",
+      "singleClueOrientations": [
+        2,
+        8,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-188",
+      "singleClueOrientations": [
+        6,
+        12,
+        2,
+        12
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        2,
+        1,
+        8,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-189",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-190",
+      "singleClueOrientations": [
+        4,
+        6,
+        6,
+        12
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-191",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-192",
+      "singleClueOrientations": [
+        18,
+        3,
+        18,
+        3
+      ],
+      "twoClueOrientations": [
+        2,
+        8,
+        2,
+        2,
+        1,
+        2
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-193",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-194",
+      "singleClueOrientations": [
+        12,
+        3,
+        2,
+        6
+      ],
+      "twoClueOrientations": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-195",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-196",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-197",
+      "singleClueOrientations": [
+        8,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-198",
+      "singleClueOrientations": [
+        8,
+        2,
+        4,
+        16
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-199",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-200",
+      "singleClueOrientations": [
+        3,
+        3,
+        4,
+        12
+      ],
+      "twoClueOrientations": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-201",
+      "singleClueOrientations": [
+        2,
+        2,
+        4,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-202",
+      "singleClueOrientations": [
+        4,
+        4,
+        2,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-203",
+      "singleClueOrientations": [
+        2,
+        2,
+        2,
+        8
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-204",
+      "singleClueOrientations": [
+        4,
+        2,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-205",
+      "singleClueOrientations": [
+        32,
+        2,
+        16,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        16,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-206",
+      "singleClueOrientations": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-207",
+      "singleClueOrientations": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-208",
+      "singleClueOrientations": [
+        2,
+        4,
+        8,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-209",
+      "singleClueOrientations": [
+        4,
+        2,
+        2,
+        4
+      ],
+      "twoClueOrientations": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "id": "sideways-210",
+      "singleClueOrientations": [
+        4,
+        2,
+        4,
+        2
+      ],
+      "twoClueOrientations": [
+        1,
+        4,
+        1,
+        1,
+        2,
+        1
+      ],
+      "threeClueOrientations": [
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

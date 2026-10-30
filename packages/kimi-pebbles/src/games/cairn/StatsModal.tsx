@@ -1,5 +1,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import type { Stats } from './storage'
+import { centralDayNumber } from '../shared/integration'
+
+export function displayedStreak(stats: Stats, today = centralDayNumber()): number {
+  return stats.lastCompletedDay !== null && stats.lastCompletedDay >= today - 1 ? stats.currentStreak : 0
+}
 
 interface Props {
   open: boolean
@@ -30,7 +35,7 @@ export function StatsModal({ open, onOpenChange, stats }: Props) {
           <Big value={stats.completed} label="Summits" />
           <Big value={`${rate}%`} label="Summit rate" />
           <Big value={stats.perfect} label="Perfect" />
-          <Big value={stats.currentStreak} label="Streak" />
+          <Big value={displayedStreak(stats)} label="Streak" />
           <Big value={stats.maxStreak} label="Best streak" />
         </div>
         <p className="mt-3 text-center text-xs font-semibold text-muted-foreground">

@@ -1,0 +1,31 @@
+✔ Cairn UI hint: scored decisions and added-letter explanation (711.015292ms)
+✔ Cairn UI skip: scored decisions and added-letter explanation (737.250541ms)
+✔ Cairn UI stale: scored decisions and added-letter explanation (694.526625ms)
+✔ Cairn UI added: scored decisions and added-letter explanation (656.30175ms)
+✔ Cairn share derives perfect, assisted summit and skipped outcomes from five real level results (0.473ms)
+✔ Cairn share freezes played identity and aggregate counters without answers or per-level patterns (0.131291ms)
+✔ Cairn share rejects unfinished levels and inconsistent or impossible clean counters (0.12425ms)
+✔ Cairn displayed streak expires after a missed day while preserving saved counters (68.90475ms)
+✔ cairn/GameBoard: Enter preserves focused button activation instead of submitting a game move (17.257042ms)
+✔ cairn/GameBoard: body Enter still submits, while an open dialog blocks game shortcuts (5.442417ms)
+✔ hunch/HunchBoard: Enter preserves focused button activation instead of submitting a game move (1.60375ms)
+✔ hunch/HunchBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.846333ms)
+✔ morph/MorphBoard: Enter preserves focused button activation instead of submitting a game move (1.868791ms)
+✔ morph/MorphBoard: body Enter still submits, while an open dialog blocks game shortcuts (4.58475ms)
+✔ tangle/TangleBoard: Enter preserves focused button activation instead of submitting a game move (1.432875ms)
+✔ tangle/TangleBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.943292ms)
+✔ cairn/GameBoard: letter typing still works with body or a board tile focused (1.846625ms)
+✔ hunch/HunchBoard: letter typing still works with body or a board tile focused (1.837ms)
+✔ morph/MorphBoard: letter typing still works with body or a board tile focused (1.560625ms)
+✔ Tangle pointer cancellation ends the gesture without submitting a word (1.004083ms)
+✔ Tangle an ordinary completed drag still submits exactly once (0.67225ms)
+(node:90337) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3172.273666

@@ -103,16 +103,31 @@ html[data-native=true] .collection-credit-row a{visibility:hidden}
 [data-slot=dialog-content] .btn3d{font-size:13px}
 
 /* CAIRN — pale stone, irregular edges, a sheltered word terrace. */
-.kimi-cairn .kimi-stage{background:#f8faf4;border-color:#cbd6ce}
-.cairn-progress{padding-bottom:12px;border-bottom:1px solid #dce4db}
-.cairn-level{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:#34584e}
-.cairn-slots{width:100%;min-height:94px;background:#e5ece5;padding:18px 8px;border:1px solid #ccd8ce;border-radius:24px 21px 25px 18px;box-shadow:inset 0 2px 0 #d5e0d6;gap:4px}
-.cairn-slots .tile3d,.cairn-slots .slot-empty{width:46px;flex:0 1 46px;min-width:0;height:49px;font-size:clamp(17px,5vw,25px);border-radius:13px 15px 12px 11px}
-.cairn-slots .slot-empty{border-style:dashed;background:#f6f9f1;border-color:#9fb5a6}
+html[data-game-id='kimi-cairn']{--identity:#315dc2;--identity-hsl:222 60% 48%;--identity-soft:#e7eefc;--identity-dark:#24499c;--slot-edge:222 62% 32%;--secondary:215 30% 93%;--secondary-foreground:209 30% 25%;--berry-face:222 60% 48%;--berry-edge:222 62% 32%}
+.kimi-cairn .kimi-stage{background:#fbfcfe;border-color:#cedbea;border-radius:24px}
+.cairn-progress{padding-bottom:12px;border-bottom:1px solid #dce5ef}
+.cairn-level{margin-top:16px;font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:#253e66}
+.cairn-added{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin:12px 0 4px;font-size:14px;color:#536477}
+.cairn-added strong{color:#253e66;letter-spacing:.06em}
+.cairn-added-letter{display:inline-flex;align-items:center;justify-content:center;min-width:42px;min-height:34px;padding:3px 8px;background:#315dc2;color:white;border-radius:8px;font-size:19px;font-weight:700}
+.cairn-added>span:last-child{flex-basis:100%;text-align:center;font-size:13px}
+.cairn-slots{width:100%;min-height:92px;background:#eaf0f9;padding:16px 6px;border:1px solid #c8d6ea;border-radius:16px;gap:4px}
+.cairn-slots .tile3d,.cairn-slots .slot-empty{width:46px;flex:0 1 46px;min-width:0;height:52px;font-size:clamp(19px,5vw,26px);border-radius:9px}
+.cairn-slots .slot-empty{border-style:dashed;background:#f9fbff;border-color:#a0b4ce}
 .cairn-rack{gap:8px;margin-top:24px;max-width:100%}
-.cairn-rack .tile3d{background:#f4eee0;border-color:#d1c5ae;border-radius:17px 15px 19px 14px;box-shadow:0 3px 0 #c6bfae;width:44px;height:48px;color:#3f5147}
-.cairn-rack .tile-new{background:#a85439;border-color:#88432f;box-shadow:0 3px 0 #88432f;color:#fff}
-.cairn-board>div:last-child{flex-wrap:wrap;justify-content:center;gap:6px 12px;margin-bottom:12px;font-size:10px}
+.cairn-rack .tile3d{flex:0 0 44px;background:#fff;border:1px solid #b8cbe0;border-radius:10px;box-shadow:0 3px 0 #cfdaea;width:44px;height:52px;color:#253e66;font-size:25px}
+.cairn-rack .tile-new{background:#e7efff;border:2px solid #315dc2;box-shadow:0 3px 0 #315dc2;color:#24499c}
+.cairn-tower{display:flex;flex-direction:column-reverse;align-items:center;gap:3px}
+.cairn-tower span{display:block;background:#315dc2;border-radius:4px}
+.cairn-tower span[data-kind='messy']{background:#368786}
+.cairn-tower span[data-kind='skipped']{background:transparent;border:1px dashed #71889f}
+.cairn-tower span[data-kind='empty']{background:#e6edf5;border:1px solid #c6d4e3}
+.cairn-board .cairn-legend{flex-wrap:wrap;justify-content:center;gap:8px 14px;margin-bottom:12px;font-size:12px}
+.cairn-legend span{display:inline-flex;align-items:center;gap:6px}.cairn-legend i{width:10px;height:10px;border-radius:3px;background:#315dc2}.cairn-legend i[data-kind='messy']{background:#368786}.cairn-legend i[data-kind='skipped']{background:transparent;border:1px dashed #71889f}
+.cairn-finish-mark{display:flex;align-items:center;justify-content:center;gap:7px;margin:5px 0}.cairn-finish-mark span{display:block;width:15px;height:15px;background:#315dc2;border-radius:4px}
+.cairn-result-summary{font-size:22px;font-family:'DM Serif Display',Georgia,serif;color:#253e66;margin:0}.cairn-result-detail{margin:-10px 0 0;font-size:14px;color:#52667a}
+.cairn-result-words{width:100%;padding:8px 15px;border:1px solid #d2deed;border-radius:12px;background:#f5f8fc}.cairn-result-words>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0}.cairn-result-words span:first-child{font-size:18px;letter-spacing:.1em;font-weight:600;color:#253e66}.cairn-result-words span:last-child{font-size:12px;color:#52667a}
+.cairn-share-panel{display:flex;flex-direction:column;gap:12px;min-width:0}.cairn-share-formats{display:flex;gap:8px}.cairn-share-formats button{flex:1;min-height:44px;border:1px solid #bdcde2;border-radius:9px;color:#253e66;background:#f8fbff;font-weight:600}.cairn-share-formats button[aria-pressed='true']{background:#e7efff;border:2px solid #315dc2}.cairn-share-panel canvas{display:block;max-width:100%;width:auto;max-height:330px;align-self:center;border-radius:8px;border:1px solid #c6d4e3;object-fit:contain}.cairn-share-status{font-size:13px;color:#52667a;margin:0}.cairn-share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cairn-share-actions button{padding:6px}.cairn-share-actions button:first-child{grid-column:1/-1}.cairn-share-panel textarea{width:100%;height:130px;margin-top:8px;padding:10px;font-size:14px;border:1px solid #bdcde2;border-radius:8px;background:#fff}.cairn-share-panel summary{cursor:pointer;min-height:36px;font-size:13px;color:#315dc2}.cairn-share-back{min-height:44px;text-decoration:underline;color:#315dc2}
 
 /* MORPH — a measured sequence of violet stepping blocks. */
 .kimi-morph .kimi-stage{background:#fcf9ff;border-color:#d5cce0}

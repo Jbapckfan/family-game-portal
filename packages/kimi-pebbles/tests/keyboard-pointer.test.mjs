@@ -11,7 +11,8 @@ const compile = source => ts.transpileModule(source, { compilerOptions: { target
 
 function keyboard(board, dialogOpen = false) {
   const source = sourceFor(board);
-  const effect = source.match(/  useEffect\(\(\) => \{[\s\S]*?\n  \}, \[[^\]]*\]\)/)?.[0];
+  const effect = [...source.matchAll(/  useEffect\(\(\) => \{\n[\s\S]*?\n  \}, \[[^\]]*\]\)/g)]
+    .map(match => match[0]).find(effect => effect.includes("addEventListener('keydown'"));
   assert.ok(effect, `${board}: keyboard effect`);
   const calls = []; let listener;
   const actions = Object.fromEntries(['submit', 'del', 'tapRack', 'backspace', 'keyLetter', 'closePalette', 'keyboardLetter', 'submitPath', 'clearPath', 'setPath']

@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Check, Copy, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Share2, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { buildShareText, emojiFor, msUntilTomorrow, type LevelResult } from './engine'
-import { CairnTower } from './CairnTower'
+import { msUntilTomorrow, type LevelResult } from './engine'
+import { nativeMessage } from '../shared/integration'
+import { buildCairnShareResult, type CairnShareResult } from './share-card'
+import { CairnSharePanel } from './CairnSharePanel'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
   mode: 'daily' | 'practice'
   puzzleNo: number
+  dayNumber: number
   results: LevelResult[]
   perfect: boolean
   onPractice: () => void
@@ -30,78 +33,37 @@ function useCountdown(active: boolean) {
 }
 
 export function WinModal(props: Props) {
-  const [copied, setCopied] = useState(false)
+  const [shareResult, setShareResult] = useState<Readonly<CairnShareResult>|null>(null)
   const countdown = useCountdown(props.open && props.mode === 'daily')
-  const totalMisses = props.results.reduce((a, r) => a + r.misses, 0)
-  const skipped = props.results.some((r) => r.status === 'skipped')
-
-  const shareText = useMemo(
-    () => buildShareText(props.puzzleNo, props.results, props.perfect),
-    [props.puzzleNo, props.results, props.perfect],
-  )
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(shareText)
-    } catch {
-      const ta = document.createElement('textarea')
-      ta.value = shareText
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      ta.remove()
-    }
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1800)
+  useEffect(() => { if (props.open) setShareResult(null) }, [props.open,props.mode,props.puzzleNo,props.dayNumber,props.results])
+  const result = props.results.length === 5 ? buildCairnShareResult(props) : null
+  const title = shareResult ? 'Share your result' : result?.headline ?? 'Your result'
+  const share = () => {
+    if (!result) return
+    if (nativeMessage({type:'share',slug:'kimi-cairn',text:result.caption})) return
+    setShareResult(result)
   }
-
-  const title = props.perfect
-    ? 'Perfect summit! ✨'
-    : skipped
-      ? 'Stack finished'
-      : props.mode === 'practice'
-        ? 'Practice summit!'
-        : 'Summit reached!'
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl">
+      <DialogContent className="cairn-results max-w-sm rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-3xl font-extrabold">{title}</DialogTitle>
+          <DialogTitle className="text-center font-display text-3xl">{title}</DialogTitle>
           <DialogDescription className="sr-only">Puzzle results and sharing</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-4">
-          <CairnTower results={props.results} totalLevels={5} finished animateLast />
-
-          {/* words you stacked */}
-          <div className="w-full rounded-2xl bg-secondary px-4 py-3">
+        {shareResult ? <CairnSharePanel result={shareResult} onBack={() => setShareResult(null)} /> : <div className="flex flex-col items-center gap-4">
+          <div className="cairn-finish-mark" aria-hidden="true">{Array.from({length:5},(_,i)=><span key={i}/>)}</div>
+          <p className="cairn-result-summary">{result?.solved} of 5 levels solved</p>
+          <p className="cairn-result-detail">{result?.misses} {result?.misses === 1 ? 'miss' : 'misses'} · {result?.hints} {result?.hints === 1 ? 'nudge' : 'nudges'}{result?.skipped ? ` · ${result.skipped} shown` : ''}</p>
+          <div className="cairn-result-words">
             {props.results.map((r, i) => (
-              <div key={i} className="flex items-center justify-between py-0.5 text-sm font-bold">
-                <span className="font-display tracking-[0.2em]">{r.word.toUpperCase()}</span>
-                <span>{emojiFor(r.status)}</span>
-              </div>
+              <div key={i}><span>{r.word.toUpperCase()}</span><span>{r.status==='clean'?'Clean':r.status==='messy'?'Assisted':'Shown'}</span></div>
             ))}
           </div>
-
-          <div className="text-center font-display text-2xl font-extrabold tracking-widest">
-            {props.results.map((r) => emojiFor(r.status)).join('')}
-          </div>
-
-          <p className="text-center text-sm font-semibold text-muted-foreground">
-            {totalMisses === 0 && !skipped
-              ? 'Not a single miss. Mountain-goat tier.'
-              : skipped
-                ? 'Some stones were placed for you — tomorrow is a new mountain.'
-                : `${totalMisses} miss${totalMisses === 1 ? '' : 'es'} on the way up.`}
-          </p>
-
+          <button type="button" onClick={share} className="btn3d btn3d-accent h-12 w-full text-base"><Share2 className="h-5 w-5" />Share result</button>
           {props.mode === 'daily' ? (
             <>
-              <button type="button" onClick={copy} className="btn3d btn3d-accent h-12 w-full text-base">
-                {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-                {copied ? 'Copied!' : 'Share result'}
-              </button>
               <div className="text-center">
                 <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Next cairn in</div>
                 <div className="font-display text-2xl font-extrabold tabular-nums">{countdown}</div>
@@ -122,7 +84,7 @@ export function WinModal(props: Props) {
               </button>
             </div>
           )}
-        </div>
+        </div>}
       </DialogContent>
     </Dialog>
   )

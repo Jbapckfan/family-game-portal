@@ -18,7 +18,7 @@ await context.route('**/*',async route=>{
  const types={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.ttf':'font/ttf','.woff2':'font/woff2'};
  try{await route.fulfill({path:file,contentType:types[path.extname(file)]});}catch{await route.fulfill({status:404,body:'Not found'});}
 });
-async function capture(){const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:!(await page.locator('.pair-drag-ghost').count())});console.log(JSON.stringify({game:slug,title:await page.title(),tabs:context.pages().length,profile}));}
+async function capture(){if(slug.startsWith('kimi-')&&page.url().includes('/games/'+slug+'/'))await page.locator('[data-game-ready]').waitFor();const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:!(await page.locator('.pair-drag-ghost').count())});console.log(JSON.stringify({game:slug,title:await page.title(),tabs:context.pages().length,profile}));}
 async function showGame(next){if(!allowed.has(next))throw new Error('Unknown game');slug=next;if(page.isClosed()){page=context.pages().find(p=>!p.isClosed())||await context.newPage();if(page===sampleTab)sampleTab=null;}await page.goto(`https://alford-daily.test/games/${slug}/`);await page.bringToFront();await capture();}
 await showGame(slug);
 let pending=Promise.resolve();

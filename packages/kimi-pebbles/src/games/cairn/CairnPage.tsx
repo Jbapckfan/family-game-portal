@@ -2,10 +2,10 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useGame } from './useGame'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
-import { dateLabel } from '../shared/share'
+import { dateForDayNumber } from '../shared/integration'
 import { hasSeenHelp, markHelpSeen } from './storage'
 import { GameHeader } from '../shared/GameHeader'
-import { PracticeBanner, ToastHost, fireConfetti } from '../shared/effects'
+import { PracticeBanner, ToastHost } from '../shared/effects'
 import { GameBoard } from './GameBoard'
 import { HelpModal } from './HelpModal'
 import { StatsModal } from './StatsModal'
@@ -27,10 +27,6 @@ export default function CairnPage() {
     }
   }, [state.phase])
 
-  useEffect(() => {
-    if (!state.finished) return
-    fireConfetti()
-  }, [state.finished, state.mode])
 
   return (
     <div className="kimi-page kimi-cairn flex min-h-dvh flex-col">
@@ -40,7 +36,7 @@ export default function CairnPage() {
         busy={state.phase === 'loading'}
         onPractice={startPractice}
         onDaily={backToDaily}
-        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
+        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateForDayNumber(state.dayNumber)}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
@@ -50,12 +46,7 @@ export default function CairnPage() {
       <main data-game-focus tabIndex={-1} className="kimi-main flex flex-1 flex-col">
         {state.phase === 'loading' ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
-            <div className="anim-sway flex flex-col-reverse items-center" style={{ gap: 4 }} aria-hidden="true">
-              <div className="rounded-full" style={{ width: 72, height: 16, background: 'hsl(200 82% 66%)', transform: 'rotate(-2deg)' }} />
-              <div className="rounded-full" style={{ width: 56, height: 16, background: 'hsl(145 55% 55%)', transform: 'rotate(1.5deg)' }} />
-              <div className="rounded-full" style={{ width: 42, height: 16, background: 'hsl(24 92% 58%)', transform: 'rotate(-1.5deg)' }} />
-              <div className="rounded-full" style={{ width: 30, height: 16, background: 'hsl(340 75% 58%)', transform: 'rotate(2deg)' }} />
-            </div>
+            <div className="cairn-finish-mark" aria-hidden="true">{Array.from({length:5},(_,i)=><span key={i}/>)}</div>
             <p className="font-display text-lg font-bold text-muted-foreground">Stacking letters…</p>
           </div>
         ) : (
@@ -86,6 +77,7 @@ export default function CairnPage() {
         onOpenChange={setWinOpen}
         mode={state.mode}
         puzzleNo={state.puzzleNo}
+        dayNumber={state.dayNumber}
         results={state.results}
         perfect={state.perfect}
         onPractice={() => {

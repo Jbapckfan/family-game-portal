@@ -17,7 +17,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 6 | Sideways | ChatGPT | Replacement candidate: too easy | Qualitative feedback |
 | 7 | Tradeoff | ChatGPT | Keep; difficulty follow-up | Keeper; a bit too easy |
 | 8 | Inbetween | ChatGPT | Keep; drag-and-drop delivered | 6/10; could have harder clues |
-| 9 | Cairn | Kimi | Not yet reviewed individually | — |
+| 9 | Cairn | Kimi | Reviewed; revised finish/UI ready | Graphic criticized; gameplay verdict pending |
 | 10 | Morph | Kimi | Not yet reviewed individually | — |
 | 11 | Tangle | Kimi | Not yet reviewed individually | — |
 | 12 | Hunch | Kimi | Not yet reviewed individually | — |
@@ -58,5 +58,7 @@ Sideways reviewer fun predictions before improvements: Kimi **3/5**, Gemini **4/
 Tradeoff reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James explicitly called it a keeper, a bit too easy. Difficulty tuning remains a follow-up; relative keeper order is unknown. [Review decisions and open concurrency finding](tradeoff/ADJUDICATION.md).
 
 Inbetween reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James rated it **6/10**, kept it, and asked for drag-and-drop placement visuals and harder clues. [Drag-and-drop delivered](inbetween/DRAG-PLACEMENT.md); clue tuning remains a follow-up. [Review decisions, bank recurrence and final verification](inbetween/ADJUDICATION.md).
+
+Cairn reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3/5**. James criticized the Perfect Summit graphic; the revised version removes it. His gameplay/replay verdict and disposition remain pending. [Review and verified fixes](cairn/REPORT.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

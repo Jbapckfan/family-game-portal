@@ -36,12 +36,12 @@ export function HelpModal({ open, onOpenChange }: Props) {
           </div>
           <div>
             <p className="mb-2">
-              Solve it, and a <span style={{ color: '#a85439' }} className="font-bold">new letter</span> drops
+              Solve it, and a <span style={{ color: '#315dc2' }} className="font-bold">new letter</span> drops
               in. Use all of them again:
             </p>
             <div className="flex items-center gap-2">
-              <MiniTiles letters="rate" variant="new" />
-              <span className="text-muted-foreground">← RATE, TEAR…</span>
+              <MiniTiles letters="tear" variant="new" />
+              <span className="text-muted-foreground">← TEAR, RATE…</span>
             </div>
           </div>
           <p>
@@ -49,13 +49,13 @@ export function HelpModal({ open, onOpenChange }: Props) {
             letters counts.
           </p>
           <ul className="flex flex-col gap-1.5">
-            <li>🟩 Flawless — solved with no misses and no hints</li>
-            <li>🟨 Solved with misses or a hint</li>
-            <li>⬛ Gave up on that level</li>
+            <li><strong>Clean</strong> — solved with no misses or hints.</li>
+            <li><strong>Assisted</strong> — solved with misses or hints.</li>
+            <li><strong>Shown</strong> — skipped; does not count as solved.</li>
           </ul>
           <p className="text-muted-foreground">
-            Tap tiles or use your keyboard. A new puzzle stacks up every day at midnight — finish it to grow your
-            streak. Choose Practice above the board for an extra puzzle; your daily result stays separate.
+            Tap tiles or use your keyboard. A new puzzle stacks up every day at midnight in Central Time. Solve all five levels without skipping to grow your
+            streak. Solve all five clean for a Perfect summit. A full invalid word counts as a miss; editing and shuffling are free. Hints reveal a prefix of one answer, with two per level (one on the first level). Choose Practice above the board for an extra puzzle; your daily result stays separate.
           </p>
         </div>
       </DialogContent>

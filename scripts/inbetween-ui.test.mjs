@@ -8,7 +8,7 @@ function open(saved=storage(),session=storage()){
  Object.defineProperty(w,'localStorage',{value:saved});Object.defineProperty(w,'sessionStorage',{value:session});w.matchMedia=()=>({matches:true});w.requestAnimationFrame=fn=>fn();w.setTimeout=()=>1;w.clearTimeout=()=>{};w.setInterval=()=>1;w.CSS={escape:s=>s};
  w.webkit={messageHandlers:{alford:{postMessage:m=>messages.push(m)}}};w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};
  Object.assign(w,E,{PUZZLES,practiceCandidates,getDateKey:()=> '2026-10-30',getDaily:items=>E.getDaily(items,new Date('2026-10-30T18:00:00Z'))});
- const ctx=dom.getInternalVMContext(),share=new URL('../games/inbetween/share-card.mjs',import.meta.url);if(existsSync(share))runInContext(strip(readFileSync(share,'utf8')),ctx);runInContext(strip(readFileSync(new URL('../games/inbetween/app.mjs',import.meta.url),'utf8')),ctx);
+ const ctx=dom.getInternalVMContext(),share=new URL('../games/inbetween/share-card.mjs',import.meta.url);if(existsSync(share))runInContext(strip(readFileSync(share,'utf8')),ctx);runInContext(strip(readFileSync(new URL('../games/inbetween/placement-drag.mjs',import.meta.url),'utf8')),ctx);runInContext(strip(readFileSync(new URL('../games/inbetween/app.mjs',import.meta.url),'utf8')),ctx);
  const $=q=>w.document.querySelector(q),state=()=>runInContext('({game,puzzle,preview,hinted,feedback,records})',ctx),action=a=>$(`[data-action="${a}"]`).click();
  const preview=h=>{$(`[data-tile="${h.tileId}"]`).click();$(`[data-row="${h.row}"][data-gap="${h.gap}"]`).click();};
  const fit=()=>{preview(E.findHint(state().puzzle,state().game));$('[data-fit]').click();};

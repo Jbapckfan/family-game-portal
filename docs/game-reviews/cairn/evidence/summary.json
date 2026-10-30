@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-30",
+  "sourceBaseCommit": "5c7948424119e1e32f25c78dfe369f281b86fd71",
+  "catalogTests": {
+    "passed": 899,
+    "failed": 0
+  },
+  "packageTests": {
+    "passed": 161,
+    "failed": 0
+  },
+  "finalFocusedTests": 21,
+  "testScope": "Package and catalog suites are separate. Focused tests overlap package tests. Final package pass preceded final wording-only TEA\u2192TEAR example and singular-nudge corrections; focused21 and browser34 passed on delivery.",
+  "browserChecks": 34,
+  "browserErrors": [],
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "nativeRuntimeParity": {
+    "files": 281,
+    "exactFileAndSHA256Match": true,
+    "compiledProduct": "output/cairn-review-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Web",
+    "signed": false,
+    "physicalDeviceTested": false
+  },
+  "stage": "dist/cairn-review-20261030-delivery/web",
+  "webBuildId": "8ce9827e8d10a961",
+  "manifestAssets": 313,
+  "stagedFiles": 315,
+  "unchangedCairnCore": [
+    "engine.ts",
+    "useGame.ts",
+    "progress.ts",
+    "storage.ts",
+    "data/puzzles.json",
+    "data/dict.txt",
+    "data/common.txt"
+  ],
+  "contentAudit": {
+    "boards": 839,
+    "distinctSignatureChains": 839,
+    "distinctTopSignatures": 133,
+    "distinctCanonicalWords": 553,
+    "maxCanonicalRecurrence": 88,
+    "dictionaryWords": 97109,
+    "commonListWords": 3774,
+    "invalidCanonicalWords": [],
+    "levelInstances": 4195,
+    "levelInstancesWithMultipleDictionaryAnagrams": 3818,
+    "maxDictionaryAnagrams": 14,
+    "levelInstancesWithNoBundledCommonAlternative": 0,
+    "method": "Independent multiset checks: five levels of3\u20137letters, each adds one letter; all stored answers checked against actual bundled dictionary. Alternate anagrams share the same multiset, so cannot strand the next level. Common-list membership is a supplied editorial list, not a human familiarity rating."
+  },
+  "jamesVerdict": "Only the Perfect Summit image was criticized; enjoyment, replay, rating and disposition remain pending.",
+  "modelReview": {
+    "baseline": [
+      "kimi-code/k3.1-pro",
+      "gemini-3.8-flash-high",
+      "claude-opus-5-5"
+    ],
+    "final": "claude-opus-5-5",
+    "finalFindings": {
+      "critical": 0,
+      "important": 1,
+      "minor": 4
+    },
+    "disposition": "Important skip/streak wording corrected. Progress accessibility, closing-copy and stale-streak display fixed. Predicted focus loss disproved by shared Dialog fallback and real-browser focus checks."
+  },
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "limitations": [
+    "Bank construction and dated rotation checks do not establish human familiarity, fun or semantic uniqueness.",
+    "Existing daily rollover contract and localStorage concurrency architecture are unchanged.",
+    "Older Canvas without roundRect retains caption fallback; physical Safari/Android share sheets are unverified.",
+    "No verified free DeepSeek review was available; no endorsement is inferred."
+  ],
+  "sourceFileSHA256": {
+    "packages/kimi-pebbles/src/games/cairn/CairnPage.tsx": "110801f1c889119a5f697efacb8834e4965bd656a761eed117e2c9fa61cfe365",
+    "packages/kimi-pebbles/src/games/cairn/CairnSharePanel.tsx": "3ba84e13b27e1e5d795c2caec0479df866be1c5c0ea432d25b56ba9aea41ecca",
+    "packages/kimi-pebbles/src/games/cairn/CairnTower.tsx": "1e94359654bc03ad085fcdb47bc8f2c4eab56d88ddd633ec951211079a8530fb",
+    "packages/kimi-pebbles/src/games/cairn/GameBoard.tsx": "5d583cb3121af334042f6656247ccb690cbaa8c394e755e1997e0905bdbcfe9f",
+    "packages/kimi-pebbles/src/games/cairn/HelpModal.tsx": "2ce0cd6021f59e1e2e1a92d490c7048d69a228032d3f590731f1c1b812cb19bd",
+    "packages/kimi-pebbles/src/games/cairn/StatsModal.tsx": "1e3db1dd25a7419a304f36faab7a1c344688adb78c417edf8d6be1b6b4898c8e",
+    "packages/kimi-pebbles/src/games/cairn/WinModal.tsx": "6df5474513287c0455e36086a0854cb37b06d8eeae086d0fa1045d190ce3b7c2",
+    "packages/kimi-pebbles/src/games/cairn/engine.ts": "8fef12cdc1320c32401b02273cd3604fd187bcc330c908e645388b91d8b801f9",
+    "packages/kimi-pebbles/src/games/cairn/progress.ts": "f37f09a2725757a4f2183cada3bb35626341f9f9c4f0653fd2a23be674b2e1e5",
+    "packages/kimi-pebbles/src/games/cairn/share-card.ts": "e66a06f241034323347aa1f60b349868e43e7ae0456b4a64d5e3919aacf6786c",
+    "packages/kimi-pebbles/src/games/cairn/storage.ts": "b4782a59998f5c844d9c35bf466da719878f2c5e51cebb5fd765eff05cbe15c3",
+    "packages/kimi-pebbles/src/games/cairn/useGame.ts": "4049ce5ce39d46c7ced11e1c6954e64ba7c10ec66d1e34bcc7411a0853a6f8a3"
+  }
+}

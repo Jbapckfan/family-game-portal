@@ -160,15 +160,25 @@ test('a paid hint survives refresh and later scans with its original evidence co
   assert.notEqual(reloaded.hint, assisted.state.hint);
 });
 
-test('older assisted saves recover a useful hint without spending another hint', () => {
+test('legacy assisted saves keep their score without inventing advice or a new hint time', () => {
   const legacy = { ...submitScan(puzzle, createGame(puzzle), 'CR').state, hints: 1 };
   delete legacy.hint;
   const restored = restoreGame(puzzle, clone(legacy));
-  const expected = findHint(puzzle, { ...legacy, hints: 0 });
-  assert.deepEqual(restored.hint, { ...expected, scanCount: legacy.scans.length });
+  assert.equal(restored.hint, null);
   assert.equal(restored.hints, 1);
   assert.deepEqual(restored.scans, legacy.scans);
-  assert.ok(!restored.hint.message.includes(puzzle.answer));
+  assert.equal(useHint(puzzle, restored).hint, null);
+  const finished = submitPick(puzzle,restored,puzzle.answer).state;
+  assert.equal(restoreGame(puzzle,clone(finished)).status,'won');
+});
+
+test('a hint wording change cannot erase a completed result with valid original hint context', () => {
+  const assisted=useHint(puzzle,createGame(puzzle)).state;
+  const won=submitPick(puzzle,assisted,puzzle.answer).state;
+  const raw={...clone(won),hint:{...won.hint,message:'Earlier release wording'}};
+  const restored=restoreGame(puzzle,raw);
+  assert.equal(restored.status,'won');assert.equal(restored.hints,1);
+  assert.equal(restored.hint.message,won.hint.message);
 });
 
 test('restoration rejects a forged hint payload or impossible hint context', () => {
@@ -177,10 +187,10 @@ test('restoration rejects a forged hint payload or impossible hint context', () 
   const fresh = createGame(puzzle);
   for (const hint of [
     { ...stored, scanCount: 2 }, { ...stored, scanCount: -1 },
-    { ...stored, message: `The secret is ${puzzle.answer}.` },
     { ...stored, letters: 'ZZ' }, { ...stored, type: 'answer' },
   ]) assert.deepEqual(restoreGame(puzzle, { ...assisted, hint }), fresh);
   assert.deepEqual(restoreGame(puzzle, { ...fresh, hint: stored }), fresh);
+  assert.equal(restoreGame(puzzle,{...assisted,hint:{...stored,message:`The secret is ${puzzle.answer}.`}}).hint.message,stored.message);
 });
 
 test('a unique deduction can be recognized early without spending another scan', () => {

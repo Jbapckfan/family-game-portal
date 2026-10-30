@@ -1,6 +1,6 @@
 # Counterpart — third individual review, October 30, 2026
 
-Counterpart is ready for James's gameplay verdict, with his requested larger words. The current window is reused with two tabs; three obsolete previews were closed after his explicit correction. Follow the [preview workflow](../WORKFLOW.md).
+James answered “yeah, next game” when asked whether he would play Counterpart again. Counterpart is a keeper alongside Switchpath; their relative order and numerical enjoyment scores are not yet supplied. His requested larger words are delivered. Follow the [preview workflow](../WORKFLOW.md) to reuse the existing window for Shortlist.
 
 The word bank now uses large two-column phone tiles, clue pairs use clear bold sans-serif type, and answer words are larger. The active row stays at the top of the row list, near the bank. Check scrolls into view once both words are chosen. Short phones may need scrolling; readability takes priority.
 
@@ -24,6 +24,6 @@ The baseline bank is an authored exact-answer system. Conditional ambiguity clai
 
 ## Continue
 
-Record James's enjoyment and willingness to play again in [ranking.json](../ranking.json), then compare with Switchpath and Ringcount. Shortlist is next in the review queue.
+James's replay approval is recorded in [ranking.json](../ranking.json). Compare the keeper games later; Shortlist is now the active review.
 
-Checkout: `/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months`; branch `codex/game-by-game-2026-10-29`. Final stage: `dist/counterpart-readable-final-20261030/web`. Reuse the existing readable preview/profile; launcher `output/counterpart-review-20261030/show-readable-counterpart.mjs` supports `reload` through its PTY. Open no additional visible browser tabs beyond the current two.
+Checkout: `/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months`; branch `codex/game-by-game-2026-10-29`. Counterpart stage: `dist/counterpart-readable-final-20261030/web`. The reusable `scripts/review-preview.mjs` controller supersedes the old reload-only launcher and retains its readable-profile storage. Use its existing PTY to navigate games; at most two task tabs.

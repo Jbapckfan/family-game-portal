@@ -1,0 +1,35 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "c8142226044fa53c4b2f3772235995aa49b34ac8e07d955964dd3806ea0144c3",
+  "files": [
+    "games/shortlist/engine.mjs",
+    "games/shortlist/app.mjs",
+    "games/shortlist/shell.mjs",
+    "games/shortlist/share-card.mjs",
+    "games/shortlist/tests/share-card.test.mjs",
+    "games/shortlist/tests/engine.test.mjs",
+    "scripts/review-shortlist.mjs",
+    "docs/game-reviews/shortlist/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 124.88,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 12223,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 43309,
+      "webSearchRequests": 0,
+      "costUSD": 0.5912596,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 10112,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 43309,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

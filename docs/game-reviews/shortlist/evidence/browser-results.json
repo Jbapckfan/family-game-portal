@@ -1,0 +1,122 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px+ word/letter labels and 44px+ controls fit 320–1440 without horizontal overflow",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Early-pick cancel is safe; pencil notes do not affect the confirmed hint; hint costs no scan and original context survives reload",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Typed letter keeps focus; an old hint remains labelled historically without selecting stale advice",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Exact presence count is correct; reversed duplicate uses no scan; evidence is beside candidates; keyboard deletion preserves focus",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Third scan focuses a real candidate; no automatic elimination; exhausted keyboard is inert and scan-rule reminder adds no hint",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Legacy assisted save preserves score/evidence and honestly omits advice whose original context is unknown",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Confirmed wrong pick loses exactly once; missed share is honest and terminal Escape preserves result",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Zero-scan win is allowed and labelled factually, without invented skill praise",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A complete strategy wins through real actions and exports actual portrait/square PNGs with truthful totals",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened sharing keeps played date past midnight; mocked cancellation preserves focus and blocked clipboard offers manual copy",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed practice is explicit and preserves daily win",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px+ word/letter labels and 44px+ controls fit 320–1440 without horizontal overflow",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Early-pick cancel is safe; pencil notes do not affect the confirmed hint; hint costs no scan and original context survives reload",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Typed letter keeps focus; an old hint remains labelled historically without selecting stale advice",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Exact presence count is correct; reversed duplicate uses no scan; evidence is beside candidates; keyboard deletion preserves focus",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Third scan focuses a real candidate; no automatic elimination; exhausted keyboard is inert and scan-rule reminder adds no hint",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Legacy assisted save preserves score/evidence and honestly omits advice whose original context is unknown",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Confirmed wrong pick loses exactly once; missed share is honest and terminal Escape preserves result",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Zero-scan win is allowed and labelled factually, without invented skill praise",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A complete strategy wins through real actions and exports actual portrait/square PNGs with truthful totals",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened sharing keeps played date past midnight; mocked cancellation preserves focus and blocked clipboard offers manual copy",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed practice is explicit and preserves daily win",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

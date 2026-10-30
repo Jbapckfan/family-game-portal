@@ -1,0 +1,1372 @@
+{
+  "boards": 210,
+  "distinctBanks": 210,
+  "distinctAnswers": 210,
+  "vocabulary": 1051,
+  "verifiedPossibleSecrets": 2520,
+  "method": "Traverse each existing decision tree independently for every bank word using letter-presence counts, not the scheduled answer. Strategy existence is not human difficulty/fun.",
+  "samples": [
+    {
+      "id": "shortlist-001",
+      "title": "Small signals. Big deductions.",
+      "difficulty": "Sharp",
+      "words": [
+        "CRANE",
+        "BRICK",
+        "GHOST",
+        "PLUMB",
+        "FJORD",
+        "WATCH",
+        "SILKY",
+        "DROWN",
+        "MAPLE",
+        "SCOUT",
+        "FLING",
+        "QUEST"
+      ],
+      "answer": "MAPLE"
+    },
+    {
+      "id": "shortlist-002",
+      "title": "Small signals. Big deductions.",
+      "difficulty": "Sharp",
+      "words": [
+        "THEME",
+        "REACH",
+        "PROUD",
+        "DIGIT",
+        "VOTER",
+        "BRAIN",
+        "GRAPE",
+        "CANAL",
+        "JUMPY",
+        "HOBBY",
+        "GROVE",
+        "BRISK"
+      ],
+      "answer": "REACH"
+    },
+    {
+      "id": "shortlist-003",
+      "title": "Small signals. Big deductions.",
+      "difficulty": "Sharp",
+      "words": [
+        "BAGEL",
+        "LEMON",
+        "TRACK",
+        "BASIC",
+        "SOUND",
+        "NOBLE",
+        "DOUBT",
+        "TRADE",
+        "MATCH",
+        "CHECK",
+        "SPEAR",
+        "SPOIL"
+      ],
+      "answer": "DOUBT"
+    },
+    {
+      "id": "shortlist-011",
+      "title": "Small signals. Big deductions.",
+      "difficulty": "Sharp",
+      "words": [
+        "HASTE",
+        "AGENT",
+        "JUDGE",
+        "SCRAP",
+        "VERGE",
+        "SPIKE",
+        "ALERT",
+        "EXACT",
+        "GLARE",
+        "VALVE",
+        "STONE",
+        "PAPER"
+      ],
+      "answer": "STONE"
+    },
+    {
+      "id": "shortlist-210",
+      "title": "Small signals. Big deductions.",
+      "difficulty": "Sharp",
+      "words": [
+        "PUNCH",
+        "BLIMP",
+        "THING",
+        "ROUGH",
+        "DUSTY",
+        "COURT",
+        "MAJOR",
+        "WOULD",
+        "TREAT",
+        "VAGUE",
+        "HONEY",
+        "SHEET"
+      ],
+      "answer": "VAGUE"
+    }
+  ],
+  "perBoard": [
+    {
+      "id": "shortlist-001",
+      "firstScan": "CR",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-002",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-003",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-004",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-005",
+      "firstScan": "CE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-006",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-007",
+      "firstScan": "AG",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-008",
+      "firstScan": "EP",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-009",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-010",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-011",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-012",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-013",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-014",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-015",
+      "firstScan": "EF",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-016",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-017",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-018",
+      "firstScan": "CR",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-019",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-020",
+      "firstScan": "IO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-021",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-022",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-023",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-024",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-025",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-026",
+      "firstScan": "ST",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-027",
+      "firstScan": "DE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-028",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-029",
+      "firstScan": "AD",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-030",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-031",
+      "firstScan": "ST",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-032",
+      "firstScan": "CE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-033",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-034",
+      "firstScan": "LN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-035",
+      "firstScan": "LO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-036",
+      "firstScan": "CH",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-037",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-038",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-039",
+      "firstScan": "HL",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-040",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-041",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-042",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-043",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-044",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-045",
+      "firstScan": "IL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-046",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-047",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-048",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-049",
+      "firstScan": "EH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-050",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-051",
+      "firstScan": "BE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-052",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-053",
+      "firstScan": "IT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-054",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-055",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-056",
+      "firstScan": "EO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-057",
+      "firstScan": "CE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-058",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-059",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-060",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-061",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-062",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-063",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-064",
+      "firstScan": "AG",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-065",
+      "firstScan": "DO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-066",
+      "firstScan": "AP",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-067",
+      "firstScan": "EI",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-068",
+      "firstScan": "AS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-069",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-070",
+      "firstScan": "AM",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-071",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-072",
+      "firstScan": "AI",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-073",
+      "firstScan": "AN",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-074",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-075",
+      "firstScan": "ES",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-076",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-077",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-078",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-079",
+      "firstScan": "IR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-080",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-081",
+      "firstScan": "CH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-082",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-083",
+      "firstScan": "EU",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-084",
+      "firstScan": "EH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-085",
+      "firstScan": "CR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-086",
+      "firstScan": "LS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-087",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-088",
+      "firstScan": "AF",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-089",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-090",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-091",
+      "firstScan": "AN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-092",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-093",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-094",
+      "firstScan": "EI",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-095",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-096",
+      "firstScan": "PR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-097",
+      "firstScan": "AP",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-098",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-099",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-100",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-101",
+      "firstScan": "AH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-102",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-103",
+      "firstScan": "ST",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-104",
+      "firstScan": "EU",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-105",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-106",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-107",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-108",
+      "firstScan": "LS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-109",
+      "firstScan": "ES",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-110",
+      "firstScan": "AD",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-111",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-112",
+      "firstScan": "LR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-113",
+      "firstScan": "IN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-114",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-115",
+      "firstScan": "IL",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-116",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-117",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-118",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-119",
+      "firstScan": "EO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-120",
+      "firstScan": "AH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-121",
+      "firstScan": "AY",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-122",
+      "firstScan": "AO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-123",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-124",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-125",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-126",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-127",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-128",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-129",
+      "firstScan": "HT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-130",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-131",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-132",
+      "firstScan": "EG",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-133",
+      "firstScan": "IN",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-134",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-135",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-136",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-137",
+      "firstScan": "AD",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-138",
+      "firstScan": "EF",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-139",
+      "firstScan": "ES",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-140",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-141",
+      "firstScan": "AS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-142",
+      "firstScan": "AS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-143",
+      "firstScan": "LS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-144",
+      "firstScan": "RT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-145",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-146",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-147",
+      "firstScan": "PU",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-148",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-149",
+      "firstScan": "CF",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-150",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-151",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-152",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-153",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-154",
+      "firstScan": "AN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-155",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-156",
+      "firstScan": "IN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-157",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-158",
+      "firstScan": "AP",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-159",
+      "firstScan": "BR",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-160",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-161",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-162",
+      "firstScan": "LO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-163",
+      "firstScan": "HT",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-164",
+      "firstScan": "LT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-165",
+      "firstScan": "EH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-166",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-167",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-168",
+      "firstScan": "ES",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-169",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-170",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-171",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-172",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-173",
+      "firstScan": "AH",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-174",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-175",
+      "firstScan": "AT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-176",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-177",
+      "firstScan": "IT",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-178",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-179",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-180",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-181",
+      "firstScan": "AN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-182",
+      "firstScan": "ST",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-183",
+      "firstScan": "EI",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-184",
+      "firstScan": "AI",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-185",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-186",
+      "firstScan": "AO",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-187",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-188",
+      "firstScan": "ER",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-189",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-190",
+      "firstScan": "AN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-191",
+      "firstScan": "AS",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-192",
+      "firstScan": "AI",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-193",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-194",
+      "firstScan": "ES",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-195",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-196",
+      "firstScan": "AK",
+      "worstCase": 3,
+      "expectedScans": 2.666666666666667
+    },
+    {
+      "id": "shortlist-197",
+      "firstScan": "EN",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-198",
+      "firstScan": "EL",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-199",
+      "firstScan": "OR",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-200",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-201",
+      "firstScan": "AD",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-202",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-203",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-204",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-205",
+      "firstScan": "AL",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-206",
+      "firstScan": "ET",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-207",
+      "firstScan": "AE",
+      "worstCase": 3,
+      "expectedScans": 2.6666666666666665
+    },
+    {
+      "id": "shortlist-208",
+      "firstScan": "AR",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-209",
+      "firstScan": "AC",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    },
+    {
+      "id": "shortlist-210",
+      "firstScan": "OU",
+      "worstCase": 3,
+      "expectedScans": 2.5
+    }
+  ]
+}

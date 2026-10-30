@@ -26,7 +26,7 @@ def main():
  for f in sorted(stage.rglob('*')):
   if f.is_file():
    assert not f.is_symlink();files.append(('web/'+str(f.relative_to(stage)),f.read_bytes()))
- readme=f'''Alford Daily — verified six-month build, October 29, 2026
+ readme=f'''Alford Daily — verified six-month build
 
 32 daily games + nine-board Tic-Tac-Toe bonus.
 182 distinct daily challenge configurations per game: October29–April28,2027.

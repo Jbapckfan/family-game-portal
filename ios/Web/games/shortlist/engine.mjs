@@ -195,16 +195,19 @@ export function restoreGame(puzzle, raw) {
   let hint = null;
   if (raw.hints === 0 && raw.hint != null) return fresh();
   if (raw.hints === 1) {
-    // Older saves retained only the assistance count. Recover advice from their
-    // visible evidence; newer saves retain the precise original scan context.
+    // Older saves retained only the assistance count. Preserve it without
+    // inventing advice or a time at which that advice was originally received.
     const legacy = raw.hint == null;
     if (!legacy && (typeof raw.hint !== 'object' || Array.isArray(raw.hint)
       || !Number.isInteger(raw.hint.scanCount) || raw.hint.scanCount < 0 || raw.hint.scanCount > scans.length)) return fresh();
-    const scanCount = legacy ? scans.length : raw.hint.scanCount;
-    const expected = findHint(puzzle, { ...createGame(puzzle), scans: scans.slice(0, scanCount) });
-    if (!legacy && (raw.hint.type !== expected.type || raw.hint.letters !== expected.letters
-      || raw.hint.message !== expected.message)) return fresh();
-    hint = { ...expected, scanCount };
+    if (!legacy) {
+      const scanCount = raw.hint.scanCount;
+      const expected = findHint(puzzle, { ...createGame(puzzle), scans: scans.slice(0, scanCount) });
+      if (raw.hint.type !== expected.type || raw.hint.letters !== expected.letters) return fresh();
+      // Wording is derived display text, not game integrity. Normalize it while
+      // preserving the original evidence context and valid completed results.
+      hint = { ...expected, scanCount };
+    }
   }
   return { puzzleId: puzzle.id, scans, eliminated: [...raw.eliminated], pick: raw.pick, hints: raw.hints, hint, status };
 }

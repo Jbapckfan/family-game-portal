@@ -1,0 +1,32 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px+ word/letter labels and 44px+ controls fit 320–1440 without horizontal overflow",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: confirmed hint must focus Scan after the dialog closes\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-shortlist.mjs:24:118\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)",
+    "overflow": {
+      "width": 390,
+      "scroll": 390,
+      "nodes": []
+    }
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px+ word/letter labels and 44px+ controls fit 320–1440 without horizontal overflow",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(await page.locator('[data-letter]').evaluateAll(nodes=>nodes.some(n=>document.activeElement===n)))\n\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-shortlist.mjs:24:367\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)",
+    "overflow": {
+      "width": 390,
+      "scroll": 390,
+      "nodes": []
+    }
+  }
+]

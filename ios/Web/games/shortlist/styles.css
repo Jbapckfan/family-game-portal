@@ -111,3 +111,51 @@ body.shortlist{--accent:#2f5baf;--accent-dark:#214586;--wash:#e7eefc;--soft:#bdc
 
 /* Native GameScreen already displays the developer credit above its WebView. */
 .native-app .game-credit{display:none}
+
+/* Review: readable words, reachable letters, and evidence alongside candidates. */
+.shortlist .candidate-word{font-size:18px;min-height:56px;letter-spacing:.4px;position:relative}
+.shortlist .candidate-word .pencil-symbol{position:absolute;right:5px;bottom:3px;font-size:12px;line-height:1}
+.shortlist .letter-key{font-size:17px;min-height:46px;min-width:0}
+.shortlist .scan-history{margin:0 0 16px}
+.shortlist .scan-result{min-height:54px}
+.shortlist .scan-explanation,.shortlist .scan-note,.shortlist .pencil-note{font-size:13px;line-height:1.55}
+.shortlist .scan-count.count-1{background:#dbe7fc}
+.shortlist .scan-count.count-2{background:#cfefeb}
+.shortlist .scan-preview span.chosen,.shortlist .letter-key.selected{background:#bce9e5;border-color:#bce9e5;box-shadow:0 3px 0 #73aaa7;color:#183747}
+.shortlist .scan-compose .primary-button{background:#bce9e5;border-color:#bce9e5;color:#183747;box-shadow:0 3px 0 #73aaa7}
+.shortlist #scan-budget{color:#c8efec}
+.shortlist .scan-clear{display:block;min-height:44px;padding:8px 12px;margin:6px 0 10px;border:1px solid #7790a9;border-radius:9px;color:#fff;font-size:14px}
+.shortlist .evidence-jump{margin-top:8px;background:#edf3fa;color:#20344b;width:100%;font-size:14px}
+.shortlist .letters-jump{margin-top:8px;width:100%;font-size:14px}
+.shortlist .pencil-note{color:var(--ink)}
+@media(max-width:600px){
+ .shortlist .masthead{min-height:62px}
+ .shortlist .hero{padding:8px 0 14px}
+ .shortlist .hero .eyebrow,.shortlist .hero-lead,.shortlist .hero>p:last-child{display:none}
+ .shortlist .hero h1{font-size:29px}
+ .shortlist .puzzle-meta{padding:9px 0}
+ .shortlist .candidate-word{font-size:18px}
+ .shortlist .letter-bank{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .shortlist .letter-key{min-height:46px;font-size:17px}
+ .shortlist .scan-explanation{font-size:12px}
+ .shortlist .scan-result{grid-template-columns:12px 62px 30px minmax(0,1fr);gap:6px}
+}
+@media(max-width:360px){.shortlist .letter-bank{grid-template-columns:repeat(5,minmax(0,1fr))}.shortlist .candidate-word{font-size:17px}}
+.share-formats{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.share-formats button{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 16px;background:var(--white);font:600 12px var(--sans);cursor:pointer}
+.share-formats button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+#result-card{display:block;width:min(100%,270px);height:auto;margin:0 auto;border-radius:14px;box-shadow:0 8px 32px #2736401c}
+.share-actions{flex-wrap:wrap;gap:8px}
+.share-actions button{min-height:44px}
+.share-caption{margin-top:12px;font-size:12px}
+.share-caption summary{cursor:pointer;padding:12px 0}
+.share-caption textarea{width:100%;box-sizing:border-box;min-height:120px}
+@media(max-width:520px){
+ .share-actions{display:grid;grid-template-columns:1fr 1fr}
+ .share-actions #share-card{grid-column:1/-1}
+}
+.shortlist .scan-compose{flex-wrap:wrap;justify-content:flex-start;gap:12px}
+.shortlist .scan-result{grid-template-columns:16px 76px 32px minmax(0,1fr);gap:8px}
+.shortlist .scan-letters{font-size:16px;letter-spacing:0}
+.shortlist .scan-count{width:30px;height:30px;font-size:20px}
+.shortlist .scan-explanation{font-size:13px}

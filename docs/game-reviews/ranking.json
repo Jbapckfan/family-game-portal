@@ -114,9 +114,32 @@
             "date": "2026-10-30",
             "quote": "make the 'need to go high vs need to go low' indicators more obvious during gameplay",
             "interpretation": "Improve visibility of the current comparison direction during play."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "not a huge fan of the brown color but otherwise i like it",
+            "interpretation": "Likes the clearer indicators; dislikes the brown lower-state colour. Change that colour."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "don't like purple",
+            "interpretation": "Rejects purple for the lower-state indicator. Teal is the next proposed colour."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "better",
+            "interpretation": "Approves teal for the lower-state indicator after rejecting brown and purple."
           }
         ],
-        "enjoymentReaction": "likes it"
+        "enjoymentReaction": "likes it",
+        "directionColourPreference": {
+          "higher": "blue",
+          "lower": "teal",
+          "avoidLower": [
+            "brown",
+            "purple"
+          ]
+        }
       },
       "reviews": [
         {
@@ -172,7 +195,8 @@
         "switchpath/evidence/summary.json",
         "switchpath/evidence/forcing-audit.json",
         "switchpath/SPACING-AND-5X5.md",
-        "switchpath/CLEAR-DIRECTIONS.md"
+        "switchpath/CLEAR-DIRECTIONS.md",
+        "switchpath/teal-evidence/browser-results.json"
       ],
       "nextStep": "Compact board delivered; 5x5 shown as a non-playable sizing concept. Consider optional longer practice mode; Counterpart remains next game in queue.",
       "gameplayFinding": "58/217 boards fully solved by basic static degree forcing; 159 require more than that technique. Not a human difficulty or fun rating.",

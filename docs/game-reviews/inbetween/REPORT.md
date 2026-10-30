@@ -1,6 +1,6 @@
 # Inbetween review — October 30, 2026
 
-Inbetween is ready for James's individual playtest. **His verdict remains pending.** No enjoyment score, keeper status or relative ranking was inferred. Cairn is next after this playtest.
+This records the original individual review delivered at `c44ccd7`. James subsequently rated Inbetween **6/10**, said **keep it**, and requested drag-and-drop visuals and harder clues. The interaction upgrade and current verification are recorded in [DRAG-PLACEMENT.md](DRAG-PLACEMENT.md). Relative keeper order remains unknown; Cairn is next in the queue.
 
 The game now has 16px clues and five separate insertion buttons at least 44×44px, aligned below the four seed letters. Letters are larger, interaction states use blue/teal, and the pair bank stays visible during phone scrolling. Keyboard movement and placement keep their focused control visible; dialogs return to a useful control. A wrong fit immediately shows that a perfect round is no longer possible.
 

@@ -1,0 +1,117 @@
+✔ a pointer drag highlights any gap neutrally and drops only a free preview (25.516375ms)
+✔ a tap never becomes a drag and does not suppress its ordinary click (2.6835ms)
+✔ outside drops, Escape and pointer cancellation never submit a preview (10.319417ms)
+✔ used pairs, secondary buttons and another pointer cannot start or hijack a drag (2.449208ms)
+✔ external game revision or navigation cancels an active drag before it can preview stale state (4.551375ms)
+✔ a drag suppresses only its trailing pointer click while keyboard activation remains available (3.236292ms)
+✔ touch drags share the same preview path, edge-scroll, and honor reduced motion (2.570625ms)
+✖ cancel restores the previous free choice only while its game revision still matches (2.243667ms)
+✖ Escape consumes an active drag before the app can clear a paid choice (1.819375ms)
+✖ the sticky pair bank does not trigger top-edge scrolling while lifting a pair inside it (2.055916ms)
+✔ nudge confirmation is inert until approved; same-board paid advice survives reload without another charge (51.45875ms)
+✔ pair/gap previews and clear/Escape spend no attempts (22.444834ms)
+✔ a stale correct placement adopts changed progress before any success animation, speech or haptic (26.237417ms)
+✔ a stale nudge adopts newer progress without announcing uncharged advice (19.120042ms)
+✔ adopting a terminal daily immediately repairs missing or stale records (10.947666ms)
+✔ a completed daily survives an older unfinished storage event (34.87325ms)
+✔ valid external terminal progress supersedes dirty unsaved local progress (11.442917ms)
+✔ an already revealed daily remains final when a stale tab tries its winning placement (39.35425ms)
+✔ result close restores its button when the previous focus was only a page container (34.891416ms)
+✔ Stats and Daily cannot persist a win record while its game save still fails (33.851958ms)
+✔ a wrong fit immediately loses perfect eligibility even before six attempts (9.240417ms)
+✔ paid advice survives a wrong preview placement but clear, Escape and another pair discard it without inventing legacy advice (54.2275ms)
+✖ repeated confirmation of the same rejected preview charges only its first attempt (11.523875ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 19
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 556.203667
+
+✖ failing tests:
+
+test at scripts/inbetween-drag.test.mjs:25:1
+✖ cancel restores the previous free choice only while its game revision still matches (2.243667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-drag.test.mjs:26:323)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-drag.test.mjs:28:1
+✖ Escape consumes an active drag before the app can clear a paid choice (1.819375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-drag.test.mjs:28:274)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-drag.test.mjs:29:1
+✖ the sticky pair bank does not trigger top-edge scrolling while lifting a pair inside it (2.055916ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-drag.test.mjs:29:352)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/inbetween-ui.test.mjs:68:1
+✖ repeated confirmation of the same rejected preview charges only its first attempt (11.523875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/inbetween-ui.test.mjs:69:166)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

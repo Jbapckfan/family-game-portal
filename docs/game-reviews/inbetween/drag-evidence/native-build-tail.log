@@ -1,0 +1,12 @@
+    cd /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/ios
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/AlfordDaily --scan-folder /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Frameworks --scan-folder /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/PlugIns --scan-folder /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/SystemExtensions --scan-folder /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Extensions --platform iphoneos --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Intermediates.noindex/AlfordDaily.build/Release-iphoneos/AlfordDaily.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+PruneExplicitPrecompiledModules /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/inbetween-drag-20261030/DerivedData/SDKExplicitPrecompiledModules
+
+** BUILD SUCCEEDED **
+

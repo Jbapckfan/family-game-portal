@@ -1,0 +1,23 @@
+# Drag-and-drop review decisions
+
+James asked for drag-and-drop with cool placement visuals, then rated Inbetween **6/10**, said **keep it**, and suggested harder clues. That verdict is saved without inventing an order among keepers. Clue difficulty is an editorial follow-up; this pass preserves every published puzzle and the scoring/calendar/save identities.
+
+Actual scoped reviews used Kimi `kimi-code/k3.1-pro`, Gemini `gemini-3.8-flash-high` and Opus `claude-opus-5-5`, through the existing subscription CLIs. The source snapshot starts from `c44ccd73c426efaf242c97e256bd76eebb467a72`; its manifest pins the modified files. Kimi/Gemini received source and four author-rendered gameplay frames. Opus received inline source without images and tools disabled. None executed the game or physically tested an iPhone. No new paid API/dependency or free DeepSeek verification is claimed. The providers did not rescore James's preference.
+
+Kimi found no concrete Critical/Important defect. Gemini identified paid-hint loss on cancellation, duplicate rejected confirmations and a mismatch between the sticky bank and upward scrolling. Opus identified those issues plus Escape handler order and a possible ScrollBehavior compatibility concern. Static reviews disagreed; we reproduced concrete cases and used actual browser checks rather than treating model agreement as execution.
+
+Implemented follow-through:
+
+- Cancelled drags restore the prior pair, preview, paid advice and optional hint snapshot, only while the same game revision remains authoritative. External/new terminal progress is never overwritten by an old UI snapshot. Escape is handled in capture phase while a gesture is pending/active, before the app's ordinary Clear-choice shortcut. Cancelling a different-pair drag and reloading retains the same paid advice without another charge.
+- A rejected confirmation disables its button until the pair/gap changes. Double activation charges only the first attempt. Focus returns to the active gap so keyboard users can change it. The pure engine remains unchanged.
+- The upper scroll zone follows the visible bottom of a sticky bank, while lifting a pair inside the bank does not start scrolling. ScrollBehavior uses `auto`. The animation frame loop survives an unavailable scroll operation. Mouse edge scrolling is exercised in Chromium and WebKit, and Chromium's native emulated touch input exercises the long phone board.
+- Unused trailing-click suppression clears on a new pointer press. Keyboard detail-zero activation remains available. A mouse move with no held button cancels a stranded drag. These supplement normal capture, pointercancel, lost-capture, blur/pagehide and modal/navigation/external-progress cancellation.
+- The floating pair sits clear of a finger on touch, and below the mouse pointer so the forming word stays visible. The success ripple is centered on the actual inserted letters. An existing preview dims while a new destination is hovered, then restores on cancellation. Reduced motion keeps the interaction with static feedback.
+
+Review suggestions were not applied blindly. The six-pixel trailing-click coordinate check remains narrow because it combines pointer identity, coordinates and a short time window, and the next physical pointerdown clears it; broad suppression risks swallowing a deliberate confirmation. Real emulated touch confirmation is tested. No claim is made about physical capacitive jitter. Hover targets are neutral: all legal gaps show the same blue word formation, including nonsense, with no correctness check. Only an accepted, persisted placement gets the success flourish.
+
+Test-harness notes: Web Animations use the browser's real animation timeline, so fake JS-clock advancement alone was not proof that the snap had completed. Native touch moves needed input frames before inspecting their result. One phone test aimed at a gap behind the sticky bank; rejecting it was correct. The corrected test places its target visibly below the bank. None of these harness corrections changed scoring or counted as successful game checks.
+
+Physical iPhone drag ergonomics, touch jitter, haptics and long sessions remain unverified. Literal simultaneous conflicting terminal writes remain the previously documented localStorage limitation. Harder clues remain on the tuning list.
+
+A final author browser check reproduced cancelled-drag focus falling to a page container after DOM rebuilding. Restored choices now focus a usable pair; both browsers passed that regression. The preview controller captures only the viewport during a held drag, avoiding a full-page capture resize that would correctly cancel the gesture.

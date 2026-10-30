@@ -1,0 +1,12 @@
+[
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.pair-drag-ghost') to be visible\u001b[22m\n\n    at start (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:14:209)\n    at async file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:19:22"
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.pair-drag-ghost') to be visible\u001b[22m\n\n    at start (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:14:209)\n    at async file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:19:22"
+  }
+]

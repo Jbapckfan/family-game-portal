@@ -139,7 +139,7 @@ async function readRuntime(slug) {
       if (!FONT_EXTENSIONS.test(font)) throw new Error(`${slug}: unexpected file in fonts/: ${font}`);
     }
     const runtime = CLASSIC_GAMES.includes(slug) ? RUNTIME_FILES.filter(name => name !== 'shell.mjs') : RUNTIME_FILES;
-    files = [...runtime, ...(['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween'].includes(slug)?['share-card.mjs']:[]), ...fonts.map(name => `fonts/${name}`)].sort();
+    files = [...runtime, ...(['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween'].includes(slug)?['share-card.mjs']:[]), ...(slug==='inbetween'?['placement-drag.mjs']:[]), ...fonts.map(name => `fonts/${name}`)].sort();
   }
   const contents = new Map();
   for (const name of files) {

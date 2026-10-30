@@ -1,0 +1,15 @@
+✔ a pointer drag highlights any gap neutrally and drops only a free preview (25.590584ms)
+✔ a tap never becomes a drag and does not suppress its ordinary click (2.75ms)
+✔ outside drops, Escape and pointer cancellation never submit a preview (10.415583ms)
+✔ used pairs, secondary buttons and another pointer cannot start or hijack a drag (3.271209ms)
+✔ external game revision or navigation cancels an active drag before it can preview stale state (4.6245ms)
+✔ a drag suppresses only its trailing pointer click while keyboard activation remains available (2.588084ms)
+✔ touch drags share the same preview path, edge-scroll, and honor reduced motion (2.262708ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 280.172208

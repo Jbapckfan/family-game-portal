@@ -1,0 +1,32 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "A real mouse drag lifts the pair, shows a live insertion and drops a free preview without spending an attempt",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Only explicit confirmation spends an attempt; accepted placement has inserted-letter arrival and a contained success flourish",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: Cancelled drag returns focus to a usable pair\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:23:446"
+  },
+  {
+    "browser": "WebKit",
+    "description": "A real mouse drag lifts the pair, shows a live insertion and drops a free preview without spending an attempt",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Only explicit confirmation spends an attempt; accepted placement has inserted-letter arrival and a contained success flourish",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: Cancelled drag returns focus to a usable pair\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-inbetween-drag.mjs:23:446\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:541:9)"
+  }
+]

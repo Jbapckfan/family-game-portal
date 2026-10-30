@@ -283,6 +283,8 @@ def validate_web_bundle(games_dir):
             runtime = RUNTIME_FILES - ({"shell.mjs"} if game in CLASSIC_GAMES else set())
             if game in {"ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween"}:
                 runtime = runtime | {"share-card.mjs"}
+            if game == "inbetween":
+                runtime = runtime | {"placement-drag.mjs"}
             require(runtime <= files, f"Missing runtime files for {game}: {sorted(runtime - files)}")
             fonts = {path for path in files if path.startswith("fonts/")}
             require(fonts, "Missing bundled fonts and licenses: " + game)

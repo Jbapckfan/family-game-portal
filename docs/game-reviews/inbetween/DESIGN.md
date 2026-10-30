@@ -1,6 +1,6 @@
 # Inbetween individual review — October 30, 2026
 
-Eighth review in the authorized one-game-at-a-time pass. James has not rated Inbetween. Keep that verdict pending and preserve the five keeper/two replacement-candidate groups without numerical or relative scores.
+Initial pre-playtest design for the eighth review. James subsequently rated Inbetween6/10 and said keep it; the current ranking records six keepers and two replacement candidates without an invented relative order. The drag-and-drop follow-up is specified in `docs/superpowers/plans/2026-10-30-inbetween-drag-placement.md`.
 
 Six four-letter seeds, six clues and six ordered pairs make six six-letter answers. Pair/gap selection, preview and clearing are free. Explicit placement costs one attempt, correct placements lock and consume the pair, wrong fits leave it available. Perfect requires six attempts and zero nudges. Reveal is not a win. Preserve engine, scoring, bank, IDs, schema and daily/practice calendar; retain all 33 catalog entries.
 

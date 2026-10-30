@@ -2,6 +2,7 @@ import {practiceCandidates} from '../deepseek-runtime/practice-calendar.mjs';
 import { PUZZLES } from './puzzles.mjs';
 import { getDateKey, getDaily, createGame, buildWord, submitPlacement, findHint, useHint, revealGame, restoreGame, getStats, formatShare } from './engine.mjs';
 import { openResultShare } from './share-card.mjs';
+import { installPlacementDrag } from './placement-drag.mjs';
 
 // Optional native bridge; browser rules and existing save keys are unchanged.
 function nativeMessage(payload) {
@@ -30,6 +31,7 @@ let feedback = '';
 let lastFocus = null;
 let toastTimer;
 let resultTimer;
+let placementDrag=null;
 let audioContext;
 let soundOn = read('settings', {})?.sound === true;
 
@@ -112,7 +114,7 @@ function saveGame(previous=game) {
 }
 function tileById(id) { return puzzle.tiles.find(tile => tile.id === id); }
 function solvedCount() { return game.placements.filter(Boolean).length; }
-function clearSelection() { selectedTile = null; preview = null; hinted = null; rejected = false; }
+function clearSelection() { placementDrag?.cancel();selectedTile = null; preview = null; hinted = null; rejected = false; }
 function announce(message) { $('announcer').textContent = ''; requestAnimationFrame(() => { $('announcer').textContent = message; }); }
 function toast(message) { clearTimeout(toastTimer); $('toast').textContent = message; $('toast').hidden = false; toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3800); }
 function formatDate(key) { return new Intl.DateTimeFormat('en-US',{weekday:'long',month:'long',day:'numeric',timeZone:'UTC'}).format(new Date(key+'T12:00:00Z')); }
@@ -126,7 +128,7 @@ function render(options = {}) {
   const selected = tileById(selectedTile);
   $('bank').innerHTML = puzzle.tiles.map(tile => `<button class="pair${tile.id === selectedTile ? ' selected' : ''}${used.has(tile.id) ? ' used' : ''}" data-tile="${esc(tile.id)}" aria-label="Pair ${esc(tile.letters.split('').join(' '))}${used.has(tile.id) ? ', placed' : ''}" aria-pressed="${tile.id === selectedTile}" ${!active || used.has(tile.id) ? 'disabled' : ''}><span>${tile.letters[0]}</span><span>${tile.letters[1]}</span></button>`).join('');
   $('bank-count').textContent = count === 6 ? 'Every pair is home' : `${6-count} to place`;
-  $('bank-note').textContent = !active ? 'Every letter has found its place.' : selected ? `${selected.letters} is ready. Tap a + in the word it belongs to.` : 'Each pair stays together. Each pair gets one home.';
+  $('bank-note').textContent = !active ? 'Every letter has found its place.' : selected ? `${selected.letters} is ready. Drag it to a +, or tap a gap.` : 'Drag a pair to a gap, or tap to choose. Preview freely.';
   $('bank-note').classList.toggle('active', !!selected);
   $('puzzle').innerHTML = puzzle.rows.map((row,r) => {
     const placement = game.placements[r];
@@ -134,10 +136,12 @@ function render(options = {}) {
     const letters = placement ? tileById(placement.tileId).letters : null;
     const word = hasPreview && selected ? buildWord(row.seed, selected.letters, preview.gap) : null;
     const heading = `<div class="clue"><span class="row-number" aria-hidden="true">${placement ? game.status === 'revealed' ? '·' : '✓' : String(r+1).padStart(2,'0')}</span><div class="clue-copy">${esc(row.clue)}${placement ? `<small>${esc(row.seed)} + ${esc(letters)}</small>` : ''}</div></div>`;
-    const line = placement ? `<div class="answer-letters" aria-label="${esc(row.answer)}, ${game.status === 'revealed' ? 'revealed' : 'fits'}">${[...row.answer].map((letter,c)=>`<span class="answer-letter${c >= placement.gap && c < placement.gap+2 ? ' inserted' : ''}" aria-hidden="true">${letter}</span>`).join('')}</div>` : `<div class="word-line" role="group" aria-label="${esc(row.seed)}; select an insertion gap">${Array.from({length:5},(_,gap)=>`<button class="gap${hasPreview && preview.gap===gap ? ' active' : ''}${hinted?.row===r && hinted.gap===gap ? ' hinted' : ''}" data-row="${r}" data-gap="${gap}" aria-label="${selected ? `Insert ${esc(selected.letters)}` : 'Pick a pair first, then insert'} ${gapDescription(row.seed,gap)} in ${row.seed}. Clue: ${esc(row.clue)}" aria-pressed="${Boolean(hasPreview && preview.gap===gap)}" ${!selected || !active ? 'disabled' : ''}>+</button>${gap<4 ? `<span class="seed-letter" aria-hidden="true">${row.seed[gap]}</span>` : ''}`).join('')}</div>`;
-    const panel = hasPreview && word ? `<div class="preview-panel"><div><span class="preview-label">Your fit</span><span class="preview-word" aria-label="Preview: ${word}">${word.slice(0,preview.gap)}<mark>${selected.letters}</mark>${word.slice(preview.gap+2)}</span></div><button class="fit-button" data-fit="${r}">Place pair</button></div>${rejected ? '<p class="preview-error">That word doesn’t match the clue. Try another gap or pair.</p>' : ''}` : '';
-    return `<div class="word-row${placement?' solved':''}${game.status==='revealed'?' revealed':''}${hasPreview?' previewing':''}${hasPreview && rejected?' rejected':''}${options.solved===r?' just-solved':''}" role="group" aria-label="Word ${r+1}: ${esc(row.clue)}${placement?', completed':''}"><div class="row-main">${heading}${line}</div>${panel}</div>`;
+    const burst=options.solved===r?`<div class="fit-burst" aria-hidden="true">${Array.from({length:12},(_,i)=>`<i style="--x:${Math.round(Math.cos(i*Math.PI/6)*64)}px;--y:${Math.round(Math.sin(i*Math.PI/6)*46)}px;--turn:${i*30}deg"></i>`).join('')}</div>`:'';
+    const line = placement ? `<div class="answer-letters" aria-label="${esc(row.answer)}, ${game.status === 'revealed' ? 'revealed' : 'fits'}">${[...row.answer].map((letter,c)=>`<span style="--letter-index:${c}" class="answer-letter${c >= placement.gap && c < placement.gap+2 ? ' inserted' : ''}" aria-hidden="true">${letter}</span>`).join('')}${burst}</div>` : `<div class="word-line" role="group" aria-label="${esc(row.seed)}; select an insertion gap">${Array.from({length:5},(_,gap)=>`<button class="gap${hasPreview && preview.gap===gap ? ' active' : ''}${hinted?.row===r && hinted.gap===gap ? ' hinted' : ''}" data-row="${r}" data-gap="${gap}" aria-label="${selected ? `Insert ${esc(selected.letters)}` : 'Pick a pair first, then insert'} ${gapDescription(row.seed,gap)} in ${row.seed}. Clue: ${esc(row.clue)}" aria-pressed="${Boolean(hasPreview && preview.gap===gap)}" ${!selected || !active ? 'disabled' : ''}>+</button>${gap<4 ? `<span class="seed-letter" aria-hidden="true">${row.seed[gap]}</span>` : ''}`).join('')}</div>`;
+    const panel = hasPreview && word ? `<div class="preview-panel"><div><span class="preview-label">Your fit</span><span class="preview-word" aria-label="Preview: ${word}">${word.slice(0,preview.gap)}<mark>${selected.letters}</mark>${word.slice(preview.gap+2)}</span></div><button class="fit-button" data-fit="${r}" ${rejected?'disabled':''}>${rejected?'Try another gap':'Place pair'}</button></div>${rejected ? '<p class="preview-error">That word doesn’t match the clue. Try another gap or pair.</p>' : ''}` : '';
+    return `<div class="word-row${placement?' solved':''}${game.status==='revealed'?' revealed':''}${hasPreview?' previewing':''}${hasPreview && rejected?' rejected':''}${options.solved===r?' just-solved':''}${options.landed===r?' drop-landed':''}" role="group" aria-label="Word ${r+1}: ${esc(row.clue)}${placement?', completed':''}"><div class="row-main">${heading}${line}</div>${panel}</div>`;
   }).join('');
+  if(options.solved!==undefined){const word=$('puzzle').querySelector('.just-solved .answer-letters'),letters=word?.querySelectorAll('.answer-letter.inserted');if(letters?.length===2){const parent=word.getBoundingClientRect(),first=letters[0].getBoundingClientRect(),last=letters[1].getBoundingClientRect();word.style.setProperty('--burst-x',`${(first.left+last.right)/2-parent.left}px`);}}
   $('daily-tab').classList.toggle('active',mode==='daily'); $('daily-tab').setAttribute('aria-pressed',String(mode==='daily'));
   $('practice-tab').classList.toggle('active',mode==='practice'); $('practice-tab').setAttribute('aria-pressed',String(mode==='practice'));
   $('issue').textContent = mode==='daily' ? `NO. ${String(daily.number).padStart(3,'0')}` : `PRACTICE ${String(PUZZLES.indexOf(puzzle)+1).padStart(2,'0')}`;
@@ -173,15 +177,17 @@ function chooseTile(id) {
   rememberHintView();
   announce(feedback);
 }
-function chooseGap(row,gap) {
+function chooseGap(row,gap,{fromDrag=false}={}) {
   if(!selectedTile||game.status!=='playing'||game.placements[row])return;
+  if(rejected&&preview?.row===row&&preview.gap===gap&&preview.tileId===selectedTile)return;
   preview={row,tileId:selectedTile,gap};rejected=false;
   feedback='Does it match the clue? Place the pair, or try another gap.';
-  render({focusGap:{row,gap}});
+  render(fromDrag?{focusFit:true,landed:row}:{focusGap:{row,gap}});
+  if(fromDrag)$('puzzle').querySelector('[data-fit]')?.scrollIntoView({block:'nearest'});
   announce(`${buildWord(puzzle.rows[row].seed,tileById(selectedTile).letters,gap)}. Preview for ${puzzle.rows[row].clue}. Confirm with Place pair.`);
 }
 function placePair() {
-  if(!preview)return;
+  if(!preview||rejected)return;
   const before=game;
   const row=preview.row;
   const outcome=submitPlacement(puzzle,game,preview);
@@ -191,7 +197,7 @@ function placePair() {
   else {rejected=true;feedback='Not quite. Your pair is still available. Try another place.';}
   if(!saveGame(before)){render();focusAvailable();announce(feedback);return;}
   rememberHintView();playTone(outcome.accepted?(game.status==='won'?'win':'fit'):'miss');
-  render(outcome.accepted?{solved:row}:{focusFit:true});
+  render(outcome.accepted?{solved:row}:{focusGap:{row,gap:preview.gap}});
   announce(`${feedback} ${game.attempts} ${game.attempts===1?'attempt':'attempts'}.`);
   if(outcome.accepted && game.status==='playing')focusAvailable();
   if(game.status!=='playing'){clearTimeout(resultTimer);resultTimer=setTimeout(showResult,650);}
@@ -216,6 +222,7 @@ function confirmHint(){
 function focusAvailable(){const target=game.status!=='playing'?$('results-button'):$('bank').querySelector('button:not(:disabled)');target?.focus({preventScroll:true});target?.scrollIntoView({block:'nearest'});}
 
 function openDialog(content) {
+  placementDrag?.cancel();
   clearTimeout(resultTimer);
   if(!dialog.open)lastFocus=document.activeElement;
   $('dialog-content').innerHTML=content;
@@ -232,7 +239,7 @@ function closeDialog() {
   });
 }
 function showHelp() {
-  openDialog(`<p class="dialog-kicker">A LITTLE SPACE. A NEW MEANING.</p><h2 class="dialog-title" id="dialog-title">Find where you fit.</h2><p class="dialog-body">Six real words are missing a little something. Use every pair in the bank once to make the six clue answers.</p><div class="help-example" aria-label="SING plus PR makes SPRING">SING <span>→</span> S<mark>PR</mark>ING</div><ol class="help-list"><li><b>1</b><span><strong>Pick a pair.</strong> Its two letters stay together and in order.</span></li><li><b>2</b><span><strong>Tap a + in a word.</strong> Insert at the start, end, or any gap. Keep the original letters in order.</span></li><li><b>3</b><span><strong>Preview, then place.</strong> Match the clue to lock it in. Wrong fits cost an attempt; previews are free.</span></li></ol><p class="dialog-body"><strong>Six attempts without nudges is a perfect fit.</strong> Take as many as you need. A nudge shows a useful placement and is noted in your result.</p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Let’s make room →</button></div>`);
+  openDialog(`<p class="dialog-kicker">A LITTLE SPACE. A NEW MEANING.</p><h2 class="dialog-title" id="dialog-title">Find where you fit.</h2><p class="dialog-body">Six real words are missing a little something. Use every pair in the bank once to make the six clue answers.</p><div class="help-example" aria-label="SING plus PR makes SPRING">SING <span>→</span> S<mark>PR</mark>ING</div><ol class="help-list"><li><b>1</b><span><strong>Pick a pair.</strong> Drag it to a gap, or tap to choose. Its two letters stay together and in order.</span></li><li><b>2</b><span><strong>Tap a + in a word.</strong> Insert at the start, end, or any gap. Keep the original letters in order.</span></li><li><b>3</b><span><strong>Preview, then place.</strong> Drop to preview, then use Place pair to lock it in. Wrong confirmed fits cost an attempt; previews are free.</span></li></ol><p class="dialog-body"><strong>Six attempts without nudges is a perfect fit.</strong> Take as many as you need. A nudge shows a useful placement and is noted in your result.</p><div class="dialog-actions"><button class="primary-button" data-action="close" autofocus>Let’s make room →</button></div>`);
 }
 function showResult() {
   if(game.status==='playing')return;
@@ -391,3 +398,12 @@ if(/\/games\/inbetween\/?(?:index\.html)?$/.test(location.pathname)){
   $('family-link').href=document.documentElement?.dataset?.collectionHome||'../../';$('tradeoff-link').href='../tradeoff/';
 }
 reconcileDailyResult();restoreHintView();updateSoundButton();render();
+if(window.PointerEvent)placementDrag=installPlacementDrag({
+  bank:$('bank'),board:$('puzzle'),reducedMotion,
+  getSession:()=>({key:`${mode}:${puzzle.id}:${daily.dateKey}`,revision:game,playing:game.status==='playing'}),
+  isAvailable:id=>Boolean(tileById(id))&&game.status==='playing'&&!game.placements.some(p=>p?.tileId===id),
+  getLetters:id=>tileById(id)?.letters,
+  getWord:(row,id,gap)=>puzzle.rows[row]&&buildWord(puzzle.rows[row].seed,tileById(id)?.letters,gap),
+  selectPair:id=>{const before={selectedTile,preview,hinted,rejected,feedback};if(selectedTile!==id)chooseTile(id);return ()=>{({selectedTile,preview,hinted,rejected,feedback}=before);rememberHintView();render();focusAvailable();};},
+  previewDrop:({tileId,row,gap})=>{if(game.status!=='playing'||game.placements[row]||game.placements.some(p=>p?.tileId===tileId))return false;if(selectedTile!==tileId)chooseTile(tileId);chooseGap(row,gap,{fromDrag:true});return true;},
+});

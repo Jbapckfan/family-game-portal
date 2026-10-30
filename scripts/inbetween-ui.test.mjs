@@ -65,3 +65,6 @@ test('paid advice survives a wrong preview placement but clear, Escape and anoth
   }finally{g.close();}
  }
 });
+test('repeated confirmation of the same rejected preview charges only its first attempt',()=>{
+ const g=open();try{const h=E.findHint(g.state().puzzle,g.state().game);g.preview({...h,gap:(h.gap+1)%5});g.$('[data-fit]').click();g.$('[data-fit]').click();assert.equal(g.state().game.attempts,1);assert.ok(g.$('[data-fit]').disabled);assert.equal(g.w.document.activeElement,g.$('.gap.active'));}finally{g.close();}
+});

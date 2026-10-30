@@ -1,6 +1,6 @@
 # Inbetween panel decisions
 
-James has not supplied an Inbetween preference verdict. The game remains undecided; the keeper and replacement-candidate groups are unchanged.
+At this initial panel's time, James had not supplied a preference verdict. He subsequently rated Inbetween **6/10**, said **keep it**, and requested drag-and-drop visuals and harder clues. See [the interaction follow-up](DRAG-PLACEMENT.md); model predictions below remain separate from his rating.
 
 | Reviewer | Actual model argument | Fun /5 | Clarity /5 | UI /5 | Replay /5 | Sharing /5 |
 |---|---|---:|---:|---:|---:|---:|

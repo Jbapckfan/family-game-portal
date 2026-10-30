@@ -2,10 +2,10 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense and Tradeoff — would play again. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff and Inbetween — would play again. Their relative order is not yet supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 
-No numerical enjoyment scores were supplied. The table below is the review queue, not a forced ranking between keepers.
+Inbetween is **6/10** from James. No numerical enjoyment scores were supplied for the other games. The table below is the review queue, not a forced ranking between keepers.
 
 | Review order | Game | Creator | Status | James rating |
 |---:|---|---|---|---|
@@ -16,7 +16,7 @@ No numerical enjoyment scores were supplied. The table below is the review queue
 | 5 | Second Sense | ChatGPT | Keep | Play again: yes |
 | 6 | Sideways | ChatGPT | Replacement candidate: too easy | Qualitative feedback |
 | 7 | Tradeoff | ChatGPT | Keep; difficulty follow-up | Keeper; a bit too easy |
-| 8 | Inbetween | ChatGPT | Reviewed build ready for playtest | Verdict pending |
+| 8 | Inbetween | ChatGPT | Keep; drag-and-drop delivered | 6/10; could have harder clues |
 | 9 | Cairn | Kimi | Not yet reviewed individually | — |
 | 10 | Morph | Kimi | Not yet reviewed individually | — |
 | 11 | Tangle | Kimi | Not yet reviewed individually | — |
@@ -57,6 +57,6 @@ Sideways reviewer fun predictions before improvements: Kimi **3/5**, Gemini **4/
 
 Tradeoff reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James explicitly called it a keeper, a bit too easy. Difficulty tuning remains a follow-up; relative keeper order is unknown. [Review decisions and open concurrency finding](tradeoff/ADJUDICATION.md).
 
-Inbetween reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James has not rated it. [Review decisions, bank recurrence and final verification](inbetween/ADJUDICATION.md).
+Inbetween reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James rated it **6/10**, kept it, and asked for drag-and-drop placement visuals and harder clues. [Drag-and-drop delivered](inbetween/DRAG-PLACEMENT.md); clue tuning remains a follow-up. [Review decisions, bank recurrence and final verification](inbetween/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

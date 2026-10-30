@@ -1,0 +1,97 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "A real mouse drag lifts the pair, shows a live insertion and drops a free preview without spending an attempt",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Only explicit confirmation spends an attempt; accepted placement has inserted-letter arrival and a contained success flourish",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Outside release and Escape cancel a real drag without placements, attempts or leftover highlights",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Wrong gaps receive the same neutral drag preview and only become an error after confirmation; no success burst leaks correctness",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reduced motion preserves drag/preview/confirmation without ghost travel",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Cancelling a different-pair drag or Escape restores the existing paid nudge preview without another charge, including reload",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real mouse edge scrolling reaches lower words in this browser and a cancelled release remains free",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Chromium native emulated touch drag drops a free preview, confirms with touch, and edge-scrolls the long phone board without charging a cancelled drag",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Incoming terminal progress cancels an in-flight drag and prevents a stale drop from creating a preview",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Six real drag-and-confirm placements finish perfectly with no nudges or browser errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A real mouse drag lifts the pair, shows a live insertion and drops a free preview without spending an attempt",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Only explicit confirmation spends an attempt; accepted placement has inserted-letter arrival and a contained success flourish",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Outside release and Escape cancel a real drag without placements, attempts or leftover highlights",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Wrong gaps receive the same neutral drag preview and only become an error after confirmation; no success burst leaks correctness",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reduced motion preserves drag/preview/confirmation without ghost travel",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Cancelling a different-pair drag or Escape restores the existing paid nudge preview without another charge, including reload",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real mouse edge scrolling reaches lower words in this browser and a cancelled release remains free",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Incoming terminal progress cancels an in-flight drag and prevents a stale drop from creating a preview",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Six real drag-and-confirm placements finish perfectly with no nudges or browser errors",
+    "pass": true
+  }
+]

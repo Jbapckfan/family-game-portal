@@ -6,7 +6,7 @@ const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'/Users/jamesalford
 const root=path.resolve(import.meta.dirname,'..'),allowed=new Set([...GAMES,...BONUS_GAMES].map(g=>g.slug));
 let slug=process.argv[2]||'shortlist';if(!allowed.has(slug))throw new Error('Unknown game');
 const profile=path.join(root,'output/counterpart-review-20261030/readable-profile');
-const context=await chromium.launchPersistentContext(profile,{channel:'chrome',headless:false,viewport:{width:1200,height:960},serviceWorkers:'block',reducedMotion:'reduce',args:['--disable-gpu','--disable-gpu-compositing']});
+const context=await chromium.launchPersistentContext(profile,{channel:'chrome',headless:false,viewport:{width:1200,height:960},serviceWorkers:'block',reducedMotion:'no-preference',args:['--disable-gpu','--disable-gpu-compositing']});
 const pages=context.pages();let page=pages[0]||await context.newPage();for(const p of pages.slice(1))await p.close();
 let sampleTab=null,sampleFile=null;
 await context.route('**/*',async route=>{
@@ -18,7 +18,7 @@ await context.route('**/*',async route=>{
  const types={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.ttf':'font/ttf','.woff2':'font/woff2'};
  try{await route.fulfill({path:file,contentType:types[path.extname(file)]});}catch{await route.fulfill({status:404,body:'Not found'});}
 });
-async function capture(){const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:true});console.log(JSON.stringify({game:slug,title:await page.title(),tabs:context.pages().length,profile}));}
+async function capture(){const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:!(await page.locator('.pair-drag-ghost').count())});console.log(JSON.stringify({game:slug,title:await page.title(),tabs:context.pages().length,profile}));}
 async function showGame(next){if(!allowed.has(next))throw new Error('Unknown game');slug=next;if(page.isClosed()){page=context.pages().find(p=>!p.isClosed())||await context.newPage();if(page===sampleTab)sampleTab=null;}await page.goto(`https://alford-daily.test/games/${slug}/`);await page.bringToFront();await capture();}
 await showGame(slug);
 let pending=Promise.resolve();
@@ -26,6 +26,9 @@ const input=createInterface({input:process.stdin});
 input.on('line',line=>{pending=pending.then(async()=>{
  const [command,...rest]=line.trim().split(' '),value=rest.join(' ');
  if(command==='status'){console.log(JSON.stringify({game:slug,gameTabClosed:page.isClosed(),tabs:context.pages().length}));}
+ else if(command==='practice'){await page.locator('#practice-tab').click();await page.locator('.practice-choice:not(.done)').first().click();await page.bringToFront();await capture();}
+ else if(command==='motion'){await page.emulateMedia({reducedMotion:value==='off'?'reduce':'no-preference'});console.log('Preview motion '+value);}
+ else if(command==='drag-demo'){const source=page.locator('.pair:not(:disabled)').first();if(!await source.count())throw new Error('No active pairs to preview');const a=await source.boundingBox();await page.mouse.move(a.x+a.width/2,a.y+a.height/2);await page.mouse.down();await page.mouse.move(a.x+a.width/2+12,a.y+a.height/2+12,{steps:3});const gap=page.locator('.gap:not(:disabled)').first();await gap.scrollIntoViewIfNeeded();const b=await gap.boundingBox();for(let i=1;i<=24;i++){await page.mouse.move(a.x+a.width/2+(b.x+b.width/2-a.x-a.width/2)*i/24,a.y+a.height/2+(b.y+b.height/2-a.y-a.height/2)*i/24);await page.waitForTimeout(25);}await page.waitForTimeout(450);await capture();await page.mouse.move(4,4,{steps:8});await page.mouse.up();console.log('Free drag preview demonstrated and cancelled; no attempt submitted.');}
  else if(command==='reload'){if(page.isClosed())throw new Error('Game tab closed; use game <slug> to continue');await page.reload();await page.bringToFront();await capture();}
  else if(command==='game')await showGame(value);
  else if(command==='sample'){

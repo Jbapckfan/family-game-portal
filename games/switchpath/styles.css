@@ -155,3 +155,20 @@ body.switchpath{--accent:#355fa7;--accent-dark:#264a86;--wash:#e5edfb;--soft:#be
 .switchpath .route-board{width:min(100%,304px);margin-inline:auto;padding:2px}
 .switchpath .number-cell{margin:3px;padding:13px 2px 11px;min-height:48px;border-radius:11px}
 @media(max-width:360px){.switchpath .number-cell{margin:2px}}
+
+/* One unmistakable instruction: direction, comparison, and current value. */
+.switchpath .direction-panel{min-height:104px;padding:14px;gap:14px;border:2px solid transparent;background:#244d91;color:#fff;box-shadow:0 4px 0 #173766}
+.switchpath .direction-icon{flex:0 0 52px;width:52px;height:58px;border-radius:12px;font:700 46px/1 var(--sans);background:#ffffff20;color:#fff}
+.switchpath .direction-copy{gap:3px}
+.switchpath .direction-kicker{font-size:9px;font-weight:700;letter-spacing:1.3px;color:inherit}
+.switchpath .direction-copy strong{font:800 24px/1.15 var(--sans);letter-spacing:.3px;color:inherit}
+.switchpath .direction-detail{font-size:15px;line-height:1.35;font-weight:600;color:inherit}
+.switchpath .direction-lower{background:#8b3f18;box-shadow:0 4px 0 #622b11}
+.switchpath .direction-lower .direction-icon{background:#ffffff20}
+.switchpath .direction-blocked{background:#fff0d4;border-color:#b98731;color:#653f0c;box-shadow:0 4px 0 #e0c58d}
+.switchpath .direction-blocked .direction-icon{background:#653f0c;color:#fff}
+.switchpath .direction-finished,.switchpath .direction-revealed{background:#e5edfb;border-color:#bdd0ef;color:#264a86;box-shadow:none}
+.switchpath .direction-finished .direction-icon,.switchpath .direction-revealed .direction-icon{background:#355fa7}
+.switchpath .direction-finished .direction-copy strong,.switchpath .direction-revealed .direction-copy strong{font-size:18px;letter-spacing:0}
+@media(max-width:520px){.switchpath .direction-panel{padding:12px;gap:12px}.switchpath .direction-copy strong{font-size:22px}}
+@media(max-width:360px){.switchpath .direction-icon{flex-basis:46px;width:46px;font-size:42px}.switchpath .direction-copy strong{font-size:20px}.switchpath .direction-detail{font-size:14px}}

@@ -98,17 +98,22 @@ function openApp(saved = new Map()) {
 test('the visible rhythm, route steps, and progress survive a real saved-game refresh', () => {
   const view = openApp();
   assert.equal(view.nodes.get('puzzle').cells.size, 16);
-  assert.equal(view.nodes.get('direction-label').textContent, 'Go higher than 1');
+  assert.equal(view.nodes.get('direction-label').textContent, 'GO HIGHER');
+  assert.equal(view.nodes.get('direction-detail').textContent, 'Greater than 1');
+  assert.equal(view.nodes.get('direction-icon').textContent, '↑');
   assert.equal(view.nodes.get('undo-button').disabled, true);
   view.tap(4);
   assert.deepEqual(plain(view.app.game.path), [0, 4]);
-  assert.equal(view.nodes.get('direction-label').textContent, 'Go lower than 5');
+  assert.equal(view.nodes.get('direction-label').textContent, 'GO LOWER');
+  assert.equal(view.nodes.get('direction-detail').textContent, 'Less than 5');
+  assert.equal(view.nodes.get('direction-icon').textContent, '↓');
   assert.equal(view.nodes.get('progress-label').textContent, '2 of 16 connected');
   assert.equal(view.nodes.get('move-count').textContent, '1');
   assert.match(view.nodes.get('puzzle').innerHTML, /path step 2, current position/);
   const reloaded = openApp(view.saved);
   assert.deepEqual(plain(reloaded.app.game), plain(view.app.game));
-  assert.equal(reloaded.nodes.get('direction-label').textContent, 'Go lower than 5');
+  assert.equal(reloaded.nodes.get('direction-label').textContent, 'GO LOWER');
+  assert.equal(reloaded.nodes.get('direction-detail').textContent, 'Less than 5');
   assert.equal(reloaded.nodes.get('puzzle').cells.get(4).tabIndex, 0);
 });
 

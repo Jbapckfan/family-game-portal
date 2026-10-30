@@ -28,6 +28,41 @@ for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){
     function dead(state){if(state.status!=='playing')return null;const next=e.legalNextCells(p,state);if(!next.length)return state;for(const c of next){const d=dead(e.selectCell(p,state,c).state);if(d)return d;}return null;}
     return {solution:p.solution,dead:dead(e.createGame(p)).path};
   });
+  async function directionState(word,comparison,arrow){
+    assert.equal(await page.locator('#direction-label').innerText(),word);
+    assert.equal(await page.locator('#direction-detail').innerText(),comparison);
+    assert.equal(await page.locator('#direction-icon').innerText(),arrow);
+    assert.equal(await page.locator('#direction-panel .rhythm').count(),0);
+  }
+  const values=await page.locator('[data-cell] .cell-value').allTextContents();
+  await directionState('GO HIGHER',`Greater than ${values[fixture.solution[0]]}`,'↑');
+  const panels=[];
+  for(const [word,comparison,arrow] of [['GO HIGHER',`Greater than ${values[fixture.solution[0]]}`,'↑'],['GO LOWER',`Less than ${values[fixture.solution[1]]}`,'↓']]){
+    if(word==='GO LOWER')await page.locator(`[data-cell="${fixture.solution[1]}"]`).click();
+    for(const width of [320,390,1440]){
+      await page.setViewportSize({width,height:width===1440?1000:844});
+      await directionState(word,comparison,arrow);
+      const panel=await page.evaluate(()=>{
+        const panel=document.getElementById('direction-panel'),label=document.getElementById('direction-label'),detail=document.getElementById('direction-detail'),icon=document.getElementById('direction-icon');
+        const p=panel.getBoundingClientRect(),l=label.getBoundingClientRect(),d=detail.getBoundingClientRect();
+        const style=getComputedStyle(label),colors=[style.color,getComputedStyle(panel).backgroundColor];
+        const luminance=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4;});return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+        const a=luminance(colors[0]),b=luminance(colors[1]);
+        return {width:innerWidth,label:label.textContent,color:colors[0],background:colors[1],fontSize:parseFloat(style.fontSize),arrowSize:parseFloat(getComputedStyle(icon).fontSize),contrast:(Math.max(a,b)+.05)/(Math.min(a,b)+.05),fits:l.left>=p.left&&l.right<=p.right&&d.right<=p.right&&label.scrollWidth<=label.clientWidth&&detail.scrollWidth<=detail.clientWidth,noOverflow:document.documentElement.scrollWidth<=innerWidth};
+      });
+      assert.ok(panel.fits&&panel.noOverflow&&panel.fontSize>=20&&panel.arrowSize>=42&&panel.contrast>=4.5,JSON.stringify(panel));panels.push(panel);
+      await page.screenshot({path:path.join(out,`${name}-${word==='GO HIGHER'?'higher':'lower'}-${width}.png`),fullPage:true});
+    }
+  }
+  await writeFile(path.join(out,`${name}-direction-measurements.json`),JSON.stringify(panels,null,2)+'\n');
+  check('Higher/lower show one bold arrow, 20px+ instruction and readable value at 320/390/1440; contrast exceeds 4.5:1');
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#undo-button').click();await directionState('GO HIGHER',`Greater than ${values[fixture.solution[0]]}`,'↑');
+  await page.locator('#hint-button').click();await page.locator('[data-hint-confirm]').click();
+  await directionState('GO LOWER',`Less than ${values[fixture.solution[1]]}`,'↓');
+  await page.reload();await directionState('GO LOWER',`Less than ${values[fixture.solution[1]]}`,'↓');
+  check('Prominent direction and comparison track actual moves, Undo, confirmed hint and saved-game reload');
+  await fresh();
   for(const c of fixture.dead.slice(1))await page.locator(`[data-cell="${c}"]`).click();
   assert.equal(await page.locator('#direction-kicker').innerText(),'DEAD END');
   const before=await saved();await page.reload();assert.deepEqual(await saved(),before);

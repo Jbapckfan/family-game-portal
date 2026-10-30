@@ -81,9 +81,9 @@ function renderGame(api, opts = {}) {
   $('direction-panel').className = `direction-panel${deadEnd ? ' direction-blocked' : active ? ` direction-${direction}` : game.status === 'won' ? ' direction-finished' : ' direction-revealed'}`;
   $('direction-icon').textContent = deadEnd ? '↶' : active ? direction === 'higher' ? '↑' : '↓' : game.status === 'won' ? '✓' : '⌁';
   $('direction-kicker').textContent = deadEnd ? 'DEAD END' : active ? game.path.length === 15 ? 'YOUR FINAL STEP' : 'YOUR NEXT STEP' : game.status === 'won' ? perfect(game) ? 'PERFECT ROUTE' : 'ROUTE COMPLETE' : 'ROUTE REVEALED';
-  $('direction-label').textContent = deadEnd ? 'No next step.' : active ? `Go ${direction} than ${puzzle.values[tip]}` : game.status === 'won' ? 'One unbroken path.' : 'Follow the numbered steps.';
-  $('rhythm-higher').className = `rhythm-step${active && direction === 'higher' ? ' current' : ''}`;
-  $('rhythm-lower').className = `rhythm-step${active && direction === 'lower' ? ' current' : ''}`;
+  $('direction-label').textContent = deadEnd ? 'No next step.' : active ? direction === 'higher' ? 'GO HIGHER' : 'GO LOWER' : game.status === 'won' ? 'One unbroken path.' : 'Follow the numbered steps.';
+  $('direction-detail').textContent = deadEnd ? 'Undo or tap an earlier step.' : active ? `${direction === 'higher' ? 'Greater' : 'Less'} than ${puzzle.values[tip]}` : '';
+  $('direction-detail').hidden = !active;
   $('progress-label').textContent = `${game.path.length} of 16 connected`;
   $('progress-track').setAttribute('aria-valuenow', String(game.path.length));
   $('progress-track').setAttribute('aria-valuetext', `${game.path.length} of 16 cells connected`);

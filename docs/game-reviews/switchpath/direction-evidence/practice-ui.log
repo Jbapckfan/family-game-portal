@@ -1,0 +1,32 @@
+✔ ringcount: picker and random/Next show only eligible Practice, never upcoming dailies (123.955542ms)
+✔ ringcount: valid saved future progress resumes explicitly, malformed saves cannot unlock it (39.218125ms)
+✔ ringcount: a finished daily may replay while tomorrow remains reserved (14.2305ms)
+✔ switchpath: picker and random/Next show only eligible Practice, never upcoming dailies (39.822083ms)
+✔ switchpath: valid saved future progress resumes explicitly, malformed saves cannot unlock it (33.456042ms)
+✔ switchpath: a finished daily may replay while tomorrow remains reserved (14.824375ms)
+✔ counterpart: picker and random/Next show only eligible Practice, never upcoming dailies (39.865833ms)
+✔ counterpart: valid saved future progress resumes explicitly, malformed saves cannot unlock it (27.04275ms)
+✔ counterpart: a finished daily may replay while tomorrow remains reserved (11.727625ms)
+✔ shortlist: picker and random/Next show only eligible Practice, never upcoming dailies (40.913583ms)
+✔ shortlist: valid saved future progress resumes explicitly, malformed saves cannot unlock it (40.302042ms)
+✔ shortlist: a finished daily may replay while tomorrow remains reserved (10.437958ms)
+✔ second-sense: picker and random/Next show only eligible Practice, never upcoming dailies (28.352083ms)
+✔ second-sense: valid saved future progress resumes explicitly, malformed saves cannot unlock it (25.847833ms)
+✔ second-sense: a finished daily may replay while tomorrow remains reserved (10.735375ms)
+✔ sideways: picker and random/Next show only eligible Practice, never upcoming dailies (37.011125ms)
+✔ sideways: valid saved future progress resumes explicitly, malformed saves cannot unlock it (28.322583ms)
+✔ sideways: a finished daily may replay while tomorrow remains reserved (15.663875ms)
+✔ tradeoff: picker and random/Next show only eligible Practice, never upcoming dailies (40.781625ms)
+✔ tradeoff: valid saved future progress resumes explicitly, malformed saves cannot unlock it (30.747875ms)
+✔ tradeoff: a finished daily may replay while tomorrow remains reserved (10.634292ms)
+✔ inbetween: picker and random/Next show only eligible Practice, never upcoming dailies (92.252417ms)
+✔ inbetween: valid saved future progress resumes explicitly, malformed saves cannot unlock it (42.02725ms)
+✔ inbetween: a finished daily may replay while tomorrow remains reserved (10.98575ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1045.408292

@@ -11,7 +11,7 @@ This provisional order covers only these two played games. No numerical enjoymen
 |---:|---|---|---|---|
 | 1 | Ringcount | ChatGPT | Replacement candidate: easy, boring | Qualitative feedback |
 | 2 | Switchpath | ChatGPT | Keep; spacing follow-up | Likes it; play again: yes |
-| 3 | Counterpart | ChatGPT | Not yet reviewed individually | — |
+| 3 | Counterpart | ChatGPT | Reviewed; larger words delivered | Awaiting enjoyment verdict |
 | 4 | Shortlist | ChatGPT | Not yet reviewed individually | — |
 | 5 | Second Sense | ChatGPT | Not yet reviewed individually | — |
 | 6 | Sideways | ChatGPT | Not yet reviewed individually | — |
@@ -46,5 +46,7 @@ This provisional order covers only these two played games. No numerical enjoymen
 Ringcount reviewer predictions before improvements: Kimi fun **4/5**, Opus **2.5/5**, Gemini **4/5**. These are not James’s ratings. See [full comparison and decisions](ringcount/ADJUDICATION.md).
 
 Switchpath reviewer fun predictions: Kimi **2/5**, Gemini **2.5/5**, Opus **3/5**. Opus saw the updated source; Kimi/Gemini saw the baseline. James subsequently liked Switchpath and would play again; that direct feedback takes priority. [Review and gameplay-depth audit](switchpath/ADJUDICATION.md).
+
+Counterpart reviewer fun predictions before improvements: Kimi **3/5**, Gemini **2.5/5**, Opus **3/5**. James requested larger text; his enjoyment verdict remains pending. [Review decisions](counterpart/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

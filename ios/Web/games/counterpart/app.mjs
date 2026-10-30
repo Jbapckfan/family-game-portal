@@ -1,6 +1,7 @@
 import { PUZZLES } from './puzzles.mjs';
 import * as engine from './engine.mjs';
 import { createShell, esc } from './shell.mjs';
+import { openResultShare } from './share-card.mjs';
 
 const $ = id => document.getElementById(id);
 let rowIndex = 0;
@@ -20,18 +21,19 @@ const app = createShell({
   reset({clearDraft=false}={}){if(clearDraft&&draftKey){try{sessionStorage.removeItem(draftKey);}catch{}}rowIndex=0;draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';rowDrafts=[];draftKey=null;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedRows.length}),
   help,
+  share:openResultShare,
   about:'Counterpart is a game of analogies: different words, the same relationship. Each board uses ten words once across five directed pairs. The challenge is to recognize a relationship and carry it into a new context. This edition combines 90 curated analogies into 210 different boards. Familiar relationships return with different word banks.',
   statsExtra:stats=>`<div class="stats-detail"><span>Perfect counterparts</span><strong>${stats.perfect}</strong></div><div class="stats-detail"><span>Average checks when solved</span><strong>${stats.won ? stats.averageAttempts.toFixed(1) : '—'}</strong></div>`,
   result(api){
     const {game,mode,daily}=api;
     const won=game.status==='won'; const perfect=engine.isPerfect(game);
-    return `<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A LITTLE PRACTICE'}</p><div class="result-symbol" aria-hidden="true">${perfect?'✳':won?'⇄':'∴'}</div><h2 class="dialog-title" id="dialog-title">${perfect?'Perfect counterparts.':won?'You made the connection.':'Another way to see it.'}</h2><p class="result-copy">${perfect?'Five relationships. Five checks. A beautifully clear connection.':won?'Different words, all thinking alike. Take a moment to read the relationships.':'The relationships are explained on the board. This result is recorded as revealed, not solved.'}</p><div class="result-strip" aria-hidden="true">${'<span></span>'.repeat(5)}</div><div class="result-metrics"><div><strong>${game.attempts}</strong><span>checks</span></div><div><strong>${game.hintedRows.length}</strong><span>hints</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="share" autofocus>Share your result ↗</button><button class="secondary-button" data-action="random">Another puzzle →</button></div><p class="fineprint">${mode==='daily'?'A fresh puzzle at midnight Central.':'Practice stays separate from your daily record.'}<br>No answers in your shared result.</p>`;
+    return `<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A LITTLE PRACTICE'}</p><div class="result-symbol" aria-hidden="true">${perfect?'✳':won?'⇄':'∴'}</div><h2 class="dialog-title" id="dialog-title">${perfect?'Perfect counterparts.':won?'You made the connection.':'Another way to see it.'}</h2><p class="result-copy">${perfect?'Five relationships. Five checks. A beautifully clear connection.':won?'Different words, all thinking alike. Take a moment to read the relationships.':'The relationships are explained on the board. This result is recorded as revealed, not solved.'}</p><div class="result-strip" aria-hidden="true">${'<span></span>'.repeat(5)}</div><div class="result-metrics"><div><strong>${game.attempts}</strong><span>checks</span></div><div><strong>${game.hintedRows.length}</strong><span>hints</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="random" autofocus>One more connection →</button><button class="secondary-button" data-action="share">Share result ↗</button></div><p class="fineprint">${mode==='daily'?'A fresh puzzle at midnight Central.':'Practice stays separate from your daily record.'}<br>No answers in your shared result.</p>`;
   },
   render:renderGame,
 });
 
 function tile(id){return app.puzzle.tiles.find(item=>item.id===id);}
-function focus(selector){requestAnimationFrame(()=>$('puzzle').querySelector(selector)?.focus({preventScroll:true}));}
+function focus(selector){requestAnimationFrame(()=>{const target=$('puzzle').querySelector(selector);target?.focus({preventScroll:true});if(selector==='[data-check]')target?.scrollIntoView({block:'nearest',behavior:'auto'});});}
 function rememberDrafts(){
   rowDrafts[rowIndex]=[...draft];
   try{sessionStorage.setItem(draftKey,JSON.stringify({rows:rowDrafts,row:rowIndex,slot:slotIndex}));}catch{}
@@ -46,53 +48,68 @@ function renderGame(api,opts={}){
     rowIndex=Number.isInteger(saved?.row)&&saved.row>=0&&saved.row<puzzle.rows.length?saved.row:0;
     slotIndex=saved?.slot===1?1:0;
   }
-  if(active&&game.placements[rowIndex])rowIndex=game.placements.findIndex(value=>!value);
+  const priorRow=rowIndex;
+  if(active&&game.placements[rowIndex])rowIndex=Array.from({length:puzzle.rows.length},(_,offset)=>(priorRow+offset+1)%puzzle.rows.length).find(index=>!game.placements[index]);
   const used=new Set(game.placements.filter(Boolean).flat());
+  const beforeSanitize=rowDrafts[rowIndex]||[null,null];
   rowDrafts=rowDrafts.map((pair,index)=>game.placements[index]?[null,null]:pair.map(id=>used.has(id)?null:id));
   draft=rowDrafts[rowIndex]||[null,null];
+  if(rowIndex!==priorRow||draft.some((id,index)=>id!==beforeSanitize[index]))slotIndex=draft[0]===null?0:draft[1]===null?1:0;
   const solved=game.placements.filter(Boolean).length;
   $('bank').innerHTML=puzzle.tiles.map(item=>`<button class="word-tile${draft.includes(item.id)?' selected':''}${used.has(item.id)?' used':''}" data-tile="${esc(item.id)}" aria-pressed="${draft.includes(item.id)}" aria-label="${esc(item.word)}${used.has(item.id)?', already paired':''}" ${!active||used.has(item.id)?'disabled':''}>${esc(item.word)}</button>`).join('');
-  $('bank-count').textContent=active?`${10-used.size} words left · each used once`:'Every word has a counterpart';
+  $('bank-count').textContent=active?`${10-used.size} unpaired words · use once`:'Every word has a counterpart';
   $('bank-note').textContent=active?`Working on row ${rowIndex+1}. ${draft.every(Boolean)?'Check your pair, or change either word.':`Choose the ${slotIndex===0?'first':'second'} word in the relationship.`}`:'Read the explanations. The connection is what matters.';
-  $('puzzle').innerHTML=puzzle.rows.map((row,index)=>{
+  const rowOrder=active?[rowIndex,...puzzle.rows.map((_,i)=>i).filter(i=>i!==rowIndex)]:puzzle.rows.map((_,i)=>i);
+  $('puzzle').innerHTML=rowOrder.map(index=>{
+    const row=puzzle.rows[index];
     const locked=game.placements[index]; const selected=active&&index===rowIndex;
     const ids=locked||rowDrafts[index]||[null,null];
-    return `<section class="analogy${selected?' active':''}${locked?' solved':''}${game.status==='revealed'?' revealed':''}" data-analogy="${index}" aria-label="Analogy ${index+1}${locked?', completed':''}"><div class="analogy-head"><span class="row-number" aria-hidden="true">${locked?'✓':String(index+1).padStart(2,'0')}</span><button class="cue-button" data-row="${index}" ${locked?'disabled':''} aria-label="Work on analogy ${index+1}: ${esc(row.cue[0])} is to ${esc(row.cue[1])}"><span>${esc(row.cue[0])}</span><span class="arrow" aria-hidden="true">→</span><span>${esc(row.cue[1])}</span></button><span class="row-state">${locked?game.status==='revealed'?'revealed':'paired':selected?'as…':'tap to work'}</span></div><div class="analogy-answer">${ids.map((id,slot)=>`${slot===1?'<span class="arrow" aria-hidden="true">→</span>':''}${locked?`<span class="locked-word">${esc(tile(id).word)}</span>`:`<button class="answer-slot${id?' filled':''}${selected&&slot===slotIndex?' current':''}" data-slot="${slot}" data-row="${index}" aria-label="Row ${index+1}, ${slot===0?'first':'second'} word${id?`: ${esc(tile(id).word)}`:', empty'}">${id?esc(tile(id).word):slot===0?'First word':'Second word'}</button>`}`).join('')}</div>${locked?`<p class="relation"><strong>${esc(row.relationship)}.</strong> ${esc(row.explanation)}</p>`:game.hintedRows.includes(index)?`<p class="hint-line">✦ Relationship: <strong>${esc(row.relationship)}</strong></p>`:''}${selected?`<div class="analogy-actions"><button class="mini-button" data-swap aria-label="Reverse your draft pair" ${draft.some(Boolean)?'':'disabled'}>⇄ Reverse</button><button class="mini-button" data-hint="${index}" ${game.hintedRows.includes(index)?'disabled':''}>${game.hintedRows.includes(index)?'Hint shown':'✦ Hint'}</button><button class="mini-button check-button" data-check ${draft.every(Boolean)?'':'disabled'}>Check pair ↵</button></div>${rejected?`<p class="row-error">${esc(rejectionMessage)}</p>`:''}`:''}</section>`;
+    return `<section class="analogy${selected?' active':''}${locked?' solved':''}${game.status==='revealed'?' revealed':''}" data-analogy="${index}" aria-label="Analogy ${index+1}${locked?', completed':''}"><div class="analogy-head"><span class="row-number" aria-hidden="true">${locked?'✓':String(index+1).padStart(2,'0')}</span><button class="cue-button" data-row="${index}" ${locked?'disabled':''} aria-expanded="${selected}" aria-label="Work on analogy ${index+1}: ${esc(row.cue[0])} is to ${esc(row.cue[1])}"><span>${esc(row.cue[0])}</span><span class="arrow" aria-hidden="true">→</span><span>${esc(row.cue[1])}</span></button><span class="row-state">${locked?game.status==='revealed'?'revealed':'paired':selected?'CURRENT':ids.some(Boolean)?'draft saved':'choose row'}</span></div><div class="analogy-answer">${ids.map((id,slot)=>`${slot===1?'<span class="arrow" aria-hidden="true">→</span>':''}${locked?`<span class="locked-word">${esc(tile(id).word)}</span>`:`<button class="answer-slot${id?' filled':''}${selected&&slot===slotIndex?' current':''}" data-slot="${slot}" data-row="${index}" aria-label="Row ${index+1}, ${slot===0?'first':'second'} word${id?`: ${esc(tile(id).word)}`:', empty'}">${id?esc(tile(id).word):slot===0?'First word':'Second word'}</button>`}`).join('')}</div>${locked?`<p class="relation"><strong>${esc(row.relationship)}.</strong> ${esc(row.explanation)}</p>`:game.hintedRows.includes(index)?`<p class="hint-line">✦ Relationship: <strong>${esc(row.relationship)}</strong></p>`:''}${selected?`<div class="analogy-actions"><button class="mini-button" data-swap aria-label="Reverse your draft pair" ${draft.some(Boolean)?'':'disabled'}>⇄ Reverse</button><button class="mini-button" data-hint="${index}" ${game.hintedRows.includes(index)?'disabled':''}>${game.hintedRows.includes(index)?'Hint shown':'✦ Hint'}</button><button class="mini-button check-button" data-check ${draft.every(Boolean)?'':'disabled'}>Check pair</button></div>${rejected?`<p class="row-error">${esc(rejectionMessage)}</p>`:''}`:''}</section>`;
   }).join('');
   $('progress-dots').innerHTML=Array.from({length:5},(_,i)=>`<i class="${i<solved?'filled':''}"></i>`).join('');
   $('progress-label').textContent=game.status==='revealed'?'Relationships revealed':`${solved} of 5 paired`;
   $('attempt-count').textContent=game.attempts;
+  $('perfect-note').textContent=game.status==='revealed'?'· shown, not solved':engine.isPerfect(game)?'· perfect':game.hintedRows.length?'· assisted':game.attempts>solved?'· extra checks':'· goal: 5 checks, 0 hints';
   if(opts.tile)$('bank').querySelector(`[data-tile="${CSS.escape(opts.tile)}"]:not(:disabled)`)?.focus({preventScroll:true});
   if(opts.slot!==undefined)focus(`[data-slot="${opts.slot}"][data-row="${rowIndex}"]`);
   if(opts.check)focus('[data-check]');
 }
 
+function showWorkArea(){requestAnimationFrame(()=>document.querySelector('.bank-panel')?.scrollIntoView({block:'start',behavior:'auto'}));}
 function chooseRow(index,slot){
   if(app.game.status!=='playing'||app.game.placements[index])return;
   rowDrafts[rowIndex]=[...draft];rowIndex=index;draft=rowDrafts[index]||[null,null];slotIndex=slot??(draft[0]===null?0:draft[1]===null?1:0);rejected=false;rememberDrafts();
-  app.render({slot:slotIndex});app.notice(`Row ${index+1}. ${app.puzzle.rows[index].cue.join(' is to ')}. Choose its counterpart.`);
+  app.render({slot:slotIndex});showWorkArea();app.notice(`Row ${index+1}. ${app.puzzle.rows[index].cue.join(' is to ')}. Choose its counterpart.`);
 }
 function chooseTile(id){
   if(app.game.status!=='playing'||app.game.placements.some(pair=>pair?.includes(id)))return;
   const old=draft.indexOf(id);
   if(old>=0){draft[old]=null;slotIndex=old;}else{draft[slotIndex]=id;slotIndex=draft[0]===null?0:draft[1]===null?1:0;}
-  rejected=false;rememberDrafts();app.sound('select');app.render({tile:id});
+  rejected=false;rememberDrafts();app.sound('select');app.render(draft.every(Boolean)?{check:true}:{tile:id});
   app.notice(draft.every(Boolean)?`${tile(draft[0]).word} is to ${tile(draft[1]).word}. Check the pair for row ${rowIndex+1}.`:`${tile(id).word} ${old>=0?'removed':'selected'}. Choose ${slotIndex===0?'the first':'the second'} word.`);
 }
 function checkPair(){
   const result=engine.submitPair(app.puzzle,app.game,{row:rowIndex,tileIds:draft});
   if(!result.changed)return;
   const row=app.puzzle.rows[rowIndex];
-  if(result.accepted){draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';}else{rejected=true;rejectionMessage=result.feedback==='reverse'?'You found the two words. Their direction is reversed; try Reverse.':'That pair doesn’t carry the same relationship in that order. Your words are still available.';}
+  if(result.accepted){draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';}else{rejected=true;rejectionMessage=result.feedback==='reverse'?'You found the two words. Their direction is reversed; try Reverse.':'Not the intended match for this row. Try another relationship or direction; your words are still available.';}
   rememberDrafts();
   app.commit(result.state,{message:result.accepted?`${row.relationship}. ${row.explanation}`:rejectionMessage,tone:result.accepted?(result.state.status==='won'?'win':'fit'):'miss',opts:result.accepted?{}:{check:true}});
-  if(result.accepted&&app.game.status==='playing'){ $('bank').querySelector('button:not(:disabled)')?.focus({preventScroll:true}); requestAnimationFrame(()=>document.querySelector('.analogy.active')?.scrollIntoView({block:'start',behavior:'auto'})); }
+  if(result.accepted&&app.game.status==='playing'){ if(draft.every(Boolean))focus('[data-check]');else { $('bank').querySelector('button:not(:disabled)')?.focus({preventScroll:true}); showWorkArea(); } }
 }
-function hint(index){
+function applyHint(index){
   const result=engine.useHint(app.puzzle,app.game,index);
   if(!result.hint)return;
   app.commit(result.state,{message:`Row ${index+1} hint: ${result.hint.relationship}.`,opts:{slot:slotIndex}});
 }
+function hint(index){
+  if(app.game.status!=='playing'||app.game.placements[index]||app.game.hintedRows.includes(index))return;
+  app.openDialog(`<p class="dialog-kicker">A NUDGE FOR ROW ${index+1}</p><h2 class="dialog-title" id="dialog-title">Name the relationship?</h2><p class="confirm-copy">This records <strong>1 hint</strong> and makes this an assisted round. It shows the kind of relationship; you still choose both words.</p><div class="dialog-actions"><button class="secondary-button" data-action="close" autofocus>Keep thinking</button><button class="primary-button" data-counterpart-hint="${index}">Show relationship</button></div>`);
+}
+$('dialog-content').addEventListener('click',event=>{
+ const button=event.target.closest('[data-counterpart-hint]');if(!button)return;
+ const index=Number(button.dataset.counterpartHint);app.closeDialog();applyHint(index);
+});
 $('bank').addEventListener('click',event=>{const button=event.target.closest('[data-tile]');if(button)chooseTile(button.dataset.tile);});
 $('puzzle').addEventListener('click',event=>{
   const slot=event.target.closest('[data-slot]');if(slot){chooseRow(Number(slot.dataset.row),Number(slot.dataset.slot));return;}
@@ -102,7 +119,7 @@ $('puzzle').addEventListener('click',event=>{
   if(event.target.closest('[data-swap]')){draft.reverse();slotIndex=draft[0]===null?0:draft[1]===null?1:0;rejected=false;rememberDrafts();app.render({check:true});app.notice('Draft reversed. The direction should match the first pair.');}
 });
 document.addEventListener('keydown',event=>{
-  if($('game-dialog').open)return;
+  if($('game-dialog').open||app.game.status!=='playing')return;
   if(event.key==='Escape'){draft=[null,null];slotIndex=0;rejected=false;rememberDrafts();app.render();app.notice('Draft cleared. Every unused word is available.');}
 });
 $('feedback').textContent='Look for the relationship. Carry it into a new pair.';

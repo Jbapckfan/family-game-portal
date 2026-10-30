@@ -1,0 +1,122 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Free draft edits/reverse spend no checks; wrong and correct submissions each cost one; active next row moves first",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Hint cancel preserves game; confirmation records exactly one hint and status says assisted",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "A real saved first-word draft survives auto-advance; second tile fills the empty slot and Enter checks the pair",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Changing rows and reload preserve separate unsent drafts and selected work area",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Escape clears only an unfinished draft without spending a check",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Auto-advance focuses Check when the next row already has a complete saved draft",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Large 16px+ bank words, reachable active controls, matching DOM/visual order, no overflow and 44px+ tiles at 320–1440",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Five actual correct checks finish perfectly, explain all relationships and terminal Escape leaves feedback alone",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Perfect result exports real 1080×1350 and 1080×1080 PNGs, with no bank words in caption",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened share keeps played date after midnight; mocked cancellation preserves focus and denied clipboard selects text",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed practice is honestly labelled and cannot replace the daily win",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Free draft edits/reverse spend no checks; wrong and correct submissions each cost one; active next row moves first",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Hint cancel preserves game; confirmation records exactly one hint and status says assisted",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "A real saved first-word draft survives auto-advance; second tile fills the empty slot and Enter checks the pair",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Changing rows and reload preserve separate unsent drafts and selected work area",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Escape clears only an unfinished draft without spending a check",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Auto-advance focuses Check when the next row already has a complete saved draft",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Large 16px+ bank words, reachable active controls, matching DOM/visual order, no overflow and 44px+ tiles at 320–1440",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Five actual correct checks finish perfectly, explain all relationships and terminal Escape leaves feedback alone",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Perfect result exports real 1080×1350 and 1080×1080 PNGs, with no bank words in caption",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened share keeps played date after midnight; mocked cancellation preserves focus and denied clipboard selects text",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed practice is honestly labelled and cannot replace the daily win",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

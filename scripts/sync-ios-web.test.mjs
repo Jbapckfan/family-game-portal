@@ -64,6 +64,7 @@ function fixture(run) {
   }
   writeFixture(root, 'games/ringcount/share-card.mjs', 'export const card = true;');
   writeFixture(root, 'games/switchpath/share-card.mjs', 'export const card = true;');
+  writeFixture(root, 'games/counterpart/share-card.mjs', 'export const card = true;');
   for (const slug of kimi) writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="stylesheet" href="../kimi-runtime/assets/index.css">');
   for (const name of sharedRuntime) writeFixture(root, `games/kimi-runtime/${name}`);
   writeFixture(root, 'games/kimi-runtime/assets/index.js', 'export { value } from "./chunks/game.mjs"; const text = "Climb from ";');
@@ -93,7 +94,8 @@ test('ordinary sync copies the fixed runtime set including Ringcount and Switchp
   const before = snapshot(directory);
   assert.ok(existsSync(join(directory, 'ringcount', 'share-card.mjs')));
   assert.ok(existsSync(join(directory, 'switchpath', 'share-card.mjs')));
-  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length + 2);
+  assert.ok(existsSync(join(directory, 'counterpart', 'share-card.mjs')));
+  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length + 3);
   assert.equal(readdirSync(directory).length, slugs.length + 2);
   assert.ok(Object.keys(before).every(path => !path.endsWith('/README.md')));
   assert.ok(Object.keys(before).every(path => !path.includes('/tests/')));

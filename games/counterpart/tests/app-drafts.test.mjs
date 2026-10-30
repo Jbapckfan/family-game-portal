@@ -23,8 +23,8 @@ function openApp(saved = memoryStorage(), session = memoryStorage()) {
         focus(){}, scrollIntoView(){}, getClientRects(){return [{}];},
         getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};},
         showModal(){this.open=true;},close(){this.open=false;},
-        addEventListener(type, fn){events.set(type, fn);},
-        emit(type, event){events.get(type)?.({preventDefault(){},...event});},
+        addEventListener(type, fn){if(!events.has(type))events.set(type,[]);events.get(type).push(fn);},
+        emit(type, event){for(const fn of events.get(type)||[])fn({preventDefault(){},...event});},
       });
     }
     return nodes.get(name);
@@ -38,11 +38,14 @@ function openApp(saved = memoryStorage(), session = memoryStorage()) {
     setTimeout:()=>1, clearTimeout(){}, setInterval:()=>1,
   });
   runInContext(readFileSync(new URL('../shell.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,''), context);
+  runInContext(readFileSync(new URL('../share-card.mjs',import.meta.url),'utf8').replace(/^export /gm,''),context);
   runInContext(readFileSync(new URL('../app.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,''), context);
   function dispatch(attribute, value) {
     node('dialog-content').emit('click',{target:{closest:selector => selector===`[${attribute}]` ? {dataset:{[attribute.slice(5)]:String(value)}} : null}});
   }
   return {saved,session,node,app:runInContext('app',context),
+    tapTile:id=>node('bank').emit('click',{target:{closest:selector=>selector==='[data-tile]'?{dataset:{tile:id}}:null}}),
+    check:()=>node('puzzle').emit('click',{target:{closest:selector=>selector==='[data-check]'?{}:null}}),
     practice:index=>dispatch('data-practice',index), action:action=>dispatch('data-action',action)};
 }
 function seedDraft(session, puzzle, mode='practice') {
@@ -92,4 +95,28 @@ test('a stale practice restart adopts newer progress without discarding its loca
   stale.action('restart');
   assert.equal(stale.app.game.attempts,0);
   assert.equal(hasDraft(stale),false);
+});
+
+
+test('automatic row advance preserves the first drafted word and fills its empty second slot',()=>{
+ const session=memoryStorage(),puzzle=PUZZLES[0];
+ const key=`counterpart:ui:v1:2026-10-20:${puzzle.id}`;
+ session.setItem(key,JSON.stringify({rows:[[null,null],[puzzle.rows[1].answer[0],null]],row:0,slot:0}));
+ const view=openApp(memoryStorage(),session);
+ for(const id of puzzle.rows[0].answer)view.tapTile(id);
+ view.check();assert.equal(view.app.game.attempts,1);
+ view.tapTile(puzzle.rows[1].answer[1]);
+ const draft=JSON.parse(session.getItem(key));
+ assert.deepEqual(draft.rows[1],puzzle.rows[1].answer,'a saved first word must not be overwritten by the second');
+ view.check();assert.equal(view.app.game.placements.filter(Boolean).length,2);
+});
+
+test('sanitizing a draft after another row locks its second word preserves the remaining first word',()=>{
+ const session=memoryStorage(),puzzle=PUZZLES[0];
+ const key=`counterpart:ui:v1:2026-10-20:${puzzle.id}`;
+ session.setItem(key,JSON.stringify({rows:[[puzzle.rows[0].answer[0],puzzle.rows[1].answer[1]]],row:0,slot:0}));
+ const view=openApp(memoryStorage(),session);
+ view.app.commit(rules.submitPair(puzzle,view.app.game,{row:1,tileIds:puzzle.rows[1].answer}).state);
+ view.tapTile(puzzle.rows[0].answer[1]);
+ assert.deepEqual(JSON.parse(session.getItem(key)).rows[0],puzzle.rows[0].answer);
 });

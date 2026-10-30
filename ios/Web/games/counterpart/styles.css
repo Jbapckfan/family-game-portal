@@ -107,3 +107,75 @@ body.counterpart{--accent:#b2573f;--accent-dark:#8e402d;--wash:#f7e6dd;--soft:#e
 
 /* Native GameScreen already displays the developer credit above its WebView. */
 .native-app .game-credit{display:none}
+
+/* Counterpart review: keep the active pair beside a compact word bank. */
+body.counterpart{--accent:#006b73;--accent-dark:#004f57;--wash:#e1f1f0;--soft:#b7d6d5}
+.counterpart .bank-panel{background:var(--wash);border-color:#b6d4d2;position:static}
+.counterpart .word-tile{border-color:#b0cccc;box-shadow:0 3px 0 #c4ddda}
+.counterpart .analogy{border-left-color:#abc9c9}
+.counterpart .analogy.active{border-color:var(--accent);background:#f0f8f7;box-shadow:0 0 0 2px #006b7314}
+.counterpart .answer-slot{border-color:#90b8b8;background:#f6fbfa}
+.counterpart .analogy:not(.active):not(.solved) .analogy-answer{display:none}
+.counterpart .row-state{font-size:9px;font-weight:600;letter-spacing:.3px}
+.counterpart .analogy.active .row-state{color:var(--accent-dark)}
+.counterpart .cue-button{min-height:44px}
+.counterpart .answer-slot{min-height:44px}
+.counterpart .analogy-actions{gap:7px}
+.counterpart .bank-note{font-size:11px}
+@media(max-width:520px){
+ .counterpart .masthead{min-height:62px}
+ .counterpart .hero{padding:8px 0 14px}
+ .counterpart .hero .eyebrow,.counterpart .hero-lead,.counterpart .hero>p:last-child{display:none}
+ .counterpart .hero h1{font-size:29px}
+ .counterpart .puzzle-meta{padding:9px 0}
+ .counterpart .word-bank{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .counterpart .word-tile{font-size:12px;min-height:46px;padding:8px 3px;box-shadow:0 2px 0 #c4ddda}
+ .counterpart .bank-panel{margin-bottom:16px}
+ .counterpart .analogy{scroll-margin-top:12px}
+ .counterpart .analogy-actions{flex-wrap:wrap}
+ .counterpart .bank-note{font-size:10px}
+}
+@media(max-width:360px){.counterpart .word-bank{grid-template-columns:repeat(3,minmax(0,1fr))}.counterpart .mini-button{padding:9px}}
+.share-formats{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.share-formats button{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 16px;background:var(--white);font:600 12px var(--sans);cursor:pointer}
+.share-formats button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+#result-card{display:block;width:min(100%,270px);height:auto;margin:0 auto;border-radius:14px;box-shadow:0 8px 32px #2736401c}
+.share-actions{flex-wrap:wrap;gap:8px}
+.share-actions button{min-height:44px}
+.share-caption{margin-top:12px;font-size:12px}
+.share-caption summary{cursor:pointer;padding:12px 0}
+.share-caption textarea{width:100%;box-sizing:border-box;min-height:120px}
+@media(max-width:520px){
+ .share-actions{display:grid;grid-template-columns:1fr 1fr}
+ .share-actions #share-card{grid-column:1/-1}
+}
+.counterpart .board-bottom{flex-wrap:wrap}
+
+/* James's playtest: larger words and clear sans-serif clues. */
+.counterpart .word-tile{font-size:16px;font-weight:700;line-height:1.3;min-height:52px;padding:10px 8px;color:var(--ink)}
+.counterpart .word-tile.selected{color:#fff}
+.counterpart .cue-button{font:700 18px/1.4 var(--sans);letter-spacing:0;gap:9px;color:var(--ink)}
+.counterpart .answer-slot{font-size:15px;min-height:50px;line-height:1.4}
+.counterpart .answer-slot.filled,.counterpart .locked-word{font-size:17px;font-weight:700;line-height:1.4}
+.counterpart .relation,.counterpart .hint-line,.counterpart .row-error{font-size:14px;line-height:1.65}
+.counterpart .bank-note,.counterpart .section-heading,.counterpart .row-state{font-size:12px;line-height:1.5}
+.counterpart .mini-button{font-size:13px;min-height:46px}
+.counterpart .board-bottom,.counterpart .board-note{font-size:13px}
+.counterpart .feedback{font-size:14px}
+.counterpart .row-state{white-space:normal;text-align:right;flex:0 0 58px;font-size:11px}
+@media(max-width:520px){
+ .counterpart .word-bank{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .counterpart .word-tile{font-size:17px}
+ .counterpart .cue-button{font-size:17px}
+ .counterpart .bank-note{font-size:12px}
+ .counterpart .section-heading{font-size:11px;letter-spacing:.4px;flex-wrap:wrap;gap:5px}
+ .counterpart .section-heading small{font-size:11px}
+ .counterpart .analogy-head{gap:6px}
+ .counterpart .row-number{font-size:11px;width:18px}
+}
+@media(max-width:360px){
+ .counterpart .word-tile{font-size:16px}
+ .counterpart .cue-button{font-size:16px}
+ .counterpart .analogy.active .analogy-head{flex-wrap:wrap}
+ .counterpart .analogy.active .row-state{flex-basis:100%;text-align:left;margin-left:24px}
+}

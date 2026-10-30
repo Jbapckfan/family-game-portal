@@ -1,0 +1,124 @@
+{
+  "method": "Apply all existing generator/test semantic-exclusion families to every actual board, including the initial30, and separately test reviewer examples. A family membership is an editorial heuristic, not a semantic proof.",
+  "boards": 210,
+  "families": 17,
+  "violations": [
+    {
+      "board": "counterpart-007",
+      "family": 6,
+      "ids": [
+        31,
+        32,
+        35
+      ]
+    },
+    {
+      "board": "counterpart-011",
+      "family": 4,
+      "ids": [
+        53,
+        55
+      ]
+    },
+    {
+      "board": "counterpart-013",
+      "family": 17,
+      "ids": [
+        62,
+        63
+      ]
+    },
+    {
+      "board": "counterpart-018",
+      "family": 4,
+      "ids": [
+        87,
+        90
+      ]
+    },
+    {
+      "board": "counterpart-026",
+      "family": 7,
+      "ids": [
+        10,
+        83
+      ]
+    }
+  ],
+  "violationsAreBroadFlagsNotProvenSemanticConflicts": true,
+  "reviewerSpecificFamilies": [
+    [
+      3,
+      23,
+      38
+    ],
+    [
+      46,
+      52,
+      59,
+      71
+    ],
+    [
+      2,
+      13,
+      28,
+      88
+    ],
+    [
+      1,
+      14,
+      24
+    ],
+    [
+      22,
+      54
+    ],
+    [
+      27,
+      51
+    ],
+    [
+      61,
+      85
+    ],
+    [
+      21,
+      74
+    ],
+    [
+      5,
+      80
+    ],
+    [
+      17,
+      73
+    ],
+    [
+      31,
+      64
+    ]
+  ],
+  "reviewerSpecificConflictCount": 0,
+  "manualAdjudication": [
+    {
+      "board": "counterpart-007",
+      "distinction": "collection site\u2192items, individual animal\u2192social group, and excerpt\u2192source text have different subtypes/directions; broad part/whole family alone does not prove interchangeable answers."
+    },
+    {
+      "board": "counterpart-011",
+      "distinction": "body response\u2192cause differs from harm\u2192corrective response."
+    },
+    {
+      "board": "counterpart-013",
+      "distinction": "evidence\u2192inferred conclusion differs from advance sign\u2192future event."
+    },
+    {
+      "board": "counterpart-018",
+      "distinction": "device\u2192output differs from formal request\u2192fulfillment."
+    },
+    {
+      "board": "counterpart-026",
+      "distinction": "craftsperson\u2192tool differs from evidence object\u2192specialist."
+    }
+  ]
+}

@@ -207,17 +207,80 @@
       "name": "Counterpart",
       "creator": "ChatGPT",
       "reviewOrder": 3,
-      "status": "not_reviewed",
+      "status": "awaiting_james_verdict",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "for counterpart make the words/fonts larger and easier to read",
+            "interpretation": "Readability request during playtest, not an enjoyment rating."
+          }
+        ]
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "method": "Static source/audit and screenshot inspection; no execution",
+          "scope": "Baseline Counterpart before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 4,
+            "ui": 3,
+            "replay": 3,
+            "shareability": 4
+          },
+          "scoresArePredictions": true,
+          "report": "counterpart/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "method": "Static source/audit and screenshot inspection; no execution",
+          "scope": "Baseline Counterpart before improvements",
+          "scores": {
+            "fun": 2.5,
+            "clarity": 3,
+            "ui": 2,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "counterpart/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "method": "Inline source/audit only; no execution or screenshots",
+          "scope": "Baseline Counterpart before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 3,
+            "ui": null,
+            "replay": 2,
+            "shareability": 3
+          },
+          "scoresArePredictions": true,
+          "report": "counterpart/MAKER-Opus__initial-review.md"
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "counterpart/REPORT.md",
+        "counterpart/ADJUDICATION.md",
+        "counterpart/evidence/summary.json"
+      ],
+      "nextStep": "James verdict on larger-text Counterpart: enjoyment and play-again choice; compare with Switchpath/Ringcount. Shortlist is next.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Updated inline source only; no execution or screenshots",
+        "report": "counterpart/MAKER-Opus__final-review.md",
+        "findings": "No confirmed Critical/Important issue; minor follow-ups verified/corrected by author. Later requested typography and scroll refinement covered by actual browser checks."
+      }
     },
     {
       "slug": "shortlist",

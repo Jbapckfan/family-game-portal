@@ -1,0 +1,35 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "5fef3acd92e8d502b348a1111aba6ab6854a5215439ebeea1e87368a0f558610",
+  "files": [
+    "games/counterpart/share-card.mjs",
+    "games/counterpart/app.mjs",
+    "games/counterpart/shell.mjs",
+    "games/counterpart/engine.mjs",
+    "games/counterpart/tests/share-card.test.mjs",
+    "games/counterpart/tests/app-drafts.test.mjs",
+    "scripts/review-counterpart.mjs",
+    "docs/game-reviews/counterpart/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 164.45,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 15732,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 35117,
+      "webSearchRequests": 0,
+      "costUSD": 0.5959036,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 13540,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 35117,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

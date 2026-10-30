@@ -1,0 +1,1178 @@
+{
+  "boards": 210,
+  "distinctAnalogies": 90,
+  "method": "Deduplicate actual cue plus ordered answer words; counts are content reuse, not semantic validity or fun.",
+  "dailyId": "counterpart-011",
+  "analogies": [
+    {
+      "cue": [
+        "ACORN",
+        "OAK"
+      ],
+      "answer": [
+        "CATERPILLAR",
+        "BUTTERFLY"
+      ],
+      "relationship": "Earlier stage → later stage",
+      "explanation": "An acorn can develop into an oak; a caterpillar develops into a butterfly.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "GLOVE",
+        "HAND"
+      ],
+      "answer": [
+        "SHEATH",
+        "BLADE"
+      ],
+      "relationship": "Protective covering → what it protects",
+      "explanation": "A glove covers and protects a hand; a sheath covers and protects a blade.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "COMPASS",
+        "DIRECTION"
+      ],
+      "answer": [
+        "BAROMETER",
+        "PRESSURE"
+      ],
+      "relationship": "Instrument → what it indicates",
+      "explanation": "A compass indicates direction; a barometer indicates atmospheric pressure.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "EMBER",
+        "FIRE"
+      ],
+      "answer": [
+        "ECHO",
+        "SOUND"
+      ],
+      "relationship": "Lingering trace → its source",
+      "explanation": "An ember can remain after a fire subsides; an echo repeats after the original sound.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "AUTHOR",
+        "NOVEL"
+      ],
+      "answer": [
+        "COMPOSER",
+        "SYMPHONY"
+      ],
+      "relationship": "Creator → creation",
+      "explanation": "An author writes a novel; a composer writes a symphony.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "MAP",
+        "TERRITORY"
+      ],
+      "answer": [
+        "PORTRAIT",
+        "PERSON"
+      ],
+      "relationship": "Representation → what it depicts",
+      "explanation": "A map represents a territory; a portrait represents a person.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "KEY",
+        "LOCK"
+      ],
+      "answer": [
+        "PASSWORD",
+        "ACCOUNT"
+      ],
+      "relationship": "Credential → what it unlocks",
+      "explanation": "A key opens a lock; a password unlocks access to an account.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "CHAPTER",
+        "BOOK"
+      ],
+      "answer": [
+        "SCENE",
+        "PLAY"
+      ],
+      "relationship": "Narrative section → larger work",
+      "explanation": "A chapter is a section of a book; a scene is a section of a play.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "DROUGHT",
+        "WILTING"
+      ],
+      "answer": [
+        "FRICTION",
+        "HEAT"
+      ],
+      "relationship": "Physical cause → resulting effect",
+      "explanation": "Drought can cause plants to wilt; friction can produce heat.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "SCRIBE",
+        "PEN"
+      ],
+      "answer": [
+        "SCULPTOR",
+        "CHISEL"
+      ],
+      "relationship": "Craftsperson → working tool",
+      "explanation": "A scribe works with a pen; a sculptor can work with a chisel.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "ROOT",
+        "ANCHOR"
+      ],
+      "answer": [
+        "GILL",
+        "BREATHE"
+      ],
+      "relationship": "Body part → one of its functions",
+      "explanation": "Roots anchor a plant; gills allow an aquatic animal to breathe.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "SPARK",
+        "IGNITION"
+      ],
+      "answer": [
+        "PROMPT",
+        "RESPONSE"
+      ],
+      "relationship": "Initiating stimulus → what follows",
+      "explanation": "A spark can initiate ignition; a prompt can elicit a response.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "BARK",
+        "TREE"
+      ],
+      "answer": [
+        "RIND",
+        "FRUIT"
+      ],
+      "relationship": "Outer layer → what it surrounds",
+      "explanation": "Bark is the outer covering of a tree; rind is the outer covering of a fruit.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "INFANT",
+        "ADULT"
+      ],
+      "answer": [
+        "SAPLING",
+        "TREE"
+      ],
+      "relationship": "Young form → mature form",
+      "explanation": "An infant grows into an adult; a sapling grows into a mature tree.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "HUNGER",
+        "FOOD"
+      ],
+      "answer": [
+        "THIRST",
+        "WATER"
+      ],
+      "relationship": "Bodily need → what satisfies it",
+      "explanation": "Food satisfies hunger; water satisfies thirst.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "MILE",
+        "DISTANCE"
+      ],
+      "answer": [
+        "MINUTE",
+        "TIME"
+      ],
+      "relationship": "Unit → quantity measured",
+      "explanation": "A mile is a unit of distance; a minute is a unit of time.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "MARBLE",
+        "STATUE"
+      ],
+      "answer": [
+        "CLAY",
+        "POT"
+      ],
+      "relationship": "Raw material → crafted object",
+      "explanation": "Marble can be shaped into a statue; clay can be shaped into a pot.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "BEE",
+        "HIVE"
+      ],
+      "answer": [
+        "MONK",
+        "MONASTERY"
+      ],
+      "relationship": "Resident → customary home",
+      "explanation": "A bee lives in a hive; a monk may live in a monastery.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "THORN",
+        "PRICK"
+      ],
+      "answer": [
+        "FANG",
+        "PUNCTURE"
+      ],
+      "relationship": "Sharp structure → action it performs",
+      "explanation": "A thorn can prick skin; a fang can puncture it.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "CHORUS",
+        "SONG"
+      ],
+      "answer": [
+        "REFRAIN",
+        "POEM"
+      ],
+      "relationship": "Repeated passage → larger work",
+      "explanation": "A chorus repeats within a song; a refrain repeats within a poem.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "MOLT",
+        "FEATHERS"
+      ],
+      "answer": [
+        "SHED",
+        "LEAVES"
+      ],
+      "relationship": "Discarding action → what is discarded",
+      "explanation": "A bird molts its old feathers; a deciduous tree sheds its leaves.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "PROLOGUE",
+        "STORY"
+      ],
+      "answer": [
+        "OVERTURE",
+        "OPERA"
+      ],
+      "relationship": "Introduction → main work",
+      "explanation": "A prologue introduces a story; an overture introduces an opera.",
+      "boards": 14
+    },
+    {
+      "cue": [
+        "SEISMOGRAPH",
+        "TREMOR"
+      ],
+      "answer": [
+        "THERMOMETER",
+        "TEMPERATURE"
+      ],
+      "relationship": "Measuring device → phenomenon measured",
+      "explanation": "A seismograph records ground tremors; a thermometer measures temperature.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "BUD",
+        "BLOSSOM"
+      ],
+      "answer": [
+        "LARVA",
+        "ADULT"
+      ],
+      "relationship": "Immature stage → developed stage",
+      "explanation": "A bud develops into a blossom; a larva develops into the adult form of its species.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "RECIPE",
+        "COOK"
+      ],
+      "answer": [
+        "BLUEPRINT",
+        "BUILDER"
+      ],
+      "relationship": "Instruction document → intended user",
+      "explanation": "A cook follows a recipe; a builder follows a blueprint.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "WITNESS",
+        "TESTIMONY"
+      ],
+      "answer": [
+        "HISTORIAN",
+        "CHRONICLE"
+      ],
+      "relationship": "Account giver → account given",
+      "explanation": "A witness gives testimony; a historian can write a chronicle.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "CANAL",
+        "BOAT"
+      ],
+      "answer": [
+        "RAILWAY",
+        "TRAIN"
+      ],
+      "relationship": "Constructed route → traveling vehicle",
+      "explanation": "A canal provides a route for a boat; a railway provides a route for a train.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "ZEST",
+        "ORANGE"
+      ],
+      "answer": [
+        "HUSK",
+        "CORN"
+      ],
+      "relationship": "Removed outer covering → its source",
+      "explanation": "Zest comes from the outer peel of an orange; a husk is removed from an ear of corn.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "DEBT",
+        "REPAY"
+      ],
+      "answer": [
+        "RIDDLE",
+        "SOLVE"
+      ],
+      "relationship": "Unresolved matter → resolving action",
+      "explanation": "A debt is settled by repaying it; a riddle is resolved by solving it.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "BIRTH",
+        "DEATH"
+      ],
+      "answer": [
+        "DAWN",
+        "DUSK"
+      ],
+      "relationship": "Beginning → ending of a natural span",
+      "explanation": "Birth and death mark the ends of a life; dawn and dusk mark the ends of daylight.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "ORCHARD",
+        "TREES"
+      ],
+      "answer": [
+        "LIBRARY",
+        "BOOKS"
+      ],
+      "relationship": "Collection site → collected items",
+      "explanation": "An orchard contains trees; a library contains books.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "ANT",
+        "COLONY"
+      ],
+      "answer": [
+        "WOLF",
+        "PACK"
+      ],
+      "relationship": "Social animal → its group",
+      "explanation": "An ant belongs to a colony; a wolf belongs to a pack.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "FLINT",
+        "SPARK"
+      ],
+      "answer": [
+        "MATCH",
+        "FLAME"
+      ],
+      "relationship": "Fire starter → what it produces",
+      "explanation": "Struck flint can produce a spark; a struck match can produce a flame.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "FILTER",
+        "IMPURITY"
+      ],
+      "answer": [
+        "CENSOR",
+        "OBSCENITY"
+      ],
+      "relationship": "Remover → material it screens out",
+      "explanation": "A filter removes an impurity; a censor may remove obscenity.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "QUOTE",
+        "SPEECH"
+      ],
+      "answer": [
+        "EXCERPT",
+        "TEXT"
+      ],
+      "relationship": "Selected passage → original source",
+      "explanation": "A quote can be selected from a speech; an excerpt is selected from a text.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "GRAIN",
+        "SAND"
+      ],
+      "answer": [
+        "FLAKE",
+        "SNOW"
+      ],
+      "relationship": "Small particle → accumulated substance",
+      "explanation": "A grain is a small particle of sand; a flake is a small particle of snow.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "MIRAGE",
+        "SIGHT"
+      ],
+      "answer": [
+        "ECHO",
+        "HEARING"
+      ],
+      "relationship": "Sensory phenomenon → sense detecting it",
+      "explanation": "A mirage is perceived through sight; an echo is perceived through hearing.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "SUNDIAL",
+        "TIME"
+      ],
+      "answer": [
+        "ODOMETER",
+        "DISTANCE"
+      ],
+      "relationship": "Instrument → quantity displayed",
+      "explanation": "A sundial displays time; an odometer displays distance traveled.",
+      "boards": 14
+    },
+    {
+      "cue": [
+        "FOSSIL",
+        "PAST"
+      ],
+      "answer": [
+        "FORECAST",
+        "FUTURE"
+      ],
+      "relationship": "Information source → time it concerns",
+      "explanation": "A fossil provides evidence about the past; a forecast makes a prediction about the future.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "RETRACT",
+        "STATEMENT"
+      ],
+      "answer": [
+        "REVOKE",
+        "PERMISSION"
+      ],
+      "relationship": "Withdrawal action → what is withdrawn",
+      "explanation": "You retract a statement; you revoke permission.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "BAIT",
+        "TRAP"
+      ],
+      "answer": [
+        "LURE",
+        "AMBUSH"
+      ],
+      "relationship": "Attraction → capture it draws toward",
+      "explanation": "Bait draws a target toward a trap; a lure can draw a target into an ambush.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "SCAB",
+        "WOUND"
+      ],
+      "answer": [
+        "CALLUS",
+        "FRICTION"
+      ],
+      "relationship": "Skin response → what prompts it",
+      "explanation": "A scab forms over a wound; a callus develops in response to repeated friction.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "IRON",
+        "MAGNET"
+      ],
+      "answer": [
+        "MOTH",
+        "LIGHT"
+      ],
+      "relationship": "Attracted thing → attractor",
+      "explanation": "Iron is attracted to a magnet; a moth may be attracted to a light.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "CIPHER",
+        "MESSAGE"
+      ],
+      "answer": [
+        "MASK",
+        "FACE"
+      ],
+      "relationship": "Concealing device → what it conceals",
+      "explanation": "A cipher conceals the meaning of a message; a mask conceals a face.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "ORCHESTRA",
+        "CONDUCTOR"
+      ],
+      "answer": [
+        "TEAM",
+        "COACH"
+      ],
+      "relationship": "Performing group → its leader",
+      "explanation": "A conductor directs an orchestra; a coach directs a team.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "OVEN",
+        "BAKE"
+      ],
+      "answer": [
+        "LOOM",
+        "WEAVE"
+      ],
+      "relationship": "Production tool → its operation",
+      "explanation": "An oven is used to bake; a loom is used to weave.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "SEED",
+        "SOW"
+      ],
+      "answer": [
+        "VOTE",
+        "CAST"
+      ],
+      "relationship": "Thing → conventional action applied to it",
+      "explanation": "The conventional verb for putting a seed in the ground is sow; for submitting a vote, it is cast.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "FEVER",
+        "ILLNESS"
+      ],
+      "answer": [
+        "SMOKE",
+        "FIRE"
+      ],
+      "relationship": "Observable sign → underlying condition",
+      "explanation": "A fever can signal illness; smoke can signal a fire.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "PETAL",
+        "FLOWER"
+      ],
+      "answer": [
+        "SPOKE",
+        "WHEEL"
+      ],
+      "relationship": "Distinct component → whole object",
+      "explanation": "A petal is a component of a flower; a spoke is a component of a wheel.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "MONARCH",
+        "CROWN"
+      ],
+      "answer": [
+        "JUDGE",
+        "ROBE"
+      ],
+      "relationship": "Role → ceremonial clothing",
+      "explanation": "A monarch may wear a crown; a judge may wear a robe.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "ORBIT",
+        "PLANET"
+      ],
+      "answer": [
+        "ITINERARY",
+        "TRAVELER"
+      ],
+      "relationship": "Route → one who follows it",
+      "explanation": "A planet follows an orbit; a traveler follows an itinerary.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "LEVER",
+        "PRY"
+      ],
+      "answer": [
+        "AWL",
+        "PIERCE"
+      ],
+      "relationship": "Hand tool → characteristic action",
+      "explanation": "A lever can be used to pry; an awl is used to pierce holes.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "SHIVER",
+        "COLD"
+      ],
+      "answer": [
+        "SWEAT",
+        "HEAT"
+      ],
+      "relationship": "Body response → prompting condition",
+      "explanation": "Shivering is a response to cold; sweating is a response to heat.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "APPETIZER",
+        "MEAL"
+      ],
+      "answer": [
+        "PRELUDE",
+        "CONCERT"
+      ],
+      "relationship": "Opening portion → main experience",
+      "explanation": "An appetizer opens a meal; a prelude can open a concert.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "INSULT",
+        "APOLOGY"
+      ],
+      "answer": [
+        "DAMAGE",
+        "REPAIR"
+      ],
+      "relationship": "Harm → corrective response",
+      "explanation": "An apology can address an insult; a repair can address damage.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "CONFIDENCE",
+        "ARROGANCE"
+      ],
+      "answer": [
+        "CAUTION",
+        "TIMIDITY"
+      ],
+      "relationship": "Useful quality → excessive version",
+      "explanation": "Too much confidence can become arrogance; too much caution can become timidity.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "KNIFE",
+        "SHARPEN"
+      ],
+      "answer": [
+        "STRING",
+        "TUNE"
+      ],
+      "relationship": "Item → adjustment that readies it",
+      "explanation": "You sharpen a knife for use; you tune a musical string before playing.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "DROPLET",
+        "CLOUD"
+      ],
+      "answer": [
+        "STAR",
+        "GALAXY"
+      ],
+      "relationship": "Constituent → natural aggregation",
+      "explanation": "A cloud contains many droplets; a galaxy contains many stars.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "SIEVE",
+        "SIFT"
+      ],
+      "answer": [
+        "NET",
+        "CATCH"
+      ],
+      "relationship": "Utensil → intended action",
+      "explanation": "A sieve is used to sift; a net is used to catch.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "PERMISSION",
+        "ACT"
+      ],
+      "answer": [
+        "INVITATION",
+        "ATTEND"
+      ],
+      "relationship": "Authorization → action it enables",
+      "explanation": "Permission allows someone to act; an invitation allows someone to attend.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "ANCHOR",
+        "DRIFT"
+      ],
+      "answer": [
+        "BRAKE",
+        "MOTION"
+      ],
+      "relationship": "Restraint → movement it limits",
+      "explanation": "An anchor limits a vessel's drift; a brake limits a vehicle's motion.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "EVIDENCE",
+        "VERDICT"
+      ],
+      "answer": [
+        "SYMPTOM",
+        "DIAGNOSIS"
+      ],
+      "relationship": "Evidence type → conclusion it informs",
+      "explanation": "Evidence informs a verdict; a symptom informs a diagnosis.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "FORESHADOWING",
+        "EVENT"
+      ],
+      "answer": [
+        "OMEN",
+        "OUTCOME"
+      ],
+      "relationship": "Advance sign → what it anticipates",
+      "explanation": "Foreshadowing anticipates an event in a story; an omen is taken to anticipate an outcome.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "SHIP",
+        "FLEET"
+      ],
+      "answer": [
+        "TREE",
+        "FOREST"
+      ],
+      "relationship": "Individual → collective grouping",
+      "explanation": "A fleet is a group of ships; a forest is a collection of trees.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "CANVAS",
+        "PAINTER"
+      ],
+      "answer": [
+        "CLAY",
+        "POTTER"
+      ],
+      "relationship": "Artistic medium → craftsperson",
+      "explanation": "A painter works on canvas; a potter works with clay.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "LULLABY",
+        "SLEEP"
+      ],
+      "answer": [
+        "CAFFEINE",
+        "ALERTNESS"
+      ],
+      "relationship": "Inducer → intended state",
+      "explanation": "A lullaby is intended to encourage sleep; caffeine can increase alertness.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "LIFEGUARD",
+        "RESCUE"
+      ],
+      "answer": [
+        "REFEREE",
+        "OFFICIATE"
+      ],
+      "relationship": "Role → primary duty",
+      "explanation": "A lifeguard may need to rescue; a referee officiates a contest.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "SKELETON",
+        "BODY"
+      ],
+      "answer": [
+        "FRAME",
+        "BUILDING"
+      ],
+      "relationship": "Supporting structure → what it supports",
+      "explanation": "A skeleton supports a body; a frame supports a building.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "CALENDAR",
+        "DATE"
+      ],
+      "answer": [
+        "DICTIONARY",
+        "DEFINITION"
+      ],
+      "relationship": "Reference → information looked up",
+      "explanation": "A calendar lets you look up a date; a dictionary lets you look up a definition.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "TEACH",
+        "LEARN"
+      ],
+      "answer": [
+        "TELL",
+        "HEAR"
+      ],
+      "relationship": "Communicator's action → receiver's action",
+      "explanation": "The receiver of teaching is meant to learn; the receiver of telling is meant to hear.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "NEEDLE",
+        "SEW"
+      ],
+      "answer": [
+        "CHISEL",
+        "CARVE"
+      ],
+      "relationship": "Implement → craft action",
+      "explanation": "A needle is used to sew; a chisel is used to carve.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "MARATHON",
+        "ENDURANCE"
+      ],
+      "answer": [
+        "SPRINT",
+        "SPEED"
+      ],
+      "relationship": "Contest → central ability tested",
+      "explanation": "A marathon especially tests endurance; a sprint especially tests speed.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "ICICLE",
+        "WATER"
+      ],
+      "answer": [
+        "CANDLE",
+        "WAX"
+      ],
+      "relationship": "Shaped object → constituent material",
+      "explanation": "An icicle is made of frozen water; a conventional candle is made of wax.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "PLUCK",
+        "FEATHER"
+      ],
+      "answer": [
+        "PRUNE",
+        "BRANCH"
+      ],
+      "relationship": "Removal action → part removed",
+      "explanation": "You remove a feather by plucking it; you remove a branch by pruning it.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "EDITOR",
+        "MANUSCRIPT"
+      ],
+      "answer": [
+        "CURATOR",
+        "COLLECTION"
+      ],
+      "relationship": "Caretaking role → material managed",
+      "explanation": "An editor tends a manuscript; a curator tends a collection.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "DIAMOND",
+        "HARDNESS"
+      ],
+      "answer": [
+        "RUBBER",
+        "ELASTICITY"
+      ],
+      "relationship": "Material → characteristic property",
+      "explanation": "Diamond is noted for hardness; rubber is noted for elasticity.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "CENTURY",
+        "YEARS"
+      ],
+      "answer": [
+        "DOZEN",
+        "ITEMS"
+      ],
+      "relationship": "Fixed quantity → what is counted",
+      "explanation": "A century counts one hundred years; a dozen counts twelve items.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "REHEARSAL",
+        "PERFORMANCE"
+      ],
+      "answer": [
+        "DRAFT",
+        "PUBLICATION"
+      ],
+      "relationship": "Preparation → finished presentation",
+      "explanation": "Rehearsal prepares for a performance; a draft prepares a work for publication.",
+      "boards": 13
+    },
+    {
+      "cue": [
+        "SCENT",
+        "NOSE"
+      ],
+      "answer": [
+        "TEXTURE",
+        "SKIN"
+      ],
+      "relationship": "Perceived quality → detecting organ",
+      "explanation": "The nose detects scent; touch receptors in the skin detect texture.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "HONEYCOMB",
+        "BEE"
+      ],
+      "answer": [
+        "WEB",
+        "SPIDER"
+      ],
+      "relationship": "Built structure → its animal builder",
+      "explanation": "Honeycomb is a structure built by bees; a web is a structure built by a spider.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "FREEZE",
+        "ICE"
+      ],
+      "answer": [
+        "EVAPORATE",
+        "VAPOR"
+      ],
+      "relationship": "Phase change → resulting form",
+      "explanation": "Water that freezes becomes ice; water that evaporates becomes vapor.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "COMMA",
+        "SENTENCE"
+      ],
+      "answer": [
+        "REST",
+        "MUSIC"
+      ],
+      "relationship": "Pause marker → expressive medium",
+      "explanation": "A comma can indicate a pause within a sentence; a rest indicates a pause within music.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "ARTIFACT",
+        "ARCHAEOLOGIST"
+      ],
+      "answer": [
+        "FOSSIL",
+        "PALEONTOLOGIST"
+      ],
+      "relationship": "Evidence object → specialist who studies it",
+      "explanation": "An archaeologist studies artifacts; a paleontologist studies fossils.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "NEST",
+        "EGG"
+      ],
+      "answer": [
+        "VAULT",
+        "TREASURE"
+      ],
+      "relationship": "Protective container → contents",
+      "explanation": "A nest holds and protects an egg; a vault holds and protects treasure.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "CAMOUFLAGE",
+        "VISIBILITY"
+      ],
+      "answer": [
+        "MUFFLER",
+        "NOISE"
+      ],
+      "relationship": "Suppressor → what it reduces",
+      "explanation": "Camouflage reduces visibility; a muffler reduces noise.",
+      "boards": 10
+    },
+    {
+      "cue": [
+        "THESIS",
+        "ARGUMENT"
+      ],
+      "answer": [
+        "THEOREM",
+        "PROOF"
+      ],
+      "relationship": "Claim → structured support",
+      "explanation": "A thesis is supported by an argument; a theorem is established by a proof.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "PRISM",
+        "SPECTRUM"
+      ],
+      "answer": [
+        "KILN",
+        "CERAMICS"
+      ],
+      "relationship": "Device → product it helps create",
+      "explanation": "A prism separates light into a spectrum; a kiln fires clay into ceramics.",
+      "boards": 11
+    },
+    {
+      "cue": [
+        "SHELL",
+        "TURTLE"
+      ],
+      "answer": [
+        "ARMOR",
+        "SOLDIER"
+      ],
+      "relationship": "Body protection → protected wearer",
+      "explanation": "A shell protects a turtle; armor protects a soldier.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "BASS",
+        "LOW"
+      ],
+      "answer": [
+        "SOPRANO",
+        "HIGH"
+      ],
+      "relationship": "Voice category → relative register",
+      "explanation": "A bass voice occupies a low register; a soprano voice occupies a high register.",
+      "boards": 12
+    },
+    {
+      "cue": [
+        "INVOICE",
+        "PAYMENT"
+      ],
+      "answer": [
+        "SUMMONS",
+        "APPEARANCE"
+      ],
+      "relationship": "Formal request → expected fulfillment",
+      "explanation": "An invoice requests payment; a summons requires an appearance.",
+      "boards": 11
+    }
+  ]
+}

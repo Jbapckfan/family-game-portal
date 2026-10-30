@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "James’s stated preferences; reviewer predictions tracked separately",
+  "rankingBasis": "Provisional order among games James has played, derived from liked/would-play-again versus easy/boring feedback; no numeric enjoyment scores invented. Reviewer predictions remain separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -12,7 +12,7 @@
       "james": {
         "enjoyment": null,
         "playAgain": null,
-        "preferenceRank": null,
+        "preferenceRank": 2,
         "comments": [
           {
             "date": "2026-10-30",
@@ -94,12 +94,24 @@
       "name": "Switchpath",
       "creator": "ChatGPT",
       "reviewOrder": 2,
-      "status": "ready_for_james",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
-        "playAgain": null,
-        "preferenceRank": null,
-        "comments": []
+        "playAgain": true,
+        "preferenceRank": 1,
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "yes, i like it",
+            "interpretation": "Answers yes to playing again. Likes Switchpath; no numeric enjoyment score supplied."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "consider numbers closer together and also a possible 5x5 grid",
+            "interpretation": "Requests a tighter layout and consideration of a larger grid."
+          }
+        ],
+        "enjoymentReaction": "likes it"
       },
       "reviews": [
         {
@@ -148,15 +160,17 @@
           "report": "switchpath/MAKER-Opus__final-review.md"
         }
       ],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "switchpath/REPORT.md",
         "switchpath/ADJUDICATION.md",
         "switchpath/evidence/summary.json",
-        "switchpath/evidence/forcing-audit.json"
+        "switchpath/evidence/forcing-audit.json",
+        "switchpath/SPACING-AND-5X5.md"
       ],
-      "nextStep": "James playtest: enjoyment, play again, comparison with Ringcount; Counterpart next",
-      "gameplayFinding": "58/217 boards fully solved by basic static degree forcing; 159 require more than that technique. Not a human difficulty or fun rating."
+      "nextStep": "Compact board delivered; 5x5 shown as a non-playable sizing concept. Consider optional longer practice mode; Counterpart remains next game in queue.",
+      "gameplayFinding": "58/217 boards fully solved by basic static degree forcing; 159 require more than that technique. Not a human difficulty or fun rating.",
+      "dispositionBasis": "James said yes to playing again and explicitly likes it."
     },
     {
       "slug": "counterpart",

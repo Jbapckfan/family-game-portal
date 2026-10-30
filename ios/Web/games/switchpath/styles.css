@@ -149,3 +149,9 @@ body.switchpath{--accent:#355fa7;--accent-dark:#264a86;--wash:#e5edfb;--soft:#be
  .share-actions{display:grid;grid-template-columns:1fr 1fr}
  .share-actions #share-card{grid-column:1/-1}
 }
+
+/* James's playtest: bring neighboring numbers closer without shrinking the type. */
+.switchpath .route-play{width:min(100%,360px)}
+.switchpath .route-board{width:min(100%,304px);margin-inline:auto;padding:2px}
+.switchpath .number-cell{margin:3px;padding:13px 2px 11px;min-height:48px;border-radius:11px}
+@media(max-width:360px){.switchpath .number-cell{margin:2px}}

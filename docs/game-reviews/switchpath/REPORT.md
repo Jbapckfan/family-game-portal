@@ -1,6 +1,6 @@
 # Switchpath — second individual review, October 30, 2026
 
-Switchpath is ready for James's playtest. All **32 daily games plus the nine-board bonus** remain available. Ringcount's “easy and boring” feedback is recorded as a replacement candidate, without deletion or an invented numeric score.
+James subsequently said “yes, i like it” and would play again. It is now a keeper and provisionally first among the two games he has played. See the [compact-board and 5×5 consideration follow-up](SPACING-AND-5X5.md) for his requested refinements. The initial review below is retained as dated evidence. All **32 daily games plus the nine-board bonus** remain available. Ringcount's “easy and boring” feedback is recorded as a replacement candidate, without deletion or an invented numeric score.
 
 The phone header is shorter and controls sit directly below the board. Dead ends now remain obvious after reload. Hints disclose their cost and possible rewind before changing the route. Finished routes have an ordered readable inspection view. Browser results export as spoiler-free square/portrait PNGs with the played date and honest moves/hints, plus download/copy fallbacks. Rules, boards, historical calendar, scores and saved-game formats are unchanged.
 

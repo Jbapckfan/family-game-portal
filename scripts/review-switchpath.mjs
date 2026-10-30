@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 const {chromium,webkit}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
-const root=path.resolve(import.meta.dirname,'..'),out=path.join(root,'output/switchpath-review-20261030');
+const root=path.resolve(import.meta.dirname,'..'),out=process.env.REVIEW_OUTPUT?path.resolve(process.env.REVIEW_OUTPUT):path.join(root,'output/switchpath-review-20261030');
 await mkdir(out,{recursive:true});
 const results=[];
 for(const [name,type] of [['Chromium',chromium],['WebKit',webkit]]){

@@ -1,11 +1,16 @@
 # Preference ranking and review queue
 
-Ringcount: James found it “pretty easy and boring.” It is a replacement candidate, still available. No numerical rating or comparative rank was invented. Queue position below is not a fun ranking.
+Current preference order, based on James's playtests:
+
+1. **Switchpath — keep.** “yes, i like it”; would play again. Requests closer number spacing and consideration of 5×5.
+2. **Ringcount — replacement candidate.** “pretty easy and boring.” Still available.
+
+This provisional order covers only these two played games. No numerical enjoyment scores were supplied. The table below is the review queue.
 
 | Review order | Game | Creator | Status | James rating |
 |---:|---|---|---|---|
 | 1 | Ringcount | ChatGPT | Replacement candidate: easy, boring | Qualitative feedback |
-| 2 | Switchpath | ChatGPT | Revised; ready for James | Pending playtest |
+| 2 | Switchpath | ChatGPT | Keep; spacing follow-up | Likes it; play again: yes |
 | 3 | Counterpart | ChatGPT | Not yet reviewed individually | — |
 | 4 | Shortlist | ChatGPT | Not yet reviewed individually | — |
 | 5 | Second Sense | ChatGPT | Not yet reviewed individually | — |
@@ -40,6 +45,6 @@ Ringcount: James found it “pretty easy and boring.” It is a replacement cand
 
 Ringcount reviewer predictions before improvements: Kimi fun **4/5**, Opus **2.5/5**, Gemini **4/5**. These are not James’s ratings. See [full comparison and decisions](ringcount/ADJUDICATION.md).
 
-Switchpath reviewer fun predictions: Kimi **2/5**, Gemini **2.5/5**, Opus **3/5**. Opus saw the updated source; Kimi/Gemini saw the baseline. No player preference is inferred. [Review and gameplay-depth audit](switchpath/ADJUDICATION.md).
+Switchpath reviewer fun predictions: Kimi **2/5**, Gemini **2.5/5**, Opus **3/5**. Opus saw the updated source; Kimi/Gemini saw the baseline. James subsequently liked Switchpath and would play again; that direct feedback takes priority. [Review and gameplay-depth audit](switchpath/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

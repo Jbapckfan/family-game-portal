@@ -26,3 +26,7 @@ Physical iPhone ergonomics, capacitive jitter, haptics and long sessions remain 
 ## Blue side-guide follow-up
 
 James asked for the side explainer to match the blue drag state. Its card, heading and inserted-letter example now turn blue while dragging and return to idle on release. A real browser verified both colors and zero attempts throughout a cancelled drag; the active frame was visually inspected. This CSS-only change was synchronized into the iOS source bundle and structurally validated; the earlier full runtime checks above remain the prior checkpoint, not a new test run. New web build `bd3b3351d98e90e9`. [Verification](drag-evidence/blue-guide-verification.json).
+
+### Selected-state example refinement
+
+James clarified that the illustration itself should show selection/dragging, then approved it: “good, that's better.” PR is now a lifted blue joined tile with a pointer cue, and its insertion in SPRING has the same light-blue highlight as a live preview. This selected-state example stays visible before and during gameplay dragging. The card keeps its calm background. Focused browser checks confirmed the illustration and zero attempts during a cancelled drag; the iOS source bundle was synchronized and structurally validated. Build `3089171fd45188be`. [Verification](drag-evidence/selected-guide-verification.json).

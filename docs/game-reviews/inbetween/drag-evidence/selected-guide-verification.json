@@ -1,0 +1,29 @@
+{
+  "idle": {
+    "dragging": false,
+    "tile": "linear-gradient(145deg, rgb(76, 126, 229), rgb(33, 85, 178) 72%)",
+    "ink": "rgb(255, 255, 255)",
+    "insert": "rgb(212, 231, 255)",
+    "card": "rgb(227, 240, 237)",
+    "cursor": true,
+    "attempts": "0"
+  },
+  "dragging": {
+    "dragging": true,
+    "tile": "linear-gradient(145deg, rgb(76, 126, 229), rgb(33, 85, 178) 72%)",
+    "ink": "rgb(255, 255, 255)",
+    "insert": "rgb(212, 231, 255)",
+    "card": "rgb(227, 240, 237)",
+    "cursor": true,
+    "attempts": "0"
+  },
+  "pass": true,
+  "date": "2026-10-30",
+  "scope": "Static selected/dragged example state shown before and during real dragging; CSS/illustration-only update. Focused browser and resource parity/structural checks passed. No full suite or native compile rerun.",
+  "jamesApproval": "good, that's better",
+  "webBuildId": "3089171fd45188be",
+  "sourceSHA256": {
+    "games/inbetween/index.html": "d68c06cc7800c9d33497c1b7f41404f4b3bc12ea2c6163c4290eb89a26755895",
+    "games/inbetween/styles.css": "e729617eeb90875668dca7f32e52a2d2348e3cbc5610bfc1529c1bc1b99fdefd"
+  }
+}

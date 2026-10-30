@@ -22,3 +22,7 @@ Verification on the final runtime:
 Kimi, Gemini and Opus reviewed the scoped source; Kimi/Gemini also received gameplay screenshots. They did not execute the game. Concrete review findings were reproduced and corrected, with final automated/browser checks afterward. See [DRAG-ADJUDICATION.md](DRAG-ADJUDICATION.md) and [drag-evidence/summary.json](drag-evidence/summary.json).
 
 Physical iPhone ergonomics, capacitive jitter, haptics and long sessions remain unverified. The existing literal simultaneous-terminal-write limitation remains documented. No paid API, dependency installation, social posting or public deployment occurred.
+
+## Blue side-guide follow-up
+
+James asked for the side explainer to match the blue drag state. Its card, heading and inserted-letter example now turn blue while dragging and return to idle on release. A real browser verified both colors and zero attempts throughout a cancelled drag; the active frame was visually inspected. This CSS-only change was synchronized into the iOS source bundle and structurally validated; the earlier full runtime checks above remain the prior checkpoint, not a new test run. New web build `bd3b3351d98e90e9`. [Verification](drag-evidence/blue-guide-verification.json).

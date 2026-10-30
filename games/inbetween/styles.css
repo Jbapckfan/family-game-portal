@@ -175,3 +175,10 @@ body.inbetween{--purple:#315dc2;--lavender:#e7eefc;--lavender-dark:#c6d6f3;--acc
 .pair-dragging .inbetween .preview-panel{opacity:.28;transition:opacity .12s}.pair-dragging.inbetween .preview-panel{opacity:.28;transition:opacity .12s}
 
 .inbetween .fit-burst{inset:0 auto 0 var(--burst-x,50%);width:0}
+
+/* The guide mirrors the same blue preview state as the live insertion. */
+.inbetween .rule-card{transition:background .18s,border-color .18s,box-shadow .18s}
+.inbetween.pair-dragging .rule-card{background:#eaf2ff;border-color:#72a4ed;box-shadow:0 0 0 3px #4e97f21c,0 10px 30px #315dc21a}
+.inbetween.pair-dragging .rule-card h2,.inbetween.pair-dragging .rule-card em,.inbetween.pair-dragging .rule-kicker,.inbetween.pair-dragging .rule-kicker>span{color:#244994}
+.inbetween.pair-dragging .example-pair,.inbetween.pair-dragging .real-example .inserted{background:#315dc2;color:white;box-shadow:inset 0 -2px 0 #244994}
+.inbetween.pair-dragging .rule-card ol,.inbetween.pair-dragging .perfect-note{border-color:#b4ccef}

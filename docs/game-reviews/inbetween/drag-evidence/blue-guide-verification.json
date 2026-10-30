@@ -1,0 +1,32 @@
+{
+  "idle": {
+    "dragging": false,
+    "card": "rgb(227, 240, 237)",
+    "pair": "rgb(220, 236, 245)",
+    "insert": "rgb(200, 232, 228)",
+    "ink": "rgb(0, 107, 115)",
+    "attempts": "0"
+  },
+  "dragging": {
+    "dragging": true,
+    "card": "rgb(234, 242, 255)",
+    "pair": "rgb(49, 93, 194)",
+    "insert": "rgb(49, 93, 194)",
+    "ink": "rgb(255, 255, 255)",
+    "attempts": "0"
+  },
+  "cancelled": {
+    "dragging": false,
+    "card": "rgb(227, 240, 237)",
+    "pair": "rgb(220, 236, 245)",
+    "insert": "rgb(200, 232, 228)",
+    "ink": "rgb(0, 107, 115)",
+    "attempts": "0"
+  },
+  "pass": true,
+  "date": "2026-10-30",
+  "scope": "CSS-only blue side-explainer state during active dragging; returns to idle after cancellation. No unit/full catalog/native compile rerun for this styling change. Source/iOS resource parity and structural validation passed.",
+  "baseRuntimeReview": "c3aef3d411a351c51518097ac1301e9436e03073",
+  "sourceCSSSHA256": "162442a4a2c7b1425f68b36428cce02a46bc1af4a48524af670c37f33c7e2fca",
+  "webBuildId": "bd3b3351d98e90e9"
+}

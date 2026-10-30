@@ -1,6 +1,6 @@
 # Shortlist — fourth individual review, October 30, 2026
 
-Shortlist is ready for James's playtest in the reused preview window. Find one secret among twelve words: choose two letters per scan, receive a presence count of zero, one or two, use at most three scans, then make one confirmed final pick. Manual pencil marks help record deductions; they are not evidence and do not change the answer-independent hint strategy.
+James answered “yes, next game” after this review: Shortlist is a keeper alongside Switchpath and Counterpart, without a supplied relative order or numeric rating. Find one secret among twelve words: choose two letters per scan, receive a presence count of zero, one or two, use at most three scans, then make one confirmed final pick. Manual pencil marks help record deductions; they are not evidence and do not change the answer-independent hint strategy.
 
 Words and letter controls are larger. Scan evidence now sits directly above the words, with jump controls to the scanner. Hints disclose their cost before use, terminal keyboard behavior is safe, and old assisted saves no longer invent original hint advice. Added factual, spoiler-free portrait/square sharing with download and copy fallbacks. Exact scan rules, scoring, banks, calendars and save identities remain intact. All 32 daily games and the nine-board bonus remain included.
 
@@ -20,6 +20,6 @@ The larger-type layout check caught malformed grid declarations introduced durin
 
 ## Continue
 
-Ask whether James would play Shortlist again; record his actual preference without inventing a numerical rating. Second Sense is next after his verdict. Switchpath and Counterpart are keepers; their relative order remains unknown. Ringcount stays available as a replacement candidate.
+James's replay approval is recorded in the ranking. Second Sense is now the active review. Switchpath and Counterpart are keepers; their relative order remains unknown. Ringcount stays available as a replacement candidate.
 
 Checkout: `/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months`; branch `codex/game-by-game-2026-10-29`. Final stage: `dist/shortlist-review-20261030-final/web`, build ID `32beb1a99cc574b2` (310 files). Use the existing `scripts/review-preview.mjs` PTY with `game <slug>`, `reload` and optional `sample <image>`; one window, at most two task tabs. Preserve the saved readable-profile storage. See [workflow](../WORKFLOW.md).

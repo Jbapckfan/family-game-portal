@@ -1,0 +1,102 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Readable 16px+ definitions, 44px+ targets, no clipping/overflow and reachable focused input at 320–1440 widths",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Scored hint confirmation/cancel preserves draft; approval records one hint, announces assistance and exposes hint in accessible clue name",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reload restores unsent word/selection and persistent first-letter advice without a second hint",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Malformed spelling is free; a wrong check costs one, editing clears both errors, normalized correct input locks clues and returns visible focus",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Real second-tab save, with storage-event delivery delayed, adopted at write boundary preserves the rejected correct draft; explicit retry commits exactly once",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Five actual correct checks give a perfect win with five explanations; closing result focuses its reachable result button",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Perfect result exports actual portrait/square PNGs with factual score/date and no answer words in caption",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Reopened share freezes played date after midnight; mocked cancel retains focus and denied clipboard selects manual caption",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed Practice is explicit, spoiler-free and cannot replace the perfect Daily record",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Readable 16px+ definitions, 44px+ targets, no clipping/overflow and reachable focused input at 320–1440 widths",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Scored hint confirmation/cancel preserves draft; approval records one hint, announces assistance and exposes hint in accessible clue name",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reload restores unsent word/selection and persistent first-letter advice without a second hint",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Malformed spelling is free; a wrong check costs one, editing clears both errors, normalized correct input locks clues and returns visible focus",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Real second-tab save, with storage-event delivery delayed, adopted at write boundary preserves the rejected correct draft; explicit retry commits exactly once",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Five actual correct checks give a perfect win with five explanations; closing result focuses its reachable result button",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Perfect result exports actual portrait/square PNGs with factual score/date and no answer words in caption",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Reopened share freezes played date after midnight; mocked cancel retains focus and denied clipboard selects manual caption",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed Practice is explicit, spoiler-free and cannot replace the perfect Daily record",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

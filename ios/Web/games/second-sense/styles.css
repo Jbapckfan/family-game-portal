@@ -107,3 +107,38 @@ body.second-sense{--accent:#855194;--accent-dark:#673b75;--wash:#efe4f4;--soft:#
 
 /* Native GameScreen already displays the developer credit above its WebView. */
 .native-app .game-credit{display:none}
+
+/* Individual review: readable meanings, clear noun/verb cues and reachable typing. */
+body.second-sense{--accent:#2f59b6;--accent-dark:#24498d;--wash:#e7efff;--soft:#c7d8f5}
+.second-sense .sense-board{background:linear-gradient(90deg,#edf3ff 0 49.5%,#cfdee6 49.5% 50.5%,#edf7f6 50.5%);border-color:#cbd9e4;box-shadow:0 3px 0 #dce4eb}
+.second-sense .sense-column h2{font:700 18px var(--sans);color:#24498d}
+.second-sense .sense-column h2>span{background:#d8e6ff;color:#24498d}
+.second-sense .sense-column+ .sense-column h2{color:#006b73}
+.second-sense .sense-column+ .sense-column h2>span{background:#d3eeec;color:#006b73}
+.second-sense .sense-card{font-size:16px;line-height:1.55;min-height:64px;padding:12px;border-color:#c4d5ec;box-shadow:0 3px 0 #d9e3f1;overflow-wrap:anywhere}
+.second-sense .sense-column+ .sense-column .sense-card{border-color:#bfdad7;box-shadow:0 3px 0 #d7e7e3}
+.second-sense .sense-card.selected{background:#2f59b6;border-color:#2f59b6;box-shadow:0 3px 0 #24498d}
+.second-sense .sense-column+ .sense-column .sense-card.selected{background:#006b73;border-color:#006b73;box-shadow:0 3px 0 #00525a;outline-color:#006b73}
+.second-sense .sense-card.used{background:#e4eddf;border-color:#bdcdb5;color:#365a41;box-shadow:none}
+.second-sense .answer-panel{background:#eef3fa;border-color:#c7d7e8;padding:16px;scroll-margin-block:16px}
+.second-sense .chosen-senses p{font-size:16px;line-height:1.6;color:#24498d;overflow-wrap:anywhere}
+.second-sense .chosen-senses p:last-child{color:#006b73}
+.second-sense #answer-input{border-color:#a8bfd8;font-size:18px;min-height:48px;min-width:0}
+.second-sense #answer-input::placeholder{font-size:14px}
+.second-sense #sense-check,.second-sense .text-button{font-size:14px;min-height:44px}
+.second-sense .text-button{padding:8px 4px}
+.second-sense .back-to-clues{display:flex;margin:12px auto 0;min-height:44px;font-size:14px}
+.second-sense .section-heading{flex-wrap:wrap}
+.second-sense .sense-explanation,.second-sense .discovered-word>div p{font-size:15px;line-height:1.65}
+.second-sense .board-bottom{flex-wrap:wrap;line-height:1.7;font-size:12px}
+.second-sense .confirm-copy{font-size:16px;line-height:1.65}
+.second-sense .share-formats{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.second-sense .share-formats button{min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 14px}
+.second-sense .share-formats button[aria-pressed=true]{background:var(--accent);color:white}
+.second-sense #result-card{display:block;width:min(100%,360px);height:auto;margin:16px auto;border-radius:12px}
+.second-sense .share-caption summary{min-height:44px;cursor:pointer;padding:12px 0;font-size:14px}
+.second-sense .share-actions{flex-wrap:wrap}
+.second-sense .share-fallback{min-height:150px;font-size:14px}
+@media(max-width:600px){.second-sense .hero{padding:14px 0 18px}.second-sense .eyebrow,.second-sense .hero>p:last-child{display:none}.second-sense .hero h1{font-size:28px}.second-sense .sense-board{padding:10px 8px;gap:10px}.second-sense .sense-column h2{font-size:16px}.second-sense .sense-column h2>span{width:24px;height:24px;font-size:14px}.second-sense .sense-card{font-size:16px;padding:11px 8px;min-height:64px}.second-sense .answer-panel{padding:13px}.second-sense #answer-form{display:flex;flex-wrap:wrap}.second-sense #answer-input{flex:1 1 150px;width:100%}.second-sense #sense-check{flex:1 1 110px;min-height:48px}.second-sense .chosen-senses{gap:7px}.second-sense .chosen-senses p{font-size:16px}}
+
+.second-sense .sense-example{background:#f7fbff;border-color:#c7d7e8}

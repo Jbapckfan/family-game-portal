@@ -1,0 +1,2564 @@
+{
+  "boards": 210,
+  "distinctCombinations": 210,
+  "sourcePairs": 75,
+  "pairAppearances": 1050,
+  "appearancesPerPair": [
+    14
+  ],
+  "meaningPool": [
+    {
+      "word": "FENCE",
+      "noun": "Barrier enclosing a yard",
+      "verb": "Buy or sell stolen goods",
+      "explanation": "A fence can mark a property boundary. To fence goods is to deal in stolen property."
+    },
+    {
+      "word": "BARK",
+      "noun": "A tree’s protective outer layer",
+      "verb": "Make a sharp canine sound",
+      "explanation": "Bark covers the outside of a tree. To bark is to make the characteristic sharp sound of a dog."
+    },
+    {
+      "word": "WIND",
+      "noun": "Air moving through the atmosphere",
+      "verb": "Wrap thread around a reel",
+      "explanation": "Wind is moving air. To wind thread is to wrap it around something. The pronunciation changes: the noun rhymes with pinned, the verb with find."
+    },
+    {
+      "word": "TENDER",
+      "noun": "Small boat that serves a larger vessel",
+      "verb": "Formally offer a resignation or payment",
+      "explanation": "A tender carries people or supplies to a larger vessel. To tender something is to offer it formally for acceptance."
+    },
+    {
+      "word": "COURT",
+      "noun": "Room where a judge hears cases",
+      "verb": "Try to win someone’s affection",
+      "explanation": "A court is a place where legal cases are heard. To court someone is to seek their affection."
+    },
+    {
+      "word": "BOLT",
+      "noun": "Metal fastener used with a nut",
+      "verb": "Run away suddenly",
+      "explanation": "A bolt fastens objects together with a nut. To bolt is to dash away suddenly."
+    },
+    {
+      "word": "SEAL",
+      "noun": "Flippered marine mammal",
+      "verb": "Close so air cannot get through",
+      "explanation": "A seal is a marine mammal. To seal an opening is to close it tightly against passage."
+    },
+    {
+      "word": "SPRING",
+      "noun": "Coiled metal part that stores force",
+      "verb": "Leap suddenly upward",
+      "explanation": "A spring is an elastic coil. To spring is to jump or leap suddenly."
+    },
+    {
+      "word": "MATCH",
+      "noun": "Small stick with a flame-making tip",
+      "verb": "Correspond exactly",
+      "explanation": "A match is a small fire-lighting stick. To match is to agree or correspond with something."
+    },
+    {
+      "word": "DUCK",
+      "noun": "Waterbird with a broad, flat bill",
+      "verb": "Lower your head quickly to avoid something",
+      "explanation": "A duck is a broad-billed waterbird. To duck is to lower yourself quickly out of the way."
+    },
+    {
+      "word": "WATCH",
+      "noun": "Wrist-worn timepiece",
+      "verb": "Observe attentively",
+      "explanation": "A watch tells the time. To watch is to look at or observe something attentively."
+    },
+    {
+      "word": "ROCK",
+      "noun": "Solid natural mass of mineral material",
+      "verb": "Sway gently back and forth",
+      "explanation": "A rock is a solid piece of natural mineral matter. To rock is to move back and forth."
+    },
+    {
+      "word": "RING",
+      "noun": "Band worn on a finger",
+      "verb": "Make a bell sound",
+      "explanation": "A ring can be worn as jewelry. To ring is to produce the clear sound associated with a bell."
+    },
+    {
+      "word": "BEAR",
+      "noun": "Large, shaggy omnivorous mammal",
+      "verb": "Endure a heavy burden or hardship",
+      "explanation": "A bear is a large mammal. To bear something is to carry or endure its weight or difficulty."
+    },
+    {
+      "word": "BAT",
+      "noun": "Flying mammal active mostly at night",
+      "verb": "Strike a ball with a club",
+      "explanation": "A bat is a flying mammal. To bat is to strike a ball with a sporting implement."
+    },
+    {
+      "word": "CLUB",
+      "noun": "Organization whose members share an interest",
+      "verb": "Hit with a heavy stick",
+      "explanation": "A club is an association of people. To club something is to hit it with a heavy stick."
+    },
+    {
+      "word": "COACH",
+      "noun": "Long-distance passenger bus",
+      "verb": "Train an athlete",
+      "explanation": "A coach is a passenger vehicle. To coach an athlete is to train and guide them."
+    },
+    {
+      "word": "CRANE",
+      "noun": "Long-legged wading bird with a long neck",
+      "verb": "Stretch your neck for a better view",
+      "explanation": "A crane is a tall wading bird. To crane your neck is to stretch it to see better."
+    },
+    {
+      "word": "CROW",
+      "noun": "Glossy black bird with a harsh call",
+      "verb": "Boast triumphantly",
+      "explanation": "A crow is a black bird. To crow over a success is to boast about it triumphantly."
+    },
+    {
+      "word": "FLY",
+      "noun": "Small two-winged insect",
+      "verb": "Travel through the air",
+      "explanation": "A fly is an insect. To fly is to move through the air."
+    },
+    {
+      "word": "FOX",
+      "noun": "Bushy-tailed wild canine",
+      "verb": "Puzzle or outwit someone",
+      "explanation": "A fox is a wild member of the dog family. To fox someone is to baffle or outwit them."
+    },
+    {
+      "word": "HAWK",
+      "noun": "Hook-beaked bird of prey",
+      "verb": "Offer goods for sale with shouted calls",
+      "explanation": "A hawk is a bird of prey. To hawk goods is to offer them for sale, often by calling out."
+    },
+    {
+      "word": "PERCH",
+      "noun": "Spiny-finned freshwater fish, often striped",
+      "verb": "Settle on a narrow, raised support",
+      "explanation": "A perch is a freshwater fish. To perch is to sit or settle on a raised support."
+    },
+    {
+      "word": "QUAIL",
+      "noun": "Small ground-dwelling game bird",
+      "verb": "Shrink back in fear",
+      "explanation": "A quail is a small game bird. To quail is to recoil or lose courage in fear."
+    },
+    {
+      "word": "SWALLOW",
+      "noun": "Fork-tailed bird that catches insects in flight",
+      "verb": "Make food pass down your throat",
+      "explanation": "A swallow is an insect-eating bird. To swallow is to make something pass down the throat."
+    },
+    {
+      "word": "CARP",
+      "noun": "Freshwater fish often raised in ornamental ponds",
+      "verb": "Complain persistently about small faults",
+      "explanation": "A carp is a freshwater fish. To carp is to complain or find fault repeatedly."
+    },
+    {
+      "word": "FLOUNDER",
+      "noun": "Flat bony sea fish with both eyes on one side",
+      "verb": "Struggle clumsily without making progress",
+      "explanation": "A flounder is a flatfish. To flounder is to struggle awkwardly or ineffectually."
+    },
+    {
+      "word": "SKATE",
+      "noun": "Broad, flat sea fish related to rays",
+      "verb": "Glide over ice on bladed footwear",
+      "explanation": "A skate is a fish related to rays. To skate is to glide on ice using blades under your feet."
+    },
+    {
+      "word": "SMELT",
+      "noun": "Small silvery fish often cooked whole",
+      "verb": "Extract metal from ore using heat",
+      "explanation": "A smelt is a small fish. To smelt ore is to process it with heat to obtain metal."
+    },
+    {
+      "word": "CAN",
+      "noun": "Cylindrical metal food container",
+      "verb": "Dismiss an employee, informally",
+      "explanation": "A can is a metal container. To can someone is an informal way to say dismiss them from a job."
+    },
+    {
+      "word": "PERMIT",
+      "noun": "Official document granting permission",
+      "verb": "Allow an action",
+      "explanation": "A permit is a document authorizing something. To permit an action is to allow it. The stressed syllable changes."
+    },
+    {
+      "word": "OBJECT",
+      "noun": "Physical thing you can touch",
+      "verb": "Express disagreement",
+      "explanation": "An object is a tangible thing. To object is to raise a disagreement or protest. The stressed syllable changes."
+    },
+    {
+      "word": "RECORD",
+      "noun": "Flat vinyl disc played on a turntable",
+      "verb": "Set down information for future reference",
+      "explanation": "A record can be a vinyl music disc. To record information is to preserve it for later. The stressed syllable changes."
+    },
+    {
+      "word": "CONDUCT",
+      "noun": "A person’s behavior",
+      "verb": "Direct an orchestra",
+      "explanation": "Conduct is the way someone behaves. To conduct an orchestra is to direct its performance. The stressed syllable changes."
+    },
+    {
+      "word": "PRESENT",
+      "noun": "Gift given to someone",
+      "verb": "Introduce a speaker to an audience",
+      "explanation": "A present is a gift. To present a speaker is to introduce them. The stressed syllable changes."
+    },
+    {
+      "word": "PROJECT",
+      "noun": "Planned piece of work",
+      "verb": "Cast an image onto a screen",
+      "explanation": "A project is a planned undertaking. To project an image is to cast it onto a surface. The stressed syllable changes."
+    },
+    {
+      "word": "SUBJECT",
+      "noun": "Topic of a discussion",
+      "verb": "Make someone undergo an experience",
+      "explanation": "A subject is what a discussion concerns. To subject someone to something is to make them undergo it. The stressed syllable changes."
+    },
+    {
+      "word": "DESERT",
+      "noun": "Vast, extremely dry landscape",
+      "verb": "Abandon someone who needs you",
+      "explanation": "A desert is a very dry region. To desert someone is to abandon them. The stressed syllable changes."
+    },
+    {
+      "word": "REFUSE",
+      "noun": "Garbage awaiting disposal",
+      "verb": "Decline to accept an offer",
+      "explanation": "Refuse is waste material. To refuse something is to decline it. The pronunciation and stressed syllable change."
+    },
+    {
+      "word": "PRODUCE",
+      "noun": "Fresh fruit and vegetables at a market",
+      "verb": "Bring something into existence",
+      "explanation": "Produce means fresh fruits and vegetables. To produce is to create or bring something forth. The stressed syllable changes."
+    },
+    {
+      "word": "CONTENT",
+      "noun": "Material in a book or website",
+      "verb": "Make someone satisfied",
+      "explanation": "Content is the material a publication contains. To content someone is to satisfy them. The stressed syllable changes."
+    },
+    {
+      "word": "CONTEST",
+      "noun": "Competition for a prize",
+      "verb": "Challenge the truth or legality of something",
+      "explanation": "A contest is a competition. To contest a claim is to challenge it. The stressed syllable changes."
+    },
+    {
+      "word": "CONTRACT",
+      "noun": "Legally binding agreement",
+      "verb": "Become smaller or tighter",
+      "explanation": "A contract is a binding agreement. To contract is to shrink or tighten. The stressed syllable changes."
+    },
+    {
+      "word": "CONVERT",
+      "noun": "Person who has adopted a new faith",
+      "verb": "Change from one format to another",
+      "explanation": "A convert is someone who has adopted a different faith or belief. To convert is to change form or format. The stressed syllable changes."
+    },
+    {
+      "word": "BUFFET",
+      "noun": "Meal laid out for guests to serve themselves",
+      "verb": "Strike repeatedly, as waves do",
+      "explanation": "A buffet is a self-service meal. To buffet something is to strike it repeatedly. The pronunciation changes: the meal ends in an ay sound; the verb does not."
+    },
+    {
+      "word": "LEAD",
+      "noun": "Dense metal once common in water pipes",
+      "verb": "Guide someone along a route",
+      "explanation": "Lead is a dense metal. To lead is to guide. The pronunciation changes: the metal rhymes with red, the verb with seed."
+    },
+    {
+      "word": "SOW",
+      "noun": "Adult female pig",
+      "verb": "Scatter seeds for planting",
+      "explanation": "A sow is a female pig. To sow is to plant seeds. The pronunciation changes: the animal rhymes with cow, the verb with go."
+    },
+    {
+      "word": "TEAR",
+      "noun": "Drop produced by a crying eye",
+      "verb": "Pull something apart by ripping",
+      "explanation": "A tear is a drop from the eye. To tear is to rip. The pronunciation changes: the noun rhymes with near, the verb with care."
+    },
+    {
+      "word": "ROW",
+      "noun": "Line of seats next to one another",
+      "verb": "Propel a boat with oars",
+      "explanation": "A row is a line of things placed beside one another. To row is to move a boat using oars."
+    },
+    {
+      "word": "BOW",
+      "noun": "Ribbon tied into two loops",
+      "verb": "Bend at the waist as a greeting",
+      "explanation": "A bow is a looped ribbon knot. To bow is to bend in greeting or respect. The pronunciation changes: the ribbon rhymes with go, the verb with cow."
+    },
+    {
+      "word": "PAWN",
+      "noun": "Chess piece that usually advances one square",
+      "verb": "Leave an item as security for a loan",
+      "explanation": "A pawn is a chess piece. To pawn an item is to leave it as collateral for a loan."
+    },
+    {
+      "word": "CHECK",
+      "noun": "Written order directing a bank to pay money",
+      "verb": "Examine for accuracy",
+      "explanation": "A check is a written payment instruction to a bank. To check something is to examine it for accuracy."
+    },
+    {
+      "word": "DRAFT",
+      "noun": "Current of cool air inside a room",
+      "verb": "Select someone for compulsory military service",
+      "explanation": "A draft is a current of air. To draft someone is to select them for compulsory service."
+    },
+    {
+      "word": "PITCH",
+      "noun": "Dark, sticky substance used for waterproofing",
+      "verb": "Throw a baseball toward a batter",
+      "explanation": "Pitch is a dark, sticky material. To pitch a baseball is to throw it toward the batter."
+    },
+    {
+      "word": "PLOT",
+      "noun": "Small piece of land",
+      "verb": "Plan something secretly",
+      "explanation": "A plot is a piece of land. To plot is to make a secret plan."
+    },
+    {
+      "word": "PORT",
+      "noun": "Fortified wine often served after dinner",
+      "verb": "Adapt software to a different operating system",
+      "explanation": "Port is a fortified wine. To port software is to adapt it so it runs on a different system."
+    },
+    {
+      "word": "FILE",
+      "noun": "Rough metal tool used to smooth a surface",
+      "verb": "Submit paperwork officially",
+      "explanation": "A file is an abrasive hand tool. To file paperwork is to submit it to the appropriate office or system."
+    },
+    {
+      "word": "BOARD",
+      "noun": "Long, flat piece of lumber",
+      "verb": "Get onto a bus, ship, or plane",
+      "explanation": "A board is a flat piece of wood. To board a vehicle is to get on it."
+    },
+    {
+      "word": "DOCK",
+      "noun": "Landing place for ships",
+      "verb": "Reduce someone’s pay as a penalty",
+      "explanation": "A dock is a place where a ship lands. To dock pay is to subtract an amount from it."
+    },
+    {
+      "word": "QUARRY",
+      "noun": "Animal being pursued by a hunter",
+      "verb": "Extract building stone from an excavation",
+      "explanation": "A quarry is an animal being hunted. To quarry is to extract stone from the ground. These senses have different historical origins."
+    },
+    {
+      "word": "MINE",
+      "noun": "Explosive device hidden in the ground",
+      "verb": "Extract ore from the earth",
+      "explanation": "A mine can be an explosive device. To mine is to extract useful material from the earth."
+    },
+    {
+      "word": "PLANT",
+      "noun": "Living thing with roots, stems, and leaves",
+      "verb": "Place evidence secretly to mislead",
+      "explanation": "A plant is a rooted living organism. To plant evidence is to put it somewhere secretly to mislead others."
+    },
+    {
+      "word": "ROOT",
+      "noun": "Underground part that takes in water",
+      "verb": "Cheer for a team or person",
+      "explanation": "A root takes in water beneath the ground. To root for someone is to support or cheer for them."
+    },
+    {
+      "word": "STEM",
+      "noun": "Main stalk of a flower",
+      "verb": "Stop or check the flow of something",
+      "explanation": "A stem is a plant’s stalk. To stem a flow is to stop or restrain it."
+    },
+    {
+      "word": "STOCK",
+      "noun": "Liquid base made by simmering bones or vegetables",
+      "verb": "Keep a supply of goods for sale",
+      "explanation": "Stock is a flavorful liquid used in cooking. To stock goods is to keep a supply available."
+    },
+    {
+      "word": "TANK",
+      "noun": "Armored military vehicle with continuous tracks",
+      "verb": "Fail spectacularly, informally",
+      "explanation": "A tank is an armored tracked vehicle. To tank is an informal way to say fail badly."
+    },
+    {
+      "word": "TRAIN",
+      "noun": "Connected railway cars pulled by an engine",
+      "verb": "Teach a skill through repeated practice",
+      "explanation": "A train is a series of railway cars. To train someone is to develop their skill through instruction and practice."
+    },
+    {
+      "word": "BUS",
+      "noun": "Large road vehicle carrying many passengers",
+      "verb": "Clear dirty dishes from restaurant tables",
+      "explanation": "A bus carries passengers by road. To bus tables is to clear away used dishes."
+    },
+    {
+      "word": "FIELD",
+      "noun": "Open stretch of land used for crops or games",
+      "verb": "Handle a question without preparation",
+      "explanation": "A field is an open area of land. To field a question is to receive and handle it."
+    },
+    {
+      "word": "TABLE",
+      "noun": "Furniture with a flat top and legs",
+      "verb": "Postpone consideration of a proposal, in U.S. usage",
+      "explanation": "A table is a piece of furniture. In U.S. usage, to table a proposal is to put off considering it; British usage can differ."
+    },
+    {
+      "word": "PRUNE",
+      "noun": "Plum preserved by drying",
+      "verb": "Trim unwanted branches from a plant",
+      "explanation": "A prune is a dried plum. To prune is to cut back branches or growth."
+    },
+    {
+      "word": "DATE",
+      "noun": "Sweet fruit of a palm",
+      "verb": "Go out romantically with someone",
+      "explanation": "A date is a palm fruit. To date someone is to go out with them romantically."
+    },
+    {
+      "word": "SQUASH",
+      "noun": "Vegetable such as a zucchini or pumpkin",
+      "verb": "Crush by pressing firmly",
+      "explanation": "A squash is a vegetable in the gourd family. To squash something is to crush it under pressure."
+    },
+    {
+      "word": "SEASON",
+      "noun": "One of a year’s recurring weather periods",
+      "verb": "Add salt, herbs, or spices to food",
+      "explanation": "A season is a recurring division of the year. To season food is to add flavoring."
+    },
+    {
+      "word": "JAM",
+      "noun": "Fruit preserve spread on toast",
+      "verb": "Block a mechanism so it cannot move",
+      "explanation": "Jam is a fruit preserve. To jam a mechanism is to block or immobilize its movement."
+    }
+  ],
+  "boardWords": [
+    {
+      "id": "second-sense-001",
+      "words": [
+        "FENCE",
+        "BARK",
+        "WIND",
+        "TENDER",
+        "COURT"
+      ]
+    },
+    {
+      "id": "second-sense-002",
+      "words": [
+        "BOLT",
+        "SEAL",
+        "SPRING",
+        "MATCH",
+        "DUCK"
+      ]
+    },
+    {
+      "id": "second-sense-003",
+      "words": [
+        "WATCH",
+        "ROCK",
+        "RING",
+        "BEAR",
+        "BAT"
+      ]
+    },
+    {
+      "id": "second-sense-004",
+      "words": [
+        "CLUB",
+        "COACH",
+        "CRANE",
+        "CROW",
+        "FLY"
+      ]
+    },
+    {
+      "id": "second-sense-005",
+      "words": [
+        "FOX",
+        "HAWK",
+        "PERCH",
+        "QUAIL",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-006",
+      "words": [
+        "CARP",
+        "FLOUNDER",
+        "SKATE",
+        "SMELT",
+        "CAN"
+      ]
+    },
+    {
+      "id": "second-sense-007",
+      "words": [
+        "PERMIT",
+        "OBJECT",
+        "RECORD",
+        "CONDUCT",
+        "PRESENT"
+      ]
+    },
+    {
+      "id": "second-sense-008",
+      "words": [
+        "PROJECT",
+        "SUBJECT",
+        "DESERT",
+        "REFUSE",
+        "PRODUCE"
+      ]
+    },
+    {
+      "id": "second-sense-009",
+      "words": [
+        "CONTENT",
+        "CONTEST",
+        "CONTRACT",
+        "CONVERT",
+        "BUFFET"
+      ]
+    },
+    {
+      "id": "second-sense-010",
+      "words": [
+        "LEAD",
+        "SOW",
+        "TEAR",
+        "ROW",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-011",
+      "words": [
+        "PAWN",
+        "CHECK",
+        "DRAFT",
+        "PITCH",
+        "PLOT"
+      ]
+    },
+    {
+      "id": "second-sense-012",
+      "words": [
+        "PORT",
+        "FILE",
+        "BOARD",
+        "DOCK",
+        "QUARRY"
+      ]
+    },
+    {
+      "id": "second-sense-013",
+      "words": [
+        "MINE",
+        "PLANT",
+        "ROOT",
+        "STEM",
+        "STOCK"
+      ]
+    },
+    {
+      "id": "second-sense-014",
+      "words": [
+        "TANK",
+        "TRAIN",
+        "BUS",
+        "FIELD",
+        "TABLE"
+      ]
+    },
+    {
+      "id": "second-sense-015",
+      "words": [
+        "PRUNE",
+        "DATE",
+        "SQUASH",
+        "SEASON",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-016",
+      "words": [
+        "FENCE",
+        "SEAL",
+        "RING",
+        "CROW",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-017",
+      "words": [
+        "BARK",
+        "SPRING",
+        "BEAR",
+        "FLY",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-018",
+      "words": [
+        "WIND",
+        "MATCH",
+        "BAT",
+        "CLUB",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-019",
+      "words": [
+        "TENDER",
+        "DUCK",
+        "WATCH",
+        "COACH",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-020",
+      "words": [
+        "COURT",
+        "BOLT",
+        "ROCK",
+        "CRANE",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-021",
+      "words": [
+        "CARP",
+        "OBJECT",
+        "DESERT",
+        "CONVERT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-022",
+      "words": [
+        "FLOUNDER",
+        "RECORD",
+        "REFUSE",
+        "BUFFET",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-023",
+      "words": [
+        "SKATE",
+        "CONDUCT",
+        "PRODUCE",
+        "CONTENT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-024",
+      "words": [
+        "SMELT",
+        "PRESENT",
+        "PROJECT",
+        "CONTEST",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-025",
+      "words": [
+        "CAN",
+        "PERMIT",
+        "SUBJECT",
+        "CONTRACT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-026",
+      "words": [
+        "PAWN",
+        "FILE",
+        "ROOT",
+        "FIELD",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-027",
+      "words": [
+        "CHECK",
+        "BOARD",
+        "STEM",
+        "TABLE",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-028",
+      "words": [
+        "DRAFT",
+        "DOCK",
+        "STOCK",
+        "TANK",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-029",
+      "words": [
+        "PITCH",
+        "QUARRY",
+        "MINE",
+        "TRAIN",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-030",
+      "words": [
+        "PLOT",
+        "PORT",
+        "PLANT",
+        "BUS",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-031",
+      "words": [
+        "FENCE",
+        "SPRING",
+        "BAT",
+        "COACH",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-032",
+      "words": [
+        "BARK",
+        "MATCH",
+        "WATCH",
+        "CRANE",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-033",
+      "words": [
+        "WIND",
+        "DUCK",
+        "ROCK",
+        "CROW",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-034",
+      "words": [
+        "TENDER",
+        "BOLT",
+        "RING",
+        "FLY",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-035",
+      "words": [
+        "COURT",
+        "SEAL",
+        "BEAR",
+        "CLUB",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-036",
+      "words": [
+        "CARP",
+        "RECORD",
+        "PRODUCE",
+        "CONTEST",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-037",
+      "words": [
+        "FLOUNDER",
+        "CONDUCT",
+        "PROJECT",
+        "CONTRACT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-038",
+      "words": [
+        "SKATE",
+        "PRESENT",
+        "SUBJECT",
+        "CONVERT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-039",
+      "words": [
+        "SMELT",
+        "PERMIT",
+        "DESERT",
+        "BUFFET",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-040",
+      "words": [
+        "CAN",
+        "OBJECT",
+        "REFUSE",
+        "CONTENT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-041",
+      "words": [
+        "PAWN",
+        "BOARD",
+        "STOCK",
+        "TRAIN",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-042",
+      "words": [
+        "CHECK",
+        "DOCK",
+        "MINE",
+        "BUS",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-043",
+      "words": [
+        "DRAFT",
+        "QUARRY",
+        "PLANT",
+        "FIELD",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-044",
+      "words": [
+        "PITCH",
+        "PORT",
+        "ROOT",
+        "TABLE",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-045",
+      "words": [
+        "PLOT",
+        "FILE",
+        "STEM",
+        "TANK",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-046",
+      "words": [
+        "FENCE",
+        "MATCH",
+        "ROCK",
+        "FLY",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-047",
+      "words": [
+        "BARK",
+        "DUCK",
+        "RING",
+        "CLUB",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-048",
+      "words": [
+        "WIND",
+        "BOLT",
+        "BEAR",
+        "COACH",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-049",
+      "words": [
+        "TENDER",
+        "SEAL",
+        "BAT",
+        "CRANE",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-050",
+      "words": [
+        "COURT",
+        "SPRING",
+        "WATCH",
+        "CROW",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-051",
+      "words": [
+        "CARP",
+        "CONDUCT",
+        "SUBJECT",
+        "BUFFET",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-052",
+      "words": [
+        "FLOUNDER",
+        "PRESENT",
+        "DESERT",
+        "CONTENT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-053",
+      "words": [
+        "SKATE",
+        "PERMIT",
+        "REFUSE",
+        "CONTEST",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-054",
+      "words": [
+        "SMELT",
+        "OBJECT",
+        "PRODUCE",
+        "CONTRACT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-055",
+      "words": [
+        "CAN",
+        "RECORD",
+        "PROJECT",
+        "CONVERT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-056",
+      "words": [
+        "PAWN",
+        "DOCK",
+        "PLANT",
+        "TABLE",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-057",
+      "words": [
+        "CHECK",
+        "QUARRY",
+        "ROOT",
+        "TANK",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-058",
+      "words": [
+        "DRAFT",
+        "PORT",
+        "STEM",
+        "TRAIN",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-059",
+      "words": [
+        "PITCH",
+        "FILE",
+        "STOCK",
+        "BUS",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-060",
+      "words": [
+        "PLOT",
+        "BOARD",
+        "MINE",
+        "FIELD",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-061",
+      "words": [
+        "FENCE",
+        "DUCK",
+        "BEAR",
+        "CRANE",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-062",
+      "words": [
+        "BARK",
+        "BOLT",
+        "BAT",
+        "CROW",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-063",
+      "words": [
+        "WIND",
+        "SEAL",
+        "WATCH",
+        "FLY",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-064",
+      "words": [
+        "TENDER",
+        "SPRING",
+        "ROCK",
+        "CLUB",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-065",
+      "words": [
+        "COURT",
+        "MATCH",
+        "RING",
+        "COACH",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-066",
+      "words": [
+        "CARP",
+        "PRESENT",
+        "REFUSE",
+        "CONTRACT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-067",
+      "words": [
+        "FLOUNDER",
+        "PERMIT",
+        "PRODUCE",
+        "CONVERT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-068",
+      "words": [
+        "SKATE",
+        "OBJECT",
+        "PROJECT",
+        "BUFFET",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-069",
+      "words": [
+        "SMELT",
+        "RECORD",
+        "SUBJECT",
+        "CONTENT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-070",
+      "words": [
+        "CAN",
+        "CONDUCT",
+        "DESERT",
+        "CONTEST",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-071",
+      "words": [
+        "PAWN",
+        "QUARRY",
+        "STEM",
+        "BUS",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-072",
+      "words": [
+        "CHECK",
+        "PORT",
+        "STOCK",
+        "FIELD",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-073",
+      "words": [
+        "DRAFT",
+        "FILE",
+        "MINE",
+        "TABLE",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-074",
+      "words": [
+        "PITCH",
+        "BOARD",
+        "PLANT",
+        "TANK",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-075",
+      "words": [
+        "PLOT",
+        "DOCK",
+        "ROOT",
+        "TRAIN",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-076",
+      "words": [
+        "FENCE",
+        "BOLT",
+        "WATCH",
+        "CLUB",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-077",
+      "words": [
+        "BARK",
+        "SEAL",
+        "ROCK",
+        "COACH",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-078",
+      "words": [
+        "WIND",
+        "SPRING",
+        "RING",
+        "CRANE",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-079",
+      "words": [
+        "TENDER",
+        "MATCH",
+        "BEAR",
+        "CROW",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-080",
+      "words": [
+        "COURT",
+        "DUCK",
+        "BAT",
+        "FLY",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-081",
+      "words": [
+        "CARP",
+        "PERMIT",
+        "PROJECT",
+        "CONTENT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-082",
+      "words": [
+        "FLOUNDER",
+        "OBJECT",
+        "SUBJECT",
+        "CONTEST",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-083",
+      "words": [
+        "SKATE",
+        "RECORD",
+        "DESERT",
+        "CONTRACT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-084",
+      "words": [
+        "SMELT",
+        "CONDUCT",
+        "REFUSE",
+        "CONVERT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-085",
+      "words": [
+        "CAN",
+        "PRESENT",
+        "PRODUCE",
+        "BUFFET",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-086",
+      "words": [
+        "PAWN",
+        "PORT",
+        "MINE",
+        "TANK",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-087",
+      "words": [
+        "CHECK",
+        "FILE",
+        "PLANT",
+        "TRAIN",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-088",
+      "words": [
+        "DRAFT",
+        "BOARD",
+        "ROOT",
+        "BUS",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-089",
+      "words": [
+        "PITCH",
+        "DOCK",
+        "STEM",
+        "FIELD",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-090",
+      "words": [
+        "PLOT",
+        "QUARRY",
+        "STOCK",
+        "TABLE",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-091",
+      "words": [
+        "FENCE",
+        "SEAL",
+        "BAT",
+        "FLY",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-092",
+      "words": [
+        "BARK",
+        "SPRING",
+        "WATCH",
+        "CLUB",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-093",
+      "words": [
+        "WIND",
+        "MATCH",
+        "ROCK",
+        "COACH",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-094",
+      "words": [
+        "TENDER",
+        "DUCK",
+        "RING",
+        "CRANE",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-095",
+      "words": [
+        "COURT",
+        "BOLT",
+        "BEAR",
+        "CROW",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-096",
+      "words": [
+        "CARP",
+        "OBJECT",
+        "PRODUCE",
+        "BUFFET",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-097",
+      "words": [
+        "FLOUNDER",
+        "RECORD",
+        "PROJECT",
+        "CONTENT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-098",
+      "words": [
+        "SKATE",
+        "CONDUCT",
+        "SUBJECT",
+        "CONTEST",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-099",
+      "words": [
+        "SMELT",
+        "PRESENT",
+        "DESERT",
+        "CONTRACT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-100",
+      "words": [
+        "CAN",
+        "PERMIT",
+        "REFUSE",
+        "CONVERT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-101",
+      "words": [
+        "PAWN",
+        "FILE",
+        "STOCK",
+        "TABLE",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-102",
+      "words": [
+        "CHECK",
+        "BOARD",
+        "MINE",
+        "TANK",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-103",
+      "words": [
+        "DRAFT",
+        "DOCK",
+        "PLANT",
+        "TRAIN",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-104",
+      "words": [
+        "PITCH",
+        "QUARRY",
+        "ROOT",
+        "BUS",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-105",
+      "words": [
+        "PLOT",
+        "PORT",
+        "STEM",
+        "FIELD",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-106",
+      "words": [
+        "FENCE",
+        "SPRING",
+        "ROCK",
+        "CRANE",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-107",
+      "words": [
+        "BARK",
+        "MATCH",
+        "RING",
+        "CROW",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-108",
+      "words": [
+        "WIND",
+        "DUCK",
+        "BEAR",
+        "FLY",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-109",
+      "words": [
+        "TENDER",
+        "BOLT",
+        "BAT",
+        "CLUB",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-110",
+      "words": [
+        "COURT",
+        "SEAL",
+        "WATCH",
+        "COACH",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-111",
+      "words": [
+        "CARP",
+        "RECORD",
+        "SUBJECT",
+        "CONTRACT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-112",
+      "words": [
+        "FLOUNDER",
+        "CONDUCT",
+        "DESERT",
+        "CONVERT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-113",
+      "words": [
+        "SKATE",
+        "PRESENT",
+        "REFUSE",
+        "BUFFET",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-114",
+      "words": [
+        "SMELT",
+        "PERMIT",
+        "PRODUCE",
+        "CONTENT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-115",
+      "words": [
+        "CAN",
+        "OBJECT",
+        "PROJECT",
+        "CONTEST",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-116",
+      "words": [
+        "PAWN",
+        "BOARD",
+        "PLANT",
+        "BUS",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-117",
+      "words": [
+        "CHECK",
+        "DOCK",
+        "ROOT",
+        "FIELD",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-118",
+      "words": [
+        "DRAFT",
+        "QUARRY",
+        "STEM",
+        "TABLE",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-119",
+      "words": [
+        "PITCH",
+        "PORT",
+        "STOCK",
+        "TANK",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-120",
+      "words": [
+        "PLOT",
+        "FILE",
+        "MINE",
+        "TRAIN",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-121",
+      "words": [
+        "FENCE",
+        "MATCH",
+        "BEAR",
+        "CLUB",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-122",
+      "words": [
+        "BARK",
+        "DUCK",
+        "BAT",
+        "COACH",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-123",
+      "words": [
+        "WIND",
+        "BOLT",
+        "WATCH",
+        "CRANE",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-124",
+      "words": [
+        "TENDER",
+        "SEAL",
+        "ROCK",
+        "CROW",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-125",
+      "words": [
+        "COURT",
+        "SPRING",
+        "RING",
+        "FLY",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-126",
+      "words": [
+        "CARP",
+        "CONDUCT",
+        "REFUSE",
+        "CONTENT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-127",
+      "words": [
+        "FLOUNDER",
+        "PRESENT",
+        "PRODUCE",
+        "CONTEST",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-128",
+      "words": [
+        "SKATE",
+        "PERMIT",
+        "PROJECT",
+        "CONTRACT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-129",
+      "words": [
+        "SMELT",
+        "OBJECT",
+        "SUBJECT",
+        "CONVERT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-130",
+      "words": [
+        "CAN",
+        "RECORD",
+        "DESERT",
+        "BUFFET",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-131",
+      "words": [
+        "PAWN",
+        "DOCK",
+        "STEM",
+        "TANK",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-132",
+      "words": [
+        "CHECK",
+        "QUARRY",
+        "STOCK",
+        "TRAIN",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-133",
+      "words": [
+        "DRAFT",
+        "PORT",
+        "MINE",
+        "BUS",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-134",
+      "words": [
+        "PITCH",
+        "FILE",
+        "PLANT",
+        "FIELD",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-135",
+      "words": [
+        "PLOT",
+        "BOARD",
+        "ROOT",
+        "TABLE",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-136",
+      "words": [
+        "FENCE",
+        "DUCK",
+        "WATCH",
+        "CROW",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-137",
+      "words": [
+        "BARK",
+        "BOLT",
+        "ROCK",
+        "FLY",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-138",
+      "words": [
+        "WIND",
+        "SEAL",
+        "RING",
+        "CLUB",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-139",
+      "words": [
+        "TENDER",
+        "SPRING",
+        "BEAR",
+        "COACH",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-140",
+      "words": [
+        "COURT",
+        "MATCH",
+        "BAT",
+        "CRANE",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-141",
+      "words": [
+        "CARP",
+        "PRESENT",
+        "PROJECT",
+        "CONVERT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-142",
+      "words": [
+        "FLOUNDER",
+        "PERMIT",
+        "SUBJECT",
+        "BUFFET",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-143",
+      "words": [
+        "SKATE",
+        "OBJECT",
+        "DESERT",
+        "CONTENT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-144",
+      "words": [
+        "SMELT",
+        "RECORD",
+        "REFUSE",
+        "CONTEST",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-145",
+      "words": [
+        "CAN",
+        "CONDUCT",
+        "PRODUCE",
+        "CONTRACT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-146",
+      "words": [
+        "PAWN",
+        "QUARRY",
+        "MINE",
+        "FIELD",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-147",
+      "words": [
+        "CHECK",
+        "PORT",
+        "PLANT",
+        "TABLE",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-148",
+      "words": [
+        "DRAFT",
+        "FILE",
+        "ROOT",
+        "TANK",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-149",
+      "words": [
+        "PITCH",
+        "BOARD",
+        "STEM",
+        "TRAIN",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-150",
+      "words": [
+        "PLOT",
+        "DOCK",
+        "STOCK",
+        "BUS",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-151",
+      "words": [
+        "FENCE",
+        "BOLT",
+        "RING",
+        "COACH",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-152",
+      "words": [
+        "BARK",
+        "SEAL",
+        "BEAR",
+        "CRANE",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-153",
+      "words": [
+        "WIND",
+        "SPRING",
+        "BAT",
+        "CROW",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-154",
+      "words": [
+        "TENDER",
+        "MATCH",
+        "WATCH",
+        "FLY",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-155",
+      "words": [
+        "COURT",
+        "DUCK",
+        "ROCK",
+        "CLUB",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-156",
+      "words": [
+        "CARP",
+        "PERMIT",
+        "DESERT",
+        "CONTEST",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-157",
+      "words": [
+        "FLOUNDER",
+        "OBJECT",
+        "REFUSE",
+        "CONTRACT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-158",
+      "words": [
+        "SKATE",
+        "RECORD",
+        "PRODUCE",
+        "CONVERT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-159",
+      "words": [
+        "SMELT",
+        "CONDUCT",
+        "PROJECT",
+        "BUFFET",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-160",
+      "words": [
+        "CAN",
+        "PRESENT",
+        "SUBJECT",
+        "CONTENT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-161",
+      "words": [
+        "PAWN",
+        "PORT",
+        "ROOT",
+        "TRAIN",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-162",
+      "words": [
+        "CHECK",
+        "FILE",
+        "STEM",
+        "BUS",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-163",
+      "words": [
+        "DRAFT",
+        "BOARD",
+        "STOCK",
+        "FIELD",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-164",
+      "words": [
+        "PITCH",
+        "DOCK",
+        "MINE",
+        "TABLE",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-165",
+      "words": [
+        "PLOT",
+        "QUARRY",
+        "PLANT",
+        "TANK",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-166",
+      "words": [
+        "FENCE",
+        "SPRING",
+        "BEAR",
+        "CROW",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-167",
+      "words": [
+        "BARK",
+        "MATCH",
+        "BAT",
+        "FLY",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-168",
+      "words": [
+        "WIND",
+        "DUCK",
+        "WATCH",
+        "CLUB",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-169",
+      "words": [
+        "TENDER",
+        "BOLT",
+        "ROCK",
+        "COACH",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-170",
+      "words": [
+        "COURT",
+        "SEAL",
+        "RING",
+        "CRANE",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-171",
+      "words": [
+        "CARP",
+        "RECORD",
+        "REFUSE",
+        "CONVERT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-172",
+      "words": [
+        "FLOUNDER",
+        "CONDUCT",
+        "PRODUCE",
+        "BUFFET",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-173",
+      "words": [
+        "SKATE",
+        "PRESENT",
+        "PROJECT",
+        "CONTENT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-174",
+      "words": [
+        "SMELT",
+        "PERMIT",
+        "SUBJECT",
+        "CONTEST",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-175",
+      "words": [
+        "CAN",
+        "OBJECT",
+        "DESERT",
+        "CONTRACT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-176",
+      "words": [
+        "PAWN",
+        "BOARD",
+        "STEM",
+        "FIELD",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-177",
+      "words": [
+        "CHECK",
+        "DOCK",
+        "STOCK",
+        "TABLE",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-178",
+      "words": [
+        "DRAFT",
+        "QUARRY",
+        "MINE",
+        "TANK",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-179",
+      "words": [
+        "PITCH",
+        "PORT",
+        "PLANT",
+        "TRAIN",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-180",
+      "words": [
+        "PLOT",
+        "FILE",
+        "ROOT",
+        "BUS",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-181",
+      "words": [
+        "FENCE",
+        "MATCH",
+        "WATCH",
+        "COACH",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-182",
+      "words": [
+        "BARK",
+        "DUCK",
+        "ROCK",
+        "CRANE",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-183",
+      "words": [
+        "WIND",
+        "BOLT",
+        "RING",
+        "CROW",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-184",
+      "words": [
+        "TENDER",
+        "SEAL",
+        "BEAR",
+        "FLY",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-185",
+      "words": [
+        "COURT",
+        "SPRING",
+        "BAT",
+        "CLUB",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-186",
+      "words": [
+        "CARP",
+        "CONDUCT",
+        "PROJECT",
+        "CONTEST",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-187",
+      "words": [
+        "FLOUNDER",
+        "PRESENT",
+        "SUBJECT",
+        "CONTRACT",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-188",
+      "words": [
+        "SKATE",
+        "PERMIT",
+        "DESERT",
+        "CONVERT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-189",
+      "words": [
+        "SMELT",
+        "OBJECT",
+        "REFUSE",
+        "BUFFET",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-190",
+      "words": [
+        "CAN",
+        "RECORD",
+        "PRODUCE",
+        "CONTENT",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-191",
+      "words": [
+        "PAWN",
+        "DOCK",
+        "MINE",
+        "TRAIN",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-192",
+      "words": [
+        "CHECK",
+        "QUARRY",
+        "PLANT",
+        "BUS",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-193",
+      "words": [
+        "DRAFT",
+        "PORT",
+        "ROOT",
+        "FIELD",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-194",
+      "words": [
+        "PITCH",
+        "FILE",
+        "STEM",
+        "TABLE",
+        "JAM"
+      ]
+    },
+    {
+      "id": "second-sense-195",
+      "words": [
+        "PLOT",
+        "BOARD",
+        "STOCK",
+        "TANK",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-196",
+      "words": [
+        "FENCE",
+        "DUCK",
+        "RING",
+        "FLY",
+        "FOX"
+      ]
+    },
+    {
+      "id": "second-sense-197",
+      "words": [
+        "BARK",
+        "BOLT",
+        "BEAR",
+        "CLUB",
+        "HAWK"
+      ]
+    },
+    {
+      "id": "second-sense-198",
+      "words": [
+        "WIND",
+        "SEAL",
+        "BAT",
+        "COACH",
+        "PERCH"
+      ]
+    },
+    {
+      "id": "second-sense-199",
+      "words": [
+        "TENDER",
+        "SPRING",
+        "WATCH",
+        "CRANE",
+        "QUAIL"
+      ]
+    },
+    {
+      "id": "second-sense-200",
+      "words": [
+        "COURT",
+        "MATCH",
+        "ROCK",
+        "CROW",
+        "SWALLOW"
+      ]
+    },
+    {
+      "id": "second-sense-201",
+      "words": [
+        "CARP",
+        "PRESENT",
+        "DESERT",
+        "BUFFET",
+        "LEAD"
+      ]
+    },
+    {
+      "id": "second-sense-202",
+      "words": [
+        "FLOUNDER",
+        "PERMIT",
+        "REFUSE",
+        "CONTENT",
+        "SOW"
+      ]
+    },
+    {
+      "id": "second-sense-203",
+      "words": [
+        "SKATE",
+        "OBJECT",
+        "PRODUCE",
+        "CONTEST",
+        "TEAR"
+      ]
+    },
+    {
+      "id": "second-sense-204",
+      "words": [
+        "SMELT",
+        "RECORD",
+        "PROJECT",
+        "CONTRACT",
+        "ROW"
+      ]
+    },
+    {
+      "id": "second-sense-205",
+      "words": [
+        "CAN",
+        "CONDUCT",
+        "SUBJECT",
+        "CONVERT",
+        "BOW"
+      ]
+    },
+    {
+      "id": "second-sense-206",
+      "words": [
+        "PAWN",
+        "QUARRY",
+        "ROOT",
+        "TABLE",
+        "PRUNE"
+      ]
+    },
+    {
+      "id": "second-sense-207",
+      "words": [
+        "CHECK",
+        "PORT",
+        "STEM",
+        "TANK",
+        "DATE"
+      ]
+    },
+    {
+      "id": "second-sense-208",
+      "words": [
+        "DRAFT",
+        "FILE",
+        "STOCK",
+        "TRAIN",
+        "SQUASH"
+      ]
+    },
+    {
+      "id": "second-sense-209",
+      "words": [
+        "PITCH",
+        "BOARD",
+        "MINE",
+        "BUS",
+        "SEASON"
+      ]
+    },
+    {
+      "id": "second-sense-210",
+      "words": [
+        "PLOT",
+        "DOCK",
+        "PLANT",
+        "FIELD",
+        "JAM"
+      ]
+    }
+  ],
+  "limitations": "Counts and exact-answer tests do not prove semantic uniqueness, vocabulary fairness or human fun."
+}

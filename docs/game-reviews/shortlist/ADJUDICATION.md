@@ -1,6 +1,6 @@
 # Shortlist review decisions — October 30, 2026
 
-Shortlist is the fourth individual review. James's preference is pending. Counterpart and Switchpath are keepers without a supplied relative order; Ringcount remains a replacement candidate. No game has been removed.
+Shortlist is the fourth individual review. James subsequently said yes to playing again; Shortlist is a keeper with no numeric or relative ranking supplied. Counterpart and Switchpath are keepers without a supplied relative order; Ringcount remains a replacement candidate. No game has been removed.
 
 | Baseline reviewer | Fun | Clarity | UI | Replay | Sharing |
 |---|---:|---:|---|---:|---:|
@@ -33,4 +33,4 @@ The updated inline-source review found no Critical logic/save/sharing defect. It
 
 The final review ran nothing and did not inspect rendered HTML/CSS, native integration or physical sharing. Author-run browser and build evidence is separate. DeepSeek was not run because no verified free route was available. Existing subscription CLI routes were used; no paid API route or new dependency was introduced.
 
-Physical iPhone use, VoiceOver/TalkBack, real recipient-app handoff and James's enjoyment are pending.
+Physical iPhone use, VoiceOver/TalkBack, real recipient-app handoff and repeated-day enjoyment are pending.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "Partial ranking from James: Switchpath and Counterpart are keepers (relative order not yet supplied); Ringcount is a replacement candidate. No numerical enjoyment scores invented. Model predictions remain separate.",
+  "rankingBasis": "Partial ranking from James: Switchpath, Counterpart and Shortlist are keepers with no supplied relative order; Ringcount is a replacement candidate. No numerical enjoyment scores invented. Model predictions remain separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -297,12 +297,20 @@
       "name": "Shortlist",
       "creator": "ChatGPT",
       "reviewOrder": 4,
-      "status": "awaiting_james_verdict",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
-        "playAgain": null,
+        "playAgain": true,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-10-30",
+            "quote": "yes, next game",
+            "interpretation": "Yes to playing Shortlist again; asks to move to Second Sense. No numeric or relative ranking supplied."
+          }
+        ],
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "would play again"
       },
       "reviews": [
         {
@@ -354,14 +362,14 @@
           "report": "shortlist/MAKER-Opus__initial-review.md"
         }
       ],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "shortlist/REPORT.md",
         "shortlist/ADJUDICATION.md",
         "shortlist/evidence/summary.json",
         "shortlist/evidence/strategy-audit.json"
       ],
-      "nextStep": "Await James’s replay/enjoyment verdict, then review Second Sense. No relative keeper order inferred.",
+      "nextStep": "Keep available and compare keepers later; review Second Sense now.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -369,24 +377,94 @@
         "report": "shortlist/MAKER-Opus__final-review.md",
         "findings": "No Critical defect found. Important disabled-control focus trigger reproduced and fixed; minor factual copy, stale hint, typed-key focus and real-commit save assertion corrected and browser checked."
       },
-      "gameplayFinding": "210 distinct banks; all 2520 possible bank secrets have a verified three-scan strategy. Solvability is not human difficulty/fun."
+      "gameplayFinding": "210 distinct banks; all 2520 possible bank secrets have a verified three-scan strategy. Solvability is not human difficulty/fun.",
+      "dispositionBasis": "James said yes to playing again."
     },
     {
       "slug": "second-sense",
       "name": "Second Sense",
       "creator": "ChatGPT",
       "reviewOrder": 5,
-      "status": "not_reviewed",
+      "status": "awaiting_james_verdict",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
         "comments": []
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "77127f956826bac4cfb2bebe1253a52df22ae6be",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Second Sense before improvements",
+          "scores": {
+            "fun": 4,
+            "clarity": 4,
+            "ui": 3,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "second-sense/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "77127f956826bac4cfb2bebe1253a52df22ae6be",
+          "method": "Static source/tests/audit and screenshot inspection; no execution",
+          "scope": "Baseline Second Sense before improvements",
+          "scores": {
+            "fun": 4,
+            "clarity": 3.5,
+            "ui": 3,
+            "replay": 4,
+            "shareability": 3.5
+          },
+          "scoresArePredictions": true,
+          "report": "second-sense/MAKER-Gemini__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "77127f956826bac4cfb2bebe1253a52df22ae6be",
+          "method": "Inline source/audit only; tools disabled, no execution or screenshots",
+          "scope": "Baseline Second Sense before improvements",
+          "scores": {
+            "fun": 3.5,
+            "clarity": 3.5,
+            "ui": null,
+            "replay": null,
+            "shareability": 2.5
+          },
+          "scoresArePredictions": true,
+          "report": "second-sense/MAKER-Opus__initial-review.md",
+          "scoreNotes": {
+            "replayRange": [
+              2.5,
+              3
+            ],
+            "clarityOnFlaggedBoards": 3
+          }
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "second-sense/REPORT.md",
+        "second-sense/ADJUDICATION.md",
+        "second-sense/evidence/summary.json",
+        "second-sense/evidence/co-board-review.json"
+      ],
+      "nextStep": "Await James’s replay/enjoyment verdict, then review Sideways. Human editorial ambiguity questions remain documented.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Updated inline source only, no execution or rendered UI",
+        "report": "second-sense/MAKER-Opus__final-review.md",
+        "findings": "No Critical/Important issue found. Two Minor adoption focus/obsolete-draft cases corrected with unit and browser evidence afterward."
+      },
+      "gameplayFinding": "210 combinations reuse 75 noun/verb pairs 14 times each. Exact-answer tests do not establish semantic uniqueness; actual co-board overlaps are documented."
     },
     {
       "slug": "sideways",

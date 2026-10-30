@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-30",
+  "catalogTests": {
+    "passed": 860,
+    "failed": 0
+  },
+  "secondSenseTests": 71,
+  "browserChecks": 20,
+  "browserPassed": 20,
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "compiledRuntimeFiles": 277,
+  "compiledBytesMatch": true,
+  "webBuildId": "aa0c835008c74e2b",
+  "stagedRuntimeFiles": 311,
+  "contentAudit": {
+    "boards": 210,
+    "distinctCombinations": 210,
+    "sourcePairs": 75,
+    "pairAppearances": 1050,
+    "appearancesPerPair": [
+      14
+    ]
+  },
+  "humanFunVerdict": null,
+  "humanSemanticFairnessVerified": false,
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "finalStage": "dist/second-sense-review-20261030-final-v3/web",
+  "browserRuntimeReceipt": "webkit-runtime-receipt.json",
+  "sourceFileSHA256": {
+    "games/second-sense/README.md": "f10350e16698ee7571870f5dca05937a7e90489317602daa6974f6f986f41fa5",
+    "games/second-sense/app.mjs": "4a3156cff8e7482325c73aba975066456f002363a46878c84a9b84e2a5d6c7ea",
+    "games/second-sense/content-identity.mjs": "211e331a2e6fcb205b349d830a3c0b6bfffe88848ec749f8aa0e69e0952c8cb4",
+    "games/second-sense/contentnotes/ENGINE.md": "2a060f6a3f52be26e9f8da7ffec377cf7c5ff1e76842c95bb715a9d8cec23bcc",
+    "games/second-sense/engine.mjs": "ff86ed804517ce04d9c20e6cfb59787ea234968fb4de2560caeec800e91ea9c4",
+    "games/second-sense/fonts/DM-Sans-LICENSE.txt": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1",
+    "games/second-sense/fonts/DM-Serif-Display-LICENSE.txt": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231",
+    "games/second-sense/fonts/dm-sans-bold.ttf": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211",
+    "games/second-sense/fonts/dm-sans-regular.ttf": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9",
+    "games/second-sense/fonts/dm-sans-semibold.ttf": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a",
+    "games/second-sense/fonts/dm-serif-display-italic.ttf": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920",
+    "games/second-sense/fonts/dm-serif-display-regular.ttf": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1",
+    "games/second-sense/icon.svg": "af0cad083430e936a1609f55da81077a8f423f9fdf501e8634ee40d86ad77a03",
+    "games/second-sense/index.html": "63508b88debd89a6dc5515a92b0adb9d6e740c1e8033819137bd0db9aa575974",
+    "games/second-sense/manifest.webmanifest": "6f0db81d19c5b75be692270adfa90ca35b4e1662f8b709e3344e37446a6911e2",
+    "games/second-sense/package.json": "362f4f73148e548c474b002284dfe23852fc1d30c200f92c5c0d64776bcc4b66",
+    "games/second-sense/puzzles.mjs": "d8ed503d73828ad2d700ad023decf07b84ad6456025c2c1aeccffd18eb12f685",
+    "games/second-sense/scripts/generate-puzzles.mjs": "b5b0f50c6d58ca17d5f9038611580a7a6eab4807ddffe9e1258cc4df40b049e6",
+    "games/second-sense/share-card.mjs": "2706cb6c92af2f14c595b7217ee1e06caf300fe82c975b2ccc01050c6a62dd9a",
+    "games/second-sense/shell.mjs": "b5b81c8d66734d7c7ccc0ac4344a72221405cec433b555330e0b82f9ca4c1af7",
+    "games/second-sense/styles.css": "2f6fe00b85aeaf69ed9d6030eb12d07009028ca37aae6e2a0954e251dec33736",
+    "games/second-sense/tests/app-drafts.test.mjs": "a8531f6cac9b14c45c3d0610adc9787f5108d8470ee4730d6c5e34852703e4c6",
+    "games/second-sense/tests/content-identity.test.mjs": "a770c25c2a579cfc3d85dda01abfb52aae905b7d15bc4f9c9cbfdb1ba65a0053",
+    "games/second-sense/tests/engine.test.mjs": "788713f5071162d740df81a22622a5bebd835fdd673605a99f12ae32424762cc",
+    "games/second-sense/tests/expansion.test.mjs": "ef2447eb0202c5304bfa59c0aec60c757547fead7d09582ae70880aba9ac3cf5",
+    "games/second-sense/tests/product.test.mjs": "c3f0427964a225da1d02dc1f0d57c2b64e28ea2157fc6c13115022b5fddc056f",
+    "games/second-sense/tests/puzzles.test.mjs": "dcda1c11db1752fd9b247cf3cb513f1eac241de8345e2cda09e9e1e2e640c07c",
+    "games/second-sense/tests/share-card.test.mjs": "a4558d9fc325cc2f145df964c1910006da3b836212c9f276acc84ecf6904e732",
+    "games/second-sense/tests/shell.test.mjs": "ebf5771a24cbbf2c5896ba38b07e38f98b6f08e8b25e2d0e5e35cb4ff7395538"
+  }
+}

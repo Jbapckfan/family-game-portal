@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath and Counterpart — would play again. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart and Shortlist — would play again. Their relative order is not yet supplied.
 - **Replacement candidate:** Ringcount — “pretty easy and boring.” Still available.
 
 No numerical enjoyment scores were supplied. The table below is the review queue, not a forced ranking between keepers.
@@ -12,8 +12,8 @@ No numerical enjoyment scores were supplied. The table below is the review queue
 | 1 | Ringcount | ChatGPT | Replacement candidate: easy, boring | Qualitative feedback |
 | 2 | Switchpath | ChatGPT | Keep; spacing follow-up | Likes it; play again: yes |
 | 3 | Counterpart | ChatGPT | Keep; larger words delivered | Play again: yes |
-| 4 | Shortlist | ChatGPT | Reviewed; awaiting verdict | Pending playtest |
-| 5 | Second Sense | ChatGPT | Not yet reviewed individually | — |
+| 4 | Shortlist | ChatGPT | Keep | Play again: yes |
+| 5 | Second Sense | ChatGPT | Reviewed; awaiting verdict | Pending playtest |
 | 6 | Sideways | ChatGPT | Not yet reviewed individually | — |
 | 7 | Tradeoff | ChatGPT | Not yet reviewed individually | — |
 | 8 | Inbetween | ChatGPT | Not yet reviewed individually | — |
@@ -49,6 +49,8 @@ Switchpath reviewer fun predictions: Kimi **2/5**, Gemini **2.5/5**, Opus **3/5*
 
 Counterpart reviewer fun predictions before improvements: Kimi **3/5**, Gemini **2.5/5**, Opus **3/5**. James requested larger text; he subsequently said he would play again. [Review decisions](counterpart/ADJUDICATION.md).
 
-Shortlist reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3/5**. James’s verdict is pending. [Review decisions](shortlist/ADJUDICATION.md).
+Shortlist reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3/5**. James subsequently said he would play again. [Review decisions](shortlist/ADJUDICATION.md).
+
+Second Sense reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3.5/5**. James’s verdict is pending; recurring meanings and possible ambiguous cross-pairs remain human-review questions. [Review decisions](second-sense/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

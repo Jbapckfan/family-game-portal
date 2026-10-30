@@ -23,8 +23,8 @@ function openApp(saved = memoryStorage(), session = memoryStorage()) {
         focus(){}, scrollIntoView(){}, getClientRects(){return [{}];},
         getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};},
         showModal(){this.open=true;},close(){this.open=false;},
-        addEventListener(type, fn){events.set(type, fn);},
-        emit(type, event){events.get(type)?.({preventDefault(){},...event});},
+        addEventListener(type, fn){events.set(type, [...(events.get(type)||[]),fn]);},
+        emit(type, event){for(const fn of events.get(type)||[])fn({preventDefault(){},...event});},
       });
     }
     return nodes.get(name);
@@ -38,6 +38,7 @@ function openApp(saved = memoryStorage(), session = memoryStorage()) {
     setTimeout:()=>1, clearTimeout(){}, setInterval:()=>1,
   });
   runInContext(readFileSync(new URL('../shell.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/^export /gm,''), context);
+  runInContext(readFileSync(new URL('../share-card.mjs',import.meta.url),'utf8').replace(/^export /gm,''), context);
   runInContext(readFileSync(new URL('../app.mjs',import.meta.url),'utf8').replace(/^import .*;\n/gm,''), context);
   function dispatch(attribute, value) {
     node('dialog-content').emit('click',{target:{closest:selector => selector===`[${attribute}]` ? {dataset:{[attribute.slice(5)]:String(value)}} : null}});
@@ -92,4 +93,45 @@ test('a stale practice restart adopts newer progress without discarding its loca
   stale.action('restart');
   assert.equal(stale.app.game.attempts,0);
   assert.equal(hasDraft(stale),false);
+});
+
+test('a scored first-letter hint requires confirmation; cancellation is inert and repeat approval cannot double count',()=>{
+ const g=openApp(),nounId=g.app.puzzle.pairs[0].nounId;
+ g.node('noun-clues').emit('click',{target:{closest:()=>({dataset:{noun:nounId}})}});
+ g.node('answer-input').value='unfinished';g.node('answer-input').emit('input',{target:g.node('answer-input')});
+ g.node('sense-hint').emit('click',{});
+ assert.equal(g.app.game.hintedNouns.length,0,'opening confirmation must not spend a hint');
+ assert.match(g.node('dialog-content').innerHTML,/1 hint/);
+ g.action('close');assert.equal(g.app.game.hintedNouns.length,0);
+ assert.equal(g.node('answer-input').value,'unfinished');
+ g.node('sense-hint').emit('click',{});
+ const approve=()=>g.node('dialog-content').emit('click',{target:{closest:selector=>selector==='[data-second-sense-hint]'?{dataset:{secondSenseHint:nounId}}:null}});
+ approve();assert.deepEqual([...g.app.game.hintedNouns],[nounId]);assert.equal(g.app.game.attempts,0);
+ approve();assert.deepEqual([...g.app.game.hintedNouns],[nounId]);
+});
+
+test('an accepted check rejected by newer saved progress preserves its typed draft for retry',()=>{
+ const saved=memoryStorage(),session=memoryStorage(),stale=openApp(saved,session),p=stale.app.puzzle,pair=p.pairs[0];
+ stale.node('noun-clues').emit('click',{target:{closest:()=>({dataset:{noun:pair.nounId}})}});
+ stale.node('verb-clues').emit('click',{target:{closest:()=>({dataset:{verb:pair.verbId}})}});
+ stale.node('answer-input').value=pair.word;stale.node('answer-input').emit('input',{target:stale.node('answer-input')});
+ const latest=openApp(saved,memoryStorage());latest.app.commit(rules.submitPair(p,latest.app.game,p.pairs[1]).state);
+ stale.node('answer-form').emit('submit',{});
+ assert.equal(stale.app.game.placements.length,1);assert.equal(stale.app.game.placements[0].word,p.pairs[1].word);
+ assert.equal(stale.node('answer-input').value,pair.word,'the rejected move must remain ready to retry');
+ assert.equal(JSON.parse(session.getItem(`second-sense:ui:v1:2026-10-20:${p.id}`)).draft,pair.word);
+ stale.node('answer-form').emit('submit',{});assert.equal(stale.app.game.placements.length,2);
+ assert.equal(stale.node('answer-input').value,'','a committed correct move clears its own draft');
+});
+
+test('when another tab already solved the same draft, adoption clears that obsolete word',()=>{
+ const saved=memoryStorage(),session=memoryStorage(),stale=openApp(saved,session),p=stale.app.puzzle,pair=p.pairs[0];
+ stale.node('noun-clues').emit('click',{target:{closest:()=>({dataset:{noun:pair.nounId}})}});
+ stale.node('verb-clues').emit('click',{target:{closest:()=>({dataset:{verb:pair.verbId}})}});
+ stale.node('answer-input').value=pair.word.toLowerCase();stale.node('answer-input').emit('input',{target:stale.node('answer-input')});
+ const latest=openApp(saved,memoryStorage());latest.app.commit(rules.submitPair(p,latest.app.game,pair).state);
+ stale.node('answer-form').emit('submit',{});
+ assert.equal(stale.app.game.placements.length,1);assert.equal(stale.app.game.attempts,1);
+ assert.equal(stale.node('answer-input').value,'');
+ assert.equal(JSON.parse(session.getItem(`second-sense:ui:v1:2026-10-20:${p.id}`)).draft,'');
 });

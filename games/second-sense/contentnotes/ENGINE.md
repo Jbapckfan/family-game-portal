@@ -23,19 +23,19 @@ State: `{puzzleId,placements:[],attempts:0,hintedNouns:[],status:'playing'}`. Ea
 - `getStats(records,todayKey)` accepts date-keyed records `{status,attempts,hints}` and returns `{played,won,streak,bestStreak,perfect,averageAttempts}`. Use `hintedNouns.length` for the record's hint count.
 - `formatShare(puzzle,state,{number,mode,url})` produces spoiler-free text.
 
-Chicago midnight controls the daily puzzle. The release epoch is October 20, 2026. The finite collection repeats after 30 days. Each of 75 original noun/verb pairs appears twice, in distinct composed boards.
+Chicago midnight controls the daily puzzle. The release epoch is October 20, 2026. The finite collection repeats after 210 days. Each of 75 original noun/verb pairs appears fourteen times, in distinct composed boards.
 
 ## Validation
 
 Tests cover immutable scoring, normalization, pairing and spelling, reused cards, hints, reveal/win separation, save corruption, statistics, calendar boundaries, sharing, all solved-pair subsets and all encoded matching alternatives. Semantic review is a separate editorial task: a stored answer table does not prove that English has no other interpretation.
 
-The final collection was reviewed as 75 individual pairs and 30 complete clue boards. Each source pair appears exactly twice, in different neighboring sets, with 11–19 daily positions between appearances. The independent noun and verb ordering never presents the entire answer mapping already aligned.
+The final collection was reviewed as 75 individual pairs; the expanded edition has 210 complete clue boards. Each source pair appears exactly fourteen times, in different neighboring sets, with 11–19 daily positions between appearances. The independent noun and verb ordering never presents the entire answer mapping already aligned.
 
 Potential overlaps were considered in composing the sets: MATCH and CONTEST do not share a board; neither do COACH and BUS, nor COACH and TRAIN. These would create broad noun or verb definitions that could become interchangeable. SOLE was rejected from the fish group because its fish sense would overlap the FLOUNDER clue. The retained noun clues distinguish bony flatfish from ray-related fish. No published board currently needs a second accepted word, but the engine supports explicit alternatives and tests that they survive saving and revealing.
 
 The edition uses American English. TABLE explicitly labels the U.S. sense because British usage can point in the opposite direction. CAN and TANK identify their informal verb senses. WIND, LEAD, SOW, TEAR, BOW and BUFFET explanations describe the pronunciation change; several other noun/verb pairs explain their changed stress. Difficulty labels are editorial, not calibrated with external play-test data.
 
-Verification passed: 24 engine tests and seven collection tests, including all 960 puzzle/solved-pair-subset states and 56,250 noun/verb/known-word combinations. After UI integration, ten shared-shell regressions also pass with the actual Second Sense engine and record adapter. They cover failed storage, terminal-save reconciliation, stale tabs, practice separation, restart restrictions, and Central-day changes. The complete project `npm test` and `npm run check` both pass.
+Verification passed: 24 engine tests and seven collection tests, including all 6,720 puzzle/solved-pair-subset states and 393,750 noun/verb/known-word combinations. After UI integration, ten shared-shell regressions also pass with the actual Second Sense engine and record adapter. They cover failed storage, terminal-save reconciliation, stale tabs, practice separation, restart restrictions, and Central-day changes. The complete project `npm test` and `npm run check` both pass.
 
 ## Lexical verification
 

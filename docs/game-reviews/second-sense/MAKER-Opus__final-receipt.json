@@ -1,0 +1,36 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "5427d4b7f1d1471c8a59beef459ecb65e6042c4a8140ee2977ff95dff6846570",
+  "files": [
+    "games/second-sense/engine.mjs",
+    "games/second-sense/app.mjs",
+    "games/second-sense/shell.mjs",
+    "games/second-sense/share-card.mjs",
+    "games/second-sense/tests/share-card.test.mjs",
+    "games/second-sense/tests/app-drafts.test.mjs",
+    "games/second-sense/index.html",
+    "scripts/review-second-sense.mjs",
+    "docs/game-reviews/second-sense/DESIGN.md"
+  ],
+  "exitCode": 0,
+  "seconds": 118.97,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 11173,
+      "cacheReadInputTokens": 1598,
+      "cacheCreationInputTokens": 38167,
+      "webSearchRequests": 0,
+      "costUSD": 0.5291236,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 9234,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 38167,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

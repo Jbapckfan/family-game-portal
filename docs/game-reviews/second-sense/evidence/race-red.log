@@ -1,0 +1,36 @@
+✔ practice restart discards an unsent draft through the real app and stays clear after reloading (3.707333ms)
+✔ switching practice boards keeps their unsent drafts until an explicit restart (1.209333ms)
+✔ a stale practice restart adopts newer progress without discarding its local draft (1.465083ms)
+✔ a scored first-letter hint requires confirmation; cancellation is inert and repeat approval cannot double count (1.521625ms)
+✖ an accepted check rejected by newer saved progress preserves its typed draft for retry (1.652959ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.438583
+
+✖ failing tests:
+
+test at games/second-sense/tests/app-drafts.test.mjs:113:1
+✖ an accepted check rejected by newer saved progress preserves its typed draft for retry (1.652959ms)
+  AssertionError [ERR_ASSERTION]: the rejected move must remain ready to retry
+  
+  '' !== 'FENCE'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/games/second-sense/tests/app-drafts.test.mjs:121:9)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'FENCE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

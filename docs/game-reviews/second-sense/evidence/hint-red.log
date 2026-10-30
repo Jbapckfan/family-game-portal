@@ -1,0 +1,35 @@
+✔ practice restart discards an unsent draft through the real app and stays clear after reloading (3.7355ms)
+✔ switching practice boards keeps their unsent drafts until an explicit restart (1.192334ms)
+✔ a stale practice restart adopts newer progress without discarding its local draft (1.44725ms)
+✖ a scored first-letter hint requires confirmation; cancellation is inert and repeat approval cannot double count (1.51975ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110.317334
+
+✖ failing tests:
+
+test at games/second-sense/tests/app-drafts.test.mjs:98:1
+✖ a scored first-letter hint requires confirmation; cancellation is inert and repeat approval cannot double count (1.51975ms)
+  AssertionError [ERR_ASSERTION]: opening confirmation must not spend a hint
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/games/second-sense/tests/app-drafts.test.mjs:103:9)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

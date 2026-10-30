@@ -223,7 +223,7 @@ export function createShell(config) {
   function closeDialog() {
     if (dialog.open) dialog.close();
     requestAnimationFrame(() => {
-      if (lastFocus?.isConnected && !lastFocus.disabled && lastFocus.getClientRects().length) lastFocus.focus({preventScroll:true});
+      if (lastFocus !== document.body && lastFocus?.isConnected && !lastFocus.disabled && lastFocus.getClientRects().length) lastFocus.focus({preventScroll:true});
       else (isTerminal(game) ? $('results-button') : $('puzzle')).focus({preventScroll:true});
     });
   }
@@ -328,6 +328,7 @@ export function createShell(config) {
     if (!isTerminal(game)) return;
     const value = engine.formatShare(puzzle, game, {number:mode === 'daily' ? daily.number : puzzles.indexOf(puzzle) + 1, mode});
     if (nativeMessage({type:'share',text:value})) return;
+    if (config.share) { config.share(api); return; }
     try {
       if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(value); toast('Result copied. No answers included.'); return; }
     } catch {}

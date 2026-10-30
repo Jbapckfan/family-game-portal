@@ -1,9 +1,10 @@
 import { PUZZLES } from './puzzles.mjs';
 import * as engine from './engine.mjs';
 import { createShell, esc } from './shell.mjs';
+import {openResultShare} from './share-card.mjs';
 
 const $ = id => document.getElementById(id);
-const COLORS = ['#a45e2c','#4a746c','#786392','#9b684f'];
+const COLORS = ['#885719','#267266','#755692','#305f8b'];
 const point = (angle, radius=126) => ({x:200+Math.cos(angle*Math.PI/180)*radius,y:200+Math.sin(angle*Math.PI/180)*radius});
 const app = createShell({
   lesson:{question:'The target is 15. Which arc has the right total?',choices:[{label:'4 + 6 + 5',correct:true,why:'4 + 6 + 5 is 15. Arc length can vary; its sum is what matters.'},{label:'4 + 6 + 6',correct:false,why:'That totals 16. Each arc must equal the target exactly.'},{label:'5 + 5',correct:false,why:'That totals 10. There is no fixed count of numbers per arc.'}]},
@@ -18,6 +19,7 @@ const app = createShell({
     return `<p class="dialog-kicker">${mode==='daily'?`DAILY NO. ${String(daily.number).padStart(3,'0')}`:'A MOMENT OF BALANCE'}</p><div class="result-symbol ring-result" aria-hidden="true">◎</div><h2 class="dialog-title" id="dialog-title">${perfect?'Perfectly balanced.':won?'Full circle.':'The circle revealed.'}</h2><p class="result-copy">${won?'Four parts. One lovely whole. You found where everything belongs.':'The four cuts now show the solution. This round is recorded as revealed.'}</p><div class="result-metrics"><div><strong>${game.checks}</strong><span>checks</span></div><div><strong>${game.moves}</strong><span>moves</span></div><div><strong>${game.hints}</strong><span>hints</span></div></div><div class="dialog-actions"><button class="primary-button" data-action="share" autofocus>Share your circle ↗</button><button class="secondary-button" data-action="random">One more circle →</button></div><p class="fineprint">Your shared result keeps the cuts a secret.<br>${mode==='daily'?'A fresh daily at midnight Central.':'Practice stays separate from your daily score.'}</p>`;
   },
   render:renderGame,
+  share:openResultShare,
 });
 
 function renderGame(api,opts={}){
@@ -30,7 +32,7 @@ function renderGame(api,opts={}){
   $('puzzle').classList.toggle('complete',game.status==='won');
   $('ring-numbers').innerHTML=puzzle.numbers.map((number,index)=>{
     const angle=-90+index*30;const p=point(angle,126);
-    return `<span class="ring-number" style="left:${p.x/4}%;top:${p.y/4}%;--arc:${colors[index]}" aria-label="Position ${index+1}, number ${number}">${number}<small>${index+1}</small></span>`;
+    return `<span class="ring-number" role="img" style="left:${p.x/4}%;top:${p.y/4}%;--arc:${colors[index]}" aria-label="Position ${index+1}, number ${number}">${number}<small>${index+1}</small></span>`;
   }).join('');
   $('ring-gaps').innerHTML=puzzle.numbers.map((number,index)=>{
     const angle=-75+index*30;const p=point(angle,172);const selected=cuts.includes(index);
@@ -40,14 +42,19 @@ function renderGame(api,opts={}){
     if(!cuts.length)return '<circle cx="200" cy="200" r="126" fill="none" stroke="#ddd6c8" stroke-width="7"/>';
     const start=-90+segment.start*30-13;const end=start+segment.indices.length*30-4;
     const a=point(start),b=point(end);
-    return `<path d="M${a.x} ${a.y} A126 126 0 ${end-start>180?1:0} 1 ${b.x} ${b.y}" fill="none" stroke="${COLORS[index]}" stroke-width="7" stroke-linecap="round" opacity=".42"/>`;
+    return `<path d="M${a.x} ${a.y} A126 126 0 ${end-start>180?1:0} 1 ${b.x} ${b.y}" fill="none" stroke="${COLORS[index]}" stroke-width="7" stroke-linecap="round" opacity="${segment.sum===puzzle.target?.85:.6}"/>`;
   }).join('');
   $('arc-totals').innerHTML=cuts.length?segments.map((segment,index)=>{
     const matches=segment.sum===puzzle.target;
-    return `<div class="arc-total${matches?' matched':''}" style="--arc:${COLORS[index]}"><span>ARC ${index+1}</span><strong>${segment.sum}${matches?'<i aria-label="matches target">✓</i>':''}</strong><small>${segment.values.join(' + ')}</small></div>`;
+    return `<button type="button" data-arc="${index}" data-positions="${segment.indices.join(',')}" aria-pressed="false" class="arc-total${matches?' matched':''}" style="--arc:${COLORS[index]}" aria-label="Positions ${segment.indices.map(i=>i+1).join(', ')}, total ${segment.sum}${matches?', matches target':''}. Highlight this arc."><span>${segment.start+1} → ${segment.end+1}</span><strong>${segment.sum}${matches?'<i aria-hidden="true">✓</i>':''}</strong><small>${segment.values.join(' + ')}</small></button>`;
   }).join(''):'<p class="empty-arcs">Your four arc totals will appear here.<br>Start with any gap.</p>';
   $('ring-check').disabled=!active||cuts.length!==4||game.checkedSets.includes(cuts.join(','));
-  $('ring-check').textContent=cuts.length===4&&segments.every(segment=>segment.sum===puzzle.target)?'Bring it full circle ↵':'Check the circle ↵';
+  const balanced=cuts.length?segments.filter(segment=>segment.sum===puzzle.target).length:0;
+  $('balance-status').textContent=cuts.length?`${balanced} of 4 totals match${balanced===4?' · Ready to finish':'. Keep exploring.'}`:'Tap a gap to place your first cut.';
+  const ready=cuts.length===4&&balanced===4;
+  $('ring-check').textContent=ready?'Finish circle ✓':'Check circle';
+  $('ring-check').classList.toggle('ready',ready);
+  $('ring-hint').textContent=cuts.length===4?'Hint · move a cut':'Hint · place a cut';
   $('ring-hint').disabled=!active||puzzle.solution.every(gap=>cuts.includes(gap));
   document.querySelector('.ring-actions').hidden=!active;
   $('ring-moves').textContent=game.moves;$('ring-hints').textContent=game.hints;$('ring-checks').textContent=game.checks;
@@ -64,7 +71,7 @@ function check(){
   const result=engine.checkBoard(app.puzzle,app.game);
   if(!result.changed){app.notice(result.reason==='incomplete'?'Place all four cuts before checking.':'Try a different arrangement before checking again.');return;}
   const won=result.state.status==='won';
-  app.commit(result.state,{message:won?'Four equal parts. A perfectly balanced circle.':'Not balanced yet. Your cuts are still yours to move.',tone:won?'win':'miss'});
+  app.commit(result.state,{message:won?'Four equal parts. A perfectly balanced circle.':'Not balanced yet. Your cuts are still yours to move.',tone:won?'win':'miss',opts:won?{}:{gap:result.state.cuts[0]}});
 }
 $('ring-gaps').addEventListener('click',event=>{const gap=event.target.closest('[data-gap]');if(gap)toggle(Number(gap.dataset.gap));});
 $('ring-gaps').addEventListener('keydown',event=>{
@@ -74,7 +81,22 @@ $('ring-gaps').addEventListener('keydown',event=>{
   $('ring-gaps').querySelector(`[data-gap="${next}"]`)?.focus();
 });
 $('ring-check').addEventListener('click',check);
-$('ring-hint').addEventListener('click',()=>{const result=engine.useHint(app.puzzle,app.game);if(result.changed)app.commit(result.state,{message:result.hint.message,tone:'fit',opts:{gap:result.hint.gap}});});
+function hint(){
+  const result=engine.useHint(app.puzzle,app.game);
+  if(result.changed)app.commit(result.state,{message:`${result.hint.message} 1 hint added to your result.`,tone:'fit',opts:{gap:result.hint.gap}});
+}
+$('ring-hint').addEventListener('click',()=>{
+  app.openDialog(`<p class="dialog-kicker">A LITTLE HELP</p><h2 class="dialog-title" id="dialog-title">Show a correct cut?</h2><p class="dialog-body">This adds <strong>1 hint</strong> to your result. ${app.game.cuts.length===4?'One incorrect cut will move to a correct gap.':'One correct cut will be placed.'} You can still finish, but this round won’t count as perfect.</p><div class="dialog-actions"><button class="secondary-button" data-action="close" autofocus>Keep thinking</button><button class="primary-button" data-ring-hint-confirm>Use 1 hint</button></div>`);
+});
+$('dialog-content').addEventListener('click',event=>{if(event.target.closest('[data-ring-hint-confirm]')){app.closeDialog();hint();}});
+function focusArc(button){
+  const selected=button&&button.getAttribute('aria-pressed')!=='true';
+  const indices=selected?button.dataset.positions.split(',').map(Number):[];
+  document.querySelectorAll('[data-arc]').forEach(b=>b.setAttribute('aria-pressed',String(selected&&b===button)));
+  document.querySelectorAll('.ring-number').forEach((node,i)=>node.classList.toggle('arc-focused',indices.includes(i)));
+}
+$('arc-totals').addEventListener('click',event=>{const button=event.target.closest('[data-arc]');if(button)focusArc(button);});
+$('arc-totals').addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();focusArc(null);}});
 $('feedback').textContent='Four cuts, four equal totals. Every number has its place.';
 $('board-note').textContent='One solution. No timer. One check without hints is perfect.';
 app.start();

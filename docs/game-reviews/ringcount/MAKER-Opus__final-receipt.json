@@ -1,0 +1,33 @@
+{
+  "modelArgument": "claude-opus-5-5",
+  "method": "Inline source, tools disabled",
+  "promptSHA256": "7093688f661dbb8194c209484fc9890d56a68ab22c0282677091e4a86019da0b",
+  "files": [
+    "games/ringcount/share-card.mjs",
+    "games/ringcount/app.mjs",
+    "games/ringcount/tests/share-card.test.mjs",
+    "scripts/review-ringcount.mjs",
+    "docs/game-reviews/ringcount/DESIGN.md",
+    "docs/game-reviews/ringcount/ADJUDICATION.md"
+  ],
+  "exitCode": 0,
+  "seconds": 121.62,
+  "modelUsage": {
+    "claude-opus-5-5": {
+      "inputTokens": 2,
+      "outputTokens": 10702,
+      "cacheReadInputTokens": 649,
+      "cacheCreationInputTokens": 18325,
+      "webSearchRequests": 0,
+      "costUSD": 0.36077780000000004,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 8717,
+      "cacheCreationEphemeral5mInputTokens": 0,
+      "cacheCreationEphemeral1hInputTokens": 18325,
+      "canonicalModel": "claude-opus-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

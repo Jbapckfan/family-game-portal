@@ -327,6 +327,7 @@ export function createShell(config) {
     if (!isTerminal(game)) return;
     const value = engine.formatShare(puzzle, game, {number:mode === 'daily' ? daily.number : puzzles.indexOf(puzzle) + 1, mode});
     if (nativeMessage({type:'share',text:value})) return;
+    if (config.share) { config.share(api); return; }
     try {
       if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(value); toast('Result copied. No answers included.'); return; }
     } catch {}

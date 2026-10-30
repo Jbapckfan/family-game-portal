@@ -1,0 +1,12 @@
+[
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: [{\"format\":\"square\",\"clearance\":-22.263999938964844},{\"format\":\"portrait\",\"clearance\":97.73600006103516}]\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-ringcount.mjs:44:10"
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: [{\"format\":\"square\",\"clearance\":-22.25},{\"format\":\"portrait\",\"clearance\":97.75}]\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-ringcount.mjs:44:10"
+  }
+]

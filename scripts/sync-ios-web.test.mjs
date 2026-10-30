@@ -62,6 +62,7 @@ function fixture(run) {
     for(const name of bonusFiles)writeFixture(root,`games/${slug}/${name}`,name==='index.html'?'<script type="module" src="./app.mjs"></script>':name==='app.mjs'?'import "./engine.mjs"; import "./ai.mjs";':name==='ai.mjs'?'import "./engine.mjs";':'');
     writeFixture(root,`games/${slug}/README.md`,'Not a runtime file');
   }
+  writeFixture(root, 'games/ringcount/share-card.mjs', 'export const card = true;');
   for (const slug of kimi) writeFixture(root, `games/${slug}/index.html`, '<script type="module" src="../kimi-runtime/assets/index.js"></script><link rel="stylesheet" href="../kimi-runtime/assets/index.css">');
   for (const name of sharedRuntime) writeFixture(root, `games/kimi-runtime/${name}`);
   writeFixture(root, 'games/kimi-runtime/assets/index.js', 'export { value } from "./chunks/game.mjs"; const text = "Climb from ";');
@@ -85,11 +86,12 @@ function fixture(run) {
   finally { rmSync(temporary, { recursive: true, force: true }); }
 }
 
-test('ordinary sync copies the fixed runtime set and check is read-only', () => fixture(({ root, command }) => {
+test('ordinary sync copies the fixed runtime set including Ringcount image export and check is read-only', () => fixture(({ root, command }) => {
   assert.equal(command().status, 0);
   const directory = join(root, 'ios', 'Web', 'games');
   const before = snapshot(directory);
-  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length);
+  assert.ok(existsSync(join(directory, 'ringcount', 'share-card.mjs')));
+  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length + 1);
   assert.equal(readdirSync(directory).length, slugs.length + 2);
   assert.ok(Object.keys(before).every(path => !path.endsWith('/README.md')));
   assert.ok(Object.keys(before).every(path => !path.includes('/tests/')));

@@ -1,0 +1,633 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-30",
+  "rankingBasis": "James\u2019s stated preferences; reviewer predictions tracked separately",
+  "games": [
+    {
+      "slug": "ringcount",
+      "name": "Ringcount",
+      "creator": "ChatGPT",
+      "reviewOrder": 1,
+      "status": "ready_for_james_playtest",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "5d692780cd52c8bee3263340f06dda771fdd115e",
+          "method": "Static source and screenshot inspection; no execution",
+          "scope": "Pre-improvement Ringcount only",
+          "scores": {
+            "fun": 4,
+            "clarity": 4,
+            "ui": 4,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "ringcount/MAKER-Kimi__initial-review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "5d692780cd52c8bee3263340f06dda771fdd115e",
+          "method": "Static source and screenshot inspection; no execution",
+          "scope": "Pre-improvement Ringcount only",
+          "scores": {
+            "fun": 2.5,
+            "clarity": 4,
+            "ui": 3.5,
+            "replay": 2.5,
+            "shareability": 2.5
+          },
+          "scoresArePredictions": true,
+          "report": "ringcount/MAKER-Opus__initial-review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "5d692780cd52c8bee3263340f06dda771fdd115e",
+          "method": "Static source and screenshot inspection; no execution",
+          "scope": "Pre-improvement Ringcount only",
+          "scores": {
+            "fun": 4,
+            "clarity": 3,
+            "ui": 3,
+            "replay": 4,
+            "shareability": 2.5
+          },
+          "scoresArePredictions": true,
+          "report": "ringcount/MAKER-Gemini__initial-review.md"
+        }
+      ],
+      "disposition": "improve",
+      "evidence": [
+        "ringcount/ADJUDICATION.md",
+        "ringcount/REPORT.md",
+        "ringcount/evidence/summary.json"
+      ],
+      "nextStep": "James playtest: rate enjoyment and replay interest before assigning preference rank",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Static inline source review; no execution",
+        "findings": "Two important findings reproduced and corrected; accessible number roles also corrected",
+        "report": "ringcount/MAKER-Opus__final-review.md"
+      }
+    },
+    {
+      "slug": "switchpath",
+      "name": "Switchpath",
+      "creator": "ChatGPT",
+      "reviewOrder": 2,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "counterpart",
+      "name": "Counterpart",
+      "creator": "ChatGPT",
+      "reviewOrder": 3,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "shortlist",
+      "name": "Shortlist",
+      "creator": "ChatGPT",
+      "reviewOrder": 4,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "second-sense",
+      "name": "Second Sense",
+      "creator": "ChatGPT",
+      "reviewOrder": 5,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "sideways",
+      "name": "Sideways",
+      "creator": "ChatGPT",
+      "reviewOrder": 6,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "tradeoff",
+      "name": "Tradeoff",
+      "creator": "ChatGPT",
+      "reviewOrder": 7,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "inbetween",
+      "name": "Inbetween",
+      "creator": "ChatGPT",
+      "reviewOrder": 8,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-cairn",
+      "name": "Cairn",
+      "creator": "Kimi",
+      "reviewOrder": 9,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-morph",
+      "name": "Morph",
+      "creator": "Kimi",
+      "reviewOrder": 10,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-tangle",
+      "name": "Tangle",
+      "creator": "Kimi",
+      "reviewOrder": 11,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-hunch",
+      "name": "Hunch",
+      "creator": "Kimi",
+      "reviewOrder": 12,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-circuit",
+      "name": "Circuit",
+      "creator": "Kimi",
+      "reviewOrder": 13,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "kimi-quartet",
+      "name": "Quartet",
+      "creator": "Kimi",
+      "reviewOrder": 14,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-twin-hive",
+      "name": "Twin Hive",
+      "creator": "DeepSeek",
+      "reviewOrder": 15,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-spare",
+      "name": "Spare",
+      "creator": "DeepSeek",
+      "reviewOrder": 16,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-rung",
+      "name": "Rung",
+      "creator": "DeepSeek",
+      "reviewOrder": 17,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-cipher",
+      "name": "Cipher",
+      "creator": "DeepSeek",
+      "reviewOrder": 18,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-trail",
+      "name": "Trail",
+      "creator": "DeepSeek",
+      "reviewOrder": 19,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "deepseek-split",
+      "name": "Split",
+      "creator": "DeepSeek",
+      "reviewOrder": 20,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-quadra",
+      "name": "Quadra",
+      "creator": "Qwen",
+      "reviewOrder": 21,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-logic-lattice",
+      "name": "Logic Lattice",
+      "creator": "Qwen",
+      "reviewOrder": 22,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-syntax-siege",
+      "name": "Syntax Siege",
+      "creator": "Qwen",
+      "reviewOrder": 23,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-memory-maze",
+      "name": "Memory Maze",
+      "creator": "Qwen",
+      "reviewOrder": 24,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-pattern-prism",
+      "name": "Pattern Prism",
+      "creator": "Qwen",
+      "reviewOrder": 25,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "qwen-territory-tactics",
+      "name": "Territory Tactics",
+      "creator": "Qwen",
+      "reviewOrder": 26,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-dovetail",
+      "name": "Dovetail",
+      "creator": "Claude",
+      "reviewOrder": 27,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-splice",
+      "name": "Splice",
+      "creator": "Claude",
+      "reviewOrder": 28,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-sprout",
+      "name": "Sprout",
+      "creator": "Claude",
+      "reviewOrder": 29,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-tangle",
+      "name": "Tangle",
+      "creator": "Claude",
+      "reviewOrder": 30,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-keystone",
+      "name": "Keystone",
+      "creator": "Claude",
+      "reviewOrder": 31,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "claude-tumbler",
+      "name": "Tumbler",
+      "creator": "Claude",
+      "reviewOrder": 32,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    },
+    {
+      "slug": "nested-tic-tac-toe",
+      "name": "Tic-Tac-Toe",
+      "creator": "ChatGPT",
+      "reviewOrder": 33,
+      "status": "not_reviewed",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": []
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [],
+      "nextStep": "Await individual review"
+    }
+  ],
+  "conditionalReviewer": {
+    "provider": "DeepSeek",
+    "status": "not_run",
+    "reason": "No verified free route; browser access host unavailable; metered cloud inference not authorized"
+  }
+}

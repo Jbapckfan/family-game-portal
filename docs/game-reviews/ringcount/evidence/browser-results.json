@@ -1,0 +1,102 @@
+[
+  {
+    "browser": "Chromium",
+    "description": "Solved/revealed text fits both card formats with readable space below the daily label",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Hint is explicit; cancel preserves score; confirmed hint counts",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Wrong check returns keyboard focus to an editable cut",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Arc focus connects totals to board and dismisses with Escape",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Hinted win exports a real 1080×1350 PNG with honest caption",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Format changes preserve the played date across midnight; square PNG is 1080×1080",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Share cancellation has no download side effect; denied clipboard offers manual selection",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "Revealed practice is labelled honestly and preserves the daily result",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "320–1440 widths fit; 44px cut targets, keyboard selection and reload persistence work",
+    "pass": true
+  },
+  {
+    "browser": "Chromium",
+    "description": "No browser page errors",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Solved/revealed text fits both card formats with readable space below the daily label",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Hint is explicit; cancel preserves score; confirmed hint counts",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Wrong check returns keyboard focus to an editable cut",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Arc focus connects totals to board and dismisses with Escape",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Hinted win exports a real 1080×1350 PNG with honest caption",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Format changes preserve the played date across midnight; square PNG is 1080×1080",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Share cancellation has no download side effect; denied clipboard offers manual selection",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "Revealed practice is labelled honestly and preserves the daily result",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "320–1440 widths fit; 44px cut targets, keyboard selection and reload persistence work",
+    "pass": true
+  },
+  {
+    "browser": "WebKit",
+    "description": "No browser page errors",
+    "pass": true
+  }
+]

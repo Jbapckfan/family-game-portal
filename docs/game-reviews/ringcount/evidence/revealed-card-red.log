@@ -1,0 +1,12 @@
+[
+  {
+    "browser": "Chromium",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: [{\"format\":\"square\",\"status\":\"won\",\"clearance\":40.736000061035156,\"insideClearance\":142.3401375484023},{\"format\":\"square\",\"status\":\"revealed\",\"clearance\":40.736000061035156,\"insideClearance\":-16.551343348881232},{\"format\":\"portrait\",\"status\":\"won\",\"clearance\":97.73600006103516,\"insideClearance\":200.74549768868786},{\"format\":\"portrait\",\"status\":\"revealed\",\"clearance\":97.73600006103516,\"insideClearance\":41.779702224374205}]\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-ringcount.mjs:46:10"
+  },
+  {
+    "browser": "WebKit",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: [{\"format\":\"square\",\"status\":\"won\",\"clearance\":40.75,\"insideClearance\":142.34580648246975},{\"format\":\"square\",\"status\":\"revealed\",\"clearance\":40.75,\"insideClearance\":-16.542031583274763},{\"format\":\"portrait\",\"status\":\"won\",\"clearance\":97.75,\"insideClearance\":200.75018161964005},{\"format\":\"portrait\",\"status\":\"revealed\",\"clearance\":97.75,\"insideClearance\":41.78739792367702}]\n    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/review-ringcount.mjs:46:10"
+  }
+]

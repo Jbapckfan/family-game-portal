@@ -1,0 +1,36 @@
+{
+  "completed": "2026-10-30",
+  "baseCommit": "5d692780cd52c8bee3263340f06dda771fdd115e",
+  "branch": "codex/game-by-game-2026-10-29",
+  "node": {
+    "tests": 840,
+    "pass": 840,
+    "fail": 0
+  },
+  "browser": {
+    "checks": 20,
+    "passed": 20
+  },
+  "offline": [
+    "Interrupted first download never claims readiness",
+    "All byte-verified assets downloaded through real service worker",
+    "Lost-cache retry rejects changed network bytes and never claims readiness",
+    "Real active worker repairs a lost entry using verified same-edition bytes",
+    "Cold offline home launch with all network routes removed",
+    "All 32 actual daily game pages boot with browser offline and no test routing",
+    "Bonus boots, completes a human/AI turn and restores the match offline",
+    "Real scan and unfinished save survive offline reload",
+    "Offline Central date advances while prior saves stay intact",
+    "Update waits without replacing the active edition or open game",
+    "Closing tabs activates next edition, retires only own old cache, preserves saves"
+  ],
+  "native": {
+    "unsignedReleaseBuild": "passed",
+    "matchingBundledFiles": 273,
+    "physicalDeviceTested": false,
+    "nativeImageSharing": false
+  },
+  "webBuildId": "5098743b6e15aa9e",
+  "stagedAssets": 305,
+  "publicDeployment": false
+}

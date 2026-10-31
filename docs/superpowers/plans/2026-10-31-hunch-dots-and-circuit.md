@@ -12,4 +12,6 @@ Circuit keeps its ring, alternating-arc and chained-word rules, bank/selector an
 - [x] Independently audit Circuit’s full bank, dated selections and routes; capture baseline; obtain the requested static panel reviews.
 - [x] Add regressions for confirmed Circuit defects; implement focused UI, safe actions, fresh/restored completion and frozen aggregate sharing. Preserve its actual gameplay.
 - [x] Run package/catalog tests, TypeScript/build, Chrome/WebKit flows, all-games offline checks and native Web parity. Inspect actual UI and cards, adjudicate reviewers, record Hunch’s exact verdict and Circuit’s pending verdict.
-- [ ] Open Circuit in the existing tab, commit/push/verify the feature checkpoint and package the all-games build. No deployment or hardware certification.
+- [x] Open Circuit in the existing tab, commit/push/verify the feature checkpoint and package the all-games build. No deployment or hardware certification.
+
+Delivery verified: implementation checkpoint `5619c2ec9c9d8f21558378a510b49de9e6905aa9` pushed to the existing private feature branch; GitHub SHA and private status checked. All-games ZIP integrity and SHA256 verified. Circuit is open in the one existing tab, with saves preserved; James’s verdict is pending. Receipt: `docs/game-reviews/circuit/evidence/delivery.json`. No deployment/native hardware certification.

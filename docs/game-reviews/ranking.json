@@ -1045,6 +1045,11 @@
             "date": "2026-10-31",
             "quote": "hunch is good, make sure it's not too similar to words with friends",
             "interpretation": "Positive verdict in response to keeper/improve/pass; retain Hunch and preserve a distinct identity from Words With Friends. No numerical score, relative keeper rank or explicit replay answer supplied."
+          },
+          {
+            "date": "2026-10-31",
+            "quote": "i meant wordle",
+            "interpretation": "Corrects the similarity target to Wordle. The positive Hunch verdict remains; the current five-letter/six-guess/per-letter feedback format is too close, so gameplay differentiation remains open."
           }
         ],
         "preferenceTier": "keeper",
@@ -1109,7 +1114,7 @@
         "hunch/evidence/audit.json",
         "hunch/SIMILARITY.md"
       ],
-      "nextStep": "Keeper recorded with similarity constraint. Circuit is next in the review queue; await next-game instruction.",
+      "nextStep": "Resolve Hunch’s Wordle gameplay similarity with James before proceeding to Circuit. Current build remains unchanged; no new rating or relative rank.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -1117,10 +1122,11 @@
         "report": "hunch/MAKER-Opus-final__review.md",
         "findings": "Mixed keyboard/control focus defect reproduced and corrected after review; baseline RED and final browser/real-hook checks. IME guard also added. No second provider sign-off claimed."
       },
-      "dispositionBasis": "James said Hunch is good in response to the keeper/improve/pass prompt, with a similarity constraint.",
+      "dispositionBasis": "James said Hunch is good, with a distinct-identity constraint subsequently clarified to mean Wordle.",
       "designConstraints": [
-        "Keep a distinct Hunch identity from Words With Friends. Current classic-rule comparison finds different goals, board and scoring; no gameplay change required.",
-        "Current core is closely comparable to Wordle; do not claim wholly original mechanics. Any substantial mechanic redesign is a separate design decision."
+        "Keep Hunch, but make its gameplay sufficiently distinct from Wordle. James corrected his earlier Words With Friends reference.",
+        "Current five-letter/six-guess/per-letter feedback loop and colored share pattern closely match Wordle; palette, branding, clue and Practice changes do not resolve this.",
+        "Preserve the current liked game and saved rounds while selecting the revised gameplay direction. No differentiation fix is implemented yet."
       ]
     },
     {

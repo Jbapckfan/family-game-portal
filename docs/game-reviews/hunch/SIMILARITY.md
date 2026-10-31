@@ -1,5 +1,9 @@
 # Hunch identity check — October 31, 2026
 
+## Latest decision: keep and use dots
+
+James subsequently said **“still seems very similar to wordle, keep it, maybe do white and black dots lie in mastermind. go to next game.”** He explicitly keeps Hunch and moves the review on to Circuit. [Grouped black/white dots](DOTS.md) replace per-letter feedback in the board, keyboard, rules and sharing. The larger redesign discussion is closed by this instruction; no complete originality claim is made. This supersedes the earlier hold-before-Circuit statement below.
+
 ## Corrected comparison: Wordle
 
 James clarified **“i meant wordle.”** His previous request must therefore be read as: Hunch is good, but should not be too similar to **Wordle**. The Words With Friends comparison below is historical and does not satisfy that corrected request.

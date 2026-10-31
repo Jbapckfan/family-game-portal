@@ -39,3 +39,7 @@ James subsequently said **“hunch is good, make sure it's not too similar to wo
 ## Correction: Wordle
 
 James clarified **“i meant wordle.”** This supersedes the Words With Friends target above. Hunch remains a keeper, but the current five-letter/six-guess/per-letter-feedback loop is too close to Wordle; the identity requirement is unresolved. See the [corrected comparison](SIMILARITY.md). Current code, saved rounds, ratings and prior test evidence are unchanged. Select a substantive gameplay distinction before moving on to Circuit.
+
+## Keep and move on with dots
+
+James explicitly said **“still seems very similar to wordle, keep it, maybe do white and black dots lie in mastermind. go to next game.”** Hunch stays a keeper with the [requested grouped-dot presentation](DOTS.md). He chose to move to Circuit, superseding the earlier redesign hold. New dots remove individual-letter feedback; answers, calendar, saved rounds and original scoring remain. No new rating or complete-originality claim is inferred.

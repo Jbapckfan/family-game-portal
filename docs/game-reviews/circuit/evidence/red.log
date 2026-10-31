@@ -1,0 +1,212 @@
+✖ Circuit real page restore (2155.856667ms)
+✖ Circuit real page practice (531.793375ms)
+✖ Circuit real page burst (526.826708ms)
+✖ Circuit real page consent (530.504417ms)
+✖ Circuit real page stale (516.164667ms)
+✔ Circuit real page assistance (530.719417ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4875.126583
+
+✖ failing tests:
+
+test at tests/circuit-review.test.mjs:2:85
+✖ Circuit real page restore (2155.856667ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs restore
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  6 !== 3
+
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:76:398 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:127)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 393 more bytes> ],
+    pid: 64444,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 393 more bytes>
+  }
+
+test at tests/circuit-review.test.mjs:2:85
+✖ Circuit real page practice (531.793375ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs practice
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 60
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:77:234 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 60,
+    expected: 60,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:127)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 398 more bytes> ],
+    pid: 64449,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 398 more bytes>
+  }
+
+test at tests/circuit-review.test.mjs:2:85
+✖ Circuit real page burst (526.826708ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs burst
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  0 !== 1
+
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:78:224 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:127)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 393 more bytes> ],
+    pid: 64451,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 393 more bytes>
+  }
+
+test at tests/circuit-review.test.mjs:2:85
+✖ Circuit real page consent (530.504417ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs consent
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:79:89 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:127)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 392 more bytes> ],
+    pid: 64470,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 392 more bytes>
+  }
+
+test at tests/circuit-review.test.mjs:2:85
+✖ Circuit real page stale (516.164667ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs stale
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  true !== false
+
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:80:89 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:127)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 406 more bytes> ],
+    pid: 64497,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 406 more bytes>
+  }

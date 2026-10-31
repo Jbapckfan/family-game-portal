@@ -71,7 +71,7 @@ test('PLUM is accepted and restorable only on Circuit boards where it satisfies 
   }
 })
 
-test('Hunch announces each letter result without relying on color', () => {
+test('Hunch announces aggregate dot totals without identifying matched letters', () => {
   // tsx's standalone test transform uses classic JSX; Vite uses the automatic runtime.
   Object.assign(globalThis, { React })
   const html = renderToStaticMarkup(createElement(HunchBoard, {
@@ -79,7 +79,8 @@ test('Hunch announces each letter result without relying on color', () => {
       current: '', hintLetters: [], hintsUsed: 0, finished: false, won: false, shaking: false },
     actions: { keyLetter() {}, backspace() {}, submit() {}, hint() {} },
   }))
-  assert.ok(html.includes('Position 1: S, not in the word, or no additional copy'))
-  assert.ok(html.includes('Position 5: E, in the word, different position'))
-  assert.ok(html.includes('Letter e, in the word, different position'))
+  assert.ok(html.includes('Position 1: S'))
+  assert.ok(html.includes('0 exact matches, 1 elsewhere'))
+  assert.ok(!html.includes('Letter e, in the word'))
+  assert.ok(!html.includes('Position 5: E, in the word'))
 })

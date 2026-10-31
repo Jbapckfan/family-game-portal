@@ -28,6 +28,7 @@ interface CircuitState {
   hintsUsed: number
   finished: boolean
   gaveUp: boolean
+  freshFinish: boolean
   toast: CircuitToast | null
   shaking: boolean
   stats: GameStats
@@ -45,6 +46,7 @@ const initial = (): CircuitState => ({
   hintsUsed: 0,
   finished: false,
   gaveUp: false,
+  freshFinish: false,
   toast: null,
   shaking: false,
   stats: loadGameStats('circuit'),
@@ -87,6 +89,7 @@ export function useCircuit() {
         hintsUsed: saved.hintsUsed,
         finished: true,
         gaveUp: saved.gaveUp,
+        freshFinish: false,
         toast: null,
         shaking: false,
       }))
@@ -106,6 +109,7 @@ export function useCircuit() {
       hintsUsed: saved?.hintsUsed ?? 0,
       finished: false,
       gaveUp: false,
+      freshFinish: false,
       toast: null,
       shaking: false,
     }))
@@ -193,7 +197,7 @@ export function useCircuit() {
     }
     if (gaveUp) sfx.remove()
     else sfx.win()
-    setS((p) => ({ ...p, phase: 'finished', finished: true, played, gaveUp, current: [], stats }))
+    setS((p) => ({ ...p, phase: 'finished', finished: true, freshFinish:true, played, gaveUp, current: [], stats }))
   }, [])
 
   /* --- input --- */
@@ -201,7 +205,7 @@ export function useCircuit() {
   const tapLetter = useCallback(
     (i: number) => {
       const prev = ref.current
-      if (prev.phase !== 'playing' || !prev.puzzle) return
+      if (prev.phase !== 'playing' || !prev.puzzle || !Number.isInteger(i) || i<0 || i>=12) return
       const letters = prev.puzzle.l
       const cur = prev.current
       // chain rule: after a word, the next must start with its last letter
@@ -311,7 +315,7 @@ export function useCircuit() {
 
   const startPractice = useCallback(() => {
     const cur = ref.current
-    const { puzzle, puzzleNo } = practiceCircuit(cur.mode === 'daily' ? cur.puzzleNo - 1 : -1)
+    const { puzzle, puzzleNo } = practiceCircuit(cur.puzzleNo - 1)
     setS((prev) => ({
       ...prev,
       mode: 'practice',
@@ -324,6 +328,7 @@ export function useCircuit() {
       hintsUsed: 0,
       finished: false,
       gaveUp: false,
+      freshFinish: false,
       toast: null,
       shaking: false,
     }))

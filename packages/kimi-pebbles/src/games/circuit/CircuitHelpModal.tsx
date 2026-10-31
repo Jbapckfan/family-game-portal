@@ -1,30 +1,6 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-
-export function CircuitHelpModal({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-center font-display text-3xl font-extrabold">How to play CIRCUIT</DialogTitle>
-          <DialogDescription className="sr-only">Game instructions</DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-3 text-[15px] font-semibold leading-relaxed">
-          <p>Light up all 12 letters around the ring by playing words.</p>
-          <ul className="flex list-disc flex-col gap-2 pl-5">
-            <li>
-              Letters sit on <span className="font-display font-extrabold">4 colored arcs</span> — consecutive letters
-              in a word must hop to a <em>different</em> arc.
-            </li>
-            <li>
-              After each word, your next word must <span className="font-display font-extrabold">start with the last
-              letter</span> of the previous one. The chain is seeded for you.
-            </li>
-            <li>Cover all 12 letters in as few words as possible — beat par for gold.</li>
-          </ul>
-          <p>Stuck? One free route clue per round. Undo a word or restart the chain whenever you need another route.</p>
-          <p className="text-sm text-muted-foreground">A new ring every midnight. Finish the circuit to keep your streak.</p>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
+import {useState} from 'react'
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog'
+export function CircuitHelpModal({open,onOpenChange}:{open:boolean;onOpenChange:(open:boolean)=>void}){
+ const [example,setExample]=useState<'cat'|'tar'|'invalid'>('cat')
+ return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="circuit-help max-w-sm rounded-3xl"><DialogHeader><DialogTitle className="font-display text-2xl">How to play Circuit</DialogTitle><DialogDescription>Connect words and use all twelve letters around the ring.</DialogDescription></DialogHeader><div className="flex flex-col gap-4 text-[15px] leading-relaxed"><p>Tap letters or type on your keyboard. Words need at least <strong>three letters</strong>. Consecutive letters must come from <strong>different numbered arcs</strong>; a letter may be reused after a different arc.</p><p>Each new word starts with the last letter of the previous one. We seed that letter for you. Each word can be played once. Press Enter or Play word to submit; Backspace deletes.</p><div className="circuit-help-example"><strong>Separate example</strong><div className="circuit-help-arcs"><span>1 · C P S</span><span>2 · A O E</span><span>3 · T L D</span><span>4 · R U N</span></div><div className="circuit-help-choices">{(['cat','tar','invalid'] as const).map(value=><button type="button" key={value} aria-pressed={example===value} onClick={()=>setExample(value)}>{value==='cat'?'Play CAT':value==='tar'?'Then TAR':'Try C → P'}</button>)}</div><p role="status">{example==='cat'?'CAT visits arcs 1 → 2 → 3. The next word must begin with T.':example==='tar'?'CAT → TAR is a connected chain. TAR visits arcs 3 → 2 → 4. Four distinct letters are now covered.':'C and P are both on arc 1. That move is blocked; switch arcs instead.'}</p></div><p>Use all twelve letters in as few words as possible. Meet the published word target for Gold. Undo edits the last accepted word. Restart clears the chain after confirmation; used clues stay recorded.</p><p>One optional route clue reveals the beginning of an example route from scratch, which may differ from your chain. Confirm to use it; cancellation is free. Reveal route ends the round as <strong>revealed, not solved</strong>, and resets a Daily streak.</p><p className="text-sm text-muted-foreground">Daily changes at midnight Central Time. Practice leaves Daily statistics intact. Progress is saved in this browser.</p></div></DialogContent></Dialog>
 }

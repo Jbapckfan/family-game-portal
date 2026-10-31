@@ -17,7 +17,7 @@ test('Hunch share records played Daily/Practice and assisted win/loss without le
  const loss=buildHunchShareResult({...input,won:false,evals:Array.from({length:6},()=>['absent','absent','present','absent','absent']) as any});assert.equal(loss.score,'X/6');assert.match(loss.caption,/Not solved/)
 })
 test('Hunch snapshot deeply freezes status rows and rejects inconsistent finished-game data',()=>{
- const copy=structuredClone(input),r=buildHunchShareResult(copy);copy.evals[0][0]='correct';assert.equal(r.rows[0][0],'absent');assert.ok(Object.isFrozen(r)&&Object.isFrozen(r.rows)&&Object.isFrozen(r.rows[0]))
+ const copy=structuredClone(input),r=buildHunchShareResult(copy);copy.evals[0][0]='correct';assert.deepEqual(r.rows[0],['correct','present','absent','absent','absent']);assert.ok(Object.isFrozen(r)&&Object.isFrozen(r.rows)&&Object.isFrozen(r.rows[0]))
  for(const bad of [{...input,evals:[]},{...input,won:false},{...input,evals:[green,['absent','absent','absent','absent','absent']]},{...input,hintsUsed:-1},{...input,puzzleNo:0},{...input,evals:[['wat']]}])assert.throws(()=>buildHunchShareResult(bad as any))
 })
 test('Hunch accepts the complete pinned five-letter guess list and retains its published answer bank',async()=>{

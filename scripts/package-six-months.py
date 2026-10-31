@@ -46,7 +46,8 @@ The three model reviews are static code reviews; author-run tests and real brows
 playthroughs are separately recorded. Physical iPhone and human editorial testing remain open.
 
 source/ contains the scoped game project, including the native iOS source and offline assets.
-The unsigned iPhone build compiled successfully; it was not installed on a device.
+A previous unsigned iPhone build compiled successfully. This archive synchronizes the
+updated offline Web assets; it does not certify a fresh native build or device installation.
 Source commit: {commit}
 Web build ID: {manifest['buildId']}
 No public deployment is represented by this archive.

@@ -1,10 +1,13 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import {flushSync} from 'react-dom'
+import {isNativeEnter} from '../shared/keyboard'
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog'
 import { Delete, Eraser, Flag, Lightbulb, Undo2, RotateCcw } from 'lucide-react'
 import { arcOf, medalForChain } from './engine'
 
 // Presentation colors preserve the four distinct arc identities.
-const ARC_COLORS = ['#a65d37', '#2a7379', '#737a42', '#8a587a']
-const ARC_EDGES = ['#794022', '#19545a', '#52572d', '#633d58']
+const ARC_COLORS = ['#315e9b', '#216971', '#526a82', '#25475e']
+const ARC_EDGES = ['#234775', '#164f57', '#394f63', '#193448']
 import { coverage } from './progress'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
@@ -22,6 +25,9 @@ type Actions = {
 
 interface Props {
   state: {
+    mode: string
+    dayNumber: number
+    puzzleNo: number
     phase: string
     puzzle: { l: string; n: number; par: number; sol: string[] } | null
     played: string[]
@@ -36,6 +42,14 @@ interface Props {
 }
 
 export function CircuitBoard({ state, actions }: Props) {
+  const [approval,setApproval]=useState<{kind:'hint'|'giveUp'|'restartChain';key:string;played:string[];current:number[]}|null>(null)
+  const cancelButton=useRef<HTMLButtonElement>(null)
+  const consumed=useRef(false),identity=`${state.mode}:${state.dayNumber}:${state.puzzleNo}`
+  const approvalOpen=Boolean(approval&&approval.key===identity&&approval.played===state.played&&approval.current===state.current&&state.phase==='playing'&&!state.finished)
+  useEffect(()=>setApproval(null),[identity,state.played,state.current,state.phase])
+  const request=(kind:'hint'|'giveUp'|'restartChain')=>{consumed.current=false;setApproval({kind,key:identity,played:state.played,current:state.current})}
+  const approve=()=>{if(!approvalOpen||consumed.current||!approval)return;consumed.current=true;setApproval(null);flushSync(()=>actions[approval.kind]())}
+  useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.defaultPrevented||e.isComposing||state.phase!=='playing'||e.ctrlKey||e.metaKey||e.altKey||document.querySelector('[role="dialog"]'))return;const t=e.target as HTMLElement|null;if(t?.closest?.('input,textarea,select,[contenteditable="true"]')||isNativeEnter(e))return;const focus=()=>{if(t?.closest?.('button,a[href],summary,[role="button"]'))document.querySelector<HTMLElement>('[data-game-focus]')?.focus({preventScroll:true})};if(e.key==='Enter'){e.preventDefault();flushSync(()=>actions.submit())}else if(e.key==='Backspace'){e.preventDefault();focus();flushSync(()=>actions.backspace())}else if(/^[a-z]$/i.test(e.key)){const i=state.puzzle?.l.indexOf(e.key.toLowerCase())??-1;if(i>=0){focus();flushSync(()=>actions.tapLetter(i))}}};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[state.phase,state.puzzle,actions])
   const puzzle = state.puzzle
   const covered = useMemo(() => (puzzle ? coverage(state.played, puzzle.l) : 0), [puzzle, state.played])
   if (!puzzle) return null
@@ -54,7 +68,7 @@ export function CircuitBoard({ state, actions }: Props) {
       <div className="mt-4 flex w-full items-center justify-between text-sm font-bold text-muted-foreground">
         <span>
           Words <span className="font-display text-lg text-foreground">{state.played.length}</span>
-          <span className="text-muted-foreground"> · par {puzzle.par}</span>
+          <span className="text-muted-foreground"> · target {puzzle.par}</span>
         </span>
         <span>
           Letters lit <span className="font-display text-lg text-foreground">{coveredCount}/12</span>
@@ -67,13 +81,13 @@ export function CircuitBoard({ state, actions }: Props) {
       </p>}
 
       {/* coverage meter */}
-      <div className="circuit-coverage mt-2 flex gap-1" aria-label={`${coveredCount} of 12 letters lit`}>
+      <div className="circuit-coverage mt-2 flex gap-1" role="img" aria-label={`${coveredCount} of 12 letters lit`}>
         {letters.map((_, i) => (
           <span
             key={i}
             className="h-2.5 flex-1 rounded-full transition-colors duration-200"
             style={{
-              background: (covered >> i) & 1 ? ARC_COLORS[arcOf(i)] : 'hsl(340 18% 82%)',
+              background: (covered >> i) & 1 ? ARC_COLORS[arcOf(i)] : '#d4e1eb',
             }}
           />
         ))}
@@ -81,16 +95,13 @@ export function CircuitBoard({ state, actions }: Props) {
 
       {/* the ring */}
       <div className={cn('circuit-instrument relative mx-auto mt-6 h-72 w-72 sm:h-80 sm:w-80', state.shaking && 'anim-shake')}>
+        <svg className="circuit-trace" viewBox="0 0 100 100" aria-hidden="true"><polyline points={state.current.map(i=>`${50+Math.cos((i/12*360-90)*Math.PI/180)*40},${50+Math.sin((i/12*360-90)*Math.PI/180)*40}`).join(' ')} fill="none" stroke="#7bc6dc" strokeWidth="1.1" strokeLinejoin="round" strokeLinecap="round"/></svg>
         {/* current word in the middle */}
         <div className="circuit-readout absolute inset-0 flex flex-col items-center justify-center">
           <div className="font-display text-2xl font-extrabold uppercase tracking-[0.2em]" aria-live="polite">
             {currentWord || (needStart ? `${needStart}…` : ' ')}
           </div>
-          {state.revealed > 0 && (
-            <div className="mt-1 max-w-44 text-center text-xs font-bold text-muted-foreground">
-              Route: {puzzle.sol.slice(0, state.revealed).join(' → ')}
-            </div>
-          )}
+
         </div>
         {letters.map((ch, i) => {
           const angle = (i / 12) * 360 - 90
@@ -103,11 +114,14 @@ export function CircuitBoard({ state, actions }: Props) {
               key={i}
               type="button"
               data-letter={i}
-              aria-label={`Letter ${ch}, arc ${arcOf(i) + 1}${lit ? ', lit' : ''}`}
+              aria-label={`Letter ${ch}, arc ${arcOf(i) + 1}${lit ? ', lit' : ''}${picked ? ', in current word' : ''}`}
+              data-covered={lit?"true":undefined}
+              data-selected={picked?"true":undefined}
+              data-blocked={disabledArc||mustPick?"true":undefined}
               aria-describedby={!state.finished ? 'circuit-instructions' : undefined}
               aria-description={disabledArc ? 'Choose a different arc for the next letter' : mustPick ? `Next word must start with ${needStart?.toUpperCase()}` : undefined}
               disabled={state.finished}
-              onClick={() => actions.tapLetter(i)}
+              onClick={event=>{flushSync(()=>actions.tapLetter(i));if(event.detail>0)event.currentTarget.blur()}}
               className={cn(
                 'circuit-node tile3d absolute h-14 w-14 text-2xl transition-all duration-150',
                 picked && 'scale-110',
@@ -124,17 +138,19 @@ export function CircuitBoard({ state, actions }: Props) {
               }}
             >
               {ch}
-              <span className="circuit-arc-label absolute bottom-1 right-1.5 text-[9px] font-bold leading-none" aria-hidden="true">{arcOf(i) + 1}</span>
+              <span className="circuit-arc-label absolute bottom-1 right-1.5 text-[11px] font-bold leading-none" aria-hidden="true">{arcOf(i) + 1}</span>
             </button>
           )
         })}
       </div>
 
+      <div className="circuit-arc-legend">{ARC_COLORS.map((color,i)=><span key={i} style={{borderColor:color,color}} data-current-arc={lastArc===i?'true':undefined}>Arc {i+1}</span>)}</div>
+      {(state.revealed>0||state.gaveUp)&&<aside className="circuit-route"><strong>{state.gaveUp?'Revealed example route':'Saved route clue'}</strong><p>{puzzle.sol.slice(0,state.gaveUp?puzzle.sol.length:state.revealed).join(' → ')}</p><small>This route starts from the beginning; it may differ from your chain.</small></aside>}
       {/* chain so far */}
       {state.played.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5" aria-label="Words played">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5" role="list" aria-label="Words played">
           {state.played.map((w, i) => (
-            <span key={i} className="rounded-full bg-secondary px-3 py-1 font-display text-sm font-bold uppercase tracking-wider">
+            <span key={i} role="listitem" className="rounded-full bg-secondary px-3 py-1 font-display text-sm font-bold uppercase tracking-wider">
               {w}
               {i < state.played.length - 1 && <span className="text-muted-foreground"> →</span>}
             </span>
@@ -148,7 +164,7 @@ export function CircuitBoard({ state, actions }: Props) {
           <button
             type="button"
             aria-label="Erase word"
-            onClick={actions.clearWord}
+            onClick={event=>{flushSync(()=>actions.clearWord());if(event.detail>0)event.currentTarget.blur()}}
             className="btn3d btn3d-soft h-12 w-14"
           >
             <Eraser className="mx-auto h-5 w-5" />
@@ -156,12 +172,12 @@ export function CircuitBoard({ state, actions }: Props) {
           <button
             type="button"
             aria-label="Delete last letter"
-            onClick={actions.backspace}
+            onClick={event=>{flushSync(()=>actions.backspace());if(event.detail>0)event.currentTarget.blur()}}
             className="btn3d btn3d-soft h-12 w-14"
           >
             <Delete className="mx-auto h-5 w-5" />
           </button>
-          <button type="button" onClick={actions.submit} className="btn3d btn3d-accent h-12 flex-1 text-base">
+          <button type="button" onClick={event=>{flushSync(()=>actions.submit());if(event.detail>0)event.currentTarget.blur()}} className="btn3d btn3d-accent h-12 flex-1 text-base">
             Play word
           </button>
         </div>
@@ -169,11 +185,11 @@ export function CircuitBoard({ state, actions }: Props) {
 
       {!state.finished && (
         <div className="mt-3 flex items-center justify-center gap-2">
-          <button type="button" onClick={actions.undoWord} disabled={state.played.length === 0} className="btn3d btn3d-soft h-11 px-4 text-sm disabled:opacity-50">
+          <button type="button" onClick={event=>{flushSync(()=>actions.undoWord());if(event.detail>0)event.currentTarget.blur()}} disabled={state.played.length === 0} className="btn3d btn3d-soft h-11 px-4 text-sm disabled:opacity-50">
             <Undo2 className="h-4 w-4" />
             Undo word
           </button>
-          <button type="button" onClick={actions.restartChain} disabled={state.played.length === 0 && state.current.length === 0} className="btn3d btn3d-soft h-11 px-4 text-sm disabled:opacity-50">
+          <button type="button" onClick={()=>request('restartChain')} disabled={state.played.length === 0 && state.current.length === 0} className="btn3d btn3d-soft h-11 px-4 text-sm disabled:opacity-50">
             <RotateCcw className="h-4 w-4" />
             Restart chain
           </button>
@@ -182,17 +198,18 @@ export function CircuitBoard({ state, actions }: Props) {
 
       {!state.finished && (
         <div className="mt-3 flex items-center justify-center gap-2">
-          <button type="button" onClick={actions.hint} className="btn3d btn3d-soft h-11 px-4 text-sm">
+          <button type="button" onClick={()=>request('hint')} disabled={!isPremium()&&state.hintsUsed>0} className="btn3d btn3d-soft h-11 px-4 text-sm">
             <Lightbulb className="h-4 w-4" />
             {isPremium() ? 'Route clue · ∞' : state.hintsUsed === 0 ? 'Route clue · 1 free' : 'Route clue · used'}
           </button>
-          <button type="button" onClick={actions.giveUp} className="btn3d btn3d-soft h-11 px-4 text-sm">
+          <button type="button" onClick={()=>request('giveUp')} className="btn3d btn3d-soft circuit-reveal h-11 px-4 text-sm">
             <Flag className="h-4 w-4" />
             Reveal route
           </button>
         </div>
       )}
 
+      <Dialog open={approvalOpen} onOpenChange={open=>{if(!open)setApproval(null)}}><DialogContent onOpenAutoFocus={event=>{event.preventDefault();cancelButton.current?.focus()}} className="circuit-confirm max-w-sm rounded-3xl"><DialogTitle>{approval?.kind==='hint'?'Use your route clue?':approval?.kind==='giveUp'?'Reveal an example route?':'Restart your chain?'}</DialogTitle><DialogDescription>{approval?.kind==='hint'?'Reveal the beginning of a complete example route. It may not continue your current chain. Using it records assistance.':approval?.kind==='giveUp'?'End this round as revealed, without a solve, and show a complete example route. A Daily reveal resets your current streak; Practice leaves Daily statistics intact.':'Clear your chain and current word. Clues already used stay recorded.'} Cancelling changes nothing.</DialogDescription><button type="button" ref={cancelButton} className="btn3d btn3d-soft h-12" onClick={()=>setApproval(null)}>Keep playing</button><button type="button" className="btn3d btn3d-accent h-12" onClick={approve}>{approval?.kind==='hint'?'Use route clue':approval?.kind==='giveUp'?'Reveal and end round':'Restart chain now'}</button></DialogContent></Dialog>
       {state.finished && !state.gaveUp && (
         <div className="mt-4 font-display text-xl font-extrabold">
           {medal.icon} {medal.label}

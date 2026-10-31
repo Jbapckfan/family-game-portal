@@ -268,13 +268,9 @@ export function useHunch() {
       setS({ ...prev, toast: makeToast('Your one letter hint has been used for this round.', 'info') })
       return
     }
-    const known = new Set<string>()
-    prev.evals.forEach((row, r) =>
-      row.forEach((e, i) => {
-        if (e !== 'absent') known.add(prev.guesses[r][i])
-      }),
-    )
-    const candidates = [...new Set(prev.answer)].filter((c) => !hintTaken(prev, c, known))
+    // Aggregate dots do not identify which guessed letters matched. Only a
+    // previously revealed clue is individually known.
+    const candidates = [...new Set(prev.answer)].filter(c => !prev.hintLetters.includes(c))
     if (candidates.length === 0) {
       setS({ ...prev, toast: makeToast('No new letter to reveal. Your clue is unused.', 'info') })
       return
@@ -317,8 +313,4 @@ export function useHunch() {
     state: s,
     actions: dailySession.actions({ keyLetter, backspace, submit, hint, startPractice, exitPractice }),
   }
-}
-
-function hintTaken(prev: { hintLetters: string[] }, ch: string, greens: Set<string>): boolean {
-  return prev.hintLetters.includes(ch) || greens.has(ch)
 }

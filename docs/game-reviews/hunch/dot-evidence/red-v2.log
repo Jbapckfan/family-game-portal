@@ -1,0 +1,123 @@
+✖ tests/hunch-dots.test.ts (0.599833ms)
+✔ Hunch UI consumed (455.571958ms)
+✔ Hunch UI clue (534.8285ms)
+✔ Hunch UI stale-clue (490.763875ms)
+✖ Hunch UI aggregate (449.979333ms)
+✔ Hunch real hook restore (2055.659959ms)
+✔ Hunch real hook duplicate (537.813125ms)
+✔ Hunch real hook practice (503.260667ms)
+✖ Hunch real hook hint-aggregate (534.156042ms)
+✔ Hunch real hook burst (520.97075ms)
+✔ Hunch real hook focus (551.660334ms)
+✔ Hunch real hook composition (499.117959ms)
+(node:64037) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 9
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7203.547875
+
+✖ failing tests:
+
+test at tests/hunch-dots.test.ts:1:1
+✖ tests/hunch-dots.test.ts (0.599833ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/src/games/hunch/feedback.ts' imported from /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/hunch-dots.test.ts
+      at finalizeResolution (node:internal/modules/esm/resolve:241:11)
+      at moduleResolve (node:internal/modules/esm/resolve:846:10)
+      at defaultResolve (node:internal/modules/esm/resolve:973:11)
+      at nextResolve (node:internal/modules/esm/hooks:769:28)
+      at resolveBase (file:///Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/tsx/dist/esm/index.mjs?1793482998687:2:3744)
+      at async resolveDirectory (file:///Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/tsx/dist/esm/index.mjs?1793482998687:2:4237)
+      at async resolve (file:///Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/tsx/dist/esm/index.mjs?1793482998687:2:5355)
+      at async nextResolve (node:internal/modules/esm/hooks:769:22)
+      at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:265:24)
+      at async handleMessage (node:internal/modules/esm/worker:251:18) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/src/games/hunch/feedback.ts'
+  }
+
+test at tests/hunch-review.test.mjs:2:68
+✖ Hunch UI aggregate (449.979333ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-dom.mjs aggregate
+  (node:64049) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  5 !== 0
+
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-dom.mjs:13:66) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 5,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/hunch-review.test.mjs:2:101)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 36 34 30 34 39 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes> ],
+    pid: 64049,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 36 34 30 34 39 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes>
+  }
+
+test at tests/hunch-review.test.mjs:3:105
+✖ Hunch real hook hint-aggregate (534.156042ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-hook.mjs hint-aggregate
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  's' !== 'a'
+
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-hook.mjs:78:398 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 's',
+    expected: 'a',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/hunch-review.test.mjs:3:145)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 399 more bytes> ],
+    pid: 64063,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 399 more bytes>
+  }

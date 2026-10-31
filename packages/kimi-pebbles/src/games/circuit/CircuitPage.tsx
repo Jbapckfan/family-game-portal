@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useCircuit } from './useCircuit'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
-import { readIntegrationValue, writeIntegrationValue } from '../shared/integration'
-import { dateLabel } from '../shared/share'
+import { centralDayNumber,dateForDayNumber,readIntegrationValue, writeIntegrationValue } from '../shared/integration'
 import { GameHeader } from '../shared/GameHeader'
 import { SimpleStatsModal } from '../shared/SimpleStatsModal'
 import { PracticeBanner, ToastHost, fireConfetti } from '../shared/effects'
@@ -17,7 +16,7 @@ export default function CircuitPage() {
   const { state, actions } = useCircuit()
   useUnifiedProgress('circuit', state)
   const { helpOpen, statsOpen, winOpen, setHelpOpen, setStatsOpen, setWinOpen, reset } = useGameOverlays(
-    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished, 900,
+    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished && state.freshFinish, 900,
   )
   const startPractice = () => { reset(); actions.startPractice() }
   const backToDaily = () => { reset(); actions.exitPractice() }
@@ -30,9 +29,9 @@ export default function CircuitPage() {
   }, [state.phase])
 
   useEffect(() => {
-    if (!state.finished) return
+    if (!state.finished || !state.freshFinish) return
     if (!state.gaveUp) fireConfetti()
-  }, [state.finished, state.gaveUp])
+  }, [state.finished, state.gaveUp, state.freshFinish])
 
   return (
     <div className="kimi-page kimi-circuit flex min-h-dvh flex-col">
@@ -42,7 +41,7 @@ export default function CircuitPage() {
         busy={state.phase === 'loading'}
         onPractice={startPractice}
         onDaily={backToDaily}
-        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
+        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateForDayNumber(state.dayNumber)}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
@@ -72,18 +71,21 @@ export default function CircuitPage() {
       </main>
 
       <footer className="pb-6 text-center text-xs font-semibold text-muted-foreground">
-        A new ring every midnight · Progress is saved in this browser
+        A new ring at midnight Central Time · Daily progress is saved in this browser
       </footer>
 
       <CircuitHelpModal open={helpOpen} onOpenChange={setHelpOpen} />
-      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={state.stats} title="Your circuits" />
-      {state.puzzle && (
+      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={{...state.stats,currentStreak:state.stats.lastCompletedDay!==null&&state.stats.lastCompletedDay>=centralDayNumber()-1?state.stats.currentStreak:0}} title="Your circuits" />
+      {state.puzzle && winOpen && state.finished && (
         <CircuitWinModal
-          open={winOpen && state.finished}
+          key={`${state.mode}:${state.dayNumber}:${state.puzzleNo}`}
+          open={true}
           onOpenChange={setWinOpen}
           mode={state.mode}
           puzzle={state.puzzle}
           puzzleNo={state.puzzleNo}
+          dayNumber={state.dayNumber}
+          hintsUsed={state.hintsUsed}
           played={state.played}
           gaveUp={state.gaveUp}
           onPractice={() => {

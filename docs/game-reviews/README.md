@@ -22,6 +22,8 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Hunch](hunch/REPORT.md), game 12, is a keeper: James said “hunch is good” and clarified that the similarity concern is **Wordle**. The [corrected identity check](hunch/SIMILARITY.md) confirms the current mechanics are still too close. Hunch remains open in the existing tab; choose its gameplay distinction before proceeding to Circuit. No numerical rating, relative keeper order or explicit replay answer was supplied. The requested Kimi/Gemini/Opus static reviews and author verification are recorded separately. [Review comparison](hunch/ADJUDICATION.md) · [preference ranking and queue](RANKING.md).
+[Circuit](circuit/REPORT.md), game 13, is open in the existing game tab. Kimi/Gemini/Opus baseline reviews, final Opus source review and author verification are recorded separately. James’s Circuit enjoyment, replay preference and disposition remain pending; Quartet follows his verdict. [Review comparison](circuit/ADJUDICATION.md) · [ranking and queue](RANKING.md).
 
-James said “great, next game” after Kimi’s Tangle vocabulary corrections. Tangle remains a keeper. Its optional [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) is retained; a full larger-board calendar is future work. Both sizes use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md). Exact current Words With Friends parity is unverified. This is distinct from Claude’s later Tangle game.
+James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
+
+Kimi’s Tangle remains a keeper with the [broader audited vocabulary](tangle-kimi/WORD-GAME-LEXICON.md). Its optional [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) is retained; a full larger-board calendar is future work. Exact current Words With Friends parity is unverified. This is distinct from Claude’s later Tangle.

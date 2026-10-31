@@ -1,0 +1,2 @@
+import test from 'node:test';import {execFileSync} from 'node:child_process';import {fileURLToPath} from 'node:url';
+for(const scenario of ['restore','practice','burst','consent','stale','assistance','focus-cancel','undo-focus'])test(`Circuit real page ${scenario}`,()=>{execFileSync(process.execPath,[fileURLToPath(new URL('./helpers/circuit-review-hook.mjs',import.meta.url)),scenario],{cwd:fileURLToPath(new URL('..',import.meta.url)),stdio:'pipe',timeout:30000})});

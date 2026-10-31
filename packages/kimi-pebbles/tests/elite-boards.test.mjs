@@ -44,11 +44,12 @@ test('Morph identifies the edit position and explains tapping before opening the
 
 test('Hunch gives visible non-color result marks and a persistent interpretation key', () => {
   const document = render('hunch', { phase: 'playing', answer: 'honey', guesses: ['stare'], evals: [['absent', 'absent', 'absent', 'absent', 'present']], current: 'h', hintLetters: [], hintsUsed: 0, finished: false, won: false });
-  assert.equal(document.querySelectorAll('.hunch-result-mark').length, 5);
-  assert.match(document.querySelector('[data-hunch-legend]')?.textContent ?? '', /correct position/i);
-  assert.match(document.querySelector('[data-hunch-legend]')?.textContent ?? '', /different position/i);
-  assert.equal(document.querySelectorAll('.hunch-typecase [role="img"]')[4].querySelector('.hunch-result-mark').textContent, '↔');
-  assert.equal(document.querySelectorAll('.hunch-typecase [role="img"]')[5].querySelector('.hunch-result-mark'), null, 'typing does not reveal an evaluation');
+  assert.equal(document.querySelectorAll('[data-hunch-row="0"] [data-hunch-dot]').length, 5);
+  assert.match(document.querySelector('[data-hunch-legend]')?.textContent ?? '', /Black: exact/i);
+  assert.match(document.querySelector('[data-hunch-legend]')?.textContent ?? '', /White: elsewhere/i);
+  assert.equal(document.querySelectorAll('[data-hunch-row="0"] [data-hunch-dot="present"]').length, 1);
+  assert.equal(document.querySelector('[data-active="true"] .hunch-dots'), null, 'typing does not reveal an evaluation');
+  assert.equal(document.querySelectorAll('[data-hunch-cell][data-eval],[data-hunch-key][data-eval]').length,0,'aggregate feedback must not identify letters');
 });
 
 test('Tangle keeps its consumed clue visible and numbers the selected route without color', () => {

@@ -1,0 +1,27 @@
+✔ Hunch feedback groups exact then misplaced dots without per-letter positions (0.596083ms)
+✔ Hunch caption and frozen pattern use grouped black/white dots rather than a positioned color grid (0.177709ms)
+✔ Hunch UI consumed (466.143417ms)
+✔ Hunch UI clue (507.568792ms)
+✔ Hunch UI stale-clue (493.82825ms)
+✔ Hunch UI aggregate (459.028916ms)
+✔ Hunch real hook restore (2088.198208ms)
+✔ Hunch real hook duplicate (554.406625ms)
+✔ Hunch real hook practice (512.178458ms)
+✔ Hunch real hook hint-aggregate (531.739583ms)
+✔ Hunch real hook burst (525.841875ms)
+✔ Hunch real hook focus (553.41325ms)
+✔ Hunch real hook composition (503.524459ms)
+✔ Hunch share records played Daily/Practice and assisted win/loss without letters or answer (0.356041ms)
+✔ Hunch snapshot deeply freezes status rows and rejects inconsistent finished-game data (0.177667ms)
+✔ Hunch accepts the complete pinned five-letter guess list and retains its published answer bank (161.955042ms)
+✔ historical repeated valid guesses remain restorable (0.149083ms)
+(node:64214) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7429.528917

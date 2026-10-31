@@ -69,7 +69,7 @@ export default function HunchPage() {
       </main>
 
       <footer className="pb-6 text-center text-xs font-semibold text-muted-foreground">
-        A new word every midnight · Progress is saved in this browser
+        A new word every midnight · Daily progress is saved in this browser
       </footer>
 
       <HunchHelpModal open={helpOpen} onOpenChange={setHelpOpen} />

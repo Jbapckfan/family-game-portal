@@ -1,0 +1,127 @@
+✖ Circuit real page focus-cancel (914.347708ms)
+✖ Circuit real page undo-focus (623.851208ms)
+✖ Hunch UI focus-cancel (852.503458ms)
+(node:68004) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2432.391125
+
+✖ failing tests:
+
+test at tests/circuit-review.test.mjs:2:113
+✖ Circuit real page focus-cancel (914.347708ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs focus-cancel
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: cancel restores the actual clue opener
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:76:228 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:155)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 383 more bytes> ],
+    pid: 68012,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 383 more bytes>
+  }
+
+test at tests/circuit-review.test.mjs:2:113
+✖ Circuit real page undo-focus (623.851208ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs undo-focus
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: pointer Undo releases native Enter ownership
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/circuit-review-hook.mjs:77:285 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-review.test.mjs:2:155)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 389 more bytes> ],
+    pid: 68013,
+    stdout: <Buffer >,
+    stderr: <Buffer 6e 6f 64 65 3a 69 6e 74 65 72 6e 61 6c 2f 6d 6f 64 75 6c 65 73 2f 72 75 6e 5f 6d 61 69 6e 3a 31 31 31 0a 20 20 20 20 74 72 69 67 67 65 72 55 6e 63 61 ... 389 more bytes>
+  }
+
+test at tests/hunch-review.test.mjs:2:83
+✖ Hunch UI focus-cancel (852.503458ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-dom.mjs focus-cancel
+  (node:68014) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+
+  AssertionError [ERR_ASSERTION]: cancel restores the actual clue opener
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/hunch-review-dom.mjs:11:234) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+  Node.js v26.11.0
+
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/hunch-review.test.mjs:2:116)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31 {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 36 38 30 31 34 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 578 more bytes> ],
+    pid: 68014,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 36 38 30 31 34 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 578 more bytes>
+  }

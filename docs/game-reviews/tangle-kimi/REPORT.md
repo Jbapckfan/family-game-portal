@@ -1,6 +1,6 @@
 # Kimi Tangle review — October 30, 2026
 
-Morph is now a **keeper**, from James’s exact “keeper, next,” with no numeric score or relative rank supplied. Kimi’s Tangle is game11, distinct from Claude’s later Tangle. James’s enjoyment/replay/rating/disposition remain pending; Hunch follows.
+Morph is a **keeper**, from James’s exact “keeper, next,” with no numeric score or relative rank supplied. Kimi’s Tangle is game11, distinct from Claude’s later Tangle. James subsequently called Kimi’s Tangle a **keeper** on October 31; see the verdict below. Hunch follows after the Tangle discussion.
 
 The untimed4×4 hunt now has readable blue/teal letters, ordered selection marks, a clear endpoint, larger found words and a sticky selection/Check bar. The progress meter follows the **Gold goal**, with the total points still explicit. Gold completes the daily achievement once, while further hunting remains playable and saved.
 
@@ -31,3 +31,9 @@ Vocabulary is the main editorial concern: only14of430boards have enough Gold poi
 [Summary/hashes](evidence/summary.json), [browser results](evidence/browser-results.json), [word-path audit](evidence/word-path-audit.json). Captured author harnesses retain paths relative to their original `output/tangle-review-20261030/` location.
 
 Remaining minor: current-word live-region timing/verbosity needs screen-reader validation. Human vocabulary/difficulty/fun and physical input/share behavior remain open. Existing localStorage concurrency and daily-midnight rollover are preserved. Older Canvas without roundRect can use captions.
+
+## James’s verdict — October 31, 2026
+
+“keeper, what about adding 5x5.... would that be too much? too complicated?”
+
+Kimi’s Tangle is kept. James supplied no numerical score or relative keeper rank. He asked about the feasibility of a 5×5 version; no expansion has been implemented. Recommendation for discussion: retain the quick 4×4 daily game and offer an optional 5×5 board with the same rules. More space can support a longer hunt without adding rules, but it does not guarantee greater difficulty. A larger mode needs its own validated puzzle content, calibrated goals, readable phone layout and separate saved progress. Current engine adjacency, board rendering and puzzle bank assume 4×4.

@@ -22,4 +22,4 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-Morph is a keeper from James’s “keeper, next.” [Kimi Tangle’s revised game and verification](tangle-kimi/REPORT.md) · [review comparison and decisions](tangle-kimi/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-30-tangle-review.md). Tangle’s preference remains pending; Hunch follows. This is distinct from Claude’s later Tangle game.
+Kimi’s Tangle is a keeper from James’s October 31 feedback. He asked whether adding a 5×5 board would be too complicated; that expansion is under discussion, with no implementation yet. [Kimi Tangle’s revised game and verification](tangle-kimi/REPORT.md) · [review comparison and decisions](tangle-kimi/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-30-tangle-review.md). Hunch follows after the Tangle discussion. This is distinct from Claude’s later Tangle game.

@@ -1,0 +1,3465 @@
+{
+  "boards": 430,
+  "distinctRotationReflectionGrids": 430,
+  "rawWordPaths": 30688,
+  "reviewedWordPaths": 30599,
+  "distinctAcceptedWords": 9155,
+  "maxWordBoardRecurrence": 60,
+  "wordsPerBoard": {
+    "min": 28,
+    "max": 80
+  },
+  "maximumPointsPerBoard": {
+    "min": 35,
+    "max": 119
+  },
+  "goldThreshold": {
+    "min": 8,
+    "max": 18
+  },
+  "boardsWithCommonListPointsForGold": 14,
+  "exactReviewedExclusions": 12,
+  "method": "Independent four-by-four/eight-way/nonreusing path enumeration for every raw and default-reviewed accepted word, point/count/threshold validation, grid rotation/reflection identity and supplied-common-list point totals. Common-list membership and path construction are not human familiarity, completeness of the dictionary, semantic variety or measured difficulty.",
+  "perBoard": [
+    {
+      "puzzle": 1,
+      "words": 64,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 2,
+      "words": 79,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 3,
+      "words": 75,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 4,
+      "words": 75,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 5,
+      "words": 78,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 6,
+      "words": 51,
+      "max": 58,
+      "gold": 12,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 7,
+      "words": 74,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 8,
+      "words": 70,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 9,
+      "words": 70,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 10,
+      "words": 79,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 11,
+      "words": 76,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 12,
+      "words": 74,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 13,
+      "words": 78,
+      "max": 108,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 14,
+      "words": 70,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 15,
+      "words": 70,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 16,
+      "words": 80,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 17,
+      "words": 77,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 18,
+      "words": 49,
+      "max": 55,
+      "gold": 11,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 19,
+      "words": 67,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 20,
+      "words": 73,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 21,
+      "words": 66,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 22,
+      "words": 75,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 23,
+      "words": 72,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 24,
+      "words": 76,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 25,
+      "words": 65,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 26,
+      "words": 78,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 27,
+      "words": 69,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 28,
+      "words": 62,
+      "max": 72,
+      "gold": 14,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 29,
+      "words": 79,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 30,
+      "words": 61,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 31,
+      "words": 69,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 32,
+      "words": 77,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 33,
+      "words": 79,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 34,
+      "words": 68,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 35,
+      "words": 52,
+      "max": 64,
+      "gold": 13,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 36,
+      "words": 78,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 37,
+      "words": 73,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 38,
+      "words": 72,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 39,
+      "words": 78,
+      "max": 118,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 40,
+      "words": 61,
+      "max": 73,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 41,
+      "words": 77,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 42,
+      "words": 78,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 43,
+      "words": 54,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 44,
+      "words": 74,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 45,
+      "words": 70,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 46,
+      "words": 75,
+      "max": 102,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 47,
+      "words": 58,
+      "max": 64,
+      "gold": 13,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 48,
+      "words": 68,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 49,
+      "words": 70,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 50,
+      "words": 80,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 51,
+      "words": 79,
+      "max": 101,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 52,
+      "words": 74,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 53,
+      "words": 64,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 54,
+      "words": 80,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 55,
+      "words": 76,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 56,
+      "words": 75,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 57,
+      "words": 80,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 58,
+      "words": 67,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 59,
+      "words": 72,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 60,
+      "words": 73,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 61,
+      "words": 74,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 62,
+      "words": 77,
+      "max": 104,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 63,
+      "words": 80,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 64,
+      "words": 48,
+      "max": 60,
+      "gold": 12,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 65,
+      "words": 57,
+      "max": 68,
+      "gold": 14,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 66,
+      "words": 61,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 67,
+      "words": 80,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 68,
+      "words": 58,
+      "max": 67,
+      "gold": 13,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 69,
+      "words": 79,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 70,
+      "words": 77,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 71,
+      "words": 73,
+      "max": 106,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 72,
+      "words": 79,
+      "max": 99,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 73,
+      "words": 62,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 74,
+      "words": 31,
+      "max": 39,
+      "gold": 8,
+      "commonPoints": 14,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 75,
+      "words": 70,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 76,
+      "words": 77,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 77,
+      "words": 72,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 78,
+      "words": 80,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 79,
+      "words": 64,
+      "max": 73,
+      "gold": 15,
+      "commonPoints": 18,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 80,
+      "words": 77,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 81,
+      "words": 76,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 82,
+      "words": 75,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 83,
+      "words": 68,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 84,
+      "words": 74,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 17,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 85,
+      "words": 79,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 86,
+      "words": 76,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 87,
+      "words": 69,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 88,
+      "words": 75,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 89,
+      "words": 69,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 90,
+      "words": 78,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 91,
+      "words": 78,
+      "max": 104,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 92,
+      "words": 59,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 93,
+      "words": 78,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 94,
+      "words": 74,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 95,
+      "words": 75,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 96,
+      "words": 73,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 97,
+      "words": 71,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 98,
+      "words": 73,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 17,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 99,
+      "words": 79,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 100,
+      "words": 75,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 101,
+      "words": 67,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 102,
+      "words": 70,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 16,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 103,
+      "words": 60,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 104,
+      "words": 64,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 105,
+      "words": 80,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 106,
+      "words": 76,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 107,
+      "words": 65,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 108,
+      "words": 75,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 109,
+      "words": 60,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 110,
+      "words": 71,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 111,
+      "words": 64,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 112,
+      "words": 76,
+      "max": 107,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 113,
+      "words": 80,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 114,
+      "words": 67,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 115,
+      "words": 77,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 116,
+      "words": 67,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 117,
+      "words": 72,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 118,
+      "words": 74,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 119,
+      "words": 72,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 120,
+      "words": 77,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 121,
+      "words": 64,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 122,
+      "words": 74,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 123,
+      "words": 77,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 124,
+      "words": 78,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 19,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 125,
+      "words": 77,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 126,
+      "words": 75,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 127,
+      "words": 73,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 128,
+      "words": 73,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 129,
+      "words": 69,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 16,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 130,
+      "words": 76,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 131,
+      "words": 80,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 132,
+      "words": 76,
+      "max": 99,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 133,
+      "words": 71,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 134,
+      "words": 70,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 135,
+      "words": 72,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 136,
+      "words": 66,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 137,
+      "words": 76,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 138,
+      "words": 61,
+      "max": 68,
+      "gold": 14,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 139,
+      "words": 77,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 140,
+      "words": 77,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 141,
+      "words": 74,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 142,
+      "words": 74,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 143,
+      "words": 72,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 144,
+      "words": 65,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 145,
+      "words": 73,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 146,
+      "words": 74,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 147,
+      "words": 61,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 148,
+      "words": 75,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 149,
+      "words": 65,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 150,
+      "words": 73,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 151,
+      "words": 68,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 152,
+      "words": 68,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 153,
+      "words": 74,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 154,
+      "words": 74,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 155,
+      "words": 68,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 156,
+      "words": 77,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 157,
+      "words": 45,
+      "max": 52,
+      "gold": 10,
+      "commonPoints": 10,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 158,
+      "words": 75,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 159,
+      "words": 73,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 160,
+      "words": 71,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 161,
+      "words": 71,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 162,
+      "words": 75,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 163,
+      "words": 80,
+      "max": 111,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 164,
+      "words": 75,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 165,
+      "words": 78,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 166,
+      "words": 78,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 167,
+      "words": 80,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 168,
+      "words": 76,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 169,
+      "words": 78,
+      "max": 101,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 170,
+      "words": 68,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 171,
+      "words": 78,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 172,
+      "words": 76,
+      "max": 102,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 173,
+      "words": 75,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 174,
+      "words": 80,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 175,
+      "words": 70,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 176,
+      "words": 79,
+      "max": 114,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 177,
+      "words": 76,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 178,
+      "words": 74,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 179,
+      "words": 76,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 180,
+      "words": 73,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 181,
+      "words": 70,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 182,
+      "words": 69,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 183,
+      "words": 80,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 184,
+      "words": 74,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 185,
+      "words": 80,
+      "max": 104,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 186,
+      "words": 64,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 187,
+      "words": 63,
+      "max": 71,
+      "gold": 14,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 188,
+      "words": 61,
+      "max": 71,
+      "gold": 14,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 189,
+      "words": 76,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 190,
+      "words": 79,
+      "max": 105,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 191,
+      "words": 75,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 192,
+      "words": 76,
+      "max": 114,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 193,
+      "words": 60,
+      "max": 68,
+      "gold": 14,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 194,
+      "words": 61,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 195,
+      "words": 67,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 196,
+      "words": 78,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 197,
+      "words": 66,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 198,
+      "words": 40,
+      "max": 50,
+      "gold": 10,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 199,
+      "words": 79,
+      "max": 106,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 200,
+      "words": 77,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 201,
+      "words": 74,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 202,
+      "words": 65,
+      "max": 74,
+      "gold": 15,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 203,
+      "words": 77,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 204,
+      "words": 79,
+      "max": 105,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 205,
+      "words": 64,
+      "max": 74,
+      "gold": 15,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 206,
+      "words": 73,
+      "max": 107,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 207,
+      "words": 58,
+      "max": 71,
+      "gold": 14,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 208,
+      "words": 57,
+      "max": 63,
+      "gold": 13,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 209,
+      "words": 79,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 210,
+      "words": 78,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 211,
+      "words": 69,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 17,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 212,
+      "words": 74,
+      "max": 115,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 213,
+      "words": 74,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 214,
+      "words": 49,
+      "max": 56,
+      "gold": 11,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 215,
+      "words": 74,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 216,
+      "words": 49,
+      "max": 57,
+      "gold": 11,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 217,
+      "words": 76,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 17,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 218,
+      "words": 75,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 219,
+      "words": 69,
+      "max": 74,
+      "gold": 15,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 220,
+      "words": 61,
+      "max": 71,
+      "gold": 14,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 221,
+      "words": 78,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 222,
+      "words": 65,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 223,
+      "words": 80,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 224,
+      "words": 77,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 225,
+      "words": 70,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 226,
+      "words": 57,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 227,
+      "words": 78,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 228,
+      "words": 78,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 229,
+      "words": 71,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 230,
+      "words": 77,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 231,
+      "words": 60,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 232,
+      "words": 57,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 233,
+      "words": 28,
+      "max": 35,
+      "gold": 8,
+      "commonPoints": 1,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 234,
+      "words": 60,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 235,
+      "words": 66,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 17,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 236,
+      "words": 65,
+      "max": 71,
+      "gold": 14,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 237,
+      "words": 67,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 238,
+      "words": 65,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 239,
+      "words": 55,
+      "max": 65,
+      "gold": 13,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 240,
+      "words": 74,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 241,
+      "words": 74,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 242,
+      "words": 68,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 243,
+      "words": 75,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 244,
+      "words": 79,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 245,
+      "words": 42,
+      "max": 45,
+      "gold": 9,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 246,
+      "words": 48,
+      "max": 55,
+      "gold": 11,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 247,
+      "words": 50,
+      "max": 57,
+      "gold": 11,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 248,
+      "words": 73,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 249,
+      "words": 75,
+      "max": 108,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 250,
+      "words": 67,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 251,
+      "words": 48,
+      "max": 61,
+      "gold": 12,
+      "commonPoints": 1,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 252,
+      "words": 80,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 253,
+      "words": 76,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 254,
+      "words": 79,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 255,
+      "words": 60,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 256,
+      "words": 75,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 257,
+      "words": 71,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 258,
+      "words": 74,
+      "max": 107,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 259,
+      "words": 73,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 260,
+      "words": 74,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 261,
+      "words": 79,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 262,
+      "words": 78,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 17,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 263,
+      "words": 76,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 264,
+      "words": 80,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 265,
+      "words": 64,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 266,
+      "words": 72,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 267,
+      "words": 61,
+      "max": 68,
+      "gold": 14,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 268,
+      "words": 79,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 269,
+      "words": 64,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 270,
+      "words": 69,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 271,
+      "words": 80,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 272,
+      "words": 79,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 273,
+      "words": 64,
+      "max": 72,
+      "gold": 14,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 274,
+      "words": 78,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 275,
+      "words": 76,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 22,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 276,
+      "words": 77,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 277,
+      "words": 79,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 278,
+      "words": 65,
+      "max": 72,
+      "gold": 14,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 279,
+      "words": 65,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 280,
+      "words": 72,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 281,
+      "words": 67,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 282,
+      "words": 77,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 283,
+      "words": 65,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 284,
+      "words": 80,
+      "max": 106,
+      "gold": 18,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 285,
+      "words": 79,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 286,
+      "words": 67,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 287,
+      "words": 79,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 288,
+      "words": 59,
+      "max": 68,
+      "gold": 14,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 289,
+      "words": 77,
+      "max": 99,
+      "gold": 18,
+      "commonPoints": 21,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 290,
+      "words": 77,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 291,
+      "words": 70,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 292,
+      "words": 77,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 293,
+      "words": 78,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 294,
+      "words": 76,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 295,
+      "words": 71,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 296,
+      "words": 79,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 297,
+      "words": 77,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 298,
+      "words": 56,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 299,
+      "words": 54,
+      "max": 62,
+      "gold": 12,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 300,
+      "words": 78,
+      "max": 84,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 301,
+      "words": 64,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 302,
+      "words": 46,
+      "max": 50,
+      "gold": 10,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 303,
+      "words": 73,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 304,
+      "words": 77,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 305,
+      "words": 79,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 306,
+      "words": 68,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 307,
+      "words": 73,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 308,
+      "words": 79,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 309,
+      "words": 77,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 310,
+      "words": 80,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 311,
+      "words": 67,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 312,
+      "words": 73,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 313,
+      "words": 76,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 314,
+      "words": 75,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 315,
+      "words": 59,
+      "max": 70,
+      "gold": 14,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 316,
+      "words": 70,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 317,
+      "words": 75,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 318,
+      "words": 68,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 319,
+      "words": 80,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 320,
+      "words": 77,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 321,
+      "words": 78,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 322,
+      "words": 73,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 323,
+      "words": 74,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 17,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 324,
+      "words": 80,
+      "max": 118,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 325,
+      "words": 74,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 326,
+      "words": 77,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 327,
+      "words": 60,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 328,
+      "words": 70,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 329,
+      "words": 79,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 330,
+      "words": 45,
+      "max": 54,
+      "gold": 11,
+      "commonPoints": 1,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 331,
+      "words": 75,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 332,
+      "words": 80,
+      "max": 105,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 333,
+      "words": 42,
+      "max": 56,
+      "gold": 11,
+      "commonPoints": 1,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 334,
+      "words": 70,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 335,
+      "words": 72,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 336,
+      "words": 79,
+      "max": 105,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 337,
+      "words": 70,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 338,
+      "words": 73,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 339,
+      "words": 80,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 340,
+      "words": 76,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 341,
+      "words": 68,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 342,
+      "words": 63,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 343,
+      "words": 79,
+      "max": 101,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 344,
+      "words": 71,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 345,
+      "words": 77,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 13,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 346,
+      "words": 79,
+      "max": 96,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 347,
+      "words": 54,
+      "max": 63,
+      "gold": 13,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 348,
+      "words": 57,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 349,
+      "words": 75,
+      "max": 104,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 350,
+      "words": 70,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 351,
+      "words": 74,
+      "max": 105,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 352,
+      "words": 60,
+      "max": 69,
+      "gold": 14,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 353,
+      "words": 78,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 354,
+      "words": 75,
+      "max": 99,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 355,
+      "words": 56,
+      "max": 61,
+      "gold": 12,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 356,
+      "words": 75,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 357,
+      "words": 77,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 358,
+      "words": 73,
+      "max": 95,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 359,
+      "words": 79,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 360,
+      "words": 46,
+      "max": 53,
+      "gold": 11,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 361,
+      "words": 73,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 362,
+      "words": 74,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 363,
+      "words": 68,
+      "max": 74,
+      "gold": 15,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 364,
+      "words": 77,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 365,
+      "words": 74,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 366,
+      "words": 55,
+      "max": 61,
+      "gold": 12,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 367,
+      "words": 75,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 368,
+      "words": 65,
+      "max": 79,
+      "gold": 16,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 369,
+      "words": 80,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 370,
+      "words": 78,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 15,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 371,
+      "words": 79,
+      "max": 98,
+      "gold": 18,
+      "commonPoints": 21,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 372,
+      "words": 54,
+      "max": 57,
+      "gold": 11,
+      "commonPoints": 3,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 373,
+      "words": 69,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 374,
+      "words": 75,
+      "max": 83,
+      "gold": 17,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 375,
+      "words": 80,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 16,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 376,
+      "words": 76,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 377,
+      "words": 78,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 378,
+      "words": 75,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 379,
+      "words": 79,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 380,
+      "words": 77,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 381,
+      "words": 69,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 4,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 382,
+      "words": 69,
+      "max": 80,
+      "gold": 16,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 383,
+      "words": 68,
+      "max": 76,
+      "gold": 15,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 384,
+      "words": 61,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 385,
+      "words": 78,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 386,
+      "words": 79,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 387,
+      "words": 66,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 388,
+      "words": 62,
+      "max": 66,
+      "gold": 13,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 389,
+      "words": 70,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 390,
+      "words": 64,
+      "max": 73,
+      "gold": 15,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 391,
+      "words": 74,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 18,
+      "commonListCanReachGold": true
+    },
+    {
+      "puzzle": 392,
+      "words": 78,
+      "max": 108,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 393,
+      "words": 80,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 394,
+      "words": 74,
+      "max": 91,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 395,
+      "words": 62,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 2,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 396,
+      "words": 79,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 397,
+      "words": 76,
+      "max": 115,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 398,
+      "words": 76,
+      "max": 104,
+      "gold": 18,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 399,
+      "words": 73,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 400,
+      "words": 75,
+      "max": 119,
+      "gold": 18,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 401,
+      "words": 68,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 402,
+      "words": 60,
+      "max": 77,
+      "gold": 15,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 403,
+      "words": 74,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 404,
+      "words": 76,
+      "max": 92,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 405,
+      "words": 74,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 406,
+      "words": 77,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 407,
+      "words": 78,
+      "max": 100,
+      "gold": 18,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 408,
+      "words": 75,
+      "max": 101,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 409,
+      "words": 77,
+      "max": 94,
+      "gold": 18,
+      "commonPoints": 17,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 410,
+      "words": 66,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 411,
+      "words": 79,
+      "max": 97,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 412,
+      "words": 72,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 413,
+      "words": 72,
+      "max": 81,
+      "gold": 16,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 414,
+      "words": 72,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 415,
+      "words": 76,
+      "max": 86,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 416,
+      "words": 52,
+      "max": 57,
+      "gold": 11,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 417,
+      "words": 67,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 418,
+      "words": 70,
+      "max": 78,
+      "gold": 16,
+      "commonPoints": 10,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 419,
+      "words": 71,
+      "max": 75,
+      "gold": 15,
+      "commonPoints": 5,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 420,
+      "words": 80,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 421,
+      "words": 74,
+      "max": 85,
+      "gold": 17,
+      "commonPoints": 12,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 422,
+      "words": 73,
+      "max": 87,
+      "gold": 17,
+      "commonPoints": 7,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 423,
+      "words": 79,
+      "max": 89,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 424,
+      "words": 69,
+      "max": 82,
+      "gold": 16,
+      "commonPoints": 14,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 425,
+      "words": 76,
+      "max": 90,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 426,
+      "words": 67,
+      "max": 73,
+      "gold": 15,
+      "commonPoints": 6,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 427,
+      "words": 73,
+      "max": 93,
+      "gold": 18,
+      "commonPoints": 8,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 428,
+      "words": 73,
+      "max": 88,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 429,
+      "words": 80,
+      "max": 111,
+      "gold": 18,
+      "commonPoints": 11,
+      "commonListCanReachGold": false
+    },
+    {
+      "puzzle": 430,
+      "words": 74,
+      "max": 99,
+      "gold": 18,
+      "commonPoints": 9,
+      "commonListCanReachGold": false
+    }
+  ]
+}

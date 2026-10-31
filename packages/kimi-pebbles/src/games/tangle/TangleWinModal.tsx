@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react'
-import { Check, Copy, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
+import { useState } from 'react'
+import { Share2, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { TIER_META, buildTangleShare, tierFor, type TanglePuzzle } from './engine'
-import { copyText, useCountdown } from '../shared/share'
+import type { TanglePuzzle } from './engine'
+import { buildTangleShareResult, type TangleShareResult } from './share-card'
+import { TangleSharePanel } from './TangleSharePanel'
+import { nativeMessage } from '../shared/integration'
+import { useCountdown } from '../shared/share'
 
 interface Props {
   open: boolean
@@ -10,6 +13,9 @@ interface Props {
   mode: 'daily' | 'practice'
   puzzle: TanglePuzzle
   puzzleNo: number
+  dayNumber: number
+  misses: number
+  hintsUsed: number
   found: string[]
   score: number
   onPractice: () => void
@@ -18,58 +24,35 @@ interface Props {
 }
 
 export function TangleWinModal(props: Props) {
-  const [copied, setCopied] = useState(false)
+  const [shareResult,setShareResult] = useState<Readonly<TangleShareResult>|null>(null)
   const countdown = useCountdown(props.open && props.mode === 'daily')
-  const tier = tierFor(props.score, props.puzzle.targets)
-  const bestFound = props.found.reduce((a, b) => (b.length > a.length ? b : a), '')
-
-  const shareText = useMemo(
-    () => buildTangleShare(props.puzzleNo, props.score, props.puzzle.max, props.found.length, props.puzzle.n, tier),
-    [props.puzzleNo, props.score, props.puzzle.max, props.found.length, props.puzzle.n, tier],
-  )
-
-  const copy = async () => {
-    await copyText(shareText)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1800)
+  const result = buildTangleShareResult({mode:props.mode,puzzleNo:props.puzzleNo,dayNumber:props.dayNumber,score:props.score,maxScore:props.puzzle.max,wordCount:props.found.length,totalWords:props.puzzle.n,targets:props.puzzle.targets,misses:props.misses,hintsUsed:props.hintsUsed})
+  const share = () => {
+    if (nativeMessage({type:'share',slug:'kimi-tangle',text:result.caption})) return
+    setShareResult(result)
   }
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl">
+      <DialogContent className="tangle-results max-w-sm rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-3xl font-extrabold">
-            {TIER_META[tier].icon} {tier === 3 ? 'Gold rush!' : `${TIER_META[tier].label}!`}
-          </DialogTitle>
+          <DialogTitle className="text-center font-display text-3xl">{shareResult ? 'Share your hunt' : result.headline}</DialogTitle>
           <DialogDescription className="sr-only">Puzzle results and sharing</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-4">
-          <div className="grid w-full grid-cols-3 gap-2 text-center">
-            <div className="rounded-2xl bg-secondary p-3">
-              <div className="font-display text-2xl font-extrabold">{props.score}</div>
-              <div className="text-xs font-bold text-muted-foreground">of {props.puzzle.max} pts</div>
-            </div>
-            <div className="rounded-2xl bg-secondary p-3">
-              <div className="font-display text-2xl font-extrabold">{props.found.length}</div>
-              <div className="text-xs font-bold text-muted-foreground">of {props.puzzle.n} words</div>
-            </div>
-            <div className="rounded-2xl bg-secondary p-3">
-              <div className="font-display text-2xl font-extrabold uppercase">{bestFound || '—'}</div>
-              <div className="text-xs font-bold text-muted-foreground">best find</div>
-            </div>
+        {shareResult ? <TangleSharePanel result={shareResult} onBack={() => setShareResult(null)} /> : <div className="flex flex-col items-center gap-4">
+          <p className="tangle-result-tier">{result.medal} · {result.assisted ? 'Clue used' : 'No clue used'}</p>
+          <div className="tangle-result-metrics">
+            <div><strong>{result.score}</strong><span>points · {result.maxScore} available</span></div>
+            <div><strong>{result.wordCount} / {result.totalWords}</strong><span>words found</span></div>
+            <div><strong>{result.goldTarget}</strong><span>Gold goal</span></div>
+            <div><strong>{result.misses}</strong><span>{result.misses === 1 ? 'miss' : 'misses'}</span></div>
           </div>
-          <p className="text-center text-sm font-semibold text-muted-foreground">
-            Today's hidden gem was <span className="font-display font-extrabold uppercase">{props.puzzle.best}</span>.
-            You can keep hunting after closing this.
-          </p>
-
+          <p className="text-center text-sm text-muted-foreground">Your hunt can continue. Close this to find another word.</p>
+          <button type="button" onClick={() => props.onOpenChange(false)} className="btn3d btn3d-soft h-12 w-full">Keep hunting</button>
+          <button type="button" onClick={share} className="btn3d btn3d-accent h-12 w-full"><Share2 className="h-5 w-5" />Share progress</button>
           {props.mode === 'daily' ? (
             <>
-              <button type="button" onClick={copy} className="btn3d btn3d-accent h-12 w-full text-base">
-                {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-                {copied ? 'Copied!' : 'Share result'}
-              </button>
               <div className="text-center">
                 <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Next web in</div>
                 <div className="font-display text-2xl font-extrabold tabular-nums">{countdown}</div>
@@ -90,7 +73,7 @@ export function TangleWinModal(props: Props) {
               </button>
             </div>
           )}
-        </div>
+        </div>}
       </DialogContent>
     </Dialog>
   )

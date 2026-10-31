@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { Script } from 'node:vm';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import ts from 'typescript';
 import { isNativeEnter } from '../src/games/shared/keyboard.ts';
 
@@ -63,31 +65,20 @@ for (const [board, expected] of [
   });
 }
 
-function tanglePointer(binding) {
-  const source = sourceFor('tangle/TangleBoard');
-  const name = source.match(new RegExp(`${binding}=\\{(\\w+)\\}`))?.[1];
-  assert.ok(name, `${binding}: production handler exists`);
-  const callback = source.match(new RegExp(`  const ${name} = useCallback\\([\\s\\S]*?\\n  \\}, \\[[^\\]]*\\]\\)`))?.[0];
-  assert.ok(callback, `${name}: production callback exists`);
-  let submissions = 0;
-  const dragging = { current: true }, moved = { current: true };
-  new Script(compile(`${callback}\n${name}();`)).runInNewContext({
-    useCallback: fn => fn, dragging, moved, pathRef: { current: [0, 1, 2] },
-    actions: { submitPath: () => { submissions++; } },
-  });
-  return { submissions, dragging: dragging.current, moved: moved.current };
+function tanglePointer(scenario) {
+  execFileSync(process.execPath,['--import','tsx',fileURLToPath(new URL('./helpers/tangle-review-dom.mjs',import.meta.url)),scenario],{cwd:fileURLToPath(new URL('..',import.meta.url)),stdio:'pipe'});
 }
-
-test('Tangle pointer cancellation ends the gesture without submitting a word', () => {
-  assert.deepEqual(tanglePointer('onPointerCancel'), { submissions: 0, dragging: false, moved: false });
-});
-
-test('Tangle an ordinary completed drag still submits exactly once', () => {
-  assert.deepEqual(tanglePointer('onPointerUp'), { submissions: 1, dragging: false, moved: false });
-});
+test('Tangle pointer cancellation ends the gesture without submitting a word',()=>tanglePointer('cancel'));
+test('Tangle an ordinary completed drag still submits exactly once',()=>tanglePointer('inside'));
 
 test('Morph ignores a consumed palette key after its dialog has closed', () => {
   const game = keyboard('morph/MorphBoard');
   game.press('z', 'BODY', { defaultPrevented: true });
   assert.deepEqual(game.calls, [], 'a key consumed by the palette cannot also edit the underlying row');
+});
+
+test('Tangle ignores an already-consumed editing shortcut', () => {
+  const game=keyboard('tangle/TangleBoard');
+  game.press('Backspace','BODY',{defaultPrevented:true});
+  assert.deepEqual(game.calls,[]);
 });

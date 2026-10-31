@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-30",
+  "sourceBaseCommit": "2ebc0413c88b3c8cc48bb51f0eb624e216b2bbb1",
+  "catalogTests": {
+    "passed": 899,
+    "failed": 0
+  },
+  "packageTests": {
+    "passed": 184,
+    "failed": 0
+  },
+  "finalFocusedTests": 32,
+  "testScope": "Separate catalog/package suites; focused tests overlap package. All pass on final source. DOM event burst/prefix/context-menu regressions failed before fixes. Existing source-extraction pointer checks were replaced by real React DOM pointer fixtures.",
+  "browserChecks": 42,
+  "browserErrors": [],
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "nativeRuntimeParity": {
+    "files": 284,
+    "exactFileAndSHA256Match": true,
+    "compiledProduct": "output/tangle-review-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Web",
+    "signed": false,
+    "physicalDeviceTested": false
+  },
+  "stage": "dist/tangle-review-20261030-final/web",
+  "webBuildId": "1663e82dac1ed8df",
+  "manifestAssets": 316,
+  "stagedFiles": 318,
+  "unchangedTangleCore": [
+    "engine.ts",
+    "useTangle.ts",
+    "progress.ts",
+    "reviewed-words.ts",
+    "data/puzzles.json"
+  ],
+  "contentAudit": {
+    "boards": 430,
+    "distinctRotationReflectionGrids": 430,
+    "rawWordPaths": 30688,
+    "reviewedWordPaths": 30599,
+    "distinctAcceptedWords": 9155,
+    "maxWordBoardRecurrence": 60,
+    "wordsPerBoard": {
+      "min": 28,
+      "max": 80
+    },
+    "maximumPointsPerBoard": {
+      "min": 35,
+      "max": 119
+    },
+    "goldThreshold": {
+      "min": 8,
+      "max": 18
+    },
+    "boardsWithCommonListPointsForGold": 14,
+    "exactReviewedExclusions": 12,
+    "method": "Independent four-by-four/eight-way/nonreusing path enumeration for every raw and default-reviewed accepted word, point/count/threshold validation, grid rotation/reflection identity and supplied-common-list point totals. Common-list membership and path construction are not human familiarity, completeness of the dictionary, semantic variety or measured difficulty."
+  },
+  "jamesVerdict": "Tangle enjoyment/replay/rating/disposition pending. Morph is now a keeper from exact keeper, next.",
+  "modelReview": {
+    "baseline": [
+      "kimi-code/k3.1-pro",
+      "gemini-3.8-flash-high",
+      "claude-opus-5-5"
+    ],
+    "final": "claude-opus-5-5",
+    "finalFindings": {
+      "critical": 0,
+      "important": 1,
+      "minor": 4
+    },
+    "disposition": "Move\u2192up event burst reproduced RED, flushSync path writes GREEN; native tile activation and clue-found status verified. Data assertion refuted by all-board audit. Screen-reader live-region polish remains. No model rerun after verified author fixes."
+  },
+  "additionalAuthorFinding": "WebKit native right-click menu intercepted subsequent page clicks. Control run without menu worked; grid contextmenu prevention RED\u2192GREEN and full browser flow passed.",
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "deferredMinors": [
+    "Current-word live-region announcement timing/verbosity needs screen-reader validation."
+  ],
+  "limitations": [
+    "Only14of430 reviewed grids have enough points forGold using the supplied common list; incompleteness of that list prevents a claim that the other416require obscure words. Human vocabulary/fun/difficulty judgment remains open.",
+    "Existing localStorage concurrency and daily rollover contract unchanged.",
+    "No physical touch/assistive-technology/share-sheet certification; older Canvas without roundRect retains captions.",
+    "No verified free DeepSeek route used; no endorsement inferred."
+  ],
+  "sourceFileSHA256": {
+    "packages/kimi-pebbles/src/games/tangle/TangleBoard.tsx": "af058ba90bb94519d6bb00c8423c6cf45542d922ceea94822bd84c160aee787a",
+    "packages/kimi-pebbles/src/games/tangle/TangleHelpModal.tsx": "5d99d1ceddb0952aaaa80ab81fdb2748b03a2d9887d914809c49cc276c838e60",
+    "packages/kimi-pebbles/src/games/tangle/TanglePage.tsx": "0848a01b916ae764a28789036cb27d54830f71d7f2d32f5e226ecba699c53758",
+    "packages/kimi-pebbles/src/games/tangle/TangleSharePanel.tsx": "546de04d1f069fe668255a4f78afe6fb1ad070e01e9dd844794ae78c9c6d42e4",
+    "packages/kimi-pebbles/src/games/tangle/TangleWinModal.tsx": "274d0c371713925a73ad7c212d4a037cd6e36c9d64eb21df19b720e31f58b491",
+    "packages/kimi-pebbles/src/games/tangle/engine.ts": "22ac6b5a34ea3a02dcfbc4bfd618b0185a0565ffc92d9af0167367af44eda12b",
+    "packages/kimi-pebbles/src/games/tangle/progress.ts": "a56cc6026a93a8b21de15e78b625a3466384c7ed1906b0da35b03056292feeaa",
+    "packages/kimi-pebbles/src/games/tangle/reviewed-words.ts": "81f88569a63398ec212f1257ee7aa89ffc1781683c98f50d79a5c581e01fc982",
+    "packages/kimi-pebbles/src/games/tangle/share-card.ts": "dda45ed33f555e1aa2be12a726ddc3c653947fd72a9f7105c4a5332021826d5c",
+    "packages/kimi-pebbles/src/games/tangle/useTangle.ts": "d3fc7ecc84ca4f94a026d806d46c4f09a8cecb60772bc10dad6aff10643d125d"
+  },
+  "desktopCapture": "Fresh1440x1000 current-Chrome capture replaces old-driver resize/compositor artifact; DOM confirms one header and main. No product change."
+}

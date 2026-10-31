@@ -1,0 +1,42 @@
+✔ Cairn explains rack placement and distinguishes each empty or removable position (105.327125ms)
+✔ Morph identifies the edit position and explains tapping before opening the letter sheet (19.352333ms)
+✔ Hunch gives visible non-color result marks and a persistent interpretation key (17.334166ms)
+✔ Tangle keeps its consumed clue visible and numbers the selected route without color (20.780042ms)
+✔ Circuit names arcs visibly and describes the next legal action before an error (33.423667ms)
+✔ Quartet makes its saved pair clue available as text and names both hinted cards (9.980958ms)
+✔ cairn/GameBoard: Enter preserves focused button activation instead of submitting a game move (1.701ms)
+✔ cairn/GameBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.959917ms)
+✔ hunch/HunchBoard: Enter preserves focused button activation instead of submitting a game move (0.918125ms)
+✔ hunch/HunchBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.525791ms)
+✔ morph/MorphBoard: Enter preserves focused button activation instead of submitting a game move (0.784416ms)
+✔ morph/MorphBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.58975ms)
+✔ tangle/TangleBoard: Enter preserves focused button activation instead of submitting a game move (0.747833ms)
+✔ tangle/TangleBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.212083ms)
+✔ cairn/GameBoard: letter typing still works with body or a board tile focused (1.389208ms)
+✔ hunch/HunchBoard: letter typing still works with body or a board tile focused (4.624458ms)
+✔ morph/MorphBoard: letter typing still works with body or a board tile focused (1.202708ms)
+✔ Tangle pointer cancellation ends the gesture without submitting a word (476.617375ms)
+✔ Tangle an ordinary completed drag still submits exactly once (488.264125ms)
+✔ Morph ignores a consumed palette key after its dialog has closed (1.216667ms)
+✔ Tangle ignores an already-consumed editing shortcut (0.83125ms)
+✔ Tangle UI outside: safe path and clue interaction (496.658625ms)
+✔ Tangle UI secondary: safe path and clue interaction (484.091833ms)
+✔ Tangle UI stale: safe path and clue interaction (494.551833ms)
+✔ Tangle UI assistive: safe path and clue interaction (485.404625ms)
+✔ Tangle UI clue: safe path and clue interaction (532.084042ms)
+✔ Tangle UI burst: safe path and clue interaction (491.596084ms)
+✔ Tangle UI resolved: safe path and clue interaction (491.198958ms)
+✔ Tangle UI contextmenu: safe path and clue interaction (484.260208ms)
+✔ Tangle snapshot distinguishes ongoing, gold and all-listed progress without ending the hunt (0.337791ms)
+✔ Tangle snapshot freezes played identity and contains only aggregates, never grid/words/path/clue (0.105125ms)
+✔ Tangle snapshot rejects inconsistent score/counts, invalid targets and invalid daily identity (0.13425ms)
+(node:8373) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5615.285125

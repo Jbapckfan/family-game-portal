@@ -22,4 +22,4 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-Cairn is a keeper from James’s “keeper, go next.” [Morph’s revised game and verification](morph/REPORT.md) · [review comparison and decisions](morph/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-30-morph-review.md). Morph’s preference remains pending; Kimi’s Tangle follows.
+Morph is a keeper from James’s “keeper, next.” [Kimi Tangle’s revised game and verification](tangle-kimi/REPORT.md) · [review comparison and decisions](tangle-kimi/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-30-tangle-review.md). Tangle’s preference remains pending; Hunch follows. This is distinct from Claude’s later Tangle game.

@@ -21,7 +21,7 @@
   --gold-face:43 69% 33%;--gold-edge:43 61% 23%;--dim-face:200 8% 40%;--dim-edge:200 8% 27%;
 }
 html[data-game-id='kimi-morph']{--identity:#315dc2;--identity-hsl:222 60% 48%;--identity-soft:#e7eefc;--identity-dark:#24499c;--slot-edge:222 62% 32%;--grape-edge:222 62% 32%;--secondary:215 30% 93%;--secondary-foreground:209 30% 25%}
-html[data-game-id='kimi-tangle']{--identity:#527b35;--identity-hsl:95 40% 35%;--identity-soft:#e8eedc;--identity-dark:#355225;--slot-edge:95 38% 24%;--grape-edge:95 38% 24%}
+html[data-game-id='kimi-tangle']{--identity:#287d8a;--identity-hsl:188 55% 35%;--identity-soft:#e5f1f4;--identity-dark:#1d5058;--slot-edge:188 47% 23%;--grape-edge:188 47% 23%;--secondary:190 25% 93%;--secondary-foreground:205 25% 25%}
 html[data-game-id='kimi-hunch']{--identity:#94701c;--identity-hsl:43 68% 35%;--identity-soft:#f0e8d0;--identity-dark:#65501d;--slot-edge:43 56% 24%;--grape-edge:43 56% 24%}
 html[data-game-id='kimi-circuit']{--identity:#287d8a;--identity-hsl:188 55% 35%;--identity-soft:#e0eeed;--identity-dark:#1d5058;--slot-edge:188 47% 23%;--grape-edge:188 47% 23%}
 html[data-game-id='kimi-quartet']{--identity:#9a4f74;--identity-hsl:330 32% 46%;--identity-soft:#f0e3e9;--identity-dark:#6b3650;--slot-edge:330 33% 30%;--grape-edge:330 33% 30%}
@@ -147,19 +147,18 @@ html[data-game-id='kimi-cairn']{--identity:#315dc2;--identity-hsl:222 60% 48%;--
 .morph-board>.mt-6{gap:12px;margin-top:18px}.morph-board .flex.items-center.justify-center.gap-2{flex-wrap:wrap}
 .morph-letter-palette{padding-top:22px}.morph-letter-palette [aria-pressed='true']{border:2px solid #315dc2;background:#e7efff;color:#24499c}.morph-route-goal,.morph-help-blue{color:#315dc2}.morph-help-change{color:#24499c;border-bottom:2px solid #315dc2}
 .morph-result-pace{margin:0;text-align:center;color:#253e66;font-size:18px;font-weight:600}.morph-result-assistance{margin:-8px 0 0;color:#52667a;font-size:13px;text-align:center}.morph-result-ladders>div{background:#f0f5fc;border:1px solid #d2deed;border-radius:12px}.morph-result-word{font-size:18px;color:#253e66;line-height:1.7}
-/* TANGLE — a planted field with leaf-shaped letter tiles and a live trail. */
-.kimi-tangle .kimi-stage{background:#fbfcf4;border-color:#d3dcc2}
-.tangle-growth{height:7px;background:#e4e9d7;margin-top:12px}
-.tangle-growth>div:first-child{background:#527b35}
-.tangle-growth>.absolute{width:2px;height:13px;top:-3px;background:#87976e}
-.tangle-field{width:calc(100% - 24px);max-width:340px;margin-top:26px;margin-bottom:14px;box-shadow:0 0 0 11px #e6edd9,0 0 0 12px #c6d2b3;border-radius:17px}
-.tangle-field .tile3d{width:100%;height:auto;aspect-ratio:1;border-radius:15px 5px 15px 5px;background:#f9fbef;border:1px solid #bdcba9;box-shadow:0 3px 0 #b6c59e;color:#36552c;font-size:clamp(23px,6vw,31px)}
-.tangle-field .tile-slot{background:#527b35;color:#fff;border-color:#3e5f2c;box-shadow:0 3px 0 #3e5f2c}
-.tangle-field .tile-new{background:#9a782d;color:#fff;border-color:#735b23;box-shadow:0 3px 0 #735b23}
-.tangle-field polyline{opacity:.38}
-.tangle-found{border-top:1px solid #dae2ca;padding-top:14px}
-.tangle-found>div:first-child{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px}
-.tangle-found .rounded-full{background:#e8efdc;border:1px solid #d4dfc3;font-family:'DM Sans',sans-serif;color:#465e35;font-size:11px}
+/* TANGLE — a clear ordered trace through cool letter tiles. */
+.kimi-tangle .kimi-stage{background:#fbfcfe;border-color:#c8dce3;border-radius:24px}
+.tangle-score-row{gap:8px}.tangle-medal{font-size:13px;color:#235f69}.tangle-score-detail{align-self:flex-start;font-size:13px;color:#52667a;margin:4px 0 2px}
+.tangle-growth{height:9px;background:#e4edf5;margin-top:10px}.tangle-growth>.absolute{width:2px;height:15px;top:-3px;background:#718aa0}.tangle-thresholds{font-size:11px;letter-spacing:0;color:#52667a}
+.tangle-selection{position:sticky;top:8px;z-index:30;width:100%;min-height:66px;padding:8px;background:#f7fbff;border:1px solid #ccddeb;border-radius:12px;text-align:center;box-shadow:0 4px 10px #203e5810}
+.tangle-selection>span:first-child{min-width:0;overflow-wrap:anywhere}.tangle-current-word{color:#24499c;font-family:'DM Sans',sans-serif;font-size:24px;font-weight:700;letter-spacing:.08em}.tangle-selection .line-through{font-family:'DM Sans',sans-serif;font-size:24px}
+.tangle-field{width:calc(100% - 20px);max-width:340px;margin-top:24px;margin-bottom:14px;box-shadow:0 0 0 9px #e8f1f6,0 0 0 10px #bdd1df;border-radius:14px}
+.tangle-field .tile3d{width:100%;height:auto;aspect-ratio:1;border-radius:10px;background:#fbfdff;border:1px solid #b7ccdc;box-shadow:0 3px 0 #c5d8e6;color:#253e66;font-size:clamp(26px,6.5vw,33px)}
+.tangle-field .tile-slot{background:#287d8a;color:#fff;border-color:#1d5058;box-shadow:0 3px 0 #1d5058,0 0 0 2px #a7d6e4}.tangle-field .tile-new{background:#315dc2;color:#fff;border:2px solid #24499c;box-shadow:0 3px 0 #24499c,0 0 0 3px #a9c5ff}
+.tangle-field [data-path-order]{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1;color:#fff}.tangle-field polyline{opacity:.8;stroke:#315dc2}
+.tangle-found{border-top:1px solid #d1e0e9;padding-top:14px}.tangle-found>div:first-child{font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.04em}.tangle-found .rounded-full{background:#edf5fa;border:1px solid #c5dbe7;font-family:'DM Sans',sans-serif;color:#253e66;font-size:15px}
+.tangle-result-tier{margin:0;font-size:16px;color:#235f69;text-align:center}.tangle-result-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}.tangle-result-metrics>div{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f0f6fa;border:1px solid #cbdce8;border-radius:12px;padding:14px 6px;text-align:center}.tangle-result-metrics strong{font-family:'DM Serif Display',Georgia,serif;font-size:29px;font-weight:400;color:#253e66}.tangle-result-metrics span{font-size:12px;color:#52667a}
 
 /* HUNCH — a mustard-edged letterpress case, with compact mechanical keys. */
 .kimi-hunch .kimi-stage{background:#fffdf5;border-color:#daceac}
@@ -222,3 +221,5 @@ html[data-game-id='kimi-cairn']{--identity:#315dc2;--identity-hsl:222 60% 48%;--
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 .morph-share-panel{display:flex;flex-direction:column;gap:12px;min-width:0}.morph-share-formats{display:flex;gap:8px}.morph-share-formats button{flex:1;min-height:44px;border:1px solid #bdcde2;border-radius:9px;color:#253e66;background:#f8fbff;font-weight:600}.morph-share-formats button[aria-pressed='true']{background:#e7efff;border:2px solid #315dc2}.morph-share-panel canvas{display:block;max-width:100%;width:auto;max-height:330px;align-self:center;border-radius:8px;border:1px solid #c6d4e3;object-fit:contain}.morph-share-status{font-size:13px;color:#52667a;margin:0}.morph-share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.morph-share-actions button{padding:6px}.morph-share-actions button:first-child{grid-column:1/-1}.morph-share-panel textarea{width:100%;height:130px;margin-top:8px;padding:10px;font-size:14px;border:1px solid #bdcde2;border-radius:8px;background:#fff}.morph-share-panel summary{cursor:pointer;min-height:36px;font-size:13px;color:#315dc2}.morph-share-back{min-height:44px;text-decoration:underline;color:#315dc2}
+
+.tangle-share-panel{display:flex;flex-direction:column;gap:12px;min-width:0}.tangle-share-formats{display:flex;gap:8px}.tangle-share-formats button{flex:1;min-height:44px;border:1px solid #bdcde2;border-radius:9px;color:#253e66;background:#f8fbff;font-weight:600}.tangle-share-formats button[aria-pressed='true']{background:#e7efff;border:2px solid #315dc2}.tangle-share-panel canvas{display:block;max-width:100%;width:auto;max-height:330px;align-self:center;border-radius:8px;border:1px solid #c6d4e3;object-fit:contain}.tangle-share-status{font-size:13px;color:#52667a;margin:0}.tangle-share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tangle-share-actions button{padding:6px}.tangle-share-actions button:first-child{grid-column:1/-1}.tangle-share-panel textarea{width:100%;height:130px;margin-top:8px;padding:10px;font-size:14px;border:1px solid #bdcde2;border-radius:8px;background:#fff}.tangle-share-panel summary{cursor:pointer;min-height:36px;font-size:13px;color:#315dc2}.tangle-share-back{min-height:44px;text-decoration:underline;color:#315dc2}

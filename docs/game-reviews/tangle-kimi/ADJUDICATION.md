@@ -1,0 +1,19 @@
+# Kimi Tangle review decisions
+
+| Finding | Decision and evidence |
+|---|---|
+| All: outside/secondary pointers could charge attempts | Reproduced in React DOM. One primary pointer/capture/identity is tracked; outside/cancel preserves the free preview, secondary/mismatched release cannot submit, stale board/found/phase and blur cancel. Actual Chrome/WebKit pointer flows pass. |
+| Opus final Important: last move can be lost before release | RED move→up in one React event batch submitted zero instead of the complete path. Synchronous UI path commits fix it without changing the hook/score rules. GREEN focused/package tests and rapid real pointer traces in both browsers. |
+| Native assistive click and keyboard | Added semantic button activation; native Enter/Space now use the same click path rather than a custom keydown handler. Consumed/modifier shortcuts are guarded. DOM assistive-click plus real Chrome/WebKit keyboard hunts pass. No physical screen-reader certification. |
+| Author verification: WebKit right-click swallowed subsequent Check clicks | Event capture showed no subsequent page pointer events. A no-right-click control worked. Grid contextmenu prevention failed RED, then passed GREEN; full tests now include right-click and later Check actions. No scoring bypass or forced test-click workaround. |
+| All: clue silently consumed/omitted in share | Confirm the one allowance, freeze approval identity, guard double approval, persist prefix as before, disclose clue use. All matching4+words found changes the visible clue to found. DOM consent/resolution and actual reload/limit checks pass. |
+| All: automatic best-word reveal spoils continued play | Removed the unearned word reveal from results. It never appeared in the old share text, so this was an in-game spoiler rather than an existing caption leak. Scores/bank unchanged. |
+| All: meter, tiny chips, brown endpoint/low-contrast medal labels | Blue/teal, larger readable words/order marks, explicit text medal/Goldgoal and an accessible Gold-scaled meter. Total available points remain clear; thresholds unchanged. |
+| All: sharing lacks date, ongoing/Practice, image and honest feedback | Frozen aggregate snapshot/native text first/browser PNG/cancel/download/copy/manual implemented. Clue assistance and misses included. No words or per-word pattern exported. Actual files and mocked platform boundaries verified. |
+| Claimed repeated restoredGold celebration | Rejected: source already requires winShownOnce and restore sets it false. Preserved earned celebration; browser restoredGold has no auto-dialog/confetti. |
+| Vocabulary concern | Recorded14boards with enough Gold points in the supplied common list; do not infer the other416necessarily require obscure words. Gemini’s stronger wording and “best usually8+letters” generalization are unsupported by this audit. All30599reviewed paths and scores are valid, but no human-familiarity certification is claimed. Published bank/scoring preserved. |
+| Final Opus data assertion: Gold could exceed max | No current-bank defect: every reviewed max is at least35, Gold is at most18, raw max cannot be lower than its reviewed subset. Existing all-board/dated/legacy tests and independent audit verify reachable Gold. No hypothetical future-bank scoring change added. |
+
+Final Opus predicted **0Critical,1Important,4Minor**. The material event-burst issue was reproduced/fixed; native activation and completed-clue polish were addressed. The data assertion is refuted for the actual bank. Current-word live-region timing/verbosity remains a minor requiring screen-reader validation. There was no second model review after the independently verified fixes.
+
+Morph’s keeper verdict is saved; Tangle’s preference remains pending. Model predictions stay separate. Freshness means distinct dated configurations with verified paths, not human-approved vocabulary or measured replay enjoyment. Hunch follows.

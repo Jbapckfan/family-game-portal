@@ -1,0 +1,103 @@
+✔ Tangle UI outside: safe path and clue interaction (461.816584ms)
+✔ Tangle UI secondary: safe path and clue interaction (455.391792ms)
+✔ Tangle UI stale: safe path and clue interaction (463.614291ms)
+✔ Tangle UI assistive: safe path and clue interaction (449.44525ms)
+✔ Tangle UI clue: safe path and clue interaction (498.948625ms)
+✖ Tangle UI burst: safe path and clue interaction (460.457292ms)
+✖ Tangle UI resolved: safe path and clue interaction (453.133875ms)
+(node:6379) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3278.643625
+
+✖ failing tests:
+
+test at tests/tangle-review.test.mjs:2:93
+✖ Tangle UI burst: safe path and clue interaction (460.457292ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-review-dom.mjs burst
+  (node:6396) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-review-dom.mjs:17:543) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/tangle-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 36 33 39 36 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 2e ... 588 more bytes> ],
+    pid: 6396,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 36 33 39 36 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 2e ... 588 more bytes>
+  }
+
+test at tests/tangle-review.test.mjs:2:93
+✖ Tangle UI resolved: safe path and clue interaction (453.133875ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-review-dom.mjs resolved
+  (node:6397) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /found/i. Input:
+  
+  'Saved clue: a word starts with AB.'
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-review-dom.mjs:12:120) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Saved clue: a word starts with AB.',
+    expected: /found/i,
+    operator: 'match',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/tangle-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 36 33 39 37 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 2e ... 679 more bytes> ],
+    pid: 6397,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 36 33 39 37 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 2e ... 679 more bytes>
+  }

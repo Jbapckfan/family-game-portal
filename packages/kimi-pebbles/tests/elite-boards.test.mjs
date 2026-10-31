@@ -52,7 +52,7 @@ test('Hunch gives visible non-color result marks and a persistent interpretation
 });
 
 test('Tangle keeps its consumed clue visible and numbers the selected route without color', () => {
-  const document = render('tangle', { phase: 'playing', puzzle: { g: 'finishabcdefghjk', targets: [3, 6, 9], max: 30, n: 10 }, path: [0, 1, 2], found: [], score: 0, misses: 0, hintsUsed: 1, hintPrefix: 'fi' });
+  const document = render('tangle', { phase: 'playing', puzzle: { g: 'finishabcdefghjk', words: ['fini'], targets: [3, 6, 9], max: 30, n: 10 }, path: [0, 1, 2], found: [], score: 0, misses: 0, hintsUsed: 1, hintPrefix: 'fi' });
   assert.match(document.querySelector('[data-tangle-clue]')?.textContent ?? '', /FI/);
   assert.deepEqual([...document.querySelectorAll('[data-path-order]')].map(el => el.textContent), ['1', '2', '3']);
   assert.equal(document.querySelector('[data-cell="2"]').getAttribute('aria-pressed'), 'true');

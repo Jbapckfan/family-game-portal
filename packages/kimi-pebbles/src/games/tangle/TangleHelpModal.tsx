@@ -16,12 +16,12 @@ export function TangleHelpModal({ open, onOpenChange }: { open: boolean; onOpenC
           <ul className="flex flex-col gap-1.5">
             <li>• Words are 3+ letters; each letter cell can be used once per word</li>
             <li>• Longer words score more: 3–4 letters = 1 pt, 5 = 2, 6 = 3, 7 = 5, 8+ = 11</li>
-            <li>• Climb the meter: 🥉 bronze → 🥈 silver → 🥇 <strong>gold wins the day</strong></li>
+            <li>• Follow the Bronze, Silver and <strong>Gold point goals</strong>. Gold completes the daily goal; keep hunting afterward.</li>
           </ul>
           <p className="text-muted-foreground">
-            Slide back one letter to undo it; tap the last letter again (or ✓) to submit. One free hint per round. A new
-            web tangles up every midnight — keep hunting after gold to find every word.
+            Drag through touching letters, then release on a letter to check the word. Releasing outside the grid keeps a free preview. Slide back one letter to undo it. You can also tap letters, then Check; tap the last letter again to submit. Keyboard: focus a letter and use Space or Enter to select, or focus Check to submit. Escape clears and Backspace removes the last letter.
           </p>
+          <p className="text-muted-foreground">A word not in this grid’s word list counts as one miss. Short or already-found words cost no points or misses. One two-letter clue is available per round and stays saved; using it is recorded on your result without changing points. New grids arrive at midnight in Central Time. Some accepted words may be uncommon.</p>
         </div>
       </DialogContent>
     </Dialog>

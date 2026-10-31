@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useTangle } from './useTangle'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
-import { readIntegrationValue, writeIntegrationValue } from '../shared/integration'
-import { dateLabel } from '../shared/share'
+import { centralDayNumber, dateForDayNumber, readIntegrationValue, writeIntegrationValue } from '../shared/integration'
 import { GameHeader } from '../shared/GameHeader'
 import { SimpleStatsModal } from '../shared/SimpleStatsModal'
 import { PracticeBanner, ToastHost, fireConfetti } from '../shared/effects'
@@ -33,8 +32,7 @@ export default function TanglePage() {
   useEffect(() => {
     if (!state.goldReached || !state.winShownOnce) return
     fireConfetti()
-    // mark shown so reopening later doesn't auto-celebrate again
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // The hook sets winShownOnce only on a fresh Gold crossing; restore leaves it false.
   }, [state.goldReached, state.winShownOnce])
 
   return (
@@ -45,7 +43,7 @@ export default function TanglePage() {
         busy={state.phase === 'loading'}
         onPractice={startPractice}
         onDaily={backToDaily}
-        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
+        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateForDayNumber(state.dayNumber)}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
@@ -56,7 +54,7 @@ export default function TanglePage() {
         {state.mode === 'practice' && <PracticeBanner onExit={backToDaily} />}
         <div className="kimi-stage my-auto w-full" data-game-ready={state.phase === 'playing' ? 'true' : undefined}>
           <TangleBoard state={state} actions={actions} />
-          {state.goldReached && (
+          {state.found.length > 0 && (
             <div className="mb-8 flex justify-center">
               <button type="button" data-game-results onClick={() => setWinOpen(true)} className="btn3d btn3d-accent h-12 px-6 text-base">
                 See results
@@ -71,14 +69,18 @@ export default function TanglePage() {
       </footer>
 
       <TangleHelpModal open={helpOpen} onOpenChange={setHelpOpen} />
-      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={state.stats} title="Your webs" />
-      {state.puzzle && (
+      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={{...state.stats,currentStreak:state.stats.lastCompletedDay !== null && state.stats.lastCompletedDay >= centralDayNumber()-1 ? state.stats.currentStreak : 0}} title="Your webs" />
+      {state.puzzle && winOpen && (
         <TangleWinModal
-          open={winOpen && state.goldReached}
+          key={`${state.mode}:${state.dayNumber}:${state.puzzleNo}:${state.puzzle.max}`}
+          open={true}
           onOpenChange={setWinOpen}
           mode={state.mode}
           puzzle={state.puzzle}
           puzzleNo={state.puzzleNo}
+          dayNumber={state.dayNumber}
+          misses={state.misses}
+          hintsUsed={state.hintsUsed}
           found={state.found}
           score={state.score}
           onPractice={() => {

@@ -29,3 +29,5 @@ The first cross-tab harness asserted a terminal state before its writer committe
 The current all-games build preserves all 32 daily games and the nine-board bonus. Compiled entrypoints were regenerated and the iOS Web files synchronized with exact byte parity. Existing runtime backups and raw test outputs remain in ignored output folders. The owned visible preview reuses one tab, showing Hunch’s independent help example without solving James’s Daily. No deployment or access change was made.
 
 Minor follow-ups: the unused legacy share formatter remains for compatibility; key absent labels reuse the more verbose tile wording; fast repeated invalid guesses may show toast feedback without replaying the shake animation. Human fun, answer familiarity, physical touch/audio, native image export and sustained device performance remain unverified.
+
+[Delivery receipt](evidence/delivery.json) identifies the remotely verified implementation checkpoint and the exact all-games archive hash. A following documentation-only commit records delivery; the ZIP intentionally freezes the named implementation checkpoint.

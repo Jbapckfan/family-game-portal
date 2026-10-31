@@ -26,7 +26,7 @@
 2. [x] Failing regressions for dictionary completeness, fresh/restored finish, free duplicate submissions, safe clue confirmation, keyboard ownership and spoiler-free sharing.
 3. [x] Implement Hunch-only dictionary, targeted hook/UI fixes, cool readable board/keyboard, interactive rules and completed-result export.
 4. [x] Focused tests, full package/catalog suites, independent audit, Chrome/WebKit win/loss/Practice/restore/share flows, offline all-games and native Web byte parity; fresh source review and adjudication.
-5. [ ] Reuse the current tab for Hunch; save exact Tangle feedback and Hunch’s pending verdict. Commit/push/verify feature branch and package the current all-games build.
+5. [x] Reuse the current tab for Hunch; save exact Tangle feedback and Hunch’s pending verdict. Commit/push/verify feature branch and package the current all-games build.
 
 ## Initial evidence
 
@@ -35,3 +35,5 @@ Baseline: 937 unique five-letter answers, all present in the supplied common lis
 ## Final verification
 
 212 package tests, 899 catalog tests, 54 Chrome/WebKit checks and 11 offline-worker checks passed. App/node TypeScript and Vite passed. Native Web parity: 285 exact runtime files. Stage 0b4709d7e8cd3871 has 319 files and 317 hash-verified manifest entries. No fresh native compile or hardware play. Hunch is open in the one existing game tab, with its help inspected; verdict pending. Commit/push/package complete this delivery.
+
+Implementation checkpoint `f44770a0fbc067db7e6817ed4a9953f0dc41932f` was pushed to the existing private feature branch and verified via GitHub API. The all-games ZIP was hash-verified by the packaging tool; see `docs/game-reviews/hunch/evidence/delivery.json`. Hunch remains open for James’s verdict.

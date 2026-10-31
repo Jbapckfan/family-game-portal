@@ -1,0 +1,1274 @@
+{
+  "buildId": "0b4709d7e8cd3871",
+  "bytes": 10923729,
+  "assets": [
+    {
+      "url": "404.html",
+      "sha256": "b769cf89f9126658a996b407e8e6e5bcbc199f0599e08e2cd27f7ad9f9670dc3"
+    },
+    {
+      "url": "app.mjs",
+      "sha256": "2d0514193e4821cadb85f75bbd8714da6e9cea06d55a757f3d1e3c4438a0cf62"
+    },
+    {
+      "url": "catalog.mjs",
+      "sha256": "eea1fdcb80126b7f91a638c234dd90ad5779f3058ed9f0c9a792af788aa87807"
+    },
+    {
+      "url": "fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/claude-dovetail/app.mjs",
+      "sha256": "564c14aaa62ea3e4636a778c02cad4c82aa0e2f955ac01493b69e4a49dd6c5a8"
+    },
+    {
+      "url": "games/claude-dovetail/engine.mjs",
+      "sha256": "869238f0fe16643cdb22e6078ee487536fdf86a22bce5de8136661ff21f1aad7"
+    },
+    {
+      "url": "games/claude-dovetail/icon.svg",
+      "sha256": "a1cc544c06c480a0433f6b2d164852b4a6fd735b1297882d67429ef8797a7724"
+    },
+    {
+      "url": "games/claude-dovetail/index.html",
+      "sha256": "83c978eb9179f1d9bbfb8e75fcf31e363f307dd329671a376909d3d61bb68c7e"
+    },
+    {
+      "url": "games/claude-dovetail/puzzles.mjs",
+      "sha256": "a7e6f89da291aaa41db9be10a31ee4c46c34ccf3277fd2cc7fb8e4d224a71272"
+    },
+    {
+      "url": "games/claude-dovetail/styles.css",
+      "sha256": "79195b7d3082e49e59ab231d6b980c80575a044a90370b3e6beb58e9a967d3a0"
+    },
+    {
+      "url": "games/claude-keystone/app.mjs",
+      "sha256": "4cdc99d2aa0212fe9c2ee36080fd65819dade47439f25ebaf030f246595a916d"
+    },
+    {
+      "url": "games/claude-keystone/engine.mjs",
+      "sha256": "7b00c3a209d8920399af633989fcee7413feb88949f1e5fdce62af67318d8ec9"
+    },
+    {
+      "url": "games/claude-keystone/icon.svg",
+      "sha256": "9c377cb1d93fa774f6f4693b6a92e0308b305379b5a82653f27405363cf2ea8c"
+    },
+    {
+      "url": "games/claude-keystone/index.html",
+      "sha256": "3d8f0786d08309166b4ee70701a34c5cd11dc9bc9651faf02d508030453533cc"
+    },
+    {
+      "url": "games/claude-keystone/puzzles.mjs",
+      "sha256": "5278a45f8dca00f3555d51324c6be9853e22b963a10ba2120185776ca1f9e319"
+    },
+    {
+      "url": "games/claude-keystone/styles.css",
+      "sha256": "61b53cbb5a8961123c6c53a1c4aef18e60183d883dfa620223f9bb492aff8ad9"
+    },
+    {
+      "url": "games/claude-splice/app.mjs",
+      "sha256": "2383133768cd0e315abd040e13372c4cc1b9dcffe0ae1c3e58f930c12cb2f2dd"
+    },
+    {
+      "url": "games/claude-splice/engine.mjs",
+      "sha256": "cf3f4f789d0b4c3bd47ba8db3257980a0edaa21c6ee3a69deedfcafc5f855e51"
+    },
+    {
+      "url": "games/claude-splice/icon.svg",
+      "sha256": "86381a0d4d1ecacdfb1e6d96ac8d669264cff2aa445c6bab9d30bee214a2125f"
+    },
+    {
+      "url": "games/claude-splice/index.html",
+      "sha256": "131dab7d0a41286a03daf2d7f450210affb09567ed1f3f47e522f6479201523b"
+    },
+    {
+      "url": "games/claude-splice/puzzles.mjs",
+      "sha256": "818e5f9bf1c30dfdee4366f5d60bc95116c594beb7777d4630b2497dd57ced4e"
+    },
+    {
+      "url": "games/claude-splice/styles.css",
+      "sha256": "1775ccfb87424b6d88d3031882049c5d640b9ed242ea919f9887356f6bda17d2"
+    },
+    {
+      "url": "games/claude-sprout/app.mjs",
+      "sha256": "e504a9e1f4a78947b9a2c9ab6e7a5efdd6b30427a277499abf62acb0b4bc24d8"
+    },
+    {
+      "url": "games/claude-sprout/engine.mjs",
+      "sha256": "30dd2a9f977669f3f5295f691eb0ef9aabd9994688582f0b3e1d5830e52c3b07"
+    },
+    {
+      "url": "games/claude-sprout/icon.svg",
+      "sha256": "98deed5fbcfb8779fda787bc42d9ac3cd25dacdc9c254908b90d2be9e2cb3e4e"
+    },
+    {
+      "url": "games/claude-sprout/index.html",
+      "sha256": "e161000ddcf29d661a4837d6415b5fd98817825c2124777516dd182f6577f3ff"
+    },
+    {
+      "url": "games/claude-sprout/puzzles.mjs",
+      "sha256": "058a333b683ed16a5e0cae98e0978f6314e334734c892d9c596a5e2d8f0bfc5c"
+    },
+    {
+      "url": "games/claude-sprout/styles.css",
+      "sha256": "de9dd4b97b75edd6a06b3af0234cdfc8e8271dc376c98c8e0cf8e2eb4f1bd328"
+    },
+    {
+      "url": "games/claude-tangle/app.mjs",
+      "sha256": "e56e424baa345da883558e07c697e612c3a1b791856707cc486fe276ab2f41aa"
+    },
+    {
+      "url": "games/claude-tangle/engine.mjs",
+      "sha256": "f69ccdf3bbd3543da6cc3d8dd2a4a551b970f075b4e50699f73fa4d75410e546"
+    },
+    {
+      "url": "games/claude-tangle/icon.svg",
+      "sha256": "9ce8a412c165225d2243aa3a8312f5cfa7c69188870e6b7e509392c6e95e44cd"
+    },
+    {
+      "url": "games/claude-tangle/index.html",
+      "sha256": "b32c04354289fad0c862fe2f232db51678d67851fc111e9085860b0183523463"
+    },
+    {
+      "url": "games/claude-tangle/puzzles.mjs",
+      "sha256": "a95c7b8237bcbd2b49bb43c44301b168923567339a052f41347836fc6cf46be1"
+    },
+    {
+      "url": "games/claude-tangle/styles.css",
+      "sha256": "b36661d44ba3d63a5bb2fb71b1a9553a9bff8bdf60628884f12e88826c43ab53"
+    },
+    {
+      "url": "games/claude-tumbler/app.mjs",
+      "sha256": "f83b43d8b54ac677320f8f94c1bb01b7ec6aaca1420608f8c35e258f3bad359c"
+    },
+    {
+      "url": "games/claude-tumbler/engine.mjs",
+      "sha256": "e74f1b48b26210096521c9b8a0b1ffc59e2b49b318f2b36f06b55e01a1a088ee"
+    },
+    {
+      "url": "games/claude-tumbler/icon.svg",
+      "sha256": "cdabb3d30f405b0ecb2ea6dec744effadf4c752882fb0c8bbd2b4b4d679e0add"
+    },
+    {
+      "url": "games/claude-tumbler/index.html",
+      "sha256": "7fef311e050d051002ee5ae86967220970314747d1c803cc392ed27192218399"
+    },
+    {
+      "url": "games/claude-tumbler/puzzles.mjs",
+      "sha256": "9e66c0233795f437d04e30bfae4e8a2f9ce2216424c11e05630a342f0ed7b478"
+    },
+    {
+      "url": "games/claude-tumbler/styles.css",
+      "sha256": "fb16c9476203cce6612aee09c9778d85df3bdfdddb283919976cb52faf0a8bc0"
+    },
+    {
+      "url": "games/counterpart/app.mjs",
+      "sha256": "e5ab89424d4b1bc9178296b760dd02360a0ddb73f31c3395702f171f501fd798"
+    },
+    {
+      "url": "games/counterpart/engine.mjs",
+      "sha256": "09663e75e8368d83f8d7b431866dea260350df43b56ff908737e0ad1223c1c26"
+    },
+    {
+      "url": "games/counterpart/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/counterpart/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/counterpart/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/counterpart/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/counterpart/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/counterpart/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/counterpart/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/counterpart/icon.svg",
+      "sha256": "48f1eab5feda60c4bde71feeeac05a7a087b4ce68d1301ba2086280e8ea11d5f"
+    },
+    {
+      "url": "games/counterpart/index.html",
+      "sha256": "9a443a14395f6f0d124b677e3a39adedd88fd9245bedd2ff5c4f570ab68fac12"
+    },
+    {
+      "url": "games/counterpart/manifest.webmanifest",
+      "sha256": "0490643359a10f1400aae5300dd306786b959830c3150c139768828bee319cee"
+    },
+    {
+      "url": "games/counterpart/puzzles.mjs",
+      "sha256": "c48d062751a02d29915eb6b0c63ff86af685d7fc0c813ce5da9dffbace04b041"
+    },
+    {
+      "url": "games/counterpart/share-card.mjs",
+      "sha256": "c58951247e4f3d553298bc4b0b54a3eefc477bcfe0e16fddd1e5593a1a97f67e"
+    },
+    {
+      "url": "games/counterpart/shell.mjs",
+      "sha256": "ef83924290f1450ec5e60470557a2b93581d0a78ed833d3e909f1a78d3ad8cf9"
+    },
+    {
+      "url": "games/counterpart/styles.css",
+      "sha256": "ffa2ae6240fb97a69fde87b625084db7c479ca66154136edc449e057d1cf8c35"
+    },
+    {
+      "url": "games/daily/app.mjs",
+      "sha256": "2d0514193e4821cadb85f75bbd8714da6e9cea06d55a757f3d1e3c4438a0cf62"
+    },
+    {
+      "url": "games/daily/catalog.mjs",
+      "sha256": "eea1fdcb80126b7f91a638c234dd90ad5779f3058ed9f0c9a792af788aa87807"
+    },
+    {
+      "url": "games/daily/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/daily/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/daily/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/daily/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/daily/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/daily/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/daily/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/daily/icon.svg",
+      "sha256": "9f3c49142b5a9cd643b3e1d8137916ea8db9c25749d26da3782783f41e2dba2c"
+    },
+    {
+      "url": "games/daily/identities.css",
+      "sha256": "bac9e9cf762fd4423114c725ad34f782d2e7911dca484bd93462bede219c2e99"
+    },
+    {
+      "url": "games/daily/index.html",
+      "sha256": "ad09377484373ba8ae34ded0b6e12bd899611c9331a158a5a08e4f015423b29c"
+    },
+    {
+      "url": "games/daily/manifest.webmanifest",
+      "sha256": "e107ca5f29a5f16bcc6f996c99cace909a435fb6bdeddd9b70dcd0401e37eae3"
+    },
+    {
+      "url": "games/daily/playtest.mjs",
+      "sha256": "7c1f7a2dbba4e22bc730813fc529953741492b0d1fbd1079532587e7f6c92c01"
+    },
+    {
+      "url": "games/daily/styles.css",
+      "sha256": "b5da2ffc9ddcccd8dcce157b19812f92d083ea41413a98f118c9155fa76929c9"
+    },
+    {
+      "url": "games/deepseek-cipher/app.mjs",
+      "sha256": "0bb86d60d71637dd4f873b0f56a44a27d0520851c4ecc26b0fd8de1d57854e84"
+    },
+    {
+      "url": "games/deepseek-cipher/engine.mjs",
+      "sha256": "61058248cea6634dc53103d68ce58ef8127967b2974c7f677f537d76a361df50"
+    },
+    {
+      "url": "games/deepseek-cipher/icon.svg",
+      "sha256": "f88c4bbf0a5cad5c78a84dae9194da0f26ee8df288547ddd7deaa5690d4e78b8"
+    },
+    {
+      "url": "games/deepseek-cipher/index.html",
+      "sha256": "3624f9738acf7aac0e4f9ec9f323f6645e2ba8f94464587607f596ef7eeba70b"
+    },
+    {
+      "url": "games/deepseek-cipher/puzzles.mjs",
+      "sha256": "3f422a25482c8d77efc82cc921727fb7900c7fb9259550039aa19f66ea3bf344"
+    },
+    {
+      "url": "games/deepseek-cipher/styles.css",
+      "sha256": "38cbc6ee2f4ee23cd951f34e451a62fb5ccc2dbbcfbe94ae794994f11ddc017a"
+    },
+    {
+      "url": "games/deepseek-rung/app.mjs",
+      "sha256": "9e72800ca3609f293d84e0c78a3a77f46bb4f807e1b14d4855ca42f7d51485f0"
+    },
+    {
+      "url": "games/deepseek-rung/engine.mjs",
+      "sha256": "66882d0d9d9c352a8aaa2a3739be4a632c9b8515863eb062f697c3c8f1ae2cee"
+    },
+    {
+      "url": "games/deepseek-rung/icon.svg",
+      "sha256": "4e136502e29af71a077ad06f23cfe5c467fafb223b9961dadf2d64492cd7188e"
+    },
+    {
+      "url": "games/deepseek-rung/index.html",
+      "sha256": "6f28f59c7b9696855cefe3da02f2299e214f501fa8e007cd770c588068b49368"
+    },
+    {
+      "url": "games/deepseek-rung/puzzles.mjs",
+      "sha256": "99c2fd16f57063e04659cd4044f27a885fe9d639faa0085bbd34f04cc8196acf"
+    },
+    {
+      "url": "games/deepseek-rung/styles.css",
+      "sha256": "d5ac63af2749a63650df0f9de1d8a0dac11dd76edd5ffb4240ea76914dfcf624"
+    },
+    {
+      "url": "games/deepseek-runtime/common.mjs",
+      "sha256": "353e299696dbd078d037b0054a1444786d8c6c6cb9abf1e4d20e3a4c47c2aba7"
+    },
+    {
+      "url": "games/deepseek-runtime/core.mjs",
+      "sha256": "7ef1999fa017cb4d5405513e0da74deb18fc0f175a21d35408f23802d1c7b680"
+    },
+    {
+      "url": "games/deepseek-runtime/daily-rotations.mjs",
+      "sha256": "cc83a441595dec9afd80b25676d211e8c5da72f514240f86421f59a242f3b16c"
+    },
+    {
+      "url": "games/deepseek-runtime/practice-calendar.mjs",
+      "sha256": "0c2cbb1309390e559782ac34bc50a6b97590d510c96236a34ad29bbdbceac743"
+    },
+    {
+      "url": "games/deepseek-runtime/styles.css",
+      "sha256": "59794d95ef7a2c1ce3f87bbcf8e8be70d21e5fb7a2d7dec8f0467e1010d13def"
+    },
+    {
+      "url": "games/deepseek-spare/app.mjs",
+      "sha256": "aaf34cd80b54b97d8c7bff35f6018c97cdbb30182be6f23c14bdb062734f0a0d"
+    },
+    {
+      "url": "games/deepseek-spare/engine.mjs",
+      "sha256": "6e457518364042794b73d136a233d96aa55633c13d63514850213dc3a4a03515"
+    },
+    {
+      "url": "games/deepseek-spare/icon.svg",
+      "sha256": "2f39b0339a8e2343899fd8e6b31bedf920eb3d8c2c38f23747d26de16348f923"
+    },
+    {
+      "url": "games/deepseek-spare/index.html",
+      "sha256": "ca545e345718c256ccbe27cc4ba3b3376dc5058ca9517be598de7e7909902700"
+    },
+    {
+      "url": "games/deepseek-spare/puzzles.mjs",
+      "sha256": "caf3e74099de5429c765255a69af6f6e19504fa1de42b6451154127472a7e66e"
+    },
+    {
+      "url": "games/deepseek-spare/styles.css",
+      "sha256": "b3a62b87c641d6beafe49cdf891ba1dbb0bcca8b086d5e8e7723ced635033f61"
+    },
+    {
+      "url": "games/deepseek-split/app.mjs",
+      "sha256": "b14062b938b485d847274cbd5a0caf49000d24f72c45f843d5f71d8743fd18b2"
+    },
+    {
+      "url": "games/deepseek-split/engine.mjs",
+      "sha256": "c5a99e12521bc1ed54361890e78fc117bc5a4fe543e3012f3172d24e10e4ff7a"
+    },
+    {
+      "url": "games/deepseek-split/icon.svg",
+      "sha256": "92bfcf7a37a9a81631c4d8fee64fe24a5afc22e86839e773a84bf01aa0469af0"
+    },
+    {
+      "url": "games/deepseek-split/index.html",
+      "sha256": "22c2030b9bb75d3f8a8a23f4f66087daff9cb14e0e980abef677297b286600b6"
+    },
+    {
+      "url": "games/deepseek-split/puzzles.mjs",
+      "sha256": "805c1e7bb93b002981cafb23e4936e0e00a71f7c908f29783ccf203c2c7ed0f4"
+    },
+    {
+      "url": "games/deepseek-split/styles.css",
+      "sha256": "12abcef2f0aeefdcba541a99148a1981d183fd79448395fdc2945bc0e609f9c3"
+    },
+    {
+      "url": "games/deepseek-trail/app.mjs",
+      "sha256": "cc18b7d21b272a59e55eb4c263ceae14bcf760ab6f4b7b8f321d77d919fcbca9"
+    },
+    {
+      "url": "games/deepseek-trail/engine.mjs",
+      "sha256": "c8ace30252b366132cb0a6869f258d79cdc476bf95fedd503dfe434cb5d6dc26"
+    },
+    {
+      "url": "games/deepseek-trail/icon.svg",
+      "sha256": "542fa21cf6a5074e7f02b24a7db8a5c38f380bf870cefd43f03806a9f321e5a0"
+    },
+    {
+      "url": "games/deepseek-trail/index.html",
+      "sha256": "1df3d8d825f99ffa7dfa0c54564565ad78aabbd4091080339abf764578cd0bc3"
+    },
+    {
+      "url": "games/deepseek-trail/puzzles.mjs",
+      "sha256": "7515dd304fbe3df49f3397962984bf2d37350d54e1c27ad15a25e03d1d01f66b"
+    },
+    {
+      "url": "games/deepseek-trail/styles.css",
+      "sha256": "0c1d1ab2665f3b8ed4a4b060d136b0d32a054d140a576e5b425ea7e4f3e77829"
+    },
+    {
+      "url": "games/deepseek-twin-hive/app.mjs",
+      "sha256": "7c35ae40bc4ef19e5decefd169219704412454fe1a95d080ee7cab6b9d6fdcf0"
+    },
+    {
+      "url": "games/deepseek-twin-hive/engine.mjs",
+      "sha256": "b3d674ecfc2cdf29bc8e089b12e7d668d9edeb70b715eddcae05ef91cc4f7876"
+    },
+    {
+      "url": "games/deepseek-twin-hive/icon.svg",
+      "sha256": "40e1f01e8146265bd85cc53e74417b74bf0aba51ffd2015c9a6af0d820449c74"
+    },
+    {
+      "url": "games/deepseek-twin-hive/index.html",
+      "sha256": "4817e4ef02a54caebcf4b416738ada5036009d9e94cb943ead421eda80d9bf1b"
+    },
+    {
+      "url": "games/deepseek-twin-hive/puzzles.mjs",
+      "sha256": "ccfe3fd1f2852b2007d3c60a6a0b21d83d3427b0f2403ffdb20e3b0e80927521"
+    },
+    {
+      "url": "games/deepseek-twin-hive/styles.css",
+      "sha256": "0db37abb4006c820d54596fa7c650ec59fb991c315088ffc165e01b8cd28cc39"
+    },
+    {
+      "url": "games/inbetween/app.mjs",
+      "sha256": "f65abdefe00ead6e5d7712113ba56bb21a1d3336defac90a827c9da01031c7b7"
+    },
+    {
+      "url": "games/inbetween/engine.mjs",
+      "sha256": "9aad0f2d95e1a54dc9c09b5023a402be5456e10932cc99843be873e8499ba4f1"
+    },
+    {
+      "url": "games/inbetween/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/inbetween/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/inbetween/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/inbetween/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/inbetween/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/inbetween/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/inbetween/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/inbetween/icon.svg",
+      "sha256": "8996fddb83d8aa1d3f36c1306f9a7a19b8bdf3c1af563d055a96a1ef156a3658"
+    },
+    {
+      "url": "games/inbetween/index.html",
+      "sha256": "d68c06cc7800c9d33497c1b7f41404f4b3bc12ea2c6163c4290eb89a26755895"
+    },
+    {
+      "url": "games/inbetween/manifest.webmanifest",
+      "sha256": "2be1239a0963340a397e063ef0c245da0b978d48df4a4d3f2dc620c785a7d15d"
+    },
+    {
+      "url": "games/inbetween/placement-drag.mjs",
+      "sha256": "2c67362cb0adc49c4cce1f6f2871bd6a4a53458c9235f06e0dc3f2c04879aaa8"
+    },
+    {
+      "url": "games/inbetween/puzzles.mjs",
+      "sha256": "0161fc3b69d0f9443ca3922653d9ab0fd7b54c7265d7d04fbe98797dcf1e8962"
+    },
+    {
+      "url": "games/inbetween/share-card.mjs",
+      "sha256": "20dcc892c2491dcf9be5c6ff7becc3561ad0b33f56b3fc542f610fba1f873b33"
+    },
+    {
+      "url": "games/inbetween/styles.css",
+      "sha256": "e729617eeb90875668dca7f32e52a2d2348e3cbc5610bfc1529c1bc1b99fdefd"
+    },
+    {
+      "url": "games/kimi-cairn/icon.svg",
+      "sha256": "a974960e3ac33759c22df65c1d65d875ae470a4a31084d85a010e42703303eca"
+    },
+    {
+      "url": "games/kimi-cairn/index.html",
+      "sha256": "5b3a28362491f798a963d64f3ca3a460c0b0e8b83aac81cb33295a0bbf4f8eb3"
+    },
+    {
+      "url": "games/kimi-circuit/icon.svg",
+      "sha256": "b6c6ff883843df7cd9a4695a506c765ac884119462d3e806e370fc14b4d141d9"
+    },
+    {
+      "url": "games/kimi-circuit/index.html",
+      "sha256": "41b3dc902411094d7fc3383bf8a8f3579e06034c9e391d4a3aceb3aafa7df5b0"
+    },
+    {
+      "url": "games/kimi-hunch/icon.svg",
+      "sha256": "ebfea17b4b4eac688920473b8af9cb5a141e428b3db755c82a20bc3d370470cc"
+    },
+    {
+      "url": "games/kimi-hunch/index.html",
+      "sha256": "90eba1432d76653adc6709af183d9756fe5ff8eb60eafb33605f70bf2fd48bc0"
+    },
+    {
+      "url": "games/kimi-morph/icon.svg",
+      "sha256": "4514042735dc0f458fb20cc875dcc7e8670b02c43d763094f0b2a460c2b968a1"
+    },
+    {
+      "url": "games/kimi-morph/index.html",
+      "sha256": "476604e3e174fe85471364054102ba83fb6121f2c53e1d1263c6a595ffa8be63"
+    },
+    {
+      "url": "games/kimi-quartet/icon.svg",
+      "sha256": "2c7bfabc79664c0c72dd369b924eeb2d7a9f11cef30c9f826ecea75eb1c0d14d"
+    },
+    {
+      "url": "games/kimi-quartet/index.html",
+      "sha256": "10fada633f32545e32b7c9b1c8bc89ef275285b84cd584d7f0588175ea858093"
+    },
+    {
+      "url": "games/kimi-runtime/assets/CairnPage-D2cPFI4S.js",
+      "sha256": "5afcdc83c1d1851b1fd1c439df2ee529f378bd2ab87e8a2db27004acbb557368"
+    },
+    {
+      "url": "games/kimi-runtime/assets/check-C8AKx7_k.js",
+      "sha256": "e04526ab7e33246a5eacdb09bb9f6bc82addc51e2f56a60b7af4d99b7f69484f"
+    },
+    {
+      "url": "games/kimi-runtime/assets/CircuitPage-Dg7LyV-B.js",
+      "sha256": "91689803d850195376e3fc7ced61c0540549ae31f4bc013ab79ed1532492bbe2"
+    },
+    {
+      "url": "games/kimi-runtime/assets/copy-CE6hb48j.js",
+      "sha256": "6f8d1e85619c6b602fccb6dec7cce32b5519bb9597b16d0607b9ce2886e6b135"
+    },
+    {
+      "url": "games/kimi-runtime/assets/delete-B6EGd-3J.js",
+      "sha256": "80dcb495acdb92eb7321e27fb5b78f4e3bc280d9f4a21469cf798c55fe4aa05f"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dialog-DLygyf2k.js",
+      "sha256": "42374c8c4f40d1400d35d13729f6cf3cbe0003af10104f69171209769b6c7462"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dict-D4jPk5Iy.js",
+      "sha256": "a4a6f458e3ca0fac2f8374e478140b2ace373914388d1f43cb5bb5aaa2f93db7"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dm-sans-bold-BQ0abr9c.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dm-sans-regular-CB7WfZ8W.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dm-sans-semibold-CYvJJk-g.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/kimi-runtime/assets/dm-serif-display-regular-DEPTIRtf.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/kimi-runtime/assets/flag-Do9WqOhO.js",
+      "sha256": "2fef2fdcc469a6c9f9de1028e042867f210df1b82ddb8727e72ce1e84a6df63f"
+    },
+    {
+      "url": "games/kimi-runtime/assets/HunchPage-BP-nF-Xt.js",
+      "sha256": "ed78732e978dfe7d7c2033805a2aa62dba675a89a82f441183ca48ad29e58040"
+    },
+    {
+      "url": "games/kimi-runtime/assets/index-C0-j5TRz.css",
+      "sha256": "cabc3981a8221755a19557b5393001dd62668e1ac9ce43687a5308832e417875"
+    },
+    {
+      "url": "games/kimi-runtime/assets/index-f7a-iHmK.js",
+      "sha256": "a09b144544dbcf048fb59a2ede6547c9f6dab734ba67892af9126294b02d6595"
+    },
+    {
+      "url": "games/kimi-runtime/assets/infinity-C8ZWuNl8.js",
+      "sha256": "fabb39286f49b9332b06b481a1092ceab3f890e8fb3c6ff0eb2156370060b5f0"
+    },
+    {
+      "url": "games/kimi-runtime/assets/keyboard-CqKxfmA6.js",
+      "sha256": "dc6adcc8a36f2d2644dda7dfce98d49e127e194cdef2f9cb99b315c04d688522"
+    },
+    {
+      "url": "games/kimi-runtime/assets/MorphPage-CV301bc5.js",
+      "sha256": "5fa763d59c86ce2add0f533054d4312498fbcc978cfdc9071822f47eede6c007"
+    },
+    {
+      "url": "games/kimi-runtime/assets/QuartetPage-CmLDdnlX.js",
+      "sha256": "c3615c2d11cc4124442313d8d7649579d5a86c878b03c61a87100cd90b352571"
+    },
+    {
+      "url": "games/kimi-runtime/assets/shuffle-DiDU8Lq3.js",
+      "sha256": "5f4eedc361a9a6cf5012d8e94fc0ff22c33f3dbe4b3c469421cf8a475d4d6abe"
+    },
+    {
+      "url": "games/kimi-runtime/assets/SimpleStatsModal-B8jQYTHI.js",
+      "sha256": "9dd063e1148a297892ea73407db7cf4f4ec425bf72b0c8320047006410c522db"
+    },
+    {
+      "url": "games/kimi-runtime/assets/TanglePage-C2FbnNMX.js",
+      "sha256": "f729869191828e594107096546c725b1236870012b25c2863e0e847498b6528f"
+    },
+    {
+      "url": "games/kimi-runtime/assets/word-lists-LICENSE.txt",
+      "sha256": "5b24cf821b839162903d783ab59a806adc7f3e631dc2abf4952ee759499748f0"
+    },
+    {
+      "url": "games/kimi-runtime/fonts/Baloo2-LICENSE.txt",
+      "sha256": "ad09b05dc8bc678c9daf7c4c5f7ef1f55e5726127f4330b2e98e40b9dffcb860"
+    },
+    {
+      "url": "games/kimi-runtime/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/kimi-runtime/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/kimi-runtime/fonts/Nunito-LICENSE.txt",
+      "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65"
+    },
+    {
+      "url": "games/kimi-tangle/icon.svg",
+      "sha256": "b880151cee99e28ad04342c027ec63c902b796a147051f4a6e6208580ab10586"
+    },
+    {
+      "url": "games/kimi-tangle/index.html",
+      "sha256": "66f8e4af4d5b56ece57b0c77d1cdae1b9cf3c36b984e280aa823971df687b455"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/ai.mjs",
+      "sha256": "c22ef088bce7587bc235b62e4a4e97c63a16fa01258fe1691171c15468d974a1"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/app.mjs",
+      "sha256": "2823b18e6e7799b275aa052428f9bdc2e9fccb9296951c857f413c28f61a7940"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/engine.mjs",
+      "sha256": "89060d98e2e4e5945429527e62f49b3e05ee69a2a0f45461711eec877bde9fa9"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/icon.svg",
+      "sha256": "a370a47905a0fac0b64b4bff4cf8f363afd6963ef537d7a68b87571bf40970e8"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/index.html",
+      "sha256": "0061ace609f838bd1a92a5df1e4e618b98283eceaab9a29cd7bb26a48dda330c"
+    },
+    {
+      "url": "games/nested-tic-tac-toe/styles.css",
+      "sha256": "2b34a5cf9b2eace3070f064e3b375ba97a17787e269e2061c0bfe0bb8d9890ad"
+    },
+    {
+      "url": "games/qwen-logic-lattice/app.mjs",
+      "sha256": "adb063d4f302fff52fa3d7081f6aded1dc38fd1779f58f961f8cd491693f6a98"
+    },
+    {
+      "url": "games/qwen-logic-lattice/engine.mjs",
+      "sha256": "9bfcc64f2f35d79868e69a2ddda480b437d78a5dc77d7c0f5aabb50896317b1e"
+    },
+    {
+      "url": "games/qwen-logic-lattice/icon.svg",
+      "sha256": "330ce73cb2f514b1f431f2c36079fa99304a16f6821115c0bf5ae3966f2b811a"
+    },
+    {
+      "url": "games/qwen-logic-lattice/index.html",
+      "sha256": "8cec20814ac509ebcb190c627c9dafef9d0b9c1d72e6bf1d72235c4c3a7a252c"
+    },
+    {
+      "url": "games/qwen-logic-lattice/puzzles.mjs",
+      "sha256": "0ba891a433f580f5b46dcafae518d43f1155f2157dbb7ef21c79ea4accd3d76b"
+    },
+    {
+      "url": "games/qwen-logic-lattice/styles.css",
+      "sha256": "69e498a8dbec14f08f4bc1268df4774d9401245d36aa56a8f548904c72e36065"
+    },
+    {
+      "url": "games/qwen-memory-maze/app.mjs",
+      "sha256": "0337eb1b8dbd5398a47913ca826b5ee96b7b80ea9dd8e729cb85c8f0065252fc"
+    },
+    {
+      "url": "games/qwen-memory-maze/engine.mjs",
+      "sha256": "c1ddd48b0c05ed41f5cafe713760d5c4d8fc05bc793e1e270721af8028169b4d"
+    },
+    {
+      "url": "games/qwen-memory-maze/icon.svg",
+      "sha256": "b26111020dd30c6ddc33f9e0f2913f611248f6c5be5ac5493701c57a665fb322"
+    },
+    {
+      "url": "games/qwen-memory-maze/index.html",
+      "sha256": "51e62e47dcfe1c4fc65a72f0e43642e2cfa5c7be7e7316e6ec25a79f7b2af29b"
+    },
+    {
+      "url": "games/qwen-memory-maze/puzzles.mjs",
+      "sha256": "2b0332a006021f40c9b09239023b8cb69ff01f983240131ed024ef86c7844051"
+    },
+    {
+      "url": "games/qwen-memory-maze/styles.css",
+      "sha256": "ce19b8481eba7390ae9b725d71a250040d53346022f440e5dc67272c851c9c12"
+    },
+    {
+      "url": "games/qwen-pattern-prism/app.mjs",
+      "sha256": "1b50ba66214e862b14ebed0469ff7164fdf324775eff01dff0f0fa8a1eeecbd8"
+    },
+    {
+      "url": "games/qwen-pattern-prism/engine.mjs",
+      "sha256": "7e533eca511e4cd1bf5e46e38a7cb15602b3dcc7f8dec4780c133de8e24f77ad"
+    },
+    {
+      "url": "games/qwen-pattern-prism/icon.svg",
+      "sha256": "cf3ba9ec1942b1e329c965fb9107e43459b26bafa244715b4b538a4edff8146b"
+    },
+    {
+      "url": "games/qwen-pattern-prism/index.html",
+      "sha256": "7b81b4dc8d6b4edbfc9bee2eb6571c00fb6a8117ded4ee7da48b0f5ce7bbd9d5"
+    },
+    {
+      "url": "games/qwen-pattern-prism/puzzles.mjs",
+      "sha256": "8c23ecf9a14908528e8e3d3dea01fcb77cefcfaebf59e75f5df86a6530688a30"
+    },
+    {
+      "url": "games/qwen-pattern-prism/styles.css",
+      "sha256": "597e1ede7c44ba395f044c24eda8262a03d2b7ca58b9b59ea308d588a1585ba8"
+    },
+    {
+      "url": "games/qwen-quadra/app.mjs",
+      "sha256": "462b334fca86ac6364939c2f7d6ec44a24a9a98641fd0ffe3af9adb810aff274"
+    },
+    {
+      "url": "games/qwen-quadra/engine.mjs",
+      "sha256": "853e5c90286f09c3853a524ff8e57e9ee7aa38fb31fcd06118a80cbd77ba5a91"
+    },
+    {
+      "url": "games/qwen-quadra/icon.svg",
+      "sha256": "ae67dcd321baa81d667071c289961a5a7cd0635b2638aa44cb67469dac79ac27"
+    },
+    {
+      "url": "games/qwen-quadra/index.html",
+      "sha256": "7b31834781fb52b94f04bbb03be8631103879f81fcfd889afd4e4f382ff6b35a"
+    },
+    {
+      "url": "games/qwen-quadra/puzzles.mjs",
+      "sha256": "71a73e29c96c2456ccc0a9c398f2cc092213c398bcd253f7e83f8453252c900f"
+    },
+    {
+      "url": "games/qwen-quadra/styles.css",
+      "sha256": "d7b498d5e9b79fffa6f84e8fbfa932706d4a15cb4154327b8a6f4edf3f278eb3"
+    },
+    {
+      "url": "games/qwen-syntax-siege/app.mjs",
+      "sha256": "d671727b5c3f76918ff3ef4a57975a6306c54e8ddb365673f87363e1306dc4e8"
+    },
+    {
+      "url": "games/qwen-syntax-siege/engine.mjs",
+      "sha256": "40f0830ad9ea1253e556c4e9e3b4f7adc0237bca0a830abed987aae782e4e88e"
+    },
+    {
+      "url": "games/qwen-syntax-siege/icon.svg",
+      "sha256": "ad7bc22c8ce8ca9ef206e59ace04375469f2454a44785468d101713da81c03b2"
+    },
+    {
+      "url": "games/qwen-syntax-siege/index.html",
+      "sha256": "efcc3a4c45d42eb9ae11e33bb7bd92c9645904241ca35091130a27991f16934d"
+    },
+    {
+      "url": "games/qwen-syntax-siege/puzzles.mjs",
+      "sha256": "4c80d2fffdb78734632c55603b86851c2edc93e4785d64c4a48dca0c1e22a84c"
+    },
+    {
+      "url": "games/qwen-syntax-siege/styles.css",
+      "sha256": "8eac5deda47a037da4e0376e9c79954f4c368311a1e3744585067491d2818d94"
+    },
+    {
+      "url": "games/qwen-territory-tactics/app.mjs",
+      "sha256": "eba2422c60cf878d5a1cbaf05c9617f2786b0aa4f52b5c69ad064f035de9e2d8"
+    },
+    {
+      "url": "games/qwen-territory-tactics/engine.mjs",
+      "sha256": "1a253ad20adb439f5a3ec5953549278c707dae8f533044f8262ccabd8261dae9"
+    },
+    {
+      "url": "games/qwen-territory-tactics/icon.svg",
+      "sha256": "17835f83da863c71a20c22a74169a7d82a146f867bb27f6aae314beca3112b01"
+    },
+    {
+      "url": "games/qwen-territory-tactics/index.html",
+      "sha256": "fd87bd3eb53645fbb96f141c3ebeb622fa36af798936a5054c89ac1e985d3912"
+    },
+    {
+      "url": "games/qwen-territory-tactics/puzzles.mjs",
+      "sha256": "d1d63a7577b6aded72b1e5147ac4565bb3e945e48944346ba143e7a1797f16ea"
+    },
+    {
+      "url": "games/qwen-territory-tactics/styles.css",
+      "sha256": "b159c72c3211313f9952a2843e6f47cc8802f397a795ed66176fa105f9e7e6ee"
+    },
+    {
+      "url": "games/ringcount/app.mjs",
+      "sha256": "0fc99dc009992fa3b2748e9ed34f2480267d3451ff433f99a97d7c1419d0a4e7"
+    },
+    {
+      "url": "games/ringcount/engine.mjs",
+      "sha256": "6b003452d06b0c11a7a94cda36fc1682fdf74d248383b9f40c97f0beaa7f92bf"
+    },
+    {
+      "url": "games/ringcount/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/ringcount/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/ringcount/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/ringcount/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/ringcount/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/ringcount/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/ringcount/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/ringcount/icon.svg",
+      "sha256": "d892848869cd8e036963cf118f14136163102e40562d671da4b4b6ffbab923fa"
+    },
+    {
+      "url": "games/ringcount/index.html",
+      "sha256": "57cc583e572c08e9d7abf792de30461fac93757ec4db229c1a5220908438c2a5"
+    },
+    {
+      "url": "games/ringcount/manifest.webmanifest",
+      "sha256": "ca0132b12a4ccd0f0214326135b2c95b476a9c4903a4e34d1ed9a059f02b48d9"
+    },
+    {
+      "url": "games/ringcount/puzzles.mjs",
+      "sha256": "1640f72b39609d929fbf0fb33e7015c5c8dad0b041b23884dbade1b875c0ee54"
+    },
+    {
+      "url": "games/ringcount/share-card.mjs",
+      "sha256": "38d5bc1257437e54846e9f90c19add75197343f24521c4a46a3c4ab9c1cfef92"
+    },
+    {
+      "url": "games/ringcount/shell.mjs",
+      "sha256": "7f0369b76318b9d49d858b323ec766183ea76077ff6ec2e5198a774721d0e095"
+    },
+    {
+      "url": "games/ringcount/styles.css",
+      "sha256": "ad6f684f781b960b44b222e9421e05868b30187991fee4194047c96e9532c808"
+    },
+    {
+      "url": "games/second-sense/app.mjs",
+      "sha256": "4a3156cff8e7482325c73aba975066456f002363a46878c84a9b84e2a5d6c7ea"
+    },
+    {
+      "url": "games/second-sense/engine.mjs",
+      "sha256": "ff86ed804517ce04d9c20e6cfb59787ea234968fb4de2560caeec800e91ea9c4"
+    },
+    {
+      "url": "games/second-sense/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/second-sense/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/second-sense/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/second-sense/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/second-sense/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/second-sense/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/second-sense/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/second-sense/icon.svg",
+      "sha256": "af0cad083430e936a1609f55da81077a8f423f9fdf501e8634ee40d86ad77a03"
+    },
+    {
+      "url": "games/second-sense/index.html",
+      "sha256": "63508b88debd89a6dc5515a92b0adb9d6e740c1e8033819137bd0db9aa575974"
+    },
+    {
+      "url": "games/second-sense/manifest.webmanifest",
+      "sha256": "6f0db81d19c5b75be692270adfa90ca35b4e1662f8b709e3344e37446a6911e2"
+    },
+    {
+      "url": "games/second-sense/puzzles.mjs",
+      "sha256": "d8ed503d73828ad2d700ad023decf07b84ad6456025c2c1aeccffd18eb12f685"
+    },
+    {
+      "url": "games/second-sense/share-card.mjs",
+      "sha256": "2706cb6c92af2f14c595b7217ee1e06caf300fe82c975b2ccc01050c6a62dd9a"
+    },
+    {
+      "url": "games/second-sense/shell.mjs",
+      "sha256": "b5b81c8d66734d7c7ccc0ac4344a72221405cec433b555330e0b82f9ca4c1af7"
+    },
+    {
+      "url": "games/second-sense/styles.css",
+      "sha256": "2f6fe00b85aeaf69ed9d6030eb12d07009028ca37aae6e2a0954e251dec33736"
+    },
+    {
+      "url": "games/shortlist/app.mjs",
+      "sha256": "db7d90407f59d65214912bb840d4c62e22c18b9bf6de479037404c011ed4f32e"
+    },
+    {
+      "url": "games/shortlist/engine.mjs",
+      "sha256": "75c58f9ec5f8940ac759f6a7c6a00e579903832f04951de10674e1dc20d9a7c4"
+    },
+    {
+      "url": "games/shortlist/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/shortlist/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/shortlist/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/shortlist/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/shortlist/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/shortlist/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/shortlist/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/shortlist/icon.svg",
+      "sha256": "dfdb8dd3743311e9053941704ff9e92f2973a2d7af258627e86d8969a4ddba7e"
+    },
+    {
+      "url": "games/shortlist/index.html",
+      "sha256": "c903abb2d27a1448834b226df049c18f9769f8b3b4176468be836dd6b7a7dc36"
+    },
+    {
+      "url": "games/shortlist/manifest.webmanifest",
+      "sha256": "b548edccc8b0a442d69df346d31f1366f8c85a7e53ab036cedb79f04c4bc960c"
+    },
+    {
+      "url": "games/shortlist/puzzles.mjs",
+      "sha256": "aabee4929e1fa79a2704a578a58ea0d00c65b7b68b1bf19a522c73e1d3904027"
+    },
+    {
+      "url": "games/shortlist/share-card.mjs",
+      "sha256": "5edea1ec8dbd09cf0f9edb7dff0f72bfdb0a76c451eaf0c7bb40688702a73c4c"
+    },
+    {
+      "url": "games/shortlist/shell.mjs",
+      "sha256": "7f0369b76318b9d49d858b323ec766183ea76077ff6ec2e5198a774721d0e095"
+    },
+    {
+      "url": "games/shortlist/styles.css",
+      "sha256": "ae6372f11ce20f83bb1f8e6f5c2a95365547e99f816efb68380953e09fdac836"
+    },
+    {
+      "url": "games/sideways/app.mjs",
+      "sha256": "c664862114d0e60816cee40674175e60662ae3411c4f62a093b57dc6be71c0c7"
+    },
+    {
+      "url": "games/sideways/engine.mjs",
+      "sha256": "37f8e0f0ba81f3c8e36a2c077505de2ca793a67fd7810c78c7145d3a54109ca5"
+    },
+    {
+      "url": "games/sideways/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/sideways/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/sideways/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/sideways/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/sideways/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/sideways/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/sideways/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/sideways/icon.svg",
+      "sha256": "7323fb17a794e632a90f03557db00c4d73116617dbd21898b806c9984b6c682b"
+    },
+    {
+      "url": "games/sideways/index.html",
+      "sha256": "c8e4aebb2a6f7e2ae5875cc29576987c7dd8b71d9dafd7f2a37ba4d45f6d32c6"
+    },
+    {
+      "url": "games/sideways/manifest.webmanifest",
+      "sha256": "11b8418a68056a08cc0c18298ba35cd7f185efb564ec4f4ada5ffacb38629d1b"
+    },
+    {
+      "url": "games/sideways/puzzles.mjs",
+      "sha256": "9193b0ef4396689ddce43e7d70f30ebd45ae74162d46d1d9120a94797dd042b8"
+    },
+    {
+      "url": "games/sideways/share-card.mjs",
+      "sha256": "e49b83a8294dfb57f561bf499080c9add63aabf2d3dcf86401ec50ca2b6fbe7a"
+    },
+    {
+      "url": "games/sideways/shell.mjs",
+      "sha256": "4043e90011d250979af53ea4153250d67c66cc3ffa4bb322ad83e60135699dbe"
+    },
+    {
+      "url": "games/sideways/styles.css",
+      "sha256": "c227710d8c52231a1f37424e402213b80772e65b76a7488be127a0256668ac2e"
+    },
+    {
+      "url": "games/switchpath/app.mjs",
+      "sha256": "006a02572cdabbae5b2fe97615ca21f02cabf6bc3948a1258f92734df1005301"
+    },
+    {
+      "url": "games/switchpath/engine.mjs",
+      "sha256": "7df4b101fd9de9eb92270fb1d6b1ba7f3a46895ee08193f141ceb2f0461cdd2e"
+    },
+    {
+      "url": "games/switchpath/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/switchpath/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/switchpath/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/switchpath/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/switchpath/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/switchpath/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/switchpath/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/switchpath/icon.svg",
+      "sha256": "24837980d43ac2ae011686f5df30813108880cd4d78b69e2fb574837ccde6ba3"
+    },
+    {
+      "url": "games/switchpath/index.html",
+      "sha256": "60743ca422679b3639c5de5d101d2d15c40b19e5e606d486ce9e09f305e292e6"
+    },
+    {
+      "url": "games/switchpath/manifest.webmanifest",
+      "sha256": "3408fa0760539d246dc57a8648be64b74d5e394e2d862488cef726bcea5695e7"
+    },
+    {
+      "url": "games/switchpath/puzzles.mjs",
+      "sha256": "612a4e7acfb842591b44ae3b7456321e66cd32b65cabad79e9e7f4e1bb19b1fc"
+    },
+    {
+      "url": "games/switchpath/share-card.mjs",
+      "sha256": "ce7accf0d9291b694f7ef6d8ce7fbc748289e36d6d62972636266f231a3ab453"
+    },
+    {
+      "url": "games/switchpath/shell.mjs",
+      "sha256": "7f0369b76318b9d49d858b323ec766183ea76077ff6ec2e5198a774721d0e095"
+    },
+    {
+      "url": "games/switchpath/styles.css",
+      "sha256": "372b82cd623843d8874e5d501d68ee018cef755abf0cb80b1e9fd27b195636b4"
+    },
+    {
+      "url": "games/tradeoff/app.mjs",
+      "sha256": "543c0a9f95991f346111ecaf879ad2d6480d2bc24ae0425c8326a9e5153b2ec3"
+    },
+    {
+      "url": "games/tradeoff/engine.mjs",
+      "sha256": "99a4b0f8febee041cdac093a0becfa2268d42043aec921de2cb8ba319d02a8a2"
+    },
+    {
+      "url": "games/tradeoff/fonts/dm-sans-bold.ttf",
+      "sha256": "2a8e7f713ee79fbccdef3cef5c787aff47580299f7da60144961e7db2ec08211"
+    },
+    {
+      "url": "games/tradeoff/fonts/DM-Sans-LICENSE.txt",
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1"
+    },
+    {
+      "url": "games/tradeoff/fonts/dm-sans-regular.ttf",
+      "sha256": "b0ae3e89a7d3ef2b1838bb4b1ceb0b17cc3435af061eee809d76aa623ff116e9"
+    },
+    {
+      "url": "games/tradeoff/fonts/dm-sans-semibold.ttf",
+      "sha256": "b79a2ea7a38f33fd96a282fadb9ce97626bb0724a44d21075859f0e50239993a"
+    },
+    {
+      "url": "games/tradeoff/fonts/dm-serif-display-italic.ttf",
+      "sha256": "0ab2fcacedaafc0a7536453d4a763f131ba83a636706d3ec2d685cf04478a920"
+    },
+    {
+      "url": "games/tradeoff/fonts/DM-Serif-Display-LICENSE.txt",
+      "sha256": "a3e5cdd67d4571dd0a24fcc968de0efde7ae97ef752daf0906e4767619dd7231"
+    },
+    {
+      "url": "games/tradeoff/fonts/dm-serif-display-regular.ttf",
+      "sha256": "c03775f8cc3db88cfea259b231abe13f94e6a3d3cb01c09477a2e42a1f5919e1"
+    },
+    {
+      "url": "games/tradeoff/icon.svg",
+      "sha256": "e471eeb4ac6ca8523250411f4f9d14af4671ef9e87bc8fd9a8739ef6b286e59b"
+    },
+    {
+      "url": "games/tradeoff/index.html",
+      "sha256": "1c306b67d4d76369c93bba456695520f58c6487a16a2b321d4170f7883632f9e"
+    },
+    {
+      "url": "games/tradeoff/manifest.webmanifest",
+      "sha256": "6c9b0c06c88ed3d3a7258996dd1823fc4f78093d70bf8b4161759b6c36578737"
+    },
+    {
+      "url": "games/tradeoff/puzzles.mjs",
+      "sha256": "95264814dc0a3a6800beaf8d0d73260a951a5fdb73e848bda37f876de3b17688"
+    },
+    {
+      "url": "games/tradeoff/share-card.mjs",
+      "sha256": "03c62ce68618fa902c8777a40b438077cee824ea159c0fd7e56f32843d5cb882"
+    },
+    {
+      "url": "games/tradeoff/styles.css",
+      "sha256": "8fe4569c1dc9ed4b3f96a5ded1ffdde334d07e4b14d745b686a931bbb7f8b98a"
+    },
+    {
+      "url": "icon.svg",
+      "sha256": "9f3c49142b5a9cd643b3e1d8137916ea8db9c25749d26da3782783f41e2dba2c"
+    },
+    {
+      "url": "identities.css",
+      "sha256": "bac9e9cf762fd4423114c725ad34f782d2e7911dca484bd93462bede219c2e99"
+    },
+    {
+      "url": "index.html",
+      "sha256": "c858d178bf6a52fe88ca99a0a780ac4226dd3baa4c2d0836d692b10803363c18"
+    },
+    {
+      "url": "manifest.webmanifest",
+      "sha256": "e107ca5f29a5f16bcc6f996c99cace909a435fb6bdeddd9b70dcd0401e37eae3"
+    },
+    {
+      "url": "playtest.mjs",
+      "sha256": "7c1f7a2dbba4e22bc730813fc529953741492b0d1fbd1079532587e7f6c92c01"
+    },
+    {
+      "url": "release.json",
+      "sha256": "ff82faaf629059e916d50d82b44a8d30afb2f7d851ec55cb80004068d943fb0d"
+    },
+    {
+      "url": "styles.css",
+      "sha256": "b5da2ffc9ddcccd8dcce157b19812f92d083ea41413a98f118c9155fa76929c9"
+    }
+  ]
+}

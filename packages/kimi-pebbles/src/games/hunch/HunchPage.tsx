@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useHunch } from './useHunch'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
-import { dateLabel } from '../shared/share'
+import { centralDayNumber,dateForDayNumber,readIntegrationValue,writeIntegrationValue } from '../shared/integration'
 import { GameHeader } from '../shared/GameHeader'
 import { SimpleStatsModal } from '../shared/SimpleStatsModal'
 import { PracticeBanner, ToastHost, fireConfetti } from '../shared/effects'
@@ -16,22 +16,20 @@ export default function HunchPage() {
   const { state, actions } = useHunch()
   useUnifiedProgress('hunch', state)
   const { helpOpen, statsOpen, winOpen, setHelpOpen, setStatsOpen, setWinOpen, reset } = useGameOverlays(
-    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished, 900,
+    `${state.mode}:${state.dayNumber}:${state.puzzleNo}`, state.finished && state.freshFinish, 900,
   )
   const startPractice = () => { reset(); actions.startPractice() }
   const backToDaily = () => { reset(); actions.exitPractice() }
 
   useEffect(() => {
     if (state.phase !== 'playing') return
-    try {
-      if (!localStorage.getItem(HELP_KEY)) { setHelpOpen(true); localStorage.setItem(HELP_KEY, '1') }
-    } catch { setHelpOpen(true) }
+    if (!readIntegrationValue(HELP_KEY)) { setHelpOpen(true); writeIntegrationValue(HELP_KEY,1) }
   }, [state.phase])
 
   useEffect(() => {
-    if (!state.finished) return
+    if (!state.finished || !state.freshFinish) return
     if (state.won) fireConfetti()
-  }, [state.finished, state.won])
+  }, [state.finished, state.won, state.freshFinish])
 
   return (
     <div className="kimi-page kimi-hunch flex min-h-dvh flex-col">
@@ -41,7 +39,7 @@ export default function HunchPage() {
         busy={state.phase === 'loading'}
         onPractice={startPractice}
         onDaily={backToDaily}
-        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
+        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateForDayNumber(state.dayNumber)}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
@@ -75,14 +73,16 @@ export default function HunchPage() {
       </footer>
 
       <HunchHelpModal open={helpOpen} onOpenChange={setHelpOpen} />
-      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={state.stats} title="Your hunches" />
-      {state.answer && (
+      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={{...state.stats,currentStreak:state.stats.lastCompletedDay!==null&&state.stats.lastCompletedDay>=centralDayNumber()-1?state.stats.currentStreak:0}} title="Your hunches" />
+      {state.answer && winOpen && state.finished && (
         <HunchWinModal
-          open={winOpen && state.finished}
+          key={`${state.mode}:${state.dayNumber}:${state.puzzleNo}`}
+          open={true}
           onOpenChange={setWinOpen}
           mode={state.mode}
           answer={state.answer}
           puzzleNo={state.puzzleNo}
+          dayNumber={state.dayNumber}
           evals={state.evals}
           won={state.won}
           hintsUsed={state.hintsUsed}

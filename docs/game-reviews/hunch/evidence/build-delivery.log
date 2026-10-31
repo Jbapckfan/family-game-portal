@@ -1,0 +1,34 @@
+vite v7.2.4 building client environment for production...
+transforming...
+✓ 1846 modules transformed.
+rendering chunks...
+computing gzip size...
+../../output/hunch-review-20261031/compiled-delivery/index.html                                      0.88 kB │ gzip:   0.49 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dm-sans-bold-BQ0abr9c.ttf               48.20 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dm-sans-regular-CB7WfZ8W.ttf            48.28 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dm-sans-semibold-CYvJJk-g.ttf           48.28 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dm-serif-display-regular-DEPTIRtf.ttf   70.35 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/index-C0-j5TRz.css                      52.21 kB │ gzip:  11.38 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/check-C8AKx7_k.js                        0.13 kB │ gzip:   0.14 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/infinity-C8ZWuNl8.js                     0.17 kB │ gzip:   0.17 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/copy-CE6hb48j.js                         0.24 kB │ gzip:   0.20 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/flag-Do9WqOhO.js                         0.26 kB │ gzip:   0.21 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/delete-B6EGd-3J.js                       0.31 kB │ gzip:   0.22 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/shuffle-DiDU8Lq3.js                      0.39 kB │ gzip:   0.25 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/keyboard-CqKxfmA6.js                     0.51 kB │ gzip:   0.34 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/SimpleStatsModal-B8jQYTHI.js             1.34 kB │ gzip:   0.62 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/MorphPage-CV301bc5.js                   66.51 kB │ gzip:  18.56 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/CairnPage-D2cPFI4S.js                   97.59 kB │ gzip:  29.89 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dialog-DLygyf2k.js                     132.07 kB │ gzip:  33.92 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/QuartetPage-CmLDdnlX.js                158.27 kB │ gzip:  30.57 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/HunchPage-BP-nF-Xt.js                  177.22 kB │ gzip:  59.91 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/index-f7a-iHmK.js                      200.10 kB │ gzip:  63.50 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/CircuitPage-Dg7LyV-B.js                378.20 kB │ gzip:  93.49 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/TanglePage-C2FbnNMX.js                 519.84 kB │ gzip: 172.90 kB
+../../output/hunch-review-20261031/compiled-delivery/assets/dict-D4jPk5Iy.js                       685.24 kB │ gzip: 239.27 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.09s

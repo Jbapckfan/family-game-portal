@@ -19,8 +19,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 8 | Inbetween | ChatGPT | Keep; drag-and-drop delivered | 6/10; could have harder clues |
 | 9 | Cairn | Kimi | Keep; revised finish delivered | Keeper; no numerical score |
 | 10 | Morph | Kimi | Keep; revised game delivered | Keeper; no numerical score |
-| 11 | Tangle | Kimi | Keep; corrected 5×5 sample open | Keeper; 5×5 verdict pending |
-| 12 | Hunch | Kimi | Not yet reviewed individually | — |
+| 11 | Tangle | Kimi | Keep; vocabulary improvements approved | Keeper; no numerical score |
+| 12 | Hunch | Kimi | Revised game open; verdict pending | — |
 | 13 | Circuit | Kimi | Not yet reviewed individually | — |
 | 14 | Quartet | Kimi | Not yet reviewed individually | — |
 | 15 | Twin Hive | DeepSeek | Not yet reviewed individually | — |
@@ -63,6 +63,8 @@ Cairn reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**
 
 Morph reviewer fun predictions before improvements: Kimi **4/5**, Gemini **3.5/5**, Opus **3/5**. James subsequently said “keeper, next”; Morph is kept without a numerical score or relative keeper rank. [Review and verification](morph/REPORT.md).
 
-Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and requested a 5×5 sample. His playtest exposed missing valid words; both sizes now use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md), preserving his corrected round and original Gold goals. No numerical score or relative keeper rank supplied; the larger mode’s verdict remains pending. [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) · [original review](tangle-kimi/REPORT.md).
+Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and requested a 5×5 sample. His playtest exposed missing valid words; both sizes now use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md), preserving his corrected round and original Gold goals. James subsequently said “great, next game.” Tangle remains a keeper; the optional larger sample is retained, with its full calendar still future work. No numerical score or relative keeper rank supplied. [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) · [original review](tangle-kimi/REPORT.md).
+
+Hunch reviewer baseline fun predictions: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. Its revised blue/teal game, broader guesses, confirmed clue and result images are open for James. His verdict is pending; Circuit follows. [Review and verification](hunch/REPORT.md) · [adjudication](hunch/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

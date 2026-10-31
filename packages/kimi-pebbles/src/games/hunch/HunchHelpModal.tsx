@@ -1,46 +1,17 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-
-function Row({ word, marks }: { word: string; marks: ('g' | 'y' | 'b')[] }) {
-  return (
-    <div className="flex gap-1">
-      {word.split('').map((c, i) => (
-        <span
-          key={i}
-          className={`flex h-9 w-9 items-center justify-center rounded-xl font-display text-lg font-extrabold uppercase text-white ${
-            marks[i] === 'g' ? 'tile-ok' : marks[i] === 'y' ? 'tile-gold' : 'tile-dim'
-          }`}
-        >
-          {c}
-        </span>
-      ))}
-    </div>
-  )
-}
-
-export function HunchHelpModal({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-center font-display text-3xl font-extrabold">How to play HUNCH</DialogTitle>
-          <DialogDescription className="sr-only">Game instructions</DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-4 text-[15px] font-semibold leading-relaxed">
-          <p>Guess the hidden 5-letter word in 6 tries.</p>
-          <div className="flex flex-col gap-2.5">
-            <Row word="crane" marks={['g', 'b', 'y', 'b', 'b']} />
-            <p>
-              <span className="font-display font-extrabold" style={{ color: 'hsl(145 55% 45%)' }}>Green</span> = right
-              letter, right spot ·{' '}
-              <span className="font-display font-extrabold" style={{ color: 'hsl(38 85% 45%)' }}>Gold</span> = right
-              letter, wrong spot · <span className="font-display font-extrabold" style={{ color: 'hsl(340 14% 50%)' }}>Gray</span>{' '}
-              = not in the word.
-            </p>
-          </div>
-          <p>Stuck? Reveal one letter per round. Your saved hint stays visible above the board.</p>
-          <p className="text-sm text-muted-foreground">A new word every midnight. Win to keep your streak alive.</p>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
+import {useState} from 'react'
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog'
+import {evaluate} from './engine'
+const example='alley',marks=evaluate(example,'apple'),labels={correct:'correct spot',present:'different spot',absent:'absent or no extra copy'}
+const explanations=['A matches the first position.','This L belongs somewhere else in APPLE.','APPLE has one L. The earlier L already used that copy, so this extra L is gray.','E belongs in another position.','There is no Y in the example answer.']
+export function HunchHelpModal({open,onOpenChange}:{open:boolean;onOpenChange:(open:boolean)=>void}){
+ const [selected,setSelected]=useState(2)
+ return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="hunch-help max-w-sm rounded-3xl"><DialogHeader><DialogTitle className="font-display text-2xl">How to play Hunch</DialogTitle><DialogDescription>Find the hidden five-letter word in six accepted guesses.</DialogDescription></DialogHeader>
+  <div className="flex flex-col gap-4 text-[15px] leading-relaxed">
+   <p>Type a five-letter word, then Enter. Or use the on-screen keys. <strong>✓</strong> means the right spot; <strong>↔</strong> means move it; <strong>·</strong> means absent or no extra copy.</p>
+   <div className="hunch-example"><strong>Example answer: APPLE</strong><div>{[...example].map((c,i)=><button key={i} type="button" data-eval={marks[i]} aria-pressed={selected===i} aria-label={`Example position ${i+1}, ${c.toUpperCase()}, ${labels[marks[i]]}`} onClick={()=>setSelected(i)}>{c.toUpperCase()}<span aria-hidden="true">{marks[i]==='correct'?'✓':marks[i]==='present'?'↔':'·'}</span></button>)}</div><p role="status">{explanations[selected]}</p><small>This is a separate example. Tap a tile to inspect it.</small></div>
+   <p>Repeated letters count only as many times as they occur in the answer. Correct spots count first. Repeated or unrecognized guesses are free to edit and do not use a try.</p>
+   <p>One optional clue reveals a new letter’s membership, without its position or number of copies. Confirm to use it; cancelling is free. Your result records assistance.</p>
+   <p className="text-sm text-muted-foreground">Daily changes at midnight in Central Time. Practice has separate results and leaves your daily streak intact.</p>
+  </div>
+ </DialogContent></Dialog>
 }

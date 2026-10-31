@@ -1,0 +1,12 @@
+(node:47829) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 15000ms exceeded.
+    at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/hunch-review-20261031/focus-browser-red.mjs:12:725) {
+  name: 'TimeoutError'
+}
+
+Node.js v26.11.0

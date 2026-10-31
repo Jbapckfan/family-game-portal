@@ -22,7 +22,7 @@ function keyboard(board, dialogOpen = false) {
   const document = { querySelector: () => dialogOpen ? {} : null };
   new Script(compile(effect)).runInNewContext({
     actions, state: { rack: ['a'], slots: [], phase: 'playing' }, pathRef: { current: [0, 1, 2] }, document, isNativeEnter,
-    useEffect: fn => fn(), window: { addEventListener: (_event, fn) => { listener = fn; } },
+    useEffect: fn => fn(), flushSync: fn => fn(), window: { addEventListener: (_event, fn) => { listener = fn; } },
   });
   return { calls, press(key, tag = 'BODY', extra = {}) {
     const target = { tagName: tag, closest(selector) {

@@ -983,6 +983,11 @@
             "date": "2026-10-31",
             "quote": "make sure all dictionary words/words used in a game like Words With Friends",
             "interpretation": "Requested broad dictionary and established word-game acceptance. Both Tangle sizes now use the audited pinned union; exact current WWF/NASPA parity remains unverified. No new enjoyment score or relative rank."
+          },
+          {
+            "date": "2026-10-31",
+            "quote": "great, next game",
+            "interpretation": "Positive response to the vocabulary improvement and instruction to proceed to Hunch. Tangle remains a keeper; no separate numerical 5×5 score or relative keeper rank supplied."
           }
         ],
         "preferenceTier": "keeper"
@@ -1017,7 +1022,7 @@
         "tangle-kimi/evidence/summary.json",
         "tangle-kimi/WORD-GAME-LEXICON.md"
       ],
-      "nextStep": "James tries both Tangle sizes with the expanded word-game vocabulary and gives a 5×5 verdict. If retained, generate its full content bank and calibrate goals; Hunch follows the Tangle discussion.",
+      "nextStep": "Keeper retained; optional 5×5 sample retained. A full larger-board calendar and goal calibration remain future work. Hunch is now active.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -1030,17 +1035,79 @@
       "name": "Hunch",
       "creator": "Kimi",
       "reviewOrder": 12,
-      "status": "not_reviewed",
+      "status": "reviewed_pending_james_gameplay_verdict",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
         "comments": []
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "reviewedRevision": "0203993632508a76dca3664ce4145bb895615c70",
+          "method": "Static supplied source/audit and two phone images; no play or execution",
+          "scope": "Baseline Hunch before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 3,
+            "ui": 2,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "hunch/MAKER-Kimi__review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "reviewedRevision": "0203993632508a76dca3664ce4145bb895615c70",
+          "method": "Static supplied source/audit and two phone images; no play or execution",
+          "scope": "Baseline Hunch before improvements",
+          "scores": {
+            "fun": 3.5,
+            "clarity": 3,
+            "ui": 2.5,
+            "replay": 4,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "hunch/MAKER-Gemini__review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "reviewedRevision": "0203993632508a76dca3664ce4145bb895615c70",
+          "method": "Static inline source/audit; no images, play or execution",
+          "scope": "Baseline Hunch before improvements",
+          "scores": {
+            "fun": 3,
+            "clarity": 3,
+            "ui": null,
+            "replay": 3,
+            "shareability": 2
+          },
+          "scoresArePredictions": true,
+          "report": "hunch/MAKER-Opus__review.md"
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "hunch/REPORT.md",
+        "hunch/ADJUDICATION.md",
+        "hunch/evidence/summary.json",
+        "hunch/evidence/browser-results.json",
+        "hunch/evidence/audit.json"
+      ],
+      "nextStep": "James plays Hunch and gives his verdict before moving to Circuit. No enjoyment score or relative rank supplied.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "method": "Static complete Hunch source/tests; no screenshots/play/execution",
+        "report": "hunch/MAKER-Opus-final__review.md",
+        "findings": "Mixed keyboard/control focus defect reproduced and corrected after review; baseline RED and final browser/real-hook checks. IME guard also added. No second provider sign-off claimed."
+      }
     },
     {
       "slug": "kimi-circuit",

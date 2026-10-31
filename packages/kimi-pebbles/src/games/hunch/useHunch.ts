@@ -1,7 +1,7 @@
 import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyHunch, practiceHunch, evaluate, WORD_LEN, MAX_GUESSES, type Eval } from './engine'
-import { loadDict, isValidWord } from '../shared/dict'
+import { loadDict, isValidWord } from './dictionary'
 import { todayDayNumber } from '../shared/share'
 import { EMPTY_GAME_STATS, loadGameStats, saveGameStats, loadDayProgress, saveDayProgress, type GameStats } from '../shared/stats'
 import { restoreHunchProgress, type HunchProgress } from './progress'
@@ -17,7 +17,7 @@ interface HunchToast {
   kind: 'info' | 'error' | 'success'
 }
 
-interface HunchState {
+export interface HunchState {
   phase: Phase
   mode: Mode
   answer: string
@@ -30,6 +30,7 @@ interface HunchState {
   hintsUsed: number
   finished: boolean
   won: boolean
+  freshFinish: boolean
   toast: HunchToast | null
   shaking: boolean
   stats: GameStats
@@ -48,6 +49,7 @@ const initial: HunchState = {
   hintsUsed: 0,
   finished: false,
   won: false,
+  freshFinish: false,
   toast: null,
   shaking: false,
   stats: { ...EMPTY_GAME_STATS },
@@ -90,6 +92,7 @@ export function useHunch() {
         hintsUsed: saved.hintsUsed,
         finished: true,
         won: saved.won,
+        freshFinish: false,
         current: '',
         toast: null,
         shaking: false,
@@ -111,6 +114,7 @@ export function useHunch() {
       hintsUsed: saved?.hintsUsed ?? 0,
       finished: false,
       won: false,
+      freshFinish: false,
       toast: null,
       shaking: false,
     }))
@@ -206,7 +210,7 @@ export function useHunch() {
     }
     if (won) sfx.win()
     else sfx.remove()
-    setS((p) => ({ ...p, phase: 'finished', finished: true, won, guesses, evals, current: '', stats }))
+    setS((p) => ({ ...p, phase: 'finished', finished: true, freshFinish:true, won, guesses, evals, current: '', stats }))
   }, [])
 
   const keyLetter = useCallback((ch: string) => {
@@ -238,6 +242,10 @@ export function useHunch() {
       setS({ ...prev, shaking: true, toast: makeToast('Not in the word list', 'error') })
       return
     }
+    if(prev.guesses.includes(guess)){
+      setS({...prev,shaking:true,toast:makeToast('Already tried — edit your guess. No try used.','info')})
+      return
+    }
     const stats = markPlayed(prev)
     const evals = [...prev.evals, evaluate(guess, prev.answer)]
     const guesses = [...prev.guesses, guess]
@@ -260,15 +268,15 @@ export function useHunch() {
       setS({ ...prev, toast: makeToast('Your one letter hint has been used for this round.', 'info') })
       return
     }
-    const greens = new Set<string>()
+    const known = new Set<string>()
     prev.evals.forEach((row, r) =>
       row.forEach((e, i) => {
-        if (e === 'correct') greens.add(prev.guesses[r][i])
+        if (e !== 'absent') known.add(prev.guesses[r][i])
       }),
     )
-    const candidates = prev.answer.split('').filter((c) => !hintTaken(prev, c, greens))
+    const candidates = [...new Set(prev.answer)].filter((c) => !hintTaken(prev, c, known))
     if (candidates.length === 0) {
-      setS({ ...prev, toast: makeToast('No more to reveal', 'info') })
+      setS({ ...prev, toast: makeToast('No new letter to reveal. Your clue is unused.', 'info') })
       return
     }
     const pick = candidates[Math.floor(Math.random() * candidates.length)]
@@ -283,7 +291,7 @@ export function useHunch() {
 
   const startPractice = useCallback(() => {
     const cur = ref.current
-    const { answer, puzzleNo } = practiceHunch(cur.mode === 'daily' ? cur.puzzleNo - 1 : -1)
+    const { answer, puzzleNo } = practiceHunch(cur.puzzleNo - 1)
     setS((prev) => ({
       ...prev,
       mode: 'practice',
@@ -297,6 +305,7 @@ export function useHunch() {
       hintsUsed: 0,
       finished: false,
       won: false,
+      freshFinish: false,
       toast: null,
       shaking: false,
     }))

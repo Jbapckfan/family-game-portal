@@ -6,6 +6,7 @@ import { todayDayNumber } from '../shared/share'
 import { sfx } from '../shared/sound'
 import { isPremium } from '../shared/premium'
 import { restoreTangleProgress, reconcileTangleCompletion, type TangleProgress } from './progress'
+import { TANGLE_FIVE_PREVIEW, FIVE_PREVIEW_KEY, restoreFivePreview } from './five-preview'
 
 export type TanglePhase = 'loading' | 'playing'
 export type TangleMode = 'daily' | 'practice'
@@ -129,6 +130,12 @@ export function useTangle() {
       saveGameStats('tangle', s.stats)
     })
   }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.found, s.score, s.misses, s.hintsUsed, s.hintPrefix, s.goldReached])
+
+  useEffect(() => {
+    if(s.mode!=='practice'||s.phase!=='playing'||s.puzzle?.g.length!==25)return
+    try { sessionStorage.setItem(FIVE_PREVIEW_KEY,JSON.stringify({grid:s.puzzle.g,found:s.found,misses:s.misses,hintsUsed:s.hintsUsed,hintPrefix:s.hintPrefix,countedPlayed:false})) }
+    catch { /* Storage unavailable: the sample remains playable in memory. */ }
+  },[s.mode,s.phase,s.puzzle,s.found,s.misses,s.hintsUsed,s.hintPrefix])
 
   useEffect(() => {
     const onVis = () => {
@@ -287,8 +294,16 @@ export function useTangle() {
 
   const exitPractice = useCallback(() => startDaily(), [startDaily])
 
+  const startFivePreview = useCallback((fresh=false) => {
+    let saved:TangleProgress|null=null
+    if(!fresh)try { saved=restoreFivePreview(JSON.parse(sessionStorage.getItem(FIVE_PREVIEW_KEY)||'null')) } catch { /* invalid/unavailable sample save */ }
+    setS(prev => ({...prev, mode:'practice', phase:'playing', puzzle:TANGLE_FIVE_PREVIEW, puzzleNo:1,
+      path:[],found:saved?.found??[],score:saved?.score??0,misses:saved?.misses??0,hintsUsed:saved?.hintsUsed??0,hintPrefix:saved?.hintPrefix??null,goldReached:saved?.goldReached??false,
+      winShownOnce:false,toast:null,shaking:false}))
+  }, [])
+
   return {
     state: s,
-    actions: dailySession.actions({ setPath, submitPath, clearPath, hint, startPractice, exitPractice }),
+    actions: dailySession.actions({ setPath, submitPath, clearPath, hint, startPractice, exitPractice, startFivePreview }),
   }
 }

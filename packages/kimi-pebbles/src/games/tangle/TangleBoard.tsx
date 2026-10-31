@@ -19,6 +19,7 @@ interface Props {
 
 export function TangleBoard({ state, actions }: Props) {
   const { puzzle, path, found, score, misses, hintsUsed, shaking } = state
+  const size = puzzle?.g.length === 25 ? 5 : 4
   const dragging = useRef(false)
   const moved = useRef(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -61,8 +62,8 @@ export function TangleBoard({ state, actions }: Props) {
     const el = document.elementFromPoint(x, y)?.closest('[data-cell]')
     if (!el || !containerRef.current?.contains(el)) return null
     const idx = Number((el as HTMLElement).dataset.cell)
-    return Number.isInteger(idx) && idx >= 0 && idx < 16 ? idx : null
-  }, [])
+    return Number.isInteger(idx) && idx >= 0 && idx < size*size ? idx : null
+  }, [size])
 
   const selectCell = useCallback(
     (i: number) => {
@@ -79,13 +80,13 @@ export function TangleBoard({ state, actions }: Props) {
         }
       } else if (p.includes(i)) {
         flushSync(() => actions.setPath(p.slice(0, p.indexOf(i) + 1)))
-      } else if (isAdjacent(last, i)) {
+      } else if (isAdjacent(last, i, size)) {
         flushSync(() => actions.setPath([...p, i]))
       } else {
         flushSync(() => actions.setPath([i]))
       }
     },
-    [actions, puzzle],
+    [actions, puzzle, size],
   )
 
   const handleDown = useCallback((e: React.PointerEvent, i: number) => {
@@ -108,8 +109,8 @@ export function TangleBoard({ state, actions }: Props) {
     const p = pathRef.current, last = p[p.length-1]
     if (i === last || p.length === 0) return
     if (p.length >= 2 && i === p[p.length-2]) { moved.current = true; flushSync(() => actions.setPath(p.slice(0,-1))); return }
-    if (!p.includes(i) && isAdjacent(last,i)) { moved.current = true; flushSync(() => actions.setPath([...p,i])) }
-  }, [actions,cellAt,gestureIsCurrent,endGesture])
+    if (!p.includes(i) && isAdjacent(last,i,size)) { moved.current = true; flushSync(() => actions.setPath([...p,i])) }
+  }, [actions,cellAt,gestureIsCurrent,endGesture,size])
 
   const handleUp = useCallback((e: React.PointerEvent) => {
     if (!dragging.current || e.pointerId !== gesture.current?.id) return
@@ -153,14 +154,14 @@ export function TangleBoard({ state, actions }: Props) {
 
   const points = path
     .map((i) => {
-      const r = Math.floor(i / 4)
-      const c = i % 4
-      return `${(c + 0.5) * 25},${(r + 0.5) * 25}`
+      const r = Math.floor(i / size)
+      const c = i % size
+      return `${(c + 0.5) * 100/size},${(r + 0.5) * 100/size}`
     })
     .join(' ')
 
   return (
-    <div className="kimi-board tangle-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
+    <div data-board-size={size} className="kimi-board tangle-board mx-auto flex w-full max-w-lg flex-col items-center px-3">
       {/* score row */}
       <div className="tangle-score-row mt-4 flex w-full items-end justify-between">
         <div>
@@ -268,7 +269,7 @@ export function TangleBoard({ state, actions }: Props) {
             />
           )}
         </svg>
-        <div className="relative z-10 grid grid-cols-4 gap-2">
+        <div className="tangle-letter-grid relative z-10 grid gap-2" style={{gridTemplateColumns:`repeat(${size}, minmax(0, 1fr))`}}>
           {grid.split('').map((ch, i) => {
             const sel = path.indexOf(i)
             const isSel = sel >= 0
@@ -286,7 +287,7 @@ export function TangleBoard({ state, actions }: Props) {
                   isSel && 'tile-slot',
                   isSel && isLast && 'tile-new',
                 )}
-                aria-label={`Letter ${ch}, row ${Math.floor(i / 4) + 1}, column ${i % 4 + 1}${isSel ? `, selected ${sel + 1}` : ''}`}
+                aria-label={`Letter ${ch}, row ${Math.floor(i / size) + 1}, column ${i % size + 1}${isSel ? `, selected ${sel + 1}` : ''}`}
               >
                 {ch}
                 {isSel && <span data-path-order className="absolute bottom-1 right-2 text-[10px] font-bold leading-none" aria-hidden="true">{sel + 1}</span>}
@@ -297,7 +298,7 @@ export function TangleBoard({ state, actions }: Props) {
       </div>
 
       {state.hintPrefix && <p data-tangle-clue className="mt-3 max-w-sm text-center text-sm font-bold text-muted-foreground">
-        {clueHasUnfoundWord ? 'Saved clue: a word starts with ' : 'Clue found: '}<span className="font-display text-foreground">{state.hintPrefix.toUpperCase()}</span>.
+        {clueHasUnfoundWord ? `${size === 5 ? 'Clue' : 'Saved clue'}: a word starts with ` : 'Clue found: '}<span className="font-display text-foreground">{state.hintPrefix.toUpperCase()}</span>.
       </p>}
 
       {/* hint */}

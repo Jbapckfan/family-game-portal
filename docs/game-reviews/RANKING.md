@@ -19,7 +19,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 8 | Inbetween | ChatGPT | Keep; drag-and-drop delivered | 6/10; could have harder clues |
 | 9 | Cairn | Kimi | Keep; revised finish delivered | Keeper; no numerical score |
 | 10 | Morph | Kimi | Keep; revised game delivered | Keeper; no numerical score |
-| 11 | Tangle | Kimi | Keep; optional 5×5 discussion | Keeper; no numerical score |
+| 11 | Tangle | Kimi | Keep; corrected 5×5 sample open | Keeper; 5×5 verdict pending |
 | 12 | Hunch | Kimi | Not yet reviewed individually | — |
 | 13 | Circuit | Kimi | Not yet reviewed individually | — |
 | 14 | Quartet | Kimi | Not yet reviewed individually | — |
@@ -63,6 +63,6 @@ Cairn reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**
 
 Morph reviewer fun predictions before improvements: Kimi **4/5**, Gemini **3.5/5**, Opus **3/5**. James subsequently said “keeper, next”; Morph is kept without a numerical score or relative keeper rank. [Review and verification](morph/REPORT.md).
 
-Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and asked whether adding a 5×5 board would be too complicated. No numerical score or relative keeper rank supplied; the larger board is under discussion. [Review and verification](tangle-kimi/REPORT.md).
+Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and requested a 5×5 sample. His playtest exposed missing valid words; the sample now uses full-source path enumeration and preserves his corrected round. No numerical score or relative keeper rank supplied; the larger mode’s verdict remains pending. [5×5 sample and correction](tangle-kimi/FIVE-PREVIEW.md) · [original review](tangle-kimi/REPORT.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

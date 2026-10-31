@@ -36,4 +36,6 @@ Remaining minor: current-word live-region timing/verbosity needs screen-reader v
 
 “keeper, what about adding 5x5.... would that be too much? too complicated?”
 
-Kimi’s Tangle is kept. James supplied no numerical score or relative keeper rank. He asked about the feasibility of a 5×5 version; no expansion has been implemented. Recommendation for discussion: retain the quick 4×4 daily game and offer an optional 5×5 board with the same rules. More space can support a longer hunt without adding rules, but it does not guarantee greater difficulty. A larger mode needs its own validated puzzle content, calibrated goals, readable phone layout and separate saved progress. Current engine adjacency, board rendering and puzzle bank assume 4×4.
+Kimi’s Tangle is kept. James supplied no numerical score or relative keeper rank. He asked about the feasibility of a 5×5 version, then requested a playable sample. More space can support a longer hunt without adding rules, but it does not guarantee greater difficulty.
+
+The subsequent [5×5 sample and dictionary correction](FIVE-PREVIEW.md) adds size-aware geometry and separate sample progress while preserving the four-wide Daily bank. James found seven valid words missing from the first sample; the corrected list is generated exhaustively from the full-length word source, with independent completeness checks. His 5×5 preference remains pending. No six-month larger-board bank or model endorsement of the sample is claimed.

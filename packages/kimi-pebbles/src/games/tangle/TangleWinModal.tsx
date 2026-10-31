@@ -26,7 +26,8 @@ interface Props {
 export function TangleWinModal(props: Props) {
   const [shareResult,setShareResult] = useState<Readonly<TangleShareResult>|null>(null)
   const countdown = useCountdown(props.open && props.mode === 'daily')
-  const result = buildTangleShareResult({mode:props.mode,puzzleNo:props.puzzleNo,dayNumber:props.dayNumber,score:props.score,maxScore:props.puzzle.max,wordCount:props.found.length,totalWords:props.puzzle.n,targets:props.puzzle.targets,misses:props.misses,hintsUsed:props.hintsUsed})
+  const five = props.puzzle.g.length === 25
+  const result = buildTangleShareResult({mode:props.mode,boardSize:five?5:4,puzzleNo:props.puzzleNo,dayNumber:props.dayNumber,score:props.score,maxScore:props.puzzle.max,wordCount:props.found.length,totalWords:props.puzzle.n,targets:props.puzzle.targets,misses:props.misses,hintsUsed:props.hintsUsed})
   const share = () => {
     if (nativeMessage({type:'share',slug:'kimi-tangle',text:result.caption})) return
     setShareResult(result)
@@ -41,7 +42,7 @@ export function TangleWinModal(props: Props) {
         </DialogHeader>
 
         {shareResult ? <TangleSharePanel result={shareResult} onBack={() => setShareResult(null)} /> : <div className="flex flex-col items-center gap-4">
-          <p className="tangle-result-tier">{result.medal} · {result.assisted ? 'Clue used' : 'No clue used'}</p>
+          <p className="tangle-result-tier">{five && '5×5 Preview · '}{result.medal} · {result.assisted ? 'Clue used' : 'No clue used'}</p>
           <div className="tangle-result-metrics">
             <div><strong>{result.score}</strong><span>points · {result.maxScore} available</span></div>
             <div><strong>{result.wordCount} / {result.totalWords}</strong><span>words found</span></div>
@@ -66,7 +67,7 @@ export function TangleWinModal(props: Props) {
             <div className="flex w-full flex-col gap-2">
               <button type="button" onClick={props.onNewPractice} className="btn3d btn3d-accent h-12 w-full text-base">
                 <RotateCcw className="h-5 w-5" />
-                New practice round
+                {five ? 'Restart sample' : 'New practice round'}
               </button>
               <button type="button" onClick={props.onBackToDaily} className="btn3d btn3d-soft h-11 px-4 text-sm">
                 Back to today's puzzle

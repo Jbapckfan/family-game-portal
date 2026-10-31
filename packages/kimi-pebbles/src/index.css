@@ -149,6 +149,19 @@ html[data-game-id='kimi-cairn']{--identity:#315dc2;--identity-hsl:222 60% 48%;--
 .morph-result-pace{margin:0;text-align:center;color:#253e66;font-size:18px;font-weight:600}.morph-result-assistance{margin:-8px 0 0;color:#52667a;font-size:13px;text-align:center}.morph-result-ladders>div{background:#f0f5fc;border:1px solid #d2deed;border-radius:12px}.morph-result-word{font-size:18px;color:#253e66;line-height:1.7}
 /* TANGLE — a clear ordered trace through cool letter tiles. */
 .kimi-tangle .kimi-stage{background:#fbfcfe;border-color:#c8dce3;border-radius:24px}
+.tangle-five .collection-modes{display:none}.tangle-five .collection-edition-row{justify-content:flex-end}
+.tangle-size-picker{display:flex;gap:6px;max-width:360px;margin:20px auto 0;padding:5px;background:#e8f0f7;border:1px solid #c8d9e6;border-radius:15px;width:calc(100% - 32px)}
+.tangle-size-picker button{flex:1;min-height:46px;border:0;border-radius:10px;background:transparent;color:#456078;font:600 15px 'DM Sans',sans-serif;cursor:pointer}
+.tangle-size-picker button[aria-pressed=true]{background:#315dc2;color:#fff;box-shadow:0 3px 7px #24499c26}
+.tangle-size-picker button:focus-visible,.tangle-preview-note button:focus-visible{outline:3px solid #315dc2;outline-offset:3px}
+.tangle-preview-note{display:flex;flex-direction:column;align-items:center;gap:2px;margin:15px 16px 0;text-align:center;color:#456078;font:400 12px/1.6 'DM Sans',sans-serif}
+.tangle-preview-note p{margin:0}.tangle-preview-note strong{display:block;color:#253e66;font-size:17px;font-weight:600}.tangle-preview-note span{display:block}
+.tangle-preview-note button{min-height:44px;padding:4px 14px;border:0;border-radius:10px;background:transparent;color:#3157a9;font:600 13px 'DM Sans',sans-serif;text-decoration:underline;cursor:pointer}
+.tangle-board[data-board-size="5"]{max-width:480px;padding:0 8px 8px}
+.tangle-board[data-board-size="5"] .tangle-field{width:calc(100% - 16px);max-width:360px}
+.tangle-board[data-board-size="5"] .tangle-letter-grid{gap:6px}
+.tangle-board[data-board-size="5"] .tile3d{font-size:clamp(24px,5vw,32px)}
+.tangle-board[data-board-size="5"] [data-path-order]{font-size:10px;right:4px;bottom:4px}
 .tangle-score-row{gap:8px}.tangle-medal{font-size:13px;color:#235f69}.tangle-score-detail{align-self:flex-start;font-size:13px;color:#52667a;margin:4px 0 2px}
 .tangle-growth{height:9px;background:#e4edf5;margin-top:10px}.tangle-growth>.absolute{width:2px;height:15px;top:-3px;background:#718aa0}.tangle-thresholds{font-size:11px;letter-spacing:0;color:#52667a}
 .tangle-selection{position:sticky;top:8px;z-index:30;width:100%;min-height:66px;padding:8px;background:#f7fbff;border:1px solid #ccddeb;border-radius:12px;text-align:center;box-shadow:0 4px 10px #203e5810}

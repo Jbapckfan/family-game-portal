@@ -6,7 +6,7 @@ import { todayDayNumber } from '../shared/share'
 import { medalTargets, restoreTangleProgress } from './progress'
 
 export interface TanglePuzzle {
-  g: string // 16 letters, row-major 4x4
+  g: string // row-major: 16 letters for daily/practice, 25 for the optional preview
   n: number // total findable words
   max: number // total possible points
   best: string // a nice long word findable today
@@ -61,9 +61,10 @@ export function buildTangleShare(
   return `TANGLE No.${puzzleNo}\n${t.icon} ${t.label} · ${score}/${max} pts · ${found}/${total} words`
 }
 
-/** 8-way adjacency on a 4x4 grid. */
-export function isAdjacent(a: number, b: number): boolean {
-  const ra = Math.floor(a / 4), ca = a % 4
-  const rb = Math.floor(b / 4), cb = b % 4
+/** 8-way adjacency; existing callers retain the published 4x4 geometry. */
+export function isAdjacent(a: number, b: number, size = 4): boolean {
+  if (![4,5].includes(size) || !Number.isInteger(a) || !Number.isInteger(b) || a < 0 || b < 0 || a >= size*size || b >= size*size) return false
+  const ra = Math.floor(a / size), ca = a % size
+  const rb = Math.floor(b / size), cb = b % size
   return Math.abs(ra - rb) <= 1 && Math.abs(ca - cb) <= 1 && a !== b
 }

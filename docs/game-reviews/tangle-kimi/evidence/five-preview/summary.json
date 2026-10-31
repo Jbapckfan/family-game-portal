@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-31",
+  "scope": "One optional 5x5 sample; unchanged 4x4 daily bank; no 5x5 six-month bank or public deployment",
+  "dictionary": {
+    "file": "/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/src/games/tangle/data/five-preview.json",
+    "dictionaryWords": 370105,
+    "dictionarySha256": "3ed0c94610d8bcf7c11bbb49c56aa49c7234d32b66824df91f554169e572da48",
+    "words": 1576,
+    "max": 4197,
+    "exclusions": [
+      "ccm",
+      "ccw",
+      "ccws",
+      "cfm",
+      "whf",
+      "mahmoud",
+      "wilhelm",
+      "nig",
+      "wog",
+      "coon",
+      "fag",
+      "fags"
+    ]
+  },
+  "verified": {
+    "catalogTests": 899,
+    "packageTests": 190,
+    "overlappingFocusedTests": 9,
+    "previewBrowserChecks": 28,
+    "existingBrowserChecks": 42,
+    "browserErrors": 0,
+    "appTypeScript": true,
+    "nodeTypeScript": true,
+    "viteBuild": true,
+    "iosSyncedRuntimeFiles": 284,
+    "iosSha256Parity": true
+  },
+  "limitations": [
+    "Provisional medal goals; human vocabulary/difficulty judgment pending",
+    "Earlier panel reports cover the four-wide version, not the sample",
+    "No fresh native build, physical touch, screen-reader or physical sharing certification",
+    "Full word-source membership is not completeness of English; existing closed exclusions retained"
+  ]
+}

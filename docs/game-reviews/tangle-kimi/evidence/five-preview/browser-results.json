@@ -1,0 +1,67 @@
+{
+  "checks": [
+    "chromium: five-wide sample is opt-in and clearly separate from saved Daily",
+    "chromium: 320px layout has at least 44px tiles and no horizontal overflow",
+    "chromium: 390px layout has at least 44px tiles and no horizontal overflow",
+    "chromium: row edges cannot wrap into the next row",
+    "chromium: real rapid pointer drag submits the entire five-letter path",
+    "chromium: eight-letter bent path scores once; duplicates stay free",
+    "chromium: outside release keeps an uncharged preview",
+    "chromium: invalid word and one confirmed clue use the existing scoring rules",
+    "chromium: Gold is reachable and actual PNG sharing identifies the sample without spoilers",
+    "chromium: all seven reported omissions score through real gameplay",
+    "chromium: continued play, clue and Gold leave Daily save and stats byte-for-byte unchanged",
+    "chromium: restart resets only the sample and switching back restores played Daily",
+    "chromium: sample progress restores in its tab after reload without changing Daily",
+    "chromium: entire desktop grid is visible without scrolling at 1440×1000",
+    "webkit: five-wide sample is opt-in and clearly separate from saved Daily",
+    "webkit: 320px layout has at least 44px tiles and no horizontal overflow",
+    "webkit: 390px layout has at least 44px tiles and no horizontal overflow",
+    "webkit: row edges cannot wrap into the next row",
+    "webkit: real rapid pointer drag submits the entire five-letter path",
+    "webkit: eight-letter bent path scores once; duplicates stay free",
+    "webkit: outside release keeps an uncharged preview",
+    "webkit: invalid word and one confirmed clue use the existing scoring rules",
+    "webkit: Gold is reachable and actual PNG sharing identifies the sample without spoilers",
+    "webkit: all seven reported omissions score through real gameplay",
+    "webkit: continued play, clue and Gold leave Daily save and stats byte-for-byte unchanged",
+    "webkit: restart resets only the sample and switching back restores played Daily",
+    "webkit: sample progress restores in its tab after reload without changing Daily",
+    "webkit: entire desktop grid is visible without scrolling at 1440×1000"
+  ],
+  "metrics": [
+    {
+      "browser": "chromium",
+      "width": 320,
+      "minWidth": 47.59375,
+      "minHeight": 47.59375,
+      "overflow": false,
+      "font": "24px"
+    },
+    {
+      "browser": "chromium",
+      "width": 390,
+      "minWidth": 60.796875,
+      "minHeight": 60.796875,
+      "overflow": false,
+      "font": "24px"
+    },
+    {
+      "browser": "webkit",
+      "width": 320,
+      "minWidth": 47.59375,
+      "minHeight": 47.59375,
+      "overflow": false,
+      "font": "24px"
+    },
+    {
+      "browser": "webkit",
+      "width": 390,
+      "minWidth": 60.796875,
+      "minHeight": 60.796875,
+      "overflow": false,
+      "font": "24px"
+    }
+  ],
+  "errors": []
+}

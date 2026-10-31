@@ -1,0 +1,21 @@
+(node:36488) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ sample restore validates board identity and recalculates actual found-word points without daily stats (0.348042ms)
+✔ reported valid words and inflections are accepted, including STONED, TREAD, CORES, PORES, PORE, TARE and TARES (0.149583ms)
+✔ the preview accepts every bundled-dictionary word with a legal path, under the existing closed exclusion policy (542.493542ms)
+✔ five-wide adjacency handles diagonals and row boundaries while preserving four-wide defaults (0.088708ms)
+✔ every listed preview word has an independently enumerated nonreusing five-wide path and honest totals (3.573958ms)
+✔ five-wide sharing labels the sample and cannot impersonate a daily edition (0.203833ms)
+(node:36489) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Tangle snapshot distinguishes ongoing, gold and all-listed progress without ending the hunt (0.518875ms)
+✔ Tangle snapshot freezes played identity and contains only aggregates, never grid/words/path/clue (0.145084ms)
+✔ Tangle snapshot rejects inconsistent score/counts, invalid targets and invalid daily identity (0.140166ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 694.933584

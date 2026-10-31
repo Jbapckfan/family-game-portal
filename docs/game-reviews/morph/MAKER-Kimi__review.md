@@ -1,0 +1,17 @@
+## Scope
+
+Reviewed all 15 supplied files: Morph’s engine, gameplay, recovery, persistence, session guards, overlays, results/sharing, styles, dialog focus handling, and the complete 450-board bank. I did not run tests or play. The reported 161 passing tests, Chrome Daily win, dictionary validation, and BFS audit are supplied evidence, not my execution. Calendar/reservation helpers and `dict.txt` were not supplied, so six-month scheduling cannot be independently verified; the audit’s 450 distinct unordered pairs supports content freshness.
+
+**Provisional predictions—mine, not James’s ratings:** Fun **4/5** · Clarity **3/5** · UI **3/5** · Replay **3/5** · Sharing **2/5**. The UI prediction is source-derived, not a screenshot or hands-on visual assessment.
+
+## Material findings
+
+1. **A hint is not persisted when it is revealed.** `hint()` changes `hintsUsed` and `showPath`, but the persistence effect omits `s.hintsUsed` from its dependencies (`src/games/morph/useMorph.ts:139-155`, `303-308`). Revealing a route and immediately reloading can therefore erase both the saved route and assisted status. Add the missing dependency without changing the save schema; reopening an already-saved route should remain free.
+
+2. **Sharing can falsely announce success.** The fallback ignores `document.execCommand('copy')`’s return value, while the modal unconditionally displays “Copied!” after `copyText()` resolves (`src/games/shared/share.ts:21-32`, `src/games/morph/MorphWinModal.tsx:33-36`). Native sharing also produces the misleading “Copied!” label. Additionally, Practice has no share control, and Daily text lacks the played date (`MorphWinModal.tsx:75-100`, `src/games/morph/engine.ts:47-58`). Use a frozen Daily-date/Practice aggregate, report failure truthfully, and preserve cancellation without claiming success.
+
+3. **Consequential actions lack confirmation.** The first hint immediately reveals the entire supplied route and permanently marks the round assisted; Give up ends the round and resets the Daily streak; Restart removes every confirmed rung (`useMorph.ts:198-224`, `303-328`). All are direct buttons with no confirmation (`src/games/morph/MorphBoard.tsx:216-239`). Confirm first-route reveal, Give up, and Restart while leaving subsequent saved-route views, Undo, and recovery counters uninterrupted.
+
+4. **The board’s presentation works against readability and stable orientation.** Morph explicitly overrides the shared teal identity with purple (`src/index.css:23`, `132-143`), contrary to the stated blue/teal preference. CSS reduces row labels to **8px** and board buttons to **12–14px** (`index.css:89-90`, `137`). The target is rendered after every confirmed and editing row, so it moves downward as the ladder grows rather than remaining fixed (`MorphBoard.tsx:117-176`). Larger labels, blue/teal styling, and a persistent goal would better support ordinary play.
+
+5. **“Real word” overpromises editorial familiarity.** Help says every rung must be a “real word” (`src/games/morph/MorphHelpModal.tsx:21-30`), but acceptance is strictly dictionary membership (`src/games/shared/dict.ts:3-8`). The supplied audit documents names, acronyms, rare words, and 391 canonical words outside the common list; visible routes include entries such as `thad`, `hunh`, and `roid`. Without rewriting the bank, say “in our word list” and set expectations for uncommon entries. The existing explanation that the target is a supplied-route benchmark—not shortest—is appropriately clear and should remain.

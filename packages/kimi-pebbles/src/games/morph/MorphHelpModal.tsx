@@ -10,24 +10,23 @@ export function MorphHelpModal({ open, onOpenChange }: { open: boolean; onOpenCh
         </DialogHeader>
         <div className="flex flex-col gap-4 text-[15px] font-semibold leading-relaxed text-foreground/85">
           <p>
-            Turn the <strong className="text-[hsl(205_75%_42%)]">start</strong> word into the{' '}
-            <strong className="text-[hsl(340_75%_50%)]">target</strong> word, one rung at a time.
+            Turn the <strong className="morph-help-blue">start</strong> word into the{' '}
+            <strong className="morph-help-blue">goal</strong> word, one rung at a time.
           </p>
           <div className="rounded-2xl bg-secondary p-3 font-display font-bold uppercase tracking-widest">
-            cold → <span className="text-[hsl(20_85%_43%)]">c</span>ord →{' '}
-            <span className="text-[hsl(20_85%_43%)]">card</span> →{' '}
-            <span className="text-[hsl(20_85%_43%)]">ward</span> → warm
+            cold → co<strong className="morph-help-change">r</strong>d → c<strong className="morph-help-change">a</strong>rd → <strong className="morph-help-change">w</strong>ard → war<strong className="morph-help-change">m</strong>
+
           </div>
           <ul className="flex flex-col gap-1.5">
             <li>• Each new rung changes <strong>exactly one letter</strong></li>
-            <li>• Every rung must be a <strong>real word</strong></li>
-            <li>• Fewer moves = better medal. Match or beat the <strong>target</strong> for gold 🥇</li>
+            <li>• Every rung must be in <strong>the word list</strong></li>
+            <li>• No repeated words. Match or beat the <strong>suggested move count</strong> for gold.</li>
           </ul>
           <p className="text-muted-foreground">
-            Tap a letter in the editing row to swap it, or type with your keyboard. Undo a rung or restart an unfinished
+            Tap a letter in the Next row to swap it, or type a four-letter word with your keyboard. Press Enter or Check word to submit. Undo a rung or restart an unfinished
             ladder whenever you need to recover. Hints and misses are kept.
           </p>
-          <p className="text-muted-foreground">The target is the supplied route's length; shorter routes may exist. Reveal that route once, then view the saved hint anytime. New ladder every midnight.</p>
+          <p className="text-muted-foreground">The suggested move count is the supplied route’s length; shorter routes may exist. Showing the whole route marks the round Assisted; reopening it is free. Giving up reveals the route, ends the round without a completion and ends a daily streak. Invalid one-letter words count as misses; changing too many letters or repeating a word does not. New ladder every midnight in Central Time.</p>
         </div>
       </DialogContent>
     </Dialog>

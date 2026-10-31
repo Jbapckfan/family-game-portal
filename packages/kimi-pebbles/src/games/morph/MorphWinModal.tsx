@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react'
-import { Check, Copy, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Share2, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { buildMorphShare, medalFor, type MorphPuzzle } from './engine'
-import { useCountdown, copyText } from '../shared/share'
+import type { MorphPuzzle } from './engine'
+import { buildMorphShareResult, type MorphShareResult } from './share-card'
+import { MorphSharePanel } from './MorphSharePanel'
+import { nativeMessage } from '../shared/integration'
+import { useCountdown } from '../shared/share'
 
 interface Props {
   open: boolean
@@ -10,6 +13,7 @@ interface Props {
   mode: 'daily' | 'practice'
   puzzle: MorphPuzzle
   puzzleNo: number
+  dayNumber: number
   rows: string[]
   misses: number
   gaveUp: boolean
@@ -20,41 +24,34 @@ interface Props {
 }
 
 export function MorphWinModal(props: Props) {
-  const [copied, setCopied] = useState(false)
-  const countdown = useCountdown(props.open && props.mode === 'daily')
+  const [shareResult,setShareResult] = useState<Readonly<MorphShareResult>|null>(null)
   const moves = props.rows.length - 1
-  const medal = medalFor(moves, props.puzzle.par, props.gaveUp, props.hintsUsed)
-
-  const shareText = useMemo(
-    () => buildMorphShare(props.puzzleNo, moves, props.puzzle.par, props.gaveUp, props.hintsUsed),
-    [props.puzzleNo, moves, props.puzzle.par, props.gaveUp, props.hintsUsed],
-  )
-
-  const copy = async () => {
-    await copyText(shareText)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1800)
+  const countdown = useCountdown(props.open && props.mode === 'daily')
+  useEffect(() => { if (props.open) setShareResult(null) }, [props.open,props.mode,props.dayNumber,props.puzzleNo,props.rows])
+  const result = buildMorphShareResult({mode:props.mode,puzzleNo:props.puzzleNo,dayNumber:props.dayNumber,moves:props.rows.length-1,suggested:props.puzzle.par,misses:props.misses,hintsUsed:props.hintsUsed,gaveUp:props.gaveUp})
+  const share = () => {
+    if (nativeMessage({type:'share',slug:'kimi-morph',text:result.caption})) return
+    setShareResult(result)
   }
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl">
+      <DialogContent className="morph-results max-w-sm rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-center font-display text-3xl font-extrabold">
-            {props.gaveUp ? 'Route revealed' : `${medal.icon} ${props.mode === 'practice' ? 'Ladder climbed!' : medal.label}`}
-          </DialogTitle>
+          <DialogTitle className="text-center font-display text-3xl">{shareResult ? 'Share your result' : result.headline}</DialogTitle>
           <DialogDescription className="sr-only">Puzzle results and sharing</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-4">
-          {props.hintsUsed > 0 && <p className="text-center text-sm font-bold">💡 Assisted · route shown during play</p>}
-          <div className="grid w-full grid-cols-2 gap-2 text-sm">
+        {shareResult ? <MorphSharePanel result={shareResult} onBack={() => setShareResult(null)} /> : <div className="flex flex-col items-center gap-4">
+          <p className="morph-result-pace">{result.pace}</p>
+          <p className="morph-result-assistance">{result.assisted ? 'Assisted · route shown during play' : 'No route hint used'}</p>
+          <div className="morph-result-ladders grid w-full grid-cols-2 gap-2 text-sm">
             <div className="rounded-2xl bg-secondary p-3">
               <div className="mb-1 font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
                 Your ladder
               </div>
               {props.rows.map((w, i) => (
-                <div key={i} className="font-display font-bold uppercase tracking-widest">{w}</div>
+                <div key={i} className="morph-result-word font-bold uppercase tracking-widest">{w}</div>
               ))}
               {!props.gaveUp && (
                 <div className="mt-1 text-xs font-bold text-muted-foreground">
@@ -67,17 +64,14 @@ export function MorphWinModal(props: Props) {
                 Suggested route · {props.puzzle.par} moves
               </div>
               {props.puzzle.p.map((w, i) => (
-                <div key={i} className="font-display font-bold uppercase tracking-widest">{w}</div>
+                <div key={i} className="morph-result-word font-bold uppercase tracking-widest">{w}</div>
               ))}
             </div>
           </div>
 
+          <button type="button" onClick={share} className="btn3d btn3d-accent h-12 w-full text-base"><Share2 className="h-5 w-5" />Share result</button>
           {props.mode === 'daily' ? (
             <>
-              <button type="button" onClick={copy} className="btn3d btn3d-accent h-12 w-full text-base">
-                {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-                {copied ? 'Copied!' : 'Share result'}
-              </button>
               <div className="text-center">
                 <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Next ladder in</div>
                 <div className="font-display text-2xl font-extrabold tabular-nums">{countdown}</div>
@@ -98,7 +92,7 @@ export function MorphWinModal(props: Props) {
               </button>
             </div>
           )}
-        </div>
+        </div>}
       </DialogContent>
     </Dialog>
   )

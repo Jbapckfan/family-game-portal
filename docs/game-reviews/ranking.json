@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-10-30",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff and Inbetween are keepers; Ringcount and Sideways are replacement candidates. Inbetween is6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween and Cairn are keepers; Ringcount and Sideways are replacement candidates. Inbetween is6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -811,18 +811,24 @@
       "name": "Cairn",
       "creator": "Kimi",
       "reviewOrder": 9,
-      "status": "reviewed_pending_james_gameplay_verdict",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
-        "playAgain": null,
+        "playAgain": true,
         "preferenceRank": null,
         "comments": [
           {
             "date": "2026-10-30",
             "quote": "the perfect summit image looks really dumb and stands out",
             "interpretation": "Result graphic criticism only; no enjoyment, replay, numeric score or keeper verdict inferred."
+          },
+          {
+            "date": "2026-10-30",
+            "quote": "keeper, go next",
+            "interpretation": "Cairn is a keeper; proceed to Morph. No numerical score or relative keeper rank supplied."
           }
-        ]
+        ],
+        "preferenceTier": "keeper"
       },
       "reviews": [
         {
@@ -847,13 +853,13 @@
           "report": "cairn/MAKER-Opus__review.md"
         }
       ],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "cairn/REPORT.md",
         "cairn/ADJUDICATION.md",
         "cairn/evidence/summary.json"
       ],
-      "nextStep": "James plays the revised Cairn and supplies enjoyment/replay verdict; Morph follows.",
+      "nextStep": "Keeper recorded; Morph review now active.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",
@@ -866,17 +872,49 @@
       "name": "Morph",
       "creator": "Kimi",
       "reviewOrder": 10,
-      "status": "not_reviewed",
+      "status": "reviewed_pending_james_gameplay_verdict",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
         "comments": []
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "method": "Static supplied source/bank; no execution, play or image inspection claimed",
+          "funPrediction": 4,
+          "report": "morph/MAKER-Kimi__review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "method": "Static source/bank review; screenshots supplied but no play/execution",
+          "funPrediction": 3.5,
+          "report": "morph/MAKER-Gemini__review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "method": "Static inline source/audit aggregates; no screenshots or execution",
+          "funPrediction": 3,
+          "report": "morph/MAKER-Opus__review.md"
+        }
+      ],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "morph/REPORT.md",
+        "morph/ADJUDICATION.md",
+        "morph/evidence/summary.json"
+      ],
+      "nextStep": "James plays revised Morph and supplies enjoyment/replay verdict; Kimi Tangle follows.",
+      "finalReview": {
+        "provider": "Opus",
+        "model": "claude-opus-5-5",
+        "report": "morph/MAKER-Opus-final__review.md",
+        "method": "Static inline source, no images/execution; material event-consumption fix independently tested"
+      }
     },
     {
       "slug": "kimi-tangle",

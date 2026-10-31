@@ -1,0 +1,3180 @@
+{
+  "boards": 450,
+  "distinctUnorderedEndpointPairs": 450,
+  "distinctStarts": 333,
+  "distinctTargets": 323,
+  "distinctCanonicalWords": 988,
+  "maxCanonicalRecurrence": 17,
+  "fourLetterDictionaryWords": 7186,
+  "fourLetterCommonListWords": 747,
+  "invalidCanonicalWords": [],
+  "suppliedMoveDistribution": {
+    "4": 104,
+    "5": 133,
+    "6": 137,
+    "7": 76
+  },
+  "shortestDictionaryMoveDistribution": {
+    "2": 2,
+    "3": 69,
+    "4": 206,
+    "5": 145,
+    "6": 27,
+    "7": 1
+  },
+  "boardsWithShorterDictionaryRoute": 357,
+  "canonicalWordsOutsideBundledCommon": 391,
+  "method": "Independent validation of every supplied route: exact dictionary membership, unique four-letter words, one-position changes, start/target/par. Breadth-first search over actual bundled four-letter dictionary computes shortest distance; broad-dictionary paths can contain obscure terms. Not human familiarity, fun, semantic uniqueness, or shortest common-word certification.",
+  "routes": [
+    {
+      "puzzle": 1,
+      "start": "shaw",
+      "target": "cold",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 2,
+      "start": "june",
+      "target": "high",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 3,
+      "start": "sand",
+      "target": "seal",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 4,
+      "start": "void",
+      "target": "earl",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 5,
+      "start": "make",
+      "target": "raid",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 6,
+      "start": "iron",
+      "target": "keys",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 7,
+      "start": "fund",
+      "target": "casa",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 8,
+      "start": "made",
+      "target": "worm",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 9,
+      "start": "duck",
+      "target": "pope",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 10,
+      "start": "lens",
+      "target": "fell",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 11,
+      "start": "deer",
+      "target": "term",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 12,
+      "start": "lean",
+      "target": "gore",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 13,
+      "start": "kind",
+      "target": "copy",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 14,
+      "start": "bent",
+      "target": "they",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 15,
+      "start": "page",
+      "target": "type",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 16,
+      "start": "king",
+      "target": "debt",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 17,
+      "start": "dust",
+      "target": "body",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 18,
+      "start": "gang",
+      "target": "both",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 19,
+      "start": "join",
+      "target": "laws",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 20,
+      "start": "with",
+      "target": "bars",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 21,
+      "start": "fork",
+      "target": "belt",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 22,
+      "start": "cave",
+      "target": "dead",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 23,
+      "start": "pair",
+      "target": "iron",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 24,
+      "start": "path",
+      "target": "neck",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 25,
+      "start": "norm",
+      "target": "tube",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 26,
+      "start": "jury",
+      "target": "fell",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 27,
+      "start": "lady",
+      "target": "wake",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 28,
+      "start": "plus",
+      "target": "more",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 29,
+      "start": "nail",
+      "target": "casa",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 30,
+      "start": "grab",
+      "target": "tail",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 31,
+      "start": "logs",
+      "target": "fold",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 32,
+      "start": "hint",
+      "target": "cave",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 33,
+      "start": "name",
+      "target": "park",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 34,
+      "start": "lung",
+      "target": "wool",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 35,
+      "start": "walk",
+      "target": "lets",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 36,
+      "start": "rain",
+      "target": "mars",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 37,
+      "start": "pipe",
+      "target": "keep",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 38,
+      "start": "void",
+      "target": "chad",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 39,
+      "start": "jill",
+      "target": "rear",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 40,
+      "start": "come",
+      "target": "bars",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 41,
+      "start": "cope",
+      "target": "sell",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 42,
+      "start": "mass",
+      "target": "pork",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 43,
+      "start": "core",
+      "target": "gods",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 44,
+      "start": "yang",
+      "target": "corn",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 45,
+      "start": "city",
+      "target": "name",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 46,
+      "start": "even",
+      "target": "bend",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 47,
+      "start": "keen",
+      "target": "mode",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 48,
+      "start": "rose",
+      "target": "wing",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 49,
+      "start": "spin",
+      "target": "post",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 50,
+      "start": "fort",
+      "target": "aids",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 51,
+      "start": "text",
+      "target": "mark",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 52,
+      "start": "duke",
+      "target": "dash",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 53,
+      "start": "gift",
+      "target": "seen",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 54,
+      "start": "pads",
+      "target": "lets",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 55,
+      "start": "soap",
+      "target": "knew",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 56,
+      "start": "buys",
+      "target": "turn",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 57,
+      "start": "mood",
+      "target": "four",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 58,
+      "start": "lane",
+      "target": "gulf",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 59,
+      "start": "tire",
+      "target": "brad",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 60,
+      "start": "belt",
+      "target": "role",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 61,
+      "start": "them",
+      "target": "hard",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 62,
+      "start": "chat",
+      "target": "good",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 63,
+      "start": "mean",
+      "target": "visa",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 64,
+      "start": "bang",
+      "target": "mess",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 65,
+      "start": "kill",
+      "target": "dirt",
+      "supplied": 6,
+      "shortest": 3
+    },
+    {
+      "puzzle": 66,
+      "start": "halo",
+      "target": "roll",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 67,
+      "start": "arts",
+      "target": "meet",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 68,
+      "start": "back",
+      "target": "lime",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 69,
+      "start": "reed",
+      "target": "beds",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 70,
+      "start": "roll",
+      "target": "palm",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 71,
+      "start": "food",
+      "target": "jill",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 72,
+      "start": "feat",
+      "target": "know",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 73,
+      "start": "jump",
+      "target": "thus",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 74,
+      "start": "loan",
+      "target": "cove",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 75,
+      "start": "cure",
+      "target": "rows",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 76,
+      "start": "clip",
+      "target": "more",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 77,
+      "start": "tube",
+      "target": "come",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 78,
+      "start": "tube",
+      "target": "land",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 79,
+      "start": "halo",
+      "target": "knit",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 80,
+      "start": "deep",
+      "target": "lion",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 81,
+      "start": "tips",
+      "target": "mall",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 82,
+      "start": "wake",
+      "target": "they",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 83,
+      "start": "tube",
+      "target": "hack",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 84,
+      "start": "lots",
+      "target": "game",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 85,
+      "start": "wild",
+      "target": "does",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 86,
+      "start": "cups",
+      "target": "feet",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 87,
+      "start": "boot",
+      "target": "fire",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 88,
+      "start": "milk",
+      "target": "vast",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 89,
+      "start": "halo",
+      "target": "disk",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 90,
+      "start": "mean",
+      "target": "rise",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 91,
+      "start": "feet",
+      "target": "rose",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 92,
+      "start": "rows",
+      "target": "lamp",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 93,
+      "start": "cold",
+      "target": "soil",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 94,
+      "start": "room",
+      "target": "dies",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 95,
+      "start": "fits",
+      "target": "give",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 96,
+      "start": "rush",
+      "target": "cars",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 97,
+      "start": "bush",
+      "target": "root",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 98,
+      "start": "tent",
+      "target": "pork",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 99,
+      "start": "cool",
+      "target": "than",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 100,
+      "start": "deck",
+      "target": "vast",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 101,
+      "start": "diet",
+      "target": "earn",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 102,
+      "start": "rear",
+      "target": "debt",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 103,
+      "start": "pink",
+      "target": "tour",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 104,
+      "start": "core",
+      "target": "your",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 105,
+      "start": "cave",
+      "target": "jobs",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 106,
+      "start": "mars",
+      "target": "text",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 107,
+      "start": "note",
+      "target": "sake",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 108,
+      "start": "sign",
+      "target": "wind",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 109,
+      "start": "mass",
+      "target": "wake",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 110,
+      "start": "boys",
+      "target": "nose",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 111,
+      "start": "jade",
+      "target": "bags",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 112,
+      "start": "gain",
+      "target": "sage",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 113,
+      "start": "runs",
+      "target": "hash",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 114,
+      "start": "cast",
+      "target": "lace",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 115,
+      "start": "bold",
+      "target": "past",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 116,
+      "start": "camp",
+      "target": "crew",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 117,
+      "start": "post",
+      "target": "told",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 118,
+      "start": "help",
+      "target": "cons",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 119,
+      "start": "bent",
+      "target": "deal",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 120,
+      "start": "dock",
+      "target": "long",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 121,
+      "start": "tend",
+      "target": "bars",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 122,
+      "start": "felt",
+      "target": "made",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 123,
+      "start": "flow",
+      "target": "crop",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 124,
+      "start": "deck",
+      "target": "deep",
+      "supplied": 5,
+      "shortest": 2
+    },
+    {
+      "puzzle": 125,
+      "start": "bird",
+      "target": "wave",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 126,
+      "start": "laid",
+      "target": "meet",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 127,
+      "start": "cast",
+      "target": "rock",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 128,
+      "start": "what",
+      "target": "eyes",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 129,
+      "start": "reed",
+      "target": "rich",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 130,
+      "start": "farm",
+      "target": "rich",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 131,
+      "start": "casa",
+      "target": "poor",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 132,
+      "start": "diet",
+      "target": "gore",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 133,
+      "start": "pole",
+      "target": "with",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 134,
+      "start": "rain",
+      "target": "done",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 135,
+      "start": "kick",
+      "target": "pill",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 136,
+      "start": "four",
+      "target": "drum",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 137,
+      "start": "eyes",
+      "target": "safe",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 138,
+      "start": "gift",
+      "target": "page",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 139,
+      "start": "neck",
+      "target": "mean",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 140,
+      "start": "been",
+      "target": "laws",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 141,
+      "start": "sand",
+      "target": "soft",
+      "supplied": 6,
+      "shortest": 3
+    },
+    {
+      "puzzle": 142,
+      "start": "slow",
+      "target": "cast",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 143,
+      "start": "grid",
+      "target": "else",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 144,
+      "start": "lack",
+      "target": "wild",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 145,
+      "start": "nest",
+      "target": "cart",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 146,
+      "start": "gain",
+      "target": "axis",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 147,
+      "start": "ball",
+      "target": "pink",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 148,
+      "start": "nova",
+      "target": "ties",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 149,
+      "start": "salt",
+      "target": "fool",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 150,
+      "start": "fell",
+      "target": "sons",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 151,
+      "start": "neck",
+      "target": "cope",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 152,
+      "start": "rest",
+      "target": "road",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 153,
+      "start": "lime",
+      "target": "pole",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 154,
+      "start": "soon",
+      "target": "tend",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 155,
+      "start": "feed",
+      "target": "come",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 156,
+      "start": "form",
+      "target": "sake",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 157,
+      "start": "seed",
+      "target": "hats",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 158,
+      "start": "pond",
+      "target": "loud",
+      "supplied": 4,
+      "shortest": 2
+    },
+    {
+      "puzzle": 159,
+      "start": "rock",
+      "target": "flow",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 160,
+      "start": "drug",
+      "target": "link",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 161,
+      "start": "hong",
+      "target": "ears",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 162,
+      "start": "mint",
+      "target": "cube",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 163,
+      "start": "dude",
+      "target": "wake",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 164,
+      "start": "dear",
+      "target": "junk",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 165,
+      "start": "mere",
+      "target": "ride",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 166,
+      "start": "sand",
+      "target": "disk",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 167,
+      "start": "rent",
+      "target": "star",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 168,
+      "start": "soap",
+      "target": "tale",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 169,
+      "start": "tied",
+      "target": "yang",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 170,
+      "start": "lord",
+      "target": "dear",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 171,
+      "start": "dogs",
+      "target": "foot",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 172,
+      "start": "yard",
+      "target": "hour",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 173,
+      "start": "tone",
+      "target": "five",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 174,
+      "start": "pass",
+      "target": "gold",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 175,
+      "start": "post",
+      "target": "lawn",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 176,
+      "start": "race",
+      "target": "pill",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 177,
+      "start": "foul",
+      "target": "yard",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 178,
+      "start": "tags",
+      "target": "fire",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 179,
+      "start": "hung",
+      "target": "rack",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 180,
+      "start": "sort",
+      "target": "bond",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 181,
+      "start": "ties",
+      "target": "were",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 182,
+      "start": "reel",
+      "target": "cake",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 183,
+      "start": "west",
+      "target": "rise",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 184,
+      "start": "thin",
+      "target": "cake",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 185,
+      "start": "care",
+      "target": "drug",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 186,
+      "start": "cute",
+      "target": "bell",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 187,
+      "start": "zero",
+      "target": "gets",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 188,
+      "start": "pine",
+      "target": "cube",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 189,
+      "start": "rule",
+      "target": "link",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 190,
+      "start": "gone",
+      "target": "norm",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 191,
+      "start": "seem",
+      "target": "pets",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 192,
+      "start": "cost",
+      "target": "call",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 193,
+      "start": "less",
+      "target": "down",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 194,
+      "start": "belt",
+      "target": "step",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 195,
+      "start": "bald",
+      "target": "heel",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 196,
+      "start": "dust",
+      "target": "make",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 197,
+      "start": "made",
+      "target": "bulk",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 198,
+      "start": "easy",
+      "target": "jews",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 199,
+      "start": "keen",
+      "target": "surf",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 200,
+      "start": "test",
+      "target": "duck",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 201,
+      "start": "tiny",
+      "target": "skin",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 202,
+      "start": "fort",
+      "target": "reel",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 203,
+      "start": "pads",
+      "target": "year",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 204,
+      "start": "load",
+      "target": "care",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 205,
+      "start": "mile",
+      "target": "earl",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 206,
+      "start": "hood",
+      "target": "bars",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 207,
+      "start": "seen",
+      "target": "band",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 208,
+      "start": "boot",
+      "target": "miss",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 209,
+      "start": "item",
+      "target": "save",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 210,
+      "start": "rate",
+      "target": "laid",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 211,
+      "start": "role",
+      "target": "gain",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 212,
+      "start": "data",
+      "target": "tags",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 213,
+      "start": "cord",
+      "target": "fell",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 214,
+      "start": "duke",
+      "target": "fill",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 215,
+      "start": "many",
+      "target": "huge",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 216,
+      "start": "boom",
+      "target": "soil",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 217,
+      "start": "down",
+      "target": "fake",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 218,
+      "start": "hard",
+      "target": "drag",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 219,
+      "start": "golf",
+      "target": "seed",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 220,
+      "start": "zone",
+      "target": "last",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 221,
+      "start": "bald",
+      "target": "reef",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 222,
+      "start": "rope",
+      "target": "cook",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 223,
+      "start": "term",
+      "target": "rock",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 224,
+      "start": "hong",
+      "target": "kids",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 225,
+      "start": "miss",
+      "target": "cafe",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 226,
+      "start": "mall",
+      "target": "dump",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 227,
+      "start": "crop",
+      "target": "kirk",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 228,
+      "start": "star",
+      "target": "fold",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 229,
+      "start": "name",
+      "target": "bank",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 230,
+      "start": "dump",
+      "target": "tank",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 231,
+      "start": "pope",
+      "target": "does",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 232,
+      "start": "buck",
+      "target": "mood",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 233,
+      "start": "beat",
+      "target": "trap",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 234,
+      "start": "boot",
+      "target": "debt",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 235,
+      "start": "tied",
+      "target": "span",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 236,
+      "start": "boat",
+      "target": "fine",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 237,
+      "start": "true",
+      "target": "tend",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 238,
+      "start": "true",
+      "target": "line",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 239,
+      "start": "spin",
+      "target": "food",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 240,
+      "start": "jack",
+      "target": "farm",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 241,
+      "start": "gain",
+      "target": "jets",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 242,
+      "start": "shut",
+      "target": "date",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 243,
+      "start": "meal",
+      "target": "epic",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 244,
+      "start": "tips",
+      "target": "cave",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 245,
+      "start": "heat",
+      "target": "dump",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 246,
+      "start": "flow",
+      "target": "pope",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 247,
+      "start": "rand",
+      "target": "help",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 248,
+      "start": "nine",
+      "target": "sake",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 249,
+      "start": "worm",
+      "target": "take",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 250,
+      "start": "went",
+      "target": "pose",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 251,
+      "start": "lead",
+      "target": "true",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 252,
+      "start": "jury",
+      "target": "yard",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 253,
+      "start": "labs",
+      "target": "toll",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 254,
+      "start": "cafe",
+      "target": "bits",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 255,
+      "start": "trap",
+      "target": "drew",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 256,
+      "start": "jail",
+      "target": "mess",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 257,
+      "start": "slip",
+      "target": "tall",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 258,
+      "start": "hans",
+      "target": "feet",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 259,
+      "start": "milk",
+      "target": "boom",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 260,
+      "start": "salt",
+      "target": "gore",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 261,
+      "start": "hans",
+      "target": "menu",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 262,
+      "start": "vast",
+      "target": "ties",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 263,
+      "start": "head",
+      "target": "kill",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 264,
+      "start": "find",
+      "target": "dial",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 265,
+      "start": "yoga",
+      "target": "duke",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 266,
+      "start": "rank",
+      "target": "laws",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 267,
+      "start": "main",
+      "target": "swim",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 268,
+      "start": "stop",
+      "target": "cash",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 269,
+      "start": "nova",
+      "target": "spin",
+      "supplied": 7,
+      "shortest": 7
+    },
+    {
+      "puzzle": 270,
+      "start": "team",
+      "target": "bank",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 271,
+      "start": "hart",
+      "target": "dome",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 272,
+      "start": "fine",
+      "target": "casa",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 273,
+      "start": "iron",
+      "target": "deck",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 274,
+      "start": "duck",
+      "target": "snap",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 275,
+      "start": "pain",
+      "target": "tour",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 276,
+      "start": "tall",
+      "target": "kirk",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 277,
+      "start": "copy",
+      "target": "duty",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 278,
+      "start": "item",
+      "target": "free",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 279,
+      "start": "moon",
+      "target": "bone",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 280,
+      "start": "park",
+      "target": "grip",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 281,
+      "start": "yoga",
+      "target": "cost",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 282,
+      "start": "fire",
+      "target": "gale",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 283,
+      "start": "pale",
+      "target": "brad",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 284,
+      "start": "skip",
+      "target": "wing",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 285,
+      "start": "mold",
+      "target": "tray",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 286,
+      "start": "chad",
+      "target": "park",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 287,
+      "start": "cell",
+      "target": "fire",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 288,
+      "start": "moss",
+      "target": "pink",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 289,
+      "start": "loss",
+      "target": "cake",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 290,
+      "start": "lock",
+      "target": "four",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 291,
+      "start": "hack",
+      "target": "kids",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 292,
+      "start": "turn",
+      "target": "june",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 293,
+      "start": "tips",
+      "target": "best",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 294,
+      "start": "duck",
+      "target": "busy",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 295,
+      "start": "girl",
+      "target": "rain",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 296,
+      "start": "road",
+      "target": "desk",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 297,
+      "start": "void",
+      "target": "paul",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 298,
+      "start": "next",
+      "target": "hans",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 299,
+      "start": "gore",
+      "target": "mine",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 300,
+      "start": "hill",
+      "target": "rage",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 301,
+      "start": "list",
+      "target": "duck",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 302,
+      "start": "leaf",
+      "target": "mall",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 303,
+      "start": "held",
+      "target": "dark",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 304,
+      "start": "will",
+      "target": "rent",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 305,
+      "start": "rock",
+      "target": "farm",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 306,
+      "start": "lung",
+      "target": "sign",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 307,
+      "start": "legs",
+      "target": "star",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 308,
+      "start": "sick",
+      "target": "zone",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 309,
+      "start": "need",
+      "target": "lung",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 310,
+      "start": "foam",
+      "target": "dome",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 311,
+      "start": "kind",
+      "target": "sick",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 312,
+      "start": "palm",
+      "target": "ford",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 313,
+      "start": "hood",
+      "target": "blow",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 314,
+      "start": "clip",
+      "target": "ping",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 315,
+      "start": "flow",
+      "target": "swim",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 316,
+      "start": "barn",
+      "target": "foam",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 317,
+      "start": "mill",
+      "target": "spot",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 318,
+      "start": "bell",
+      "target": "whom",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 319,
+      "start": "jury",
+      "target": "told",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 320,
+      "start": "case",
+      "target": "tops",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 321,
+      "start": "cups",
+      "target": "foam",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 322,
+      "start": "mile",
+      "target": "than",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 323,
+      "start": "pink",
+      "target": "beam",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 324,
+      "start": "horn",
+      "target": "tent",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 325,
+      "start": "ears",
+      "target": "shut",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 326,
+      "start": "bond",
+      "target": "rats",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 327,
+      "start": "jack",
+      "target": "ward",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 328,
+      "start": "wolf",
+      "target": "lane",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 329,
+      "start": "turn",
+      "target": "shot",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 330,
+      "start": "four",
+      "target": "from",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 331,
+      "start": "cube",
+      "target": "snap",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 332,
+      "start": "only",
+      "target": "food",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 333,
+      "start": "dash",
+      "target": "milk",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 334,
+      "start": "ball",
+      "target": "dude",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 335,
+      "start": "bond",
+      "target": "area",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 336,
+      "start": "fair",
+      "target": "risk",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 337,
+      "start": "tied",
+      "target": "lawn",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 338,
+      "start": "jill",
+      "target": "brad",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 339,
+      "start": "less",
+      "target": "tide",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 340,
+      "start": "crew",
+      "target": "loan",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 341,
+      "start": "diet",
+      "target": "seek",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 342,
+      "start": "lamp",
+      "target": "pair",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 343,
+      "start": "gave",
+      "target": "farm",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 344,
+      "start": "best",
+      "target": "hawk",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 345,
+      "start": "wall",
+      "target": "sure",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 346,
+      "start": "help",
+      "target": "gulf",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 347,
+      "start": "seek",
+      "target": "dude",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 348,
+      "start": "hull",
+      "target": "pond",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 349,
+      "start": "lady",
+      "target": "plot",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 350,
+      "start": "bill",
+      "target": "guns",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 351,
+      "start": "park",
+      "target": "well",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 352,
+      "start": "lord",
+      "target": "five",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 353,
+      "start": "moon",
+      "target": "self",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 354,
+      "start": "bank",
+      "target": "dial",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 355,
+      "start": "maps",
+      "target": "back",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 356,
+      "start": "rays",
+      "target": "shop",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 357,
+      "start": "need",
+      "target": "bold",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 358,
+      "start": "half",
+      "target": "post",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 359,
+      "start": "done",
+      "target": "wins",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 360,
+      "start": "deny",
+      "target": "neck",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 361,
+      "start": "told",
+      "target": "lion",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 362,
+      "start": "fees",
+      "target": "solo",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 363,
+      "start": "ford",
+      "target": "wrap",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 364,
+      "start": "neck",
+      "target": "mint",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 365,
+      "start": "jews",
+      "target": "bags",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 366,
+      "start": "dash",
+      "target": "lime",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 367,
+      "start": "cube",
+      "target": "wake",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 368,
+      "start": "mice",
+      "target": "land",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 369,
+      "start": "what",
+      "target": "gore",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 370,
+      "start": "weed",
+      "target": "todd",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 371,
+      "start": "bull",
+      "target": "jews",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 372,
+      "start": "huge",
+      "target": "bass",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 373,
+      "start": "give",
+      "target": "bars",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 374,
+      "start": "wide",
+      "target": "tall",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 375,
+      "start": "lean",
+      "target": "crop",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 376,
+      "start": "rays",
+      "target": "belt",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 377,
+      "start": "junk",
+      "target": "goat",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 378,
+      "start": "deal",
+      "target": "poll",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 379,
+      "start": "nose",
+      "target": "turn",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 380,
+      "start": "bent",
+      "target": "lung",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 381,
+      "start": "page",
+      "target": "done",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 382,
+      "start": "roll",
+      "target": "died",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 383,
+      "start": "rope",
+      "target": "lots",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 384,
+      "start": "long",
+      "target": "mary",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 385,
+      "start": "yoga",
+      "target": "need",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 386,
+      "start": "hull",
+      "target": "bugs",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 387,
+      "start": "dice",
+      "target": "self",
+      "supplied": 7,
+      "shortest": 4
+    },
+    {
+      "puzzle": 388,
+      "start": "cute",
+      "target": "mere",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 389,
+      "start": "took",
+      "target": "yang",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 390,
+      "start": "dead",
+      "target": "lung",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 391,
+      "start": "bond",
+      "target": "game",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 392,
+      "start": "post",
+      "target": "turn",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 393,
+      "start": "worm",
+      "target": "test",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 394,
+      "start": "both",
+      "target": "soap",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 395,
+      "start": "best",
+      "target": "edit",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 396,
+      "start": "mood",
+      "target": "tree",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 397,
+      "start": "bird",
+      "target": "lets",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 398,
+      "start": "bulk",
+      "target": "less",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 399,
+      "start": "pick",
+      "target": "than",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 400,
+      "start": "plug",
+      "target": "year",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 401,
+      "start": "said",
+      "target": "poll",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 402,
+      "start": "sick",
+      "target": "poll",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 403,
+      "start": "type",
+      "target": "iron",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 404,
+      "start": "till",
+      "target": "hard",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 405,
+      "start": "ward",
+      "target": "dock",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 406,
+      "start": "hair",
+      "target": "rage",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 407,
+      "start": "bite",
+      "target": "cord",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 408,
+      "start": "seed",
+      "target": "noon",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 409,
+      "start": "hats",
+      "target": "felt",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 410,
+      "start": "team",
+      "target": "does",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 411,
+      "start": "swap",
+      "target": "grid",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 412,
+      "start": "boss",
+      "target": "gale",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 413,
+      "start": "trek",
+      "target": "card",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 414,
+      "start": "cage",
+      "target": "pose",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 415,
+      "start": "wrap",
+      "target": "bomb",
+      "supplied": 6,
+      "shortest": 6
+    },
+    {
+      "puzzle": 416,
+      "start": "went",
+      "target": "slow",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 417,
+      "start": "farm",
+      "target": "turn",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 418,
+      "start": "deny",
+      "target": "earn",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 419,
+      "start": "lose",
+      "target": "duke",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 420,
+      "start": "lawn",
+      "target": "belt",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 421,
+      "start": "yard",
+      "target": "seal",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 422,
+      "start": "dare",
+      "target": "size",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 423,
+      "start": "fool",
+      "target": "ball",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 424,
+      "start": "grow",
+      "target": "earl",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 425,
+      "start": "pope",
+      "target": "west",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 426,
+      "start": "bowl",
+      "target": "shop",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 427,
+      "start": "been",
+      "target": "dark",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 428,
+      "start": "mass",
+      "target": "cute",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 429,
+      "start": "them",
+      "target": "thus",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 430,
+      "start": "term",
+      "target": "sets",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 431,
+      "start": "brad",
+      "target": "poor",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 432,
+      "start": "base",
+      "target": "seal",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 433,
+      "start": "wood",
+      "target": "cube",
+      "supplied": 5,
+      "shortest": 5
+    },
+    {
+      "puzzle": 434,
+      "start": "turn",
+      "target": "cube",
+      "supplied": 5,
+      "shortest": 3
+    },
+    {
+      "puzzle": 435,
+      "start": "pope",
+      "target": "near",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 436,
+      "start": "skin",
+      "target": "cave",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 437,
+      "start": "join",
+      "target": "salt",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 438,
+      "start": "pray",
+      "target": "vast",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 439,
+      "start": "rise",
+      "target": "kept",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 440,
+      "start": "move",
+      "target": "fine",
+      "supplied": 4,
+      "shortest": 3
+    },
+    {
+      "puzzle": 441,
+      "start": "trio",
+      "target": "lean",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 442,
+      "start": "lone",
+      "target": "your",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 443,
+      "start": "said",
+      "target": "halo",
+      "supplied": 6,
+      "shortest": 4
+    },
+    {
+      "puzzle": 444,
+      "start": "skin",
+      "target": "wood",
+      "supplied": 7,
+      "shortest": 5
+    },
+    {
+      "puzzle": 445,
+      "start": "dumb",
+      "target": "mate",
+      "supplied": 6,
+      "shortest": 5
+    },
+    {
+      "puzzle": 446,
+      "start": "mood",
+      "target": "yard",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 447,
+      "start": "keep",
+      "target": "glow",
+      "supplied": 7,
+      "shortest": 6
+    },
+    {
+      "puzzle": 448,
+      "start": "went",
+      "target": "term",
+      "supplied": 5,
+      "shortest": 4
+    },
+    {
+      "puzzle": 449,
+      "start": "tiny",
+      "target": "corn",
+      "supplied": 4,
+      "shortest": 4
+    },
+    {
+      "puzzle": 450,
+      "start": "pink",
+      "target": "soft",
+      "supplied": 6,
+      "shortest": 5
+    }
+  ]
+}

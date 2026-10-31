@@ -1,0 +1,226 @@
+✖ Morph UI hint: scored decisions and added-letter explanation (618.545334ms)
+✖ Morph UI skip: scored decisions and added-letter explanation (629.034083ms)
+✖ Morph UI restart: scored decisions and added-letter explanation (621.743625ms)
+✖ Morph UI stale: scored decisions and added-letter explanation (625.163584ms)
+✔ Morph UI saved: scored decisions and added-letter explanation (615.576459ms)
+✖ Morph UI palette: scored decisions and added-letter explanation (662.854208ms)
+(node:98760) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3809.943667
+
+✖ failing tests:
+
+test at tests/morph-review.test.mjs:2:75
+✖ Morph UI hint: scored decisions and added-letter explanation (618.545334ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs hint
+  (node:98761) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs:19:48) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/morph-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 39 38 37 36 31 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes> ],
+    pid: 98761,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 39 38 37 36 31 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes>
+  }
+
+test at tests/morph-review.test.mjs:2:75
+✖ Morph UI skip: scored decisions and added-letter explanation (629.034083ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs skip
+  (node:98764) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs:19:48) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/morph-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 39 38 37 36 34 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes> ],
+    pid: 98764,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 39 38 37 36 34 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes>
+  }
+
+test at tests/morph-review.test.mjs:2:75
+✖ Morph UI restart: scored decisions and added-letter explanation (621.743625ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs restart
+  (node:98767) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs:19:48) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/morph-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 39 38 37 36 37 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes> ],
+    pid: 98767,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 39 38 37 36 37 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes>
+  }
+
+test at tests/morph-review.test.mjs:2:75
+✖ Morph UI stale: scored decisions and added-letter explanation (625.163584ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs stale
+  (node:98768) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at <anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs:19:48) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/morph-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 39 38 37 36 38 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes> ],
+    pid: 98768,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 39 38 37 36 38 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 587 more bytes>
+  }
+
+test at tests/morph-review.test.mjs:2:75
+✖ Morph UI palette: scored decisions and added-letter explanation (662.854208ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/26.11.0/bin/node --import tsx /Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/morph-review-dom.mjs palette
+  (node:98770) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  /Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/@radix-ui/react-focus-scope/src/focus-scope.tsx:248
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, {
+                                                        ^
+  
+  ReferenceError: NodeFilter is not defined
+      at getTabbableCandidates (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/@radix-ui/react-focus-scope/src/focus-scope.tsx:248:55)
+      at <anonymous> (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/@radix-ui/react-focus-scope/src/focus-scope.tsx:143:34)
+      at Object.react_stack_bottom_frame (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:871:30)
+      at commitHookEffectListMount (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:15476:11)
+      at recursivelyTraversePassiveMountEffects (/Users/jamesalford/Documents/Codex/2026-10-27/task/alford-daily/packages/kimi-pebbles/node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+  
+  Node.js v26.11.0
+  
+      at genericNodeError (node:internal/errors:999:15)
+      at wrappedFn (node:internal/errors:544:14)
+      at checkExecSyncError (node:child_process:988:11)
+      at execFileSync (node:child_process:1024:15)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/morph-review.test.mjs:3:2)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12) {
+    status: 1,
+    signal: null,
+    output: [ null, <Buffer >, <Buffer 28 6e 6f 64 65 3a 39 38 37 37 30 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 2388 more bytes> ],
+    pid: 98770,
+    stdout: <Buffer >,
+    stderr: <Buffer 28 6e 6f 64 65 3a 39 38 37 37 30 29 20 5b 44 45 50 30 32 30 35 5d 20 44 65 70 72 65 63 61 74 69 6f 6e 57 61 72 6e 69 6e 67 3a 20 60 6d 6f 64 75 6c 65 ... 2388 more bytes>
+  }

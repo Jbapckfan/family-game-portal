@@ -39,7 +39,7 @@ test('Cairn explains rack placement and distinguishes each empty or removable po
 test('Morph identifies the edit position and explains tapping before opening the letter sheet', () => {
   const document = render('morph', { phase: 'playing', puzzle: { s: 'cold', t: 'warm', par: 4 }, rows: ['cold'], edit: [...'cord'], focusCell: null, paletteOpen: false, misses: 0, hintsUsed: 0, finished: false });
   assert.match(document.getElementById('morph-instructions')?.textContent ?? '', /Tap.*letter/);
-  assert.equal(document.querySelector('button[aria-label="Edit letter r"]')?.getAttribute('aria-description'), 'Position 3 of 4');
+  assert.equal(document.querySelector('button[aria-label="Edit letter r, position 3"]')?.getAttribute('aria-description'), 'Position 3 of 4');
 });
 
 test('Hunch gives visible non-color result marks and a persistent interpretation key', () => {

@@ -32,7 +32,7 @@ function Fixture() {
 const root = createRoot(document.getElementById('root'));
 try {
   await act(async () => root.render(h(Fixture)));
-  const opener = document.querySelector('button[aria-label="Edit letter c"]');
+  const opener = document.querySelector('button[aria-label="Edit letter c, position 1"]');
   await act(async () => { opener.focus(); opener.click(); });
   const dialog = document.querySelector('[role="dialog"]');
   assert.ok(dialog, 'tapping an editable letter opens the palette');
@@ -43,13 +43,18 @@ try {
     assert.equal(document.querySelector('[role="dialog"]') === null, true, 'Escape dismisses the palette');
     assert.ok(document.activeElement === opener, 'Escape restores focus to the selected letter');
   } else if (process.argv[2] === 'choice') {
-    await act(async () => { key(dialog, 'Enter'); key(dialog, 'z'); });
+    await act(async () => key(dialog, 'Enter'));
     assert.equal(calls.submits, 0, 'dialog keys cannot submit the underlying rung');
     assert.equal(calls.keyboard, 0, 'dialog keys cannot edit the underlying rung');
+    await act(async () => key(dialog, 'z'));
+    assert.equal(calls.keyboard, 0, 'a palette letter never edits the underlying row too');
+    assert.deepEqual(calls.picked, ['z']);
+    assert.equal(document.querySelector('[role="dialog"]') === null, true);
+  } else if (process.argv[2] === 'pointer') {
     const letter = [...dialog.querySelectorAll('button')].find(button => button.textContent === 'z');
     await act(async () => letter.click());
     assert.deepEqual(calls.picked, ['z']);
-    assert.equal(document.querySelector('[role="dialog"]') === null, true);
+    assert.equal(document.querySelector('[role="dialog"]'), null);
   } else {
     assert.ok(dialog.contains(document.activeElement), 'opening moves focus inside the palette');
     const buttons = [...dialog.querySelectorAll('button')];

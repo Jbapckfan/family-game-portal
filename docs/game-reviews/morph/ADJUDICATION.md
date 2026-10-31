@@ -1,0 +1,18 @@
+# Morph review decisions
+
+| Finding | Decision and evidence |
+|---|---|
+| All: purple, small labels and drifting goal | Applied blue/teal, including the existing vector icon; larger controls/labels, numbered steps, a goal above the ladder and public changed-letter indicators. Both browsers tested320–1440px and goal visibility while playing. |
+| Opus/Gemini: target word versus target moves | Goal means the destination word; suggested moves means the supplied route’s length. The benchmark is not shortest. The worked help example now highlights the correct single letter on every move. |
+| All: consequential actions need confirmation | First whole-route hint, give-up and restart are confirmed; saved route views stay free. Captured round/puzzle/rows/phase identity and a double-confirm guard protect approval. New DOM tests first failed on direct-action paths, then passed. Actual recovery, cancellation and persistence checked. |
+| All: false Copied, missing date/Practice/image | Frozen aggregate adapter and native-first browser share UI implemented. Native handoff never claims clipboard success. Chrome/WebKit exercised copies, denial/manual fallback, PNG files and mocked cancellation/native messages. |
+| Opus/Gemini: restored-win confetti | Removed Morph’s confetti effect, without changing scoring or the overlay/replay contract. Restored finished boards have no confetti canvas. |
+| Final Opus Important: consumed palette key can reach the underlying row | The production window handler accepted an already-prevented event: RED test demonstrated a second keyboardLetter call. Added defaultPrevented guard; GREEN focused/full suites and actual reduced-motion third-position edits in both browsers. The specific Radix microtask race is a prediction; the vulnerable consumed-event path and final behavior are independently tested. |
+| Kimi: hint persistence effect omits hintsUsed | Rejected: the supplied useMorph persistence dependency list already contains s.hintsUsed. Hook unchanged. Actual first-route hint, reload and free repeated view keep assistance1. |
+| Gemini: native bridge broken because gameId absent | Rejected: canonical HTML contains data-game-id and shared copyText already calls nativeMessage. The new interface uses explicit slug kimi-morph anyway. No prior native failure is claimed. |
+| Gemini:357shorter paths are caused by391non-common canonical words | Unsupported causal claim. BFS and common-list membership are separate measurements; neither proves which vocabulary creates every shortcut. Broad-dictionary shortest paths are not human difficulty. |
+| Vocabulary and forgiving suggested benchmark | Recorded450unique endpoint pairs, recurring words and dictionary-relative shortest distances. Preserved published puzzles, scoring and dates. Human familiarity/difficulty remain open. Practice draws from eligible existing boards; no infinite supply claim is made. |
+
+Final Opus found **0Critical,1Important,4Minor** source predictions. The consumed-key path was corrected and verified. The help-copy minor was also corrected to meet the planned goal/suggestion distinction. Three minor polish items remain: same-round share-reopen rendering/focus, assisted route-panel visibility across reload, delayed physical Safari download expiry. They do not change outcome or exported privacy and are not presented as verified device behavior. There was no model re-review after the fix; final author-run tests cover it.
+
+Cairn’s keeper verdict is saved. Morph’s preference remains pending; model predictions are not James’s ranking. No other game’s engine/bank or private-site audience was changed.

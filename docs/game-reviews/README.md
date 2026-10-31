@@ -2,7 +2,7 @@
 
 James asked for every game's UI, gameplay, fun, replay value and social sharing to be reviewed individually. The collection currently contains 32 daily games and the nine-board bonus. `ranking.json` is the durable record. Catalog order is review order, not enjoyment rank.
 
-Start with Ringcount, show the revised game, then record James's response before deciding whether its design should carry into the next game. Keep all existing games available.
+Follow the queue in RANKING.md, show each revised game, then record James's response before moving to the next game. Keep all existing games available.
 
 ## How the ranking works
 
@@ -22,4 +22,4 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Ringcount result and verification](ringcount/REPORT.md) · [review comparison](ringcount/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-29-ringcount-review.md)
+Cairn is a keeper from James’s “keeper, go next.” [Morph’s revised game and verification](morph/REPORT.md) · [review comparison and decisions](morph/ADJUDICATION.md) · [preference ranking and queue](RANKING.md) · [implementation plan](../superpowers/plans/2026-10-30-morph-review.md). Morph’s preference remains pending; Kimi’s Tangle follows.

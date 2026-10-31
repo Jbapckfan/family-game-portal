@@ -1,0 +1,54 @@
+✔ cairn/GameBoard: Enter preserves focused button activation instead of submitting a game move (16.442792ms)
+✔ cairn/GameBoard: body Enter still submits, while an open dialog blocks game shortcuts (4.582708ms)
+✔ hunch/HunchBoard: Enter preserves focused button activation instead of submitting a game move (1.463875ms)
+✔ hunch/HunchBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.151083ms)
+✔ morph/MorphBoard: Enter preserves focused button activation instead of submitting a game move (1.057292ms)
+✔ morph/MorphBoard: body Enter still submits, while an open dialog blocks game shortcuts (2.871291ms)
+✔ tangle/TangleBoard: Enter preserves focused button activation instead of submitting a game move (1.317042ms)
+✔ tangle/TangleBoard: body Enter still submits, while an open dialog blocks game shortcuts (1.89675ms)
+✔ cairn/GameBoard: letter typing still works with body or a board tile focused (2.054ms)
+✔ hunch/HunchBoard: letter typing still works with body or a board tile focused (2.406291ms)
+✔ morph/MorphBoard: letter typing still works with body or a board tile focused (1.562083ms)
+✔ Tangle pointer cancellation ends the gesture without submitting a word (0.96575ms)
+✔ Tangle an ordinary completed drag still submits exactly once (0.621791ms)
+✖ Morph ignores a consumed palette key after its dialog has closed (1.166667ms)
+(node:1342) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 283.630709
+
+✖ failing tests:
+
+test at tests/keyboard-pointer.test.mjs:89:1
+✖ Morph ignores a consumed palette key after its dialog has closed (1.166667ms)
+  AssertionError [ERR_ASSERTION]: a key consumed by the palette cannot also edit the underlying row
+  + actual - expected
+  
+  + [
+  +   [
+  +     'keyboardLetter',
+  +     'z'
+  +   ]
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/keyboard-pointer.test.mjs:92:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

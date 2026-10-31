@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff and Inbetween — would play again. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween and Cairn — would play again. Their relative order is not yet supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 
 Inbetween is **6/10** from James. No numerical enjoyment scores were supplied for the other games. The table below is the review queue, not a forced ranking between keepers.
@@ -17,8 +17,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 6 | Sideways | ChatGPT | Replacement candidate: too easy | Qualitative feedback |
 | 7 | Tradeoff | ChatGPT | Keep; difficulty follow-up | Keeper; a bit too easy |
 | 8 | Inbetween | ChatGPT | Keep; drag-and-drop delivered | 6/10; could have harder clues |
-| 9 | Cairn | Kimi | Reviewed; revised finish/UI ready | Graphic criticized; gameplay verdict pending |
-| 10 | Morph | Kimi | Not yet reviewed individually | — |
+| 9 | Cairn | Kimi | Keep; revised finish delivered | Keeper; no numerical score |
+| 10 | Morph | Kimi | Reviewed; revised game ready | Gameplay verdict pending |
 | 11 | Tangle | Kimi | Not yet reviewed individually | — |
 | 12 | Hunch | Kimi | Not yet reviewed individually | — |
 | 13 | Circuit | Kimi | Not yet reviewed individually | — |
@@ -59,6 +59,8 @@ Tradeoff reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.
 
 Inbetween reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **2/5**. James rated it **6/10**, kept it, and asked for drag-and-drop placement visuals and harder clues. [Drag-and-drop delivered](inbetween/DRAG-PLACEMENT.md); clue tuning remains a follow-up. [Review decisions, bank recurrence and final verification](inbetween/ADJUDICATION.md).
 
-Cairn reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3/5**. James criticized the Perfect Summit graphic; the revised version removes it. His gameplay/replay verdict and disposition remain pending. [Review and verified fixes](cairn/REPORT.md).
+Cairn reviewer fun predictions before improvements: Kimi **4/5**, Gemini **4/5**, Opus **3/5**. James criticized the Perfect Summit graphic; the revised version removes it. He subsequently said “keeper, go next”; Cairn is kept, without a numerical score or relative keeper rank. [Review and verified fixes](cairn/REPORT.md).
+
+Morph reviewer fun predictions before improvements: Kimi **4/5**, Gemini **3.5/5**, Opus **3/5**. James’s gameplay/replay verdict and keeper disposition remain pending. [Review and verification](morph/REPORT.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

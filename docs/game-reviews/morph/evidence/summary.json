@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-30",
+  "sourceBaseCommit": "a1a0ff61ad74eb3f51bba9d53f7cde71de88d036",
+  "catalogTests": {
+    "passed": 899,
+    "failed": 0
+  },
+  "packageTests": {
+    "passed": 172,
+    "failed": 0
+  },
+  "finalFocusedTests": 33,
+  "testScope": "Catalog/package are separate suites; focused tests overlap package. Final source after consumed-key fix. Browser42 also exercises invalid/repeated/multiple-change cases, saved hint/recovery and a valid alternate route.",
+  "browserChecks": 42,
+  "browserErrors": [],
+  "offlineChecks": 11,
+  "unsignedIphoneBuild": "BUILD SUCCEEDED",
+  "nativeRuntimeParity": {
+    "files": 283,
+    "exactFileAndSHA256Match": true,
+    "compiledProduct": "output/morph-review-20261030/DerivedData/Build/Products/Release-iphoneos/AlfordDaily.app/Web",
+    "signed": false,
+    "physicalDeviceTested": false
+  },
+  "stage": "dist/morph-review-20261030-delivery/web",
+  "webBuildId": "b46bb72a44711aa1",
+  "manifestAssets": 315,
+  "stagedFiles": 317,
+  "unchangedMorphCore": [
+    "engine.ts",
+    "useMorph.ts",
+    "progress.ts",
+    "data/puzzles.json"
+  ],
+  "contentAudit": {
+    "boards": 450,
+    "distinctUnorderedEndpointPairs": 450,
+    "distinctStarts": 333,
+    "distinctTargets": 323,
+    "distinctCanonicalWords": 988,
+    "maxCanonicalRecurrence": 17,
+    "fourLetterDictionaryWords": 7186,
+    "fourLetterCommonListWords": 747,
+    "invalidCanonicalWords": [],
+    "suppliedMoveDistribution": {
+      "4": 104,
+      "5": 133,
+      "6": 137,
+      "7": 76
+    },
+    "shortestDictionaryMoveDistribution": {
+      "2": 2,
+      "3": 69,
+      "4": 206,
+      "5": 145,
+      "6": 27,
+      "7": 1
+    },
+    "boardsWithShorterDictionaryRoute": 357,
+    "canonicalWordsOutsideBundledCommon": 391,
+    "method": "Independent validation of every supplied route: exact dictionary membership, unique four-letter words, one-position changes, start/target/par. Breadth-first search over actual bundled four-letter dictionary computes shortest distance; broad-dictionary paths can contain obscure terms. Not human familiarity, fun, semantic uniqueness, or shortest common-word certification."
+  },
+  "jamesVerdict": "Morph enjoyment/replay/rating/disposition pending. Cairn is now a keeper from exact keeper, go next.",
+  "modelReview": {
+    "baseline": [
+      "kimi-code/k3.1-pro",
+      "gemini-3.8-flash-high",
+      "claude-opus-5-5"
+    ],
+    "final": "claude-opus-5-5",
+    "finalFindings": {
+      "critical": 0,
+      "important": 1,
+      "minor": 4
+    },
+    "disposition": "Consumed keyboard-event path reproduced RED then guarded GREEN; real Chrome/WebKit reduced-motion position3 edits pass. Ambiguous help-copy item corrected. Other three minors documented."
+  },
+  "physicalPhoneVerified": false,
+  "nativeImageSharingVerified": false,
+  "publicDeployment": false,
+  "deferredMinors": [
+    "Share panel can briefly render before reset on same-round results reopen; dialog remains functional.",
+    "Assisted terminal board hides route until reload, then restores it; results show the route in either case.",
+    "Blob URL expiry after1second may affect a physical Safari download confirmation; desktop WebKit/Chrome PNGs passed, hardware sharing is unverified."
+  ],
+  "limitations": [
+    "Dictionary route validity/shortest distance and calendar uniqueness are not human familiarity, semantic diversity or measured difficulty.",
+    "Existing localStorage concurrency and daily rollover contract unchanged.",
+    "No verified free DeepSeek route used; no endorsement inferred."
+  ],
+  "sourceFileSHA256": {
+    "packages/kimi-pebbles/src/games/morph/MorphBoard.tsx": "706b478ee79cec6f6c5846ff52ff8f811f0ad65708487c6ea9cbbc85e97c70d8",
+    "packages/kimi-pebbles/src/games/morph/MorphHelpModal.tsx": "06afe3ea6c791ed09ad564b596969aea98a45af5268d037380cb8324a00deb67",
+    "packages/kimi-pebbles/src/games/morph/MorphPage.tsx": "a69acefc9b8c378d32aaaa4592fc3e16a2a59dcb0489ab1771b6203bd352a2e0",
+    "packages/kimi-pebbles/src/games/morph/MorphSharePanel.tsx": "2c557deed47b562800135857ba7f0633f6be7536b455afc7831980d50f1e3512",
+    "packages/kimi-pebbles/src/games/morph/MorphWinModal.tsx": "6dc02844df2d244c68c13dc28ca3addbaa038afb7373eb7ab4b4332f23a0e6df",
+    "packages/kimi-pebbles/src/games/morph/engine.ts": "f380d2cd4266db9e36508c86dc11491808b3f7d10ae042e25580670db98f3271",
+    "packages/kimi-pebbles/src/games/morph/progress.ts": "4efc99ab49c1c671fb3876c9c23dd70a5a593929d7d655ce93e1d4eccb47330a",
+    "packages/kimi-pebbles/src/games/morph/share-card.ts": "48d9e9209789ae23fde11d043ae1967a88b4f1c329af96e4b2ae078f00a2b68a",
+    "packages/kimi-pebbles/src/games/morph/useMorph.ts": "21ac2345951710823beba12b032809d6e9a3ce7c1ec475873ab9e73e7b3f7d1b"
+  },
+  "desktopCapture": "A fresh1440x1000 Chrome capture with GPU disabled replaced a resize/compositor artifact; DOM confirms one header/main. No product change."
+}

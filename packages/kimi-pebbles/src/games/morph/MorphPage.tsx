@@ -2,10 +2,10 @@ import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useMorph } from './useMorph'
 import { useUnifiedProgress } from '../shared/useUnifiedProgress'
-import { dateLabel } from '../shared/share'
+import { centralDayNumber, dateForDayNumber } from '../shared/integration'
 import { GameHeader } from '../shared/GameHeader'
 import { SimpleStatsModal } from '../shared/SimpleStatsModal'
-import { PracticeBanner, ToastHost, fireConfetti } from '../shared/effects'
+import { PracticeBanner, ToastHost } from '../shared/effects'
 import { MorphBoard } from './MorphBoard'
 import { MorphHelpModal } from './MorphHelpModal'
 import { MorphWinModal } from './MorphWinModal'
@@ -28,11 +28,6 @@ export default function MorphPage() {
     } catch { setHelpOpen(true) }
   }, [state.phase])
 
-  useEffect(() => {
-    if (!state.finished) return
-    if (!state.gaveUp) fireConfetti()
-  }, [state.finished, state.gaveUp])
-
   return (
     <div className="kimi-page kimi-morph flex min-h-dvh flex-col">
       <GameHeader
@@ -41,7 +36,7 @@ export default function MorphPage() {
         busy={state.phase === 'loading'}
         onPractice={startPractice}
         onDaily={backToDaily}
-        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateLabel()}` : 'Practice round'}
+        subtitle={state.mode === 'daily' ? `No. ${state.puzzleNo} · ${dateForDayNumber(state.dayNumber)}` : 'Practice round'}
 
         onHelp={() => setHelpOpen(true)}
         onStats={() => setStatsOpen(true)}
@@ -75,14 +70,15 @@ export default function MorphPage() {
       </footer>
 
       <MorphHelpModal open={helpOpen} onOpenChange={setHelpOpen} />
-      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={state.stats} title="Your ladders" />
-      {state.puzzle && (
+      <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={{...state.stats,currentStreak:state.stats.lastCompletedDay !== null && state.stats.lastCompletedDay >= centralDayNumber()-1 ? state.stats.currentStreak : 0}} title="Your ladders" />
+      {state.puzzle && state.finished && (
         <MorphWinModal
           open={winOpen && state.finished}
           onOpenChange={setWinOpen}
           mode={state.mode}
           puzzle={state.puzzle}
           puzzleNo={state.puzzleNo}
+          dayNumber={state.dayNumber}
           rows={state.rows}
           misses={state.misses}
           gaveUp={state.gaveUp}

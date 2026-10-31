@@ -85,3 +85,9 @@ test('Tangle pointer cancellation ends the gesture without submitting a word', (
 test('Tangle an ordinary completed drag still submits exactly once', () => {
   assert.deepEqual(tanglePointer('onPointerUp'), { submissions: 1, dragging: false, moved: false });
 });
+
+test('Morph ignores a consumed palette key after its dialog has closed', () => {
+  const game = keyboard('morph/MorphBoard');
+  game.press('z', 'BODY', { defaultPrevented: true });
+  assert.deepEqual(game.calls, [], 'a key consumed by the palette cannot also edit the underlying row');
+});

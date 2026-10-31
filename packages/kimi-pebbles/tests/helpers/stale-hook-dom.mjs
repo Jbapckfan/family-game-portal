@@ -272,7 +272,7 @@ try {
       let copied = '';
       Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { copied = text; } } });
       await act(async () => modal.render(React.createElement(MorphWinModal, {
-        open: true, onOpenChange() {}, mode: 'daily', puzzle: state.puzzle, puzzleNo: state.puzzleNo,
+        open: true, onOpenChange() {}, mode: 'daily', puzzle: state.puzzle, puzzleNo: state.puzzleNo, dayNumber: state.dayNumber,
         rows: state.rows, misses: state.misses, gaveUp: false, hintsUsed: state.hintsUsed,
         onPractice() {}, onNewPractice() {}, onBackToDaily() {},
       })));
@@ -280,7 +280,11 @@ try {
       const share = [...document.querySelectorAll('button')].find(button => button.textContent === 'Share result');
       assert.ok(share);
       await act(async () => share.dispatchEvent(new window.MouseEvent('click', { bubbles: true })));
-      assert.match(copied, /💡 Assisted · route shown/);
+      const copyCaption = [...document.querySelectorAll('button')].find(button => button.textContent === 'Copy caption');
+      assert.ok(copyCaption);
+      await act(async () => copyCaption.click());
+      assert.match(copied, /Assisted · route shown/);
+      assert.match(copied, /DAILY #/);
 
     }
   }

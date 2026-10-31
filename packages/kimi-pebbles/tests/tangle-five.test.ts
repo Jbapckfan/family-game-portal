@@ -5,6 +5,7 @@ import { isAdjacent } from '../src/games/tangle/engine.ts'
 import { pointsFor } from '../src/games/tangle/progress.ts'
 import { buildTangleShareResult } from '../src/games/tangle/share-card.ts'
 import { readFileSync } from 'node:fs'
+import { gunzipSync } from 'node:zlib'
 import { TANGLE_REVIEWED_EXCLUSIONS } from '../src/games/tangle/reviewed-words.ts'
 
 function pathExists(word:string):boolean {
@@ -36,7 +37,13 @@ test('reported valid words and inflections are accepted, including STONED, TREAD
 })
 
 test('the preview accepts every bundled-dictionary word with a legal path, under the existing closed exclusion policy',()=>{
-  const dict=readFileSync(new URL('../data/english-words-alpha.txt',import.meta.url),'utf8').split(/\s+/)
+  const data=new URL('../data/',import.meta.url)
+  const dict=[
+    ...readFileSync(new URL('english-words-alpha.txt',data),'utf8').split(/\s+/),
+    ...readFileSync(new URL('wordnik-game-words.txt',data),'utf8').split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),
+    ...gunzipSync(readFileSync(new URL('enable2k.txt.gz',data))).toString().split(/\s+/),
+    ...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',data),'utf8')).words,
+  ]
   const excluded=new Set(TANGLE_REVIEWED_EXCLUSIONS)
   const counts=(text:string)=>Object.fromEntries([...new Set(text)].map(c=>[c,[...text].filter(x=>x===c).length]))
   const available=counts(TANGLE_FIVE_PREVIEW.g)

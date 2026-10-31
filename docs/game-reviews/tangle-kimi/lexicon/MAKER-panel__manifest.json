@@ -1,0 +1,82 @@
+[
+  {
+    "path": "output/tangle-lexicon-20261031/audit.json",
+    "sha256": "b75f453afac244f213d75c8def97afbb9a0ecc0e5a95909cd6657bd038de135b",
+    "bytes": 58052
+  },
+  {
+    "path": "output/tangle-lexicon-20261031/generation.json",
+    "sha256": "5513af2c9412199d0a504f479c0569e240fc33c45edb526dfba17310c5e25f7f",
+    "bytes": 632
+  },
+  {
+    "path": "packages/kimi-pebbles/data/word-game-sources.json",
+    "sha256": "cce4e8f09c337e48f4f3b6eac23aed4c293146adc464ec6a77d25fa5da5f05b9",
+    "bytes": 1160
+  },
+  {
+    "path": "packages/kimi-pebbles/data/zynga-disclosed-words.json",
+    "sha256": "f0e7dd68a7db11fbbe168629a70a98503aad6eaf964f9df0dddd11fc2954a226",
+    "bytes": 404
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/shared/useDailySession.ts",
+    "sha256": "7f46503915b2ab730e3d20302e77e19f6cd2fa28895f3329d0a03c70fc03ee67",
+    "bytes": 5273
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/engine.ts",
+    "sha256": "4dd490d22502d73fbd55d7c7b284a04322f004cacc503bcf5c4a7885f26d2b60",
+    "bytes": 3366
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/five-preview.ts",
+    "sha256": "e48629dd8a8bb0c1a6cc11cf122fd03540bcf4cc2493da92424a941d1addfa72",
+    "bytes": 825
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/lexicon.ts",
+    "sha256": "ce2684c5a6745336c820ea6cbbb0b105b688216e53fea84f46c00c6c6a0f4bf1",
+    "bytes": 839
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/progress.ts",
+    "sha256": "a56cc6026a93a8b21de15e78b625a3466384c7ed1906b0da35b03056292feeaa",
+    "bytes": 2543
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/reviewed-words.ts",
+    "sha256": "81f88569a63398ec212f1257ee7aa89ffc1781683c98f50d79a5c581e01fc982",
+    "bytes": 1456
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/useTangle.ts",
+    "sha256": "87f4262ad95e129949f6e55acb3bb17914e89102d4e3fe8cdc6a05996364ec07",
+    "bytes": 10386
+  },
+  {
+    "path": "packages/kimi-pebbles/tests/tangle-five.test.ts",
+    "sha256": "3f5b12651d5f38c2e52efa5bba44d4390154a65969bf20dba26072d4ceda610d",
+    "bytes": 5089
+  },
+  {
+    "path": "packages/kimi-pebbles/tests/tangle-lexicon.test.ts",
+    "sha256": "e1790e5d5d7e3e798547c43e8ef78bc8aedca7ab561595c9fc804a437e472fc1",
+    "bytes": 4548
+  },
+  {
+    "path": "scripts/audit-tangle-lexicon.mjs",
+    "sha256": "1ee59a2647d5c05e4aef4a9bcea3e0096995632659f7e9ef4a1f3eea215df33d",
+    "bytes": 4735
+  },
+  {
+    "path": "scripts/generate-tangle-lexicon.mjs",
+    "sha256": "d3272a417fffc37182f836a23788e43126842891518f54a5d2c9bdea1f913163",
+    "bytes": 1241
+  },
+  {
+    "path": "scripts/tangle-lexicon.mjs",
+    "sha256": "3d999c809942559547f2fc49dfbff6e72ef6870fb547770220abd547e032bd7d",
+    "bytes": 2264
+  }
+]

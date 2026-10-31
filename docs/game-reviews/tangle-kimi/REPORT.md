@@ -1,5 +1,7 @@
 # Kimi Tangle review — October 30, 2026
 
+This records the October 30 edition. The later [optional sample](FIVE-PREVIEW.md) and [word-game lexicon expansion](WORD-GAME-LEXICON.md) document subsequent changes and verification; their vocabulary counts supersede this historical baseline for current/future play.
+
 Morph is a **keeper**, from James’s exact “keeper, next,” with no numeric score or relative rank supplied. Kimi’s Tangle is game11, distinct from Claude’s later Tangle. James subsequently called Kimi’s Tangle a **keeper** on October 31; see the verdict below. Hunch follows after the Tangle discussion.
 
 The untimed4×4 hunt now has readable blue/teal letters, ordered selection marks, a clear endpoint, larger found words and a sticky selection/Check bar. The progress meter follows the **Gold goal**, with the total points still explicit. Gold completes the daily achievement once, while further hunting remains playable and saved.

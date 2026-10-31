@@ -1,0 +1,52 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   'emo',
+-   'emove',
+-   'eom',
+-   'evg',
+-   'evoe',
+-   'ghoom',
+-   'goer',
+-   'goi',
+-   'gome',
+-   'gomer',
+-   'goo',
+-   'gooier',
+-   'gou',
+-   'gov',
+-   'gove',
+-   'gye',
+-   'gyve',
+-   'hgwy',
+-   'hog',
+-   'hogo',
+-   'hoo',
+-   'wog'
+- ]
+
+    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-expanded-legacy-dom.mjs:79:106 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [
+    'emo',   'emove', 'eom',
+    'evg',   'evoe',  'ghoom',
+    'goer',  'goi',   'gome',
+    'gomer', 'goo',   'gooier',
+    'gou',   'gov',   'gove',
+    'gye',   'gyve',  'hgwy',
+    'hog',   'hogo',  'hoo',
+    'wog'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.11.0

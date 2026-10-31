@@ -23,3 +23,5 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 ## Current round
 
 Kimi’s Tangle is a keeper from James’s October 31 feedback. Its optional [5×5 playable sample](tangle-kimi/FIVE-PREVIEW.md) is open for his verdict. James exposed missing valid words in the first sample; full-source path enumeration now fixes those omissions and preserves his corrected round. This is one sample, not a published six-month larger-board bank. [Original Tangle review](tangle-kimi/REPORT.md) · [review comparison](tangle-kimi/ADJUDICATION.md) · [preference ranking and queue](RANKING.md). Hunch follows after the Tangle discussion. This is distinct from Claude’s later Tangle game.
+
+Latest: [broader word-game vocabulary on both Tangle sizes](tangle-kimi/WORD-GAME-LEXICON.md), with all 430 boards independently audited, saved-score migration fixes and Kimi/Gemini/Opus evidence. Exact current Words With Friends parity is unverified.

@@ -1,0 +1,37 @@
+# Word-game vocabulary expansion — October 31, 2026
+
+James requested: “make sure all dictionary words/words used in a game like Words With Friends.” Both current/future 4×4 Tangle and the optional 5×5 sample now accept the broader word-game lexicon, under the existing three-letter minimum, eight-way adjacency, no reused cell and closed 12-word editorial policy. This is a vocabulary expansion for Kimi’s Tangle, not a rewrite of the other games’ rules or dictionaries.
+
+## Sources and precise coverage
+
+The pinned, checksum-verified union has **409,097** distinct entries: dwyl full-length English (370,105), Wordnik’s game list (198,422), public-domain ENABLE2K (173,528), and six examples expressly disclosed by Zynga. Sources overlap. [Source documentation and retained licenses](../../../../packages/kimi-pebbles/data/README.md).
+
+Zynga’s [current rulebook](https://zyngasupport.helpshift.com/hc/en/63-words-with-friends-2/faq/10552-words-with-friends-rule-book/) says Words With Friends incorporates NASPA and its own additions. Its [October 8 update](https://www.zynga.com/corporate/words-with-friends-dictionary-update/) names additional contemporary examples. The implementation includes those documented examples, but does not contain or claim certification against Zynga’s complete current NASPA/custom set. No paid dataset, license, definition service or per-play API was purchased or called.
+
+The independent audit considered **408,617** candidates after omitting 458 entries shorter than three letters, 10 longer than the 25-cell board, and the 12 existing exclusions. It enumerated each word separately using board letter counts and DFS; it does not call the production trie solver. For every one of the **430** four-wide grids it compares generated and actual Daily accepted sets, score sums, preserved targets, grid/calendar identity, saved-score restoration and a per-board accepted-set SHA-256.
+
+Results: **33,506** accepted four-wide word paths, **2,907** additions over the reviewed bank; two boards were already covered. The sample now has **1,671** accepted words and **4,384** available points, 95 words more than the earlier English-only correction. STONED, TREAD, CORES, PORES, PORE, TARE and TARES remain accepted. New sample gameplay also verified PARTIER, PARTIERS, SESH and AIRGAP. The current four-wide board verifies EMO as a newly accepted word. Completeness is against these pinned sources and Tangle’s rules; no source can establish every possible English word or human familiarity by itself.
+
+## Saves, goals and review findings
+
+Published grid identities, calendar indices and original source records remain unchanged. Four-wide Daily expansion starts on day 20757 (October 31); Practice expands immediately. Earlier dated editions retain their original vocabulary policy. Every original/valid legacy accepted word remains in its edition, and existing Gold targets stay fixed even though total available points and word counts increase. The sample’s provisional Gold target remains 30 and its session cache restores the played score.
+
+Actual static reviews: [Kimi K3.1](lexicon/MAKER-Kimi__review.md), [Gemini](lexicon/MAKER-Gemini__review.md), [initial Opus 5.5](lexicon/MAKER-Opus__review.md), [full-evidence follow-up Opus](lexicon/MAKER-Opus-final__review.md). None played or executed tests, and none inspected all 409k source rows. No verified free DeepSeek route was used.
+
+Kimi and Opus found a real migration defect: after upgrading an older excluded-word edition and finding an expansion word, reloading could invalidate both and overwrite the save. Pure and real-hook regressions reproduced the loss before the fix. Legacy validation now uses the expanded original edition. A second real-hook regression reproduced an already-counted day incrementing completion again; the corrected Gold crossing checks `lastCompletedDay`. Both regressions and the green suite passed afterward.
+
+Source-loading hashes now fail closed against the downloaded pins, and the separate audit checks them independently. Runtime expansion defensively excludes the closed entries from extensions while retaining valid original legacy entries. Full 430-grid key/identity tests, candidate-count breakdowns and per-board hashes address review evidence gaps. All source/license notices ship verbatim and their pinned checksums are verified before staging changes any runtime files.
+
+The first Opus inline payload inadvertently omitted the MJS generators/audit and JSON/license text, though those files were in Kimi/Gemini’s review folders. The follow-up supplied all of them inline and returned **no Critical/Important blockers; ready on static grounds**, subject to author verification. Gemini’s ready verdict missed the reproduced migration defect and its proposed provenance block invented a different revision, byte count and license hash. Those invented values were rejected; actual downloaded receipts are used. A generated Gemini plan artifact is retained beside its response for accurate attribution. Its question about adding provenance did not require another approval from James.
+
+## Verification
+
+- **198/198 package**, **899/899 catalog** tests passed. Real-hook legacy-plus-extension reload and counted-Gold regressions failed before correction and passed after it. The tests also reject corrupted/missing source checksums.
+- **82 Chrome/WebKit browser checks**: 12 current-edition upgrade/vocabulary/Gold/restore/notices checks, 28 sample controls/sharing/session checks, and 42 historical/legacy/Practice/sharing/shared-runtime checks. No browser errors. Existing Daily saves and stats remain separate from the sample.
+- **11 real offline-worker checks** passed, including all 32 cold offline daily pages and a completed/restored human/AI bonus turn.
+- App/node TypeScript checks and fresh Vite build passed. Native Web parity verifies **285** runtime files and complete SHA-256/file sets. No fresh native compilation, physical touch, screen-reader or physical export claim is made.
+- Final stage `dist/tangle-lexicon-20261031-final/web`, build **9edd6ea6e0148021**: **319 files**, **317** manifest asset entries hash-verified. Upstream expanded source files are absent; word-list notices are included. The final notice-check improvement left the tested runtime byte-identical. The existing visible preview tab was reloaded, preserving the corrected round.
+
+Remaining limitations: older cached clients can still overwrite newer vocabulary progress if used concurrently; new code cannot repair an already-running old client. A current tab accepting an older excluded-word edition may need reload to display that edition consistently. Hints still choose among all unfound words and can be uncommon. Source membership and the unchanged 12-word policy do not amount to a full modern-usage or suitability review. Totals can differ between old and expanded clients on the same day; goals and earned scores stay fixed. The sample is still one board, not a six-month 5×5 bank. James’s 5×5 verdict remains pending; Tangle stays a keeper without a new numerical or relative rating.
+
+[Audit, source hashes, tests and browser evidence](evidence/word-game-lexicon/summary.json). Original failures, raw model outputs, manifests, browser harnesses, stage/offline evidence and recoverable prior generated directories remain under `output/tangle-lexicon-20261031/`. No public deployment occurred.

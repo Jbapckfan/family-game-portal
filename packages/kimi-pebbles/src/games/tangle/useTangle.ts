@@ -215,7 +215,7 @@ export function useTangle() {
     if (tier === 3 && !prev.goldReached) {
       goldReached = true
       winShownOnce = true
-      if (prev.mode === 'daily') {
+      if (prev.mode === 'daily' && stats.lastCompletedDay !== prev.dayNumber) {
         const day = prev.dayNumber
         const streak = stats.lastCompletedDay === day - 1 ? stats.currentStreak + 1 : 1
         stats = {

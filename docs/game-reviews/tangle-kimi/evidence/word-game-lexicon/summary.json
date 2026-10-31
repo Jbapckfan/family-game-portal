@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-31",
+  "scope": "Expanded free-source acceptance for current/future Tangle 4x4, all Practice and the optional 5x5 sample; not certified WWF parity",
+  "audit": {
+    "method": "Independent word-by-word DFS with board letter-count prefilter, eight neighbors, no reused cells; checks source pins, every union-source candidate, per-board hashes, calendars and actual Daily entry points.",
+    "unionWords": 409097,
+    "sourceCandidates": 408617,
+    "omitted": {
+      "shorterThanThree": 458,
+      "longerThanBoard": 10,
+      "closedExclusions": 12
+    },
+    "boards": 430,
+    "acceptedWordPaths": 33506,
+    "addedWordPaths": 2907,
+    "unchangedAlreadyCoveredBoards": 2,
+    "previewWords": 1671,
+    "previewMax": 4384,
+    "sourceExclusions": [
+      "ccm",
+      "ccw",
+      "ccws",
+      "cfm",
+      "whf",
+      "mahmoud",
+      "wilhelm",
+      "nig",
+      "wog",
+      "coon",
+      "fag",
+      "fags"
+    ],
+    "scope": "Completeness against pinned sources under Tangle 3+ letter/path rules; not a complete English dictionary or certified current Words With Friends parity."
+  },
+  "verification": {
+    "packageTests": 198,
+    "catalogTests": 899,
+    "currentBrowserChecks": 12,
+    "sampleBrowserChecks": 28,
+    "historicalBrowserChecks": 42,
+    "browserErrors": 0,
+    "realOfflineWorkerChecks": 11,
+    "appTypeScript": true,
+    "nodeTypeScript": true,
+    "vite": true,
+    "nativeWebRuntimeFiles": 285,
+    "nativeSha256Parity": true,
+    "stageFiles": 319,
+    "manifestAssets": 317,
+    "allManifestHashes": true,
+    "buildId": "9edd6ea6e0148021",
+    "rawExpandedSourceFilesAbsentFromWeb": true,
+    "allFourSourceNoticesShippedVerbatimAndHashChecked": true
+  },
+  "reviews": {
+    "Kimi": "Static initial review found migration defect and pin evidence gap; reproduced and fixed",
+    "Gemini": "Static review missed migration defect; invented replacement provenance rejected in favor of actual receipts",
+    "Opus": "Static initial review found migration defect; full-evidence followup found no Critical/Important blockers; final notice checksum suggestion implemented"
+  },
+  "limitations": [
+    "Exact current licensed NASPA/custom WWF set not supplied or certified",
+    "Existing three-letter minimum, path rules and closed 12 exclusions remain",
+    "Older cached-client cross-tab writes may overwrite newer progress; reload required for older excluded editions",
+    "Hints can be uncommon; no full human usage/suitability review",
+    "5x5 is one sample with provisional targets, not a six-month bank",
+    "No new native compilation, physical touch, screen-reader or physical share validation"
+  ]
+}

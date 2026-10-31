@@ -1,0 +1,87 @@
+(node:40953) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ game lexicon includes every English, Wordnik, ENABLE and disclosed Zynga entry without a seven-letter cap (172.449583ms)
+✔ solver handles both board sizes, diagonal paths, no reuse, row edges, and all word-game inflections (0.410916ms)
+✔ expanded four-wide entry points keep daily grid/calendar and current Gold goals while widening acceptance (7.496458ms)
+✖ historical editions and valid older-client words retain their earned scores and goals (1.139792ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 469.251958
+
+✖ failing tests:
+
+test at tests/tangle-lexicon.test.ts:1:3527
+✖ historical editions and valid older-client words retain their earned scores and goals (1.139792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + null
+  - {
+  -   countedPlayed: true,
+  -   found: [
+  -     'emo',
+  -     'emove',
+  -     'eom',
+  -     'evg',
+  -     'evoe',
+  -     'ghoom',
+  -     'goer',
+  -     'goi',
+  -     'gome',
+  -     'gomer',
+  -     'goo',
+  -     'gooier',
+  -     'gou',
+  -     'gov',
+  -     'gove',
+  -     'gye',
+  -     'gyve',
+  -     'hgwy',
+  -     'hog',
+  -     'hogo',
+  -     'hoo',
+  -     'wog'
+  -   ],
+  -   goldReached: true,
+  -   hintPrefix: null,
+  -   hintsUsed: 0,
+  -   misses: 2,
+  -   score: 27
+  - }
+
+      at TestContext.<anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/tangle-lexicon.test.ts:72:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: {
+      found: [
+        'emo',   'emove', 'eom',
+        'evg',   'evoe',  'ghoom',
+        'goer',  'goi',   'gome',
+        'gomer', 'goo',   'gooier',
+        'gou',   'gov',   'gove',
+        'gye',   'gyve',  'hgwy',
+        'hog',   'hogo',  'hoo',
+        'wog'
+      ],
+      score: 27,
+      misses: 2,
+      hintsUsed: 0,
+      hintPrefix: null,
+      goldReached: true,
+      countedPlayed: true
+    },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

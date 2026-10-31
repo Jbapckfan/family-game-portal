@@ -1,0 +1,20 @@
+(node:41002) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ real Tangle hook preserves a same-day older-client save across reload (537.110791ms)
+✔ real Tangle hook preserves tangle-expanded-legacy-dom.mjs (508.586ms)
+✔ real Tangle hook preserves tangle-counted-gold-dom.mjs (435.96525ms)
+(node:41003) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ game lexicon includes every English, Wordnik, ENABLE and disclosed Zynga entry without a seven-letter cap (191.1115ms)
+✔ solver handles both board sizes, diagonal paths, no reuse, row edges, and all word-game inflections (0.428875ms)
+✔ expanded four-wide entry points keep daily grid/calendar and current Gold goals while widening acceptance (21.078417ms)
+✔ every published grid has an expansion entry and generated extensions keep the closed exclusion policy (2.246625ms)
+✔ historical editions and valid older-client words retain their earned scores and goals (1.163291ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1594.868083

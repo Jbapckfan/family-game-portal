@@ -4,6 +4,7 @@ import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
 import { medalTargets, restoreTangleProgress } from './progress'
+import { expandTanglePuzzle, TANGLE_LEXICON_START_DAY } from './lexicon'
 
 export interface TanglePuzzle {
   g: string // row-major: 16 letters for daily/practice, 25 for the optional preview
@@ -21,14 +22,17 @@ export function dailyTangle(dayNumber = todayDayNumber(), savedProgress?: unknow
   const original = PUZZLES[idx]
   // A cached older client may already have played this day's original edition.
   // Preserve a fully valid such round, including earned points and medals.
-  const legacy = savedProgress === undefined ? null : restoreTangleProgress(savedProgress, original)
+  const legacyBase=dayNumber>=TANGLE_LEXICON_START_DAY ? expandTanglePuzzle(original) : original
+  const legacy = savedProgress === undefined ? null : restoreTangleProgress(savedProgress, legacyBase)
   const keepEdition = legacy && legacy.found.some(word => TANGLE_REVIEWED_EXCLUSIONS.includes(word))
-  return { puzzle: keepEdition ? original : reviewTanglePuzzleForDay(original, dayNumber), puzzleNo: idx + 1 }
+  if(keepEdition)return {puzzle:legacyBase,puzzleNo:idx+1}
+  const edition=reviewTanglePuzzleForDay(original, dayNumber)
+  return { puzzle: dayNumber>=TANGLE_LEXICON_START_DAY ? expandTanglePuzzle(edition) : edition, puzzleNo: idx + 1 }
 }
 
 export function practiceTangle(excludeIdx = -1): { puzzle: TanglePuzzle; puzzleNo: number } {
   const idx = choosePracticeIndex('kimi-tangle', PUZZLES.length, excludeIdx)
-  return { puzzle: reviewTanglePuzzle(PUZZLES[idx]), puzzleNo: idx + 1 }
+  return { puzzle: expandTanglePuzzle(reviewTanglePuzzle(PUZZLES[idx])), puzzleNo: idx + 1 }
 }
 
 export { pointsFor } from './progress'

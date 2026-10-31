@@ -6,6 +6,7 @@ import {medalTargets, pointsFor, restoreTangleProgress} from '../src/games/tangl
 import type {TanglePuzzle} from '../src/games/tangle/engine.ts'
 import {dailyTangle, practiceTangle} from '../src/games/tangle/engine.ts'
 import {reviewTanglePuzzle, reviewTanglePuzzleForDay, TANGLE_REVIEWED_EXCLUSIONS} from '../src/games/tangle/reviewed-words.ts'
+import {expandTanglePuzzle,TANGLE_LEXICON_START_DAY} from '../src/games/tangle/lexicon.ts'
 
 const raw = JSON.parse(fs.readFileSync(new URL('../src/games/tangle/data/puzzles.json',import.meta.url),'utf8')) as TanglePuzzle[]
 const puzzles=raw.map(p=>({...p,targets:medalTargets(p.max)}))
@@ -110,11 +111,12 @@ test('real daily and practice entry points apply the dated review without changi
   for(let day=20746;day<20937;day++){
     const {puzzle,puzzleNo}=dailyTangle(day),index=day%430
     assert.equal(puzzleNo,index+1)
-    assert.deepEqual(puzzle,reviewTanglePuzzleForDay(puzzles[index],day))
+    const reviewed=reviewTanglePuzzleForDay(puzzles[index],day)
+    assert.deepEqual(puzzle,day>=TANGLE_LEXICON_START_DAY?expandTanglePuzzle(reviewed):reviewed)
   }
   for(let i=0;i<100;i++){
     const {puzzle,puzzleNo}=practiceTangle()
-    assert.deepEqual(puzzle,reviewTanglePuzzle(puzzles[puzzleNo-1]))
+    assert.deepEqual(puzzle,expandTanglePuzzle(reviewTanglePuzzle(puzzles[puzzleNo-1])))
   }
 })
 
@@ -125,9 +127,10 @@ test('valid older-client daily saves retain their vocabulary edition and score',
   if(!removed)continue
   const saved={found:[removed,...p.words.filter(word=>word!==removed).slice(0,20)],misses:2,hintsUsed:0,countedPlayed:true}
   const actual=dailyTangle(day,saved)
-  assert.equal(actual.puzzleNo,index+1);assert.deepEqual(actual.puzzle,p)
+  assert.equal(actual.puzzleNo,index+1);assert.deepEqual(actual.puzzle,day>=TANGLE_LEXICON_START_DAY?expandTanglePuzzle(p):p)
   assert.deepEqual(restoreTangleProgress(saved,actual.puzzle),restoreTangleProgress(saved,p))
-  assert.deepEqual(dailyTangle(day).puzzle,reviewTanglePuzzle(p))
-  assert.deepEqual(dailyTangle(day,{...saved,found:[removed,'invalidzzzz']}).puzzle,reviewTanglePuzzle(p))
+  const reviewed=reviewTanglePuzzle(p),expected=day>=TANGLE_LEXICON_START_DAY?expandTanglePuzzle(reviewed):reviewed
+  assert.deepEqual(dailyTangle(day).puzzle,expected)
+  assert.deepEqual(dailyTangle(day,{...saved,found:[removed,'invalidzzzz']}).puzzle,expected)
  }
 })

@@ -1,0 +1,3903 @@
+{
+  "method": "Independent word-by-word DFS with board letter-count prefilter, eight neighbors, no reused cells; checks source pins, every union-source candidate, per-board hashes, calendars and actual Daily entry points.",
+  "unionWords": 409097,
+  "sourceCandidates": 408617,
+  "omitted": {
+    "shorterThanThree": 458,
+    "longerThanBoard": 10,
+    "closedExclusions": 12
+  },
+  "boards": 430,
+  "acceptedWordPaths": 33506,
+  "addedWordPaths": 2907,
+  "unchangedAlreadyCoveredBoards": 2,
+  "previewWords": 1671,
+  "previewMax": 4384,
+  "sourceExclusions": [
+    "ccm",
+    "ccw",
+    "ccws",
+    "cfm",
+    "whf",
+    "mahmoud",
+    "wilhelm",
+    "nig",
+    "wog",
+    "coon",
+    "fag",
+    "fags"
+  ],
+  "scope": "Completeness against pinned sources under Tangle 3+ letter/path rules; not a complete English dictionary or certified current Words With Friends parity.",
+  "perBoard": [
+    {
+      "puzzle": 1,
+      "sourceWords": 69,
+      "accepted": 69,
+      "added": 5,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "2ff3e94f859bb361f980a29fea35d4be8391bd968d87844c72adca8f18f11002"
+    },
+    {
+      "puzzle": 2,
+      "sourceWords": 89,
+      "accepted": 89,
+      "added": 10,
+      "max": 97,
+      "gold": 17,
+      "acceptedSetSha256": "f735d0cf5b50fe74739858187fbc5f6ebdcfd0d54b5a5407a7df9d1d74522ae2"
+    },
+    {
+      "puzzle": 3,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 4,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "661c4e6d794e71cce2437a65191270e5ad2578414256fb07836d1c55f6737b98"
+    },
+    {
+      "puzzle": 4,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "dd20600c4b4f7d228d48d3b980fc447805dfb56d793957d1208ca720fb2e7352"
+    },
+    {
+      "puzzle": 5,
+      "sourceWords": 90,
+      "accepted": 90,
+      "added": 12,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "c26a0cfc5b2ac03a5876458b31a65b33d1684dc2d0c3bf8e9ccc168ca8536f92"
+    },
+    {
+      "puzzle": 6,
+      "sourceWords": 56,
+      "accepted": 56,
+      "added": 5,
+      "max": 64,
+      "gold": 12,
+      "acceptedSetSha256": "54d01710e025fa39747c5926b6428e0a37ed4d58eaa17622e6ff5cfd24fb2424"
+    },
+    {
+      "puzzle": 7,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 5,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "ad753ee70f643822064f8b1a5f4b003aada6770fd7eed9920754433c9314e4c4"
+    },
+    {
+      "puzzle": 8,
+      "sourceWords": 75,
+      "accepted": 75,
+      "added": 5,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "1225474b8d14c481624d675931f8e01ec24c9e013791b914addb97686edb860f"
+    },
+    {
+      "puzzle": 9,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 6,
+      "max": 88,
+      "gold": 16,
+      "acceptedSetSha256": "08e53a094d74239330d3578128310b50a7c60c8fff653e40ad597524da398880"
+    },
+    {
+      "puzzle": 10,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 5,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "293cba22ce6af0c1d9796dfe4afc66261808a3f440afd3c050f27867fcb11cdc"
+    },
+    {
+      "puzzle": 11,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "b1f9bb5866e007b4c5f776740ffd179f30da43e2701fd0584c80137eae974745"
+    },
+    {
+      "puzzle": 12,
+      "sourceWords": 93,
+      "accepted": 93,
+      "added": 19,
+      "max": 106,
+      "gold": 17,
+      "acceptedSetSha256": "26ad79268c08c1bdfc0fc5ebbd4735ffc1d151163b33ca8613cb79d26ac8996c"
+    },
+    {
+      "puzzle": 13,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 9,
+      "max": 123,
+      "gold": 18,
+      "acceptedSetSha256": "a70a4e4af60b5be7ff7f7d7340fd94947fcc03a11bc2306d953aebc74b4f7357"
+    },
+    {
+      "puzzle": 14,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 9,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "830029100de26e0121e333e63af315079ff65a7bf1b5ca020d64179eef5fa5ae"
+    },
+    {
+      "puzzle": 15,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 4,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "bf20cf37c52740242d2bc51ea000b8a32f24dd567cb014483da7287df0cd6a26"
+    },
+    {
+      "puzzle": 16,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 7,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "2b41bb625877561246f2aa834c4dec1d806a3ba06abca78698d4ef8547933097"
+    },
+    {
+      "puzzle": 17,
+      "sourceWords": 97,
+      "accepted": 97,
+      "added": 20,
+      "max": 113,
+      "gold": 18,
+      "acceptedSetSha256": "ad3010b675dd38a3caa5941ca093482b1a8b3944aa38240ea5a723cf9f758c62"
+    },
+    {
+      "puzzle": 18,
+      "sourceWords": 54,
+      "accepted": 54,
+      "added": 5,
+      "max": 60,
+      "gold": 11,
+      "acceptedSetSha256": "bcea07018868ca99cda2cf822f71b034352ddf2b0e1b4f217631685aa9c4ffcf"
+    },
+    {
+      "puzzle": 19,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 9,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "12e061f61477540324044054098f55a838e9337c9dda329eb97dd11c419ca354"
+    },
+    {
+      "puzzle": 20,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 8,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "19a7f741d555d7c0a4995198b724eaecaa11979254e95ff40c6a8b09a9baadc4"
+    },
+    {
+      "puzzle": 21,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 2,
+      "max": 80,
+      "gold": 15,
+      "acceptedSetSha256": "1b1090d05cb1ce840e2ee1d0fec516626555b19110d7fe69c46bf52d12b1413f"
+    },
+    {
+      "puzzle": 22,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "79dff69f4cbcb387004a6bbaf9c0cbe17440cd506deb74f52ea69a3d1d13e461"
+    },
+    {
+      "puzzle": 23,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 5,
+      "max": 88,
+      "gold": 17,
+      "acceptedSetSha256": "f845e4c80256bc0d18aabc4ac6cd5eecce9db4c79fd59ab911ff3582158a9e1d"
+    },
+    {
+      "puzzle": 24,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 9,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "748bfe856b3bef5c932af3ca78d61c8b37b4e80480c625f87e5c493827e86385"
+    },
+    {
+      "puzzle": 25,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 11,
+      "max": 82,
+      "gold": 14,
+      "acceptedSetSha256": "7ade74c59b8d732a46b0335894155f6a96d65a6683dcfe19dda5bfd83c0e8ea4"
+    },
+    {
+      "puzzle": 26,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 3,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "7883b23e7a1f100cfd6e83cd34f8c555a3cd8c2af00aecaff15ac35b85853c13"
+    },
+    {
+      "puzzle": 27,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 8,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "c551afc8fa505f5e863e44f8867d2eb5a3d6bc222bd3a629d0f786bc00e08d83"
+    },
+    {
+      "puzzle": 28,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 6,
+      "max": 80,
+      "gold": 14,
+      "acceptedSetSha256": "9809b27605d4d0efb116f84b2e4de40d1dcd1a8b219778318fdeca27a7851aa1"
+    },
+    {
+      "puzzle": 29,
+      "sourceWords": 92,
+      "accepted": 92,
+      "added": 13,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "ff33bba8a1fb7e02172ae147b34b98d8f8e6127e676a4310e780fc07eb699e4f"
+    },
+    {
+      "puzzle": 30,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 6,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "6b6f036e6cfdb337f8a0c5e892e9e0366889d790235a4e50a4ce4f2134c6995a"
+    },
+    {
+      "puzzle": 31,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 3,
+      "max": 91,
+      "gold": 18,
+      "acceptedSetSha256": "63466281ae64768363218a982e91b7c5e66074c5224e79ddb841a25f94cb7124"
+    },
+    {
+      "puzzle": 32,
+      "sourceWords": 92,
+      "accepted": 92,
+      "added": 15,
+      "max": 107,
+      "gold": 17,
+      "acceptedSetSha256": "c7d1a2e7c1f19ca96772ee8b8689731415348455d0154342e7cf2df365a418f7"
+    },
+    {
+      "puzzle": 33,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 6,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "f55e77536e297bac26826cd5c10fc93e64cbefebc0539245cceaab4306ab2f98"
+    },
+    {
+      "puzzle": 34,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 3,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "c85af7b1bc8b0250bb6f8e7e168f9f88660999146376e83afa180a76eeaf8205"
+    },
+    {
+      "puzzle": 35,
+      "sourceWords": 57,
+      "accepted": 57,
+      "added": 5,
+      "max": 70,
+      "gold": 13,
+      "acceptedSetSha256": "4ee1749741ea1d1c1047da91ff625a5502a25ede01dbc4c4e9fbf745982aea53"
+    },
+    {
+      "puzzle": 36,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 13,
+      "max": 111,
+      "gold": 18,
+      "acceptedSetSha256": "928b4f83f42d82ce814863404cc3fc5ceaecd2afe412b406d8c09aad96cd8b0d"
+    },
+    {
+      "puzzle": 37,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 9,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "abb2b63ebb37c7fdb61a9ca400e6a4817b6cee21752f4a3a1f7a755dc5cfb207"
+    },
+    {
+      "puzzle": 38,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 9,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "93253bec07b4ace4d19b8726ed5abd81928d8ebab236280cd334ca527896a981"
+    },
+    {
+      "puzzle": 39,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 6,
+      "max": 126,
+      "gold": 18,
+      "acceptedSetSha256": "042d4a870c9ad60ebac79e57475e0621815eac72014d1df21c8f5c2178707d4b"
+    },
+    {
+      "puzzle": 40,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 7,
+      "max": 80,
+      "gold": 15,
+      "acceptedSetSha256": "918f0146feeae2c3252187b66611445ee7d3406166bb1340c3b4cae4005efe7d"
+    },
+    {
+      "puzzle": 41,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 7,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "139c4064a5ce2bf2dbba00f5f5aceba3b536ee6dfc02b23b0ca5919c5ef94868"
+    },
+    {
+      "puzzle": 42,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 2,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "54f5a3588d43718a7e3f167df9d7e737ce18560d9a2432bc82863f15feb7e6f8"
+    },
+    {
+      "puzzle": 43,
+      "sourceWords": 64,
+      "accepted": 64,
+      "added": 10,
+      "max": 76,
+      "gold": 13,
+      "acceptedSetSha256": "db07d7855326d1d216193327968304cb6bfd71ae16e5fd465382cec90811a113"
+    },
+    {
+      "puzzle": 44,
+      "sourceWords": 92,
+      "accepted": 92,
+      "added": 18,
+      "max": 113,
+      "gold": 18,
+      "acceptedSetSha256": "0826646dc1484da93ef89c5bfe991deae5df659dd40894be60c0f6ab8bfc641b"
+    },
+    {
+      "puzzle": 45,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 8,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "3a124128a2a0cf01ce17771a5f9e778a881509375156acdbf800677ebed755a1"
+    },
+    {
+      "puzzle": 46,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "1660fe7fd42df2bb4507f2880c65381742f19fff6f2698e77fc98213b2395dc1"
+    },
+    {
+      "puzzle": 47,
+      "sourceWords": 65,
+      "accepted": 65,
+      "added": 7,
+      "max": 72,
+      "gold": 13,
+      "acceptedSetSha256": "5ca22444705e8cf18cebf670861f4f917a28050bf821c962766cadb02591809e"
+    },
+    {
+      "puzzle": 48,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 6,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "62f044ac53e155fe419b0f336799047970ccbdfcc14879f1a3283420c414edef"
+    },
+    {
+      "puzzle": 49,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 7,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "68e1769a207dfd928dc7aa05828d1df1f09118856ac9d49b9fa65f3549e03453"
+    },
+    {
+      "puzzle": 50,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 7,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "a63bb17e38f27faf001d54237bb422309f593aa6ca550e74c00423443486e25c"
+    },
+    {
+      "puzzle": 51,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "fca037761e0b87242cdd4b249bfd8bf5886509433c0b715b539a7eb27c099a61"
+    },
+    {
+      "puzzle": 52,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "381c5fdb39445b31efac7d4cd8431b4b23572783274ff53265c2c636e47fa6aa"
+    },
+    {
+      "puzzle": 53,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 8,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "904da0453c631d1cd723523d1eecc381b60de11de22a5b5d95b0d62e1a8400b9"
+    },
+    {
+      "puzzle": 54,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 11,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "dbac8cc9c90870fc6bbad456d9e50c717ed05378fbaf721753c97fd78d8eaf14"
+    },
+    {
+      "puzzle": 55,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 10,
+      "max": 98,
+      "gold": 17,
+      "acceptedSetSha256": "1b3561a2c698efd88e43ada970cbdb7639b21f4d57070a5e63f4b7b3e4cf946f"
+    },
+    {
+      "puzzle": 56,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 3,
+      "max": 88,
+      "gold": 17,
+      "acceptedSetSha256": "3921e9d630958162b9028d02096a2cd8a4cf37f4dd04d702a0843ad0ac85da10"
+    },
+    {
+      "puzzle": 57,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 4,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "3f9957696ed3238cb2c91078b8105e6cb81d759af76c93ef84b5c4a86f341aa8"
+    },
+    {
+      "puzzle": 58,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 13,
+      "max": 94,
+      "gold": 16,
+      "acceptedSetSha256": "bac75f8f55dd4ea5fe7e50e4d8199f8b5385f0accdf315bb325c3041c77e5a5f"
+    },
+    {
+      "puzzle": 59,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 9,
+      "max": 88,
+      "gold": 16,
+      "acceptedSetSha256": "fcad4d1b3bf101d60d23c5eff5b8c669d224306a6e3fd73f10b38edfa1fc1225"
+    },
+    {
+      "puzzle": 60,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 12,
+      "max": 100,
+      "gold": 16,
+      "acceptedSetSha256": "e3a9160b81054abb5762afc6415d749f76281c68118f87ae27668b259a121434"
+    },
+    {
+      "puzzle": 61,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 9,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "ac6010b29ea42e8005377a8eab8bf5de20f1f8a5eb51fe2d2a1560a3f1ad6ba3"
+    },
+    {
+      "puzzle": 62,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 4,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "c1e53933bc1f253199708ff76ce523bac768541e27b0b041e542b998411b50e7"
+    },
+    {
+      "puzzle": 63,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 6,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "4e55b13c50dfa2da6248825b4bcc3abcde81426ee23481e4391e3c39786991fa"
+    },
+    {
+      "puzzle": 64,
+      "sourceWords": 53,
+      "accepted": 53,
+      "added": 5,
+      "max": 65,
+      "gold": 12,
+      "acceptedSetSha256": "cc4305bbab1e7ce26829389f74e3ba38b628dfda62dcf6f028d871fabb6411ce"
+    },
+    {
+      "puzzle": 65,
+      "sourceWords": 62,
+      "accepted": 62,
+      "added": 5,
+      "max": 73,
+      "gold": 14,
+      "acceptedSetSha256": "6902352cbdb8c54325b21c9d4542afd53a6cc8b391882cff1f0ab711dfd5babe"
+    },
+    {
+      "puzzle": 66,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 9,
+      "max": 78,
+      "gold": 14,
+      "acceptedSetSha256": "3a41de72aeb8bf7fdac919b1f6cc7d66179cee1028430a98f2d7e67e5dfcb059"
+    },
+    {
+      "puzzle": 67,
+      "sourceWords": 90,
+      "accepted": 90,
+      "added": 10,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "6905cb0d4216028ee53dd66d012db3e3e00141366559dd107f2816171b7859c4"
+    },
+    {
+      "puzzle": 68,
+      "sourceWords": 60,
+      "accepted": 60,
+      "added": 2,
+      "max": 69,
+      "gold": 13,
+      "acceptedSetSha256": "56f3be1c47f25e14aa7da4275f79298da24d6e358fa28705a1d1e93bc2df4eb7"
+    },
+    {
+      "puzzle": 69,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 6,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "78dca79a26cb7e546871c018b7f98dfcfde3360acd14896461ac15f1a104314e"
+    },
+    {
+      "puzzle": 70,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 9,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "08eb25ff65de9e03ec417835a2271757532de114ce6b48420310af13214b9723"
+    },
+    {
+      "puzzle": 71,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 8,
+      "max": 115,
+      "gold": 18,
+      "acceptedSetSha256": "a1ffad027fc4bb179997ee4e1e040aa3656ebc1dc4d65fa1c91f5b12fc3a32dc"
+    },
+    {
+      "puzzle": 72,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "219ab039d155c3b5741c288ddc0e4839f12f3e65c4afaea1fb4f34be5bff37d2"
+    },
+    {
+      "puzzle": 73,
+      "sourceWords": 65,
+      "accepted": 65,
+      "added": 3,
+      "max": 78,
+      "gold": 15,
+      "acceptedSetSha256": "be3fcdc4d451ccc027eb8bf6e2a489660e8e52f5719c2e0688550096c9b757f9"
+    },
+    {
+      "puzzle": 74,
+      "sourceWords": 32,
+      "accepted": 32,
+      "added": 1,
+      "max": 40,
+      "gold": 8,
+      "acceptedSetSha256": "241f920c76c7d5e02a6c7a7e00249af21e05ac69bbbad8baa4805099c6d30f1c"
+    },
+    {
+      "puzzle": 75,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 9,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "88b77d8a78154c62e59020dfd3355b3cdb34e5961e7887e7376c198156c8872c"
+    },
+    {
+      "puzzle": 76,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 7,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "24d684a0d2367729ebfddadb81f0673edaec23ebe11eae1bc503f1bbe441d590"
+    },
+    {
+      "puzzle": 77,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 8,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "6cd9d838b670ec5836dc7abcb8f7668c57dae067593600068c6f9c48cfe440ce"
+    },
+    {
+      "puzzle": 78,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 6,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "0972b5b3527c21cd53f7859082da287d03ee2674257fd2bfbaa378c14b3b952d"
+    },
+    {
+      "puzzle": 79,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 4,
+      "max": 77,
+      "gold": 15,
+      "acceptedSetSha256": "dd43c6d0bf15052f8915bab66ae1aba58dd1941cdacac2a5bf9707075babbe33"
+    },
+    {
+      "puzzle": 80,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 7,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "45f4603ea0b54dc334704b872d3eb4bbac2dd0af223ec793d12652c72d9fd243"
+    },
+    {
+      "puzzle": 81,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "4d596599390ebcdc3c591c81f0c7117796a727cd176d654b5737a25ee57798fd"
+    },
+    {
+      "puzzle": 82,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "9a330cc37760c530b9e26d35a6797b2c4257831c374c407e3e4a80d196a158ef"
+    },
+    {
+      "puzzle": 83,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 3,
+      "max": 78,
+      "gold": 15,
+      "acceptedSetSha256": "72a9cb56a774faee3c1a7639cfdf0f218fe75a87847c7b0c485f6cc4a584a62c"
+    },
+    {
+      "puzzle": 84,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 5,
+      "max": 86,
+      "gold": 16,
+      "acceptedSetSha256": "379203e35250476ab07469477a201bc6f87d3043c2dfa557335905fbb14455f6"
+    },
+    {
+      "puzzle": 85,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 3,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "b9c386b66bc4d6ed001cac6a50ae8b5559ca8c1ac5ab5c1f8e65f6a47fe201fc"
+    },
+    {
+      "puzzle": 86,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 3,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "f94012e94c2aa91b595afa7cadc04be7acc77110dc02f3c15ff98aeb056753ff"
+    },
+    {
+      "puzzle": 87,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 9,
+      "max": 89,
+      "gold": 15,
+      "acceptedSetSha256": "ab641037a234677f9221dbfd4f64d4434862bc439f2bf7e6fd1e0ae6b9d05de2"
+    },
+    {
+      "puzzle": 88,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 7,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "ea945d29fac8abf930612b419d0d5f27f759e602ffde47d6f1471100e152cfb3"
+    },
+    {
+      "puzzle": 89,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 7,
+      "max": 83,
+      "gold": 15,
+      "acceptedSetSha256": "5eb9ca34db5bd7222aff96905edaeec7b132fd95a6a39d52d76427ab00184b35"
+    },
+    {
+      "puzzle": 90,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 3,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "fa40dc96c6a33fd992ab80f3b7031b5c3010bfa10eb8cfa465bd5181350dc65a"
+    },
+    {
+      "puzzle": 91,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 7,
+      "max": 112,
+      "gold": 18,
+      "acceptedSetSha256": "9759593d18e16176149ba59b5ba6d44bff19f104fc45cad58dc07d7e470b9a7d"
+    },
+    {
+      "puzzle": 92,
+      "sourceWords": 60,
+      "accepted": 60,
+      "added": 1,
+      "max": 67,
+      "gold": 13,
+      "acceptedSetSha256": "39c5f5a060dc401651a11dbc95acf27ce96c33cb49d58880318e075f32c2de7b"
+    },
+    {
+      "puzzle": 93,
+      "sourceWords": 97,
+      "accepted": 97,
+      "added": 19,
+      "max": 114,
+      "gold": 18,
+      "acceptedSetSha256": "8b2534fe0edcf84b96d932fa3a327162a12767fff38e562a988c767ad0e78483"
+    },
+    {
+      "puzzle": 94,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 10,
+      "max": 98,
+      "gold": 17,
+      "acceptedSetSha256": "875c8108bc1173013d1ce732911673e43b75de896ce35a1806d57fa500fa430e"
+    },
+    {
+      "puzzle": 95,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "7682331556042d773744ec4c02b710931417d0a4f77d717b673e77043b713a83"
+    },
+    {
+      "puzzle": 96,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 5,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "4e46dba13adddf7857414f378658587ed2c12f21a9cd0a22dd35d5fddfe8e921"
+    },
+    {
+      "puzzle": 97,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 5,
+      "max": 86,
+      "gold": 16,
+      "acceptedSetSha256": "01b02cfc15f6c174f9b4b8047fc45c2e6fce6ab9fdd2c5c9a8c8f6d1ae6034dd"
+    },
+    {
+      "puzzle": 98,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 7,
+      "max": 105,
+      "gold": 18,
+      "acceptedSetSha256": "35ab0ade3429793cdb9da0291176e9b6607976d03283e7ef8628db78ec58cc33"
+    },
+    {
+      "puzzle": 99,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 12,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "4740393c882c2095a5c293794aaee9c41930e037b06cfd82f35c754c67745ad9"
+    },
+    {
+      "puzzle": 100,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 7,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "5421016362d6a13b5e1c6c27ca2e64956736ca500d99632f0694592010d4d1e2"
+    },
+    {
+      "puzzle": 101,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 4,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "80dd3df8c7df601d6a4b1a29dc602e7403dca29f42d52c1c5af31b70b8b67647"
+    },
+    {
+      "puzzle": 102,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 10,
+      "max": 92,
+      "gold": 16,
+      "acceptedSetSha256": "d8d59d005f179372cd8047288975f302e7d165fa2486a91df3d31461faee752b"
+    },
+    {
+      "puzzle": 103,
+      "sourceWords": 63,
+      "accepted": 63,
+      "added": 3,
+      "max": 72,
+      "gold": 14,
+      "acceptedSetSha256": "665608c415e1a52348c74cf16c9fdba5343e36a7e7720289788f42b64fa8a574"
+    },
+    {
+      "puzzle": 104,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 8,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "5d171afe5c1e295d8282eff14752d2c7645ae0072cedc7b84bdc01dbe5821659"
+    },
+    {
+      "puzzle": 105,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 5,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "3c22725326b6f541d37d2f23b597b2d9deca6f33f2e9e86fc39ec99d8c189aad"
+    },
+    {
+      "puzzle": 106,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "f1bc36f26e07fa00eca8071fd6de93728a74b6c8fd9497602814cdc525306864"
+    },
+    {
+      "puzzle": 107,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 7,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "3171d1cf7bd9dc855831af7a368b8dca8485eca8856fc08dd92bb36c20bad730"
+    },
+    {
+      "puzzle": 108,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "04faab1102b25c425a3d897dcabe5ee8215d9ed94cf7bf6adb91b3f12a6fd8b6"
+    },
+    {
+      "puzzle": 109,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 11,
+      "max": 81,
+      "gold": 14,
+      "acceptedSetSha256": "ecab5ceeb168c07d0c2c72085f2c7c9a5cd4c70b336136be3eb75b5a81cf3bad"
+    },
+    {
+      "puzzle": 110,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 10,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "f828d46b5fa18b210b6f784788d6cb6ac270ee1d6b59923054f4514585e8ec68"
+    },
+    {
+      "puzzle": 111,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 3,
+      "max": 80,
+      "gold": 15,
+      "acceptedSetSha256": "8bae798cf8572119260a2468dd39485236da1fda5014581d55f921868d83ad6b"
+    },
+    {
+      "puzzle": 112,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 112,
+      "gold": 18,
+      "acceptedSetSha256": "8054816011a3761d6b78e12284ee17ddf31f808f1735dc9e80cc4f771b5ba546"
+    },
+    {
+      "puzzle": 113,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 7,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "aed877023f2fe973437b147e52bd4d0c9055bf66eb8cdfd75688226484711957"
+    },
+    {
+      "puzzle": 114,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 6,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "fc93ae4e7f0aec61229dc11622ef475d4f229a571c9d9763e517f087712d06d6"
+    },
+    {
+      "puzzle": 115,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 3,
+      "max": 94,
+      "gold": 18,
+      "acceptedSetSha256": "dd0d9bf4d182c11017d4b783a89be6632efccb365f0a87ec610f2893a9f96f5e"
+    },
+    {
+      "puzzle": 116,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 3,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "f309dedc99b7620186bce70cbc44b2dd50eca378ef6cb9fe18eaf412c40ed3dd"
+    },
+    {
+      "puzzle": 117,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 7,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "e1c9c8b06f5a158edc87a93d03769f919509ab52485f67acfd411db0f80630c7"
+    },
+    {
+      "puzzle": 118,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 10,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "37466b2001f8ffdc7153b2b561dcacd71c406fc8486430d97e6c8c272af5803e"
+    },
+    {
+      "puzzle": 119,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 13,
+      "max": 93,
+      "gold": 16,
+      "acceptedSetSha256": "4dabe9a9bf6c2f35bdf8ee7998bd18da42ea8503862cb0c93bf2e0db322a4959"
+    },
+    {
+      "puzzle": 120,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 6,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "b93591bec9a186941f608bfe9e4ad19dd00af1994338518c99199925aaef3b13"
+    },
+    {
+      "puzzle": 121,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 7,
+      "max": 85,
+      "gold": 15,
+      "acceptedSetSha256": "b4129218fe52e2c92935130c4ad9360e0ed6d9eb92ecd4b85a6422228a32425c"
+    },
+    {
+      "puzzle": 122,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 7,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "68ef95836238dfa7c8fbdd92e12812f1693947e5a879e29e1c7334fdd004d896"
+    },
+    {
+      "puzzle": 123,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 5,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "87f491697c855eb0031969efb6db736920427c41884926d5b6a0256c92f9555b"
+    },
+    {
+      "puzzle": 124,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 6,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "9af5e4f7c6bbcba01894130191eca6810059c777c568ca01c83c18b67d52782c"
+    },
+    {
+      "puzzle": 125,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 9,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "0185f6957e8de53308128685f357f13f054a1cd0c36a1e701df0ea9f9270ee68"
+    },
+    {
+      "puzzle": 126,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 7,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "aea5224bc85797400f7a5b0b02fe5774898863988b0bcbe9a87e010ea221fd6f"
+    },
+    {
+      "puzzle": 127,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 6,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "68921e181c2c54440c883124ab2733770ba69a340f7844c77653d54e4bff3cc6"
+    },
+    {
+      "puzzle": 128,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 5,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "9aac2e095516914ffeee43c2ec1b70aae011aaabb77c1647ca4f75e2d3f71fba"
+    },
+    {
+      "puzzle": 129,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 3,
+      "max": 82,
+      "gold": 16,
+      "acceptedSetSha256": "75d0672df5b4fe6c291f7634dd92aa9912aa18dceed94643460e693532b743e3"
+    },
+    {
+      "puzzle": 130,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "ef02333560fd83443b6f4f613d74f4b578f156c9b0ceabf34ab0bfb7a8bcd763"
+    },
+    {
+      "puzzle": 131,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 2,
+      "max": 92,
+      "gold": 18,
+      "acceptedSetSha256": "9deaa08c35cc149dc001607ca750d5b423e21da36a3967eb5ed8df0adf356037"
+    },
+    {
+      "puzzle": 132,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 11,
+      "max": 112,
+      "gold": 18,
+      "acceptedSetSha256": "a1c4baf6054e98e0c3941097f46bdbaff568d90629563327207693613b169426"
+    },
+    {
+      "puzzle": 133,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 14,
+      "max": 114,
+      "gold": 18,
+      "acceptedSetSha256": "eacacddd32b311583d41b11989e58fec6339c64e453fe0bc043e0ab16061ed58"
+    },
+    {
+      "puzzle": 134,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 8,
+      "max": 93,
+      "gold": 17,
+      "acceptedSetSha256": "5679672a3bbf2af2eb79b4c64cfc0ee547a17c2c5c740c917baf21592d1659fd"
+    },
+    {
+      "puzzle": 135,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 7,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "9235b1bba7a9fb7cc3d7688b20ee5a31453f4df271d9b054ac5cd056ad557571"
+    },
+    {
+      "puzzle": 136,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 6,
+      "max": 76,
+      "gold": 14,
+      "acceptedSetSha256": "18629a315b46598ce43d7355d1f092136bde5820873934c12b088c73e23e8c16"
+    },
+    {
+      "puzzle": 137,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 10,
+      "max": 97,
+      "gold": 17,
+      "acceptedSetSha256": "2d138b8e9b7378cee87aea4a35f38cd71f0613ea61e5328dbade2c89fa6638e8"
+    },
+    {
+      "puzzle": 138,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 10,
+      "max": 80,
+      "gold": 14,
+      "acceptedSetSha256": "0bdc308c7239d8d289920c274f6a7059ed14053223d5ddc0577a7c9c2214cb21"
+    },
+    {
+      "puzzle": 139,
+      "sourceWords": 92,
+      "accepted": 92,
+      "added": 15,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "17de211d68a5ae17832ede6ca9d57a0873b2fac6274a9b26d344831e8070ad80"
+    },
+    {
+      "puzzle": 140,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 4,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "a2c0317a294a9575a0768f2794a17ac18a7fef21f04f49fd596a1e27b786878f"
+    },
+    {
+      "puzzle": 141,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 7,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "f9a35288908491c8b343ddcd5d678ef73bcfac4dbdef317fca67f13c6c25a85f"
+    },
+    {
+      "puzzle": 142,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 4,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "58f0cf3c514f9ae087f12d78d7a2e03a4f2124ee18612ff28e3deab4ca8a58b3"
+    },
+    {
+      "puzzle": 143,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 10,
+      "max": 96,
+      "gold": 16,
+      "acceptedSetSha256": "990325aa96b13aa05d8be93c6f3ba8f73620fa804502b64ba68fe8f956b4c939"
+    },
+    {
+      "puzzle": 144,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 11,
+      "max": 87,
+      "gold": 15,
+      "acceptedSetSha256": "70ada26d98ec214e1220faeb4a7e2e9029cf2d29ecb8025db9f0a0da3d9c5cc2"
+    },
+    {
+      "puzzle": 145,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 8,
+      "max": 89,
+      "gold": 16,
+      "acceptedSetSha256": "0302cb916c1188dc1e27eb1c38f05df56d0ecb64649055403b4116a98a4f929f"
+    },
+    {
+      "puzzle": 146,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 7,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "f146fe37fe1f8316118b99f24d8a0ca36f29dffb32af7dea4a37b0cd2317831d"
+    },
+    {
+      "puzzle": 147,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 9,
+      "max": 78,
+      "gold": 14,
+      "acceptedSetSha256": "3d113316f1152bea4879ecc203c835f0eb9234e27d1414c7c05fa49151b8b7ed"
+    },
+    {
+      "puzzle": 148,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "1342bb1c78adbc8b6a9690e0fd1c7d87297b268964eb32150fd91a4c417c9552"
+    },
+    {
+      "puzzle": 149,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 7,
+      "max": 85,
+      "gold": 15,
+      "acceptedSetSha256": "7808761ea615671c1a2f309e8b25dee26e494d054feb9a521325417d69ed36dc"
+    },
+    {
+      "puzzle": 150,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 6,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "ed4630dd1fd73f8bda0228a7731ffefa9ee40759eb90cbf864d51b43e525b070"
+    },
+    {
+      "puzzle": 151,
+      "sourceWords": 75,
+      "accepted": 75,
+      "added": 7,
+      "max": 90,
+      "gold": 16,
+      "acceptedSetSha256": "6e2fafed2da9f38ef12d385b4c798a9e8a4d521bdb3b749c0b5905a302c53c4f"
+    },
+    {
+      "puzzle": 152,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 5,
+      "max": 83,
+      "gold": 15,
+      "acceptedSetSha256": "964840cdea847282602d5ef0bd6a48e885884de0098adb4ba777344076fdecb2"
+    },
+    {
+      "puzzle": 153,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 5,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "33831b4c862f30cf33732ff2505813db1a8366b280f5509472aab31a224dec49"
+    },
+    {
+      "puzzle": 154,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 4,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "3d0aeaa636bf68c3a1b5d8b60c4694c85c55cc8304f22eb7a04a794b41e796c0"
+    },
+    {
+      "puzzle": 155,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 4,
+      "max": 84,
+      "gold": 16,
+      "acceptedSetSha256": "ea5950a992b9a77790dd07ad75a76a7d76544a8e4dd965156317b557e6f36d56"
+    },
+    {
+      "puzzle": 156,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 6,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "8509f2d349a0c9819e91614ea8216d314b9dde27a92a2929ea5f04b6d476b670"
+    },
+    {
+      "puzzle": 157,
+      "sourceWords": 46,
+      "accepted": 46,
+      "added": 1,
+      "max": 53,
+      "gold": 10,
+      "acceptedSetSha256": "0b48a126ce61bd51d30161c2c2c1c6bb32a63711d6363dc6cd509a7d648ac4f5"
+    },
+    {
+      "puzzle": 158,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 1,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "22742e9a8015ea9524250f2ba12b3f8710b19455b88280148bed5a48191b6fa0"
+    },
+    {
+      "puzzle": 159,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 15,
+      "max": 103,
+      "gold": 17,
+      "acceptedSetSha256": "0761198f42efa7b14760dc5b58a7f4652b27a6bc1445d46f9b89a2dc095d8f8b"
+    },
+    {
+      "puzzle": 160,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 7,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "e6f57fecc6b5870ad929b6c5131232e3b0037ec31340e925cba76c814707d083"
+    },
+    {
+      "puzzle": 161,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 12,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "37751d37d87852738c6ab6017334fb15f07770c1514951a28279b462835c6faa"
+    },
+    {
+      "puzzle": 162,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 10,
+      "max": 111,
+      "gold": 18,
+      "acceptedSetSha256": "55fa186e9f87f3965af07a82ac29a4c7e28e59f0f5bb4e1f8521ace31490965c"
+    },
+    {
+      "puzzle": 163,
+      "sourceWords": 90,
+      "accepted": 90,
+      "added": 10,
+      "max": 124,
+      "gold": 18,
+      "acceptedSetSha256": "7a6f189587408340926b5389c1f38404471adaf24bf3d83c0eb671d0bfa7c9b9"
+    },
+    {
+      "puzzle": 164,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 3,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "629fa5ee04fb43792b870e46187b69261a6d4738d2ecdf46a92b2e1ceca72d96"
+    },
+    {
+      "puzzle": 165,
+      "sourceWords": 89,
+      "accepted": 89,
+      "added": 11,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "f1720d71797bd9c1c27d4ba0df6dc61e2b0dc5387e7ed33f2bfecff037b81d9d"
+    },
+    {
+      "puzzle": 166,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 5,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "70b6960c14cc8fb84a0b6cb11ce0740a8a4c54f2febe7cec9d49cc7644718703"
+    },
+    {
+      "puzzle": 167,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 3,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "cdb74c1cae4f7452c099401eb1c98c1735511860f02e5482617f2f7090ce4a6c"
+    },
+    {
+      "puzzle": 168,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "0728b9c40e59680d215466ee40a8fdd75e733646a1c7c75ab49c5342846722cd"
+    },
+    {
+      "puzzle": 169,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 8,
+      "max": 111,
+      "gold": 18,
+      "acceptedSetSha256": "f2fac9989d231942df3d7c7865603be96358ce90b0bb90bd3817ceb337555bf0"
+    },
+    {
+      "puzzle": 170,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 10,
+      "max": 92,
+      "gold": 16,
+      "acceptedSetSha256": "13d2f0fd22a5e38bce76e41b0e89690b33756d412ad37f5d438e4fe70cc1811e"
+    },
+    {
+      "puzzle": 171,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 5,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "5f74be0f203fe445fdf751762d360cca9ea6640d34718050422e0067a1db1db9"
+    },
+    {
+      "puzzle": 172,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "52e931ddf961398143f8cbba11186778661833fd522016a5d42a061fb93c12b3"
+    },
+    {
+      "puzzle": 173,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 9,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "07ebb2a56e7c716208e825a6c3e04c35886f5e60359ac2392030ea448c9a2925"
+    },
+    {
+      "puzzle": 174,
+      "sourceWords": 89,
+      "accepted": 89,
+      "added": 9,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "70a3a020806cc3987b7a4f87b10961f95efedc8f8dcc637f910bd69f93d75dfa"
+    },
+    {
+      "puzzle": 175,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 3,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "17966059ef3d88cf6236fb867c7797e2df452d15e2641340e6764e9be8199bfc"
+    },
+    {
+      "puzzle": 176,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 12,
+      "max": 127,
+      "gold": 18,
+      "acceptedSetSha256": "06a91901af1847685f77d4e9564642f7e70f05aaab2cfd481ed338841b0ded14"
+    },
+    {
+      "puzzle": 177,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 7,
+      "max": 93,
+      "gold": 17,
+      "acceptedSetSha256": "abcc21f96e72c5d34383ba9a31cbd3fb95113a58c2a065b3c442898d21cfcbfa"
+    },
+    {
+      "puzzle": 178,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 2,
+      "max": 93,
+      "gold": 18,
+      "acceptedSetSha256": "3a7fa89e8e6d81241e6464aa30ec51f1d25c0a5498f817a575e73be5a7b1cc00"
+    },
+    {
+      "puzzle": 179,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 1,
+      "max": 88,
+      "gold": 17,
+      "acceptedSetSha256": "5642d89b351b859bc74702bebf6221743a3267a17fe46a5b48579eeb4bdc03eb"
+    },
+    {
+      "puzzle": 180,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 3,
+      "max": 81,
+      "gold": 16,
+      "acceptedSetSha256": "d51cd18e8851a88159c3d19bd46f961d340f726e695ad235d3e1b0a9896aeefb"
+    },
+    {
+      "puzzle": 181,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 3,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "955fe640c320fd94271f229a5ec18090299c6d617256f860a2d4cd0c7d95d135"
+    },
+    {
+      "puzzle": 182,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 17,
+      "max": 100,
+      "gold": 16,
+      "acceptedSetSha256": "86b890650c5fb7018eeec3a2111edaa0af625c6f7b379f2dd7d85addacd2e2c1"
+    },
+    {
+      "puzzle": 183,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 8,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "f691f9bb397b77aafddf5aa24a0d194879f57a28983d161e3443d0f4ccc8059c"
+    },
+    {
+      "puzzle": 184,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "8d8cd1164daec5b0185356534a31324ab61cb1702146dad365a733a5a464b4b7"
+    },
+    {
+      "puzzle": 185,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 11,
+      "max": 116,
+      "gold": 18,
+      "acceptedSetSha256": "99058c13e648c17b9fe72e539d67f57fc918394b135fa886090925b102f2fb76"
+    },
+    {
+      "puzzle": 186,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 4,
+      "max": 82,
+      "gold": 16,
+      "acceptedSetSha256": "fcae9bd4a529aa59911b6b17c4f1245ef8f0c9e64ed009a5afb496c947f02053"
+    },
+    {
+      "puzzle": 187,
+      "sourceWords": 65,
+      "accepted": 65,
+      "added": 2,
+      "max": 73,
+      "gold": 14,
+      "acceptedSetSha256": "c0438acba9576bbb9859cf8d1d1f66a3c881eeeb3ca05a96d944e00ecd92e87e"
+    },
+    {
+      "puzzle": 188,
+      "sourceWords": 66,
+      "accepted": 66,
+      "added": 5,
+      "max": 76,
+      "gold": 14,
+      "acceptedSetSha256": "3c5381c85b33956af92c8ce511b6c81ef408593c739a4ca853c23f8ccd7b0c1a"
+    },
+    {
+      "puzzle": 189,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 7,
+      "max": 93,
+      "gold": 17,
+      "acceptedSetSha256": "9cb69aca192a90bba27c3de2d0ea984ec041aaa9da8d7cb17f87e21035483ddc"
+    },
+    {
+      "puzzle": 190,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 8,
+      "max": 115,
+      "gold": 18,
+      "acceptedSetSha256": "af41a19c838bf6150963cf94be52d626943f826fd4471c0e883cd138a5382917"
+    },
+    {
+      "puzzle": 191,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "71ad6c586e83d765cb22677a2ee844d5fbe6fa89b7c14980224b8a4c17e7af88"
+    },
+    {
+      "puzzle": 192,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 4,
+      "max": 119,
+      "gold": 18,
+      "acceptedSetSha256": "9550faba2daf7bdb3394005678caca7436c455786e676b44a53f0ca9e1d88a55"
+    },
+    {
+      "puzzle": 193,
+      "sourceWords": 65,
+      "accepted": 65,
+      "added": 5,
+      "max": 73,
+      "gold": 14,
+      "acceptedSetSha256": "824d91122f74de85184bc6932118ac3ad45bd688e3ad873c79a4e20f58314aa7"
+    },
+    {
+      "puzzle": 194,
+      "sourceWords": 62,
+      "accepted": 62,
+      "added": 1,
+      "max": 82,
+      "gold": 16,
+      "acceptedSetSha256": "9df1b52d92225fe0f27e2e4ff8b8666c6f7b86f515e3c8b437005c8318fa4edf"
+    },
+    {
+      "puzzle": 195,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 4,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "6c20ec8082ac7b91b3e2ecfb77bd8754eb8a7ad5a0b5793bcb9af002ca37a5a1"
+    },
+    {
+      "puzzle": 196,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 7,
+      "max": 97,
+      "gold": 17,
+      "acceptedSetSha256": "c74052c3b56425a7753bf48d0cab0290e127a7fe19e766f8765e01b44b02053e"
+    },
+    {
+      "puzzle": 197,
+      "sourceWords": 69,
+      "accepted": 69,
+      "added": 3,
+      "max": 78,
+      "gold": 15,
+      "acceptedSetSha256": "e53321adda4a0af92945aa2de0990765bd2f41fff809dd3a89fa5d4541cf4ad6"
+    },
+    {
+      "puzzle": 198,
+      "sourceWords": 42,
+      "accepted": 42,
+      "added": 2,
+      "max": 52,
+      "gold": 10,
+      "acceptedSetSha256": "46f111e9c88f01eb8fa87df0cd99a0cab2cc25cf4ef3351fe028e4e428edd2e6"
+    },
+    {
+      "puzzle": 199,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 116,
+      "gold": 18,
+      "acceptedSetSha256": "989bbd231d78510d0b311012492ae01a6bd773b72c6efa25e82a3e9dadb8f115"
+    },
+    {
+      "puzzle": 200,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 7,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "828ee5af1243012c8974abe55f8d8ad4de4fb32e441a0e927347d130791cdfb0"
+    },
+    {
+      "puzzle": 201,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "e314b7665147bbf0deeb1cc91bceee6188122a71846644c1e83f4f27d6b4acd3"
+    },
+    {
+      "puzzle": 202,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 5,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "8a9d29c0fbea96dc116d9be9367ccf0a1cd3059cea74485ae2cddbca1707e6af"
+    },
+    {
+      "puzzle": 203,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 11,
+      "max": 110,
+      "gold": 18,
+      "acceptedSetSha256": "a6456561cafd056c01ca9ffbd5f90ecf3f597e35e52eb4885223722791e8c3ef"
+    },
+    {
+      "puzzle": 204,
+      "sourceWords": 94,
+      "accepted": 94,
+      "added": 15,
+      "max": 125,
+      "gold": 18,
+      "acceptedSetSha256": "0adcd98c7c3f8b53b76148ea6101ba9a39593d47930fa80175a4e162d8aee701"
+    },
+    {
+      "puzzle": 205,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 6,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "81f6973dc92c6aaacfb19fcaf92a7f094fcf7b353a25c2b432361c8d939d1130"
+    },
+    {
+      "puzzle": 206,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 0,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "9aaa4f0a71e155a1c529cfe956a3040ba0d5d6200b8bd805a0c753caad54c5ab"
+    },
+    {
+      "puzzle": 207,
+      "sourceWords": 64,
+      "accepted": 64,
+      "added": 6,
+      "max": 80,
+      "gold": 14,
+      "acceptedSetSha256": "6b083e75c1ffbf4d706bc8622e2dc65b01fb5a1ca666e159d84ac97fcf2b1fe7"
+    },
+    {
+      "puzzle": 208,
+      "sourceWords": 66,
+      "accepted": 66,
+      "added": 9,
+      "max": 72,
+      "gold": 13,
+      "acceptedSetSha256": "90560d5a0b3e161c7dbd8bcfd57968f1be1d7948c3fbddb5d73bd00d341d64e4"
+    },
+    {
+      "puzzle": 209,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "fe0d9f7b2d156db479f8d0ad414d6ba673b5501501ff10ca2a8cc29b0f8cf3f8"
+    },
+    {
+      "puzzle": 210,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 5,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "b2f710d40633f25af38f95450c80684fb9542bda3b2864bffd85fe4391612171"
+    },
+    {
+      "puzzle": 211,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 8,
+      "max": 86,
+      "gold": 15,
+      "acceptedSetSha256": "11baec1fcee8a093cb5880cdf6bde6fa240dc33a347947ecd463456e286d3db6"
+    },
+    {
+      "puzzle": 212,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 10,
+      "max": 130,
+      "gold": 18,
+      "acceptedSetSha256": "7d9fae57b4611641846cb337c64e7aaea7581486188e6de00f3dcff40d69ec68"
+    },
+    {
+      "puzzle": 213,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 5,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "828b580def19395827cf61f481fdbabc0fa594e29e7e2e0b5e14eeca16a32821"
+    },
+    {
+      "puzzle": 214,
+      "sourceWords": 53,
+      "accepted": 53,
+      "added": 4,
+      "max": 60,
+      "gold": 11,
+      "acceptedSetSha256": "6b358973338f19bba32b7458412aa6e6170d29a0d3dafee6a74236d259caccd8"
+    },
+    {
+      "puzzle": 215,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "f4f2271c3aec0a3278758f86ed8b1e1c96f66b4eee9cb8172e7ef7726d8367e3"
+    },
+    {
+      "puzzle": 216,
+      "sourceWords": 53,
+      "accepted": 53,
+      "added": 4,
+      "max": 63,
+      "gold": 11,
+      "acceptedSetSha256": "99bbc0685f44e4f552d96ff978efb03c9accc5872969c62728c33be0c900a374"
+    },
+    {
+      "puzzle": 217,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 3,
+      "max": 92,
+      "gold": 18,
+      "acceptedSetSha256": "1667cd15b978177f9b29596b6a970ec96ac9198f845fdfc6bae414d2e30b1832"
+    },
+    {
+      "puzzle": 218,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "491e7bdafd12a70b9054b306f5fc3a679797261b709594edbc8e9cf65522393f"
+    },
+    {
+      "puzzle": 219,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 5,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "56c6107b27ec6054a705d4ee266595bbd2a8fbb57e4ca9806c80c7f7798837c0"
+    },
+    {
+      "puzzle": 220,
+      "sourceWords": 66,
+      "accepted": 66,
+      "added": 5,
+      "max": 77,
+      "gold": 14,
+      "acceptedSetSha256": "3d29a0310b6269e04ebd151bfc8bd516384b6f008c528d2107663480f28c82ec"
+    },
+    {
+      "puzzle": 221,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 10,
+      "max": 105,
+      "gold": 18,
+      "acceptedSetSha256": "72b66ec9442979fe1fa7428cdbc3e331e10b0eaf1c4f784826db3f7c49ecde10"
+    },
+    {
+      "puzzle": 222,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 6,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "84eee93c547b080c4484dcaa2add3cf6bd3259790eef0d3dbe5924ab740608f7"
+    },
+    {
+      "puzzle": 223,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 6,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "831354aab255ebab7feeaa663f9d70a8e7663dcec7d9a6f34e8619358edba971"
+    },
+    {
+      "puzzle": 224,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 5,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "91c491d21aabbe1046c253c04024adf0eac7abfff9a757629d43ac0f87359074"
+    },
+    {
+      "puzzle": 225,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 3,
+      "max": 81,
+      "gold": 16,
+      "acceptedSetSha256": "171eaabe985e410d5f515defec8a567ee49efbc9bc8ebfd7c8065f0b23a6a5cd"
+    },
+    {
+      "puzzle": 226,
+      "sourceWords": 62,
+      "accepted": 62,
+      "added": 5,
+      "max": 76,
+      "gold": 14,
+      "acceptedSetSha256": "5d4fe42c4d3c241be5fa0eead8570dbb7123b5472799a3d7da61deeb12099e29"
+    },
+    {
+      "puzzle": 227,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 6,
+      "max": 94,
+      "gold": 18,
+      "acceptedSetSha256": "67477c779bc3ac7e0a1f255bd11d1d0f2c0c39f4b76f9b8ef633faa65c7c60dc"
+    },
+    {
+      "puzzle": 228,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 4,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "186193f533645f5020a2e33ed607eaaad8160919f628788b31e04a3bde5e6c9a"
+    },
+    {
+      "puzzle": 229,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 10,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "5123ab7e3909a9e262c7bba307d5564be1ae190ed0423d04cd7880ee85f0a9cf"
+    },
+    {
+      "puzzle": 230,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 2,
+      "max": 90,
+      "gold": 18,
+      "acceptedSetSha256": "fc9c798142605cef1513094965cb41443a10a6d27649e77d60c0370e57079472"
+    },
+    {
+      "puzzle": 231,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 7,
+      "max": 73,
+      "gold": 13,
+      "acceptedSetSha256": "dc01d6b6afc0c1ed0d166be0b1c38bc5ae7d7279b05dcdea35eddb248a33373a"
+    },
+    {
+      "puzzle": 232,
+      "sourceWords": 62,
+      "accepted": 62,
+      "added": 5,
+      "max": 80,
+      "gold": 15,
+      "acceptedSetSha256": "8f471a02df5fd5fb5497f2a34efc7cfe5cee38fc45fa4cecc234f45fbed761fe"
+    },
+    {
+      "puzzle": 233,
+      "sourceWords": 31,
+      "accepted": 31,
+      "added": 3,
+      "max": 39,
+      "gold": 8,
+      "acceptedSetSha256": "f38d1beb5ecd398afa47cf69c7b6fe02edacbfccc9f3933409011b64dd06bb52"
+    },
+    {
+      "puzzle": 234,
+      "sourceWords": 66,
+      "accepted": 66,
+      "added": 6,
+      "max": 73,
+      "gold": 13,
+      "acceptedSetSha256": "30667003965cdb5e9075fdd425f78df5adf73e9e20aa5306b9c141d092660191"
+    },
+    {
+      "puzzle": 235,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 8,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "53060f645b1ec49f485e37281cfbc7de7ec2e4843c531854598c0192ad644c23"
+    },
+    {
+      "puzzle": 236,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 6,
+      "max": 77,
+      "gold": 14,
+      "acceptedSetSha256": "7cb0d8513b1bd373dc678c0ae240461f31fd27a38a1bc99691d4812e812dba26"
+    },
+    {
+      "puzzle": 237,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 0,
+      "max": 80,
+      "gold": 16,
+      "acceptedSetSha256": "1eeb2e5aeb807cc9bf30dc3eb85e5013491a0ce9aa674f2b6fec0b5b9aa0343b"
+    },
+    {
+      "puzzle": 238,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 9,
+      "max": 89,
+      "gold": 15,
+      "acceptedSetSha256": "a7b2ff88b41c5f65b80019cfb16304245a494d5c9a3a9b84b4ac72520633b3d4"
+    },
+    {
+      "puzzle": 239,
+      "sourceWords": 58,
+      "accepted": 58,
+      "added": 3,
+      "max": 68,
+      "gold": 13,
+      "acceptedSetSha256": "ebf12a87a64dcd063e73808387c5bbc8fba943bbb7ea71952f3c0d699e040844"
+    },
+    {
+      "puzzle": 240,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 92,
+      "gold": 16,
+      "acceptedSetSha256": "c56b85f6a495660e502f8c603a9b6d765dfa1ae37cbd34271976048820cf1c53"
+    },
+    {
+      "puzzle": 241,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 5,
+      "max": 90,
+      "gold": 17,
+      "acceptedSetSha256": "2bf2f46bf91e837369e41927ff9f6e25264c7b0f37620aea39c72d145f2bce2e"
+    },
+    {
+      "puzzle": 242,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 9,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "6219723587b59fe2964425cf3c5d757b2a4e1f45469779e17ad91d95349c846f"
+    },
+    {
+      "puzzle": 243,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 10,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "e92f0ddbfd6368e8c66bc9da4195b0de01dc113b49c7e9cc7eba0b7ecd92ec9c"
+    },
+    {
+      "puzzle": 244,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "bfe911e5112495be4a01ecdf066b8d93af4ecd22f1add423f6eec6dbcf4e8c76"
+    },
+    {
+      "puzzle": 245,
+      "sourceWords": 49,
+      "accepted": 49,
+      "added": 7,
+      "max": 54,
+      "gold": 9,
+      "acceptedSetSha256": "2a8cea1a49ccccf50458e826de95f4d25219cc27b2b968fd2954393859ae189a"
+    },
+    {
+      "puzzle": 246,
+      "sourceWords": 51,
+      "accepted": 51,
+      "added": 3,
+      "max": 58,
+      "gold": 11,
+      "acceptedSetSha256": "7a3acc623474f8008c6377a5c4946d462829bd3cd288062ad310478e2dd8a495"
+    },
+    {
+      "puzzle": 247,
+      "sourceWords": 54,
+      "accepted": 54,
+      "added": 4,
+      "max": 61,
+      "gold": 11,
+      "acceptedSetSha256": "78689b8ae24e5c661f9c3114b8a6e402bbbdf90febdae221599cdb1de9cb38bd"
+    },
+    {
+      "puzzle": 248,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 8,
+      "max": 90,
+      "gold": 16,
+      "acceptedSetSha256": "dc3b151ee4025fe4194aae4982ef2e9f7a384c44801cc583a6a56ae1525bc35c"
+    },
+    {
+      "puzzle": 249,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 113,
+      "gold": 18,
+      "acceptedSetSha256": "5488227cc25c5cae39a71a516449d1fb5489824caeeb0e801e350af1081eba3d"
+    },
+    {
+      "puzzle": 250,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 6,
+      "max": 83,
+      "gold": 15,
+      "acceptedSetSha256": "e40574d3df73fc3f25b6ae91e6cab16e657b83dbbdc497cef7c247e1c70cb4f1"
+    },
+    {
+      "puzzle": 251,
+      "sourceWords": 59,
+      "accepted": 59,
+      "added": 11,
+      "max": 75,
+      "gold": 12,
+      "acceptedSetSha256": "4b453ae8e7748eb8f9aaafc6b7ef1821188a9be3cffc74c07d6f5ac249a4945a"
+    },
+    {
+      "puzzle": 252,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 8,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "9e38ea4e3fc04e727b8f9e4c6628aa9075adbdef01ca8c0400518ebf0ca4ab5c"
+    },
+    {
+      "puzzle": 253,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "a2b2b100af6d4a5979417107034dc09487439cdeb5f3204d0e0ef999a23a6271"
+    },
+    {
+      "puzzle": 254,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "06126b267f734565a66b293d39c6f6a220e908df139cc2f08e672ef4ccfd105e"
+    },
+    {
+      "puzzle": 255,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 8,
+      "max": 78,
+      "gold": 14,
+      "acceptedSetSha256": "4fc4463e686090374fb87ca41b5ee7eed8c21c6b972730df421cf250f56442e3"
+    },
+    {
+      "puzzle": 256,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "670146532975c8a0736794ee77ab95b3834b32e94a6806d9cf3f320be7496448"
+    },
+    {
+      "puzzle": 257,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 9,
+      "max": 99,
+      "gold": 17,
+      "acceptedSetSha256": "ac52605400f87555e9a247ecda6082cef250218995f4b26ec2cf6eb103bd3da0"
+    },
+    {
+      "puzzle": 258,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 113,
+      "gold": 18,
+      "acceptedSetSha256": "f9fe64d09415e7404d70e366dadd417d22e73d97a432f02bd32676078dc79c79"
+    },
+    {
+      "puzzle": 259,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 14,
+      "max": 101,
+      "gold": 17,
+      "acceptedSetSha256": "60da518f8cdf2684380dd150c45a291fac463592a2c332df833cf77389162393"
+    },
+    {
+      "puzzle": 260,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 8,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "bb2780e045d5398e54a6d13336c8c8dd08db78ee6981e5e25fa5a0bf5cc99dda"
+    },
+    {
+      "puzzle": 261,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 3,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "1f00d499754a98e8396ff4f02104dd2c0ee9808155df0370d6fa8b4b9fbac613"
+    },
+    {
+      "puzzle": 262,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 3,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "77351959dd8696c1d9ceeb7c798fac221c82ca33a7fe87e2338d0f3539d8f6eb"
+    },
+    {
+      "puzzle": 263,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 4,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "e5403e244e960ecb443e22a481f2e31ffc7c8866731a51293a8c366fd93e0440"
+    },
+    {
+      "puzzle": 264,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 6,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "1a19caf75559750855fd2bc9e24561b8e079e1fe86215757dba624e60f65f528"
+    },
+    {
+      "puzzle": 265,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 8,
+      "max": 79,
+      "gold": 14,
+      "acceptedSetSha256": "802d1aa1549f7354c87a69388c4bc57be189598022a23eff5a9f79a8d0aae7c5"
+    },
+    {
+      "puzzle": 266,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 11,
+      "max": 114,
+      "gold": 18,
+      "acceptedSetSha256": "db13b94c00a7dbec8650ad7badc9f1c83aced3b56c25186560735081939fd535"
+    },
+    {
+      "puzzle": 267,
+      "sourceWords": 64,
+      "accepted": 64,
+      "added": 3,
+      "max": 71,
+      "gold": 14,
+      "acceptedSetSha256": "e8a9ddd7f4daf1544c9854d5b17c68a963b2941ada385b8a04c5112318c23d73"
+    },
+    {
+      "puzzle": 268,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 2,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "609fec7ab64950cac0a9ff9e546ed7f91726c9ec65b03b537371dcf4b2d35a7c"
+    },
+    {
+      "puzzle": 269,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 7,
+      "max": 83,
+      "gold": 15,
+      "acceptedSetSha256": "5063189c93d36305d7be991ffa1e26bd34e10c4ca035176e8d953c72d45ac811"
+    },
+    {
+      "puzzle": 270,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 8,
+      "max": 92,
+      "gold": 16,
+      "acceptedSetSha256": "d233872d7bca9dde76a1befcd7c394202d7e31dfc2b7ba22dbf6f4484fb99295"
+    },
+    {
+      "puzzle": 271,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 5,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "fc36b1214b949e65f9606380f75fae1687997a21352d135803e1c02a54f8befc"
+    },
+    {
+      "puzzle": 272,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 6,
+      "max": 93,
+      "gold": 17,
+      "acceptedSetSha256": "449153c08d6cdef5095a679630231cdc814c0230c9f5ea26db5f747da943c4db"
+    },
+    {
+      "puzzle": 273,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 4,
+      "max": 76,
+      "gold": 14,
+      "acceptedSetSha256": "fc32362028ccc2cd3e988a5d0c8f3d6f547d0c47e1b054cb687a0b833e37e10e"
+    },
+    {
+      "puzzle": 274,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 9,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "faafc7e2f0122556789025752bc4f30ff62c6235472c5186fde8a00d76d6ce93"
+    },
+    {
+      "puzzle": 275,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "9a174dc425050b915a5bdfcddb5771fa25c6a4931df0a39163e94bd8bb38326a"
+    },
+    {
+      "puzzle": 276,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 3,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "216872dff9ad766a5e52c8dec9a620d3626bc954d0b3eda03f3fa1771debd51d"
+    },
+    {
+      "puzzle": 277,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "3ca22f7c30e1cfe391c3e0d006ca32064a7be2b3a3f2647c463fa34afe62197a"
+    },
+    {
+      "puzzle": 278,
+      "sourceWords": 69,
+      "accepted": 69,
+      "added": 4,
+      "max": 76,
+      "gold": 14,
+      "acceptedSetSha256": "7701ff17445c99c8049a07d22256a4abba6087d196ee955508e827dc5093df1b"
+    },
+    {
+      "puzzle": 279,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 8,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "9f778bc75d59d2a76fd867d2c870ab41f0fd9e344d9b75ee86545c7ac6aad5cf"
+    },
+    {
+      "puzzle": 280,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 4,
+      "max": 83,
+      "gold": 16,
+      "acceptedSetSha256": "a0a1e20e7e4c39cf303f2f2e44d254970fbcf482349c8b8c002dd78b597b6fe6"
+    },
+    {
+      "puzzle": 281,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 4,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "06024c2970de0df8b7870805a47382c175e09e20bfa8fde9da612593b3ce8074"
+    },
+    {
+      "puzzle": 282,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 6,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "96fb01f44c946d7417628c66cecc131545c120384591c210a8098e1dfab3495c"
+    },
+    {
+      "puzzle": 283,
+      "sourceWords": 69,
+      "accepted": 69,
+      "added": 4,
+      "max": 86,
+      "gold": 16,
+      "acceptedSetSha256": "2dcbc2d303411f1bb670e13ed5bf140bffe02a13cdcffad4578774f0ca2a78d8"
+    },
+    {
+      "puzzle": 284,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 4,
+      "max": 110,
+      "gold": 18,
+      "acceptedSetSha256": "e4dbfa48aa6d2b0c5f5b0bdbbf0eb827ff97c4ddfe8e985152eb80a85e4f883a"
+    },
+    {
+      "puzzle": 285,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "0a94b0554806ad22b717bab2f42af507578a37dc110a230effc0d8de3831d384"
+    },
+    {
+      "puzzle": 286,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 7,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "64992320c53fcf460d1b9bca4f95cd09865f62fd83c519154eb686831ca9b1ac"
+    },
+    {
+      "puzzle": 287,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 3,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "2c704e10667be0e0d1a187d1169ec62308ac5a424872caa96b25313e47fccaed"
+    },
+    {
+      "puzzle": 288,
+      "sourceWords": 64,
+      "accepted": 64,
+      "added": 5,
+      "max": 74,
+      "gold": 14,
+      "acceptedSetSha256": "8abafddd0ed67967f009f34b2e04620cefc7866e8937a30f2e3daa9d06ef27c0"
+    },
+    {
+      "puzzle": 289,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 4,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "4db16c213f592f0fe55dda8b8cae7e6a84a6c225e96021e5ba5fe31a7ada5e88"
+    },
+    {
+      "puzzle": 290,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 5,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "a378c7cf67e106727206998fde97f442392a6b7ff1e914ce636720e5f8bfc8a3"
+    },
+    {
+      "puzzle": 291,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 7,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "03cb23f7e343ce0bd3706373fc1a3a44bc7f828336e60c97275cef2cd0238d21"
+    },
+    {
+      "puzzle": 292,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 7,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "663096f66ecc81f41472850e5490fb285645ce6a6db1af8beacc1f0e7bc237e7"
+    },
+    {
+      "puzzle": 293,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 9,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "7730d33160f89a22cac1b1c7fa98a8b4030186b3de5f555f0a430ff72aac1e46"
+    },
+    {
+      "puzzle": 294,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 4,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "4fedcbda4a66b521c230f528d551bcd6f45033e6f78a46d09f48624d8753e2ec"
+    },
+    {
+      "puzzle": 295,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 8,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "62fbe09cd27199396e88c17a0e50a519afa58e5356bc1cb07cee22a1225f4650"
+    },
+    {
+      "puzzle": 296,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 4,
+      "max": 92,
+      "gold": 18,
+      "acceptedSetSha256": "a9e11acd78b9e0338e68f939a76be4a7e8604747fc2de13952c641ed29eed51e"
+    },
+    {
+      "puzzle": 297,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 11,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "7393a20db63c104afe0e1828e69f2f5564dbe41dcdedb57ede3858fe8a1ffec6"
+    },
+    {
+      "puzzle": 298,
+      "sourceWords": 63,
+      "accepted": 63,
+      "added": 7,
+      "max": 88,
+      "gold": 16,
+      "acceptedSetSha256": "3772524f17279b39228489ef0bb62941e8bb3c5776d4c22f9ef06cfc909ca42f"
+    },
+    {
+      "puzzle": 299,
+      "sourceWords": 64,
+      "accepted": 64,
+      "added": 10,
+      "max": 74,
+      "gold": 12,
+      "acceptedSetSha256": "85b51270ef767ba4c76c2a4235526f100e23b7536fcb88eac44e8b12da4232a7"
+    },
+    {
+      "puzzle": 300,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 9,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "f1c06f446ffb2f5edf266232abda82fff8800486b51425e8af342d9c3c3a0475"
+    },
+    {
+      "puzzle": 301,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 7,
+      "max": 78,
+      "gold": 14,
+      "acceptedSetSha256": "12449ce257909f446a2983b2f5000fe4a223dfb927efb89a6d948ab553eb455b"
+    },
+    {
+      "puzzle": 302,
+      "sourceWords": 50,
+      "accepted": 50,
+      "added": 4,
+      "max": 54,
+      "gold": 10,
+      "acceptedSetSha256": "385fca3fb5046743fc31a5657f64209d16e91ccedf77e9dc3d8b9d2a301e3692"
+    },
+    {
+      "puzzle": 303,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 7,
+      "max": 90,
+      "gold": 16,
+      "acceptedSetSha256": "8ba3c2112e1f7d1d8153ccf2632c6b334c7391d7c2443d33d6c2e54a943d3333"
+    },
+    {
+      "puzzle": 304,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 8,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "138fc0b6ce1649bbc832e33e77c1335622b8e9d188b03d62bde9975204178b59"
+    },
+    {
+      "puzzle": 305,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 5,
+      "max": 94,
+      "gold": 18,
+      "acceptedSetSha256": "c92cc02dcf86211d90aa4d3e52b8f445102ddf3b84d0c8000c7a034c50154a09"
+    },
+    {
+      "puzzle": 306,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 3,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "ad281b8830a4bcd6fe671ea29f9cf93a38f186b5d6d559f100c428a2b84c02ed"
+    },
+    {
+      "puzzle": 307,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 13,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "257516ed23d6bff8952cf148ae578eb3bd5ed8d3d3c9de4a8cf3a9df25d025a0"
+    },
+    {
+      "puzzle": 308,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 7,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "186fa9fb3d96b2b86e1c907666bce4ccae781495620f6d8403d69ee8ede20f87"
+    },
+    {
+      "puzzle": 309,
+      "sourceWords": 89,
+      "accepted": 89,
+      "added": 12,
+      "max": 114,
+      "gold": 18,
+      "acceptedSetSha256": "5517aa510c6946253029b11ca1193836bd5014846379a2d80469e7114174e8d8"
+    },
+    {
+      "puzzle": 310,
+      "sourceWords": 89,
+      "accepted": 89,
+      "added": 9,
+      "max": 99,
+      "gold": 18,
+      "acceptedSetSha256": "cdc00c674e9fad80d0bba2790397c4039981a33369a780f039d228803c5c4794"
+    },
+    {
+      "puzzle": 311,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 3,
+      "max": 81,
+      "gold": 16,
+      "acceptedSetSha256": "1c85843074b1fa894e1e482f2c5a6779ab9040a90ae997cf41af26b29eb56e97"
+    },
+    {
+      "puzzle": 312,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 7,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "5e72fb5f6cffaa5ee73f3cb0d9dbfb5aa4746117e08f83385aa124f491e14653"
+    },
+    {
+      "puzzle": 313,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 7,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "5bd5d0bc6a247fdf85cad646cf3037b80de446e1f49d328a25468b7257cfde93"
+    },
+    {
+      "puzzle": 314,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "086161d32caac7b768087afdc8f96597f7de714073ec2ce791447cdb6126d615"
+    },
+    {
+      "puzzle": 315,
+      "sourceWords": 63,
+      "accepted": 63,
+      "added": 4,
+      "max": 74,
+      "gold": 14,
+      "acceptedSetSha256": "8aa847d5e9bc67e974914091490836a477aca3e5e091aa6622f28817d766d829"
+    },
+    {
+      "puzzle": 316,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "2a207f999cd574cc9fc0b777cfe2ede6d48a708b530359432a9853a80c91d011"
+    },
+    {
+      "puzzle": 317,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 8,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "cb78cc72a910a15536059ccd31a5acebf13c54920119ab5137a80f63119fddc8"
+    },
+    {
+      "puzzle": 318,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 6,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "c506708d2d62e9581e3f65339ff2d29f7f2682cc09c46078b87394fa5612468b"
+    },
+    {
+      "puzzle": 319,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 5,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "29a160c48d9eba52eb5c37a9f85e9653a79d4196c3a1497256420495ac8775ee"
+    },
+    {
+      "puzzle": 320,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 6,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "f0f28627f8e240a0198092a9e6b9eaf1c6a8d055fdbbfb00ebe7c43e5bedb82c"
+    },
+    {
+      "puzzle": 321,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "aec367fc61faf02e8f6218ac72224ce5faaa5bc907490a6ca5d34195a8826f06"
+    },
+    {
+      "puzzle": 322,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 3,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "c5bf067d14f0e758ba8c3211633385c92fdcd0592c52d12ce19403153a428427"
+    },
+    {
+      "puzzle": 323,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 7,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "fab091c9fb83169ce40833f02ac39527f197101ff3681e526e3ed4211abf2b93"
+    },
+    {
+      "puzzle": 324,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 4,
+      "max": 122,
+      "gold": 18,
+      "acceptedSetSha256": "06e4c545bbc2af9d152333b7490345bfead8c87ae7e9536d967aa2f6f1e9ee27"
+    },
+    {
+      "puzzle": 325,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "d91d61c3fef0f863a0fb1a2d27c6da26859f5d21ad858da19c472a04990ccc47"
+    },
+    {
+      "puzzle": 326,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 9,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "f814d8963e8ef90ea710a651aa20b5bb31495cc1fdccb3508cb7696d389fb6d4"
+    },
+    {
+      "puzzle": 327,
+      "sourceWords": 70,
+      "accepted": 70,
+      "added": 10,
+      "max": 89,
+      "gold": 15,
+      "acceptedSetSha256": "5459db63f0cc7702274ac9595bfe3d8d4e69ced7999f6d84d96eef3a8cb27fc2"
+    },
+    {
+      "puzzle": 328,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "514436eaad0b8b3b31193b68c40121614e440ee61160cf791009b11309affe59"
+    },
+    {
+      "puzzle": 329,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "04877c1cf97ecbf313f20eb844e1baf7116991be66e136810f9188508c824664"
+    },
+    {
+      "puzzle": 330,
+      "sourceWords": 52,
+      "accepted": 52,
+      "added": 7,
+      "max": 61,
+      "gold": 11,
+      "acceptedSetSha256": "f0f2a0ea78da77d549f59202a841df83b6a3b13a460f2cb4ad9052a06542395f"
+    },
+    {
+      "puzzle": 331,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 10,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "21dc66b335b1bd0481871c691e2e81d92b299ae0acb73c7e8ea4907dbf1344e8"
+    },
+    {
+      "puzzle": 332,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 8,
+      "max": 115,
+      "gold": 18,
+      "acceptedSetSha256": "24ea8688246ff980716914e4861b567956fb9d5e8a3ef3ffed30b6fca444ba42"
+    },
+    {
+      "puzzle": 333,
+      "sourceWords": 51,
+      "accepted": 51,
+      "added": 9,
+      "max": 67,
+      "gold": 11,
+      "acceptedSetSha256": "0a2f7914b5a64a8b733191e83d2259878234181e2f4f2ee12a0babbbe13b6543"
+    },
+    {
+      "puzzle": 334,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 9,
+      "max": 90,
+      "gold": 16,
+      "acceptedSetSha256": "38b806cfb35b90f658ec2004c1fab64d7469300a9128fee60334e240161fa913"
+    },
+    {
+      "puzzle": 335,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 8,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "227ed790b554e88eae3e8123288a5516df6edb5eace0022680bcb3aefb3ceff4"
+    },
+    {
+      "puzzle": 336,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 5,
+      "max": 110,
+      "gold": 18,
+      "acceptedSetSha256": "1eb8f0835e69be0f955c482d20949366a2cc32e01e624d9746ca7576b63fb143"
+    },
+    {
+      "puzzle": 337,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 9,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "f1629a36fb8013b744cdf8d6e8a82af9a1c464adeaeed42206f1df12c3961131"
+    },
+    {
+      "puzzle": 338,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 7,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "7338b3583a9f053dd16f78f1c5928b959784c6d74e7bfb4e47508069e3ef67b2"
+    },
+    {
+      "puzzle": 339,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 7,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "63b98541f65921f45f5ea8c6898d9a84bbf6e94f3330ff05b1b2f0772db78a9b"
+    },
+    {
+      "puzzle": 340,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "44ae63e40c754995cdffb3c33978a6fd71ed33cc5e4a81a58446995f8a29c4bc"
+    },
+    {
+      "puzzle": 341,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 9,
+      "max": 88,
+      "gold": 16,
+      "acceptedSetSha256": "697399a91d5c2fcb65dbb07f591e781661c37b21f54b996c6ff2cb1ccd772801"
+    },
+    {
+      "puzzle": 342,
+      "sourceWords": 69,
+      "accepted": 69,
+      "added": 6,
+      "max": 84,
+      "gold": 15,
+      "acceptedSetSha256": "08979c7c6932c70293f26a76d51bc3915edcbf6e2f2a765b536eaf0c1d3b9b1a"
+    },
+    {
+      "puzzle": 343,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 8,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "942cac74b5d24b34c736e5b2ed671269b80007d99a8d8dc9eb427ef539585f76"
+    },
+    {
+      "puzzle": 344,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 6,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "e2158f7de4c01a25f5d66160bb0721fc185514fb907f2ee7234adece461e8302"
+    },
+    {
+      "puzzle": 345,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 11,
+      "max": 105,
+      "gold": 18,
+      "acceptedSetSha256": "c986b53c29372d57d90370054e5584af7cc430c74a6b7cce65f0de71ba0127f4"
+    },
+    {
+      "puzzle": 346,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 4,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "eefdfffb6397bf226f53c1e2d0a51a3bf7732830c329f5ca69873d11b78d99c4"
+    },
+    {
+      "puzzle": 347,
+      "sourceWords": 56,
+      "accepted": 56,
+      "added": 2,
+      "max": 65,
+      "gold": 13,
+      "acceptedSetSha256": "004f22a098966b560d57d22cd90a9f98600fa17bc789094982c99e19b1c8dd12"
+    },
+    {
+      "puzzle": 348,
+      "sourceWords": 59,
+      "accepted": 59,
+      "added": 2,
+      "max": 68,
+      "gold": 13,
+      "acceptedSetSha256": "e38a59d5bc73559cdfd3e0ea6ae1c5e06d6c17e7020a1f3a56842b0eae0de39d"
+    },
+    {
+      "puzzle": 349,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 3,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "f0e12dcb6f741fed822f75f0f463e36ca5b2876249e738fabd8d868c473f09fd"
+    },
+    {
+      "puzzle": 350,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 7,
+      "max": 88,
+      "gold": 16,
+      "acceptedSetSha256": "0b320179100406e0bbb73a4b9ee27857bb42358117c2a53cea8359287b954c5e"
+    },
+    {
+      "puzzle": 351,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 10,
+      "max": 115,
+      "gold": 18,
+      "acceptedSetSha256": "808933c0158787ccff1dabdde9778105374adae9d25a9d3b4957353c15f2bad9"
+    },
+    {
+      "puzzle": 352,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 8,
+      "max": 78,
+      "gold": 14,
+      "acceptedSetSha256": "3268417c954a1dc10d8997f9084447218474c69d1aa0bf47f4816f117af58e8e"
+    },
+    {
+      "puzzle": 353,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 7,
+      "max": 95,
+      "gold": 17,
+      "acceptedSetSha256": "dac24e8f94fcd5308944c10641927cd38a0ab9dd67a32f69f9be814db4cf5141"
+    },
+    {
+      "puzzle": 354,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 108,
+      "gold": 18,
+      "acceptedSetSha256": "35a8ca8ab09bd6b8c5f417d872395b0d6c7ef53038928c3a5a14d7edb8639080"
+    },
+    {
+      "puzzle": 355,
+      "sourceWords": 59,
+      "accepted": 59,
+      "added": 3,
+      "max": 64,
+      "gold": 12,
+      "acceptedSetSha256": "daddadc801350f19bb5b5de73cfec29ff6599fb3f1014821d1545b084d67e5d9"
+    },
+    {
+      "puzzle": 356,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 8,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "c3684fe0f31dbc373ba7d18d433ef96b646f5cce0d99902e86e248386e98e3ce"
+    },
+    {
+      "puzzle": 357,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 5,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "e89ead7f63b7d948224386ab0d4e22dee81b4e878116977d3393a1aa7882e070"
+    },
+    {
+      "puzzle": 358,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 3,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "1fb8ddb0b8d0741bd9bdfaa0a621bb1ebcf5a3eca5390edd16abc8edfd76014b"
+    },
+    {
+      "puzzle": 359,
+      "sourceWords": 93,
+      "accepted": 93,
+      "added": 14,
+      "max": 116,
+      "gold": 18,
+      "acceptedSetSha256": "72c98c647f0fd1043b9d2e13cfd0db26e9b8647cc71605e884dd06ced54fdaa9"
+    },
+    {
+      "puzzle": 360,
+      "sourceWords": 51,
+      "accepted": 51,
+      "added": 5,
+      "max": 58,
+      "gold": 11,
+      "acceptedSetSha256": "27182b6998dbc41a147a105fb4bbf61351522e720cc4b1fa8b7357b9b8505293"
+    },
+    {
+      "puzzle": 361,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 6,
+      "max": 89,
+      "gold": 17,
+      "acceptedSetSha256": "3df2940d8352ed47de4824faa53ee81a13cf6f27d83faf63906045506fd49723"
+    },
+    {
+      "puzzle": 362,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 8,
+      "max": 98,
+      "gold": 18,
+      "acceptedSetSha256": "0f672099685e2caad55c5a5576b6cddc5812a3ddcd2186785d3d69e5377e4fa4"
+    },
+    {
+      "puzzle": 363,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 11,
+      "max": 87,
+      "gold": 15,
+      "acceptedSetSha256": "83fb370b7fcc6f30d9c1af70dde8e6a359ad17901a0727704a41fdd70db0c2d6"
+    },
+    {
+      "puzzle": 364,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 5,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "8ffba92f0abbfe10e2bbc431906215d3fa87a40a809001be215ed8a3b31ec712"
+    },
+    {
+      "puzzle": 365,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 7,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "97ac47a2fabc496ac0a751b327d4716a1155ce86b75492b3850951fb65fb7b08"
+    },
+    {
+      "puzzle": 366,
+      "sourceWords": 60,
+      "accepted": 60,
+      "added": 5,
+      "max": 66,
+      "gold": 12,
+      "acceptedSetSha256": "5b4e60d74f5662f4d20329180632fa9a13f3ebcc2f8fda2df56d8fb6527e4ab5"
+    },
+    {
+      "puzzle": 367,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 5,
+      "max": 93,
+      "gold": 17,
+      "acceptedSetSha256": "c7b36fbb5fa93d1e42654dbfb0814781fd4453670a801e418c31ea1d03fd0537"
+    },
+    {
+      "puzzle": 368,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 6,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "e9d6a0c08767d10ebcce3309894e2578a4c60e6c91e4b18bd993ffaf80335ca8"
+    },
+    {
+      "puzzle": 369,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 6,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "2489567b16a181bc19c14fdd18138df371dd02241d046a149557e92a8f45cac4"
+    },
+    {
+      "puzzle": 370,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 4,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "0ba578d2a01bbd7187ec8c44789d49464afc0895a6230c03b050bb1d9e1b7957"
+    },
+    {
+      "puzzle": 371,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 109,
+      "gold": 18,
+      "acceptedSetSha256": "48bff43e30a138c9bcba396780604897f1ac5e11f023cca0d923b1b5f89b989a"
+    },
+    {
+      "puzzle": 372,
+      "sourceWords": 57,
+      "accepted": 57,
+      "added": 3,
+      "max": 60,
+      "gold": 11,
+      "acceptedSetSha256": "f1e6e524a572c3c76fb77f0a451e0d0e26e3664e3affcaaee9f1a37bc0a4af53"
+    },
+    {
+      "puzzle": 373,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 5,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "f8ec55afe46e8825d534c686b7dc582c8fde819cb0cb2b40862f35d04b703a67"
+    },
+    {
+      "puzzle": 374,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 11,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "c6938d03031d0b819dba9cecb6ec2439746cd924a4661e990f0e990904d92786"
+    },
+    {
+      "puzzle": 375,
+      "sourceWords": 90,
+      "accepted": 90,
+      "added": 10,
+      "max": 107,
+      "gold": 18,
+      "acceptedSetSha256": "fe7cb29a1c60ee38f7259a1586723ad7e7bf91c9ae042f2c1b65d1cb9cf0def7"
+    },
+    {
+      "puzzle": 376,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "c48453d0971d8263daacc35006d21673397cb78cb8405e3745271fca03d0b54a"
+    },
+    {
+      "puzzle": 377,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 7,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "a5e01f84e50fc12e651d661b3aca1d21cd4c4df5ce32dd82d487f518a36dc4cf"
+    },
+    {
+      "puzzle": 378,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 6,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "55235a646083ea68984be9b00597434bfa91dcc49a5c98c7ab317cd31418989b"
+    },
+    {
+      "puzzle": 379,
+      "sourceWords": 91,
+      "accepted": 91,
+      "added": 12,
+      "max": 111,
+      "gold": 18,
+      "acceptedSetSha256": "8f21422cefb93fe68d3bf430cb9e0aee225aa4a8da3b8ef23f9644fa0da55c9f"
+    },
+    {
+      "puzzle": 380,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 4,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "795027c86f02c285bd6ffb2fb1fae78a86b060da4b005d3c01ca48c9ec6151e6"
+    },
+    {
+      "puzzle": 381,
+      "sourceWords": 76,
+      "accepted": 76,
+      "added": 7,
+      "max": 85,
+      "gold": 16,
+      "acceptedSetSha256": "bc2c09ebf49dcd118a0d6ec73c9a280b89cad6674eb8b89f3486f7208d069a0e"
+    },
+    {
+      "puzzle": 382,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 9,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "03d9f6ea2c230a50a55e80e934008615c97d34804b140c68fe76234a9d2fffa3"
+    },
+    {
+      "puzzle": 383,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 19,
+      "max": 97,
+      "gold": 15,
+      "acceptedSetSha256": "ee42787dc19a7e5ee9b0f1811c3216afedaac00f306ed3426ac2d7ad45dff7b5"
+    },
+    {
+      "puzzle": 384,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 6,
+      "max": 89,
+      "gold": 16,
+      "acceptedSetSha256": "6bbb83dd3905ec196d6f22e8ac535e152342fe307cbdeb0bf8a6d2995f3c9ad3"
+    },
+    {
+      "puzzle": 385,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 5,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "61c9a640364a578d92b1e4c844035fc663d6b43943b246ddb1fa4b5288c02e19"
+    },
+    {
+      "puzzle": 386,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 5,
+      "max": 95,
+      "gold": 18,
+      "acceptedSetSha256": "8eefa6ca1e2473175c9cea7d28122d44160d8b9b5432815d2556f32a5905c424"
+    },
+    {
+      "puzzle": 387,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 11,
+      "max": 93,
+      "gold": 16,
+      "acceptedSetSha256": "dc44096409369a19eec79884085dce30cb4d0d706cc75b5df4a1e892b60ce4f1"
+    },
+    {
+      "puzzle": 388,
+      "sourceWords": 67,
+      "accepted": 67,
+      "added": 5,
+      "max": 72,
+      "gold": 13,
+      "acceptedSetSha256": "290ac73a49e553c5c84cc591f7d0cf26d89fe00469aa3c891145a2cb1524a1ac"
+    },
+    {
+      "puzzle": 389,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 15,
+      "max": 95,
+      "gold": 16,
+      "acceptedSetSha256": "9fcb343faea68ea2e5f1fe212d46dfa00c7e156e306efd7059757d7ffdfac87c"
+    },
+    {
+      "puzzle": 390,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 7,
+      "max": 81,
+      "gold": 15,
+      "acceptedSetSha256": "5183dd04bdc1862805a21b31a4def82dd275b007e9c9161f758c10ede328840e"
+    },
+    {
+      "puzzle": 391,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 6,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "96b0982791e430997ddd96afe88f9789c894732be1abdad629c760a5a1e6418f"
+    },
+    {
+      "puzzle": 392,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 8,
+      "max": 116,
+      "gold": 18,
+      "acceptedSetSha256": "1a10fde4ef4f7fb16c0d6afac6db28965ade770939caf3b92fa8af32b23ff473"
+    },
+    {
+      "puzzle": 393,
+      "sourceWords": 94,
+      "accepted": 94,
+      "added": 14,
+      "max": 117,
+      "gold": 18,
+      "acceptedSetSha256": "19c387d6ad7cf70a6079e308884afbbb04a951165803494b585d29fbb2484bd0"
+    },
+    {
+      "puzzle": 394,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 4,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "fde9d1e4871f80e1bf2fee3f0348db8d4f53a53f2316a497e8f895fedbbe040a"
+    },
+    {
+      "puzzle": 395,
+      "sourceWords": 71,
+      "accepted": 71,
+      "added": 9,
+      "max": 85,
+      "gold": 15,
+      "acceptedSetSha256": "4ecc17b78658f8fd7f3960478f68a2243bf69f80e7d792793cd469aa04f5a637"
+    },
+    {
+      "puzzle": 396,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 9,
+      "max": 104,
+      "gold": 18,
+      "acceptedSetSha256": "0aa68a70652dbd4b4160b41e4d795cc2077cf755c938e7abcbbc7f30bc07d827"
+    },
+    {
+      "puzzle": 397,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 6,
+      "max": 121,
+      "gold": 18,
+      "acceptedSetSha256": "fdde2ccc9dd6c6d54c175229ad74c91130e792a1de0b94f403de6cdc4a79c8d1"
+    },
+    {
+      "puzzle": 398,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 10,
+      "max": 118,
+      "gold": 18,
+      "acceptedSetSha256": "0b410be19a79a5787e85786b2579bee8f0d59d88002591514a9d072dd1d50632"
+    },
+    {
+      "puzzle": 399,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 12,
+      "max": 102,
+      "gold": 18,
+      "acceptedSetSha256": "c2466c4c2f042299c03321946449a90f7bde686e8f8c7d4fe7608f9f23854846"
+    },
+    {
+      "puzzle": 400,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 10,
+      "max": 129,
+      "gold": 18,
+      "acceptedSetSha256": "b359caa2473c117c0aabab8799146e1ef2ea8dd7fadcebd5609347380c161774"
+    },
+    {
+      "puzzle": 401,
+      "sourceWords": 74,
+      "accepted": 74,
+      "added": 6,
+      "max": 92,
+      "gold": 17,
+      "acceptedSetSha256": "b83a9710536f344196758553e3cff06a5c91d36833671ac5f547b2d0fc4b589d"
+    },
+    {
+      "puzzle": 402,
+      "sourceWords": 68,
+      "accepted": 68,
+      "added": 8,
+      "max": 87,
+      "gold": 15,
+      "acceptedSetSha256": "2c0e2b9ebff80f6146f918f5b4b80da1ceccd2f41fbd686ae720092a6ebd2e97"
+    },
+    {
+      "puzzle": 403,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 4,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "7d07b9ec66167944a6ac8ecc2f57355bf13b4cc7cf1d662992c824d844c5158b"
+    },
+    {
+      "puzzle": 404,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 97,
+      "gold": 18,
+      "acceptedSetSha256": "463733bab0c12ef698489f07019a9054388c16798de76ede69d7cb502705407a"
+    },
+    {
+      "puzzle": 405,
+      "sourceWords": 75,
+      "accepted": 75,
+      "added": 1,
+      "max": 87,
+      "gold": 17,
+      "acceptedSetSha256": "e0111dab11a34431c4223a21f88bc71096bc9cbd2b5ae445b3d8c6b7c44f419f"
+    },
+    {
+      "puzzle": 406,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 3,
+      "max": 91,
+      "gold": 17,
+      "acceptedSetSha256": "c135107b6f2888903e5d5ea1a25be3973f1291e5a083098fe6592dcd9b641794"
+    },
+    {
+      "puzzle": 407,
+      "sourceWords": 86,
+      "accepted": 86,
+      "added": 8,
+      "max": 110,
+      "gold": 18,
+      "acceptedSetSha256": "cfdd0df0c4dffc2306d1bb30261ba037f0d5a777c959e6bd48d315fac3f5c140"
+    },
+    {
+      "puzzle": 408,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 10,
+      "max": 111,
+      "gold": 18,
+      "acceptedSetSha256": "02436343db13ada61afb4a8e17a79823278dc2d066a92a10659fb30a8b8f6937"
+    },
+    {
+      "puzzle": 409,
+      "sourceWords": 79,
+      "accepted": 79,
+      "added": 2,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "b3a7bdfeac0d3db26e14fd5bdcb82ca25f702c37bcc3951bb3f3ebc677008cad"
+    },
+    {
+      "puzzle": 410,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 7,
+      "max": 106,
+      "gold": 18,
+      "acceptedSetSha256": "20498e52de5382eb8e49950cb0e7283cad7db83e75410a34d6f10cb84d536472"
+    },
+    {
+      "puzzle": 411,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 3,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "0d528bfb9c623846a86087a17510a6f9f1fb4a5dd8b50e537b7e9fb4e247e2d0"
+    },
+    {
+      "puzzle": 412,
+      "sourceWords": 78,
+      "accepted": 78,
+      "added": 6,
+      "max": 101,
+      "gold": 18,
+      "acceptedSetSha256": "7cdd52facf51753f3d1d3fb153d6ecd5828d01f070ac5697551f01403e5df184"
+    },
+    {
+      "puzzle": 413,
+      "sourceWords": 75,
+      "accepted": 75,
+      "added": 3,
+      "max": 84,
+      "gold": 16,
+      "acceptedSetSha256": "5cef147e74daafcf148e75ff03664ec743a01583ee207bf67eb81f005de6c6eb"
+    },
+    {
+      "puzzle": 414,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 8,
+      "max": 91,
+      "gold": 16,
+      "acceptedSetSha256": "868aaaea296d9c270dc5eac30e9a67d122e9996f28434164de2ab3583b9c413c"
+    },
+    {
+      "puzzle": 415,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 8,
+      "max": 94,
+      "gold": 17,
+      "acceptedSetSha256": "1e3870ff3e83578c139816a610d954a773e1376abfd7b0ff40eefd6453c1eced"
+    },
+    {
+      "puzzle": 416,
+      "sourceWords": 56,
+      "accepted": 56,
+      "added": 4,
+      "max": 63,
+      "gold": 11,
+      "acceptedSetSha256": "f0f5237abce5360b2ca4ae04d144d73c1ea1980bb31b36ba817c10f962983db1"
+    },
+    {
+      "puzzle": 417,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 10,
+      "max": 103,
+      "gold": 17,
+      "acceptedSetSha256": "ba5bdc085ff8c7996907bdb22d9c2ee51ce8e6e82208b9539df6794c046def95"
+    },
+    {
+      "puzzle": 418,
+      "sourceWords": 80,
+      "accepted": 80,
+      "added": 10,
+      "max": 90,
+      "gold": 16,
+      "acceptedSetSha256": "4588899b96ebca5f4fc7e16753eacc1b7be7a9e3ed883eee9b3136d28965a089"
+    },
+    {
+      "puzzle": 419,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 10,
+      "max": 85,
+      "gold": 15,
+      "acceptedSetSha256": "7e5307af521f4ed99122fc32f057f20fef3251a604c0b2d4af5f50b790a2e5ff"
+    },
+    {
+      "puzzle": 420,
+      "sourceWords": 88,
+      "accepted": 88,
+      "added": 8,
+      "max": 100,
+      "gold": 18,
+      "acceptedSetSha256": "077cd7f2a6bcf94eff0c8c0e9fb086f92352e0132d0da1e2f12d63e3ab76dbeb"
+    },
+    {
+      "puzzle": 421,
+      "sourceWords": 85,
+      "accepted": 85,
+      "added": 11,
+      "max": 98,
+      "gold": 17,
+      "acceptedSetSha256": "c7bc03dcdd0e54a4fbbc49d2143d7adf5e7567d2c289ab2c508c0cc47c83abeb"
+    },
+    {
+      "puzzle": 422,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 8,
+      "max": 96,
+      "gold": 17,
+      "acceptedSetSha256": "b69ca3fd22ea39638f125310266f3283a436ee50fff05016db72292479eb9d87"
+    },
+    {
+      "puzzle": 423,
+      "sourceWords": 84,
+      "accepted": 84,
+      "added": 5,
+      "max": 94,
+      "gold": 18,
+      "acceptedSetSha256": "ce69d4c40ce0c84506c59c443f9401f9b303b93fb5d4eda673e529a43f6b6e87"
+    },
+    {
+      "puzzle": 424,
+      "sourceWords": 73,
+      "accepted": 73,
+      "added": 4,
+      "max": 87,
+      "gold": 16,
+      "acceptedSetSha256": "47977c2ae733c4b0f63ef7b63d7db8e0b3019659a79243cd98b614997c53e74b"
+    },
+    {
+      "puzzle": 425,
+      "sourceWords": 81,
+      "accepted": 81,
+      "added": 5,
+      "max": 96,
+      "gold": 18,
+      "acceptedSetSha256": "5fd28d2e272aa1934d1cef075e737c5405bc7661d98706090d427abbb8c6127d"
+    },
+    {
+      "puzzle": 426,
+      "sourceWords": 72,
+      "accepted": 72,
+      "added": 5,
+      "max": 79,
+      "gold": 15,
+      "acceptedSetSha256": "b83760972bef54c4c97873e4ee170711ab4c28124dfff4cb82e8a4a88802a886"
+    },
+    {
+      "puzzle": 427,
+      "sourceWords": 83,
+      "accepted": 83,
+      "added": 10,
+      "max": 103,
+      "gold": 18,
+      "acceptedSetSha256": "fd06b5663f90c0878e62fb35f7eb53ef568bcfb9dd394c0ec777abd630fb801c"
+    },
+    {
+      "puzzle": 428,
+      "sourceWords": 77,
+      "accepted": 77,
+      "added": 4,
+      "max": 94,
+      "gold": 18,
+      "acceptedSetSha256": "427855e87a5fb1322d79aed390145f4cb8ee83b38de6c7ee5f87c5a40389b754"
+    },
+    {
+      "puzzle": 429,
+      "sourceWords": 87,
+      "accepted": 87,
+      "added": 7,
+      "max": 119,
+      "gold": 18,
+      "acceptedSetSha256": "c24c9ccac12d0d3cc3ca53c5fad35ad82f11ce66e93ba1f4fa6518de2a1b503b"
+    },
+    {
+      "puzzle": 430,
+      "sourceWords": 82,
+      "accepted": 82,
+      "added": 8,
+      "max": 110,
+      "gold": 18,
+      "acceptedSetSha256": "0c3a56ed4140d6752a2acaf193eec41990dd3cd99e9b414ca7f4dc8d0102be43"
+    }
+  ]
+}

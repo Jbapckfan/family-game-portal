@@ -1,5 +1,7 @@
 # Optional 5×5 playable sample — October 31, 2026
 
+Subsequent [word-game lexicon expansion](WORD-GAME-LEXICON.md) supersedes the English-only counts below: the sample now has 1,671 words, and the same expanded source coverage also applies to current/future 4×4 Daily and all Practice boards. The historical failure/correction record below is retained.
+
 James kept Kimi’s Tangle and asked to see an optional larger board. The existing 4×4 Daily remains the default. The size picker opens one 5×5 practice sample with the same eight-way adjacency, no cell reuse, word-length scoring, single confirmed clue, free duplicate/short submissions, continuing play after Gold and spoiler-free sharing. This is not a six-month 5×5 daily bank. Goals of 10/20/30 are provisional, awaiting James’s judgment.
 
 The blue/teal board has 25 tiles; phone checks measured a minimum 47.59px tile at 320px and 60.80px at 390px, with 24px letters and no horizontal overflow in Chrome/WebKit. The whole desktop grid fits at 1440×1000. Sample results and PNGs explicitly say 5×5 Preview. They export aggregate results and identical marks, without letters, words or paths. Existing four-wide sharing retains its identity.

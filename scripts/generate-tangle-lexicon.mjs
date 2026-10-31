@@ -1,0 +1,13 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {loadTangleLexicon,buildTangleTrie,solveTangleGrid} from './tangle-lexicon.mjs';
+import {pointsFor} from '../packages/kimi-pebbles/src/games/tangle/progress.ts';
+const data=new URL('../packages/kimi-pebbles/src/games/tangle/data/',import.meta.url);
+const raw=JSON.parse(await readFile(new URL('puzzles.json',data),'utf8'));
+const sample=JSON.parse(await readFile(new URL('five-preview.json',data),'utf8'));
+const lexicon=await loadTangleLexicon(),trie=buildTangleTrie(lexicon.words);
+const expansions=Object.fromEntries(raw.map(p=>[p.g,solveTangleGrid(p.g,trie)]));
+const words=solveTangleGrid(sample.g,trie),preview={g:sample.g,words,n:words.length,max:words.reduce((n,w)=>n+pointsFor(w),0)};
+await writeFile(new URL('lexicon-expansions.json',data),JSON.stringify(expansions)+'\n');
+await writeFile(new URL('five-preview.json',data),JSON.stringify(preview,null,2)+'\n');
+const sizes=Object.values(expansions).map(ws=>ws.length);
+console.log(JSON.stringify({sources:lexicon.sources,unionWords:lexicon.words.size,boards:raw.length,wordPaths:sizes.reduce((a,b)=>a+b,0),minimumWords:Math.min(...sizes),maximumWords:Math.max(...sizes),previewWords:preview.n,previewMax:preview.max}));

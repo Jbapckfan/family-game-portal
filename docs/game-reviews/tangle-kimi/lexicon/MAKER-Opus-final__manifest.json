@@ -1,0 +1,102 @@
+[
+  {
+    "path": "scripts/tangle-lexicon.mjs",
+    "bytes": 3249,
+    "sha256": "1648e46df56ca7323fa0f7cba4bd9c22f9edba01665a27bb8695a815f6f6b8fb"
+  },
+  {
+    "path": "scripts/generate-tangle-lexicon.mjs",
+    "bytes": 1241,
+    "sha256": "d3272a417fffc37182f836a23788e43126842891518f54a5d2c9bdea1f913163"
+  },
+  {
+    "path": "scripts/audit-tangle-lexicon.mjs",
+    "bytes": 5945,
+    "sha256": "d55dad5f5941a2f4f01b35e0bfe3be957613cb67d17591fd1efba717ff3977bf"
+  },
+  {
+    "path": "packages/kimi-pebbles/scripts/stage.mjs",
+    "bytes": 4221,
+    "sha256": "5f0d8082d0eb018c57c91db25d89df7ec991c64e79c1a0cbf9c4e055346c2df0"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/engine.ts",
+    "bytes": 3499,
+    "sha256": "c301fe7e94af17666c84d4d6eb98ab197b0ff3f7950f169f334d0e21ac24692a"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/lexicon.ts",
+    "bytes": 984,
+    "sha256": "84fa891d544c9aa6b0aaec8e2cf594d9e4bcd8582ab21d36ce2d9d86204b0330"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/useTangle.ts",
+    "bytes": 10431,
+    "sha256": "9bdabd692fc39bfb1ae68975f6f8725f7a5cc0cf82cffee9bfae88e34d79cd2a"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/progress.ts",
+    "bytes": 2543,
+    "sha256": "a56cc6026a93a8b21de15e78b625a3466384c7ed1906b0da35b03056292feeaa"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/reviewed-words.ts",
+    "bytes": 1456,
+    "sha256": "81f88569a63398ec212f1257ee7aa89ffc1781683c98f50d79a5c581e01fc982"
+  },
+  {
+    "path": "packages/kimi-pebbles/src/games/tangle/five-preview.ts",
+    "bytes": 811,
+    "sha256": "29f485c325ed3b5f139af076dc8bd48698c77d19180898398d238e5698ee711b"
+  },
+  {
+    "path": "packages/kimi-pebbles/tests/tangle-lexicon.test.ts",
+    "bytes": 5689,
+    "sha256": "17ebd01dea95dc848c97dd8695b96aeb2dcf41efa6538006e00fffa5d4169fcb"
+  },
+  {
+    "path": "packages/kimi-pebbles/tests/helpers/tangle-expanded-legacy-dom.mjs",
+    "bytes": 6145,
+    "sha256": "3e6af5876e0991161963fb0eb24930c2b5640602acf6384e16f5195f88b7be47"
+  },
+  {
+    "path": "packages/kimi-pebbles/tests/helpers/tangle-counted-gold-dom.mjs",
+    "bytes": 5131,
+    "sha256": "e2a0708fe0f03b1272cd641cc64bc5bb3e6275733017afc91d76a217c0572acb"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/word-game-sources.json",
+    "bytes": 1594,
+    "sha256": "7f0014622f192f0f82cb5096319515ff8b15387f774afe921af53a1eb152f1cd"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/english-words-source.json",
+    "bytes": 682,
+    "sha256": "362a12d1668fdaf6dd279e7f32da9ada5d4ae98c479d67563a1f66125b7ce9a2"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/zynga-disclosed-words.json",
+    "bytes": 404,
+    "sha256": "f0e7dd68a7db11fbbe168629a70a98503aad6eaf964f9df0dddd11fc2954a226"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/english-words-LICENSE.md",
+    "bytes": 1212,
+    "sha256": "b5065838cbac452dfc855ba6e6e031481ad2c68406f70d21ead9321374653e6c"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/wordnik-LICENSE.txt",
+    "bytes": 1064,
+    "sha256": "a568f0ac4c7ad5248ff748387d41e39519811b4a3e07d7438c9d1465dd4c9339"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/enable2k-README.txt",
+    "bytes": 11751,
+    "sha256": "ce998d561ba84df4aea9840a8e729218fa61cf5de5d8480e3efc9965a9a22751"
+  },
+  {
+    "path": "packages/kimi-pebbles/data/enable2k-mirror-LICENSE.txt",
+    "bytes": 1123,
+    "sha256": "2796659067549f784e8fa2a84dd67837289892de17f20c806a855e3e0371e787"
+  }
+]

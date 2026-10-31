@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+2 !== 1
+
+    at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/helpers/tangle-counted-gold-dom.mjs:76:37 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.11.0

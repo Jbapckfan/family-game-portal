@@ -3,7 +3,7 @@ import data from './data/five-preview.json'
 import { restoreTangleProgress, type TangleProgress } from './progress'
 
 // One sample, not a published daily bank. Accepted words come from exhaustive
-// full-dictionary solving, not the smaller familiarity list used for clues.
+// full-dictionary solving, not a shortlist of familiar words.
 // Medal goals remain provisional until James judges the larger board's feel.
 export const TANGLE_FIVE_PREVIEW: TanglePuzzle = {
   ...data,

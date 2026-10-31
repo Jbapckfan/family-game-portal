@@ -978,6 +978,11 @@
             "date": "2026-10-31",
             "quote": "tare and tares... what is going on???",
             "interpretation": "Reported incomplete accepted vocabulary in the 5×5 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+          },
+          {
+            "date": "2026-10-31",
+            "quote": "make sure all dictionary words/words used in a game like Words With Friends",
+            "interpretation": "Requested broad dictionary and established word-game acceptance. Both Tangle sizes now use the audited pinned union; exact current WWF/NASPA parity remains unverified. No new enjoyment score or relative rank."
           }
         ],
         "preferenceTier": "keeper"
@@ -1009,9 +1014,10 @@
       "evidence": [
         "tangle-kimi/REPORT.md",
         "tangle-kimi/ADJUDICATION.md",
-        "tangle-kimi/evidence/summary.json"
+        "tangle-kimi/evidence/summary.json",
+        "tangle-kimi/WORD-GAME-LEXICON.md"
       ],
-      "nextStep": "James tries the corrected optional 5×5 sample and gives his verdict. Full larger-board content bank, goal calibration and new panel review follow if retained; Hunch follows the Tangle discussion.",
+      "nextStep": "James tries both Tangle sizes with the expanded word-game vocabulary and gives a 5×5 verdict. If retained, generate its full content bank and calibrate goals; Hunch follows the Tangle discussion.",
       "finalReview": {
         "provider": "Opus",
         "model": "claude-opus-5-5",

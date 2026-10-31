@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph and Kimi’s Tangle — would play again. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle and Hunch. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 
 Inbetween is **6/10** from James. No numerical enjoyment scores were supplied for the other games. The table below is the review queue, not a forced ranking between keepers.
@@ -20,7 +20,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 9 | Cairn | Kimi | Keep; revised finish delivered | Keeper; no numerical score |
 | 10 | Morph | Kimi | Keep; revised game delivered | Keeper; no numerical score |
 | 11 | Tangle | Kimi | Keep; vocabulary improvements approved | Keeper; no numerical score |
-| 12 | Hunch | Kimi | Revised game open; verdict pending | — |
+| 12 | Hunch | Kimi | Keep; distinct-identity constraint | Good; no numerical score |
 | 13 | Circuit | Kimi | Not yet reviewed individually | — |
 | 14 | Quartet | Kimi | Not yet reviewed individually | — |
 | 15 | Twin Hive | DeepSeek | Not yet reviewed individually | — |
@@ -65,6 +65,6 @@ Morph reviewer fun predictions before improvements: Kimi **4/5**, Gemini **3.5/5
 
 Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and requested a 5×5 sample. His playtest exposed missing valid words; both sizes now use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md), preserving his corrected round and original Gold goals. James subsequently said “great, next game.” Tangle remains a keeper; the optional larger sample is retained, with its full calendar still future work. No numerical score or relative keeper rank supplied. [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) · [original review](tangle-kimi/REPORT.md).
 
-Hunch reviewer baseline fun predictions: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. Its revised blue/teal game, broader guesses, confirmed clue and result images are open for James. His verdict is pending; Circuit follows. [Review and verification](hunch/REPORT.md) · [adjudication](hunch/ADJUDICATION.md).
+Hunch reviewer baseline fun predictions: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James said “hunch is good” and asked that it stay distinct from Words With Friends. Hunch is a keeper; no numerical score, relative keeper rank or explicit replay answer supplied. The [identity check](hunch/SIMILARITY.md) finds a different play loop from WWF’s classic board game and flags the much closer Wordle format. Circuit follows. [Review and verification](hunch/REPORT.md) · [adjudication](hunch/ADJUDICATION.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

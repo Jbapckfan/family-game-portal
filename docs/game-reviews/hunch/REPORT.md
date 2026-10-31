@@ -31,3 +31,7 @@ The current all-games build preserves all 32 daily games and the nine-board bonu
 Minor follow-ups: the unused legacy share formatter remains for compatibility; key absent labels reuse the more verbose tile wording; fast repeated invalid guesses may show toast feedback without replaying the shake animation. Human fun, answer familiarity, physical touch/audio, native image export and sustained device performance remain unverified.
 
 [Delivery receipt](evidence/delivery.json) identifies the remotely verified implementation checkpoint and the exact all-games archive hash. A following documentation-only commit records delivery; the ZIP intentionally freezes the named implementation checkpoint.
+
+## James’s verdict and identity constraint
+
+James subsequently said **“hunch is good, make sure it's not too similar to words with friends.”** Hunch is retained as a keeper. No numerical score, relative keeper rank or explicit replay answer was supplied. The [identity check](SIMILARITY.md) compares current source/presentation with Zynga’s official classic rules, records the distinct-identity constraint, and flags that Hunch’s core is much closer to Wordle. This supersedes pending verdict statements in the review-time report above. No gameplay or visual change was needed for the WWF comparison; the tested build remains unchanged. Circuit is next in the review queue.

@@ -22,6 +22,6 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Hunch](hunch/REPORT.md), game 12, is open in the existing preview tab for James’s playtest. The requested Kimi/Gemini/Opus static reviews and author verification are recorded separately. James’s enjoyment, replay preference and disposition remain pending; Circuit follows after his verdict. [Review comparison](hunch/ADJUDICATION.md) · [preference ranking and queue](RANKING.md).
+[Hunch](hunch/REPORT.md), game 12, is a keeper: James said “hunch is good” and requested a distinct identity from Words With Friends. The [identity check](hunch/SIMILARITY.md) records that constraint and the closer similarity to Wordle. Hunch remains open in the existing tab; Circuit is next in the queue. No numerical rating, relative keeper order or explicit replay answer was supplied. The requested Kimi/Gemini/Opus static reviews and author verification are recorded separately. [Review comparison](hunch/ADJUDICATION.md) · [preference ranking and queue](RANKING.md).
 
 James said “great, next game” after Kimi’s Tangle vocabulary corrections. Tangle remains a keeper. Its optional [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) is retained; a full larger-board calendar is future work. Both sizes use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md). Exact current Words With Friends parity is unverified. This is distinct from Claude’s later Tangle game.

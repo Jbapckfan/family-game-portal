@@ -5,6 +5,7 @@ Current preference groups from James's playtests:
 - **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
+- **Difficulty redesign needed; retention undecided:** Spare — “the game is too easy.”
 
 Inbetween is **6/10** from James. No numerical enjoyment scores were supplied for the other games. The table below is the review queue, not a forced ranking between keepers.
 
@@ -25,7 +26,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 13 | Circuit | Kimi | Keep; vocabulary and cardinal arc revisions delivered | Keeper; no numerical score |
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
 | 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
-| 16 | Spare | DeepSeek | Not yet reviewed individually | — |
+| 16 | Spare | DeepSeek | Too easy; difficulty redesign or replacement decision pending | Difficulty feedback; no numerical score |
 | 17 | Rung | DeepSeek | Not yet reviewed individually | — |
 | 18 | Cipher | DeepSeek | Not yet reviewed individually | — |
 | 19 | Trail | DeepSeek | Not yet reviewed individually | — |
@@ -73,5 +74,7 @@ Circuit reviewer baseline fun predictions: Kimi **4/5**, Gemini **3.5/5**, Opus 
 Quartet: James called it “fun” and asked to check that it is not an exact copy before moving on. The source and published Connections rules show substantial overlap in the central game. Existing styling, practice and pair hints do not resolve that concern. Record positive enjoyment separately from release readiness; no numerical score or relative preference supplied. [Originality comparison and required follow-up](quartet/ORIGINALITY-2026-11-01.md). The review then proceeded to Twin Hive.
 
 Twin Hive: James said “good, go to next game this one is a keeper” after the [compact layout and input repairs](WORD-INPUT-2026-11-01.md). Keep it without assigning a numerical score or relative keeper rank. Spare is next in the individual review queue.
+
+Spare: James said “the game is too easy.” Its direct antonym recognition, unrelated concrete spare and recurring pair bank limit the reasoning challenge. The initial November 1 arrangement additionally aligns all four partners in a row or column. Record difficulty criticism without inferring dislike, removal, a keeper verdict or a numerical rank. [Difficulty audit and next decision](spare/DIFFICULTY-2026-11-01.md).
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

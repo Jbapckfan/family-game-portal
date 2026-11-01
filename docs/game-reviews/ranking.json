@@ -1325,17 +1325,27 @@
       "name": "Spare",
       "creator": "DeepSeek",
       "reviewOrder": 16,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-01",
+            "quote": "the game is too easy",
+            "interpretation": "Difficulty criticism of Spare during its individual review. No enjoyment score, keeper verdict, removal choice or relative rank supplied."
+          }
+        ],
+        "difficultyReaction": "too easy"
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "spare/DIFFICULTY-2026-11-01.md"
+      ],
+      "nextStep": "Decide between a harder sample and replacement-candidate status. Keep current progress and published boards; difficulty feedback alone is not a removal or keeper decision.",
+      "dispositionBasis": "James found Spare too easy; enjoyment and retention remain undecided."
     },
     {
       "slug": "deepseek-rung",

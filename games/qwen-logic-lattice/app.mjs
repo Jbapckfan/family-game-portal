@@ -3,7 +3,8 @@ import {PUZZLES} from './puzzles.mjs';
 import {createState,restoreState,getStatus,toggleCell,markCell,undo,restart,hint,reveal,clueStatus} from './engine.mjs';
 
 mountDailyGame({
- id:'qwen-logic-lattice',name:'Logic Lattice',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#286a8a',
+ assistanceCount:(p,s)=>s.hinted.length,
+ id:'qwen-logic-lattice',name:'Logic Lattice',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
  intro:'A quiet grid. A handful of clues. Exactly one way for every square to agree.',
  instructions:[
   'Make every square black or white. Each number above or beside the grid is the required number of black squares in that column or row.',

@@ -33,9 +33,9 @@ test('six different legal words complete Twin Hive; duplicate words cannot infla
  assert.equal(getStatus(sample,state),'won');
  assert.equal(score(state),sample.answers.slice(0,6).reduce((n,w)=>n+w.length-3,0));
 });
-test('both gold letters, rack membership, minimum length and curated membership are enforced',()=>{
- for(const word of ['ART','STONE','BARK','RACER']) assert.equal(submitWord(sample,createState(sample),word).state.found.length,0);
- assert.match(submitWord(sample,createState(sample),'RACER').message,/word list/);
+test('both gold letters, rack membership, minimum length and pinned membership are enforced',()=>{
+ for(const word of ['ART','STONE','BARK','ARARARAR']) assert.equal(submitWord(sample,createState(sample),word).state.found.length,0);
+ assert.match(submitWord(sample,createState(sample),'ARARARAR').message,/word list/);
 });
 test('hint identifies one missing word and persists without granting it',()=>{
  const state=hint(sample,createState(sample));

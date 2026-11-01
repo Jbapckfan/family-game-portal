@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,getStatus,submitWord,undo,restart,hint,reveal,restoreState,findRoute,oneLetterApart,LEXICON} from './engine.mjs';
+import {createState,getStatus,submitWord,undo,restart,hint,reveal,restoreState,findRoute,oneLetterApart,shortestSteps,LEXICON} from './engine.mjs';
 import {PUZZLES} from './puzzles.mjs';
 const sample={id:'test',start:'COLD',target:'WARM',par:4};
 test('a complete accepted ladder solves Rung',()=>{
@@ -31,10 +31,10 @@ test('restoration revalidates every actual edge and does not trust a claimed win
  assert.equal(restoreState(sample,{...initial,chain:['CORD','CARD']}),null);
  assert.equal(getStatus(sample,restoreState(sample,{...initial,status:'won'})),'playing');
 });
-test('all prepared ladders have a verified shortest path in the real curated lexicon',()=>{
+test('all prepared ladders have a verified shortest path in the expanded pinned lexicon',()=>{
  assert.ok(PUZZLES.length>=120);assert.equal(new Set(PUZZLES.map(p=>p.start+':'+p.target)).size,PUZZLES.length);
  assert.ok(LEXICON.length>=250);assert.ok(LEXICON.every(w=>/^[A-Z]{4}$/.test(w)));
- for(const p of PUZZLES){const route=findRoute(p.start,p.target);assert.ok(route,p.id);assert.equal(route.length-1,p.par,p.id);assert.ok(p.par>=3,p.id);let s=createState(p);for(const w of route.slice(1))s=submitWord(p,s,w).state;assert.equal(getStatus(p,s),'won',p.id);}
+ for(const p of PUZZLES){const route=findRoute(p.start,p.target);assert.ok(route,p.id);assert.equal(route.length-1,shortestSteps(p),p.id);assert.ok(shortestSteps(p)<=p.par,p.id);assert.ok(p.par>=3,p.id);let s=createState(p);for(const w of route.slice(1))s=submitWord(p,s,w).state;assert.equal(getStatus(p,s),'won',p.id);}
 });
 
 // The initial thirty records are an append-only compatibility contract.

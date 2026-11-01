@@ -2,7 +2,8 @@ import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mj
 import { PUZZLES } from './puzzles.mjs';
 import * as E from './engine.mjs';
 mountDailyGame({
-  id: 'deepseek-trail', name: 'Trail', accent:'#347353',
+ assistanceCount:(p,s)=>s.hints,
+  id: 'deepseek-trail', name: 'Trail', accent:'#087c99',
   intro: 'Nine letters. One winding way through.',
   instructions: [
     'Find a nine-letter word by joining neighboring tiles. Horizontal, vertical, and diagonal steps all count.',

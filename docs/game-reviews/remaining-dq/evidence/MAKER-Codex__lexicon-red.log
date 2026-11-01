@@ -1,0 +1,104 @@
+✖ Twin Hive accepts the full pinned corpus under its rack and gold rules on every board (21.92625ms)
+✖ Rung accepts all pinned four-letter words and solves every original endpoint pair (2.315417ms)
+✖ Syntax Siege accepts every pinned 3–6 letter rack word and preserves real damage and saves (5.500583ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 391.005291
+
+✖ failing tests:
+
+test at scripts/MAKER-Codex__dq-lexicon.test.mjs:24:1
+✖ Twin Hive accepts the full pinned corpus under its rack and gold rules on every board (21.92625ms)
+  AssertionError [ERR_ASSERTION]: twin-1-1
+  + actual - expected
+
+    {
+  +   missing: [
+  +     'ACATER',
+  +     'ACCENSOR',
+  +     'ACCENTOR',
+  +     'ACCENTORS',
+  +     'ACCERSE',
+  +     'ACCESSOR',
+  +     'ACCESSORS',
+  +     'ACCREASE',
+  +     'ACCRESCE',
+  +     'ACCRESCENCE',
+  +     'ACCRESCENT',
+  +     'ACCRETE'
+  +   ],
+  -   missing: [],
+      unexpected: []
+    }
+
+      at same (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-lexicon.test.mjs:21:89)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-lexicon.test.mjs:26:3)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: {
+      missing: [
+        'ACATER',     'ACCENSOR',
+        'ACCENTOR',   'ACCENTORS',
+        'ACCERSE',    'ACCESSOR',
+        'ACCESSORS',  'ACCREASE',
+        'ACCRESCE',   'ACCRESCENCE',
+        'ACCRESCENT', 'ACCRETE'
+      ],
+      unexpected: []
+    },
+    expected: { missing: [], unexpected: [] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/MAKER-Codex__dq-lexicon.test.mjs:31:1
+✖ Rung accepts all pinned four-letter words and solves every original endpoint pair (2.315417ms)
+  AssertionError [ERR_ASSERTION]: the full source union must be accepted
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-lexicon.test.mjs:32:60)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at scripts/MAKER-Codex__dq-lexicon.test.mjs:37:1
+✖ Syntax Siege accepts every pinned 3–6 letter rack word and preserves real damage and saves (5.500583ms)
+  AssertionError [ERR_ASSERTION]: AER
+  + actual - expected
+
+  + []
+  - [
+  -   'AER'
+  - ]
+
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-lexicon.test.mjs:43:32)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'AER' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

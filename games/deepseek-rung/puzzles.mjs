@@ -1,5 +1,6 @@
-import {findRoute} from './engine.mjs';
-// Thirty authored start/target challenges. Pars are calculated against the actual accepted lexicon.
+// Thirty authored start/target challenges. Freeze their originally published
+// pars independently of later dictionary growth; the UI computes today's shortest route.
+const ORIGINAL_PARS=Object.freeze([4,5,3,3,5,7,3,6,4,4,8,6,9,5,6,4,5,8,6,9,6,3,5,6,10,7,3,5,3,5]);
 const endpoints=[
  ['COLD','WARM'],['HEAD','TAIL'],['LOVE','HATE'],['WEST','EAST'],['DARK','LAMP'],
  ['DUSK','DAWN'],['SAND','SOIL'],['FIRE','RAIN'],['MIND','BODY'],['WORD','BOOK'],
@@ -9,9 +10,7 @@ const endpoints=[
  ['TREE','LEAF'],['LEAD','GOLD'],['BEAR','LION'],['TIDE','WAVE'],['CATS','DOGS'],
 ];
 const ORIGINAL_PUZZLES=Object.freeze(endpoints.map(([start,target],index)=>{
- const route=findRoute(start,target);
- if(!route)throw new Error(`Disconnected authored ladder: ${start} to ${target}`);
- return Object.freeze({id:`rung-${String(index+1).padStart(2,'0')}`,start,target,par:route.length-1});
+ return Object.freeze({id:`rung-${String(index+1).padStart(2,'0')}`,start,target,par:ORIGINAL_PARS[index]});
 }));
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION

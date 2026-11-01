@@ -9,7 +9,6 @@ html[data-game-id='kimi-quartet']{--identity:#176e91;--identity-hsl:197 72% 33%;
 .kimi-quartet .quartet-solved>span:first-child{font-size:15px;letter-spacing:.02em;text-align:center;line-height:1.4}
 .kimi-quartet .quartet-solved>span:last-child{font-size:14px;letter-spacing:0;line-height:1.6;text-align:center}
 .kimi-quartet .quartet-tier{display:inline-grid;place-items:center;min-width:23px;min-height:23px;margin-right:4px;border:1px solid #ffffff80;border-radius:50%;font-size:13px}
-@media(max-width:350px){.kimi-quartet .quartet-cabinet{padding:4px;gap:4px}.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{min-height:86px;padding-inline:3px;font-size:14px}.kimi-quartet .quartet-card[data-long-word]{font-size:13px}}
 html[data-game-id='kimi-quartet']{--background:204 50% 97%;--card:204 50% 99%;background:#f2f8fc}
 html[data-game-id='kimi-quartet'] body,.kimi-quartet .collection-header{background:#f2f8fc}
 .kimi-quartet .collection-rule{font-size:15px;line-height:1.6;color:#425e70}
@@ -19,3 +18,5 @@ html[data-game-id='kimi-quartet'] body,.kimi-quartet .collection-header{backgrou
 html[data-game-id='kimi-quartet'] [data-slot=dialog-content]{background:#f8fcff;border-color:#bed4e4}
 html[data-game-id='kimi-quartet'] .btn3d-soft{background:#f8fcff;border-color:#bfd3e2;box-shadow:0 2px 0 #cfdeea;color:#23465c}
 @media(max-width:420px){.kimi-quartet .quartet-cabinet{grid-template-columns:repeat(2,minmax(0,1fr))}.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{min-height:64px;font-size:17px;padding:12px 5px}.kimi-quartet .quartet-card[data-long-word]{font-size:15px}}
+/* Compact spacing follows the phone layout; keep its larger word sizes. */
+@media(max-width:350px){.kimi-quartet .quartet-cabinet{padding:4px;gap:4px}.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{padding-inline:3px}}

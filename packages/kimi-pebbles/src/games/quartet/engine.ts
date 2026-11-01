@@ -49,6 +49,7 @@ export function seededOrder(seed: number, n = 16): number[] {
 
 /** One spoiler-free numbered tier row per guess, in selection order. */
 export function buildQuartetShare(puzzleNo: number, history: number[][], won: boolean, hintsUsed = 0): string {
+  if (!Number.isSafeInteger(hintsUsed) || hintsUsed < 0) throw new TypeError('Quartet hint count must be a nonnegative safe integer')
   const rows = history.map((row) => row.map((t) => TIER_STYLE[t].emoji).join('')).join('\n')
   return `QUARTET No.${puzzleNo} ${won ? 'Solved' : 'Revealed'}\n${rows}${hintsUsed ? `\n${hintsUsed} pair hint${hintsUsed === 1 ? '' : 's'}` : ''}`
 }

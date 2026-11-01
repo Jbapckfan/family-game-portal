@@ -2,6 +2,14 @@
 
 James wants a full gameplay/UI/sharing review of each game, one at a time, with Kimi, Opus and Gemini; DeepSeek only if free access is verified. Preserve reviewer attribution and separate their predictions from James's actual preferences. Keep the overall game count stable unless James approves removal or replacement.
 
+## Word-game controls — James's November 1 requirement
+
+“for word games make sure that they work with touch and also keyboard entry (for appropriate games)”
+
+Treat both input methods as required in every subsequent review and new game. Free-form words must support a real text field or physical-letter handling, with touch tiles or a phone keyboard as appropriate. Selection and arrangement games must work through touch and keyboard focus/activation; positional paths must retain explicit control over duplicate letters. Test switching input methods, editing, submission, dialogs and focused-button Enter behavior. Do not equate a desktop click test with touch or a physical iPhone test.
+
+The first collection-wide input audit and Twin Hive formatting repair are recorded in [WORD-INPUT-2026-11-01.md](WORD-INPUT-2026-11-01.md).
+
 ## Preview windows — James's October 30 correction
 
 “you keep opening new chrome tabs, i have 4 open... just try to use 1 or 2”

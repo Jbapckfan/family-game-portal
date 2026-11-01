@@ -41,10 +41,10 @@ mountDailyGame({
   }
   const next=root.querySelector('#keystone-next');if(next)next.onclick=()=>act(E.nextArch);
   root.onkeydown=event=>{
-   if(!active||event.ctrlKey||event.altKey||event.metaKey||event.target.tagName==='INPUT')return;
-   if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();act(E.typeKey,event.key.toLowerCase());}
-   else if(event.key==='Backspace'){event.preventDefault();act(E.backspace);}
-   else if(event.key==='Enter'&&(event.target===root||event.target.hasAttribute('data-key'))){event.preventDefault();act(E.submit);}
+   if(!active||event.defaultPrevented||event.isComposing||event.ctrlKey||event.altKey||event.metaKey||event.target.closest('input,textarea,select,[contenteditable]'))return;
+   if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();act(E.typeKey,event.key.toLowerCase());root.focus({preventScroll:true});}
+   else if(event.key==='Backspace'){event.preventDefault();act(E.backspace);root.focus({preventScroll:true});}
+   else if(event.key==='Enter'&&event.target===root){event.preventDefault();act(E.submit);}
    else if(event.key==='Escape'){event.preventDefault();act(E.setDraft,'');}
   };
   const replacement=focusId&&root.querySelector(`#${focusId}`);if(replacement&&!replacement.disabled){replacement.focus({preventScroll:true});if(selection)replacement.setSelectionRange(...selection.map(n=>Math.min(n,s.draft.length)));}else if(selection&&next)next.focus({preventScroll:true});else if(focusId==='keystone-next'&&active)root.querySelector('#keystone-input').focus({preventScroll:true});

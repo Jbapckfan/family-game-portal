@@ -24,7 +24,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 12 | Hunch | Kimi | Keep; black/white dots delivered | Good; no numerical score |
 | 13 | Circuit | Kimi | Keep; vocabulary and cardinal arc revisions delivered | Keeper; no numerical score |
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
-| 15 | Twin Hive | DeepSeek | Not yet reviewed individually | — |
+| 15 | Twin Hive | DeepSeek | Playtest in progress; compact layout and input repair | No enjoyment verdict yet |
 | 16 | Spare | DeepSeek | Not yet reviewed individually | — |
 | 17 | Rung | DeepSeek | Not yet reviewed individually | — |
 | 18 | Cipher | DeepSeek | Not yet reviewed individually | — |

@@ -1,0 +1,806 @@
+{
+  "date": "2026-11-01",
+  "method": "Actual browser controls in isolated local-file-routed contexts; touch emulation, physical key events and native input events. Not physical-device certification.",
+  "checks": 132,
+  "games": 26,
+  "engines": [
+    "chromium",
+    "webkit"
+  ],
+  "passed": true,
+  "supersession": "Final Twin Hive reruns in both engines replace earlier rows after the WebKit focus repair; all other source handlers are unchanged from their complete passes.",
+  "results": [
+    {
+      "engine": "chromium",
+      "slug": "counterpart",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "counterpart",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "shortlist",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "shortlist",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "second-sense",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "second-sense",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "sideways",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "sideways",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "tradeoff",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "tradeoff",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "inbetween",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "inbetween",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-cairn",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-cairn",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-morph",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-morph",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-tangle",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-tangle",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-hunch",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-hunch",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-circuit",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-circuit",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-quartet",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "kimi-quartet",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-spare",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-spare",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-rung",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-rung",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-cipher",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-cipher",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-trail",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-trail",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-split",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-split",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "qwen-quadra",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "qwen-quadra",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "qwen-syntax-siege",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "qwen-syntax-siege",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-dovetail",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-dovetail",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-splice",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-splice",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-sprout",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-sprout",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tangle",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tangle",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-keystone",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-keystone",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tumbler",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tumbler",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "second-sense",
+      "check": "touch-word-submit",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "second-sense",
+      "check": "keyboard-word-submit",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-keystone",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-keystone",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tumbler",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tumbler",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tangle",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "claude-tangle",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "tap-then-type",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "mixed-entry-submit-and-selection",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-320",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-390",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-768",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-1200",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "counterpart",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "counterpart",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "shortlist",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "shortlist",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "second-sense",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "second-sense",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "sideways",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "sideways",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "tradeoff",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "tradeoff",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "inbetween",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "inbetween",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-cairn",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-cairn",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-morph",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-morph",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-tangle",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-tangle",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-hunch",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-hunch",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-circuit",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-circuit",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-quartet",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "kimi-quartet",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-spare",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-spare",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-rung",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-rung",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-cipher",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-cipher",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-trail",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-trail",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-split",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-split",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "qwen-quadra",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "qwen-quadra",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "qwen-syntax-siege",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "qwen-syntax-siege",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-dovetail",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-dovetail",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-splice",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-splice",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-sprout",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-sprout",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tangle",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tangle",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-keystone",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-keystone",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tumbler",
+      "check": "touch",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tumbler",
+      "check": "keyboard",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "second-sense",
+      "check": "touch-word-submit",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "second-sense",
+      "check": "keyboard-word-submit",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-keystone",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-keystone",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tumbler",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tumbler",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tangle",
+      "check": "native-enter-on-letter",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "claude-tangle",
+      "check": "tap-type-submit",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "tap-then-type",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "mixed-entry-submit-and-selection",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-320",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-390",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-768",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "slug": "deepseek-twin-hive",
+      "check": "layout-1200",
+      "pass": true
+    }
+  ]
+}

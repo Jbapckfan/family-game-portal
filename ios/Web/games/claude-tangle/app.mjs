@@ -36,11 +36,11 @@ mountDailyGame({
   const actions={back:E.backspace,clear:E.clear,pull:E.submit,undo:E.undoPull,restart:E.restart};
   for(const b of root.querySelectorAll('[data-action]'))b.onclick=()=>action(actions[b.dataset.action]);
   root.onkeydown=event=>{
-   if(finished||event.ctrlKey||event.altKey||event.metaKey)return;
-   if(event.key==='Backspace'){event.preventDefault();action(E.backspace);}
+   if(finished||event.defaultPrevented||event.isComposing||event.ctrlKey||event.altKey||event.metaKey||event.target.closest('input,textarea,select,[contenteditable]'))return;
+   if(event.key==='Backspace'){event.preventDefault();action(E.backspace);root.focus({preventScroll:true});}
    else if(event.key==='Escape'){event.preventDefault();action(E.clear);}
-   else if(event.key==='Enter'&&(event.target===root||event.target.hasAttribute('data-bead'))){event.preventDefault();action(E.submit);}
-   else if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();const after=s.selected.length?Math.max(...s.selected):-1;const i=[...p.s].findIndex((letter,i)=>i>after&&letter===event.key.toLowerCase()&&!v.removed.includes(i)&&!s.selected.includes(i));if(i>=0)action(E.toggle,i);else announce('No matching bead follows this selection. Clear or choose a specific bead with Tab and Space.');}
+   else if(event.key==='Enter'&&event.target===root){event.preventDefault();action(E.submit);}
+   else if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();const after=s.selected.length?Math.max(...s.selected):-1;const i=[...p.s].findIndex((letter,i)=>i>after&&letter===event.key.toLowerCase()&&!v.removed.includes(i)&&!s.selected.includes(i));if(i>=0)action(E.toggle,i);else announce('No matching bead follows this selection. Clear or choose a specific bead with Tab and Space.');root.focus({preventScroll:true});}
   };
   const replacement=focused&&root.querySelector(`#${focused}`);if(replacement&&!replacement.disabled)replacement.focus({preventScroll:true});else if(focused&&!finished)root.focus({preventScroll:true});
  }

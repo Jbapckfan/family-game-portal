@@ -40,10 +40,10 @@ mountDailyGame({
    for(const b of root.querySelectorAll('[data-key]'))b.onclick=()=>b.dataset.key==='ENTER'?act(E.submit):b.dataset.key==='BACK'?act(E.backspace):act(E.typeKey,b.dataset.key);
   }
   root.onkeydown=event=>{
-   if(finished||event.ctrlKey||event.altKey||event.metaKey||event.target.tagName==='INPUT')return;
-   if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();act(E.typeKey,event.key.toLowerCase());}
-   else if(event.key==='Backspace'){event.preventDefault();act(E.backspace);}
-   else if(event.key==='Enter'&&(event.target===root||event.target.hasAttribute('data-key'))){event.preventDefault();act(E.submit);}
+   if(finished||event.defaultPrevented||event.isComposing||event.ctrlKey||event.altKey||event.metaKey||event.target.closest('input,textarea,select,[contenteditable]'))return;
+   if(/^[a-zA-Z]$/.test(event.key)){event.preventDefault();act(E.typeKey,event.key.toLowerCase());root.focus({preventScroll:true});}
+   else if(event.key==='Backspace'){event.preventDefault();act(E.backspace);root.focus({preventScroll:true});}
+   else if(event.key==='Enter'&&event.target===root){event.preventDefault();act(E.submit);}
    else if(event.key==='Escape'){event.preventDefault();act(E.setDraft,'');}
   };
   const replacement=focusId&&root.querySelector(`#${focusId}`);if(replacement&&!replacement.disabled){replacement.focus({preventScroll:true});if(selection)replacement.setSelectionRange(...selection.map(n=>Math.min(n,s.draft.length)));}

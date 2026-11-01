@@ -1,0 +1,414 @@
+Alford Daily open-word acceptance: Twin Hive, Rung, Syntax Siege
+
+Generated from the pinned dwyl English, Wordnik and public-domain ENABLE2K union, plus six documented Zynga examples. The source list can include uncommon, historical and sensitive vocabulary. This is not certification of every English word or an exact Words With Friends/NASPA dictionary.
+Source pins and checksums: packages/kimi-pebbles/data/word-game-sources.json and english-words-source.json.
+
+--- english-words-LICENSE.md ---
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <https://unlicense.org/>
+
+
+--- wordnik-LICENSE.txt ---
+MIT License
+
+Copyright (c) 2020 Wordnik
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+--- enable2k-README.txt ---
+                              ‹‹‹‹‹‹‹‹‹‹‹‹
+                                 ENABLE
+                              ‹‹‹‹‹‹‹‹‹‹‹‹
+
+
+The Enhanced North American Benchmark LExicon (ENABLE) is the most
+thoroughly researched, and therefore the most authoritative word list
+and reference available for Scrabble players. The word list file itself
+retains the name WORD.LST, to retain compatibility with the WORDY
+utilities (http://personal.riverusers.com/~thegrendel/wordy530.zip)
+originally written for it. The word list is in plain ASCII format,
+unencrypted, and is placed in the Public Domain for anyone to use as
+they see fit. It is non-proprietary, free, and freely available for
+any legal use.  Moreover, it is "open source" in the sense that the
+researcher and compiler, Alan Beale, carefully explains and elucidates
+the reasoning that has influenced his judgments on which words belong in
+the list and why.  The first edition of ENABLE has become a recognized
+standard and a benchmark for the Scrabble community. This revised
+millennial edition continues in the same proud tradition.
+
+Since the release of its first edition, in the fall of 1997, ENABLE has
+become something of a de facto standard for electronic word lists used
+by word gamers. It has been adopted by developers and programmers for
+interactive on-line word game servers and word construction (anagramming)
+software.
+
+The master word list in ENABLE, WORD.LST, is *not* the so-called TWL98,
+a proprietary word list prepared by an "official" dictionary committee
+with a corporate agenda. On the contrary, it is an even more accurate
+and authoritative reference for the serious Scrabble player.  It is
+primarily the result of a single unifying vision, that of Alan Beale,
+who dedicated countless hours to research.  ENABLE therefore represents
+not merely a superior alternative to the OSPD/TWL, it threatens to
+supplant and replace it, to squeeze the very life out of it in a process
+of Darwinian selection.
+
+
+ENABLE reflects the changes to the OSPD that went into place as of
+January 1, 1998, so many "old friends", such as "vin" and "da" have now
+disappeared. The original WORD.LST contained 100,701 words, this enhanced
+Y2K update has 173,528.  This word list would not have been possible
+without the help of a number of people in the Scrabble community, most
+notably Alan Beale for his tireless research, and to them go my thanks.
+This revised second edition of ENABLE incorporates the words added to
+the new printings of MW10, as well as Alan Beale's research into obscure
+plurals and other lexicographic arcana.
+
+Ample documentation for the claims of accuracy and authoritativeness
+of the ENABLE list is contained in the SUPP2K.ZIP archive, particularly
+in the file TWL_ENAB.DOC. This file contains a detailed listing of the
+differences between the ENABLE list and the DOOM/TWL98 list, including
+sources and justifications for the additions and corrections.
+
+The master word list, WORD.LST, contains all 70 of the MW10 "also
+called" words. These are the italicized entries in the MW10 hidden in
+definitions of other words with the notation "also called". An example
+of this is found in the entry for "streelight", wherein is the notation
+"also called streetlamp". Therefore, the word "streetlamp" belongs in
+the ENABLE WORD.LST. A complete list of these "also called" words, with
+appropriate cross-references, may be found in the ALSO.LST file in the
+SUPP2K.ZIP archive. Note that the DOOM/TWL98 list opened this particular
+"can of worms" with the adoption of the word "starfruit", found in the
+definition of "carambola". Nevertheless, the DOOM/TWL98 list still omits
+some of the plurals of these words.
+
+This edition of ENABLE benefits from the painstaking research on obscure
+plurals done by Alan Beale. He unearthed a number of explicit plurals in
+MW10 that OSPD and other lists omit (see PLURALS.DOC in the supplementary
+archive). This alone gives ENABLE a significant advantage over OSPD
+and TWL.
+
+In contrast to other word lists, the ENABLE list has not been crippled
+by being limited to words under an arbitrary length. The ENABLE list is
+eminently suitable for most word games, such as Anagrams and Clabbers,
+and for crossword puzzle solving, rather than just for Scrabble. A great
+deal of research has gone into removing this limitation, however the
+list is much the better for it.
+
+The file SIGWORD.LST is a list of the 1024 words in WORD.LST that do not
+appear in the OSPD or MW10, but either appear in other standard sources
+or are words the ENABLE maintainers believe worthy of lexicographic
+recognition. These "signature words" distinguish this list from others. Of
+course, those wishing to may delete the SIGWORD.LST words from the
+WORD.LST in order to obtain a more "standardized" listing. This may be
+accomplished simply and quickly using the UNIX "comm" utility in the
+following manner:
+
+             comm -23 word.lst sigword.list > word.lst.new.
+
+This will create the file "word.lst.new" with the signature words deleted.
+
+As of this update, it is no longer necessary for DOS and Windows users to
+resort to manually editing the WORD.LST file to remove the SIGWORD.LST
+words.  Alan Beale's MAKELIST utility, distributed in the supplementary
+archive, provides the opportunity to build custom lists by combining
+selected auxiliary lists from the ENABLE2K supplement with the base list.
+Even UNIX users may find MAKELIST more convenient than running built-ins
+from the command line or a script.
+
+
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+The ENABLE master word list, WORD.LST, is herewith formally released
+into the Public Domain. Anyone is free to use it or distribute it in
+any manner they see fit. No fee or registration is required for its
+use nor are "contributions" solicited (if you feel you absolutely
+must contribute something for your own peace of mind, the authors of
+the ENABLE list ask that you make a donation on their behalf to your
+favorite charity). This word list is our gift to the Scrabble community,
+as an alternate to "official" word lists. Game designers may feel free
+to incorporate the WORD.LST into their games. Please mention the source
+and credit us as originators of the list. Note that if you, as a game
+designer, use the WORD.LST in your product, you may still copyright and
+protect your product, but you may *not* legally copyright or in any way
+restrict redistribution of the WORD.LST portion of your product. This
+*may* under law restrict your rights to restrict your users' rights,
+but that is only fair.
+
+It is to be expected that the maintainers of the OSPD and TWL will
+benefit from the research done for ENABLE. If these people incorporate
+portions of ENABLE into their lists, this may compromise the copyrighted
+proprietary status of those lists.
+
+The accuracy of the WORD.LST is due, in great part, to the herculean
+efforts of Alan Beale. He has put in many hours of multi-dictionary
+research in checking conjugations, inflections, plurals, and obscure
+parts of speech of thousands of words. In every sense of the word,
+he is as much the father of the word list as anyone.
+
+Ross Beresford (ross@bryson.demon.co.uk) has incorporated the WORD.LST
+from the first edition of ENABLE into his North  American Scrabble version
+of his excellent TEA word list generation / analysis program. See his
+home page, http://www.bryson.demon.co.uk/, for word list info and more
+details of TEA.
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+WORD.LST (pronounced "word-dot-list") is the generic term for the
+ASCII-format word file released into the Public Domain as a standard and
+a reference for crossword-type games.  As laptop and palmtop computers
+have become more common and affordable, it is convenient to use the
+WORD.LST in conjunction with utilities such as SEARCH.EXE and JUDGE.EXE
+(parts of the WORDY package) to adjudicate disputes in word  game
+competitive play. The OSPD in its various versions and incarnations
+is  not particularly well  suited for this application as it is poorly
+organized, sometimes difficult to interpret, and clumsy to use (try
+locating the word PELVES in the printed OSPD, for example). Furthermore,
+the WORD.LST is free from corporate politics and agendas, scheming
+and conniving, committee wrangling, "politically correct" appeasement,
+compromising, greed, and all other such nonsense. The WORD.LST is yours,
+word game players! Use it.  Help keep it updated and corrected. Distribute
+it (you do *not* need permission to do so, but tell us about it)!
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+
+Scrabble and OSPD are trademarks owned by Milton Bradley, a division of
+Hasbro.
+
+Windows is a trademark of the Microsoft Corporation.
+
+
+WORDY is *not* copyrighted and is *not* a trademark. It may be found
+under 'W' in any dictionary, just as scrabble, the verb, may be found
+under 'S'.  The make-believe word "hasbro" may be whimsically defined as
+"possessing a male sibling" (named Milton, I guess).
+
+ENABLE is not a trademark. WORD.LST is not a trademark.
+
+   This whole trademark business has been taken to ridiculous extremes.
+
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+
+Disclaimer: Neither I nor Alan Beale is in any way associated with the
+so-called "Official Dictionary Committee", nor with the NSA in any of its
+guises or avatars (i.e., neither the National Scrabble Association nor
+the National Security Agency). We did not and do not have direct access
+to the so-called TWL98, and the ENABLE list is not derivative from it. We
+do believe, however, the the ENABLE list is more thoroughly researched,
+more accurate, and therefore a more authoritative and generally useful
+replacement for the TWL98 list.
+
+
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+Important note:
+The supplementary archive, SUPP2K.ZIP, is a valuable adjunct to ENABLE. It
+supplies additional word lists, Alan Beale's "makelist" utility for combining
+and expurgating lists, and the must-read documentation files on word list
+research on plurals. The resources in this supplement make possible creating
+one's own "SOWPODS" list, creating custom combined lists, or even lists with
+"nasty words" removed, suitable for family use.
+‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+
+
+
+
+                                 M\Cooper
+                         thegrendel@theriver.com
+              http://personal.riverusers.com/~thegrendel/
+
+
+--- enable2k-mirror-LICENSE.txt ---
+Copyright © 2025 Bart Massey
+
+[This work is made available under the "MIT License".]
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall
+be included in all copies or substantial portions of the
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+
+ESDB supplemental English word sources
+https://github.com/en-wl/wordlist-diff/tree/7f2f4078354752045ee16a041605686561122185
+Corresponding source: https://github.com/en-wl/wordlist/tree/1e5b7d3a72f47a71da5d28686c1dd4b397178485
+Default size60 US, British ise+ize, Canadian and Australian; retain only original lowercase ASCII entries, without case folding or punctuation stripping. Supplemental union; preserve older sources.
+
+Copyright 2000-2026 by Kevin Atkinson
+
+Permission to use, copy, modify, distribute, and sell any part of the English
+Speller Database (ESDB, previously known as SCOWLv2), or word lists
+created from it, is hereby granted without fee, provided that the above
+copyright notice appears in all copies and that both the above copyright
+notice and this notice appear in supporting documentation.  Kevin Atkinson
+makes no representations about the suitability of this database for any
+purpose.  It is provided "as is" without express or implied warranty.
+
+ESDB is derived from many sources, most of which are in the Public Domain.
+Data from the Corpus of Contemporary American English (COCA) was also used.
+
+All data from COCA comes from 3-gram data that is not freely available;
+however, the usage is within the rights given by the NDA that was signed when
+purchasing the data.  More information on COCA is available at
+https://www.english-corpora.org/coca/.
+
+The primary source of words for ESDB comes from 12dicts and ENABLE2K.  Both
+are in the Public Domain, but Alan Beale <biljir@pobox.com> deserves special
+credit as he is the author of 12dicts and a major contributor to ENABLE2K.  In
+addition, he gave me an incredible amount of feedback and created a number of
+special lists in order to help improve the overall quality of ESDB.
+
+===
+
+If you are using an official speller dictionary created by ESDB that is not
+Australian English, then no additional copyright applies and including the
+notice before the === is sufficient.
+
+If you are using the Australian English dictionary or a wordlist that uses the 'D'
+SPELLING code and/or the 'AU' REGION code, the copyright after '=== AU' applies.
+
+If you are using a generated word list larger than 80, the copyright
+after '=== UKACD' applies.
+
+If you are distributing the database or results from the 
+database that is not a speller dictionary or generated word list, then both
+copyrights may apply depending on the parts you use.  In addition, the WordNet
+copyright MIGHT apply as WordNet was one of many sources used for the initial
+POS assignment.
+
+=== AU
+
+The initial information for Australian English comes from Benjamin Titze:
+
+  Copyright 2016 by Benjamin Titze
+
+  Permission to use, copy, modify, distribute and sell this array, the
+  associated software, and its documentation for any purpose is hereby
+  granted without fee, provided that the above copyright notice appears
+  in all copies and that both that copyright notice and this permission
+  notice appear in supporting documentation. Benjamin Titze makes no
+  representations about the suitability of this array for any
+  purpose. It is provided "as is" without express or implied warranty.
+
+=== UKACD
+
+Some words used come from the UK Advanced Cryptics Dictionary:
+
+  Copyright (c) J Ross Beresford 1993-1999. All Rights Reserved.
+
+  The following restriction is placed on the use of this publication:
+  if The UK Advanced Cryptics Dictionary is used in a software package
+  or redistributed in any form, the copyright notice must be
+  prominently displayed and the text of this document must be included
+  verbatim.
+
+  There are no other restrictions: I would like to see the list
+  distributed as widely as possible.
+
+=== WordNet
+
+WordNet was used to help with the initial POS assignment:
+
+  This software and database is being provided to you, the LICENSEE,
+  by Princeton University under the following license.  By obtaining,
+  using and/or copying this software and database, you agree that you
+  have read, understood, and will comply with these terms and
+  conditions.:
+
+  Permission to use, copy, modify and distribute this software and
+  database and its documentation for any purpose and without fee or
+  royalty is hereby granted, provided that you agree to comply with
+  the following copyright notice and statements, including the
+  disclaimer, and that the same appear on ALL copies of the software,
+  database and documentation, including modifications that you make
+  for internal use or for distribution.
+
+  WordNet 1.6 Copyright 1997 by Princeton University.  All rights
+  reserved.
+
+  THIS SOFTWARE AND DATABASE IS PROVIDED "AS IS" AND PRINCETON
+  UNIVERSITY MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+  IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PRINCETON
+  UNIVERSITY MAKES NO REPRESENTATIONS OR WARRANTIES OF MERCHANT-
+  ABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE
+  LICENSED SOFTWARE, DATABASE OR DOCUMENTATION WILL NOT INFRINGE ANY
+  THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+
+  The name of Princeton University or Princeton may not be used in
+  advertising or publicity pertaining to distribution of the software
+  and/or database.  Title to copyright in this software, database and
+  any associated documentation shall at all times remain with
+  Princeton University and LICENSEE agrees to preserve same.
+
+
+Individually verified spelling and inflection corrections (no definitions or commercial dictionary export):
+https://www.merriam-webster.com/dictionary/chatbot
+https://www.merriam-webster.com/dictionary/kombucha
+https://www.merriam-webster.com/dictionary/doomscroll
+https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_US-large.txt
+End of retained notices.

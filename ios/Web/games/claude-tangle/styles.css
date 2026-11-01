@@ -1,37 +1,52 @@
 /* Tangle · three spools and a numbered string of tactile beads. */
 .tangle-selection-detail{text-align:center;overflow-wrap:anywhere}
-body[data-game-id="claude-tangle"]{--accent:#83529b;--accent-soft:#efe4f5;--game-ink:#573264;--soft:#efe4f5}
-.tangle-panel{background:#fcf8fd;border-color:#d4bfdf;box-shadow:0 5px 0 #e7d9ee}
-.tangle-hud{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;font-weight:700;margin-bottom:19px;color:#573264}
-.tangle-knots{display:flex;align-items:center;gap:4px;color:#886b99}
-.tangle-knots>span{font-size:20px;line-height:1}.tangle-knots .tied{color:#a03d59}.tangle-knots b{font-size:11px;white-space:nowrap;margin-left:4px;font-weight:650}
+body[data-game-id="claude-tangle"]{--accent:#52839b;--accent-soft:#e4eff5;--game-ink:#325364;--soft:#e4eff5}
+.tangle-panel{background:#f8fbfd;border-color:#bfd4df;box-shadow:0 5px 0 #d9e7ee}
+.tangle-hud{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;font-weight:700;margin-bottom:19px;color:#325364}
+.tangle-knots{display:flex;align-items:center;gap:4px;color:#698a9b}
+.tangle-knots>span{font-size:20px;line-height:1}.tangle-knots .tied{color:#3d7fa0}.tangle-knots b{font-size:11px;white-space:nowrap;margin-left:4px;font-weight:650}
 .tangle-threads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-inline:3px}
-.tangle-thread{position:relative;min-width:0;border:1px solid color-mix(in srgb,var(--thread) 45%,white);border-top:7px solid var(--thread);border-bottom:7px solid var(--thread);background:#fff;border-radius:7px 7px 9px 9px;padding:10px 7px;min-height:89px;text-align:center;box-shadow:0 3px 0 #ddd0e2}
-.thread-0{--thread:#c97759}.thread-1{--thread:#3c8b81}.thread-2{--thread:#9e7931}
-.thread-label{display:block;font-size:10px;color:#685771;line-height:1.5;font-weight:600}
-.tangle-thread strong{display:block;font-size:15px;margin-top:9px;letter-spacing:.02em;overflow-wrap:anywhere;color:#47334f}
-.tangle-thread.done{background:#f0f5e8}
-.thread-check{font-size:10px;color:#3e623a;display:block;margin-top:5px;font-weight:650}
+.tangle-thread{position:relative;min-width:0;border:1px solid color-mix(in srgb,var(--thread) 45%,white);border-top:7px solid var(--thread);border-bottom:7px solid var(--thread);background:#fff;border-radius:7px 7px 9px 9px;padding:10px 7px;min-height:89px;text-align:center;box-shadow:0 3px 0 #d0dce2}
+.thread-0{--thread:#59a4c9}.thread-1{--thread:#3c8b83}.thread-2{--thread:#317a9e}
+.thread-label{display:block;font-size:10px;color:#506b78;line-height:1.5;font-weight:600}
+.tangle-thread strong{display:block;font-size:15px;margin-top:9px;letter-spacing:.02em;overflow-wrap:anywhere;color:#33464f}
+.tangle-thread.done{background:#e8f5f4}
+.thread-check{font-size:10px;color:#3a625e;display:block;margin-top:5px;font-weight:650}
 .thread-ghost{display:flex;justify-content:center;gap:3px;margin-top:17px;flex-wrap:wrap}
-.thread-ghost i{width:8px;height:3px;border-radius:2px;background:#c3adc8}
-.tangle-beads{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px 8px;max-width:400px;margin:24px auto;padding:16px 11px;background:#eee4f3;border:1px solid #d6c1e0;border-radius:22px}
-.tangle-bead{position:relative;aspect-ratio:1;min-height:47px;min-width:0;padding:11px 2px 2px;border-radius:50%;border:1px solid #b995ca;background:#fff9ff;box-shadow:0 4px 0 #c9afd5,inset 0 2px 0 #fff;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:750;color:#573264;user-select:none;transition:transform .15s,background .15s,box-shadow .15s}
-.tangle-bead small{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:9px;color:#7b6087;font-weight:650}
-.tangle-bead.selected{background:#83529b;border-color:#83529b;color:#fff;box-shadow:0 2px 0 #543268;transform:translateY(2px)}
-.tangle-bead.selected small{color:#f0ddfa}
-.tangle-bead.hinted{outline:3px solid #b28d22;outline-offset:3px}
-.tangle-bead>b{position:absolute;font-size:10px;right:-2px;top:0;color:#71521d;background:#ffeec0;border:1px solid #d3b569;border-radius:50%;width:19px;height:19px;display:grid;place-items:center}
-.tangle-bead.removed{background:#e5d8ec;box-shadow:none;border-style:dashed;border-color:#c9b4d4;color:#8b7097}
+.thread-ghost i{width:8px;height:3px;border-radius:2px;background:#adbfc8}
+.tangle-beads{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px 8px;max-width:400px;margin:24px auto;padding:16px 11px;background:#e4eef3;border:1px solid #c1d6e0;border-radius:22px}
+.tangle-bead{position:relative;aspect-ratio:1;min-height:47px;min-width:0;padding:11px 2px 2px;border-radius:50%;border:1px solid #95b8ca;background:#fafdfe;box-shadow:0 4px 0 #afc8d5,inset 0 2px 0 #fff;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:750;color:#325364;user-select:none;transition:transform .15s,background .15s,box-shadow .15s}
+.tangle-bead small{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:9px;color:#5c7b8b;font-weight:650}
+.tangle-bead.selected{background:#52839b;border-color:#52839b;color:#fff;box-shadow:0 2px 0 #325668;transform:translateY(2px)}
+.tangle-bead.selected small{color:#dff0f8}
+.tangle-bead.hinted{outline:3px solid #2780ad;outline-offset:3px}
+.tangle-bead>b{position:absolute;font-size:10px;right:-2px;top:0;color:#1d5571;background:#cce6f3;border:1px solid #69b0d3;border-radius:50%;width:19px;height:19px;display:grid;place-items:center}
+.tangle-bead.removed{background:#d8e5ec;box-shadow:none;border-style:dashed;border-color:#b4c9d4;color:#6b8c9c}
 .tangle-bead:disabled{opacity:1}
-.tangle-selection{min-height:61px;padding:15px 10px;border-radius:12px;background:#573264;border:1px solid #573264;text-align:center;font-size:25px;font-weight:750;letter-spacing:.12em;overflow-wrap:anywhere;color:#fff}
-.tangle-selection>span{font-size:13px;letter-spacing:0;font-weight:500;color:#f2e1fa}
-.tangle-actions{gap:8px}.tangle-actions .primary{flex:1.8;background:#83529b;border-color:#83529b}
-.tangle-note{font-size:12px;text-align:center;color:#6d5979;margin:16px 0 0;line-height:1.6}
-.tangle-note.blocked{color:#815120;background:#fff0d4;border:1px solid #e0c28c;padding:12px;border-radius:9px}
+.tangle-selection{min-height:61px;padding:15px 10px;border-radius:12px;background:#325364;border:1px solid #325364;text-align:center;font-size:25px;font-weight:750;letter-spacing:.12em;overflow-wrap:anywhere;color:#fff}
+.tangle-selection>span{font-size:13px;letter-spacing:0;font-weight:500;color:#e2f1f9}
+.tangle-actions{gap:8px}.tangle-actions .primary{flex:1.8;background:#52839b;border-color:#52839b}
+.tangle-note{font-size:12px;text-align:center;color:#54707e;margin:16px 0 0;line-height:1.6}
+.tangle-note.blocked{color:#206181;background:#dceef7;border:1px solid #8cc4e0;padding:12px;border-radius:9px}
 .tangle-recovery{margin-top:13px;gap:8px}.tangle-recovery .button{font-size:12px}
-.tangle-footer{text-align:center;font-size:11px;margin:16px 0 0;color:#6d5979;line-height:1.6}
+.tangle-footer{text-align:center;font-size:11px;margin:16px 0 0;color:#54707e;line-height:1.6}
 #puzzle:focus{outline:none}
-@media(hover:hover){.tangle-bead:not(.selected):not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 0 #c9afd5}}
+@media(hover:hover){.tangle-bead:not(.selected):not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 0 #afc8d5}}
 @media(max-width:420px){.tangle-beads{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 8px}.tangle-threads{gap:7px}.tangle-thread{padding-inline:4px}.thread-label{font-size:9px}.tangle-thread strong{font-size:13px}}
 @media(max-width:350px){.tangle-beads{grid-template-columns:repeat(4,minmax(0,1fr));max-width:270px}.tangle-hud{font-size:12px;flex-wrap:wrap}.tangle-thread{min-height:84px}.thread-label{font-size:9px}.tangle-thread strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.tangle-bead{transition:none}}
+
+/* Readable collection finish; this stylesheet is isolated to this game. */
+:root{--bg:#f1f7fb;--ink:#173448;--muted:#536b7c;--line:#c8dbe7;--white:#fbfdff;color-scheme:light;background:#f1f7fb}
+body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f7fb}
+.game-shell{width:min(100% - 32px,660px)}
+.game-shell .intro{font-size:16px;color:#4b6374;line-height:1.65}
+.game-shell .button{font-size:14px;min-height:48px}
+.game-shell .muted,.game-shell .status-note{font-size:14px}
+.game-shell .collection-label,.game-shell .game-credit,.game-shell footer{font-size:12px}
+.game-shell .mode-switch{background:#e2eef6;border-color:#c4d8e7}
+.game-shell .panel{border-radius:22px}
+.game-shell dialog{background:#fbfdff}
+@media(max-width:350px){.game-shell{width:calc(100% - 24px)}.game-shell .intro{font-size:15px}.game-shell .button{font-size:13px}}
+
+.thread-label,.tangle-note,.tangle-footer,.tangle-knots b{font-size:13px}.tangle-thread strong{font-size:17px}.tangle-thread{min-height:105px}.tangle-bead small{font-size:11px}.thread-0{--thread:#266d9b}.thread-1{--thread:#227d77}.thread-2{--thread:#506784}

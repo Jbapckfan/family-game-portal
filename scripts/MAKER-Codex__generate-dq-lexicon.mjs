@@ -2,6 +2,7 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {loadTangleLexicon,assertTangleSourceHash} from './tangle-lexicon.mjs';
+import {modernWordSourceNotice} from './word-source-notice.mjs';
 import {PUZZLES as HIVES} from '../games/deepseek-twin-hive/puzzles.mjs';
 import {PUZZLES as SIEGES} from '../games/qwen-syntax-siege/puzzles.mjs';
 const {words,sources}=await loadTangleLexicon();
@@ -18,7 +19,7 @@ const data=new URL('../packages/kimi-pebbles/data/',import.meta.url),pins=JSON.p
 const noticeFiles=[['english-words-LICENSE.md','https://github.com/dwyl/english-words','LICENSE.md'],['wordnik-LICENSE.txt','https://github.com/wordnik/wordlist','LICENSE'],['enable2k-README.txt','https://github.com/BartMassey/wordlists','README-enable2k.txt'],['enable2k-mirror-LICENSE.txt','https://github.com/BartMassey/wordlists','LICENSE.txt']];
 let notice='Alford Daily open-word acceptance: Twin Hive, Rung, Syntax Siege\n\nGenerated from the pinned dwyl English, Wordnik and public-domain ENABLE2K union, plus six documented Zynga examples. The source list can include uncommon, historical and sensitive vocabulary. This is not certification of every English word or an exact Words With Friends/NASPA dictionary.\nSource pins and checksums: packages/kimi-pebbles/data/word-game-sources.json and english-words-source.json.\n\n';
 for(const[file,repository,upstream]of noticeFiles){const bytes=await readFile(new URL(file,data));const pin=pins.find(p=>p.repository===repository);assertTangleSourceHash(bytes,pin.files[upstream].sha256,file);notice+=`--- ${file} ---\n`+bytes.toString()+'\n\n';}
-notice+='End of retained notices.\n';
+notice+=await modernWordSourceNotice();notice+='End of retained notices.\n';
 for(const slug of ['deepseek-twin-hive','deepseek-rung','qwen-syntax-siege'])await writeFile(new URL(`../games/${slug}/word-lists-LICENSE.txt`,import.meta.url),notice);
 const summary={sourceUnion:words.size,sources,fourLetterWords:vocabulary.filter(w=>w.length===4).length,hiveRacks:Object.fromEntries(Object.entries(byRack).map(([r,a])=>[r,a.length])),siegeRacks:Object.fromEntries(Object.entries(siege).map(([r,a])=>[r,a.length])),noticeSHA256:createHash('sha256').update(notice).digest('hex')};
 await writeFile(new URL('../docs/game-reviews/remaining-dq/evidence/MAKER-Codex__lexicon-provenance.json',import.meta.url),JSON.stringify(summary,null,2)+'\n');

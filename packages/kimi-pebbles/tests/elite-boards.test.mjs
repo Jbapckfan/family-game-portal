@@ -73,3 +73,35 @@ test('Quartet makes its saved pair clue available as text and names both hinted 
   assert.equal(document.querySelectorAll('button[aria-label*="hint pair"]').length, 2);
   assert.match(document.getElementById('quartet-selection')?.textContent ?? '', /1 of 4/);
 });
+
+test('Circuit shows four separated bands with explicit three-letter membership and next-arc highlighting', () => {
+  const base={phase:'playing',mode:'daily',dayNumber:20758,puzzleNo:167,puzzle:{l:'abcdefghijkl',par:3,sol:[]},played:[],current:[0],revealed:0,hintsUsed:0,finished:false};
+  const document=render('circuit',base),bands=[...document.querySelectorAll('[data-arc-band]')];
+  assert.equal(bands.length,4,'the ring needs actual visible arc bands');
+  for(let i=0;i<4;i++){assert.equal(bands[i].getAttribute('data-arc-letters'),'abcdefghijkl'.slice(i*3,i*3+3));assert.equal(document.querySelector(`[data-arc-label="${i}"]`).textContent,`Arc ${i+1}`);assert.equal(bands[i].getAttribute('data-allowed'),i===0?'false':'true')}
+  const labels=[...document.querySelectorAll('[data-circuit-arc-legend]')].map(n=>n.textContent.replace(/\s/g,''));assert.deepEqual(labels,['Arc1ABC','Arc2DEF','Arc3GHI','Arc4JKL']);
+  const seeded=render('circuit',{...base,played:['adg'],current:[]});for(let i=0;i<4;i++)assert.equal(seeded.querySelector(`[data-arc-band="${i}"]`).getAttribute('data-allowed'),i===2?'true':'false','an erased draft must start with its chain letter');
+});
+
+test('Circuit arc sections join exactly with no empty wedges between their bands', () => {
+  const document=render('circuit',{phase:'playing',puzzle:{l:'abcdefghijkl',par:3,sol:[]},played:[],current:[],revealed:0,hintsUsed:0,finished:false});
+  const paths=[...document.querySelectorAll('[data-arc-band]')].map(el=>el.getAttribute('d').match(/-?\d+(?:\.\d+)?/g).map(Number));
+  assert.equal(paths.length,4);
+  for(let i=0;i<4;i++){
+    const next=paths[(i+1)%4];
+    assert.ok(Math.abs(paths[i][7]-next[0])<1e-8&&Math.abs(paths[i][8]-next[1])<1e-8,'each band must meet the next band at the same boundary');
+  }
+});
+
+test('Circuit arc splits sit at the four cardinal axes and letters sit inside their own quarter', () => {
+  const document=render('circuit',{phase:'playing',puzzle:{l:'abcdefghijkl',par:3,sol:[]},played:[],current:[0],revealed:0,hintsUsed:0,finished:false});
+  const expected=[[50,10,90,50],[90,50,50,90],[50,90,10,50],[10,50,50,10]];
+  for(let i=0;i<4;i++){
+    const p=document.querySelector(`[data-arc-band="${i}"]`).getAttribute('d').match(/-?\d+(?:\.\d+)?/g).map(Number);
+    [p[0],p[1],p[7],p[8]].forEach((n,j)=>assert.ok(Math.abs(n-expected[i][j])<1e-8,'arc boundaries must be cardinal'));
+  }
+  const first=document.querySelector('[data-letter="0"]');
+  assert.match(first.getAttribute('style'),/left:\s*calc\(50% \+ 10\.352/,'first letter moves inside the first quarter');
+  const trace=document.querySelector('.circuit-trace polyline').getAttribute('points').split(',').map(Number);
+  assert.ok(Math.abs(trace[0]-(50+Math.cos(-75*Math.PI/180)*40))<1e-8,'trace follows the repositioned letters');
+});

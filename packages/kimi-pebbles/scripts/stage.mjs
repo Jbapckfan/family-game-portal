@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, cp, rename, lstat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname, join } from 'node:path';
 import { assertTangleSourceHash } from '../../../scripts/tangle-lexicon.mjs';
+import {modernWordSourceNotice} from '../../../scripts/word-source-notice.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const games = resolve(root, '../../games');
 const names = { cairn:'Cairn', morph:'Morph', tangle:'Tangle', hunch:'Hunch', circuit:'Circuit', quartet:'Quartet' };
@@ -19,7 +20,7 @@ const englishPin=wordPins.find(p=>p.repository==='https://github.com/dwyl/englis
 const noticeHashes=[englishPin.files['LICENSE.md'].sha256,wordnikPin.files.LICENSE.sha256,enablePin.files['README-enable2k.txt'].sha256,enablePin.files['LICENSE.txt'].sha256];
 wordLicenses.forEach((text,i)=>assertTangleSourceHash(text,noticeHashes[i],wordLicenseNames[i]));
 if (!wordLicenses[1].includes('Copyright (c) 2020 Wordnik') || !wordLicenses[2].includes('Public Domain')) throw new Error('Missing complete word-list notices');
-const wordNotice = 'Alford Daily · Tangle word-list sources\n\nEnglish: https://github.com/dwyl/english-words/tree/20f5cc9b3f0ccc8ce45d814c532b7c2031bba31c\nWordnik: https://github.com/wordnik/wordlist/tree/46e6215d0f90356afe9c8ba4be347e7e98cb425c\nENABLE by Alan Beale and M. Cooper: https://github.com/BartMassey/wordlists/tree/af52415c13af809bd8757a40f17f46e79d09583c\nPublicly disclosed Zynga examples are factual additions; this is not a licensed NASPA or official Words With Friends dictionary.\n\n'+wordLicenses.map((text,i)=>wordLicenseNames[i]+'\n\n'+text).join('\n\n');
+const wordNotice = 'Alford Daily · bundled word-list sources\n\nEnglish: https://github.com/dwyl/english-words/tree/20f5cc9b3f0ccc8ce45d814c532b7c2031bba31c\nWordnik: https://github.com/wordnik/wordlist/tree/46e6215d0f90356afe9c8ba4be347e7e98cb425c\nENABLE by Alan Beale and M. Cooper: https://github.com/BartMassey/wordlists/tree/af52415c13af809bd8757a40f17f46e79d09583c\nPublicly disclosed Zynga examples are factual additions; this is not a licensed NASPA or official Words With Friends dictionary.\n\n'+wordLicenses.map((text,i)=>wordLicenseNames[i]+'\n\n'+text).join('\n\n')+await modernWordSourceNotice();
 if (!html.includes('__GAME_ID__') || !html.includes('__GAME_NAME__')) throw new Error('Missing canonical game placeholders');
 const files = await readdir(assets);
 if (!files.some(n => n.endsWith('.js')) || !files.some(n => n.endsWith('.css'))) throw new Error('Missing compiled application assets');

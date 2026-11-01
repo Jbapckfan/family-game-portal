@@ -71,6 +71,28 @@ test('ready native board has correct attribution and shares no solution text',()
  }finally{shell?.destroy();e.restore();}
 });
 
+test('shared results disclose exact hint counts and untimed assistance without copying answer summaries',()=>{
+ for(const hints of [0,2]){
+  const e=environment();let shell;try{
+   shell=mountDailyGame({...e.config,summarize:()=> 'SECRET ANSWER',assistanceCount:(p,s)=>{assert.equal(p,shell.session.puzzle);return s.hints;},untimedAssistance:(p,s)=>s.untimed});
+   shell.session.commit({...shell.session.state,elapsed:20000,hints,untimed:hints>0});
+   e.elements.get('game-share').emit('click');
+   const share=e.messages.find(m=>m.type==='share');assert.ok(share);assert.match(share.text,new RegExp(`Hints: ${hints}`));
+   assert.equal(share.text.includes('Untimed assist'),hints>0);assert.doesNotMatch(share.text,/SECRET|ANSWER/);
+  }finally{shell?.destroy();e.restore();}
+ }
+});
+
+test('invalid assistance values cannot produce a misleading share and unfinished rounds cannot share',()=>{
+ for(const callbacks of [{assistanceCount:()=>-1},{assistanceCount:()=>NaN},{assistanceCount:()=>1.5},{untimedAssistance:()=> 'false'}]){
+  const e=environment();let shell;try{
+   shell=mountDailyGame({...e.config,...callbacks});e.elements.get('game-share').emit('click');assert.equal(e.messages.some(m=>m.type==='share'),false);
+   shell.session.commit({...shell.session.state,elapsed:20000});e.elements.get('game-share').emit('click');assert.equal(e.messages.some(m=>m.type==='share'),false);
+   assert.match(e.elements.get('game-message').textContent,/could not be prepared/);
+  }finally{shell?.destroy();e.restore();}
+ }
+});
+
 test('completed daily from another tab refreshes on storage, visibility, and cached-page return',()=>{
  for(const trigger of ['storage','visibilitychange','pageshow']){
   const e=environment();let shell;try{

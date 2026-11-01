@@ -31,7 +31,8 @@ try {
     rotations[game.slug]={from:'2026-10-30',bankCount:game.puzzles.length,indices};
     if (game.creator === 'ChatGPT') originalCounts[game.slug]=previous.count;
   }
-  const dates=calendarDates('2026-10-29','2027-04-29');
+  // Retain the original protected prefix and cover the next 182 dates from Nov 1.
+  const dates=calendarDates('2026-10-29','2027-05-02');
   const reservations={start:dates[0],end:dates.at(-1),byGame:{}};
   for(const game of games){
     const release=rotations[game.slug];

@@ -1,6 +1,8 @@
+import {FOUR_LETTER_WORDS} from './word-acceptance.mjs';
 // Concept: DeepSeek. Curated lexicon and completed implementation: ChatGPT.
-// This deliberately finite game lexicon does not claim to include every English word.
-export const LEXICON=Object.freeze([...new Set(`
+// Retain the original vocabulary so all valid progress remains restorable.
+// The pinned full-source four-letter union expands legal moves.
+const ORIGINAL_LEXICON=Object.freeze([...new Set(`
 ABLE ACHE ACID ACME ACRE AGED AGES AIDE AIMS AIRS AKIN ALSO AMEN AMID ANTS ARCH
 AREA ARID ARMS ARMY ARTS ASHY ATOM AUNT AUTO AWAY AXES BABE BABY BACK BAIL BAIT
 BAKE BALD BALE BALL BALM BAND BANE BANG BANK BARE BARK BARN BASE BASH BASK BASS
@@ -87,17 +89,23 @@ WING WINK WINS WIPE WIRE WISE WISH WITH WITS WOKE WOLF WOMB WONT WOOD WOOF WOOL
 WORD WORE WORK WORM WORN WOVE WRAP WREN YARD YARN YAWN YEAR YELL YELP YOGA YOKE
 YOUR YOWL ZEAL ZERO ZEST ZINC ZONE ZOOM
 `.trim().split(/\s+/))].sort());
-const words=new Set(LEXICON);
+export const LEXICON=Object.freeze([...new Set([...ORIGINAL_LEXICON,...FOUR_LETTER_WORDS])].sort());
+const words=new Set(LEXICON),familiar=new Set(ORIGINAL_LEXICON);
 export function oneLetterApart(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==4||b.length!==4)return false;let d=0;for(let i=0;i<4;i++)if(a[i]!==b[i])d++;return d===1;}
 const neighbors=new Map(LEXICON.map(w=>[w,[]])),buckets=new Map();
 for(const w of LEXICON)for(let i=0;i<4;i++){const key=w.slice(0,i)+'*'+w.slice(i+1);const b=buckets.get(key)||[];b.push(w);buckets.set(key,b);}
 for(const b of buckets.values())for(const a of b)for(const c of b)if(a!==c)neighbors.get(a).push(c);
+// Breadth first search keeps shortest-distance honesty. Prefer the familiar
+// original words only to break ties between equally short routes.
+for(const list of neighbors.values())list.sort((a,b)=>Number(familiar.has(b))-Number(familiar.has(a))||a.localeCompare(b));
 export function findRoute(start,target){
  if(!words.has(start)||!words.has(target))return null;
  const prev=new Map([[start,null]]),queue=[start];
  for(let at=0;at<queue.length;at++){const cur=queue[at];if(cur===target){const route=[];for(let w=target;w!==null;w=prev.get(w))route.push(w);return route.reverse();}for(const n of neighbors.get(cur))if(!prev.has(n)){prev.set(n,cur);queue.push(n);}}
  return null;
 }
+const shortestCache=new Map();
+export function shortestSteps(p){const key=p.start+':'+p.target;if(!shortestCache.has(key))shortestCache.set(key,(findRoute(p.start,p.target)?.length||1)-1);return shortestCache.get(key);}
 export const createState=p=>({chain:[p.start],hintWord:null,hints:0,revealed:false});
 export function getStatus(p,s){return s.revealed?'revealed':s.chain.at(-1)===p.target?'won':'playing';}
 export function submitWord(p,s,input){
@@ -105,7 +113,7 @@ export function submitWord(p,s,input){
  const word=typeof input==='string'?input.trim().toUpperCase():'';
  if(!/^[A-Z]{4}$/.test(word))return{state:s,message:'Enter a four-letter word.'};
  if(!oneLetterApart(s.chain.at(-1),word))return{state:s,message:'Change exactly one letter from the last rung.'};
- if(!words.has(word))return{state:s,message:'That word is outside the curated ladder dictionary.'};
+ if(!words.has(word))return{state:s,message:'That word is not in the game’s four-letter dictionary.'};
  if(s.chain.length>=200)return{state:s,message:'Use Undo or Restart to shorten this ladder.'};
  return{state:{...s,chain:[...s.chain,word],hintWord:null},message:word===p.target?'You reached the target!':`${word} added to the ladder.`};
 }

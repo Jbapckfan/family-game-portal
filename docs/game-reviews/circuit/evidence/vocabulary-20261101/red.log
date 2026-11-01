@@ -1,0 +1,88 @@
+(node:7379) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✖ MORN and NICE are accepted on the reported daily and every eligible ring (0.91975ms)
+✔ Circuit preserves original words, layouts, routes and targets through vocabulary expansion (9.423583ms)
+✖ accepted reported words and an existing unfinished draft survive restore without changing assistance (0.46975ms)
+✖ every source-eligible Circuit word is present, using an independent regex arc oracle (132.233167ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 341.21775
+
+✖ failing tests:
+
+test at tests/circuit-vocabulary.test.ts:1:755
+✖ MORN and NICE are accepted on the reported daily and every eligible ring (0.91975ms)
+  AssertionError [ERR_ASSERTION]: morn is missing on November 1
+      at TestContext.<anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-vocabulary.test.ts:13:71)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/circuit-vocabulary.test.ts:1:1606
+✖ accepted reported words and an existing unfinished draft survive restore without changing assistance (0.46975ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + null
+  - {
+  -   countedPlayed: true,
+  -   current: [
+  -     9,
+  -     0,
+  -     6,
+  -     11
+  -   ],
+  -   finished: false,
+  -   gaveUp: false,
+  -   hintsUsed: 1,
+  -   played: [
+  -     'morn'
+  -   ],
+  -   revealed: 1
+  - }
+  
+      at TestContext.<anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-vocabulary.test.ts:19:214)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: { played: [ 'morn' ], current: [ 9, 0, 6, 11 ], revealed: 1, hintsUsed: 1, finished: false, gaveUp: false, countedPlayed: true },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/circuit-vocabulary.test.ts:1:2111
+✖ every source-eligible Circuit word is present, using an independent regex arc oracle (132.233167ms)
+  AssertionError [ERR_ASSERTION]: source word missing: aba on lubimacohgts
+      at TestContext.<anonymous> (/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/circuit-vocabulary.test.ts:25:281)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

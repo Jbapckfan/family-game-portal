@@ -113,7 +113,7 @@ export function submitWord(p,s,input){
  const word=typeof input==='string'?input.trim().toUpperCase():'';
  if(!/^[A-Z]{4}$/.test(word))return{state:s,message:'Enter a four-letter word.'};
  if(!oneLetterApart(s.chain.at(-1),word))return{state:s,message:'Change exactly one letter from the last rung.'};
- if(!words.has(word))return{state:s,message:'That word is not in the pinned four-letter dictionary.'};
+ if(!words.has(word))return{state:s,message:'That word is not in the game’s four-letter dictionary.'};
  if(s.chain.length>=200)return{state:s,message:'Use Undo or Restart to shorten this ladder.'};
  return{state:{...s,chain:[...s.chain,word],hintWord:null},message:word===p.target?'You reached the target!':`${word} added to the ladder.`};
 }

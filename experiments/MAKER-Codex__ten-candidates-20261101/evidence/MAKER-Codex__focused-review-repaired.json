@@ -1,0 +1,52 @@
+{
+  "cases": 11,
+  "passed": 11,
+  "results": [
+    {
+      "name": "Recorded unaided result stays truthful after Undo, Study, and re-finish",
+      "passed": true
+    },
+    {
+      "name": "Recorded draft loss stays visible after Undo and a winning replay",
+      "passed": true
+    },
+    {
+      "name": "Modified, composing, and editable keyboard events are not intercepted",
+      "passed": true
+    },
+    {
+      "name": "Focus has working per-kind fallbacks for draft, launch/next, wave bounds and exhausted undo",
+      "passed": true
+    },
+    {
+      "name": "Opening practice from Daily preserves the explicitly selected resume mix",
+      "passed": true
+    },
+    {
+      "name": "Unchanged day sync preserves the focused Open today banner button",
+      "passed": true
+    },
+    {
+      "name": "Unreadable practice saves survive opening, and are quarantined before a later recovery write",
+      "passed": true
+    },
+    {
+      "name": "A failed quarantine write protects the original save instead of overwriting it",
+      "passed": true
+    },
+    {
+      "name": "Render recovery preserves the first result in quarantine before a slider save",
+      "passed": true
+    },
+    {
+      "name": "Practice PNG filename uses the played practice mix after the Daily range is exhausted",
+      "passed": true
+    },
+    {
+      "name": "Graph and prototype details retain their independent open state and summary focus",
+      "passed": true
+    }
+  ],
+  "staticReviewExecuted": false,
+  "testedIn": "isolated headless Chrome"
+}

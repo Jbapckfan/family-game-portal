@@ -1,0 +1,16 @@
+✔ clock pauses while hidden or in help, statistics, and reveal dialogs, without charging that time later (1.73275ms)
+✔ back-forward cache retains the clock; disposal clears it and listeners (0.384417ms)
+✔ clock renders retain the focused word input and caret (0.591125ms)
+✔ an adapter can deliberately hand focus to its next interaction during a clock transition (0.304834ms)
+✔ ready native board has correct attribution and shares no solution text (0.467625ms)
+✔ shared results disclose exact hint counts and untimed assistance without copying answer summaries (0.377125ms)
+✔ invalid assistance values cannot produce a misleading share and unfinished rounds cannot share (0.7215ms)
+✔ completed daily from another tab refreshes on storage, visibility, and cached-page return (0.644416ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.580584

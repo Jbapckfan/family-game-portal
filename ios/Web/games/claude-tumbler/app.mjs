@@ -1,9 +1,11 @@
+import {assistanceCount} from './engine.mjs';
 import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
 const glyph=f=>f===0?'●':f>0?'▲':'▼';
 const feedbackLabel=f=>f===0?'exact':f>0?'secret letter is later':'secret letter is earlier';
 mountDailyGame({
+ assistanceCount,
  id:'claude-tumbler',name:'Tumbler',creator:'Claude',credit:'Developed by Claude',accent:'#385d85',
  intro:'Five dials. Six turns. Feel your way to the word.',hintLabel:'Lock one dial · assisted',
  instructions:[

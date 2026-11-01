@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/en-wl/wordlist-diff",
+  "generatedCommit": "7f2f4078354752045ee16a041605686561122185",
+  "sourceRepository": "https://github.com/en-wl/wordlist",
+  "sourceCommit": "1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+  "officialLink": "https://wordlist.aspell.net/dicts/",
+  "checked": "2026-11-01",
+  "selection": "Default size60 US, British ise+ize, Canadian and Australian; retain only original lowercase ASCII entries, without case folding or punctuation stripping. Supplemental union; preserve older sources.",
+  "files": {
+    "en_US.txt": {
+      "url": "https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_US.txt",
+      "bytes": 1024440,
+      "sha256": "45a4dd29b86234fbabce26f33272466bb5572db6fdca1470c4f218e6b666a56d"
+    },
+    "en_GB-ise.txt": {
+      "url": "https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_GB-ise.txt",
+      "bytes": 1021473,
+      "sha256": "3febf4057b95dd654e8c9421197fd8c08cf8e7ae9c4a457228da9ec36af6083c"
+    },
+    "en_GB-ize.txt": {
+      "url": "https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_GB-ize.txt",
+      "bytes": 1021599,
+      "sha256": "dc8f5a35bd0afd61cd80b045d724b13c1491fe5440bf9cdd997882bf62096ec0"
+    },
+    "en_CA.txt": {
+      "url": "https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_CA.txt",
+      "bytes": 1021314,
+      "sha256": "97c814d4f06e31f1ac53a9fe7bc009242c03bdaaa0637408aef27cc0351012ee"
+    },
+    "en_AU.txt": {
+      "url": "https://raw.githubusercontent.com/en-wl/wordlist-diff/7f2f4078354752045ee16a041605686561122185/en_AU.txt",
+      "bytes": 1026003,
+      "sha256": "13ed8e16092b15eebab0ef408f3fe109cdc6877bb27d4aeb3f4bb8633ed4c1f8"
+    }
+  },
+  "copyright": {
+    "file": "esdb-Copyright.txt",
+    "sha256": "71bffd4b74ad47fff01c8b3c666e77da92737854e568850d8728024e0a53f304",
+    "bytes": 4903
+  },
+  "reviewedCorrections": {
+    "file": "reviewed-modern-words.json",
+    "sha256": "7ac56f4146309bd74d380cc72581567394959b97da31de1afeb334af2ff1cbc4",
+    "bytes": 1167
+  }
+}

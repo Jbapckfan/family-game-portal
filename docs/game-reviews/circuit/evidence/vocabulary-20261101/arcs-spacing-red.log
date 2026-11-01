@@ -1,0 +1,38 @@
+(node:13463) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Cairn explains rack placement and distinguishes each empty or removable position (121.392833ms)
+✔ Morph identifies the edit position and explains tapping before opening the letter sheet (29.897125ms)
+✔ Hunch gives visible non-color result marks and a persistent interpretation key (21.706958ms)
+✔ Tangle keeps its consumed clue visible and numbers the selected route without color (26.460708ms)
+✔ Circuit names arcs visibly and describes the next legal action before an error (101.233666ms)
+✔ Quartet makes its saved pair clue available as text and names both hinted cards (11.310959ms)
+✔ Circuit shows four separated bands with explicit three-letter membership and next-arc highlighting (39.206541ms)
+✖ Circuit arc sections join exactly with no empty wedges between their bands (19.585334ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 953.437875
+
+✖ failing tests:
+
+test at tests/elite-boards.test.mjs:86:1
+✖ Circuit arc sections join exactly with no empty wedges between their bands (19.585334ms)
+  AssertionError [ERR_ASSERTION]: each band must meet the next band at the same boundary
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/tests/elite-boards.test.mjs:92:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

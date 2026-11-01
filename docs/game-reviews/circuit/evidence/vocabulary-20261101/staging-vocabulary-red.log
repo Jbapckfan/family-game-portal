@@ -1,0 +1,28 @@
+✖ word acceptance modules and source notices are bundled and their local imports validate (146.1ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 226.72325
+
+✖ failing tests:
+
+test at scripts/sync-ios-web.test.mjs:97:1
+✖ word acceptance modules and source notices are bundled and their local imports validate (146.1ms)
+  Error: ENOENT: no such file or directory, open '/var/folders/ky/s8r5b1q50y980vfrmqf4rg600000gn/T/alford-sync-test-bJVIf0/repo/ios/Web/games/claude-sprout/vocabulary.mjs'
+      at readFileSync (node:fs:624:20)
+      at file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/sync-ios-web.test.mjs:105:18
+      at fixture (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/sync-ios-web.test.mjs:93:9)
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/scripts/sync-ios-web.test.mjs:97:103)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/var/folders/ky/s8r5b1q50y980vfrmqf4rg600000gn/T/alford-sync-test-bJVIf0/repo/ios/Web/games/claude-sprout/vocabulary.mjs'
+  }

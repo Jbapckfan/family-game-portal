@@ -17,7 +17,7 @@ for(const game of games)test(`${game.slug}: six calendar months select distinct 
   assert.equal(dates.length,182);
   assert.ok(new Set(game.puzzles.map(game.key)).size>=200);
   assert.equal(new Set(dates.map(date=>game.key(game.select(date).puzzle))).size,182);
-  assert.deepEqual(DAILY_RESERVATIONS.byGame[game.slug].indices,dates.map(date=>game.select(date).index),'practice reservations match the actual selectors on every protected date');
+  assert.deepEqual(DAILY_RESERVATIONS.byGame[game.slug].indices.slice(0,dates.length),dates.map(date=>game.select(date).index),'original reservation prefix still matches every previously protected date');
   const openingWeek=new Set(calendarDates('2026-10-20','2026-10-29').map(date=>game.key(game.select(date).puzzle)));
   assert.ok(dates.every(date=>!openingWeek.has(game.key(game.select(date).puzzle))),`${game.slug}: the next six months must not recycle a challenge scheduled before this update`);
   const previous=baseline.games.find(p=>p.slug===game.slug);

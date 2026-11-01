@@ -14,16 +14,22 @@ export function assertTangleSourceHash(bytes,expected,file){
 export async function loadTangleLexicon(){
  const english=JSON.parse(await readFile(new URL('english-words-source.json',data),'utf8'));
  const games=JSON.parse(await readFile(new URL('word-game-sources.json',data),'utf8'));
+ const modern=JSON.parse(await readFile(new URL('esdb-word-source.json',data),'utf8'));
+ const disclosed=JSON.parse(await readFile(new URL('zynga-disclosed-source.json',data),'utf8'));
+ assertTangleSourceHash(await readFile(new URL(modern.copyright.file,data)),modern.copyright.sha256,modern.copyright.file);
  const pins={'english-words-alpha.txt':english.files['words_alpha.txt'].sha256,'wordnik-game-words.txt':games.find(s=>s.repository==='https://github.com/wordnik/wordlist').files['wordlist-20210729.txt'].sha256,'enable2k.txt.gz':games.find(s=>s.repository==='https://github.com/BartMassey/wordlists').files['enable2k.txt.gz'].sha256};
- const files=[['english-words-alpha.txt','plain'],['wordnik-game-words.txt','quoted'],['enable2k.txt.gz','gzip'],['zynga-disclosed-words.json','json']];
+ for(const [file,pin] of Object.entries(modern.files))pins['esdb/'+file]=pin.sha256;
+ pins[disclosed.file]=disclosed.sha256;
+ pins[modern.reviewedCorrections.file]=modern.reviewedCorrections.sha256;
+ const files=[['english-words-alpha.txt','plain'],['wordnik-game-words.txt','quoted'],['enable2k.txt.gz','gzip'],['zynga-disclosed-words.json','json'],...Object.keys(modern.files).map(file=>['esdb/'+file,'plain']),[modern.reviewedCorrections.file,'json']];
  const parts=await Promise.all(files.map(async([file,kind])=>{
   const bytes=await readFile(new URL(file,data));
-  if(kind!=='json')assertTangleSourceHash(bytes,pins[file],file);
+  assertTangleSourceHash(bytes,pins[file],file);
   const text=kind==='gzip'?gunzipSync(bytes).toString('utf8'):bytes.toString('utf8');
-  const entries=kind==='quoted'?text.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)):kind==='json'?JSON.parse(text).words:text.split(/\s+/);
+  const entries=kind==='quoted'?text.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)):kind==='json'?JSON.parse(text).words:text.split(/\r?\n/);
   const records=[...new Set(entries)].filter(w=>w!=='');
   const words=records.filter(w=>typeof w==='string'&&/^[a-z]+$/.test(w));
-  return {words,source:{file,words:words.length,droppedShape:records.length-words.length,sha256:createHash('sha256').update(bytes).digest('hex'),pinVerified:kind!=='json'}};
+  return {words,source:{file,words:words.length,droppedShape:records.length-words.length,sha256:createHash('sha256').update(bytes).digest('hex'),pinVerified:Boolean(pins[file])}};
  }));
  return {words:new Set(parts.flatMap(p=>p.words)),sources:parts.map(p=>p.source)};
 }

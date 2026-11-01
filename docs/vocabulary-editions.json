@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "frozenAt": "2026-11-01",
+  "sourceUnion": 410592,
+  "policy": "These prepared replay vocabulary payloads are immutable. Future acceptance changes require a new marker and retained older payloads. Preserve all valid prior event streams and hint choices. Never silently refresh this manifest to bless changed published data.",
+  "payloads": [
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-dovetail/vocabulary.mjs",
+      "semanticSHA256": "036c336186119f8ac1817530a7b58db9258f570c8d0133622ed7b4b4039ded19"
+    },
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-splice/vocabulary.mjs",
+      "semanticSHA256": "46eca3cc2a144149848ae456d6619e4339f0ce5ef0d9da902b6e3e8b8f7203a5"
+    },
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-sprout/vocabulary.mjs",
+      "semanticSHA256": "c40c8a7eadffdf1b70db1cfa8d4bc7cd526d6dfa0d77e0ab6afeb88e89502590"
+    },
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-tangle/vocabulary.mjs",
+      "semanticSHA256": "67107335c8d447332d7101ba7beed931cfd19f3d8d135c5cb6026352267fe8ee"
+    },
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-keystone/vocabulary.mjs",
+      "semanticSHA256": "0495113c50d9dd05df1c708a2a0f9e77506ea3132bbdb581e9ee871ca1e6c94f"
+    },
+    {
+      "edition": "claude-v2",
+      "file": "games/claude-tumbler/vocabulary.mjs",
+      "semanticSHA256": "0ab1c369d11aac832856fe3054721829c24f427558ee248a2146ce9f2808d703"
+    },
+    {
+      "edition": "kimi-tangle-v2",
+      "file": "packages/kimi-pebbles/src/games/tangle/data/lexicon-expansions-v2.json",
+      "sha256": "5aefff209f5b14e11b781c5e5b123a2d16a797e707a3165ac3d1a212b95a8e2b"
+    },
+    {
+      "edition": "kimi-tangle-v2",
+      "file": "packages/kimi-pebbles/src/games/tangle/data/five-preview-v2.json",
+      "sha256": "48ba85ef81a7439ddab6c4a9743a08289a19c003792e761455251eb8ba34b498"
+    },
+    {
+      "edition": "kimi-tangle-v3",
+      "file": "packages/kimi-pebbles/src/games/tangle/data/lexicon-expansions.json",
+      "sha256": "5fe1f3b71c2a09d09413148dcb00896b8e87ab2ceff2f9bf05eb8fc4b8024a3f"
+    },
+    {
+      "edition": "kimi-tangle-v3",
+      "file": "packages/kimi-pebbles/src/games/tangle/data/five-preview.json",
+      "sha256": "ada7362d9a4dcebf10bde9247ecf778941a7bc444594cf6b9c03cf1b50cc3eb4"
+    }
+  ]
+}

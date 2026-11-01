@@ -1,0 +1,63 @@
+{
+  "cases": 11,
+  "passed": 0,
+  "results": [
+    {
+      "name": "Recorded unaided result stays truthful after Undo, Study, and re-finish",
+      "passed": false,
+      "error": "The input did not match the regular expression /Solved, then studied/. Input:\n\n'CHALLENGE COMPLETE\\n' +\n  'That came together.\\n' +\n  '\\n' +\n  '3 moves, 2 checks and 1 undo. Your own finished result.\\n' +\n  '\\n' +\n  'Share this resultTry another mix'\n"
+    },
+    {
+      "name": "Recorded draft loss stays visible after Undo and a winning replay",
+      "passed": false,
+      "error": "The input did not match the regular expression /Rival won/. Input:\n\n'CHALLENGE COMPLETE\\n' +\n  'That came together.\\n' +\n  '\\n' +\n  'Your final distance: 6. Rival: 7. Lower is better.\\n' +\n  '\\n' +\n  'Share this resultTry another mix'\n"
+    },
+    {
+      "name": "Modified, composing, and editable keyboard events are not intercepted",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    },
+    {
+      "name": "Focus has working per-kind fallbacks for draft, launch/next, wave bounds and exhausted undo",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "Opening practice from Daily preserves the explicitly selected resume mix",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n0 !== 5\n"
+    },
+    {
+      "name": "Unchanged day sync preserves the focused Open today banner button",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "Unreadable practice saves survive opening, and are quarantined before a later recovery write",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '{\"schema\":2,\"board\":{\"kind\":1,\"seed\":1606930696,\"identity\":\"[[[1,4,10,13],7,9],[[5,6,7,10],14,11]]\"},\"edition\":\"practice-seed:1606930696\",\"state\":{\"moves\":0,\"checks\":0,\"assisted\":false,\"status\":\"playing\",\"data\":[13,4],\"undos\":0,\"resets\":0,\"studied\":false,\"firstOutcome\":null},\"history\":[]}'\n- '{\"bad\":\"unreadable\",\"sentinel\":\"keep-original\"}'\n"
+    },
+    {
+      "name": "A failed quarantine write protects the original save instead of overwriting it",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '{\"schema\":2,\"board\":{\"kind\":1,\"seed\":1606930696,\"identity\":\"[[[1,4,10,13],7,9],[[5,6,7,10],14,11]]\"},\"edition\":\"practice-seed:1606930696\",\"state\":{\"moves\":1,\"checks\":0,\"assisted\":false,\"status\":\"playing\",\"data\":[13,0],\"undos\":0,\"resets\":0,\"studied\":false,\"firstOutcome\":null},\"history\":[{\"moves\":0,\"checks\":0,\"assisted\":false,\"status\":\"playing\",\"data\":[13,4],\"undos\":0,\"resets\":0,\"studied\":false,\"firstOutcome\":null}]}'\n- '{\"unreadable\":\"quota-test\"}'\n"
+    },
+    {
+      "name": "Render recovery preserves the first result in quarantine before a slider save",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "Practice PNG filename uses the played practice mix after the Daily range is exhausted",
+      "passed": false,
+      "error": "The input did not match the regular expression /practice-3\\.png$/. Input:\n\n'MAKER-Codex__candidate-01-practice-0.png'\n"
+    },
+    {
+      "name": "Graph and prototype details retain their independent open state and summary focus",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    }
+  ],
+  "staticReviewExecuted": false,
+  "testedIn": "isolated headless Chrome"
+}

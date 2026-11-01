@@ -1,5 +1,7 @@
 # Circuit review — October 31, 2026
 
+**November 1 update:** James called Circuit a keeper. [The vocabulary and arc revision](VOCABULARY-2026-11-01.md) supersedes the small-list acceptance, palette and pending-verdict statements in this historical report. MORN/NICE now work on eligible rings; the bands meet at cardinal boundaries and use distinct blue/green/gold/red identities. The October 31 audit numbers below describe that earlier accepted list.
+
 Circuit is game 13, created by Kimi. James reaffirmed Hunch as a keeper, suggested black/white Mastermind-style dots and requested the next game. [Hunch’s dot presentation](../hunch/DOTS.md) is delivered in this shared build. Circuit’s enjoyment, replay preference and disposition await his playtest; Quartet follows after that verdict. No numerical score or relative keeper rank is inferred.
 
 Circuit keeps twelve letters on four numbered arcs. Consecutive letters switch arcs, words contain at least three letters, each next word starts with the preceding word’s final letter, and a chain wins when it covers every letter. The ring, accepted words, published bank/calendar, medal thresholds, scoring and save schema are preserved. Its core is closely comparable to Letter Boxed; changing the square to a ring does not establish original mechanics. No rule redesign is claimed.

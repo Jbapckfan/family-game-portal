@@ -25,7 +25,7 @@ The upstream union includes obscure, historical, taxonomic and potentially sensi
 
 `MAKER-Codex__all-bank-and-dates.json` records every actual date selection and full-bank hash. The audit executes each engine's real input transitions and restores JSON after every transition.
 
-| Game | Stored records | Substantive configurations | Distinct Nov 1–Apr 30 selections |
+| Game | Stored records | Substantive configurations | Distinct Nov 1–May 1 selections |
 |---|---:|---:|---:|
 | Twin Hive | 200 | 200 | 182 |
 | Spare | 200 | 200 | 182 |

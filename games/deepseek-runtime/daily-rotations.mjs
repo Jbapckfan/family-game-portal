@@ -6303,7 +6303,7 @@ export const FRESH_ROTATIONS = Object.freeze(Object.fromEntries(Object.entries({
 }).map(([slug,release])=>[slug,Object.freeze({...release,indices:Object.freeze(release.indices)})])));
 export const DAILY_RESERVATIONS = Object.freeze({
   "start": "2026-10-29",
-  "end": "2027-04-28",
+  "end": "2027-05-01",
   "byGame": {
     "ringcount": {
       "bankCount": 210,
@@ -6489,7 +6489,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "switchpath": {
@@ -6676,7 +6679,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         194,
         195,
         196,
-        197
+        197,
+        198,
+        199,
+        200
       ]
     },
     "counterpart": {
@@ -6863,7 +6869,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "shortlist": {
@@ -7050,7 +7059,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "second-sense": {
@@ -7237,7 +7249,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "sideways": {
@@ -7424,7 +7439,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "tradeoff": {
@@ -7611,7 +7629,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "inbetween": {
@@ -7798,7 +7819,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         187,
         188,
         189,
-        190
+        190,
+        191,
+        192,
+        193
       ]
     },
     "kimi-cairn": {
@@ -7985,7 +8009,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         797,
         798,
         799,
-        800
+        800,
+        801,
+        802,
+        803
       ]
     },
     "kimi-morph": {
@@ -8172,7 +8199,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         233,
         234,
         235,
-        236
+        236,
+        237,
+        238,
+        239
       ]
     },
     "kimi-tangle": {
@@ -8359,7 +8389,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         293,
         294,
         295,
-        296
+        296,
+        297,
+        298,
+        299
       ]
     },
     "kimi-hunch": {
@@ -8546,7 +8579,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         319,
         320,
         321,
-        322
+        322,
+        323,
+        324,
+        325
       ]
     },
     "kimi-circuit": {
@@ -8733,7 +8769,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         55,
         56,
         57,
-        58
+        58,
+        59,
+        60,
+        61
       ]
     },
     "kimi-quartet": {
@@ -8920,7 +8959,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         353,
         354,
         355,
-        356
+        356,
+        357,
+        358,
+        359
       ]
     },
     "deepseek-twin-hive": {
@@ -9107,7 +9149,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "deepseek-spare": {
@@ -9294,7 +9339,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         14,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "deepseek-rung": {
@@ -9481,7 +9529,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "deepseek-cipher": {
@@ -9668,7 +9719,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "deepseek-trail": {
@@ -9855,7 +9909,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         14,
         15,
         16,
-        17
+        17,
+        18,
+        19,
+        23
       ]
     },
     "deepseek-split": {
@@ -10042,7 +10099,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "qwen-quadra": {
@@ -10229,7 +10289,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "qwen-logic-lattice": {
@@ -10416,7 +10479,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         14,
         15,
         16,
-        17
+        17,
+        18,
+        19,
+        23
       ]
     },
     "qwen-syntax-siege": {
@@ -10603,7 +10669,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         15,
         16,
         17,
-        18
+        18,
+        19,
+        20,
+        21
       ]
     },
     "qwen-memory-maze": {
@@ -10790,7 +10859,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         17,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "qwen-pattern-prism": {
@@ -10977,7 +11049,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         214,
         215,
         216,
-        217
+        217,
+        218,
+        219,
+        220
       ]
     },
     "qwen-territory-tactics": {
@@ -11164,7 +11239,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         14,
         18,
         19,
-        20
+        20,
+        21,
+        22,
+        23
       ]
     },
     "claude-dovetail": {
@@ -11351,7 +11429,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         64,
         65,
         66,
-        67
+        67,
+        68,
+        69,
+        70
       ]
     },
     "claude-splice": {
@@ -11538,7 +11619,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         60,
         61,
         62,
-        63
+        63,
+        64,
+        65,
+        66
       ]
     },
     "claude-sprout": {
@@ -11725,7 +11809,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         205,
         206,
         207,
-        208
+        208,
+        209,
+        210,
+        0
       ]
     },
     "claude-tangle": {
@@ -11912,7 +11999,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         50,
         51,
         52,
-        53
+        53,
+        54,
+        55,
+        56
       ]
     },
     "claude-keystone": {
@@ -12099,7 +12189,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         45,
         46,
         47,
-        48
+        48,
+        49,
+        50,
+        51
       ]
     },
     "claude-tumbler": {
@@ -12286,7 +12379,10 @@ export const DAILY_RESERVATIONS = Object.freeze({
         568,
         569,
         570,
-        571
+        571,
+        572,
+        573,
+        574
       ]
     }
   }

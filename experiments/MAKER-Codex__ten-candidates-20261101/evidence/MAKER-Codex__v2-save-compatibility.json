@@ -1,0 +1,32 @@
+{
+  "schema": 2,
+  "namespace": "MAKER-Codex-candidates:v2",
+  "unchanged": [
+    {
+      "path": "engine.mjs",
+      "sha256": "4b8212700cdda18cdba4bdea04f7311bca5c7cdbf804430a4f1e1a22411495a8",
+      "unchangedFromV2": true
+    },
+    {
+      "path": "state.mjs",
+      "sha256": "b5dabec0c695055eb0a2f715da8c1bf6d3e1d1bd524e0c09e5e918ae0828efbc",
+      "unchangedFromV2": true
+    },
+    {
+      "path": "styles.css",
+      "sha256": "b73f0a3eb0be4c94c6a558289798323288b49fc08fa939b8b77499c9dd447f78",
+      "unchangedFromV2": true
+    },
+    {
+      "path": "bank.json",
+      "sha256": "161df4aa9c4abeb2f790f32c17204611390877a174fbcca5d9282e36b2f211cb",
+      "unchangedFromV2": true
+    },
+    {
+      "path": "practice.json",
+      "sha256": "9db437424607fe98e93dc7998784b8265cbb4302c2a982d0c782a2275835f71c",
+      "unchangedFromV2": true
+    }
+  ],
+  "basis": "The restore/validation module, engine and both puzzle banks are byte-identical to the prior v2 build. Valid envelopes retain the same identity, schema and accepted shape."
+}

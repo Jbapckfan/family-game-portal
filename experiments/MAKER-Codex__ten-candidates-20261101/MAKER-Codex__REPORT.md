@@ -1,83 +1,78 @@
-# Ten playable replacement candidates
+# Ten replacement candidates — compatible revision 2.1
 
-Built November 1, 2026 in an isolated experiment. James chooses the keepers and final names. These prototypes have not been added to the Alford Daily catalog, ranking, runtime, or iOS app. No main-checkout file was edited.
+This is the isolated, playable Alford Daily experiment. The focused 2.1 repair keeps the existing v2 schema, namespace and valid saves; no new progress reset is introduced. See [the focused adjudication](MAKER-Codex__REVIEW-ADJUDICATION-v2.1.md). James chooses the keepers and final names. The existing catalog, ranking, runtime and iOS app were not edited. `index.html` is a self-contained local gallery with no asset requests, server, accounts, telemetry or paid services.
 
-Open `index.html` directly, or serve its exact contents as an HTML response in an existing test tab. It is one self-contained file: no asset URLs, fetches, CDN, account, server, build dependency, paid service, or download is needed to play. The blue/teal UI uses native system fonts, touch buttons and ordinary keyboard-operable controls. Candidate 01 also accepts arrow keys when focus is outside controls. Reduced motion is respected.
+Start with Candidate **01, 07, 10 and 09** as a subjective trial order. Human enjoyment, comfortable difficulty, originality relative to all published games, and keeper status remain unverified. The implementations are original to this experiment; the broad genres have precedents.
 
-Start with **Candidate 01, 07, 10 and 09**. They add the most different decision structures to the present collection. This is my playtest order, not a ranking supplied by James or evidence that any candidate is a keeper. Human enjoyment, first-time comprehension and comfortable difficulty remain pending.
-
-The inspected baseline has 32 daily games plus its bonus. Its catalog, review queue, ranking and detailed Sideways/Hunch/Circuit notes were read. The new set deliberately avoids word guessing, word ladders, anagrams, synonyms and Letter Boxed-style chains. These are original implementations and combinations for this experiment; the broad genres have precedents. No first-ever mechanic, exhaustive prior-art search, trademark clearance or universal originality is claimed.
-
-| Candidate | Distinct hook and first action | Difficulty and replay | Sharing appeal and viability |
-|---|---|---|---|
-| 01 | Two separate frictionless worlds receive the same arrow command. Move both discs onto their own goals simultaneously. Tap an arrow and see two different consequences. | Exact shortest paths span 7–12 commands. The player must plan interactions between wall layouts. Any move can be undone. Different geometry and goals on 182 editions. | Compare total moves and undo counts on the same edition without exporting either board or the route. Strong first test for James: little reading, substantial planning. Risk: must communicate the two-world behavior clearly. |
-| 02 | Five numeric pulse strips add into one visible target skyline. Shift a strip; watch all eight column sums respond. | Every prepared edition has exactly one assignment of strip positions. Minimum shifts from the initial left alignment span 10–20. Target/current differences are visible. | Share action totals while withholding target/profile values. Feasible daily composition puzzle. Risk: number juggling and incremental shifts may feel more like work than discovery; blind testing should decide. |
-| 03 | A small tangled graph changes when two anchor discs swap. Remove every crossing; shared endpoints are allowed. | All editions require exactly three swaps, proved by checking every shorter sequence. The initial embedded graph is varied, with rotational/reflection equivalents removed. | Very quick, visual before/after satisfaction; result exports no graph. Risk: a three-swap snack may still be too brief for James given his Ringcount/Sideways feedback. Do not increase a numerical claim of difficulty based on solver search alone. |
-| 04 | Six arithmetic keys are consumed once each. Their order must produce one exact target, with a live calculation tape. | Exactly one legal six-operation permutation reaches each target. Whole-number intermediates must stay in 1–199. Reverse and half have explicit constraints. | Compare thinking/actions without sharing the equation. A compact numerical lane with no dictionary maintenance. Risk: mental-arithmetic preference is polarizing; operation ordering alone does not prove enjoyable difficulty. |
-| 05 | Pack five tetrominoes into a daily silhouette. A dot marks the placement anchor; orientations include rotations and mirrors. Tap a piece, turn it, and place its anchor. | Constructive exact-cover certificates prove every silhouette tileable. Multiple valid tilings are accepted. Holes and piece multisets vary; symmetrical boards are deduplicated. All 182 witnesses also finish through real UI click handlers. | Tactile, readable shapes; share only finished status and attempt totals. Familiar genre, useful comparison candidate. Risk: no uniqueness promise, drag support or optimal-placement score. The original bounding-box anchor problem was fixed before handoff. |
-| 06 | Order six weighted artifacts using a small set of sum and relative-position clues. Tap two artifacts to swap. | Independent enumeration of all 720 orders proves one answer on every edition. Check is explicit; it shows which clues agree. Undo remains available. | A quick deduction result without showing the order or clues. Feasible, inexpensive to generate. Risk: closest to generic ordering logic; no measured difficulty curve and some clue sets are short. |
-| 07 | Three taps inject energy into a finite cascade. At four charges a cell fires into its neighbors. Wake all sixteen cells. | Every edition is solvable in exactly three pulses; no one- or two-pulse solution exists. Repeated taps are legal. Boundary energy escapes, so cascades terminate. Live charge counts, fired checkmarks and brief cascade flashes explain the reaction. | A compact chain-reaction finish that is easy to compare without revealing the tap locations. Strong candidate for a more physical daily ritual. Risk: spatial consequences may be hard to predict at first; animation is feedback, not a calibrated tutorial. |
-| 08 | Set angle and power to land inside three zones under different constant wind pushes. Launch, read short/long feedback, adjust. | Turn-based discrete ballistics; every stage has a reachable solution. No motor timing or countdown. Three clean shots complete a round; retries remain possible. | Shot counts and bullseyes have obvious comparison appeal. Feasible skill practice, with a deliberately simplified physical model. Risk: binary adjustment can become routine, and 182 numeric setups do not prove six months of fresh-feeling play. |
-| 09 | Draft from one shared pool against a rival that plans every remaining pick. Both sides pursue their displayed two-resource targets. Denial matters. | Exact minimax supplies the rival. Every prepared hand gives a perfect-play human winning margin of 1–5. Lower final target distance wins; a poor pick can still lose. Undo restores the complete human/rival turn. | Win/loss and action totals are spoiler-free; targets, cards and picks stay local. Strong contrast with the existing solitaire puzzles. Risk: AI is intentionally exact and can punish a first-time player; casual difficulty is not calibrated. |
-| 10 | Write six commands, then execute that same program three times. Collect beacons and arrive with the right facing. | Every prepared board has exactly one successful six-slot program among all 729 possible Forward/Left/Right programs. After a run, scrub its executed commands to inspect each loop and diagnose a block. | The compact program creates an explainable aha, while sharing conceals the program/map. Strong candidate for James’s harder-game request. Risk: programming notation adds onboarding cost and needs blind testing. |
-
-Possible final names are only suggestions for James to choose, never product names assigned by this prototype:
-
-| Candidate | Name options |
+| Candidate | Hook |
 |---|---|
-| 01 | Tandem / Dual Drift / In Step |
-| 02 | Waveform / Counterwave / Overlap |
-| 03 | Clearline / Uncross / Anchor Swap |
-| 04 | Aftermath / Order of Operations / Six Keys |
-| 05 | Inset / Silhouette / Exact Fit |
-| 06 | Weighted Order / Relic Row / Between |
-| 07 | Afterglow / Cascade / Three Sparks |
-| 08 | Windline / Landing Zone / Loft |
-| 09 | Shared Reserve / Denial / Counterdraft |
-| 10 | Loopcraft / Repeat Route / Six Commands |
+| 01 | Two frictionless worlds receive the same directional command. Reach both goals simultaneously. Exact shortest paths span 7–12 moves. |
+| 02 | Shift five numeric pulse strips until their sums form one exact wave. Unique assignments; explicit one-beat buttons. |
+| 03 | Swap two anchors to untangle a small planar graph. Every current board has a proved three-swap solution; that constant is intentional and not a varying difficulty score. |
+| 04 | Consume six arithmetic operations once each, in the only order reaching the target. A live calculation tape shows every intermediate value. |
+| 05 | Pack five tetrominoes into a daily silhouette. Marked anchors, turns/mirrors, and multiple valid tilings. |
+| 06 | Order six weighted artifacts using sums and positional relationships. Exactly one arrangement fits every clue. |
+| 07 | Use three pulses to wake all sixteen cells through finite energy cascades. Repeated taps are allowed. |
+| 08 | Set discrete angle and power to hit three landing zones under a constant wind push. No reaction timer; successful paths remain visible until Next target. |
+| 09 | Draft against an exact rival from one shared pool while both sides pursue different two-resource targets. Lower final distance wins. |
+| 10 | Write six commands and repeat that program three times. Collect beacons, finish at the goal and face correctly. Scrub the executed run to inspect it. |
 
-## Reproducible content and evidence
+The historical [revision-1 report](MAKER-Codex__REPORT-v1.md) preserves detailed design rationales and possible name options for James. Its old storage/study behavior and old test totals are historical, superseded below.
 
-`bank.json` contains 182 prepared boards per candidate, 1,820 total, for consecutive dates **November 1, 2026 through May 1, 2027**. This exceeds six complete calendar months by one edition. Each record includes its seed, substantive identity and a concrete solution witness. `tools/generate-bank.mjs` regenerates the entire bank from local deterministic code. Existing editions are data in this artifact; adding future dates is intentionally separate from the main product’s dated schedule.
+## Daily, practice and saved progress
 
-Freshness keys ignore display labels and IDs. They remove relevant equivalent presentations: common board symmetries/board swap for 01, time reversal and strip reordering for 02, circle dihedral symmetries and vertex labels for 03, shape/board symmetries for 05, artifact relabeling/order of clues and reversed positions for 06, grid symmetries for 07, card ordering for 09, and common grid/facing symmetries for 10. Arithmetic inputs/operation magnitudes, ballistic target/wind triples, and draft target/card multisets are gameplay data rather than cosmetic IDs. This is an engineering freshness definition, not proof that people will find every edition equally fresh or fun.
+The original `bank.json` remains byte-for-byte unchanged: 182 Daily editions per candidate, November 1, 2026 through May 1, 2027. None of its Candidate 06 boards starts solved. A guard now rejects already-solved Candidate 06 output for new generation; all existing Daily seeds still reproduce exactly.
 
-The full-bank audit passed **136,711 assertions**. Twenty Chrome pointer cases and 182 additional packing-handler cases passed. The independent audit checks all certificates and all promised uniqueness/minimum claims. It uses a separate slide BFS, geometric segment intersection test, arithmetic permutation evaluator, weighted-clue evaluator, deterministic ballistics formula, toppling order and program executor. Packing shape geometry and playable anchors are checked. Draft search is recomputed with the production exact minimax; legality, stored optimal continuation and final scoring are checked separately, but there is no independent second minimax implementation.
+`practice.json` adds 182 independently generated practice editions per candidate. Every practice substantive identity is disjoint from every prepared Daily identity for that candidate, and practice identities are unique within their own pool. There are 3,640 prepared boards across both pools. Replay cycles through a finite separate practice pool; it does not promise unlimited novelty.
 
-Current machine-readable results are in:
+Daily controls permit dates on or before the current Chicago date, within the prepared range. An invalid date is rejected and the visible picker is restored to the played edition. Opening any game from the gallery resets to today's Daily. A date outside the prepared range shows an honest unavailable screen with a practice option. An open board is retained across a date rollover, with an explicit button for the new Daily. These are UI protections: all offline puzzle data are bundled, so this is not a tamper-proof anti-cheat boundary.
 
-- `evidence/MAKER-Codex__generation.json` — bank counts, identity counts, par ranges and actual generator timings.
-- `evidence/MAKER-Codex__audit.json` — full-bank assertion count and per-candidate results.
-- `evidence/MAKER-Codex__browser-qa.json` — 20 Chrome cases: ten at 1440×1000 and ten at 390×844. Each completes using the actual pointer controls, reloads the result, undoes, checks sharing, studies an assisted solution and starts separate practice.
-- `evidence/MAKER-Codex__packing-ui-qa.json` — all 182 packing certificates through actual DOM button handlers, with explicit checks against disabled anchors. The separate phone/desktop pointer cases cover geometry.
-- `evidence/MAKER-Codex__candidate-01-phone.png` through `...-10-phone.png`, equivalent desktop captures, two gallery captures and the actual downloaded `MAKER-Codex__share-result.png`.
+Practice has an explicit Resume practice control. Opening practice from Daily returns to that selected mix instead of replacing the resume pointer with mix 1; only Next practice mix advances it. Revision 2 uses a new `MAKER-Codex-candidates:v2` storage namespace, visibly labeled in the UI. Revision-1 progress is neither read nor written; it remains available if the prior build is restored. This is deliberate prototype isolation, not a claim that old saves were migrated. No user's visible-tab storage was accessed during testing.
 
-All tests use local files. Headless Chrome was authorized and run without visible tabs or a local listener. The initial restricted launch failed at the OS boundary; the authorized headless run completed. An early classic-script global collision (`top`) was reproduced in Chrome and corrected by isolating the bundle in an IIFE. No unrelated Chrome window or process was closed.
+Revision-2 saves bind schema, kind, seed, substantive board identity, and the played daily date or practice seed. `state.mjs` validates and reconstructs each kind's data, legal coordinates, permutations, operations, masks, shots, placements and derived run records. The first terminal outcome also carries a validated board witness. Counters must be bounded integers. Histories must be arrays of at most 80 valid positions. Mismatches and malformed saves recover to a fresh board with a visible warning. The original record remains untouched on opening. Before any recovery write replaces it, an exact verified quarantine copy is stored; if that backup fails, the original is not overwritten. Render-failure recovery follows the same rule. Persisted text is not trusted as markup.
 
-Reproduce from this folder:
+## Study, results and counters
+
+Study requires a visible confirmation. Revealing a solution during play marks the attempt assisted, but does not install a completed board, fabricate launches, or set a winning status. Candidate 01 shows the actual sequence of arrows and both positions after each command; Candidate 07 shows the actual three pulse coordinates. All ten reveal their real starting-board certificate.
+
+The first honest terminal result and its metrics are retained. Studying after an unaided win reports **Solved, then studied**; studying after an actual loss reports **Rival won, then studied**. Reopening/resetting a finished board does not rewrite that first result. The on-screen result card and shared text both label the retained first result. The current board is labeled separately as a replay after an undo/reset or later finish, including a loss followed by a winning replay. Ongoing assisted play says **In progress**, including after undo/reset; it never says Assisted finish.
+
+Undo and reset have separate counters. Both retain cumulative attempted moves and checks. Post-terminal Check/Run actions are visibly disabled and guarded. Candidate 10's move count combines slot edits and runs; its six-slot metric describes program size, not a move par. Share text and PNG use a result allowlist and include no routes, clues, targets, picks, placements or programs. The actual PNG export works with or without Canvas `roundRect`; practice filenames use the played practice mix. No external share/send or clipboard write was performed by QA.
+
+## Input, accessibility and feedback
+
+A persistent live region survives rendering. Stable controls retain focus after changes, with per-kind fallbacks when a control is disabled or replaced; independent detail panels retain open state and summary focus; unchanged date checks retain the existing banner button; aim sliders and the program scrubber update continuously on `input` while keeping the same range element mounted. Actual pointer-drag feedback and keyboard focus were tested. Candidate 01 arrow shortcuts work even while a board button has focus. Shortcuts ignore Ctrl/Meta/Alt, IME composition and editable contexts. Arithmetic supports keys 1–6; programming supports F/L/R and slot keys 1–6. Ordinary native button keyboard access remains available.
+
+Boards have role-bearing labels, the graph exposes adjacency in both node labels and a text list, and packing pieces expose their shape and oriented cell coordinates. Candidate 08 states the numeric landing zone and bullseye distance in text and in the SVG's accessible description. These changes were checked in the DOM; no physical screen reader or assistive-technology certification is claimed.
+
+Candidate 02 strips are now noninteractive visuals; only large explicit one-beat arrows shift them. The arrows meet 44×44px at tested widths 320, 375 and 390px. Profile anchors are labeled, bar heights remain proportional, and phone metrics stay visible. At narrower widths, artifact and program controls wrap to preserve usable targets. Lifting a packing piece preserves its placed orientation; selecting a different piece does not accidentally lift an occupied one. Cascade sparks occur for the current pulse and do not replay on undo or unrelated rendering. Successful aiming paths remain visible until the player advances.
+
+## Verification and reproducibility
+
+Machine-readable results are the source of exact totals:
+
+- `evidence/MAKER-Codex__audit.json`: full unchanged Daily-bank solvability, uniqueness/minimum, freshness and **every-seed** deterministic reproduction checks.
+- `evidence/MAKER-Codex__practice-audit.json`: the same checks for all practice boards.
+- `evidence/MAKER-Codex__state-qa-v2.json`: per-kind save validation, malformed/XSS values, identity/date mismatches, first-outcome semantics, disjoint pools and unchanged Daily-bank digest.
+- `evidence/MAKER-Codex__focused-review-baseline.json` and `...focused-review-repaired.json`: all eleven focused follow-up groups were observed failing against v2, then passing after repair. They cover eight review findings plus separate recovery/quota branches. `...v2-save-compatibility.json` records the unchanged schema/engine/bank hashes.
+- `evidence/MAKER-Codex__review-regressions-v2.json`: actual headless Chrome regressions for the demonstrated review issues, including real pointer dragging, an actual draft loss, old-save preservation, piece lifting and ephemeral cascades.
+- `evidence/MAKER-Codex__browser-qa.json`: ten completed pointer flows at desktop and ten at phone size, including reload, undo, confirmed study with first-result retention, separate practice and real PNG export.
+- `evidence/MAKER-Codex__packing-ui-qa.json`: all 182 original Daily packing certificates through the actual DOM handlers; the test clock is set after the prepared dates instead of bypassing the date gate.
+
+The content audit uses separate slide BFS, geometric crossing checks, arithmetic and order enumeration, shape geometry, toppling order, ballistics formula and program executor. The drafting audit still recomputes production minimax rather than using a second independent minimax implementation; that limitation remains explicit. Assertions and static reviews do not prove universal fun, calibrated difficulty or first-time comprehension.
 
 ```sh
-node tools/generate-bank.mjs
+node tools/generate-practice.mjs
 node tools/build.mjs
 node tools/audit.mjs
+node tools/audit.mjs practice.json
+node tools/state-qa.mjs
+node tools/review-regressions.mjs
+node tools/focused-v2-qa.mjs
 node tools/browser-qa.mjs
 node tools/packing-ui-qa.mjs
 ```
 
-The two browser scripts use the already installed Playwright module specified in the task. Nothing is installed. Node checks and the builder have no package dependencies.
+The browser scripts use only the already installed Playwright specified by the parent task. They launch headless Chrome in isolated contexts; no listener, visible tab, existing browser profile or user save is opened by this subagent. The root agent owns refresh of the existing visible second tab, after notifying James.
 
-## State, reversibility and sharing
-
-Progress, the latest 80 saved undo positions and results stay in local browser storage under an experimental namespace. Daily and practice keys differ. Ordinary undo keeps cumulative move/check totals and increments the undo count. Reset restores the board while retaining attempt totals; it is itself undoable. Study a solution marks assistance permanently for that attempt and exposes that label in every result. Practice starts separately on the next prepared mix. A schema migration, concurrent-tab conflict resolution and production calendar integration are not implemented in this spike.
-
-Share text and 1080×1350 PNG are created from a status allowlist: candidate label, edition, completion/assistance, move/check totals and undo count. Board, clues, targets, route, cards, program and solution data are excluded. Copy has an explicit manual-selection fallback when clipboard permission is unavailable. Native sharing is offered when the browser supports it. The actual PNG download was verified; no external message, Photos save, clipboard copy or native share send was performed during QA. There is no public URL or public deployment, so this demonstrates shareable results, not a hosted friend challenge.
-
-## Handoff for the root agent
-
-Runtime root: this directory. Runtime file: `index.html`. It has no required assets. Existing-tab routing can fulfill this file as `text/html` with no server. Keep it in the second existing visible tab if James wants to try it; do not add the candidates to the main catalog.
-
-Start selectors: `[data-open="1"]` through `[data-open="10"]`; `#date` chooses any prepared edition; `[data-action="replay"]` starts a practice mix. `window.candidateLab.snapshot()` exposes only current visible state, kind/index/mode and undo-history length. It does not expose hidden bank solutions. The source-assisted QA reads its certificates from `bank.json` outside the browser.
-
-Control selectors are documented concretely in `tools/browser-qa.mjs`: `data-action="dirN"`, `data-action="shiftROW:DELTA"`, `data-node`, `data-op`, `data-piece`/`data-cell`/`orient1`, `data-artifact`/`check-order`, `data-cell` for cascades, `#angle`/`#power`/`launch`, `data-draft`, and `data-command`/`data-slot`/`run`. Program run review is `#run-step`. Share opens `[data-action="share"]`, displays `#share-text`, downloads through `[data-action="image"]`, and closes with `[data-action="close-share"]`.
-
-No physical phone, VoiceOver, touch hardware, long-session performance, Safari, Firefox, native iOS integration, public deployment or blind playtest is certified. Screenshots were inspected for rendering and readability; the root agent owns the requested visible-tab presentation. Whether these become keepers remains entirely James’s call.
+Physical phone, Safari/Firefox, VoiceOver, long sessions, production multi-tab synchronization, native iOS integration, public deployment and blind play remain pending. The main catalog is untouched.

@@ -59,6 +59,7 @@ async function dismissHelp(page) {
 async function result(page, puzzleId, title) {
   await page.clock.runFor(1000);
   const heading = page.locator('[role="dialog"] [data-slot="dialog-title"]');
+  if(!await heading.isVisible()) await page.getByRole('button',{name:'See results',exact:true}).click();
   await heading.waitFor({ timeout: 10000 });
   const terminalText = await heading.innerText();
   assert.match(terminalText, title);
@@ -115,28 +116,32 @@ export async function playGame(page, slug, { checkpoint, date = '2026-10-28' } =
       const index = [...next].findIndex((letter, position) => letter !== before[position]);
       await morphLetter(page, index, next[index]);
       if (rung === 1) { await checkpoint(); await dismissHelp(page); }
-      await page.getByRole('button', { name: 'LOCK IN RUNG', exact: true }).click();
+      await page.getByRole('button', { name: 'CHECK WORD', exact: true }).click();
     }
-    return result(page, puzzleId, /Gold.*target met/);
+    const completed=await result(page, puzzleId, /Ladder complete/);
+    assert.match(await page.getByRole('dialog').innerText(),/Gold · suggested pace met/);
+    return completed;
   }
   if (game === 'hunch') {
     for (const letter of 'crane') await page.getByRole('button', { name: new RegExp(`^Letter ${letter}(?:,|$)`) }).click();
     await page.getByRole('button', { name: 'Enter', exact: true }).click();
-    assert.equal(await page.locator('.hunch-result-mark').count(), 5);
+    assert.equal(await page.locator('[data-hunch-row="0"] .hunch-letters').innerText().then(t=>t.replace(/\s/g,'').toLowerCase()),'crane');
+    await page.locator('[data-hunch-row="0"] .hunch-dots').waitFor();
     for (let index = 0; index < puzzle.length; index++) {
       await page.getByRole('button', { name: new RegExp(`^Letter ${puzzle[index]}(?:,|$)`) }).click();
       if (index === 2) { await checkpoint(); await dismissHelp(page); }
     }
     await page.getByRole('button', { name: 'Enter', exact: true }).click();
-    return result(page, puzzleId, /Sharp hunch/);
+    return result(page, puzzleId, /Hunch solved/);
   }
   if (game === 'tangle') {
-    await page.getByRole('button', { name: /Hint · 1 free/ }).click();
+    await page.getByRole('button', { name: /Clue · 1 available/ }).click();
+    await page.getByRole('button',{name:'Use my clue',exact:true}).click();
     for (let index = 0; index < fixture.route.length; index++) {
       await tangleWord(page, fixture.route[index]);
       if (index === 0) { await checkpoint(); await dismissHelp(page); }
     }
-    return result(page, puzzleId, /Gold rush/);
+    return result(page, puzzleId, /Gold reached/);
   }
   if (game === 'circuit') {
     for (let wordIndex = 0; wordIndex < puzzle.sol.length; wordIndex++) {
@@ -148,7 +153,7 @@ export async function playGame(page, slug, { checkpoint, date = '2026-10-28' } =
       }
       await page.getByRole('button', { name: 'Play word', exact: true }).click();
     }
-    return result(page, puzzleId, /Gold/);
+    return result(page, puzzleId, /Circuit complete/);
   }
   for (let index = 0; index < puzzle.groups.length; index++) {
     for (const word of puzzle.groups[index].members) {
@@ -162,5 +167,5 @@ export async function playGame(page, slug, { checkpoint, date = '2026-10-28' } =
       await page.locator('#quartet-hint').waitFor();
     }
   }
-  return result(page, puzzleId, /Flawless quartet/);
+  return result(page, puzzleId, /All four found!/);
 }

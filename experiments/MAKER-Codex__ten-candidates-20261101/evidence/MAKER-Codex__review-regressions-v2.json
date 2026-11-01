@@ -1,0 +1,26 @@
+{
+  "cases": 18,
+  "status": "passed",
+  "results": [
+    "Future picker rejected and visible date restored",
+    "Practice resumes explicitly and opening another game resets to today Daily",
+    "Midnight/date rollover offers new Daily without replacing the open board",
+    "Dates before/after prepared range show unavailable; practice remains available",
+    "All ten malformed/XSS saves recover without executing persisted markup",
+    "Keyboard action retains focus and the same persistent live-region node",
+    "Continuous aim readout/focus, numeric target and successful trajectory retained until Next target",
+    "Study cancellation, ongoing assistance, separate reset counts and three actual pulse coordinates",
+    "Honest win and first metrics retained after confirmed route study",
+    "An actual draft loss cannot be converted into an assisted solve",
+    "Empty-run study/scrub/undo sequence stays renderable",
+    "Post-terminal run is guarded; continuous program scrub retains input focus",
+    "Post-terminal check is guarded",
+    "Wave shift controls meet 44px at 320/375/390px, phone metrics stay visible, no overflow",
+    "Public board, graph adjacency and piece shapes have accessible labels",
+    "Revision-1 storage remains untouched; arrows work while a board control has focus",
+    "Lifting preserves piece orientation and a different selected piece cannot accidentally lift it",
+    "Cascade spark feedback occurs for a pulse and does not replay on undo"
+  ],
+  "errors": [],
+  "scope": "Isolated headless Chrome contexts only; no user storage or visible tabs accessed."
+}

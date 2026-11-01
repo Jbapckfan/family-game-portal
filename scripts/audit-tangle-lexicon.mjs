@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from './independent-modern-lexicon.mjs';
 /** Independent word-centric audit. Does not import the production trie/solver. */
 import {readFile,writeFile} from 'node:fs/promises';
 import {gunzipSync} from 'node:zlib';
@@ -12,7 +13,7 @@ const [alpha,wordnik,enable,disclosed,raw,extension,preview]=await Promise.all([
 ]);
 const englishPin=JSON.parse(await readFile(new URL('english-words-source.json',data),'utf8')),gamePins=JSON.parse(await readFile(new URL('word-game-sources.json',data),'utf8'));
 for(const [bytes,expected] of [[alpha,englishPin.files['words_alpha.txt'].sha256],[wordnik,gamePins.find(p=>p.repository==='https://github.com/wordnik/wordlist').files['wordlist-20210729.txt'].sha256],[enable,gamePins.find(p=>p.repository==='https://github.com/BartMassey/wordlists').files['enable2k.txt.gz'].sha256]])assert.equal(createHash('sha256').update(bytes).digest('hex'),expected,'independent source checksum');
-const excluded=new Set(TANGLE_REVIEWED_EXCLUSIONS),union=[...new Set([...alpha.split(/\s+/),...wordnik.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),...gunzipSync(enable).toString().split(/\s+/),...JSON.parse(disclosed).words])].filter(w=>/^[a-z]+$/.test(w));
+const excluded=new Set(TANGLE_REVIEWED_EXCLUSIONS),union=[...new Set([...alpha.split(/\s+/),...wordnik.split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),...gunzipSync(enable).toString().split(/\s+/),...JSON.parse(disclosed).words,...independentlyReadModernWords(data)])].filter(w=>/^[a-z]+$/.test(w));
 const allWords=union.filter(w=>w.length>=3&&w.length<=25&&!excluded.has(w));
 const omitted={shorterThanThree:union.filter(w=>w.length<3).length,longerThanBoard:union.filter(w=>w.length>25).length,closedExclusions:union.filter(w=>w.length>=3&&w.length<=25&&excluded.has(w)).length};
 assert.equal(union.length-allWords.length,Object.values(omitted).reduce((a,b)=>a+b,0));
@@ -34,7 +35,7 @@ const originals=JSON.parse(raw),extensions=JSON.parse(extension),sample=JSON.par
 for(let i=0;i<originals.length;i++){
  const p=originals[i],expected=enumerate(p.g);assert.deepEqual(extensions[p.g],expected,`generated coverage: ${i+1}`);
  const base=reviewTanglePuzzle({...p,targets:medalTargets(p.max)}),expectedRuntime=[...new Set([...base.words,...expected])].sort();
- const day=20757+((i-20757%430+430)%430),selection=dailyTangle(day),actual=selection.puzzle;
+ const day=20758+((i-20758%430+430)%430),selection=dailyTangle(day),actual=selection.puzzle;
  assert.equal(actual.g,p.g);assert.equal(selection.puzzleNo,i+1);
  assert.deepEqual(actual.words,expectedRuntime,`runtime coverage: ${i+1}`);assert.deepEqual(actual.targets,base.targets,`goal preserved: ${i+1}`);
  assert.equal(actual.n,actual.words.length);assert.equal(actual.max,actual.words.reduce((n,w)=>n+pointsFor(w),0));

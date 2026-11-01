@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "an existing NICE draft and Daily statistics load unchanged",
+    "real physical MORN → NICE submission accepts both words and seeds the next word",
+    "new dictionary words survive reload without duplicated scoring or a false solve",
+    "a full-dictionary long word is readable at 320px without horizontal overflow",
+    "a full-dictionary long word is readable at 390px without horizontal overflow",
+    "a full-dictionary long word is readable at 1440px without horizontal overflow",
+    "same-arc moves stay blocked and invented alternating strings remain invalid",
+    "a legacy completed round restores silently and retains its date and aggregate share result"
+  ],
+  "errors": [],
+  "localRoutedBootMs": 354
+}

@@ -1,0 +1,28 @@
+✔ word acceptance modules and source notices are bundled and their local imports validate (268.065667ms)
+✔ ordinary sync copies the fixed runtime set including Ringcount and Switchpath image export and check is read-only (239.75475ms)
+✔ sync and check reject a symlinked game-root before changing any bundle (303.068292ms)
+✔ sync and check reject a destination ancestor link before any output mutation (318.883709ms)
+✔ source game, font, wrapper and shared directory links fail before creating any bundle (1057.378209ms)
+✔ Kimi sources reject documents, hidden paths, unknown extensions and extra wrapper files before mutation (2763.482333ms)
+✔ shared runtime file symlinks are rejected in both source and destination before any bundle changes (3013.341375ms)
+✔ shared runtime check reports missing, corrupted and extra files without mutation (1341.056959ms)
+✔ an unknown destination directory is rejected before replacing any known bundle (306.144625ms)
+✔ structural validation accepts assets-only Kimi runtime and optional separate fonts (366.801ms)
+✔ Kimi wrappers stage their own optional icon.svg and validate its local reference (285.438042ms)
+✔ Kimi icon allowance still rejects other wrapper files and nested resources (1096.043166ms)
+✔ Kimi icon references remain local to their own wrapper and must exist (744.612083ms)
+✔ structural validation rejects shared documents and missing local wrapper assets (377.901292ms)
+✔ DeepSeek, Qwen and Claude stage optional local styles and icons while excluding development files (291.279375ms)
+✔ shared-module icon allowance rejects extra bundled files (1095.613083ms)
+✔ flat shared modules reject documents, data, nested paths and empty directories before changing bundles (3164.438708ms)
+✔ shared module check detects missing and changed files and sync repairs only generated output (3843.689375ms)
+✔ structural validation treats dictionary words and quoted import examples as data (183.3485ms)
+✔ structural validation checks local game module imports and rejects remote, missing and cross-game references (3209.272ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24352.004

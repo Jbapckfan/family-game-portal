@@ -37,14 +37,14 @@ test('appended unpublished records do not change the canonical practice reserve'
 });
 test('Prism practice omits the duplicate legacy rules even after the daily reservation expires',async()=>{
  const {PUZZLES}=await import('../qwen-pattern-prism/puzzles.mjs');
- const candidates=practiceCandidates('qwen-pattern-prism','2027-04-29',PUZZLES.length);
+ const candidates=practiceCandidates('qwen-pattern-prism','2027-05-02',PUZZLES.length);
  assert.equal(candidates.length,200);
  assert.equal(new Set(candidates.map(index=>substantiveSignature('qwen-pattern-prism',PUZZLES[index]))).size,200);
  assert.equal(candidates.filter(index=>index<30).length,5);
 });
 test('Splice practice honors the canonical editorial hold after the reservation expires',()=>{
  const rotation=FRESH_ROTATIONS['claude-splice'];
- const candidates=practiceCandidates('claude-splice','2027-04-29',rotation.bankCount);
+ const candidates=practiceCandidates('claude-splice','2027-05-02',rotation.bankCount);
  assert.ok(!candidates.includes(7),'splice-8 is held');
  assert.ok(!candidates.includes(23),'splice-24 is held');
  assert.equal(candidates.length,200);
@@ -52,7 +52,7 @@ test('Splice practice honors the canonical editorial hold after the reservation 
 test('Sprout keeps all eleven reviewed legacy graphs out of new practice',async()=>{
  const {PUZZLES}=await import('../claude-sprout/puzzles.mjs');
  const held=new Set([7,12,54,58,61,62,86,88,116,124,128].map(n=>`sprout-${n}`));
- const candidates=practiceCandidates('claude-sprout','2027-04-29',PUZZLES.length);
+ const candidates=practiceCandidates('claude-sprout','2027-05-02',PUZZLES.length);
  assert.equal(PUZZLES.length,211);assert.equal(candidates.length,200);
  assert.ok(candidates.every(index=>!held.has(PUZZLES[index].id)));
 });

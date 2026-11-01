@@ -1,0 +1,21 @@
+{
+  "providers": [
+    "Gemini"
+  ],
+  "inlineAll": true,
+  "paths": [
+    "games/claude-tangle/engine.mjs",
+    "games/claude-tangle/word-acceptance.mjs",
+    "games/claude-tumbler/engine.mjs",
+    "games/deepseek-rung/engine.mjs",
+    "packages/kimi-pebbles/src/games/quartet/engine.ts",
+    "packages/kimi-pebbles/src/games/tangle/engine.ts",
+    "packages/kimi-pebbles/src/games/tangle/lexicon.ts",
+    "packages/kimi-pebbles/src/games/tangle/progress.ts",
+    "scripts/tangle-lexicon.mjs",
+    "scripts/frozen-vocabulary-editions.test.mjs",
+    "scripts/fresh-reserve-20261101.test.mjs",
+    "output/remaining-games-20261101/final-contracts.txt"
+  ],
+  "prompt": "Give a final static code review directly in your final response, <=650 words. Do not execute, fetch, mutate, make a plan or write artifacts. Relevant Alford Daily final acceptance/save changes supplied in full small modules; no raw banks, generated payloads, complete UI or screenshots. Review concrete logic, not omitted code assumptions. Six Claude apps actually pass assistanceCount via JS object shorthand (excerpts included). Tumbler deliberately expands only valid guesses additively: secrets, scoring and replay checks unchanged, no construction rules, version splitting not required for this additive policy. Other five Claude construction games preserve markerless legacy rules and use frozen vocabulary2 for new rounds. Kimi Tangle now immutable v2/v3, markerless saves infer old edition. Claude Tangle free retries when word has another viable bead-copy path intentionally replace unfair knots; true word traps still knot. Source union410592 verified by independent generators/tests, exact payload omitted so do not certify membership. Calendar182actualuniqueDailiesNov1-May1 protectedfromPractice. Future edition guard freezes10payloads, all10sourcechecksumsmandatory. Identify up to5 actionable findings with severity/exact mechanism. Do not claim actual execution or UI/device/editorial certification. If no concrete defect, state that with limited static scope. Existing tests under final rerun, not yours."
+}

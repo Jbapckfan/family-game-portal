@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-31",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle and Hunch are keepers; Ringcount and Sideways are replacement candidates. Inbetween is6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
+  "updated": "2026-11-01",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch and Circuit are keepers; Ringcount and Sideways are replacement candidates. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -1140,12 +1140,50 @@
       "name": "Circuit",
       "creator": "Kimi",
       "reviewOrder": 13,
-      "status": "reviewed_pending_james_gameplay_verdict",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-01",
+            "quote": "morn, nice, not in word list//",
+            "interpretation": "Reported valid-word omissions; full pinned-source acceptance applied to every legal ring."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "what??",
+            "interpretation": "Requested clarification after the vocabulary rejection."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "how can you tell what the 4 arcs are?",
+            "interpretation": "Arc membership was unclear; four labeled bands and letter-membership cards added."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "the 4 arcs have weird spaces between them, fix that",
+            "interpretation": "Bands now meet at narrow consistent dividers."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "make the arc color splits at 0 degrees, 90 degrees, etc",
+            "interpretation": "Quadrant boundaries aligned with cardinal axes, with each three-letter group centered inside."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "the arm colors are too similar",
+            "interpretation": "Changed to distinct blue, green, gold and red, retaining numbered membership cues."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "circuit is a keeper",
+            "interpretation": "Explicit keeper verdict after gameplay and UI/dictionary revisions; no numeric rating supplied."
+          }
+        ],
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "keeper"
       },
       "reviews": [
         {

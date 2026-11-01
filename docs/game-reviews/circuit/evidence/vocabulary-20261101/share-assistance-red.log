@@ -1,0 +1,60 @@
+✔ clock pauses while hidden or in help, statistics, and reveal dialogs, without charging that time later (1.725375ms)
+✔ back-forward cache retains the clock; disposal clears it and listeners (0.364625ms)
+✔ clock renders retain the focused word input and caret (0.555125ms)
+✔ an adapter can deliberately hand focus to its next interaction during a clock transition (0.279625ms)
+✔ ready native board has correct attribution and shares no solution text (0.438958ms)
+✖ shared results disclose exact hint counts and untimed assistance without copying answer summaries (0.4845ms)
+✖ invalid assistance values cannot produce a misleading share and unfinished rounds cannot share (0.309458ms)
+✔ completed daily from another tab refreshes on storage, visibility, and cached-page return (0.659833ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 6
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.7515
+
+✖ failing tests:
+
+test at games/deepseek-runtime/common.test.mjs:74:1
+✖ shared results disclose exact hint counts and untimed assistance without copying answer summaries (0.4845ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Hints: 0/. Input:
+  
+  'Alford Daily · Fixture\n2026-11-01\n🟩 Solved\nDeveloped by Qwen'
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/games/deepseek-runtime/common.test.mjs:80:77)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Alford Daily · Fixture\n2026-11-01\n🟩 Solved\nDeveloped by Qwen',
+    expected: /Hints: 0/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at games/deepseek-runtime/common.test.mjs:86:1
+✖ invalid assistance values cannot produce a misleading share and unfinished rounds cannot share (0.309458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/games/deepseek-runtime/common.test.mjs:89:103)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

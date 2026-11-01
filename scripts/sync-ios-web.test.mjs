@@ -94,6 +94,21 @@ function fixture(run) {
   finally { rmSync(temporary, { recursive: true, force: true }); }
 }
 
+test('word acceptance modules and source notices are bundled and their local imports validate', () => fixture(({ root, command }) => {
+  for(const [slug,name] of [['claude-sprout','vocabulary.mjs'],['deepseek-twin-hive','word-acceptance.mjs']]){
+    writeFixture(root,`games/${slug}/${name}`,'export const words = ["care"];');
+    writeFixture(root,`games/${slug}/word-lists-LICENSE.txt`,'Pinned dictionary source notices');
+    writeFixture(root,`games/${slug}/engine.mjs`,`import { words } from "./${name}"; export const count = words.length;`);
+  }
+  const result=command();assert.equal(result.status,0,result.stderr);
+  for(const [slug,name] of [['claude-sprout','vocabulary.mjs'],['deepseek-twin-hive','word-acceptance.mjs']]){
+    assert.equal(readFileSync(join(root,'ios/Web/games',slug,name),'utf8'),'export const words = ["care"];');
+    assert.ok(existsSync(join(root,'ios/Web/games',slug,'word-lists-LICENSE.txt')));
+  }
+  const validation=validateFixture(root);assert.equal(validation.status,0,validation.stderr);
+  assert.equal(command('--check').status,0);
+}));
+
 test('ordinary sync copies the fixed runtime set including Ringcount and Switchpath image export and check is read-only', () => fixture(({ root, command }) => {
   assert.equal(command().status, 0);
   const directory = join(root, 'ios', 'Web', 'games');

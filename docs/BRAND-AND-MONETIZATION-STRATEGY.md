@@ -2,6 +2,8 @@
 
 Prepared for James / Cursed Toaster Studios, October 22, 2026.
 
+**November 1 continuation:** [The current launch pack](launch/2026-11-01/README.md) proposes free Daily and included Practice with restrained ads and optional one-time ad removal, following James’s latest request. The paid Collection One offer below remains a historical alternative, not an activated product.
+
 ## The recommendation
 
 Build **Alford Daily** into the product brand, endorsed by **Cursed Toaster Studios**. Keep the existing line **“A little pause. A good puzzle.”** Add the plain category descriptor **“Daily word & logic puzzles”** wherever a new visitor first sees the name.

@@ -1,0 +1,88 @@
+{
+  "revision": 2,
+  "frozenAtUTC": "2026-11-01T16:29:37.443207+00:00",
+  "runtime": "index.html",
+  "requiredAssets": [],
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 1215352,
+      "sha256": "e65555f5c6a6bb5fef37027394190fc45d5f9beeab6a6e7f62e0c58b40cd9c14"
+    },
+    {
+      "path": "engine.mjs",
+      "bytes": 19101,
+      "sha256": "4b8212700cdda18cdba4bdea04f7311bca5c7cdbf804430a4f1e1a22411495a8"
+    },
+    {
+      "path": "state.mjs",
+      "bytes": 6278,
+      "sha256": "b5dabec0c695055eb0a2f715da8c1bf6d3e1d1bd524e0c09e5e918ae0828efbc"
+    },
+    {
+      "path": "app.mjs",
+      "bytes": 47466,
+      "sha256": "631d330f47ac45b2b81c28b1fe407c466b67770ea702e03e55fa7a5373412625"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 25283,
+      "sha256": "b73f0a3eb0be4c94c6a558289798323288b49fc08fa939b8b77499c9dd447f78"
+    },
+    {
+      "path": "bank.json",
+      "bytes": 559652,
+      "sha256": "161df4aa9c4abeb2f790f32c17204611390877a174fbcca5d9282e36b2f211cb"
+    },
+    {
+      "path": "practice.json",
+      "bytes": 557773,
+      "sha256": "9db437424607fe98e93dc7998784b8265cbb4302c2a982d0c782a2275835f71c"
+    },
+    {
+      "path": "MAKER-Codex__REPORT.md",
+      "bytes": 9849,
+      "sha256": "dc9384096855e20c1946bd3453003ea056ca932287b7a67310c03c084a36ccfd"
+    },
+    {
+      "path": "MAKER-Codex__REVIEW-ADJUDICATION-v2.md",
+      "bytes": 4949,
+      "sha256": "36bede3a8e740a7954f5fdaa170750492b410bca647848f47bcbdf6c5f07d25b"
+    },
+    {
+      "path": "tools/audit.mjs",
+      "bytes": 9059,
+      "sha256": "451d1e1899522f002268d7275c2debb3189405e901ea20eb7533ad8914c7440c"
+    },
+    {
+      "path": "tools/state-qa.mjs",
+      "bytes": 4262,
+      "sha256": "38663cc4f140fba0e0038f1cd357b7be018200e48f8fa664763225324a00fb5e"
+    },
+    {
+      "path": "tools/review-regressions.mjs",
+      "bytes": 14542,
+      "sha256": "1687b3447764e735a600d8f43dcb817b2d6d3e15fda994dbe0938f2bec496c93"
+    },
+    {
+      "path": "tools/generate-practice.mjs",
+      "bytes": 663,
+      "sha256": "9c306cf6c9d386a1529cc77042edbd1ef4fdb3e3235f9feb243a1fcc9f8f5f12"
+    },
+    {
+      "path": "tools/build.mjs",
+      "bytes": 1176,
+      "sha256": "ec2813e7980cf6cdb2bda59f032cd85c55cd698ebd819462a6f33dd2dd4decb7"
+    },
+    {
+      "path": "tools/browser-qa.mjs",
+      "bytes": 7300,
+      "sha256": "ce0203973d06c9610f66c58be3390d38307bdf4b8504fe289e6a99ff83ddba74"
+    },
+    {
+      "path": "tools/packing-ui-qa.mjs",
+      "bytes": 2054,
+      "sha256": "f1a0cd53184df6d1794f90cd0acfece99eec1270ad395e97ac7fae78c7d8f85c"
+    }
+  ]
+}

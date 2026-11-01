@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from '../../../scripts/independent-modern-lexicon.mjs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { TANGLE_FIVE_PREVIEW, restoreFivePreview } from '../src/games/tangle/five-preview.ts'
@@ -42,7 +43,7 @@ test('the preview accepts every bundled-dictionary word with a legal path, under
     ...readFileSync(new URL('english-words-alpha.txt',data),'utf8').split(/\s+/),
     ...readFileSync(new URL('wordnik-game-words.txt',data),'utf8').split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),
     ...gunzipSync(readFileSync(new URL('enable2k.txt.gz',data))).toString().split(/\s+/),
-    ...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',data),'utf8')).words,
+    ...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',data),'utf8')).words,...independentlyReadModernWords(data),
   ]
   const excluded=new Set(TANGLE_REVIEWED_EXCLUSIONS)
   const counts=(text:string)=>Object.fromEntries([...new Set(text)].map(c=>[c,[...text].filter(x=>x===c).length]))

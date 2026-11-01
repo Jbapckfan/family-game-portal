@@ -13,13 +13,13 @@ const newContent=process.env.DAILY_QA_MODE==='new-content';
 const runway=newContent?JSON.parse(await readFile(path.join(root,'docs/six-month-runway.json'),'utf8')):null;
 const previous=newContent?JSON.parse(await readFile(path.join(root,'docs/six-month-previous-calendar.json'),'utf8')):null;
 for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')){
- const browser=await pw[engine].launch(engine==='chromium'?{channel:'chrome',args:['--disable-gpu','--disable-gpu-compositing']}:{});
+ const browser=await pw[engine].launch(engine==='chromium'?{channel:'chrome',args:['--disable-gpu','--disable-gpu-compositing']}:(process.env.DAILY_WEBKIT_EXECUTABLE?{executablePath:process.env.DAILY_WEBKIT_EXECUTABLE}:{}));
  try{
   for(const game of selected){
    const priorCount=previous?.games.find(row=>row.slug===game.slug)?.count;
    const scheduled=runway?.games.find(row=>row.slug===game.slug);
    const freshSelection=scheduled?.selections.find(row=>row.index>=priorCount);
-   const date=game.slug.startsWith('kimi-')?(newContent?'2026-10-30':'2026-10-28'):freshSelection?.date??(newContent?'2027-04-28':'2026-10-28');
+   const date=process.env.DAILY_QA_DATE||(game.slug.startsWith('kimi-')?(newContent?'2026-10-30':'2026-10-28'):freshSelection?.date??(newContent?'2027-04-28':'2026-10-28'));
    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'}),page=await ctx.newPage(),errors=[];page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
    await ctx.route('https://daily.test/**',async route=>{let n=new URL(route.request().url()).pathname;if(n.endsWith('/'))n+='index.html';const f=path.resolve(root,'.'+n),types={'.mjs':'text/javascript','.js':'text/javascript','.html':'text/html','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.ttf':'font/ttf','.woff2':'font/woff2'};if(!f.startsWith(root+path.sep))return route.abort();try{await route.fulfill({path:f,contentType:types[path.extname(f)]});}catch{await route.fulfill({status:404,body:'missing'});}});
    const snapshot=()=>page.evaluate(()=>Object.fromEntries(Object.keys(localStorage).sort().map(k=>[k,localStorage.getItem(k)])));

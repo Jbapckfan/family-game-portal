@@ -12,7 +12,9 @@ const CATEGORY = {
  'claude-tangle':'Three threads. One string.','claude-keystone':'Find the missing link','claude-tumbler':'Dial in the word'
 };
 
-/** UI contract shared by completed concepts. Timed games may supply tick(puzzle,state,deltaMs,mode). */
+/** UI contract shared by completed concepts. Timed games may supply tick(puzzle,state,deltaMs,mode).
+ * Optional assistanceCount and untimedAssistance return aggregates only; never share summarize(), which can contain answers.
+ */
 export function mountDailyGame(config) {
   const doc=document,win=window,host=doc.getElementById('app');
   const creator=config.creator||'DeepSeek';
@@ -93,7 +95,21 @@ export function mountDailyGame(config) {
   for(const id of ['help-dialog','stats-dialog','reveal-dialog'])$(id).addEventListener('close',()=>{dialogPause=false;lastTick=performance.now();});
   $('game-share').addEventListener('click',async()=>{
     const status=session.outcome,symbol=status==='won'?'🟩':status==='lost'?'⬜':'🟨';
-    const text=`Alford Daily · ${config.name}\n${session.dateKey}${session.mode==='practice'?' · Practice':''}\n${symbol} ${status==='won'?'Solved':status==='lost'?'Finished':'Revealed'}\n${credit}`;
+    if(status==='playing')return;
+    const details=[];
+    try{
+      if(typeof config.assistanceCount==='function'){
+        const count=config.assistanceCount(session.puzzle,session.state);
+        if(!Number.isSafeInteger(count)||count<0)throw new TypeError('Invalid assistance count');
+        details.push(`Hints: ${count}`);
+      }
+      if(typeof config.untimedAssistance==='function'){
+        const untimed=config.untimedAssistance(session.puzzle,session.state);
+        if(typeof untimed!=='boolean')throw new TypeError('Invalid untimed assistance');
+        if(untimed)details.push('Untimed assist');
+      }
+    }catch{announce('Your result could not be prepared. Please reopen the result and try again.');return;}
+    const text=[`Alford Daily · ${config.name}`,`${session.dateKey}${session.mode==='practice'?' · Practice':''}`,`${symbol} ${status==='won'?'Solved':status==='lost'?'Finished':'Revealed'}`,...details,credit].join('\n');
     if(sendNative({type:'share',text}))return;
     try{await navigator.clipboard.writeText(text);announce('Spoiler-free result copied.');}catch{announce(text);}
   });

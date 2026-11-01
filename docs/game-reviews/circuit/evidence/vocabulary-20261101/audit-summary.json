@@ -1,0 +1,29 @@
+{
+  "boards": 286,
+  "previousAcceptedEntries": 44957,
+  "acceptedEntries": 949273,
+  "addedEntries": 904316,
+  "distinctAcceptedWords": 148986,
+  "reportedWords": {
+    "morn": {
+      "eligibleBoards": 38,
+      "acceptedOnReportedDaily": true
+    },
+    "nice": {
+      "eligibleBoards": 33,
+      "acceptedOnReportedDaily": true
+    }
+  },
+  "sourceWords": 409097,
+  "generatedPoolWords": 146027,
+  "generatedPoolSHA256": "67ebe3d2c026d816fef55c0fb950ff3f3e9bb2f736acd27ba1ed34025cc3407c",
+  "boardsBelowPublishedTarget": 230,
+  "minimumCounts": {
+    "1": 1,
+    "2": 284,
+    "3": 1
+  },
+  "datedSelections": 182,
+  "uniqueDatedLayouts": 182,
+  "method": "Author-run full-source regex completeness test plus independent mask/chain bound audit. Original accepted words, layouts, routes and published targets retained; targets are not asserted minimal after expansion."
+}

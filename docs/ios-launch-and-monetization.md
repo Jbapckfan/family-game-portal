@@ -1,5 +1,8 @@
 # Alford Daily: six-game iOS launch and monetization
 
+**November 1 continuation:** [The current 32-game launch pack](launch/2026-11-01/README.md) updates the offer and preparation requirements. This earlier six-game plan is retained for implementation background; no real ads or purchases are enabled.
+
+
 > **Updated collection scope:** the app now includes 14 attributed games (eight ChatGPT, six Kimi). See [Unified collection](unified-collection.md) for the current lineup, source provenance, integration changes, and commercial-release limitations. Earlier six-game choices and projections below remain the original planning record.
 
 Research date: October 20, 2026. This is a product and implementation plan, not a claim of App Store approval or a revenue forecast. No paid service, store product, ad account, or developer membership is created by this document.

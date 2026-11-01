@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from '../../scripts/independent-modern-lexicon.mjs';
 /** Independent source-word enumeration and word-edge oracle, not the generator. */
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
@@ -45,6 +46,7 @@ export async function audit(){
   pins.push({file,sha256:sha(bytes)});
  }
  for(const w of JSON.parse(await readFile(new URL('zynga-disclosed-words.json',data),'utf8')).words)dictionary.add(w);
+ for(const word of independentlyReadModernWords(data))dictionary.add(word);
  assert.equal(dictionary.size,WORD_GAME_INFO.sourceUnion);
  const policy=JSON.parse(await readFile(new URL('scripts/claude-sprout-editorial-exclusions.json',root),'utf8'));
  const excluded=new Set(Object.values(policy).filter(Array.isArray).flat());

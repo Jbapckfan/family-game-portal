@@ -6,8 +6,9 @@ import { Delete, Eraser, Flag, Lightbulb, Undo2, RotateCcw } from 'lucide-react'
 import { arcOf, medalForChain } from './engine'
 
 // Presentation colors preserve the four distinct arc identities.
-const ARC_COLORS = ['#315e9b', '#216971', '#526a82', '#25475e']
-const ARC_EDGES = ['#234775', '#164f57', '#394f63', '#193448']
+const ARC_COLORS = ['#2558c8', '#087455', '#8a6300', '#bd3547']
+const ARC_EDGES = ['#102d65', '#064631', '#513800', '#6d1827']
+const ARC_BANDS = ['#79a7ff', '#62d6a2', '#ffd05c', '#ff8593']
 import { coverage } from './progress'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
@@ -61,6 +62,7 @@ export function CircuitBoard({ state, actions }: Props) {
     ? state.played[state.played.length - 1].slice(-1)
     : null
   const lastArc = state.current.length > 0 ? arcOf(state.current[state.current.length - 1]) : null
+  const allowedArcs = ARC_COLORS.map((_, i) => state.finished || (needStart ? arcOf(puzzle.l.indexOf(needStart)) === i : lastArc !== i))
   const medal = medalForChain(state.played.length, puzzle.par, state.gaveUp)
 
   return (
@@ -95,7 +97,22 @@ export function CircuitBoard({ state, actions }: Props) {
 
       {/* the ring */}
       <div className={cn('circuit-instrument relative mx-auto mt-6 h-72 w-72 sm:h-80 sm:w-80', state.shaking && 'anim-shake')}>
-        <svg className="circuit-trace" viewBox="0 0 100 100" aria-hidden="true"><polyline points={state.current.map(i=>`${50+Math.cos((i/12*360-90)*Math.PI/180)*40},${50+Math.sin((i/12*360-90)*Math.PI/180)*40}`).join(' ')} fill="none" stroke="#7bc6dc" strokeWidth="1.1" strokeLinejoin="round" strokeLinecap="round"/></svg>
+        <svg className="circuit-arc-bands" viewBox="0 0 100 100" aria-hidden="true">
+          {ARC_BANDS.map((color, i) => {
+            const start = (i * 90 - 90) * Math.PI / 180, end = (i * 90) * Math.PI / 180
+            return <path key={i} data-arc-band={i} data-arc-letters={puzzle.l.slice(i * 3, i * 3 + 3)} data-allowed={String(allowedArcs[i])} d={`M ${50 + Math.cos(start) * 40} ${50 + Math.sin(start) * 40} A 40 40 0 0 1 ${50 + Math.cos(end) * 40} ${50 + Math.sin(end) * 40}`} fill="none" stroke={color} strokeWidth="21" />
+          })}
+          <circle cx="50" cy="50" r="29.5" fill="#142c3f" />
+          {ARC_COLORS.map((_, i) => {
+            const angle = (i * 90 - 90) * Math.PI / 180
+            return <line key={i} x1={50 + Math.cos(angle) * 29.5} y1={50 + Math.sin(angle) * 29.5} x2={50 + Math.cos(angle) * 50.5} y2={50 + Math.sin(angle) * 50.5} stroke="#142c3f" strokeWidth=".45" />
+          })}
+        </svg>
+        {ARC_COLORS.map((color, i) => {
+          const angle = (i * 90 - 45) * Math.PI / 180
+          return <span key={i} className="circuit-band-label" data-arc-label={i} data-allowed={String(allowedArcs[i])} style={{left: `${50 + Math.cos(angle) * 60}%`, top: `${50 + Math.sin(angle) * 60}%`, borderColor: color, color}} aria-hidden="true">Arc {i + 1}</span>
+        })}
+        <svg className="circuit-trace" viewBox="0 0 100 100" aria-hidden="true"><polyline points={state.current.map(i=>`${50+Math.cos((i/12*360-75)*Math.PI/180)*40},${50+Math.sin((i/12*360-75)*Math.PI/180)*40}`).join(' ')} fill="none" stroke="#7bc6dc" strokeWidth="1.1" strokeLinejoin="round" strokeLinecap="round"/></svg>
         {/* current word in the middle */}
         <div className="circuit-readout absolute inset-0 flex flex-col items-center justify-center">
           <div className="font-display text-2xl font-extrabold uppercase tracking-[0.2em]" aria-live="polite">
@@ -104,7 +121,7 @@ export function CircuitBoard({ state, actions }: Props) {
 
         </div>
         {letters.map((ch, i) => {
-          const angle = (i / 12) * 360 - 90
+          const angle = (i / 12) * 360 - 75
           const lit = ((covered >> i) & 1) === 1
           const picked = state.current.includes(i)
           const disabledArc = lastArc !== null && arcOf(i) === lastArc && !picked
@@ -130,8 +147,8 @@ export function CircuitBoard({ state, actions }: Props) {
               style={{
                 left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 40}% - 24px)`,
                 top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 40}% - 24px)`,
-                background: lit || picked ? ARC_COLORS[arcOf(i)] : 'hsl(var(--tile-face))',
-                color: lit || picked ? '#fff' : ARC_EDGES[arcOf(i)],
+                background: lit || picked ? ARC_BANDS[arcOf(i)] : 'hsl(var(--tile-face))',
+                color: ARC_EDGES[arcOf(i)],
                 border: `3px solid ${lit || picked ? 'transparent' : ARC_COLORS[arcOf(i)]}`,
                 boxShadow: `0 5px 0 ${lit || picked ? ARC_EDGES[arcOf(i)] : 'hsl(var(--tile-edge))'}`,
                 opacity: disabledArc || mustPick ? 0.58 : undefined,
@@ -144,7 +161,7 @@ export function CircuitBoard({ state, actions }: Props) {
         })}
       </div>
 
-      <div className="circuit-arc-legend">{ARC_COLORS.map((color,i)=><span key={i} style={{borderColor:color,color}} data-current-arc={lastArc===i?'true':undefined}>Arc {i+1}</span>)}</div>
+      <div className="circuit-arc-legend" aria-label="The four arcs and their letters">{ARC_COLORS.map((color,i)=><span key={i} data-circuit-arc-legend data-allowed={String(allowedArcs[i])} style={{borderColor:color,color}} data-current-arc={lastArc===i?'true':undefined}><strong>Arc {i+1}</strong><b>{letters.slice(i*3,i*3+3).join(' ').toUpperCase()}</b></span>)}</div>
       {(state.revealed>0||state.gaveUp)&&<aside className="circuit-route"><strong>{state.gaveUp?'Revealed example route':'Saved route clue'}</strong><p>{puzzle.sol.slice(0,state.gaveUp?puzzle.sol.length:state.revealed).join(' → ')}</p><small>This route starts from the beginning; it may differ from your chain.</small></aside>}
       {/* chain so far */}
       {state.played.length > 0 && (

@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from '../../../scripts/independent-modern-lexicon.mjs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
@@ -15,7 +16,7 @@ const dictionary=[...new Set([
  ...readFileSync(new URL('english-words-alpha.txt',dir),'utf8').split(/\s+/),
  ...readFileSync(new URL('wordnik-game-words.txt',dir),'utf8').split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),
  ...gunzipSync(readFileSync(new URL('enable2k.txt.gz',dir))).toString().split(/\s+/),
- ...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',dir),'utf8')).words,
+ ...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',dir),'utf8')).words,...independentlyReadModernWords(dir),
 ])].filter(w=>/^[a-z]+$/.test(w)).sort()
 const raw=JSON.parse(readFileSync(new URL('../src/games/tangle/data/puzzles.json',import.meta.url),'utf8'))
 
@@ -46,7 +47,7 @@ test('expanded four-wide entry points keep daily grid/calendar and current Gold 
  let additions=0
  for(let day=TANGLE_LEXICON_START_DAY;day<TANGLE_LEXICON_START_DAY+430;day++){
   const index=day%430,original={...raw[index],targets:medalTargets(raw[index].max)},reviewed=reviewTanglePuzzle(original)
-  const expected=expandTanglePuzzle(reviewed),actual=dailyTangle(day)
+  const expected=expandTanglePuzzle(reviewed,day===TANGLE_LEXICON_START_DAY?2:3),actual=dailyTangle(day)
   assert.equal(actual.puzzleNo,index+1)
   assert.equal(actual.puzzle.g,original.g)
   assert.deepEqual(actual.puzzle,expected)
@@ -79,10 +80,10 @@ test('historical editions and valid older-client words retain their earned score
   const p={...raw[day%430],targets:medalTargets(raw[day%430].max)},removed=p.words.find((w:string)=>TANGLE_REVIEWED_EXCLUSIONS.includes(w))
   if(!removed)continue
   const save={found:[removed,...p.words.filter((w:string)=>w!==removed).slice(0,20)],misses:2,hintsUsed:0,countedPlayed:true}
-  const extension=expandTanglePuzzle(p).words.find(w=>!p.words.includes(w))
+  const extension=expandTanglePuzzle(p,2).words.find(w=>!p.words.includes(w))
   if(extension){save.found.push(extension);expandedLegacySaves++}
   const actual=dailyTangle(day,save).puzzle
-  assert.deepEqual(restoreTangleProgress(save,actual),restoreTangleProgress(save,expandTanglePuzzle(p)))
+  assert.deepEqual(restoreTangleProgress(save,actual),restoreTangleProgress(save,expandTanglePuzzle(p,2)))
   assert.ok(actual.words.length>=p.words.length)
   assert.deepEqual(actual.targets,p.targets)
  }

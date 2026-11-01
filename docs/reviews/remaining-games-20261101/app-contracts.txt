@@ -1,0 +1,144 @@
+games/claude-dovetail/app.mjs
+1: import {createExpandedState,assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import {restoreState,getStatus,analyze,chooseRow,setTyped,submitWord,hint,reveal} from './engine.mjs';
+10:  hintLabel:'Reveal a letter · costs 1 miss',puzzles:PUZZLES,createState:createExpandedState,restoreState,getStatus,hint,reveal,
+11:  instructions:[
+
+games/claude-keystone/app.mjs
+1: import {assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import * as E from './engine.mjs';
+10:  instructions:[
+19:  puzzles:PUZZLES,createState:E.createExpandedState,restoreState:E.restoreState,getStatus:E.getStatus,hint:E.hint,reveal:E.reveal,summarize:E.summarize,
+
+games/claude-splice/app.mjs
+1: import {createExpandedState,assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import {restoreState,getStatus,analyze,chooseTile,submitPair,shuffle,hint,reveal,solutionPairs} from './engine.mjs';
+10:  hintLabel:'Show a safe splice',puzzles:PUZZLES,createState:createExpandedState,restoreState,getStatus,hint,reveal,
+11:  instructions:[
+
+games/claude-sprout/app.mjs
+1: import {assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import {createExpandedState,restoreState,getStatus,analyze,typedWord,chooseTile,selectWord,submitWord,undo,restart,hint,reveal,solutionPath} from './engine.mjs';
+10:  hintLabel:'Which letter? · costs 1 wilt',puzzles:PUZZLES,createState:createExpandedState,restoreState,getStatus,hint,reveal,
+11:  instructions:[
+
+games/claude-tangle/app.mjs
+1: import {assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import * as E from './engine.mjs';
+9:  instructions:[
+18:  puzzles:PUZZLES,createState:E.createExpandedState,restoreState:E.restoreState,getStatus:E.getStatus,hint:E.hint,reveal:E.reveal,summarize:E.summarize,
+
+games/claude-tumbler/app.mjs
+1: import {assistanceCount} from './engine.mjs';
+2: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+3: import {PUZZLES} from './puzzles.mjs';
+4: import * as E from './engine.mjs';
+11:  instructions:[
+19:  puzzles:PUZZLES,createState:E.createState,restoreState:E.restoreState,getStatus:E.getStatus,hint:E.hint,reveal:E.reveal,summarize:E.summarize,
+
+games/deepseek-cipher/app.mjs
+1: import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mjs';
+2: import { PUZZLES } from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+6:  assistanceCount:(p,s)=>s.hints,
+9:   instructions: [
+15:   puzzles: PUZZLES, createState: E.createState, restoreState: E.restoreState,
+
+games/deepseek-rung/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,submitWord,undo,restart,hint,reveal,findRoute,shortestSteps,LEXICON} from './engine.mjs';
+7:  assistanceCount:(p,s)=>s.hints,
+9:  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
+10:  instructions:['Turn the start word into the target word by changing exactly one letter each step. Every rung must be a four-letter word.','The target shown is the shortest possible route in the game dictionary. You can still solve the daily if your route takes more steps.','Use Undo rung or Restart ladder whenever you need a different route. There is no strike limit.','A little hint suggests a next word on a shortest route from your current rung. This edition accepts '+LEXICON.length+' four-letter words, including uncommon vocabulary.'],
+
+games/deepseek-spare/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,chooseTile,submitPair,shuffle,hint,reveal} from './engine.mjs';
+5:  assistanceCount:(p,s)=>s.hinted.length,
+7:  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
+8:  instructions:['The nine words contain four pairs with opposite meanings and one spare word.','Select two words, then choose Match pair. Correct pairs move above the board.','Three different wrong pairings end the round. Repeating a wrong pairing never costs another strike.','Find all four pairs to expose the spare and solve the puzzle. A little hint highlights one pair; it stays highlighted when you shuffle.'],
+
+games/deepseek-split/app.mjs
+1: import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mjs';
+2: import { PUZZLES } from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+5:  assistanceCount:(p,s)=>s.hints,
+8:   instructions: [
+15:   puzzles: PUZZLES, createState: E.createState, restoreState: E.restoreState,
+
+games/deepseek-trail/app.mjs
+1: import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mjs';
+2: import { PUZZLES } from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+5:  assistanceCount:(p,s)=>s.hints,
+8:   instructions: [
+15:   puzzles: PUZZLES, createState: E.createState, restoreState: E.restoreState,
+
+games/deepseek-twin-hive/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,submitWord,hint,reveal,score,acceptedWords} from './engine.mjs';
+5:  assistanceCount:(p,s)=>s.hinted.length,
+7:  puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
+8:  instructions:['Make six different words of at least four letters. Every word must include both gold letters.','Use only the eight displayed letters. You may reuse a letter as often as needed. Tap letters or type on your keyboard.','Each accepted word earns one point per letter beyond three. Six words complete the daily goal.','The game uses a broad English dictionary. Uncommon words may count. A little hint gives a familiar prepared word without submitting it.'],
+
+games/qwen-logic-lattice/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,toggleCell,markCell,undo,restart,hint,reveal,clueStatus} from './engine.mjs';
+6:  assistanceCount:(p,s)=>s.hinted.length,
+9:  instructions:[
+15:  ],puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
+
+games/qwen-memory-maze/app.mjs
+1: import {mountDailyGame} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,startStudy,chooseCell,tick,hint,reveal,STUDY_MS,scoreSeconds} from './engine.mjs';
+7:  assistanceCount:(p,s)=>s.replays,
+10:  instructions:[
+16:  ],puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,tick,
+
+games/qwen-pattern-prism/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+16:  assistanceCount:(p,s)=>s.hints.reduce((a,b)=>a+b,0),
+19:   instructions:[
+26:   puzzles:PUZZLES,createState:E.createState,restoreState:E.restoreState,getStatus:E.getStatus,hint:E.hint,reveal:E.reveal,summarize:E.summarize,
+
+games/qwen-quadra/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import {createState,restoreState,getStatus,chooseTile,selectWord,submitWord,hint,reveal,analyze} from './engine.mjs';
+6:  assistanceCount:(p,s)=>s.hinted.length,
+9:  instructions:[
+14:  ],puzzles:PUZZLES,createState,restoreState,getStatus,hint,reveal,
+
+games/qwen-syntax-siege/app.mjs
+1: import {mountDailyGame, escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+25:  assistanceCount:(p,s)=>s.hints,
+26:  untimedAssistance:(p,s)=>s.untimed,
+29:   instructions:[
+37:   puzzles:PUZZLES,createState:E.createState,restoreState:E.restoreState,getStatus:E.getStatus,
+
+games/qwen-territory-tactics/app.mjs
+1: import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
+2: import {PUZZLES} from './puzzles.mjs';
+3: import * as E from './engine.mjs';
+5:  assistanceCount:(p,s)=>s.hints,
+8:   instructions:[
+16:   puzzles:PUZZLES,createState:E.createState,restoreState:E.restoreState,getStatus:E.getStatus,hint:E.hint,reveal:E.reveal,summarize:E.summarize,

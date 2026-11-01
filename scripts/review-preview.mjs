@@ -9,6 +9,7 @@ const profile=path.join(root,'output/counterpart-review-20261030/readable-profil
 const context=await chromium.launchPersistentContext(profile,{channel:'chrome',headless:false,viewport:{width:1200,height:960},serviceWorkers:'block',reducedMotion:'no-preference',args:['--disable-gpu','--disable-gpu-compositing']});
 const pages=context.pages();let page=pages[0]||await context.newPage();for(const p of pages.slice(1))await p.close();
 let sampleTab=null,sampleFile=null;
+const reviewFiles={candidates:path.join(root,'experiments/MAKER-Codex__ten-candidates-20261101/index.html'),launch:path.join(root,'docs/launch/2026-11-01/revenue-calculator.html')};
 if(process.argv[3]==='five'&&process.argv[4]){
  const file=path.resolve(root,process.argv[4]);if(!file.startsWith(path.join(root,'output')+path.sep)||!file.endsWith('.json'))throw new Error('Only an output JSON checkpoint may restore the sample');
  const snapshot=JSON.parse(await readFile(file,'utf8'));
@@ -16,6 +17,7 @@ if(process.argv[3]==='five'&&process.argv[4]){
 }
 await context.route('**/*',async route=>{
  const u=new URL(route.request().url());if(u.origin!=='https://alford-daily.test')return route.abort();
+ const review=u.pathname.match(/^\/review-(candidates|launch)\/$/);if(review)return route.fulfill({path:reviewFiles[review[1]],contentType:'text/html'});
  if(u.pathname==='/review-example/'&&sampleFile)return route.fulfill({contentType:'text/html',body:`<!doctype html><meta charset="utf-8"><title>Result-card example</title><style>body{background:#f6f3ec;color:#202c35;font:16px system-ui;text-align:center;padding:24px}img{width:min(85vw,480px);height:auto;margin-top:24px}p{max-width:620px;margin:auto;line-height:1.7}</style><h1>Share-card preview</h1><p>Automated test example. Your result uses your actual score. The playable game is in the other tab.</p><img src="/review-example.png?${Date.now()}" alt="Spoiler-free result example">`});
  if(u.pathname==='/review-example.png'&&sampleFile)return route.fulfill({path:sampleFile,contentType:'image/png'});
  let name=u.pathname;if(name==='/')name='/games/daily/';if(name.endsWith('/'))name+='index.html';const file=path.resolve(root,'.'+name);
@@ -42,6 +44,10 @@ input.on('line',line=>{pending=pending.then(async()=>{
  else if(command==='sample'){
   const candidate=path.resolve(root,value);if(!candidate.startsWith(path.join(root,'output')+path.sep)||!candidate.endsWith('.png'))throw new Error('Only generated output PNGs may be previewed');sampleFile=candidate;
   if(!sampleTab||sampleTab.isClosed())sampleTab=await context.newPage();await sampleTab.goto('https://alford-daily.test/review-example/');await sampleTab.waitForFunction(()=>document.querySelector('img')?.naturalWidth>0);await sampleTab.bringToFront();console.log('Example updated in second tab.');await page.bringToFront();
+ }else if(command==='preview'){
+  if(!Object.hasOwn(reviewFiles,value))throw new Error('Unknown review deliverable');
+  if(!sampleTab||sampleTab.isClosed())sampleTab=await context.newPage();await sampleTab.goto(`https://alford-daily.test/review-${value}/`);await sampleTab.bringToFront();console.log(JSON.stringify({preview:value,title:await sampleTab.title(),tabs:context.pages().length}));
  }else if(command==='close-sample'){if(sampleTab&&!sampleTab.isClosed())await sampleTab.close();sampleTab=null;await page.bringToFront();}
+ else if(command==='close'){await context.close();}
 }).catch(error=>console.log('Preview command failed: '+error.message));});
 await new Promise(resolve=>context.on('close',()=>{input.close();process.stdin.pause();resolve();}));

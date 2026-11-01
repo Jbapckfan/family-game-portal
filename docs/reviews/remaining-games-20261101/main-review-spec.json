@@ -1,0 +1,16 @@
+{
+  "inlineAll": true,
+  "paths": [
+    "output/remaining-games-20261101/main-review-changes.patch",
+    "games/claude-tangle/word-acceptance.mjs",
+    "scripts/tangle-lexicon.mjs",
+    "scripts/word-source-notice.mjs",
+    "scripts/independent-modern-lexicon.mjs",
+    "packages/kimi-pebbles/data/esdb-word-source.json",
+    "packages/kimi-pebbles/data/reviewed-modern-words.json",
+    "scripts/modern-lexicon.test.mjs",
+    "scripts/fresh-reserve-20261101.test.mjs",
+    "output/remaining-games-20261101/app-contracts.txt"
+  ],
+  "prompt": "Static review of Alford Daily remaining nineteen games (Quartet; sixDeepSeek; sixQwen; sixClaude), plus Circuit/source acceptance and shared sharing/calendar changes. Supplied patch against67886a6 and current helpers. Root has integrated isolated source commits134dc46 and0deb0ea; source metadata files/manifests bind actualworkingtree snapshot. Do not execute, mutate, fetch or print solutions. Full wordpools, rawpuzzle banks and screenshots NOT supplied. KimiTangle v3 migration is separately in progress, excluded from this review; do not certify it. User wants broad acceptable English words, clear beautiful UI and sixmonths freshactualDaily games, preserving saves; no fun ratings inferred. Current corpus410591 includes prior409097 plus checksum-pinned official ESDB default size60 US/GBise/GBize/CA/AU and8 individually verified spellings/inflections (some overlap). Existing97,109 shared words retained; allpublishedpuzzle records/targets/calendar identities retained. NewClaude rounds usevocabulary2, oldmarkerless rounds keepoldrules visibly; unknownmarkers reject. All-source oracles verify construction/matching/partition eligibility independently, oldreplay remains; root rerunning aftersupplement. Earlier worker evidence:244DQ checks/36Chrome flows;88CQ checks/8Chrome scenarios; these are author-run, not yours. Current182datesNov1\u2013May1 are unique and protectedfromPractice;104calendar/reserve tests passed. Source/rawgraphs omitted, cannotverify payload membership/editorial suitability independently. BroaderSprout removesmany deadends:136/211 previously hadnodeadbranches; legitimatewords mustnotberejectedtomanufacture traps. Sharedshares append validated hintcounts/untimedflag only, never answersummary. Review exact code for correctness, legacy/v2 replay, false wins/losses/targets, word-rule mismatch, wrong-bead traps andrecovery, assistance disclosures, stale/localstorage behavior, generation/pin/license propagation. Source helpers receive explicitoriginal-lowercase lines, no casefolding ofpropernames. Focus up to8actionable Critical/Important/Minor findings with exact mechanisms/repro; <=1000words, no long recap or invented validation. Distinguish demonstrated bug from uncertainty. Coherent offlineupdates waitforoldtabsclose; arbitrarymixedoldclient writes are acknowledged unprotected and not claimed fixed. Rights, humansemanticquality, physicaldevices/ads/purchases are separate releasegates, not certified by this review. App configuration excerpts are supplied (line numbers explicit); full DOM templates/styles are omitted, so decline visual/UI certification."
+}

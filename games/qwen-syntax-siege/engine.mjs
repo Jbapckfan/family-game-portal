@@ -50,7 +50,7 @@ export function submit(p,s) {
   const index=waveIndex(p,s),w=p.waves[index],word=currentWord(p,s);
   if(word.length<3)return {state:s,message:'Use at least three letters to fire a word.'};
   if(s.played[index].includes(word))return {state:{...s,selected:[]},message:'That word already hit this wave. Find a different one.'};
-  if(!acceptedWords(w).includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'Not in the pinned dictionary for this rack. The core takes 10 damage.'};
+  if(!acceptedWords(w).includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'That word is not in the game dictionary. The core takes 10 damage.'};
   const played=s.played.map(words=>[...words]);played[index].push(word);
   let state={...s,played,selected:[]};
   const cleared=waveDamage(state,index)>=w.health;

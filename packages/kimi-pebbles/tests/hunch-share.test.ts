@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from '../../../scripts/independent-modern-lexicon.mjs'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {buildHunchShareResult} from '../src/games/hunch/share-card.ts'
@@ -22,7 +23,7 @@ test('Hunch snapshot deeply freezes status rows and rejects inconsistent finishe
 })
 test('Hunch accepts the complete pinned five-letter guess list and retains its published answer bank',async()=>{
  await loadDict();const words=JSON.parse(readFileSync(new URL('../src/games/hunch/data/guesses.json',import.meta.url),'utf8'));const answers=JSON.parse(readFileSync(new URL('../src/games/hunch/data/answers.json',import.meta.url),'utf8'))
- const data=new URL('../data/',import.meta.url),all=[...new Set([...readFileSync(new URL('english-words-alpha.txt',data),'utf8').split(/\s+/),...readFileSync(new URL('wordnik-game-words.txt',data),'utf8').split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),...gunzipSync(readFileSync(new URL('enable2k.txt.gz',data))).toString().split(/\s+/),...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',data),'utf8')).words])].filter(w=>/^[a-z]{5}$/.test(w)).sort()
+ const data=new URL('../data/',import.meta.url),all=[...new Set([...readFileSync(new URL('english-words-alpha.txt',data),'utf8').split(/\s+/),...readFileSync(new URL('wordnik-game-words.txt',data),'utf8').split(/\r?\n/).filter(Boolean).map(line=>JSON.parse(line)),...gunzipSync(readFileSync(new URL('enable2k.txt.gz',data))).toString().split(/\s+/),...JSON.parse(readFileSync(new URL('zynga-disclosed-words.json',data),'utf8')).words,...independentlyReadModernWords(data)])].filter(w=>/^[a-z]{5}$/.test(w)).sort()
  assert.deepEqual(words,all)
  const older=readFileSync(new URL('../src/games/cairn/data/dict.txt',import.meta.url),'utf8').split(/\s+/).filter(w=>/^[a-z]{5}$/.test(w))
  for(const word of older)assert.ok(isValidWord(word),`older saved guess: ${word}`)

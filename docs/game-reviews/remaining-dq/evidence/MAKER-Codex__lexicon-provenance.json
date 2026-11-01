@@ -1,5 +1,5 @@
 {
-  "sourceUnion": 409097,
+  "sourceUnion": 410592,
   "sources": [
     {
       "file": "english-words-alpha.txt",
@@ -27,19 +27,61 @@
       "words": 6,
       "droppedShape": 0,
       "sha256": "f0e7dd68a7db11fbbe168629a70a98503aad6eaf964f9df0dddd11fc2954a226",
-      "pinVerified": false
+      "pinVerified": true
+    },
+    {
+      "file": "esdb/en_US.txt",
+      "words": 79454,
+      "droppedShape": 29686,
+      "sha256": "45a4dd29b86234fbabce26f33272466bb5572db6fdca1470c4f218e6b666a56d",
+      "pinVerified": true
+    },
+    {
+      "file": "esdb/en_GB-ise.txt",
+      "words": 79454,
+      "droppedShape": 29324,
+      "sha256": "3febf4057b95dd654e8c9421197fd8c08cf8e7ae9c4a457228da9ec36af6083c",
+      "pinVerified": true
+    },
+    {
+      "file": "esdb/en_GB-ize.txt",
+      "words": 79464,
+      "droppedShape": 29324,
+      "sha256": "dc8f5a35bd0afd61cd80b045d724b13c1491fe5440bf9cdd997882bf62096ec0",
+      "pinVerified": true
+    },
+    {
+      "file": "esdb/en_CA.txt",
+      "words": 79453,
+      "droppedShape": 29318,
+      "sha256": "97c814d4f06e31f1ac53a9fe7bc009242c03bdaaa0637408aef27cc0351012ee",
+      "pinVerified": true
+    },
+    {
+      "file": "esdb/en_AU.txt",
+      "words": 79716,
+      "droppedShape": 29580,
+      "sha256": "13ed8e16092b15eebab0ef408f3fe109cdc6877bb27d4aeb3f4bb8633ed4c1f8",
+      "pinVerified": true
+    },
+    {
+      "file": "reviewed-modern-words.json",
+      "words": 9,
+      "droppedShape": 0,
+      "sha256": "7ac56f4146309bd74d380cc72581567394959b97da31de1afeb334af2ff1cbc4",
+      "pinVerified": true
     }
   ],
-  "fourLetterWords": 8141,
+  "fourLetterWords": 8182,
   "hiveRacks": {
-    "ACENORST": 3765,
-    "ADEILRST": 3836,
-    "ADEINRST": 4745,
-    "AEGILNRS": 3209,
+    "ACENORST": 3767,
+    "ADEILRST": 3845,
+    "ADEINRST": 4758,
+    "AEGILNRS": 3215,
     "AEILNPRT": 2826,
-    "AEILORST": 3611,
-    "AEIMNRST": 4774,
-    "AEINORST": 4687
+    "AEILORST": 3614,
+    "AEIMNRST": 4782,
+    "AEINORST": 4695
   },
   "siegeRacks": {
     "ACDELN": 104,
@@ -57,9 +99,9 @@
     "DGNORU": 71,
     "EFORST": 124,
     "EILNST": 142,
-    "EILRSV": 108,
+    "EILRSV": 109,
     "EOPRTY": 108,
     "GINPRS": 69
   },
-  "noticeSHA256": "c266e4d8a155b71d0de288246c8aa3b3d3b1ee7540785dfb008f140c81189dde"
+  "noticeSHA256": "2eaf0effeca37eb1c4af0a52804dd297d84f4e4ca03adea09ebed8cdfc7e54a3"
 }

@@ -64,7 +64,6 @@ test('PLUM is accepted and restorable only on Circuit boards where it satisfies 
     assert.equal(revised.par, raw.par)
     assert.equal(revised.n, revised.words.length)
     for (const word of revised.words.filter((w: string) => !raw.words.includes(w))) {
-      assert.equal(word, 'plum')
       assert.ok([...word].every((letter, i) => raw.l.includes(letter) &&
         (!i || Math.floor(raw.l.indexOf(letter) / 3) !== Math.floor(raw.l.indexOf(word[i - 1]) / 3))))
     }

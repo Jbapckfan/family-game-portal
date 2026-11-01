@@ -1,3 +1,4 @@
+import {independentlyReadModernWords} from './independent-modern-lexicon.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -18,6 +19,7 @@ const files=[['english-words-alpha.txt',english.files['words_alpha.txt'].sha256,
 const source=new Set();
 for(const[file,sha,kind]of files){const bytes=await readFile(new URL(file,data));assert.equal(createHash('sha256').update(bytes).digest('hex'),sha,file);const text=kind==='gzip'?gunzipSync(bytes).toString():bytes.toString();for(const raw of text.split(/\r?\n/)){const word=kind==='quoted'&&raw?JSON.parse(raw):raw;if(/^[a-z]+$/.test(word))source.add(word.toUpperCase());}}
 for(const word of JSON.parse(await readFile(new URL('zynga-disclosed-words.json',data),'utf8')).words)source.add(word.toUpperCase());
+for(const word of independentlyReadModernWords(data))source.add(word.toUpperCase());
 const same=(actual,expected,label)=>{const a=new Set(actual),b=new Set(expected);assert.deepEqual({missing:[...b].filter(w=>!a.has(w)).slice(0,12),unexpected:[...a].filter(w=>!b.has(w)).slice(0,12)},{missing:[],unexpected:[]},label);};
 const spells=(rack,word)=>{const pool=[...rack];return [...word].every(letter=>{const i=pool.indexOf(letter);if(i<0)return false;pool.splice(i,1);return true;});};
 

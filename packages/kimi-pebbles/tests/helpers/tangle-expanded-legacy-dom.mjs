@@ -65,7 +65,7 @@ const bank=JSON.parse(readFileSync(resolve(base,'tangle/data/puzzles.json'),'utf
 const exclusions=new Set(['ccm','ccw','ccws','cfm','whf','mahmoud','wilhelm','nig','wog','coon','fag','fags']);
 let day=20757;while(!bank[day%430].words.some(word=>exclusions.has(word)))day++;
 assert.ok(day<20937);const raw=bank[day%430],removed=raw.words.find(word=>exclusions.has(word));
-const extension=JSON.parse(readFileSync(resolve(base,'tangle/data/lexicon-expansions.json'),'utf8'))[raw.g].find(word=>!raw.words.includes(word));assert.ok(extension);
+const extension=JSON.parse(readFileSync(resolve(base,'tangle/data/lexicon-expansions-v2.json'),'utf8'))[raw.g].find(word=>!raw.words.includes(word));assert.ok(extension);
 const NativeDate=globalThis.Date;globalThis.Date=class extends NativeDate {constructor(...args){super(...(args.length?args:[day*86400000+18*3600000]));}static now(){return day*86400000+18*3600000;}};
 const saved={found:[removed,extension,...raw.words.filter(word=>word!==removed).slice(0,20)],misses:2,hintsUsed:0,countedPlayed:true};
 const key=`kimi:tangle:v1:day:${day}`;disk.setItem(key,JSON.stringify(saved));
@@ -73,7 +73,7 @@ const statsKey='kimi:tangle:v1:stats';disk.setItem(statsKey,JSON.stringify({play
 let state;
 for(let pass=0;pass<2;pass++){
  const load=tabLoader(),useTangle=load(resolve(base,'tangle/useTangle.ts')).useTangle,progress=load(resolve(base,'tangle/progress.ts'));
- const expected=progress.restoreTangleProgress(saved,load(resolve(base,'tangle/lexicon.ts')).expandTanglePuzzle({...raw,targets:progress.medalTargets(raw.max)}));
+ const expected=progress.restoreTangleProgress(saved,load(resolve(base,'tangle/lexicon.ts')).expandTanglePuzzle({...raw,targets:progress.medalTargets(raw.max)},2));
  const root=createRoot(document.getElementById('a'));function Probe(){state=useTangle().state;return null;}
  await act(async()=>root.render(React.createElement(Probe)));
  assert.equal(JSON.parse(disk.getItem(statsKey)).completed,1);assert.equal(state.phase,'playing');assert.deepEqual(state.found,expected.found);assert.equal(state.score,expected.score);assert.equal(state.misses,2);assert.equal(state.goldReached,expected.goldReached);assert.ok(state.puzzle.words.includes(removed));

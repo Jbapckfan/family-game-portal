@@ -1,0 +1,943 @@
+diff --git a/games/claude-dovetail/engine.mjs b/games/claude-dovetail/engine.mjs
+index befba5d..f5897b9 100644
+--- a/games/claude-dovetail/engine.mjs
++++ b/games/claude-dovetail/engine.mjs
+@@ -1,3 +1,4 @@
++import {WORD_GAME_WORDS,WORD_GAME_JOINS} from './vocabulary.mjs';
+ import {COMMON,FUSED} from './puzzles.mjs';
+ export const MAX_MISSES=6;
+ const wordOK=word=>typeof word==='string'&&/^[a-z]+$/.test(word);
+@@ -5,16 +6,17 @@ const rowOK=(p,row)=>Number.isInteger(row)&&row>0&&row<p.words.length-1;
+ export function createState(){return {events:[],active:1,typed:'',revealed:false};}
+ function initialProgress(p){return {valid:true,words:[...p.words],solved:p.words.map((_,i)=>i===0||i===p.words.length-1),guesses:p.words.map(()=>[]),hints:p.words.map(()=>0),misses:0};}
+ function statusOf(a){return a.solved.every(Boolean)?'won':a.misses>=MAX_MISSES?'lost':'playing';}
+-function judgeProgress(p,a,row,word){
++function judgeProgress(p,a,row,word,vocabulary=1){
++ const words=vocabulary===2?WORD_GAME_WORDS:COMMON,joins=vocabulary===2?WORD_GAME_JOINS:FUSED;
+  if(!rowOK(p,row)||a.solved[row]||!wordOK(word)||word.length!==p.words[row].length)return {kind:'length'};
+  if(!word.startsWith(p.words[row].slice(0,a.hints[row])))return {kind:'prefix'};
+  const left=a.solved[row-1]?a.words[row-1]:null,right=a.solved[row+1]?a.words[row+1]:null;
+- const up=!!left&&FUSED.has(left+word),down=!!right&&FUSED.has(word+right);
++ const up=!!left&&joins.has(left+word),down=!!right&&joins.has(word+right);
+  // Even an expected answer must preserve every already completed neighboring join.
+  const canonical=word===p.words[row]&&(!left||up)&&(!right||down);
+- if(canonical||(left&&right&&up&&down&&COMMON.has(word)))return {kind:'solve',word,up,down,left,right};
++ if(canonical||(left&&right&&up&&down&&words.has(word)))return {kind:'solve',word,up,down,left,right};
+  if(a.guesses[row].some(g=>g.word===word))return {kind:'duplicate'};
+- if(!COMMON.has(word))return {kind:'unlisted'};
++ if(!words.has(word))return {kind:'unlisted'};
+  return {kind:'miss',word,up,down,left,right};
+ }
+ 
+@@ -29,7 +31,7 @@ export function analyze(p,s){
+    if(a.hints[event.row]>=p.words[event.row].length-1)return {...a,valid:false};
+    a.hints[event.row]++;a.misses++;
+   }else if(event.type==='guess'){
+-   const result=judgeProgress(p,a,event.row,event.word);
++   const result=judgeProgress(p,a,event.row,event.word,s.vocabulary);
+    if(result.kind==='solve'){a.words[event.row]=event.word;a.solved[event.row]=true;}
+    else if(result.kind==='miss'){a.guesses[event.row].push({word:event.word,up:result.up,down:result.down});a.misses++;}
+    else return {...a,valid:false};
+@@ -49,7 +51,7 @@ export function setTyped(p,s,input){
+ }
+ export function submitWord(p,s,input=s.typed){
+  if(getStatus(p,s)!=='playing')return {state:s,message:'This chain is complete.'};
+- const word=String(input).trim().toLowerCase(),a=analyze(p,s),row=s.active,result=judgeProgress(p,a,row,word);
++ const word=String(input).trim().toLowerCase(),a=analyze(p,s),row=s.active,result=judgeProgress(p,a,row,word,s.vocabulary);
+  if(result.kind==='length')return {state:s,message:`This row needs exactly ${p.words[row].length} letters.`};
+  if(result.kind==='prefix')return {state:s,message:'Keep the letters already revealed by the hint.'};
+  if(result.kind==='duplicate')return {state:s,message:'Already tried that word in this row. No extra miss charged.'};
+@@ -70,11 +72,15 @@ export function hint(p,s){
+ }
+ export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,active:-1,typed:'',revealed:true}:s;}
+ export function restoreState(p,raw){
+- if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||typeof raw.typed!=='string')return null;
++ if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||typeof raw.typed!=='string'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
+  const a=analyze(p,raw);if(!a.valid)return null;
+  const terminal=raw.revealed||statusOf(a)!=='playing';
+  if(raw.revealed&&statusOf(a)!=='playing')return null;
+  if(terminal){if(raw.active!==-1||raw.typed!=='')return null;}
+  else if(!rowOK(p,raw.active)||a.solved[raw.active]||!/^[a-z]*$/.test(raw.typed)||raw.typed.length>p.words[raw.active].length||!raw.typed.startsWith(p.words[raw.active].slice(0,a.hints[raw.active])))return null;
+- return {events:raw.events.map(e=>e.type==='guess'?{type:'guess',row:e.row,word:e.word}:{type:'hint',row:e.row}),active:raw.active,typed:raw.typed,revealed:raw.revealed};
++ return {events:raw.events.map(e=>e.type==='guess'?{type:'guess',row:e.row,word:e.word}:{type:'hint',row:e.row}),active:raw.active,typed:raw.typed,revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
+ }
++
++export const assistanceCount=(p,s)=>analyze(p,s).hints.reduce((total,n)=>total+n,0);
++
++export const createExpandedState=()=>({...createState(),vocabulary:2});
+diff --git a/games/claude-keystone/engine.mjs b/games/claude-keystone/engine.mjs
+index e03f213..6ab0be8 100644
+--- a/games/claude-keystone/engine.mjs
++++ b/games/claude-keystone/engine.mjs
+@@ -1,14 +1,18 @@
++import {WORD_GAME_WORDS,WORD_GAME_JOINS,WORD_GAME_ALTERNATIVES} from './vocabulary.mjs';
+ import {COMMON,FUSED} from './puzzles.mjs';
+ const WORDS=new Set(COMMON),JOINS=new Set(FUSED);
+ export const fused=(word,clue)=>clue.d==='before'?clue.w+word:word+clue.w;
+-export const joins=(a,b)=>JOINS.has(a+b)||JOINS.has(b+a);
+-export const joinWord=(a,b)=>JOINS.has(a+b)?a+b:JOINS.has(b+a)?b+a:null;
++const joinList=vocabulary=>vocabulary===2?WORD_GAME_JOINS:JOINS;
++export const joins=(a,b,vocabulary=1)=>joinList(vocabulary).has(a+b)||joinList(vocabulary).has(b+a);
++export const joinWord=(a,b,vocabulary=1)=>joinList(vocabulary).has(a+b)?a+b:joinList(vocabulary).has(b+a)?b+a:null;
++export const roundKey=round=>round.k+':'+round.clues.map(c=>c.w).sort().join('/');
++export const acceptedAnswer=(round,word,vocabulary=1)=>word===round.k||(vocabulary===2&&WORD_GAME_ALTERNATIVES[roundKey(round)]?.includes(word));
+ export const createState=p=>({rounds:p.rounds.map(()=>[]),draft:'',awaitingNext:false,revealed:false});
+ /** Derive score, clue count, strikes, and status from actual accepted guesses.
+  * Explicit Next arch replaces the source's race-prone delayed advancement. */
+-export function roundView(round,events){
++export function roundView(round,events,vocabulary=1){
+   if(!Array.isArray(events)||events.length>20)return null;
+-  const r={clues:2,strikes:0,guesses:[],status:'playing',score:0,prefix:0,hints:0,words:[]};
++  const r={clues:2,strikes:0,guesses:[],status:'playing',score:0,prefix:0,hints:0,words:[],answer:null};
+   for(const event of events){
+     if(!event||typeof event!=='object'||r.status!=='playing')return null;
+     if(event.type==='clue'){
+@@ -18,54 +22,58 @@ export function roundView(round,events){
+     }else if(event.type==='guess'){
+       const word=event.word;
+       if(typeof word!=='string'||!/^[a-z]{3,9}$/.test(word)||r.words.includes(word))return null;
+-      if(word!==round.k&&(!WORDS.has(word)||round.clues.some(c=>c.w===word)))return null;
++      if(word!==round.k&&(!(vocabulary===2?WORD_GAME_WORDS:WORDS).has(word)||round.clues.some(c=>c.w===word)))return null;
+       r.words.push(word);
+-      if(word===round.k){r.status='won';r.score=r.clues;continue;}
+-      r.guesses.push({word,fits:round.clues.slice(0,r.clues).map(c=>joins(word,c.w))});
++      if(acceptedAnswer(round,word,vocabulary)){r.status='won';r.score=r.clues;r.answer=word;continue;}
++      r.guesses.push({word,fits:round.clues.slice(0,r.clues).map(c=>joins(word,c.w,vocabulary))});
+       if(r.clues<5)r.clues++;else if(++r.strikes===2){r.status='lost';r.score=6;}
+     }else return null;
+   }
+   return r;
+ }
+-function views(p,s){return p.rounds.map((r,i)=>roundView(r,s.rounds[i]));}
++function views(p,s){return p.rounds.map((r,i)=>roundView(r,s.rounds[i],s.vocabulary));}
+ export function getStatus(p,s){if(s.revealed)return 'revealed';const all=views(p,s);return all.every(r=>r?.status!=='playing')?(all.every(r=>r?.status==='won')?'won':'lost'):'playing';}
+ export function currentIndex(p,s){const first=views(p,s).findIndex(r=>r.status==='playing');return first===-1?p.rounds.length-1:s.awaitingNext?first-1:first;}
+ export const total=(p,s)=>views(p,s).reduce((sum,r)=>sum+r.score,0);
+ export const hintCount=(p,s)=>views(p,s).reduce((sum,r)=>sum+r.hints,0);
+ export function restoreState(p,raw){
+-  if(!raw||typeof raw!=='object'||!Array.isArray(raw.rounds)||raw.rounds.length!==p.rounds.length||typeof raw.draft!=='string'||!/^[a-z]{0,9}$/.test(raw.draft)||typeof raw.awaitingNext!=='boolean'||typeof raw.revealed!=='boolean')return null;
++  if(!raw||typeof raw!=='object'||!Array.isArray(raw.rounds)||raw.rounds.length!==p.rounds.length||typeof raw.draft!=='string'||!/^[a-z]{0,9}$/.test(raw.draft)||typeof raw.awaitingNext!=='boolean'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
+   let firstPlaying=-1;
+   for(let i=0;i<p.rounds.length;i++){
+-    const r=roundView(p.rounds[i],raw.rounds[i]);if(!r)return null;
++    const r=roundView(p.rounds[i],raw.rounds[i],raw.vocabulary);if(!r)return null;
+     if(firstPlaying!==-1&&raw.rounds[i].length)return null;
+     if(r.status==='playing'&&firstPlaying===-1)firstPlaying=i;
+   }
+   if(raw.awaitingNext&&(firstPlaying<=0||raw.draft))return null;
+   if((firstPlaying===-1||raw.revealed)&&raw.draft)return null;
+   if(raw.revealed&&raw.awaitingNext)return null;
+-  return {rounds:raw.rounds.map(events=>events.map(e=>e.type==='guess'?{type:'guess',word:e.word}:{type:e.type})),draft:raw.draft,awaitingNext:raw.awaitingNext,revealed:raw.revealed};
++  return {rounds:raw.rounds.map(events=>events.map(e=>e.type==='guess'?{type:'guess',word:e.word}:{type:e.type})),draft:raw.draft,awaitingNext:raw.awaitingNext,revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
+ }
+ export function setDraft(p,s,value){return getStatus(p,s)==='playing'&&!s.awaitingNext?{...s,draft:String(value).toLowerCase().replace(/[^a-z]/g,'').slice(0,9)}:s;}
+ export const typeKey=(p,s,key)=>setDraft(p,s,s.draft+key);
+ export const backspace=(p,s)=>setDraft(p,s,s.draft.slice(0,-1));
+ export function submit(p,s){
+   if(getStatus(p,s)!=='playing'||s.awaitingNext)return {state:s,message:s.awaitingNext?'Review this arch, then choose Next arch.':'This puzzle is complete.'};
+-  const i=currentIndex(p,s),round=p.rounds[i],r=roundView(round,s.rounds[i]),word=s.draft;
++  const i=currentIndex(p,s),round=p.rounds[i],r=roundView(round,s.rounds[i],s.vocabulary),word=s.draft;
+   if(word.length<3)return {state:s,message:'Use three or more letters.'};
+   if(r.words.includes(word))return {state:s,message:'Already tried. No extra strike.'};
+   if(word!==round.k&&round.clues.some(c=>c.w===word))return {state:s,message:'That is one of the clues.'};
+-  if(word!==round.k&&!WORDS.has(word))return {state:s,message:'Not in the supplied word list. No extra clue or strike.'};
+-  const rounds=s.rounds.map(events=>[...events]);rounds[i].push({type:'guess',word});const after=roundView(round,rounds[i]);
++  if(word!==round.k&&!(s.vocabulary===2?WORD_GAME_WORDS:WORDS).has(word))return {state:s,message:'Not in the supplied word list. No extra clue or strike.'};
++  const rounds=s.rounds.map(events=>[...events]);rounds[i].push({type:'guess',word});const after=roundView(round,rounds[i],s.vocabulary);
+   const next={...s,rounds,draft:'',awaitingNext:after.status!=='playing'&&i<p.rounds.length-1};
+-  const fits=round.clues.slice(0,r.clues).filter(c=>joins(word,c.w)).length;
+-  return {state:next,message:after.status==='won'?`${word.toUpperCase()} holds the arch. Score ${after.score}.`:after.status==='lost'?`The keystone was ${round.k.toUpperCase()}. This arch scores 6.`:`${word.toUpperCase()} joins ${fits} of ${r.clues} visible clues. ${r.clues<5?'Another clue is open.':'One last try for this arch.'}`};
++  const fits=round.clues.slice(0,r.clues).filter(c=>joins(word,c.w,s.vocabulary)).length;
++  return {state:next,message:after.status==='won'?`${word.toUpperCase()} holds the arch. Score ${after.score}.`:after.status==='lost'?`The keystone was ${round.k.toUpperCase()}. This arch scores 6.`:`${word.toUpperCase()} joins ${fits} of ${r.clues} visible clues. ${r.clues<5?'It must fit all five, including hidden clues. Another clue is open.':'It must fit all five. One last try for this arch.'}`};
+ }
+ export const nextArch=(p,s)=>getStatus(p,s)==='playing'&&s.awaitingNext?{...s,awaitingNext:false,draft:''}:s;
+ export function hint(p,s){
+   if(getStatus(p,s)!=='playing'||s.awaitingNext)return null;
+-  const i=currentIndex(p,s),r=roundView(p.rounds[i],s.rounds[i]);if(r.clues===5&&r.prefix===p.rounds[i].k.length)return null;
++  const i=currentIndex(p,s),r=roundView(p.rounds[i],s.rounds[i],s.vocabulary);if(r.clues===5&&r.prefix===p.rounds[i].k.length)return null;
+   const rounds=s.rounds.map(events=>[...events]);rounds[i].push({type:r.clues<5?'clue':'letter'});
+   return {...s,rounds};
+ }
+ export const reveal=(p,s)=>getStatus(p,s)==='playing'?{...s,draft:'',awaitingNext:false,revealed:true}:s;
+ export const summarize=(p,s)=>`${views(p,s).filter(r=>r.status==='won').length}/3 arches solved · score ${total(p,s)} (6 is perfect) · ${hintCount(p,s)} hints`;
++
++export const assistanceCount=(p,s)=>hintCount(p,s);
++
++export const createExpandedState=p=>({...createState(p),vocabulary:2});
+diff --git a/games/claude-splice/engine.mjs b/games/claude-splice/engine.mjs
+index 41c8918..c73195f 100644
+--- a/games/claude-splice/engine.mjs
++++ b/games/claude-splice/engine.mjs
+@@ -1,12 +1,19 @@
++import {WORD_GAME_JOINS} from './vocabulary.mjs';
+ import {FUSED} from './puzzles.mjs';
+ export const MAX_MISTAKES=4;
+ const indexOK=i=>Number.isInteger(i)&&i>=0&&i<12;
+ const unique=items=>new Set(items).size===items.length;
+-const graphCache=new WeakMap();
++const graphCache=new WeakMap(),expandedPuzzles=new WeakMap();
++export function puzzleForState(p,s){
++ if(s?.vocabulary!==2||p.vocabulary===2)return p;
++ if(!expandedPuzzles.has(p))expandedPuzzles.set(p,{...p,vocabulary:2});
++ return expandedPuzzles.get(p);
++}
++const hasWord=(p,word)=>p.vocabulary===2?WORD_GAME_JOINS.has(word):FUSED.has(word);
+ function graph(p){
+  if(graphCache.has(p))return graphCache.get(p);
+  const tiles=p.parts.flat(),edges=Array.from({length:12},()=>[]);
+- for(let i=0;i<12;i++)for(let j=0;j<12;j++)if(i!==j&&FUSED.has(tiles[i]+tiles[j]))edges[i].push(j);
++ for(let i=0;i<12;i++)for(let j=0;j<12;j++)if(i!==j&&hasWord(p,tiles[i]+tiles[j]))edges[i].push(j);
+  const value={tiles,edges};graphCache.set(p,value);return value;
+ }
+ export function findMatchings(p,remaining=Array.from({length:12},(_,i)=>i),limit=2){
+@@ -27,13 +34,14 @@ function canPair(p,used,a,b){return findMatchings(p,Array.from({length:12},(_,i)
+ function shuffled(p,n){let seed=([...p.id].reduce((a,c)=>Math.imul(a,31)+c.charCodeAt(0),0)+n*104729)>>>0;const order=Array.from({length:12},(_,i)=>i);for(let i=11;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=seed%(i+1);[order[i],order[j]]=[order[j],order[i]];}return order;}
+ export function createState(p){return {attempts:[],selected:[],order:shuffled(p,0),shuffles:0,hinted:[],hintPair:null,revealed:false};}
+ export function analyze(p,s){
++ p=puzzleForState(p,s);
+  const result={valid:true,pairs:[],used:new Set(),mistakes:0,tried:new Set()},tiles=graph(p).tiles;
+  if(!Array.isArray(s?.attempts)||s.attempts.length>9)return {...result,valid:false};
+  for(const attempt of s.attempts){
+   const pair=attempt?.tiles;
+   if(result.used.size===12||result.mistakes===4||!Array.isArray(pair)||pair.length!==2||!unique(pair)||!pair.every(i=>indexOK(i)&&!result.used.has(i)))return {...result,valid:false};
+   const [a,b]=pair,word=tiles[a]+tiles[b],key=`${tiles[a]}+${tiles[b]}`;
+-  if(!FUSED.has(word))return {...result,valid:false};
++  if(!hasWord(p,word))return {...result,valid:false};
+   if(canPair(p,result.used,a,b)){result.pairs.push([a,b]);result.used.add(a);result.used.add(b);}
+   else {if(result.tried.has(key))return {...result,valid:false};result.tried.add(key);result.mistakes++;}
+  }
+@@ -46,10 +54,11 @@ export function chooseTile(p,s,index){
+  return {...s,selected:s.selected.length<2?[...s.selected,index]:[s.selected[0],index]};
+ }
+ export function submitPair(p,s){
++ p=puzzleForState(p,s);
+  if(getStatus(p,s)!=='playing')return {state:s,message:'This bin is complete.'};
+  if(s.selected.length!==2)return {state:s,message:'Choose two different halves in word order.'};
+  const a=analyze(p,s),tiles=graph(p).tiles,[first,second]=s.selected,word=tiles[first]+tiles[second],key=`${tiles[first]}+${tiles[second]}`;
+- if(!FUSED.has(word))return {state:{...s,selected:[]},message:`${word.toUpperCase()} is not in this puzzle’s word list. No mistake charged.`};
++ if(!hasWord(p,word))return {state:{...s,selected:[]},message:`${word.toUpperCase()} is not in this puzzle’s word list. No mistake charged.`};
+  const valid=canPair(p,a.used,first,second);
+  if(!valid&&a.tried.has(key))return {state:{...s,selected:[]},message:'Already tried that splice. No extra mistake charged.'};
+  const next={...s,attempts:[...s.attempts,{tiles:[...s.selected]}],selected:[]},after=analyze(p,next),status=getStatus(p,next);
+@@ -58,22 +67,28 @@ export function submitPair(p,s){
+ }
+ export function shuffle(p,s){if(getStatus(p,s)!=='playing')return s;const shuffles=s.shuffles+1;return {...s,shuffles,order:shuffled(p,shuffles)};}
+ export function hint(p,s){
++ p=puzzleForState(p,s);
+  if(getStatus(p,s)!=='playing'||s.hintPair)return null;
+  const used=analyze(p,s).used,matching=findMatchings(p,Array.from({length:12},(_,i)=>i).filter(i=>!used.has(i)),1)[0];if(!matching?.length)return null;
+  const pair=matching[0];return {...s,selected:[...pair],hintPair:[...pair],hinted:[...s.hinted,[...pair]]};
+ }
+ export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,selected:[],hintPair:null,revealed:true}:s;}
+-export function solutionPairs(p,s){const a=analyze(p,s),remaining=Array.from({length:12},(_,i)=>i).filter(i=>!a.used.has(i));return [...a.pairs,...(findMatchings(p,remaining,1)[0]||[])];}
++export function solutionPairs(p,s){p=puzzleForState(p,s);const a=analyze(p,s),remaining=Array.from({length:12},(_,i)=>i).filter(i=>!a.used.has(i));return [...a.pairs,...(findMatchings(p,remaining,1)[0]||[])];}
+ export function restoreState(p,raw){
+- if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean')return null;
++ if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
++ p=puzzleForState(p,raw);
+  const a=analyze(p,raw);if(!a.valid)return null;
+  if(!Array.isArray(raw.selected)||raw.selected.length>2||!unique(raw.selected)||!raw.selected.every(i=>indexOK(i)&&!a.used.has(i)))return null;
+  if(!Array.isArray(raw.order)||raw.order.length!==12||!unique(raw.order)||!raw.order.every(indexOK)||!Number.isSafeInteger(raw.shuffles)||raw.shuffles<0)return null;
+- const pairOK=pair=>Array.isArray(pair)&&pair.length===2&&unique(pair)&&pair.every(indexOK)&&FUSED.has(graph(p).tiles[pair[0]]+graph(p).tiles[pair[1]])&&canPair(p,new Set(),...pair);
++ const pairOK=pair=>Array.isArray(pair)&&pair.length===2&&unique(pair)&&pair.every(indexOK)&&hasWord(p,graph(p).tiles[pair[0]]+graph(p).tiles[pair[1]])&&canPair(p,new Set(),...pair);
+  if(!Array.isArray(raw.hinted)||raw.hinted.length>6||!raw.hinted.every(pairOK)||!unique(raw.hinted.map(pair=>pair.join(':'))))return null;
+  if(raw.hintPair!==null&&(!pairOK(raw.hintPair)||raw.hintPair.some(i=>a.used.has(i))||!canPair(p,a.used,...raw.hintPair)||!raw.hinted.some(pair=>pair.join(':')===raw.hintPair.join(':'))))return null;
+  const terminal=raw.revealed||a.used.size===12||a.mistakes===4;
+  if(terminal&&raw.selected.length)return null;
+  if(raw.revealed&&(a.used.size===12||a.mistakes===4))return null;
+- return {attempts:raw.attempts.map(a=>({tiles:[...a.tiles]})),selected:[...raw.selected],order:[...raw.order],shuffles:raw.shuffles,hinted:raw.hinted.map(pair=>[...pair]),hintPair:raw.hintPair?[...raw.hintPair]:null,revealed:raw.revealed};
++ return {attempts:raw.attempts.map(a=>({tiles:[...a.tiles]})),selected:[...raw.selected],order:[...raw.order],shuffles:raw.shuffles,hinted:raw.hinted.map(pair=>[...pair]),hintPair:raw.hintPair?[...raw.hintPair]:null,revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
+ }
++
++export const assistanceCount=(p,s)=>s.hinted.length;
++
++export const createExpandedState=p=>({...createState(p),vocabulary:2});
+diff --git a/games/claude-sprout/engine.mjs b/games/claude-sprout/engine.mjs
+index 5555039..e99271f 100644
+--- a/games/claude-sprout/engine.mjs
++++ b/games/claude-sprout/engine.mjs
+@@ -1,4 +1,15 @@
++import {WORD_GAME_LEVELS} from './vocabulary.mjs';
+ export const MAX_WILTS=5;
++const expandedPuzzles=new WeakMap();
++export function puzzleForState(p,s){
++ if(s?.vocabulary!==2)return p;
++ if(!expandedPuzzles.has(p)){
++  const levels=WORD_GAME_LEVELS[p.id];
++  if(!levels)throw new Error('Expanded word graph is unavailable for this puzzle');
++  expandedPuzzles.set(p,{...p,levels});
++ }
++ return expandedPuzzles.get(p);
++}
+ const wordOK=word=>typeof word==='string'&&/^[a-z]+$/.test(word);
+ export function extraLetter(current,next){
+  if(!wordOK(current)||!wordOK(next)||next.length!==current.length+1)return null;
+@@ -37,9 +48,11 @@ function hintLetter(p,a){
+  return null;
+ }
+ export function createState(){return {events:[],typed:[],revealed:false};}
++export function createExpandedState(){return {...createState(),vocabulary:2};}
+ function initialProgress(p){return {valid:true,stack:[p.seed],soilUsed:[],wilts:0,levelWilts:{},hintLetter:null,hints:0};}
+ function statusOf(a){return a.stack.at(-1).length===8?'won':a.wilts>=MAX_WILTS?'lost':'playing';}
+ export function analyze(p,s){
++ p=puzzleForState(p,s);
+  const a=initialProgress(p);
+  if(!Array.isArray(s?.events)||s.events.length>10000)return {...a,valid:false};
+  for(const event of s.events){
+@@ -87,7 +100,7 @@ export function selectWord(p,s,input){
+ }
+ export function submitWord(p,s,input=typedWord(p,s)){
+  if(getStatus(p,s)!=='playing')return {state:s,message:'This plant is complete.'};
+- const word=String(input).trim().toLowerCase(),a=analyze(p,s),result=judgeProgress(p,a,word);
++ const a=analyze(p,s),word=String(input).trim().toLowerCase(),result=judgeProgress(puzzleForState(p,s),a,word);
+  if(result.kind==='length')return {state:s,message:`Use all ${a.stack.at(-1).length+1} letters.`};
+  if(result.kind==='letters')return {state:s,message:'Keep every letter in your word and add exactly one available soil letter.'};
+  if(result.kind==='unlisted')return {state:s,message:'That is not in this puzzle’s word list. No wilt charged.'};
+@@ -97,13 +110,13 @@ export function submitWord(p,s,input=typedWord(p,s)){
+ export function undo(p,s){return getStatus(p,s)==='playing'&&analyze(p,s).stack.length>1?{...s,events:[...s.events,{type:'undo'}],typed:[]}:s;}
+ export function restart(p,s){return getStatus(p,s)==='playing'?{...s,events:[...s.events,{type:'restart'}],typed:[]}:s;}
+ export function hint(p,s){
+- const a=analyze(p,s);if(getStatus(p,s)!=='playing'||a.hintLetter!==null||hintLetter(p,a)===null)return null;
++ const a=analyze(p,s);if(getStatus(p,s)!=='playing'||a.hintLetter!==null||hintLetter(puzzleForState(p,s),a)===null)return null;
+  return {...s,events:[...s.events,{type:'hint'}],typed:[]};
+ }
+ export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,typed:[],revealed:true}:s;}
+-export function solutionPath(p,s){const a=analyze(p,s),tail=findRoute(p,a.stack.at(-1),remainingLetters(p,a.soilUsed));return tail?[...a.stack.slice(0,-1),...tail]:(findRoute(p)||[]);}
++export function solutionPath(p,s){const a=analyze(p,s);p=puzzleForState(p,s);const tail=findRoute(p,a.stack.at(-1),remainingLetters(p,a.soilUsed));return tail?[...a.stack.slice(0,-1),...tail]:(findRoute(p)||[]);}
+ export function restoreState(p,raw){
+- if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean')return null;
++ if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
+  const a=analyze(p,raw);if(!a.valid||!Array.isArray(raw.typed)||raw.typed.length>a.stack.at(-1).length+1)return null;
+  const current=a.stack.at(-1),keys=new Set();let soil=0;
+  for(const pick of raw.typed){
+@@ -114,5 +127,7 @@ export function restoreState(p,raw){
+  }
+  if((raw.revealed||statusOf(a)!=='playing')&&raw.typed.length)return null;
+  if(raw.revealed&&statusOf(a)!=='playing')return null;
+- return {events:raw.events.map(e=>e.type==='word'?{type:'word',word:e.word}:{type:e.type}),typed:raw.typed.map(t=>({source:t.source,index:t.index})),revealed:raw.revealed};
++ return {events:raw.events.map(e=>e.type==='word'?{type:'word',word:e.word}:{type:e.type}),typed:raw.typed.map(t=>({source:t.source,index:t.index})),revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
+ }
++
++export const assistanceCount=(p,s)=>analyze(p,s).hints;
+diff --git a/games/claude-tangle/engine.mjs b/games/claude-tangle/engine.mjs
+index 7f7391b..f04e95f 100644
+--- a/games/claude-tangle/engine.mjs
++++ b/games/claude-tangle/engine.mjs
+@@ -1,3 +1,4 @@
++import {dictionaryPath,wordPartition} from './word-acceptance.mjs';
+ import {DICTIONARY} from './puzzles.mjs';
+ const WORDS=new Set(DICTIONARY);
+ export const MAX_KNOTS=4;
+@@ -7,7 +8,7 @@ export const selectedWord=(p,s)=>[...s.selected].sort((a,b)=>a-b).map(i=>p.s[i])
+ export function findWordPaths(sequence,word){const paths=[];function walk(start,used){if(used.length===word.length){paths.push(used);return;}for(let i=start;i<sequence.length;i++)if(sequence[i]===word[used.length])walk(i+1,[...used,i]);}walk(0,[]);return paths;}
+ /** Assign every remaining bead to an ordered target word. This also detects
+  * duplicate-letter pulls that need undo instead of silently removing other beads. */
+-export function allocation(p,v){
++function legacyAllocation(p,v){
+   const left=[...p.s].map((_,i)=>i).filter(i=>!v.removed.includes(i));
+   const remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
+   const cursors=p.w.map(()=>0),failed=new Set();
+@@ -20,6 +21,7 @@ export function allocation(p,v){
+   const owners=visit(0);if(!owners)return null;
+   const result=p.w.map(()=>[]);owners.forEach((j,n)=>result[j].push(left[n]));return result;
+ }
++export function allocation(p,v){return v.vocabulary===2?(legacyAllocation(p,v)??wordPartition(p,v)):legacyAllocation(p,v);}
+ function hintFor(p,v){
+   const solution=allocation(p,v);
+   if(!solution)return v.pulls.length?{type:'recover'}:null;
+@@ -29,9 +31,9 @@ function hintFor(p,v){
+   return {type:'hint',index,target};
+ }
+ function popPull(v){const pull=v.pulls.pop();if(!pull)return false;v.removed=v.removed.filter(i=>!pull.indices.includes(i));return true;}
+-export function replay(p,events){
++export function replay(p,events,vocabulary=1){
+   if(!Array.isArray(events)||events.length>2000)return null;
+-  const v=emptyView();
++  const v={...emptyView(),...(vocabulary===2?{vocabulary:2}:{})};
+   for(const event of events){
+     if(!event||typeof event!=='object'||v.knots>=MAX_KNOTS||v.pulls.length===p.w.length)return null;
+     if(event.type==='pull'||event.type==='knot'){
+@@ -39,11 +41,14 @@ export function replay(p,events){
+       if(!Array.isArray(ix)||!ix.length||ix.some((n,i)=>!Number.isInteger(n)||n<0||n>=p.s.length||(i&&n<=ix[i-1])||v.removed.includes(n)))return null;
+       const word=ix.map(i=>p.s[i]).join(''),remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
+       if(!remaining.some(j=>p.w[j].length===word.length))return null;
+-      const target=remaining.find(j=>p.w[j]===word);
++      const slot=vocabulary===2?remaining.find(j=>p.w[j].length===word.length):remaining.find(j=>p.w[j]===word);
++      const listed=vocabulary===2?dictionaryPath(p,ix):WORDS.has(word);
++      const viable=vocabulary===2&&slot!==undefined&&listed?wordPartition(p,{pulls:[...v.pulls,{target:slot,indices:ix}],removed:[...v.removed,...ix]}):null;
++      const target=vocabulary===2?(viable?slot:undefined):slot;
+       if(event.type==='pull'){
+-        if(target===undefined)return null;v.pulls.push({target,indices:[...ix]});v.removed.push(...ix);v.removed.sort((a,b)=>a-b);
++        if(target===undefined)return null;v.pulls.push({target,indices:[...ix],...(vocabulary===2?{word}:{})});v.removed.push(...ix);v.removed.sort((a,b)=>a-b);
+       }else{
+-        if(target!==undefined||!WORDS.has(word)||v.tried.includes(word))return null;v.tried.push(word);v.knots++;
++        if(target!==undefined||!listed||v.tried.includes(word))return null;v.tried.push(word);v.knots++;
+       }
+     }else if(event.type==='hint'){
+       const h=hintFor(p,v);if(!h||h.type!=='hint'||h.index!==event.index||h.target!==event.target)return null;
+@@ -58,14 +63,14 @@ export function replay(p,events){
+   }
+   return v;
+ }
+-export const view=(p,s)=>replay(p,s.events);
++export const view=(p,s)=>replay(p,s.events,s.vocabulary);
+ export function getStatus(p,s){if(s.revealed)return 'revealed';const v=view(p,s);if(!v)return 'playing';return v.knots>=MAX_KNOTS?'lost':v.pulls.length===p.w.length?'won':'playing';}
+ export function restoreState(p,raw){
+-  if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||!Array.isArray(raw.selected))return null;
+-  const v=replay(p,raw.events);if(!v)return null;
++  if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2)||!Array.isArray(raw.selected))return null;
++  const v=replay(p,raw.events,raw.vocabulary);if(!v)return null;
+   if(raw.selected.length>p.s.length||new Set(raw.selected).size!==raw.selected.length||raw.selected.some(i=>!Number.isInteger(i)||i<0||i>=p.s.length||v.removed.includes(i)))return null;
+   if((raw.revealed||v.knots===MAX_KNOTS||v.pulls.length===p.w.length)&&raw.selected.length)return null;
+-  return {events:raw.events.map(e=>e.indices?{type:e.type,indices:[...e.indices]}:e.type==='hint'?{type:'hint',index:e.index,target:e.target}:{type:e.type}),selected:[...raw.selected],revealed:raw.revealed};
++  return {events:raw.events.map(e=>e.indices?{type:e.type,indices:[...e.indices]}:e.type==='hint'?{type:'hint',index:e.index,target:e.target}:{type:e.type}),selected:[...raw.selected],revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
+ }
+ export function toggle(p,s,index){
+   if(getStatus(p,s)!=='playing')return {state:s,message:'This tangle is finished.'};
+@@ -79,15 +84,22 @@ export function submit(p,s){
+   const word=selectedWord(p,s),v=view(p,s),remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
+   if(!word)return {state:s,message:'Select the beads of one word.'};
+   if(!remaining.some(j=>p.w[j].length===word.length))return {state:s,message:`Threads left have ${remaining.map(j=>p.w[j].length).sort().join(', ')} letters.`};
+-  const target=remaining.find(j=>p.w[j]===word);
++  const indices=[...s.selected].sort((a,b)=>a-b),slot=s.vocabulary===2?remaining.find(j=>p.w[j].length===word.length):remaining.find(j=>p.w[j]===word);
++  const listed=s.vocabulary===2?dictionaryPath(p,indices):WORDS.has(word);
++  const viable=s.vocabulary===2&&slot!==undefined&&listed?wordPartition(p,{pulls:[...v.pulls,{target:slot,indices}],removed:[...v.removed,...indices]}):null;
++  const target=s.vocabulary===2?(viable?slot:undefined):slot;
+   if(target===undefined&&v.tried.includes(word))return {state:s,message:'Already tried that word. No extra knot.'};
+-  if(target===undefined&&!WORDS.has(word))return {state:{...s,selected:[]},message:'Not in the supplied word list. No knot.'};
++  if(target===undefined&&!listed)return {state:{...s,selected:[]},message:'Not in the game dictionary. No knot.'};
+   const event={type:target===undefined?'knot':'pull',indices:[...s.selected].sort((a,b)=>a-b)};
+   const next={...s,events:[...s.events,event],selected:[]};
+-  return {state:next,message:target===undefined?`${word.toUpperCase()} is a word, but not one of these threads. One knot.`:getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
++  return {state:next,message:target===undefined?(s.vocabulary===2?`${word.toUpperCase()} is a valid word, but these beads strand the remaining threads. One knot; all beads stay available.`:`${word.toUpperCase()} is a word, but not one of these threads. One knot.`):getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
+ }
+ export function undoPull(p,s){return getStatus(p,s)==='playing'&&view(p,s).pulls.length?{...s,events:[...s.events,{type:'undo'}],selected:[]}:s;}
+ export function restart(p,s){if(getStatus(p,s)!=='playing')return s;return view(p,s).pulls.length?{...s,events:[...s.events,{type:'restart'}],selected:[]}:clear(p,s);}
+ export function hint(p,s){if(getStatus(p,s)!=='playing')return null;const h=hintFor(p,view(p,s));return h?{...s,events:[...s.events,h],selected:[]}:null;}
+ export const reveal=(p,s)=>getStatus(p,s)==='playing'?{...s,selected:[],revealed:true}:s;
+ export const summarize=(p,s)=>{const v=view(p,s);return `${v.pulls.length}/3 threads · ${v.knots}/4 knots · ${v.assists} hints`;};
++
++export const assistanceCount=(p,s)=>view(p,s).assists;
++
++export const createExpandedState=()=>({...createState(),vocabulary:2});
+diff --git a/games/claude-tumbler/engine.mjs b/games/claude-tumbler/engine.mjs
+index ff69c59..6a90588 100644
+--- a/games/claude-tumbler/engine.mjs
++++ b/games/claude-tumbler/engine.mjs
+@@ -1,5 +1,6 @@
++import {WORD_GAME_GUESSES} from './vocabulary.mjs';
+ import {GUESS_WORDS,ANSWERS} from './puzzles.mjs';
+-const WORDS=new Set([...GUESS_WORDS,...ANSWERS]);
++const WORDS=new Set([...GUESS_WORDS,...ANSWERS,...WORD_GAME_GUESSES]);
+ export const ALPHABET='abcdefghijklmnopqrstuvwxyz';
+ export const MAX_GUESSES=6;
+ export const createState=()=>({guesses:[],draft:'',hints:[],revealed:false});
+@@ -39,3 +40,5 @@ export function hint(p,s){
+ }
+ export const reveal=(p,s)=>getStatus(p,s)==='playing'?{...s,draft:'',revealed:true}:s;
+ export const summarize=(p,s)=>`${s.guesses.length}/6 guesses · ${ranges(p,s).locked.filter(Boolean).length}/5 dials locked · ${s.hints.length} hints`;
++
++export const assistanceCount=(p,s)=>s.hints.length;
+diff --git a/games/deepseek-rung/engine.mjs b/games/deepseek-rung/engine.mjs
+index b024e56..f66d5e5 100644
+--- a/games/deepseek-rung/engine.mjs
++++ b/games/deepseek-rung/engine.mjs
+@@ -1,6 +1,8 @@
++import {FOUR_LETTER_WORDS} from './word-acceptance.mjs';
+ // Concept: DeepSeek. Curated lexicon and completed implementation: ChatGPT.
+-// This deliberately finite game lexicon does not claim to include every English word.
+-export const LEXICON=Object.freeze([...new Set(`
++// Retain the original vocabulary so all valid progress remains restorable.
++// The pinned full-source four-letter union expands legal moves.
++const ORIGINAL_LEXICON=Object.freeze([...new Set(`
+ ABLE ACHE ACID ACME ACRE AGED AGES AIDE AIMS AIRS AKIN ALSO AMEN AMID ANTS ARCH
+ AREA ARID ARMS ARMY ARTS ASHY ATOM AUNT AUTO AWAY AXES BABE BABY BACK BAIL BAIT
+ BAKE BALD BALE BALL BALM BAND BANE BANG BANK BARE BARK BARN BASE BASH BASK BASS
+@@ -87,17 +89,23 @@ WING WINK WINS WIPE WIRE WISE WISH WITH WITS WOKE WOLF WOMB WONT WOOD WOOF WOOL
+ WORD WORE WORK WORM WORN WOVE WRAP WREN YARD YARN YAWN YEAR YELL YELP YOGA YOKE
+ YOUR YOWL ZEAL ZERO ZEST ZINC ZONE ZOOM
+ `.trim().split(/\s+/))].sort());
+-const words=new Set(LEXICON);
++export const LEXICON=Object.freeze([...new Set([...ORIGINAL_LEXICON,...FOUR_LETTER_WORDS])].sort());
++const words=new Set(LEXICON),familiar=new Set(ORIGINAL_LEXICON);
+ export function oneLetterApart(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==4||b.length!==4)return false;let d=0;for(let i=0;i<4;i++)if(a[i]!==b[i])d++;return d===1;}
+ const neighbors=new Map(LEXICON.map(w=>[w,[]])),buckets=new Map();
+ for(const w of LEXICON)for(let i=0;i<4;i++){const key=w.slice(0,i)+'*'+w.slice(i+1);const b=buckets.get(key)||[];b.push(w);buckets.set(key,b);}
+ for(const b of buckets.values())for(const a of b)for(const c of b)if(a!==c)neighbors.get(a).push(c);
++// Breadth first search keeps shortest-distance honesty. Prefer the familiar
++// original words only to break ties between equally short routes.
++for(const list of neighbors.values())list.sort((a,b)=>Number(familiar.has(b))-Number(familiar.has(a))||a.localeCompare(b));
+ export function findRoute(start,target){
+  if(!words.has(start)||!words.has(target))return null;
+  const prev=new Map([[start,null]]),queue=[start];
+  for(let at=0;at<queue.length;at++){const cur=queue[at];if(cur===target){const route=[];for(let w=target;w!==null;w=prev.get(w))route.push(w);return route.reverse();}for(const n of neighbors.get(cur))if(!prev.has(n)){prev.set(n,cur);queue.push(n);}}
+  return null;
+ }
++const shortestCache=new Map();
++export function shortestSteps(p){const key=p.start+':'+p.target;if(!shortestCache.has(key))shortestCache.set(key,(findRoute(p.start,p.target)?.length||1)-1);return shortestCache.get(key);}
+ export const createState=p=>({chain:[p.start],hintWord:null,hints:0,revealed:false});
+ export function getStatus(p,s){return s.revealed?'revealed':s.chain.at(-1)===p.target?'won':'playing';}
+ export function submitWord(p,s,input){
+@@ -105,7 +113,7 @@ export function submitWord(p,s,input){
+  const word=typeof input==='string'?input.trim().toUpperCase():'';
+  if(!/^[A-Z]{4}$/.test(word))return{state:s,message:'Enter a four-letter word.'};
+  if(!oneLetterApart(s.chain.at(-1),word))return{state:s,message:'Change exactly one letter from the last rung.'};
+- if(!words.has(word))return{state:s,message:'That word is outside the curated ladder dictionary.'};
++ if(!words.has(word))return{state:s,message:'That word is not in the game’s four-letter dictionary.'};
+  if(s.chain.length>=200)return{state:s,message:'Use Undo or Restart to shorten this ladder.'};
+  return{state:{...s,chain:[...s.chain,word],hintWord:null},message:word===p.target?'You reached the target!':`${word} added to the ladder.`};
+ }
+diff --git a/games/deepseek-rung/puzzles.mjs b/games/deepseek-rung/puzzles.mjs
+index 61b337c..dd1e6fa 100644
+--- a/games/deepseek-rung/puzzles.mjs
++++ b/games/deepseek-rung/puzzles.mjs
+@@ -1,5 +1,6 @@
+-import {findRoute} from './engine.mjs';
+-// Thirty authored start/target challenges. Pars are calculated against the actual accepted lexicon.
++// Thirty authored start/target challenges. Freeze their originally published
++// pars independently of later dictionary growth; the UI computes today's shortest route.
++const ORIGINAL_PARS=Object.freeze([4,5,3,3,5,7,3,6,4,4,8,6,9,5,6,4,5,8,6,9,6,3,5,6,10,7,3,5,3,5]);
+ const endpoints=[
+  ['COLD','WARM'],['HEAD','TAIL'],['LOVE','HATE'],['WEST','EAST'],['DARK','LAMP'],
+  ['DUSK','DAWN'],['SAND','SOIL'],['FIRE','RAIN'],['MIND','BODY'],['WORD','BOOK'],
+@@ -9,9 +10,7 @@ const endpoints=[
+  ['TREE','LEAF'],['LEAD','GOLD'],['BEAR','LION'],['TIDE','WAVE'],['CATS','DOGS'],
+ ];
+ const ORIGINAL_PUZZLES=Object.freeze(endpoints.map(([start,target],index)=>{
+- const route=findRoute(start,target);
+- if(!route)throw new Error(`Disconnected authored ladder: ${start} to ${target}`);
+- return Object.freeze({id:`rung-${String(index+1).padStart(2,'0')}`,start,target,par:route.length-1});
++ return Object.freeze({id:`rung-${String(index+1).padStart(2,'0')}`,start,target,par:ORIGINAL_PARS[index]});
+ }));
+ 
+ // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
+diff --git a/games/deepseek-runtime/common.mjs b/games/deepseek-runtime/common.mjs
+index f75e9f0..495fd60 100644
+--- a/games/deepseek-runtime/common.mjs
++++ b/games/deepseek-runtime/common.mjs
+@@ -12,7 +12,9 @@ const CATEGORY = {
+  'claude-tangle':'Three threads. One string.','claude-keystone':'Find the missing link','claude-tumbler':'Dial in the word'
+ };
+ 
+-/** UI contract shared by completed concepts. Timed games may supply tick(puzzle,state,deltaMs,mode). */
++/** UI contract shared by completed concepts. Timed games may supply tick(puzzle,state,deltaMs,mode).
++ * Optional assistanceCount and untimedAssistance return aggregates only; never share summarize(), which can contain answers.
++ */
+ export function mountDailyGame(config) {
+   const doc=document,win=window,host=doc.getElementById('app');
+   const creator=config.creator||'DeepSeek';
+@@ -93,7 +95,21 @@ export function mountDailyGame(config) {
+   for(const id of ['help-dialog','stats-dialog','reveal-dialog'])$(id).addEventListener('close',()=>{dialogPause=false;lastTick=performance.now();});
+   $('game-share').addEventListener('click',async()=>{
+     const status=session.outcome,symbol=status==='won'?'🟩':status==='lost'?'⬜':'🟨';
+-    const text=`Alford Daily · ${config.name}\n${session.dateKey}${session.mode==='practice'?' · Practice':''}\n${symbol} ${status==='won'?'Solved':status==='lost'?'Finished':'Revealed'}\n${credit}`;
++    if(status==='playing')return;
++    const details=[];
++    try{
++      if(typeof config.assistanceCount==='function'){
++        const count=config.assistanceCount(session.puzzle,session.state);
++        if(!Number.isSafeInteger(count)||count<0)throw new TypeError('Invalid assistance count');
++        details.push(`Hints: ${count}`);
++      }
++      if(typeof config.untimedAssistance==='function'){
++        const untimed=config.untimedAssistance(session.puzzle,session.state);
++        if(typeof untimed!=='boolean')throw new TypeError('Invalid untimed assistance');
++        if(untimed)details.push('Untimed assist');
++      }
++    }catch{announce('Your result could not be prepared. Please reopen the result and try again.');return;}
++    const text=[`Alford Daily · ${config.name}`,`${session.dateKey}${session.mode==='practice'?' · Practice':''}`,`${symbol} ${status==='won'?'Solved':status==='lost'?'Finished':'Revealed'}`,...details,credit].join('\n');
+     if(sendNative({type:'share',text}))return;
+     try{await navigator.clipboard.writeText(text);announce('Spoiler-free result copied.');}catch{announce(text);}
+   });
+diff --git a/games/deepseek-twin-hive/engine.mjs b/games/deepseek-twin-hive/engine.mjs
+index 3b8c658..06795b3 100644
+--- a/games/deepseek-twin-hive/engine.mjs
++++ b/games/deepseek-twin-hive/engine.mjs
+@@ -1,11 +1,17 @@
++import {WORDS_BY_RACK} from './word-acceptance.mjs';
+ // Concept: DeepSeek. Completed rules, validation and implementation: ChatGPT.
+-// Narrow editorial correction from live play review. Keep prepared records and
+-// stable IDs unchanged; supplements must obey the same rack and gold-letter rules.
++// Keep the earlier common-word hint priority and all authored records intact.
++// Broader offline source acceptance obeys the same rack and gold-letter rules.
+ const REVIEWED_COMMON_WORDS=Object.freeze(['EARS']);
++const acceptanceCache=new WeakMap();
+ export function acceptedWords(puzzle){
+- return [...new Set([...puzzle.answers,...REVIEWED_COMMON_WORDS.filter(word=>
+-  [...word].every(letter=>puzzle.letters.includes(letter))&&puzzle.gold.every(letter=>word.includes(letter))
+- )])];
++ if(!acceptanceCache.has(puzzle)){
++  const eligible=word=>[...word].every(letter=>puzzle.letters.includes(letter))&&puzzle.gold.every(letter=>word.includes(letter));
++  // Authored words keep their order for familiar hints. Broader acceptance does
++  // not change the six-word target or invalidate any previously valid save.
++  acceptanceCache.set(puzzle,Object.freeze([...new Set([...puzzle.answers,...REVIEWED_COMMON_WORDS.filter(eligible),...(WORDS_BY_RACK[puzzle.letters]||[]).filter(eligible)])]));
++ }
++ return acceptanceCache.get(puzzle);
+ }
+ export const createState = () => ({ found: [], hinted: [], hintWord: null, revealed: false });
+ export function getStatus(puzzle, state) { return state.revealed ? 'revealed' : state.found.length >= puzzle.target ? 'won' : 'playing'; }
+diff --git a/games/qwen-syntax-siege/engine.mjs b/games/qwen-syntax-siege/engine.mjs
+index 81c3dcd..5ee7047 100644
+--- a/games/qwen-syntax-siege/engine.mjs
++++ b/games/qwen-syntax-siege/engine.mjs
+@@ -1,3 +1,9 @@
++import {WORDS_BY_RACK} from './word-acceptance.mjs';
++const acceptanceCache=new WeakMap();
++export function acceptedWords(w){
++ if(!acceptanceCache.has(w))acceptanceCache.set(w,Object.freeze([...new Set([...w.words,...(WORDS_BY_RACK[[...w.rack].sort().join('')]||[])])]));
++ return acceptanceCache.get(w);
++}
+ const count = (n, max=100000) => Number.isInteger(n) && n >= 0 && n <= max;
+ export const health = s => Math.max(0, 100 - s.misses * 10 - s.timeouts * 20);
+ export const waveDamage = (s, wave) => s.played[wave].reduce((total, word) => total + word.length * 10, 0);
+@@ -17,7 +23,7 @@ export function restoreState(p,raw) {
+   let unfinished=false;
+   for(let i=0;i<p.waves.length;i++){
+     const w=p.waves[i],words=raw.played[i];
+-    if(!Array.isArray(words)||words.length>6||new Set(words).size!==words.length||words.some(word=>!w.words.includes(word)||!canSpell(w,word)))return null;
++    if(!Array.isArray(words)||words.length>6||new Set(words).size!==words.length||words.some(word=>!acceptedWords(w).includes(word)||!canSpell(w,word)))return null;
+     if(unfinished&&words.length)return null;
+     if(words.slice(0,-1).reduce((sum,word)=>sum+word.length*10,0)>=w.health)return null;
+     if(words.reduce((sum,word)=>sum+word.length*10,0)<w.health)unfinished=true;
+@@ -44,7 +50,7 @@ export function submit(p,s) {
+   const index=waveIndex(p,s),w=p.waves[index],word=currentWord(p,s);
+   if(word.length<3)return {state:s,message:'Use at least three letters to fire a word.'};
+   if(s.played[index].includes(word))return {state:{...s,selected:[]},message:'That word already hit this wave. Find a different one.'};
+-  if(!w.words.includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'Not in this wave’s word list. The core takes 10 damage.'};
++  if(!acceptedWords(w).includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'That word is not in the game dictionary. The core takes 10 damage.'};
+   const played=s.played.map(words=>[...words]);played[index].push(word);
+   let state={...s,played,selected:[]};
+   const cleared=waveDamage(state,index)>=w.health;
+diff --git a/packages/kimi-pebbles/src/games/circuit/engine.ts b/packages/kimi-pebbles/src/games/circuit/engine.ts
+index 7e3d2ba..ed1d553 100644
+--- a/packages/kimi-pebbles/src/games/circuit/engine.ts
++++ b/packages/kimi-pebbles/src/games/circuit/engine.ts
+@@ -1,6 +1,7 @@
+ import { choosePracticeIndex } from '../shared/practice'
+ import { publishedDailyIndex } from '../shared/daily'
+ import puzzlesData from './data/puzzles.json'
++import additionsData from './data/word-additions.json'
+ import { todayDayNumber } from '../shared/share'
+ 
+ export interface CircuitPuzzle {
+@@ -8,31 +9,48 @@ export interface CircuitPuzzle {
+   l: string
+   /** number of accepted words */
+   n: number
+-  /** minimal words needed to cover all letters */
++  /** Published word target, preserved when accepted vocabulary grows. */
+   par: number
+   words: string[]
+-  /** one minimal covering chain */
++  /** one published covering chain */
+   sol: string[]
+ }
+ 
+ /** Editorial correction: PLUM is an ordinary word omitted by the original web-frequency list. */
+ const SUPPLEMENTAL_WORDS = ['plum']
++const WORD_ADDITIONS = additionsData as string[]
++const letterMask = (word:string):number => {let bits=0;for(const ch of word)bits|=1<<(ch.charCodeAt(0)-97);return bits}
++const WORD_MASKS = new Uint32Array(WORD_ADDITIONS.map(letterMask))
+ export function withReviewedWords(puzzle: CircuitPuzzle): CircuitPuzzle {
+-  const additions = SUPPLEMENTAL_WORDS.filter(word => !puzzle.words.includes(word) &&
+-    [...word].every((letter, i) => puzzle.l.includes(letter) &&
+-      (i === 0 || arcOf(puzzle.l.indexOf(letter)) !== arcOf(puzzle.l.indexOf(word[i - 1])))))
+-  return additions.length ? { ...puzzle, words: [...puzzle.words, ...additions].sort(), n: puzzle.n + additions.length } : puzzle
++  const original = new Set(puzzle.words), additions = new Set<string>(), allowed = letterMask(puzzle.l)
++  const arcs = new Int8Array(26).fill(-1)
++  for(let i=0;i<puzzle.l.length;i++)arcs[puzzle.l.charCodeAt(i)-97]=arcOf(i)
++  const consider=(word:string)=>{
++    if(original.has(word))return
++    let previous=-1
++    for(const ch of word){const arc=arcs[ch.charCodeAt(0)-97];if(arc===undefined||arc<0||arc===previous)return;previous=arc}
++    additions.add(word)
++  }
++  for(const word of SUPPLEMENTAL_WORDS)consider(word)
++  for(let i=0;i<WORD_ADDITIONS.length;i++)if((WORD_MASKS[i]&~allowed)===0)consider(WORD_ADDITIONS[i])
++  return additions.size ? { ...puzzle, words: [...puzzle.words, ...additions].sort(), n: puzzle.words.length + additions.size } : puzzle
++}
++const PUZZLES = puzzlesData as CircuitPuzzle[]
++const REVIEWED = new Map<number,CircuitPuzzle>()
++function puzzleAt(index:number):CircuitPuzzle{
++  let puzzle=REVIEWED.get(index)
++  if(!puzzle){puzzle=withReviewedWords(PUZZLES[index]);REVIEWED.set(index,puzzle)}
++  return puzzle
+ }
+-const PUZZLES = (puzzlesData as CircuitPuzzle[]).map(withReviewedWords)
+ 
+ export function dailyCircuit(dayNumber = todayDayNumber()): { puzzle: CircuitPuzzle; puzzleNo: number } {
+   const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 286)
+-  return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
++  return { puzzle: puzzleAt(idx), puzzleNo: idx + 1 }
+ }
+ 
+ export function practiceCircuit(excludeNo = -1): { puzzle: CircuitPuzzle; puzzleNo: number } {
+   const idx = choosePracticeIndex('kimi-circuit', PUZZLES.length, excludeNo)
+-  return { puzzle: PUZZLES[idx], puzzleNo: idx + 1 }
++  return { puzzle: puzzleAt(idx), puzzleNo: idx + 1 }
+ }
+ 
+ export const ARC_COLORS = ['hsl(24 92% 58%)', 'hsl(145 55% 52%)', 'hsl(200 82% 60%)', 'hsl(275 58% 60%)']
+@@ -44,14 +62,14 @@ export function arcOf(i: number): number {
+ 
+ export function medalForChain(wordsUsed: number, par: number, gaveUp: boolean): { icon: string; label: string } {
+   if (gaveUp) return { icon: '⬛', label: 'Route revealed' }
+-  if (wordsUsed <= par) return { icon: '🥇', label: 'Gold — par circuit!' }
+-  if (wordsUsed === par + 1) return { icon: '🥈', label: 'Silver — 1 over par' }
+-  if (wordsUsed === par + 2) return { icon: '🥉', label: 'Bronze — 2 over par' }
++  if (wordsUsed <= par) return { icon: '🥇', label: 'Gold — target met!' }
++  if (wordsUsed === par + 1) return { icon: '🥈', label: 'Silver — 1 over target' }
++  if (wordsUsed === par + 2) return { icon: '🥉', label: 'Bronze — 2 over target' }
+   return { icon: '✅', label: 'Circuit complete' }
+ }
+ 
+ export function buildCircuitShare(puzzleNo: number, wordsUsed: number, par: number, gaveUp: boolean): string {
+   const medal = medalForChain(wordsUsed, par, gaveUp)
+   const cells = gaveUp ? '⬛'.repeat(12) : '🟧🟧🟧🟩🟩🟩🟦🟦🟦🟪🟪🟪'
+-  return `CIRCUIT No.${puzzleNo}\n${medal.icon} ${wordsUsed} word${wordsUsed === 1 ? '' : 's'} · par ${par}\n${cells}`
++  return `CIRCUIT No.${puzzleNo}\n${medal.icon} ${wordsUsed} word${wordsUsed === 1 ? '' : 's'} · target ${par}\n${cells}`
+ }
+diff --git a/packages/kimi-pebbles/src/games/quartet/QuartetBoard.tsx b/packages/kimi-pebbles/src/games/quartet/QuartetBoard.tsx
+index 4c1881f..7141108 100644
+--- a/packages/kimi-pebbles/src/games/quartet/QuartetBoard.tsx
++++ b/packages/kimi-pebbles/src/games/quartet/QuartetBoard.tsx
+@@ -1,5 +1,6 @@
++import { quartetLabel } from './labels'
+ import { Lightbulb, Shuffle, X } from 'lucide-react'
+-import { MAX_MISSES } from './engine'
++import { MAX_MISSES, TIER_STYLE } from './engine'
+ import type { Tile } from './useQuartet'
+ import { isPremium } from '../shared/premium'
+ import { cn } from '@/lib/utils'
+@@ -30,13 +31,13 @@ interface Props {
+ }
+ 
+ function GroupBanner({ label, members, tier }: { label: string; members: string[]; tier: number }) {
+-  const face = ['#887221', '#427357', '#3f7192', '#78578d'][tier] ?? '#78578d'
++  const face = TIER_STYLE[tier]?.face ?? '#384763'
+   return (
+     <div
+       className="quartet-solved anim-pop flex w-full flex-col items-center rounded-2xl px-3 py-2.5 text-white"
+       style={{ background: face }}
+     >
+-      <span className="font-display text-sm font-extrabold uppercase tracking-widest">{label}</span>
++      <span className="font-display text-sm font-extrabold uppercase tracking-widest"><small className="quartet-tier">{tier}</small> {quartetLabel(label)}</span>
+       <span className="text-xs font-bold uppercase tracking-wider opacity-90">{members.join(' · ')}</span>
+     </div>
+   )
+@@ -69,7 +70,7 @@ export function QuartetBoard({ state, actions }: Props) {
+       </div>
+ 
+       {!state.finished && <p id="quartet-selection" className="mt-3 text-center text-sm font-semibold text-muted-foreground" role="status">
+-        Choose four words with a shared connection. {state.selected.length} of 4 selected.
++        {state.selected.length === 4 ? 'Four words selected. Submit to test their connection.' : `Choose four words with a shared connection. ${state.selected.length} of 4 selected.`}
+       </p>}
+       {state.hintPair && <p id="quartet-hint" className="mt-2 max-w-sm text-center text-sm font-bold text-muted-foreground">
+         Pair clue: <span className="text-foreground">{state.hintPair[0].toUpperCase()}</span> and <span className="text-foreground">{state.hintPair[1].toUpperCase()}</span> belong together.
+diff --git a/packages/kimi-pebbles/src/games/quartet/QuartetHelpModal.tsx b/packages/kimi-pebbles/src/games/quartet/QuartetHelpModal.tsx
+index 40c4612..f9a77e4 100644
+--- a/packages/kimi-pebbles/src/games/quartet/QuartetHelpModal.tsx
++++ b/packages/kimi-pebbles/src/games/quartet/QuartetHelpModal.tsx
+@@ -14,7 +14,7 @@ export function QuartetHelpModal({ open, onOpenChange }: { open: boolean; onOpen
+           </p>
+           <ul className="flex list-disc flex-col gap-2 pl-5">
+             <li>Tap 4 tiles that share a theme, then hit Submit.</li>
+-            <li>Right group → it locks in with a color. Colors run 🟨 easy → 🟪 tricky.</li>
++            <li>A right group locks in and reveals its theme. Numbered tiers run 1 (direct) to 4 (trickier); difficulty varies by theme.</li>
+             <li>
+               Wrong group → a miss. <span className="font-display font-extrabold">Four misses</span> ends the round.
+             </li>
+diff --git a/packages/kimi-pebbles/src/games/quartet/QuartetPage.tsx b/packages/kimi-pebbles/src/games/quartet/QuartetPage.tsx
+index fb47c89..ff06a49 100644
+--- a/packages/kimi-pebbles/src/games/quartet/QuartetPage.tsx
++++ b/packages/kimi-pebbles/src/games/quartet/QuartetPage.tsx
+@@ -1,3 +1,4 @@
++import './quartet.css'
+ import { useEffect } from 'react'
+ import { useGameOverlays } from '../shared/useGameOverlays'
+ import { useQuartet } from './useQuartet'
+@@ -85,6 +86,7 @@ export default function QuartetPage() {
+           puzzle={state.puzzle}
+           puzzleNo={state.puzzleNo}
+           history={state.history}
++          hintsUsed={state.hintsUsed}
+           misses={state.misses}
+           won={state.won}
+           onPractice={() => {
+diff --git a/packages/kimi-pebbles/src/games/quartet/QuartetWinModal.tsx b/packages/kimi-pebbles/src/games/quartet/QuartetWinModal.tsx
+index a2fc5ae..19fce0a 100644
+--- a/packages/kimi-pebbles/src/games/quartet/QuartetWinModal.tsx
++++ b/packages/kimi-pebbles/src/games/quartet/QuartetWinModal.tsx
+@@ -1,3 +1,4 @@
++import { quartetLabel } from './labels'
+ import { useMemo, useState } from 'react'
+ import { Check, Copy, Infinity as InfinityIcon, RotateCcw } from 'lucide-react'
+ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+@@ -11,6 +12,7 @@ interface Props {
+   puzzle: QuartetPuzzle
+   puzzleNo: number
+   history: number[][]
++  hintsUsed: number
+   misses: number
+   won: boolean
+   onPractice: () => void
+@@ -23,8 +25,8 @@ export function QuartetWinModal(props: Props) {
+   const countdown = useCountdown(props.open && props.mode === 'daily')
+ 
+   const shareText = useMemo(
+-    () => buildQuartetShare(props.puzzleNo, props.history, props.won),
+-    [props.puzzleNo, props.history, props.won],
++    () => buildQuartetShare(props.puzzleNo, props.history, props.won, props.hintsUsed),
++    [props.puzzleNo, props.history, props.won, props.hintsUsed],
+   )
+ 
+   const copy = async () => {
+@@ -33,26 +35,27 @@ export function QuartetWinModal(props: Props) {
+     window.setTimeout(() => setCopied(false), 1800)
+   }
+ 
+-  const flawless = props.won && props.misses === 0
++  const flawless = props.won && props.misses === 0 && props.hintsUsed === 0
+ 
+   return (
+     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+       <DialogContent className="max-w-sm rounded-3xl">
+         <DialogHeader>
+           <DialogTitle className="text-center font-display text-3xl font-extrabold">
+-            {props.won ? (flawless ? '🏆 Flawless quartet!' : '🎉 All four found!') : '💔 Grid revealed'}
++            {props.won ? (flawless ? 'All four, no misses!' : 'All four found!') : 'Grid revealed'}
+           </DialogTitle>
+           <DialogDescription className="sr-only">Puzzle results and sharing</DialogDescription>
+         </DialogHeader>
+ 
+         <div className="flex flex-col items-center gap-4">
+-          {/* guess history as emoji squares */}
++          <p className="text-center text-sm font-semibold">{props.misses} of 4 misses · {props.hintsUsed} pair hint{props.hintsUsed === 1 ? '' : 's'}</p>
++          {/* Numeric tier history keeps results distinguishable without color. */}
+           {props.history.length > 0 && (
+             <div className="flex flex-col items-center gap-1 rounded-2xl bg-secondary p-4" aria-hidden="true">
+               {props.history.map((row, r) => (
+                 <div key={r} className="flex gap-1">
+                   {row.map((t, i) => (
+-                    <span key={i} className="h-6 w-6 rounded-md" style={{ background: TIER_STYLE[t].face }} />
++                    <span key={i} className="flex h-7 w-7 items-center justify-center rounded-md text-sm font-bold text-white" style={{ background: TIER_STYLE[t].face }}>{t}</span>
+                   ))}
+                 </div>
+               ))}
+@@ -63,10 +66,10 @@ export function QuartetWinModal(props: Props) {
+             {props.puzzle.groups.map((g, i) => (
+               <div
+                 key={i}
+-                className="flex items-center justify-between rounded-xl px-3 py-1.5 text-sm font-bold text-white"
++                className="flex flex-col items-center gap-1 rounded-xl px-3 py-3 text-center text-sm font-bold text-white"
+                 style={{ background: TIER_STYLE[g.tier].face }}
+               >
+-                <span className="font-display uppercase tracking-wider">{g.label}</span>
++                <span className="font-display uppercase tracking-wider">{g.tier} · {quartetLabel(g.label)}</span>
+                 <span className="text-xs opacity-90">{g.members.join(' · ')}</span>
+               </div>
+             ))}
+diff --git a/packages/kimi-pebbles/src/games/quartet/engine.ts b/packages/kimi-pebbles/src/games/quartet/engine.ts
+index b35d62c..6bda62a 100644
+--- a/packages/kimi-pebbles/src/games/quartet/engine.ts
++++ b/packages/kimi-pebbles/src/games/quartet/engine.ts
+@@ -5,7 +5,7 @@ import { todayDayNumber } from '../shared/share'
+ 
+ export interface QuartetGroup {
+   label: string
+-  /** 1 easiest (yellow) → 4 trickiest (purple) */
++  /** Author-assigned connection tiers; human difficulty can vary. */
+   tier: 1 | 2 | 3 | 4
+   members: string[]
+ }
+@@ -19,10 +19,10 @@ const PUZZLES = puzzlesData as QuartetPuzzle[]
+ export const MAX_MISSES = 4
+ 
+ export const TIER_STYLE: Record<number, { face: string; name: string; emoji: string }> = {
+-  1: { face: 'hsl(43 92% 55%)', name: 'yellow', emoji: '🟨' },
+-  2: { face: 'hsl(145 55% 52%)', name: 'green', emoji: '🟩' },
+-  3: { face: 'hsl(200 82% 60%)', name: 'blue', emoji: '🟦' },
+-  4: { face: 'hsl(275 58% 60%)', name: 'purple', emoji: '🟪' },
++  1: { face: '#146c75', name: 'teal', emoji: '1' },
++  2: { face: '#26669a', name: 'blue', emoji: '2' },
++  3: { face: '#315481', name: 'navy', emoji: '3' },
++  4: { face: '#384763', name: 'slate', emoji: '4' },
+ }
+ 
+ export function dailyQuartet(dayNumber = todayDayNumber()): { puzzle: QuartetPuzzle; puzzleNo: number } {
+@@ -47,8 +47,8 @@ export function seededOrder(seed: number, n = 16): number[] {
+   return arr
+ }
+ 
+-/** one share row per guess: tier emoji of the 4 guessed members, in guess order */
+-export function buildQuartetShare(puzzleNo: number, history: number[][], won: boolean): string {
++/** One spoiler-free numbered tier row per guess, in selection order. */
++export function buildQuartetShare(puzzleNo: number, history: number[][], won: boolean, hintsUsed = 0): string {
+   const rows = history.map((row) => row.map((t) => TIER_STYLE[t].emoji).join('')).join('\n')
+-  return `QUARTET No.${puzzleNo} ${won ? '🏆' : '💔'}\n${rows}`
++  return `QUARTET No.${puzzleNo} ${won ? 'Solved' : 'Revealed'}\n${rows}${hintsUsed ? `\n${hintsUsed} pair hint${hintsUsed === 1 ? '' : 's'}` : ''}`
+ }
+diff --git a/packages/kimi-pebbles/src/games/quartet/labels.ts b/packages/kimi-pebbles/src/games/quartet/labels.ts
+new file mode 100644
+index 0000000..02fd880
+--- /dev/null
++++ b/packages/kimi-pebbles/src/games/quartet/labels.ts
+@@ -0,0 +1,13 @@
++/** Accurate display wording over immutable published group records. */
++const labels: Record<string,string> = {
++  'Swimming strokes': 'Swimming terms',
++  Dinosaurs: 'Prehistoric animal nicknames',
++  Clouds: 'Cloud names & prefixes',
++  Knots: 'Words in knot names',
++  'Yoga poses': 'Words in yoga pose names',
++  'Chess pieces': 'Chess pieces & nicknames',
++  'Tea types': 'Words in tea names',
++  Cakes: 'Words in cake names',
++  'Wine varieties': 'Words in wine names',
++}
++export const quartetLabel = (label: string): string => labels[label] ?? label
+diff --git a/packages/kimi-pebbles/src/games/quartet/quartet.css b/packages/kimi-pebbles/src/games/quartet/quartet.css
+new file mode 100644
+index 0000000..cab28db
+--- /dev/null
++++ b/packages/kimi-pebbles/src/games/quartet/quartet.css
+@@ -0,0 +1,21 @@
++/* Quartet keeps its own scoped palette and readable, wrapping word cards. */
++html[data-game-id='kimi-quartet']{--identity:#176e91;--identity-hsl:197 72% 33%;--identity-soft:#e0f0f8;--identity-dark:#12485f;--slot-edge:197 67% 25%;--grape-edge:197 67% 25%}
++.kimi-quartet .kimi-stage{background:linear-gradient(150deg,#f7fcff,#edf7fb);border-color:#b9d4e5;box-shadow:0 14px 40px #154c6c12}
++.kimi-quartet .quartet-board{max-width:650px;padding-inline:10px}
++.kimi-quartet .quartet-cabinet{padding:7px;gap:7px;background:#dfedf5;border:1px solid #b8cede;border-radius:18px}
++.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{height:auto;min-height:84px;padding:12px 5px;background:#fff;color:#173c55;border:1px solid #b8cfdf;border-top:3px solid #8ebad4;border-radius:10px;box-shadow:0 3px 0 #b2cbdc;font-size:clamp(15px,3.3vw,19px);letter-spacing:0;line-height:1.25;white-space:normal;overflow-wrap:anywhere;word-break:normal}
++.kimi-quartet .quartet-card[data-long-word]{font-size:clamp(13px,2.8vw,17px)}
++.kimi-quartet .quartet-card.tile-slot{background:#176e91;color:#fff;border-color:#12485f;border-top-color:#12485f;box-shadow:0 3px 0 #0f3b50;transform:translateY(-2px)}
++.kimi-quartet .quartet-solved>span:first-child{font-size:15px;letter-spacing:.02em;text-align:center;line-height:1.4}
++.kimi-quartet .quartet-solved>span:last-child{font-size:14px;letter-spacing:0;line-height:1.6;text-align:center}
++.kimi-quartet .quartet-tier{display:inline-grid;place-items:center;min-width:23px;min-height:23px;margin-right:4px;border:1px solid #ffffff80;border-radius:50%;font-size:13px}
++@media(max-width:350px){.kimi-quartet .quartet-cabinet{padding:4px;gap:4px}.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{min-height:86px;padding-inline:3px;font-size:14px}.kimi-quartet .quartet-card[data-long-word]{font-size:13px}}
++html[data-game-id='kimi-quartet']{--background:204 50% 97%;--card:204 50% 99%;background:#f2f8fc}
++html[data-game-id='kimi-quartet'] body,.kimi-quartet .collection-header{background:#f2f8fc}
++.kimi-quartet .collection-rule{font-size:15px;line-height:1.6;color:#425e70}
++.kimi-quartet .collection-modes{background:#e1edf5;border-color:#bfd5e5}
++.kimi-quartet .collection-modes button[aria-pressed=true]{background:#fff}
++.kimi-quartet .collection-emblem img{filter:hue-rotate(230deg)}
++html[data-game-id='kimi-quartet'] [data-slot=dialog-content]{background:#f8fcff;border-color:#bed4e4}
++html[data-game-id='kimi-quartet'] .btn3d-soft{background:#f8fcff;border-color:#bfd3e2;box-shadow:0 2px 0 #cfdeea;color:#23465c}
++@media(max-width:420px){.kimi-quartet .quartet-cabinet{grid-template-columns:repeat(2,minmax(0,1fr))}.kimi-quartet .quartet-card,.kimi-quartet .quartet-card[data-long-word]{min-height:64px;font-size:17px;padding:12px 5px}.kimi-quartet .quartet-card[data-long-word]{font-size:15px}}
+diff --git a/packages/kimi-pebbles/src/games/quartet/useQuartet.ts b/packages/kimi-pebbles/src/games/quartet/useQuartet.ts
+index 63271c3..89954b3 100644
+--- a/packages/kimi-pebbles/src/games/quartet/useQuartet.ts
++++ b/packages/kimi-pebbles/src/games/quartet/useQuartet.ts
+@@ -1,3 +1,4 @@
++import { quartetLabel } from './labels'
+ import { useDailySession } from '../shared/useDailySession'
+ import { useCallback, useEffect, useRef, useState } from 'react'
+ import { dailyQuartet, practiceQuartet, seededOrder, MAX_MISSES, type QuartetPuzzle } from './engine'
+@@ -293,7 +294,7 @@ export function useQuartet() {
+       }
+       const solvedGroups = [...prev.solvedGroups, g0]
+       const tiles = prev.tiles.map((t, i) => (prev.selected.includes(i) ? null : t))
+-      const label = prev.puzzle.groups[g0].label
++      const label = quartetLabel(prev.puzzle.groups[g0].label)
+       if (solvedGroups.length === 4) {
+         finish({ ...prev, stats }, true, tiles, solvedGroups, history)
+         return

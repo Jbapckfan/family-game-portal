@@ -61,7 +61,10 @@ export default function TanglePage() {
             <button type="button" disabled={state.phase === 'loading'} aria-pressed={five} onClick={() => { if (!five) startFivePreview() }}>5×5 Preview</button>
           </div>
           {five && <div className="tangle-preview-note"><p><strong>A bigger web. Same rules.</strong><span>One sample board · Gold at 30 · No daily streak</span></p></div>}
-          <TangleBoard state={state} actions={actions} />
+          {state.phase === 'unavailable' ? <p className="mx-4 my-5 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-relaxed text-slate-800" role="status">This saved round uses a dictionary version this app cannot open. Its progress is preserved. {five ? 'Restart sample starts over with the current dictionary.' : 'You can start a new Practice round.'}</p> : <>
+            {state.phase === 'playing' && state.vocabulary !== 3 && <p data-tangle-earlier-dictionary className="mx-4 mt-4 rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm leading-relaxed text-slate-800" role="status">You’re playing an earlier word list. Its points and goals stay the same. New Practice rounds use the expanded game dictionary.</p>}
+            <TangleBoard state={state} actions={actions} />
+          </>}
           {five && <div className="tangle-preview-note"><button type="button" onClick={restartFivePreview}>Restart sample</button></div>}
           {state.found.length > 0 && (
             <div className="mb-8 flex justify-center">
@@ -77,7 +80,7 @@ export default function TanglePage() {
         {five ? 'Sample preview · Progress stays in this tab · Restart clears it' : 'A new web every midnight · Daily progress is saved in this browser'}
       </footer>
 
-      <TangleHelpModal open={helpOpen} onOpenChange={setHelpOpen} boardSize={five ? 5 : 4} />
+      <TangleHelpModal open={helpOpen} onOpenChange={setHelpOpen} boardSize={five ? 5 : 4} earlierVocabulary={state.phase === 'playing' && state.vocabulary !== 3} />
       <SimpleStatsModal open={statsOpen} onOpenChange={setStatsOpen} stats={{...state.stats,currentStreak:state.stats.lastCompletedDay !== null && state.stats.lastCompletedDay >= centralDayNumber()-1 ? state.stats.currentStreak : 0}} title="Your webs" />
       {state.puzzle && winOpen && (
         <TangleWinModal

@@ -1,0 +1,17 @@
+(node:27490) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ new current and future Daily and new Practice Tangle rounds are tagged vocabulary3 (0.929375ms)
+✔ unknown or malformed vocabulary markers cannot be restored as a known dictionary edition (0.17475ms)
+✔ preview session saves reject unknown markers and retain a known marker after validation (0.068458ms)
+✔ actual Tangle hooks preserve prior snapshots and unknown-version saves while new rounds accept v3 words (1274.556125ms)
+✔ frozen published v2 files retain exact released bytes and older save snapshots across all grids (24.971667ms)
+ℹ 0 selected days currently differ from frozen v2; root generation must make this positive before release.
+✔ preview edition selection keeps maximum, count and share/medal snapshot coherent (4.013584ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1545.7945

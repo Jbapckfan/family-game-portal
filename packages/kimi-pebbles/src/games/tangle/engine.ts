@@ -3,8 +3,8 @@ import { choosePracticeIndex } from '../shared/practice'
 import { publishedDailyIndex } from '../shared/daily'
 import puzzlesData from './data/puzzles.json'
 import { todayDayNumber } from '../shared/share'
-import { medalTargets, restoreTangleProgress } from './progress'
-import { expandTanglePuzzle, TANGLE_LEXICON_START_DAY } from './lexicon'
+import { medalTargets, restoreTangleProgress, tangleVocabulary, unsupportedTangleVocabulary, type TangleVocabulary } from './progress'
+import { expandTanglePuzzle, TANGLE_LEXICON_START_DAY, TANGLE_LEXICON_V3_START_DAY } from './lexicon'
 
 export interface TanglePuzzle {
   g: string // row-major: 16 letters for daily/practice, 25 for the optional preview
@@ -17,22 +17,32 @@ export interface TanglePuzzle {
 
 const PUZZLES = (puzzlesData as TanglePuzzle[]).map(puzzle => ({ ...puzzle, targets: medalTargets(puzzle.max) }))
 
-export function dailyTangle(dayNumber = todayDayNumber(), savedProgress?: unknown): { puzzle: TanglePuzzle; puzzleNo: number } {
-  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 430)
-  const original = PUZZLES[idx]
-  // A cached older client may already have played this day's original edition.
-  // Preserve a fully valid such round, including earned points and medals.
-  const legacyBase=dayNumber>=TANGLE_LEXICON_START_DAY ? expandTanglePuzzle(original) : original
-  const legacy = savedProgress === undefined ? null : restoreTangleProgress(savedProgress, legacyBase)
-  const keepEdition = legacy && legacy.found.some(word => TANGLE_REVIEWED_EXCLUSIONS.includes(word))
-  if(keepEdition)return {puzzle:legacyBase,puzzleNo:idx+1}
-  const edition=reviewTanglePuzzleForDay(original, dayNumber)
-  return { puzzle: dayNumber>=TANGLE_LEXICON_START_DAY ? expandTanglePuzzle(edition) : edition, puzzleNo: idx + 1 }
+export interface TangleRound { puzzle:TanglePuzzle; puzzleNo:number; vocabulary?:TangleVocabulary; unsupported?:boolean }
+
+export function dailyTangle(dayNumber = todayDayNumber(), savedProgress?: unknown): TangleRound {
+  const idx = publishedDailyIndex(dayNumber, PUZZLES.length, 430), original = PUZZLES[idx]
+  const edition=(puzzle:TanglePuzzle,vocabulary:TangleVocabulary):TanglePuzzle => vocabulary===1? puzzle : expandTanglePuzzle(puzzle,vocabulary)
+  const reviewed=reviewTanglePuzzleForDay(original,dayNumber)
+  if(unsupportedTangleVocabulary(savedProgress))return {puzzle:edition(reviewed,dayNumber>=TANGLE_LEXICON_V3_START_DAY?3:dayNumber>=TANGLE_LEXICON_START_DAY?2:1),puzzleNo:idx+1,unsupported:true}
+  const marker=tangleVocabulary(savedProgress)
+  if(marker!==null && savedProgress!==undefined){
+    // Before explicit markers, October31+ used the now-frozen v2 pool. The
+    // old-client exception retains original excluded words and its exact max.
+    const vocabulary=marker??(dayNumber>=TANGLE_LEXICON_START_DAY?2:1)
+    const legacyBase=edition(original,vocabulary), legacy=restoreTangleProgress(savedProgress,legacyBase)
+    if(legacy){
+      const keepExcluded=legacy.found.some(word=>TANGLE_REVIEWED_EXCLUSIONS.includes(word))
+      const puzzle=keepExcluded?legacyBase:edition(reviewed,vocabulary)
+      if(restoreTangleProgress(savedProgress,puzzle))return {puzzle,puzzleNo:idx+1,...(marker===undefined?{}:{vocabulary:marker})}
+    }
+  }
+  if(dayNumber>=TANGLE_LEXICON_V3_START_DAY)return {puzzle:expandTanglePuzzle(reviewed,3),puzzleNo:idx+1,vocabulary:3}
+  return {puzzle:dayNumber>=TANGLE_LEXICON_START_DAY?expandTanglePuzzle(reviewed,2):reviewed,puzzleNo:idx+1}
 }
 
-export function practiceTangle(excludeIdx = -1): { puzzle: TanglePuzzle; puzzleNo: number } {
+export function practiceTangle(excludeIdx = -1): TangleRound {
   const idx = choosePracticeIndex('kimi-tangle', PUZZLES.length, excludeIdx)
-  return { puzzle: expandTanglePuzzle(reviewTanglePuzzle(PUZZLES[idx])), puzzleNo: idx + 1 }
+  return { puzzle: expandTanglePuzzle(reviewTanglePuzzle(PUZZLES[idx]),3), puzzleNo: idx + 1, vocabulary:3 }
 }
 
 export { pointsFor } from './progress'

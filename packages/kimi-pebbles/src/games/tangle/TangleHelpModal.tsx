@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
-export function TangleHelpModal({ open, onOpenChange, boardSize=4 }: { open: boolean; onOpenChange: (o: boolean) => void; boardSize?:4|5 }) {
+export function TangleHelpModal({ open, onOpenChange, boardSize=4, earlierVocabulary=false }: { open: boolean; onOpenChange: (o: boolean) => void; boardSize?:4|5; earlierVocabulary?:boolean }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md rounded-3xl">
@@ -9,6 +9,7 @@ export function TangleHelpModal({ open, onOpenChange, boardSize=4 }: { open: boo
           <DialogDescription className="sr-only">Rules of the word-web game</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 text-[15px] font-semibold leading-relaxed text-foreground/85">
+          {earlierVocabulary && <p>You’re playing an earlier word list. Its points and goals stay the same. New Practice rounds use the expanded game dictionary.</p>}
           <p>
             Letters are tangled in a {boardSize}×{boardSize} web. <strong>Drag or tap across touching letters</strong> — including
             diagonals — to spell words.

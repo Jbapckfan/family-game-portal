@@ -15,7 +15,21 @@ export function reconcileTangleCompletion(stats: GameStats, progress: TangleProg
     currentStreak, maxStreak: Math.max(stats.maxStreak, currentStreak), lastCompletedDay: day }
 }
 
+export type TangleVocabulary = 1 | 2 | 3
+
+/** Undefined is a published markerless round; null is an unsupported marker. */
+export function tangleVocabulary(value: unknown): TangleVocabulary | undefined | null {
+ if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+ const vocabulary = (value as { vocabulary?: unknown }).vocabulary
+ return vocabulary === undefined ? undefined : vocabulary === 1 || vocabulary === 2 || vocabulary === 3 ? vocabulary : null
+}
+
+export function unsupportedTangleVocabulary(value: unknown): boolean {
+ return Boolean(value && typeof value === 'object' && !Array.isArray(value) && Object.hasOwn(value,'vocabulary') && tangleVocabulary(value) === null)
+}
+
 export interface TangleProgress {
+  vocabulary?: TangleVocabulary
   found: string[]
   score: number
   misses: number
@@ -32,6 +46,8 @@ export function pointsFor(word: string): number {
 
 export function restoreTangleProgress(value: unknown, puzzle: TanglePuzzle): TangleProgress | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const vocabulary = tangleVocabulary(value)
+  if (vocabulary === null) return null
   const saved = value as Record<string, unknown>
   const count = (n: unknown): n is number => typeof n === 'number' && Number.isSafeInteger(n) && n >= 0 && n <= 1000000
   if (!Array.isArray(saved.found) || saved.found.length > puzzle.words.length ||
@@ -42,5 +58,5 @@ export function restoreTangleProgress(value: unknown, puzzle: TanglePuzzle): Tan
   const score = found.reduce((total, word) => total + pointsFor(word), 0)
   const hintPrefix = saved.hintsUsed > 0 && typeof saved.hintPrefix === 'string' && /^[a-z]{2}$/.test(saved.hintPrefix) &&
     puzzle.words.some(word => word.length >= 4 && word.startsWith(saved.hintPrefix as string)) ? saved.hintPrefix : null
-  return { found: found.sort(), score, misses: saved.misses, hintsUsed: saved.hintsUsed, hintPrefix, goldReached: score >= puzzle.targets[2], countedPlayed: saved.countedPlayed }
+  return { found: found.sort(), score, misses: saved.misses, hintsUsed: saved.hintsUsed, hintPrefix, goldReached: score >= puzzle.targets[2], countedPlayed: saved.countedPlayed, ...(vocabulary === undefined ? {} : { vocabulary }) }
 }

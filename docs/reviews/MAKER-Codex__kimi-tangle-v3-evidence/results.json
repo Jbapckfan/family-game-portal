@@ -1,0 +1,21 @@
+{
+  "day": 20974,
+  "fixture": "Current pool adds the real VAPE path; current preview removes an unfound real word in memory only. Frozen files remain untouched.",
+  "reports": [
+    {
+      "scenario": "legacy Daily exact totals, clue, Gold, Help, share and reload",
+      "max": 96,
+      "n": 80,
+      "score": 17,
+      "errors": []
+    },
+    {
+      "scenario": "new v3 VAPE path/reload plus legacy preview totals/results and explicit restart",
+      "errors": []
+    },
+    {
+      "scenario": "unknown Daily and preview preserved with visible message and safe Practice",
+      "errors": []
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch and Circuit. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
 
@@ -24,7 +24,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 12 | Hunch | Kimi | Keep; black/white dots delivered | Good; no numerical score |
 | 13 | Circuit | Kimi | Keep; vocabulary and cardinal arc revisions delivered | Keeper; no numerical score |
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
-| 15 | Twin Hive | DeepSeek | Playtest in progress; compact layout and input repair | No enjoyment verdict yet |
+| 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
 | 16 | Spare | DeepSeek | Not yet reviewed individually | — |
 | 17 | Rung | DeepSeek | Not yet reviewed individually | — |
 | 18 | Cipher | DeepSeek | Not yet reviewed individually | — |
@@ -66,10 +66,12 @@ Morph reviewer fun predictions before improvements: Kimi **4/5**, Gemini **3.5/5
 
 Kimi’s Tangle reviewer fun predictions before improvements: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James called it a keeper and requested a 5×5 sample. His playtest exposed missing valid words; both sizes now use the [broader audited word-game lexicon](tangle-kimi/WORD-GAME-LEXICON.md), preserving his corrected round and original Gold goals. James subsequently said “great, next game.” Tangle remains a keeper; the optional larger sample is retained, with its full calendar still future work. No numerical score or relative keeper rank supplied. [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) · [original review](tangle-kimi/REPORT.md).
 
-Hunch reviewer baseline fun predictions: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James said “hunch is good” and clarified “i meant wordle” for the similarity concern. Hunch is a keeper; no numerical score, relative keeper rank or explicit replay answer supplied. James then explicitly said “keep it” and requested moving on, suggesting Mastermind-like black/white dots. The [grouped-dot presentation](hunch/DOTS.md) is delivered without claiming wholly original mechanics. Circuit is now active. [Review and verification](hunch/REPORT.md) · [adjudication](hunch/ADJUDICATION.md).
+Hunch reviewer baseline fun predictions: Kimi **3/5**, Gemini **3.5/5**, Opus **3/5**. James said “hunch is good” and clarified “i meant wordle” for the similarity concern. Hunch is a keeper; no numerical score, relative keeper rank or explicit replay answer supplied. James then explicitly said “keep it” and requested moving on, suggesting Mastermind-like black/white dots. The [grouped-dot presentation](hunch/DOTS.md) is delivered without claiming wholly original mechanics. The review then proceeded to Circuit. [Review and verification](hunch/REPORT.md) · [adjudication](hunch/ADJUDICATION.md).
 
 Circuit reviewer baseline fun predictions: Kimi **4/5**, Gemini **3.5/5**, Opus **3/5**. James called Circuit a keeper on November 1 after the vocabulary expansion and clearer cardinal arc bands. No numerical score or relative keeper position was supplied. Its core is closely comparable to Letter Boxed. [Review and verification](circuit/REPORT.md) · [adjudication](circuit/ADJUDICATION.md).
 
-Quartet: James called it “fun” and asked to check that it is not an exact copy before moving on. The source and published Connections rules show substantial overlap in the central game. Existing styling, practice and pair hints do not resolve that concern. Record positive enjoyment separately from release readiness; no numerical score or relative preference supplied. [Originality comparison and required follow-up](quartet/ORIGINALITY-2026-11-01.md). Twin Hive is next in the individual review queue.
+Quartet: James called it “fun” and asked to check that it is not an exact copy before moving on. The source and published Connections rules show substantial overlap in the central game. Existing styling, practice and pair hints do not resolve that concern. Record positive enjoyment separately from release readiness; no numerical score or relative preference supplied. [Originality comparison and required follow-up](quartet/ORIGINALITY-2026-11-01.md). The review then proceeded to Twin Hive.
+
+Twin Hive: James said “good, go to next game this one is a keeper” after the [compact layout and input repairs](WORD-INPUT-2026-11-01.md). Keep it without assigning a numerical score or relative keeper rank. Spare is next in the individual review queue.
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

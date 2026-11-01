@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-01",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch and Circuit are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -1292,7 +1292,7 @@
       "name": "Twin Hive",
       "creator": "DeepSeek",
       "reviewOrder": 15,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
@@ -1302,15 +1302,23 @@
             "date": "2026-11-01",
             "quote": "the formatting looks weirdly stretched out",
             "interpretation": "Layout feedback during Twin Hive playtest. Constrain the board and correct stretched letter-tile proportions; no enjoyment verdict supplied."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "good, go to next game this one is a keeper",
+            "interpretation": "Explicit keeper verdict after the layout and input repairs. No numerical enjoyment score or relative keeper rank supplied."
           }
-        ]
+        ],
+        "enjoymentReaction": "keeper",
+        "preferenceTier": "keeper"
       },
       "reviews": [],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "WORD-INPUT-2026-11-01.md"
       ],
-      "nextStep": "Continue James's Twin Hive playtest after the compact layout and touch/keyboard repair; enjoyment and keeper verdict remain open."
+      "nextStep": "Keep Twin Hive; continue the individual review with Spare. Compare keeper preferences after more playtests.",
+      "dispositionBasis": "James explicitly called Twin Hive a keeper after the compact layout and touch/keyboard repair."
     },
     {
       "slug": "deepseek-spare",

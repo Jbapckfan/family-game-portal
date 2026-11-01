@@ -1,0 +1,579 @@
+{
+  "maker": "Codex",
+  "scope": "Six Claude games and Kimi Quartet",
+  "sourceUnion": 409097,
+  "pins": [
+    {
+      "file": "english-words-alpha.txt",
+      "sha256": "3ed0c94610d8bcf7c11bbb49c56aa49c7234d32b66824df91f554169e572da48"
+    },
+    {
+      "file": "wordnik-game-words.txt",
+      "sha256": "bfd1b4eb4ade1ba81e84c7e24248b9a1aecec9d9baa427453b367a83e30e0451"
+    },
+    {
+      "file": "enable2k.txt.gz",
+      "sha256": "2c1093669cd16439bdb0a693a0058626c9c9f82e59244c9b0bde89515d44d3ad"
+    }
+  ],
+  "sprout": {
+    "boards": 211,
+    "entries": 56115,
+    "alive": 53927,
+    "dead": 2188,
+    "newEntries": 46856,
+    "reachableEdges": 131680
+  },
+  "splice": {
+    "boards": 202,
+    "joins": 4725,
+    "originalJoins": 3864,
+    "orderedPairsChecked": 26664,
+    "listedPairs": 4162,
+    "safePairs": 2436,
+    "traps": 1726
+  },
+  "keystone": {
+    "uniqueArches": 174,
+    "archesWithAlternates": 73,
+    "acceptedArchAnswers": 308,
+    "partialMatchesChecked": 170
+  },
+  "dovetail": {
+    "boards": 200,
+    "directedAlternatesSubmitted": 1602,
+    "guessWords": 115352
+  },
+  "tangle": {
+    "boards": 200,
+    "fullSourcePaths": 29301,
+    "safeFirstPulls": 1135,
+    "strandedFirstPulls": 28166,
+    "alternativeBoards": 62,
+    "completePrefixes": 2856,
+    "v2DistinctBoards": 200,
+    "alternativeExamples": [
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "brian",
+          "guest",
+          "finance"
+        ],
+        "indices": [
+          [
+            1,
+            2,
+            3,
+            4,
+            16
+          ],
+          [
+            7,
+            8,
+            11,
+            12,
+            15
+          ],
+          [
+            0,
+            5,
+            6,
+            9,
+            10,
+            13,
+            14
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "bruce",
+          "ingan",
+          "fainest"
+        ],
+        "indices": [
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ],
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "ingan",
+          "bruce",
+          "fainest"
+        ],
+        "indices": [
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ],
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "fainest",
+          "bruce",
+          "ingan"
+        ],
+        "indices": [
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ],
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ]
+        ]
+      },
+      {
+        "id": "tangle-008",
+        "original": [
+          "saying",
+          "factor",
+          "intend"
+        ],
+        "words": [
+          "sained",
+          "factor",
+          "tyning"
+        ],
+        "indices": [
+          [
+            0,
+            1,
+            2,
+            5,
+            9,
+            14
+          ],
+          [
+            3,
+            4,
+            6,
+            11,
+            16,
+            17
+          ],
+          [
+            7,
+            8,
+            10,
+            12,
+            13,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-008",
+        "original": [
+          "saying",
+          "factor",
+          "intend"
+        ],
+        "words": [
+          "tyning",
+          "sained",
+          "factor"
+        ],
+        "indices": [
+          [
+            7,
+            8,
+            10,
+            12,
+            13,
+            15
+          ],
+          [
+            0,
+            1,
+            2,
+            5,
+            9,
+            14
+          ],
+          [
+            3,
+            4,
+            6,
+            11,
+            16,
+            17
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "stead",
+          "worry",
+          "inshade"
+        ],
+        "indices": [
+          [
+            1,
+            6,
+            8,
+            10,
+            14
+          ],
+          [
+            9,
+            11,
+            13,
+            15,
+            16
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "sword",
+          "teary",
+          "inshade"
+        ],
+        "indices": [
+          [
+            1,
+            9,
+            11,
+            13,
+            14
+          ],
+          [
+            6,
+            8,
+            10,
+            15,
+            16
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "teary",
+          "sword",
+          "inshade"
+        ],
+        "indices": [
+          [
+            6,
+            8,
+            10,
+            15,
+            16
+          ],
+          [
+            1,
+            9,
+            11,
+            13,
+            14
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "inshade",
+          "stead",
+          "worry"
+        ],
+        "indices": [
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ],
+          [
+            1,
+            6,
+            8,
+            10,
+            14
+          ],
+          [
+            9,
+            11,
+            13,
+            15,
+            16
+          ]
+        ]
+      },
+      {
+        "id": "tangle-021",
+        "original": [
+          "beard",
+          "except",
+          "turner"
+        ],
+        "words": [
+          "cerer",
+          "extund",
+          "berapt"
+        ],
+        "indices": [
+          [
+            6,
+            7,
+            11,
+            13,
+            16
+          ],
+          [
+            0,
+            1,
+            3,
+            4,
+            10,
+            15
+          ],
+          [
+            2,
+            5,
+            8,
+            9,
+            12,
+            14
+          ]
+        ]
+      },
+      {
+        "id": "tangle-021",
+        "original": [
+          "beard",
+          "except",
+          "turner"
+        ],
+        "words": [
+          "extund",
+          "cerer",
+          "berapt"
+        ],
+        "indices": [
+          [
+            0,
+            1,
+            3,
+            4,
+            10,
+            15
+          ],
+          [
+            6,
+            7,
+            11,
+            13,
+            16
+          ],
+          [
+            2,
+            5,
+            8,
+            9,
+            12,
+            14
+          ]
+        ]
+      }
+    ]
+  },
+  "tumbler": {
+    "acceptedGuesses": 17977,
+    "actualSubmittedAndRestored": 17977
+  },
+  "quartet": {
+    "boards": 420,
+    "categoryLabels": 121,
+    "alternatePartitions": 0,
+    "crossCategoryChoices": 0,
+    "meaning": "Known authored category memberships only; not proof against all human semantic interpretations."
+  },
+  "calendar": [
+    {
+      "slug": "kimi-quartet",
+      "stored": 420,
+      "bankDistinct": 420,
+      "dates": 182,
+      "distinct": 182
+    },
+    {
+      "slug": "claude-dovetail",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182
+    },
+    {
+      "slug": "claude-splice",
+      "stored": 202,
+      "bankDistinct": 202,
+      "dates": 182,
+      "distinct": 182
+    },
+    {
+      "slug": "claude-sprout",
+      "stored": 211,
+      "bankDistinct": 211,
+      "dates": 182,
+      "distinct": 182
+    },
+    {
+      "slug": "claude-tangle",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182,
+      "partitionDistinct": 182
+    },
+    {
+      "slug": "claude-keystone",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182
+    },
+    {
+      "slug": "claude-tumbler",
+      "stored": 1054,
+      "bankDistinct": 1054,
+      "dates": 182,
+      "distinct": 182
+    }
+  ]
+}

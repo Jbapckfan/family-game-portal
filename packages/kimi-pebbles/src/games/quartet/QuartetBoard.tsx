@@ -1,5 +1,6 @@
+import { quartetLabel } from './labels'
 import { Lightbulb, Shuffle, X } from 'lucide-react'
-import { MAX_MISSES } from './engine'
+import { MAX_MISSES, TIER_STYLE } from './engine'
 import type { Tile } from './useQuartet'
 import { isPremium } from '../shared/premium'
 import { cn } from '@/lib/utils'
@@ -30,13 +31,13 @@ interface Props {
 }
 
 function GroupBanner({ label, members, tier }: { label: string; members: string[]; tier: number }) {
-  const face = ['#887221', '#427357', '#3f7192', '#78578d'][tier] ?? '#78578d'
+  const face = TIER_STYLE[tier]?.face ?? '#384763'
   return (
     <div
       className="quartet-solved anim-pop flex w-full flex-col items-center rounded-2xl px-3 py-2.5 text-white"
       style={{ background: face }}
     >
-      <span className="font-display text-sm font-extrabold uppercase tracking-widest">{label}</span>
+      <span className="font-display text-sm font-extrabold uppercase tracking-widest"><small className="quartet-tier">{tier}</small> {quartetLabel(label)}</span>
       <span className="text-xs font-bold uppercase tracking-wider opacity-90">{members.join(' · ')}</span>
     </div>
   )
@@ -69,7 +70,7 @@ export function QuartetBoard({ state, actions }: Props) {
       </div>
 
       {!state.finished && <p id="quartet-selection" className="mt-3 text-center text-sm font-semibold text-muted-foreground" role="status">
-        Choose four words with a shared connection. {state.selected.length} of 4 selected.
+        {state.selected.length === 4 ? 'Four words selected. Submit to test their connection.' : `Choose four words with a shared connection. ${state.selected.length} of 4 selected.`}
       </p>}
       {state.hintPair && <p id="quartet-hint" className="mt-2 max-w-sm text-center text-sm font-bold text-muted-foreground">
         Pair clue: <span className="text-foreground">{state.hintPair[0].toUpperCase()}</span> and <span className="text-foreground">{state.hintPair[1].toUpperCase()}</span> belong together.

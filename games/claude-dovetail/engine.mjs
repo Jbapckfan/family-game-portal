@@ -1,3 +1,4 @@
+import {WORD_GAME_WORDS,WORD_GAME_JOINS} from './vocabulary.mjs';
 import {COMMON,FUSED} from './puzzles.mjs';
 export const MAX_MISSES=6;
 const wordOK=word=>typeof word==='string'&&/^[a-z]+$/.test(word);
@@ -5,16 +6,17 @@ const rowOK=(p,row)=>Number.isInteger(row)&&row>0&&row<p.words.length-1;
 export function createState(){return {events:[],active:1,typed:'',revealed:false};}
 function initialProgress(p){return {valid:true,words:[...p.words],solved:p.words.map((_,i)=>i===0||i===p.words.length-1),guesses:p.words.map(()=>[]),hints:p.words.map(()=>0),misses:0};}
 function statusOf(a){return a.solved.every(Boolean)?'won':a.misses>=MAX_MISSES?'lost':'playing';}
-function judgeProgress(p,a,row,word){
+function judgeProgress(p,a,row,word,vocabulary=1){
+ const words=vocabulary===2?WORD_GAME_WORDS:COMMON,joins=vocabulary===2?WORD_GAME_JOINS:FUSED;
  if(!rowOK(p,row)||a.solved[row]||!wordOK(word)||word.length!==p.words[row].length)return {kind:'length'};
  if(!word.startsWith(p.words[row].slice(0,a.hints[row])))return {kind:'prefix'};
  const left=a.solved[row-1]?a.words[row-1]:null,right=a.solved[row+1]?a.words[row+1]:null;
- const up=!!left&&FUSED.has(left+word),down=!!right&&FUSED.has(word+right);
+ const up=!!left&&joins.has(left+word),down=!!right&&joins.has(word+right);
  // Even an expected answer must preserve every already completed neighboring join.
  const canonical=word===p.words[row]&&(!left||up)&&(!right||down);
- if(canonical||(left&&right&&up&&down&&COMMON.has(word)))return {kind:'solve',word,up,down,left,right};
+ if(canonical||(left&&right&&up&&down&&words.has(word)))return {kind:'solve',word,up,down,left,right};
  if(a.guesses[row].some(g=>g.word===word))return {kind:'duplicate'};
- if(!COMMON.has(word))return {kind:'unlisted'};
+ if(!words.has(word))return {kind:'unlisted'};
  return {kind:'miss',word,up,down,left,right};
 }
 
@@ -29,7 +31,7 @@ export function analyze(p,s){
    if(a.hints[event.row]>=p.words[event.row].length-1)return {...a,valid:false};
    a.hints[event.row]++;a.misses++;
   }else if(event.type==='guess'){
-   const result=judgeProgress(p,a,event.row,event.word);
+   const result=judgeProgress(p,a,event.row,event.word,s.vocabulary);
    if(result.kind==='solve'){a.words[event.row]=event.word;a.solved[event.row]=true;}
    else if(result.kind==='miss'){a.guesses[event.row].push({word:event.word,up:result.up,down:result.down});a.misses++;}
    else return {...a,valid:false};
@@ -49,7 +51,7 @@ export function setTyped(p,s,input){
 }
 export function submitWord(p,s,input=s.typed){
  if(getStatus(p,s)!=='playing')return {state:s,message:'This chain is complete.'};
- const word=String(input).trim().toLowerCase(),a=analyze(p,s),row=s.active,result=judgeProgress(p,a,row,word);
+ const word=String(input).trim().toLowerCase(),a=analyze(p,s),row=s.active,result=judgeProgress(p,a,row,word,s.vocabulary);
  if(result.kind==='length')return {state:s,message:`This row needs exactly ${p.words[row].length} letters.`};
  if(result.kind==='prefix')return {state:s,message:'Keep the letters already revealed by the hint.'};
  if(result.kind==='duplicate')return {state:s,message:'Already tried that word in this row. No extra miss charged.'};
@@ -70,11 +72,15 @@ export function hint(p,s){
 }
 export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,active:-1,typed:'',revealed:true}:s;}
 export function restoreState(p,raw){
- if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||typeof raw.typed!=='string')return null;
+ if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||typeof raw.typed!=='string'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
  const a=analyze(p,raw);if(!a.valid)return null;
  const terminal=raw.revealed||statusOf(a)!=='playing';
  if(raw.revealed&&statusOf(a)!=='playing')return null;
  if(terminal){if(raw.active!==-1||raw.typed!=='')return null;}
  else if(!rowOK(p,raw.active)||a.solved[raw.active]||!/^[a-z]*$/.test(raw.typed)||raw.typed.length>p.words[raw.active].length||!raw.typed.startsWith(p.words[raw.active].slice(0,a.hints[raw.active])))return null;
- return {events:raw.events.map(e=>e.type==='guess'?{type:'guess',row:e.row,word:e.word}:{type:'hint',row:e.row}),active:raw.active,typed:raw.typed,revealed:raw.revealed};
+ return {events:raw.events.map(e=>e.type==='guess'?{type:'guess',row:e.row,word:e.word}:{type:'hint',row:e.row}),active:raw.active,typed:raw.typed,revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
 }
+
+export const assistanceCount=(p,s)=>analyze(p,s).hints.reduce((total,n)=>total+n,0);
+
+export const createExpandedState=()=>({...createState(),vocabulary:2});

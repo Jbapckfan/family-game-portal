@@ -1,4 +1,15 @@
+import {WORD_GAME_LEVELS} from './vocabulary.mjs';
 export const MAX_WILTS=5;
+const expandedPuzzles=new WeakMap();
+export function puzzleForState(p,s){
+ if(s?.vocabulary!==2)return p;
+ if(!expandedPuzzles.has(p)){
+  const levels=WORD_GAME_LEVELS[p.id];
+  if(!levels)throw new Error('Expanded word graph is unavailable for this puzzle');
+  expandedPuzzles.set(p,{...p,levels});
+ }
+ return expandedPuzzles.get(p);
+}
 const wordOK=word=>typeof word==='string'&&/^[a-z]+$/.test(word);
 export function extraLetter(current,next){
  if(!wordOK(current)||!wordOK(next)||next.length!==current.length+1)return null;
@@ -37,9 +48,11 @@ function hintLetter(p,a){
  return null;
 }
 export function createState(){return {events:[],typed:[],revealed:false};}
+export function createExpandedState(){return {...createState(),vocabulary:2};}
 function initialProgress(p){return {valid:true,stack:[p.seed],soilUsed:[],wilts:0,levelWilts:{},hintLetter:null,hints:0};}
 function statusOf(a){return a.stack.at(-1).length===8?'won':a.wilts>=MAX_WILTS?'lost':'playing';}
 export function analyze(p,s){
+ p=puzzleForState(p,s);
  const a=initialProgress(p);
  if(!Array.isArray(s?.events)||s.events.length>10000)return {...a,valid:false};
  for(const event of s.events){
@@ -87,7 +100,7 @@ export function selectWord(p,s,input){
 }
 export function submitWord(p,s,input=typedWord(p,s)){
  if(getStatus(p,s)!=='playing')return {state:s,message:'This plant is complete.'};
- const word=String(input).trim().toLowerCase(),a=analyze(p,s),result=judgeProgress(p,a,word);
+ const a=analyze(p,s),word=String(input).trim().toLowerCase(),result=judgeProgress(puzzleForState(p,s),a,word);
  if(result.kind==='length')return {state:s,message:`Use all ${a.stack.at(-1).length+1} letters.`};
  if(result.kind==='letters')return {state:s,message:'Keep every letter in your word and add exactly one available soil letter.'};
  if(result.kind==='unlisted')return {state:s,message:'That is not in this puzzle’s word list. No wilt charged.'};
@@ -97,13 +110,13 @@ export function submitWord(p,s,input=typedWord(p,s)){
 export function undo(p,s){return getStatus(p,s)==='playing'&&analyze(p,s).stack.length>1?{...s,events:[...s.events,{type:'undo'}],typed:[]}:s;}
 export function restart(p,s){return getStatus(p,s)==='playing'?{...s,events:[...s.events,{type:'restart'}],typed:[]}:s;}
 export function hint(p,s){
- const a=analyze(p,s);if(getStatus(p,s)!=='playing'||a.hintLetter!==null||hintLetter(p,a)===null)return null;
+ const a=analyze(p,s);if(getStatus(p,s)!=='playing'||a.hintLetter!==null||hintLetter(puzzleForState(p,s),a)===null)return null;
  return {...s,events:[...s.events,{type:'hint'}],typed:[]};
 }
 export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,typed:[],revealed:true}:s;}
-export function solutionPath(p,s){const a=analyze(p,s),tail=findRoute(p,a.stack.at(-1),remainingLetters(p,a.soilUsed));return tail?[...a.stack.slice(0,-1),...tail]:(findRoute(p)||[]);}
+export function solutionPath(p,s){const a=analyze(p,s);p=puzzleForState(p,s);const tail=findRoute(p,a.stack.at(-1),remainingLetters(p,a.soilUsed));return tail?[...a.stack.slice(0,-1),...tail]:(findRoute(p)||[]);}
 export function restoreState(p,raw){
- if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean')return null;
+ if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2))return null;
  const a=analyze(p,raw);if(!a.valid||!Array.isArray(raw.typed)||raw.typed.length>a.stack.at(-1).length+1)return null;
  const current=a.stack.at(-1),keys=new Set();let soil=0;
  for(const pick of raw.typed){
@@ -114,5 +127,7 @@ export function restoreState(p,raw){
  }
  if((raw.revealed||statusOf(a)!=='playing')&&raw.typed.length)return null;
  if(raw.revealed&&statusOf(a)!=='playing')return null;
- return {events:raw.events.map(e=>e.type==='word'?{type:'word',word:e.word}:{type:e.type}),typed:raw.typed.map(t=>({source:t.source,index:t.index})),revealed:raw.revealed};
+ return {events:raw.events.map(e=>e.type==='word'?{type:'word',word:e.word}:{type:e.type}),typed:raw.typed.map(t=>({source:t.source,index:t.index})),revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
 }
+
+export const assistanceCount=(p,s)=>analyze(p,s).hints;

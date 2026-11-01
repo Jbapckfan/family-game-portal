@@ -1,3 +1,4 @@
+import { quartetLabel } from './labels'
 import { useDailySession } from '../shared/useDailySession'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { dailyQuartet, practiceQuartet, seededOrder, MAX_MISSES, type QuartetPuzzle } from './engine'
@@ -293,7 +294,7 @@ export function useQuartet() {
       }
       const solvedGroups = [...prev.solvedGroups, g0]
       const tiles = prev.tiles.map((t, i) => (prev.selected.includes(i) ? null : t))
-      const label = prev.puzzle.groups[g0].label
+      const label = quartetLabel(prev.puzzle.groups[g0].label)
       if (solvedGroups.length === 4) {
         finish({ ...prev, stats }, true, tiles, solvedGroups, history)
         return

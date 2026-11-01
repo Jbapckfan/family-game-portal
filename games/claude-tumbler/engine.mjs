@@ -1,5 +1,6 @@
+import {WORD_GAME_GUESSES} from './vocabulary.mjs';
 import {GUESS_WORDS,ANSWERS} from './puzzles.mjs';
-const WORDS=new Set([...GUESS_WORDS,...ANSWERS]);
+const WORDS=new Set([...GUESS_WORDS,...ANSWERS,...WORD_GAME_GUESSES]);
 export const ALPHABET='abcdefghijklmnopqrstuvwxyz';
 export const MAX_GUESSES=6;
 export const createState=()=>({guesses:[],draft:'',hints:[],revealed:false});
@@ -39,3 +40,5 @@ export function hint(p,s){
 }
 export const reveal=(p,s)=>getStatus(p,s)==='playing'?{...s,draft:'',revealed:true}:s;
 export const summarize=(p,s)=>`${s.guesses.length}/6 guesses · ${ranges(p,s).locked.filter(Boolean).length}/5 dials locked · ${s.hints.length} hints`;
+
+export const assistanceCount=(p,s)=>s.hints.length;

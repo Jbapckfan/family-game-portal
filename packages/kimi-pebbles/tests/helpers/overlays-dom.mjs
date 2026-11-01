@@ -77,6 +77,7 @@ async function mount(game = 'morph', completed = true, { firstHelp = false, roll
   const module = { exports: {} };
   const compiled = ts.transpileModule(readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   new Script(`(function(require,module,exports){${compiled}\n})`, { filename: file }).runInThisContext()((id) => {
+    if (id.endsWith('.css')) return {}; // Vite-only styling has no DOM-test side effects.
     if (/^\.\/use/.test(id)) return new Proxy({}, { get: () => () => ({ state, actions }) });
     if (id.endsWith('/useUnifiedProgress')) return { useUnifiedProgress() {} };
     if (id.endsWith('/effects')) return { ...require(id), fireConfetti() {} };

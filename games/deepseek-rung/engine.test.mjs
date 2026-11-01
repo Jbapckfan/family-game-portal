@@ -42,3 +42,13 @@ test('deepseek-rung preserves every original puzzle and stable ID',()=>{
  assert.equal(createHash('sha256').update(JSON.stringify(PUZZLES.slice(0,30))).digest('hex'),'6ce5312b5b141c3ee2938546f45c81a50c457ae5984f83ce3d4f5ec27110f3a7');
  assert.equal(new Set(PUZZLES.map(p=>p.id)).size,PUZZLES.length);
 });
+
+test('shortestSteps rejects disconnected dictionary words and preserves a genuine zero-step route',()=>{
+ assert.ok(LEXICON.includes('ADZE'));assert.ok(LEXICON.includes('COLD'));
+ assert.equal(findRoute('ADZE','COLD'),null);
+ const disconnected={start:'ADZE',target:'COLD'};
+ assert.throws(()=>shortestSteps(disconnected),RangeError);
+ assert.throws(()=>shortestSteps(disconnected),RangeError,'repeated missing routes must not become zero');
+ assert.equal(shortestSteps({start:'COLD',target:'COLD'}),0);
+ assert.throws(()=>shortestSteps({start:'ZZZZ',target:'COLD'}),RangeError);
+});

@@ -1,0 +1,61 @@
+{
+  "runtime": "index.html",
+  "requiredAssets": [],
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 639176,
+      "sha256": "15ef9a43862fdd5a49f4881455b8f2fd7279257c35f20b0c98ae1e14e18b86c4"
+    },
+    {
+      "path": "engine.mjs",
+      "bytes": 18529,
+      "sha256": "09b928b4cc4d60d200dca0a24239d1e72347a49a357062f2c79c9f66fa04cc2a"
+    },
+    {
+      "path": "app.mjs",
+      "bytes": 37921,
+      "sha256": "cd3f5c93e55d9984849174d903e30c37c12baa9bc127e9c81ef066630e27da9d"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 22940,
+      "sha256": "4a52264ab21479907002ef8530ae724ff3b3df576d77cd9e21acbecdd8e13931"
+    },
+    {
+      "path": "bank.json",
+      "bytes": 559652,
+      "sha256": "161df4aa9c4abeb2f790f32c17204611390877a174fbcca5d9282e36b2f211cb"
+    },
+    {
+      "path": "MAKER-Codex__REPORT.md",
+      "bytes": 14127,
+      "sha256": "31ebdeb1168ae37a00232d346beb6dca3f16d0a883f73c8608f587e117d082b3"
+    },
+    {
+      "path": "tools/audit.mjs",
+      "bytes": 8750,
+      "sha256": "1de96b8b456a8098f32bf3ce706b5035eef307cd801bf290eba82a73a57bf83d"
+    },
+    {
+      "path": "tools/generate-bank.mjs",
+      "bytes": 1190,
+      "sha256": "dbe1ead202be136148cfb90b250e16905d5d8989ec7d0bf3f09c5d54b1bd6ee4"
+    },
+    {
+      "path": "tools/build.mjs",
+      "bytes": 908,
+      "sha256": "ba4e7f0799fcaf369197dda10acdbd836102f0ad8edef04fb269814329f027d2"
+    },
+    {
+      "path": "tools/browser-qa.mjs",
+      "bytes": 6823,
+      "sha256": "0ca6d8bbf3e35744ae0520a4b46eaf685494b1e5b160499382746937f4caf04e"
+    },
+    {
+      "path": "tools/packing-ui-qa.mjs",
+      "bytes": 1988,
+      "sha256": "eaf8d32468aed2bbcfd6656d06f65a5ebbe6de755f6e63c94c03fe463b740373"
+    }
+  ]
+}

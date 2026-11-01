@@ -1,0 +1,87 @@
+{
+  "dateRange": [
+    "2026-11-01",
+    "2027-05-01"
+  ],
+  "consecutiveDays": 182,
+  "boards": 1820,
+  "assertions": 136711,
+  "report": [
+    {
+      "kind": 1,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 4952,
+      "ms": 6
+    },
+    {
+      "kind": 2,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 102
+    },
+    {
+      "kind": 3,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 225
+    },
+    {
+      "kind": 4,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 13
+    },
+    {
+      "kind": 5,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 61
+    },
+    {
+      "kind": 6,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 13
+    },
+    {
+      "kind": 7,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 17
+    },
+    {
+      "kind": 8,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 0,
+      "ms": 0
+    },
+    {
+      "kind": 9,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 3103282,
+      "ms": 541
+    },
+    {
+      "kind": 10,
+      "boards": 182,
+      "distinctSubstantiveKeys": 182,
+      "searchStates": 132678,
+      "ms": 49
+    }
+  ],
+  "limitations": [
+    "Difficulty and enjoyment are uncalibrated.",
+    "Packing permits multiple valid tilings.",
+    "Draft search is re-run with the production minimax; card legality and stored witness checked independently.",
+    "Numeric/shape diversity checks do not establish 182 equally enjoyable days."
+  ]
+}

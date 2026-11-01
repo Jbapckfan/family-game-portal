@@ -14,7 +14,7 @@ export function QuartetHelpModal({ open, onOpenChange }: { open: boolean; onOpen
           </p>
           <ul className="flex list-disc flex-col gap-2 pl-5">
             <li>Tap 4 tiles that share a theme, then hit Submit.</li>
-            <li>Right group → it locks in with a color. Colors run 🟨 easy → 🟪 tricky.</li>
+            <li>A right group locks in and reveals its theme. Numbered tiers run 1 (direct) to 4 (trickier); difficulty varies by theme.</li>
             <li>
               Wrong group → a miss. <span className="font-display font-extrabold">Four misses</span> ends the round.
             </li>

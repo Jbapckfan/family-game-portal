@@ -1,0 +1,7168 @@
+{
+  "maker": "Codex",
+  "scope": "Six Claude games and Kimi Quartet",
+  "sourceUnion": 409097,
+  "pins": [
+    {
+      "file": "english-words-alpha.txt",
+      "sha256": "3ed0c94610d8bcf7c11bbb49c56aa49c7234d32b66824df91f554169e572da48"
+    },
+    {
+      "file": "wordnik-game-words.txt",
+      "sha256": "bfd1b4eb4ade1ba81e84c7e24248b9a1aecec9d9baa427453b367a83e30e0451"
+    },
+    {
+      "file": "enable2k.txt.gz",
+      "sha256": "2c1093669cd16439bdb0a693a0058626c9c9f82e59244c9b0bde89515d44d3ad"
+    }
+  ],
+  "sprout": {
+    "boards": 211,
+    "entries": 56115,
+    "alive": 53927,
+    "dead": 2188,
+    "newEntries": 46856,
+    "reachableEdges": 131680,
+    "perBoard": [
+      {
+        "id": "sprout-1",
+        "entries": 498,
+        "reachableStates": 125,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "caff4b28271b7bec8324049d3a7c356131a31c78686467dd2f0ad3a85841041e"
+      },
+      {
+        "id": "sprout-2",
+        "entries": 210,
+        "reachableStates": 61,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "88ea6ddfde030c3c27b40395d4c4064acba6450e7062a6ce19db10924c126643"
+      },
+      {
+        "id": "sprout-3",
+        "entries": 368,
+        "reachableStates": 98,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "de8d43023ee45abfe83680d817acc31dca1a342cb862f693158df2ec22532ba2"
+      },
+      {
+        "id": "sprout-4",
+        "entries": 180,
+        "reachableStates": 45,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1cf4ea5a6a0a190bb5ff95ae4d940c6bef2fba92c0a23c0827a332e4c21c0301"
+      },
+      {
+        "id": "sprout-5",
+        "entries": 246,
+        "reachableStates": 27,
+        "reachableDeadEdges": 5,
+        "wordSetSha256": "189d336efae63166221b305d6c9fadeca0a64c75cd97713ba5032a58226bab42"
+      },
+      {
+        "id": "sprout-6",
+        "entries": 306,
+        "reachableStates": 24,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "fde4ab0e0d5b07dbf6bd4f6fca021db326a213bb725fe12575e4ec39b79148c7"
+      },
+      {
+        "id": "sprout-7",
+        "entries": 209,
+        "reachableStates": 48,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "a75c1ee23c29973e0883f3b7159d0f916facda277b94fd90d627cc38de9e86e7"
+      },
+      {
+        "id": "sprout-8",
+        "entries": 350,
+        "reachableStates": 110,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1dc106b19cfc026a6f353b84e330f5f696e655e4f40288c1e1eca3b9b9e2e80c"
+      },
+      {
+        "id": "sprout-9",
+        "entries": 548,
+        "reachableStates": 108,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7e387aaec1f1cd3f3dadf6e832e5d6ea8765d85fd6278629b3961656007b35d7"
+      },
+      {
+        "id": "sprout-10",
+        "entries": 178,
+        "reachableStates": 30,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1fc36f989ace0f493cc3d468a4015db922599a2afb7205f98c078e7d8ad7d58a"
+      },
+      {
+        "id": "sprout-11",
+        "entries": 217,
+        "reachableStates": 23,
+        "reachableDeadEdges": 55,
+        "wordSetSha256": "3b271ccfba125a0ddf400ec3e885cc123d8dd316bb967133de5e2a1484997d3c"
+      },
+      {
+        "id": "sprout-12",
+        "entries": 124,
+        "reachableStates": 36,
+        "reachableDeadEdges": 9,
+        "wordSetSha256": "ac44c18ace2332f7631bad88d473cd9f1baebd164c6b8064cdd62c3041bbd3b3"
+      },
+      {
+        "id": "sprout-13",
+        "entries": 286,
+        "reachableStates": 117,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7ba308136dfbc779310755739c4d9bdd05c866bb6f776035fda50e323eca6392"
+      },
+      {
+        "id": "sprout-14",
+        "entries": 336,
+        "reachableStates": 102,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "bf57b89ed1f6ed26c14b7c95b1cfefa9a65b4ae07ed7d16caad628e04a3c0c7c"
+      },
+      {
+        "id": "sprout-15",
+        "entries": 327,
+        "reachableStates": 63,
+        "reachableDeadEdges": 27,
+        "wordSetSha256": "1d2b622736bb52ba0e60fa288eab9a41fd77fe39973feb5149da379b510e5001"
+      },
+      {
+        "id": "sprout-16",
+        "entries": 292,
+        "reachableStates": 38,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a3ac5965e4604529e0fcfa275cd22a252bac118d52d47c22b527b83871652312"
+      },
+      {
+        "id": "sprout-17",
+        "entries": 353,
+        "reachableStates": 85,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "545dba88f2c0e3a33589486c2d0d0e2aa8d6e165ecdb1461c005a8257d7d9681"
+      },
+      {
+        "id": "sprout-18",
+        "entries": 438,
+        "reachableStates": 92,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ecfd3a1d14d698414c3fb51b188b5b8c8b3755509b48374d3d9fa1ebf2e24fe0"
+      },
+      {
+        "id": "sprout-19",
+        "entries": 411,
+        "reachableStates": 82,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "98c16df3569a087150050f757932008ae91c8d3853723372ad1eb32c3f559a00"
+      },
+      {
+        "id": "sprout-20",
+        "entries": 244,
+        "reachableStates": 71,
+        "reachableDeadEdges": 3,
+        "wordSetSha256": "33795aad4cff68ea5f5876ca64e5cc513db436b6f06e6a813c6a1c95ec6f3f02"
+      },
+      {
+        "id": "sprout-21",
+        "entries": 290,
+        "reachableStates": 52,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "4b2ba26552c68a0390cdc82f44fb484a4d1cdb7ea2221b69cf140798acc4d0df"
+      },
+      {
+        "id": "sprout-22",
+        "entries": 181,
+        "reachableStates": 60,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "db40bc6967b4432ded7e3d885a347025f2cf5deb994cca12573e5e443ca2dbb5"
+      },
+      {
+        "id": "sprout-23",
+        "entries": 331,
+        "reachableStates": 74,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7606832155bd38c1c8d9b25cd0a14b699596989db26f04ddc74406f6ba41d93f"
+      },
+      {
+        "id": "sprout-24",
+        "entries": 194,
+        "reachableStates": 44,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "3459c28392dbaca38cf5defe616910bff683c7ba8f29adab4979dcdb7f20e1c8"
+      },
+      {
+        "id": "sprout-25",
+        "entries": 118,
+        "reachableStates": 34,
+        "reachableDeadEdges": 1,
+        "wordSetSha256": "bc56b36f0298849411eb540b718d16dd96c573a6f4f11efb3175c41c31917a7e"
+      },
+      {
+        "id": "sprout-26",
+        "entries": 399,
+        "reachableStates": 51,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "2836e7bdbc6280355fd87de953669a0da6eb5f542ba9b12e9a15b43d14be98c3"
+      },
+      {
+        "id": "sprout-27",
+        "entries": 116,
+        "reachableStates": 20,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "3b9fa9874550bb85f604a7c64f9d0b5c297052a34a3a2b726af9578c4c911ddb"
+      },
+      {
+        "id": "sprout-28",
+        "entries": 325,
+        "reachableStates": 37,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "9b88ad7e683a9b1e91293776a3471aa0eb26232f05e826b2162e6635ac38fd9c"
+      },
+      {
+        "id": "sprout-29",
+        "entries": 211,
+        "reachableStates": 62,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "f7d8061bbc0bc8ee2f563868aadf8152f06dd7645eb262eac8461b511b7faf26"
+      },
+      {
+        "id": "sprout-30",
+        "entries": 165,
+        "reachableStates": 59,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "9cbb4e688643a8720064eafac88a635123063312627c158e79b06f4fa21c2889"
+      },
+      {
+        "id": "sprout-31",
+        "entries": 160,
+        "reachableStates": 35,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a168cc0cfac3a2a84c5aeaa328383488208b4e5f76d22aafde6cbc1cb83dfdad"
+      },
+      {
+        "id": "sprout-32",
+        "entries": 137,
+        "reachableStates": 57,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "9b9f6129542d7533dd202e20c44b4ebaa9d8c4cfb0787ca837a08380acc53574"
+      },
+      {
+        "id": "sprout-33",
+        "entries": 228,
+        "reachableStates": 54,
+        "reachableDeadEdges": 2,
+        "wordSetSha256": "53a518435a670d5f064cf8daa298210896a3e3103d915ad5442d4f28143cfa35"
+      },
+      {
+        "id": "sprout-34",
+        "entries": 111,
+        "reachableStates": 32,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "92eede4290cc6097a748fa6d8c0d1f94bdccf79da2a95619ac7c1d19629c7a7d"
+      },
+      {
+        "id": "sprout-35",
+        "entries": 164,
+        "reachableStates": 63,
+        "reachableDeadEdges": 19,
+        "wordSetSha256": "8a64a39ed27b132251a056a1cf6f5a97b0969b1528362ca336dd6412572d1842"
+      },
+      {
+        "id": "sprout-36",
+        "entries": 150,
+        "reachableStates": 46,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "bde270c0e69285c36037215657ec4b17264f837f26ba89937220289726f3dcf8"
+      },
+      {
+        "id": "sprout-37",
+        "entries": 183,
+        "reachableStates": 44,
+        "reachableDeadEdges": 7,
+        "wordSetSha256": "e19742e2130dd359ba18b54263377949fef74d8f3525e3a9604372f7d936ed7d"
+      },
+      {
+        "id": "sprout-38",
+        "entries": 308,
+        "reachableStates": 53,
+        "reachableDeadEdges": 50,
+        "wordSetSha256": "b440e988b64ed8366006effebcabf7a61cddf240de94ba4c97f3603bb815c7ac"
+      },
+      {
+        "id": "sprout-39",
+        "entries": 500,
+        "reachableStates": 66,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c71edc269850d86484af2f73103fcdee7936c987941b02df58783e7a0777931f"
+      },
+      {
+        "id": "sprout-40",
+        "entries": 168,
+        "reachableStates": 36,
+        "reachableDeadEdges": 3,
+        "wordSetSha256": "bc52cadb60bc49475a34b7c3b86a25ac33d4e91089ca509fed6c85a5b018fb18"
+      },
+      {
+        "id": "sprout-41",
+        "entries": 160,
+        "reachableStates": 33,
+        "reachableDeadEdges": 3,
+        "wordSetSha256": "255107de1ee96e5872f6988bde4bedc33d23c535e1bf650eff6e63028ba51269"
+      },
+      {
+        "id": "sprout-42",
+        "entries": 240,
+        "reachableStates": 39,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "f4419f180156fe041c51742a18ed5bc92a43da694d75f5dca6ff65d9d8fc6e0c"
+      },
+      {
+        "id": "sprout-43",
+        "entries": 190,
+        "reachableStates": 52,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c1eb5c0533dfb1c50313fb0958dd95a1a503ab1ba1ef49c7d8ca3d362675bfb2"
+      },
+      {
+        "id": "sprout-44",
+        "entries": 196,
+        "reachableStates": 27,
+        "reachableDeadEdges": 5,
+        "wordSetSha256": "d020b95498d543cae895970588853b733aef67219716d1386b9425b844b231a4"
+      },
+      {
+        "id": "sprout-45",
+        "entries": 137,
+        "reachableStates": 39,
+        "reachableDeadEdges": 56,
+        "wordSetSha256": "b74070406f83d5ba97d8ee9bf8f39c4f2836091e793b64a8cb758ac3031c456e"
+      },
+      {
+        "id": "sprout-46",
+        "entries": 114,
+        "reachableStates": 47,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "2dffdfeebcfa6b0752584c1b598f71b94d5f592c3bb3227f319302d87fe22f3c"
+      },
+      {
+        "id": "sprout-47",
+        "entries": 270,
+        "reachableStates": 46,
+        "reachableDeadEdges": 31,
+        "wordSetSha256": "baf4ec8c9f9c674e20be2625aa2af5d447aa88e61a11bd586c4e6363155706d5"
+      },
+      {
+        "id": "sprout-48",
+        "entries": 430,
+        "reachableStates": 91,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1ef7b23506441b0e876bdecdc44a489cceb84a894fa8f69664c032f1f68a9b63"
+      },
+      {
+        "id": "sprout-49",
+        "entries": 163,
+        "reachableStates": 82,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "f2d90e552702fbc44e95e62b6b3a305d0cf7dfb319a8ca2a5cda5183d9623ced"
+      },
+      {
+        "id": "sprout-50",
+        "entries": 205,
+        "reachableStates": 57,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "4028454e3da9d77928e905a2aee84b73c2ba635da7ccf2b2065bd05612fbf663"
+      },
+      {
+        "id": "sprout-51",
+        "entries": 115,
+        "reachableStates": 42,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a5db24de50f99b0dea0dd0f3bc759926d1cea6f3f392708befc20bc66fa4fee3"
+      },
+      {
+        "id": "sprout-52",
+        "entries": 86,
+        "reachableStates": 26,
+        "reachableDeadEdges": 1,
+        "wordSetSha256": "c3989dbab0e1181097aad899c0f3ae2f83f4422714ea7cede88d98625b04910d"
+      },
+      {
+        "id": "sprout-53",
+        "entries": 233,
+        "reachableStates": 27,
+        "reachableDeadEdges": 37,
+        "wordSetSha256": "20eb302e622ede03b7cea61af682a83fe0b57b1f30ad5a849833469cb7988f7f"
+      },
+      {
+        "id": "sprout-54",
+        "entries": 118,
+        "reachableStates": 27,
+        "reachableDeadEdges": 10,
+        "wordSetSha256": "aec1ec1db0a6a298f568bc816bf4f489c6342c92e7917b56edc1b867957661db"
+      },
+      {
+        "id": "sprout-55",
+        "entries": 314,
+        "reachableStates": 38,
+        "reachableDeadEdges": 1,
+        "wordSetSha256": "e69df6c55dc73ae169d309622bad25e8e96898d99dc723cdc4ca80dacbb69863"
+      },
+      {
+        "id": "sprout-56",
+        "entries": 245,
+        "reachableStates": 106,
+        "reachableDeadEdges": 18,
+        "wordSetSha256": "e33415f97e1fb5399ce7620436b06923029f97663c18ae7e52f6dc317b845999"
+      },
+      {
+        "id": "sprout-57",
+        "entries": 177,
+        "reachableStates": 22,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e8ebd7e77193d40e6893b7cd87622d5fac53c56911ae4e7b2a4a6563322dabcc"
+      },
+      {
+        "id": "sprout-58",
+        "entries": 190,
+        "reachableStates": 42,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "5c0c294a15acf6e28adff0b017e39e87557011be2a1e5f9c3141b5a3edb2bae6"
+      },
+      {
+        "id": "sprout-59",
+        "entries": 189,
+        "reachableStates": 16,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "173bcda80d951e3bbca73c5cd1a801b737328eb02ed3d71f0bb7ce375985e191"
+      },
+      {
+        "id": "sprout-60",
+        "entries": 356,
+        "reachableStates": 76,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a127244757e6334f9bde239a32af0f6185e5fc318fd04d65f9285312d6b319ac"
+      },
+      {
+        "id": "sprout-61",
+        "entries": 336,
+        "reachableStates": 51,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "c407ce7f97acc3db7782403e33fa5307e698af9b3f18074b6b3518b3e93e6610"
+      },
+      {
+        "id": "sprout-62",
+        "entries": 261,
+        "reachableStates": 60,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "63e361bc141cf7e2775de3ebd1d6b60eeb1e2938c7069db4c4071dfd4ae2a608"
+      },
+      {
+        "id": "sprout-63",
+        "entries": 135,
+        "reachableStates": 37,
+        "reachableDeadEdges": 12,
+        "wordSetSha256": "901addc379556dc84e7ada95ef7152ece635ca3a51c1b4deeb6923fad9c403d5"
+      },
+      {
+        "id": "sprout-64",
+        "entries": 275,
+        "reachableStates": 54,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e5cffdcac839f400515f6e3645e144e8ff4806b37b35024a7d7278f8bc1c3805"
+      },
+      {
+        "id": "sprout-65",
+        "entries": 194,
+        "reachableStates": 43,
+        "reachableDeadEdges": 3,
+        "wordSetSha256": "354c7f2b3326337ff57bef91167ac42a069f654fe2e0adf0df3a9cee2d79632f"
+      },
+      {
+        "id": "sprout-66",
+        "entries": 340,
+        "reachableStates": 124,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "d2e57bb66d1069580f0f27a3560f8f6ea60588bea55a48b88c14b6a48446b264"
+      },
+      {
+        "id": "sprout-67",
+        "entries": 229,
+        "reachableStates": 62,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "8e4e731481c2714055b04f6ba301fb0d8b2456437f571ec8b1819b30ee0b1c28"
+      },
+      {
+        "id": "sprout-68",
+        "entries": 306,
+        "reachableStates": 99,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "38218f2a79142d52223df365e74e440b4a4df70e97022f0696bed66d4f7e92e1"
+      },
+      {
+        "id": "sprout-69",
+        "entries": 480,
+        "reachableStates": 101,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "d5d6e8ea7bd18a0943a565014b98878f40ae72f40af37428c158420145162952"
+      },
+      {
+        "id": "sprout-70",
+        "entries": 299,
+        "reachableStates": 40,
+        "reachableDeadEdges": 21,
+        "wordSetSha256": "b9aa01e8cbfdd3eebdd6d3cc63e29c7b0e1310dc65161f0430313ce3f1d31dbf"
+      },
+      {
+        "id": "sprout-71",
+        "entries": 261,
+        "reachableStates": 119,
+        "reachableDeadEdges": 26,
+        "wordSetSha256": "c266ec9fbeec85d08aa310dd21715c8df56a4c62a26ced875eae98e39005e5de"
+      },
+      {
+        "id": "sprout-72",
+        "entries": 170,
+        "reachableStates": 32,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6574c8692c19ea4dee50ddd0af70730707da7c0d1cfe71fc7c2be3fbfe1b1b56"
+      },
+      {
+        "id": "sprout-73",
+        "entries": 95,
+        "reachableStates": 24,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "d1e7c99e731b4d23e7d6a8112111d545469a663af171ae0faf0814b0aea7a5ce"
+      },
+      {
+        "id": "sprout-74",
+        "entries": 172,
+        "reachableStates": 22,
+        "reachableDeadEdges": 21,
+        "wordSetSha256": "549eaaae2204fff73a905bb42d533f1713cadd34eabb391a7b69e015df9169c2"
+      },
+      {
+        "id": "sprout-75",
+        "entries": 287,
+        "reachableStates": 78,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ce3ced9d6dc4f1ada05cf6a31ab405016228ef187bb008f63e8bae73dc2217fd"
+      },
+      {
+        "id": "sprout-76",
+        "entries": 328,
+        "reachableStates": 50,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "8529006f9da428d3df8ae878f99d43eb7409355cd035f7ddd4a453e73b8dd172"
+      },
+      {
+        "id": "sprout-77",
+        "entries": 209,
+        "reachableStates": 54,
+        "reachableDeadEdges": 1,
+        "wordSetSha256": "de440339ef56ff9a90153d0f346306edb7ec84d85bf65af9f0d53288ccf9b367"
+      },
+      {
+        "id": "sprout-78",
+        "entries": 434,
+        "reachableStates": 100,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "eeccec90b9a12d688045f445808de44a440a0c5d35721630a9a88e02a26be582"
+      },
+      {
+        "id": "sprout-79",
+        "entries": 271,
+        "reachableStates": 57,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "883909f3a4ca6686b14cc3306eb023c79984052f8c4347c22c77f65bea245ea7"
+      },
+      {
+        "id": "sprout-80",
+        "entries": 121,
+        "reachableStates": 30,
+        "reachableDeadEdges": 10,
+        "wordSetSha256": "62c8b93d229fbe94db5208f898dcedabd506f44efb9efe2551b48fab6922fc7d"
+      },
+      {
+        "id": "sprout-81",
+        "entries": 344,
+        "reachableStates": 89,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "afb8016045f07c99fc36db01105dd051b375b816a0d6cecc8c4a855e6e11a856"
+      },
+      {
+        "id": "sprout-82",
+        "entries": 288,
+        "reachableStates": 61,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6111108aa0a2d893a1ed98ba666a63e350faf8592c3c713af77ae6f86af49340"
+      },
+      {
+        "id": "sprout-83",
+        "entries": 234,
+        "reachableStates": 36,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1f0fcc249f82581b18a49af9243f55fb360a3657d34ad402163edf700232bcac"
+      },
+      {
+        "id": "sprout-84",
+        "entries": 263,
+        "reachableStates": 62,
+        "reachableDeadEdges": 91,
+        "wordSetSha256": "0cbdba759b1260553850dc69bd2dbbb6d362361a065a2d190927fa4529633ba8"
+      },
+      {
+        "id": "sprout-85",
+        "entries": 138,
+        "reachableStates": 48,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "0d85677505c2502d532576b2354b3e35265a03ecff2e2b7b28a6aeedee24e22e"
+      },
+      {
+        "id": "sprout-86",
+        "entries": 187,
+        "reachableStates": 39,
+        "reachableDeadEdges": 19,
+        "wordSetSha256": "2591a2d08785b74b1ba57167ac73143134630afe36edcbcd81c258196f5202d3"
+      },
+      {
+        "id": "sprout-87",
+        "entries": 122,
+        "reachableStates": 48,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "eb4106cbab0dec749d2b9df9efe25bc6b74e6f30bd6a5c7329baaa369f5d0203"
+      },
+      {
+        "id": "sprout-88",
+        "entries": 416,
+        "reachableStates": 99,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "eb00bdd4a5450cfd22eb3b8bd2d7a89a86aae5a4bc44b3158ed73cfb8c96da98"
+      },
+      {
+        "id": "sprout-89",
+        "entries": 60,
+        "reachableStates": 19,
+        "reachableDeadEdges": 7,
+        "wordSetSha256": "6d154a0fdf61f525decfcbd77af52f6221016bf7cc240b9f46792178b6450242"
+      },
+      {
+        "id": "sprout-90",
+        "entries": 589,
+        "reachableStates": 88,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "4bce46427d8544dd7b0776cbdecf7b81baf497bd582b12433e50e5dbf5d0e4ae"
+      },
+      {
+        "id": "sprout-91",
+        "entries": 188,
+        "reachableStates": 51,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "8999fba807d4ad3aa88ae1699a837eac50e86b4efadbee7f7adc16dcd08c7b7e"
+      },
+      {
+        "id": "sprout-92",
+        "entries": 216,
+        "reachableStates": 47,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "531f1a309d15a47745597cb505a9427fa754edc6175901c4e2aea087c9667775"
+      },
+      {
+        "id": "sprout-93",
+        "entries": 360,
+        "reachableStates": 85,
+        "reachableDeadEdges": 132,
+        "wordSetSha256": "fe42b08ffff324aaa945bbcbb5a7d4abc22ada582937ae0477b60ceef76465a4"
+      },
+      {
+        "id": "sprout-94",
+        "entries": 204,
+        "reachableStates": 69,
+        "reachableDeadEdges": 19,
+        "wordSetSha256": "c22c9a1279986006da20cdd3efb17739d6dc66391d6f4b15e4dce0f11f634554"
+      },
+      {
+        "id": "sprout-95",
+        "entries": 110,
+        "reachableStates": 25,
+        "reachableDeadEdges": 19,
+        "wordSetSha256": "5957eff53bcd17bb208b3fdfedb1d1c64cf8f3e9468a3e5b75f4cfb04d55d5c7"
+      },
+      {
+        "id": "sprout-96",
+        "entries": 245,
+        "reachableStates": 45,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ba07bb0cf5001efbc0f4ba2e2580d64747a48ce671f09a1f6a5c08d027e17828"
+      },
+      {
+        "id": "sprout-97",
+        "entries": 225,
+        "reachableStates": 49,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "544742be6588202a25c9d27bb0663124a6936c261b84c0845e7c0c122a620572"
+      },
+      {
+        "id": "sprout-98",
+        "entries": 96,
+        "reachableStates": 18,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "ad9a51c27491a79316e3e0eb6656080c888bd19fadeb6ed0a5591a9854144dd3"
+      },
+      {
+        "id": "sprout-99",
+        "entries": 100,
+        "reachableStates": 24,
+        "reachableDeadEdges": 20,
+        "wordSetSha256": "18bce1e2a063df15022b792b6718ebd3918eb0df7c224456db6553914f02c357"
+      },
+      {
+        "id": "sprout-100",
+        "entries": 201,
+        "reachableStates": 47,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "8e3517839caccd608afb93ad22bbf1c827118c340a2dafcd0b85ecebc56c8311"
+      },
+      {
+        "id": "sprout-101",
+        "entries": 310,
+        "reachableStates": 117,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "91fcaffb5f10feb3e3b8ce6c1c1149e468f5cd994eccf745f6dd72d86c6da9da"
+      },
+      {
+        "id": "sprout-102",
+        "entries": 197,
+        "reachableStates": 43,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "cf0a1d2e4fcc4152c90f9e7e9f63770f335068aa5aa3ee7d6a4d70692ae6a046"
+      },
+      {
+        "id": "sprout-103",
+        "entries": 164,
+        "reachableStates": 45,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "6583d040f5d7b6a1ae13ff0bab2df8bbbb6875b74ec1de951af9b5877d87bd5c"
+      },
+      {
+        "id": "sprout-104",
+        "entries": 150,
+        "reachableStates": 48,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "113c66b42c6973cb792b846c025d5e168918b16e5907988de5313f74538bb71e"
+      },
+      {
+        "id": "sprout-105",
+        "entries": 263,
+        "reachableStates": 61,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "15db65a50f5fadb63c6d9b2fa15a6e8a64d883880a831e6eb8498fab3de9fe74"
+      },
+      {
+        "id": "sprout-106",
+        "entries": 165,
+        "reachableStates": 38,
+        "reachableDeadEdges": 5,
+        "wordSetSha256": "c6f9ffa09a1173f07df47982160414d9c435a23a4352ed765d1abce340ae69bc"
+      },
+      {
+        "id": "sprout-107",
+        "entries": 186,
+        "reachableStates": 31,
+        "reachableDeadEdges": 24,
+        "wordSetSha256": "3f7de92f729570381cabefe6262a5141bcc014bde3bf009b1d307dac6f4b05fe"
+      },
+      {
+        "id": "sprout-108",
+        "entries": 251,
+        "reachableStates": 36,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "17acc1b4f82fe980586ec444ddd27fe0bf4a49d35db883fa47a75c167b215623"
+      },
+      {
+        "id": "sprout-109",
+        "entries": 57,
+        "reachableStates": 21,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "694cc249490cc6c3535e1093b0481cbf37046b0a5a70b8a16423d254accecb94"
+      },
+      {
+        "id": "sprout-110",
+        "entries": 230,
+        "reachableStates": 76,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "407fe4689e65a4f1caed932079aef788ad1d7e974185bf8d60d2659447a2d18e"
+      },
+      {
+        "id": "sprout-111",
+        "entries": 509,
+        "reachableStates": 126,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1af249e308f15f11eaa636f7904ab76dffbda125246640af5a119382c3c59ae6"
+      },
+      {
+        "id": "sprout-112",
+        "entries": 324,
+        "reachableStates": 48,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "39ffa0c2383bf89b2ecea3d06a1196e02f7dd12f7c54cb9d040c145892d41744"
+      },
+      {
+        "id": "sprout-113",
+        "entries": 292,
+        "reachableStates": 80,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "f92a71f52d84d91d00d96d286874904cf5bab42dc61945ef3881f8f3d37cf6ae"
+      },
+      {
+        "id": "sprout-114",
+        "entries": 210,
+        "reachableStates": 66,
+        "reachableDeadEdges": 34,
+        "wordSetSha256": "20c57fd29622ff9cf663d6d52911484725b8e0bacf1163c96c5f405a61f38d89"
+      },
+      {
+        "id": "sprout-115",
+        "entries": 87,
+        "reachableStates": 35,
+        "reachableDeadEdges": 18,
+        "wordSetSha256": "bf841557d7bc0e80e0b6f0f3e60b07dc8926f733835a1578ffc36bd5621a3001"
+      },
+      {
+        "id": "sprout-116",
+        "entries": 411,
+        "reachableStates": 80,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "2937dd818f6e826d5218bf7cd0173c1f2039cbd77d53016a01659323b31e0698"
+      },
+      {
+        "id": "sprout-117",
+        "entries": 302,
+        "reachableStates": 55,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "055c472dfda278071d9f1770c2399264cd7e2461cbe81ee560b41cb915de6c44"
+      },
+      {
+        "id": "sprout-118",
+        "entries": 484,
+        "reachableStates": 91,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "9819dcfa88905f21fae7f3e1e6d575908d97d95c941f55e0cb7b1f092a805bae"
+      },
+      {
+        "id": "sprout-119",
+        "entries": 206,
+        "reachableStates": 55,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "de4b5070f7f9ca61e3622cbc8fc0dbe72db2215c176c663c939a8979432b1b27"
+      },
+      {
+        "id": "sprout-120",
+        "entries": 132,
+        "reachableStates": 48,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "edae5337237157ff1d615ff30efd8dfce80b52951b51186d93dad0ca76a24b5e"
+      },
+      {
+        "id": "sprout-121",
+        "entries": 149,
+        "reachableStates": 31,
+        "reachableDeadEdges": 2,
+        "wordSetSha256": "c797a31c22883bc8e799780b2583e2b073ad2839c716dbc4b84685a3dc3d6d2a"
+      },
+      {
+        "id": "sprout-122",
+        "entries": 154,
+        "reachableStates": 29,
+        "reachableDeadEdges": 13,
+        "wordSetSha256": "a1f211e912fadad12faae74efbc22f7305d21494b1f5dd1396d3f53ae3c09f1e"
+      },
+      {
+        "id": "sprout-123",
+        "entries": 204,
+        "reachableStates": 27,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7935580d33a74d8d2d81f69da390966485c8c7ac570877e118fe8180bf79fc97"
+      },
+      {
+        "id": "sprout-124",
+        "entries": 42,
+        "reachableStates": 20,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7f1d16521df7eed4365d00d5eb69bcda0d2348101df2826c3e437ee1b2ecb4b8"
+      },
+      {
+        "id": "sprout-125",
+        "entries": 156,
+        "reachableStates": 59,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "faff038edc520aa70e4dee0f9a796d8eb0be57aa8c13b8d2612a56d3b5ce940e"
+      },
+      {
+        "id": "sprout-126",
+        "entries": 215,
+        "reachableStates": 50,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6f28877f092795071b536b3b543659aa6d2b952a064987ce0f53c07ce82ff324"
+      },
+      {
+        "id": "sprout-127",
+        "entries": 195,
+        "reachableStates": 43,
+        "reachableDeadEdges": 94,
+        "wordSetSha256": "74ae563ddfd6143833fc9729e2cbcd76580a1af89fe63616698f6dfddd3d1f3c"
+      },
+      {
+        "id": "sprout-128",
+        "entries": 224,
+        "reachableStates": 37,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "0919f04a38a7dd4d3a615146241223fbd4acf556a1e2a84c0433a1c9eb50e171"
+      },
+      {
+        "id": "sprout-129",
+        "entries": 150,
+        "reachableStates": 46,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "0e826bbef5d2b9ea1706b4c57f76a873f37873b5897e9b1a3d63fdd29f01bbb3"
+      },
+      {
+        "id": "sprout-130",
+        "entries": 289,
+        "reachableStates": 73,
+        "reachableDeadEdges": 67,
+        "wordSetSha256": "dd20e5acfa8cd596106c935e646f4533abe5f5087af8caff2bd12bea1f2c4b77"
+      },
+      {
+        "id": "sprout-131",
+        "entries": 319,
+        "reachableStates": 115,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c0c69ec455ce969fc09a1ba41228682830fe9104b3a24ecbd1c8fe90d5e3d230"
+      },
+      {
+        "id": "sprout-132",
+        "entries": 596,
+        "reachableStates": 65,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "66c70db9e2c3e886ba94703080472467082218a7240d36da2c32b910543a72fb"
+      },
+      {
+        "id": "sprout-133",
+        "entries": 231,
+        "reachableStates": 30,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6f234fd27674a3bfdbb27b7a01bcd003ae7953cd620eacba867c7bcdb018ac70"
+      },
+      {
+        "id": "sprout-134",
+        "entries": 258,
+        "reachableStates": 70,
+        "reachableDeadEdges": 10,
+        "wordSetSha256": "577b323aac6c81817b1799d5e6ad64b8267ea0d78cb25aadf827cc197d04aef0"
+      },
+      {
+        "id": "sprout-135",
+        "entries": 181,
+        "reachableStates": 50,
+        "reachableDeadEdges": 6,
+        "wordSetSha256": "fe48e7c5266029aef2f22e558596a7c2a5627860125404e33d39cab9bc9751a8"
+      },
+      {
+        "id": "sprout-136",
+        "entries": 355,
+        "reachableStates": 91,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "58e9404ae370cc1c8b55ce28ad669c4c8837439ec2064130227e410b7ee5a15c"
+      },
+      {
+        "id": "sprout-137",
+        "entries": 189,
+        "reachableStates": 73,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ef7f6fb366708a592f17b491415d17e3ff7a42be509bf97ea1ca7780b5bca295"
+      },
+      {
+        "id": "sprout-138",
+        "entries": 618,
+        "reachableStates": 133,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "19b6b4227c027e6674eda7320a94394e3c45116209bc1b828029aace47c9117f"
+      },
+      {
+        "id": "sprout-139",
+        "entries": 129,
+        "reachableStates": 42,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "8912bb0a37f379bb57a2a55db796e7c197a9f64876aa3c4a567a5299e6b5a5bf"
+      },
+      {
+        "id": "sprout-140",
+        "entries": 311,
+        "reachableStates": 69,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "d3f972252bf0b89ebb0898b6a10e0318c0653eba352da63e3bc4fdba7a9529b6"
+      },
+      {
+        "id": "sprout-141",
+        "entries": 385,
+        "reachableStates": 71,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "52d9e79d012ae599dc1bdf3d4643d5a89ac366b089840cba3bb480237e3f601e"
+      },
+      {
+        "id": "sprout-142",
+        "entries": 251,
+        "reachableStates": 58,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a3b6602d5a7e441aea12b67dbf660f1b4a813eee08d75bcea5db8b7adb238afc"
+      },
+      {
+        "id": "sprout-143",
+        "entries": 289,
+        "reachableStates": 61,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c9a60ed87c0059302f2680b7a721edd2f39ca0c17ecfd3f2282661f3e12028b0"
+      },
+      {
+        "id": "sprout-144",
+        "entries": 268,
+        "reachableStates": 110,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "20436e7745a9e6028f40c8a8921358410734c853906f907e03bad30bc67646a7"
+      },
+      {
+        "id": "sprout-145",
+        "entries": 186,
+        "reachableStates": 65,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ee6fc6652a1a56c825d0d9d6bb5f3ea491e604e643ed9849994ee77c7877f6bc"
+      },
+      {
+        "id": "sprout-146",
+        "entries": 188,
+        "reachableStates": 84,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "76579c87d81319804ebef51421d74b66d83d24ecb096e2c078155ca4b3d849e0"
+      },
+      {
+        "id": "sprout-147",
+        "entries": 658,
+        "reachableStates": 167,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "5ad264bd201771b1979d926e20a9ff348e395d40feacdf6f2b1e09122a81b3a3"
+      },
+      {
+        "id": "sprout-148",
+        "entries": 238,
+        "reachableStates": 62,
+        "reachableDeadEdges": 8,
+        "wordSetSha256": "59210d8d79b0fc7cca9df75aef149756c427962a3e4c975dadc501ce20aa626b"
+      },
+      {
+        "id": "sprout-149",
+        "entries": 315,
+        "reachableStates": 94,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "83fdea98b1f4c128eee688876480f0da14c0b77fd4a76ab8c66dd9905e2c4e17"
+      },
+      {
+        "id": "sprout-150",
+        "entries": 321,
+        "reachableStates": 111,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "739e5efd3cadf7ad053270f6be4c5bbead92f6aaa3b2531ab102b77574c133c0"
+      },
+      {
+        "id": "sprout-151",
+        "entries": 262,
+        "reachableStates": 63,
+        "reachableDeadEdges": 12,
+        "wordSetSha256": "0afd9c92ba205bba0eeb357ca72f71c17ef617e0b2221c3d326296c7222975a7"
+      },
+      {
+        "id": "sprout-152",
+        "entries": 280,
+        "reachableStates": 71,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "dd23c22f63a9c6ed90ab7a4526a351fe3debc87bc179f35a27cbfc7db60598df"
+      },
+      {
+        "id": "sprout-153",
+        "entries": 390,
+        "reachableStates": 80,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "5f52c006424ea096ac3f9121125afc31c40a4131e0cfab57cd30839856a1744f"
+      },
+      {
+        "id": "sprout-154",
+        "entries": 190,
+        "reachableStates": 65,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "64427c39b54241ad59fbbb53925a8608013434eb7a79f1e86a7a15bf242657c1"
+      },
+      {
+        "id": "sprout-155",
+        "entries": 243,
+        "reachableStates": 91,
+        "reachableDeadEdges": 10,
+        "wordSetSha256": "5329c613d9be16ceeb60812fd298491dd5df649d834ed709bfb34c9fe57cf890"
+      },
+      {
+        "id": "sprout-156",
+        "entries": 318,
+        "reachableStates": 98,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ab1f728ca6850f43b49b8c8d13f4166d1cc46f9e4df28244e05f39bd8d055e32"
+      },
+      {
+        "id": "sprout-157",
+        "entries": 225,
+        "reachableStates": 73,
+        "reachableDeadEdges": 13,
+        "wordSetSha256": "c34e0c91be02803fca07d41dfb1382e66ad710d603c415b2f9ae330dd82a1d19"
+      },
+      {
+        "id": "sprout-158",
+        "entries": 169,
+        "reachableStates": 67,
+        "reachableDeadEdges": 1,
+        "wordSetSha256": "19bc9f5fcaf72122791f7277a0e1f7631bd8363750156a1837859897c6c3dee4"
+      },
+      {
+        "id": "sprout-159",
+        "entries": 78,
+        "reachableStates": 41,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c3ee4128ca30aa3d8c8ddd91fc9c8edb9f86993f5fa05635b57af4b66b97d8e4"
+      },
+      {
+        "id": "sprout-160",
+        "entries": 191,
+        "reachableStates": 87,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c7396257ddb6d076bc2067e59323150274574d9e8fef21f1ae82c9127b3c58a1"
+      },
+      {
+        "id": "sprout-161",
+        "entries": 309,
+        "reachableStates": 166,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ef09aa3295933fe5d16a306180494c2d3a40ab7f29804f7d47b30ba34d09feac"
+      },
+      {
+        "id": "sprout-162",
+        "entries": 187,
+        "reachableStates": 71,
+        "reachableDeadEdges": 36,
+        "wordSetSha256": "0bbed8be66db60315351c24c999e2a569ee373a8d018987f70cef7a70d3e0b99"
+      },
+      {
+        "id": "sprout-163",
+        "entries": 299,
+        "reachableStates": 100,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "64d2f2d06f9480106c4c3df684addca3eb8fd4ca4e925f7704a09aa55ce21626"
+      },
+      {
+        "id": "sprout-164",
+        "entries": 647,
+        "reachableStates": 110,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "10cba215256cd7780d11b304c9e494154c34e9f75641a9fd7211a70332ec3e3e"
+      },
+      {
+        "id": "sprout-165",
+        "entries": 423,
+        "reachableStates": 65,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "0bad4155414de84152e1dc5640e8b3a562044e5c7a57bce1064ef20968fd7bf7"
+      },
+      {
+        "id": "sprout-166",
+        "entries": 203,
+        "reachableStates": 53,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "333d4649934626073d3dd2862aa908371b858bb3e924e3435d37ee87dd7a5346"
+      },
+      {
+        "id": "sprout-167",
+        "entries": 310,
+        "reachableStates": 77,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e5fe95e1a9a5c7e2a0f3bcfbdb7f87eda9080302e2dabf070802156e4aa16a1e"
+      },
+      {
+        "id": "sprout-168",
+        "entries": 258,
+        "reachableStates": 49,
+        "reachableDeadEdges": 19,
+        "wordSetSha256": "4fa0ebbfcf04349ba83642791226207b680a0f3018ca31119ef503f8d20fa13d"
+      },
+      {
+        "id": "sprout-169",
+        "entries": 385,
+        "reachableStates": 110,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "87655f16f419d1fc8cb4a082276042d5b15a75ad0d577a10c278056189cc479b"
+      },
+      {
+        "id": "sprout-170",
+        "entries": 411,
+        "reachableStates": 105,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e4ce102d5a18907bbd0e8726cc54a18f2881ac864837c2e2b7fcb5d7147865c7"
+      },
+      {
+        "id": "sprout-171",
+        "entries": 226,
+        "reachableStates": 102,
+        "reachableDeadEdges": 9,
+        "wordSetSha256": "362f91308a12558b6135e4f7219534d3f8f921891ba964d778090b68978ddeb8"
+      },
+      {
+        "id": "sprout-172",
+        "entries": 138,
+        "reachableStates": 42,
+        "reachableDeadEdges": 16,
+        "wordSetSha256": "3fbddd65453de9769a4764e379e80e1eaf8836a99add3911e7d742d1c6bea5f3"
+      },
+      {
+        "id": "sprout-173",
+        "entries": 375,
+        "reachableStates": 76,
+        "reachableDeadEdges": 8,
+        "wordSetSha256": "b2cce2d7a4ae103de9a3c71a032e028b4ba822edd37711d35cfa7557537cd08f"
+      },
+      {
+        "id": "sprout-174",
+        "entries": 380,
+        "reachableStates": 125,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "4b0c1ae1f93a7460d376f3c6c16d0539842fe2c741f1ff3ccf6a7882c2798bae"
+      },
+      {
+        "id": "sprout-175",
+        "entries": 166,
+        "reachableStates": 23,
+        "reachableDeadEdges": 50,
+        "wordSetSha256": "e328a36264674a0f21ae82a0ddbd8ea9d9493d970e03cd98d94f3de709f24293"
+      },
+      {
+        "id": "sprout-176",
+        "entries": 222,
+        "reachableStates": 42,
+        "reachableDeadEdges": 44,
+        "wordSetSha256": "f528670d065103f313e16247c7b998cb0530b4b8e01325fd1195c62e9251eb54"
+      },
+      {
+        "id": "sprout-177",
+        "entries": 620,
+        "reachableStates": 166,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e36d7d4fade821404cf0ee97ccac486e036d8c264c9c15c33d33557229a1b6e3"
+      },
+      {
+        "id": "sprout-178",
+        "entries": 271,
+        "reachableStates": 90,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6c601d2245c08182743853bb17669069ace4fb0ce6dd1584f7eaa9bed6d7cca1"
+      },
+      {
+        "id": "sprout-179",
+        "entries": 121,
+        "reachableStates": 36,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "196a8bf4adf9f3228cd4b5037e948f08ac16a09b8322200a0dbb4180614ff780"
+      },
+      {
+        "id": "sprout-180",
+        "entries": 286,
+        "reachableStates": 109,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1f32b8f3d8d88cb707425808085d90eb6276358e0e37a826733d25fed80e21ea"
+      },
+      {
+        "id": "sprout-181",
+        "entries": 364,
+        "reachableStates": 84,
+        "reachableDeadEdges": 10,
+        "wordSetSha256": "7a8f93aba93abb27d40cb502f02be1fd0c7b8cb55255dd4b274e7044f719ab44"
+      },
+      {
+        "id": "sprout-182",
+        "entries": 236,
+        "reachableStates": 89,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "e313b975e4c02aeafb8c291e2036c107a10a9fb7908f63754dfce1830820be34"
+      },
+      {
+        "id": "sprout-183",
+        "entries": 262,
+        "reachableStates": 60,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "4e6b35122b524d728fa52bf5a9a321362d7a575ce39b728974e7127b61f5d5dd"
+      },
+      {
+        "id": "sprout-184",
+        "entries": 224,
+        "reachableStates": 33,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "99c1a875f58cee424d38d349e99b80b82699bceba22472553c3c86319707b8d6"
+      },
+      {
+        "id": "sprout-185",
+        "entries": 286,
+        "reachableStates": 89,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6ec3e90da9e5b03457b88bc3365e26aed8dc5a1f0e4acf66e337d9ed9fa2823f"
+      },
+      {
+        "id": "sprout-186",
+        "entries": 330,
+        "reachableStates": 52,
+        "reachableDeadEdges": 11,
+        "wordSetSha256": "50461ddc7d30f2215e8457e825df74d0d3ad09b0118dd84fbb942be3a73ad782"
+      },
+      {
+        "id": "sprout-187",
+        "entries": 184,
+        "reachableStates": 55,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "4b6c5dc98935564d25719b88d750dabc3c246256d38ace2be07f558ff6cf964f"
+      },
+      {
+        "id": "sprout-188",
+        "entries": 83,
+        "reachableStates": 33,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "731c2f35f408650ae07eeeed74c520ea58b3bf31c1f9b26a6557b81470e10e8f"
+      },
+      {
+        "id": "sprout-189",
+        "entries": 233,
+        "reachableStates": 106,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "2741bc9ca87e2587855d592c15b98efdebcc3ca9300c642b801eb11d97f6fa96"
+      },
+      {
+        "id": "sprout-190",
+        "entries": 365,
+        "reachableStates": 150,
+        "reachableDeadEdges": 217,
+        "wordSetSha256": "1187f516a15dbb32d07c29c9ac3dfec9b630c610b66b3b4d4d66eceab5eb8dad"
+      },
+      {
+        "id": "sprout-191",
+        "entries": 227,
+        "reachableStates": 95,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "5af79e13f3606bf4685912c69763694e15a8b4817c393e92f5fefb952f2d0272"
+      },
+      {
+        "id": "sprout-192",
+        "entries": 283,
+        "reachableStates": 121,
+        "reachableDeadEdges": 61,
+        "wordSetSha256": "0d013714ac0572a259cbed59d390779190fb25890b4e0a849ea3dce8b9a3aa1f"
+      },
+      {
+        "id": "sprout-193",
+        "entries": 186,
+        "reachableStates": 53,
+        "reachableDeadEdges": 100,
+        "wordSetSha256": "42a58f8838a70a79f41259234f5de05ec1e12e09c37922283c847d6ab1c5d4a8"
+      },
+      {
+        "id": "sprout-194",
+        "entries": 507,
+        "reachableStates": 149,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6c6365173284c23c856fa181c8e368565954f99a913b631e8387503d635d592e"
+      },
+      {
+        "id": "sprout-195",
+        "entries": 192,
+        "reachableStates": 84,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "b92c04936aa08d397e59e179d3258cdd5dba19be8019edbc365be37834b1882c"
+      },
+      {
+        "id": "sprout-196",
+        "entries": 106,
+        "reachableStates": 62,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "c072f95f91b472a761e4d57363cb0ddd1402ab10c64af80bd4743d843184badd"
+      },
+      {
+        "id": "sprout-197",
+        "entries": 555,
+        "reachableStates": 177,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "ea1c89ceaffc8cc5d1088b16b392203dfe06acaa5ef2765bbb13ccb0f64f6989"
+      },
+      {
+        "id": "sprout-198",
+        "entries": 479,
+        "reachableStates": 121,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "49f880c8f1cc1a802534be546b39ffa152bc05cff7ec194887cf42f3d237be8b"
+      },
+      {
+        "id": "sprout-199",
+        "entries": 337,
+        "reachableStates": 118,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "f073e1e3a3fe0feb8d76074c92cb1aa41912e77b98917a49e7827927ce3dcabc"
+      },
+      {
+        "id": "sprout-200",
+        "entries": 680,
+        "reachableStates": 193,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "a7c2aea0899ea16155a5eb8b1c07d2e664ff4ce8059e53d3211ac5652ca6f4b8"
+      },
+      {
+        "id": "sprout-201",
+        "entries": 174,
+        "reachableStates": 58,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "2b2b15096f6510c1003e7fa839c73cec4c2f02b2cfc6bd2e2c6a0a42011d0e2c"
+      },
+      {
+        "id": "sprout-202",
+        "entries": 397,
+        "reachableStates": 103,
+        "reachableDeadEdges": 4,
+        "wordSetSha256": "199da13393a90f4388fd4d6f76338dd49f147471d3859886a98e5c91a1876f49"
+      },
+      {
+        "id": "sprout-203",
+        "entries": 289,
+        "reachableStates": 87,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "6236d4475bd3a0f1e4a313cfa7093f0dbb1824f42234ba70319b7608c4615a7b"
+      },
+      {
+        "id": "sprout-204",
+        "entries": 240,
+        "reachableStates": 114,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "d11c90226cc61477069e7b90889cf22fbe20d017edf0783579f6dd01a5aa24b6"
+      },
+      {
+        "id": "sprout-205",
+        "entries": 412,
+        "reachableStates": 110,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "aa514bcad71791cb82542dcb8c2415586fec5c02b96c10fe852981433fd34080"
+      },
+      {
+        "id": "sprout-206",
+        "entries": 270,
+        "reachableStates": 88,
+        "reachableDeadEdges": 66,
+        "wordSetSha256": "3316314091c07f404b7bee3e12123d988d5f3a1b168f6d6d1b07faa30ddf97a9"
+      },
+      {
+        "id": "sprout-207",
+        "entries": 297,
+        "reachableStates": 79,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "85c28436db42c984104a76f25851a83ec34081255068d393783ac663c293f112"
+      },
+      {
+        "id": "sprout-208",
+        "entries": 311,
+        "reachableStates": 115,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7f000b3c9eb7ea0c1effdf484ebad3cb557c666251243d3b516cce7ad132e28c"
+      },
+      {
+        "id": "sprout-209",
+        "entries": 335,
+        "reachableStates": 116,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "16894c001d391636c2d1ff8f2ba463f53b93650a137d44c4b52a8c77a7b0fbc8"
+      },
+      {
+        "id": "sprout-210",
+        "entries": 759,
+        "reachableStates": 162,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "1290ee26b4392887006f93f1afe943e180d006b98482fb7af361686b656b8c8d"
+      },
+      {
+        "id": "sprout-211",
+        "entries": 458,
+        "reachableStates": 135,
+        "reachableDeadEdges": 0,
+        "wordSetSha256": "7db5f70452ab0a210f80d3ca02b178a1e40404d3f02daad2e578c3c4491c3b57"
+      }
+    ]
+  },
+  "splice": {
+    "boards": 202,
+    "joins": 4725,
+    "originalJoins": 3864,
+    "orderedPairsChecked": 26664,
+    "listedPairs": 4162,
+    "safePairs": 2436,
+    "traps": 1726
+  },
+  "keystone": {
+    "uniqueArches": 174,
+    "archesWithAlternates": 73,
+    "acceptedArchAnswers": 308,
+    "partialMatchesChecked": 170
+  },
+  "dovetail": {
+    "boards": 200,
+    "directedAlternatesSubmitted": 1602,
+    "guessWords": 115352
+  },
+  "tangle": {
+    "boards": 200,
+    "fullSourcePaths": 29301,
+    "safeFirstPulls": 1135,
+    "strandedFirstPulls": 28166,
+    "alternativeBoards": 62,
+    "completePrefixes": 2856,
+    "v2DistinctBoards": 200,
+    "alternativeExamples": [
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "brian",
+          "guest",
+          "finance"
+        ],
+        "indices": [
+          [
+            1,
+            2,
+            3,
+            4,
+            16
+          ],
+          [
+            7,
+            8,
+            11,
+            12,
+            15
+          ],
+          [
+            0,
+            5,
+            6,
+            9,
+            10,
+            13,
+            14
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "bruce",
+          "ingan",
+          "fainest"
+        ],
+        "indices": [
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ],
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "ingan",
+          "bruce",
+          "fainest"
+        ],
+        "indices": [
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ],
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-001",
+        "original": [
+          "guest",
+          "brain",
+          "finance"
+        ],
+        "words": [
+          "fainest",
+          "bruce",
+          "ingan"
+        ],
+        "indices": [
+          [
+            0,
+            4,
+            5,
+            10,
+            11,
+            12,
+            15
+          ],
+          [
+            1,
+            2,
+            8,
+            13,
+            14
+          ],
+          [
+            3,
+            6,
+            7,
+            9,
+            16
+          ]
+        ]
+      },
+      {
+        "id": "tangle-008",
+        "original": [
+          "saying",
+          "factor",
+          "intend"
+        ],
+        "words": [
+          "sained",
+          "factor",
+          "tyning"
+        ],
+        "indices": [
+          [
+            0,
+            1,
+            2,
+            5,
+            9,
+            14
+          ],
+          [
+            3,
+            4,
+            6,
+            11,
+            16,
+            17
+          ],
+          [
+            7,
+            8,
+            10,
+            12,
+            13,
+            15
+          ]
+        ]
+      },
+      {
+        "id": "tangle-008",
+        "original": [
+          "saying",
+          "factor",
+          "intend"
+        ],
+        "words": [
+          "tyning",
+          "sained",
+          "factor"
+        ],
+        "indices": [
+          [
+            7,
+            8,
+            10,
+            12,
+            13,
+            15
+          ],
+          [
+            0,
+            1,
+            2,
+            5,
+            9,
+            14
+          ],
+          [
+            3,
+            4,
+            6,
+            11,
+            16,
+            17
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "stead",
+          "worry",
+          "inshade"
+        ],
+        "indices": [
+          [
+            1,
+            6,
+            8,
+            10,
+            14
+          ],
+          [
+            9,
+            11,
+            13,
+            15,
+            16
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "sword",
+          "teary",
+          "inshade"
+        ],
+        "indices": [
+          [
+            1,
+            9,
+            11,
+            13,
+            14
+          ],
+          [
+            6,
+            8,
+            10,
+            15,
+            16
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "teary",
+          "sword",
+          "inshade"
+        ],
+        "indices": [
+          [
+            6,
+            8,
+            10,
+            15,
+            16
+          ],
+          [
+            1,
+            9,
+            11,
+            13,
+            14
+          ],
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ]
+        ]
+      },
+      {
+        "id": "tangle-013",
+        "original": [
+          "shade",
+          "worry",
+          "instead"
+        ],
+        "words": [
+          "inshade",
+          "stead",
+          "worry"
+        ],
+        "indices": [
+          [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12
+          ],
+          [
+            1,
+            6,
+            8,
+            10,
+            14
+          ],
+          [
+            9,
+            11,
+            13,
+            15,
+            16
+          ]
+        ]
+      },
+      {
+        "id": "tangle-021",
+        "original": [
+          "beard",
+          "except",
+          "turner"
+        ],
+        "words": [
+          "cerer",
+          "extund",
+          "berapt"
+        ],
+        "indices": [
+          [
+            6,
+            7,
+            11,
+            13,
+            16
+          ],
+          [
+            0,
+            1,
+            3,
+            4,
+            10,
+            15
+          ],
+          [
+            2,
+            5,
+            8,
+            9,
+            12,
+            14
+          ]
+        ]
+      },
+      {
+        "id": "tangle-021",
+        "original": [
+          "beard",
+          "except",
+          "turner"
+        ],
+        "words": [
+          "extund",
+          "cerer",
+          "berapt"
+        ],
+        "indices": [
+          [
+            0,
+            1,
+            3,
+            4,
+            10,
+            15
+          ],
+          [
+            6,
+            7,
+            11,
+            13,
+            16
+          ],
+          [
+            2,
+            5,
+            8,
+            9,
+            12,
+            14
+          ]
+        ]
+      }
+    ]
+  },
+  "tumbler": {
+    "acceptedGuesses": 17977,
+    "actualSubmittedAndRestored": 17977
+  },
+  "quartet": {
+    "boards": 420,
+    "categoryLabels": 121,
+    "alternatePartitions": 0,
+    "crossCategoryChoices": 0,
+    "meaning": "Known authored category memberships only; not proof against all human semantic interpretations."
+  },
+  "calendar": [
+    {
+      "slug": "kimi-quartet",
+      "stored": 420,
+      "bankDistinct": 420,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "kimi-quartet:179"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "kimi-quartet:180"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "kimi-quartet:181"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "kimi-quartet:182"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "kimi-quartet:183"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "kimi-quartet:184"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "kimi-quartet:185"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "kimi-quartet:186"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "kimi-quartet:187"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "kimi-quartet:188"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "kimi-quartet:189"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "kimi-quartet:190"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "kimi-quartet:191"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "kimi-quartet:192"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "kimi-quartet:193"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "kimi-quartet:194"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "kimi-quartet:195"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "kimi-quartet:196"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "kimi-quartet:197"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "kimi-quartet:198"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "kimi-quartet:199"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "kimi-quartet:200"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "kimi-quartet:201"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "kimi-quartet:202"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "kimi-quartet:203"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "kimi-quartet:204"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "kimi-quartet:205"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "kimi-quartet:206"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "kimi-quartet:207"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "kimi-quartet:208"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "kimi-quartet:209"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "kimi-quartet:210"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "kimi-quartet:211"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "kimi-quartet:212"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "kimi-quartet:213"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "kimi-quartet:214"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "kimi-quartet:215"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "kimi-quartet:216"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "kimi-quartet:217"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "kimi-quartet:218"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "kimi-quartet:219"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "kimi-quartet:220"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "kimi-quartet:221"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "kimi-quartet:222"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "kimi-quartet:223"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "kimi-quartet:224"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "kimi-quartet:225"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "kimi-quartet:226"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "kimi-quartet:227"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "kimi-quartet:228"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "kimi-quartet:229"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "kimi-quartet:230"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "kimi-quartet:231"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "kimi-quartet:232"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "kimi-quartet:233"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "kimi-quartet:234"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "kimi-quartet:235"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "kimi-quartet:236"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "kimi-quartet:237"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "kimi-quartet:238"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "kimi-quartet:239"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "kimi-quartet:240"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "kimi-quartet:241"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "kimi-quartet:242"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "kimi-quartet:243"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "kimi-quartet:244"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "kimi-quartet:245"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "kimi-quartet:246"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "kimi-quartet:247"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "kimi-quartet:248"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "kimi-quartet:249"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "kimi-quartet:250"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "kimi-quartet:251"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "kimi-quartet:252"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "kimi-quartet:253"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "kimi-quartet:254"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "kimi-quartet:255"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "kimi-quartet:256"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "kimi-quartet:257"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "kimi-quartet:258"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "kimi-quartet:259"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "kimi-quartet:260"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "kimi-quartet:261"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "kimi-quartet:262"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "kimi-quartet:263"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "kimi-quartet:264"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "kimi-quartet:265"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "kimi-quartet:266"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "kimi-quartet:267"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "kimi-quartet:268"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "kimi-quartet:269"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "kimi-quartet:270"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "kimi-quartet:271"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "kimi-quartet:272"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "kimi-quartet:273"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "kimi-quartet:274"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "kimi-quartet:275"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "kimi-quartet:276"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "kimi-quartet:277"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "kimi-quartet:278"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "kimi-quartet:279"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "kimi-quartet:280"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "kimi-quartet:281"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "kimi-quartet:282"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "kimi-quartet:283"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "kimi-quartet:284"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "kimi-quartet:285"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "kimi-quartet:286"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "kimi-quartet:287"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "kimi-quartet:288"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "kimi-quartet:289"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "kimi-quartet:290"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "kimi-quartet:291"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "kimi-quartet:292"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "kimi-quartet:293"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "kimi-quartet:294"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "kimi-quartet:295"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "kimi-quartet:296"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "kimi-quartet:297"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "kimi-quartet:298"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "kimi-quartet:299"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "kimi-quartet:300"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "kimi-quartet:301"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "kimi-quartet:302"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "kimi-quartet:303"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "kimi-quartet:304"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "kimi-quartet:305"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "kimi-quartet:306"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "kimi-quartet:307"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "kimi-quartet:308"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "kimi-quartet:309"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "kimi-quartet:310"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "kimi-quartet:311"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "kimi-quartet:312"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "kimi-quartet:313"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "kimi-quartet:314"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "kimi-quartet:315"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "kimi-quartet:316"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "kimi-quartet:317"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "kimi-quartet:318"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "kimi-quartet:319"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "kimi-quartet:320"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "kimi-quartet:321"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "kimi-quartet:322"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "kimi-quartet:323"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "kimi-quartet:324"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "kimi-quartet:325"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "kimi-quartet:326"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "kimi-quartet:327"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "kimi-quartet:328"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "kimi-quartet:329"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "kimi-quartet:330"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "kimi-quartet:331"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "kimi-quartet:332"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "kimi-quartet:333"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "kimi-quartet:334"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "kimi-quartet:335"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "kimi-quartet:336"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "kimi-quartet:337"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "kimi-quartet:338"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "kimi-quartet:339"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "kimi-quartet:340"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "kimi-quartet:341"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "kimi-quartet:342"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "kimi-quartet:343"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "kimi-quartet:344"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "kimi-quartet:345"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "kimi-quartet:346"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "kimi-quartet:347"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "kimi-quartet:348"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "kimi-quartet:349"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "kimi-quartet:350"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "kimi-quartet:351"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "kimi-quartet:352"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "kimi-quartet:353"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "kimi-quartet:354"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "kimi-quartet:355"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "kimi-quartet:356"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "kimi-quartet:357"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "kimi-quartet:358"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "kimi-quartet:359"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "kimi-quartet:360"
+        }
+      ]
+    },
+    {
+      "slug": "claude-dovetail",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "dovetail-87"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "dovetail-88"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "dovetail-89"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "dovetail-90"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "dovetail-91"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "dovetail-92"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "dovetail-93"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "dovetail-94"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "dovetail-95"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "dovetail-96"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "dovetail-97"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "dovetail-98"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "dovetail-99"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "dovetail-100"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "dovetail-101"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "dovetail-102"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "dovetail-103"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "dovetail-104"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "dovetail-105"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "dovetail-106"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "dovetail-107"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "dovetail-108"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "dovetail-109"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "dovetail-110"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "dovetail-111"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "dovetail-112"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "dovetail-113"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "dovetail-114"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "dovetail-115"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "dovetail-116"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "dovetail-117"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "dovetail-118"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "dovetail-119"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "dovetail-120"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "dovetail-121"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "dovetail-122"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "dovetail-123"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "dovetail-124"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "dovetail-125"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "dovetail-126"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "dovetail-127"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "dovetail-128"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "dovetail-129"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "dovetail-130"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "dovetail-131"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "dovetail-132"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "dovetail-133"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "dovetail-134"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "dovetail-135"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "dovetail-136"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "dovetail-137"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "dovetail-138"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "dovetail-139"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "dovetail-140"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "dovetail-141"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "dovetail-142"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "dovetail-143"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "dovetail-144"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "dovetail-145"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "dovetail-146"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "dovetail-147"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "dovetail-148"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "dovetail-149"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "dovetail-150"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "dovetail-151"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "dovetail-152"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "dovetail-153"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "dovetail-154"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "dovetail-155"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "dovetail-156"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "dovetail-157"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "dovetail-158"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "dovetail-159"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "dovetail-160"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "dovetail-161"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "dovetail-162"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "dovetail-163"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "dovetail-164"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "dovetail-165"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "dovetail-166"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "dovetail-167"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "dovetail-168"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "dovetail-169"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "dovetail-170"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "dovetail-171"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "dovetail-172"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "dovetail-173"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "dovetail-174"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "dovetail-175"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "dovetail-176"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "dovetail-177"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "dovetail-178"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "dovetail-179"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "dovetail-180"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "dovetail-181"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "dovetail-182"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "dovetail-183"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "dovetail-184"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "dovetail-185"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "dovetail-186"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "dovetail-187"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "dovetail-188"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "dovetail-189"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "dovetail-190"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "dovetail-191"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "dovetail-192"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "dovetail-193"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "dovetail-194"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "dovetail-195"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "dovetail-196"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "dovetail-197"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "dovetail-198"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "dovetail-199"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "dovetail-200"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "dovetail-1"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "dovetail-2"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "dovetail-3"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "dovetail-4"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "dovetail-5"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "dovetail-6"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "dovetail-7"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "dovetail-8"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "dovetail-9"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "dovetail-10"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "dovetail-11"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "dovetail-12"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "dovetail-13"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "dovetail-14"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "dovetail-15"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "dovetail-16"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "dovetail-17"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "dovetail-18"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "dovetail-19"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "dovetail-20"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "dovetail-21"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "dovetail-22"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "dovetail-23"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "dovetail-24"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "dovetail-28"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "dovetail-29"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "dovetail-30"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "dovetail-31"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "dovetail-32"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "dovetail-33"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "dovetail-34"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "dovetail-35"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "dovetail-36"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "dovetail-37"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "dovetail-38"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "dovetail-39"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "dovetail-40"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "dovetail-41"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "dovetail-42"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "dovetail-43"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "dovetail-44"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "dovetail-45"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "dovetail-46"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "dovetail-47"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "dovetail-48"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "dovetail-49"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "dovetail-50"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "dovetail-51"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "dovetail-52"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "dovetail-53"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "dovetail-54"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "dovetail-55"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "dovetail-56"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "dovetail-57"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "dovetail-58"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "dovetail-59"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "dovetail-60"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "dovetail-61"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "dovetail-62"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "dovetail-63"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "dovetail-64"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "dovetail-65"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "dovetail-66"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "dovetail-67"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "dovetail-68"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "dovetail-69"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "dovetail-70"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "dovetail-71"
+        }
+      ]
+    },
+    {
+      "slug": "claude-splice",
+      "stored": 202,
+      "bankDistinct": 202,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "splice-83"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "splice-84"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "splice-85"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "splice-86"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "splice-87"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "splice-88"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "splice-89"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "splice-90"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "splice-91"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "splice-92"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "splice-93"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "splice-94"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "splice-95"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "splice-96"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "splice-97"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "splice-98"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "splice-99"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "splice-100"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "splice-101"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "splice-102"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "splice-103"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "splice-104"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "splice-105"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "splice-106"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "splice-107"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "splice-108"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "splice-109"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "splice-110"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "splice-111"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "splice-112"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "splice-113"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "splice-114"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "splice-115"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "splice-116"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "splice-117"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "splice-118"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "splice-119"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "splice-120"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "splice-121"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "splice-122"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "splice-123"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "splice-124"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "splice-125"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "splice-126"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "splice-127"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "splice-128"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "splice-129"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "splice-130"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "splice-131"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "splice-132"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "splice-133"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "splice-134"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "splice-135"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "splice-136"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "splice-137"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "splice-138"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "splice-139"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "splice-140"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "splice-141"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "splice-142"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "splice-143"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "splice-144"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "splice-145"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "splice-146"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "splice-147"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "splice-148"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "splice-149"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "splice-150"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "splice-151"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "splice-152"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "splice-153"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "splice-154"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "splice-155"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "splice-156"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "splice-157"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "splice-158"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "splice-159"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "splice-160"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "splice-161"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "splice-162"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "splice-163"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "splice-164"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "splice-165"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "splice-166"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "splice-167"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "splice-168"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "splice-169"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "splice-170"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "splice-171"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "splice-172"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "splice-173"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "splice-174"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "splice-175"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "splice-176"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "splice-177"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "splice-178"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "splice-179"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "splice-180"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "splice-181"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "splice-182"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "splice-183"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "splice-184"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "splice-185"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "splice-186"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "splice-187"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "splice-188"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "splice-189"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "splice-190"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "splice-191"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "splice-192"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "splice-193"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "splice-194"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "splice-195"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "splice-196"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "splice-197"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "splice-198"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "splice-199"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "splice-200"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "splice-201"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "splice-202"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "splice-1"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "splice-2"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "splice-6"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "splice-7"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "splice-9"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "splice-10"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "splice-11"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "splice-12"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "splice-13"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "splice-14"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "splice-15"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "splice-16"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "splice-17"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "splice-18"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "splice-19"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "splice-20"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "splice-21"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "splice-22"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "splice-23"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "splice-25"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "splice-26"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "splice-27"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "splice-28"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "splice-29"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "splice-30"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "splice-31"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "splice-32"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "splice-33"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "splice-34"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "splice-35"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "splice-36"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "splice-37"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "splice-38"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "splice-39"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "splice-40"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "splice-41"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "splice-42"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "splice-43"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "splice-44"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "splice-45"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "splice-46"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "splice-47"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "splice-48"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "splice-49"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "splice-50"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "splice-51"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "splice-52"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "splice-53"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "splice-54"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "splice-55"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "splice-56"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "splice-57"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "splice-58"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "splice-59"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "splice-60"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "splice-61"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "splice-62"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "splice-63"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "splice-64"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "splice-65"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "splice-66"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "splice-67"
+        }
+      ]
+    },
+    {
+      "slug": "claude-sprout",
+      "stored": 211,
+      "bankDistinct": 211,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "sprout-22"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "sprout-23"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "sprout-24"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "sprout-25"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "sprout-26"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "sprout-27"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "sprout-28"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "sprout-29"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "sprout-30"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "sprout-31"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "sprout-32"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "sprout-33"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "sprout-34"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "sprout-35"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "sprout-36"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "sprout-37"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "sprout-38"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "sprout-39"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "sprout-40"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "sprout-41"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "sprout-42"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "sprout-43"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "sprout-44"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "sprout-45"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "sprout-46"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "sprout-47"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "sprout-48"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "sprout-49"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "sprout-50"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "sprout-51"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "sprout-52"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "sprout-53"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "sprout-55"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "sprout-56"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "sprout-57"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "sprout-59"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "sprout-60"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "sprout-63"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "sprout-64"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "sprout-65"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "sprout-66"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "sprout-67"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "sprout-68"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "sprout-69"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "sprout-70"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "sprout-71"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "sprout-72"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "sprout-73"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "sprout-74"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "sprout-75"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "sprout-76"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "sprout-77"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "sprout-78"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "sprout-79"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "sprout-80"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "sprout-81"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "sprout-82"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "sprout-83"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "sprout-84"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "sprout-85"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "sprout-87"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "sprout-89"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "sprout-90"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "sprout-91"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "sprout-92"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "sprout-93"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "sprout-94"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "sprout-95"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "sprout-96"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "sprout-97"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "sprout-98"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "sprout-99"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "sprout-100"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "sprout-101"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "sprout-102"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "sprout-103"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "sprout-104"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "sprout-105"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "sprout-106"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "sprout-107"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "sprout-108"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "sprout-109"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "sprout-110"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "sprout-111"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "sprout-112"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "sprout-113"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "sprout-114"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "sprout-115"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "sprout-117"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "sprout-118"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "sprout-119"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "sprout-120"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "sprout-121"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "sprout-122"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "sprout-123"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "sprout-125"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "sprout-126"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "sprout-127"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "sprout-129"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "sprout-130"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "sprout-131"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "sprout-132"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "sprout-133"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "sprout-134"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "sprout-135"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "sprout-136"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "sprout-137"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "sprout-138"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "sprout-139"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "sprout-140"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "sprout-141"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "sprout-142"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "sprout-143"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "sprout-144"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "sprout-145"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "sprout-146"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "sprout-147"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "sprout-148"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "sprout-149"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "sprout-150"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "sprout-151"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "sprout-152"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "sprout-153"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "sprout-154"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "sprout-155"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "sprout-156"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "sprout-157"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "sprout-158"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "sprout-159"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "sprout-160"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "sprout-161"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "sprout-162"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "sprout-163"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "sprout-164"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "sprout-165"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "sprout-166"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "sprout-167"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "sprout-168"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "sprout-169"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "sprout-170"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "sprout-171"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "sprout-172"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "sprout-173"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "sprout-174"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "sprout-175"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "sprout-176"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "sprout-177"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "sprout-178"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "sprout-179"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "sprout-180"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "sprout-181"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "sprout-182"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "sprout-183"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "sprout-184"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "sprout-185"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "sprout-186"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "sprout-187"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "sprout-188"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "sprout-189"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "sprout-190"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "sprout-191"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "sprout-192"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "sprout-193"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "sprout-194"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "sprout-195"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "sprout-196"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "sprout-197"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "sprout-198"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "sprout-199"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "sprout-200"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "sprout-201"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "sprout-202"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "sprout-203"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "sprout-204"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "sprout-205"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "sprout-206"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "sprout-207"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "sprout-208"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "sprout-209"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "sprout-210"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "sprout-211"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "sprout-1"
+        }
+      ]
+    },
+    {
+      "slug": "claude-tangle",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182,
+      "partitionDistinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "tangle-076"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "tangle-077"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "tangle-078"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "tangle-079"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "tangle-080"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "tangle-081"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "tangle-082"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "tangle-083"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "tangle-084"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "tangle-085"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "tangle-086"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "tangle-087"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "tangle-088"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "tangle-089"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "tangle-090"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "tangle-091"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "tangle-092"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "tangle-093"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "tangle-094"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "tangle-095"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "tangle-096"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "tangle-097"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "tangle-098"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "tangle-099"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "tangle-100"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "tangle-101"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "tangle-102"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "tangle-103"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "tangle-104"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "tangle-105"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "tangle-106"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "tangle-107"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "tangle-108"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "tangle-109"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "tangle-110"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "tangle-111"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "tangle-112"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "tangle-113"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "tangle-114"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "tangle-115"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "tangle-116"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "tangle-117"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "tangle-118"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "tangle-119"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "tangle-120"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "tangle-121"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "tangle-122"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "tangle-123"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "tangle-124"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "tangle-125"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "tangle-126"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "tangle-127"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "tangle-128"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "tangle-129"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "tangle-130"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "tangle-131"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "tangle-132"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "tangle-133"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "tangle-134"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "tangle-135"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "tangle-136"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "tangle-137"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "tangle-138"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "tangle-139"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "tangle-140"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "tangle-141"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "tangle-142"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "tangle-143"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "tangle-144"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "tangle-145"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "tangle-146"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "tangle-147"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "tangle-148"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "tangle-149"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "tangle-150"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "tangle-151"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "tangle-152"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "tangle-153"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "tangle-154"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "tangle-155"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "tangle-156"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "tangle-157"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "tangle-158"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "tangle-159"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "tangle-160"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "tangle-161"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "tangle-162"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "tangle-163"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "tangle-164"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "tangle-165"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "tangle-166"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "tangle-167"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "tangle-168"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "tangle-169"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "tangle-170"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "tangle-171"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "tangle-172"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "tangle-173"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "tangle-174"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "tangle-175"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "tangle-176"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "tangle-177"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "tangle-178"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "tangle-179"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "tangle-180"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "tangle-181"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "tangle-182"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "tangle-183"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "tangle-184"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "tangle-185"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "tangle-186"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "tangle-187"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "tangle-188"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "tangle-189"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "tangle-190"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "tangle-191"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "tangle-192"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "tangle-193"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "tangle-194"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "tangle-195"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "tangle-196"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "tangle-197"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "tangle-198"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "tangle-199"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "tangle-200"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "tangle-001"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "tangle-002"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "tangle-003"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "tangle-004"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "tangle-005"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "tangle-006"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "tangle-007"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "tangle-008"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "tangle-009"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "tangle-010"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "tangle-011"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "tangle-012"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "tangle-013"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "tangle-014"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "tangle-015"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "tangle-016"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "tangle-017"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "tangle-018"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "tangle-019"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "tangle-020"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "tangle-021"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "tangle-022"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "tangle-023"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "tangle-024"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "tangle-025"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "tangle-026"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "tangle-027"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "tangle-028"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "tangle-029"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "tangle-030"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "tangle-031"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "tangle-032"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "tangle-033"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "tangle-034"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "tangle-035"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "tangle-036"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "tangle-037"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "tangle-038"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "tangle-039"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "tangle-040"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "tangle-041"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "tangle-042"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "tangle-043"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "tangle-044"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "tangle-045"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "tangle-046"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "tangle-047"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "tangle-048"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "tangle-049"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "tangle-050"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "tangle-051"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "tangle-052"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "tangle-053"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "tangle-054"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "tangle-055"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "tangle-056"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "tangle-057"
+        }
+      ]
+    },
+    {
+      "slug": "claude-keystone",
+      "stored": 200,
+      "bankDistinct": 200,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "keystone-068"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "keystone-069"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "keystone-070"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "keystone-071"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "keystone-072"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "keystone-073"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "keystone-074"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "keystone-075"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "keystone-076"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "keystone-077"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "keystone-078"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "keystone-079"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "keystone-080"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "keystone-081"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "keystone-082"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "keystone-083"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "keystone-084"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "keystone-085"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "keystone-086"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "keystone-087"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "keystone-088"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "keystone-089"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "keystone-090"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "keystone-091"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "keystone-092"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "keystone-093"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "keystone-094"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "keystone-095"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "keystone-096"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "keystone-097"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "keystone-098"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "keystone-099"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "keystone-100"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "keystone-101"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "keystone-102"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "keystone-103"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "keystone-104"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "keystone-105"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "keystone-106"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "keystone-107"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "keystone-108"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "keystone-109"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "keystone-110"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "keystone-111"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "keystone-112"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "keystone-113"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "keystone-114"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "keystone-115"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "keystone-116"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "keystone-117"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "keystone-118"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "keystone-119"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "keystone-120"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "keystone-121"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "keystone-122"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "keystone-123"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "keystone-124"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "keystone-125"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "keystone-126"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "keystone-127"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "keystone-128"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "keystone-129"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "keystone-130"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "keystone-131"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "keystone-132"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "keystone-133"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "keystone-134"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "keystone-135"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "keystone-136"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "keystone-137"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "keystone-138"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "keystone-139"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "keystone-140"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "keystone-141"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "keystone-142"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "keystone-143"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "keystone-144"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "keystone-145"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "keystone-146"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "keystone-147"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "keystone-148"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "keystone-149"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "keystone-150"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "keystone-151"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "keystone-152"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "keystone-153"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "keystone-154"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "keystone-155"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "keystone-156"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "keystone-157"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "keystone-158"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "keystone-159"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "keystone-160"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "keystone-161"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "keystone-162"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "keystone-163"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "keystone-164"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "keystone-165"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "keystone-166"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "keystone-167"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "keystone-168"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "keystone-169"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "keystone-170"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "keystone-171"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "keystone-172"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "keystone-173"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "keystone-174"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "keystone-175"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "keystone-176"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "keystone-177"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "keystone-178"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "keystone-179"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "keystone-180"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "keystone-181"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "keystone-182"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "keystone-183"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "keystone-184"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "keystone-185"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "keystone-186"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "keystone-187"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "keystone-188"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "keystone-189"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "keystone-190"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "keystone-191"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "keystone-192"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "keystone-193"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "keystone-194"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "keystone-195"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "keystone-196"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "keystone-197"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "keystone-198"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "keystone-199"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "keystone-200"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "keystone-001"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "keystone-002"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "keystone-003"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "keystone-004"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "keystone-005"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "keystone-006"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "keystone-007"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "keystone-008"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "keystone-009"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "keystone-010"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "keystone-014"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "keystone-015"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "keystone-016"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "keystone-017"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "keystone-018"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "keystone-019"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "keystone-020"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "keystone-021"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "keystone-022"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "keystone-023"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "keystone-024"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "keystone-025"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "keystone-026"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "keystone-027"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "keystone-028"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "keystone-029"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "keystone-030"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "keystone-031"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "keystone-032"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "keystone-033"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "keystone-034"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "keystone-035"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "keystone-036"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "keystone-037"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "keystone-038"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "keystone-039"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "keystone-040"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "keystone-041"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "keystone-042"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "keystone-043"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "keystone-044"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "keystone-045"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "keystone-046"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "keystone-047"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "keystone-048"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "keystone-049"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "keystone-050"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "keystone-051"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "keystone-052"
+        }
+      ]
+    },
+    {
+      "slug": "claude-tumbler",
+      "stored": 1054,
+      "bankDistinct": 1054,
+      "dates": 182,
+      "distinct": 182,
+      "ids": [
+        {
+          "date": "2026-11-01",
+          "puzzleId": "tumbler-0394"
+        },
+        {
+          "date": "2026-11-02",
+          "puzzleId": "tumbler-0395"
+        },
+        {
+          "date": "2026-11-03",
+          "puzzleId": "tumbler-0396"
+        },
+        {
+          "date": "2026-11-04",
+          "puzzleId": "tumbler-0397"
+        },
+        {
+          "date": "2026-11-05",
+          "puzzleId": "tumbler-0398"
+        },
+        {
+          "date": "2026-11-06",
+          "puzzleId": "tumbler-0399"
+        },
+        {
+          "date": "2026-11-07",
+          "puzzleId": "tumbler-0400"
+        },
+        {
+          "date": "2026-11-08",
+          "puzzleId": "tumbler-0401"
+        },
+        {
+          "date": "2026-11-09",
+          "puzzleId": "tumbler-0402"
+        },
+        {
+          "date": "2026-11-10",
+          "puzzleId": "tumbler-0403"
+        },
+        {
+          "date": "2026-11-11",
+          "puzzleId": "tumbler-0404"
+        },
+        {
+          "date": "2026-11-12",
+          "puzzleId": "tumbler-0405"
+        },
+        {
+          "date": "2026-11-13",
+          "puzzleId": "tumbler-0406"
+        },
+        {
+          "date": "2026-11-14",
+          "puzzleId": "tumbler-0407"
+        },
+        {
+          "date": "2026-11-15",
+          "puzzleId": "tumbler-0408"
+        },
+        {
+          "date": "2026-11-16",
+          "puzzleId": "tumbler-0409"
+        },
+        {
+          "date": "2026-11-17",
+          "puzzleId": "tumbler-0410"
+        },
+        {
+          "date": "2026-11-18",
+          "puzzleId": "tumbler-0411"
+        },
+        {
+          "date": "2026-11-19",
+          "puzzleId": "tumbler-0412"
+        },
+        {
+          "date": "2026-11-20",
+          "puzzleId": "tumbler-0413"
+        },
+        {
+          "date": "2026-11-21",
+          "puzzleId": "tumbler-0414"
+        },
+        {
+          "date": "2026-11-22",
+          "puzzleId": "tumbler-0415"
+        },
+        {
+          "date": "2026-11-23",
+          "puzzleId": "tumbler-0416"
+        },
+        {
+          "date": "2026-11-24",
+          "puzzleId": "tumbler-0417"
+        },
+        {
+          "date": "2026-11-25",
+          "puzzleId": "tumbler-0418"
+        },
+        {
+          "date": "2026-11-26",
+          "puzzleId": "tumbler-0419"
+        },
+        {
+          "date": "2026-11-27",
+          "puzzleId": "tumbler-0420"
+        },
+        {
+          "date": "2026-11-28",
+          "puzzleId": "tumbler-0421"
+        },
+        {
+          "date": "2026-11-29",
+          "puzzleId": "tumbler-0422"
+        },
+        {
+          "date": "2026-11-30",
+          "puzzleId": "tumbler-0423"
+        },
+        {
+          "date": "2026-12-01",
+          "puzzleId": "tumbler-0424"
+        },
+        {
+          "date": "2026-12-02",
+          "puzzleId": "tumbler-0425"
+        },
+        {
+          "date": "2026-12-03",
+          "puzzleId": "tumbler-0426"
+        },
+        {
+          "date": "2026-12-04",
+          "puzzleId": "tumbler-0427"
+        },
+        {
+          "date": "2026-12-05",
+          "puzzleId": "tumbler-0428"
+        },
+        {
+          "date": "2026-12-06",
+          "puzzleId": "tumbler-0429"
+        },
+        {
+          "date": "2026-12-07",
+          "puzzleId": "tumbler-0430"
+        },
+        {
+          "date": "2026-12-08",
+          "puzzleId": "tumbler-0431"
+        },
+        {
+          "date": "2026-12-09",
+          "puzzleId": "tumbler-0432"
+        },
+        {
+          "date": "2026-12-10",
+          "puzzleId": "tumbler-0433"
+        },
+        {
+          "date": "2026-12-11",
+          "puzzleId": "tumbler-0434"
+        },
+        {
+          "date": "2026-12-12",
+          "puzzleId": "tumbler-0435"
+        },
+        {
+          "date": "2026-12-13",
+          "puzzleId": "tumbler-0436"
+        },
+        {
+          "date": "2026-12-14",
+          "puzzleId": "tumbler-0437"
+        },
+        {
+          "date": "2026-12-15",
+          "puzzleId": "tumbler-0438"
+        },
+        {
+          "date": "2026-12-16",
+          "puzzleId": "tumbler-0439"
+        },
+        {
+          "date": "2026-12-17",
+          "puzzleId": "tumbler-0440"
+        },
+        {
+          "date": "2026-12-18",
+          "puzzleId": "tumbler-0441"
+        },
+        {
+          "date": "2026-12-19",
+          "puzzleId": "tumbler-0442"
+        },
+        {
+          "date": "2026-12-20",
+          "puzzleId": "tumbler-0443"
+        },
+        {
+          "date": "2026-12-21",
+          "puzzleId": "tumbler-0444"
+        },
+        {
+          "date": "2026-12-22",
+          "puzzleId": "tumbler-0445"
+        },
+        {
+          "date": "2026-12-23",
+          "puzzleId": "tumbler-0446"
+        },
+        {
+          "date": "2026-12-24",
+          "puzzleId": "tumbler-0447"
+        },
+        {
+          "date": "2026-12-25",
+          "puzzleId": "tumbler-0448"
+        },
+        {
+          "date": "2026-12-26",
+          "puzzleId": "tumbler-0449"
+        },
+        {
+          "date": "2026-12-27",
+          "puzzleId": "tumbler-0450"
+        },
+        {
+          "date": "2026-12-28",
+          "puzzleId": "tumbler-0451"
+        },
+        {
+          "date": "2026-12-29",
+          "puzzleId": "tumbler-0452"
+        },
+        {
+          "date": "2026-12-30",
+          "puzzleId": "tumbler-0453"
+        },
+        {
+          "date": "2026-12-31",
+          "puzzleId": "tumbler-0454"
+        },
+        {
+          "date": "2027-01-01",
+          "puzzleId": "tumbler-0455"
+        },
+        {
+          "date": "2027-01-02",
+          "puzzleId": "tumbler-0456"
+        },
+        {
+          "date": "2027-01-03",
+          "puzzleId": "tumbler-0457"
+        },
+        {
+          "date": "2027-01-04",
+          "puzzleId": "tumbler-0458"
+        },
+        {
+          "date": "2027-01-05",
+          "puzzleId": "tumbler-0459"
+        },
+        {
+          "date": "2027-01-06",
+          "puzzleId": "tumbler-0460"
+        },
+        {
+          "date": "2027-01-07",
+          "puzzleId": "tumbler-0461"
+        },
+        {
+          "date": "2027-01-08",
+          "puzzleId": "tumbler-0462"
+        },
+        {
+          "date": "2027-01-09",
+          "puzzleId": "tumbler-0463"
+        },
+        {
+          "date": "2027-01-10",
+          "puzzleId": "tumbler-0464"
+        },
+        {
+          "date": "2027-01-11",
+          "puzzleId": "tumbler-0465"
+        },
+        {
+          "date": "2027-01-12",
+          "puzzleId": "tumbler-0466"
+        },
+        {
+          "date": "2027-01-13",
+          "puzzleId": "tumbler-0467"
+        },
+        {
+          "date": "2027-01-14",
+          "puzzleId": "tumbler-0468"
+        },
+        {
+          "date": "2027-01-15",
+          "puzzleId": "tumbler-0469"
+        },
+        {
+          "date": "2027-01-16",
+          "puzzleId": "tumbler-0470"
+        },
+        {
+          "date": "2027-01-17",
+          "puzzleId": "tumbler-0471"
+        },
+        {
+          "date": "2027-01-18",
+          "puzzleId": "tumbler-0472"
+        },
+        {
+          "date": "2027-01-19",
+          "puzzleId": "tumbler-0473"
+        },
+        {
+          "date": "2027-01-20",
+          "puzzleId": "tumbler-0474"
+        },
+        {
+          "date": "2027-01-21",
+          "puzzleId": "tumbler-0475"
+        },
+        {
+          "date": "2027-01-22",
+          "puzzleId": "tumbler-0476"
+        },
+        {
+          "date": "2027-01-23",
+          "puzzleId": "tumbler-0477"
+        },
+        {
+          "date": "2027-01-24",
+          "puzzleId": "tumbler-0478"
+        },
+        {
+          "date": "2027-01-25",
+          "puzzleId": "tumbler-0479"
+        },
+        {
+          "date": "2027-01-26",
+          "puzzleId": "tumbler-0480"
+        },
+        {
+          "date": "2027-01-27",
+          "puzzleId": "tumbler-0481"
+        },
+        {
+          "date": "2027-01-28",
+          "puzzleId": "tumbler-0482"
+        },
+        {
+          "date": "2027-01-29",
+          "puzzleId": "tumbler-0483"
+        },
+        {
+          "date": "2027-01-30",
+          "puzzleId": "tumbler-0484"
+        },
+        {
+          "date": "2027-01-31",
+          "puzzleId": "tumbler-0485"
+        },
+        {
+          "date": "2027-02-01",
+          "puzzleId": "tumbler-0486"
+        },
+        {
+          "date": "2027-02-02",
+          "puzzleId": "tumbler-0487"
+        },
+        {
+          "date": "2027-02-03",
+          "puzzleId": "tumbler-0488"
+        },
+        {
+          "date": "2027-02-04",
+          "puzzleId": "tumbler-0489"
+        },
+        {
+          "date": "2027-02-05",
+          "puzzleId": "tumbler-0490"
+        },
+        {
+          "date": "2027-02-06",
+          "puzzleId": "tumbler-0491"
+        },
+        {
+          "date": "2027-02-07",
+          "puzzleId": "tumbler-0492"
+        },
+        {
+          "date": "2027-02-08",
+          "puzzleId": "tumbler-0493"
+        },
+        {
+          "date": "2027-02-09",
+          "puzzleId": "tumbler-0494"
+        },
+        {
+          "date": "2027-02-10",
+          "puzzleId": "tumbler-0495"
+        },
+        {
+          "date": "2027-02-11",
+          "puzzleId": "tumbler-0496"
+        },
+        {
+          "date": "2027-02-12",
+          "puzzleId": "tumbler-0497"
+        },
+        {
+          "date": "2027-02-13",
+          "puzzleId": "tumbler-0498"
+        },
+        {
+          "date": "2027-02-14",
+          "puzzleId": "tumbler-0499"
+        },
+        {
+          "date": "2027-02-15",
+          "puzzleId": "tumbler-0500"
+        },
+        {
+          "date": "2027-02-16",
+          "puzzleId": "tumbler-0501"
+        },
+        {
+          "date": "2027-02-17",
+          "puzzleId": "tumbler-0502"
+        },
+        {
+          "date": "2027-02-18",
+          "puzzleId": "tumbler-0503"
+        },
+        {
+          "date": "2027-02-19",
+          "puzzleId": "tumbler-0504"
+        },
+        {
+          "date": "2027-02-20",
+          "puzzleId": "tumbler-0505"
+        },
+        {
+          "date": "2027-02-21",
+          "puzzleId": "tumbler-0506"
+        },
+        {
+          "date": "2027-02-22",
+          "puzzleId": "tumbler-0507"
+        },
+        {
+          "date": "2027-02-23",
+          "puzzleId": "tumbler-0508"
+        },
+        {
+          "date": "2027-02-24",
+          "puzzleId": "tumbler-0509"
+        },
+        {
+          "date": "2027-02-25",
+          "puzzleId": "tumbler-0510"
+        },
+        {
+          "date": "2027-02-26",
+          "puzzleId": "tumbler-0511"
+        },
+        {
+          "date": "2027-02-27",
+          "puzzleId": "tumbler-0512"
+        },
+        {
+          "date": "2027-02-28",
+          "puzzleId": "tumbler-0513"
+        },
+        {
+          "date": "2027-03-01",
+          "puzzleId": "tumbler-0514"
+        },
+        {
+          "date": "2027-03-02",
+          "puzzleId": "tumbler-0515"
+        },
+        {
+          "date": "2027-03-03",
+          "puzzleId": "tumbler-0516"
+        },
+        {
+          "date": "2027-03-04",
+          "puzzleId": "tumbler-0517"
+        },
+        {
+          "date": "2027-03-05",
+          "puzzleId": "tumbler-0518"
+        },
+        {
+          "date": "2027-03-06",
+          "puzzleId": "tumbler-0519"
+        },
+        {
+          "date": "2027-03-07",
+          "puzzleId": "tumbler-0520"
+        },
+        {
+          "date": "2027-03-08",
+          "puzzleId": "tumbler-0521"
+        },
+        {
+          "date": "2027-03-09",
+          "puzzleId": "tumbler-0522"
+        },
+        {
+          "date": "2027-03-10",
+          "puzzleId": "tumbler-0523"
+        },
+        {
+          "date": "2027-03-11",
+          "puzzleId": "tumbler-0524"
+        },
+        {
+          "date": "2027-03-12",
+          "puzzleId": "tumbler-0525"
+        },
+        {
+          "date": "2027-03-13",
+          "puzzleId": "tumbler-0526"
+        },
+        {
+          "date": "2027-03-14",
+          "puzzleId": "tumbler-0527"
+        },
+        {
+          "date": "2027-03-15",
+          "puzzleId": "tumbler-0528"
+        },
+        {
+          "date": "2027-03-16",
+          "puzzleId": "tumbler-0529"
+        },
+        {
+          "date": "2027-03-17",
+          "puzzleId": "tumbler-0530"
+        },
+        {
+          "date": "2027-03-18",
+          "puzzleId": "tumbler-0531"
+        },
+        {
+          "date": "2027-03-19",
+          "puzzleId": "tumbler-0532"
+        },
+        {
+          "date": "2027-03-20",
+          "puzzleId": "tumbler-0533"
+        },
+        {
+          "date": "2027-03-21",
+          "puzzleId": "tumbler-0534"
+        },
+        {
+          "date": "2027-03-22",
+          "puzzleId": "tumbler-0535"
+        },
+        {
+          "date": "2027-03-23",
+          "puzzleId": "tumbler-0536"
+        },
+        {
+          "date": "2027-03-24",
+          "puzzleId": "tumbler-0537"
+        },
+        {
+          "date": "2027-03-25",
+          "puzzleId": "tumbler-0538"
+        },
+        {
+          "date": "2027-03-26",
+          "puzzleId": "tumbler-0539"
+        },
+        {
+          "date": "2027-03-27",
+          "puzzleId": "tumbler-0540"
+        },
+        {
+          "date": "2027-03-28",
+          "puzzleId": "tumbler-0541"
+        },
+        {
+          "date": "2027-03-29",
+          "puzzleId": "tumbler-0542"
+        },
+        {
+          "date": "2027-03-30",
+          "puzzleId": "tumbler-0543"
+        },
+        {
+          "date": "2027-03-31",
+          "puzzleId": "tumbler-0544"
+        },
+        {
+          "date": "2027-04-01",
+          "puzzleId": "tumbler-0545"
+        },
+        {
+          "date": "2027-04-02",
+          "puzzleId": "tumbler-0546"
+        },
+        {
+          "date": "2027-04-03",
+          "puzzleId": "tumbler-0547"
+        },
+        {
+          "date": "2027-04-04",
+          "puzzleId": "tumbler-0548"
+        },
+        {
+          "date": "2027-04-05",
+          "puzzleId": "tumbler-0549"
+        },
+        {
+          "date": "2027-04-06",
+          "puzzleId": "tumbler-0550"
+        },
+        {
+          "date": "2027-04-07",
+          "puzzleId": "tumbler-0551"
+        },
+        {
+          "date": "2027-04-08",
+          "puzzleId": "tumbler-0552"
+        },
+        {
+          "date": "2027-04-09",
+          "puzzleId": "tumbler-0553"
+        },
+        {
+          "date": "2027-04-10",
+          "puzzleId": "tumbler-0554"
+        },
+        {
+          "date": "2027-04-11",
+          "puzzleId": "tumbler-0555"
+        },
+        {
+          "date": "2027-04-12",
+          "puzzleId": "tumbler-0556"
+        },
+        {
+          "date": "2027-04-13",
+          "puzzleId": "tumbler-0557"
+        },
+        {
+          "date": "2027-04-14",
+          "puzzleId": "tumbler-0558"
+        },
+        {
+          "date": "2027-04-15",
+          "puzzleId": "tumbler-0559"
+        },
+        {
+          "date": "2027-04-16",
+          "puzzleId": "tumbler-0560"
+        },
+        {
+          "date": "2027-04-17",
+          "puzzleId": "tumbler-0561"
+        },
+        {
+          "date": "2027-04-18",
+          "puzzleId": "tumbler-0562"
+        },
+        {
+          "date": "2027-04-19",
+          "puzzleId": "tumbler-0563"
+        },
+        {
+          "date": "2027-04-20",
+          "puzzleId": "tumbler-0564"
+        },
+        {
+          "date": "2027-04-21",
+          "puzzleId": "tumbler-0565"
+        },
+        {
+          "date": "2027-04-22",
+          "puzzleId": "tumbler-0566"
+        },
+        {
+          "date": "2027-04-23",
+          "puzzleId": "tumbler-0567"
+        },
+        {
+          "date": "2027-04-24",
+          "puzzleId": "tumbler-0568"
+        },
+        {
+          "date": "2027-04-25",
+          "puzzleId": "tumbler-0569"
+        },
+        {
+          "date": "2027-04-26",
+          "puzzleId": "tumbler-0570"
+        },
+        {
+          "date": "2027-04-27",
+          "puzzleId": "tumbler-0571"
+        },
+        {
+          "date": "2027-04-28",
+          "puzzleId": "tumbler-0572"
+        },
+        {
+          "date": "2027-04-29",
+          "puzzleId": "tumbler-0573"
+        },
+        {
+          "date": "2027-04-30",
+          "puzzleId": "tumbler-0574"
+        },
+        {
+          "date": "2027-05-01",
+          "puzzleId": "tumbler-0575"
+        }
+      ]
+    }
+  ]
+}

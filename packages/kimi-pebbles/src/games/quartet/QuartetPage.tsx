@@ -1,3 +1,4 @@
+import './quartet.css'
 import { useEffect } from 'react'
 import { useGameOverlays } from '../shared/useGameOverlays'
 import { useQuartet } from './useQuartet'
@@ -85,6 +86,7 @@ export default function QuartetPage() {
           puzzle={state.puzzle}
           puzzleNo={state.puzzleNo}
           history={state.history}
+          hintsUsed={state.hintsUsed}
           misses={state.misses}
           won={state.won}
           onPractice={() => {

@@ -1,3 +1,4 @@
+import {dictionaryPath,wordPartition} from './word-acceptance.mjs';
 import {DICTIONARY} from './puzzles.mjs';
 const WORDS=new Set(DICTIONARY);
 export const MAX_KNOTS=4;
@@ -7,7 +8,7 @@ export const selectedWord=(p,s)=>[...s.selected].sort((a,b)=>a-b).map(i=>p.s[i])
 export function findWordPaths(sequence,word){const paths=[];function walk(start,used){if(used.length===word.length){paths.push(used);return;}for(let i=start;i<sequence.length;i++)if(sequence[i]===word[used.length])walk(i+1,[...used,i]);}walk(0,[]);return paths;}
 /** Assign every remaining bead to an ordered target word. This also detects
  * duplicate-letter pulls that need undo instead of silently removing other beads. */
-export function allocation(p,v){
+function legacyAllocation(p,v){
   const left=[...p.s].map((_,i)=>i).filter(i=>!v.removed.includes(i));
   const remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
   const cursors=p.w.map(()=>0),failed=new Set();
@@ -20,6 +21,7 @@ export function allocation(p,v){
   const owners=visit(0);if(!owners)return null;
   const result=p.w.map(()=>[]);owners.forEach((j,n)=>result[j].push(left[n]));return result;
 }
+export function allocation(p,v){return v.vocabulary===2?(legacyAllocation(p,v)??wordPartition(p,v)):legacyAllocation(p,v);}
 function hintFor(p,v){
   const solution=allocation(p,v);
   if(!solution)return v.pulls.length?{type:'recover'}:null;
@@ -29,9 +31,9 @@ function hintFor(p,v){
   return {type:'hint',index,target};
 }
 function popPull(v){const pull=v.pulls.pop();if(!pull)return false;v.removed=v.removed.filter(i=>!pull.indices.includes(i));return true;}
-export function replay(p,events){
+export function replay(p,events,vocabulary=1){
   if(!Array.isArray(events)||events.length>2000)return null;
-  const v=emptyView();
+  const v={...emptyView(),...(vocabulary===2?{vocabulary:2}:{})};
   for(const event of events){
     if(!event||typeof event!=='object'||v.knots>=MAX_KNOTS||v.pulls.length===p.w.length)return null;
     if(event.type==='pull'||event.type==='knot'){
@@ -39,11 +41,14 @@ export function replay(p,events){
       if(!Array.isArray(ix)||!ix.length||ix.some((n,i)=>!Number.isInteger(n)||n<0||n>=p.s.length||(i&&n<=ix[i-1])||v.removed.includes(n)))return null;
       const word=ix.map(i=>p.s[i]).join(''),remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
       if(!remaining.some(j=>p.w[j].length===word.length))return null;
-      const target=remaining.find(j=>p.w[j]===word);
+      const slot=vocabulary===2?remaining.find(j=>p.w[j].length===word.length):remaining.find(j=>p.w[j]===word);
+      const listed=vocabulary===2?dictionaryPath(p,ix):WORDS.has(word);
+      const viable=vocabulary===2&&slot!==undefined&&listed?wordPartition(p,{pulls:[...v.pulls,{target:slot,indices:ix}],removed:[...v.removed,...ix]}):null;
+      const target=vocabulary===2?(viable?slot:undefined):slot;
       if(event.type==='pull'){
-        if(target===undefined)return null;v.pulls.push({target,indices:[...ix]});v.removed.push(...ix);v.removed.sort((a,b)=>a-b);
+        if(target===undefined)return null;v.pulls.push({target,indices:[...ix],...(vocabulary===2?{word}:{})});v.removed.push(...ix);v.removed.sort((a,b)=>a-b);
       }else{
-        if(target!==undefined||!WORDS.has(word)||v.tried.includes(word))return null;v.tried.push(word);v.knots++;
+        if(target!==undefined||!listed||v.tried.includes(word))return null;v.tried.push(word);v.knots++;
       }
     }else if(event.type==='hint'){
       const h=hintFor(p,v);if(!h||h.type!=='hint'||h.index!==event.index||h.target!==event.target)return null;
@@ -58,14 +63,14 @@ export function replay(p,events){
   }
   return v;
 }
-export const view=(p,s)=>replay(p,s.events);
+export const view=(p,s)=>replay(p,s.events,s.vocabulary);
 export function getStatus(p,s){if(s.revealed)return 'revealed';const v=view(p,s);if(!v)return 'playing';return v.knots>=MAX_KNOTS?'lost':v.pulls.length===p.w.length?'won':'playing';}
 export function restoreState(p,raw){
-  if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||!Array.isArray(raw.selected))return null;
-  const v=replay(p,raw.events);if(!v)return null;
+  if(!raw||typeof raw!=='object'||typeof raw.revealed!=='boolean'||(raw.vocabulary!==undefined&&raw.vocabulary!==2)||!Array.isArray(raw.selected))return null;
+  const v=replay(p,raw.events,raw.vocabulary);if(!v)return null;
   if(raw.selected.length>p.s.length||new Set(raw.selected).size!==raw.selected.length||raw.selected.some(i=>!Number.isInteger(i)||i<0||i>=p.s.length||v.removed.includes(i)))return null;
   if((raw.revealed||v.knots===MAX_KNOTS||v.pulls.length===p.w.length)&&raw.selected.length)return null;
-  return {events:raw.events.map(e=>e.indices?{type:e.type,indices:[...e.indices]}:e.type==='hint'?{type:'hint',index:e.index,target:e.target}:{type:e.type}),selected:[...raw.selected],revealed:raw.revealed};
+  return {events:raw.events.map(e=>e.indices?{type:e.type,indices:[...e.indices]}:e.type==='hint'?{type:'hint',index:e.index,target:e.target}:{type:e.type}),selected:[...raw.selected],revealed:raw.revealed,...(raw.vocabulary===2?{vocabulary:2}:{})};
 }
 export function toggle(p,s,index){
   if(getStatus(p,s)!=='playing')return {state:s,message:'This tangle is finished.'};
@@ -79,15 +84,22 @@ export function submit(p,s){
   const word=selectedWord(p,s),v=view(p,s),remaining=p.w.map((_,j)=>j).filter(j=>!v.pulls.some(x=>x.target===j));
   if(!word)return {state:s,message:'Select the beads of one word.'};
   if(!remaining.some(j=>p.w[j].length===word.length))return {state:s,message:`Threads left have ${remaining.map(j=>p.w[j].length).sort().join(', ')} letters.`};
-  const target=remaining.find(j=>p.w[j]===word);
+  const indices=[...s.selected].sort((a,b)=>a-b),slot=s.vocabulary===2?remaining.find(j=>p.w[j].length===word.length):remaining.find(j=>p.w[j]===word);
+  const listed=s.vocabulary===2?dictionaryPath(p,indices):WORDS.has(word);
+  const viable=s.vocabulary===2&&slot!==undefined&&listed?wordPartition(p,{pulls:[...v.pulls,{target:slot,indices}],removed:[...v.removed,...indices]}):null;
+  const target=s.vocabulary===2?(viable?slot:undefined):slot;
   if(target===undefined&&v.tried.includes(word))return {state:s,message:'Already tried that word. No extra knot.'};
-  if(target===undefined&&!WORDS.has(word))return {state:{...s,selected:[]},message:'Not in the supplied word list. No knot.'};
+  if(target===undefined&&!listed)return {state:{...s,selected:[]},message:'Not in the game dictionary. No knot.'};
   const event={type:target===undefined?'knot':'pull',indices:[...s.selected].sort((a,b)=>a-b)};
   const next={...s,events:[...s.events,event],selected:[]};
-  return {state:next,message:target===undefined?`${word.toUpperCase()} is a word, but not one of these threads. One knot.`:getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
+  return {state:next,message:target===undefined?(s.vocabulary===2?`${word.toUpperCase()} is a valid word, but these beads strand the remaining threads. One knot; all beads stay available.`:`${word.toUpperCase()} is a word, but not one of these threads. One knot.`):getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
 }
 export function undoPull(p,s){return getStatus(p,s)==='playing'&&view(p,s).pulls.length?{...s,events:[...s.events,{type:'undo'}],selected:[]}:s;}
 export function restart(p,s){if(getStatus(p,s)!=='playing')return s;return view(p,s).pulls.length?{...s,events:[...s.events,{type:'restart'}],selected:[]}:clear(p,s);}
 export function hint(p,s){if(getStatus(p,s)!=='playing')return null;const h=hintFor(p,view(p,s));return h?{...s,events:[...s.events,h],selected:[]}:null;}
 export const reveal=(p,s)=>getStatus(p,s)==='playing'?{...s,selected:[],revealed:true}:s;
 export const summarize=(p,s)=>{const v=view(p,s);return `${v.pulls.length}/3 threads · ${v.knots}/4 knots · ${v.assists} hints`;};
+
+export const assistanceCount=(p,s)=>view(p,s).assists;
+
+export const createExpandedState=()=>({...createState(),vocabulary:2});

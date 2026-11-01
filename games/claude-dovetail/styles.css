@@ -1,35 +1,50 @@
 /* Dovetail · a wordworker's bench. */
-body[data-game-id="claude-dovetail"]{--accent:#9d543b;--accent-soft:#f3e4da;--game-ink:#593829;--soft:#f3e4da}
-.dovetail-panel{background:#fcf8f1;border-color:#d8c5b2;box-shadow:0 5px 0 #e7d9ca}
-.dovetail-progress{justify-content:space-between;gap:10px;font-size:13px;color:#593829}
-.dovetail-progress .pill{font-size:12px;letter-spacing:2px;background:#ead7c6;color:#754127}
-.dovetail-note{font-size:12px;line-height:1.6;margin:12px 0 20px;color:#725b4c}
-.dovetail-board{display:flex;flex-direction:column;gap:9px;margin:0 0 24px;padding:16px 12px;background:#efe3d4;border:1px solid #d8c2ab;border-radius:14px;position:relative;box-shadow:inset 0 2px 5px #6746270a}
+body[data-game-id="claude-dovetail"]{--accent:#3b7c9d;--accent-soft:#daebf3;--game-ink:#294959;--soft:#daebf3}
+.dovetail-panel{background:#f1f8fc;border-color:#b2cbd8;box-shadow:0 5px 0 #cadde7}
+.dovetail-progress{justify-content:space-between;gap:10px;font-size:13px;color:#294959}
+.dovetail-progress .pill{font-size:12px;letter-spacing:2px;background:#c6deea;color:#275b75}
+.dovetail-note{font-size:12px;line-height:1.6;margin:12px 0 20px;color:#4c6572}
+.dovetail-board{display:flex;flex-direction:column;gap:9px;margin:0 0 24px;padding:16px 12px;background:#d4e6ef;border:1px solid #abc9d8;border-radius:14px;position:relative;box-shadow:inset 0 2px 5px #6746270a}
 .dovetail-row-wrap{position:relative;z-index:1}
-.dovetail-row-wrap:not(:last-child)::after{content:"";position:absolute;width:14px;height:13px;bottom:-10px;left:calc(50% - 7px);border-left:2px solid #ba9673;border-right:2px solid #ba9673;z-index:-1}
-.dovetail-row{display:flex;align-items:center;gap:7px;width:100%;min-height:54px;padding:10px 8px;border:1px solid #c9b197;border-radius:5px 12px 5px 12px;background:#fffcf6;color:#593829;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 #cdb69b;transition:background .16s,transform .16s,border-color .16s}
+.dovetail-row-wrap:not(:last-child)::after{content:"";position:absolute;width:14px;height:13px;bottom:-10px;left:calc(50% - 7px);border-left:2px solid #73a2ba;border-right:2px solid #73a2ba;z-index:-1}
+.dovetail-row{display:flex;align-items:center;gap:7px;width:100%;min-height:54px;padding:10px 8px;border:1px solid #97b8c9;border-radius:5px 12px 5px 12px;background:#f8fbfd;color:#294959;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 #9bbccd;transition:background .16s,transform .16s,border-color .16s}
 .dovetail-row:disabled{opacity:1;cursor:default}
-.dovetail-row.given{background:#71503b;border-color:#71503b;color:#fff6e8;box-shadow:0 3px 0 #493425}
-.dovetail-row.solved{background:#e7efe4;border-color:#9bb38d;color:#31553a;box-shadow:0 3px 0 #afc39f}
-.dovetail-row.revealed{background:#faeccb;border-color:#cfb46e;color:#70531b;box-shadow:0 3px 0 #dbc68f}
-.dovetail-row.active{border:2px solid #9d543b;padding:9px 7px;background:#fffaf3;box-shadow:0 3px 0 #9d543b}
-.dovetail-row-number,.dovetail-row-size{width:14px;flex:none;font-size:10px;color:#806e60;font-weight:700}
-.dovetail-row.given .dovetail-row-number,.dovetail-row.given .dovetail-row-size{color:#ecd8c4}
+.dovetail-row.given{background:#3b5f71;border-color:#3b5f71;color:#ecf6fb;box-shadow:0 3px 0 #253d49}
+.dovetail-row.solved{background:#e4efee;border-color:#8db3af;color:#315551;box-shadow:0 3px 0 #9fc3bf}
+.dovetail-row.revealed{background:#d1e8f4;border-color:#6eafcf;color:#1b5470;box-shadow:0 3px 0 #8fc2db}
+.dovetail-row.active{border:2px solid #3b7c9d;padding:9px 7px;background:#f5fafd;box-shadow:0 3px 0 #3b7c9d}
+.dovetail-row-number,.dovetail-row-size{width:14px;flex:none;font-size:10px;color:#5a7786;font-weight:700}
+.dovetail-row.given .dovetail-row-number,.dovetail-row.given .dovetail-row-size{color:#c4dfec}
 .dovetail-letters{display:flex;justify-content:center;gap:4px;flex:1;min-width:0}
-.dovetail-letter{display:flex;align-items:center;justify-content:center;width:30px;min-width:0;flex-shrink:1;height:30px;font-size:19px;font-weight:750;border-bottom:2px solid #cfb49c;text-transform:uppercase}
+.dovetail-letter{display:flex;align-items:center;justify-content:center;width:30px;min-width:0;flex-shrink:1;height:30px;font-size:19px;font-weight:750;border-bottom:2px solid #9cbecf;text-transform:uppercase}
 .dovetail-row.given .dovetail-letter,.dovetail-row.solved .dovetail-letter,.dovetail-row.revealed .dovetail-letter{border-color:transparent}
-.dovetail-letter.hinted{color:#765019;background:#f8e5b5;border-radius:4px;border-bottom-color:#bd8b39}
-.dovetail-join{align-self:center;position:relative;z-index:2;font-size:11px;line-height:1.3;font-weight:650;letter-spacing:.03em;color:#744a30;background:#efe3d4;padding:3px 9px;border:1px solid #d4baa1;border-radius:20px}
+.dovetail-letter.hinted{color:#1a5775;background:#bddff0;border-radius:4px;border-bottom-color:#3991bd}
+.dovetail-join{align-self:center;position:relative;z-index:2;font-size:11px;line-height:1.3;font-weight:650;letter-spacing:.03em;color:#305d74;background:#d4e6ef;padding:3px 9px;border:1px solid #a1c3d4;border-radius:20px}
 .dovetail-guesses{display:flex;flex-wrap:wrap;gap:5px;margin:8px 2px 2px}
-.dovetail-guesses span{font-size:11px;border-radius:5px;padding:4px 6px;background:#e0d3c4;color:#584c42}
-.dovetail-guesses span.fits{background:#f4e0a9;color:#6c5217}
+.dovetail-guesses span{font-size:11px;border-radius:5px;padding:4px 6px;background:#c4d7e0;color:#3e525c}
+.dovetail-guesses span.fits{background:#b0d9ed;color:#184f6b}
 .dovetail-panel form{padding-top:2px}
-.dovetail-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#593829}
-.dovetail-panel .word-input{letter-spacing:4px;text-transform:uppercase;text-align:center;border-color:#cbb59f;background:#fffcf6;color:#593829;font-size:22px;min-height:54px;border-radius:10px}
+.dovetail-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#294959}
+.dovetail-panel .word-input{letter-spacing:4px;text-transform:uppercase;text-align:center;border-color:#9fbccb;background:#f8fbfd;color:#294959;font-size:22px;min-height:54px;border-radius:10px}
 .dovetail-panel form .actions{margin-top:12px}
-.dovetail-panel .button.primary{background:#9d543b;border-color:#9d543b}
-.dovetail-hint-cost{font-size:11px;color:#745b48;text-align:center;line-height:1.6;margin:17px 0 0}
-.dovetail-row:focus-visible{outline:3px solid #9d543b;outline-offset:4px}
-@media(hover:hover){.dovetail-row:not(:disabled):hover{transform:translateY(-2px);border-color:#9d543b}}
+.dovetail-panel .button.primary{background:#3b7c9d;border-color:#3b7c9d}
+.dovetail-hint-cost{font-size:11px;color:#486574;text-align:center;line-height:1.6;margin:17px 0 0}
+.dovetail-row:focus-visible{outline:3px solid #3b7c9d;outline-offset:4px}
+@media(hover:hover){.dovetail-row:not(:disabled):hover{transform:translateY(-2px);border-color:#3b7c9d}}
 @media(max-width:350px){.dovetail-progress{font-size:12px}.dovetail-board{padding:12px 7px}.dovetail-row{padding:9px 4px;gap:4px;min-height:51px}.dovetail-row.active{padding:8px 3px}.dovetail-letters{gap:3px}.dovetail-letter{font-size:16px;height:27px}.dovetail-row-number,.dovetail-row-size{width:12px}}
 @media(prefers-reduced-motion:reduce){.dovetail-row{transition:none}}
+
+/* Readable collection finish; this stylesheet is isolated to this game. */
+:root{--bg:#f1f7fb;--ink:#173448;--muted:#536b7c;--line:#c8dbe7;--white:#fbfdff;color-scheme:light;background:#f1f7fb}
+body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f7fb}
+.game-shell{width:min(100% - 32px,660px)}
+.game-shell .intro{font-size:16px;color:#4b6374;line-height:1.65}
+.game-shell .button{font-size:14px;min-height:48px}
+.game-shell .muted,.game-shell .status-note{font-size:14px}
+.game-shell .collection-label,.game-shell .game-credit,.game-shell footer{font-size:12px}
+.game-shell .mode-switch{background:#e2eef6;border-color:#c4d8e7}
+.game-shell .panel{border-radius:22px}
+.game-shell dialog{background:#fbfdff}
+@media(max-width:350px){.game-shell{width:calc(100% - 24px)}.game-shell .intro{font-size:15px}.game-shell .button{font-size:13px}}
+
+.dovetail-panel form label{font-size:15px}.dovetail-row-number,.dovetail-row-size{font-size:12px}.dovetail-guesses span,.dovetail-join,.dovetail-hint-cost{font-size:13px}.dovetail-row{border-radius:10px;min-height:58px}

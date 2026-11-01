@@ -1,60 +1,75 @@
-/* Keystone · warm stone arches with a single central keystone. */
-body[data-game-id="claude-keystone"]{--accent:#936b2a;--accent-soft:#f4ead3;--game-ink:#684b1f;--soft:#f4ead3}
-.keystone-panel{background:#fcfaf4;border-color:#d9c8a6;box-shadow:0 5px 0 #e8ddc5}
+/* Keystone · cool stone arches with a single central keystone. */
+body[data-game-id="claude-keystone"]{--accent:#2a7093;--accent-soft:#d3e9f4;--game-ink:#1f5068;--soft:#d3e9f4}
+.keystone-panel{background:#f4f9fc;border-color:#a6c8d9;box-shadow:0 5px 0 #c5dce8}
 .keystone-rounds{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 24px}
-.keystone-rounds li{padding:11px 7px;border:1px solid #d7c7a8;border-radius:24px 24px 8px 8px;background:#f0e8d7;text-align:center;min-height:69px;color:#6a573a}
-.keystone-rounds li span{display:block;font-size:11px;color:#79674c;margin-bottom:6px}
+.keystone-rounds li{padding:11px 7px;border:1px solid #a8c7d7;border-radius:24px 24px 8px 8px;background:#d7e8f0;text-align:center;min-height:69px;color:#3a5a6a}
+.keystone-rounds li span{display:block;font-size:11px;color:#4c6a79;margin-bottom:6px}
 .keystone-rounds li strong{font-size:13px;font-weight:750}
-.keystone-rounds .current{border-color:#936b2a;background:#936b2a;color:#fff7e7;box-shadow:0 3px 0 #654918}
-.keystone-rounds .current span{color:#fff2d6}
-.keystone-rounds .solved{background:#e5eddb;border-color:#9eb18b;color:#35512d}
-.keystone-rounds .missed{background:#f4e2d9;border-color:#ca9e89;color:#854e35}
+.keystone-rounds .current{border-color:#2a7093;background:#2a7093;color:#ebf6fb;box-shadow:0 3px 0 #184b65}
+.keystone-rounds .current span{color:#deeff7}
+.keystone-rounds .solved{background:#dbedeb;border-color:#8bb1ae;color:#2d514d}
+.keystone-rounds .missed{background:#d9ebf4;border-color:#89b4ca;color:#356a85}
 .keystone-prompt{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.keystone-prompt h2{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.25;margin:0;color:#684b1f;font-weight:500}
-.keystone-prompt .pill{white-space:nowrap;font-size:10px;padding:6px 9px;background:#eee0c0;color:#6f5121}
+.keystone-prompt h2{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.25;margin:0;color:#1f5068;font-weight:500}
+.keystone-prompt .pill{white-space:nowrap;font-size:10px;padding:6px 9px;background:#c0dfee;color:#21556f}
 .keystone-arch{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:start;min-height:155px;margin:17px 0 20px;padding:4px 0 12px}
-.keystone-arch::before{content:"";z-index:-1;position:absolute;inset:33px 12% 0;border:14px solid #eadfc8;border-bottom:0;border-radius:140px 140px 0 0}
-.keystone-arch::after{content:"";z-index:-1;position:absolute;bottom:0;left:2%;right:2%;border-top:2px solid #d1ba8e}
-.keystone-stone{position:relative;min-height:86px;border:1px solid #bda16a;border-radius:13px 13px 5px 5px;background:#ecdfc3;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 5px 13px;color:#65471c;font-weight:750;text-align:center;overflow-wrap:anywhere;box-shadow:0 4px 0 #cbb487}
+.keystone-arch::before{content:"";z-index:-1;position:absolute;inset:33px 12% 0;border:14px solid #c8dfea;border-bottom:0;border-radius:140px 140px 0 0}
+.keystone-arch::after{content:"";z-index:-1;position:absolute;bottom:0;left:2%;right:2%;border-top:2px solid #8ebbd1}
+.keystone-stone{position:relative;min-height:86px;border:1px solid #6aa1bd;border-radius:13px 13px 5px 5px;background:#c3deec;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 5px 13px;color:#1c4d65;font-weight:750;text-align:center;overflow-wrap:anywhere;box-shadow:0 4px 0 #87b4cb}
 .keystone-stone:nth-child(1),.keystone-stone:nth-child(5){margin-top:44px}
 .keystone-stone:nth-child(2),.keystone-stone:nth-child(4){margin-top:15px}
-.keystone-stone:nth-child(3){background:#dac08b;border-color:#ad8949;box-shadow:0 4px 0 #ae8c52}
-.keystone-stone small{position:absolute;top:8px;left:8px;font-weight:650;font-size:10px;color:#826537}
+.keystone-stone:nth-child(3){background:#8bc0da;border-color:#498cad;box-shadow:0 4px 0 #528fae}
+.keystone-stone small{position:absolute;top:8px;left:8px;font-weight:650;font-size:10px;color:#376982}
 .keystone-stone>span{font-size:12px;width:100%;line-height:1.35;letter-spacing:.01em}
-.keystone-stone.concealed{background:#f7f0e1;box-shadow:0 3px 0 #e3d7bd;border-style:dashed;border-color:#c9b994;color:#8c7958}
+.keystone-stone.concealed{background:#e1f0f7;box-shadow:0 3px 0 #bdd6e3;border-style:dashed;border-color:#94b7c9;color:#587b8c}
 .keystone-stone.concealed span{font:500 26px/1 Georgia,serif}
 .keystone-stone em{font-size:10px;font-weight:500;font-style:normal;margin-top:5px}
-.keystone-input-label{font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:#7a633e;display:block;text-align:center;margin-bottom:9px}
-.keystone-key{text-align:center;min-height:58px;background:#fffef8;border:2px solid #b79962;color:#684b1f;font-size:25px;letter-spacing:.1em;border-radius:8px 8px 16px 16px}
-.keystone-key::placeholder{font-size:14px;font-weight:500;letter-spacing:.13em;color:#8e7b59}
-.keystone-submit{width:100%;margin-top:11px;background:#936b2a!important;border-color:#936b2a!important}
-#keystone-input-help{text-align:center;font-size:11px;margin:10px 0 0;color:#776649}
-.solved-key{font-weight:800;padding:17px;border:1px solid #9db48b;border-radius:8px 8px 16px 16px;background:#e5eedc;color:#35512d}
+.keystone-input-label{font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.1em;color:#3e667a;display:block;text-align:center;margin-bottom:9px}
+.keystone-key{text-align:center;min-height:58px;background:#f9fcfe;border:2px solid #629bb7;color:#1f5068;font-size:25px;letter-spacing:.1em;border-radius:8px 8px 16px 16px}
+.keystone-key::placeholder{font-size:14px;font-weight:500;letter-spacing:.13em;color:#597c8e}
+.keystone-submit{width:100%;margin-top:11px;background:#2a7093!important;border-color:#2a7093!important}
+#keystone-input-help{text-align:center;font-size:11px;margin:10px 0 0;color:#496877}
+.solved-key{font-weight:800;padding:17px;border:1px solid #8bb4b0;border-radius:8px 8px 16px 16px;background:#dceeec;color:#2d514d}
 .solved-key small{font-size:11px;font-weight:600;display:block;margin-top:6px;letter-spacing:0}
-.missed-key{background:#f2e0d7;border-color:#c69e87;color:#804b32}
+.missed-key{background:#d7e9f2;border-color:#87b1c6;color:#326680}
 .keystone-joins{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin:17px 0;list-style:none;padding:0}
-.keystone-joins li{background:#f1e7d2;border:1px solid #ddcaa4;border-radius:6px;padding:7px 9px;font-size:12px;color:#705124}
-.keystone-next{width:100%;margin:0 0 8px;background:#936b2a!important;border-color:#936b2a!important}
+.keystone-joins li{background:#d2e7f1;border:1px solid #a4cadd;border-radius:6px;padding:7px 9px;font-size:12px;color:#245770}
+.keystone-next{width:100%;margin:0 0 8px;background:#2a7093!important;border-color:#2a7093!important}
 .keystone-keyboard{margin:20px -4px 0}
 .key-row{display:flex;gap:4px;justify-content:center;margin:7px 0}
-.word-key{flex:1;max-width:46px;min-width:0;border:1px solid #cbbb9a;border-radius:7px;background:#f0e7d4;color:#624c29;min-height:46px;padding:4px 0;font-size:13px;font-weight:750;user-select:none;box-shadow:0 2px 0 #d0bd98;transition:transform .12s,background .12s}
+.word-key{flex:1;max-width:46px;min-width:0;border:1px solid #9abbcb;border-radius:7px;background:#d4e7f0;color:#294f62;min-height:46px;padding:4px 0;font-size:13px;font-weight:750;user-select:none;box-shadow:0 2px 0 #98bdd0;transition:transform .12s,background .12s}
 .word-key.wide{flex:1.5;max-width:70px;font-size:10px}
 .key-row:nth-child(2){padding-inline:4%}
-.word-key:active{transform:translateY(2px);box-shadow:none;background:#e5d4af}
-.keystone-hint{text-align:center;font-size:16px;font-weight:750;letter-spacing:.13em;background:#f7e7bf;border:1px solid #d2b374;border-radius:9px;padding:12px;margin:16px 0 0;color:#70521b}
-.keystone-log{margin-top:21px;border-top:1px solid #deceb0;padding-top:8px}
+.word-key:active{transform:translateY(2px);box-shadow:none;background:#afd3e5}
+.keystone-hint{text-align:center;font-size:16px;font-weight:750;letter-spacing:.13em;background:#c4e3f2;border:1px solid #74b3d2;border-radius:9px;padding:12px;margin:16px 0 0;color:#1b5470}
+.keystone-log{margin-top:21px;border-top:1px solid #b0cfde;padding-top:8px}
 .keystone-log>div{display:flex;gap:10px;padding:9px 0;align-items:flex-start}
-.keystone-log b{font-size:12px;min-width:58px;color:#705b37;overflow-wrap:anywhere}
+.keystone-log b{font-size:12px;min-width:58px;color:#375d70;overflow-wrap:anywhere}
 .keystone-log>div>span{display:flex;flex-wrap:wrap;gap:5px}
-.keystone-log i{font-style:normal;font-size:10px;color:#766347;padding:4px 6px;border:1px solid #dfd2b8;border-radius:5px}
-.keystone-log i.fits{color:#355c3b;border-color:#b3c7a5;background:#eaf1e2}
-.keystone-footer{text-align:center;font-size:11px;margin:19px 0 0;color:#756346}
-.keystone-finish>h2{text-align:center;font-family:Georgia,serif;font-size:23px;color:#684b1f}
-.keystone-summary{padding:17px 0;border-top:1px solid #deceb0}
+.keystone-log i{font-style:normal;font-size:10px;color:#476676;padding:4px 6px;border:1px solid #b8d2df;border-radius:5px}
+.keystone-log i.fits{color:#355c58;border-color:#a5c7c4;background:#e2f1f0}
+.keystone-footer{text-align:center;font-size:11px;margin:19px 0 0;color:#466575}
+.keystone-finish>h2{text-align:center;font-family:Georgia,serif;font-size:23px;color:#1f5068}
+.keystone-summary{padding:17px 0;border-top:1px solid #b0cfde}
 .keystone-summary>div{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.keystone-summary strong{font-size:22px;letter-spacing:.05em;color:#684b1f}
-.keystone-summary span{font-size:12px;color:#736345}
-.keystone-summary p{font-size:13px;line-height:1.7;margin:9px 0 0;overflow-wrap:anywhere;color:#735c39}
+.keystone-summary strong{font-size:22px;letter-spacing:.05em;color:#1f5068}
+.keystone-summary span{font-size:12px;color:#456473}
+.keystone-summary p{font-size:13px;line-height:1.7;margin:9px 0 0;overflow-wrap:anywhere;color:#396073}
 #puzzle:focus{outline:none}
 @media(max-width:350px){.keystone-prompt{align-items:flex-start;gap:7px}.keystone-prompt h2{font-size:17px}.keystone-arch{gap:4px;min-height:149px}.keystone-stone>span{font-size:10px}.keystone-stone{padding-inline:2px;min-height:81px}.keystone-stone small{left:5px}.keystone-keyboard{margin-inline:-5px}.word-key{font-size:12px}.word-key.wide{font-size:9px}.key-row{gap:3px}.keystone-log>div{flex-direction:column;gap:5px}}
 @media(prefers-reduced-motion:reduce){.word-key{transition:none}}
+
+/* Readable collection finish; this stylesheet is isolated to this game. */
+:root{--bg:#f1f7fb;--ink:#173448;--muted:#536b7c;--line:#c8dbe7;--white:#fbfdff;color-scheme:light;background:#f1f7fb}
+body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f7fb}
+.game-shell{width:min(100% - 32px,660px)}
+.game-shell .intro{font-size:16px;color:#4b6374;line-height:1.65}
+.game-shell .button{font-size:14px;min-height:48px}
+.game-shell .muted,.game-shell .status-note{font-size:14px}
+.game-shell .collection-label,.game-shell .game-credit,.game-shell footer{font-size:12px}
+.game-shell .mode-switch{background:#e2eef6;border-color:#c4d8e7}
+.game-shell .panel{border-radius:22px}
+.game-shell dialog{background:#fbfdff}
+@media(max-width:350px){.game-shell{width:calc(100% - 24px)}.game-shell .intro{font-size:15px}.game-shell .button{font-size:13px}}
+
+.keystone-stone>span{font-size:clamp(13px,3.2vw,17px)}.keystone-rounds li span,.keystone-prompt .pill,.keystone-joins li,.keystone-log b,.keystone-log i,.keystone-footer{font-size:13px}.keystone-prompt h2,.keystone-finish>h2{font-family:inherit;font-weight:750}.keystone-input-label{font-size:14px}.keystone-stone{min-height:96px}.keystone-arch{min-height:170px}

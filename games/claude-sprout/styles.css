@@ -1,39 +1,54 @@
 /* Sprout · an ascending garden of words, with a seed bed below. */
-.sprout-rack-tile.soil.chosen{opacity:1;outline:2px solid #664b29;outline-offset:2px}.sprout-build-status{text-align:center}
-body[data-game-id="claude-sprout"]{--accent:#37735a;--accent-soft:#e3eedf;--game-ink:#27503f;--soft:#e3eedf}
-.sprout-panel{background:#f9fbf5;border-color:#c3d4bc;box-shadow:0 5px 0 #dce6d4}
-.sprout-progress{justify-content:space-between;gap:8px;font-size:13px;margin-bottom:20px;color:#27503f}
-.sprout-progress .pill{font-size:11px;color:#315c3d;background:#e2ecd8}
-.sprout-stem{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;padding:19px 6px 16px;position:relative;background:linear-gradient(#94b492,#94b492) center/3px calc(100% - 44px) no-repeat,#edf4e6;border:1px solid #ceddc3;border-radius:48% 48% 18px 18px/22px 22px 18px 18px}
+.sprout-rack-tile.soil.chosen{opacity:1;outline:2px solid #295266;outline-offset:2px}.sprout-build-status{text-align:center}
+body[data-game-id="claude-sprout"]{--accent:#37736d;--accent-soft:#dfeeec;--game-ink:#27504c;--soft:#dfeeec}
+.sprout-panel{background:#f5fbfa;border-color:#bcd4d2;box-shadow:0 5px 0 #d4e6e4}
+.sprout-progress{justify-content:space-between;gap:8px;font-size:13px;margin-bottom:20px;color:#27504c}
+.sprout-progress .pill{font-size:11px;color:#315c58;background:#d8ecea}
+.sprout-stem{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;padding:19px 6px 16px;position:relative;background:linear-gradient(#91b5b2,#91b5b2) center/3px calc(100% - 44px) no-repeat,#e6f4f3;border:1px solid #c3ddda;border-radius:48% 48% 18px 18px/22px 22px 18px 18px}
 .sprout-level{display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
-.sprout-level-number{width:13px;font-size:10px;color:#5f7756;text-align:center;font-weight:650}
+.sprout-level-number{width:13px;font-size:10px;color:#527b77;text-align:center;font-weight:650}
 .sprout-level-letters{display:flex;justify-content:center;gap:4px;position:relative}
-.sprout-level.filled:not(.seed) .sprout-level-letters::after{content:"";position:absolute;width:12px;height:7px;background:#5c9568;right:-13px;top:13px;border-radius:100% 0 100% 0;transform:rotate(-20deg)}
-.sprout-character{width:min(6.8vw,32px);height:32px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid #97b68d;border-radius:8px 8px 4px 4px;background:#dbeace;color:#27503f;font-family:inherit;font-size:clamp(13px,3.8vw,18px);font-weight:750;line-height:1;box-shadow:0 2px 0 #b5cba4}
-.sprout-character.ghost{background:#f8fbf3;border:1px dashed #b7cba9;box-shadow:none}
-.sprout-level.active .sprout-character{border:2px solid #37735a;background:#fffef6;box-shadow:0 2px 0 #86a87d}
-.sprout-character.typed{cursor:pointer;background:#e3efd9}
-.sprout-character.from-soil{background:#f4dfb4;color:#6d4d22;border-color:#b18a4e}
-.sprout-level.seed .sprout-character{background:#b18a62;border-color:#92704e;color:#fff9e9;box-shadow:0 2px 0 #76593f;border-radius:4px 4px 9px 9px}
-.sprout-level.bloom .sprout-character{background:#37735a;border-color:#37735a;color:#fff;box-shadow:0 3px 0 #21523e;border-radius:10px 10px 4px 4px}
-.sprout-level.revealed .sprout-character{background:#faeccb;border-color:#c6a867;color:#71551f;box-shadow:0 2px 0 #d9c18b}
-.sprout-reveal-note{font-size:12px;color:#745a28;text-align:center;line-height:1.6}
-.sprout-rack-section{border:1px solid #c7d5bb;border-radius:13px;padding:16px 9px;margin:21px 0;background:#f0f5e9}
-.sprout-rack-label{font-size:10px;font-weight:750;letter-spacing:1.05px;text-align:center;color:#4c6944;margin:0 0 11px}
-.sprout-rack-label:not(:first-child){margin-top:19px;padding-top:15px;border-top:1px solid #d3ddc6;color:#79603c}
+.sprout-level.filled:not(.seed) .sprout-level-letters::after{content:"";position:absolute;width:12px;height:7px;background:#5c958f;right:-13px;top:13px;border-radius:100% 0 100% 0;transform:rotate(-20deg)}
+.sprout-character{width:min(6.8vw,32px);height:32px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid #8db6b2;border-radius:8px 8px 4px 4px;background:#ceeae7;color:#27504c;font-family:inherit;font-size:clamp(13px,3.8vw,18px);font-weight:750;line-height:1;box-shadow:0 2px 0 #a4cbc7}
+.sprout-character.ghost{background:#f3fbfa;border:1px dashed #a9cbc8;box-shadow:none}
+.sprout-level.active .sprout-character{border:2px solid #37736d;background:#f8fbfd;box-shadow:0 2px 0 #7da8a4}
+.sprout-character.typed{cursor:pointer;background:#d9efed}
+.sprout-character.from-soil{background:#b9ddef;color:#22546d;border-color:#4e90b1}
+.sprout-level.seed .sprout-character{background:#6297b1;border-color:#4e7b92;color:#edf6fb;box-shadow:0 2px 0 #3f6476;border-radius:4px 4px 9px 9px}
+.sprout-level.bloom .sprout-character{background:#37736d;border-color:#37736d;color:#fff;box-shadow:0 3px 0 #21524d;border-radius:10px 10px 4px 4px}
+.sprout-level.revealed .sprout-character{background:#d1e8f4;border-color:#67a6c6;color:#1f5671;box-shadow:0 2px 0 #8bbfd9}
+.sprout-reveal-note{font-size:12px;color:#285b74;text-align:center;line-height:1.6}
+.sprout-rack-section{border:1px solid #bbd5d2;border-radius:13px;padding:16px 9px;margin:21px 0;background:#e9f5f4}
+.sprout-rack-label{font-size:10px;font-weight:750;letter-spacing:1.05px;text-align:center;color:#446965;margin:0 0 11px}
+.sprout-rack-label:not(:first-child){margin-top:19px;padding-top:15px;border-top:1px solid #c6dddb;color:#3c6579}
 .sprout-rack{display:flex;justify-content:center;flex-wrap:wrap;gap:7px}
-.sprout-rack-tile{min-width:44px;min-height:46px;padding:8px;border:1px solid #9fb691;border-radius:10px 10px 5px 5px;background:#fffef5;color:#30573d;font-size:21px;font-weight:750;cursor:pointer;box-shadow:0 3px 0 #becdad;transition:transform .15s,background .15s}
-.sprout-rack-tile.soil{background:#e9d9bc;border-color:#bca17a;color:#664b29;box-shadow:0 3px 0 #c7ae86;border-radius:5px 5px 12px 12px}
+.sprout-rack-tile{min-width:44px;min-height:46px;padding:8px;border:1px solid #91b6b2;border-radius:10px 10px 5px 5px;background:#f7fbfd;color:#305753;font-size:21px;font-weight:750;cursor:pointer;box-shadow:0 3px 0 #adcdca;transition:transform .15s,background .15s}
+.sprout-rack-tile.soil{background:#bcdae9;border-color:#7aa6bc;color:#295266;box-shadow:0 3px 0 #86b1c7;border-radius:5px 5px 12px 12px}
 .sprout-rack-tile.used{opacity:.38;box-shadow:none;transform:translateY(3px)}
-.sprout-rack-tile.hinted{outline:3px solid #b28d22;outline-offset:3px}
-.sprout-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#31553b}
-.sprout-panel .word-input{text-align:center;letter-spacing:3px;text-transform:uppercase;background:#fffef8;border-color:#a9bea0;color:#27503f;min-height:53px;font-size:22px}
+.sprout-rack-tile.hinted{outline:3px solid #2780ad;outline-offset:3px}
+.sprout-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#315551}
+.sprout-panel .word-input{text-align:center;letter-spacing:3px;text-transform:uppercase;background:#f9fcfe;border-color:#9fbfbc;color:#27504c;min-height:53px;font-size:22px}
 .sprout-panel form .actions{margin-top:12px}
-.sprout-panel .button.primary{background:#37735a;border-color:#37735a}
-.sprout-recovery{margin-top:16px;border-top:1px solid #d6dfcc;padding-top:14px}
-.sprout-hint,.sprout-hint-cost{font-size:11px;line-height:1.65;text-align:center;margin:15px 0 0;color:#5b6d50}
-.sprout-hint{background:#e6efcf;border:1px solid #bed096;border-radius:9px;padding:11px;color:#455e2c}
-.sprout-character:focus-visible,.sprout-rack-tile:focus-visible{outline:3px solid #37735a;outline-offset:4px}
-@media(hover:hover){.sprout-rack-tile:not(:disabled):hover{transform:translateY(-2px);background:#e4f0d9}}
+.sprout-panel .button.primary{background:#37736d;border-color:#37736d}
+.sprout-recovery{margin-top:16px;border-top:1px solid #ccdfdd;padding-top:14px}
+.sprout-hint,.sprout-hint-cost{font-size:11px;line-height:1.65;text-align:center;margin:15px 0 0;color:#4c716e}
+.sprout-hint{background:#cfe4ef;border:1px solid #96bdd0;border-radius:9px;padding:11px;color:#2c5e59}
+.sprout-character:focus-visible,.sprout-rack-tile:focus-visible{outline:3px solid #37736d;outline-offset:4px}
+@media(hover:hover){.sprout-rack-tile:not(:disabled):hover{transform:translateY(-2px);background:#d9f0ee}}
 @media(max-width:350px){.sprout-progress{font-size:12px}.sprout-level{gap:5px}.sprout-level-letters{gap:3px}.sprout-stem{padding-inline:3px}.sprout-rack{gap:6px}.sprout-rack-tile{min-width:44px;min-height:44px;padding:6px;font-size:19px}.sprout-panel .button{padding-inline:10px}.sprout-level.filled:not(.seed) .sprout-level-letters::after{width:9px;right:-10px}}
 @media(prefers-reduced-motion:reduce){.sprout-rack-tile{transition:none}}
+
+/* Readable collection finish; this stylesheet is isolated to this game. */
+:root{--bg:#f1f7fb;--ink:#173448;--muted:#536b7c;--line:#c8dbe7;--white:#fbfdff;color-scheme:light;background:#f1f7fb}
+body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f7fb}
+.game-shell{width:min(100% - 32px,660px)}
+.game-shell .intro{font-size:16px;color:#4b6374;line-height:1.65}
+.game-shell .button{font-size:14px;min-height:48px}
+.game-shell .muted,.game-shell .status-note{font-size:14px}
+.game-shell .collection-label,.game-shell .game-credit,.game-shell footer{font-size:12px}
+.game-shell .mode-switch{background:#e2eef6;border-color:#c4d8e7}
+.game-shell .panel{border-radius:22px}
+.game-shell dialog{background:#fbfdff}
+@media(max-width:350px){.game-shell{width:calc(100% - 24px)}.game-shell .intro{font-size:15px}.game-shell .button{font-size:13px}}
+
+.sprout-panel form label{font-size:15px}.sprout-rack-label,.sprout-hint,.sprout-hint-cost,.sprout-reveal-note{font-size:13px}.sprout-character{font-size:clamp(16px,4vw,20px);height:35px}.sprout-level-number{font-size:12px}

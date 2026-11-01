@@ -146,7 +146,14 @@ export async function audit(){
    const target=lengths.indexOf(word.length),remaining=full^first,lens=lengths.filter((_,i)=>i!==target);
    const next=(byLength.get(lens[0])??[]).filter(mask=>(mask&remaining)===mask),completions=next.filter(mask=>expected.has(remaining^mask)&&bits(remaining^mask)===lens[1]);
    const safe=completions.length>0,state=play(Tangle.createExpandedState(),first),view=Tangle.view(p,state);
-   assert.equal(view.pulls.length,safe?1:0,p.id+':'+word);assert.equal(view.knots,safe?0:1);assert.ok(Tangle.restoreState(p,state));
+   // A bad copy is free when the same word has another exact-cover path.
+   // Reconstruct that property from independently enumerated masks only.
+   const otherCopies=safe||[...expected].some(([copy,sameWord])=>{
+    if(sameWord!==word)return false;const left=full^copy;
+    return (byLength.get(lens[0])??[]).some(mask=>(mask&left)===mask&&expected.has(left^mask)&&bits(left^mask)===lens[1]);
+   });
+   assert.equal(view.pulls.length,safe?1:0,p.id+':'+word);assert.equal(view.knots,otherCopies?0:1);assert.ok(Tangle.restoreState(p,state));
+   if(!safe&&otherCopies){assert.deepEqual(state.events,[]);assert.deepEqual(state.selected,toIndices(first));}
    if(!safe){strandedFirstPulls++;continue;}safeFirstPulls++;
    if(!p.w.includes(word)){
     hasAlternative=true;if(alternativeExamples.length<12)alternativeExamples.push({id:p.id,original:p.w,words:[word,expected.get(completions[0]),expected.get(remaining^completions[0])],indices:[first,completions[0],remaining^completions[0]].map(toIndices)});
@@ -154,7 +161,9 @@ export async function audit(){
    for(const second of [...new Set(lens.flatMap(length=>byLength.get(length)??[]))].filter(mask=>(mask&remaining)===mask)){
     const otherLengths=[...lens];otherLengths.splice(otherLengths.indexOf(expected.get(second).length),1);
     const complete=expected.has(remaining^second)&&bits(remaining^second)===otherLengths[0],after=play(state,second),actual=Tangle.view(p,after);
-    assert.equal(actual.pulls.length,complete?2:1,p.id+' second prefix');assert.equal(actual.knots,complete?0:1);assert.ok(Tangle.restoreState(p,after));
+    const otherSecondCopies=complete||[...expected].some(([copy,sameWord])=>sameWord===expected.get(second)&&(copy&remaining)===copy&&expected.has(remaining^copy)&&bits(remaining^copy)===otherLengths[0]);
+    assert.equal(actual.pulls.length,complete?2:1,p.id+' second prefix');assert.equal(actual.knots,otherSecondCopies?0:1);assert.ok(Tangle.restoreState(p,after));
+    if(!complete&&otherSecondCopies){assert.deepEqual(after.events,state.events);assert.deepEqual(after.selected,toIndices(second));}
     if(complete){const won=play(after,remaining^second);assert.equal(Tangle.getStatus(p,won),'won');assert.ok(Tangle.restoreState(p,won));completePrefixes++;}
    }
   }

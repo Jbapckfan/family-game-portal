@@ -1,0 +1,28 @@
+✔ a complete accepted ladder solves Rung (0.412042ms)
+✔ only one changed letter and accepted four-letter words may advance (0.17775ms)
+✔ undo and restart recover from a legal detour without spending a turn limit (0.201667ms)
+✔ route hint supplies a valid next rung and survives a save (2.3135ms)
+✔ reveal keeps its own result and never turns into a normal win (0.153ms)
+✔ restoration revalidates every actual edge and does not trust a claimed win (0.081916ms)
+✔ all prepared ladders have a verified shortest path in the expanded pinned lexicon (364.499625ms)
+✔ deepseek-rung preserves every original puzzle and stable ID (0.535292ms)
+✔ reviewed common-word supplement accepts EARS and survives save, hint, and reveal-list round trips (2.526875ms)
+✔ common-word supplement still requires the rack and both gold letters (0.896875ms)
+✔ six different legal words complete Twin Hive; duplicate words cannot inflate progress (0.668208ms)
+✔ both gold letters, rack membership, minimum length and pinned membership are enforced (0.125125ms)
+✔ hint identifies one missing word and persists without granting it (0.118041ms)
+✔ solution reveal stays revealed and cannot become a played win (0.070541ms)
+✔ untrusted saved words, duplicate entries and fake counters are rejected or ignored (0.061ms)
+✔ all prepared daily configurations have enough legal, unique authored solutions (98.189875ms)
+✔ deepseek-twin-hive preserves every original puzzle and stable ID (0.637708ms)
+✔ Twin Hive accepts the full pinned corpus under its rack and gold rules on every board (3405.908042ms)
+✔ Rung accepts all pinned four-letter words and solves every original endpoint pair (198.001583ms)
+✔ Syntax Siege accepts every pinned 3–6 letter rack word and preserves real damage and saves (87.717666ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4131.595375

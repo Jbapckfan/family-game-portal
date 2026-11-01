@@ -22,13 +22,15 @@ function updateClock() {
   clock.classList.toggle('urgent',!untimed&&s.started&&status==='playing'&&s.remainingMs<=5000);
 }
 mountDailyGame({
-  id:'qwen-syntax-siege',name:'Syntax Siege',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#b7562a',
+ assistanceCount:(p,s)=>s.hints,
+ untimedAssistance:(p,s)=>s.untimed,
+  id:'qwen-syntax-siege',name:'Syntax Siege',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
   intro:'Build a word. Break the wave. Defend the core.',
   instructions:[
     'Defend your 100-HP core against six fixed letter waves. Tap Start defense when you are ready; each daily wave has a 20-second clock.',
     'Tap the six letter tiles to form a word of three or more letters, then Fire word. Each tile can be used once in a word. Every wave has a six-letter solution.',
     'Each letter deals 10 damage. Defeat a 60-HP enemy with one six-letter word or several different shorter words. Points equal the square of each accepted word’s length; damage is 10 per letter.',
-    'Only words in the wave’s prepared word list count. An unlisted word costs 10 core HP; an expired clock costs 20 HP. A repeated accepted word deals no extra damage.',
+    'Words come from the pinned English, Wordnik and ENABLE union. A word outside that dictionary costs 10 core HP; an expired clock costs 20 HP. A repeated accepted word deals no extra damage.',
     'A hint adds the next letter of a six-letter solution and records assistance. Untimed assist stops the clock for the rest of the puzzle. Practice is always untimed.',
     'Help and leaving the screen pause the timer. Clear and Undo change your current word; damage to the core remains. Defeat all six waves before core HP reaches zero.'
   ],

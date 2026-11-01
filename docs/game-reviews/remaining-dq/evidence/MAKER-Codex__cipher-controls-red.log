@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Cipher needs one selected-code/keyboard unit
+
+0 !== 1
+
+    at file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-browser.mjs:20:99 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.11.0

@@ -1,11 +1,17 @@
+import {WORDS_BY_RACK} from './word-acceptance.mjs';
 // Concept: DeepSeek. Completed rules, validation and implementation: ChatGPT.
-// Narrow editorial correction from live play review. Keep prepared records and
-// stable IDs unchanged; supplements must obey the same rack and gold-letter rules.
+// Keep the earlier common-word hint priority and all authored records intact.
+// Broader offline source acceptance obeys the same rack and gold-letter rules.
 const REVIEWED_COMMON_WORDS=Object.freeze(['EARS']);
+const acceptanceCache=new WeakMap();
 export function acceptedWords(puzzle){
- return [...new Set([...puzzle.answers,...REVIEWED_COMMON_WORDS.filter(word=>
-  [...word].every(letter=>puzzle.letters.includes(letter))&&puzzle.gold.every(letter=>word.includes(letter))
- )])];
+ if(!acceptanceCache.has(puzzle)){
+  const eligible=word=>[...word].every(letter=>puzzle.letters.includes(letter))&&puzzle.gold.every(letter=>word.includes(letter));
+  // Authored words keep their order for familiar hints. Broader acceptance does
+  // not change the six-word target or invalidate any previously valid save.
+  acceptanceCache.set(puzzle,Object.freeze([...new Set([...puzzle.answers,...REVIEWED_COMMON_WORDS.filter(eligible),...(WORDS_BY_RACK[puzzle.letters]||[]).filter(eligible)])]));
+ }
+ return acceptanceCache.get(puzzle);
 }
 export const createState = () => ({ found: [], hinted: [], hintWord: null, revealed: false });
 export function getStatus(puzzle, state) { return state.revealed ? 'revealed' : state.found.length >= puzzle.target ? 'won' : 'playing'; }

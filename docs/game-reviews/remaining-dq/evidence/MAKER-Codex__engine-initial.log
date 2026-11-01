@@ -1,0 +1,222 @@
+✔ all prepared Cipher phrases have an exact reversible derangement and solvable givens (38.962333ms)
+✔ Cipher hints repair wrong assignments without duplicate plaintext letters (27.837291ms)
+✔ Cipher rejects corrupted saves and cannot overwrite a given (0.16825ms)
+✔ Cipher clear retains earned hints; reveal remains a reveal after restoration (0.131958ms)
+✔ deepseek-cipher preserves every original puzzle and stable ID (0.747875ms)
+✔ a complete accepted ladder solves Rung (0.479167ms)
+✔ only one changed letter and accepted four-letter words may advance (0.198792ms)
+✔ undo and restart recover from a legal detour without spending a turn limit (0.323625ms)
+✔ route hint supplies a valid next rung and survives a save (1.350208ms)
+✔ reveal keeps its own result and never turns into a normal win (0.060083ms)
+✔ restoration revalidates every actual edge and does not trust a claimed win (0.046791ms)
+✖ all prepared ladders have a verified shortest path in the real curated lexicon (3.098292ms)
+✖ deepseek-rung preserves every original puzzle and stable ID (0.62575ms)
+✔ four correct pairs leave exactly one spare and solve the round (0.779917ms)
+✔ three distinct mistakes lose; repeating a failed pair does not consume another strike (0.3085ms)
+✔ a pair hint survives shuffle and restoration until the pair is solved (0.62925ms)
+✔ locked tiles cannot be reused and clear removes only current selection (0.072667ms)
+✔ reveal is distinct from a win and corrupt saves are refused (0.122416ms)
+✔ All prepared authored boards have four disjoint pairs and one distinct spare (1.700208ms)
+✔ deepseek-spare preserves every original puzzle and stable ID (0.601792ms)
+✔ all prepared Split boards have ten conserved letters and two distinct clued answers (3.803083ms)
+✔ Split duplicate letters are distinct tiles and a tile cannot fill two slots (0.101958ms)
+✔ Split hints recover arbitrary partitions and can complete every puzzle (2.398958ms)
+✔ Split undo/restart preserve assistance and reveal never becomes a win (0.187291ms)
+✔ deepseek-split preserves every original puzzle and stable ID (0.566ms)
+✔ all prepared Trail targets occupy a legal nine-cell path (3.437458ms)
+✔ Trail rejects jumps/reused cells and permits backtracking (0.143958ms)
+✔ Trail hint restores a valid route from any legal opening and finishes every puzzle (4.5255ms)
+✔ Trail reveal is not a win; malformed terminal saves cannot forge completion (0.210667ms)
+✔ deepseek-trail preserves every original puzzle and stable ID (0.6875ms)
+✔ reviewed common-word supplement accepts EARS and survives save, hint, and reveal-list round trips (3.300709ms)
+✔ common-word supplement still requires the rack and both gold letters (1.275375ms)
+✔ six different legal words complete Twin Hive; duplicate words cannot inflate progress (0.962834ms)
+✖ both gold letters, rack membership, minimum length and curated membership are enforced (0.531541ms)
+✔ hint identifies one missing word and persists without granting it (0.10675ms)
+✔ solution reveal stays revealed and cannot become a played win (0.067959ms)
+✔ untrusted saved words, duplicate entries and fake counters are rejected or ignored (0.0665ms)
+✔ all prepared daily configurations have enough legal, unique authored solutions (99.584292ms)
+✔ deepseek-twin-hive preserves every original puzzle and stable ID (0.57725ms)
+✔ all prepared lattices have exactly one solution under their displayed clues (17.204583ms)
+✔ unknown, black, and white cycle with working undo and fixed givens (0.174ms)
+✔ every board can be solved through normal cell operations with valid intermediate saves (33.006958ms)
+✔ a full but incorrect grid does not win and contradictory line counts are visible (0.145667ms)
+✔ hints correct a cell, restart retains assistance, reveal is never an unassisted win (0.153208ms)
+✔ restoration rejects altered givens, invalid values, fabricated reveal, and malformed history (0.071708ms)
+✔ qwen-logic-lattice preserves every original puzzle and stable ID (0.625959ms)
+✔ all prepared paths are self-avoiding, orthogonal, 8–14 cells, and never blocked (1.29425ms)
+✔ the full six-second study phase precedes recall and paused time is not wall-clock time (0.1545ms)
+✔ all prepared mazes can be completed and restored through the actual input validator (3.73525ms)
+✔ errors add two seconds but preserve the correct prefix and never make the path unsolvable (0.505583ms)
+✔ a replay preserves progress, pauses recall time, and marks the solve assisted (0.174459ms)
+✔ restoration rejects fabricated progress, phases, timers, and impossible ready states (0.09025ms)
+✔ qwen-memory-maze preserves every original puzzle and stable ID (0.483625ms)
+✔ Expanded Prism rules provide three future states with four unique choices each (11.182208ms)
+✔ Prism mistakes are recoverable and repeated wrong selections do not inflate mistakes (0.149208ms)
+✔ Prism hints are explicit and persisted; malformed solves cannot skip steps (0.438042ms)
+✔ Prism reveal supplies the sequence without recording a normal win (3.233833ms)
+✔ qwen-pattern-prism preserves every original puzzle and stable ID (0.725083ms)
+✔ all prepared category boards use each of their 16 tiles exactly once (8.902167ms)
+✔ the sixteen original Qwen boards and answers remain in order (0.572333ms)
+✔ repeated letters select separate indices and locked tiles cannot be reused (0.137375ms)
+✔ four incorrect submissions end the round, never mark it won (0.148334ms)
+✔ hints are persistent assistance and revealing remains distinct from solving (0.162584ms)
+✔ restoration rejects duplicate, overlapping, terminal-after-terminal, and fabricated assignments (0.12825ms)
+✔ qwen-quadra preserves every original puzzle and stable ID (0.588291ms)
+✔ Expanded Siege schedules contain six solvable waves and only rack-valid authored words (21.341583ms)
+✔ Siege timers wait for Start, pause in practice/assist, and apply real core damage (0.140833ms)
+✔ a final Siege impact at 10 HP remains valid and records a real loss (0.424208ms)
+✔ Siege hints and wrong guesses cannot erase damage or grant duplicate word damage (0.146833ms)
+✔ Siege progressive hints can solve every wave without changing the fixed schedule (3.607125ms)
+✔ Siege save checks reject altered health, impossible wave histories and invalid timers (0.259333ms)
+✔ qwen-syntax-siege preserves every original puzzle and stable ID (0.613625ms)
+✔ all prepared Territory positions have solver-proven captures within two legal moves (478.662042ms)
+✔ Territory boundaries do not add phantom liberties and captures remove whole groups (2.811042ms)
+✔ Territory forbids self-capture that does not capture the enemy (0.184833ms)
+✔ Territory undo and hints recover every legal dead end (8010.483375ms)
+✔ Territory restore replays legal moves and rejects forged captures or reveals (2.685375ms)
+✔ qwen-territory-tactics preserves every original puzzle and stable ID (0.477041ms)
+✔ expanded Territory boards add a genuine smaller capture choice without changing the published thirty (2240.9905ms)
+✔ deepseek-cipher: every previously published record remains exact (70.705542ms)
+✔ deepseek-cipher: at least 200 stored boards with distinct stable IDs (0.79775ms)
+✖ deepseek-rung: every previously published record remains exact (0.595375ms)
+✔ deepseek-rung: at least 200 stored boards with distinct stable IDs (0.685042ms)
+✔ deepseek-spare: every previously published record remains exact (0.201833ms)
+✔ deepseek-spare: at least 200 stored boards with distinct stable IDs (0.748666ms)
+✔ deepseek-split: every previously published record remains exact (0.166917ms)
+✔ deepseek-split: at least 200 stored boards with distinct stable IDs (1.495583ms)
+✔ deepseek-trail: every previously published record remains exact (1.73225ms)
+✔ deepseek-trail: at least 200 stored boards with distinct stable IDs (0.98675ms)
+✔ deepseek-twin-hive: every previously published record remains exact (0.399167ms)
+✔ deepseek-twin-hive: at least 200 stored boards with distinct stable IDs (0.554875ms)
+✔ qwen-logic-lattice: every previously published record remains exact (0.121625ms)
+✔ qwen-logic-lattice: at least 200 stored boards with distinct stable IDs (0.593416ms)
+✔ qwen-memory-maze: every previously published record remains exact (0.423125ms)
+✔ qwen-memory-maze: at least 200 stored boards with distinct stable IDs (0.192917ms)
+✔ qwen-pattern-prism: every previously published record remains exact (2.616791ms)
+✔ qwen-pattern-prism: at least 200 stored boards with distinct stable IDs (0.348334ms)
+✔ qwen-quadra: every previously published record remains exact (0.498042ms)
+✔ qwen-quadra: at least 200 stored boards with distinct stable IDs (0.093834ms)
+✔ qwen-syntax-siege: every previously published record remains exact (0.283833ms)
+✔ qwen-syntax-siege: at least 200 stored boards with distinct stable IDs (0.0425ms)
+✔ qwen-territory-tactics: every previously published record remains exact (0.041125ms)
+✔ qwen-territory-tactics: at least 200 stored boards with distinct stable IDs (0.049167ms)
+✔ deepseek-cipher: at least 200 substantive challenges beyond ID or display permutations (0.449417ms)
+✔ deepseek-rung: at least 200 substantive challenges beyond ID or display permutations (0.18275ms)
+✔ deepseek-spare: at least 200 substantive challenges beyond ID or display permutations (0.966292ms)
+✔ deepseek-split: at least 200 substantive challenges beyond ID or display permutations (0.348292ms)
+✔ deepseek-trail: at least 200 substantive challenges beyond ID or display permutations (0.138834ms)
+✔ deepseek-twin-hive: at least 200 substantive challenges beyond ID or display permutations (2.416125ms)
+✔ qwen-logic-lattice: at least 200 substantive challenges beyond ID or display permutations (4.679292ms)
+✔ qwen-memory-maze: at least 200 substantive challenges beyond ID or display permutations (5.057792ms)
+✔ qwen-pattern-prism: at least 200 substantive challenges beyond ID or display permutations (1.281417ms)
+✔ qwen-quadra: at least 200 substantive challenges beyond ID or display permutations (0.1665ms)
+✔ qwen-syntax-siege: at least 200 substantive challenges beyond ID or display permutations (0.216042ms)
+✔ qwen-territory-tactics: at least 200 substantive challenges beyond ID or display permutations (10.913459ms)
+✔ deepseek-cipher: full-bank assisted play and every intermediate save restore (51.221042ms)
+✔ deepseek-rung: full-bank assisted play and every intermediate save restore (326.370583ms)
+✔ deepseek-spare: full-bank assisted play and every intermediate save restore (8.31725ms)
+✔ deepseek-split: full-bank assisted play and every intermediate save restore (5.141375ms)
+✔ deepseek-trail: full-bank assisted play and every intermediate save restore (3.329084ms)
+✔ deepseek-twin-hive: full-bank assisted play and every intermediate save restore (101.184084ms)
+✔ qwen-logic-lattice: full-bank assisted play and every intermediate save restore (42.642958ms)
+✔ qwen-memory-maze: full-bank assisted play and every intermediate save restore (3.321083ms)
+✔ qwen-pattern-prism: full-bank assisted play and every intermediate save restore (11.20875ms)
+✔ qwen-quadra: full-bank assisted play and every intermediate save restore (8.659ms)
+✔ qwen-syntax-siege: full-bank assisted play and every intermediate save restore (34.453291ms)
+✔ qwen-territory-tactics: full-bank assisted play and every intermediate save restore (861.244333ms)
+ℹ tests 127
+ℹ suites 0
+ℹ pass 123
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10860.594417
+
+✖ failing tests:
+
+test at games/deepseek-rung/engine.test.mjs:34:1
+✖ all prepared ladders have a verified shortest path in the real curated lexicon (3.098292ms)
+  AssertionError [ERR_ASSERTION]: rung-04
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/games/deepseek-rung/engine.test.mjs:37:135)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at games/deepseek-rung/engine.test.mjs:41:1
+✖ deepseek-rung preserves every original puzzle and stable ID (0.62575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'd186747f3b5a7f217445a077c538a59104772ba090dbf8758c7d8b208b069d74'
+  - '6ce5312b5b141c3ee2938546f45c81a50c457ae5984f83ce3d4f5ec27110f3a7'
+
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/games/deepseek-rung/engine.test.mjs:42:9)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'd186747f3b5a7f217445a077c538a59104772ba090dbf8758c7d8b208b069d74',
+    expected: '6ce5312b5b141c3ee2938546f45c81a50c457ae5984f83ce3d4f5ec27110f3a7',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at games/deepseek-twin-hive/engine.test.mjs:36:1
+✖ both gold letters, rack membership, minimum length and curated membership are enforced (0.531541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/games/deepseek-twin-hive/engine.test.mjs:37:59)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/imported-six-month.test.mjs:22:2
+✖ deepseek-rung: every previously published record remains exact (0.595375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'cd2427b9981b32e5372583afa037a2b1988f369b7e1aaaf7db06f624b0d9d6c3'
+  - 'c168e571df60553709ffa6869911862e073301547a156c52c83779c113d2186c'
+
+      at TestContext.<anonymous> (file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/imported-six-month.test.mjs:22:77)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'cd2427b9981b32e5372583afa037a2b1988f369b7e1aaaf7db06f624b0d9d6c3',
+    expected: 'c168e571df60553709ffa6869911862e073301547a156c52c83779c113d2186c',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,15 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: deepseek-twin-hive 393: readable intro, got 13px
+    at file:///Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101/scripts/MAKER-Codex__dq-browser.mjs:19:11 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.11.0

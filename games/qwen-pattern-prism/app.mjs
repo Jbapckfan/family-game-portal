@@ -13,7 +13,8 @@ function token(t,number,extra='') {
   return `<div class="prism-token ${extra}" role="img" aria-label="Element ${number}: ${esc(label(t))}"><span class="prism-number">${number}</span>${symbol(t)}<span class="prism-caption">${esc(cap(t.shape))}<br>${esc(cap(t.color))} · ${t.size?'large':'small'}<br><b>${ARROWS[t.rotation]} ${E.DIRECTIONS[t.rotation]}</b></span></div>`;
 }
 mountDailyGame({
-  id:'qwen-pattern-prism',name:'Pattern Prism',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#8c4a90',
+ assistanceCount:(p,s)=>s.hints.reduce((a,b)=>a+b,0),
+  id:'qwen-pattern-prism',name:'Pattern Prism',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
   intro:'Follow the shape. Find the rhythm. See what comes next.',
   instructions:[
     'Study the five examples in order. Shape, color, size, and direction each follow a repeating cycle of at most four elements; some attributes stay the same.',

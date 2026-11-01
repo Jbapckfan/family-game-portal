@@ -1,3 +1,9 @@
+import {WORDS_BY_RACK} from './word-acceptance.mjs';
+const acceptanceCache=new WeakMap();
+export function acceptedWords(w){
+ if(!acceptanceCache.has(w))acceptanceCache.set(w,Object.freeze([...new Set([...w.words,...(WORDS_BY_RACK[[...w.rack].sort().join('')]||[])])]));
+ return acceptanceCache.get(w);
+}
 const count = (n, max=100000) => Number.isInteger(n) && n >= 0 && n <= max;
 export const health = s => Math.max(0, 100 - s.misses * 10 - s.timeouts * 20);
 export const waveDamage = (s, wave) => s.played[wave].reduce((total, word) => total + word.length * 10, 0);
@@ -17,7 +23,7 @@ export function restoreState(p,raw) {
   let unfinished=false;
   for(let i=0;i<p.waves.length;i++){
     const w=p.waves[i],words=raw.played[i];
-    if(!Array.isArray(words)||words.length>6||new Set(words).size!==words.length||words.some(word=>!w.words.includes(word)||!canSpell(w,word)))return null;
+    if(!Array.isArray(words)||words.length>6||new Set(words).size!==words.length||words.some(word=>!acceptedWords(w).includes(word)||!canSpell(w,word)))return null;
     if(unfinished&&words.length)return null;
     if(words.slice(0,-1).reduce((sum,word)=>sum+word.length*10,0)>=w.health)return null;
     if(words.reduce((sum,word)=>sum+word.length*10,0)<w.health)unfinished=true;
@@ -44,7 +50,7 @@ export function submit(p,s) {
   const index=waveIndex(p,s),w=p.waves[index],word=currentWord(p,s);
   if(word.length<3)return {state:s,message:'Use at least three letters to fire a word.'};
   if(s.played[index].includes(word))return {state:{...s,selected:[]},message:'That word already hit this wave. Find a different one.'};
-  if(!w.words.includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'Not in this wave’s word list. The core takes 10 damage.'};
+  if(!acceptedWords(w).includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'Not in the pinned dictionary for this rack. The core takes 10 damage.'};
   const played=s.played.map(words=>[...words]);played[index].push(word);
   let state={...s,played,selected:[]};
   const cleared=waveDamage(state,index)>=w.health;

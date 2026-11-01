@@ -4,7 +4,8 @@ import {createState,restoreState,getStatus,startStudy,chooseCell,tick,hint,revea
 let lastRound='',lastPhase='';
 
 mountDailyGame({
- id:'qwen-memory-maze',name:'Memory Maze',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#405caa',
+ assistanceCount:(p,s)=>s.replays,
+ id:'qwen-memory-maze',name:'Memory Maze',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
  intro:'See the route. Hold it in your mind. Bring it back, one square at a time.',
  instructions:[
   'Choose Study the route. A numbered path appears for six seconds on the 7 × 7 grid. Remember the order, including every turn.',

@@ -3,7 +3,8 @@ import { PUZZLES } from './puzzles.mjs';
 import * as E from './engine.mjs';
 
 mountDailyGame({
-  id: 'deepseek-cipher', name: 'Cipher', accent:'#6c4bb3',
+ assistanceCount:(p,s)=>s.hints,
+  id: 'deepseek-cipher', name: 'Cipher', accent:'#087c99',
   intro: 'One hidden phrase. Every letter has a double life.',
   instructions: [
     'Each coded letter stands for one different letter. The same code always has the same answer throughout the phrase.',
@@ -27,12 +28,13 @@ mountDailyGame({
       <p class="clue">${esc(p.clue)}</p>
       <div class="cipher-phrase" aria-label="Encoded phrase">${phrase}</div>
       <p class="muted cipher-caption">${p.givens.length} given letters · ${s.hints} hint${s.hints === 1 ? '' : 's'} used</p>
-      ${finished ? `<p class="cipher-answer">${esc(p.phrase)}</p>` : `<p class="status-note">Selected code: <strong>${esc(s.selected || '—')}</strong>${s.selected ? ` → ${esc(s.guesses[s.selected] || '?')}` : ''}</p>`}
+      ${finished ? `<p class="cipher-answer">${esc(p.phrase)}</p>` : ''}
+      <div class="cipher-controls" ${finished?'hidden':''}><p class="status-note" id="cipher-selected">Selected code: <strong>${esc(s.selected || '—')}</strong>${s.selected ? ` → ${esc(s.guesses[s.selected] || '?')}` : ''}</p>
       <div class="cipher-keyboard" role="group" aria-label="Answer alphabet">
         ${[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(letter => `<button type="button" class="button cipher-key ${assigned[letter] ? 'assigned' : ''}" data-letter="${letter}" aria-label="Answer letter ${letter}${assigned[letter]?`, assigned to code ${assigned[letter]}${s.locked.includes(assigned[letter])?', confirmed':', unconfirmed guess'}`:', available'}" ${finished ? 'disabled' : ''}>${letter}</button>`).join('')}
       </div>
       <div class="actions"><button type="button" class="button" data-action="erase" ${finished ? 'disabled' : ''}>Erase guess</button><button type="button" class="button" data-action="clear" ${finished ? 'disabled' : ''}>Clear guesses</button></div>
-      <p class="muted">Confirmed letters stay put. The other letters are yours to work out.</p>
+      </div><p class="muted">Confirmed letters stay put. The other letters are yours to work out.</p>
     </section>`;
     const keepFocus = () => { if(root.querySelector('button:not(:disabled)'))root.focus({ preventScroll: true }); };
     const enter = letter => {

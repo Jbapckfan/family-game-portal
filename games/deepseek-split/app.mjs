@@ -2,7 +2,8 @@ import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mj
 import { PUZZLES } from './puzzles.mjs';
 import * as E from './engine.mjs';
 mountDailyGame({
-  id: 'deepseek-split', name: 'Split', accent:'#b54f40',
+ assistanceCount:(p,s)=>s.hints,
+  id: 'deepseek-split', name: 'Split', accent:'#087c99',
   intro: 'Ten letters. Two clues. A perfect split.',
   instructions: [
     'Use every tile exactly once to make two words that answer the two clues.',

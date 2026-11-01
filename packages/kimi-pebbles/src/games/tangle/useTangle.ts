@@ -5,10 +5,10 @@ import { loadDayProgress, loadGameStats, saveDayProgress, saveGameStats, type Ga
 import { todayDayNumber } from '../shared/share'
 import { sfx } from '../shared/sound'
 import { isPremium } from '../shared/premium'
-import { restoreTangleProgress, reconcileTangleCompletion, type TangleProgress } from './progress'
-import { TANGLE_FIVE_PREVIEW, FIVE_PREVIEW_KEY, restoreFivePreview } from './five-preview'
+import { restoreTangleProgress, reconcileTangleCompletion, unsupportedTangleVocabulary, tangleVocabulary, type TangleProgress, type TangleVocabulary } from './progress'
+import { FIVE_PREVIEW_KEY, fivePreviewRound } from './five-preview'
 
-export type TanglePhase = 'loading' | 'playing'
+export type TanglePhase = 'loading' | 'playing' | 'unavailable'
 export type TangleMode = 'daily' | 'practice'
 
 export interface TangleToast {
@@ -19,6 +19,7 @@ export interface TangleToast {
 
 export interface TangleState {
   phase: TanglePhase
+  vocabulary?: TangleVocabulary
   mode: TangleMode
   puzzle: TanglePuzzle | null
   puzzleNo: number
@@ -63,6 +64,7 @@ export function useTangle() {
   const ref = useRef(s)
   ref.current = s
   const toastId = useRef(0)
+  const replacePreviewSave = useRef(false)
 
   const makeToast = useCallback((msg: string, kind: TangleToast['kind'] = 'info'): TangleToast => {
     toastId.current += 1
@@ -76,7 +78,7 @@ export function useTangle() {
   const startDaily = useCallback(() => {
     const day = todayDayNumber()
     const raw = loadDayProgress<unknown>('tangle', day)
-    const { puzzle, puzzleNo } = dailyTangle(day, raw)
+    const { puzzle, puzzleNo, vocabulary, unsupported } = dailyTangle(day, raw)
     const saved = restoreTangleProgress(raw, puzzle)
     const previousStats = loadGameStats('tangle')
     const stats = reconcileTangleCompletion(previousStats, saved, day)
@@ -87,8 +89,9 @@ export function useTangle() {
     dailySession.acknowledge(day)
     setS((prev) => ({
       ...prev,
-      phase: 'playing',
+      phase: unsupported ? 'unavailable' : 'playing',
       mode: 'daily',
+      vocabulary,
       puzzle,
       puzzleNo,
       dayNumber: day,
@@ -106,7 +109,7 @@ export function useTangle() {
     }))
   }, [])
 
-  dailySession.configure(() => ref.current, (raw) => ref.current.puzzle &&
+  dailySession.configure(() => ref.current, (raw) => unsupportedTangleVocabulary(raw) ? {unsupported:true} : ref.current.puzzle &&
     restoreTangleProgress(raw, dailyTangle(ref.current.dayNumber, raw).puzzle), startDaily)
 
   useEffect(() => {
@@ -115,10 +118,11 @@ export function useTangle() {
   }, [startDaily])
 
   useEffect(() => {
-    if (s.mode !== 'daily' || s.phase === 'loading' || !s.puzzle || s.dayNumber === 0) return
+    if (s.mode !== 'daily' || s.phase !== 'playing' || !s.puzzle || s.dayNumber === 0) return
     dailySession.commit(() => {
       const saved = loadDayProgress<TangleProgress>('tangle', s.dayNumber)
       saveDayProgress('tangle', s.dayNumber, {
+        vocabulary: s.vocabulary,
         found: s.found,
         score: s.score,
         misses: s.misses,
@@ -129,13 +133,20 @@ export function useTangle() {
       } satisfies TangleProgress)
       saveGameStats('tangle', s.stats)
     })
-  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.found, s.score, s.misses, s.hintsUsed, s.hintPrefix, s.goldReached])
+  }, [s.mode, s.phase, s.puzzle, s.dayNumber, s.vocabulary, s.found, s.score, s.misses, s.hintsUsed, s.hintPrefix, s.goldReached])
 
   useEffect(() => {
     if(s.mode!=='practice'||s.phase!=='playing'||s.puzzle?.g.length!==25)return
-    try { sessionStorage.setItem(FIVE_PREVIEW_KEY,JSON.stringify({grid:s.puzzle.g,found:s.found,misses:s.misses,hintsUsed:s.hintsUsed,hintPrefix:s.hintPrefix,countedPlayed:false})) }
+    let existing:unknown
+    try { existing=JSON.parse(sessionStorage.getItem(FIVE_PREVIEW_KEY)||'null') } catch { /* malformed/unavailable sample save */ }
+    if(!replacePreviewSave.current&&(unsupportedTangleVocabulary(existing)||tangleVocabulary(existing)===1)){
+      setS(prev=>({...prev,phase:'unavailable',path:[],toast:null}))
+      return
+    }
+    try { sessionStorage.setItem(FIVE_PREVIEW_KEY,JSON.stringify({grid:s.puzzle.g,vocabulary:s.vocabulary,found:s.found,misses:s.misses,hintsUsed:s.hintsUsed,hintPrefix:s.hintPrefix,countedPlayed:false})) }
     catch { /* Storage unavailable: the sample remains playable in memory. */ }
-  },[s.mode,s.phase,s.puzzle,s.found,s.misses,s.hintsUsed,s.hintPrefix])
+    finally { replacePreviewSave.current=false }
+  },[s.mode,s.phase,s.puzzle,s.vocabulary,s.found,s.misses,s.hintsUsed,s.hintPrefix])
 
   useEffect(() => {
     const onVis = () => {
@@ -164,6 +175,7 @@ export function useTangle() {
     const stats = { ...prev.stats, played: prev.stats.played + 1 }
     dailySession.commit(() => {
       saveDayProgress('tangle', prev.dayNumber, {
+        vocabulary: prev.vocabulary,
         found: prev.found,
         score: prev.score,
         misses: prev.misses,
@@ -272,11 +284,12 @@ export function useTangle() {
 
   const startPractice = useCallback(() => {
     const cur = ref.current
-    const { puzzle, puzzleNo } = practiceTangle(cur.mode === 'daily' ? cur.puzzleNo - 1 : -1)
+    const { puzzle, puzzleNo, vocabulary } = practiceTangle(cur.mode === 'daily' ? cur.puzzleNo - 1 : -1)
     setS((prev) => ({
       ...prev,
       mode: 'practice',
       phase: 'playing',
+      vocabulary,
       puzzle,
       puzzleNo,
       path: [],
@@ -295,9 +308,11 @@ export function useTangle() {
   const exitPractice = useCallback(() => startDaily(), [startDaily])
 
   const startFivePreview = useCallback((fresh=false) => {
-    let saved:TangleProgress|null=null
-    if(!fresh)try { saved=restoreFivePreview(JSON.parse(sessionStorage.getItem(FIVE_PREVIEW_KEY)||'null')) } catch { /* invalid/unavailable sample save */ }
-    setS(prev => ({...prev, mode:'practice', phase:'playing', puzzle:TANGLE_FIVE_PREVIEW, puzzleNo:1,
+    replacePreviewSave.current=fresh
+    let raw:unknown
+    if(!fresh)try { raw=JSON.parse(sessionStorage.getItem(FIVE_PREVIEW_KEY)||'null') } catch { /* invalid/unavailable sample save */ }
+    const {puzzle,progress:saved,vocabulary,unsupported}=fivePreviewRound(raw)
+    setS(prev => ({...prev, mode:'practice', phase:unsupported?'unavailable':'playing', puzzle, vocabulary, puzzleNo:1,
       path:[],found:saved?.found??[],score:saved?.score??0,misses:saved?.misses??0,hintsUsed:saved?.hintsUsed??0,hintPrefix:saved?.hintPrefix??null,goldReached:saved?.goldReached??false,
       winShownOnce:false,toast:null,shaking:false}))
   }, [])

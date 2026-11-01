@@ -7,6 +7,7 @@ Launch the verified build after the checks below have evidence, owners and a rel
 | Gate | Required evidence | Current action |
 |---|---|---|
 | Game choice | James's keeper/replacement verdicts and unranked games clearly distinguished | Finish the remaining-game pass, then resume individual reviews |
+| Quartet differentiation | A substantive gameplay distinction from Connections, followed by another playtest | Unresolved: James enjoyed it, but the current grouping loop is too similar; see [comparison](../../game-reviews/quartet/ORIGINALITY-2026-11-01.md) |
 | Acceptable words | Full pinned-source coverage for each open-word mechanic; rejected everyday-word regressions; separate fixed-clue constraints | Current dictionary repairs and independent all-bank oracles |
 | Fair puzzles | A playable witness for every bank entry; unique/deliberate solutions where required; precise semantic labels | Agent engine/data audits plus human editorial review |
 | Freshness | Actual Daily selectors produce distinct substantive challenges for the next six months from release; unchanged history | Rerun the calendar/fingerprint audit against the final release date |

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-01",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch and Circuit are keepers; Ringcount and Sideways are replacement candidates. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch and Circuit are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate.",
   "games": [
     {
       "slug": "ringcount",
@@ -1258,17 +1258,34 @@
       "name": "Quartet",
       "creator": "Kimi",
       "reviewOrder": 14,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-01",
+            "quote": "fun game, make sure it's not an exact copy of another game, then go next",
+            "interpretation": "Enjoyed Quartet; requests an originality check and moving on. No numerical rating, relative rank or explicit replay answer supplied."
+          }
+        ],
+        "enjoymentReaction": "fun"
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "quartet/ORIGINALITY-2026-11-01.md"
+      ],
+      "nextStep": "Resume individual review with Twin Hive. Before launching Quartet, revise and review its core gameplay distinction from Connections; styling and the pair hint alone are insufficient.",
+      "dispositionBasis": "Positive fun feedback recorded separately from unresolved gameplay differentiation. No removal or numerical ranking inferred.",
+      "originalityReview": {
+        "status": "gameplay_revision_required_before_launch",
+        "closestComparison": "NYT Connections",
+        "finding": "Same central 16-word, four-groups-of-four structure, four-miss limit and tiered group reveals. Pair hints, practice and styling do not establish a distinctive core loop.",
+        "limitations": "Focused product comparison, not exhaustive prior-art, code or puzzle-corpus comparison; no legal clearance or independent authorship certification.",
+        "report": "quartet/ORIGINALITY-2026-11-01.md"
+      }
     },
     {
       "slug": "deepseek-twin-hive",

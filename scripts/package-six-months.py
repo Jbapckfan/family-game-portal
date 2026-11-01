@@ -5,11 +5,13 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def digest(data):return hashlib.sha256(data).hexdigest()
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--stage',required=True,type=Path);p.add_argument('--output',required=True,type=Path);p.add_argument('--commit',required=True);args=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--stage',required=True,type=Path);p.add_argument('--output',required=True,type=Path);p.add_argument('--commit',required=True);p.add_argument('--runway',type=Path,default=ROOT/'docs/six-month-runway-2026-11-01.json');args=p.parse_args()
  stage=args.stage.resolve();out=args.output.resolve()
  if out.exists():raise ValueError('Refusing to replace an existing archive')
  commit=subprocess.check_output(['git','rev-parse',args.commit],cwd=ROOT,text=True).strip()
- inv=json.loads((stage/'release.json').read_text());manifest=json.loads((stage/'playtest-build.json').read_text())
+ inv=json.loads((stage/'release.json').read_text());manifest=json.loads((stage/'playtest-build.json').read_text());runway=json.loads(args.runway.read_text())
+ assert runway['passed'] and runway['gameCount']==32 and runway['days']>=182 and runway['allActualSelectorsExecuted']
+ assert {g['slug'] for g in runway['games']}=={g['slug'] for g in inv['games']}
  assert inv['gameCount']==32 and inv['minimumPerGame']>=200
  for asset in manifest['assets']:
   f=stage/asset['url'];assert f.is_file() and not f.is_symlink() and digest(f.read_bytes())==asset['sha256'],asset['url']
@@ -29,7 +31,7 @@ def main():
  readme=f'''Alford Daily — verified six-month build
 
 32 daily games + nine-board Tic-Tac-Toe bonus.
-182 distinct daily challenge configurations per game: October29–April28,2027.
+{runway['days']} distinct daily challenge configurations per game: {runway['start']} through {runway['end']}.
 {inv['totalPuzzles']:,} stored puzzle records; at least200 eligible distinct challenges per daily game.
 Some word games reuse vocabulary, clues, or component puzzles in different combinations.
 
@@ -41,13 +43,13 @@ On James's managed Macs, select the registered project port with local-projects 
 do not use port8765 (Live TV). No hosting or access-control changes were made by this package.
 Keep the same browser and origin for saved games. The isolated preview has separate saves.
 
-Read source/docs/SIX-MONTH-VERIFICATION.md for per-game evidence and review limitations.
+Read source/docs/reviews/REMAINING-GAMES-2026-11-01.md for current evidence and review limitations.
 The three model reviews are static code reviews; author-run tests and real browser
 playthroughs are separately recorded. Physical iPhone and human editorial testing remain open.
 
 source/ contains the scoped game project, including the native iOS source and offline assets.
-A previous unsigned iPhone build compiled successfully. This archive synchronizes the
-updated offline Web assets; it does not certify a fresh native build or device installation.
+The offline Web assets match the website sources. The current verification report
+records the unsigned native build; this archive does not represent device installation.
 Source commit: {commit}
 Web build ID: {manifest['buildId']}
 No public deployment is represented by this archive.

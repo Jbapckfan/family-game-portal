@@ -1,5 +1,6 @@
 # DeepSeek and Qwen preparation for individual review
 
+**Historical isolated-worker checkpoint.** Final integrated source counts, subsequent review fixes and web/native/offline verification are in [the November 1 collection report](../../reviews/REMAINING-GAMES-2026-11-01.md). The initial 409,097-word figures and pre-fix behavior below are retained as provenance.
 November 1, 2026. Isolated worktree: `/Users/jamesalford/Projects/MAKER-codex__remaining-dq-20261101`; branch `codex/remaining-dq-20261101`. No shared home/catalog/calendar, native bundle, deployment, or personal browser state was changed. This is a substantiated repair and review-preparation pass, not a rating of enjoyment or a claim of perfection.
 
 ## Reproduced issues and changes

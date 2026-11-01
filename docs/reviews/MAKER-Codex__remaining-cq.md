@@ -1,5 +1,6 @@
 # Six Claude games and Quartet: construction rules and presentation
 
+**Historical isolated-worker checkpoint.** Final integrated source counts, subsequent review fixes and web/native/offline verification are in [the November 1 collection report](REMAINING-GAMES-2026-11-01.md). The initial 409,097-word figures and pre-fix behavior below are retained as provenance.
 Maker: Codex. November 1, 2026. Isolated branch `codex/remaining-cq-20261101`, based on `67886a6`. This is a source integration checkpoint, with shared staging, native parity, central calendar protection and the model panel owned by root.
 
 All 2,067 Claude records and 420 Quartet records retain their original puzzle IDs, targets, ordering and bank bytes. Every actual selector returns 182 distinct challenges from November 1 through May 1 inclusive: 1,274 dated selections. The old shared Practice protection ends April 28; root owns extending its reservations through May 1 without changing selections during integration. This worktree does not contain that shared change. Freshness means distinct whole challenges, with reused vocabulary/categories/arches where documented; it is not 182 human-authored ideas.

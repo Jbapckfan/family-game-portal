@@ -2,7 +2,7 @@
 
 Prepare a free daily puzzle collection for the website and iPhone, with restrained advertising and an optional one-time ad-free purchase. Keep the complete beta available while James identifies the games he most wants to play again. This updates the earlier paid-collection strategy for his November 1 request; the prices and offers below are proposals to test.
 
-The current production lineup has 32 daily games. Ten new prototypes are being developed separately as replacement candidates. James's keeper list and exact comments remain in [the ranking](../../game-reviews/RANKING.md); only he assigns enjoyment ratings.
+The current production lineup has 32 daily games. Ten playable prototypes are available separately as replacement candidates. James's keeper list and exact comments remain in [the ranking](../../game-reviews/RANKING.md); only he assigns enjoyment ratings.
 
 ## Recommended offer
 

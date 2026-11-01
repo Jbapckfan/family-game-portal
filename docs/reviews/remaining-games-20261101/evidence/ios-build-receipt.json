@@ -1,0 +1,8 @@
+{
+  "command": "DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project ios/AlfordDaily.xcodeproj -scheme AlfordDaily -configuration Release -destination generic/platform=iOS -derivedDataPath output/remaining-games-20261101/DerivedData CODE_SIGNING_ALLOWED=NO build",
+  "fullLogLocalPath": "/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/output/remaining-games-20261101/ios-build-final.log",
+  "logSHA256": "f844cf8e6df47d99cba5ac351167af79ee7a900d95eb53b218b0cc630afee88d",
+  "buildSucceeded": true,
+  "deviceInstall": false,
+  "warnings": []
+}

@@ -105,7 +105,15 @@ export function findRoute(start,target){
  return null;
 }
 const shortestCache=new Map();
-export function shortestSteps(p){const key=p.start+':'+p.target;if(!shortestCache.has(key))shortestCache.set(key,(findRoute(p.start,p.target)?.length||1)-1);return shortestCache.get(key);}
+export function shortestSteps(p){
+ const key=p.start+':'+p.target;
+ if(!shortestCache.has(key)){
+  const route=findRoute(p.start,p.target);
+  if(route===null)throw new RangeError('No route exists between these four-letter words.');
+  shortestCache.set(key,route.length-1);
+ }
+ return shortestCache.get(key);
+}
 export const createState=p=>({chain:[p.start],hintWord:null,hints:0,revealed:false});
 export function getStatus(p,s){return s.revealed?'revealed':s.chain.at(-1)===p.target?'won':'playing';}
 export function submitWord(p,s,input){

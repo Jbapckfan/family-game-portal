@@ -8,7 +8,7 @@ const root=path.resolve(import.meta.dirname,'..'),out=path.resolve(process.env.D
 await mkdir(out,{recursive:true});
 const pw=await import(pathToFileURL(process.env.DAILY_PLAYWRIGHT_MODULE||'/Users/jamesalford/.npm/_npx/31e32ef8478fbf80/node_modules/playwright/index.mjs').href),rows=[];
 const group=slug=>slug.startsWith('kimi-')?'kimi':slug.startsWith('qwen-')?'qwen':slug.startsWith('deepseek-')||slug.startsWith('claude-')?'deepseek-claude':'originals';
-const selected=[...GAMES,...BONUS_GAMES].filter(game=>!process.env.GROUPS||process.env.GROUPS.split(',').includes(group(game.slug)));
+const selected=[...GAMES,...BONUS_GAMES].filter(game=>(!process.env.GROUPS||process.env.GROUPS.split(',').includes(group(game.slug)))&&(!process.env.GAME_SLUGS||process.env.GAME_SLUGS.split(',').includes(game.slug)));
 const newContent=process.env.DAILY_QA_MODE==='new-content';
 const runway=newContent?JSON.parse(await readFile(path.join(root,'docs/six-month-runway.json'),'utf8')):null;
 const previous=newContent?JSON.parse(await readFile(path.join(root,'docs/six-month-previous-calendar.json'),'utf8')):null;

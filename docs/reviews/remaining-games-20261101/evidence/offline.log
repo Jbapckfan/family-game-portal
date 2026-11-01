@@ -1,0 +1,13 @@
+[
+  "Interrupted first download never claims readiness",
+  "All byte-verified assets downloaded through real service worker",
+  "Lost-cache retry rejects changed network bytes and never claims readiness",
+  "Real active worker repairs a lost entry using verified same-edition bytes",
+  "Cold offline home launch with all network routes removed",
+  "All 32 actual daily game pages boot with browser offline and no test routing",
+  "Bonus boots, completes a human/AI turn and restores the match offline",
+  "Real scan and unfinished save survive offline reload",
+  "Offline Central date advances while prior saves stay intact",
+  "Update waits without replacing the active edition or open game",
+  "Closing tabs activates next edition, retires only own old cache, preserves saves"
+]

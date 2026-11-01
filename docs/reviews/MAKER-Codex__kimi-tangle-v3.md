@@ -1,5 +1,6 @@
 # Kimi Tangle v3 dictionary transition
 
+**Historical isolated-worker checkpoint.** Final integrated source counts, subsequent review fixes and web/native/offline verification are in [the November 1 collection report](REMAINING-GAMES-2026-11-01.md). The initial 409,097-word figures and pre-fix behavior below are retained as provenance.
 Maker: Codex. November 1, 2026. This is a separate compatibility checkpoint atop `de120622096cb7547887110f5a59d266c9b79156`. It does not regenerate dictionary data or modify root's source parsing, shared dictionary, calendars, compiled runtime or native resources.
 
 ## Frozen source contract

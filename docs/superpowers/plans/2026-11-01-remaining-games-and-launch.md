@@ -35,13 +35,13 @@
 - [x] Delegate Claude six plus Quartet audit into `MAKER-codex__remaining-cq-20261101`; no shared build output.
 - [x] Fix Circuit full-source coverage; independently check all 286 rings, save restoration and real MORN/NICE submission. Keep targets honest.
 - [x] Add four arc bands and explicit letter membership. After James's spacing feedback, make the sections join with consistent narrow dividers. Verify geometry, phone layout and real tap input.
-- [ ] Review and integrate each agent's source patch; preserve both failed and successful verification evidence and static review findings.
-- [ ] Rebuild Kimi runtime, sync native web payload with recovery copy, stage a fresh portable website and verify hashes/file sets.
-- [ ] Run affected engine suites, whole-catalog checks, six-month freshness checks, Chrome/WebKit flows and offline boot/restore checks. Record physical-device and editorial limits separately.
-- [ ] Obtain actual Kimi, Gemini and Opus static reviews of the final scoped changes using existing subscription CLIs; adjudicate concrete findings. Free DeepSeek only if an already authorized working route is available; never substitute a model and label it DeepSeek.
-- [ ] Complete `docs/launch/2026-11-01/` with a current monetization comparison, editable economics, store copy, screenshot briefs, social/editorial calendar, support/privacy preparation and release gates.
-- [ ] Open a finished launch preview in the owned browser after review, without disturbing James's active Circuit progress. Candidate gallery uses the second tab only when ready.
-- [ ] Update ranking with James's exact Circuit feedback while leaving its fun verdict pending. Preserve candidate evaluations outside the production ranking.
+- [x] Review and integrate each agent's source patch; preserve both failed and successful verification evidence and static review findings.
+- [x] Rebuild Kimi runtime, sync native web payload with recovery copy, stage a fresh portable website and verify hashes/file sets.
+- [x] Run affected engine suites, whole-catalog checks, six-month freshness checks, Chrome/WebKit flows and offline boot/restore checks. Record physical-device and editorial limits separately.
+- [x] Obtain actual Kimi, Gemini and Opus static reviews of the final scoped changes using existing subscription CLIs; adjudicate concrete findings. Free DeepSeek only if an already authorized working route is available; never substitute a model and label it DeepSeek.
+- [x] Complete `docs/launch/2026-11-01/` with a current monetization comparison, editable economics, store copy, screenshot briefs, social/editorial calendar, support/privacy preparation and release gates.
+- [x] Open a finished launch preview in the owned browser after review, without disturbing James's active Circuit progress. Candidate gallery uses the second tab only when ready.
+- [x] Update ranking with James's exact Circuit feedback with its explicit keeper verdict. Preserve candidate evaluations outside the production ranking.
 - [ ] Commit/push the feature branch, verify remote SHA, package verified build and receipts, then report concrete artifacts and remaining release decisions.
 
 ## Verification commands

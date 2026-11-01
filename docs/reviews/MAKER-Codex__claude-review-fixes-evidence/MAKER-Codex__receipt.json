@@ -1,0 +1,62 @@
+{
+  "baselineCommit": "0deb0ea",
+  "vocabularySourceUnion": 410592,
+  "qaInputSource": "Current root generated files copied into isolated worktree; data copies intentionally uncommitted.",
+  "files": [
+    {
+      "file": "games/claude-tangle/vocabulary.mjs",
+      "bytes": 181864,
+      "sha256": "1c9667529abeecfcb71175f48dd4f761be20e4e97939ec988909fcb27cdeac4c",
+      "qaInputOnlyNotCommitted": true
+    },
+    {
+      "file": "games/claude-keystone/vocabulary.mjs",
+      "bytes": 2854935,
+      "sha256": "6d9d3e7f032d0c88de6fa79e7fce56ccfd043abfd4bca3bef2137cfeca9c1e5f",
+      "qaInputOnlyNotCommitted": true
+    },
+    {
+      "file": "games/claude-splice/vocabulary.mjs",
+      "bytes": 56759,
+      "sha256": "4f01bb5a77ff2e7be498419c2111edd824a6e3697308a643c28688fd12c9b96b",
+      "qaInputOnlyNotCommitted": true
+    }
+  ],
+  "diagnostics": [
+    {
+      "uniqueArches": 174,
+      "acceptedAnswers": 308,
+      "directedDifferences": 62,
+      "directionKeyCollisions": 0
+    },
+    {
+      "bins": 202,
+      "reachableTileSets": 34892,
+      "disjointTransitions": 88646,
+      "staleHintsCleared": 2815,
+      "staleExample": {
+        "id": "splice-1",
+        "previousAttempts": [],
+        "pendingHint": [
+          0,
+          1
+        ],
+        "acceptedPair": [
+          2,
+          7
+        ]
+      }
+    },
+    {
+      "banks": 200,
+      "paths": 29346,
+      "safe": 1135,
+      "freeCopies": 739,
+      "traps": 27472
+    }
+  ],
+  "testCommand": "NODE_PATH=/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/packages/kimi-pebbles/node_modules node --test games/claude-{tangle,keystone,splice}/engine.test.mjs scripts/MAKER-Codex__claude-review-fixes.test.mjs scripts/MAKER-Codex__remaining-cq.test.mjs",
+  "tests": 45,
+  "failures": 0,
+  "skips": 0
+}

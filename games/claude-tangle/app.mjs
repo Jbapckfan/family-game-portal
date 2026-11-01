@@ -10,7 +10,7 @@ mountDailyGame({
   'These are the rules for new rounds. A restored saved round keeps its earlier word rules; new Practice rounds use the expanded game dictionary.',
   'New rounds accept any three valid words with the displayed thread lengths that use every bead. Each word reads left to right by bead number. Saved classic rounds keep their original three threads.',
   'Tap the beads of a word in any order. Your selection is always read from left to right through the numbered beads, then continues on the next row.',
-  'A valid word ties one knot if those bead copies leave no complete partition for the remaining threads. Its beads stay available. Words outside the game dictionary, wrong lengths and repeated failed words cost nothing.',
+  'A valid word ties one knot only when none of its available bead placements leaves a complete partition. If other copies work, try those letters again with no knot. Its beads stay available. Words outside the game dictionary, wrong lengths and repeated failed words cost nothing.',
   'Four knots end the round. A loose-end hint marks the starting bead of one possible longest remaining thread and costs one knot. Repeating the same hint costs nothing.',
   'Duplicate letters are separate beads. Undo pull and Restart beads restore accepted pulls while keeping all knots and hints. In a saved classic round, a recovery hint can undo a blocked pull without another knot.',
   'Backspace removes the last selected bead; Enter pulls your word; Escape clears it. You can also type letters to choose the next matching bead, or use Tab and Space for a specific copy.'

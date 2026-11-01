@@ -88,11 +88,17 @@ export function submit(p,s){
   const listed=s.vocabulary===2?dictionaryPath(p,indices):WORDS.has(word);
   const viable=s.vocabulary===2&&slot!==undefined&&listed?wordPartition(p,{pulls:[...v.pulls,{target:slot,indices}],removed:[...v.removed,...indices]}):null;
   const target=s.vocabulary===2?(viable?slot:undefined):slot;
+  // A word is not a trap merely because duplicate-letter copies were chosen
+  // badly. Leave the selection in place so the player can choose the copies;
+  // older saved knot events still replay under their original per-path rule.
+  if(s.vocabulary===2&&target===undefined&&listed&&slot!==undefined&&findWordPaths(p.s,word).some(path=>
+    path.every(i=>!v.removed.includes(i))&&dictionaryPath(p,path)&&wordPartition(p,{pulls:[...v.pulls,{target:slot,indices:path}],removed:[...v.removed,...path]})
+  ))return {state:s,message:`${word.toUpperCase()} fits with other copies of its letters. Try other copies. No knot.`};
   if(target===undefined&&v.tried.includes(word))return {state:s,message:'Already tried that word. No extra knot.'};
   if(target===undefined&&!listed)return {state:{...s,selected:[]},message:'Not in the game dictionary. No knot.'};
   const event={type:target===undefined?'knot':'pull',indices:[...s.selected].sort((a,b)=>a-b)};
   const next={...s,events:[...s.events,event],selected:[]};
-  return {state:next,message:target===undefined?(s.vocabulary===2?`${word.toUpperCase()} is a valid word, but these beads strand the remaining threads. One knot; all beads stay available.`:`${word.toUpperCase()} is a word, but not one of these threads. One knot.`):getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
+  return {state:next,message:target===undefined?(s.vocabulary===2?`${word.toUpperCase()} is a valid word, but no available placement leaves a complete set of threads. One knot; all beads stay available.`:`${word.toUpperCase()} is a word, but not one of these threads. One knot.`):getStatus(p,next)==='won'?'Every thread pulled clean.':allocation(p,view(p,next))?`${word.toUpperCase()} pulled. Follow the remaining threads.`:`${word.toUpperCase()} pulled, but these copies block another thread. Undo pull to choose different beads.`};
 }
 export function undoPull(p,s){return getStatus(p,s)==='playing'&&view(p,s).pulls.length?{...s,events:[...s.events,{type:'undo'}],selected:[]}:s;}
 export function restart(p,s){if(getStatus(p,s)!=='playing')return s;return view(p,s).pulls.length?{...s,events:[...s.events,{type:'restart'}],selected:[]}:clear(p,s);}

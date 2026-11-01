@@ -1,0 +1,56 @@
+✔ all 58 Keystone days preserve 174 five-join arches and admit a perfect score of six (4.349167ms)
+✔ Keystone reveals one clue per wrong guess, then allows two strikes and advances explicitly (2.757125ms)
+✔ Keystone invalid, clue, and duplicate guesses do not consume clues or strikes (3.137084ms)
+✔ Keystone hints cannot complete arches or hide a revealed result as a win (0.155125ms)
+✔ Keystone restores actual guess histories and rejects forged score, skipped arches, and extra guesses (0.077709ms)
+✔ Keystone shared sessions persist draft and arch review, without premature daily wins (0.987083ms)
+✔ all 73 bins have a complete matching; three original bins allow two orientations (19.2895ms)
+✔ the alternative LOOKOUT orientation is accepted without a mistake (0.2105ms)
+✔ four distinct real-word splices that strand tiles lose; a repeated trap is free (0.497083ms)
+✔ unlisted joins do not spend a mistake and used tile identities cannot be reused (0.114625ms)
+✔ hint indices survive shuffle and are cleared when their pair is locked (0.186333ms)
+✔ saved completion flags, invented pairs, and duplicate display indices cannot fake completion (0.058875ms)
+✔ all 73 bins solve through the real shared runtime and reload one recorded daily win (47.539458ms)
+✔ all prepared Tangle records conserve three ordered words and solve using their source beads (20.9015ms)
+✔ Tangle preserves source order and actual duplicate bead indices, with undo for a stranded pull (0.569458ms)
+✔ Tangle hints cost one knot, duplicate hints are unavailable, and restart preserves penalties (0.468625ms)
+✔ Tangle charges only distinct valid wrong words and the fourth knot ends the round (0.274417ms)
+✔ every alternative first pull in the Tangle bank either completes or can be undone safely (34.683125ms)
+✔ Tangle saves replay real pulls and reject reused or forged traces; reveal stays separate (0.12225ms)
+✔ Tangle shared sessions keep practice separate and never count revealed days as wins (1.050292ms)
+✔ Tangle wrong duplicate N in BRAIN is free, preserves selection and does not auto-pull (1.574666ms)
+✔ Tangle preserves previously recorded duplicate-copy knot events and their assistance/history (0.337625ms)
+✔ Tangle still charges a real trap when every copy of BRING strands the remaining words (0.140667ms)
+✔ Keystone v2 alternatives and fit feedback exactly follow its visible either-order rules on every arch (400.639042ms)
+ℹ {"uniqueArches":174,"acceptedAnswers":308,"directedDifferences":62,"directionKeyCollisions":0}
+✔ Splice clears any hint made non-viable by a disjoint accepted pair, preserving assistance on all reachable tile sets (3391.221875ms)
+ℹ {"bins":202,"reachableTileSets":34892,"disjointTransitions":88646,"staleHintsCleared":2815,"staleExample":{"id":"splice-1","previousAttempts":[],"pendingHint":[0,1],"acceptedPair":[2,7]}}
+✔ Tangle first pulls classify all 200 current banks by whole-word placement viability (267.966208ms)
+ℹ {"banks":200,"paths":29346,"safe":1135,"freeCopies":739,"traps":27472}
+✔ the actual Tangle UI announces other copies without saving a knot or changing the selected beads (225.684417ms)
+✔ Tangle free-copy feedback also works after a real GUEST pull without undoing any beads (0.181417ms)
+✔ Tangle cannot offer a free alternative that would reuse beads already pulled (0.140292ms)
+✔ Sprout expanded rounds accept TARE while an existing classic round keeps its word graph (0.813625ms)
+✔ Sprout preserves the CORNEA classic dead-end penalty through a real save replay (0.592083ms)
+✔ Tumbler accepts normal word-game alternatives ADIOS, COATI and SWALE without changing its answer (0.196875ms)
+✔ Quartet category descriptions cover the actual fixed target meanings without changing targets (2.910959ms)
+✔ every expanded Sprout round solves, hints and reloads using its explicit vocabulary edition (222.235791ms)
+✔ the real Sprout app starts expanded rounds and restores a classic round without reinterpreting it (219.691875ms)
+✔ each Claude game exposes exact zero and used assistance counts without exposing answers (90.120375ms)
+✔ Splice expanded rounds evaluate LANDWARD as a real join and preserve classic saves (0.319667ms)
+✔ Keystone accepts a full-five-join alternative in v2 while classic replay keeps its prepared answer (0.298667ms)
+✔ Dovetail v2 accepts BACK–BAND–AGES while keeping legacy decisions and hint prefixes (0.297375ms)
+✔ the real Keystone app explains hidden-clue requirements and displays the accepted alternative (43.714292ms)
+✔ all expanded Dovetail, Splice, Keystone and Tangle banks complete with real per-action saved-round reloads (461.129542ms)
+✔ v2 Dovetail, Splice, Sprout and Keystone retain their actual loss boundaries and terminal saves (2.036084ms)
+✔ Claude Tangle v2 accepts an entire alternative ordered-bead partition instead of an arbitrary target rejection (0.342875ms)
+✔ the real Claude Tangle app displays the chosen valid partition and preserves it on reload (30.154625ms)
+✔ all five classic-round apps disclose earlier rules in play and Help while new Practice uses the expanded dictionary (35.924709ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4458.685292

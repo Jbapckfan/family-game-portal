@@ -42,8 +42,10 @@
 - [x] Complete `docs/launch/2026-11-01/` with a current monetization comparison, editable economics, store copy, screenshot briefs, social/editorial calendar, support/privacy preparation and release gates.
 - [x] Open a finished launch preview in the owned browser after review, without disturbing James's active Circuit progress. Candidate gallery uses the second tab only when ready.
 - [x] Update ranking with James's exact Circuit feedback with its explicit keeper verdict. Preserve candidate evaluations outside the production ranking.
-- [ ] Commit/push the feature branch, verify remote SHA, package verified build and receipts, then report concrete artifacts and remaining release decisions.
+- [x] Commit/push the feature branch, verify remote SHA, package verified build and receipts, then report concrete artifacts and remaining release decisions.
 
 ## Verification commands
 
 Use `npm test` and `npx tsc -b` in `packages/kimi-pebbles`; the existing root `node --test` suites for game banks/calendars/sharing; the checked-in runtime sync/staging tools; isolated Chrome/WebKit harnesses; generator `--check` modes for corpus artifacts. Run the exact appropriate subset before integration and one final affected/full pass after integration. Record exit codes and computed totals, rather than pre-filling expected counts.
+
+Delivery: implementation `3d989487a100cee4bee8d2e3b7e54deb026bddf5` was pushed and remotely verified on the private feature branch. Both delivered ZIPs passed CRC/hash checks. See `docs/reviews/remaining-games-20261101/DELIVERY.json` for immutable archive receipts.

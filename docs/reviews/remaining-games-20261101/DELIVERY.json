@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-11-01T17:44:16.379811+00:00",
+  "branch": "codex/game-by-game-2026-10-29",
+  "privateRepository": "https://github.com/Jbapckfan/family-game-portal",
+  "repositoryPrivateVerified": true,
+  "implementationCommit": "3d989487a100cee4bee8d2e3b7e54deb026bddf5",
+  "remoteImplementationCommitVerified": "3d989487a100cee4bee8d2e3b7e54deb026bddf5",
+  "webBuildId": "5dfe498e92574490",
+  "allGamesArchive": {
+    "archive": "/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/dist/Alford-Daily-All-Games-Reviewed-20261101.zip",
+    "bytes": 47305107,
+    "files": 2382,
+    "sha256": "08aadc5998f76f92212de6688b1be8622881ec8932bd0f3bbccf3c6181b26043",
+    "commit": "3d989487a100cee4bee8d2e3b7e54deb026bddf5",
+    "buildId": "5dfe498e92574490"
+  },
+  "candidateArchive": {
+    "path": "/Users/jamesalford/Projects/MAKER-codex__alford-daily-six-months/dist/MAKER-Codex__ten-candidate-gallery-v2.1.zip",
+    "bytes": 10294335,
+    "files": 65,
+    "sha256": "cfb8cca45d4a53014c8909a7d7bc29657cf65f7bf8616b407c6b926faa77e036"
+  },
+  "tests": {
+    "root": 966,
+    "kimiPackage": 244,
+    "failures": 0,
+    "skips": 0,
+    "completedBrowserFlows": 66,
+    "offlineCases": 11,
+    "actualClaudeAssistedShareFlows": 6,
+    "candidateNodeAssertions": 358153,
+    "candidateFocusedRepairGroups": 11,
+    "unsignedGenericIPhoneReleaseBuild": true,
+    "physicalDeviceInstall": false
+  },
+  "runway": {
+    "start": "2026-11-01",
+    "endInclusive": "2027-05-01",
+    "days": 182,
+    "games": 32,
+    "actualSelections": 5824
+  },
+  "deliveryNote": "Archive source is the implementation commit; the later delivery-only commit records these immutable receipts and plan completion. No public deployment or commercial activation."
+}

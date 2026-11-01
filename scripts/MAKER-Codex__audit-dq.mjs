@@ -8,8 +8,8 @@ const slugs=['deepseek-twin-hive','deepseek-spare','deepseek-rung','deepseek-cip
 const dates=Array.from({length:182},(_,n)=>new Date(Date.UTC(2026,10,1+n,12)).toISOString().slice(0,10));
 assert.equal(centralDateKey(new Date('2026-11-01T04:59:59Z')),'2026-10-31');
 assert.equal(centralDateKey(new Date('2026-11-01T05:00:00Z')),dates[0]);
-assert.equal(centralDateKey(new Date('2027-05-01T04:59:59Z')),dates.at(-1));
-assert.equal(centralDateKey(new Date('2027-05-01T05:00:00Z')),'2027-05-01');
+assert.equal(centralDateKey(new Date('2027-05-02T04:59:59Z')),dates.at(-1));
+assert.equal(centralDateKey(new Date('2027-05-02T05:00:00Z')),'2027-05-02');
 const sha=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const inGrid=(a,b,size,diagonal=false)=>{const dr=Math.abs(Math.floor(a/size)-Math.floor(b/size)),dc=Math.abs(a%size-b%size);return a!==b&&(diagonal?Math.max(dr,dc)===1:dr+dc===1);};
 function trailPath(p,word){let answer=null;function visit(path){if(answer)return;const i=path.length;if(i===word.length){answer=path;return;}for(let cell=0;cell<9;cell++)if(!path.includes(cell)&&p.grid[cell]===word[i]&&(!i||inGrid(path.at(-1),cell,3,true)))visit([...path,cell]);}visit([]);return answer;}

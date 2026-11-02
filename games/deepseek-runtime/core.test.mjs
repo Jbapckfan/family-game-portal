@@ -55,7 +55,7 @@ test('completed practice advances on re-entry while malformed practice envelopes
 });
 
 test('expanded banks preserve every old daily assignment and expose the new rotation at Central midnight',()=>{
- for(const [id,schedule]of Object.entries(DAILY_BANK_SCHEDULES)){
+ for(const [id,schedule]of Object.entries(DAILY_BANK_SCHEDULES).filter(([,schedule])=>schedule.releases.length)){
   const release=schedule.releases[0],oldCount=schedule.initialCount,newCount=release.count;
   for(const key of ['2026-01-01','2026-10-20','2026-10-21','2026-10-22'])
    assert.equal(dailyIndex(id,key,newCount),dailyIndex(id,key,oldCount),`${id}: ${key}`);

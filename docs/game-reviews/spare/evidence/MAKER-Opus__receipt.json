@@ -1,0 +1,32 @@
+{
+  "provider": "Opus",
+  "modelArgument": "claude-opus-5-5",
+  "started": "2026-11-02T03:33:50.186602+00:00",
+  "cwd": "/private/tmp/MAKER-Opus__spare-context-20261101",
+  "files": [
+    {
+      "path": "games/deepseek-spare/engine.mjs",
+      "sha256": "628086139ea9bdbe7212426bc37b1297edb4e2073482b9668456e24476ca4d19"
+    },
+    {
+      "path": "games/deepseek-spare/app.mjs",
+      "sha256": "136254fed9e35275671957f3a8a96bd29367f1d66c5022bef7fbaaca6a0dd926"
+    },
+    {
+      "path": "games/deepseek-spare/styles.css",
+      "sha256": "4bca758d94823e983d0968f622d66d7a2d2087660707642b83cf962516d3b12e"
+    },
+    {
+      "path": "scripts/spare-preview.test.mjs",
+      "sha256": "99cba71aa7115b9b6794e52dd5fd30bec2eb3bf9df8f5c473570398d1eed81c7"
+    },
+    {
+      "path": "docs/game-reviews/spare/HARDER-PREVIEW.md",
+      "sha256": "2d06d9b3208d21f57794aaebaacc6c3e81db54d1423fca1f00dc2ec6eb8b0324"
+    }
+  ],
+  "scope": "static supplied-source review",
+  "exitCode": 0,
+  "seconds": 186.94,
+  "reviewCharacters": 5207
+}

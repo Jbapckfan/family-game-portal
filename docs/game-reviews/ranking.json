@@ -1335,16 +1335,41 @@
             "date": "2026-11-01",
             "quote": "the game is too easy",
             "interpretation": "Difficulty criticism of Spare during its individual review. No enjoyment score, keeper verdict, removal choice or relative rank supplied."
+          },
+          {
+            "date": "2026-11-01",
+            "quote": "try that",
+            "interpretation": "Approved trying a harder Spare sample with contextual clues and a plausible spare. No keeper decision or enjoyment score supplied."
           }
         ],
         "difficultyReaction": "too easy"
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "reviewer": "Opus",
+          "model": "claude-opus-5-5",
+          "scope": "Initial harder-preview static source review; findings addressed and adjudicated",
+          "evidence": "spare/MAKER-Opus__review.md"
+        },
+        {
+          "reviewer": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "scope": "Initial harder-preview static source review; repeated-tap finding reproduced and fixed",
+          "evidence": "spare/MAKER-Gemini__review.md"
+        },
+        {
+          "reviewer": "Kimi",
+          "modelArgument": "kimi-code/k3.1-pro",
+          "status": "timed_out_no_review",
+          "evidence": "spare/evidence/MAKER-Kimi__receipt.json"
+        }
+      ],
       "disposition": "undecided",
       "evidence": [
-        "spare/DIFFICULTY-2026-11-01.md"
+        "spare/DIFFICULTY-2026-11-01.md",
+        "spare/HARDER-PREVIEW.md"
       ],
-      "nextStep": "Decide between a harder sample and replacement-candidate status. Keep current progress and published boards; difficulty feedback alone is not a removal or keeper decision.",
+      "nextStep": "James playtests the delivered harder sample; decide retention afterward. Both original daily and sample remain available.",
       "dispositionBasis": "James found Spare too easy; enjoyment and retention remain undecided."
     },
     {
@@ -1641,5 +1666,43 @@
     "provider": "DeepSeek",
     "status": "not_run",
     "reason": "No verified free route; browser access host unavailable; metered cloud inference not authorized"
-  }
+  },
+  "newGameCandidates": [
+    {
+      "candidateId": "01",
+      "hook": "Two worlds. One move.",
+      "source": "experiments/MAKER-Codex__ten-candidates-20261101",
+      "status": "liked_by_james",
+      "james": {
+        "enjoyment": null,
+        "preferenceRank": null,
+        "comments": [
+          {
+            "date": "2026-11-01",
+            "quote": "i like candidate 1 - two worlds, one move",
+            "interpretation": "Positive preference for candidate 01. No final name, numerical rating, specific replacement or catalog addition chosen."
+          }
+        ]
+      },
+      "nextStep": "Prioritize for further individual review; retain as a liked candidate for a future lineup decision."
+    },
+    {
+      "candidateId": "02",
+      "hook": "Build the exact wave.",
+      "source": "experiments/MAKER-Codex__ten-candidates-20261101",
+      "status": "liked_by_james",
+      "james": {
+        "enjoyment": null,
+        "preferenceRank": null,
+        "comments": [
+          {
+            "date": "2026-11-01",
+            "quote": "build the exact wave is also good",
+            "interpretation": "Positive preference for candidate 02. No final name, numerical rating, specific replacement or catalog addition chosen."
+          }
+        ]
+      },
+      "nextStep": "Keep on the liked-candidate shortlist for further individual review and a future lineup decision."
+    }
+  ]
 }

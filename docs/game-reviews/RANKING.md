@@ -26,7 +26,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 13 | Circuit | Kimi | Keep; vocabulary and cardinal arc revisions delivered | Keeper; no numerical score |
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
 | 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
-| 16 | Spare | DeepSeek | Too easy; difficulty redesign or replacement decision pending | Difficulty feedback; no numerical score |
+| 16 | Spare | DeepSeek | Too easy; harder sample approved for playtest | Difficulty feedback; no numerical score |
 | 17 | Rung | DeepSeek | Not yet reviewed individually | — |
 | 18 | Cipher | DeepSeek | Not yet reviewed individually | — |
 | 19 | Trail | DeepSeek | Not yet reviewed individually | — |
@@ -76,5 +76,9 @@ Quartet: James called it “fun” and asked to check that it is not an exact co
 Twin Hive: James said “good, go to next game this one is a keeper” after the [compact layout and input repairs](WORD-INPUT-2026-11-01.md). Keep it without assigning a numerical score or relative keeper rank. Spare is next in the individual review queue.
 
 Spare: James said “the game is too easy.” Its direct antonym recognition, unrelated concrete spare and recurring pair bank limit the reasoning challenge. The initial November 1 arrangement additionally aligns all four partners in a row or column. Record difficulty criticism without inferring dislike, removal, a keeper verdict or a numerical rank. [Difficulty audit and next decision](spare/DIFFICULTY-2026-11-01.md).
+
+New candidate feedback: James said “i like candidate 1 - two worlds, one move” and “build the exact wave is also good.” Record candidates **01 — Two worlds. One move.** and **02 — Build the exact wave.** as **liked** and prioritize both for further review. No numerical score, final name, specific replacement or catalog addition was selected.
+
+Spare follow-up: James said “try that,” approving the isolated [harder contextual sample](spare/HARDER-PREVIEW.md). Retention remains undecided pending that playtest.
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.

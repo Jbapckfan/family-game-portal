@@ -1,0 +1,102 @@
+[
+  {
+    "engine": "chromium",
+    "check": "touch-solve-save-share",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "keyboard-solve-save-share",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "swap-remove-history-repeat-and-loss",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "daily-save-preserved-and-reveal-cancel",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "storage-unavailable",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "optional-clue-and-alternative-solution",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "repeated-tap-never-moves-without-retargeting",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-320",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-393",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-1200",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "touch-solve-save-share",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "keyboard-solve-save-share",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "swap-remove-history-repeat-and-loss",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "daily-save-preserved-and-reveal-cancel",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "storage-unavailable",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "optional-clue-and-alternative-solution",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "repeated-tap-never-moves-without-retargeting",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-320",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-393",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-1200",
+    "passed": true
+  }
+]

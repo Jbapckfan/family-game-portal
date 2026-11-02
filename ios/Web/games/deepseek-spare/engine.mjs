@@ -46,3 +46,63 @@ export function restoreState(p,r){
  if((r.solved.length===4||r.mistakes.length===3||r.revealed)&&r.selected.length)return null;
  return{solved:[...r.solved],mistakes:[...r.mistakes],selected:[...r.selected],order:[...r.order],shuffles:r.shuffles,hintPair:r.hintPair,hinted:[...r.hinted],revealed:r.revealed};
 }
+
+// An isolated review sample. Published daily boards and their save schema stay above.
+export const PREVIEW=Object.freeze({
+ id:'spare-context-01-v2',
+ words:['LIGHT','HEAVY','FLAT','SHARP','DULL','BRIGHT','SOFT','LOUD','DARK'],
+ clues:[
+  {text:'A porter lifts a suitcase.',sense:'Think about weight.',explanation:'Light and heavy describe how much the suitcase weighs.'},
+  {text:'A singer misses the intended note.',sense:'Think about pitch, not volume.',explanation:'Flat is below the intended pitch; sharp is above it.'},
+  {text:'A gem catches the light.',sense:'Think about how brightly it shines.',explanation:'Bright contrasts with dull for lustre, or with dark for visible brightness. Both pairings are accepted.'},
+  {text:'A radio plays in the next room.',sense:'Think about volume, not pitch.',explanation:'Soft and loud describe the volume of the sound.'}
+ ]
+});
+const previewSlot=n=>Number.isInteger(n)&&n>=0&&n<8;
+const validSlots=slots=>Array.isArray(slots)&&slots.length===8&&slots.every(n=>n===null||tileIndex(n))&&unique(slots.filter(n=>n!==null));
+const layoutKey=slots=>[0,2,4,6].map(i=>slots.slice(i,i+2).sort((a,b)=>a-b).join(':')).join('|');
+const correctRows=slots=>[0,1,2,3].filter(i=>{
+ const [a,b]=slots.slice(2*i,2*i+2);
+ if(a===null||b===null)return false;
+ return (Math.floor(a/2)===i&&Math.floor(b/2)===i)||(i===2&&[a,b].includes(5)&&[a,b].includes(8));
+}).length;
+export function createPreview(){return{sampleId:PREVIEW.id,slots:Array(8).fill(null),checks:[],clarified:[],revealed:false};}
+export function previewStatus(s){return s.checks.at(-1)?.correct===4?'won':s.checks.length===4?'lost':s.revealed?'revealed':'playing';}
+export function placePreview(s,slot,word){
+ if(previewStatus(s)!=='playing'||!previewSlot(slot)||(word!==null&&!tileIndex(word)))return s;
+ const slots=[...s.slots],previous=word===null?-1:slots.indexOf(word);
+ if(previous===slot)return s;
+ if(previous!==-1)slots[previous]=slots[slot];
+ slots[slot]=word;
+ return{...s,slots};
+}
+export function checkPreview(s){
+ if(previewStatus(s)!=='playing')return{state:s,message:'This sample is complete.'};
+ if(s.slots.includes(null))return{state:s,message:'Fill all eight spaces before checking. One word stays spare.'};
+ const key=layoutKey(s.slots);
+ if(s.checks.some(c=>layoutKey(c.slots)===key))return{state:s,message:'You already checked that arrangement. No check used; word order within a pair does not matter.'};
+ const correct=correctRows(s.slots),checks=[...s.checks,{slots:[...s.slots],correct}];
+ return{state:{...s,checks},message:correct===4?'All four contexts matched.':checks.length===4?`${correct} of 4 pairs fit. All four checks are used; the solution is below.`:`${correct} of 4 pairs fit their contexts. ${4-checks.length} ${checks.length===3?'check':'checks'} left. Which meanings could you reconsider?`};
+}
+export function revealPreview(s){return previewStatus(s)==='playing'?{...s,revealed:true}:s;}
+export function clarifyPreview(s,row){
+ return previewStatus(s)!=='playing'||!Number.isInteger(row)||row<0||row>3||s.clarified.includes(row)?s:{...s,clarified:[...s.clarified,row]};
+}
+export function restorePreview(r){
+ if(!r||r.sampleId!==PREVIEW.id||typeof r.revealed!=='boolean'||!validSlots(r.slots)||!Array.isArray(r.checks)||r.checks.length>4)return null;
+ if(!Array.isArray(r.clarified)||r.clarified.length>4||!unique(r.clarified)||r.clarified.some(n=>!Number.isInteger(n)||n<0||n>3))return null;
+ const keys=[];
+ for(let i=0;i<r.checks.length;i++){
+  const c=r.checks[i];
+  if(!c||!validSlots(c.slots)||c.slots.includes(null)||c.correct!==correctRows(c.slots))return null;
+  const key=layoutKey(c.slots);if(keys.includes(key))return null;keys.push(key);
+  if(c.correct===4&&i!==r.checks.length-1)return null;
+ }
+ const status=previewStatus(r);
+ if((status==='won'||status==='lost')&&(r.revealed||layoutKey(r.slots)!==keys.at(-1)))return null;
+ return{sampleId:PREVIEW.id,slots:[...r.slots],checks:r.checks.map(c=>({slots:[...c.slots],correct:c.correct})),clarified:[...r.clarified],revealed:r.revealed};
+}
+export function previewShare(s){
+ const status=previewStatus(s);
+ return`Alford Daily · Spare\nHarder Preview 01\n${status==='won'?'🟩 Solved':status==='lost'?'⬜ Finished':status==='revealed'?'🟨 Revealed':'In progress'} · ${s.checks.length}/4 checks\n${s.clarified.length} context ${s.clarified.length===1?'clue':'clues'} used\nFour contexts. One spare.`;
+}

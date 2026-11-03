@@ -1,0 +1,810 @@
+[
+  {
+    "number": 1,
+    "name": "FIRST BOUNCE",
+    "extra": {
+      "x": 3,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 2,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 3,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "name": "AROUND THE CORNER",
+    "extra": {
+      "x": 9,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 9,
+        "y": 8,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 9,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "name": "DOUBLE TAKE",
+    "extra": {
+      "x": 9,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 9,
+        "y": 9,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 3,
+        "y": 9,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 9,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "name": "OVER THE WALL",
+    "extra": {
+      "x": 2,
+      "y": 2,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 7,
+        "y": 2,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "name": "UP THE STAIRS",
+    "extra": {
+      "x": 11,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 11,
+        "y": 11,
+        "type": "WEDGE",
+        "orient": "\\"
+      },
+      {
+        "x": 10,
+        "y": 11,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 11,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "name": "BEND THEN CLIMB",
+    "extra": {
+      "x": 10,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 9,
+        "y": 12,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "type": "WEDGE",
+        "orient": "\\"
+      },
+      {
+        "x": 10,
+        "y": 4,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "name": "LEVEL OFF",
+    "extra": {
+      "x": 15,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 8,
+        "y": 14,
+        "type": "WEDGE",
+        "orient": "\\"
+      },
+      {
+        "x": 8,
+        "y": 11,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 15,
+        "y": 11,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 15,
+        "y": 4,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "name": "ON STILTS",
+    "extra": {
+      "x": 6,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 5,
+        "y": 13,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 5,
+        "y": 11,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 6,
+        "y": 11,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "name": "SECRET RAMP",
+    "extra": {
+      "x": 4,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 7,
+        "y": 6,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 7,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 12,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "name": "UNDER THE ARCH",
+    "extra": {
+      "x": 2,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 7,
+        "y": 9,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 11,
+        "y": 9,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 11,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "name": "THROUGH THE WINDOW",
+    "extra": {
+      "x": 3,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 5,
+        "y": 12,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 10,
+        "y": 12,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "name": "TWO ORBS",
+    "extra": {
+      "x": 13,
+      "y": 0,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 9,
+        "y": 3,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 8,
+        "y": 3,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 13,
+        "y": 0,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "name": "SKIPPING STONE",
+    "extra": {
+      "x": 12,
+      "y": 4,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 8,
+        "y": 9,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 8,
+        "y": 7,
+        "type": "FLOOR",
+        "orient": "/"
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 12,
+        "y": 4,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "name": "THE LOW ROAD",
+    "extra": {
+      "x": 5,
+      "y": 6,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 7,
+        "y": 10,
+        "type": "WEDGE",
+        "orient": "\\"
+      },
+      {
+        "x": 7,
+        "y": 7,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 11,
+        "y": 7,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 5,
+        "y": 6,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "name": "THREAD THE NEEDLE",
+    "extra": {
+      "x": 8,
+      "y": 1,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 10,
+        "y": 8,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 10,
+        "y": 13,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 3,
+        "y": 13,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 8,
+        "y": 1,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "name": "STONE BRIDGE",
+    "extra": {
+      "x": 5,
+      "y": 0,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 12,
+        "y": 3,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 9,
+        "y": 3,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "name": "SECRET STEPS",
+    "extra": {
+      "x": 16,
+      "y": 6,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-floor",
+    "placed": [
+      {
+        "x": 9,
+        "y": 11,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 9,
+        "y": 12,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 14,
+        "y": 12,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 14,
+        "y": 6,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 16,
+        "y": 6,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "name": "THE HIGH WINDOW",
+    "extra": {
+      "x": 19,
+      "y": 3,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 9,
+        "y": 12,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 15,
+        "y": 12,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 15,
+        "y": 7,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 19,
+        "y": 7,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 19,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "name": "HIGH ROAD LOW ROAD",
+    "extra": {
+      "x": 16,
+      "y": 2,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "blocked",
+    "placed": [
+      {
+        "x": 15,
+        "y": 7,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 17,
+        "y": 7,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 17,
+        "y": 8,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 12,
+        "y": 8,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 16,
+        "y": 2,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "name": "THE LONG WAY ROUND",
+    "extra": {
+      "x": 3,
+      "y": 10,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 14,
+        "y": 14,
+        "type": "WEDGE",
+        "orient": "/"
+      },
+      {
+        "x": 12,
+        "y": 14,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 12,
+        "y": 15,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 7,
+        "y": 15,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 7,
+        "y": 10,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 3,
+        "y": 10,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 22,
+    "name": "STONE SKIPPING",
+    "extra": {
+      "x": 2,
+      "y": 5,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 13,
+        "y": 16,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 13,
+        "y": 11,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 8,
+        "y": 11,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "name": "SUMMIT",
+    "extra": {
+      "x": 10,
+      "y": 15,
+      "type": "MIRROR",
+      "orient": "/"
+    },
+    "end": "lost-edge",
+    "placed": [
+      {
+        "x": 10,
+        "y": 20,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      {
+        "x": 9,
+        "y": 20,
+        "type": "DIP",
+        "orient": "/"
+      },
+      {
+        "x": 9,
+        "y": 15,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 15,
+        "y": 15,
+        "type": "MIRROR",
+        "orient": "\\"
+      },
+      {
+        "x": 15,
+        "y": 10,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 10,
+        "y": 15,
+        "type": "MIRROR",
+        "orient": "/"
+      }
+    ]
+  }
+]

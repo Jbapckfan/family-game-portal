@@ -1,0 +1,123 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "Physical iPad WebGL renderer active",
+      "passed": true
+    },
+    {
+      "name": "All 27 bundled solutions connect",
+      "passed": true
+    },
+    {
+      "name": "Board placement and rotation produce a winning route",
+      "passed": true
+    },
+    {
+      "name": "An unfinished attempt is saved",
+      "passed": true
+    },
+    {
+      "name": "FIRE animation completes and records three stars",
+      "passed": true
+    },
+    {
+      "name": "From Above award is rendered",
+      "passed": true
+    },
+    {
+      "name": "iPad actions fit and retain 44 point touch targets",
+      "passed": true
+    },
+    {
+      "name": "Exact hint is visible on the physical iPad",
+      "passed": true
+    },
+    {
+      "name": "One-finger pan preserves pieces and flat-view eligibility",
+      "passed": true
+    },
+    {
+      "name": "Two-finger drag tilts smoothly as one gesture",
+      "passed": true,
+      "details": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 69.37351937529036,
+          "zoom": 1,
+          "preset": null,
+          "view": "working",
+          "pan": {
+            "x": -0.6123011281535461,
+            "y": 0,
+            "z": -0.3271199947806716
+          },
+          "manual": true,
+          "animating": false,
+          "cellPx": 61.13964391999232,
+          "fitZoom": 65.32733349785572,
+          "effectiveZoom": 65.32733349785572,
+          "revealIntake": 0
+        },
+        "tilts": 1,
+        "initialTilts": 0
+      }
+    },
+    {
+      "name": "Lifting one finger continues into pan without editing",
+      "passed": true
+    },
+    {
+      "name": "Pinch zoom does not introduce an accidental tilt",
+      "passed": true
+    },
+    {
+      "name": "Camera controls settle to zero idle application frames",
+      "passed": true
+    },
+    {
+      "name": "Separate 2D and 3D buttons are visible and tappable",
+      "passed": true
+    },
+    {
+      "name": "Rotation stays around the board centre after panning and zooming",
+      "passed": true
+    },
+    {
+      "name": "3D button recentres and fits the board",
+      "passed": true
+    },
+    {
+      "name": "Rapid view swaps finish in the last selected 2D view",
+      "passed": true
+    },
+    {
+      "name": "Splitters chapter opens from Levels",
+      "passed": true
+    },
+    {
+      "name": "Splitter touch placement connects two receivers",
+      "passed": true
+    },
+    {
+      "name": "Split FIRE awards only after both receivers connect",
+      "passed": true
+    },
+    {
+      "name": "Cascaded splitters reach three receivers on iPad",
+      "passed": true
+    },
+    {
+      "name": "Split beam and receiver effects return to zero idle frames",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "viewport": {
+    "width": 1376,
+    "height": 1032,
+    "dpr": 1
+  },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15",
+  "date": "2026-09-12T04:24:10.545Z"
+}

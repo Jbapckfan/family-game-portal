@@ -1,0 +1,24 @@
+{
+  "tap": {
+    "held450msPlaced": 0,
+    "thenHeld80msPlaced": 1
+  },
+  "floor": {
+    "hint": "FLOOR at column 9, row 8, facing /. Move or rotate the piece already there.",
+    "partial": [
+      {
+        "x": 8,
+        "y": 9,
+        "type": "DIP",
+        "orient": "\\"
+      },
+      {
+        "x": 8,
+        "y": 7,
+        "type": "FLOOR",
+        "orient": "\\"
+      }
+    ],
+    "alternateFullSolutionWins": true
+  }
+}

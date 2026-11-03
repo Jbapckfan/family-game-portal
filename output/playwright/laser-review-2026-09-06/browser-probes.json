@@ -1,0 +1,1429 @@
+{
+  "viewports": [
+    {
+      "width": 320,
+      "height": 568,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 4,
+          "right": 76,
+          "bottom": 491,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 84,
+          "right": 156,
+          "bottom": 491,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 164,
+          "right": 236,
+          "bottom": 491,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 244,
+          "right": 316,
+          "bottom": 491,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 11,
+          "right": 83,
+          "bottom": 557,
+          "width": 72,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 91,
+          "right": 149,
+          "bottom": 551,
+          "width": 58,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-fit",
+          "x": 157,
+          "right": 213,
+          "bottom": 551,
+          "width": 56,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 221,
+          "right": 297,
+          "bottom": 551,
+          "width": 75,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 305,
+          "right": 369,
+          "bottom": 551,
+          "width": 64,
+          "height": 44,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-more",
+          "x": 377,
+          "right": 421,
+          "bottom": 551,
+          "width": 44,
+          "height": 44,
+          "centerReachable": false
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 32,
+          "right": 104,
+          "bottom": 731,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 112,
+          "right": 184,
+          "bottom": 731,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 192,
+          "right": 264,
+          "bottom": 731,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 272,
+          "right": 344,
+          "bottom": 731,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 15,
+          "right": 87,
+          "bottom": 797,
+          "width": 72,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 95,
+          "right": 153,
+          "bottom": 791,
+          "width": 58,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-fit",
+          "x": 161,
+          "right": 217,
+          "bottom": 791,
+          "width": 56,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 225,
+          "right": 301,
+          "bottom": 791,
+          "width": 75,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 309,
+          "right": 373,
+          "bottom": 791,
+          "width": 64,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-more",
+          "x": 381,
+          "right": 425,
+          "bottom": 791,
+          "width": 44,
+          "height": 44,
+          "centerReachable": false
+        }
+      ]
+    },
+    {
+      "width": 393,
+      "height": 852,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 41,
+          "right": 113,
+          "bottom": 771,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 121,
+          "right": 193,
+          "bottom": 771,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 201,
+          "right": 273,
+          "bottom": 771,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 281,
+          "right": 353,
+          "bottom": 771,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 15,
+          "right": 87,
+          "bottom": 836,
+          "width": 72,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 95,
+          "right": 153,
+          "bottom": 831,
+          "width": 58,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-fit",
+          "x": 161,
+          "right": 217,
+          "bottom": 831,
+          "width": 56,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 225,
+          "right": 301,
+          "bottom": 831,
+          "width": 75,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 309,
+          "right": 373,
+          "bottom": 831,
+          "width": 64,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-more",
+          "x": 381,
+          "right": 425,
+          "bottom": 831,
+          "width": 44,
+          "height": 44,
+          "centerReachable": false
+        }
+      ]
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 59,
+          "right": 131,
+          "bottom": 851,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 139,
+          "right": 211,
+          "bottom": 851,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 219,
+          "right": 291,
+          "bottom": 851,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 299,
+          "right": 371,
+          "bottom": 851,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 15,
+          "right": 87,
+          "bottom": 917,
+          "width": 72,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 95,
+          "right": 153,
+          "bottom": 911,
+          "width": 58,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-fit",
+          "x": 161,
+          "right": 217,
+          "bottom": 911,
+          "width": 56,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 225,
+          "right": 301,
+          "bottom": 911,
+          "width": 75,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 309,
+          "right": 373,
+          "bottom": 911,
+          "width": 64,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-more",
+          "x": 381,
+          "right": 425,
+          "bottom": 911,
+          "width": 44,
+          "height": 44,
+          "centerReachable": true
+        }
+      ]
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 595,
+          "right": 649,
+          "bottom": 91,
+          "width": 54,
+          "height": 60,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 655,
+          "right": 709,
+          "bottom": 91,
+          "width": 54,
+          "height": 60,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 715,
+          "right": 769,
+          "bottom": 91,
+          "width": 54,
+          "height": 60,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 775,
+          "right": 829,
+          "bottom": 91,
+          "width": 54,
+          "height": 60,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 593,
+          "right": 831,
+          "bottom": 151,
+          "width": 238,
+          "height": 52,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 593,
+          "right": 667,
+          "bottom": 203,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-fit",
+          "x": 675,
+          "right": 749,
+          "bottom": 203,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 757,
+          "right": 831,
+          "bottom": 203,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 593,
+          "right": 667,
+          "bottom": 255,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-undo",
+          "x": 675,
+          "right": 749,
+          "bottom": 255,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-redo",
+          "x": 757,
+          "right": 831,
+          "bottom": 255,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-levels",
+          "x": 593,
+          "right": 667,
+          "bottom": 307,
+          "width": 74,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-help",
+          "x": 593,
+          "right": 831,
+          "bottom": 359,
+          "width": 238,
+          "height": 44,
+          "centerReachable": true
+        }
+      ]
+    },
+    {
+      "width": 820,
+      "height": 1180,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 612,
+          "right": 684,
+          "bottom": 450,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 692,
+          "right": 764,
+          "bottom": 450,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 612,
+          "right": 684,
+          "bottom": 530,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 692,
+          "right": 764,
+          "bottom": 530,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 569,
+          "right": 807,
+          "bottom": 594,
+          "width": 238,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 569,
+          "right": 684,
+          "bottom": 646,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 692,
+          "right": 807,
+          "bottom": 646,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 569,
+          "right": 684,
+          "bottom": 698,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-undo",
+          "x": 692,
+          "right": 807,
+          "bottom": 698,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-redo",
+          "x": 569,
+          "right": 684,
+          "bottom": 750,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-levels",
+          "x": 692,
+          "right": 807,
+          "bottom": 750,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-help",
+          "x": 569,
+          "right": 684,
+          "bottom": 802,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "buttons": [
+        {
+          "id": "Mirror, 2 left",
+          "x": 1232,
+          "right": 1304,
+          "bottom": 310,
+          "width": 72,
+          "height": 72,
+          "centerReachable": true
+        },
+        {
+          "id": "Wedge, 0 left",
+          "x": 1312,
+          "right": 1384,
+          "bottom": 310,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Dip, 0 left",
+          "x": 1232,
+          "right": 1304,
+          "bottom": 390,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "Floor, 0 left",
+          "x": 1312,
+          "right": 1384,
+          "bottom": 390,
+          "width": 72,
+          "height": 72,
+          "centerReachable": false
+        },
+        {
+          "id": "btn-fire",
+          "x": 1189,
+          "right": 1427,
+          "bottom": 454,
+          "width": 238,
+          "height": 56,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-tilt",
+          "x": 1189,
+          "right": 1304,
+          "bottom": 506,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-reset",
+          "x": 1312,
+          "right": 1427,
+          "bottom": 506,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-hint",
+          "x": 1189,
+          "right": 1304,
+          "bottom": 558,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-undo",
+          "x": 1312,
+          "right": 1427,
+          "bottom": 558,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-redo",
+          "x": 1189,
+          "right": 1304,
+          "bottom": 610,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-levels",
+          "x": 1312,
+          "right": 1427,
+          "bottom": 610,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        },
+        {
+          "id": "btn-help",
+          "x": 1189,
+          "right": 1304,
+          "bottom": 662,
+          "width": 115,
+          "height": 44,
+          "centerReachable": true
+        }
+      ]
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "name": "FIRST BOUNCE",
+      "positions": [
+        {
+          "x": 2,
+          "y": 3,
+          "screenX": 78,
+          "screenY": 460,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "name": "AROUND THE CORNER",
+      "positions": [
+        {
+          "x": 9,
+          "y": 8,
+          "screenX": 316,
+          "screenY": 299,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "name": "DOUBLE TAKE",
+      "positions": [
+        {
+          "x": 9,
+          "y": 9,
+          "screenX": 316,
+          "screenY": 256,
+          "inStage": true
+        },
+        {
+          "x": 3,
+          "y": 9,
+          "screenX": 112,
+          "screenY": 256,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "name": "OVER THE WALL",
+      "positions": [
+        {
+          "x": 7,
+          "y": 2,
+          "screenX": 214,
+          "screenY": 528,
+          "inStage": true
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "screenX": -24,
+          "screenY": 528,
+          "inStage": false
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "name": "UP THE STAIRS",
+      "positions": [
+        {
+          "x": 11,
+          "y": 11,
+          "screenX": 350,
+          "screenY": 222,
+          "inStage": true
+        },
+        {
+          "x": 10,
+          "y": 11,
+          "screenX": 316,
+          "screenY": 222,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 6,
+      "name": "BEND THEN CLIMB",
+      "positions": [
+        {
+          "x": 9,
+          "y": 12,
+          "screenX": 282,
+          "screenY": 197,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "screenX": 282,
+          "screenY": 469,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 7,
+      "name": "LEVEL OFF",
+      "positions": [
+        {
+          "x": 8,
+          "y": 14,
+          "screenX": 214,
+          "screenY": 154,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "screenX": 214,
+          "screenY": 256,
+          "inStage": true
+        },
+        {
+          "x": 15,
+          "y": 11,
+          "screenX": 452,
+          "screenY": 256,
+          "inStage": false
+        }
+      ]
+    },
+    {
+      "level": 8,
+      "name": "ON STILTS",
+      "positions": [
+        {
+          "x": 5,
+          "y": 13,
+          "screenX": 112,
+          "screenY": 188,
+          "inStage": true
+        },
+        {
+          "x": 5,
+          "y": 11,
+          "screenX": 112,
+          "screenY": 256,
+          "inStage": true
+        },
+        {
+          "x": 6,
+          "y": 11,
+          "screenX": 146,
+          "screenY": 256,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 9,
+      "name": "SECRET RAMP",
+      "positions": [
+        {
+          "x": 7,
+          "y": 6,
+          "screenX": 180,
+          "screenY": 426,
+          "inStage": true
+        },
+        {
+          "x": 7,
+          "y": 1,
+          "screenX": 180,
+          "screenY": 596,
+          "inStage": true
+        },
+        {
+          "x": 12,
+          "y": 1,
+          "screenX": 350,
+          "screenY": 596,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "name": "UNDER THE ARCH",
+      "positions": [
+        {
+          "x": 7,
+          "y": 9,
+          "screenX": 146,
+          "screenY": 376,
+          "inStage": true
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "screenX": 282,
+          "screenY": 376,
+          "inStage": true
+        },
+        {
+          "x": 11,
+          "y": 3,
+          "screenX": 282,
+          "screenY": 580,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 11,
+      "name": "THROUGH THE WINDOW",
+      "positions": [
+        {
+          "x": 5,
+          "y": 12,
+          "screenX": 78,
+          "screenY": 265,
+          "inStage": true
+        },
+        {
+          "x": 10,
+          "y": 12,
+          "screenX": 248,
+          "screenY": 265,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 12,
+      "name": "TWO ORBS",
+      "positions": [
+        {
+          "x": 9,
+          "y": 3,
+          "screenX": 214,
+          "screenY": 562,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "screenX": 180,
+          "screenY": 562,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "screenX": 180,
+          "screenY": 664,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 13,
+      "name": "SKIPPING STONE",
+      "positions": [
+        {
+          "x": 8,
+          "y": 9,
+          "screenX": 146,
+          "screenY": 401,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "screenX": 146,
+          "screenY": 469,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 4,
+          "screenX": 146,
+          "screenY": 571,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 14,
+      "name": "THE LOW ROAD",
+      "positions": [
+        {
+          "x": 7,
+          "y": 10,
+          "screenX": 112,
+          "screenY": 367,
+          "inStage": true
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "screenX": 112,
+          "screenY": 469,
+          "inStage": true
+        },
+        {
+          "x": 11,
+          "y": 7,
+          "screenX": 248,
+          "screenY": 469,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 15,
+      "name": "THREAD THE NEEDLE",
+      "positions": [
+        {
+          "x": 10,
+          "y": 8,
+          "screenX": 214,
+          "screenY": 435,
+          "inStage": true
+        },
+        {
+          "x": 10,
+          "y": 13,
+          "screenX": 214,
+          "screenY": 265,
+          "inStage": true
+        },
+        {
+          "x": 3,
+          "y": 13,
+          "screenX": -24,
+          "screenY": 265,
+          "inStage": false
+        }
+      ]
+    },
+    {
+      "level": 16,
+      "name": "STONE BRIDGE",
+      "positions": [
+        {
+          "x": 12,
+          "y": 3,
+          "screenX": 282,
+          "screenY": 596,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "screenX": 180,
+          "screenY": 596,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "screenX": 180,
+          "screenY": 698,
+          "inStage": false
+        }
+      ]
+    },
+    {
+      "level": 17,
+      "name": "THE SKIMMING STONE",
+      "positions": [
+        {
+          "x": 11,
+          "y": 11,
+          "screenX": 214,
+          "screenY": 367,
+          "inStage": true
+        },
+        {
+          "x": 16,
+          "y": 11,
+          "screenX": 384,
+          "screenY": 367,
+          "inStage": true
+        },
+        {
+          "x": 16,
+          "y": 18,
+          "screenX": 384,
+          "screenY": 129,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 18,
+      "name": "SECRET STEPS",
+      "positions": [
+        {
+          "x": 9,
+          "y": 11,
+          "screenX": 146,
+          "screenY": 358,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 12,
+          "screenX": 146,
+          "screenY": 324,
+          "inStage": true
+        },
+        {
+          "x": 14,
+          "y": 12,
+          "screenX": 316,
+          "screenY": 324,
+          "inStage": true
+        },
+        {
+          "x": 14,
+          "y": 6,
+          "screenX": 316,
+          "screenY": 528,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 19,
+      "name": "THE HIGH WINDOW",
+      "positions": [
+        {
+          "x": 9,
+          "y": 12,
+          "screenX": 146,
+          "screenY": 333,
+          "inStage": true
+        },
+        {
+          "x": 15,
+          "y": 12,
+          "screenX": 350,
+          "screenY": 333,
+          "inStage": true
+        },
+        {
+          "x": 15,
+          "y": 7,
+          "screenX": 350,
+          "screenY": 503,
+          "inStage": true
+        },
+        {
+          "x": 19,
+          "y": 7,
+          "screenX": 485,
+          "screenY": 503,
+          "inStage": false
+        }
+      ]
+    },
+    {
+      "level": 20,
+      "name": "HIGH ROAD LOW ROAD",
+      "positions": [
+        {
+          "x": 15,
+          "y": 7,
+          "screenX": 350,
+          "screenY": 503,
+          "inStage": true
+        },
+        {
+          "x": 17,
+          "y": 7,
+          "screenX": 417,
+          "screenY": 503,
+          "inStage": false
+        },
+        {
+          "x": 17,
+          "y": 8,
+          "screenX": 417,
+          "screenY": 469,
+          "inStage": false
+        },
+        {
+          "x": 12,
+          "y": 8,
+          "screenX": 248,
+          "screenY": 469,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 21,
+      "name": "THE LONG WAY ROUND",
+      "positions": [
+        {
+          "x": 14,
+          "y": 14,
+          "screenX": 282,
+          "screenY": 312,
+          "inStage": true
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "screenX": 214,
+          "screenY": 312,
+          "inStage": true
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "screenX": 214,
+          "screenY": 278,
+          "inStage": true
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "screenX": 44,
+          "screenY": 278,
+          "inStage": true
+        },
+        {
+          "x": 7,
+          "y": 10,
+          "screenX": 44,
+          "screenY": 448,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 22,
+      "name": "STONE SKIPPING",
+      "positions": [
+        {
+          "x": 13,
+          "y": 16,
+          "screenX": 248,
+          "screenY": 237,
+          "inStage": true
+        },
+        {
+          "x": 13,
+          "y": 11,
+          "screenX": 248,
+          "screenY": 407,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "screenX": 78,
+          "screenY": 407,
+          "inStage": true
+        },
+        {
+          "x": 8,
+          "y": 5,
+          "screenX": 78,
+          "screenY": 611,
+          "inStage": true
+        }
+      ]
+    },
+    {
+      "level": 23,
+      "name": "SUMMIT",
+      "positions": [
+        {
+          "x": 10,
+          "y": 20,
+          "screenX": 146,
+          "screenY": 92,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 20,
+          "screenX": 112,
+          "screenY": 92,
+          "inStage": true
+        },
+        {
+          "x": 9,
+          "y": 15,
+          "screenX": 112,
+          "screenY": 262,
+          "inStage": true
+        },
+        {
+          "x": 15,
+          "y": 15,
+          "screenX": 316,
+          "screenY": 262,
+          "inStage": true
+        },
+        {
+          "x": 15,
+          "y": 10,
+          "screenX": 316,
+          "screenY": 432,
+          "inStage": true
+        }
+      ]
+    }
+  ],
+  "gestures": {
+    "beforeSpace": {
+      "placed": [
+        {
+          "x": 10,
+          "y": 3,
+          "type": "MIRROR",
+          "orient": "/"
+        }
+      ],
+      "cursor": {
+        "x": 10,
+        "y": 3
+      }
+    },
+    "afterSpace": {
+      "placed": [
+        {
+          "x": 10,
+          "y": 3,
+          "type": "MIRROR",
+          "orient": "\\"
+        }
+      ],
+      "cursor": {
+        "x": 10,
+        "y": 3
+      }
+    }
+  },
+  "resume": {
+    "before": {
+      "placed": [
+        {
+          "x": 2,
+          "y": 3,
+          "type": "MIRROR",
+          "orient": "\\"
+        }
+      ],
+      "save": {
+        "schema": 2,
+        "currentLevel": 0,
+        "highestUnlocked": 1,
+        "stars": {
+          "0": {
+            "solved": true,
+            "par": true,
+            "blind": true
+          }
+        },
+        "muted": false,
+        "seenHelp": true,
+        "known": {},
+        "intros": {
+          "0": true,
+          "3": true,
+          "4": true,
+          "6": true,
+          "7": true,
+          "8": true,
+          "9": true,
+          "10": true,
+          "11": true,
+          "12": true,
+          "14": true
+        }
+      }
+    },
+    "after": {
+      "placed": [],
+      "level": 0
+    }
+  }
+}

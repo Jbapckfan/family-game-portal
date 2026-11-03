@@ -1,0 +1,55 @@
+{
+  "date" : "2026-09-11T22:03:08.572Z",
+  "errors" : [
+    "check@file:\/\/\/private\/var\/containers\/Bundle\/Application\/A363D74B-F26D-45D8-8AA6-DE473C802CC5\/Lasers3D.app\/Game\/index.html:5:87\n@file:\/\/\/private\/var\/containers\/Bundle\/Application\/A363D74B-F26D-45D8-8AA6-DE473C802CC5\/Lasers3D.app\/Game\/index.html:35:10"
+  ],
+  "passed" : false,
+  "results" : [
+    {
+      "name" : "Physical iPad WebGL renderer active",
+      "passed" : true
+    },
+    {
+      "name" : "All 23 bundled solutions connect",
+      "passed" : true
+    },
+    {
+      "name" : "Board placement and rotation produce a winning route",
+      "passed" : true
+    },
+    {
+      "name" : "An unfinished attempt is saved",
+      "passed" : true
+    },
+    {
+      "name" : "FIRE animation completes and records three stars",
+      "passed" : true
+    },
+    {
+      "name" : "From Above award is rendered",
+      "passed" : true
+    },
+    {
+      "name" : "iPad actions fit and retain 44 point touch targets",
+      "passed" : true
+    },
+    {
+      "name" : "Exact hint is visible on the physical iPad",
+      "passed" : true
+    },
+    {
+      "name" : "One-finger pan preserves pieces and flat-view eligibility",
+      "passed" : true
+    },
+    {
+      "name" : "Two-finger drag tilts smoothly as one gesture",
+      "passed" : false
+    }
+  ],
+  "userAgent" : "Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit\/605.1.15 (KHTML, like Gecko)",
+  "viewport" : {
+    "dpr" : 2,
+    "height" : 1032,
+    "width" : 1376
+  }
+}

@@ -1,0 +1,33 @@
+The user explicitly requests that Claude and Kimi independently review the gameplay and ALL levels of their Lasers 3D game now. You are Claude, one of the two reviewers. Conduct a substantive independent review, not a generic checklist.
+
+Repository: /Users/jamesalford/family-game-portal
+Game: games/lasers-3d
+Current HEAD: 426a8fd. Review current files, not historical documentation alone.
+This is REVIEW ONLY. Do not edit code, game assets, saves, Canon, git, or project documentation. Do not install anything, boot a simulator, deploy, or contact third parties. Read tools and read-only diagnostic commands are authorized. Return the whole review as your final output; the orchestrator saves stdout. Do not spawn other models or subagents.
+
+Start with games/lasers-3d/CURRENT-RULES.md, src/levels.js, src/sim.js, src/pieces.js, src/learning.js, src/main.js, src/main-trace.js, src/ui.js, src/input.js, src/render-camera.js, src/progress.js and relevant tests. DESIGN.md and older reports are historical where they conflict with CURRENT-RULES.md and current code.
+
+Scope and current intentional decisions:
+- All 31 levels are unlocked for testing; this is requested behavior, not a bug. Stars remain genuinely earned; selection persists on reload.
+- The core game starts in 2D overhead and reveals terrain in 3D. One finger pans, two fingers tilt/orbit, pinch zooms, hold then drag moves a piece. 2D/3D buttons center the view and rotation pivots at the board centre.
+- Levels 1-23 original campaign, 24-27 Splitters, 28-31 Both Sides.
+- The user rejected stacked floating platforms. Both Sides MUST remain two reflected copies of the existing terrain, bases touching at ONE opaque floor, terrain growing outward above and below. Only actual floor holes transmit the laser. Above/Below moves the camera to the opposite face. Do not recommend transparent floors, separated decks or posts as a correction.
+- Tilting no longer costs any of the three campaign stars. FROM ABOVE is a separate optional mastery award. Both Sides excludes this award.
+- No current physical iPad verification is available; device unavailable. Do not pretend a source review is physical playtesting.
+
+Evidence packet already available:
+- output/laser-review-2026-09-16/level-audit.json: all31 full terrain, actors, inventory, intro, stored solution and simulated events; all31 stored solutions currently win.
+- output/laser-review-2026-09-16/validation.log: the orchestrator is running the existing all-level validator now; it may be incomplete until it finishes.
+- output/laser-underside-verify.log: preceding full verification pass, before the small unrestricted-level-navigation change.
+- output/laser-level-access-dom.log (507 checks), output/laser-level-access-browser.log (68 WebKit/Chromium checks): current HEAD's targeted checks.
+- Actual recent gameplay screenshots: output/playwright/laser-underside-flat.png, laser-underside-profile.png, laser-underside-below.png, laser-underside-below-flat.png, laser-splitters-three-lights.png. Avoid the older rejected laser-duplex-* images.
+- The orchestrator is collecting current all-level browser captures in output/laser-review-2026-09-16/screenshots and a runtime.json. Read when available; do not wait indefinitely. Existing local game: http://localhost:8795/games/lasers-3d/. You may inspect it if tools are available but do not alter the user's saved progress.
+
+Required output:
+1. Clearly state what you actually inspected/ran versus what is inferred or remains untested.
+2. Prioritized findings, each with severity, exact file:line or level number/name, concrete player impact, reproduction/evidence, and a specific improvement. Distinguish verified logic bugs, evidence-backed design concerns, and suggestions. Do not manufacture defects to fill a quota.
+3. A compact 31-row level-by-level table (one row for EVERY level in order): level # and name, mechanic/teaching role, difficulty/fairness assessment, concrete issue or improvement (or explicitly no particular issue found). Solvability is separate from fun/clarity. Assess ordering, repetition, shortcuts, feedback, hints, cognitive load, use of3D, dark levels, splitter branches and crossings.
+4. Gameplay-system review: touch/camera, placing/rotating/moving, feedback/readouts, goals/stars, hint quality, saves, discoverability and accessibility.
+5. Top 5 next actions, ordered. Favor substantive game design and real defects over irrelevant style cleanup. If tests pass, do not imply this proves usability or fun.
+
+Be thorough but grounded; prefer concrete evidence to speculation. You have up to 15 minutes. Return your complete review in Markdown.

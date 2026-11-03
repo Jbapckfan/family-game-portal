@@ -1,0 +1,16 @@
+Your first report contains factual mistakes in its level-by-level table and unsupported claims of playability. Please perform a bounded correction pass, still READ ONLY, and return the COMPLETE corrected review in Markdown (including all31 rows). Do not modify game or documentation files.
+
+Read ALL31 definitions in games/lasers-3d/src/levels.js and the complete output/laser-review-2026-09-16/level-audit.json. Cross-check actual mechanics using output/laser-review-2026-09-16/validation.log. Use the named concepts there as evidence, not solver node counts as a human difficulty score. You may use shell read-only queries; if unavailable, read tools suffice. State honestly which files/levels you actually inspected. Review each definition; don't simply fill a table with generic "fair" judgments.
+
+Known errors to recheck against data:
+- Level2 AROUND THE CORNER needs one mirror, not multi-mirror routing.
+- Level3 DOUBLE TAKE needs two mirrors; three is its available inventory, not its solution count.
+- Level6 BEND THEN CLIMB uses WEDGE; DIP is introduced in7.
+- Level17 THE SKIMMING STONE has a fixed FLOOR and a bounce; do not invent arches.
+- Level22 STONE SKIPPING requires two floor bounces, not arches.
+- Level27 PRISM BRIDGE has a window and split/climb/level routing; "over gaps" misses its actual mechanic.
+- No human playtest supports "works flawlessly", "without disorientation", or blanket "fair" labels. Treat human difficulty/fairness as hypotheses, anchored in actual board features and teaching demands.
+- FROM ABOVE requires an unassisted no-manual-tilt solve. The campaign third star is unassisted regardless of tilt. Keep those distinct.
+- main.js:834 already traces the current route before hint matching. The bug is the later false-success fallback at845. Do not recommend merely adding a duplicate simulation call without correcting that path.
+
+Keep the verified problems as verified from parent browser evidence and source; do not claim you personally reproduced them. Do not manufacture a new bug. If no other issues are found, say so. All31 runtime solutions pass; that is execution evidence, not human discoverability. Prefer a concise, evidence-grounded corrected review over unqualified praise or generic labels.

@@ -1,0 +1,1919 @@
+{
+  "method": "Fresh isolated WebKit context; every level loaded, empty board fired, stored solution injected and fired; actual GUI state and framebuffer captured. This is automated coverage, not a blind human solve or physical iPad run.",
+  "rows": [
+    {
+      "index": 0,
+      "name": "FIRST BOUNCE",
+      "duplex": false,
+      "number": 1,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "Tap a square to put a mirror down. Tap it again to spin it. Then hit FIRE."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 1,
+      "name": "AROUND THE CORNER",
+      "duplex": false,
+      "number": 2,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 2,
+      "name": "DOUBLE TAKE",
+      "duplex": false,
+      "number": 3,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 3,
+      "name": "OVER THE WALL",
+      "duplex": false,
+      "number": 4,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 49.02285714285715,
+          "fitZoom": 49.02285714285715,
+          "effectiveZoom": 49.02285714285715,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "Some walls are lower than they look, and a beam can fly right over a low one. The beam gets wider and brighter the higher it climbs, and the readout after FIRE names every height. You can tilt the board to peek, but a no-tilt solve is what earns the third star."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 1.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 4,
+      "name": "UP THE STAIRS",
+      "duplex": false,
+      "number": 5,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 49.02285714285715,
+          "fitZoom": 49.02285714285715,
+          "effectiveZoom": 49.02285714285715,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "A WEDGE turns the beam and tilts it UP one step every square. A plain mirror turns it too, but it keeps the beam climbing - watch it grow brighter as it rises."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 5,
+      "name": "BEND THEN CLIMB",
+      "duplex": false,
+      "number": 6,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 49.02285714285715,
+          "fitZoom": 49.02285714285715,
+          "effectiveZoom": 49.02285714285715,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 6,
+      "name": "LEVEL OFF",
+      "duplex": false,
+      "number": 7,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 42.895,
+          "fitZoom": 42.895,
+          "effectiveZoom": 42.895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "A DIP turns the beam and tilts it DOWN one step. That makes it the only thing that can flatten a climbing beam: go UP with a wedge, then DIP to level off and fly straight."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 7,
+      "name": "ON STILTS",
+      "duplex": false,
+      "number": 8,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 42.895,
+          "fitZoom": 42.895,
+          "effectiveZoom": 42.895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "You can stand a piece on top of a block. Only a beam at that same height will hit it, and the readout after FIRE tells you what height your beam is flying at."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 8,
+      "name": "SECRET RAMP",
+      "duplex": false,
+      "number": 9,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 42.895,
+          "fitZoom": 42.895,
+          "effectiveZoom": 42.895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "One of these mirrors is not a mirror. Fire and watch the beam: if it turns and starts climbing, you have found the hidden wedge - and only a DIP can bring it back down to level."
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 9,
+      "name": "UNDER THE ARCH",
+      "duplex": false,
+      "number": 10,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 38.128888888888895,
+          "fitZoom": 38.128888888888895,
+          "effectiveZoom": 38.128888888888895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror4"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "Look for the faint sliver of light on the floor - that block is not solid all the way down. A beam at ground level slips straight under it, and the readout after FIRE always names the height your beam is flying at."
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 10,
+      "name": "THROUGH THE WINDOW",
+      "duplex": false,
+      "number": 11,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 38.128888888888895,
+          "fitZoom": 38.128888888888895,
+          "effectiveZoom": 38.128888888888895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "This block is hollow part-way UP, not at the bottom. The floor leaks the same faint light, but only a beam already flying at the hole's height will thread it - the readout after FIRE names the height your beam is at."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 11,
+      "name": "TWO ORBS",
+      "duplex": false,
+      "number": 12,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 38.128888888888895,
+          "fitZoom": 38.128888888888895,
+          "effectiveZoom": 38.128888888888895,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "Two orbs this time. One beam has to light them both - it passes straight through the first one and carries on to the second."
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.0 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 12,
+      "name": "SKIPPING STONE",
+      "duplex": false,
+      "number": 13,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34.316,
+          "fitZoom": 34.316,
+          "effectiveZoom": 34.316,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror1"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor1"
+          }
+        ],
+        "intro": "A FLOOR mirror lies flat in the ground. It never turns the beam - it only catches one that is already falling and throws it straight back up, still heading the same way. Send the beam down with a dip, then look for the bright dot where it touches the floor: that dot is the bounce."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 13,
+      "name": "THE LOW ROAD",
+      "duplex": false,
+      "number": 14,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34.316,
+          "fitZoom": 34.316,
+          "effectiveZoom": 34.316,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip0"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-floor",
+        "readout": "The beam fell to the floor.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 14,
+      "name": "THREAD THE NEEDLE",
+      "duplex": false,
+      "number": 15,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34.316,
+          "fitZoom": 34.316,
+          "effectiveZoom": 34.316,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "The hole in this one is high up. Climb with a wedge, then level off with a dip so the beam is flying at the hole's own height when it arrives - the readout after FIRE tells you the height you actually got."
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 15,
+      "name": "STONE BRIDGE",
+      "duplex": false,
+      "number": 16,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34.316,
+          "fitZoom": 34.316,
+          "effectiveZoom": 34.316,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 16,
+      "name": "THE SKIMMING STONE",
+      "duplex": false,
+      "number": 17,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 31.19636363636364,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror1"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor1"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 2.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 17,
+      "name": "SECRET STEPS",
+      "duplex": false,
+      "number": 18,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 31.19636363636364,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror3"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 18,
+      "name": "THE HIGH WINDOW",
+      "duplex": false,
+      "number": 19,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 31.19636363636364,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror4"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 19,
+      "name": "HIGH ROAD LOW ROAD",
+      "duplex": false,
+      "number": 20,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 31.19636363636364,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror2"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge2"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.0 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 20,
+      "name": "THE LONG WAY ROUND",
+      "duplex": false,
+      "number": 21,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 28.596666666666668,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror4"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 0.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 21,
+      "name": "STONE SKIPPING",
+      "duplex": false,
+      "number": 22,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 28.596666666666668,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror1"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip4"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "blocked",
+        "readout": "The beam hit a wall at height 2.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 22,
+      "name": "SUMMIT",
+      "duplex": false,
+      "number": 23,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 34,
+          "fitZoom": 28.596666666666668,
+          "effectiveZoom": 34,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror4"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": null
+      },
+      "empty": {
+        "end": "lost-sky",
+        "readout": "The beam went too high.0 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 23,
+      "name": "TWO WAYS",
+      "duplex": false,
+      "number": 24,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "SPLITTER",
+            "text": "Splitter1"
+          }
+        ],
+        "intro": "A SPLITTER makes two beams: one goes straight and one turns along its diagonal. Tap to rotate it. Connect both receivers in one FIRE."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.1 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 24,
+      "name": "THREE LIGHTS",
+      "duplex": false,
+      "number": 25,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "SPLITTER",
+            "text": "Splitter2"
+          }
+        ],
+        "intro": "Split the beam again to reach three receivers. Each branch keeps travelling at the same time. Light all three in one shot."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.1 of 3 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 3,
+        "hits": 3,
+        "readout": "Beam connected!3 of 3 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 25,
+      "name": "RISING FORK",
+      "duplex": false,
+      "number": 26,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "SPLITTER",
+            "text": "Splitter1"
+          }
+        ],
+        "intro": "Give each branch its own route. A SPLITTER keeps the incoming climb; a WEDGE can send one branch up to a higher receiver."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.1 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 26,
+      "name": "PRISM BRIDGE",
+      "duplex": false,
+      "number": 27,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 57.193333333333335,
+          "fitZoom": 57.193333333333335,
+          "effectiveZoom": 57.193333333333335,
+          "revealIntake": 0
+        },
+        "tray": [
+          {
+            "type": "WEDGE",
+            "text": "Wedge1"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "SPLITTER",
+            "text": "Splitter1"
+          }
+        ],
+        "intro": "Split, climb, then level off. Send the high branch through the window while the other branch stays on the ground."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.1 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 27,
+      "name": "THROUGH THE BOARD",
+      "duplex": true,
+      "number": 28,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 53.053333333333335,
+          "fitZoom": 53.053333333333335,
+          "effectiveZoom": 53.053333333333335,
+          "revealIntake": 0,
+          "layer": "above"
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror0"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "One floor, two faces. Tilt to reveal the terrain above it, then tap Below to turn the board over. Catch the beam with an upside-down DIP. Light can cross the floor only through the opening."
+      },
+      "empty": {
+        "end": "lost-floor",
+        "readout": "The beam fell to the floor.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 28,
+      "name": "RETURN TO LIGHT",
+      "duplex": true,
+      "number": 29,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 53.053333333333335,
+          "fitZoom": 53.053333333333335,
+          "effectiveZoom": 53.053333333333335,
+          "revealIntake": 0,
+          "layer": "above"
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror0"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "Travel through the first hole, follow the underside, then return through the second. Underside mirrors are flipped: DIP bends toward the shared floor; WEDGE bends away from it."
+      },
+      "empty": {
+        "end": "lost-floor",
+        "readout": "The beam fell to the floor.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 29,
+      "name": "DEEP CURRENT",
+      "duplex": true,
+      "number": 30,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 53.053333333333335,
+          "fitZoom": 53.053333333333335,
+          "effectiveZoom": 53.053333333333335,
+          "revealIntake": 0,
+          "layer": "above"
+        },
+        "tray": [
+          {
+            "type": "MIRROR",
+            "text": "Mirror1"
+          },
+          {
+            "type": "WEDGE",
+            "text": "Wedge0"
+          },
+          {
+            "type": "DIP",
+            "text": "Dip2"
+          },
+          {
+            "type": "FLOOR",
+            "text": "Floor0"
+          }
+        ],
+        "intro": "The terrain grows outward from both faces of one floor. Send the beam through the hole and catch it on the tallest underside columns. Tilt or flip to follow the whole route."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 1,
+        "hits": 1,
+        "readout": "Beam connected!",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    },
+    {
+      "index": 30,
+      "name": "PARALLEL WORLDS",
+      "duplex": true,
+      "number": 31,
+      "initial": {
+        "camera": {
+          "azimuthDeg": 0,
+          "elevationDeg": 90,
+          "zoom": 1,
+          "preset": "flat",
+          "view": "working",
+          "pan": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "manual": false,
+          "animating": false,
+          "cellPx": 53.053333333333335,
+          "fitZoom": 53.053333333333335,
+          "effectiveZoom": 53.053333333333335,
+          "revealIntake": 0,
+          "layer": "above"
+        },
+        "tray": [
+          {
+            "type": "DIP",
+            "text": "Dip1"
+          },
+          {
+            "type": "SPLITTER",
+            "text": "Splitter1"
+          }
+        ],
+        "intro": "Light both sides of the same board. Split the upper beam: one branch reaches the top receiver; the other passes through the opening and reflects along the underside."
+      },
+      "empty": {
+        "end": "lost-edge",
+        "readout": "The beam left the board.1 of 2 lit",
+        "status": "placing"
+      },
+      "solved": {
+        "allTargetsHit": true,
+        "end": "target",
+        "status": "won",
+        "targets": 2,
+        "hits": 2,
+        "readout": "Beam connected!2 of 2 lit",
+        "stars": {
+          "solved": true,
+          "par": true,
+          "blind": true
+        }
+      }
+    }
+  ],
+  "errors": []
+}

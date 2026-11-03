@@ -1,0 +1,64 @@
+{
+  "extraPieceHint": {
+    "level": 1,
+    "fixture": {
+      "number": 1,
+      "name": "FIRST BOUNCE",
+      "extra": {
+        "x": 3,
+        "y": 3,
+        "type": "MIRROR",
+        "orient": "/"
+      },
+      "end": "lost-edge",
+      "placed": [
+        {
+          "x": 2,
+          "y": 3,
+          "type": "MIRROR",
+          "orient": "\\"
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "type": "MIRROR",
+          "orient": "/"
+        }
+      ]
+    },
+    "before": {
+      "end": "lost-edge",
+      "winning": false
+    },
+    "hint": "That is the answer. Press FIRE!"
+  },
+  "crossingInspector": [
+    {
+      "expectedDestination": "below",
+      "event": {
+        "kind": "crossing",
+        "step": 3,
+        "x": 3,
+        "y": 3.5,
+        "z": -0.5,
+        "side": "below"
+      },
+      "text": "Event 7 of 26: crossing, column 4, row 4.5, height -0.5.",
+      "actualLayer": "below"
+    },
+    {
+      "expectedDestination": "above",
+      "event": {
+        "kind": "crossing",
+        "step": 10,
+        "x": 7,
+        "y": 3.5,
+        "z": -0.5,
+        "side": "above"
+      },
+      "text": "Event 19 of 26: crossing, column 8, row 4.5, height -0.5.",
+      "actualLayer": "below"
+    }
+  ],
+  "errors": []
+}

@@ -6,7 +6,7 @@
 
 # Configuration - UPDATE THESE
 NAS_USER="Jbapckfan"                # Your NAS username
-NAS_HOST="192.168.1.155"            # UGREEN NAS
+NAS_HOST="192.168.100.35"            # UGREEN NAS
 NAS_PATH="/volume1/docker/family-game-portal"  # Path on NAS
 
 # Colors

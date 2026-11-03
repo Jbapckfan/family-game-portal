@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lasers 3D — iPhone vs iPad Layout Review</title>
+<style>
+  :root { --bg: #090d16; --card-bg: #121a29; --border: #263852; --accent: #00ffcc; --text: #e6f1ff; --text-muted: #889bb5; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  h1 { font-size: 26px; font-weight: 700; margin: 0 0 6px; color: #fff; }
+  p.subtitle { color: var(--text-muted); margin: 0 0 28px; font-size: 15px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab-btn { background: #162438; border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; }
+  .tab-btn.active { background: var(--accent); color: #050817; border-color: var(--accent); font-weight: 700; }
+  .section { margin-bottom: 40px; }
+  .section-title { font-size: 19px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; }
+  .section-meta { font-size: 13px; color: var(--text-muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .card-header { padding: 12px 16px; background: rgba(0,0,0,0.25); border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; }
+  .card-header span.badge { font-size: 11px; background: rgba(0,255,204,0.15); color: var(--accent); padding: 2px 8px; border-radius: 10px; font-family: monospace; }
+  .img-wrap { padding: 12px; display: flex; justify-content: center; background: #050817; }
+  .img-wrap img { max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #1a293d; object-fit: contain; }
+  .comparison-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  @media (max-width: 900px) { .comparison-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<h1>Lasers 3D — iPhone & iPad Layout Deep Dive</h1>
+<p class="subtitle">Direct WebKit/Chromium captures comparing Phone portrait/landscape against iPad Pro 13" layouts across 2D, 3D tilt, and Both Sides underside.</p>
+
+
+  <div class="section">
+    <div class="section-title">
+      <span>Level 1: FIRST BOUNCE (2D Flat)</span>
+      <span class="section-meta">Side-by-Side iPhone vs iPad Comparison</span>
+    </div>
+    <div class="grid">
+      
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Portrait</span>
+            <span class="badge">393 × 852</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-portrait-l1-flat.png" target="_blank"><img src="iphone-portrait-l1-flat.png" alt="iPhone 15 Pro Portrait - Level 1: FIRST BOUNCE (2D Flat)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Landscape</span>
+            <span class="badge">852 × 393</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-landscape-l1-flat.png" target="_blank"><img src="iphone-landscape-l1-flat.png" alt="iPhone 15 Pro Landscape - Level 1: FIRST BOUNCE (2D Flat)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone SE Portrait</span>
+            <span class="badge">375 × 667</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-se-portrait-l1-flat.png" target="_blank"><img src="iphone-se-portrait-l1-flat.png" alt="iPhone SE Portrait - Level 1: FIRST BOUNCE (2D Flat)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Portrait</span>
+            <span class="badge">1024 × 1366</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-portrait-l1-flat.png" target="_blank"><img src="ipad-portrait-l1-flat.png" alt="iPad Pro 13" Portrait - Level 1: FIRST BOUNCE (2D Flat)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Landscape</span>
+            <span class="badge">1366 × 1024</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-landscape-l1-flat.png" target="_blank"><img src="ipad-landscape-l1-flat.png" alt="iPad Pro 13" Landscape - Level 1: FIRST BOUNCE (2D Flat)"></a>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">
+      <span>Level 4: OVER THE WALL (3D Isometric)</span>
+      <span class="section-meta">Side-by-Side iPhone vs iPad Comparison</span>
+    </div>
+    <div class="grid">
+      
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Portrait</span>
+            <span class="badge">393 × 852</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-portrait-l4-3d.png" target="_blank"><img src="iphone-portrait-l4-3d.png" alt="iPhone 15 Pro Portrait - Level 4: OVER THE WALL (3D Isometric)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Landscape</span>
+            <span class="badge">852 × 393</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-landscape-l4-3d.png" target="_blank"><img src="iphone-landscape-l4-3d.png" alt="iPhone 15 Pro Landscape - Level 4: OVER THE WALL (3D Isometric)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone SE Portrait</span>
+            <span class="badge">375 × 667</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-se-portrait-l4-3d.png" target="_blank"><img src="iphone-se-portrait-l4-3d.png" alt="iPhone SE Portrait - Level 4: OVER THE WALL (3D Isometric)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Portrait</span>
+            <span class="badge">1024 × 1366</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-portrait-l4-3d.png" target="_blank"><img src="ipad-portrait-l4-3d.png" alt="iPad Pro 13" Portrait - Level 4: OVER THE WALL (3D Isometric)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Landscape</span>
+            <span class="badge">1366 × 1024</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-landscape-l4-3d.png" target="_blank"><img src="ipad-landscape-l4-3d.png" alt="iPad Pro 13" Landscape - Level 4: OVER THE WALL (3D Isometric)"></a>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">
+      <span>Level 28: THROUGH THE BOARD (Both Sides - Above)</span>
+      <span class="section-meta">Side-by-Side iPhone vs iPad Comparison</span>
+    </div>
+    <div class="grid">
+      
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Portrait</span>
+            <span class="badge">393 × 852</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-portrait-l28-above.png" target="_blank"><img src="iphone-portrait-l28-above.png" alt="iPhone 15 Pro Portrait - Level 28: THROUGH THE BOARD (Both Sides - Above)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Landscape</span>
+            <span class="badge">852 × 393</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-landscape-l28-above.png" target="_blank"><img src="iphone-landscape-l28-above.png" alt="iPhone 15 Pro Landscape - Level 28: THROUGH THE BOARD (Both Sides - Above)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone SE Portrait</span>
+            <span class="badge">375 × 667</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-se-portrait-l28-above.png" target="_blank"><img src="iphone-se-portrait-l28-above.png" alt="iPhone SE Portrait - Level 28: THROUGH THE BOARD (Both Sides - Above)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Portrait</span>
+            <span class="badge">1024 × 1366</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-portrait-l28-above.png" target="_blank"><img src="ipad-portrait-l28-above.png" alt="iPad Pro 13" Portrait - Level 28: THROUGH THE BOARD (Both Sides - Above)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Landscape</span>
+            <span class="badge">1366 × 1024</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-landscape-l28-above.png" target="_blank"><img src="ipad-landscape-l28-above.png" alt="iPad Pro 13" Landscape - Level 28: THROUGH THE BOARD (Both Sides - Above)"></a>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">
+      <span>Level 28: THROUGH THE BOARD (Both Sides - Below)</span>
+      <span class="section-meta">Side-by-Side iPhone vs iPad Comparison</span>
+    </div>
+    <div class="grid">
+      
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Portrait</span>
+            <span class="badge">393 × 852</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-portrait-l28-below.png" target="_blank"><img src="iphone-portrait-l28-below.png" alt="iPhone 15 Pro Portrait - Level 28: THROUGH THE BOARD (Both Sides - Below)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone 15 Pro Landscape</span>
+            <span class="badge">852 × 393</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-landscape-l28-below.png" target="_blank"><img src="iphone-landscape-l28-below.png" alt="iPhone 15 Pro Landscape - Level 28: THROUGH THE BOARD (Both Sides - Below)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPhone SE Portrait</span>
+            <span class="badge">375 × 667</span>
+          </div>
+          <div class="img-wrap">
+            <a href="iphone-se-portrait-l28-below.png" target="_blank"><img src="iphone-se-portrait-l28-below.png" alt="iPhone SE Portrait - Level 28: THROUGH THE BOARD (Both Sides - Below)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Portrait</span>
+            <span class="badge">1024 × 1366</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-portrait-l28-below.png" target="_blank"><img src="ipad-portrait-l28-below.png" alt="iPad Pro 13" Portrait - Level 28: THROUGH THE BOARD (Both Sides - Below)"></a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <span>iPad Pro 13" Landscape</span>
+            <span class="badge">1366 × 1024</span>
+          </div>
+          <div class="img-wrap">
+            <a href="ipad-landscape-l28-below.png" target="_blank"><img src="ipad-landscape-l28-below.png" alt="iPad Pro 13" Landscape - Level 28: THROUGH THE BOARD (Both Sides - Below)"></a>
+          </div>
+        </div>
+        
+    </div>
+  </div>
+  
+
+</body>
+</html>

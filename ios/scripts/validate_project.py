@@ -28,7 +28,7 @@ GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES | BONU
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
 SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg", "word-acceptance.mjs", "vocabulary.mjs", "word-lists-LICENSE.txt"}
-DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "player-tools.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
+DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "player-tools.mjs", "feedback-client.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
 ASSET_EXTENSIONS = {"js", "mjs", "css", "json", "txt", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "avif", "woff", "woff2", "ttf", "otf"}

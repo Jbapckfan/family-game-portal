@@ -1,5 +1,6 @@
 // Optional on-device playtest tools. Game progress remains owned by each engine.
 import {GAMES} from './catalog.mjs';
+import {newFeedbackId,validFeedbackId,sendFeedback} from '../deepseek-runtime/feedback-client.mjs';
 const statuses={new:'Not started',playing:'In progress',won:'Solved',lost:'Not solved',revealed:'Revealed'};
 const feelings={again:'Play again',confusing:'Confusing',favorite:'A favorite',problem:'Something broke'};
 export function buildPlaytestNote({slug,date,build='local source',feeling,status,note=''}) {
@@ -11,15 +12,27 @@ export function buildPlaytestNote({slug,date,build='local source',feeling,status
 export function startPlaytest(doc,win,snapshot) {
   const $=id=>doc.getElementById(id);
   for(const game of GAMES){const option=doc.createElement('option');option.value=game.slug;option.textContent=`${game.name} · ${game.creator}`;$('playtest-game').append(option);}
-  let build='local source';
-  $('playtest-form').addEventListener('submit',event=>{
-    event.preventDefault();const current=snapshot(),slug=$('playtest-game').value;
+  let build='local source',pendingId=null,inFlight=false;
+  const draftKey='alford-daily:suggestions:v1:home-draft';
+  try{const draft=JSON.parse(win.localStorage.getItem(draftKey)||'null');if(draft){pendingId=validFeedbackId(draft.id)?draft.id:null;$('playtest-game').value=draft.slug||GAMES[0].slug;$('playtest-feeling').value=draft.feeling||'again';$('playtest-note').value=String(draft.note||'').slice(0,600);}}catch{}
+  const saveDraft=()=>{pendingId=null;try{win.localStorage.setItem(draftKey,JSON.stringify({id:null,slug:$('playtest-game').value,feeling:$('playtest-feeling').value,note:$('playtest-note').value}));$('playtest-status').textContent='Draft saved on this device.';}catch{$('playtest-status').textContent='Draft could not be saved. Keep a copy before leaving.';}};
+  $('playtest-note').addEventListener('input',saveDraft);$('playtest-game').addEventListener('change',saveDraft);$('playtest-feeling').addEventListener('change',saveDraft);
+  $('playtest-form').addEventListener('submit',async event=>{
+    event.preventDefault();if(inFlight)return;const current=snapshot(),slug=$('playtest-game').value;
     $('playtest-text').value=buildPlaytestNote({slug,date:current.date,build,feeling:$('playtest-feeling').value,status:current.results.find(result=>result.slug===slug)?.status,note:$('playtest-note').value});
-    $('playtest-report').hidden=false;$('playtest-status').textContent='Review your note, then copy it to your conversation with James. Nothing has been sent.';$('playtest-text').focus();
+    const text=$('playtest-note').value.trim();if(!text){$('playtest-status').textContent='Write your feedback first.';return;}
+    inFlight=true;const button=$('playtest-form').querySelector('button[type="submit"]');button.disabled=true;$('playtest-status').classList.remove('saved');$('playtest-status').textContent='Submitting…';let locallySaved=false;
+    try{pendingId??=newFeedbackId(win.crypto);const game=GAMES.find(g=>g.slug===slug),key='alford-daily:suggestions:v1:note:'+pendingId,record={id:pendingId,gameId:slug,gameName:game.name,mode:'general',date:current.date,created:new Date().toISOString(),feeling:$('playtest-feeling').value,text,status:'pending'};
+      try{const value=JSON.stringify(record);win.localStorage.setItem(key,value);win.localStorage.setItem(draftKey,JSON.stringify({id:pendingId,slug,feeling:$('playtest-feeling').value,note:text}));locallySaved=win.localStorage.getItem(key)===value;}catch{}
+      const receipt=await sendFeedback(record,win);try{win.localStorage.setItem(key,JSON.stringify({...record,status:'received',receipt}));win.localStorage.setItem(draftKey,'');}catch{}
+      pendingId=null;$('playtest-note').value='';$('playtest-report').hidden=false;$('playtest-status').textContent='✓ Feedback submitted successfully. Thank you!';$('playtest-status').classList.add('saved');
+    }catch{$('playtest-report').hidden=false;$('playtest-status').textContent=locallySaved?'Not submitted yet. A copy is saved on this device; retry when connected.':'Could not submit feedback. Your text is still here; copy it before leaving.';}
+    finally{inFlight=false;button.disabled=false;}
+
   });
   $('copy-playtest').addEventListener('click',async()=>{
-    try{if(!win.navigator.clipboard?.writeText)throw new Error('No clipboard');await win.navigator.clipboard.writeText($('playtest-text').value);$('playtest-status').textContent='Note copied. Send it to James when you are ready.';}
-    catch{$('playtest-text').focus();$('playtest-text').select();$('playtest-status').textContent='Select and copy the note below. Nothing has been sent.';}
+    try{if(!win.navigator.clipboard?.writeText)throw new Error('No clipboard');await win.navigator.clipboard.writeText($('playtest-text').value);$('playtest-status').textContent='Feedback copy ready to share.';}
+    catch{$('playtest-text').focus();$('playtest-text').select();$('playtest-status').textContent='Select and copy your feedback below.';}
   });
   const root=new URL('../',new URL(doc.documentElement.dataset.gameBase||'./games/',doc.baseURI));
   const button=$('save-offline'),status=$('offline-status');

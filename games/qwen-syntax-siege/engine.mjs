@@ -13,10 +13,20 @@ export function canSpell(w, word) {
   const available=[...w.rack];
   return typeof word==='string' && /^[A-Z]{3,6}$/.test(word) && [...word].every(letter=>{const i=available.indexOf(letter);if(i===-1)return false;available.splice(i,1);return true;});
 }
-export function createState(p) { return { played:p.waves.map(()=>[]),selected:[],started:false,untimed:false,remainingMs:p.waves[0].durationMs,misses:0,timeouts:0,hints:0,revealed:false }; }
+export const paceFactor = s => s.inputMode==='tiles'?2/3:1;
+export const secondsRemaining = s => Math.ceil(s.remainingMs/paceFactor(s)/1000);
+export const entrySummary = s => !s.inputHistory?'Input pace not recorded':s.inputHistory===3?'Mixed input · tile pace 30s / keyboard 20s':s.inputMode==='tiles'?'Tile entry · 30s pace':'Keyboard entry · 20s pace';
+export function setInputMode(p,s,mode,record=true){
+ if(getStatus(p,s)!=='playing'||!['tiles','keyboard'].includes(mode))return s;
+ const inputHistory=(s.inputHistory||0)|(record?(mode==='tiles'?2:1):0);
+ return s.inputMode===mode&&s.inputHistory===inputHistory?s:{...s,inputMode:mode,inputHistory};
+}
+export function createState(p) { return { played:p.waves.map(()=>[]),selected:[],started:false,untimed:false,remainingMs:p.waves[0].durationMs,misses:0,timeouts:0,hints:0,revealed:false,inputMode:'keyboard',paceCarry:0,inputHistory:0 }; }
 export function getStatus(p,s) { if(s.revealed)return 'revealed';if(health(s)===0)return 'lost';return waveIndex(p,s)===p.waves.length?'won':'playing'; }
 export function restoreState(p,raw) {
   if(!raw||typeof raw!=='object'||!Array.isArray(raw.played)||raw.played.length!==p.waves.length||!Array.isArray(raw.selected))return null;
+  const inputMode=raw.inputMode??'keyboard',paceCarry=raw.paceCarry??0,inputHistory=raw.inputHistory??0;
+  if(!['keyboard','tiles'].includes(inputMode)||!count(paceCarry,2)||!count(inputHistory,3))return null;
   // A final 20-HP impact can land when only 10 HP remains.
   if(![raw.started,raw.untimed,raw.revealed].every(x=>typeof x==='boolean')||!count(raw.misses,10)||!count(raw.timeouts,5)||!count(raw.hints)||raw.misses*10+raw.timeouts*20>110)return null;
   if(!Number.isInteger(raw.remainingMs)||raw.remainingMs<1||raw.remainingMs>20000)return null;
@@ -33,7 +43,7 @@ export function restoreState(p,raw) {
   if(index===p.waves.length&&raw.selected.length)return null;
   if(!raw.started&&(raw.played.some(words=>words.length)||raw.misses||raw.timeouts))return null;
   if(raw.revealed&&index!==p.waves.length)return null;
-  return {played:raw.played.map(words=>[...words]),selected:[...raw.selected],started:raw.started,untimed:raw.untimed,remainingMs:raw.remainingMs,misses:raw.misses,timeouts:raw.timeouts,hints:raw.hints,revealed:raw.revealed};
+  return {played:raw.played.map(words=>[...words]),selected:[...raw.selected],started:raw.started,untimed:raw.untimed,remainingMs:raw.remainingMs,misses:raw.misses,timeouts:raw.timeouts,hints:raw.hints,revealed:raw.revealed,inputMode,paceCarry,inputHistory};
 }
 export const start = (p,s) => getStatus(p,s)==='playing'?{...s,started:true}:s;
 export const assist = (p,s) => getStatus(p,s)==='playing'?{...s,untimed:true}:s;
@@ -54,15 +64,16 @@ export function submit(p,s) {
   const played=s.played.map(words=>[...words]);played[index].push(word);
   let state={...s,played,selected:[]};
   const cleared=waveDamage(state,index)>=w.health;
-  if(cleared)state={...state,remainingMs:20000};
+  if(cleared)state={...state,remainingMs:20000,paceCarry:0};
   return {state,message:getStatus(p,state)==='won'?'All six waves defeated. Core secure!':cleared?`${word}: ${word.length*10} damage. Wave cleared!`:`${word}: ${word.length*10} damage. Keep firing!`};
 }
 export function tick(p,s,deltaMs,mode='daily') {
   if(!s.started||s.untimed||mode==='practice'||getStatus(p,s)!=='playing')return null;
   const delta=Math.max(0,Math.floor(Number.isFinite(deltaMs)?deltaMs:0));
   if(!delta)return null;
-  const remaining=s.remainingMs-delta;
-  return remaining>0?{...s,remainingMs:remaining}:{...s,remainingMs:20000,timeouts:s.timeouts+1,selected:[]};
+  const scaled=s.inputMode==='tiles'?delta*2+(s.paceCarry||0):delta*3;
+  const paceCarry=scaled%3,remaining=s.remainingMs-Math.floor(scaled/3);
+  return remaining>0?{...s,remainingMs:remaining,paceCarry}:{...s,remainingMs:20000,paceCarry:0,timeouts:s.timeouts+1,selected:[]};
 }
 export function hint(p,s) {
   if(getStatus(p,s)!=='playing')return s;
@@ -77,4 +88,4 @@ export function reveal(p,s) {
   if(getStatus(p,s)!=='playing')return s;
   return {...s,played:p.waves.map(w=>[w.words[0]]),selected:[],started:true,revealed:true};
 }
-export const summarize=(p,s)=>`${waveIndex(p,s)}/${p.waves.length} waves · ${health(s)} core HP · ${score(s)} points${s.untimed?' · untimed assist':''}${s.hints?` · ${s.hints} hints`:''}`;
+export const summarize=(p,s)=>`${waveIndex(p,s)}/${p.waves.length} waves · ${health(s)} core HP · ${score(s)} points${s.untimed?' · untimed assist':''}${s.hints?` · ${s.hints} hints`:''} · ${entrySummary(s)}`;

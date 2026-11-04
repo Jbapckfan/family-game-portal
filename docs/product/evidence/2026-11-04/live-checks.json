@@ -1,0 +1,43 @@
+[
+  {
+    "path": "/games/daily/",
+    "status": 200,
+    "mime": "text/html",
+    "matchesSource": false
+  },
+  {
+    "path": "/games/deepseek-runtime/player-tools.mjs",
+    "status": 200,
+    "mime": "text/javascript",
+    "matchesSource": true
+  },
+  {
+    "path": "/games/deepseek-runtime/feedback-client.mjs",
+    "status": 200,
+    "mime": "text/javascript",
+    "matchesSource": true
+  },
+  {
+    "path": "/games/qwen-syntax-siege/app.mjs",
+    "status": 200,
+    "mime": "text/javascript",
+    "matchesSource": true
+  },
+  {
+    "path": "/games/nested-tic-tac-toe/app.mjs",
+    "status": 200,
+    "mime": "text/javascript",
+    "matchesSource": true
+  },
+  {
+    "path": "/games/ringcount/samples.mjs",
+    "status": 200,
+    "mime": "text/javascript",
+    "matchesSource": true
+  },
+  {
+    "path": "/api/feedback",
+    "status": 401,
+    "serviceIdentityRejected": true
+  }
+]

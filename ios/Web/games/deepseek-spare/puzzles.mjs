@@ -39,7 +39,7 @@ const ORIGINAL_PUZZLES=Object.freeze(boards.map((board,i)=>Object.freeze({
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
 // All published records retain their original values, IDs, and ordering.
-// Additional prepared content by ChatGPT. Creator attribution is unchanged.
+// Additional prepared content by Alford Daily. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
     "id": "spare-031",

@@ -1,5 +1,5 @@
 import {WORDS_BY_RACK} from './word-acceptance.mjs';
-// Concept: DeepSeek. Completed rules, validation and implementation: ChatGPT.
+// Concept: DeepSeek. Completed rules, validation and implementation: Alford Daily.
 // Keep the earlier common-word hint priority and all authored records intact.
 // Broader offline source acceptance obeys the same rack and gold-letter rules.
 const REVIEWED_COMMON_WORDS=Object.freeze(['EARS']);

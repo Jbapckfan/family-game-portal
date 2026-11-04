@@ -1,4 +1,4 @@
-// Curated wave words and fixed daily schedules. Concept by Qwen; implementation content by ChatGPT.
+// Curated wave words and fixed daily schedules. Concept by Qwen; implementation content by Alford Daily.
 const ORIGINAL_PUZZLES = [
   {
     "id": "siege-01",
@@ -6475,7 +6475,7 @@ const ORIGINAL_PUZZLES = [
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
 // All published records retain their original values, IDs, and ordering.
-// Additional prepared content by ChatGPT. Creator attribution is unchanged.
+// Additional prepared content by Alford Daily. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
     "id": "siege-031",

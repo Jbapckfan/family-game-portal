@@ -4,7 +4,7 @@ Current preference groups from James's playtests:
 
 - **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail, harder Split and Quadra. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Parked for later:** Logic Lattice — James is unsure; preserve it for a future revisit.
-- **Strong positive feedback:** Cipher — “cipher is great”; no numerical score or relative position supplied.
+- **Strong positive feedback:** Cipher — “cipher is great”; Syntax Siege — “great game, love this,” with UI improvements requested. No numerical scores or relative positions supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
 - **Difficulty redesign needed; retention undecided:** Spare — “the game is too easy.”
@@ -35,7 +35,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 20 | Split | DeepSeek | Keep; harder sample preferred | Much better; keep it |
 | 21 | Quadra | Qwen | Keep; category mechanic liked | Challenging; I like it |
 | 22 | Logic Lattice | Qwen | Parked for later; preserve game | Unsure; revisit later |
-| 23 | Syntax Siege | Qwen | Open for individual playtest | Awaiting feedback |
+| 23 | Syntax Siege | Qwen | Strong positive gameplay; UI and pacing revised | Great game; love this |
 | 24 | Memory Maze | Qwen | Not yet reviewed individually | — |
 | 25 | Pattern Prism | Qwen | Not yet reviewed individually | — |
 | 26 | Territory Tactics | Qwen | Not yet reviewed individually | — |

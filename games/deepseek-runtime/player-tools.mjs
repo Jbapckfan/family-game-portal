@@ -1,3 +1,4 @@
+import {mountSuggestionBox} from './common.mjs';
 /** Collection preferences only. Game saves and daily assignments are never touched. */
 export const PREFERENCE_PREFIX = 'alford:game-pref:v1:';
 export const PREFERENCE_EVENT = 'alford:game-preferences';
@@ -88,6 +89,12 @@ function installToolbar(doc=document,win=window) {
   const controls=doc.createElement('div');aside.append(label,controls);doc.body.prepend(aside);
   const name=doc.title.split(/[·—|]/)[0].trim()||slug;
   mountPreferenceButtons(controls,slug,name,win);
+  const standalone=['deepseek-trail','deepseek-split','deepseek-spare'].includes(slug)&&win.location.hash!=='#daily';
+  if(!/^(deepseek-|qwen-|claude-)/.test(slug)||standalone){
+    mountSuggestionBox({doc,win,gameId:slug,gameName:name,anchor:doc.getElementById('root')||doc.getElementById('app')||doc.querySelector('.page')||doc.querySelector('main'),snapshot:()=>({mode:'general',date:new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())})});
+  }
+  const attachFeedback=()=>{const input=doc.getElementById('suggestion-text');if(!input||aside.querySelector('[data-feedback-shortcut]'))return;const link=doc.createElement('a');link.href='#suggestion-text';link.dataset.feedbackShortcut='true';link.textContent='Feedback';link.style.cssText='display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid #56718a;border-radius:8px;color:#edf6ff;text-decoration:none;font:600 12px system-ui';link.onclick=()=>input.focus();controls.append(link);};
+  win.addEventListener('alford:feedback-ready',attachFeedback);attachFeedback();
 }
 if(typeof document!=='undefined'&&typeof window!=='undefined'){
   receiveNativePreference(window.__ALFORD_NATIVE__?.gamePreference);

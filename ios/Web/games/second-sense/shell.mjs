@@ -418,7 +418,7 @@ export function createShell(config) {
     setInterval(updateNewDay, 30000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNewDay(); });
     const onPortal = new RegExp('/games/' + slug + '(?:/(?:index\\.html)?)?$').test(location.pathname);
-    $('family-link').href = onPortal ? (document.documentElement?.dataset?.collectionHome || '../../') : 'https://alford-daily.jbapckfan.chatgpt.site';
+    $('family-link').href = onPortal ? (document.documentElement?.dataset?.collectionHome || '../../') : '../daily/';
     if (config.sibling) {
       $('sibling-link').href = onPortal ? '../' + config.sibling.slug + '/' : config.sibling.url;
       $('sibling-link').textContent = 'Play ' + config.sibling.name + ' ↗';

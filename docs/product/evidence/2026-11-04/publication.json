@@ -1,0 +1,29 @@
+{
+  "siteProjectId": "appgprj_6ad77f0216348191a061da38c4a431c4",
+  "siteVersion": 6,
+  "siteSourceCommit": "555d282f767661338313f5032f65aeb5e5f4e9e0",
+  "deploymentId": "appgdep_6aeb62d06aa48191a4d498d1cb9e26a0",
+  "status": "succeeded",
+  "url": "https://alford-daily.jbapckfan.chatgpt.site",
+  "audience": "owner-private; one owner; zero external visitors",
+  "archiveSha256": "bdca92394953c1c6fbd6ac119da669bff439e4b0006d4c8cc56bc94170b15f85",
+  "nodeTests": 997,
+  "nativeRuntimeFiles": 307,
+  "liveUI": {
+    "favoritesFilter": true,
+    "hiddenFilter": true,
+    "recommendations": 3,
+    "icons": 3,
+    "duplicateBanner": false,
+    "inlineFeedback": true,
+    "platformBrandInRenderedBody": false,
+    "pageErrors": 0
+  },
+  "limitations": [
+    "Signed-in live POST could not be automated: browser access host unavailable. Live service caller correctly receives401 because it has no visitor identity.",
+    "Service-only write relaxation was rejected by automatic approval review and reverted before publication. Version6 retains required visitor identity.",
+    "Existing hosted domain still contains provider name; removing it from address bar requires a custom domain.",
+    "Native source compiles, but no new physical-device installation was performed.",
+    "No supported two-row terminal status-line setting was established; existing configuration was not changed."
+  ]
+}

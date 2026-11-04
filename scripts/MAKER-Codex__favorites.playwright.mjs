@@ -25,7 +25,7 @@ for(const engine of [chromium,webkit]){
   const favorite=page.locator('#flagship-games [data-pref-game="ringcount"] [data-preference="favorite"]');await favorite.click();
   await page.reload();await page.waitForSelector('[data-pref-controls] button');assert.equal(await favorite.getAttribute('aria-pressed'),'true');
   await page.locator('#favorites-only').click();assert.ok((await page.locator('[data-pref-game]:visible').evaluateAll(els=>els.map(el=>el.dataset.prefGame))).every(slug=>slug==='ringcount'));
-  await page.locator('#flagship-games [data-game="ringcount"]').click();await page.waitForSelector('#alford-player-tools');
+  await page.locator('#flagship-games [data-game="ringcount"]').click();await page.waitForSelector('#alford-player-tools');await page.waitForSelector('#suggestion-text');assert.equal(await page.locator('#suggestion-text').count(),1);assert.ok(!/chatgpt/i.test(await page.locator('body').innerText()));
   assert.equal(await page.locator('#alford-player-tools [data-preference="favorite"]').getAttribute('aria-pressed'),'true');
   await page.locator('#alford-player-tools [data-preference="favorite"]').click();await page.locator('#alford-player-tools [data-preference="hidden"]').click();
   await page.goto(home);await page.waitForSelector('[data-pref-controls] button');assert.equal(await page.locator('[data-pref-game="ringcount"]:visible').count(),0);
@@ -43,7 +43,7 @@ for(const engine of [chromium,webkit]){
   await page.locator('.collection-preferences').screenshot({path:path.join(out,`${engine.name()}-${viewport.width}-filters.png`)});
   await page.locator('#featured-games [data-pref-game="shortlist"]').screenshot({path:path.join(out,`${engine.name()}-${viewport.width}-card.png`)});
   for(const slug of GAME_SLUGS){
-   await page.goto(`https://alford.test/games/${slug}/`);await page.waitForSelector('#alford-player-tools');
+   await page.goto(`https://alford.test/games/${slug}/`);await page.waitForSelector('#alford-player-tools');await page.waitForSelector('#suggestion-text');assert.equal(await page.locator('#suggestion-text').count(),1);assert.ok(!/chatgpt/i.test(await page.locator('body').innerText()));
    assert.equal(await page.locator('#alford-player-tools').count(),1);
    assert.equal(await page.locator('#alford-player-tools button').count(),2);
    assert.equal(await page.locator('#alford-player-tools').evaluate(el=>el.getBoundingClientRect().top>=0),true);
@@ -52,7 +52,7 @@ for(const engine of [chromium,webkit]){
   await page.screenshot({path:path.join(out,`${engine.name()}-${viewport.width}-game.png`),fullPage:true});
   // Native startup and event synchronization must never echo back to native.
   await page.addInitScript(()=>{window.__ALFORD_NATIVE__={gamePreference:{slug:'nested-tic-tac-toe',favorite:true,hidden:false}};window.received=[];window.webkit={messageHandlers:{alford:{postMessage:value=>window.received.push(value)}}};});
-  await page.reload();await page.waitForSelector('#alford-player-tools');
+  await page.reload();await page.waitForSelector('#alford-player-tools');await page.waitForSelector('#suggestion-text');assert.equal(await page.locator('#suggestion-text').count(),1);assert.ok(!/chatgpt/i.test(await page.locator('body').innerText()));
   assert.equal(await page.locator('#alford-player-tools [data-preference="favorite"]').getAttribute('aria-pressed'),'true');
   await page.evaluate(()=>dispatchEvent(new CustomEvent('alford:game-preference-change',{detail:{slug:'nested-tic-tac-toe',favorite:false,hidden:true}})));
   assert.equal(await page.locator('#alford-player-tools [data-preference="hidden"]').innerText(),'Unhide');

@@ -1,4 +1,5 @@
 import {createSession} from './core.mjs';
+import {newFeedbackId,validFeedbackId,sendFeedback} from './feedback-client.mjs';
 export const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function sendNative(payload){try{if(window.__ALFORD_NATIVE__?.platform!=='ios')return false;const handler=window.webkit?.messageHandlers?.alford;if(!handler?.postMessage)return false;handler.postMessage(payload);return true;}catch{return false;}}
 
@@ -18,7 +19,7 @@ const CATEGORY = {
 export function mountDailyGame(config) {
   const doc=document,win=window,host=doc.getElementById('app');
   const creator=config.creator||'DeepSeek';
-  const credit=config.credit||`Concept by ${creator} · Built by ChatGPT`;
+  const credit=config.credit||`Concept by ${creator} · Built by Alford Daily`;
   const native=win.__ALFORD_NATIVE__?.platform==='ios';
   doc.body.dataset.gameCreator=creator;doc.body.dataset.gameId=config.id;
   doc.documentElement.style.setProperty('--accent',config.accent||'#476b59');
@@ -103,6 +104,7 @@ export function mountDailyGame(config) {
         if(!Number.isSafeInteger(count)||count<0)throw new TypeError('Invalid assistance count');
         details.push(`Hints: ${count}`);
       }
+      if(typeof config.shareDetails==='function'){const extra=config.shareDetails(session.puzzle,session.state);if(!Array.isArray(extra)||extra.some(line=>typeof line!=='string'||line.length>160))throw new TypeError('Invalid share details');details.push(...extra);}
       if(typeof config.untimedAssistance==='function'){
         const untimed=config.untimedAssistance(session.puzzle,session.state);
         if(typeof untimed!=='boolean')throw new TypeError('Invalid untimed assistance');
@@ -141,6 +143,46 @@ export function mountDailyGame(config) {
   // A back/forward cache restore keeps this document and its interval alive.
   // Only dispose the clock when the document is actually being discarded.
   win.addEventListener('pagehide',pageHide);
+  if(config.suggestions!==false)mountSuggestionBox({doc,win,gameId:config.id,gameName:config.name,snapshot:()=>({mode:session.mode,date:session.dateKey,puzzleId:session.puzzle.id}),pause:()=>{dialogPause=true;},resume:()=>{dialogPause=false;lastTick=performance.now();}});
   render();
   return {session,render,destroy:cleanup};
+}
+
+
+// Private playtest feedback: durable local records, never a false delivery claim.
+export function mountSuggestionBox({doc,win,gameId,gameName,snapshot,pause=()=>{},resume=()=>{},anchor=null}){
+ if(doc.getElementById('suggestion-form'))return;
+ const native=win.__ALFORD_NATIVE__?.platform==='ios';
+ const prefix='alford-daily:suggestions:v1:note:',draftKey=`alford-daily:suggestions:v1:draft:${gameId}`,box=doc.createElement('section');box.className='suggestion-box';
+ box.innerHTML=`<h2>What would make this game better?</h2><p>${native?'Save your idea on this device, then use Copy / share saved feedback to send it to James. Nothing is sent automatically.':'Send your suggestion to Alford Daily. If a connection fails, your text stays here so you can retry.'}</p><form id="suggestion-form"><label for="suggestion-text">Your feedback</label><textarea id="suggestion-text" rows="4" maxlength="2000" required placeholder="Tell us what you would improve…"></textarea><button type="submit" id="suggestion-save" class="button primary">${native?'Save feedback on device':'Submit feedback'}</button></form><p id="suggestion-status" role="status" aria-live="polite"></p><details id="suggestion-history"><summary>Saved feedback <span id="suggestion-count"></span></summary><ol id="suggestion-list"></ol><button type="button" id="suggestion-copy" class="button">Copy / share saved feedback</button><textarea id="suggestion-export" readonly hidden rows="6" aria-label="Feedback ready to copy"></textarea></details>`;
+ (anchor||doc.getElementById('local-stats')||doc.querySelector('.game-shell main')||doc.body.lastElementChild).after(box);
+ if(!doc.getElementById('alford-feedback-style')){const style=doc.createElement('style');style.id='alford-feedback-style';style.textContent=`.suggestion-box{box-sizing:border-box;width:min(100% - 24px,720px);margin:22px auto;padding:18px;border:1px solid #b9cfde;border-radius:15px;background:#fff;color:#17384b;font:14px/1.6 system-ui;text-align:left}.suggestion-box h2{font:750 21px/1.3 system-ui;margin:0 0 8px}.suggestion-box p{font-size:13px;line-height:1.6}.suggestion-box label{display:block;font-weight:700;margin:12px 0 7px}.suggestion-box textarea{display:block;width:100%;box-sizing:border-box;resize:vertical;min-height:115px;padding:12px;border:1px solid #9cbacb;border-radius:10px;background:#fff;color:#17384b;font:16px/1.5 system-ui}.suggestion-box textarea[hidden]{display:none}.suggestion-box button{min-height:44px;padding:10px 14px;margin-top:10px;border:1px solid #247c98;border-radius:9px;background:#126f8c;color:#fff;font:700 14px system-ui;cursor:pointer}.suggestion-box button:disabled{opacity:.6;cursor:wait}.suggestion-box #suggestion-status{font-size:14px;min-height:22px;margin:12px 0}.suggestion-box #suggestion-status.saved{color:#17664b;font-weight:700}.suggestion-box summary{cursor:pointer;min-height:36px}.suggestion-box li p{white-space:pre-wrap;overflow-wrap:anywhere}.suggestion-box small{color:#4d687a}`;doc.head.append(style);}
+ box.addEventListener('keydown',event=>event.stopPropagation());
+ const $=id=>box.querySelector('#'+id),input=$('suggestion-text'),status=$('suggestion-status');let pendingId=null,inFlight=false;
+ function records(){const storage=win.localStorage,result=[];for(let i=0;i<storage.length;i++){const key=storage.key(i);if(!key?.startsWith(prefix))continue;try{const item=JSON.parse(storage.getItem(key));if(item.gameId===gameId&&typeof item.text==='string'&&item.text.length<=2000&&typeof item.created==='string')result.push(item);}catch{}}return result.sort((a,b)=>a.created.localeCompare(b.created));}
+ function showRecords(){try{const items=records(),list=$('suggestion-list');list.replaceChildren();for(const item of items){const li=doc.createElement('li'),stamp=doc.createElement('small'),text=doc.createElement('p');stamp.textContent=`${(item.receipt?.receivedAt||item.created).slice(0,10)} · ${item.mode==='practice'?'Practice':item.mode==='daily'?'Daily':'Game feedback'} · ${item.status==='received'?'✓ Received':native?'Saved on this device':'Not submitted'}`;text.textContent=item.text;li.append(stamp,text);list.append(li);}$('suggestion-count').textContent=`(${items.length})`;$('suggestion-copy').disabled=!items.length;}catch{status.textContent='Saved feedback could not be read. Keep a copy of what you type.';}}
+ try{const raw=win.localStorage.getItem(draftKey)||'';let draft;try{draft=JSON.parse(raw);}catch{}input.value=typeof draft?.text==='string'?draft.text:raw;pendingId=validFeedbackId(draft?.id)?draft.id:null;}catch{status.textContent='Device storage is unavailable. Keep a copy of what you type.';}showRecords();
+ box.addEventListener('focusin',pause);box.addEventListener('focusout',event=>{if(!box.contains(event.relatedTarget))resume();});
+ input.oninput=()=>{pendingId=null;status.classList.remove('saved');try{win.localStorage.setItem(draftKey,JSON.stringify({id:null,text:input.value}));status.textContent='Draft saved on this device.';}catch{status.textContent='Draft is not saved. Copy your text before leaving.';}};
+ $('suggestion-form').onsubmit=async event=>{
+  event.preventDefault();if(inFlight)return;const text=input.value.trim();if(!text){status.textContent='Write some feedback first.';input.focus();return;}
+  inFlight=true;$('suggestion-save').disabled=true;status.classList.remove('saved');status.textContent=native?'Saving…':'Submitting…';let locallySaved=false;
+  try{
+   pendingId??=newFeedbackId(win.crypto);const key=prefix+pendingId,record={id:pendingId,gameId,gameName,...snapshot(),created:new Date().toISOString(),text,status:'pending'};
+   try{win.localStorage.setItem(draftKey,JSON.stringify({id:pendingId,text:input.value}));const value=JSON.stringify(record);win.localStorage.setItem(key,value);locallySaved=win.localStorage.getItem(key)===value;}catch{}
+   if(native){
+    if(!locallySaved)throw Error('Device save failed');
+    try{win.localStorage.setItem(draftKey,'');}catch{}
+    input.value='';pendingId=null;showRecords();$('suggestion-history').open=true;
+    status.textContent='✓ Saved on this device. Use Copy / share saved feedback to send it to James.';status.classList.add('saved');return;
+   }
+   const receipt=await sendFeedback(record,win);
+   try{win.localStorage.setItem(key,JSON.stringify({...record,status:'received',receipt}));win.localStorage.setItem(draftKey,'');}catch{}
+   input.value='';pendingId=null;showRecords();status.textContent='✓ Feedback submitted successfully. Thank you!';status.classList.add('saved');
+  }catch{status.classList.remove('saved');status.textContent=native?'Could not save your feedback. Your text is still here—copy it before leaving.':locallySaved?'Not submitted yet. A copy is saved on this device; retry when connected.':'Could not submit your feedback. Your text is still here—copy it before leaving.';}
+  finally{inFlight=false;$('suggestion-save').disabled=false;}
+ };
+ $('suggestion-copy').onclick=async()=>{let text;try{text=records().map(n=>`${n.gameName} · ${n.mode==='practice'?'Practice':n.mode==='daily'?'Daily':'Game feedback'} · ${n.date}\n${n.text}`).join('\n\n');}catch{status.textContent='Saved feedback could not be read.';return;}if(!text){status.textContent='No saved feedback yet.';return;}if(sendNative({type:'share',text})){status.textContent='Share sheet opened. Choose where to send your feedback.';return;}try{await win.navigator.clipboard.writeText(text);status.textContent='Feedback copied. Paste it into your message to James.';}catch{$('suggestion-export').hidden=false;$('suggestion-export').value=text;$('suggestion-export').focus();$('suggestion-export').select();status.textContent='Copy your saved feedback from the text box below.';}};
+ win.dispatchEvent(new win.CustomEvent('alford:feedback-ready'));
+ return {destroy:()=>box.remove()};
 }

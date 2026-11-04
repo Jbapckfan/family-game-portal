@@ -1,4 +1,4 @@
-// Original daily boards by ChatGPT, implementing Qwen’s Logic Lattice concept.
+// Original daily boards by Alford Daily, implementing Qwen’s Logic Lattice concept.
 // Each displayed constraint set has exactly one solution (checked independently in engine.test.mjs).
 const ORIGINAL_PUZZLES = [
   {
@@ -1765,7 +1765,7 @@ const ORIGINAL_PUZZLES = [
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
 // All published records retain their original values, IDs, and ordering.
-// Additional prepared content by ChatGPT. Creator attribution is unchanged.
+// Additional prepared content by Alford Daily. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
     "id": "lattice-031",

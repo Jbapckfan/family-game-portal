@@ -22,19 +22,24 @@ test('home note flow stays on-device, renders text safely and survives failed cl
   try {
     assert.ok(doc.getElementById('playtest-form'),'real home exposes a feedback form');
     Object.defineProperty(win.navigator,'clipboard',{value:{writeText:async()=>{throw new Error('denied');}}});
+    win.fetch=async(_url,options)=>({ok:true,json:async()=>({received:true,receipt:{id:JSON.parse(options.body).id,receivedAt:'2026-11-04T12:00:00.000Z'}})});
+    const gameSave='shortlist:v1:daily:2026-10-28';win.localStorage.setItem(gameSave,'preserve-game-progress');
     const before=win.localStorage.length;
     playtest.startPlaytest(doc,win,()=>({date:'2026-10-28',results:[{slug:'shortlist',status:'playing'}]}));
     doc.getElementById('playtest-game').value='shortlist';
     doc.getElementById('playtest-feeling').value='confusing';
     doc.getElementById('playtest-note').value='<img src=x onerror=alert(1)> scans';
     doc.getElementById('playtest-form').dispatchEvent(new win.Event('submit',{bubbles:true,cancelable:true}));
+    await new Promise(setImmediate);
     assert.equal(doc.getElementById('playtest-report').hidden,false);
     assert.match(doc.getElementById('playtest-text').value,/In progress/);
     assert.match(doc.getElementById('playtest-text').value,/<img/);
     assert.equal(doc.querySelector('#playtest-report img'),null);
     doc.getElementById('copy-playtest').click();await new Promise(setImmediate);
     assert.match(doc.getElementById('playtest-status').textContent,/select|copy/i);
-    assert.equal(win.localStorage.length,before,'feedback never writes rewards, saves or tracking');
+    assert.equal(win.localStorage.getItem(gameSave),'preserve-game-progress');
+    assert.equal(win.localStorage.length,before+2,'one separate feedback record and cleared draft are saved');
+    const keys=Array.from({length:win.localStorage.length},(_,i)=>win.localStorage.key(i)).filter(k=>k.startsWith('alford-daily:suggestions:v1:note:'));assert.equal(keys.length,1);const note=JSON.parse(win.localStorage.getItem(keys[0]));assert.equal(note.gameId,'shortlist');assert.equal(note.text,'<img src=x onerror=alert(1)> scans');
   }finally{win.close();}
 });
 

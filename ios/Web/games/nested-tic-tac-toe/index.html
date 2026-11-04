@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f6f3ec">
+  <meta name="theme-color" content="#0c1723">
   <meta name="description" content="Nine small tic-tac-toe boards. One big match. Play a local AI in this Alford Daily bonus game.">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="stylesheet" href="./styles.css">
   <title>Tic-Tac-Toe · Alford Daily</title>
-</head>
-<body data-game-creator="ChatGPT">
+<script type="module" src="../deepseek-runtime/player-tools.mjs"></script></head>
+<body>
   <a class="skip-link" href="#puzzle">Skip to game</a>
   <div class="page">
     <header class="masthead">
       <a class="collection-link" href="../daily/" aria-label="Alford Daily, all games"><span class="collection-mark" aria-hidden="true">a.</span><span>ALFORD DAILY<small>THE GAMES COLLECTION</small></span></a>
-      <span class="creator">Developed by ChatGPT</span>
+      <span class="creator">NINE BOARDS. ONE MATCH.</span>
       <button id="help-button" class="help-button" aria-label="How to play">?</button>
     </header>
     <main>
@@ -46,10 +46,10 @@
           <section class="overview" aria-labelledby="overview-title">
             <div class="section-heading"><h3 id="overview-title">THE BIG BOARD</h3><span>Three in a line wins</span></div>
             <div id="macro-board" class="macro-board" role="group" aria-label="Nine mini boards. Select a board to inspect or play."></div>
-            <p id="board-choice-note" class="board-choice-note">9 open boards · select one below</p>
+            <p id="board-choice-note" class="board-choice-note">9 open boards · select a board</p>
           </section>
           <section id="detail-panel" class="detail-panel" tabindex="-1" aria-labelledby="selected-board-title">
-            <p class="detail-kicker">A CLOSER LOOK <span aria-hidden="true">↘</span></p>
+            <p class="detail-kicker">PLAY THIS BOARD <span aria-hidden="true">↘</span></p>
             <h3 id="selected-board-title">Center board</h3>
             <p id="selected-board-status" class="selected-board-status">Choose your square</p>
             <div id="detail-board" class="detail-board" role="group" aria-label="Squares in the selected mini board"></div>
@@ -64,13 +64,12 @@
         </div>
         <p id="level-note" class="level-note">Casual sees the next move. Tactical looks further ahead.</p>
         <p id="save-note" class="save-note">Your match is saved on this device.</p>
-        <p class="native-credit">Developed by ChatGPT</p>
       </section>
       <section class="margin-notes" aria-label="Rules at a glance"><p><b>Claim a board.</b> Three of your marks in a mini board earns that big square.</p><p><b>Follow the route.</b> Your small square chooses the next board. A closed destination means a free choice.</p><p><b>Make the big line.</b> Three claimed squares win. Drawn mini boards stay closed and unclaimed.</p></section>
     </main>
-    <footer><a href="../daily/">← All games</a><span>A bonus match. No daily streak required.</span><span>Developed by ChatGPT</span></footer>
+    <footer><a href="../daily/">← All games</a><span>A bonus match. No daily streak required.</span><span>Alford Daily</span></footer>
   </div>
-  <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-content"><button class="dialog-close" data-close-dialog aria-label="Close how to play">×</button><p class="eyebrow">NINE BOARDS / ONE MATCH</p><h2 id="help-title">How to play</h2><ol><li>You are the blue <b class="mark-x">×</b>. The AI is the ochre <b class="mark-o">○</b>. You make the first move in any mini board.</li><li>Choose a board in the overview, then play a square in the larger view. Your chosen small square sends the opponent to the matching big board: top left sends them to top left, center sends them to center.</li><li>Three marks in a mini board claim that big square. Three claimed squares in a big-board line win the match.</li><li>Won and drawn mini boards are closed. If the next destination is closed, choose any unfinished board. Drawn boards cannot be claimed.</li><li>If every board closes without a big-board winning line, the match is a draw.</li></ol><p>Pick Casual or Tactical before your first move. Both levels run locally and make deterministic choices. Your match resumes on this device, including an interrupted AI turn.</p><p class="keyboard-note">Keyboard: Tab to choose a board or square. Enter or Space selects. Arrow keys move between available squares.</p><button data-close-dialog class="primary-button">Let's play <span aria-hidden="true">↗</span></button></div></dialog>
+  <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-content"><button class="dialog-close" data-close-dialog aria-label="Close how to play">×</button><p class="eyebrow">NINE BOARDS / ONE MATCH</p><h2 id="help-title">How to play</h2><ol><li>You are the blue <b class="mark-x">×</b>. The AI is the teal <b class="mark-o">○</b>. You make the first move in any mini board.</li><li>Choose a board in the overview, then play a square in the larger view. Your chosen small square sends the opponent to the matching big board: top left sends them to top left, center sends them to center.</li><li>Three marks in a mini board claim that big square. Three claimed squares in a big-board line win the match.</li><li>Won and drawn mini boards are closed. If the next destination is closed, choose any unfinished board. Drawn boards cannot be claimed.</li><li>If every board closes without a big-board winning line, the match is a draw.</li></ol><p>Pick Casual or Tactical before your first move. Both levels run locally and make deterministic choices. Your match resumes on this device, including an interrupted AI turn.</p><p class="keyboard-note">Keyboard: Tab to choose a board or square. Enter or Space selects. Arrow keys move between available squares.</p><button data-close-dialog class="primary-button">Let's play <span aria-hidden="true">↗</span></button></div></dialog>
   <dialog id="restart-dialog" aria-labelledby="restart-title"><div class="dialog-content"><p class="eyebrow">A FRESH BOARD</p><h2 id="restart-title">Start a new match?</h2><p>Your current match will be replaced. You will play first as ×.</p><div class="dialog-actions"><button data-close-dialog class="secondary-button">Keep playing</button><button id="confirm-restart" class="primary-button">New match <span aria-hidden="true">↗</span></button></div></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
   <noscript><p class="noscript">Enable JavaScript to play Tic-Tac-Toe.</p></noscript>

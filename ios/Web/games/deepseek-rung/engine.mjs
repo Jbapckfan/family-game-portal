@@ -1,5 +1,5 @@
 import {FOUR_LETTER_WORDS} from './word-acceptance.mjs';
-// Concept: DeepSeek. Curated lexicon and completed implementation: ChatGPT.
+// Concept: DeepSeek. Curated lexicon and completed implementation: Alford Daily.
 // Retain the original vocabulary so all valid progress remains restorable.
 // The pinned full-source four-letter union expands legal moves.
 const ORIGINAL_LEXICON=Object.freeze([...new Set(`

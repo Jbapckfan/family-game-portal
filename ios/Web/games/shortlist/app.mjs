@@ -12,7 +12,7 @@ const help=`<p class="dialog-kicker">A LITTLE INFORMATION GOES A LONG WAY</p><h2
 const app=createShell({
   lesson:{question:'A + E gives 1. Which word fits that result?',choices:[{label:'MATCH',correct:true,why:'MATCH has A but no E: exactly one of the two letters.'},{label:'TABLE',correct:false,why:'TABLE contains both A and E, so its count would be 2.'},{label:'STORY',correct:false,why:'STORY contains neither A nor E, so its count would be 0.'}]},
   slug:'shortlist',name:'Shortlist',puzzles:PUZZLES,engine,
-  sibling:{slug:'counterpart',name:'Counterpart',url:'https://counterpart-daily.jbapckfan.chatgpt.site'},
+  sibling:{slug:'counterpart',name:'Counterpart',url:'../counterpart/'},
   reset(){selected=[];restoredHintKey=null;pendingPick=null;markMode=false;},
   record:game=>({status:game.status,scans:game.scans.length,hints:game.hints}),
   help,

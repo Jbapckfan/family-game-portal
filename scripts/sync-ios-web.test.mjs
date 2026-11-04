@@ -22,7 +22,7 @@ const slugs = [...originals, ...classics, ...kimi, ...sharedModuleGames, ...bonu
 const runtime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs', 'styles.css', 'icon.svg', 'manifest.webmanifest', 'fonts/test.ttf', 'fonts/LICENSE.txt'];
 const sharedRuntime = ['assets/index.js', 'assets/index.css', 'assets/chunks/game.mjs', 'assets/puzzles.json', 'assets/images/icon.avif', 'fonts/test.woff2', 'fonts/LICENSE.txt'];
 const deepseekRuntime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs'];
-const deepseekShared = ['core.mjs', 'common.mjs', 'player-tools.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css'];
+const deepseekShared = ['core.mjs', 'common.mjs', 'player-tools.mjs', 'feedback-client.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css'];
 
 function writeFixture(root, relative, content = relative) {
   const target = join(root, relative);
@@ -87,6 +87,7 @@ function fixture(run) {
   writeFixture(root, 'games/deepseek-runtime/daily-rotations.mjs', 'export const FRESH_ROTATIONS = {};');
   writeFixture(root, 'games/deepseek-runtime/practice-calendar.mjs', 'export const practiceCandidates = () => [];');
   writeFixture(root, 'games/deepseek-runtime/player-tools.mjs', 'export const preferences = true;');
+  writeFixture(root, 'games/deepseek-runtime/feedback-client.mjs', 'export const feedback = true;');
   writeFixture(root, 'games/deepseek-runtime/common.mjs', 'import "./core.mjs";');
   writeFixture(root, 'games/deepseek-runtime/styles.css', 'body { font-family: system-ui; }');
   writeFixture(root, 'games/deepseek-runtime/core.test.mjs', 'throw new Error("Do not bundle this test.");');

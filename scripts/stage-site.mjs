@@ -67,7 +67,7 @@ for (const name of dailyFiles) {
   if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`Not a regular collection runtime file: ${name}`);
   const bytes = await readFile(source);
   files.set(`games/daily/${name}`,bytes);
-  files.set(name, name==='index.html' ? Buffer.from(bytes.toString().replace('data-game-base="../"','data-game-base="./games/"')) : bytes);
+  files.set(name, name==='index.html' ? Buffer.from(bytes.toString().replace('data-game-base="../"','data-game-base="./games/"')) : name==='playtest.mjs'?Buffer.from(bytes.toString().replace('../deepseek-runtime/feedback-client.mjs','./games/deepseek-runtime/feedback-client.mjs')):bytes);
 }
 files.set('release.json',Buffer.from(JSON.stringify(inventory,null,2)+'\n'));
 files.set('404.html',Buffer.from('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found · Alford Daily</title><h1>Page not found</h1><p>This address does not contain a game. Open the collection link your host shared.</p></html>\n'));

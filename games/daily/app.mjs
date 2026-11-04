@@ -133,7 +133,6 @@ export function startHome(doc = document, win = window) {
   });
   $('browse-all').addEventListener('click', () => { favoritesOnly=false;$('favorites-only')?.setAttribute('aria-pressed','false');applyFilter('All'); $('today').focus(); });
   let savedFilter = 'All'; try {savedFilter = win.localStorage.getItem('alford:catalog:creator') || 'All';} catch {}
-  if(savedFilter==='ChatGPT')savedFilter='Alford Daily';
   applyFilter(savedFilter, false);
   // Preserve synchronous startHome and support both the collection root and games/daily.
   const preferencesReady = import(new URL('deepseek-runtime/player-tools.mjs',new URL(base,doc.baseURI)).href).then(module=>{

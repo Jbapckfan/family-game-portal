@@ -4,6 +4,7 @@ import {createInterface} from 'node:readline';
 import {GAMES,BONUS_GAMES} from '../games/daily/catalog.mjs';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'/Users/jamesalford/.npm/_npx/31e32ef8478fbf80/node_modules/playwright/index.mjs');
 const root=path.resolve(import.meta.dirname,'..'),allowed=new Set([...GAMES,...BONUS_GAMES].map(g=>g.slug));
+allowed.add('daily');
 let slug=process.argv[2]||'shortlist';if(!allowed.has(slug))throw new Error('Unknown game');
 const profile=path.join(root,'output/counterpart-review-20261030/readable-profile');
 const context=await chromium.launchPersistentContext(profile,{channel:'chrome',headless:false,viewport:{width:1200,height:960},serviceWorkers:'block',reducedMotion:'no-preference',args:['--disable-gpu','--disable-gpu-compositing']});
@@ -25,8 +26,9 @@ await context.route('**/*',async route=>{
  const types={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.ttf':'font/ttf','.woff2':'font/woff2'};
  try{await route.fulfill({path:file,contentType:types[path.extname(file)]});}catch{await route.fulfill({status:404,body:'Not found'});}
 });
-async function capture(){if(slug.startsWith('kimi-')&&page.url().includes('/games/'+slug+'/'))await page.locator('[data-game-ready]').waitFor();const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:!(await page.locator('.pair-drag-ghost').count())});console.log(JSON.stringify({game:slug,title:await page.title(),tabs:context.pages().length,profile}));}
-async function showGame(next){if(!allowed.has(next))throw new Error('Unknown game');slug=next;if(page.isClosed()){page=context.pages().find(p=>!p.isClosed())||await context.newPage();if(page===sampleTab)sampleTab=null;}await page.goto(`https://alford-daily.test/games/${slug}/`);await page.bringToFront();await capture();}
+async function capture(){if(slug.startsWith('kimi-')&&page.url().includes('/games/'+slug+'/'))await page.locator('[data-game-ready]').waitFor();const out=path.join(root,'output',slug+'-review-20261030');await mkdir(out,{recursive:true});await page.screenshot({path:path.join(out,'visible-game.png'),fullPage:slug!=='daily'&&!(await page.locator('.pair-drag-ghost').count())});console.log(JSON.stringify({game:slug,url:page.url(),title:await page.title(),tabs:context.pages().length,profile}));}
+async function showGame(next){if(!allowed.has(next))throw new Error('Unknown game');slug=next;if(page.isClosed()){page=context.pages().find(p=>!p.isClosed())||await context.newPage();if(page===sampleTab)sampleTab=null;}await page.goto(`https://alford-daily.test/games/${slug}/`);if(slug==='daily'){await page.locator('#todays-three .game-card').first().waitFor();await page.locator('.collection-preferences').scrollIntoViewIfNeeded().catch(()=>{});}
+await page.bringToFront();await capture();}
 await showGame(slug);
 if(process.argv[3]==='five'&&slug==='kimi-tangle'){await page.getByRole('button',{name:'5×5 Preview',exact:true}).click();await page.locator('[data-board-size="5"]').waitFor();await capture();}
 let pending=Promise.resolve();

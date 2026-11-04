@@ -36,3 +36,6 @@ Logic Lattice follow-up: James requested more explanation and UI improvement. Th
 
 
 November 4 decision: **Logic Lattice is parked for later, not removed.** Its game files, puzzles, saves and review work are preserved. The keeper count remains 15. Syntax Siege is next when the individual review resumes.
+
+
+November 4 collection update: [UI, pacing, favorites/hide, feedback, branding, bonus and private-publication report](../product/POLISH-2026-11-04.md). Syntax Siege received strong positive gameplay feedback; no new numeric score or explicit keeper verdict was inferred.

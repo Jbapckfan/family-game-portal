@@ -1,5 +1,5 @@
 // Boards 1–16 preserve Qwen's supplied QUADRA prototype verbatim.
-// Boards 17–30 are additional editorial content by ChatGPT.
+// Boards 17–30 are additional editorial content by Alford Daily.
 const BOARDS = [
  ['Weather',['RAIN','SNOW','WIND','HAIL']],
  ['Money',['CASH','COIN','NOTE','BILL']],
@@ -41,7 +41,7 @@ const ORIGINAL_PUZZLES=BOARDS.map(([category,answers],i)=>({id:`quadra-${i+1}`,c
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
 // All published records retain their original values, IDs, and ordering.
-// Additional prepared content by ChatGPT. Creator attribution is unchanged.
+// Additional prepared content by Alford Daily. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
     "id": "quadra-031",

@@ -9,7 +9,7 @@ let followedColumn=null;
 const app=createShell({
   lesson:{question:'Shift A B C D one place to the right. Which strip do you get?',choices:[{label:'D A B C',correct:true,why:'The right edge wraps around to become the first letter.'},{label:'B C D A',correct:false,why:'That is one shift to the left. Try wrapping D around to the front.'},{label:'D C B A',correct:false,why:'A shift keeps the letter order. It does not reverse the strip.'}]},
   slug:'sideways',name:'Sideways',puzzles:PUZZLES,engine,
-  sibling:{slug:'second-sense',name:'Second Sense',url:'https://alford-daily.jbapckfan.chatgpt.site/games/second-sense/'},
+  sibling:{slug:'second-sense',name:'Second Sense',url:'../second-sense/'},
   reset(){hintMessage='';followedColumn=null;},
   record:game=>({status:game.status,checks:game.checks,moves:game.moves,hints:game.hints}),
   share:openResultShare,

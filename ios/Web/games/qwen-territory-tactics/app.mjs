@@ -3,7 +3,7 @@ import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
 mountDailyGame({
  assistanceCount:(p,s)=>s.hints,
-  id:'qwen-territory-tactics',name:'Territory Tactics',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
+  id:'qwen-territory-tactics',name:'Territory Tactics',creator:'Qwen',credit:'Concept by Qwen · Built by Alford Daily',accent:'#087c99',
   intro:'Two moves. One opening. Make the capture count.',
   instructions:[
     'Capture at least the number of amber enemy stones shown in the capture goal, using no more than two blue placements. This is a prepared position puzzle; there is no opposing player taking turns.',

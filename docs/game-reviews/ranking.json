@@ -1645,19 +1645,42 @@
       "name": "Syntax Siege",
       "creator": "Qwen",
       "reviewOrder": 23,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-04",
+            "quote": "okay, this is a great game, love this",
+            "interpretation": "Strong positive gameplay reaction; no numerical rating or explicit keeper wording supplied."
+          },
+          {
+            "date": "2026-11-04",
+            "quote": "UI needs work, but gameplay is gun",
+            "interpretation": "Gameplay is fun (apparent typo); requests a UI improvement."
+          },
+          {
+            "date": "2026-11-04",
+            "quote": "might be harder to type out with touch vs a keyboard, so may consider different speeds depending on the input method (automatically determined by us, not the user",
+            "interpretation": "Requests automatic pacing based on actual input method."
+          },
+          {
+            "date": "2026-11-04",
+            "quote": "in practice the diamond is not moving, it should move to simulate the real game",
+            "interpretation": "Requests visual approach motion during untimed practice."
+          }
+        ],
+        "enjoymentReaction": "great game; love this; gameplay is fun",
+        "preferenceTier": "strong_positive"
       },
       "reviews": [],
       "disposition": "undecided",
       "evidence": [
         "syntax-siege/REVIEW-2026-11-04.md"
       ],
-      "nextStep": "Open for James’s playtest. Timer remains waiting for Start defense. Await enjoyment, difficulty and retention feedback."
+      "nextStep": "Playtest refreshed UI, automatic tile/typed pacing and moving untimed practice. Explicit retention and numerical rank remain unset."
     },
     {
       "slug": "qwen-memory-maze",

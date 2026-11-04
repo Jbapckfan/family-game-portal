@@ -1,0 +1,24 @@
+{
+  "provider": "Opus",
+  "modelArgument": "claude-opus-5-5",
+  "started": "2026-11-04T15:01:53.580517+00:00",
+  "cwd": "/private/tmp/MAKER-Opus__siege-ui-20261104",
+  "files": [
+    {
+      "path": "games/qwen-syntax-siege/engine.mjs",
+      "sha256": "58927d90a823c777fa0016d2da24d5ba7f3e0ecd0a8744a7e398c0c8c534fa5e"
+    },
+    {
+      "path": "games/qwen-syntax-siege/app.mjs",
+      "sha256": "d0c81d76bb9b89d2d9efa20e692abc67e9af0909d6a089e8db9e8881f7c4373d"
+    },
+    {
+      "path": "games/qwen-syntax-siege/styles.css",
+      "sha256": "fc2da640b21f211bafdc5e35e48adf55897b45ded8917bd4960b9985a9307915"
+    }
+  ],
+  "scope": "static supplied-source review",
+  "exitCode": 0,
+  "seconds": 143.13,
+  "reviewCharacters": 3761
+}

@@ -1,4 +1,4 @@
-import { createGame, legalMoves, playMove, saveMatch, restoreMatch } from './engine.mjs';
+import { createGame, legalMoves, playMove, saveMatch, restoreMatch, LINES } from './engine.mjs';
 import { chooseMove } from './ai.mjs';
 
 export const STORAGE_KEY = 'alford:tic-tac-toe:v1:match';
@@ -146,6 +146,7 @@ function boot() {
   let selectedBoard = 4;
   let renderedMoves = -1;
   let previousStatus = 'playing';
+  let previousBoards = null;
   let previewCell = null;
   let returnFocus = null;
   let toastTimer;
@@ -225,13 +226,22 @@ function boot() {
     $('turn-mark').className = `turn-mark mark-${playing ? state.turn.toLowerCase() : state.status.toLowerCase()}`;
     $('turn-instruction').textContent = instruction;
     $('turn-status').setAttribute('aria-label',`${title} ${instruction}`);
-    $('board-choice-note').textContent = conflicted ? 'Reload to see the current saved match' : playing && state.forcedBoard === null ? `${new Set(moves.map(move => move.board)).size} open boards · select one below` : playing ? 'The outlined board is the next destination' : 'The finished match';
+    $('board-choice-note').textContent = conflicted ? 'Reload to see the current saved match' : playing && state.forcedBoard === null ? `${new Set(moves.map(move => move.board)).size} open boards · select a board` : playing ? 'The outlined board is the next destination' : 'The finished match';
+    const newlyClosed = previousBoards && state.boards.some((result,board) => result && previousBoards[board] === null);
+    if (newlyClosed) {
+      // Phone play happens below the overview. Reveal the claimed macro square
+      // before its animation so the reward and next destination can be seen.
+      const overview = $('macro-board');
+      const bounds = overview.getBoundingClientRect();
+      if (bounds.top < 0 || bounds.bottom > window.innerHeight) overview.scrollIntoView({block:'center',behavior:'auto'});
+    }
+    const winningBoards = new Set(LINES.filter(line => ['X','O'].includes(state.status) && line.every(board => state.boards[board] === state.status)).flat());
     const claimedX = state.boards.filter(board => board === 'X').length;
     const claimedO = state.boards.filter(board => board === 'O').length;
     const last = state.history.at(-1);
     const lastPlayer = last ? state.cells[last.board][last.cell] : null;
     $('recent-move').hidden = !last;
-    const recentText = last ? `${lastPlayer === 'X' ? 'You' : 'AI'} played ${symbol(lastPlayer)} in the ${POSITIONS[last.board].toLowerCase()} board, ${POSITIONS[last.cell].toLowerCase()} square.` : '';
+    const recentText = last ? `${lastPlayer === 'X' ? 'You' : 'AI'} played ${symbol(lastPlayer)} in the ${POSITIONS[last.board].toLowerCase()} board, ${POSITIONS[last.cell].toLowerCase()} square.${state.boards[last.board] ? state.boards[last.board] === 'draw' ? ' Board drawn — it stays unclaimed.' : ` ${lastPlayer === 'X' ? 'You claim' : 'AI claims'} the big square.` : ''}` : '';
     if ($('last-move').textContent !== recentText) $('last-move').textContent = recentText;
     $('inspect-last-move').disabled = conflicted;
     if (last) $('inspect-last-move').setAttribute('aria-label',`Inspect the last move in the ${POSITIONS[last.board].toLowerCase()} board`);
@@ -244,7 +254,7 @@ function boot() {
       const result = state.boards[board];
       const available = openBoards.has(board);
       const status = result === 'draw' ? 'Drawn' : result === 'X' ? 'You claimed' : result === 'O' ? 'AI claimed' : conflicted ? 'Paused' : state.forcedBoard === board && playing ? (human ? 'Play here' : 'AI here') : available && playing ? 'Open' : 'Waiting';
-      button.className = `mini-board${available ? ' available' : ''}${selectedBoard === board ? ' selected' : ''}${state.forcedBoard === board && playing ? ' forced' : ''}${result ? ` closed result-${result.toLowerCase()}` : ''}${last?.board === board ? ' has-last-move' : ''}`;
+      button.className = `mini-board${available ? ' available' : ''}${selectedBoard === board ? ' selected' : ''}${state.forcedBoard === board && playing ? ' forced' : ''}${result ? ` closed result-${result.toLowerCase()}` : ''}${last?.board === board ? ' has-last-move' : ''}${winningBoards.has(board) ? ' winning-board' : ''}`;
       button.setAttribute('aria-pressed',String(board === selectedBoard));
       button.setAttribute('aria-label',`${POSITIONS[board]} board. ${status}. ${selectedBoard === board ? 'Selected.' : 'Select to inspect.'}${last?.board === board ? ` Last move: ${lastPlayer === 'X' ? 'you' : 'AI'} played the ${POSITIONS[last.cell].toLowerCase()} square.` : ''}`);
       button.querySelector('.board-state').textContent = status;
@@ -261,13 +271,25 @@ function boot() {
       if(last?.board === board){recentSquare.style.gridArea=`${Math.floor(last.cell/3)+1} / ${last.cell%3+1}`;recentSquare.className=`recent-square-marker mark-${lastPlayer.toLowerCase()}`;}
       overlay.hidden = !result;
       overlay.querySelector('b').textContent = result === 'draw' ? '—' : symbol(result);
-      overlay.querySelector('span').textContent = result === 'draw' ? 'Drawn' : result === 'X' ? 'Yours' : 'AI';
+      overlay.querySelector('span').textContent = result === 'draw' ? 'Unclaimed' : result === 'X' ? 'Your board' : 'AI board';
+      // Animate only a newly earned square, never restored saves or inspection.
+      // The overlay stays on the macro board while the next legal move remains usable.
+      if (!result) for (const animation of overlay.getAnimations()) animation.cancel();
+      if (result && previousBoards && previousBoards[board] === null && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        overlay.animate([
+          {opacity:0, transform:'scale(.28)'},
+          {opacity:1, transform:'scale(1.06)', offset:.7},
+          {opacity:1, transform:'scale(1)'},
+        ], {duration:620, easing:'cubic-bezier(.16,1,.3,1)'});
+      }
     }
+    previousBoards = [...state.boards];
     const selectedResult = state.boards[selectedBoard];
     const playable = human && openBoards.has(selectedBoard);
     $('selected-board-title').textContent = `${POSITIONS[selectedBoard]} board`;
     $('selected-board-status').textContent = conflicted ? 'Paused · reload to continue' : selectedResult === 'draw' ? 'Drawn · closed' : selectedResult ? `${selectedResult === 'X' ? 'You' : 'AI'} claimed this board` : !playing ? 'Match finished' : playable ? 'Choose your square' : human ? 'Inspecting · play in the outlined board' : 'AI turn · please wait';
     $('detail-panel').classList.toggle('can-play', playable);
+    document.querySelector('.detail-kicker').firstChild.textContent = playable ? 'PLAY THIS BOARD ' : selectedResult === 'draw' ? 'DRAWN BOARD ' : selectedResult ? 'CLAIMED BOARD ' : 'BOARD DETAIL ';
     $('detail-panel').classList.toggle('is-closed', Boolean(selectedResult));
     for (let cell = 0; cell < 9; cell++) {
       const button = cellButtons[cell];

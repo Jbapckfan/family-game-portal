@@ -1,4 +1,4 @@
-// Concept: DeepSeek. Completed rules, validation and implementation: ChatGPT.
+// Concept: DeepSeek. Completed rules, validation and implementation: Alford Daily.
 const unique=values=>new Set(values).size===values.length;
 const tileIndex=n=>Number.isInteger(n)&&n>=0&&n<9;
 const pairKey=(a,b)=>[a,b].sort((x,y)=>x-y).join(':');

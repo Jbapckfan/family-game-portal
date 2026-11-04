@@ -3,6 +3,7 @@
 Current preference groups from James's playtests:
 
 - **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Strong positive feedback:** Cipher — “cipher is great”; no numerical score or relative position supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
 - **Difficulty redesign needed; retention undecided:** Spare — “the game is too easy.”
@@ -28,7 +29,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
 | 16 | Spare | DeepSeek | Harder sample explained; positive acknowledgment, retention undecided | No numerical score |
 | 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
-| 18 | Cipher | DeepSeek | Open for individual playtest | — |
+| 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
 | 19 | Trail | DeepSeek | Not yet reviewed individually | — |
 | 20 | Split | DeepSeek | Not yet reviewed individually | — |
 | 21 | Quadra | Qwen | Not yet reviewed individually | — |
@@ -86,3 +87,5 @@ Canonical data: [ranking.json](ranking.json). Keep this table in step with that 
 November 3 follow-up: James initially said “i don’t understand Spare.” After the explanation he said “okay good, next game.” Record positive acknowledgment and an onboarding concern, without inventing a keeper verdict or numerical rating. The review proceeded to Rung.
 
 Rung follow-up, November 3: James said “okay good, next game.” Record positive feedback without assigning a numerical score, explicit keeper status or relative rank. Cipher is now the active individual playtest.
+
+Cipher follow-up, November 3: James said “cipher is great.” Recorded as strong positive enjoyment. No numerical score or relative ordering was assigned. The game stays on the current review screen; Trail is next when James requests it.

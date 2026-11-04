@@ -4,6 +4,8 @@ struct HomeView: View {
     let store: ProgressStore
     let now: Date
     @State private var creatorFilter = CreatorFilter.all
+    @State private var favoritesOnly = false
+    @State private var showHidden = false
     @State private var share: ShareRequest?
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private var today: String { DailyCalendar.key(for: now) }
@@ -18,16 +20,17 @@ struct HomeView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 26) {
                 introduction
+                collectionPreferences
                 todaysThree
-                gameSection(title: "Original word games", games: GameID.featured)
+                gameSection(title: "Original word games", games: visible(GameID.featured))
                 DisclosureGroup("Your collection record") { dailyProgress }
-                gameSection(title: "Bonus · Local AI", games: GameID.bonusGames)
+                gameSection(title: "Bonus · Local AI", games: visible(GameID.bonusGames))
                 creatorPicker
 
-                if creatorFilter.games.contains(where: \.isFlagship) {
-                    gameSection(title: "Start with a new challenge", games: creatorFilter.games.filter(\.isFlagship))
+                if visible(creatorFilter.games).contains(where: \.isFlagship) {
+                    gameSection(title: "Start with a new challenge", games: visible(creatorFilter.games).filter(\.isFlagship))
                 }
-                gameSection(title: "More ways to play", games: creatorFilter.games.filter { !$0.isFlagship })
+                gameSection(title: "More ways to play", games: visible(creatorFilter.games).filter { !$0.isFlagship })
 
                 Text("New dailies arrive at midnight Central. All \(gameCount) games work offline. Each prepared collection repeats after its last puzzle.")
                     .font(.footnote).foregroundStyle(Theme.muted).lineSpacing(4)
@@ -42,6 +45,45 @@ struct HomeView: View {
         .toolbarBackground(Theme.paper, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .sheet(item: $share) { request in ShareSheet(text: request.text).presentationDetents([.medium, .large]) }
+    }
+
+    private func visible(_ games: [GameID]) -> [GameID] {
+        store.visibleGames(games, favoritesOnly: favoritesOnly, showHidden: showHidden)
+    }
+
+    private var collectionPreferences: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Toggle("Favorites only", isOn: $favoritesOnly)
+                .accessibilityIdentifier("favorites-only")
+            Toggle("Show hidden", isOn: $showHidden)
+                .accessibilityIdentifier("show-hidden-games")
+            Text("Stars and hidden games are saved on this device. Hiding a game keeps its progress and records.")
+                .font(.caption).foregroundStyle(Theme.muted)
+            if visible(GameID.allCases).isEmpty {
+                Text(favoritesOnly ? "No favorites to show. Turn off Favorites only to star a game, or turn on Show hidden." : "Your games are hidden. Turn on Show hidden to restore them.")
+                    .font(.subheadline).foregroundStyle(Theme.ink)
+            }
+        }.tint(Theme.ink).paperCard()
+    }
+
+    private func gamePreferences(_ game: GameID) -> some View {
+        let preference = store.gamePreference(for: game)
+        return HStack {
+            Button { store.toggleFavorite(game) } label: {
+                Label(preference.favorite ? "Starred" : "Star", systemImage: preference.favorite ? "star.fill" : "star")
+                    .frame(minHeight: 44)
+            }
+            .accessibilityLabel("\(preference.favorite ? "Remove" : "Add") \(game.name) \(preference.favorite ? "from" : "to") favorites")
+            .accessibilityIdentifier("favorite-\(game.rawValue)")
+            Spacer()
+            Button { store.toggleHidden(game) } label: {
+                Label(preference.hidden ? "Unhide" : "Hide", systemImage: preference.hidden ? "eye" : "eye.slash")
+                    .frame(minHeight: 44)
+            }
+            .accessibilityLabel("\(preference.hidden ? "Unhide" : "Hide") \(game.name)")
+            .accessibilityIdentifier("hide-\(game.rawValue)")
+        }.font(.subheadline.weight(.semibold)).buttonStyle(.plain).foregroundStyle(Theme.ink)
+            .padding(.horizontal, 12)
     }
 
     private var introduction: some View {
@@ -77,13 +119,15 @@ struct HomeView: View {
     }
 
     private var todaysThree: some View {
-        let games = GameID.todaysThree(on: today)
+        let games = visible(GameID.todaysThree(on: today))
+        let next = games.first { store.ledger.status(for: $0, on: today) == .playing }
+            ?? games.first { store.ledger.status(for: $0, on: today)?.isTerminal != true }
         let solved = games.filter { store.ledger.status(for: $0, on: today) == .won }.count
         return VStack(alignment: .leading, spacing: 14) {
             Text("Today’s Three").font(.system(.title2, design: .serif))
             Text("\(solved) of \(games.count) solved · a small daily ritual")
                 .font(.subheadline).foregroundStyle(Theme.muted)
-            if let next = store.ledger.nextDaily(on: today) {
+            if let next {
                 NavigationLink(value: next) {
                     HStack {
                         VStack(alignment: .leading, spacing: 5) {
@@ -96,7 +140,7 @@ struct HomeView: View {
                     }.padding(18).frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
                         .background(Theme.ink, in: RoundedRectangle(cornerRadius: 14)).foregroundStyle(Theme.card)
                 }.buttonStyle(.plain).accessibilityIdentifier("next-daily")
-            } else if games.allSatisfy({ store.ledger.status(for: $0, on: today)?.isTerminal == true }) {
+            } else if !games.isEmpty && games.allSatisfy({ store.ledger.status(for: $0, on: today)?.isTerminal == true }) {
                 Text("Daily set complete. Share your result, try Practice, or return for a fresh set tomorrow.")
                     .font(.subheadline).foregroundStyle(Theme.muted)
             }
@@ -139,7 +183,7 @@ struct HomeView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("The collection").font(.system(.title2, design: .serif))
                 Spacer(minLength: 8)
-                Text("\(creatorFilter.games.count) games")
+                Text("\(visible(creatorFilter.games).count) games")
                     .font(.caption.weight(.semibold)).foregroundStyle(Theme.muted)
             }
             ScrollView(.horizontal, showsIndicators: false) {
@@ -168,9 +212,12 @@ struct HomeView: View {
                     .foregroundStyle(Theme.muted)
                 LazyVGrid(columns: columns, alignment: .leading, spacing: 14) {
                     ForEach(games) { game in
-                        NavigationLink(value: game) {
-                            GameCard(game: game, status: store.ledger.status(for: game, on: today))
-                        }.buttonStyle(.plain)
+                        VStack(alignment: .leading, spacing: 8) {
+                            NavigationLink(value: game) {
+                                GameCard(game: game, status: store.ledger.status(for: game, on: today))
+                            }.buttonStyle(.plain)
+                            gamePreferences(game)
+                        }
                     }
                 }
             }

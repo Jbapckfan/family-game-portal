@@ -49,6 +49,7 @@ struct ProgressMessage: Equatable {
 
 enum BridgeMessage: Equatable {
     case progress(ProgressMessage)
+    case gamePreference(GameID, GamePreference)
     case share(String)
     case haptic(HapticKind)
 }
@@ -75,6 +76,10 @@ enum BridgeDecoder {
                   status != .lost || game.allowsLoss,
                   let rawStats = value["stats"] as? [String: Any], let stats = statistics(rawStats) else { return nil }
             return .progress(ProgressMessage(game: game, mode: mode, dateKey: dateKey, status: status, stats: stats))
+        case "gamePreference":
+            guard value["slug"] as? String == context.game.rawValue,
+                  let favorite = boolean(value["favorite"]), let hidden = boolean(value["hidden"]) else { return nil }
+            return .gamePreference(context.game, GamePreference(favorite: favorite, hidden: hidden))
         case "share":
             guard let text = value["text"] as? String, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                   text.utf8.count <= 4_096, !text.contains("\0") else { return nil }
@@ -85,6 +90,11 @@ enum BridgeDecoder {
         default:
             return nil
         }
+    }
+
+    private static func boolean(_ value: Any?) -> Bool? {
+        guard let value = value as? NSNumber, CFGetTypeID(value) == CFBooleanGetTypeID() else { return nil }
+        return value.boolValue
     }
 
     private static func number(_ value: Any?) -> Double? {

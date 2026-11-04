@@ -47,7 +47,18 @@ struct GameScreen: View {
                 }.accessibilityAddTraits(.isHeader)
             }
             ToolbarItem(placement: .topBarTrailing) {
+                Button { store.toggleFavorite(game) } label: {
+                    Image(systemName: store.gamePreference(for: game).favorite ? "star.fill" : "star")
+                        .frame(minWidth: 44, minHeight: 44)
+                }
+                .accessibilityLabel(store.gamePreference(for: game).favorite ? "Remove from favorites" : "Add to favorites")
+                .accessibilityIdentifier("game-favorite")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
+                    Button(store.gamePreference(for: game).hidden ? "Unhide game" : "Hide game", systemImage: store.gamePreference(for: game).hidden ? "eye" : "eye.slash") {
+                        store.toggleHidden(game)
+                    }
                     Button("Back to Today", systemImage: "square.grid.2x2") { onNavigate(nil) }
                     Button("Reload saved puzzle", systemImage: "arrow.clockwise") { reloadToken = UUID() }
                     Button("About this game", systemImage: "info.circle") { showingAbout = true }

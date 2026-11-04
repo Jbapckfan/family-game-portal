@@ -6,6 +6,7 @@ final class ProgressStore {
     private(set) var ledger = ProgressLedger()
     private(set) var statistics: [String: GameStatistics] = [:]
     private(set) var preferences = AppPreferences()
+    private(set) var gamePreferences: [GameID: GamePreference] = [:]
     private(set) var resetGeneration = UUID()
     private(set) var storageError: String?
 
@@ -21,6 +22,12 @@ final class ProgressStore {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        for game in GameID.allCases {
+            if let data = defaults.data(forKey: gamePreferenceKey(game)),
+               let stored = try? JSONDecoder().decode(GamePreference.self, from: data) {
+                gamePreferences[game] = stored
+            }
+        }
         if let data = defaults.data(forKey: progressKey),
            let snapshot = try? JSONDecoder().decode(Snapshot.self, from: data), snapshot.version == 1 {
             ledger = snapshot.ledger.sanitized()
@@ -67,6 +74,35 @@ final class ProgressStore {
         resetGeneration = UUID()
         storageError = nil
     }
+
+    func gamePreference(for game: GameID) -> GamePreference { gamePreferences[game] ?? GamePreference() }
+
+    func setGamePreference(_ preference: GamePreference, for game: GameID) {
+        guard let data = try? JSONEncoder().encode(preference) else { return }
+        gamePreferences[game] = preference
+        defaults.set(data, forKey: gamePreferenceKey(game))
+    }
+
+    func toggleFavorite(_ game: GameID) {
+        var preference = gamePreference(for: game)
+        preference.favorite.toggle()
+        setGamePreference(preference, for: game)
+    }
+
+    func toggleHidden(_ game: GameID) {
+        var preference = gamePreference(for: game)
+        preference.hidden.toggle()
+        setGamePreference(preference, for: game)
+    }
+
+    func visibleGames(_ games: [GameID], favoritesOnly: Bool = false, showHidden: Bool = false) -> [GameID] {
+        games.filter { game in
+            let preference = gamePreference(for: game)
+            return (showHidden || !preference.hidden) && (!favoritesOnly || preference.favorite)
+        }
+    }
+
+    private func gamePreferenceKey(_ game: GameID) -> String { "alford:game-pref:v1:\(game.rawValue)" }
 
     func stats(for game: GameID) -> GameStatistics { statistics[game.rawValue] ?? .empty }
 

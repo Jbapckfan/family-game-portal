@@ -56,16 +56,25 @@ final class OfflineSchemeHandler: NSObject, WKURLSchemeHandler {
 enum OfflineWebConfiguration {
     static var bundledRoot: URL { Bundle.main.resourceURL!.appendingPathComponent("Web", isDirectory: true) }
 
-    static func make(messageHandler: WKScriptMessageHandler, root: URL? = nil) -> WKWebViewConfiguration {
+    static func make(messageHandler: WKScriptMessageHandler, root: URL? = nil, game: GameID? = nil, preference: GamePreference = GamePreference()) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = .default()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = false
         configuration.setURLSchemeHandler(OfflineSchemeHandler(root: root ?? bundledRoot), forURLScheme: "alford")
         configuration.userContentController.add(messageHandler, name: "alford")
-        configuration.userContentController.addUserScript(WKUserScript(
-            source: "window.__ALFORD_NATIVE__ = Object.freeze({ platform: 'ios', version: 1 });",
-            injectionTime: .atDocumentStart, forMainFrameOnly: true))
+        configuration.userContentController.addUserScript(environmentScript(game: game, preference: preference))
         return configuration
+    }
+
+    static func environmentScript(game: GameID?, preference: GamePreference) -> WKUserScript {
+        var environment: [String: Any] = ["platform": "ios", "version": 1]
+        if let game {
+            environment["gamePreference"] = ["slug": game.rawValue, "favorite": preference.favorite, "hidden": preference.hidden]
+        }
+        // Only catalog-controlled identifiers and booleans enter this startup marker.
+        let environmentJSON = String(data: try! JSONSerialization.data(withJSONObject: environment), encoding: .utf8)!
+        return WKUserScript(source: "window.__ALFORD_NATIVE__ = Object.freeze(" + environmentJSON + ");",
+            injectionTime: .atDocumentStart, forMainFrameOnly: true)
     }
 }

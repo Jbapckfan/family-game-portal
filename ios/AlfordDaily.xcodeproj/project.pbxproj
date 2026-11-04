@@ -49,6 +49,17 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "E3225F0EF50DA5BF0C032089";
 		};
+		"017FDC9246BF620D68915164" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "GamePreference.swift";
+			"path" = "AlfordDaily/Core/GamePreference.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"0A152B3E5671D7278438DB7E" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "017FDC9246BF620D68915164";
+		};
 		"C3388A8F9A689BCAEFBFFE3F" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -236,6 +247,17 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "F11E0A9AD4B799F24BCA6564";
 		};
+		"07180F5C7C25F06052EA9E18" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"name" = "GamePreferenceTests.swift";
+			"path" = "AlfordDailyTests/GamePreferenceTests.swift";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"B5C17900D7FF2EB96DF05FD4" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "07180F5C7C25F06052EA9E18";
+		};
 		"A5FA1C01DF32E7C1907B7E96" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -338,6 +360,7 @@
 				"C14397C74510FBA3B160125F",
 				"36F452764557B977F83B067A",
 				"E3225F0EF50DA5BF0C032089",
+				"017FDC9246BF620D68915164",
 				"C3388A8F9A689BCAEFBFFE3F",
 				"9605687CAD5C217FB29ACF21",
 				"DD093BE9F0D5CE225327149F",
@@ -362,6 +385,7 @@
 				"857B9E9E442EE7E2D881ACEE",
 				"6AD722FF11F354FD080969D5",
 				"F11E0A9AD4B799F24BCA6564",
+				"07180F5C7C25F06052EA9E18",
 				"A5FA1C01DF32E7C1907B7E96",
 				"12F488527C07B495AE2DBB76",
 				"45E2EBA17F0E9939871B99D7",
@@ -407,6 +431,7 @@
 				"1D3FEF859289990ADA0D8EC7",
 				"EC2DC787B143E2DC3B7A6617",
 				"CDA29F9A2CC84E0CFD51730B",
+				"0A152B3E5671D7278438DB7E",
 				"F4EBDA4C53C189BFCDC1777A",
 				"8EBA537C3ADD53E9FF5560BA",
 				"1523F409634F4E70CAB394CC",
@@ -448,6 +473,7 @@
 				"BC320B3BEE3E4D8AC28A12D6",
 				"F3C2C20923728471510CA926",
 				"B059DC539812F4FAD4597EDA",
+				"B5C17900D7FF2EB96DF05FD4",
 				"AE5A6A0E6933C0F91DB54EAC",
 				"FF877C06C39954AEEAB0569C",
 				"79677B2138A174CFC68D0462",

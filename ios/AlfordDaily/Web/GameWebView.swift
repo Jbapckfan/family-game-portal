@@ -18,7 +18,7 @@ struct GameWebView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
 
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView(frame: .zero, configuration: OfflineWebConfiguration.make(messageHandler: context.coordinator))
+        let webView = WKWebView(frame: .zero, configuration: OfflineWebConfiguration.make(messageHandler: context.coordinator, game: game, preference: store.gamePreference(for: game)))
         webView.navigationDelegate = context.coordinator
         webView.isOpaque = false
         webView.backgroundColor = UIColor(Theme.paper)
@@ -33,8 +33,11 @@ struct GameWebView: UIViewRepresentable {
 
     func updateUIView(_ webView: WKWebView, context: Context) {
         context.coordinator.parent = self
+        context.coordinator.syncPreference(to: webView)
         if context.coordinator.lastReloadToken != reloadToken {
             context.coordinator.lastReloadToken = reloadToken
+            webView.configuration.userContentController.removeAllUserScripts()
+            webView.configuration.userContentController.addUserScript(OfflineWebConfiguration.environmentScript(game: game, preference: store.gamePreference(for: game)))
             webView.load(URLRequest(url: game.localURL))
         }
     }
@@ -48,6 +51,8 @@ struct GameWebView: UIViewRepresentable {
     final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var parent: GameWebView
         var lastReloadToken: UUID?
+        private var isLoaded = false
+        private var lastSyncedPreference: GamePreference?
         private let resetGeneration: UUID
 
         init(parent: GameWebView) {
@@ -64,6 +69,7 @@ struct GameWebView: UIViewRepresentable {
             guard let decoded = BridgeDecoder.decode(message.body, context: context) else { return }
             switch decoded {
             case .progress(let progress): parent.store.accept(progress)
+            case .gamePreference(let game, let preference): parent.store.setGamePreference(preference, for: game)
             case .share(let text): parent.onShare(text)
             case .haptic(let kind): HapticService.play(kind, enabled: parent.store.preferences.hapticsEnabled)
             }
@@ -85,10 +91,14 @@ struct GameWebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            isLoaded = false
+            lastSyncedPreference = nil
             parent.onLoading(true, nil)
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            isLoaded = true
+            syncPreference(to: webView)
             parent.onLoading(false, nil)
         }
 
@@ -102,6 +112,19 @@ struct GameWebView: UIViewRepresentable {
 
         func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
             parent.onLoading(false, "The puzzle paused unexpectedly. Reload to continue from its last saved move.")
+        }
+
+        func syncPreference(to webView: WKWebView) {
+            let preference = parent.store.gamePreference(for: parent.game)
+            guard isLoaded, preference != lastSyncedPreference,
+                  LocalRoute.game(at: webView.url) == parent.game else { return }
+            lastSyncedPreference = preference
+            webView.callAsyncJavaScript("""
+                const detail = {slug, favorite, hidden};
+                try { localStorage.setItem('alford:game-pref:v1:' + slug, JSON.stringify({favorite, hidden})); } catch {}
+                window.dispatchEvent(new CustomEvent('alford:game-preference-change', {detail}));
+                """, arguments: ["slug": parent.game.rawValue, "favorite": preference.favorite, "hidden": preference.hidden],
+                in: nil, in: .page, completionHandler: nil)
         }
 
         private func report(_ error: Error) {

@@ -1,0 +1,24 @@
+{
+  "provider": "Kimi",
+  "modelArgument": "kimi-code/k3.1-pro",
+  "started": "2026-11-04T14:00:13.156307+00:00",
+  "cwd": "/private/tmp/MAKER-Kimi__lattice-ui-20261104",
+  "files": [
+    {
+      "path": "games/qwen-logic-lattice/engine.mjs",
+      "sha256": "9bfcc64f2f35d79868e69a2ddda480b437d78a5dc77d7c0f5aabb50896317b1e"
+    },
+    {
+      "path": "games/qwen-logic-lattice/app.mjs",
+      "sha256": "fd376ddf600c11a171d9b0f0a3f1d1365b0844a7ee62d18fa0b16ed5739e70d6"
+    },
+    {
+      "path": "games/qwen-logic-lattice/styles.css",
+      "sha256": "d054def49ca8dc6d7ec7df67bfa73ad637a552282135df4ef188e50386caa3fe"
+    }
+  ],
+  "scope": "static supplied-source review",
+  "exitCode": 0,
+  "seconds": 256.32,
+  "reviewCharacters": 2632
+}

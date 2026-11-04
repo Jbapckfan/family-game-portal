@@ -1592,19 +1592,46 @@
       "name": "Logic Lattice",
       "creator": "Qwen",
       "reviewOrder": 22,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-04",
+            "quote": "thi seems like minesweeper but the numbers are different, hmm, need more exlanation and the UI needs more improvement",
+            "interpretation": "Requests clearer whole-line counting explanation and improved UI; mentions visual similarity to Minesweeper. No enjoyment rating, keeper verdict or relative rank supplied."
+          }
+        ],
+        "clarityReaction": "Needs more explanation; grid resembles Minesweeper"
       },
-      "reviews": [],
+      "reviews": [
+        {
+          "provider": "Kimi",
+          "model": "kimi-code/k3.1-pro",
+          "method": "Static supplied-source review before follow-up UI fixes; no playtest",
+          "report": "logic-lattice/evidence/MAKER-Kimi__review.md"
+        },
+        {
+          "provider": "Opus",
+          "model": "claude-opus-5-5",
+          "method": "Static supplied-source review before follow-up UI fixes; no playtest",
+          "report": "logic-lattice/evidence/MAKER-Opus__review.md"
+        },
+        {
+          "provider": "Gemini",
+          "model": "gemini-3.8-flash-high",
+          "method": "Static supplied-source review before follow-up UI fixes; no playtest",
+          "report": "logic-lattice/evidence/MAKER-Gemini__review.md"
+        }
+      ],
       "disposition": "undecided",
       "evidence": [
-        "logic-lattice/REVIEW-2026-11-04.md"
+        "logic-lattice/REVIEW-2026-11-04.md",
+        "logic-lattice/UI-2026-11-04.md"
       ],
-      "nextStep": "Open for individual playtest; await James’s difficulty, enjoyment and retention feedback."
+      "nextStep": "James to try the improved whole-line teaching, clickable clues, compact grid and direct marking tools. Retention remains undecided."
     },
     {
       "slug": "qwen-syntax-siege",

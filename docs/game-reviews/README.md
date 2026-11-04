@@ -22,7 +22,7 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Logic Lattice](logic-lattice/REVIEW-2026-11-04.md), game 22, is open in the same single tab. James kept Quadra, praising its challenge and category mechanic. Seven engine tests and four isolated touch/keyboard/edit/save checks passed for Logic Lattice; his feedback is pending. There are now 15 keepers, with no invented relative ordering.
+[Logic Lattice](logic-lattice/REVIEW-2026-11-04.md), game 22, is open in the same single tab. James kept Quadra, praising its challenge and category mechanic. Seven engine tests and four isolated touch/keyboard/edit/save checks passed for Logic Lattice; James has now parked it for later reconsideration and explicitly asked to preserve it. There are 15 keepers, with no invented relative ordering.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 
@@ -32,4 +32,7 @@ Kimi’s Tangle remains a keeper with the [broader audited vocabulary](tangle-ki
 November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). James then said “that is much better, keep it, next game.” Harder Split is a keeper. Quadra is now open in the same single tab; feedback is pending.
 
 
-Logic Lattice follow-up: James requested more explanation and UI improvement. The [whole-line teaching and inspection update](logic-lattice/UI-2026-11-04.md) is delivered for another playtest. No keeper verdict or numerical rating is inferred.
+Logic Lattice follow-up: James requested more explanation and UI improvement. The [whole-line teaching and inspection update](logic-lattice/UI-2026-11-04.md) is preserved. James subsequently asked to park the game and revisit later, without deleting it. No keeper verdict or numerical rating is inferred.
+
+
+November 4 decision: **Logic Lattice is parked for later, not removed.** Its game files, puzzles, saves and review work are preserved. The keeper count remains 15. Syntax Siege is next when the individual review resumes.

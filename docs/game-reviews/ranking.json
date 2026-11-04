@@ -1592,7 +1592,7 @@
       "name": "Logic Lattice",
       "creator": "Qwen",
       "reviewOrder": 22,
-      "status": "reviewed_by_james",
+      "status": "parked_for_later",
       "james": {
         "enjoyment": null,
         "playAgain": null,
@@ -1602,9 +1602,15 @@
             "date": "2026-11-04",
             "quote": "thi seems like minesweeper but the numbers are different, hmm, need more exlanation and the UI needs more improvement",
             "interpretation": "Requests clearer whole-line counting explanation and improved UI; mentions visual similarity to Minesweeper. No enjoyment rating, keeper verdict or relative rank supplied."
+          },
+          {
+            "date": "2026-11-04",
+            "quote": "hmm, not sure about this game, don't fully delete, but let's park it and come back later",
+            "interpretation": "Explicitly park for later reconsideration and preserve the game. Not a keeper or removal verdict; no numerical rating supplied."
           }
         ],
-        "clarityReaction": "Needs more explanation; grid resembles Minesweeper"
+        "clarityReaction": "Needs more explanation; grid resembles Minesweeper",
+        "preferenceTier": "parked_for_later"
       },
       "reviews": [
         {
@@ -1626,12 +1632,13 @@
           "report": "logic-lattice/evidence/MAKER-Gemini__review.md"
         }
       ],
-      "disposition": "undecided",
+      "disposition": "parked",
       "evidence": [
         "logic-lattice/REVIEW-2026-11-04.md",
         "logic-lattice/UI-2026-11-04.md"
       ],
-      "nextStep": "James to try the improved whole-line teaching, clickable clues, compact grid and direct marking tools. Retention remains undecided."
+      "nextStep": "Revisit later when James asks. Preserve the game, improved UI, puzzles, saves and review evidence. Syntax Siege is next in the review queue.",
+      "dispositionBasis": "James is unsure about the game and explicitly requested parking it without deletion."
     },
     {
       "slug": "qwen-syntax-siege",

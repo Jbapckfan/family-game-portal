@@ -35,7 +35,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 20 | Split | DeepSeek | Keep; harder sample preferred | Much better; keep it |
 | 21 | Quadra | Qwen | Keep; category mechanic liked | Challenging; I like it |
 | 22 | Logic Lattice | Qwen | Parked for later; preserve game | Unsure; revisit later |
-| 23 | Syntax Siege | Qwen | Not yet reviewed individually | — |
+| 23 | Syntax Siege | Qwen | Open for individual playtest | Awaiting feedback |
 | 24 | Memory Maze | Qwen | Not yet reviewed individually | — |
 | 25 | Pattern Prism | Qwen | Not yet reviewed individually | — |
 | 26 | Territory Tactics | Qwen | Not yet reviewed individually | — |

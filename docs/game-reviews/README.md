@@ -22,7 +22,7 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Logic Lattice](logic-lattice/REVIEW-2026-11-04.md), game 22, is open in the same single tab. James kept Quadra, praising its challenge and category mechanic. Seven engine tests and four isolated touch/keyboard/edit/save checks passed for Logic Lattice; James has now parked it for later reconsideration and explicitly asked to preserve it. There are 15 keepers, with no invented relative ordering.
+[Syntax Siege](syntax-siege/REVIEW-2026-11-04.md), game 23, is open in the same single tab after James parked Logic Lattice and said “show me.” The defense has not been started by the assistant. Seven engine tests and four Chrome/WebKit basic input checks passed. Logic Lattice stays parked and preserved; there are 15 keepers.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 

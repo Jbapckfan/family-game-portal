@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "slug": "qwen-syntax-siege",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "chromium",
+    "slug": "qwen-syntax-siege",
+    "check": "keyboard",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "qwen-syntax-siege",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "qwen-syntax-siege",
+    "check": "keyboard",
+    "pass": true
+  }
+]

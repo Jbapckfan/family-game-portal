@@ -54,8 +54,8 @@ export function readKimiStatus({slug, storage, now = new Date()}) {
 }
 
 const STATUS = Object.freeze({
-  loading: {label: 'Today’s puzzle', action: 'Play today'},
-  new: {label: 'Ready for today', action: 'Play today'},
+  loading: {label: '', action: 'Play today'},
+  new: {label: '', action: 'Play today'},
   playing: {label: 'In progress', action: 'Continue'},
   won: {label: 'Solved', action: 'See result'},
   lost: {label: 'Not solved', action: 'See result'},
@@ -65,7 +65,7 @@ const STATUS = Object.freeze({
 
 function card(game, url) {
   return `<article class="preference-card" data-pref-game="${game.slug}" data-pref-creator="${game.creator}"><a class="game-card ${game.group === 'logic' ? 'word' : game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
-    <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
+    <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading" hidden><span class="status-dot" aria-hidden="true"></span><span data-status-label></span></span></div>
     <div class="card-motif"><img src="${escape(new URL('icon.svg', url).href)}" width="96" height="96" alt="" loading="lazy"></div>
     <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">${escape(game.credit || `Developed by ${game.creator}`)}</span><p>${escape(game.description)}</p></div>
     <div class="card-bottom"><span class="card-detail">${game.boards.toLocaleString('en-US')} puzzles · Practice anytime</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
@@ -184,14 +184,15 @@ export function startHome(doc = document, win = window) {
       doc.querySelectorAll(`[data-game="${result.slug}"]`).forEach(item => {
         item.querySelector('[data-status]').dataset.status = result.status;
         item.querySelector('[data-status-label]').textContent = state.label;
+        item.querySelector('[data-status]').hidden = !state.label;
         item.querySelector('[data-action-label]').textContent = state.action;
       });
       const mark = doc.querySelector(`[data-mark="${result.slug}"]`);
       if (mark) {
         const game = GAMES.find(item => item.slug === result.slug);
         mark.dataset.status = result.status;
-        mark.title = `${game.name}: ${state.label}`;
-        mark.querySelector('.sr-only').textContent = `${game.name}: ${state.label}`;
+        mark.title = state.label ? `${game.name}: ${state.label}` : game.name;
+        mark.querySelector('.sr-only').textContent = state.label ? `${game.name}: ${state.label}` : game.name;
         mark.querySelector('.mark-symbol').textContent = result.status === 'won' ? '✓' : result.status === 'playing' ? '·' : '';
       }
     }

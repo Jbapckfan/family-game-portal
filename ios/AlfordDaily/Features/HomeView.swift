@@ -135,8 +135,9 @@ struct HomeView: View {
                         GameEmblem(game: game, size: 40).accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 5) {
                             Text(game.name).font(.headline)
-                            Text(store.ledger.status(for: game, on: today)?.label ?? "Ready for today")
-                                .font(.subheadline).foregroundStyle(Theme.muted)
+                            if let status = store.ledger.status(for: game, on: today) {
+                                Text(status.label).font(.subheadline).foregroundStyle(Theme.muted)
+                            }
                         }
                         Spacer(minLength: 8)
                         Image(systemName: "arrow.up.right").accessibilityHidden(true)

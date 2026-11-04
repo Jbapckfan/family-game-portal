@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {runInContext} from 'node:vm';
+import {TOUGHER_SAMPLE} from '../games/ringcount/samples.mjs';
 import {practiceCandidates} from '../games/deepseek-runtime/practice-calendar.mjs';
 import {DAILY_RESERVATIONS,originalDailyIndex} from '../games/deepseek-runtime/daily-rotations.mjs';
 const {JSDOM}=createRequire(import.meta.url)('jsdom');
@@ -23,6 +24,7 @@ async function openGame(slug,{saved={},date='2026-10-30'}={}){
   return {...daily,puzzle:items[originalDailyIndex(slug,currentDate,daily.number-1,items.length)]};
  }};
  Object.assign(w,engine,{engine,PUZZLES,practiceCandidates});
+ if(slug==='ringcount')w.TOUGHER_SAMPLE=TOUGHER_SAMPLE;
  const context=dom.getInternalVMContext(),shell=!['tradeoff','inbetween'].includes(slug);
  if(shell)runInContext(strip(await readFile(new URL('shell.mjs',root),'utf8')),context);
  if(slug==='inbetween')runInContext(strip(await readFile(new URL('placement-drag.mjs',root),'utf8')),context);

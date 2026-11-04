@@ -1494,7 +1494,7 @@
         "trail/REVIEW-2026-11-03.md",
         "trail/HARDER-PREVIEW.md"
       ],
-      "nextStep": "Retain the harder 4×4 direction. A full dated puzzle bank for this variant remains release work; do not replace the original calendar until verified. Split is next when James requests the next game.",
+      "nextStep": "Retain the harder 4×4 direction; full verified dated bank remains release work. James requested the next game and review advanced to Split.",
       "dispositionBasis": "James explicitly said to keep Trail after playing the harder 4×4 sample."
     },
     {
@@ -1502,17 +1502,28 @@
       "name": "Split",
       "creator": "DeepSeek",
       "reviewOrder": 20,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-03",
+            "quote": "good but too easy",
+            "interpretation": "Positive qualitative feedback and a difficulty concern. No numerical score, explicit keeper verdict or relative rank supplied."
+          }
+        ],
+        "enjoymentReaction": "good",
+        "difficultyReaction": "too easy"
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "split/REVIEW-2026-11-03.md"
+      ],
+      "nextStep": "Propose a separate harder sample: two six-letter words, four decoys, less direct clues with optional definitions, and correctness feedback only when both answers are checked. No redesign selected yet.",
+      "dispositionBasis": "James called Split good but too easy; explicit retention decision remains pending."
     },
     {
       "slug": "qwen-quadra",

@@ -22,7 +22,7 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Trail](trail/REVIEW-2026-11-03.md), game 19, is open in the existing game tab. James called Cipher “great” and requested a work summary before Trail. [Current progress summary](PROGRESS-2026-11-03.md) · [ranking and queue](RANKING.md). James subsequently kept the [harder 4×4 Trail](trail/HARDER-PREVIEW.md), saying “that is definitely a lot harder, keep it.” Its numerical score and relative keeper rank remain unset. Earlier provider reports remain attributed to their actual source snapshots and scopes.
+[Split](split/REVIEW-2026-11-03.md), game 20, is open in the existing game tab after James kept the [harder 4×4 Trail](trail/HARDER-PREVIEW.md) and said “go.” Split's fresh engine and basic touch/keyboard checks passed. James said “good but too easy”; a harder sample is proposed, with no keeper decision yet. [Current progress summary](PROGRESS-2026-11-03.md) · [ranking and queue](RANKING.md). Trail's numerical score and relative keeper rank remain unset. Earlier provider reports remain attributed to their actual source snapshots and scopes.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 

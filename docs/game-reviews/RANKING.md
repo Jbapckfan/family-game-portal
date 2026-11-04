@@ -31,7 +31,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
 | 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
 | 19 | Trail | DeepSeek | Keep; harder 4×4 direction approved | Definitely a lot harder; keep it |
-| 20 | Split | DeepSeek | Not yet reviewed individually | — |
+| 20 | Split | DeepSeek | Good but too easy; harder sample proposed | No numerical score or keeper verdict |
 | 21 | Quadra | Qwen | Not yet reviewed individually | — |
 | 22 | Logic Lattice | Qwen | Not yet reviewed individually | — |
 | 23 | Syntax Siege | Qwen | Not yet reviewed individually | — |
@@ -91,3 +91,5 @@ Rung follow-up, November 3: James said “okay good, next game.” Record positi
 Cipher follow-up, November 3: James said “cipher is great.” Recorded as strong positive enjoyment. No numerical score or relative ordering was assigned. James subsequently requested a progress summary and moving to Trail; Trail is now the active individual playtest.
 
 Trail feedback, November 3: James said “trail seems way too easy,” then approved trying the harder direction with “try harder.” The [4×4 sample](trail/HARDER-PREVIEW.md) is delivered with seven decoys, less direct clue and optional definition. Original daily boards and records remain intact. James then said “that is definitely a lot harder, keep it.” Trail is a keeper, with the harder 4×4 as his preferred direction. No numerical score or relative keeper rank supplied.
+
+Split feedback, November 3: James said “good but too easy.” Record positive feedback and a difficulty concern; retention is undecided. Proposed experiment: two six-letter words, four decoys, subtler clues with optional definitions, and correctness feedback only after checking both words. [Review and proposal](split/REVIEW-2026-11-03.md).

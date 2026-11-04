@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "slug": "deepseek-split",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "chromium",
+    "slug": "deepseek-split",
+    "check": "keyboard",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "deepseek-split",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "deepseek-split",
+    "check": "keyboard",
+    "pass": true
+  }
+]

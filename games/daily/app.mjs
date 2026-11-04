@@ -64,12 +64,12 @@ const STATUS = Object.freeze({
 });
 
 function card(game, url) {
-  return `<a class="game-card ${game.group === 'logic' ? 'word' : game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
+  return `<article class="preference-card" data-pref-game="${game.slug}" data-pref-creator="${game.creator}"><a class="game-card ${game.group === 'logic' ? 'word' : game.group}-card game-${game.slug}" href="${escape(url)}" data-game="${game.slug}" data-creator="${game.creator}">
     <div class="card-topline"><span class="game-category">${escape(game.category)}</span><span class="game-status" data-status="loading"><span class="status-dot" aria-hidden="true"></span><span data-status-label>Today’s puzzle</span></span></div>
     <div class="card-motif"><img src="${escape(new URL('icon.svg', url).href)}" width="96" height="96" alt="" loading="lazy"></div>
     <div class="card-copy"><h3>${escape(game.name)}</h3><span class="creator-credit">${escape(game.credit || `Developed by ${game.creator}`)}</span><p>${escape(game.description)}</p></div>
     <div class="card-bottom"><span class="card-detail">${game.boards.toLocaleString('en-US')} puzzles · Practice anytime</span><span class="card-action"><span data-action-label>Play today</span><span class="card-arrow" aria-hidden="true">↗</span></span></div>
-  </a>`;
+  </a><div data-pref-controls="${game.slug}" data-pref-name="${escape(game.name)}"></div></article>`;
 }
 
 export function startHome(doc = document, win = window) {
@@ -81,26 +81,67 @@ export function startHome(doc = document, win = window) {
     $(`${group}-games`).innerHTML = GAMES.filter(game => game.group === group).map(game => card(game, urls.get(game.slug))).join('');
   }
   $('featured-games').innerHTML = featuredGames().map(game => card(game, urls.get(game.slug))).join('');
-  $('bonus-games').innerHTML=BONUS_GAMES.map(game=>`<a class="bonus-card" href="${escape(new URL(game.slug+'/',new URL(base,doc.baseURI)).href)}" data-bonus="${game.slug}"><img src="${escape(new URL(game.slug+'/icon.svg',new URL(base,doc.baseURI)).href)}" width="56" height="56" alt=""><div><span class="eyebrow">A change of pace · Local AI</span><h3>${escape(game.name)}</h3><p>${escape(game.description)}</p></div><span class="card-action">Play a match ↗</span></a>`).join('');
+  $('bonus-games').innerHTML=BONUS_GAMES.map(game=>`<article class="preference-card" data-pref-game="${game.slug}" data-pref-creator="${game.creator}"><a class="bonus-card" href="${escape(new URL(game.slug+'/',new URL(base,doc.baseURI)).href)}" data-bonus="${game.slug}"><img src="${escape(new URL(game.slug+'/icon.svg',new URL(base,doc.baseURI)).href)}" width="56" height="56" alt=""><div><span class="eyebrow">A change of pace · Local AI</span><h3>${escape(game.name)}</h3><p>${escape(game.description)}</p></div><span class="card-action">Play a match ↗</span></a><div data-pref-controls="${game.slug}" data-pref-name="${escape(game.name)}"></div></article>`).join('');
   $('progress-marks').innerHTML = LAUNCH_GAMES.map(game => `<li class="progress-mark game-${game.slug}" data-mark="${game.slug}" title="${escape(game.name)}"><span class="mark-symbol" aria-hidden="true"></span><span class="sr-only">${escape(game.name)}: checking progress</span></li>`).join('');
 
   const filterButtons = doc.querySelectorAll('[data-creator-filter]');
-  function applyFilter(value, announce = true) {
-    const selected = CREATORS.includes(value) ? value : 'All';
-    filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.creatorFilter === selected)));
-    doc.querySelectorAll('[data-collection] [data-game]').forEach(card => { card.hidden = selected !== 'All' && card.dataset.creator !== selected; });
+  let selectedCreator = 'All', preferences = null, favoritesOnly = false, showHidden = false;
+  const allGames = [...GAMES,...BONUS_GAMES];
+  function allowed(game) {
+    const pref = preferences?.readPreferences(game.slug,win) || {favorite:false,hidden:false};
+    return (selectedCreator === 'All' || game.creator === selectedCreator) && (!favoritesOnly || pref.favorite) && (showHidden || !pref.hidden);
+  }
+  function applyFilter(value = selectedCreator, announce = true) {
+    selectedCreator = CREATORS.includes(value) ? value : 'All';
+    filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.creatorFilter === selectedCreator)));
+    doc.querySelectorAll('[data-pref-game]').forEach(item => {
+      const game = allGames.find(game => game.slug === item.dataset.prefGame);
+      const hides = game ? !allowed(game) : false;
+      if(hides && item.contains(doc.activeElement)) $('show-hidden')?.focus();
+      item.hidden = hides;
+      const pref = preferences?.readPreferences(item.dataset.prefGame,win);
+      item.classList.toggle('is-hidden-game',Boolean(pref?.hidden));
+    });
     for (const group of ['flagship','word','logic','classic']) {
-      $(`${group}-games`).closest('section').hidden = !GAMES.some(game => game.group === group && (selected === 'All' || game.creator === selected));
+      $(`${group}-games`).closest('section').hidden = !GAMES.some(game => game.group === group && allowed(game));
     }
-    const visible = GAMES.filter(game => selected === 'All' || game.creator === selected);
+    const visible = GAMES.filter(allowed);
     const puzzles = visible.reduce((sum,game) => sum+game.boards,0);
-    $('filter-summary').textContent = `${visible.length} games · ${puzzles.toLocaleString('en-US')} puzzles${selected === 'All' ? ` · ${CREATORS.length} creators` : ` · ${selected}`}`;
-    if (announce) { try {win.localStorage.setItem('alford:catalog:creator',selected);} catch {} }
+    $('filter-summary').textContent = `${visible.length} daily games · ${puzzles.toLocaleString('en-US')} puzzles${selectedCreator === 'All' ? '' : ` · ${selectedCreator}`}`;
+    const empty = $('preferences-empty');
+    if (empty) empty.hidden = allGames.some(allowed);
+    const note = $('preference-summary');
+    if (note) {
+      const hiddenCount=allGames.filter(game=>preferences?.readPreferences(game.slug,win).hidden).length;
+      note.textContent = `${favoritesOnly ? 'Showing favorites' : 'Showing all games'}${showHidden ? ', including hidden games' : ` · ${hiddenCount} hidden`}. Filters change the cards shown; today’s set and records stay unchanged.`;
+    }
+    if (announce) { try {win.localStorage.setItem('alford:catalog:creator',selectedCreator);} catch {} }
+  }
+  function mountPreferences() {
+    if (!preferences) return;
+    doc.querySelectorAll('[data-pref-controls]').forEach(container => preferences.mountPreferenceButtons(container,container.dataset.prefControls,container.dataset.prefName,win));
+    applyFilter(selectedCreator,false);
+    const errors=allGames.map(game=>preferences.readPreferences(game.slug,win).error).filter(Boolean);
+    if ($('preference-error')) $('preference-error').textContent=errors[0] || '';
   }
   filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.creatorFilter)));
-  $('browse-all').addEventListener('click', () => { applyFilter('All'); $('today').focus(); });
+  $('favorites-only')?.addEventListener('click',()=>{
+    favoritesOnly=!favoritesOnly; $('favorites-only').setAttribute('aria-pressed',String(favoritesOnly));applyFilter(selectedCreator,false);
+  });
+  $('show-hidden')?.addEventListener('click',()=>{
+    showHidden=!showHidden; $('show-hidden').setAttribute('aria-pressed',String(showHidden));applyFilter(selectedCreator,false);
+  });
+  $('browse-all').addEventListener('click', () => { favoritesOnly=false;$('favorites-only')?.setAttribute('aria-pressed','false');applyFilter('All'); $('today').focus(); });
   let savedFilter = 'All'; try {savedFilter = win.localStorage.getItem('alford:catalog:creator') || 'All';} catch {}
+  if(savedFilter==='ChatGPT')savedFilter='Alford Daily';
   applyFilter(savedFilter, false);
+  // Preserve synchronous startHome and support both the collection root and games/daily.
+  const preferencesReady = import(new URL('deepseek-runtime/player-tools.mjs',new URL(base,doc.baseURI)).href).then(module=>{
+    preferences=module;mountPreferences();
+    win.addEventListener(module.PREFERENCE_EVENT,()=>applyFilter(selectedCreator,false));
+    win.addEventListener('storage',event=>{if(event.key===null||event.key.startsWith(module.PREFERENCE_PREFIX))mountPreferences();});
+    return module;
+  }).catch(()=>{if($('preference-error'))$('preference-error').textContent='Game preference controls could not load. Reload to try again.';});
 
   const imports = new Map();
   function runtime(slug) {
@@ -126,6 +167,8 @@ export function startHome(doc = document, win = window) {
     if (dayChanged) {
       shareGeneration++;
       $('todays-three').innerHTML = todayThree(shownDate).map(game => card(game, urls.get(game.slug))).join('');
+      mountPreferences();
+      applyFilter(selectedCreator,false);
       $('share-fallback').hidden = true; $('share-text').value = ''; $('share-status').textContent = '';
     }
     $('today-date').dateTime = shownDate;
@@ -163,8 +206,6 @@ export function startHome(doc = document, win = window) {
     $('progress-note').textContent = unavailable ? 'You can still choose a game. This page could not read every saved result on this device.' : '';
     const journey=dailyJourney(shownDate,results);
     $('three-progress').textContent = journey.complete?`Daily set complete · ${journey.solved} of ${journey.games.length} solved`:`${journey.finished} of ${journey.games.length} finished · ${journey.solved} solved`;
-    const next=$('next-daily');next.hidden=!journey.next;
-    if(journey.next){const continuing=results.find(result=>result.slug===journey.next.slug)?.status==='playing';next.href=urls.get(journey.next.slug);$('next-daily-label').textContent=`${continuing?'Continue':'Play'} ${journey.next.name}`;$('next-daily-note').textContent=continuing?'Your unfinished daily is ready.':'One good puzzle is enough to begin.';}
     $('daily-set-note').textContent=journey.complete?'A set well played. Share your result, try Practice, or return for a fresh set tomorrow.':'No timer. No need to play everything. Start one, and return whenever you like.';
     shareSnapshot = {date: shownDate, results};
     $('share-today').disabled = false;
@@ -209,12 +250,12 @@ export function startHome(doc = document, win = window) {
   win.addEventListener('storage', event => {
     if (event.key === null || GAMES.some(game => event.key.startsWith(`${game.slug}:v1:`))) void refresh();
   });
-  win.addEventListener('pageshow', () => {void refresh();});
+  win.addEventListener('pageshow', () => {mountPreferences();void refresh();});
   win.addEventListener('focus', () => {if (dateKey() !== shownDate) void refresh();});
   doc.addEventListener('visibilitychange', () => {if (doc.visibilityState === 'visible') void refresh();});
   win.setInterval(() => {if (doc.visibilityState === 'visible' && dateKey() !== shownDate) void refresh();}, 30_000);
   void refresh();
-  return {refresh};
+  return {refresh,preferencesReady};
 }
 
 if (typeof document !== 'undefined' && typeof window !== 'undefined') startHome();

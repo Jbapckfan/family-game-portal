@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f3ec">
-  <meta name="description" content="A little pause. A good puzzle. Thirty-two daily games, with original creator credits for ChatGPT, Kimi, DeepSeek, Qwen, and Claude.">
+  <meta name="description" content="A little pause. A good puzzle. Thirty-two daily games, with original creator credits for Alford Daily, Kimi, DeepSeek, Qwen, and Claude.">
   <title>Alford Daily — A good puzzle, every day</title>
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -52,9 +52,16 @@
       </section>
       <p class="progress-note" id="progress-note" hidden></p>
       </details>
+      <section class="collection-preferences" aria-label="Your game preferences">
+        <div><p class="eyebrow">Your collection</p><h2>Keep your favorites close.</h2></div>
+        <div class="preference-filters" role="group" aria-label="Games shown"><button id="favorites-only" type="button" aria-pressed="false">★ Favorites only</button><button id="show-hidden" type="button" aria-pressed="false">Show hidden</button></div>
+        <p id="preference-summary" role="status" aria-live="polite">Favorite or hide any game below. Hidden games can always be restored.</p>
+        <p id="preference-error" role="status" aria-live="polite"></p>
+        <p id="preferences-empty" hidden>No games match these filters. Turn off Favorites only, select All creators, or use Show hidden to restore a game.</p>
+      </section>
       <section class="game-section ritual-section" aria-labelledby="three-title">
         <div class="section-heading"><div><p class="eyebrow">A little rhythm for your day</p><h2 id="three-title">Today’s Three</h2></div><p id="three-progress" role="status">Three small challenges. Your own pace.</p></div>
-        <a id="next-daily" class="next-daily" hidden><span><strong id="next-daily-label"></strong><small id="next-daily-note"></small></span><span aria-hidden="true">↗</span></a><div id="todays-three" class="three-grid"></div><p id="daily-set-note" class="daily-set-note"></p>
+        <div id="todays-three" class="three-grid"></div><p id="daily-set-note" class="daily-set-note"></p>
         <div class="ritual-actions"><button type="button" id="share-today" disabled>Share today’s result</button><a id="browse-all" href="#today">Browse all 32 games <span aria-hidden="true">↗</span></a><a href="#playtest-title">Leave a playtest note</a></div>
         <p class="share-status" id="share-status" role="status" aria-live="polite"></p>
         <div id="share-fallback" hidden><label for="share-text">Your spoiler-free result</label><textarea id="share-text" rows="6" readonly></textarea></div>
@@ -69,7 +76,7 @@
         <div><p class="eyebrow">One collection. Many ways to play.</p><p id="filter-summary" role="status" aria-live="polite">32 games · 5 creators</p></div>
         <div class="creator-filters" role="group" aria-label="Game creator">
           <button type="button" data-creator-filter="All" aria-pressed="true">All</button>
-          <button type="button" data-creator-filter="ChatGPT" aria-pressed="false">ChatGPT</button>
+          <button type="button" data-creator-filter="Alford Daily" aria-pressed="false">Alford Daily</button>
           <button type="button" data-creator-filter="Kimi" aria-pressed="false">Kimi</button>
           <button type="button" data-creator-filter="DeepSeek" aria-pressed="false">DeepSeek</button>
           <button type="button" data-creator-filter="Qwen" aria-pressed="false">Qwen</button>
@@ -125,7 +132,7 @@
     <div class="dialog-topline"><span class="eyebrow">A note from Alford Daily</span><button id="close-about" class="close-button" type="button" aria-label="Close about dialog">×</button></div>
     <h2 id="about-title">A small daily ritual.</h2>
     <p>Alford Daily brings together 32 word, logic, memory, and strategy games. Ringcount and Switchpath are quick first stops; choose any game or filter the collection by its original creator.</p>
-    <h3>Original creators, always credited</h3><p>ChatGPT developed Ringcount, Switchpath, Counterpart, Shortlist, Second Sense, Sideways, Tradeoff, and Inbetween. Kimi developed Cairn, Morph, Tangle, Hunch, Circuit, and Quartet in the Pebbles package. Integration and repairs by ChatGPT do not change those credits. DeepSeek supplied the concepts for Twin Hive, Spare, Rung, Cipher, Trail, and Split. Qwen supplied Quadra and the concepts for Logic Lattice, Syntax Siege, Memory Maze, Pattern Prism, and Territory Tactics. Games completed from those concepts show separate ChatGPT implementation credit. Claude developed Dovetail, Splice, Sprout, Tangle, Keystone, and Tumbler in Foreword. Both versions of Tangle keep their own creator labels and progress.</p>
+    <h3>Original creators, always credited</h3><p>Alford Daily developed Ringcount, Switchpath, Counterpart, Shortlist, Second Sense, Sideways, Tradeoff, and Inbetween. Kimi developed Cairn, Morph, Tangle, Hunch, Circuit, and Quartet in the Pebbles package. Integration and repairs by Alford Daily do not change those credits. DeepSeek supplied the concepts for Twin Hive, Spare, Rung, Cipher, Trail, and Split. Qwen supplied Quadra and the concepts for Logic Lattice, Syntax Siege, Memory Maze, Pattern Prism, and Territory Tactics. Games completed from those concepts show separate Alford Daily implementation credit. Claude developed Dovetail, Splice, Sprout, Tangle, Keystone, and Tumbler in Foreword. Both versions of Tangle keep their own creator labels and progress.</p>
     <h3>One day, the same puzzles</h3>
     <p>Everyone gets the same daily board for each game. The day changes at midnight in America/Chicago (Central Time). Most puzzles work at your own pace. Syntax Siege adds timed word waves, with untimed assistance and practice available.</p>
     <h3>Pick up where you left off</h3>

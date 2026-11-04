@@ -23,7 +23,7 @@ const BUNDLE_SLUGS = Object.freeze([...GAME_SLUGS, 'kimi-runtime', 'deepseek-run
 const KIMI_WRAPPER_FILES = Object.freeze(['index.html', 'icon.svg']);
 const SHARED_GAME_REQUIRED_FILES = Object.freeze(['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs']);
 const SHARED_GAME_OPTIONAL_FILES = Object.freeze(['styles.css', 'icon.svg', 'word-acceptance.mjs', 'vocabulary.mjs', 'word-lists-LICENSE.txt']);
-const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css']);
+const DEEPSEEK_SHARED_FILES = Object.freeze(['core.mjs', 'common.mjs', 'player-tools.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css']);
 const DEEPSEEK_SHARED_TESTS = Object.freeze(['core.test.mjs', 'common.test.mjs', 'elite-ui.test.mjs', 'practice-calendar.test.mjs']);
 const RUNTIME_FILES = Object.freeze([
   'index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs',
@@ -139,7 +139,7 @@ async function readRuntime(slug) {
       if (!FONT_EXTENSIONS.test(font)) throw new Error(`${slug}: unexpected file in fonts/: ${font}`);
     }
     const runtime = CLASSIC_GAMES.includes(slug) ? RUNTIME_FILES.filter(name => name !== 'shell.mjs') : RUNTIME_FILES;
-    files = [...runtime, ...(['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween'].includes(slug)?['share-card.mjs']:[]), ...(slug==='inbetween'?['placement-drag.mjs']:[]), ...fonts.map(name => `fonts/${name}`)].sort();
+    files = [...runtime, ...(['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween'].includes(slug)?['share-card.mjs']:[]), ...(slug==='ringcount'?['samples.mjs']:[]), ...(slug==='inbetween'?['placement-drag.mjs']:[]), ...fonts.map(name => `fonts/${name}`)].sort();
   }
   const contents = new Map();
   for (const name of files) {

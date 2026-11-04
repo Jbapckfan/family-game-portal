@@ -2,7 +2,7 @@
 
 A SwiftUI application with no external native dependencies for iPhone and iPad, targeting iOS 17 and later. All 32 daily game runtimes and the local-AI Tic-Tac-Toe bonus ship inside the app and load through a local `alford://app/` origin. Gameplay requires no server, account, sign-in session, or network connection.
 
-The app adds native Today navigation, completion and streak summaries, a local Record screen, settings, haptic feedback, the system share sheet, and an optional local daily reminder. Counterpart, Shortlist, Second Sense and Sideways lead the word edition. Today’s Three offers the next unfinished game; broader daily records and every daily game remain accessible. The bonus appears separately and never earns daily progress or streak credit. Cards and game screens preserve each game's original development credit or its separate concept and implementation credits. The horizontally scrolling creator filter offers All / ChatGPT / Kimi / DeepSeek / Qwen / Claude. See [the unified collection record](../docs/unified-collection.md) for attribution and import details.
+The app adds native Today navigation, completion and streak summaries, a local Record screen, settings, haptic feedback, the system share sheet, and an optional local daily reminder. Counterpart, Shortlist, Second Sense and Sideways lead the word edition. Today’s Three offers the next unfinished game; broader daily records and every daily game remain accessible. The bonus appears separately and never earns daily progress or streak credit. Cards and game screens preserve each game's original development credit or its separate concept and implementation credits. The horizontally scrolling creator filter offers All / Alford Daily / Kimi / DeepSeek / Qwen / Claude. See [the unified collection record](../docs/unified-collection.md) for attribution and import details.
 
 ## Build status and prerequisites
 
@@ -60,8 +60,8 @@ Use **Product → Archive** with a physical-device destination for a distributio
 | Shortlist | Identify a hidden word from twelve candidates using three letter-presence scans, then commit to an answer. | 180 |
 | Second Sense | Match a noun definition and verb definition, then type the single word fitting both senses. | 180 |
 | Sideways | Shift word rows horizontally so their selected letters satisfy the vertical clue. | 180 |
-| Tradeoff (ChatGPT) | Trade letters between six clued words. | 180 |
-| Inbetween (ChatGPT) | Insert two-letter pairs into clued words. | 180 |
+| Tradeoff (Alford Daily) | Trade letters between six clued words. | 180 |
+| Inbetween (Alford Daily) | Insert two-letter pairs into clued words. | 180 |
 | Cairn (Kimi) | Five growing anagrams. | 839 |
 | Morph (Kimi) | One-letter word ladders. | 450 |
 | Tangle (Kimi) | Trace words through a grid to reach gold. | 430 |
@@ -87,7 +87,7 @@ Use **Product → Archive** with a physical-device destination for a distributio
 | Keystone (Claude) | Find the hidden compound-word link in each of three arches. | 120 |
 | Tumbler (Claude) | Use alphabet-range clues to find a five-letter word. | 1,054 |
 
-The six DeepSeek entries carry **Concept by DeepSeek · Built by ChatGPT**. Quadra carries **Developed by Qwen**; the other five Qwen entries carry **Concept by Qwen · Built by ChatGPT**. The six Claude entries carry **Developed by Claude**, retaining their supplied playable games and original puzzle banks. Claude's Tangle and Kimi's Tangle have different mechanics, IDs, routes, and saved results despite sharing a display name.
+The six DeepSeek entries carry **Concept by DeepSeek · Built by Alford Daily**. Quadra carries **Developed by Qwen**; the other five Qwen entries carry **Concept by Qwen · Built by Alford Daily**. The six Claude entries carry **Developed by Claude**, retaining their supplied playable games and original puzzle banks. Claude's Tangle and Kimi's Tangle have different mechanics, IDs, routes, and saved results despite sharing a display name.
 
 Every game has at least 120 prepared puzzles. Some word games reuse a finite curated pool in distinct combinations; see the [content expansion record](../docs/verification-puzzles-2026-10-22.md). These are finite, prepared collections. The daily index is deterministic and repeats after each game's collection length. The app does not promise an infinite supply of unseen puzzles. Practice remains separate from daily results. Game-specific rules, explanations, score sharing, and saved-state validation remain in each bundled JavaScript engine.
 

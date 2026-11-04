@@ -1,4 +1,4 @@
-// Original prepared routes by ChatGPT, implementing Qwen’s Memory Maze concept.
+// Original prepared routes by Alford Daily, implementing Qwen’s Memory Maze concept.
 // Obstacles are outside the remembered route; every route remains playable.
 const ORIGINAL_PUZZLES = [
   {
@@ -840,7 +840,7 @@ const ORIGINAL_PUZZLES = [
 
 // BEGIN ALFORD DAILY DEEPSEEK QWEN EXPANSION
 // All published records retain their original values, IDs, and ordering.
-// Additional prepared content by ChatGPT. Creator attribution is unchanged.
+// Additional prepared content by Alford Daily. Creator attribution is unchanged.
 export const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...[
   {
     "id": "maze-031",

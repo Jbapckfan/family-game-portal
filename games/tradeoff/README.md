@@ -41,7 +41,7 @@ Progress and records use localStorage under `tradeoff:v1:`. There is no account,
 
 Fonts are served locally, with their SIL Open Font License files in `fonts/`. Game logic, vocabulary, and typography need no third-party runtime requests. Sound uses the browser Web Audio API and starts muted.
 
-The game is backed up inside the private `family-game-portal` GitHub repository. Publishing a commit does not automatically update the NAS. Follow the portal README's `git pull --ff-only` procedure from the home network to update its mounted files. This package does not include the standalone ChatGPT Site's hosting identity or credentials.
+The game is backed up inside the private `family-game-portal` GitHub repository. Publishing a commit does not automatically update the NAS. Follow the portal README's `git pull --ff-only` procedure from the home network to update its mounted files. This package does not include the standalone Alford Daily site's hosting identity or credentials.
 
 `docs/verification.md` records checks performed on the original standalone game. Design and planning notes under `docs/superpowers/` retain their original context and `dist/` paths. This portal copy flattens the runtime files into this directory; its tests and generator use the flattened layout.
 

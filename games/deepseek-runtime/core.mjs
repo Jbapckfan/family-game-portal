@@ -1,4 +1,4 @@
-/** Shared completion runtime by ChatGPT; individual concept credits stay in the catalog. */
+/** Shared completion runtime by Alford Daily; individual concept credits stay in the catalog. */
 import {releasedDailyIndex} from './daily-rotations.mjs';
 import {practiceCandidates} from './practice-calendar.mjs';
 /** Published daily rotations. Append releases here when expanding a bank again.

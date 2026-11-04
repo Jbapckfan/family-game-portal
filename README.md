@@ -19,7 +19,7 @@ docker compose up -d
 
 ## Alford Daily: one attributed collection
 
-The daily-puzzle web and iOS app contains **32 daily games with ChatGPT, Kimi, DeepSeek, Qwen, and Claude creator labels**, plus a separate local-AI nine-board Tic-Tac-Toe bonus. Counterpart, Shortlist, Second Sense and Sideways lead the word edition; all daily games remain accessible. Cards and game screens retain their original developer labels, with filters for all five creators and separate concept/completion credit where applicable. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
+The daily-puzzle web and iOS app contains **32 daily games with Alford Daily, Kimi, DeepSeek, Qwen, and Claude creator labels**, plus a separate local-AI nine-board Tic-Tac-Toe bonus. Counterpart, Shortlist, Second Sense and Sideways lead the word edition; all daily games remain accessible. Cards and game screens retain their original developer labels, with filters for all five creators and separate concept/completion credit where applicable. The existing family-portal games remain available. See [the current collection and import record](docs/unified-collection.md).
 
 ## Games Included
 
@@ -115,7 +115,7 @@ The sync script transfers the root `index.html` catalog along with the `games/` 
 
 ## Alford Daily puzzles
 
-The 32 daily games have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. They are also collected in the [private Alford Daily app](https://alford-daily.jbapckfan.chatgpt.site). The NAS portal serves each game locally, with no dependence on access to that private app.
+The 32 daily games have a local hub at `/games/daily/`, sourced from `games/daily/index.html`. The NAS portal serves each game locally, with no dependence on access to that private app.
 
 | Game | Local portal path | Prepared boards |
 | --- | --- | --- |

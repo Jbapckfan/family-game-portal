@@ -2,38 +2,38 @@
 
 ## Current scope
 
-The unified web and iOS catalogs contain **32 games with five creator labels: ChatGPT, Kimi, DeepSeek, Qwen, and Claude**. This supersedes the earlier six-game launch selection and fourteen-game Kimi integration. Existing family-portal games remain intact; the Alford Daily entry opens this collection.
+The unified web and iOS catalogs contain **32 games with five creator labels: Alford Daily, Kimi, DeepSeek, Qwen, and Claude**. This supersedes the earlier six-game launch selection and fourteen-game Kimi integration. Existing family-portal games remain intact; the Alford Daily entry opens this collection.
 
-The supplied packages contain different levels of implementation. Kimi supplied six completed games in Pebbles. DeepSeek supplied six concepts and a SwiftUI hub with missing gameplay screens. Qwen supplied a playable Quadra prototype and five blueprints. Claude supplied six implemented web/SwiftUI games in Foreword. The original eight games developed in this conversation retain ChatGPT credit. No exact model versions were supplied.
+The supplied packages contain different levels of implementation. Kimi supplied six completed games in Pebbles. DeepSeek supplied six concepts and a SwiftUI hub with missing gameplay screens. Qwen supplied a playable Quadra prototype and five blueprints. Claude supplied six implemented web/SwiftUI games in Foreword. The original eight games developed in this conversation retain Alford Daily credit. No exact model versions were supplied.
 
 | Creator | Game | Visible credit | Stable ID | Prepared records |
 |---|---|---|---|---:|
-| ChatGPT | Ringcount | Developed by ChatGPT | `ringcount` | 180 |
-| ChatGPT | Switchpath | Developed by ChatGPT | `switchpath` | 187 |
-| ChatGPT | Counterpart | Developed by ChatGPT | `counterpart` | 180 |
-| ChatGPT | Shortlist | Developed by ChatGPT | `shortlist` | 180 |
-| ChatGPT | Second Sense | Developed by ChatGPT | `second-sense` | 180 |
-| ChatGPT | Sideways | Developed by ChatGPT | `sideways` | 180 |
-| ChatGPT | Tradeoff | Developed by ChatGPT | `tradeoff` | 180 |
-| ChatGPT | Inbetween | Developed by ChatGPT | `inbetween` | 180 |
+| Alford Daily | Ringcount | Developed by Alford Daily | `ringcount` | 180 |
+| Alford Daily | Switchpath | Developed by Alford Daily | `switchpath` | 187 |
+| Alford Daily | Counterpart | Developed by Alford Daily | `counterpart` | 180 |
+| Alford Daily | Shortlist | Developed by Alford Daily | `shortlist` | 180 |
+| Alford Daily | Second Sense | Developed by Alford Daily | `second-sense` | 180 |
+| Alford Daily | Sideways | Developed by Alford Daily | `sideways` | 180 |
+| Alford Daily | Tradeoff | Developed by Alford Daily | `tradeoff` | 180 |
+| Alford Daily | Inbetween | Developed by Alford Daily | `inbetween` | 180 |
 | Kimi | Cairn | Developed by Kimi | `kimi-cairn` | 839 |
 | Kimi | Morph | Developed by Kimi | `kimi-morph` | 450 |
 | Kimi | Tangle | Developed by Kimi | `kimi-tangle` | 430 |
 | Kimi | Hunch | Developed by Kimi | `kimi-hunch` | 937 |
 | Kimi | Circuit | Developed by Kimi | `kimi-circuit` | 286 |
 | Kimi | Quartet | Developed by Kimi | `kimi-quartet` | 420 |
-| DeepSeek | Twin Hive | Concept by DeepSeek · Built by ChatGPT | `deepseek-twin-hive` | 140 |
-| DeepSeek | Spare | Concept by DeepSeek · Built by ChatGPT | `deepseek-spare` | 120 |
-| DeepSeek | Rung | Concept by DeepSeek · Built by ChatGPT | `deepseek-rung` | 120 |
-| DeepSeek | Cipher | Concept by DeepSeek · Built by ChatGPT | `deepseek-cipher` | 120 |
-| DeepSeek | Trail | Concept by DeepSeek · Built by ChatGPT | `deepseek-trail` | 120 |
-| DeepSeek | Split | Concept by DeepSeek · Built by ChatGPT | `deepseek-split` | 120 |
+| DeepSeek | Twin Hive | Concept by DeepSeek · Built by Alford Daily | `deepseek-twin-hive` | 140 |
+| DeepSeek | Spare | Concept by DeepSeek · Built by Alford Daily | `deepseek-spare` | 120 |
+| DeepSeek | Rung | Concept by DeepSeek · Built by Alford Daily | `deepseek-rung` | 120 |
+| DeepSeek | Cipher | Concept by DeepSeek · Built by Alford Daily | `deepseek-cipher` | 120 |
+| DeepSeek | Trail | Concept by DeepSeek · Built by Alford Daily | `deepseek-trail` | 120 |
+| DeepSeek | Split | Concept by DeepSeek · Built by Alford Daily | `deepseek-split` | 120 |
 | Qwen | Quadra | Developed by Qwen | `qwen-quadra` | 120 |
-| Qwen | Logic Lattice | Concept by Qwen · Built by ChatGPT | `qwen-logic-lattice` | 120 |
-| Qwen | Syntax Siege | Concept by Qwen · Built by ChatGPT | `qwen-syntax-siege` | 120 |
-| Qwen | Memory Maze | Concept by Qwen · Built by ChatGPT | `qwen-memory-maze` | 120 |
-| Qwen | Pattern Prism | Concept by Qwen · Built by ChatGPT | `qwen-pattern-prism` | 150 |
-| Qwen | Territory Tactics | Concept by Qwen · Built by ChatGPT | `qwen-territory-tactics` | 120 |
+| Qwen | Logic Lattice | Concept by Qwen · Built by Alford Daily | `qwen-logic-lattice` | 120 |
+| Qwen | Syntax Siege | Concept by Qwen · Built by Alford Daily | `qwen-syntax-siege` | 120 |
+| Qwen | Memory Maze | Concept by Qwen · Built by Alford Daily | `qwen-memory-maze` | 120 |
+| Qwen | Pattern Prism | Concept by Qwen · Built by Alford Daily | `qwen-pattern-prism` | 150 |
+| Qwen | Territory Tactics | Concept by Qwen · Built by Alford Daily | `qwen-territory-tactics` | 120 |
 | Claude | Dovetail | Developed by Claude | `claude-dovetail` | 120 |
 | Claude | Splice | Developed by Claude | `claude-splice` | 120 |
 | Claude | Sprout | Developed by Claude | `claude-sprout` | 128 |
@@ -47,14 +47,14 @@ Kimi's Tangle traces adjacent letters on a grid. Claude's Tangle separates inter
 
 ## What makes it one app
 
-- One home screen, one native Today/Record/Settings structure, and **All / ChatGPT / Kimi / DeepSeek / Qwen / Claude** filters.
-- Visible **Developed by …** or **Concept by … · Built by ChatGPT** labels on cards and game screens; the native game menu also describes the game and its developer.
+- One home screen, one native Today/Record/Settings structure, and **All / Alford Daily / Kimi / DeepSeek / Qwen / Claude** filters.
+- Visible **Developed by …** or **Concept by … · Built by Alford Daily** labels on cards and game screens; the native game menu also describes the game and its developer.
 - One America/Chicago daily reset schedule, with date arithmetic that remains correct over daylight-saving changes and outside Central Time.
 - A completion summary covering all 32 games even when a developer filter hides some cards.
 - Local daily progress, practice separation, and offline iOS resources. Practice never adds a daily result. A reveal or loss does not become a solve.
 - The normal app has no advertising, analytics, payment prompts, or working purchase product. The uploaded Pebbles demo toggle and Foreword commerce/entitlement screens are excluded.
 
-The app credits original game development and supplied concepts separately from ChatGPT's completion, integration, and repair work. Neither sorting by developer nor adding a game changes its attribution.
+The app credits original game development and supplied concepts separately from Alford Daily's completion, integration, and repair work. Neither sorting by developer nor adding a game changes its attribution.
 
 ## Source provenance and integration boundary
 

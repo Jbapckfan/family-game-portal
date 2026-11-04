@@ -40,7 +40,7 @@ try {
       select=date=>{const value=kimi[game.slug.slice(5)](dayNumber(date));return `${game.slug}:${value.puzzleNo}`;};
     } else {
       const {PUZZLES}=await import(pathToFileURL(path.join(root,'games',game.slug,'puzzles.mjs')).href);
-      if (game.creator==='ChatGPT') {
+      if (game.creator==='Alford Daily') {
         const {getDaily}=await import(pathToFileURL(path.join(root,'games',game.slug,'engine.mjs')).href);
         select=date=>getDaily(PUZZLES,new Date(`${date}T18:00:00Z`)).puzzle.id;
       } else select=date=>PUZZLES[dailyIndex(game.slug,date,PUZZLES.length)].id;

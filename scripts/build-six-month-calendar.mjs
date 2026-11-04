@@ -29,7 +29,7 @@ try {
     indices.push(previous.todayIndex);
     assert.ok(indices.length >= 200,`${game.slug}: insufficient substantive reserve`);
     rotations[game.slug]={from:'2026-10-30',bankCount:game.puzzles.length,indices};
-    if (game.creator === 'ChatGPT') originalCounts[game.slug]=previous.count;
+    if (game.creator === 'Alford Daily') originalCounts[game.slug]=previous.count;
   }
   // Retain the original protected prefix and cover the next 182 dates from Nov 1.
   const dates=calendarDates('2026-10-29','2027-05-02');

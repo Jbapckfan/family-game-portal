@@ -1,4 +1,4 @@
-// Additional editorial content by ChatGPT, October 2026.
+// Additional editorial content by Alford Daily, October 2026.
 // These are authored puzzle inputs, not quotations or an imported dictionary.
 const rows = text => text.trim().split('\n').map(line => line.split(' | '));
 

@@ -47,7 +47,7 @@ Progress and scores use localStorage under `inbetween:v1:`. There is no account 
 
 Fonts are served locally under their included SIL Open Font License terms. Optional sound uses Web Audio and starts off. The game makes no third-party runtime requests, records no analytics, and requires no network service after assets load.
 
-All runtime URLs are relative, so the files also work at `/games/inbetween/` in the family portal. Portal copies link back to the catalog and to Tradeoff. The separate standalone ChatGPT Site is owner-private; the NAS portal retains its existing home-network audience.
+All runtime URLs are relative, so the files also work at `/games/inbetween/` in the family portal. Portal copies link back to the catalog and to Tradeoff. The separate standalone Alford Daily site is owner-private; the NAS portal retains its existing home-network audience.
 
 ## Related games
 

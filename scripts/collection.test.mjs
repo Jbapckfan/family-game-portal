@@ -10,12 +10,12 @@ const store = values => ({getItem:key=>values[key]===undefined?null:JSON.stringi
 
 test('one collection preserves original IDs and all five creators without conflating concept and development credits',()=>{
   assert.equal(GAMES.length,32); assert.equal(new Set(GAMES.map(g=>g.slug)).size,32);
-  assert.deepEqual(filterGames('ChatGPT').map(g=>g.slug),['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween']);
+  assert.deepEqual(filterGames('Alford Daily').map(g=>g.slug),['ringcount','switchpath','counterpart','shortlist','second-sense','sideways','tradeoff','inbetween']);
   assert.deepEqual(filterGames('Kimi').map(g=>g.slug),['kimi-cairn','kimi-morph','kimi-tangle','kimi-hunch','kimi-circuit','kimi-quartet']);
-  assert.deepEqual(CREATORS,['ChatGPT','Kimi','DeepSeek','Qwen','Claude']);
+  assert.deepEqual(CREATORS,['Alford Daily','Kimi','DeepSeek','Qwen','Claude']);
   for(const creator of ['DeepSeek','Qwen','Claude'])assert.equal(filterGames(creator).length,6);
-  for(const game of filterGames('DeepSeek'))assert.equal(game.credit,'Concept by DeepSeek · Built by ChatGPT');
-  for(const game of filterGames('Qwen'))assert.equal(game.credit,game.slug==='qwen-quadra'?'Developed by Qwen':'Concept by Qwen · Built by ChatGPT');
+  for(const game of filterGames('DeepSeek'))assert.equal(game.credit,'Concept by DeepSeek · Built by Alford Daily');
+  for(const game of filterGames('Qwen'))assert.equal(game.credit,game.slug==='qwen-quadra'?'Developed by Qwen':'Concept by Qwen · Built by Alford Daily');
   for(const game of filterGames('Claude'))assert.equal(game.credit,'Developed by Claude');
   assert.deepEqual(GAMES.filter(g=>g.name==='Tangle').map(g=>[g.slug,g.creator]),[['kimi-tangle','Kimi'],['claude-tangle','Claude']]);
   assert.equal(filterGames('All').length,32);
@@ -31,7 +31,7 @@ test('imported home results distinguish wins, reveals, losses, practice, and una
   assert.equal(readKimiStatus({slug,storage:{getItem(){return '{bad';}},now}).status,'new');
 });
 test('all existing engines still read their original saved-result keys',async()=>{
-  for(const game of filterGames('ChatGPT')){
+  for(const game of filterGames('Alford Daily')){
     const engine=await import(`../games/${game.slug}/engine.mjs`);
     const {PUZZLES}=await import(`../games/${game.slug}/puzzles.mjs`);
     const daily=engine.getDaily(PUZZLES,now);
@@ -47,7 +47,7 @@ test('canonical documents expose the credited creator and the correct isolated r
   for(const game of GAMES){
     const html=await readFile(new URL(`../games/${game.slug}/index.html`,import.meta.url),'utf8');
     assert.ok(html.includes(`data-game-creator="${game.creator}"`),game.slug);
-    if(game.creator==='ChatGPT') assert.ok(html.includes('Developed by ChatGPT'),game.slug);
+    if(game.creator==='Alford Daily') assert.ok(html.includes('Developed by Alford Daily'),game.slug);
     else {assert.ok(html.includes(`data-game-id="${game.slug}"`));assert.ok(html.includes(game.creator==='Kimi'?'../kimi-runtime/assets/':'../deepseek-runtime/styles.css'),game.slug);}
   }
   const original=await readFile(new URL('../sources/kimi/original/Kimi_Agent_iOS_4-Game_Monetization.zip',import.meta.url));

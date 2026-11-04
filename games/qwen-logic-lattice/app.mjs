@@ -5,7 +5,7 @@ import {createState,restoreState,getStatus,toggleCell,markCell,undo,restart,hint
 let selectedLine=0,tool='cycle',viewPuzzle=null,helpOpen=false;
 mountDailyGame({
  assistanceCount:(p,s)=>s.hinted.length,
- id:'qwen-logic-lattice',name:'Logic Lattice',creator:'Qwen',credit:'Concept by Qwen · Built by ChatGPT',accent:'#087c99',
+ id:'qwen-logic-lattice',name:'Logic Lattice',creator:'Qwen',credit:'Concept by Qwen · Built by Alford Daily',accent:'#087c99',
  intro:'Make each row, column and diagonal contain exactly the right number of black squares.',
  instructions:[
   'Numbers count an entire line of five squares. They do not count neighboring squares, and there are no hidden mines.',

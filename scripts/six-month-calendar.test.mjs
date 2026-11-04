@@ -32,7 +32,7 @@ test('dated rotations contain valid distinct challenge indices and remain stable
     assert.ok(rotation.indices.every(index=>Number.isInteger(index)&&index>=0&&index<count));
     assert.equal(new Set(rotation.indices.map(i=>game.key(game.puzzles[i]))).size,rotation.indices.length);
     for(const date of dates){
-      if(game.creator==='ChatGPT'){
+      if(game.creator==='Alford Daily'){
         const ordinal=(Date.parse(date)-Date.parse('2026-10-20'))/86400000;
         assert.equal(originalDailyIndex(game.slug,date,ordinal,count+11),originalDailyIndex(game.slug,date,ordinal,count));
       }else assert.equal(dailyIndex(game.slug,date,count+11),dailyIndex(game.slug,date,count));

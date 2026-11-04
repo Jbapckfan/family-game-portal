@@ -265,7 +265,7 @@ for(const slug of slugs){
  const {additions,info}=generators[slug]();assert.equal(info.preparedPuzzles,30+additions.length);
  assert.ok(new Set([...original[slug],...additions].map(p=>substantiveSignature(slug,p))).size>=200,`${slug}: fewer than 200 substantive challenges`);
  const retained=source[slug].replace('export const PUZZLES','const ORIGINAL_PUZZLES');
- const text=retained+`\n${MARKER}\n// All published records retain their original values, IDs, and ordering.\n// Additional prepared content by ChatGPT. Creator attribution is unchanged.\nexport const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...${JSON.stringify(additions,null,2)}]);\nexport const CONTENT_INFO = Object.freeze(${JSON.stringify(info,null,2)});\n`;
+ const text=retained+`\n${MARKER}\n// All published records retain their original values, IDs, and ordering.\n// Additional prepared content by Alford Daily. Creator attribution is unchanged.\nexport const PUZZLES = Object.freeze([...ORIGINAL_PUZZLES, ...${JSON.stringify(additions,null,2)}]);\nexport const CONTENT_INFO = Object.freeze(${JSON.stringify(info,null,2)});\n`;
  const url=new URL(`../games/${slug}/puzzles.mjs`,import.meta.url);
  if(check)assert.equal(await readFile(url,'utf8'),text,`${slug}: generated content is stale`);else await writeFile(url,text);
  console.log(`${slug}: ${info.preparedPuzzles} prepared puzzles${check?' verified':''}`);

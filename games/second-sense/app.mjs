@@ -9,7 +9,7 @@ let draftKey=null;
 const app=createShell({
   lesson:{question:'A kitchen vessel · Put a plant in a container. Which one word fits both meanings?',choices:[{label:'POT',correct:true,why:'A pot is a vessel; to pot is to put a plant in a container.'},{label:'PAN',correct:false,why:'A pan can be a vessel, but that does not fit the plant action here.'},{label:'PLANT',correct:false,why:'Plant fits the action, but it is not the kitchen vessel in this example.'}]},
   slug:'second-sense',name:'Second Sense',puzzles:PUZZLES,engine,
-  sibling:{slug:'sideways',name:'Sideways',url:'https://alford-daily.jbapckfan.chatgpt.site/games/sideways/'},
+  sibling:{slug:'sideways',name:'Sideways',url:'../sideways/'},
   reset({clearDraft=false}={}){if(clearDraft&&draftKey){try{sessionStorage.removeItem(draftKey);}catch{}}nounId=null;verbId=null;draft='';error='';draftKey=null;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedNouns.length}),
   share:openResultShare,

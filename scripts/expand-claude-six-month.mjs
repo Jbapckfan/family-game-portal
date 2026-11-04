@@ -322,7 +322,7 @@ for(const [slug,build] of [['sprout',sprout],['tangle',tangle]]){
   const file=new URL(`../games/claude-${slug}/puzzles.mjs`,import.meta.url),current=await readFile(file,'utf8'),original=current.split(MARKER)[0];
   assert.equal(sha(original),hashes[slug],`${slug}: original source changed`);
   const {added,info}=build();
-  const generated=original+MARKER+'\n// Additional content prepared by ChatGPT; published records above are unchanged.\n'+
+  const generated=original+MARKER+'\n// Additional content prepared by Alford Daily; published records above are unchanged.\n'+
     `PUZZLES.push(...${JSON.stringify(added)});\nexport const CONTENT_INFO = Object.freeze(${JSON.stringify(info)});\n`;
   output.push({slug,file,current,generated,info});
 }

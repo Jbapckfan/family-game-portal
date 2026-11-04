@@ -2,7 +2,7 @@
 
 > **Current collection — October 22, 2026:** 32 attributed games, 8,001 prepared puzzles, and at least 120 records per game. See [release state](RELEASE-STATE.md), [NAS and domain deployment](NAS-AND-DOMAIN-DEPLOYMENT.md), and the [commercial launch plan](COMMERCIAL-LAUNCH-PLAN.md) for the current release. The historical integration details and earlier launch choices below remain an archived planning record; their smaller counts and six-game scope are superseded.
 
-Tradeoff, Inbetween, Counterpart, Shortlist, Second Sense, Sideways, Ringcount, and Switchpath appear as featured games in the active root `index.html` catalog. They also have relative links in the older `games/index.html` catalog. The existing game cards and catalog behavior are retained. A separate header link opens the local Alford Daily hub. The collection is also available as a [private app preview](https://alford-daily.jbapckfan.chatgpt.site).
+Tradeoff, Inbetween, Counterpart, Shortlist, Second Sense, Sideways, Ringcount, and Switchpath appear as featured games in the active root `index.html` catalog. They also have relative links in the older `games/index.html` catalog. The existing game cards and catalog behavior are retained. A separate header link opens the local Alford Daily hub. Open the [local collection](../games/daily/) from this checkout or its deployed host.
 
 ## Runtime paths
 

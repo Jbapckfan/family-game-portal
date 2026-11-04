@@ -2,7 +2,7 @@
 
 This directory contains the Alford Daily home. Alford Daily is a separate product from Family Portal and SpellSpark. Its source remains in the historically named `family-game-portal` repository, but its standalone build includes only the collection and its 32 game runtimes. The source layout at `/games/daily/` links to sibling game directories at `/games/<slug>/` and shares their browser storage when served from the same origin.
 
-The collection contains eight ChatGPT games and six each from Kimi, DeepSeek, Qwen, and Claude. Filters preserve those creator labels. Six DeepSeek concepts and five Qwen concepts also carry separate ChatGPT implementation credit. Ringcount and Switchpath lead the home; Tradeoff and Inbetween remain family favorites. The two games named Tangle retain separate IDs, mechanics, credits, and progress.
+The collection contains eight Alford Daily games and six each from Kimi, DeepSeek, Qwen, and Claude. Filters preserve those creator labels. Six DeepSeek concepts and five Qwen concepts also carry separate Alford Daily implementation credit. Ringcount and Switchpath lead the home; Tradeoff and Inbetween remain family favorites. The two games named Tangle retain separate IDs, mechanics, credits, and progress.
 
 ## Local verification
 
@@ -40,7 +40,7 @@ Saves belong to the current browser, device, and website origin. A private previ
 
 ## Content and build scope
 
-The collection contains 8,001 prepared puzzle/answer records: 1,447 across the original eight ChatGPT games, 3,362 from Kimi, 740 DeepSeek-based records, 750 Qwen-based records, and 1,702 from Claude. Every game has at least 120 records. Keystone's 120 records each contain three arches. Some records recombine smaller approved pools; each game cycles its own finite bank, so the total does not imply 8,001 unique authored ideas or fresh days per game. Decorative home illustrations are not today's puzzles. See `../../docs/puzzle-inventory.json` for current counts and `../../docs/unified-collection.md` for provenance.
+The collection contains 8,001 prepared puzzle/answer records: 1,447 across the original eight Alford Daily games, 3,362 from Kimi, 740 DeepSeek-based records, 750 Qwen-based records, and 1,702 from Claude. Every game has at least 120 records. Keystone's 120 records each contain three arches. Some records recombine smaller approved pools; each game cycles its own finite bank, so the total does not imply 8,001 unique authored ideas or fresh days per game. Decorative home illustrations are not today's puzzles. See `../../docs/puzzle-inventory.json` for current counts and `../../docs/unified-collection.md` for provenance.
 
 This web build has no accounts, analytics, advertising, ad removal purchase, or billing SDK. The standalone export now provides an optional **Take the games offline** download. Its content-addressed worker verifies every asset before installation, waits for old tabs to close when updating, and never changes localStorage. The source portal and bundled iOS app do not register that worker. Browser download/storage failures remain visible; browser eviction can remove downloaded games. Keyboard focus, a native accessible About dialog, and reduced-motion styling are included.
 

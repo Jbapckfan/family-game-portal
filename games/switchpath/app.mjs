@@ -19,7 +19,7 @@ const help = `
 const app = createShell({
   lesson:{question:'Your route is 3 → 12 → 7. The next step must go higher. Which neighboring number fits?',choices:[{label:'10',correct:true,why:'10 is higher than 7. The rhythm continues higher, lower, higher.'},{label:'5',correct:false,why:'5 is lower than 7. That would repeat the lower step.'},{label:'7',correct:false,why:'Equal numbers are neither higher nor lower. This step must increase.'}]},
   slug: 'switchpath', name: 'Switchpath', puzzles: PUZZLES, engine,
-  sibling: { slug: 'ringcount', name: 'Ringcount', url: 'https://alford-daily.jbapckfan.chatgpt.site/games/ringcount/' },
+  sibling: { slug: 'ringcount', name: 'Ringcount', url: '../ringcount/' },
   reset() { focusedCell = null; },
   record: game => ({ status: game.status, moves: game.moves, hints: game.hints }),
   help,

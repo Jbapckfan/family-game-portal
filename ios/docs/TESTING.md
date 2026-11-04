@@ -19,7 +19,7 @@ These are the suite's coverage requirements, not a claim that a particular revis
 
 | Area | Procedure | Expected result |
 | --- | --- | --- |
-| First launch | Install a clean normal build and open it. | Today shows all 32 games and All / ChatGPT / Kimi / DeepSeek / Qwen / Claude filters. Eight are developed by ChatGPT, six by Kimi, six by Claude, six are DeepSeek concepts built by ChatGPT, Quadra is developed by Qwen, and the other five Qwen concepts are built by ChatGPT; no account, network, notification, tracking, or purchase prompt appears. |
+| First launch | Install a clean normal build and open it. | Today shows all 32 games and All / Alford Daily / Kimi / DeepSeek / Qwen / Claude filters. Eight are developed by Alford Daily, six by Kimi, six by Claude, six are DeepSeek concepts built by Alford Daily, Quadra is developed by Qwen, and the other five Qwen concepts are built by Alford Daily; no account, network, notification, tracking, or purchase prompt appears. |
 | Offline gameplay | Enable Airplane Mode on a device, launch each game, make several moves, and finish a puzzle. | All rules, fonts, content, explanations, and game controls work without a remote origin. |
 | Process persistence | Make a partial move in each game, terminate the app, and reopen it. | Each game resumes its own daily/practice state; a terminal daily result remains terminal. |
 | Daily results | Solve one daily, reveal another, finish unsuccessful daily rounds in Shortlist, Hunch, Quartet, Spare, Quadra, Syntax Siege, and the six Claude games, and play practice. | Today counts only daily terminal results as completed; only daily wins as solved; practice leaves the daily ledger unchanged. Claude's Tangle result does not change Kimi's Tangle result. |

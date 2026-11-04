@@ -76,11 +76,11 @@ final class DailyCalendarTests: XCTestCase {
         XCTAssertEqual(CreatorFilter.qwen.games.count, 6)
         XCTAssertEqual(GameID.qwenQuadra.credit, "Developed by Qwen")
         XCTAssertEqual(GameID.kimiCairn.credit, "Developed by Kimi")
-        XCTAssertEqual(GameID.ringcount.credit, "Developed by ChatGPT")
+        XCTAssertEqual(GameID.ringcount.credit, "Developed by Alford Daily")
         for game in CreatorFilter.deepSeek.games {
             XCTAssertEqual(game.creator, .deepSeek)
             XCTAssertTrue(game.rawValue.hasPrefix("deepseek-"))
-            XCTAssertEqual(game.credit, "Concept by DeepSeek · Built by ChatGPT")
+            XCTAssertEqual(game.credit, "Concept by DeepSeek · Built by Alford Daily")
             XCTAssertEqual(game.collectionCount, 200)
             XCTAssertEqual(game.allowsLoss, game == .deepSeekSpare)
         }
@@ -88,7 +88,7 @@ final class DailyCalendarTests: XCTestCase {
             XCTAssertEqual(game.creator, .qwen)
             XCTAssertTrue(game.rawValue.hasPrefix("qwen-"))
             if game != .qwenQuadra {
-                XCTAssertEqual(game.credit, "Concept by Qwen · Built by ChatGPT")
+                XCTAssertEqual(game.credit, "Concept by Qwen · Built by Alford Daily")
             }
             XCTAssertEqual(game.allowsLoss, game == .qwenQuadra || game == .qwenSyntaxSiege)
         }

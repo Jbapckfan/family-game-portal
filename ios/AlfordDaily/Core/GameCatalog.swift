@@ -1,20 +1,20 @@
 import Foundation
 
 enum GameCreator: String, CaseIterable, Identifiable, Hashable {
-    case chatGPT = "ChatGPT"
+    case chatGPT = "Alford Daily"
     case kimi = "Kimi"
     case deepSeek = "DeepSeek"
     case qwen = "Qwen"
     case claude = "Claude"
     var id: String { rawValue }
     var credit: String {
-        self == .deepSeek ? "Concept by DeepSeek · Built by ChatGPT" : "Developed by \(rawValue)"
+        self == .deepSeek ? "Concept by DeepSeek · Built by Alford Daily" : "Developed by \(rawValue)"
     }
 }
 
 enum CreatorFilter: String, CaseIterable, Identifiable, Hashable {
     case all = "All"
-    case chatGPT = "ChatGPT"
+    case chatGPT = "Alford Daily"
     case kimi = "Kimi"
     case deepSeek = "DeepSeek"
     case qwen = "Qwen"
@@ -203,11 +203,11 @@ enum GameID: String, CaseIterable, Codable, Identifiable, Hashable {
         }
     }
     var credit: String {
-        creator == .qwen && self != .qwenQuadra ? "Concept by Qwen · Built by ChatGPT" : creator.credit
+        creator == .qwen && self != .qwenQuadra ? "Concept by Qwen · Built by Alford Daily" : creator.credit
     }
     var attributionDescription: String {
         if creator == .deepSeek || (creator == .qwen && self != .qwenQuadra) {
-            return "Original concept: \(creator.rawValue). Playable implementation and integration: ChatGPT. Both contributions remain credited in this collection."
+            return "Original concept: \(creator.rawValue). Playable implementation and integration: Alford Daily. Both contributions remain credited in this collection."
         }
         return "Original developer: \(creator.rawValue). Included in the Alford Daily collection with its original attribution."
     }

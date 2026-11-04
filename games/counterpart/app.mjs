@@ -17,7 +17,7 @@ const help = `<p class="dialog-kicker">A DAILY GAME OF RELATIONSHIPS</p><h2 clas
 const app = createShell({
   lesson:{question:'PEN → WRITER is a tool → its user. Which pair has the same direction?',choices:[{label:'BRUSH → PAINTER',correct:true,why:'A painter uses a brush, just as a writer uses a pen.'},{label:'PAINTER → BRUSH',correct:false,why:'Those words have the relationship, but the direction is reversed.'},{label:'BRUSH → CANVAS',correct:false,why:'Canvas is the surface used, rather than the person using the tool.'}]},
   slug:'counterpart', name:'Counterpart', puzzles:PUZZLES, engine,
-  sibling:{slug:'shortlist', name:'Shortlist', url:'https://shortlist-daily.jbapckfan.chatgpt.site'},
+  sibling:{slug:'shortlist', name:'Shortlist', url:'../shortlist/'},
   reset({clearDraft=false}={}){if(clearDraft&&draftKey){try{sessionStorage.removeItem(draftKey);}catch{}}rowIndex=0;draft=[null,null];slotIndex=0;rejected=false;rejectionMessage='';rowDrafts=[];draftKey=null;},
   record:game=>({status:game.status,attempts:game.attempts,hints:game.hintedRows.length}),
   help,

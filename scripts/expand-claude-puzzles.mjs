@@ -131,7 +131,7 @@ for(const [slug,build] of [['dovetail',dovetail],['splice',splice],['keystone',k
   const file=new URL(`../games/claude-${slug}/puzzles.mjs`,import.meta.url),current=await readFile(file,'utf8'),original=current.split(MARKER)[0];
   assert.equal(sha(original),hashes[slug],`${slug}: original source changed; review instead of silently regenerating it.`);
   const {added,info}=build();
-  const generated=original+MARKER+'\n// Additional prepared combinations by ChatGPT; original Claude records above are unchanged.\n'+
+  const generated=original+MARKER+'\n// Additional prepared combinations by Alford Daily; original Claude records above are unchanged.\n'+
     `PUZZLES.push(...${JSON.stringify(added)});\nexport const CONTENT_INFO = Object.freeze(${JSON.stringify(info)});\n`;
   output.push({slug,file,current,generated,info});
 }

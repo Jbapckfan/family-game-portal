@@ -48,7 +48,7 @@ export async function loadDailyAudit() {
         };
       } else {
         ({PUZZLES:puzzles} = await import(pathToFileURL(path.join(root,'games',game.slug,'puzzles.mjs')).href));
-        if (game.creator === 'ChatGPT') {
+        if (game.creator === 'Alford Daily') {
           ({substantiveKey:key} = await import(pathToFileURL(path.join(root,'games',game.slug,'content-identity.mjs')).href));
           const {getDaily} = await import(pathToFileURL(path.join(root,'games',game.slug,'engine.mjs')).href);
           select = date => { const {puzzle} = getDaily(puzzles,new Date(`${date}T18:00:00Z`)); return {index:puzzles.indexOf(puzzle),puzzleId:puzzle.id,puzzle}; };

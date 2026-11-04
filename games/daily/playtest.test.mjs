@@ -10,7 +10,7 @@ const {JSDOM}=require('jsdom');
 test('playtest note includes only selected public metadata and deliberate text',()=>{
   assert.equal(typeof playtest.buildPlaytestNote,'function');
   const text=playtest.buildPlaytestNote({slug:'shortlist',date:'2026-10-28',build:'abc123',feeling:'again',status:'won',note:'  Clear scans.  ',answer:'MAPLE',solution:[1,2,3]});
-  assert.match(text,/Shortlist · ChatGPT/);assert.match(text,/2026-10-28/);assert.match(text,/abc123/);assert.match(text,/Play again/);assert.match(text,/Solved/);assert.match(text,/Clear scans\./);
+  assert.match(text,/Shortlist · Alford Daily/);assert.match(text,/2026-10-28/);assert.match(text,/abc123/);assert.match(text,/Play again/);assert.match(text,/Solved/);assert.match(text,/Clear scans\./);
   assert.doesNotMatch(text,/MAPLE|solution|1,2,3/);
   assert.throws(()=>playtest.buildPlaytestNote({slug:'missing',date:'2026-10-28'}),/game/i);
   assert.throws(()=>playtest.buildPlaytestNote({slug:'shortlist',date:'2026-02-30'}),/date/i);

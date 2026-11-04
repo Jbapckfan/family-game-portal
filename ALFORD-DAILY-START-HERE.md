@@ -30,7 +30,7 @@ Release handoff: October 20, 2026.
 
 ## Play and source
 
-- Private playable collection: https://alford-daily.jbapckfan.chatgpt.site
+- Playable collection: open `games/daily/` on the host serving this checkout.
 - Private source repository: https://github.com/Jbapckfan/family-game-portal
 - Native project: `ios/AlfordDaily.xcodeproj`; shared scheme: `AlfordDaily`.
 - The web collection retains Tradeoff and Inbetween as classics. The iOS launch contains the six newer games below.

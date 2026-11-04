@@ -56,7 +56,7 @@ for(const name of (process.env.ENGINES||'chromium').split(',')){
   }
   await p.goto('https://daily.test/');await p.waitForFunction(()=>document.getElementById('progress-count')?.textContent.startsWith('4 of 32'));
   await p.locator('.playtest-tools details').first().locator('summary').click();await p.locator('#playtest-game').selectOption('shortlist');await p.locator('#playtest-feeling').selectOption('again');await p.locator('#playtest-note').fill('QA example: scan controls and reload checked. This is not a human playtest report.');await p.locator('#playtest-form button').click();
-  assert.match(await p.locator('#playtest-text').inputValue(),/Shortlist · ChatGPT/);assert.match(await p.locator('#playtest-text').inputValue(),/Solved/);
+  assert.match(await p.locator('#playtest-text').inputValue(),/Shortlist · Alford Daily/);assert.match(await p.locator('#playtest-text').inputValue(),/Solved/);
   await p.setViewportSize({width:1100,height:1100});await p.evaluate(()=>document.activeElement?.blur());await p.locator('.playtest-tools').scrollIntoViewIfNeeded();await p.screenshot({path:path.join(out,name+'-feedback-desktop.png')});
   await p.setViewportSize({width:320,height:568});assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   // Regression: a deployment prefix must not send testers out to a hosted sibling.

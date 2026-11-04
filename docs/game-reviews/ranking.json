@@ -1436,19 +1436,27 @@
       "name": "Trail",
       "creator": "DeepSeek",
       "reviewOrder": 19,
-      "status": "in_review",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-03",
+            "quote": "trail seems way too easy",
+            "interpretation": "Strong difficulty criticism. No numerical enjoyment score, removal choice, keeper verdict or relative rank supplied."
+          }
+        ],
+        "difficultyReaction": "way too easy"
       },
       "reviews": [],
       "disposition": "undecided",
       "evidence": [
         "trail/REVIEW-2026-11-03.md"
       ],
-      "nextStep": "James plays Trail; gather enjoyment, difficulty, clarity and retention feedback."
+      "nextStep": "Choose whether to try a harder sample: a 4×4 board with decoy letters and a less direct clue, with the definition available as an optional hint. No redesign or removal chosen yet.",
+      "dispositionBasis": "James found Trail way too easy; enjoyment and retention remain undecided."
     },
     {
       "slug": "deepseek-split",

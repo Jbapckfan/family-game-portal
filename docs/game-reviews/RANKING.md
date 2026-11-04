@@ -30,7 +30,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 16 | Spare | DeepSeek | Harder sample explained; positive acknowledgment, retention undecided | No numerical score |
 | 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
 | 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
-| 19 | Trail | DeepSeek | Open for individual playtest | — |
+| 19 | Trail | DeepSeek | Way too easy; redesign choice pending | Difficulty feedback; no numerical score |
 | 20 | Split | DeepSeek | Not yet reviewed individually | — |
 | 21 | Quadra | Qwen | Not yet reviewed individually | — |
 | 22 | Logic Lattice | Qwen | Not yet reviewed individually | — |
@@ -89,3 +89,5 @@ November 3 follow-up: James initially said “i don’t understand Spare.” Aft
 Rung follow-up, November 3: James said “okay good, next game.” Record positive feedback without assigning a numerical score, explicit keeper status or relative rank. The review proceeded to Cipher.
 
 Cipher follow-up, November 3: James said “cipher is great.” Recorded as strong positive enjoyment. No numerical score or relative ordering was assigned. James subsequently requested a progress summary and moving to Trail; Trail is now the active individual playtest.
+
+Trail feedback, November 3: James said “trail seems way too easy.” Record difficulty criticism, with enjoyment and retention undecided. The current board has no decoy tiles; its direct meaning clue plus all nine answer letters can leave mostly tracing work. Proposed next experiment: a 4×4 board with decoys and a less direct clue, using the definition as an optional hint. This is a proposal, not a delivered redesign or approved replacement.

@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive and the harder 4×4 Trail. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail and harder Split. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Strong positive feedback:** Cipher — “cipher is great”; no numerical score or relative position supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
@@ -31,8 +31,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
 | 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
 | 19 | Trail | DeepSeek | Keep; harder 4×4 direction approved | Definitely a lot harder; keep it |
-| 20 | Split | DeepSeek | Good but too easy; harder sample proposed | No numerical score or keeper verdict |
-| 21 | Quadra | Qwen | Not yet reviewed individually | — |
+| 20 | Split | DeepSeek | Keep; harder sample preferred | Much better; keep it |
+| 21 | Quadra | Qwen | Open for individual playtest | Awaiting feedback |
 | 22 | Logic Lattice | Qwen | Not yet reviewed individually | — |
 | 23 | Syntax Siege | Qwen | Not yet reviewed individually | — |
 | 24 | Memory Maze | Qwen | Not yet reviewed individually | — |
@@ -95,4 +95,4 @@ Trail feedback, November 3: James said “trail seems way too easy,” then appr
 Split feedback, November 3: James said “good but too easy.” Record positive feedback and a difficulty concern; retention is undecided. Proposed experiment: two six-letter words, four decoys, subtler clues with optional definitions, and correctness feedback only after checking both words. [Review and proposal](split/REVIEW-2026-11-03.md).
 
 
-November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). It is built and open in one game tab with two six-letter answers and four decoys. Retention and difficulty feedback on the sample are pending.
+November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). James then said “that is much better, keep it, next game.” Harder Split is a keeper. Quadra is now open in the same single tab; feedback is pending.

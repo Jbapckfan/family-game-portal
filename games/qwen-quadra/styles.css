@@ -11,3 +11,6 @@ h1{font-family:inherit;font-size:clamp(29px,6.5vw,43px);font-weight:800;letter-s
 @media(max-width:350px){.game-emblem{display:none}.support-actions .button{flex:1 1 120px}.panel{padding:13px}.identity-heading{min-width:0}.eyebrow{font-size:10px}h1{font-size:29px}.header-tools{gap:4px}}
 
 .quadra-category>.muted{font-size:13px}.quadra-category .row,.quadra-input-label{font-size:15px}.quadra-category h2{font-family:inherit;font-weight:800;font-size:clamp(29px,7vw,40px)}.quadra-word{font-size:clamp(14px,3.5vw,19px)}.quadra-word small,.quadra-order{font-size:12px}.quadra-input-label span{font-size:14px}
+
+/* Keep the letter bank readable without stretching square tiles across the page. */
+.quadra-grid{width:100%;max-width:360px;margin-inline:auto}

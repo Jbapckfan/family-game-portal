@@ -1,0 +1,26 @@
+[
+  {
+    "engine": "chromium",
+    "slug": "qwen-quadra",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "chromium",
+    "slug": "qwen-quadra",
+    "check": "keyboard",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "qwen-quadra",
+    "check": "touch",
+    "pass": true
+  },
+  {
+    "engine": "webkit",
+    "slug": "qwen-quadra",
+    "check": "keyboard",
+    "pass": true
+  }
+]

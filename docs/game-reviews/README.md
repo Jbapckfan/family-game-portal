@@ -22,11 +22,11 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Split](split/REVIEW-2026-11-03.md), game 20, is open in the existing game tab after James kept the [harder 4×4 Trail](trail/HARDER-PREVIEW.md) and said “go.” Split's fresh engine and basic touch/keyboard checks passed. James said “good but too easy”; a harder sample is proposed, with no keeper decision yet. [Current progress summary](PROGRESS-2026-11-03.md) · [ranking and queue](RANKING.md). Trail's numerical score and relative keeper rank remain unset. Earlier provider reports remain attributed to their actual source snapshots and scopes.
+[Quadra](quadra/REVIEW-2026-11-04.md), game 21, is open in the existing single game tab. James kept the harder Split and requested the next game. Seven engine tests and four touch/keyboard checks passed; his Quadra feedback is pending. The keeper list now contains 14 games, with no invented relative order.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 
 Kimi’s Tangle remains a keeper with the [broader audited vocabulary](tangle-kimi/WORD-GAME-LEXICON.md). Its optional [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) is retained; a full larger-board calendar is future work. Exact current Words With Friends parity is unverified. This is distinct from Claude’s later Tangle.
 
 
-November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). It is built and open in one game tab with two six-letter answers and four decoys. Retention and difficulty feedback on the sample are pending.
+November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). James then said “that is much better, keep it, next game.” Harder Split is a keeper. Quadra is now open in the same single tab; feedback is pending.

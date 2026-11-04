@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-04",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied. Quadra is also a keeper; James particularly likes its challenge and category-guided word finding.",
   "games": [
     {
       "slug": "ringcount",
@@ -1562,19 +1562,30 @@
       "name": "Quadra",
       "creator": "Qwen",
       "reviewOrder": 21,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-04",
+            "quote": "that is challenging, i like it, like the use of a category. keep it. next",
+            "interpretation": "Explicit keeper verdict. Likes the challenge and using a category to guide word finding; no numeric score or relative rank supplied."
+          }
+        ],
+        "enjoymentReaction": "I like it",
+        "difficultyReaction": "challenging, positively received",
+        "preferenceTier": "keeper",
+        "likedFeature": "Use of a category"
       },
       "reviews": [],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "quadra/REVIEW-2026-11-04.md"
       ],
-      "nextStep": "Open for James’s individual playtest; await enjoyment/difficulty and retention feedback."
+      "nextStep": "Keep Quadra and retain the category mechanic. Review advanced to Logic Lattice.",
+      "dispositionBasis": "James explicitly kept Quadra, praising its challenge and category mechanic."
     },
     {
       "slug": "qwen-logic-lattice",
@@ -1590,8 +1601,10 @@
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "logic-lattice/REVIEW-2026-11-04.md"
+      ],
+      "nextStep": "Open for individual playtest; await James’s difficulty, enjoyment and retention feedback."
     },
     {
       "slug": "qwen-syntax-siege",

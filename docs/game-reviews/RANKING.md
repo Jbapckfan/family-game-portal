@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail and harder Split. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail, harder Split and Quadra. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Strong positive feedback:** Cipher — “cipher is great”; no numerical score or relative position supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
@@ -32,8 +32,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
 | 19 | Trail | DeepSeek | Keep; harder 4×4 direction approved | Definitely a lot harder; keep it |
 | 20 | Split | DeepSeek | Keep; harder sample preferred | Much better; keep it |
-| 21 | Quadra | Qwen | Open for individual playtest | Awaiting feedback |
-| 22 | Logic Lattice | Qwen | Not yet reviewed individually | — |
+| 21 | Quadra | Qwen | Keep; category mechanic liked | Challenging; I like it |
+| 22 | Logic Lattice | Qwen | Open for individual playtest | Awaiting feedback |
 | 23 | Syntax Siege | Qwen | Not yet reviewed individually | — |
 | 24 | Memory Maze | Qwen | Not yet reviewed individually | — |
 | 25 | Pattern Prism | Qwen | Not yet reviewed individually | — |
@@ -96,3 +96,6 @@ Split feedback, November 3: James said “good but too easy.” Record positive 
 
 
 November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). James then said “that is much better, keep it, next game.” Harder Split is a keeper. Quadra is now open in the same single tab; feedback is pending.
+
+
+November 4: James kept Quadra, saying “that is challenging, i like it, like the use of a category. keep it. next.” Category-guided word finding is a stated preference to consider in future candidates. No numeric score or relative keeper order supplied. The review advanced to Logic Lattice.

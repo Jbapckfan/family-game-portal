@@ -22,7 +22,7 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Quadra](quadra/REVIEW-2026-11-04.md), game 21, is open in the existing single game tab. James kept the harder Split and requested the next game. Seven engine tests and four touch/keyboard checks passed; his Quadra feedback is pending. The keeper list now contains 14 games, with no invented relative order.
+[Logic Lattice](logic-lattice/REVIEW-2026-11-04.md), game 22, is open in the same single tab. James kept Quadra, praising its challenge and category mechanic. Seven engine tests and four isolated touch/keyboard/edit/save checks passed for Logic Lattice; his feedback is pending. There are now 15 keepers, with no invented relative ordering.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 

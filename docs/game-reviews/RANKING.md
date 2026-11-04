@@ -26,8 +26,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 13 | Circuit | Kimi | Keep; vocabulary and cardinal arc revisions delivered | Keeper; no numerical score |
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
 | 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
-| 16 | Spare | DeepSeek | Too easy; harder sample approved for playtest | Difficulty feedback; no numerical score |
-| 17 | Rung | DeepSeek | Not yet reviewed individually | — |
+| 16 | Spare | DeepSeek | Harder sample explained; positive acknowledgment, retention undecided | No numerical score |
+| 17 | Rung | DeepSeek | Open for individual playtest | — |
 | 18 | Cipher | DeepSeek | Not yet reviewed individually | — |
 | 19 | Trail | DeepSeek | Not yet reviewed individually | — |
 | 20 | Split | DeepSeek | Not yet reviewed individually | — |
@@ -82,3 +82,5 @@ New candidate feedback: James said “i like candidate 1 - two worlds, one move�
 Spare follow-up: James said “try that,” approving the isolated [harder contextual sample](spare/HARDER-PREVIEW.md). Retention remains undecided pending that playtest.
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.
+
+November 3 follow-up: James initially said “i don’t understand Spare.” After the explanation he said “okay good, next game.” Record positive acknowledgment and an onboarding concern, without inventing a keeper verdict or numerical rating. Rung is now the active individual playtest.

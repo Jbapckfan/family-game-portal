@@ -31,7 +31,7 @@ export function createShell(config) {
 
   const api = {
     get game() { return game; }, get puzzle() { return puzzle; },
-    get mode() { return mode; }, get daily() { return daily; },
+    get mode() { return mode; }, get isBonus() { return mode === 'practice' && puzzle.id === config.sample?.id; }, get daily() { return daily; },
     start, render, commit, notice, announce, openDialog, closeDialog,
     toast, sound, showResult, randomPractice,
   };
@@ -192,11 +192,14 @@ export function createShell(config) {
   function updateNewDay() { $('new-day').hidden = mode !== 'daily' || engine.getDateKey() === daily.dateKey; }
   function render(opts = {}) {
     const active = game.status === 'playing';
+    const isSample = mode === 'practice' && puzzle.id === config.sample?.id;
+    $('sample-button')?.setAttribute('aria-pressed', String(isSample));
+    $('sample-button').textContent = isSample ? 'Bonus challenge selected' : 'Try the bonus challenge →';
     $('daily-tab').classList.toggle('active', mode === 'daily');
     $('daily-tab').setAttribute('aria-pressed', String(mode === 'daily'));
     $('practice-tab').classList.toggle('active', mode === 'practice');
     $('practice-tab').setAttribute('aria-pressed', String(mode === 'practice'));
-    $('issue').textContent = mode === 'daily' ? `NO. ${String(daily.number).padStart(3, '0')}` : `PRACTICE ${String(puzzles.indexOf(puzzle) + 1).padStart(2, '0')}`;
+    $('issue').textContent = mode === 'daily' ? `NO. ${String(daily.number).padStart(3, '0')}` : isSample ? 'BONUS' : `PRACTICE ${String(puzzles.indexOf(puzzle) + 1).padStart(2, '0')}`;
     $('puzzle-date').textContent = mode === 'daily' ? dateLabel(daily.dateKey) : puzzle.title;
     $('difficulty').textContent = puzzle.difficulty;
     $('game-controls').hidden = !active;
@@ -205,7 +208,7 @@ export function createShell(config) {
     $('results-button').textContent = game.status === 'won' ? 'Your result ↗' : 'See the result ↗';
     $('feedback').textContent = feedback || (active ? defaultFeedback : game.status === 'won' ? 'Nicely solved.' : game.status === 'lost' ? 'That was not the answer. There is another puzzle waiting.' : 'Answers revealed. Ready for another?');
     $('feedback').className = `feedback${feedbackTone ? ' ' + feedbackTone : game.status === 'won' ? ' success' : ''}`;
-    $('board-note').textContent = storageWarning ? 'Progress could not be saved in this browser.' : defaultNote;
+    $('board-note').textContent = storageWarning ? 'Progress could not be saved in this browser.' : isSample ? 'Bonus challenge · separate result, no daily streak impact.' : defaultNote;
     $('board-note').classList.toggle('warning', storageWarning);
     updateNewDay();
     config.render(api, opts);
@@ -271,7 +274,7 @@ export function createShell(config) {
   function showPractice() {
     const fresh = new Set(practiceIndices());
     const available = puzzles.map((_, index) => index).filter(index => fresh.has(index) || unfinishedPractice(index));
-    openDialog(`<p class="dialog-kicker">ANOTHER GOOD CHALLENGE</p><h2 class="dialog-title" id="dialog-title">Pick your next puzzle.</h2><p class="result-copy">Practice at your own pace.<br>Your daily score stays separate.</p><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${available.map(index => {
+    openDialog(`<p class="dialog-kicker">ANOTHER GOOD CHALLENGE</p><h2 class="dialog-title" id="dialog-title">Pick your next puzzle.</h2><p class="result-copy">Practice at your own pace.<br>Your daily score stays separate.</p><button class="secondary-button sample-practice" data-action="sample">Try the tougher bonus →</button><button class="primary-button practice-random" data-action="random" autofocus>Find me a fresh one ↗</button><div class="practice-grid">${available.map(index => {
       const item = puzzles[index], saved = savedPractice(index), done = saved && isTerminal(saved), resume = unfinishedPractice(index);
       return `<button class="practice-choice${done ? ' done' : ''}" data-practice="${index}" aria-label="${resume ? 'Resume practice' : 'Practice'} ${index + 1}: ${esc(item.title)}${done ? ', completed' : ''}">${String(index + 1).padStart(2, '0')}</button>`;
     }).join('')}</div><p class="fineprint">${available.length} available now. Upcoming dailies stay fresh. Saved rounds can be resumed; finish today’s daily to replay it.</p>`);
@@ -285,6 +288,14 @@ export function createShell(config) {
     resetView(); render(); lastFocus = null; closeDialog();
     ($('game-topline') || document.querySelector('.game-topline'))?.scrollIntoView({block:'start', behavior:reducedMotion() ? 'instant' : 'smooth'});
     announce(`Practice ${index + 1}. ${puzzle.title}.`);
+  }
+  function loadSample() {
+    if (!config.sample) return;
+    mode = 'practice'; puzzle = config.sample;
+    game = engine.restoreGame(puzzle, read('practice:' + puzzle.id, null, true));
+    resetView(); render(); lastFocus = null; closeDialog();
+    ($('game-topline') || document.querySelector('.game-topline'))?.scrollIntoView({block:'start', behavior:reducedMotion() ? 'instant' : 'smooth'});
+    announce('Bonus challenge. Same four cuts and equal totals; a few more tempting paths. Practice score only.');
   }
   function randomPractice() {
     const available = practiceIndices().map(index => ({item:puzzles[index],index})).filter(({item}) => item.id !== puzzle.id);
@@ -325,7 +336,7 @@ export function createShell(config) {
   }
   async function share() {
     if (!isTerminal(game)) return;
-    const value = engine.formatShare(puzzle, game, {number:mode === 'daily' ? daily.number : puzzles.indexOf(puzzle) + 1, mode});
+    const value = engine.formatShare(puzzle, game, {number:mode === 'daily' ? daily.number : puzzles.indexOf(puzzle) + 1, mode, bonus:api.isBonus});
     if (nativeMessage({type:'share',text:value})) return;
     if (config.share) { config.share(api); return; }
     try {
@@ -384,7 +395,7 @@ export function createShell(config) {
     defaultNote = $('board-note').textContent;
     const on = (id, fn) => $(id)?.addEventListener('click', fn);
     on('daily-tab', loadDaily); on('new-day-button', loadDaily);
-    on('practice-tab', showPractice); on('next-button', randomPractice);
+    on('sample-button', loadSample); on('practice-tab', showPractice); on('next-button', randomPractice);
     on('results-button', showResult); on('stats-button', showStats);
     on('help-button', showHelp); on('quick-help', showHelp);
     on('about-button', showAbout); on('more-button', showOptions); on('finished-more-button', showOptions);
@@ -406,7 +417,7 @@ export function createShell(config) {
       const choice = event.target.closest('[data-practice]');
       if (choice) { loadPractice(Number(choice.dataset.practice)); return; }
       const action = event.target.closest('[data-action]')?.dataset.action;
-      const actions = {close:closeDialog, share, practice:showPractice, random:randomPractice,
+      const actions = {close:closeDialog, share, practice:showPractice, random:randomPractice, sample:loadSample,
         help:showHelp, 'confirm-reveal':confirmReveal, reveal,
         'confirm-restart':confirmRestart, restart,
         'select-share':() => { $('share-text')?.focus(); $('share-text')?.select(); },
@@ -417,12 +428,13 @@ export function createShell(config) {
     setInterval(updateNewDay, 30000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNewDay(); });
     const onPortal = new RegExp('/games/' + slug + '(?:/(?:index\\.html)?)?$').test(location.pathname);
-    $('family-link').href = onPortal ? (document.documentElement?.dataset?.collectionHome || '../../') : 'https://alford-daily.jbapckfan.chatgpt.site';
+    $('family-link').href = onPortal ? (document.documentElement?.dataset?.collectionHome || '../../') : '../daily/';
     if (config.sibling) {
       $('sibling-link').href = onPortal ? '../' + config.sibling.slug + '/' : config.sibling.url;
       $('sibling-link').textContent = 'Play ' + config.sibling.name + ' ↗';
     }
     reconcile(); updateSound(); render();
+    if (new URLSearchParams(location.search).get('sample') === 'tougher') loadSample();
     return api;
   }
   return api;

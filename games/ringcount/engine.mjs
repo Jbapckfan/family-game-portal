@@ -205,8 +205,8 @@ export function getStats(records, todayKey) {
   return stats;
 }
 
-export function formatShare(puzzle, state, {number = 1, mode = 'daily', url} = {}) {
-  const label = mode === 'practice' ? 'RINGCOUNT Practice' : `RINGCOUNT #${String(number).padStart(3, '0')}`;
+export function formatShare(puzzle, state, {number = 1, mode = 'daily', url, bonus = false} = {}) {
+  const label = mode === 'practice' ? bonus ? 'RINGCOUNT Bonus challenge' : 'RINGCOUNT Practice' : `RINGCOUNT #${String(number).padStart(3, '0')}`;
   const result = {won: ['🟩🟩🟩🟩', 'Solved'], revealed: ['🟨🟨🟨🟨', 'Revealed'], playing: ['⬜⬜⬜⬜', 'In progress']}[state.status];
   const details = `${state.checks} ${state.checks === 1 ? 'check' : 'checks'} · ${state.hints} ${state.hints === 1 ? 'hint' : 'hints'} · ${result[1]}`;
   return [label, result[0], details, ...(typeof url === 'string' && url ? [url] : [])].join('\n');

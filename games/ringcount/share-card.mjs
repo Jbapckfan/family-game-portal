@@ -1,5 +1,5 @@
 /** Spoiler-free result data is the only input to the image renderer. */
-export function buildShareResult({game,mode,number,dateKey}) {
+export function buildShareResult({game,mode,number,dateKey,bonus=false}) {
   if (!['won','revealed'].includes(game?.status) || !['daily','practice'].includes(mode)
       || !Number.isInteger(game.checks) || game.checks<0 || game.checks>495
       || !Number.isInteger(game.hints) || game.hints<0 || game.hints>1_000_000
@@ -7,15 +7,16 @@ export function buildShareResult({game,mode,number,dateKey}) {
   if(mode==='daily' && (!Number.isInteger(number)||number<1
       || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)
       || new Date(dateKey+'T12:00:00Z').toISOString().slice(0,10)!==dateKey)) throw new TypeError('Invalid daily identity.');
+  bonus=mode==='practice'&&bonus===true;
   const perfect=game.status==='won'&&game.hints===0&&game.checks===1;
   const headline=game.status==='revealed'?'Answer revealed.':perfect?'Perfect circle.':'Circle solved.';
-  const edition=mode==='daily'?`DAILY #${String(number).padStart(3,'0')}`:'PRACTICE';
+  const edition=mode==='daily'?`DAILY #${String(number).padStart(3,'0')}`:bonus?'BONUS CHALLENGE':'PRACTICE';
   const checks=game.checks,hints=game.hints;
   const caption=['Alford Daily · RINGCOUNT',mode==='daily'?`${edition} · ${dateKey}`:edition,
     game.status==='won'?'🟩🟩🟩🟩 Solved':'🟨🟨🟨🟨 Revealed',
     `${checks} ${checks===1?'check':'checks'} · ${hints} ${hints===1?'hint':'hints'}`].join('\n');
-  return Object.freeze({headline,edition,date:mode==='daily'?dateKey:'Your practice round',
-    checks,hints,status:game.status,caption,filename:`alford-ringcount-${mode==='daily'?dateKey:'practice'}`});
+  return Object.freeze({headline,edition,date:mode==='daily'?dateKey:bonus?'Your bonus round':'Your practice round',
+    checks,hints,status:game.status,caption,filename:`alford-ringcount-${mode==='daily'?dateKey:bonus?'bonus':'practice'}`});
 }
 
 /** No board data, cut positions or puzzle-dependent geometry is accepted here. */
@@ -23,13 +24,13 @@ export function drawShareCard(canvas,result,format='portrait') {
   canvas.width=1080;canvas.height=format==='square'?1080:1350;
   const c=canvas.getContext('2d');if(!c)throw new Error('Image drawing is unavailable.');
   const h=canvas.height,center=h===1080?465:550,r=h===1080?160:188;
-  c.fillStyle='#f7f4ec';c.fillRect(0,0,1080,h);
-  c.strokeStyle='#d7cbb3';c.lineWidth=2;c.strokeRect(36,36,1008,h-72);
+  c.fillStyle='#f0f6f8';c.fillRect(0,0,1080,h);
+  c.strokeStyle='#cedee4';c.lineWidth=2;c.strokeRect(36,36,1008,h-72);
   c.textAlign='center';c.fillStyle='#273640';c.font='600 26px "DM Sans",sans-serif';
   c.fillText('ALFORD DAILY',540,108);
-  c.fillStyle='#9a681d';c.font='italic 70px "DM Serif",serif';c.fillText('ringcount.',540,202);
+  c.fillStyle='#176b91';c.font='italic 70px "DM Serif",serif';c.fillText('ringcount.',540,202);
   c.font='600 22px "DM Sans",sans-serif';c.fillStyle='#5a625f';c.fillText(result.edition,540,251);
-  const colors=result.status==='won'?['#7c561c','#28756a','#7860a0','#345e89']:['#a8782b','#a8782b','#a8782b','#a8782b'];
+  const colors=result.status==='won'?['#176b91','#16766c','#254d70','#2b7d91']:['#587883','#587883','#587883','#587883'];
   colors.forEach((color,i)=>{
     c.beginPath();c.arc(540,center,r,(i*90-87)*Math.PI/180,(i*90-3)*Math.PI/180);
     c.strokeStyle=color;c.lineWidth=25;c.lineCap='round';c.stroke();
@@ -47,7 +48,7 @@ export function drawShareCard(canvas,result,format='portrait') {
 const pngBlob=canvas=>new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Image export failed.')),'image/png'));
 
 export function openResultShare(api) {
-  const result=buildShareResult({game:api.game,mode:api.mode,number:api.daily.number,dateKey:api.daily.dateKey});
+  const result=buildShareResult({game:api.game,mode:api.mode,number:api.daily.number,dateKey:api.daily.dateKey,bonus:api.isBonus});
   api.openDialog(`<p class="dialog-kicker">PASS YOUR CIRCLE ALONG</p><h2 class="dialog-title" id="dialog-title">A little balance to share.</h2>
     <div class="share-formats" role="group" aria-label="Image format"><button type="button" data-card-format="portrait" aria-pressed="true">Portrait · 4:5</button><button type="button" data-card-format="square" aria-pressed="false">Square · 1:1</button></div>
     <canvas id="result-card" role="img" aria-label="Spoiler-free Ringcount result card"></canvas>

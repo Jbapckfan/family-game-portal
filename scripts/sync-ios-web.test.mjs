@@ -22,7 +22,7 @@ const slugs = [...originals, ...classics, ...kimi, ...sharedModuleGames, ...bonu
 const runtime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs', 'shell.mjs', 'styles.css', 'icon.svg', 'manifest.webmanifest', 'fonts/test.ttf', 'fonts/LICENSE.txt'];
 const sharedRuntime = ['assets/index.js', 'assets/index.css', 'assets/chunks/game.mjs', 'assets/puzzles.json', 'assets/images/icon.avif', 'fonts/test.woff2', 'fonts/LICENSE.txt'];
 const deepseekRuntime = ['index.html', 'app.mjs', 'engine.mjs', 'puzzles.mjs'];
-const deepseekShared = ['core.mjs', 'common.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css'];
+const deepseekShared = ['core.mjs', 'common.mjs', 'player-tools.mjs', 'daily-rotations.mjs', 'practice-calendar.mjs', 'styles.css'];
 
 function writeFixture(root, relative, content = relative) {
   const target = join(root, relative);
@@ -62,6 +62,7 @@ function fixture(run) {
     for(const name of bonusFiles)writeFixture(root,`games/${slug}/${name}`,name==='index.html'?'<script type="module" src="./app.mjs"></script>':name==='app.mjs'?'import "./engine.mjs"; import "./ai.mjs";':name==='ai.mjs'?'import "./engine.mjs";':'');
     writeFixture(root,`games/${slug}/README.md`,'Not a runtime file');
   }
+  writeFixture(root, 'games/ringcount/samples.mjs', 'export const SAMPLES = [];');
   writeFixture(root, 'games/ringcount/share-card.mjs', 'export const card = true;');
   writeFixture(root, 'games/switchpath/share-card.mjs', 'export const card = true;');
   writeFixture(root, 'games/counterpart/share-card.mjs', 'export const card = true;');
@@ -85,6 +86,7 @@ function fixture(run) {
   writeFixture(root, 'games/deepseek-runtime/core.mjs', 'export const version = 1;');
   writeFixture(root, 'games/deepseek-runtime/daily-rotations.mjs', 'export const FRESH_ROTATIONS = {};');
   writeFixture(root, 'games/deepseek-runtime/practice-calendar.mjs', 'export const practiceCandidates = () => [];');
+  writeFixture(root, 'games/deepseek-runtime/player-tools.mjs', 'export const preferences = true;');
   writeFixture(root, 'games/deepseek-runtime/common.mjs', 'import "./core.mjs";');
   writeFixture(root, 'games/deepseek-runtime/styles.css', 'body { font-family: system-ui; }');
   writeFixture(root, 'games/deepseek-runtime/core.test.mjs', 'throw new Error("Do not bundle this test.");');
@@ -109,11 +111,28 @@ test('word acceptance modules and source notices are bundled and their local imp
   assert.equal(command('--check').status,0);
 }));
 
+test('collection toolbar imports validate only the exact shared preferences entry for Kimi and bonus games', () => fixture(({root,command}) => {
+  for(const slug of [...kimi,...bonus]) {
+    const file=join(root,'games',slug,'index.html');
+    writeFileSync(file,readFileSync(file,'utf8')+'<script type="module" src="../deepseek-runtime/player-tools.mjs"></script>');
+  }
+  assert.equal(command().status,0);
+  const valid=validateFixture(root);assert.equal(valid.status,0,valid.stderr);
+  for(const slug of [kimi[0],bonus[0]]) {
+    const file=join(root,'ios/Web/games',slug,'index.html'),original=readFileSync(file,'utf8');
+    writeFileSync(file,original.replace('deepseek-runtime/player-tools.mjs','deepseek-runtime/common.mjs'));
+    const rejected=validateFixture(root);assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/outside its (shared )?runtime/);
+    writeFileSync(file,original);
+  }
+}));
+
 test('ordinary sync copies the fixed runtime set including Ringcount and Switchpath image export and check is read-only', () => fixture(({ root, command }) => {
   assert.equal(command().status, 0);
   const directory = join(root, 'ios', 'Web', 'games');
   const before = snapshot(directory);
   assert.ok(existsSync(join(directory, 'ringcount', 'share-card.mjs')));
+  assert.ok(existsSync(join(directory, 'ringcount', 'samples.mjs')));
+  assert.ok(existsSync(join(directory, 'deepseek-runtime', 'player-tools.mjs')));
   assert.ok(existsSync(join(directory, 'switchpath', 'share-card.mjs')));
   assert.ok(existsSync(join(directory, 'counterpart', 'share-card.mjs')));
   assert.ok(existsSync(join(directory, 'shortlist', 'share-card.mjs')));
@@ -122,7 +141,7 @@ test('ordinary sync copies the fixed runtime set including Ringcount and Switchp
   assert.ok(existsSync(join(directory, 'tradeoff', 'share-card.mjs')));
   assert.ok(existsSync(join(directory, 'inbetween', 'share-card.mjs')));
   assert.ok(existsSync(join(directory, 'inbetween', 'placement-drag.mjs')));
-  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length + 9);
+  assert.equal(Object.keys(before).length, originals.length * runtime.length + classics.length * (runtime.length - 1) + kimi.length + sharedRuntime.length + sharedModuleGames.length * deepseekRuntime.length + deepseekShared.length + bonusFiles.length + 10);
   assert.equal(readdirSync(directory).length, slugs.length + 2);
   assert.ok(Object.keys(before).every(path => !path.endsWith('/README.md')));
   assert.ok(Object.keys(before).every(path => !path.includes('/tests/')));

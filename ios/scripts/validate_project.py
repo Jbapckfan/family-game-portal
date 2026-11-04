@@ -28,7 +28,7 @@ GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES | BONU
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
 SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg", "word-acceptance.mjs", "vocabulary.mjs", "word-lists-LICENSE.txt"}
-DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
+DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "player-tools.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.
 ASSET_EXTENSIONS = {"js", "mjs", "css", "json", "txt", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "avif", "woff", "woff2", "ttf", "otf"}
@@ -137,7 +137,8 @@ def validate_kimi_references(games_dir, files):
             target = posixpath.normpath(posixpath.join(posixpath.dirname(origin), path))
         owner = origin.split("/")[0]
         own_icon = owner in KIMI_GAMES and origin == f"{owner}/index.html" and target == f"{owner}/icon.svg"
-        require(own_icon or target.startswith(("kimi-runtime/assets/", "kimi-runtime/fonts/")), f"Kimi resource is outside its shared runtime: {origin}: {reference}")
+        player_tools = origin in {f"{slug}/index.html" for slug in KIMI_GAMES} and target == "deepseek-runtime/player-tools.mjs"
+        require(own_icon or player_tools or target.startswith(("kimi-runtime/assets/", "kimi-runtime/fonts/")), f"Kimi resource is outside its shared runtime: {origin}: {reference}")
         require(target in files, f"Missing Kimi resource: {origin}: {reference}")
 
     for game in sorted(KIMI_GAMES):
@@ -228,7 +229,8 @@ def validate_shared_module_references(games_dir, files):
         own_files = {f"{owner}/{name}" for name in SHARED_GAME_REQUIRED_FILES | SHARED_GAME_OPTIONAL_FILES} if owner in SHARED_MODULE_GAMES else set()
         if owner in BONUS_GAMES:
             own_files = {f"{owner}/{name}" for name in BONUS_FILES}
-        require(target in (own_files if owner in BONUS_GAMES else shared | own_files), f"Game module resource is outside its runtime: {origin}: {reference}")
+        entry_tools = {"deepseek-runtime/player-tools.mjs"} if owner in BONUS_GAMES and origin == f"{owner}/index.html" else set()
+        require(target in (own_files | entry_tools if owner in BONUS_GAMES else shared | own_files), f"Game module resource is outside its runtime: {origin}: {reference}")
         require(target in files, f"Missing game module resource: {origin}: {reference}")
 
     for game in sorted(SHARED_MODULE_GAMES | BONUS_GAMES):
@@ -283,6 +285,8 @@ def validate_web_bundle(games_dir):
             runtime = RUNTIME_FILES - ({"shell.mjs"} if game in CLASSIC_GAMES else set())
             if game in {"ringcount", "switchpath", "counterpart", "shortlist", "second-sense", "sideways", "tradeoff", "inbetween"}:
                 runtime = runtime | {"share-card.mjs"}
+            if game == "ringcount":
+                runtime = runtime | {"samples.mjs"}
             if game == "inbetween":
                 runtime = runtime | {"placement-drag.mjs"}
             require(runtime <= files, f"Missing runtime files for {game}: {sorted(runtime - files)}")

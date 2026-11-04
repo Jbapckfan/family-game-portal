@@ -6,7 +6,7 @@ Follow the queue in RANKING.md, show each revised game, then record James's resp
 
 ## How the ranking works
 
-- James's preference is the deciding evidence. Record his exact comment, a 1–5 enjoyment rating only if he supplies one, whether he wants to play again, and any explicit pairwise preference.
+- James's preference is the deciding evidence. Record his exact comment, a numerical enjoyment rating only if he supplies one (preserving his scale), whether he wants to play again, and any explicit pairwise preference.
 - Reviewer scores use a separate 1–5 scale: 1 poor, 2 weak, 3 promising, 4 strong, 5 exceptional. They are subjective predictions from inspection, not measured player responses. Do not merge them into James's rating.
 - Overall preference rank stays unset until James gives enough comparative feedback. No fabricated averages, engagement metrics or population percentiles.
 - Suggested dispositions are keep, improve, replacement candidate, or undecided. Removing or replacing a game requires James's decision; this ledger is not an automatic deletion system.
@@ -22,7 +22,7 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 
 ## Current round
 
-[Circuit](circuit/REPORT.md), game 13, is open in the existing game tab. Kimi/Gemini/Opus baseline reviews, final Opus source review and author verification are recorded separately. James’s Circuit enjoyment, replay preference and disposition remain pending; Quartet follows his verdict. [Review comparison](circuit/ADJUDICATION.md) · [ranking and queue](RANKING.md).
+[Trail](trail/REVIEW-2026-11-03.md), game 19, is open in the existing game tab. James called Cipher “great” and requested a work summary before Trail. [Current progress summary](PROGRESS-2026-11-03.md) · [ranking and queue](RANKING.md). Trail has no enjoyment score or keeper verdict yet. Earlier provider reports remain attributed to their actual source snapshots and scopes.
 
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 

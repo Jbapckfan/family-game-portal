@@ -1428,7 +1428,7 @@
       "evidence": [
         "cipher/REVIEW-2026-11-03.md"
       ],
-      "nextStep": "Keep the current Cipher playtest available. Trail is next when James asks to continue; compare relative preferences later.",
+      "nextStep": "Strong positive feedback recorded. James requested the work summary and review advanced to Trail.",
       "dispositionBasis": "James explicitly said Cipher is great; strong positive enjoyment is recorded, with no numerical score or relative rank inferred."
     },
     {
@@ -1436,7 +1436,7 @@
       "name": "Trail",
       "creator": "DeepSeek",
       "reviewOrder": 19,
-      "status": "not_reviewed",
+      "status": "in_review",
       "james": {
         "enjoyment": null,
         "playAgain": null,
@@ -1445,8 +1445,10 @@
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "trail/REVIEW-2026-11-03.md"
+      ],
+      "nextStep": "James plays Trail; gather enjoyment, difficulty, clarity and retention feedback."
     },
     {
       "slug": "deepseek-split",

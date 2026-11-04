@@ -1,6 +1,6 @@
 # Trail — harder review sample, November 3, 2026
 
-James said “trail seems way too easy,” then “try harder,” approving the proposed separate 4×4 sample. This is a playtest of the harder direction. Retention, enjoyment score and relative rank remain undecided.
+James said “trail seems way too easy,” then “try harder,” approving the proposed separate 4×4 sample. After playing it, James said “that is definitely a lot harder, keep it.” Trail is a keeper, and the harder 4×4 is his preferred direction. No numerical score or relative keeper rank was supplied.
 
 ## What changed
 
@@ -45,4 +45,4 @@ These are static supplied-source reviews, not browser playtests. The three suppl
 
 Opus also suggested exempting a possible technical word from checks. That suggestion was not adopted: it was explicitly uncertain, absent from the three searched lexicons, and not established as an alternative answer to the clue. Incorrect paths are described as not fitting the clue, not as universally invalid dictionary words. Checks remain consistent across guesses. No numerical fun prediction or user rating was invented.
 
-Human difficulty and enjoyment, physical iPhone play, and a full bank for this new variant remain unverified. No production site, ads or purchases were activated.
+James has confirmed the increased difficulty and retention choice. Broader human playtesting, physical iPhone play and a full bank for this new variant remain unverified. No production site, ads or purchases were activated.

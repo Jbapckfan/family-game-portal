@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-03",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive and the harder 4×4 Trail are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied.",
   "games": [
     {
       "slug": "ringcount",
@@ -1451,9 +1451,17 @@
             "date": "2026-11-03",
             "quote": "try harder",
             "interpretation": "Approves trying the proposed harder 4×4 sample. No enjoyment score, keeper verdict or relative rank supplied."
+          },
+          {
+            "date": "2026-11-03",
+            "quote": "that is definitely a lot harder, keep it",
+            "interpretation": "Explicit keeper verdict for Trail after trying the harder 4×4 sample. No numerical score or relative keeper rank supplied."
           }
         ],
-        "difficultyReaction": "way too easy"
+        "difficultyReaction": "Original 3×3: way too easy. Harder 4×4: definitely a lot harder.",
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "keep it",
+        "preferredVariant": "Harder 4×4: nine-letter target, seven decoys, indirect clue and optional definition."
       },
       "reviews": [
         {
@@ -1481,13 +1489,13 @@
           "scoresArePredictions": true
         }
       ],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "trail/REVIEW-2026-11-03.md",
         "trail/HARDER-PREVIEW.md"
       ],
-      "nextStep": "James to play the delivered 4×4 sample and judge difficulty/enjoyment; retention remains undecided. Split follows Trail when he requests the next game.",
-      "dispositionBasis": "James found Trail way too easy; enjoyment and retention remain undecided."
+      "nextStep": "Retain the harder 4×4 direction. A full dated puzzle bank for this variant remains release work; do not replace the original calendar until verified. Split is next when James requests the next game.",
+      "dispositionBasis": "James explicitly said to keep Trail after playing the harder 4×4 sample."
     },
     {
       "slug": "deepseek-split",

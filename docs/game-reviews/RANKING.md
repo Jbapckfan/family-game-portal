@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit and Twin Hive. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive and the harder 4×4 Trail. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Strong positive feedback:** Cipher — “cipher is great”; no numerical score or relative position supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
 - **Positive feedback with an unresolved condition:** Quartet — “fun game”; gameplay differentiation from Connections needs revision before launch.
@@ -30,7 +30,7 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 16 | Spare | DeepSeek | Harder sample explained; positive acknowledgment, retention undecided | No numerical score |
 | 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
 | 18 | Cipher | DeepSeek | Strong positive feedback | Great; no numerical score |
-| 19 | Trail | DeepSeek | Way too easy; redesign choice pending | Difficulty feedback; no numerical score |
+| 19 | Trail | DeepSeek | Keep; harder 4×4 direction approved | Definitely a lot harder; keep it |
 | 20 | Split | DeepSeek | Not yet reviewed individually | — |
 | 21 | Quadra | Qwen | Not yet reviewed individually | — |
 | 22 | Logic Lattice | Qwen | Not yet reviewed individually | — |
@@ -90,4 +90,4 @@ Rung follow-up, November 3: James said “okay good, next game.” Record positi
 
 Cipher follow-up, November 3: James said “cipher is great.” Recorded as strong positive enjoyment. No numerical score or relative ordering was assigned. James subsequently requested a progress summary and moving to Trail; Trail is now the active individual playtest.
 
-Trail feedback, November 3: James said “trail seems way too easy,” then approved trying the harder direction with “try harder.” The [4×4 sample](trail/HARDER-PREVIEW.md) is delivered with seven decoys, less direct clue and optional definition. Original daily boards and records remain intact. Enjoyment, retention and relative rank remain undecided pending James's playtest.
+Trail feedback, November 3: James said “trail seems way too easy,” then approved trying the harder direction with “try harder.” The [4×4 sample](trail/HARDER-PREVIEW.md) is delivered with seven decoys, less direct clue and optional definition. Original daily boards and records remain intact. James then said “that is definitely a lot harder, keep it.” Trail is a keeper, with the harder 4×4 as his preferred direction. No numerical score or relative keeper rank supplied.

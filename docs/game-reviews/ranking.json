@@ -1382,6 +1382,32 @@
       "name": "Rung",
       "creator": "DeepSeek",
       "reviewOrder": 17,
+      "status": "reviewed_by_james",
+      "james": {
+        "enjoyment": null,
+        "playAgain": null,
+        "preferenceRank": null,
+        "comments": [
+          {
+            "date": "2026-11-03",
+            "quote": "okay good, next game",
+            "interpretation": "Positive feedback on Rung, followed by a request to move on. No numerical score, relative ranking or explicit keeper verdict supplied."
+          }
+        ]
+      },
+      "reviews": [],
+      "disposition": "undecided",
+      "evidence": [
+        "rung/REVIEW-2026-11-03.md"
+      ],
+      "nextStep": "Positive feedback recorded; review moved to Cipher. Ask for relative preferences when comparing games.",
+      "dispositionBasis": "James described Rung as good; explicit retention and relative rank remain unspecified."
+    },
+    {
+      "slug": "deepseek-cipher",
+      "name": "Cipher",
+      "creator": "DeepSeek",
+      "reviewOrder": 18,
       "status": "in_review",
       "james": {
         "enjoyment": null,
@@ -1392,26 +1418,9 @@
       "reviews": [],
       "disposition": "undecided",
       "evidence": [
-        "rung/REVIEW-2026-11-03.md"
+        "cipher/REVIEW-2026-11-03.md"
       ],
-      "nextStep": "James plays the current Rung daily; gather enjoyment, difficulty and retention feedback."
-    },
-    {
-      "slug": "deepseek-cipher",
-      "name": "Cipher",
-      "creator": "DeepSeek",
-      "reviewOrder": 18,
-      "status": "not_reviewed",
-      "james": {
-        "enjoyment": null,
-        "playAgain": null,
-        "preferenceRank": null,
-        "comments": []
-      },
-      "reviews": [],
-      "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "nextStep": "James plays Cipher; gather enjoyment, difficulty, clarity and retention feedback."
     },
     {
       "slug": "deepseek-trail",

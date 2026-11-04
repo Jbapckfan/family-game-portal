@@ -27,8 +27,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 14 | Quartet | Kimi | Fun; gameplay distinction needs revision before launch | Fun; no numerical score |
 | 15 | Twin Hive | DeepSeek | Keep; compact layout and touch/keyboard repair delivered | Keeper; no numerical score |
 | 16 | Spare | DeepSeek | Harder sample explained; positive acknowledgment, retention undecided | No numerical score |
-| 17 | Rung | DeepSeek | Open for individual playtest | — |
-| 18 | Cipher | DeepSeek | Not yet reviewed individually | — |
+| 17 | Rung | DeepSeek | Positive feedback; moved to next game | Good; no numerical score |
+| 18 | Cipher | DeepSeek | Open for individual playtest | — |
 | 19 | Trail | DeepSeek | Not yet reviewed individually | — |
 | 20 | Split | DeepSeek | Not yet reviewed individually | — |
 | 21 | Quadra | Qwen | Not yet reviewed individually | — |
@@ -83,4 +83,6 @@ Spare follow-up: James said “try that,” approving the isolated [harder conte
 
 Canonical data: [ranking.json](ranking.json). Keep this table in step with that file.
 
-November 3 follow-up: James initially said “i don’t understand Spare.” After the explanation he said “okay good, next game.” Record positive acknowledgment and an onboarding concern, without inventing a keeper verdict or numerical rating. Rung is now the active individual playtest.
+November 3 follow-up: James initially said “i don’t understand Spare.” After the explanation he said “okay good, next game.” Record positive acknowledgment and an onboarding concern, without inventing a keeper verdict or numerical rating. The review proceeded to Rung.
+
+Rung follow-up, November 3: James said “okay good, next game.” Record positive feedback without assigning a numerical score, explicit keeper status or relative rank. Cipher is now the active individual playtest.

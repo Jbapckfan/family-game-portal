@@ -9,7 +9,7 @@ let sequence=0;
 // claims: jsdom supplies events; dialogs need its missing native methods.
 async function game(id, saved={}) {
  const globals=Object.fromEntries(['window','document','navigator'].map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
- const dom=new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>',{url:`https://example.test/games/${id}/${['deepseek-spare','deepseek-trail'].includes(id)?'#daily':''}`,pretendToBeVisual:true});
+ const dom=new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>',{url:`https://example.test/games/${id}/${['deepseek-spare','deepseek-trail','deepseek-split'].includes(id)?'#daily':''}`,pretendToBeVisual:true});
  const {window:w}=dom;
  w.setInterval=()=>1;w.clearInterval=()=>{};
  w.HTMLDialogElement.prototype.showModal=function(){this.open=true;this.querySelector('button')?.focus();};

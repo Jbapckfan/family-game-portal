@@ -1,0 +1,24 @@
+{
+  "provider": "Gemini",
+  "modelArgument": "gemini-3.8-flash-high",
+  "started": "2026-11-04T13:00:41.373824+00:00",
+  "cwd": "/private/tmp/MAKER-Gemini__split-harder-20261104",
+  "files": [
+    {
+      "path": "games/deepseek-split/engine.mjs",
+      "sha256": "dbe844c4228969735ed90dfeae9474b979f344164d12b4b356e6129ddb7d3890"
+    },
+    {
+      "path": "games/deepseek-split/app.mjs",
+      "sha256": "a72b3f41a89185cad49988c32a1c4fe325d96e147438f1080a0a4805ccc41d0d"
+    },
+    {
+      "path": "games/deepseek-split/styles.css",
+      "sha256": "cd00919b7689dbda432edde85bef40c623121c3c21a660afc57b326ac170f700"
+    }
+  ],
+  "scope": "static supplied-source review",
+  "exitCode": 0,
+  "seconds": 188.37,
+  "reviewCharacters": 2743
+}

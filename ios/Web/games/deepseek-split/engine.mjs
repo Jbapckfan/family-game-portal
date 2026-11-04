@@ -8,7 +8,7 @@ export function getStatus(p, s) {
 }
 export function restoreState(p, raw) {
   if (!raw || typeof raw !== 'object' || !Array.isArray(raw.rows) || raw.rows.length !== 2 || ![0, 1].includes(raw.active) || !integer(raw.hints) || !integer(raw.checks) || typeof raw.submitted !== 'boolean' || typeof raw.revealed !== 'boolean') return null;
-  if (raw.rows.some((row, i) => !Array.isArray(row) || row.length > p.words[i].length || row.some(n => !Number.isInteger(n) || n < 0 || n >= 10))) return null;
+  if (raw.rows.some((row, i) => !Array.isArray(row) || row.length > p.words[i].length || row.some(n => !Number.isInteger(n) || n < 0 || n >= p.rack.length))) return null;
   const used = raw.rows.flat();
   if (new Set(used).size !== used.length || ((raw.submitted || raw.revealed) && !fits(p, raw))) return null;
   return { rows: raw.rows.map(row => [...row]), active: raw.active, hints: raw.hints, checks: raw.checks, submitted: raw.submitted, revealed: raw.revealed };
@@ -18,7 +18,7 @@ export function setActive(p, s, row) {
 }
 export function addTile(p, s, index) {
   if (getStatus(p, s) !== 'playing') return { state: s, message: 'Both words are complete.' };
-  if (!Number.isInteger(index) || index < 0 || index > 9) return { state: s, message: 'Choose a letter from the rack.' };
+  if (!Number.isInteger(index) || index < 0 || index >= p.rack.length) return { state: s, message: 'Choose a letter from the rack.' };
   if (s.rows.flat().includes(index)) return { state: s, message: 'That tile is already in a word.' };
   let active = s.active;
   if (s.rows[active].length === p.words[active].length) active = 1 - active;
@@ -72,3 +72,28 @@ export function reveal(p, s) {
   return { ...s, rows, revealed: true };
 }
 export const summarize = (p, s) => `${wordsAt(p, s).filter((word, i) => word === p.words[i]).length}/2 words · ${s.hints} hint${s.hints === 1 ? '' : 's'}`;
+
+// Isolated harder review sample; published daily boards retain their own records.
+export const PREVIEW = Object.freeze({
+ id:'split-harder-02', words:Object.freeze(['TONGUE','RECORD']),
+ clues:Object.freeze(['Sharp without a blade.','Broken at someone’s best.']),
+ definitions:Object.freeze(['The organ in your mouth used for tasting and speaking.','A best-ever achievement, such as the fastest time in a race.']),
+ rack:Object.freeze(Array.from('RAOEBGTCNRHUEIDO'))
+});
+export const createPreview = () => ({...createState(),sampleId:PREVIEW.id,definitions:[false,false]});
+export function restorePreview(raw){
+ if(!raw||raw.sampleId!==PREVIEW.id||!Array.isArray(raw.definitions)||raw.definitions.length!==2||raw.definitions.some(v=>typeof v!=='boolean')||raw.submitted&&(raw.revealed||raw.checks===0))return null;
+ const restored=restoreState(PREVIEW,raw);
+ return restored?{...restored,sampleId:PREVIEW.id,definitions:[...raw.definitions]}:null;
+}
+export function checkPreview(s){
+ if(getStatus(PREVIEW,s)!=='playing')return {state:s,message:'This sample is complete.'};
+ if(s.rows.some(row=>row.length!==6))return {state:s,message:'Fill both six-letter words before checking.'};
+ const count=wordsAt(PREVIEW,s).filter((word,i)=>word===PREVIEW.words[i]).length;
+ return {state:{...s,checks:Math.min(100000,s.checks+1),submitted:count===2},message:count===2?'Both meanings found. Four decoys left behind.':`${count} of 2 words fit. Reconsider both clues.`};
+}
+export function definePreview(s,row){
+ if(getStatus(PREVIEW,s)!=='playing'||![0,1].includes(row)||s.definitions[row])return s;
+ const definitions=[...s.definitions];definitions[row]=true;return {...s,definitions};
+}
+export const previewShare=s=>`Alford Daily · Split · Harder Preview 01\n${getStatus(PREVIEW,s)==='won'?'Solved':getStatus(PREVIEW,s)==='revealed'?'Revealed':'In progress'} · ${s.checks} checks\n${s.definitions.filter(Boolean).length} definitions used · four decoys`;

@@ -1,6 +1,9 @@
 import { mountDailyGame, escapeHTML as esc } from '../deepseek-runtime/common.mjs';
 import { PUZZLES } from './puzzles.mjs';
 import * as E from './engine.mjs';
+window.addEventListener('hashchange',()=>window.location.reload());
+if(window.location.hash==='#daily')mountOriginal();else mountPreview();
+function mountOriginal(){
 mountDailyGame({
  assistanceCount:(p,s)=>s.hints,
   id: 'deepseek-split', name: 'Split', accent:'#087c99',
@@ -48,3 +51,38 @@ mountDailyGame({
     };
   }
 });
+
+ const link=document.createElement('a');link.href='#harder';link.className='button';link.textContent='Try the harder sample →';document.querySelector('.mode-switch').after(link);
+}
+
+function mountPreview(){
+ const p=E.PREVIEW,key='deepseek-split:harder-preview:v2',host=document.getElementById('app');
+ let s=E.createPreview(),message='',saved=true;
+ try{const raw=localStorage.getItem(key);if(raw){const value=raw.length<16384?E.restorePreview(JSON.parse(raw)):null;if(value)s=value;else message='Starting a fresh sample: the saved data was invalid.';}}catch{saved=false;}
+ host.innerHTML=`<div class="game-shell split-preview"><header><div class="collection-bar"><a class="collection-back" href="../daily/">← Alford Daily</a><a href="#daily">Original daily →</a></div><p class="eyebrow">HARDER SAMPLE · 01</p><h1>Split</h1><p class="intro">Two answers. Four distractions.</p><p class="muted">Make two six-letter words. Use each tile once and leave four behind.</p><details><summary>How to play</summary><p>Choose a row, then tap or type letters. Tap a placed letter to return it. Up/Down switches rows; Backspace removes a letter. Check both answers together. Feedback says how many fit, without naming the row. Optional definitions count as help.</p></details></header><main><div id="preview-board" tabindex="0" aria-label="Split puzzle. Choose a row, then tap or type letters."></div><p id="preview-message" role="status" class="status-note"></p><section id="preview-result" class="result" hidden tabindex="-1"></section><div class="support-actions"><button id="preview-reveal" class="button subtle">Reveal solution</button><button id="preview-share" class="button primary" hidden>Copy result</button></div><p id="preview-storage" class="muted"></p></main><footer>One review sample · progress separate from your daily record</footer></div><dialog id="preview-dialog"><h2>Reveal both words?</h2><p>This ends the sample as revealed.</p><div class="actions"><button id="preview-cancel" class="button">Keep playing</button><button id="preview-confirm" class="button primary">Reveal</button></div></dialog>`;
+ const $=id=>document.getElementById(id),board=$('preview-board');
+ function update(next,note=''){s=next;message=note;try{localStorage.setItem(key,JSON.stringify(s));saved=true;}catch{saved=false;}render();if(E.getStatus(p,s)==='playing')board.focus({preventScroll:true});else $('preview-result').focus({preventScroll:true});}
+ function render(){
+  const status=E.getStatus(p,s),done=status!=='playing',used=s.rows.flat(),words=E.wordsAt(p,s);
+  board.innerHTML=`<div class="preview-answers">${p.words.map((word,row)=>`<section class="preview-answer ${s.active===row?'active':''}"><button class="preview-row" data-preview-row="${row}" aria-pressed="${s.active===row}" ${done?'disabled':''}><span>WORD ${row+1} · 6 LETTERS</span><span>${done?'Complete':s.active===row?'Selected':'Select row'}</span></button><p class="clue">${esc(p.clues[row])}</p><div class="preview-slots">${Array.from({length:6},(_,slot)=>`<button class="preview-slot" data-preview-slot="${row}:${slot}" aria-label="Word ${row+1}, position ${slot+1}: ${words[row][slot]||'empty'}${words[row][slot]&&!done?', return letter':''}" ${done?'disabled':''}>${words[row][slot]||'·'}</button>`).join('')}</div><button class="preview-define" data-define="${row}" ${done||s.definitions[row]?'disabled':''}>${s.definitions[row]?'Definition used':'Need a definition?'}</button>${s.definitions[row]?`<p class="preview-definition">${esc(p.definitions[row])}</p>`:''}</section>`).join('')}</div><p class="split-counter" aria-live="polite">${used.length} / 12 placed · ${16-used.length} in the rack · ${s.checks} checks</p><div class="preview-rack">${p.rack.map((letter,i)=>`<button class="preview-tile ${used.includes(i)?'used':''}" data-preview-index="${i}" aria-label="Letter ${letter}, tile ${i+1}" ${done||used.includes(i)?'disabled':''}>${letter}</button>`).join('')}</div><div class="actions"><button id="preview-undo" class="button" ${done||!used.length?'disabled':''}>Undo</button><button id="preview-clear" class="button" ${done||!used.length?'disabled':''}>Clear</button><button id="preview-check" class="button primary" ${done||used.length!==12?'disabled':''}>Check both</button></div>`;
+  $('preview-message').textContent=message;$('preview-result').hidden=!done;$('preview-reveal').hidden=done;$('preview-share').hidden=!done;
+  $('preview-storage').textContent=saved?'Saved on this device.':'Saving is unavailable. Keep this tab open.';
+  if(done)$('preview-result').innerHTML=`<h2>${status==='won'?'Both meanings found.':'Solution revealed.'}</h2><p>${p.words.map((w,i)=>`<strong>${w}</strong> — ${esc(p.definitions[i])}`).join('<br>')}</p><p>${s.checks} checks · ${s.definitions.filter(Boolean).length} definitions used</p>`;
+  board.querySelectorAll('[data-preview-row]').forEach(b=>b.onclick=()=>update(E.setActive(p,s,+b.dataset.previewRow)));
+  board.querySelectorAll('[data-preview-index]').forEach(b=>b.onclick=()=>{const r=E.addTile(p,s,+b.dataset.previewIndex);update(r.state,r.message);});
+  board.querySelectorAll('[data-preview-slot]').forEach(b=>b.onclick=()=>{const [row,slot]=b.dataset.previewSlot.split(':').map(Number);update(s.rows[row][slot]===undefined?E.setActive(p,s,row):E.removeTile(p,s,row,slot));});
+  board.querySelectorAll('[data-define]').forEach(b=>b.onclick=()=>update(E.definePreview(s,+b.dataset.define),'Definition shown; help is recorded in your result.'));
+  $('preview-undo').onclick=()=>update(E.undo(p,s),'Letter returned.');$('preview-clear').onclick=()=>update(E.clearAll(p,s),'Letters returned; help and checks retained.');
+  $('preview-check').onclick=()=>{const r=E.checkPreview(s);update(r.state,r.message);};
+ }
+ board.onkeydown=e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing||e.repeat||E.getStatus(p,s)!=='playing')return;
+  if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();update(E.setActive(p,s,e.key==='ArrowUp'?0:1));}
+  else if(/^[a-z]$/i.test(e.key)){e.preventDefault();const i=p.rack.findIndex((c,i)=>c===e.key.toUpperCase()&&!s.rows.flat().includes(i));if(i<0){$('preview-message').textContent=`No ${e.key.toUpperCase()} remains.`;return;}const r=E.addTile(p,s,i);update(r.state,r.message);}
+  else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();update(E.undo(p,s));}
+  else if(e.key==='Enter'&&e.target===board){e.preventDefault();const r=E.checkPreview(s);update(r.state,r.message);}
+ };
+ $('preview-reveal').onclick=()=>$('preview-dialog').showModal();$('preview-cancel').onclick=()=>{$('preview-dialog').close();board.focus({preventScroll:true});};$('preview-confirm').onclick=()=>{$('preview-dialog').close();update(E.reveal(p,s),'Solution revealed.');};
+ $('preview-share').onclick=async()=>{const text=E.previewShare(s);try{await navigator.clipboard.writeText(text);$('preview-message').textContent='Result copied without answers.';}catch{$('preview-message').textContent=text;}};
+ render();board.focus({preventScroll:true});
+}

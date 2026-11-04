@@ -93,3 +93,6 @@ Cipher follow-up, November 3: James said “cipher is great.” Recorded as stro
 Trail feedback, November 3: James said “trail seems way too easy,” then approved trying the harder direction with “try harder.” The [4×4 sample](trail/HARDER-PREVIEW.md) is delivered with seven decoys, less direct clue and optional definition. Original daily boards and records remain intact. James then said “that is definitely a lot harder, keep it.” Trail is a keeper, with the harder 4×4 as his preferred direction. No numerical score or relative keeper rank supplied.
 
 Split feedback, November 3: James said “good but too easy.” Record positive feedback and a difficulty concern; retention is undecided. Proposed experiment: two six-letter words, four decoys, subtler clues with optional definitions, and correctness feedback only after checking both words. [Review and proposal](split/REVIEW-2026-11-03.md).
+
+
+November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). It is built and open in one game tab with two six-letter answers and four decoys. Retention and difficulty feedback on the sample are pending.

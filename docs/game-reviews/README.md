@@ -27,3 +27,6 @@ DeepSeek is conditional/unavailable for this round: the browser access host coul
 James explicitly kept Hunch and moved on, suggesting black/white dots like Mastermind. Its [grouped-dot presentation](hunch/DOTS.md) is delivered across the board, rules, results, captions, PNGs and icon. No wholly-original-mechanic claim or new numerical rating is inferred.
 
 Kimi’s Tangle remains a keeper with the [broader audited vocabulary](tangle-kimi/WORD-GAME-LEXICON.md). Its optional [5×5 sample](tangle-kimi/FIVE-PREVIEW.md) is retained; a full larger-board calendar is future work. Exact current Words With Friends parity is unverified. This is distinct from Claude’s later Tangle.
+
+
+November 4: James approved the [harder Split sample](split/HARDER-PREVIEW.md). It is built and open in one game tab with two six-letter answers and four decoys. Retention and difficulty feedback on the sample are pending.

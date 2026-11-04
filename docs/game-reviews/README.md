@@ -39,3 +39,6 @@ November 4 decision: **Logic Lattice is parked for later, not removed.** Its gam
 
 
 November 4 collection update: [UI, pacing, favorites/hide, feedback, branding, bonus and private-publication report](../product/POLISH-2026-11-04.md). Syntax Siege received strong positive gameplay feedback; no new numeric score or explicit keeper verdict was inferred.
+
+
+Current review: Memory Maze is kept (16 keepers). Its study countdown now remains visible while scrolled. Next is [Pattern Prism](https://alford-daily.jbapckfan.chatgpt.site/games/qwen-pattern-prism/): follow the five examples and predict the next three, matching shape, color, size and direction. Feedback is pending.

@@ -2,7 +2,7 @@
 
 Current preference groups from James's playtests:
 
-- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail, harder Split and Quadra. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
+- **Keepers:** Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive, the harder 4×4 Trail, harder Split, Quadra and Memory Maze. Hunch was called “good”; replay answers are recorded only where supplied. Their relative order is not yet supplied.
 - **Parked for later:** Logic Lattice — James is unsure; preserve it for a future revisit.
 - **Strong positive feedback:** Cipher — “cipher is great”; Syntax Siege — “great game, love this,” with UI improvements requested. No numerical scores or relative positions supplied.
 - **Replacement candidates:** Ringcount — “pretty easy and boring”; Sideways — “not a big fan…too easy.” Both remain available.
@@ -36,8 +36,8 @@ Inbetween is **6/10** from James. No numerical enjoyment scores were supplied fo
 | 21 | Quadra | Qwen | Keep; category mechanic liked | Challenging; I like it |
 | 22 | Logic Lattice | Qwen | Parked for later; preserve game | Unsure; revisit later |
 | 23 | Syntax Siege | Qwen | Strong positive gameplay; UI and pacing revised | Great game; love this |
-| 24 | Memory Maze | Qwen | Not yet reviewed individually | — |
-| 25 | Pattern Prism | Qwen | Not yet reviewed individually | — |
+| 24 | Memory Maze | Qwen | Keep; visible countdown added | Keeper; no numerical score |
+| 25 | Pattern Prism | Qwen | Next individual review | Awaiting feedback |
 | 26 | Territory Tactics | Qwen | Not yet reviewed individually | — |
 | 27 | Dovetail | Claude | Not yet reviewed individually | — |
 | 28 | Splice | Claude | Not yet reviewed individually | — |
@@ -106,3 +106,6 @@ Logic Lattice follow-up: James requested more explanation and UI improvement. Th
 
 
 November 4 decision: **Logic Lattice is parked for later, not removed.** Its game files, puzzles, saves and review work are preserved. The keeper count remains 15. Syntax Siege is next when the individual review resumes.
+
+
+November 4: James explicitly kept Memory Maze, bringing the keeper count to 16. He requested a countdown visible while scrolled; the viewport-anchored study/replay timer and automatic board positioning were added. Pattern Prism follows. No numerical rating or relative rank supplied.

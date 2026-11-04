@@ -42,3 +42,18 @@ The local game source contains its puzzle answers so it can work offline. This i
 ## Expanded collection verification
 
 Run `npm run verify:content` to reproduce the deterministic collection without writing files, or `npm run generate` to regenerate it. Run `npm test` for the game suite. For individual assertion output, use `node --test --test-isolation=none tests/*.test.mjs` with Node 24. The expansion tests verify an immutable SHA-256 of every published board in its original position, substantive uniqueness, and stable launch-date daily selection. Published IDs, save schemas, creator labels, and the October 20, 2026 Central daily epoch remain unchanged.
+
+## Optional tougher bonus — November 4, 2026
+
+Open `games/ringcount/?sample=tougher`, or select **Try the bonus challenge** above the ring. The practice picker also offers **Try the tougher bonus**. This is an optional practice board with the stable ID `ringcount-tougher-v1`; its save uses `ringcount:v1:practice:ringcount-tougher-v1`. Existing daily puzzles, selection, records, and streaks are unchanged. Bonus captions/cards identify the result as **BONUS CHALLENGE**. Restart is available through the existing practice options.
+
+Ringcount suits a bonus because the existing rule can produce a slightly more demanding board without new controls: the target is 17, the four section lengths are 2/2/3/5, and four additional arcs match the target but cannot all complete a solution. Today's November 4 daily has two such decoy arcs. The independent prefix-sum test enumerates all 495 placements, proves exactly one solution, and confirms a wrong placement with two correct totals and the other two within two of the target. This supports the design intent; human difficulty/enjoyment still need James's assessment. No new content bank was added.
+
+The Ringcount screen, icon and result card use blue/teal accents. User-facing creator/host branding is Alford Daily with relative collection links.
+
+Verification:
+
+- `node --test games/ringcount/tests/*.test.mjs`: 30 passing tests, including preservation of all 210 published boards and the bonus’s uniqueness, result identity and restore rules.
+- `node --check games/ringcount/{app,shell,engine,samples,share-card}.mjs` (one file per invocation).
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/alford-word-controls-browsers PLAYWRIGHT_MODULE=/Users/jamesalford/.npm/_npx/31e32ef8478fbf80/node_modules/playwright/index.mjs node games/ringcount/tests/browser/tougher-bonus.mjs`: Chromium and WebKit pass entry, near miss, reload, solving, image/caption generation, reveal, preserved daily save/record bytes, and no horizontal overflow at 320/390/1280 widths. These tests use intercepted local files with temporary profiles and no server listener.
+- Screenshots inspected at `/private/tmp/MAKER-codex__ringcount-bonus/`; no deployment, push, physical-device or human difficulty claim.

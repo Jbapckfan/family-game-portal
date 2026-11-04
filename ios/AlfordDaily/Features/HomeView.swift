@@ -120,27 +120,12 @@ struct HomeView: View {
 
     private var todaysThree: some View {
         let games = visible(GameID.todaysThree(on: today))
-        let next = games.first { store.ledger.status(for: $0, on: today) == .playing }
-            ?? games.first { store.ledger.status(for: $0, on: today)?.isTerminal != true }
         let solved = games.filter { store.ledger.status(for: $0, on: today) == .won }.count
         return VStack(alignment: .leading, spacing: 14) {
             Text("Today’s Three").font(.system(.title2, design: .serif))
             Text("\(solved) of \(games.count) solved · a small daily ritual")
                 .font(.subheadline).foregroundStyle(Theme.muted)
-            if let next {
-                NavigationLink(value: next) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("\(store.ledger.status(for: next, on: today) == .playing ? "Continue" : "Play") \(next.name)")
-                                .font(.system(.title3, design: .serif).weight(.semibold))
-                            Text("Your next good puzzle.").font(.subheadline)
-                        }
-                        Spacer()
-                        Image(systemName: "arrow.up.right").accessibilityHidden(true)
-                    }.padding(18).frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-                        .background(Theme.ink, in: RoundedRectangle(cornerRadius: 14)).foregroundStyle(Theme.card)
-                }.buttonStyle(.plain).accessibilityIdentifier("next-daily")
-            } else if !games.isEmpty && games.allSatisfy({ store.ledger.status(for: $0, on: today)?.isTerminal == true }) {
+            if !games.isEmpty && games.allSatisfy({ store.ledger.status(for: $0, on: today)?.isTerminal == true }) {
                 Text("Daily set complete. Share your result, try Practice, or return for a fresh set tomorrow.")
                     .font(.subheadline).foregroundStyle(Theme.muted)
             }

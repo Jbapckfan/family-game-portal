@@ -1,0 +1,51 @@
+{
+  "verifiedAt": "2026-11-04T04:45:25.036107+00:00",
+  "files": [
+    {
+      "path": "games/deepseek-trail/app.mjs",
+      "sha256": "a28905495e964a2193743821ca307f7dd4ddfe4d52cb9c285d09c73b35b35e07"
+    },
+    {
+      "path": "games/deepseek-trail/engine.mjs",
+      "sha256": "8b0c98f3df23ed40508c591f152b2eabcf95cb9f108b15a120b853186f4b6b7f"
+    },
+    {
+      "path": "games/deepseek-trail/styles.css",
+      "sha256": "e7d9488190531d8938c5fbedbfd523ceaa8b2ad0ae4b483ee9de80dba85f6089"
+    },
+    {
+      "path": "games/deepseek-trail/puzzles.mjs",
+      "sha256": "7515dd304fbe3df49f3397962984bf2d37350d54e1c27ad15a25e03d1d01f66b"
+    },
+    {
+      "path": "scripts/trail-preview.test.mjs",
+      "sha256": "dc58c6f469c62f65b226631618af074405190e8eb589fc144d3429e61f43565a"
+    },
+    {
+      "path": "scripts/trail-preview.playwright.mjs",
+      "sha256": "db887d4812e9434796fba8fc704a09ba66b9418043cfb7e7b10ffc1e34809293"
+    },
+    {
+      "path": "scripts/trail-preview-lexicon.mjs",
+      "sha256": "665604c1ce34d6805ad97dacfb20579a9030ea42de0805a3c0717b313814b598"
+    }
+  ],
+  "focusedEngineTests": 11,
+  "browserChecks": 18,
+  "fullCollectionTests": 978,
+  "nativeBundle": {
+    "gameEntries": 33,
+    "sharedRuntimes": 2,
+    "matchingRuntimeFiles": 304
+  },
+  "visibleController": {
+    "game": "deepseek-trail",
+    "tabs": 2,
+    "sampleLettersSelected": 0
+  },
+  "limitations": [
+    "Static source model reviews preceded final focus/history/grid/check-limit changes.",
+    "No physical iPhone, new native binary or production deployment.",
+    "One authored preview only; no new six-month bank."
+  ]
+}

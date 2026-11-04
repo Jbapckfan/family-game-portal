@@ -1,0 +1,55 @@
+{
+  "sampleId": "trail-4x4-01",
+  "grid": [
+    "F",
+    "T",
+    "E",
+    "O",
+    "A",
+    "A",
+    "L",
+    "R",
+    "E",
+    "G",
+    "F",
+    "W",
+    "R",
+    "T",
+    "L",
+    "O"
+  ],
+  "sources": [
+    {
+      "path": "packages/kimi-pebbles/data/english-words-alpha.txt",
+      "sha256": "3ed0c94610d8bcf7c11bbb49c56aa49c7234d32b66824df91f554169e572da48",
+      "nineLetterWords": 53402
+    },
+    {
+      "path": "packages/kimi-pebbles/data/wordnik-game-words.txt",
+      "sha256": "bfd1b4eb4ade1ba81e84c7e24248b9a1aecec9d9baa427453b367a83e30e0451",
+      "nineLetterWords": 30833
+    },
+    {
+      "path": "packages/kimi-pebbles/data/enable2k.txt.gz",
+      "sha256": "2c1093669cd16439bdb0a693a0058626c9c9f82e59244c9b0bde89515d44d3ad",
+      "nineLetterWords": 25011
+    }
+  ],
+  "uniqueNineLetterWordsSearched": 57245,
+  "traceableNineLetterWords": {
+    "AFTERGLOW": [
+      [
+        5,
+        10,
+        13,
+        8,
+        12,
+        9,
+        14,
+        15,
+        11
+      ]
+    ]
+  },
+  "scope": "Pinned local lexicons; not an exhaustive claim about all dictionaries."
+}

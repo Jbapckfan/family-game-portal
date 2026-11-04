@@ -90,4 +90,4 @@ Rung follow-up, November 3: James said “okay good, next game.” Record positi
 
 Cipher follow-up, November 3: James said “cipher is great.” Recorded as strong positive enjoyment. No numerical score or relative ordering was assigned. James subsequently requested a progress summary and moving to Trail; Trail is now the active individual playtest.
 
-Trail feedback, November 3: James said “trail seems way too easy.” Record difficulty criticism, with enjoyment and retention undecided. The current board has no decoy tiles; its direct meaning clue plus all nine answer letters can leave mostly tracing work. Proposed next experiment: a 4×4 board with decoys and a less direct clue, using the definition as an optional hint. This is a proposal, not a delivered redesign or approved replacement.
+Trail feedback, November 3: James said “trail seems way too easy,” then approved trying the harder direction with “try harder.” The [4×4 sample](trail/HARDER-PREVIEW.md) is delivered with seven decoys, less direct clue and optional definition. Original daily boards and records remain intact. Enjoyment, retention and relative rank remain undecided pending James's playtest.

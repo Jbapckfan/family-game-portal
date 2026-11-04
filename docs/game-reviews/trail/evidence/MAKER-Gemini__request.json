@@ -1,0 +1,21 @@
+{
+  "provider": "Gemini",
+  "modelArgument": "gemini-3.8-flash-high",
+  "started": "2026-11-04T04:36:05.259995+00:00",
+  "cwd": "/private/tmp/MAKER-Gemini__trail-4x4-20261103",
+  "files": [
+    {
+      "path": "games/deepseek-trail/engine.mjs",
+      "sha256": "03cad07d8ac773498b2b6bb13a9cb8d322c8bb7f3b986b2576669da832c6dd22"
+    },
+    {
+      "path": "games/deepseek-trail/app.mjs",
+      "sha256": "f2fe991cc140dfb3a5825674699b765e4464857778da957e5b8821ad1b9a11ff"
+    },
+    {
+      "path": "scripts/trail-preview.test.mjs",
+      "sha256": "88f03831b02a7481ec205581cc9f44b53305c270618e92a76500ee49b9d3dd8b"
+    }
+  ],
+  "scope": "static supplied-source review"
+}

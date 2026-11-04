@@ -11,3 +11,52 @@ h1{font-family:inherit;font-size:clamp(29px,6.5vw,43px);font-weight:800;letter-s
 @media(max-width:350px){.game-emblem{display:none}.support-actions .button{flex:1 1 120px}.panel{padding:13px}.identity-heading{min-width:0}.eyebrow{font-size:10px}h1{font-size:29px}.header-tools{gap:4px}}
 
 .trail-panel>.clue{font-family:inherit;font-size:18px;font-weight:650}.trail-count{font-size:14px}.trail-tile{font-size:31px}.trail-tile small{font-size:13px}.trail-word{font-size:clamp(20px,5vw,30px)}
+
+/* Isolated 4×4 review sample. Grid and SVG share the same cell centers. */
+.preview-link{margin-top:10px}.preview-back{font-size:13px;font-weight:650;color:#17627c;text-decoration:none}
+.trail-preview{max-width:560px;padding-bottom:28px}
+.preview-heading{display:flex;align-items:center;justify-content:space-between;margin-top:25px}
+.preview-heading h1{font-size:48px;letter-spacing:-2px}.preview-heading .eyebrow{color:#24738a;margin:0 0 7px}
+.preview-badge{padding:13px 17px;background:#dff1f8;border:1px solid #b6dce9;border-radius:16px;font-size:21px;font-weight:800;letter-spacing:2px;color:#14627a}
+.trail-preview .intro{margin:9px 0 3px;font-size:20px;font-weight:650;color:#284c63}
+.preview-instructions{font-size:15px;line-height:1.6;color:#4b6476;margin:0 0 10px}
+.preview-rules{font-size:14px;line-height:1.6;margin-bottom:20px;color:#446377}
+.preview-rules summary{cursor:pointer;font-weight:650;color:#246d84;min-height:28px}
+.preview-rules p{margin:8px 0}
+.trail-preview-panel{padding:20px;border-radius:24px;background:linear-gradient(160deg,#fff,#f3f9fd)}
+.preview-clue{text-align:center;padding:3px 0 16px;border-bottom:1px solid #dbe8ef}
+.preview-clue .eyebrow{font-size:10px;letter-spacing:1.7px;color:#527a8f;margin:0 0 7px}
+.preview-clue .clue{font-size:clamp(19px,4.8vw,24px);line-height:1.45;font-weight:720;max-width:330px;margin:0 auto;color:#173e56}
+.definition-button{border:0;background:transparent;color:#176d88;font-family:inherit;font-size:13px;line-height:1.5;font-weight:600;min-height:44px;padding:9px 12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.definition-button:disabled{color:#577180;cursor:default;text-decoration:none}
+#preview-definition-text{font-size:15px;line-height:1.6;margin:2px 0 0;padding:10px 14px;border-radius:12px;background:#e4f2f8;color:#21536a}
+.trail-slots{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;max-width:370px;margin:20px auto 8px}
+.trail-slots span{display:flex;align-items:center;justify-content:center;min-width:0;height:42px;border-bottom:2px solid #bbd4e3;font-size:24px;font-weight:750;color:#8aaaba}
+.trail-slots .filled{color:#116581;border-bottom-color:#2595b7}
+.trail-preview .trail-count{font-size:13px;margin:6px 0 0;color:#56758a}
+.trail-preview .trail-count strong{color:#214f68}
+.trail-preview .trail-board{max-width:376px;margin:12px auto 18px}
+.trail-preview .trail-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.trail-preview .trail-tile{margin:7px;width:calc(100% - 14px);border:1px solid #bdd6e4;border-radius:20%;font-size:clamp(25px,6.5vw,34px);color:#184760;background:#fff;box-shadow:0 3px 0 #d7e6ef}
+.trail-preview .trail-tile.selected{background:#def2fa;border-color:#3f9aba;color:#176883}
+.trail-preview .trail-tile.last{background:#096d8b;border-color:#096d8b;color:#fff;box-shadow:0 3px 0 #075068}
+.trail-preview .trail-tile small{font-size:11px;top:3px;right:5px;color:#3d7b90}
+.trail-preview .trail-tile.last small{color:#ceeff9}
+.trail-preview .trail-lines polyline{stroke:#1e9dc6;stroke-width:7;opacity:.8}
+.preview-actions{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:8px;margin:0}
+.preview-actions .button{padding:10px 8px;min-width:0}
+.trail-preview .status-note{font-size:14px;min-height:23px;margin:13px 0 0;white-space:pre-line}
+.trail-preview .status-note:empty{display:none}
+.preview-footer{display:flex;justify-content:center;margin:18px 0 0}
+.trail-preview .result{margin-top:16px}
+.preview-history{padding:14px 4px 0;font-size:14px;color:#365c72}
+.preview-history summary{cursor:pointer;min-height:30px}
+.preview-history ul{list-style:none;padding:0;display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.preview-history li{padding:6px 10px;border-radius:8px;border:1px solid #c7dfe9;background:#e7f2f8;font-weight:700}
+.preview-history li span{font-size:12px;font-weight:400}
+#preview-storage,.trail-preview footer{text-align:center;font-size:12px;line-height:1.6;color:#627f90}
+.trail-preview footer{margin-top:6px}
+.trail-preview button:focus-visible,.trail-preview summary:focus-visible{outline:3px solid #279cc3;outline-offset:3px}
+.trail-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:350px){.trail-preview-panel{padding:13px}.trail-preview .trail-tile{margin:5px;width:calc(100% - 10px)}.preview-heading{margin-top:19px}.preview-heading h1{font-size:41px}.trail-slots{gap:3px}.trail-slots span{font-size:22px}.preview-instructions{font-size:14px}.preview-badge{padding:12px}}
+@media(max-width:600px){.trail-preview{padding-top:10px}.trail-preview .collection-bar{padding-bottom:13px;margin-bottom:0}.preview-heading{margin-top:15px}.preview-heading h1{font-size:41px}.trail-preview .intro{font-size:18px;margin-top:6px}.preview-rules{margin-bottom:12px}.preview-clue{padding-bottom:6px}.preview-clue .clue{max-width:350px;font-size:19px}.trail-slots{margin-top:10px}.trail-slots span{height:33px}.trail-preview .trail-board{margin-top:8px;margin-bottom:12px}}

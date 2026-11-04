@@ -1,0 +1,95 @@
+[
+  {
+    "engine": "chromium",
+    "check": "touch-solve-reload-share",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "keyboard-solve-reload-share",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "wrong-path-repeat-backtrack-and-keyboard-boundaries",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "definition-save-reveal-cancel-and-share-fallback",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "daily-save-isolation",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+  },
+  {
+    "engine": "chromium",
+    "check": "corrupt-save-and-storage-unavailable",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-320",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-393",
+    "passed": true
+  },
+  {
+    "engine": "chromium",
+    "check": "layout-1200",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "touch-solve-reload-share",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "keyboard-solve-reload-share",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "wrong-path-repeat-backtrack-and-keyboard-boundaries",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+  },
+  {
+    "engine": "webkit",
+    "check": "definition-save-reveal-cancel-and-share-fallback",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "daily-save-isolation",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+  },
+  {
+    "engine": "webkit",
+    "check": "corrupt-save-and-storage-unavailable",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-320",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-393",
+    "passed": true
+  },
+  {
+    "engine": "webkit",
+    "check": "layout-1200",
+    "passed": true
+  }
+]

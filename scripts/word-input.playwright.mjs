@@ -47,7 +47,7 @@ for(const engine of (process.env.ENGINES||'chromium,webkit').split(',')){
   const page=await context.newPage();page.setDefaultTimeout(7000);
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.clock.install({time:new Date('2026-11-01T18:00:00Z')});
-  await page.goto(`https://word-input.test/games/${slug}/${slug==='deepseek-spare'?'#daily':''}`);
+  await page.goto(`https://word-input.test/games/${slug}/${['deepseek-spare','deepseek-trail'].includes(slug)?'#daily':''}`);
   if(slug.startsWith('kimi-'))await page.locator('[data-game-ready]').waitFor();
   else await page.locator('#puzzle,#board').first().waitFor();
   // Original games can show an introductory dialog on first use.

@@ -109,3 +109,6 @@ November 4 decision: **Logic Lattice is parked for later, not removed.** Its gam
 
 
 November 4: James explicitly kept Memory Maze, bringing the keeper count to 16. He requested a countdown visible while scrolled; the viewport-anchored study/replay timer and automatic board positioning were added. Pattern Prism follows. No numerical rating or relative rank supplied.
+
+
+November 5: Pattern Prism review continued. James likes the broader intelligence/IQ-style pattern-recognition concept and requested returning to it later. [Future idea](../product/FUTURE-IDEAS.md). Pattern Prism has no explicit keeper verdict or numeric score yet.

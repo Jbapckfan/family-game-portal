@@ -1,21 +1,22 @@
 import {mountDailyGame,escapeHTML as esc} from '../deepseek-runtime/common.mjs';
 import {PUZZLES} from './puzzles.mjs';
 import * as E from './engine.mjs';
-const PALETTE={ocean:'#467b9f',rose:'#ae5271',gold:'#b98219',leaf:'#5f864f'};
+// Color is a puzzle attribute. Keep the four named signals distinct on the dark stage.
+const PALETTE={ocean:'#8fbbe0',rose:'#e0a0ae',gold:'#dec88e',leaf:'#92c5b0'};
 const ARROWS={0:'↑',90:'→',180:'↓',270:'←'};
 const cap=word=>word[0].toUpperCase()+word.slice(1);
 const label=t=>`${t.size?'Large':'Small'} ${t.color} ${t.shape}, pointing ${E.DIRECTIONS[t.rotation]}`;
 function symbol(t) {
-  const shapes={circle:'<circle cx="50" cy="50" r="28"/>',triangle:'<path d="M50 20L80 76H20Z"/>',square:'<rect x="24" y="24" width="52" height="52" rx="3"/>',star:'<path d="M50 18L59 39L82 42L65 58L70 81L50 69L30 81L35 58L18 42L41 39Z"/>'};
-  return `<svg viewBox="0 0 100 100" class="prism-symbol" aria-hidden="true"><g transform="translate(50 50) scale(${t.size?1:.67}) rotate(${t.rotation}) translate(-50 -50)" fill="${PALETTE[t.color]}" stroke="${PALETTE[t.color]}" stroke-width="2">${shapes[t.shape]}</g><g transform="rotate(${t.rotation} 50 50)" fill="#293b34"><path d="M50 2L45 11H55Z"/><rect x="48.5" y="10" width="3" height="7" rx="1"/></g></svg>`;
+  const shapes={circle:'<circle cx="50" cy="50" r="28"/>',triangle:'<path d="M50 20L80 76H20Z"/>',square:'<rect x="24" y="24" width="52" height="52"/>',star:'<path d="M50 18L59 39L82 42L65 58L70 81L50 69L30 81L35 58L18 42L41 39Z"/>'};
+  return `<svg viewBox="0 0 100 100" class="prism-symbol" aria-hidden="true" style="--signal:${PALETTE[t.color]}"><path class="prism-registration" d="M3 50h5m84 0h5M50 3v5m0 84v5"/><g class="prism-form" transform="translate(50 50) scale(${t.size?1:.67}) rotate(${t.rotation}) translate(-50 -50)">${shapes[t.shape]}</g><g class="prism-bearing" transform="rotate(${t.rotation} 50 50)"><path d="M46 9l4-5 4 5M50 5v11"/></g></svg>`;
 }
 function token(t,number,extra='') {
-  return `<div class="prism-token ${extra}" role="img" aria-label="Element ${number}: ${esc(label(t))}"><span class="prism-number">${number}</span>${symbol(t)}<span class="prism-caption">${esc(cap(t.shape))}<br>${esc(cap(t.color))} · ${t.size?'large':'small'}<br><b>${ARROWS[t.rotation]} ${E.DIRECTIONS[t.rotation]}</b></span></div>`;
+  return `<div class="prism-token ${extra}" role="img" aria-label="Element ${number}: ${esc(label(t))}"><span class="prism-number">${String(number).padStart(2,'0')}</span>${symbol(t)}<span class="prism-caption"><strong>${esc(cap(t.shape))}</strong><span>${esc(cap(t.color))} · ${t.size?'large':'small'}</span><b>${ARROWS[t.rotation]} ${E.DIRECTIONS[t.rotation]}</b></span></div>`;
 }
 mountDailyGame({
  assistanceCount:(p,s)=>s.hints.reduce((a,b)=>a+b,0),
   id:'qwen-pattern-prism',name:'Pattern Prism',creator:'Qwen',credit:'Concept by Qwen · Built by Alford Daily',accent:'#087c99',
-  intro:'Follow the shape. Find the rhythm. See what comes next.',
+  intro:'Four signals. One underlying rhythm. Find what comes next.',
   instructions:[
     'Study the five examples in order. Shape, color, size, and direction each follow a repeating cycle of at most four elements; some attributes stay the same.',
     'Predict the next three elements, one at a time. Choose the option that continues all four attributes.',
@@ -27,10 +28,11 @@ mountDailyGame({
   render({root,puzzle:p,state:s,commit,announce}) {
     const step=s.answers.length,status=E.getStatus(p,s),finished=status!=='playing',hint=E.hintText(p,s);
     root.innerHTML=`<section class="panel prism-panel">
-      <div class="prism-heading"><h2>Read the sequence</h2><span class="pill">${E.mistakes(s)} miss${E.mistakes(s)===1?'':'es'}</span></div>
+      <div class="prism-heading"><div><p class="prism-overline">Observe / 01–05</p><h2>Read the sequence</h2></div><span class="pill">${E.mistakes(s)} miss${E.mistakes(s)===1?'':'es'}</span></div>
+      <p class="prism-attributes">Shape <span>·</span> Color <span>·</span> Size <span>·</span> Direction</p>
       <div class="prism-examples" aria-label="Five examples in sequence">${[0,1,2,3,4].map(i=>token(E.tokenAt(p,i),i+1)).join('')}</div>
-      <div class="prism-divider"><span>Your next three</span></div>
-      <div class="prism-predictions" aria-label="Your predictions">${[0,1,2].map(i=>i<step?token(E.tokenAt(p,5+i),6+i,'completed'):`<div class="prism-token blank ${i===step?'current':''}" aria-label="Element ${6+i}, ${i===step?'predict this one next':'not yet reached'}"><span class="prism-number">${6+i}</span><span class="prism-question">${i===step?'?':'·'}</span><span class="prism-caption">${i===step?'Your move':'Coming next'}</span></div>`).join('')}</div>
+      <div class="prism-divider"><span>Continue / 06–08</span></div>
+      <div class="prism-predictions" aria-label="Your predictions">${[0,1,2].map(i=>i<step?token(E.tokenAt(p,5+i),6+i,'completed'):`<div class="prism-token blank ${i===step?'current':''}" aria-label="Element ${6+i}, ${i===step?'predict this one next':'not yet reached'}"><span class="prism-number">0${6+i}</span><span class="prism-question">${i===step?'?':'—'}</span><span class="prism-caption">${i===step?'Your move':'Next'}</span></div>`).join('')}</div>
       ${!finished?`<h2 id="prism-prompt" class="prism-prompt" tabindex="-1">What belongs at ${step+6}?</h2><p class="prism-keys muted">Choose A, B, C or D · keyboard letters work too.</p><div class="prism-choices" role="group" aria-labelledby="prism-prompt">${E.choicesAt(p,step).map((t,i)=>{const wrong=s.wrong[step].includes(i),hinted=s.hints[step]===2&&i===E.correctIndex(p,step);return `<button id="prism-choice-${i}" type="button" class="prism-choice ${wrong?'wrong':''} ${hinted?'hinted':''}" data-choice="${i}" aria-label="Choice ${'ABCD'[i]}: ${esc(label(t))}${wrong?', does not fit':''}${hinted?', hinted answer':''}" ${wrong?'disabled':''}><span class="prism-choice-letter">${'ABCD'[i]}</span>${symbol(t)}<span class="prism-choice-caption"><strong>${esc(cap(t.shape))} · ${esc(cap(t.color))}</strong><span>${t.size?'Large':'Small'} · ${ARROWS[t.rotation]} ${E.DIRECTIONS[t.rotation]}</span></span>${wrong?'<span class="prism-choice-note">Does not fit</span>':hinted?'<span class="prism-choice-note">Hint</span>':''}</button>`;}).join('')}</div>${hint?`<p class="prism-hint">${esc(hint)}</p>`:''}`:`<div class="prism-explanation"><h2>${status==='revealed'?'The sequence revealed':'The pattern holds'}</h2><p>${esc(E.explanation(p))}</p></div>`}
       <p class="muted prism-footer">${step} of 3 predictions · ${s.hints.reduce((a,b)=>a+b,0)} hints · no time limit</p>
     </section>`;

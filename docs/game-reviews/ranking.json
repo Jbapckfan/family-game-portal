@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-05",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied. Quadra is also a keeper; James particularly likes its challenge and category-guided word finding.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied. Quadra is also a keeper; James particularly likes its challenge and category-guided word finding. Dovetail is also a keeper after James explicitly said “keep it, next game”; no numerical score or relative rank was supplied.",
   "games": [
     {
       "slug": "ringcount",
@@ -1797,17 +1797,28 @@
       "name": "Dovetail",
       "creator": "Claude",
       "reviewOrder": 27,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-05",
+            "quote": "keep it, next game",
+            "interpretation": "Explicit keeper verdict for Dovetail and request to advance. No numerical enjoyment score or relative rank supplied."
+          }
+        ],
+        "preferenceTier": "keeper",
+        "enjoymentReaction": "keep it"
       },
       "reviews": [],
-      "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Opened for individual review after Territory Tactics UI selection was deferred. Await James’s gameplay and UI feedback."
+      "disposition": "keep",
+      "evidence": [
+        "dovetail/REVIEW-2026-11-05.md"
+      ],
+      "nextStep": "Keep Dovetail; advance to Splice. Earlier play needed explanation and gentle join hints.",
+      "dispositionBasis": "James explicitly kept Dovetail."
     },
     {
       "slug": "claude-splice",
@@ -1823,8 +1834,10 @@
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "splice/REVIEW-2026-11-05.md"
+      ],
+      "nextStep": "Opened for individual review after James kept Dovetail. Await gameplay and UI feedback."
     },
     {
       "slug": "claude-sprout",

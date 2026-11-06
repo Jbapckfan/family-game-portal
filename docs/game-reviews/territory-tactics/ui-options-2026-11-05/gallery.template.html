@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Territory Tactics · Three UI directions</title>
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#123a54;background:#eff5fb;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-width:300px;min-height:100vh;background:radial-gradient(ellipse at 80% 0,#d8eef8 0,transparent 48%)}
+button,summary{font:inherit;touch-action:manipulation}button{cursor:pointer;color:inherit}button:disabled{cursor:default}button:focus-visible,summary:focus-visible{outline:3px solid #147b9d;outline-offset:4px}button{-webkit-tap-highlight-color:transparent}
+main{max-width:1540px;margin:auto;padding:28px 28px 40px}
+.gallery-header{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:24px}.eyebrow{margin:0 0 7px;font-size:11px;letter-spacing:1.7px;font-weight:800;color:#21708e;text-transform:uppercase}
+h1{font-size:31px;line-height:1.2;letter-spacing:-1px;margin:0 0 9px;font-weight:750}.gallery-intro{font-size:15px;line-height:1.6;color:#506a7c;margin:0;max-width:780px}
+.view-switch{display:flex;gap:4px;padding:4px;background:#e4eef5;border:1px solid #c4d9e7;border-radius:9px;flex-shrink:0}
+.view-switch button{border:0;background:transparent;border-radius:5px;min-width:44px;min-height:40px;padding:8px 13px;font-size:13px;font-weight:700}
+.view-switch button[aria-pressed=true]{background:white;box-shadow:0 1px 4px #123a5410}
+.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
+.concept{min-width:0}.concept-info{display:flex;gap:11px;align-items:start;margin:0 0 14px}.concept-letter{display:grid;place-items:center;width:31px;height:31px;background:#173c53;color:white;border-radius:6px;font-size:14px;font-weight:750;flex-shrink:0}
+.concept-info h2{font-size:20px;line-height:1.25;margin:0 0 4px;font-weight:750;letter-spacing:-.4px}.concept-info p{font-size:13px;color:#587184;line-height:1.5;margin:0}
+.game{background:#fff;border:1px solid #cddde7;border-radius:14px;box-shadow:0 10px 26px #183d5408;overflow:hidden;color:#17384e;min-height:760px}
+.game-content{padding:24px 22px 21px}.brand-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.brand{font-size:10px;letter-spacing:1.6px;font-weight:800;text-transform:uppercase;color:#476a80}.sample-label{font-size:10px;font-weight:650;color:#668091}
+.game-title{font-size:30px;font-weight:780;letter-spacing:-1px;line-height:1.12;margin:0 0 10px}.game-intro{font-size:14px;line-height:1.55;color:#526c7e;margin:0 0 20px}
+.score{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #d5e1e9;border-bottom:1px solid #d5e1e9;padding:13px 0}
+.score-label{display:block;font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:1px;color:#58768b;margin-bottom:3px}.score strong{font-size:26px;line-height:1.2;font-weight:750;font-variant-numeric:tabular-nums;color:#123b54}.score strong small{font-size:13px;font-weight:600;color:#648093}
+.moves{text-align:right}.move-pips{display:flex;justify-content:flex-end;gap:5px;margin-top:5px}.move-pips i{width:18px;height:4px;background:#d1dee7;border-radius:2px}.move-pips i.available{background:#20789b}
+.legend{display:flex;justify-content:center;align-items:center;gap:22px;margin:17px 0 8px;font-size:12px;color:#4c6b80}
+.legend span{display:inline-flex;align-items:center;gap:7px}.legend i{width:11px;height:11px;display:inline-block;flex-shrink:0}
+.legend .you{background:#186e91;border-radius:50%}.legend .enemy{background:#d7a225;transform:rotate(45deg);border-radius:2px}
+.board-wrap{margin:0 auto 15px;padding:8px;max-width:370px}
+.board{position:relative;width:100%;aspect-ratio:1.0825;isolation:isolate}
+.connections{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hex{position:absolute;left:var(--x);top:var(--y);width:18.4%;height:23%;min-width:44px;min-height:44px;transform:translate(-50%,-50%);padding:0;border:0;background:#9cb5c6;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);isolation:isolate}
+.hex:before{content:"";position:absolute;inset:1px;clip-path:inherit;background:#fbfdff}
+.hex.occupied:before{background:#f2f7fa}.hex.empty:hover{background:#4a8dae}.hex.empty:hover:before{background:#e8f3fa}.hex:focus-visible{outline:none;background:#1b536f}.hex:focus-visible:before{inset:4px;background:#edf7fc}
+.hex-inner{display:flex;justify-content:center;align-items:center;position:relative;width:100%;height:100%;z-index:1}.empty-dot{width:4px;height:4px;background:#8eacbf;border-radius:50%}
+.piece{display:block;width:45%;aspect-ratio:1;position:relative;box-shadow:inset 0 0 0 1px #ffffff35,0 2px 2px #163b4f14}
+.piece.you{border-radius:50%;background:#176d91;border:1px solid #145875}.piece.enemy{width:32%;border-radius:3px;background:#e2b13e;border:1px solid #b88a21;transform:rotate(45deg)}
+.placement{position:absolute;color:#fff;font-size:14px;font-weight:750;font-variant-numeric:tabular-nums}
+.board-help{font-size:13px;line-height:1.6;text-align:center;color:#506d82;max-width:340px;margin:0 auto 17px}
+.notice{margin:0 0 16px;min-height:43px;padding:10px 11px;font-size:13px;line-height:1.55;color:#42677e;background:#edf5fa;border-radius:6px;border-left:2px solid #90b9cf}
+.notice.won{color:#175d68;background:#e7f3f2;border-color:#4a939b;font-weight:700}
+.actions{display:flex;gap:8px}.actions button{min-height:44px;min-width:0;flex:1;font-size:13px;font-weight:700;padding:10px 9px;border:1px solid #c4d7e3;border-radius:7px;background:white}
+.actions button:hover:not(:disabled){background:#eef7fc;border-color:#73a8c3}.actions button:disabled{color:#91a4b2;background:#fafcfd}.actions .hint{background:#155e80;color:white;border-color:#155e80}.actions .hint:hover:not(:disabled){background:#104d69}
+.rules{margin-top:19px;border-top:1px solid #dae5ed;padding-top:12px;font-size:12px;color:#4b6d83;line-height:1.65}.rules summary{cursor:pointer;min-height:32px;font-weight:700}.rules p{margin:6px 0 0}
+.assist-note{font-size:10px;letter-spacing:.2px;line-height:1.5;color:#688497;margin:9px 0 0}
+/* B: a quiet physical playing surface, rather than extra chrome around the page. */
+[data-variant=b] .game-content{padding-top:24px}[data-variant=b] .game-title{font-size:30px;font-weight:700}
+[data-variant=b] .score{background:#edf4f8;border:1px solid #d0dfe9;border-radius:10px;padding:13px}
+[data-variant=b] .board-wrap{padding:12px;margin-top:12px;background:linear-gradient(145deg,#e7eff4,#f7fafc);border:1px solid #ccdae4;border-radius:16px;box-shadow:inset 0 2px 7px #21465d0c,0 1px 0 #fff}
+[data-variant=b] .hex{background:#b1c5d3}[data-variant=b] .hex:before{inset:1.5px;background:linear-gradient(145deg,#fff,#e8f0f6)}
+[data-variant=b] .hex.occupied:before{background:linear-gradient(145deg,#edf4f8,#e1ebf2)}
+[data-variant=b] .piece.you{background:linear-gradient(140deg,#6b9aae,#255976 56%,#173f59);border-color:#244f67;box-shadow:inset 0 1px 1px #b1d1df99,0 3px 0 #17394e,0 5px 5px #1f445b24}
+[data-variant=b] .piece.enemy{background:linear-gradient(145deg,#f2d98e,#d5ab43 55%,#af8627);border-color:#c9a24d;box-shadow:inset 0 1px 1px #fff7d1aa,2px 2px 0 #a37c28,3px 4px 5px #5a501c20}
+[data-variant=b] .actions button{box-shadow:0 2px 0 #d0dde6}[data-variant=b] .actions .hint{box-shadow:0 2px 0 #103e59}
+/* C: a more technical hierarchy and an open, connected field. */
+[data-variant=c] .game{border-radius:6px;box-shadow:none}[data-variant=c] .game-title{font-weight:750;letter-spacing:-1.1px}
+[data-variant=c] .brand{font-size:10px;letter-spacing:1.5px}[data-variant=c] .score{padding:12px 0;border-color:#a9becd}
+[data-variant=c] .score-label{font:650 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.8px}
+[data-variant=c] .board-wrap{padding:7px 3px;background:radial-gradient(ellipse at center,#edf4f8 0,transparent 68%)}
+[data-variant=c] .connections{display:block;stroke:#b7cbd9;stroke-width:.45}
+[data-variant=c] .hex{background:transparent;clip-path:none;border-radius:50%;width:15.5%;height:18%;min-height:44px;min-width:44px}
+[data-variant=c] .hex:before{display:none}[data-variant=c] .hex.empty:hover{background:#d7e9f480}
+[data-variant=c] .hex:focus-visible{outline:3px solid #147b9d;outline-offset:-3px;background:transparent}
+[data-variant=c] .empty-dot{width:9px;height:9px;background:#fff;border:1.5px solid #7598b0}
+[data-variant=c] .piece.you{width:57%}[data-variant=c] .piece.enemy{width:41%;border-radius:2px}
+[data-variant=c] .piece.you{background:#214d69;border-color:#153b56;box-shadow:inset 0 0 0 2px #58829a44}
+[data-variant=c] .piece.enemy{background:#dfb74d;border-color:#b18c2b;box-shadow:inset 0 0 0 1px #f3d89b}
+[data-variant=c] .actions button{border-radius:4px}[data-variant=c] .notice{border-radius:0;background:#f1f6f9}
+.gallery-footer{font-size:13px;color:#547184;line-height:1.65;margin:23px 0 0}
+body[data-focus] .options{grid-template-columns:1fr;max-width:530px;margin:auto}body[data-focus] .concept{display:none}
+body[data-focus=a] [data-variant=a],body[data-focus=b] [data-variant=b],body[data-focus=c] [data-variant=c]{display:block}
+body[data-focus] .game{min-height:0}
+@media(max-width:1050px){main{padding:22px 16px}.options{grid-template-columns:1fr;max-width:510px;margin:auto;gap:28px}.gallery-header{display:block;max-width:700px;margin:0 auto 24px}.view-switch{margin-top:17px;width:fit-content}.game{min-height:0}.gallery-footer{max-width:510px;margin:22px auto 0}}
+@media(max-width:380px){.game-content{padding:20px 15px}.game-title{font-size:28px}.actions{gap:6px}.actions button{font-size:12px;padding-inline:6px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body><main>
+<header class="gallery-header"><div><p class="eyebrow">Alford Daily · UI exploration</p><h1>Territory Tactics: three playable directions</h1><p class="gallery-intro">Compare the same practice position in three original interfaces. Tap empty hexes to play, or use the controls to focus on one design.</p></div><nav class="view-switch" aria-label="Compare designs"><button data-focus-choice="all" aria-pressed="true">All</button><button data-focus-choice="a" aria-pressed="false">A</button><button data-focus-choice="b" aria-pressed="false">B</button><button data-focus-choice="c" aria-pressed="false">C</button></nav></header>
+<section class="options" aria-label="Territory Tactics UI concepts">
+<article class="concept" data-variant="a"><div class="concept-info"><span class="concept-letter">A</span><div><h2>Clean graphic</h2><p>Clear hierarchy, crisp pieces and an uncluttered board.</p></div></div><div class="game" id="game-a"></div></article>
+<article class="concept" data-variant="b"><div class="concept-info"><span class="concept-letter">B</span><div><h2>Sculpted board</h2><p>Shallow relief, satin pieces and a tactile playing surface.</p></div></div><div class="game" id="game-b"></div></article>
+<article class="concept" data-variant="c"><div class="concept-info"><span class="concept-letter">C</span><div><h2>Tactical field</h2><p>Connected positions, stronger contrast and an open playing field.</p></div></div><div class="game" id="game-c"></div></article>
+</section><p class="gallery-footer">Interactive design previews. Each board has independent, temporary progress. The same real practice position and capture rules are used in all three.</p>
+</main><script>
+/* ACTUAL_ENGINE */
+const puzzle=__ACTUAL_PUZZLE__;
+const states={a:E.createState(),b:E.createState(),c:E.createState()};
+const notes={a:'Find the openings around an amber group.',b:'Find the openings around an amber group.',c:'Find the openings around an amber group.'};
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function connections(){
+ const xy=cell=>{const [q,r]=cell.split(',').map(Number);return [50+Math.sqrt(3)*(q+r/2)/8.66*100,(50+1.5*r/8*100)/1.0825];};
+ return '<svg class="connections" viewBox="0 0 100 '+(100/1.0825)+'" aria-hidden="true">'+E.cells(puzzle).flatMap(cell=>E.neighbors(puzzle,cell).filter(n=>cell<n).map(n=>{const [x1,y1]=xy(cell),[x2,y2]=xy(n);return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/>';})).join('')+'</svg>';
+}
+function render(key,focusHex){
+ const root=document.querySelector('#game-'+key),s=states[key],board=E.simulate(puzzle,s.moves),won=E.getStatus(puzzle,s)==='won',remaining=puzzle.maxMoves-s.moves.length,all=E.cells(puzzle);
+ const rules=key==='c'?'Stones joined by a line form a group. Empty positions directly linked to that group are its openings. Fill every opening to remove the whole enemy group. A placement must leave your own group an opening. If both placements are used without reaching the goal, undo or restart. There is no opposing turn.':'Touching stones of the same side form a group. Empty hexes beside that group are its openings. Fill every opening to remove the whole enemy group. Board edges are closed. A placement must leave your own group an opening. If you use both moves without reaching the goal, undo or restart. There is no opposing turn.';
+ const hexes=connections()+all.map(cell=>{
+  const [q,r]=cell.split(',').map(Number),row=all.filter(c=>Number(c.split(',')[1])===r),column=row.indexOf(cell)+1;
+  const own=board.friendly.includes(cell),enemy=board.enemy.includes(cell),move=s.moves.indexOf(cell),kind=own?'you':enemy?'enemy':'empty';
+  const x=50+Math.sqrt(3)*(q+r/2)/8.66*100,y=50+1.5*r/8*100;
+  return '<button type="button" class="hex '+(kind==='empty'?'empty':'occupied')+'" style="--x:'+x.toFixed(4)+'%;--y:'+y.toFixed(4)+'%" data-cell="'+cell+'" aria-label="Row '+(r+3)+', column '+column+': '+(own?'your blue stone':enemy?'amber enemy stone':'empty hex')+(move>=0?', placement '+(move+1):'')+'" '+(own||enemy||won||remaining===0?'disabled':'')+'><span class="hex-inner">'+(kind==='empty'?'<i class="empty-dot"></i>':'<i class="piece '+kind+'"></i>')+(move>=0?'<b class="placement">'+(move+1)+'</b>':'')+'</span></button>';
+ }).join('');
+ root.innerHTML='<div class="game-content"><div class="brand-row"><span class="brand">Alford Daily</span><span class="sample-label">Practice sample</span></div><h2 class="game-title">Territory Tactics</h2><p class="game-intro">Capture '+puzzle.target+' amber stones in up to '+puzzle.maxMoves+' blue placements.</p><div class="score"><div><span class="score-label">Captured</span><strong class="capture-count">'+board.captured+' <small>/ '+puzzle.target+'</small></strong></div><div class="moves"><span class="score-label">Placements left</span><strong class="remaining-count">'+remaining+'</strong><span class="move-pips" aria-hidden="true">'+[0,1].map(i=>'<i class="'+(i<remaining?'available':'')+'"></i>').join('')+'</span></div></div><div class="legend"><span><i class="you"></i> Your stones</span><span><i class="enemy"></i> Enemy stones</span></div><div class="board-wrap"><div class="board" role="group" aria-label="Nineteen hexes in five staggered rows">'+hexes+'</div></div><p class="board-help">Fill every opening around an amber group to capture it.</p><p class="notice '+(won?'won':'')+'" role="status" aria-live="polite">'+escapeHTML(won?board.captured+' stones captured. Position solved.':notes[key])+'</p><div class="actions"><button type="button" data-action="undo" '+(!s.moves.length||won?'disabled':'')+'>Undo</button><button type="button" data-action="restart">Restart</button><button type="button" class="hint" data-action="hint" '+(won?'disabled':'')+'>Hint</button></div><p class="assist-note">'+s.hints+' hint'+(s.hints===1?'':'s')+' used · no timer</p><details class="rules"><summary>How capturing works</summary><p>'+escapeHTML(rules)+'</p></details></div>';
+ for(const button of root.querySelectorAll('[data-cell]'))button.onclick=()=>{
+  const result=E.place(puzzle,states[key],button.dataset.cell);states[key]=result.state;notes[key]=result.message;render(key);
+  const next=root.querySelector('[data-cell]:not(:disabled)')||root.querySelector('[data-action="undo"]:not(:disabled)')||root.querySelector('[data-action="restart"]');next?.focus({preventScroll:true});
+ };
+ for(const button of root.querySelectorAll('[data-action]'))button.onclick=()=>{
+  const action=button.dataset.action;
+  if(action==='restart'){states[key]=E.createState();notes[key]='Find the openings around an amber group.';}
+  else if(action==='undo'){states[key]=E.undo(puzzle,states[key]);notes[key]='Last placement removed.';}
+  else {states[key]=E.hint(puzzle,states[key]);notes[key]=states[key].lastHint==='undo'?'One placement undone. Try a different route.':'A hint placed the next stone on a winning route.';}
+  render(key);root.querySelector('[data-action="'+action+'"]')?.focus({preventScroll:true});
+ };
+}
+for(const key of ['a','b','c'])render(key);
+for(const button of document.querySelectorAll('[data-focus-choice]'))button.onclick=()=>{
+ const choice=button.dataset.focusChoice;if(choice==='all')delete document.body.dataset.focus;else document.body.dataset.focus=choice;
+ for(const b of document.querySelectorAll('[data-focus-choice]'))b.setAttribute('aria-pressed',String(b===button));
+};
+</script></body></html>

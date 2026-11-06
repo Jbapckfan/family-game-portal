@@ -15,3 +15,7 @@ James: “do it more masculine, more modern, more like if Apple designed it or A
 The current `index.html` presents the revised concepts: A Precision (quiet titanium minimalism), B Performance (angular instrument-style structure), and C Titanium (an open, precise blend; assistant recommendation). The original comparison remains at `round-one.html`. Round-two prompts are in `PROMPTS-V2.md`. Originals remain in the generated-images directory. No brand logos or affiliation are implied.
 
 These image-model mockups prioritize art direction. Exact small/large labels and star rotations need to be carried across from the real engine in the selected implementation, rather than copied blindly from the image.
+
+## Feedback and transition
+
+James: “try b but they all look bad”, followed by “next game”. B / Performance is a trial direction, not an accepted finished UI. All concepts were disliked. Prism’s visual design remains unresolved and its gameplay retention/rating remains undecided. The immediate next step is Territory Tactics; no B implementation was made during this transition.

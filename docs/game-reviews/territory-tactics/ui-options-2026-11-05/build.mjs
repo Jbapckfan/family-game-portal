@@ -1,0 +1,14 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const here=import.meta.dirname,repo=path.resolve(here,'../../../..');
+const game=path.join(repo,'games/qwen-territory-tactics');
+const {PUZZLES}=await import(pathToFileURL(path.join(game,'puzzles.mjs')));
+const puzzle=PUZZLES.slice(30).find(p=>p.target===4);
+if(!puzzle)throw Error('Expected a real four-stone practice position');
+const engine=(await readFile(path.join(game,'engine.mjs'),'utf8')).replace(/\bexport\s+/g,'');
+const api='cells,neighbors,groups,liberties,applyMove,simulate,winningPaths,createState,getStatus,place,undo,hint';
+const code='const E=(()=>{\n'+engine+'\nreturn {'+api+'};\n})();';
+const template=await readFile(path.join(here,'gallery.template.html'),'utf8');
+await writeFile(path.join(here,'index.html'),template.replace('/* ACTUAL_ENGINE */',code).replace('__ACTUAL_PUZZLE__',JSON.stringify(puzzle)));
+console.log(JSON.stringify({puzzle:puzzle.id,goal:puzzle.target,moves:puzzle.maxMoves,concepts:3}));

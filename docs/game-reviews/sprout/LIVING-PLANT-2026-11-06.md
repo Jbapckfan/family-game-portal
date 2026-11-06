@@ -13,3 +13,5 @@ Published privately from Site source `ae405e555392d1d528c9636257ea09f65f2bcafc`;
 Hosted release checks at 393 and 1280 pixels verified the exact app/CSS source hashes, visible updated UI, no horizontal overflow and no page errors. The offline worker intentionally pins an open offline edition until all collection tabs close; a simple refresh may retain that edition. Close and reopen the Alford Daily tabs to activate a downloaded update when necessary. No skip-waiting behavior or vocabulary migration rule was changed.
 
 A focused motion probe measured leaf width growing from 3.60 to 88.75 pixels and the flower opening from 13.08 to 70.50 pixels, confirming actual animation rather than only CSS class presence. This used an isolated earlier puzzle, not James’s current round.
+
+James subsequently said the UI “is still weird” and requested several more options. Treat this implemented visual direction as unaccepted. [Three natural-plant composition mockups](ui-options-2026-11-06/index.html) are available for selection; the game rules and challenge remain intact.

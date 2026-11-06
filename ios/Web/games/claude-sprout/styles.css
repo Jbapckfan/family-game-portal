@@ -1,44 +1,34 @@
-/* Sprout · an ascending garden of words, with a seed bed below. */
-.sprout-rack-tile.soil.chosen{opacity:1;outline:2px solid #295266;outline-offset:2px}.sprout-build-status{text-align:center}
-body[data-game-id="claude-sprout"]{--accent:#37736d;--accent-soft:#dfeeec;--game-ink:#27504c;--soft:#dfeeec}
-.sprout-panel{background:#f5fbfa;border-color:#bcd4d2;box-shadow:0 5px 0 #d4e6e4}
-.sprout-progress{justify-content:space-between;gap:8px;font-size:13px;margin-bottom:20px;color:#27504c}
-.sprout-progress .pill{font-size:11px;color:#315c58;background:#d8ecea}
-.sprout-stem{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;padding:19px 6px 16px;position:relative;background:linear-gradient(#91b5b2,#91b5b2) center/3px calc(100% - 44px) no-repeat,#e6f4f3;border:1px solid #c3ddda;border-radius:48% 48% 18px 18px/22px 22px 18px 18px}
-.sprout-level{display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
-.sprout-level-number{width:13px;font-size:10px;color:#527b77;text-align:center;font-weight:650}
-.sprout-level-letters{display:flex;justify-content:center;gap:4px;position:relative}
-.sprout-level.filled:not(.seed) .sprout-level-letters::after{content:"";position:absolute;width:12px;height:7px;background:#5c958f;right:-13px;top:13px;border-radius:100% 0 100% 0;transform:rotate(-20deg)}
-.sprout-character{width:min(6.8vw,32px);height:32px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid #8db6b2;border-radius:8px 8px 4px 4px;background:#ceeae7;color:#27504c;font-family:inherit;font-size:clamp(13px,3.8vw,18px);font-weight:750;line-height:1;box-shadow:0 2px 0 #a4cbc7}
-.sprout-character.ghost{background:#f3fbfa;border:1px dashed #a9cbc8;box-shadow:none}
-.sprout-level.active .sprout-character{border:2px solid #37736d;background:#f8fbfd;box-shadow:0 2px 0 #7da8a4}
-.sprout-character.typed{cursor:pointer;background:#d9efed}
-.sprout-character.from-soil{background:#b9ddef;color:#22546d;border-color:#4e90b1}
-.sprout-level.seed .sprout-character{background:#6297b1;border-color:#4e7b92;color:#edf6fb;box-shadow:0 2px 0 #3f6476;border-radius:4px 4px 9px 9px}
-.sprout-level.bloom .sprout-character{background:#37736d;border-color:#37736d;color:#fff;box-shadow:0 3px 0 #21524d;border-radius:10px 10px 4px 4px}
-.sprout-level.revealed .sprout-character{background:#d1e8f4;border-color:#67a6c6;color:#1f5671;box-shadow:0 2px 0 #8bbfd9}
-.sprout-reveal-note{font-size:12px;color:#285b74;text-align:center;line-height:1.6}
-.sprout-rack-section{border:1px solid #bbd5d2;border-radius:13px;padding:16px 9px;margin:21px 0;background:#e9f5f4}
-.sprout-rack-label{font-size:10px;font-weight:750;letter-spacing:1.05px;text-align:center;color:#446965;margin:0 0 11px}
-.sprout-rack-label:not(:first-child){margin-top:19px;padding-top:15px;border-top:1px solid #c6dddb;color:#3c6579}
-.sprout-rack{display:flex;justify-content:center;flex-wrap:wrap;gap:7px}
-.sprout-rack-tile{min-width:44px;min-height:46px;padding:8px;border:1px solid #91b6b2;border-radius:10px 10px 5px 5px;background:#f7fbfd;color:#305753;font-size:21px;font-weight:750;cursor:pointer;box-shadow:0 3px 0 #adcdca;transition:transform .15s,background .15s}
-.sprout-rack-tile.soil{background:#bcdae9;border-color:#7aa6bc;color:#295266;box-shadow:0 3px 0 #86b1c7;border-radius:5px 5px 12px 12px}
-.sprout-rack-tile.used{opacity:.38;box-shadow:none;transform:translateY(3px)}
-.sprout-rack-tile.hinted{outline:3px solid #2780ad;outline-offset:3px}
-.sprout-panel form label{display:block;font-size:12px;font-weight:700;margin:0 0 8px;color:#315551}
-.sprout-panel .word-input{text-align:center;letter-spacing:3px;text-transform:uppercase;background:#f9fcfe;border-color:#9fbfbc;color:#27504c;min-height:53px;font-size:22px}
-.sprout-panel form .actions{margin-top:12px}
-.sprout-panel .button.primary{background:#37736d;border-color:#37736d}
-.sprout-recovery{margin-top:16px;border-top:1px solid #ccdfdd;padding-top:14px}
-.sprout-hint,.sprout-hint-cost{font-size:11px;line-height:1.65;text-align:center;margin:15px 0 0;color:#4c716e}
-.sprout-hint{background:#cfe4ef;border:1px solid #96bdd0;border-radius:9px;padding:11px;color:#2c5e59}
-.sprout-character:focus-visible,.sprout-rack-tile:focus-visible{outline:3px solid #37736d;outline-offset:4px}
-@media(hover:hover){.sprout-rack-tile:not(:disabled):hover{transform:translateY(-2px);background:#d9f0ee}}
-@media(max-width:350px){.sprout-progress{font-size:12px}.sprout-level{gap:5px}.sprout-level-letters{gap:3px}.sprout-stem{padding-inline:3px}.sprout-rack{gap:6px}.sprout-rack-tile{min-width:44px;min-height:44px;padding:6px;font-size:19px}.sprout-panel .button{padding-inline:10px}.sprout-level.filled:not(.seed) .sprout-level-letters::after{width:9px;right:-10px}}
-@media(prefers-reduced-motion:reduce){.sprout-rack-tile{transition:none}}
+/* Sprout: accepted words grow a botanical climber from a ceramic seed bed. */
+body[data-game-id="claude-sprout"]{--accent:#287868;--accent-soft:#e4f1ed;--game-ink:#214f49;--soft:#e7f3ef}
+.sprout-panel{background:#fbfefd;border-color:#c1d8d3;box-shadow:0 10px 28px #245f4f08;padding:22px}
+.sprout-progress{justify-content:space-between;gap:8px;font-size:14px;margin-bottom:14px;color:#315d54}.sprout-progress strong{font-weight:700}.sprout-progress .pill{font-size:12px;color:#315c55;background:#e0eeea;border:1px solid #c5ded5;border-radius:7px}
+.sprout-growth-label{display:flex;justify-content:center;align-items:center;gap:7px;font:700 10px/1.6 ui-sans-serif,system-ui,sans-serif;letter-spacing:1.65px;text-transform:uppercase;color:#548174;margin:1px 0 2px}.sprout-live-dot{width:5px;height:5px;border-radius:50%;background:#6ca181}
+.sprout-stem{position:relative;width:100%;max-width:460px;aspect-ratio:440/var(--garden-height);margin:0 auto 8px;background:radial-gradient(ellipse at 50% 55%,#e8f3ec90 0,transparent 66%);isolation:isolate}
+.sprout-plant-art{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:0}.sprout-future-trace{stroke:#bfd7ce;stroke-width:1;stroke-dasharray:2 9;fill:none;opacity:.35}.sprout-main-vine{fill:none;stroke:url(#sprout-vine-face);stroke-linecap:round;stroke-linejoin:round}.sprout-vine-highlight{fill:none;stroke:#d7ebc3;stroke-width:1.6;stroke-opacity:.6;stroke-linecap:round}.sprout-leaf-surface{transform-box:fill-box;transform-origin:100% 83%}.sprout-flower>g{transform-box:fill-box;transform-origin:center}
+.sprout-level{position:absolute;left:2%;right:2%;top:var(--level-y);transform:translateY(-50%);min-height:44px;display:flex;align-items:center;justify-content:center;gap:7px;z-index:1;--letter-w:clamp(20px,6vw,31px)}
+.sprout-level-number{width:17px;flex-shrink:0;font:600 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#6f9489;text-align:center}
+.sprout-level-letters{display:flex;justify-content:center;align-items:center;gap:3px;padding:4px 6px;border:1px solid transparent;border-radius:9px;position:relative}
+.sprout-character{width:var(--letter-w);height:34px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid transparent;border-radius:5px;background:transparent;color:#244f48;font-family:inherit;font-size:clamp(15px,4.2vw,20px);font-weight:750;line-height:1;box-shadow:none}
+.sprout-character.ghost{border:1px dashed #c0d7cf;background:#ffffff82;color:transparent}
+.sprout-level.empty:not(.active){opacity:.7}.sprout-level.empty:not(.active) .sprout-character{height:29px}
+.sprout-level.filled .sprout-level-letters{background:#f9fdf9f2;border-color:#bdd7c6;box-shadow:0 3px 9px #285b4510}.sprout-level.filled .sprout-level-number{color:#3d7764}
+.sprout-level.active .sprout-level-letters{background:#fff;border-color:#6caa94;box-shadow:0 2px 0 #c1d9d0,0 4px 14px #2d705a12}.sprout-level.active .sprout-level-number{font-weight:800;color:#276e5c}.sprout-level.active .sprout-character{border:0;border-bottom:1.5px solid #9ac3b4;border-radius:0}.sprout-level.active .sprout-character.ghost{background:transparent}.sprout-character.typed{cursor:pointer;min-height:44px;background:#edf6f1;border-radius:4px}.sprout-character.from-soil{background:#dfedf7;color:#235b7b;border-color:#78adc5!important}
+.sprout-level.seed .sprout-level-letters{background:#e1efe8;border-color:#aecdbd}.sprout-level.seed .sprout-character{color:#255847}.sprout-level.bloom .sprout-level-letters{background:#f0f8f8;border-color:#88b8ba;box-shadow:0 3px 10px #356f7020}.sprout-level.bloom .sprout-character{color:#256264}
+.sprout-level.revealed .sprout-level-letters{background:#edf5fc;border:1px dashed #9fc3d9;box-shadow:none}.sprout-level.revealed .sprout-character{color:#3b7391}.sprout-reveal-note{font-size:13px;color:#3a6c87;text-align:center;line-height:1.6;margin:5px 0 16px}
+.sprout-rack-section{border:1px solid #cadfd7;border-radius:14px;padding:16px 10px;margin:7px 0 18px;background:linear-gradient(150deg,#f2f8f4,#e8f3ef);box-shadow:inset 0 1px 0 #fff}
+.sprout-rack-label{font-size:11px;font-weight:750;letter-spacing:1.15px;text-align:center;color:#477464;margin:0 0 11px}.sprout-rack-label:not(:first-child){margin-top:17px;padding-top:15px;border-top:1px solid #d2e4db;color:#477086}
+.sprout-rack{display:flex;justify-content:center;flex-wrap:wrap;gap:6px}.sprout-rack[data-count="7"]{gap:3px}
+.sprout-rack-tile{min-width:44px;min-height:46px;padding:8px;border:1px solid #a9cbbd;border-radius:9px;background:linear-gradient(145deg,#fff,#eff7f2);color:#2e5a4d;font-size:21px;font-weight:750;cursor:pointer;box-shadow:0 3px 0 #c1d8cd;transition:transform .15s,background .15s}
+.sprout-rack-tile.soil{background:linear-gradient(145deg,#dfebe6,#c3dbce);border-color:#9bbfae;color:#285d49;box-shadow:0 3px 0 #a0c2b1;border-radius:6px 6px 12px 12px}.sprout-rack-tile.used{opacity:.38;box-shadow:none;transform:translateY(3px)}.sprout-rack-tile.soil.chosen{opacity:1;outline:2px solid #3c7d93;outline-offset:2px}.sprout-rack-tile.hinted{outline:3px solid #2780ad;outline-offset:3px}
+.sprout-build-status{text-align:center}.sprout-panel form label{display:block;font-size:15px;font-weight:700;margin:0 0 8px;color:#31594f}.sprout-panel .word-input{text-align:center;letter-spacing:3px;text-transform:uppercase;background:#fff;border-color:#9abfae;color:#275448;min-height:54px;font-size:22px}.sprout-panel form .actions{margin-top:12px}.sprout-panel .button.primary{background:#2b7967;border-color:#2b7967;box-shadow:0 3px 0 #205b4e}.sprout-panel .button.primary:hover:not(:disabled){background:#236756}.sprout-recovery{margin-top:16px;border-top:1px solid #d4e4dd;padding-top:14px}.sprout-hint,.sprout-hint-cost{font-size:13px;line-height:1.65;text-align:center;margin:15px 0 0;color:#4c7568}.sprout-hint{background:#e2f0f5;border:1px solid #aacbd8;border-radius:9px;padding:11px;color:#355f69}.sprout-character:focus-visible,.sprout-rack-tile:focus-visible{outline:3px solid #287868;outline-offset:4px}
+.sprout-stem-grow .sprout-main-vine,.sprout-stem-grow .sprout-vine-highlight{stroke-dasharray:1;animation:sprout-stem-rise .65s ease-out both}.sprout-leaf-grow{animation:sprout-leaf-unfurl .8s cubic-bezier(.18,.75,.25,1) .12s both}.sprout-bloom-open{animation:sprout-flower-open 1.1s cubic-bezier(.17,.75,.23,1) .12s both}
+@keyframes sprout-stem-rise{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes sprout-leaf-unfurl{from{opacity:0;transform:scale(.04) rotate(12deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes sprout-flower-open{from{opacity:0;transform:scale(.15) rotate(-16deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@media(hover:hover){.sprout-rack-tile:not(:disabled):hover{transform:translateY(-2px);background:#edf8f1}}
+@media(max-width:420px){.sprout-panel{padding:18px 14px}.sprout-stem{margin-top:3px}.sprout-level{gap:5px;left:0;right:0}.sprout-level-letters{padding-inline:4px}.sprout-level-number{width:15px}.sprout-progress{font-size:13px}.sprout-progress .pill{font-size:11px}.sprout-rack-section{padding-inline:7px}}
+@media(max-width:350px){.sprout-panel{padding:16px 11px}.sprout-level{--letter-w:20px;gap:4px}.sprout-level-letters{gap:2px;padding-inline:3px}.sprout-character{font-size:16px;height:30px}.sprout-rack{gap:5px}.sprout-rack-tile{min-width:44px;min-height:44px;padding:6px;font-size:19px}.sprout-panel .button{padding-inline:9px}}
+@media(prefers-reduced-motion:reduce){.sprout-rack-tile{transition:none}.sprout-leaf-grow,.sprout-bloom-open,.sprout-stem-grow .sprout-main-vine,.sprout-stem-grow .sprout-vine-highlight{animation:none!important}}
 
-/* Readable collection finish; this stylesheet is isolated to this game. */
+/* Existing light collection frame. */
 :root{--bg:#f1f7fb;--ink:#173448;--muted:#536b7c;--line:#c8dbe7;--white:#fbfdff;color-scheme:light;background:#f1f7fb}
 body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f7fb}
 .game-shell{width:min(100% - 32px,660px)}
@@ -51,4 +41,7 @@ body{background:radial-gradient(ellipse at 50% 0,#e1f0fa 0,transparent 60%),#f1f
 .game-shell dialog{background:#fbfdff}
 @media(max-width:350px){.game-shell{width:calc(100% - 24px)}.game-shell .intro{font-size:15px}.game-shell .button{font-size:13px}}
 
-.sprout-panel form label{font-size:15px}.sprout-rack-label,.sprout-hint,.sprout-hint-cost,.sprout-reveal-note{font-size:13px}.sprout-character{font-size:clamp(16px,4vw,20px);height:35px}.sprout-level-number{font-size:12px}
+.game-shell h1{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:750;letter-spacing:-1.2px}
+
+/* The young plant occupies its stage; the growing canopy earns more vertical space. */
+.sprout-growth-stages{display:flex;align-items:center;justify-content:center;gap:0;width:min(100% - 30px,250px);margin:9px auto 15px}.sprout-growth-stages span{display:grid;place-items:center;position:relative;flex:1;height:22px;font:600 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#91aaa2}.sprout-growth-stages span:after{content:"";position:absolute;left:calc(50% + 10px);right:calc(-50% + 10px);top:50%;border-top:1px solid #d9e7e0}.sprout-growth-stages span:last-child:after{content:none}.sprout-growth-stages .grown{color:#3c7e63;font-weight:800}.sprout-growth-stages .grown:after{border-color:#b7d3c2}.sprout-growth-stages .next{color:#336b58;font-weight:750;background:#e4f1e9;border-radius:5px}

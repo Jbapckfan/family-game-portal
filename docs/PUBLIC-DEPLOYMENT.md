@@ -24,3 +24,7 @@ The static promotion preserved all service containers, existing profile/feedback
 The restored Caddyfile still lives in the existing container’s writable layer, with a host backup in the deployment package. Do not recreate that web container from the old definition; it can discard routing again. A persistent mount/definition change is separate infrastructure work, not part of this static update.
 
 Evidence and guarded scripts: [November 6 public release](deployments/2026-11-06-public/REPORT.md).
+
+## Latest addition: playable Sprout B/C
+
+Build `714ea7a69726c446` adds the two public practice previews at `/alford-daily/previews/sprout-bc/?view=b` and `?view=c`. All 368 public files were verified; the earlier 37-hex exact Territory update remains active. [Preview release evidence](deployments/2026-11-06-sprout-previews/REPORT.md).

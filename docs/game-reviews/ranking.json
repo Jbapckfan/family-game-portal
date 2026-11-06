@@ -1797,16 +1797,23 @@
             "date": "2026-11-06",
             "quote": "the territory tactics is a little confusing even though I am getting past levels, can you put more clear instructions on that one",
             "interpretation": "Self-reports progressing but finds the capture mechanic confusing. Requests clearer teaching; no keeper verdict or rating."
+          },
+          {
+            "date": "2026-11-06",
+            "quote": "on this puzzle it says to get 3 stones but you can only get 4, seems sloppy [Image #1] [Image #2] also this game seems too easy. we need to expand the board. and the stones needed must be exact",
+            "interpretation": "Requests exact capture totals and a larger, harder board. The earlier at-least rule permitted the shown 4/3 win, but no longer matches the desired design."
           }
-        ]
+        ],
+        "difficultyReaction": "too easy in the earlier 19-hex edition"
       },
       "reviews": [],
       "disposition": "undecided",
       "evidence": [
         "territory-tactics/REVIEW-2026-11-05.md",
-        "territory-tactics/CLEAR-CAPTURES-2026-11-06.md"
+        "territory-tactics/CLEAR-CAPTURES-2026-11-06.md",
+        "territory-tactics/EXACT-EXPANDED-2026-11-06.md"
       ],
-      "nextStep": "Clear capture guide and before/after example published. Earlier UI-choice decision remains deferred; await clarity feedback."
+      "nextStep": "Public expanded exact-v2 edition: 37 hexes, three placements, 240 boards, 186 protected daily dates. Await James’s difficulty/clarity feedback. Retention and UI-style choice remain undecided."
     },
     {
       "slug": "claude-dovetail",
@@ -1886,6 +1893,16 @@
             "date": "2026-11-06",
             "quote": "the sprout Ui is still weird, show me several more options",
             "interpretation": "Rejects the current plant UI and requests more visual alternatives. No approval of the current design, numeric score or keeper verdict."
+          },
+          {
+            "date": "2026-11-06",
+            "quote": "i don't like any. i want the answers to be part of the plant",
+            "interpretation": "Rejects the separated plant-window concepts; answers must physically form the plant."
+          },
+          {
+            "date": "2026-11-06",
+            "quote": "show me B and C of Sprout to play and see the visual movement",
+            "interpretation": "Requests real playable comparison of integrated letter branches and word vine, not final selection of one. No keeper verdict or numeric score."
           }
         ],
         "difficultyReaction": "challenging"
@@ -1895,9 +1912,10 @@
       "evidence": [
         "sprout/REVIEW-2026-11-05.md",
         "sprout/LIVING-PLANT-2026-11-06.md",
-        "sprout/ui-options-2026-11-06/README.md"
+        "sprout/ui-options-2026-11-06/README.md",
+        "sprout/ui-integrated-2026-11-06/README.md"
       ],
-      "nextStep": "Current plant UI remains unaccepted. Three natural-plant visual concepts prepared; await James’s choice. Gameplay challenge is retained and retention is undecided."
+      "nextStep": "Playable B/C integrated-answer previews are public. Await visual/gameplay preference; main Sprout design remains unaccepted and retention undecided."
     },
     {
       "slug": "claude-tangle",

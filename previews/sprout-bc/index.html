@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eff5fb"><title>Sprout · Practice preview</title><link rel="stylesheet" href="./style.css"></head>
+<body>
+<header class="topbar"><a href="../../">← Alford Daily</a><span>Practice preview</span></header>
+<main>
+  <header class="intro"><div><p class="eyebrow">ONE WORD. A LITTLE GROWTH.</p><h1>Sprout<span class="logo-leaves" aria-hidden="true">❧</span></h1></div><button id="new-practice" class="quiet">New practice <span aria-hidden="true">↗</span></button></header>
+  <div class="view-switch" role="group" aria-label="Plant design"><button data-view="b" aria-pressed="true"><b>B</b> Letter branches</button><button data-view="c" aria-pressed="false"><b>C</b> Living word vine</button></div>
+  <div class="play-layout">
+    <section class="garden-panel" aria-label="Your growing plant"><div class="garden-meta"><strong id="progress"></strong><span id="wilts"></span></div><div id="plant" class="plant" role="img"></div><p class="garden-caption" id="garden-caption">Every word becomes a new branch.</p><button id="replay" class="replay" disabled>Replay last growth ↻</button></section>
+    <section class="play-panel" aria-label="Word controls"><p class="eyebrow" id="stage-label">GROW YOUR NEXT WORD</p><h2 id="goal"></h2><p class="rule">Keep every current letter. Add <strong>one</strong> soil letter. Rearrange.</p>
+      <div id="rack-panel"><div class="rack-label"><span>Current word</span><span>use all</span></div><div id="word-rack" class="rack"></div><div class="rack-label"><span>Soil letters</span><span>choose one</span></div><div id="soil-rack" class="rack soil-rack"></div></div>
+      <form id="word-form"><label for="word-entry" id="entry-label">Type or tap letters</label><div class="entry-row"><input id="word-entry" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="message"><button type="submit" id="grow">Grow <span aria-hidden="true">↗</span></button></div><div class="small-actions"><button type="button" id="clear">Clear</button><button type="button" id="delete">Delete last</button><span id="arranged"></span></div></form>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <div class="tools"><button id="undo">Undo growth</button><button id="restart">Restart</button><button id="hint">Hint · 1 wilt</button></div>
+      <p class="fine" id="hint-note">Five wilts end the round. Undo and Restart keep wilts.</p><button id="reveal" class="text-button">Reveal a path</button><div id="reveal-path" hidden></div>
+      <details><summary>How to grow</summary><p>Begin with three letters and grow to eight. A listed word with no way to reach a bloom costs one wilt; your current word and soil stay available. Unlisted guesses cost nothing. A hint highlights a useful soil letter and costs one wilt, even if it is your last.</p><p>This practice preview stays only in this tab. Switching B and C keeps your plant. New practice starts another board.</p></details>
+    </section>
+  </div>
+</main>
+<script type="module" src="./app.mjs"></script>
+</body></html>

@@ -11,3 +11,5 @@ All retain the pale blue collection background, white controls, readable sans-se
 Generated with the built-in image tool. The shared prompts and targeted corrections are in `PROMPTS.md`. A uses a text-only five-wilts status to avoid incorrect generated marker counts. C’s stage rail was corrected to six labelled stages (3–8), with stage 5 current. Original and superseded tool outputs remain in the generated-images directory; only the final three are copied here.
 
 Open `index.html` for the side-by-side comparison and enlarged images. No live game was changed by this concept pass.
+
+Superseded: James rejected all three and clarified that answers must be part of the plant. See ../ui-integrated-2026-11-06/ for the resulting concepts.

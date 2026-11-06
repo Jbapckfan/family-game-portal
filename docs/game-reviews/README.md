@@ -41,4 +41,4 @@ November 4 decision: **Logic Lattice is parked for later, not removed.** Its gam
 November 4 collection update: [UI, pacing, favorites/hide, feedback, branding, bonus and private-publication report](../product/POLISH-2026-11-04.md). Syntax Siege received strong positive gameplay feedback; no new numeric score or explicit keeper verdict was inferred.
 
 
-Current review: [Territory Tactics](territory-tactics/REVIEW-2026-11-05.md), game 26, with [three original playable UI choices](territory-tactics/ui-options-2026-11-05/index.html). Memory Maze remains a keeper (16 confirmed keepers). Prism’s visual design remains unresolved; B / Performance is a trial direction for later, and James requested moving on. No new keeper or numerical ranking is inferred.
+Current review: **Dovetail**, game 27. James deferred choosing among [Territory Tactics’ three UI previews](territory-tactics/ui-options-2026-11-05/index.html); all remain available. Memory Maze remains a keeper (16 confirmed keepers). Prism’s visual design remains unresolved, with B / Performance only a trial direction for later. No new keeper or numerical ranking is inferred.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updated": "2026-11-06",
-  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied. Quadra is also a keeper; James particularly likes its challenge and category-guided word finding. Dovetail is also a keeper after James explicitly said “keep it, next game”; no numerical score or relative rank was supplied.",
+  "rankingBasis": "James’s preference groups: Switchpath, Counterpart, Shortlist, Second Sense, Tradeoff, Inbetween, Cairn, Morph, Kimi’s Tangle, Hunch, Circuit, Twin Hive the harder 4×4 Trail and harder Split are keepers; Ringcount and Sideways are replacement candidates. Quartet was called fun, with gameplay differentiation unresolved. Inbetween is 6/10; other numerical scores and relative keeper order are not supplied. Model predictions stay separate. Cipher received strong positive feedback (“cipher is great”); no relative position was supplied. Quadra is also a keeper; James particularly likes its challenge and category-guided word finding. Dovetail is also a keeper after James explicitly said “keep it, next game”; no numerical score or relative rank was supplied. James explicitly kept Sprout despite continued visual dissatisfaction; no numeric score or relative rank was supplied.",
   "games": [
     {
       "slug": "ringcount",
@@ -1903,19 +1903,26 @@
             "date": "2026-11-06",
             "quote": "show me B and C of Sprout to play and see the visual movement",
             "interpretation": "Requests real playable comparison of integrated letter branches and word vine, not final selection of one. No keeper verdict or numeric score."
+          },
+          {
+            "date": "2026-11-06",
+            "quote": "still looks bad, but let's keep it and move on to next game",
+            "interpretation": "Explicit keeper verdict for Sprout despite unresolved visual dissatisfaction. No B/C style selection, numeric enjoyment score or relative rank."
           }
         ],
-        "difficultyReaction": "challenging"
+        "difficultyReaction": "challenging",
+        "preferenceTier": "keeper"
       },
       "reviews": [],
-      "disposition": "undecided",
+      "disposition": "keep",
       "evidence": [
         "sprout/REVIEW-2026-11-05.md",
         "sprout/LIVING-PLANT-2026-11-06.md",
         "sprout/ui-options-2026-11-06/README.md",
         "sprout/ui-integrated-2026-11-06/README.md"
       ],
-      "nextStep": "Playable B/C integrated-answer previews are public. Await visual/gameplay preference; main Sprout design remains unaccepted and retention undecided."
+      "nextStep": "Keep Sprout. Visual design remains unaccepted; no final B/C choice. Resume Claude’s Tangle review, which was opened earlier without a verdict.",
+      "dispositionBasis": "James explicitly kept Sprout while still disliking its visuals."
     },
     {
       "slug": "claude-tangle",
@@ -1934,7 +1941,7 @@
       "evidence": [
         "tangle-claude/REVIEW-2026-11-06.md"
       ],
-      "nextStep": "Opened as the next unreviewed game (Claude edition). Await James’s gameplay and UI feedback."
+      "nextStep": "Resumed on the public friend-sharing site after Sprout was kept; no review verdict yet."
     },
     {
       "slug": "claude-keystone",

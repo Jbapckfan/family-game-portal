@@ -15,3 +15,5 @@ Hosted release checks at 393 and 1280 pixels verified the exact app/CSS source h
 A focused motion probe measured leaf width growing from 3.60 to 88.75 pixels and the flower opening from 13.08 to 70.50 pixels, confirming actual animation rather than only CSS class presence. This used an isolated earlier puzzle, not James’s current round.
 
 James subsequently said the UI “is still weird” and requested several more options. Treat this implemented visual direction as unaccepted. [Three natural-plant composition mockups](ui-options-2026-11-06/index.html) are available for selection; the game rules and challenge remain intact.
+
+James subsequently said “still looks bad, but let's keep it and move on to next game” after trying the B/C previews. **Sprout is a keeper**, while visual design remains unaccepted and no final B/C choice was supplied. Confirmed keepers become 18; numerical rating and relative rank remain unset. Resume Claude’s Tangle, previously opened without a review verdict, before Keystone.

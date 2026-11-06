@@ -84,13 +84,27 @@ export function recordStatistics(input,today) {
 
 /** Pure session controller, shared by visible UI and persistence/rollover tests. */
 export function createSession(config,{storage,now=()=>new Date()}={}) {
-  const store=makeStore(storage),prefix=`${config.id}:v1:`,recordKey=prefix+'records';
+  const store=makeStore(storage),legacyPrefix=`${config.id}:v1:`;
+  // A rules edition owns new saves/results; the original ledger remains intact.
+  if(config.stateEdition!==undefined&&!/^[a-z0-9][a-z0-9-]{0,63}$/.test(config.stateEdition))throw Error('Invalid state edition');
+  const prefix=legacyPrefix+(config.stateEdition?`edition:${config.stateEdition}:`:''),recordKey=prefix+'records';
+  const scheduleID=config.stateEdition?`${config.id}:${config.stateEdition}`:config.id;
   if(!Array.isArray(config.puzzles)||!config.puzzles.length)throw Error('A playable puzzle bank is required');
+  const practiceReservedDays=config.practiceReservedDays??1;
+  if(!Number.isSafeInteger(practiceReservedDays)||practiceReservedDays<1||(config.practiceReservedDays!==undefined&&practiceReservedDays>=config.puzzles.length))throw Error('Practice reservation must leave available puzzles');
   let date=centralDateKey(now()),mode='daily',index=0,puzzle,state;
   let cursor=store.read(prefix+'practice-cursor');if(!Number.isSafeInteger(cursor)||cursor<0||cursor>1_000_000)cursor=0;
   const puzzleID=()=>String(puzzle.id??index);
   const stateKey=()=>prefix+(mode==='daily'?`daily:${date}`:'practice');
   const records=()=>cleanRecords(store.read(recordKey),centralDateKey(now()));
+  function statistics(){
+    const current=records();
+    if(!config.stateEdition)return recordStatistics(current,centralDateKey(now()));
+    const historical=cleanRecords(store.read(legacyPrefix+'records'),centralDateKey(now()));
+    // One result per date. Keep a historical earned win even if the new edition is revealed.
+    for(const [key,result] of Object.entries(current))if(historical[key]?.status!=='won')historical[key]=result;
+    return recordStatistics(historical,centralDateKey(now()));
+  }
   function restore(raw) {
     try{const restored=config.restoreState(puzzle,clone(raw));return restored&&['playing','won','lost','revealed'].includes(config.getStatus(puzzle,restored))?clone(restored):null;}catch{return null;}
   }
@@ -119,7 +133,7 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
   }
   function refreshDate() {
     const today=centralDateKey(now());if(today===date)return false;date=today;
-    if(mode==='daily'){index=dailyIndex(config.id,date,config.puzzles.length);load();}
+    if(mode==='daily'){index=dailyIndex(scheduleID,date,config.puzzles.length);load();}
     return true;
   }
   function refreshSavedResult() {
@@ -144,12 +158,12 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
     if(refreshDate()||refreshSavedResult()||terminal.has(outcome())||typeof action!=='function')return false;
     const next=action(puzzle,clone(state));return next?commit(next):false;
   }
-  index=dailyIndex(config.id,date,config.puzzles.length);load();
+  index=dailyIndex(scheduleID,date,config.puzzles.length);load();
   return {
     get puzzle(){return puzzle;},get state(){return clone(state);},get mode(){return mode;},get dateKey(){return date;},get outcome(){return outcome();},
-    get stats(){return recordStatistics(records(),centralDateKey(now()));},get storageAvailable(){return store.available;},
+    get stats(){return statistics();},get storageAvailable(){return store.available;},
     commit,hint:()=>apply(config.hint),reveal:()=>apply(config.reveal),refreshDate,refreshSavedResult,
-    daily(){date=centralDateKey(now());mode='daily';index=dailyIndex(config.id,date,config.puzzles.length);load();},
+    daily(){date=centralDateKey(now());mode='daily';index=dailyIndex(scheduleID,date,config.puzzles.length);load();},
     practice(){
       const advancing=mode==='practice';let previous=advancing?index:null;
       date=centralDateKey(now());mode='practice';
@@ -164,10 +178,12 @@ export function createSession(config,{storage,now=()=>new Date()}={}) {
         }
       }
       cursor=(cursor+1)%1_000_000;store.write(prefix+'practice-cursor',cursor);
-      const candidates=practiceCandidates(config.id,date,config.puzzles.length,{excludeIndices:[dailyIndex(config.id,date,config.puzzles.length)]});
+      // Reserve calendar dates, not elapsed local hours, across both DST changes.
+      const excludeIndices=Array.from({length:practiceReservedDays},(_,offset)=>dailyIndex(scheduleID,new Date((dayNumber(date)+offset)*86400000).toISOString().slice(0,10),config.puzzles.length));
+      const candidates=practiceCandidates(scheduleID,date,config.puzzles.length,{excludeIndices});
       index=candidates[(candidates.indexOf(previous)+1)%candidates.length];
       load(true);return 'new';
     },
-    progress(){const today=centralDateKey(now());return {type:'progress',slug:config.id,name:config.name,mode,dateKey:mode==='daily'?date:today,status:outcome(),stats:recordStatistics(records(),today)};},
+    progress(){const today=centralDateKey(now());return {type:'progress',slug:config.id,name:config.name,mode,dateKey:mode==='daily'?date:today,status:outcome(),stats:statistics()};},
   };
 }

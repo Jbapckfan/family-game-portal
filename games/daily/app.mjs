@@ -45,8 +45,9 @@ export function readDailyStatus({slug, engine, puzzles, storage, now = new Date(
 /** Imported game snapshots contain status only; each game's detailed saves stay namespaced. */
 export function readKimiStatus({slug, storage, now = new Date()}) {
   const key = dateKey(now);
-  const saved = readJSON(storage, `${slug}:v1:status:${key}`);
-  const records = readJSON(storage, `${slug}:v1:records`);
+  const prefix = `${slug}:v1:` + (slug === 'qwen-territory-tactics' ? 'edition:exact-v2:' : '');
+  const saved = readJSON(storage, `${prefix}status:${key}`);
+  const records = readJSON(storage, `${prefix}records`);
   const record = records.value && !Array.isArray(records.value) ? records.value[key] : null;
   if (['won','lost','revealed'].includes(record?.status)) return {status:record.status,dateKey:key};
   if (!saved.available || !records.available) return {status:'unavailable',dateKey:key};

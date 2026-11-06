@@ -1,5 +1,7 @@
 # Alford Family Game Portal
 
+**Alford Daily updates must reach the public friends site.** See [the primary public deployment and verification procedure](docs/PUBLIC-DEPLOYMENT.md). The private preview is a separate destination.
+
 A self-hosted game portal for your UGREEN NAS - lets your kids test your web games from any device on the home network.
 
 ## Quick Start

@@ -27,7 +27,7 @@ BONUS_FILES = {"index.html", "app.mjs", "engine.mjs", "ai.mjs", "styles.css", "i
 GAMES = ORIGINAL_GAMES | CLASSIC_GAMES | KIMI_GAMES | SHARED_MODULE_GAMES | BONUS_GAMES
 BUNDLE_DIRECTORIES = GAMES | {"kimi-runtime", "deepseek-runtime"}
 SHARED_GAME_REQUIRED_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs"}
-SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg", "word-acceptance.mjs", "vocabulary.mjs", "word-lists-LICENSE.txt"}
+SHARED_GAME_OPTIONAL_FILES = {"styles.css", "icon.svg", "word-acceptance.mjs", "vocabulary.mjs", "word-lists-LICENSE.txt", "exact-puzzles.mjs"}
 DEEPSEEK_SHARED_FILES = {"core.mjs", "common.mjs", "player-tools.mjs", "feedback-client.mjs", "daily-rotations.mjs", "practice-calendar.mjs", "styles.css"}
 RUNTIME_FILES = {"index.html", "app.mjs", "engine.mjs", "puzzles.mjs", "shell.mjs", "styles.css", "icon.svg", "manifest.webmanifest"}
 # Keep these extensions aligned with BundleResourceResolver.swift and the sync script.

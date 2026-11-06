@@ -41,4 +41,4 @@ November 4 decision: **Logic Lattice is parked for later, not removed.** Its gam
 November 4 collection update: [UI, pacing, favorites/hide, feedback, branding, bonus and private-publication report](../product/POLISH-2026-11-04.md). Syntax Siege received strong positive gameplay feedback; no new numeric score or explicit keeper verdict was inferred.
 
 
-Current review: **Splice**, game 28. James explicitly kept Dovetail, bringing the confirmed keeper total to 17. [Territory Tactics’ three UI previews](territory-tactics/ui-options-2026-11-05/index.html) remain deferred. Prism’s visual design is unresolved, with B / Performance only a trial direction for later. No numerical score or relative keeper rank was supplied.
+Current review: **Sprout**, game 29. Splice’s unfamiliar-word/alternative-pair feedback is recorded; retention remains undecided. Dovetail is kept, with 17 confirmed keepers. [Territory Tactics’ three UI previews](territory-tactics/ui-options-2026-11-05/index.html) remain deferred. Prism’s visual design is unresolved, with B / Performance only a trial direction for later. No numerical score or relative keeper rank was supplied.

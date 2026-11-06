@@ -1825,19 +1825,30 @@
       "name": "Splice",
       "creator": "Claude",
       "reviewOrder": 28,
-      "status": "not_reviewed",
+      "status": "reviewed_by_james",
       "james": {
         "enjoyment": null,
         "playAgain": null,
         "preferenceRank": null,
-        "comments": []
+        "comments": [
+          {
+            "date": "2026-11-05",
+            "quote": "hmm, i says i did it right... but house man? i thought maybe i needed to change sky-light and house-man to house-light and sky-man.",
+            "interpretation": "Questions the unfamiliar accepted word HOUSEMAN and whether an alternative pairing is needed. No enjoyment score or keeper verdict."
+          },
+          {
+            "date": "2026-11-05",
+            "quote": "okay, next game",
+            "interpretation": "Acknowledges the explanation and requests advancing to Sprout. Does not explicitly keep or remove Splice."
+          }
+        ]
       },
       "reviews": [],
       "disposition": "undecided",
       "evidence": [
         "splice/REVIEW-2026-11-05.md"
       ],
-      "nextStep": "Opened for individual review after James kept Dovetail. Await gameplay and UI feedback."
+      "nextStep": "Retention remains undecided. HOUSEMAN and alternative-pair clarity noted; short definitions are a possible follow-up. Review advances to Sprout."
     },
     {
       "slug": "claude-sprout",
@@ -1853,8 +1864,10 @@
       },
       "reviews": [],
       "disposition": "undecided",
-      "evidence": [],
-      "nextStep": "Await individual review"
+      "evidence": [
+        "sprout/REVIEW-2026-11-05.md"
+      ],
+      "nextStep": "Opened for individual review after Splice. Await James’s gameplay and UI feedback."
     },
     {
       "slug": "claude-tangle",

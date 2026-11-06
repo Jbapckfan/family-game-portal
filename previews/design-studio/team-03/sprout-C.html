@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprout · Concept C · Blade fan</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:560px;margin:0 auto}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.hud b{font-size:16px}
+.hud span{font:600 13px/1 var(--mono);color:var(--ink-2)}
+.scene{border-radius:20px;background:linear-gradient(180deg,#f8fbfc 0%,#eef4f6 100%);border:1px solid var(--line);overflow:hidden}
+.scene svg{width:100%;height:auto}
+.blade{stroke:#173f31;stroke-width:1}
+.b3{fill:#1d4d3c}.b4{fill:#265c47}.b5{fill:#326c54}
+.mid{stroke:rgba(255,255,255,.18);stroke-width:1.2;fill:none}
+.bt{font:800 22px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.bt.add{fill:#123d2e}
+.addchip{fill:#a5d48e}
+.ghostb{fill:#fff;stroke:#5c9a72;stroke-width:1.6;stroke-dasharray:5 4}
+.ghostt{font:800 22px var(--sans);fill:#123d2e;text-anchor:middle;dominant-baseline:central}
+.slotdot{fill:#d7e6dc}
+.fut{fill:none;stroke:#c3d2dc;stroke-width:1.4;stroke-dasharray:3 6}
+.pot{fill:#e4ebf0;stroke:#b5c7d4}
+.potrim{fill:#f4f7f9;stroke:#b5c7d4}
+.lab{font:700 11px var(--mono);fill:#7a8f9f;text-anchor:middle}
+.grow{animation:rise .8s cubic-bezier(.2,.85,.25,1) both;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes rise{from{transform:scaleY(.05);opacity:.2}}
+.below{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;padding:6px 12px 10px;font-size:13px;color:var(--ink-2)}
+.trays{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;margin-top:14px;align-items:end}
+.trays h3{margin:0 0 8px;font:700 11px/1.2 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.rack{display:flex;gap:6px;flex-wrap:wrap}
+.tile{width:46px;height:52px;border-radius:10px;border:1.5px solid #9fbfa9;background:#fff;font:800 22px/1 var(--sans);cursor:pointer;color:#123d2e}
+.tile.soil{border-radius:50%;background:#eef6ea;width:48px;height:48px}
+.tile:disabled{opacity:.28}
+@media(max-width:600px){.trays{grid-template-columns:1fr}}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.quiet{display:flex;gap:4px;flex-wrap:wrap}.quiet .btn{font-size:14px}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Sprout · C — Blade fan · visual prototype; sample growth words derived for illustration</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-sprout.svg" alt=""><div class="titles"><p class="kicker">Growing anagrams</p><h1>Sprout</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <div class="hud"><b>Next blade: 6 letters</b><span>WILTS 0 / 5</span></div>
+ <div class="scene">
+  <svg viewBox="0 0 400 470" role="img" aria-label="A fan of upright leaf blades. Each blade is one accepted word read top to bottom: ALL, ALLY, RALLY. A dashed sixth blade is being built. Faint outlines show where blades 7 and 8 will rise.">
+   <g id="blades"></g>
+   <path class="potrim" d="M96 418 H304 V430 H96Z"/><path class="pot" d="M100 430 H300 L284 466 H116Z"/>
+  </svg>
+  <div class="below"><span>Each word grows as a blade, read from tip to base. The pale band marks the letter taken from the soil. New blades rise from the centre of the fan.</span><button class="btn btn-quiet" id="replay" style="min-height:44px">▶ Replay last blade</button></div>
+ </div>
+ <div class="trays">
+  <div><h3>USE EVERY LETTER · RALLY</h3><div class="rack" id="word"></div></div>
+  <div><h3>SOIL · ADD ONE</h3><div class="rack" id="soil"></div></div>
+ </div>
+ <p class="msg" id="status"></p>
+ <div class="row-actions"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="grow">Grow</button></div>
+ <div class="quiet"><button class="btn btn-quiet">Undo growth</button><button class="btn btn-quiet">Restart</button><button class="btn btn-quiet">Which letter? · 1 wilt</button></div>
+ <p class="msg" id="msg" role="status">Letters you pick fill the dashed blade from its tip downward.</p>
+</main>
+<footer class="app-foot"><span>Undo and Restart keep wilts</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Sprout</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+// order across the fan, left to right: 3,5,7,8,6,4 (tallest in the centre, like a growing fan)
+const X={3:110,5:146,7:182,8:218,6:254,4:290},STEP=34,BASE=418;
+const grown={3:['ALL',-1],4:['ALLY',3],5:['RALLY',0]},cur='RALLY',soil=['M','N','O'];let typed=[];const $=id=>document.getElementById(id);
+const tipY=len=>BASE-24-len*STEP-14;
+function bladePath(x,len,lean){const t=tipY(len),hw=17;return `M${x-hw} ${BASE} C${x-hw-2} ${(BASE+t)/2} ${x-6+lean} ${t+40} ${x+lean} ${t} C${x+6+lean} ${t+40} ${x+hw+2} ${(BASE+t)/2} ${x+hw} ${BASE}Z`;}
+function letters(x,len,word,added,cls){return [...Array(len)].map((_,k)=>{const y=tipY(len)+40+k*STEP;return `${k===added?`<rect class="addchip" x="${x-14}" y="${y-14}" width="28" height="28" rx="6"/>`:''}<text class="${cls} ${k===added?'add':''}" x="${x}" y="${y}">${word[k]||''}</text>`}).join('');}
+function render(){let h='';
+ [7,8].forEach(l=>h+=`<path class="fut" d="${bladePath(X[l],l,0)}"/><text class="lab" x="${X[l]}" y="${tipY(l)-8}">${l}</text>`);
+ const t=typed.map(o=>o.s==='w'?cur[o.i]:soil[o.i]).join('');
+ h+=`<path class="ghostb" d="${bladePath(X[6],6,2)}"/>`+[...Array(6)].map((_,k)=>{const y=tipY(6)+40+k*STEP;return t[k]?'':`<circle class="slotdot" cx="${X[6]+0}" cy="${y}" r="4"/>`}).join('')+letters(X[6],6,t,typed.findIndex(o=>o.s==='s'),'ghostt')+`<text class="lab" x="${X[6]}" y="${tipY(6)-8}">6</text>`;
+ [3,4,5].forEach(l=>{const [w,a]=grown[l],lean=l===3?-4:l===4?4:-2;h+=`<g data-len="${l}"><path class="blade b${l}" d="${bladePath(X[l],l,lean)}"/><path class="mid" d="M${X[l]} ${BASE} L${X[l]+lean} ${tipY(l)+10}"/>${letters(X[l],l,w,a,'bt')}</g>`;});
+ $('blades').innerHTML=h;
+ const soilOn=typed.some(o=>o.s==='s');
+ $('word').innerHTML=[...cur].map((c,i)=>`<button class="tile" data-s="w" data-i="${i}" ${typed.some(o=>o.s==='w'&&o.i===i)?'disabled':''}>${c}</button>`).join('');
+ $('soil').innerHTML=soil.map((c,i)=>`<button class="tile soil" data-s="s" data-i="${i}" ${soilOn?'disabled':''} aria-label="Soil ${c}">${c}</button>`).join('');
+ $('status').textContent=`${typed.length} of 6 letters · ${soilOn?'soil letter chosen':'choose one soil letter'}`;$('grow').disabled=typed.length!==6;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b&&!b.disabled){typed.push({s:b.dataset.s,i:+b.dataset.i});render();}});
+document.addEventListener('keydown',e=>{if(/^[a-z]$/i.test(e.key)){const c=e.key.toUpperCase();let i=[...cur].findIndex((x,i)=>x===c&&!typed.some(o=>o.s==='w'&&o.i===i));if(i>=0){typed.push({s:'w',i});render();return;}i=soil.indexOf(c);if(i>=0&&!typed.some(o=>o.s==='s')){typed.push({s:'s',i});render();}}else if(e.key==='Backspace'&&typed.length){typed.pop();render();}});
+$('del').onclick=()=>{typed.pop();render()};$('clr').onclick=()=>{typed=[];render()};
+$('grow').onclick=()=>$('msg').textContent='Prototype: the live game checks the word; if accepted the dashed blade fills and rises.';
+$('replay').onclick=()=>{const g=$('blades').querySelector('[data-len="5"]');g.classList.remove('grow');void g.getBoundingClientRect();requestAnimationFrame(()=>g.classList.add('grow'));};
+render();setTimeout(()=>$('replay').click(),300);
+</script>
+</body></html>

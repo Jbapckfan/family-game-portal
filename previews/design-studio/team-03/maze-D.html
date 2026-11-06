@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Maze · Concept D · Chart and step tape</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.stage{max-width:600px;margin:0 auto}
+.tape{position:sticky;top:0;z-index:4;background:var(--bg);padding:8px 0 10px;border-bottom:1px solid var(--line-2)}
+.tape-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tape-top b{font:800 26px/1 var(--mono)}
+.tape-top span{font:600 13px/1.2 var(--sans);color:var(--ink-2)}
+.steps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;margin-top:8px}
+.steps span{height:40px;border-radius:4px;background:var(--paper);border:1px solid var(--line-2);display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 13px/1.1 var(--mono);color:var(--muted)}
+.steps span b{font-size:11px;color:var(--line-2)}
+.steps span.f{background:var(--ink);color:#fff;border-color:var(--ink)}
+.steps span.f b{color:#8fc5d8}
+.steps span.n{border:2px solid var(--accent);color:var(--accent)}
+.prompt{margin:16px 0 10px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans)}
+.chart{display:grid;grid-template-columns:18px minmax(0,1fr);grid-template-rows:18px auto;gap:3px}
+.cols{grid-column:2;display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font:700 11px/18px var(--mono);color:var(--muted)}
+.rows{display:grid;grid-template-rows:repeat(7,1fr);font:700 11px/1 var(--mono);color:var(--muted);align-items:center}
+.paper{position:relative;aspect-ratio:1;background:#fff;background-image:linear-gradient(#e3ecf2 1px,transparent 1px),linear-gradient(90deg,#e3ecf2 1px,transparent 1px);background-size:calc(100%/7) calc(100%/7);border:1.5px solid var(--ink-2)}
+.paper svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.paper polyline{fill:none;stroke:var(--accent);stroke-width:.09;stroke-linecap:square;stroke-linejoin:miter}
+.grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(7,1fr)}
+.c{border:0;background:transparent;font:800 clamp(14px,4vw,20px)/1 var(--sans);cursor:pointer;position:relative;padding:0;min-width:0}
+.c:hover:not(:disabled),.c:focus-visible{background:rgba(10,106,138,.08)}
+.c.start,.c.goal{color:var(--ink)}
+.c.shown{color:var(--accent-ink);background:rgba(10,106,138,.14)}
+.c.done{background:var(--ink);color:#fff}
+.c.block{background:repeating-linear-gradient(-45deg,#bfcdd8 0 2px,transparent 2px 7px)}
+.pen{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font:700 12px/1 var(--mono);color:var(--warn);background:#fff;padding:2px 4px;border:1px solid var(--warn);border-radius:4px;animation:up 1.2s forwards;white-space:nowrap;z-index:3}
+@keyframes up{to{transform:translate(-50%,-14px);opacity:0}}
+.actions{margin-top:14px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.kbd{font-size:13px;color:var(--muted);margin-top:6px}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Memory Maze · D — Chart and step tape · visual prototype · route is illustrative</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/qwen-memory-maze.svg" alt=""><div class="titles"><p class="kicker">Remember the route</p><h1>Memory Maze</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="stage">
+ <div class="tape" role="timer"><div class="tape-top"><b id="clk">6s</b><span id="tm">STUDY · 8 squares</span></div><div class="steps" id="steps" aria-label="Step tape"></div></div>
+ <p class="prompt" id="prompt">Six seconds to study. Then retrace from S, one touching square at a time.</p>
+ <div class="chart"><div class="cols"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span></div><div class="rows"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+  <div class="paper"><svg viewBox="0 0 7 7" aria-hidden="true"><polyline id="line"/></svg><div class="grid" id="grid" role="group" aria-label="Chart, columns A to G, rows 1 to 7"></div></div></div>
+ <div class="row-actions actions"><button class="btn btn-primary" id="go">Study the route</button><button class="btn" id="hint">Hint · replay</button></div>
+ <p class="msg" id="msg" role="status"></p>
+ <p class="kbd">Keyboard: arrows move across the chart, Enter chooses. Squares are announced by coordinate, e.g. “B2”.</p>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Memory Maze</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const P=[0,1,8,9,16,15,22,21],B=[3,10,24,29,31,38,44];let ph='ready',left=6,trail=[],miss=0,t0=0,tick=null,wrong=-1;const $=id=>document.getElementById(id),co=i=>'ABCDEFG'[i%7]+((i/7|0)+1);
+function render(){const show=ph==='study';
+ $('grid').innerHTML=Array.from({length:49},(_,i)=>{const k=P.indexOf(i),d=trail.indexOf(i),blk=(ph==='recall'||ph==='done')&&B.includes(i);
+  const sym=show&&k>=0?k+1:d>=0?d+1:blk?'':i===P[0]?'S':i===P.at(-1)?'◇':'';
+  return `<button class="c ${i===P[0]?'start':''} ${i===P.at(-1)?'goal':''} ${show&&k>=0?'shown':''} ${d>=0?'done':''} ${blk?'block':''}" data-i="${i}" ${ph!=='recall'||blk?'disabled':''} aria-label="${co(i)}${blk?', blocked':''}${sym?', '+sym:''}">${sym}${i===wrong?'<span class="pen">+2s</span>':''}</button>`}).join('');
+ $('line').setAttribute('points',(show?P:trail).map(i=>`${i%7+.5},${(i/7|0)+.5}`).join(' '));
+ $('steps').innerHTML=Array.from({length:8},(_,k)=>`<span class="${trail[k]!==undefined?'f':ph==='recall'&&k===trail.length?'n':''}"><b>${k+1}</b>${trail[k]!==undefined?co(trail[k]):'—'}</span>`).join('');
+ $('prompt').textContent={ready:'Six seconds to study. Then retrace from S, one touching square at a time.',study:'Study: follow 1 → 8 and notice each turn.',recall:`Which square is step ${trail.length+1}?`,done:'Illustrative route retraced · prototype timing only.'}[ph];
+ $('go').hidden=ph!=='ready';clock();}
+function clock(){const rec=ph==='recall'||ph==='done';$('clk').textContent=(rec?Math.round((Date.now()-t0)/1000)+miss*2:left)+'s';$('tm').textContent=rec?`RECALL · ${miss} misses (+2s each)`:'STUDY · 8 squares';}
+function study(){ph='study';left=6;render();clearInterval(tick);tick=setInterval(()=>{if(ph==='study'){left--;if(left<=0){ph='recall';t0=t0||Date.now();}render();}else clock();},1000);}
+$('go').onclick=study;$('hint').onclick=()=>{if(ph==='recall')study();};
+$('grid').onclick=e=>{const b=e.target.closest('[data-i]');if(!b||ph!=='recall')return;const i=+b.dataset.i;
+ if(i===P[trail.length]){trail.push(i);wrong=-1;if(trail.length===8){ph='done';clearInterval(tick);}$('msg').textContent='';}else if(!trail.includes(i)){miss++;wrong=i;$('msg').textContent=co(i)+' is not step '+(trail.length+1)+'. +2 seconds; trail kept.';}render();$('grid').querySelector(`[data-i="${i}"]`)?.focus();};
+$('grid').onkeydown=e=>{const b=e.target.closest('[data-i]');const d={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7}[e.key];if(!b||d===undefined)return;e.preventDefault();
+ const f=+b.dataset.i;for(let n=f+d;n>=0&&n<49;n+=d){if(Math.abs(d)===1&&(n/7|0)!==(f/7|0))break;const t=$('grid').querySelector(`[data-i="${n}"]`);if(t&&!t.disabled){t.focus();break;}}};
+render();
+</script>
+</body></html>

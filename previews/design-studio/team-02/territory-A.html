@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Territory Tactics A · Survey table — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.goal h2{margin:0;font-size:clamp(22px,5.4vw,30px);letter-spacing:-.02em}
+.goal h2 em{font-style:normal;color:var(--accent)}
+.goal p{margin:2px 0 0;color:var(--ink-2);font-size:15px}
+.count{text-align:right}
+.count b{font-size:40px;font-weight:850;line-height:1}
+.count small{display:block;font:12px var(--mono);color:var(--muted)}
+.stones{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.stones i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7fb0ff,#1c5cbc 65%,#123e82);box-shadow:0 2px 3px rgba(14,34,50,.35)}
+.stones i.used{background:#dbe4ec;box-shadow:inset 0 1px 2px rgba(14,34,50,.25)}
+.lesson{margin:14px 0;border-radius:16px;border:1px solid var(--line);background:#fff}
+.lesson summary{min-height:48px;display:flex;align-items:center;padding:0 16px;font-weight:700;cursor:pointer}
+.lesson .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 12px 14px}
+.lesson figure{margin:0;text-align:center;font-size:13px;color:var(--ink-2)}
+.lesson svg{width:100%;max-width:120px;height:auto}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+@media(max-width:860px){.lay{grid-template-columns:minmax(0,1fr)}}
+.boardbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:14px;color:var(--muted)}
+.view{overflow:auto;border-radius:18px;background:#f8fbfd;border:1px solid var(--line);padding:12px;-webkit-overflow-scrolling:touch}
+.board{position:relative;margin:0 auto}
+.hx{position:absolute;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:#c8d5e0;cursor:pointer;display:grid;place-items:center}
+.hx::before{content:"";position:absolute;inset:2px;clip-path:inherit;background:#f2f6f9}
+.hx.E::before{background:#fff}
+.hx.E:hover::before{background:#e5eefb}
+.hx>i{position:relative;border-radius:50%;width:62%;height:54%}
+.hx.B>i,.hx.P>i{background:radial-gradient(circle at 35% 30%,#7fb0ff,#1c5cbc 60%,#123e82);box-shadow:0 2px 3px rgba(14,34,50,.4)}
+.hx.P>b{position:absolute;font:800 12px var(--mono);color:#fff}
+.hx.A>i{width:46%;height:40%;border-radius:4px;transform:rotate(45deg);background:linear-gradient(135deg,#ffe08a,#e2a919 60%,#b98510);box-shadow:0 2px 3px rgba(14,34,50,.35)}
+.hx.grp{background:#0e2232}
+.hx.open{background:var(--accent)}
+.hx.open::after{content:"";position:relative;width:34%;height:30%;border-radius:50%;border:2px dashed var(--accent)}
+.hx.gone::before{background:#fff4d6;animation:flash .8s ease-out}
+@keyframes flash{from{background:#ffd54f}}
+.hx:focus-visible{outline:none;background:var(--focus)}
+.side{display:grid;gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.card small{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.card h3{margin:4px 0 6px;font-size:19px}
+.card p{margin:0;color:var(--ink-2);font-size:15px}
+.status{font-weight:700}
+.status.bad{color:var(--bad)}.status.ok{color:var(--ok)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aux{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Territory Tactics A — Survey table</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/qwen-territory-tactics.svg" alt=""><div><p class="eyebrow">Hex strategy</p><h1 class="gname">Territory Tactics</h1><p class="tagline">37 hexes. Three stones. One exact capture.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov</span></div>
+
+  <section class="goal" aria-live="polite">
+    <div><h2>Capture <em>exactly 3</em> amber</h2><p>Not 2, not 4. Count across every group you close.</p></div>
+    <div class="count"><b id="cap">0</b><small>of 3 captured</small></div>
+    <div class="stones" id="stones"></div>
+  </section>
+
+  <details class="lesson" open>
+    <summary>How a capture works</summary>
+    <div class="steps">
+      <figure><svg viewBox="0 0 120 100" id="l1"></svg><figcaption>A group and its <b>2 openings</b></figcaption></figure>
+      <figure><svg viewBox="0 0 120 100" id="l2"></svg><figcaption>Fill one: still alive</figcaption></figure>
+      <figure><svg viewBox="0 0 120 100" id="l3"></svg><figcaption>Fill both: whole group captured</figcaption></figure>
+    </div>
+  </details>
+
+  <div class="lay">
+    <section>
+      <div class="boardbar"><span>Tap amber to inspect · tap an empty hex to place</span><button class="demo-toggle" id="zoom" aria-pressed="false">Zoom board</button></div>
+      <div class="view" id="view" tabindex="0" aria-label="Hex board, 37 hexes in 7 rows"><div class="board" id="board"></div></div>
+    </section>
+    <aside class="side">
+      <div class="card" id="insp"><small>Inspect</small><h3>Tap any amber stone</h3><p>Its whole group outlines, and every opening is marked with a count, so you can total captures before placing.</p></div>
+      <div class="card"><small>Last move</small><p class="status" id="st">No stones placed yet.</p></div>
+      <div class="acts"><button class="btn" id="undo">Undo placement</button><button class="btn" id="rs">Restart</button></div>
+      <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>
+    </aside>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the exact target is the headline, remaining stones are physical tokens, and an inspect tap shows a group's size and openings directly on the board. The before/after lesson stays in context and collapses once learned. Board is today's supplied 37-hex position; placements and captures run as a local rule preview (including the "own group needs an opening" rule) and are not the game's validation. Zoom enlarges hexes to 52px and pans inside the board frame, never the page.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const DEF=['ABBA','EEAAB','BEABAB','BAEBBBE','BAABEE','BEBEE','EEEE'];let cells,moves=[],captured=0,inspect=null,zoom=false,hist=[];
+function reset(){cells=[];DEF.forEach((s,r)=>{const n=s.length;[...s].forEach((t,j)=>cells.push({r,x:2*j-(n-1),t}));});moves=[];captured=0;inspect=null;hist=[];}
+const nb=(a,b)=>(a.r===b.r&&Math.abs(a.x-b.x)===2)||(Math.abs(a.r-b.r)===1&&Math.abs(a.x-b.x)===1);
+const N=i=>cells.map((c,k)=>k).filter(k=>k!==i&&nb(cells[i],cells[k]));
+function group(i,types){const t=new Set([i]),q=[i];while(q.length){const c=q.pop();N(c).forEach(k=>{if(!t.has(k)&&types.includes(cells[k].t)){t.add(k);q.push(k);}});}return [...t];}
+const openings=g=>[...new Set(g.flatMap(N).filter(k=>cells[k].t==='E'))];
+function draw(){const view=document.getElementById('view'),avail=view.clientWidth-24,g=4;const W=zoom?52:Math.max(30,Math.min(56,(avail-6*g)/7)),H=W*1.1547,b=document.getElementById('board');
+b.style.width=(7*W+6*g)+'px';b.style.height=(H+6*(.75*H+g))+'px';
+const grp=inspect!==null&&cells[inspect].t==='A'?group(inspect,['A']):[],op=grp.length?openings(grp):[];
+b.innerHTML=cells.map((c,i)=>{const left=(c.x+6)/2*(W+g),top=c.r*(.75*H+g);const cls=[c.t,grp.includes(i)?'grp':'',op.includes(i)?'open':'',c.gone?'gone':''].join(' ');const m=moves.indexOf(i);
+return `<button class="hx ${cls}" data-i="${i}" style="left:${left}px;top:${top}px;width:${W}px;height:${H}px" aria-label="Row ${c.r+1}: ${c.t==='A'?'amber stone':c.t==='E'?'empty hex':'blue stone'}${op.includes(i)?', opening':''}">${c.t!=='E'?'<i></i>':''}${m>-1?`<b>${m+1}</b>`:''}</button>`}).join('');
+b.querySelectorAll('.hx').forEach(h=>h.onclick=()=>tap(+h.dataset.i));
+document.getElementById('cap').textContent=captured;document.getElementById('stones').innerHTML=[0,1,2].map(k=>`<i class="${k<moves.length?'used':''}"></i>`).join('')+`<span>${3-moves.length} of 3 new stones left · existing blue stones help</span>`;
+const ins=document.getElementById('insp');if(grp.length){const over=captured+grp.length>3;ins.innerHTML=`<small>Inspect</small><h3>Group of ${grp.length} · ${op.length} opening${op.length===1?'':'s'}</h3><p>Closing all ${op.length} would capture ${grp.length}, making ${captured+grp.length} in total — ${over?'<b style="color:var(--bad)">over the exact target</b>':captured+grp.length===3?'<b>exactly the target</b>':'still short of 3'}. ${op.length>3-moves.length?'That needs more stones than you have left.':''}</p>`;}
+cells.forEach(c=>delete c.gone);}
+function tap(i){const c=cells[i];if(c.t==='A'){inspect=inspect===i?null:i;draw();return;}if(c.t!=='E')return;const st=document.getElementById('st');
+if(moves.length>=3){st.className='status bad';st.textContent='All three stones are placed. Undo or restart to try another route.';return;}
+if(captured>3)return;hist.push(JSON.stringify({cells,moves,captured}));c.t='P';moves.push(i);let got=0;
+cells.forEach((a,k)=>{if(a.t==='A'){const g=group(k,['A']);if(!openings(g).length){g.forEach(x=>{cells[x].t='E';cells[x].gone=true;});got+=g.length;}}});
+const own=group(i,['B','P']);if(!openings(own).length){const h=JSON.parse(hist.pop());cells=h.cells;moves=h.moves;captured=h.captured;st.className='status bad';st.textContent='Not allowed: your own blue group would have no opening left.';draw();return;}
+captured+=got;inspect=null;st.className='status '+(captured>3?'bad':captured===3?'ok':'');st.textContent=got?`Captured ${got}. Total ${captured} of exactly 3${captured>3?' — too many. Undo a placement.':captured===3?' — matches the target in this local preview.':'.'}`:`No group closed. ${3-moves.length} stone${3-moves.length===1?'':'s'} left.`;draw();}
+document.getElementById('undo').onclick=()=>{if(!hist.length)return;const h=JSON.parse(hist.pop());cells=h.cells;moves=h.moves;captured=h.captured;document.getElementById('st').textContent='Last placement removed.';document.getElementById('st').className='status';draw();};
+document.getElementById('rs').onclick=()=>{reset();document.getElementById('st').textContent='Original position restored.';document.getElementById('st').className='status';draw();};
+document.getElementById('zoom').onclick=e=>{zoom=!zoom;e.target.setAttribute('aria-pressed',zoom);draw();};addEventListener('resize',draw);
+function mini(id,fill){const hx=(x,y,f,s)=>`<path d="M${x} ${y-13}l11.3 6.5v13L${x} ${y+13}l-11.3-6.5v-13Z" fill="${f}" stroke="#b5c6d4"/>${s||''}`;const am=(x,y)=>`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="1.5" transform="rotate(45 ${x} ${y})" fill="#e2a919"/>`,bl=(x,y)=>`<circle cx="${x}" cy="${y}" r="7" fill="#1c5cbc"/>`;
+const P=[[49,50],[71,50]],ring=[[38,30],[60,30],[82,30],[27,50],[93,50],[38,70],[60,70],[82,70]];const opens=[3,4];let h='';ring.forEach(([x,y],k)=>{const o=opens.indexOf(k);const filled=o>-1&&o<fill;h+=hx(x,y,o>-1&&!filled?'#e6effc':'#f2f6f9',o>-1&&!filled?`<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#1c5cbc" stroke-dasharray="2 2"/>`:bl(x,y));});P.forEach(([x,y])=>{h+=hx(x,y,fill===2?'#fff4d6':'#f2f6f9',fill===2?'':am(x,y));});document.getElementById(id).innerHTML=h;}
+mini('l1',0);mini('l2',1);mini('l3',2);
+reset();draw();
+</script>
+</body>
+</html>

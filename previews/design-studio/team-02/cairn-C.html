@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cairn C · Carry and add — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.stage{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 16px}
+.chain{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap;margin:0 0 22px;font:600 13px var(--mono);color:var(--muted)}
+.chain b{display:inline-grid;place-items:center;min-width:32px;height:36px;border-radius:8px;border:1px solid var(--line);color:var(--ink-2)}
+.chain b.now{background:var(--ink);border-color:var(--ink);color:#fff}
+.chain em{font-style:normal;color:#8aa0b2;font-size:12px}
+.equation{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:14px}
+@media(max-width:640px){.equation{grid-template-columns:minmax(0,1fr)}.arrow{transform:rotate(90deg);justify-self:center}}
+.label{font:700 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.tray{display:flex;justify-content:center;gap:8px;padding:14px 12px;border-radius:14px;background:#e6edf3;box-shadow:inset 0 3px 6px rgba(14,34,50,.14),inset 0 -1px 0 #fff}
+.sort{width:56px;height:76px;border-radius:8px 8px 6px 6px;border:1px solid #b6c6d4;background:linear-gradient(#ffffff 0 82%,#dbe4ec 82%);box-shadow:0 3px 0 #a9bccc;font-size:34px;font-weight:850;cursor:pointer;padding-bottom:10px;transition:transform .12s}
+.sort:hover{transform:translateY(-3px)}
+.sort.used{opacity:.22;transform:translateY(3px);box-shadow:none}
+.carry{font:12px var(--mono);color:var(--muted);text-align:center;margin:8px 0 0}
+.arrow{font-size:28px;color:#8aa0b2}
+.rail{display:flex;justify-content:center;gap:8px;padding:14px 12px;border-radius:14px;border:2px solid #c8d6e2}
+.slot{width:56px;height:76px;border-radius:8px;border-bottom:3px solid var(--ink);display:grid;place-items:center;font-size:36px;font-weight:850;background:#f7f9fb}
+.slot.next{border-bottom-color:var(--accent);background:#eef4fd}
+.controls{display:flex;justify-content:center;gap:8px;margin-top:22px;flex-wrap:wrap}
+.controls .primary{min-width:160px}
+.sub{display:flex;justify-content:center;gap:4px 14px;flex-wrap:wrap;margin-top:8px}
+.example{margin-top:22px;border-radius:14px;border:1px dashed #9fb3c4;padding:14px 16px;background:#f6f9fb}
+.example[hidden]{display:none}
+.example h3{margin:0 0 4px;font-size:15px}
+.example p{margin:0 0 10px;color:var(--ink-2);font-size:14px}
+.exrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:700 20px var(--mono)}
+.exrow span{display:inline-grid;place-items:center;width:34px;height:40px;border-radius:6px;background:#fff;border:1px solid #c3d1dd}
+.exrow span.new{background:var(--accent);color:#fff;border-color:var(--accent);animation:fall .5s cubic-bezier(.3,1.4,.6,1)}
+.exrow i{font-style:normal;color:var(--muted);font-size:15px}
+@keyframes fall{from{transform:translateY(-26px);opacity:0}}
+.foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:16px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Cairn C — Carry and add</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/kimi-cairn.svg" alt=""><div><p class="eyebrow">Growing anagrams</p><h1 class="gname">Cairn</h1><p class="tagline">One more letter. One stone higher.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 628 · Fri 6 Nov</span></div>
+
+  <section class="stage">
+    <div class="chain" aria-label="Level sizes: 3, 4, 5, 6, 7 letters. You are on level 1."><b class="now">3</b><em>+1</em><b>4</b><em>+1</em><b>5</b><em>+1</em><b>6</b><em>+1</em><b>7</b></div>
+    <div class="equation">
+      <div>
+        <p class="label">Your letters</p>
+        <div class="tray" id="tray"><button class="sort">T</button><button class="sort">H</button><button class="sort">A</button></div>
+        <p class="carry">Level 1 starts with three. Each later level carries these letters and adds one.</p>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div>
+        <p class="label">Spell one word with all of them</p>
+        <div class="rail" id="rail"><span class="slot next"></span><span class="slot"></span><span class="slot"></span></div>
+        <p class="carry" id="say" aria-live="polite">0 of 3 placed · tap a placed letter to return it</p>
+      </div>
+    </div>
+    <div class="controls"><button class="btn" aria-label="Shuffle">Shuffle</button><button class="btn primary">Enter</button><button class="btn" aria-label="Delete last letter">⌫</button></div>
+    <div class="sub"><button class="btn quiet">Hint · 1 left</button><button class="btn quiet">Skip level</button><button class="demo-toggle" id="ex" aria-pressed="false" aria-controls="example">How level 2 opens</button></div>
+    <div class="example" id="example" hidden>
+      <h3>Example from the rules — not today's letters</h3>
+      <p>After solving a word, one new letter drops into the tray. You must use all of them again.</p>
+      <div class="exrow"><span>T</span><span>E</span><span>A</span><i>+</i><span class="new">R</span><i>→ TEAR, RATE…</i></div>
+    </div>
+    <div class="foot"><span>Clean · Assisted · Shown marked per level</span><span>Editing and shuffling are free</span></div>
+  </section>
+</main>
+<p class="studio-foot">Concept notes: the composition states the mechanic as an equation — tray of letters → one word using all of them — and the +1 chain makes the 3→7 climb explicit without a summit picture. The example uses the supplied help text (TEA + R) and is labelled as an example.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const ex=document.getElementById('ex'),exb=document.getElementById('example');
+ex.addEventListener('click',()=>{exb.hidden=!exb.hidden;ex.setAttribute('aria-pressed',!exb.hidden);});
+const slots=[...document.querySelectorAll('#rail .slot')],say=document.getElementById('say');
+document.querySelectorAll('.sort').forEach(b=>b.addEventListener('click',()=>{const s=slots.find(x=>!x.textContent);if(!s||b.classList.contains('used'))return;s.textContent=b.textContent;b.classList.add('used');slots.forEach(x=>x.classList.remove('next'));const n=slots.find(x=>!x.textContent);if(n)n.classList.add('next');const c=slots.filter(x=>x.textContent).length;say.textContent=c===3?'Ready · press Enter to check':c+' of 3 placed · tap a placed letter to return it';}));
+</script>
+</body>
+</html>

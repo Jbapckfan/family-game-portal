@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circuit D · Chain and coverage — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.chainbar{display:flex;align-items:center;gap:0;overflow:hidden;flex-wrap:wrap;row-gap:8px;margin-bottom:18px}
+.plate{display:inline-flex;align-items:center;height:56px;padding:0 14px;border-radius:12px;background:#0e2232;color:#fff;font:800 24px var(--mono);letter-spacing:.14em}
+.plate.open{background:#fff;color:var(--ink);border:2px dashed #8ea5b8}
+.link{width:22px;height:4px;background:#0e2232}
+.lay{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:840px){.lay{grid-template-columns:minmax(0,1fr)}}
+.ring svg{display:block;width:100%;height:auto;max-width:420px;margin:0 auto}
+.lt{cursor:pointer}.lt.blocked{opacity:.35;cursor:not-allowed}
+.lt:focus{outline:none}.lt:focus-visible circle.k{stroke:var(--focus);stroke-width:4}
+.cov h2,.share h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.col{border-radius:12px;overflow:hidden;border:2px solid}
+.col header{font:700 12px var(--sans);padding:6px 8px;color:#fff}
+.col div{display:grid;gap:3px;padding:6px}
+.col span{height:34px;border-radius:6px;display:grid;place-items:center;font:800 17px var(--sans);background:#f1f5f8;color:#90a2b1}
+.col span.on{color:#fff}
+.sum{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 0 16px;font-size:15px}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px}
+.aux{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.share{margin-top:20px}
+.share[hidden]{display:none}
+.card{background:#fff;border:1px solid var(--line-2);border-radius:16px;padding:16px;max-width:320px}
+.card header{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--muted);margin-bottom:6px}
+.card h3{margin:0 0 12px;font-size:22px}
+.cells{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-bottom:10px}
+.cells i{height:20px;border-radius:3px}
+.card p{margin:0;font-size:14px;color:var(--ink-2)}
+.share .note{font-size:14px;color:var(--muted);max-width:420px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Circuit D — Chain and coverage</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/kimi-circuit.svg" alt=""><div><p class="eyebrow">Word chains</p><h1 class="gname">Circuit</h1><p class="tagline">Switch arcs. Connect words. Light every letter.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 172 · Fri 6 Nov</span></div>
+
+  <div class="chainbar" aria-label="Your chain: HAWK, then a word starting with K"><span class="plate">HAWK</span><span class="link"></span><span class="plate open" id="open">K</span></div>
+  <div class="lay">
+    <div class="ring"><svg id="ring" viewBox="0 0 400 400" role="group" aria-label="Letter ring"></svg></div>
+    <section>
+      <div class="cov"><h2>Coverage · every letter must be lit</h2><div class="matrix" id="matrix"></div></div>
+      <div class="sum"><span>Words <b>1</b> · target <b>3</b> for Gold</span><span>Lit <b id="lc">4</b>/12</span></div>
+      <div class="row"><button class="btn" id="del" aria-label="Delete letter">⌫</button><button class="btn primary">Play word</button><button class="btn" id="clr">Clear</button></div>
+      <div class="aux"><button class="btn quiet">Undo word</button><button class="btn quiet">Restart chain</button><button class="btn quiet">Route clue · 1 free</button><button class="btn quiet">Reveal route</button><button class="demo-toggle" id="sh" aria-pressed="false" aria-controls="share">Preview result card</button></div>
+      <div class="share" id="share" hidden>
+        <h2>Result card · illustrative</h2>
+        <div class="card"><header><span>ALFORD DAILY</span><span>CIRCUIT · No. 172</span></header><h3>12/12 lit in 3 words</h3><div class="cells" id="cells"></div><p>Target 3 · Gold · no clue used</p></div>
+        <p class="note">Invented finish to show the format: twelve arc-coloured cells and the word count, never the words.</p>
+      </div>
+    </section>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the chain and the 12-letter coverage are the scoreboard. Words sit as joined plates (the next one opens on the shared letter), and a 4×3 matrix grouped by arc shows exactly which letters still need lighting. The ring keeps exact cardinal quadrants. Illustrative state: HAWK played. Tap the ring locally.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const C=['#2f6fd6','#1f9d6a','#d39a12','#d1404a'],L=[['K',1],['B',1],['C',1],['U',2],['S',2],['H',2],['A',3],['I',3],['R',3],['W',4],['M',4],['E',4]];
+const P=(r,d)=>[200+r*Math.sin(d*Math.PI/180),200-r*Math.cos(d*Math.PI/180)],arc=l=>L.find(x=>x[0]===l)[1];
+const lit=new Set(['H','A','W','K']);let cur=['K'];
+function seg(a){const s=a*90,e=s+90,[x1,y1]=P(190,s),[x2,y2]=P(190,e),[x3,y3]=P(112,e),[x4,y4]=P(112,s);return `M${x1} ${y1}A190 190 0 0 1 ${x2} ${y2}L${x3} ${y3}A112 112 0 0 0 ${x4} ${y4}Z`;}
+function draw(){const last=arc(cur[cur.length-1]);let h='';for(let a=0;a<4;a++)h+=`<path d="${seg(a)}" fill="${C[a]}" stroke="#edf3f8" stroke-width="4"/>`;
+h+=`<circle cx="200" cy="200" r="108" fill="#fff"/><text x="200" y="192" text-anchor="middle" font-size="16" font-weight="700" fill="#566d80" font-family="system-ui,sans-serif">NEXT</text><text x="200" y="228" text-anchor="middle" font-size="28" font-weight="800" fill="#0e2232" font-family="system-ui,sans-serif">not Arc ${last}</text>`;
+L.forEach(([l,a],i)=>{const[x,y]=P(151,i*30+15),bl=a===last;h+=`<g class="lt ${bl?'blocked':''}" data-i="${i}" tabindex="0" role="button" aria-label="${l}, arc ${a}${bl?', not allowed next':''}"><circle cx="${x}" cy="${y}" r="30" fill="transparent"/><circle class="k" cx="${x}" cy="${y}" r="25" fill="${lit.has(l)?'#0e2232':'#fff'}"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="25" font-weight="800" font-family="system-ui,sans-serif" fill="${lit.has(l)?'#fff':'#0e2232'}" pointer-events="none">${l}</text></g>`;});
+const svg=document.getElementById('ring');svg.innerHTML=h;svg.querySelectorAll('.lt').forEach(g=>{const f=()=>{const[l,a]=L[g.dataset.i];if(a===last)return;cur.push(l);lit.add(l);draw();};g.onclick=f;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+document.getElementById('matrix').innerHTML=[1,2,3,4].map(a=>`<div class="col" style="border-color:${C[a-1]}"><header style="background:${C[a-1]}">Arc ${a}</header><div>${L.filter(x=>x[1]===a).map(([l])=>`<span class="${lit.has(l)?'on':''}" style="${lit.has(l)?'background:'+C[a-1]:''}">${l}</span>`).join('')}</div></div>`).join('');
+document.getElementById('open').textContent=cur.join('')+'…';document.getElementById('lc').textContent=lit.size;}
+document.getElementById('del').onclick=()=>{if(cur.length>1)cur.pop();draw();};document.getElementById('clr').onclick=()=>{cur=['K'];draw();};
+document.getElementById('cells').innerHTML=L.map(([,a])=>`<i style="background:${C[a-1]}"></i>`).join('');
+const sh=document.getElementById('sh'),s=document.getElementById('share');sh.onclick=()=>{s.hidden=!s.hidden;sh.setAttribute('aria-pressed',!s.hidden);};draw();
+</script>
+</body>
+</html>

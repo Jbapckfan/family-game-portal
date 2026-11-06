@@ -1,0 +1,52 @@
+/* Team 02 shared Alford Daily frame for concept mockups.
+   Light cool frame only; each concept owns its board composition inline. */
+:root{
+  --bg:#edf3f8; --paper:#ffffff; --ink:#0e2232; --ink-2:#2b4357; --muted:#566d80;
+  --line:#d3dfe9; --line-2:#b7c9d7; --wash:#e3ecf4;
+  --accent:#1c5cbc; --accent-2:#164a99; --teal:#0b6f80; --focus:#0b57d0;
+  --ok:#17784f; --bad:#b3261e;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:ui-serif,"New York","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45;overflow-x:hidden}
+button{font:inherit;color:inherit}
+img,svg{max-width:100%}
+.studio-note{max-width:1080px;margin:0 auto;padding:8px 16px 0;font:12px/1.5 var(--mono);color:#6a7f90;display:flex;justify-content:space-between;gap:4px 12px;flex-wrap:wrap}
+.studio-note b{font-weight:600;color:#4c6273}
+.studio-foot{max-width:1080px;margin:0 auto;padding:0 16px 24px;font:12px/1.55 var(--mono);color:#6a7f90}
+.app{max-width:1080px;margin:0 auto;padding:0 16px 24px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;border-bottom:1px solid var(--line)}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;color:var(--ink-2);text-decoration:none;font-weight:600;font-size:15px}
+.wordmark{font-family:var(--serif);font-weight:700;font-size:18px;letter-spacing:-.01em;white-space:nowrap}
+.tools{display:flex;gap:2px}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid transparent;background:transparent;display:grid;place-items:center;color:var(--ink-2);cursor:pointer;padding:0}
+.icon-btn:hover{background:#fff;border-color:var(--line)}
+.icon-btn[aria-pressed="true"]{color:var(--accent)}
+.icon-btn svg{width:22px;height:22px}
+.ghead{display:flex;align-items:center;gap:12px;padding:18px 0 10px}
+.ghead img{width:44px;height:44px;border-radius:12px;flex:none}
+.eyebrow{font:700 12px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0}
+.gname{font-size:clamp(28px,6vw,36px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:2px 0 0}
+.tagline{margin:2px 0 0;color:var(--muted);font-size:15px}
+.modes{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:4px 0 16px}
+.seg{display:inline-flex;background:var(--wash);border-radius:12px;padding:3px}
+.seg button{min-height:44px;padding:0 16px;border:0;border-radius:10px;background:transparent;font-weight:600;font-size:15px;color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(14,34,50,.14)}
+.meta{font:13px/1.3 var(--mono);color:var(--muted)}
+.btn{min-height:48px;padding:0 18px;border-radius:12px;border:1px solid var(--line-2);background:#fff;font-weight:650;font-size:15px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn:hover{border-color:#8fa8bc}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 0 var(--accent-2)}
+.btn.primary:hover{background:var(--accent-2)}
+.btn.quiet{background:transparent;border-color:transparent;color:var(--ink-2)}
+.btn.quiet:hover{background:#fff;border-color:var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kbd{font:600 12px var(--mono);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#fff;color:var(--ink-2)}
+.demo-toggle{font:600 12px var(--mono);letter-spacing:.02em;min-height:44px;padding:0 14px;border-radius:22px;border:1px dashed #8ea5b8;background:transparent;color:#4c6273;cursor:pointer}
+.demo-toggle[aria-pressed="true"]{background:#fff;border-style:solid;color:var(--ink)}
+@media (max-width:400px){.back span{display:none}.app{padding:0 12px 20px}.studio-note,.studio-foot{padding-left:12px;padding-right:12px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

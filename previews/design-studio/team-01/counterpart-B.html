@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Counterpart · Concept B · Relationship Bridge</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.layout{display:grid;gap:20px}
+@media (min-width:880px){.layout{grid-template-columns:minmax(0,1fr) 330px;align-items:start}}
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.steps button{min-height:48px;border-radius:10px;border:1px solid var(--line);background:#fff;font:700 15px/1 var(--mono);color:var(--ink2);display:grid;place-items:center;gap:2px}
+.steps button small{font:600 10px/1 var(--sans);letter-spacing:.08em;color:var(--muted)}
+.steps button[aria-current="true"]{border:2px solid var(--ink);}
+.steps button.ok{background:var(--ok-wash);border-color:transparent;color:var(--ok)}
+.bridge{background:#fff;border:1px solid var(--line2);border-radius:20px;padding:22px clamp(12px,4vw,30px) 18px;box-shadow:var(--shade)}
+.tier{display:grid;grid-template-columns:minmax(0,1fr) minmax(56px,.6fr) minmax(0,1fr);align-items:center}
+.word{font:800 clamp(19px,5.6vw,34px)/1.05 var(--display);letter-spacing:.01em;text-align:center;overflow-wrap:anywhere}
+.link{position:relative;height:2px;background:var(--ink);margin:0 6px}
+.link::after{content:"";position:absolute;right:-2px;top:-5px;border:6px solid transparent;border-left:9px solid var(--ink);border-right:0}
+.link span{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);white-space:nowrap;font:600 11px/1 var(--mono);color:var(--muted)}
+.tier.mine .link{background:var(--blue)} .tier.mine .link::after{border-left-color:var(--blue)}
+.roles{display:grid;grid-template-columns:minmax(0,1fr) minmax(56px,.6fr) minmax(0,1fr);height:56px}
+.roles i{justify-self:center;width:0;border-left:2px dashed #b5c3d1;position:relative}
+.roles i:nth-child(1){grid-column:1}.roles i:nth-child(2){grid-column:3}
+.roles em{grid-column:2;align-self:center;text-align:center;font:600 11px/1.3 var(--sans);letter-spacing:.06em;color:var(--muted);font-style:normal;text-transform:uppercase}
+.slot{min-height:60px;width:100%;border-radius:12px;border:2px dashed #b3c2d1;background:var(--frame);font:800 clamp(15px,4.4vw,28px)/1.05 var(--display);color:var(--muted);transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s;overflow-wrap:anywhere;padding:6px}
+.slot.f{border-style:solid;border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
+.slot.cur{box-shadow:0 0 0 4px rgba(28,95,196,.18)}
+.flip .slot:first-child{transform:translateX(30%)} .flip .slot:last-child{transform:translateX(-30%)}
+.under{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.under .btn{flex:1 1 120px}
+.msg{margin:12px 0 0;font-size:15px;color:var(--ink2);min-height:22px}
+.bankp h2{margin:0 0 4px;font:700 16px/1.2 var(--display)}
+.bank{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.w{min-height:52px;border-radius:12px;border:1px solid var(--line);background:#fff;font:750 clamp(15px,4.3vw,18px)/1.1 var(--sans);letter-spacing:.03em;position:relative;padding:4px 6px;overflow-wrap:anywhere}
+.w:hover{border-color:#9fb3c8}
+.w .t{position:absolute;top:4px;right:6px;font:700 10px/1 var(--mono);color:var(--blue)}
+.w[aria-pressed="true"]{border:2px solid var(--blue);background:var(--blue-wash)}
+.w:disabled{opacity:.35}
+</style></head>
+<body>
+<div class="rv"><span><b>Counterpart · Concept B “Relationship Bridge”</b> · design review prototype, not a live game</span><nav aria-label="Counterpart concepts"><a href="counterpart-A.html">A</a><a href="counterpart-B.html" aria-current="page">B</a><a href="counterpart-C.html">C</a><a href="counterpart-D.html">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Counterpart" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Counterpart from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/counterpart.svg" alt=""><div><h1>Counterpart</h1><div class="meta">NO. 018 · TRICKY · 0 CHECKS · 0 HINTS</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap layout">
+  <section>
+    <nav class="steps" id="steps" aria-label="Relationships"></nav>
+    <div class="bridge">
+      <p class="kicker" style="margin-bottom:14px">The given relationship</p>
+      <div class="tier"><div class="word" id="c0">BASS</div><div class="link"><span id="rel">relationship ?</span></div><div class="word" id="c1">LOW</div></div>
+      <div class="roles" aria-hidden="true"><i></i><em>same role<br>same side</em><i></i></div>
+      <div class="tier mine" id="mine"><button class="slot" data-s="0"></button><div class="link"></div><button class="slot" data-s="1"></button></div>
+      <p class="kicker" style="margin-top:14px">Your counterpart</p>
+      <div class="under"><button class="btn" id="rev">⇄ Reverse</button><button class="btn" id="hint">✦ Name the relationship</button><button class="btn pri" id="chk">Check pair</button></div>
+      <p class="msg" id="msg" aria-live="polite"></p>
+    </div>
+  </section>
+  <aside class="bankp"><h2>Word bank</h2><p class="note" id="bn">Tap a word for the highlighted space.</p><div class="bank" id="bank"></div></aside>
+</div>
+<div class="foot"><span>Five checks, no hints = perfect. Wrong checks keep every word available.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const ROWS=[['THESIS','ARGUMENT'],['PRISM','SPECTRUM'],['SHELL','TURTLE'],['BASS','LOW'],['INVOICE','PAYMENT']];
+const BANK=['HIGH','SOLDIER','PROOF','KILN','APPEARANCE','ARMOR','SUMMONS','SOPRANO','CERAMICS','THEOREM'];
+const SOLVED={2:['ARMOR','SOLDIER']};
+let drafts=ROWS.map(()=>[null,null]);drafts[3]=['HIGH','SOPRANO'];
+let row=3,slot=0;
+const $=id=>document.getElementById(id);
+function render(){
+  $('steps').innerHTML=ROWS.map((r,i)=>`<button ${i===row?'aria-current="true"':''} class="${SOLVED[i]?'ok':''}" data-r="${i}" aria-label="Relationship ${i+1}: ${r.join(' to ')}${SOLVED[i]?', paired':''}">${SOLVED[i]?'✓':String(i+1).padStart(2,'0')}<small>${SOLVED[i]?'paired':drafts[i].some(Boolean)?'draft':'open'}</small></button>`).join('');
+  const s=SOLVED[row],d=s||drafts[row];
+  $('c0').textContent=ROWS[row][0];$('c1').textContent=ROWS[row][1];
+  document.querySelectorAll('#mine .slot').forEach(b=>{const k=+b.dataset.s;b.textContent=d[k]||(k?'second':'first');b.className='slot'+(d[k]?' f':'')+(!s&&k===slot?' cur':'');b.disabled=!!s;});
+  const used=new Set(Object.values(SOLVED).flat());
+  $('bank').innerHTML=BANK.map(w=>{const k=d.indexOf(w);return `<button class="w" data-w="${w}" aria-pressed="${k>=0}" ${used.has(w)?'disabled':''}>${w}${k>=0?`<span class="t">${k?'2nd':'1st'}</span>`:''}</button>`;}).join('');
+  $('rel').textContent=s?'protects ↦':'relationship ?';
+  $('chk').disabled=!!s||!(d[0]&&d[1]);$('rev').disabled=!!s;
+}
+$('steps').onclick=e=>{const b=e.target.closest('[data-r]');if(b){row=+b.dataset.r;slot=drafts[row][0]?1:0;$('msg').textContent='';render();}};
+$('mine').onclick=e=>{const b=e.target.closest('[data-s]');if(b){slot=+b.dataset.s;render();}};
+$('bank').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;const d=drafts[row],w=b.dataset.w,k=d.indexOf(w);if(k>=0){d[k]=null;slot=k;}else{d[slot]=w;slot=d[0]?(d[1]?slot:1):0;}render();};
+$('rev').onclick=()=>{const m=$('mine');m.classList.add('flip');setTimeout(()=>{drafts[row].reverse();m.classList.remove('flip');render();$('msg').textContent='Reversed. Direction must match the line above.';},260);};
+$('hint').onclick=()=>{$('msg').textContent='After confirmation (+1 hint) the relationship name fills the arrow label above. Not wired in this prototype.';};
+$('chk').onclick=()=>{$('msg').textContent='The live engine checks here; a reversed pair gets its own message (“right words, wrong direction”). Not wired in this prototype.';};
+render();
+</script>
+</body></html>

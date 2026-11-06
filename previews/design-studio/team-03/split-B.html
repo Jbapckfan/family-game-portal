@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Split · Concept B · Facing pages</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.spread{display:grid;gap:0;border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--paper)}
+@media(min-width:760px){.spread{grid-template-columns:1fr 1fr}.page+.page{border-left:1px solid var(--line-2)}}
+.page{padding:18px 18px 16px;cursor:pointer;position:relative}
+.page+.page{border-top:1px solid var(--line-2)}
+@media(min-width:760px){.page+.page{border-top:0}}
+.page.active{background:var(--paper);box-shadow:inset 0 4px 0 var(--accent)}
+.page:not(.active){background:var(--bg-2)}
+.pg-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.num{font:800 44px/1 var(--serif);color:var(--line-2)}
+.page.active .num{color:var(--accent)}
+.pg-state{font:600 13px/1 var(--sans);color:var(--muted)}
+.clue{margin:8px 0 14px;font:600 clamp(24px,5.4vw,30px)/1.2 var(--serif)}
+.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.slot{height:56px;border:1.5px solid var(--line-2);border-radius:8px;background:#fff;font:800 clamp(22px,6vw,28px)/1 var(--sans);cursor:pointer}
+.page.active .slot.next{border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-wash)}
+.slot.filled{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media(max-width:759px){
+ .page:not(.active) .clue{font-size:17px;margin:4px 0 8px;font-family:var(--sans);font-weight:600;color:var(--ink-2)}
+ .page:not(.active) .slot{height:36px;font-size:18px}
+ .page:not(.active) .num{font-size:28px}
+}
+.pg-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.def{font-size:14px;padding:0;min-height:44px}
+.dock{margin-top:16px;padding:14px;border-radius:16px;background:#e3ebf2}
+.dock-head{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--ink-2);margin-bottom:10px;flex-wrap:wrap}
+.dock-head b{color:var(--ink)}
+.rack{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media(min-width:520px){.rack{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}}
+.tile{height:clamp(46px,12vw,58px);border:0;border-radius:8px;background:#fff;font:800 clamp(20px,5.4vw,26px)/1 var(--sans);box-shadow:0 1px 0 #fff inset,0 3px 0 #b8c9d6;cursor:pointer}
+.tile:disabled{background:transparent;box-shadow:inset 0 0 0 1.5px #c7d5e0;color:transparent}
+.target{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--accent-ink)}
+.actions{margin-top:12px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Split · B — Facing pages · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/deepseek-split.svg" alt=""><div class="titles"><p class="kicker">Two clues · sixteen tiles</p><h1>Split</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main id="board" tabindex="0" aria-label="Split. Choose a page, then tap or type rack letters.">
+ <div class="spread" id="spread"></div>
+ <div class="dock">
+  <div class="dock-head"><span class="target" id="target">→ Letters go to Word 1</span><span><b id="placed">0 / 12</b> placed · 4 stay behind · 0 checks</span></div>
+  <div class="rack" id="rack" role="group" aria-label="Letter rack"></div>
+  <div class="row-actions actions"><button class="btn" id="undo">Undo</button><button class="btn" id="clear">Clear</button><button class="btn btn-primary" id="check">Check both</button></div>
+ </div>
+ <p class="msg" id="msg" role="status">Tap a page to aim the rack at it. On phones the other page folds to a compact strip.</p>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Split</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const R='RAOEBGTCNRHUEIDO'.split(''),C=['Sharp without a blade.','Broken at someone’s best.'];
+let rows=[[],[]],active=0,stack=[];const $=id=>document.getElementById(id),used=()=>rows.flat();
+function render(){
+ $('spread').innerHTML=[0,1].map(r=>{const on=r===active,n=rows[r].length;return `<section class="page ${on?'active':''}" data-row="${r}" aria-label="Word ${r+1}"><div class="pg-head"><span class="num">${r+1}</span><span class="pg-state">${n}/6 · ${on?'receiving letters':'tap to aim here'}</span></div><p class="clue">${C[r]}</p><div class="slots">${Array.from({length:6},(_,s)=>`<button class="slot ${rows[r][s]!==undefined?'filled':''} ${on&&s===n?'next':''}" data-slot="${r}:${s}" aria-label="Word ${r+1} slot ${s+1}">${rows[r][s]!==undefined?R[rows[r][s]]:''}</button>`).join('')}</div><div class="pg-foot"><button class="btn btn-quiet def">Definition · counts as help</button></div></section>`}).join('');
+ $('rack').innerHTML=R.map((l,i)=>`<button class="tile" data-i="${i}" ${used().includes(i)?'disabled aria-label="placed"':`aria-label="${l}"`}>${l}</button>`).join('');
+ $('target').textContent=`→ Letters go to Word ${active+1}`;const u=used().length;$('placed').textContent=u+' / 12';$('check').disabled=u!==12;$('undo').disabled=$('clear').disabled=!u;}
+function add(i){if(used().includes(i))return;if(rows[active].length===6){if(rows[1-active].length<6)active=1-active;else return;}rows[active].push(i);stack.push(active);if(rows[active].length===6&&rows[1-active].length<6)active=1-active;render();}
+const say=t=>$('msg').textContent=t;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(t){add(+t.dataset.i);return;}
+ if(e.target.closest('.def')){say('Live game: the definition appears on this page and is noted in your result.');return;}
+ const s=e.target.closest('[data-slot]');if(s){const[r,k]=s.dataset.slot.split(':').map(Number);if(rows[r][k]!==undefined)rows[r].splice(k,1);active=r;render();return;}
+ const p=e.target.closest('[data-row]');if(p){active=+p.dataset.row;render();}});
+$('board').onkeydown=e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();active=(e.key==='ArrowUp'||e.key==='ArrowLeft')?0:1;render();}
+ else if(/^[a-z]$/i.test(e.key)){const i=R.findIndex((c,i)=>c===e.key.toUpperCase()&&!used().includes(i));if(i<0)say(`No ${e.key.toUpperCase()} left.`);else add(i);}
+ else if(e.key==='Backspace'){e.preventDefault();$('undo').click();}};
+$('undo').onclick=()=>{const r=stack.pop();if(r!==undefined){rows[r].pop();active=r;}render();};
+$('clear').onclick=()=>{rows=[[],[]];stack=[];active=0;render();};
+$('check').onclick=()=>say('Prototype: the live game checks both pages together and reports how many fit.');
+render();
+</script>
+</body></html>

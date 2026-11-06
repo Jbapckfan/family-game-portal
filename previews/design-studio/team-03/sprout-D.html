@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprout · Concept D · Trailing planter</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:540px;margin:0 auto}
+.hook{width:2px;height:22px;margin:0 auto;background:#9fb3c2}
+.planter{position:relative;z-index:2;margin:0 6px;padding:10px 14px 14px;border-radius:14px 14px 30px 30px;background:linear-gradient(#f4f7f9,#e1e9ef);border:1px solid #b5c7d4;box-shadow:0 14px 20px -18px rgba(14,34,50,.6)}
+.planter-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font:700 11px/1.2 var(--mono);letter-spacing:.1em;color:#5b7385;margin-bottom:8px;flex-wrap:wrap}
+.soilbed{display:flex;gap:10px;justify-content:center;padding:8px;border-radius:999px;background:#d4dfe6;box-shadow:inset 0 3px 6px rgba(14,34,50,.18)}
+.peb{width:50px;height:50px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff,#e8f2e3 70%);box-shadow:0 3px 0 #9fbfa9;font:800 22px/1 var(--sans);color:#123d2e;cursor:pointer}
+.peb:disabled{opacity:.3}
+.peb.used{visibility:hidden}
+.vines{margin-top:-14px}
+.vines svg{width:100%;height:auto}
+.vine{fill:none;stroke:#2b6650;stroke-width:3;stroke-linecap:round}
+.node{fill:#245c48}
+.node.add{fill:#a5d48e;stroke:#3f7d5f;stroke-width:1.5}
+.nt{font:800 22px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.nt.add{fill:#123d2e}
+.lfv{fill:#4f8f67}
+.gv{fill:none;stroke:#8ab89a;stroke-width:2;stroke-dasharray:4 5}
+.gn{fill:#fff;stroke:#5c9a72;stroke-width:1.6;stroke-dasharray:4 3}
+.gn.f{fill:#e3f2dc;stroke-dasharray:none}.gn.fs{fill:#a5d48e}
+.gt{font:800 22px var(--sans);fill:#123d2e;text-anchor:middle;dominant-baseline:central}
+.fut{fill:none;stroke:#c3d2dc;stroke-width:1.5;stroke-dasharray:2 7}
+.lab{font:700 12px var(--mono);fill:#7a8f9f;text-anchor:middle}
+.drop .vine{stroke-dasharray:400;animation:spool 1s ease-out both}
+.drop .n{animation:pop .35s ease-out both}
+.drop .lfv{animation:pop .4s ease-out both}
+@keyframes spool{from{stroke-dashoffset:400}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}}
+.drop .n,.drop .lfv{transform-box:fill-box;transform-origin:center}
+.note{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--ink-2);margin-top:4px}
+.panel{margin-top:10px;padding:14px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
+.panel h3{margin:0 0 8px;font:700 11px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.rack{display:flex;gap:6px;flex-wrap:wrap}
+.tile{width:48px;height:52px;border-radius:10px;border:1.5px solid #9fbfa9;background:#fff;font:800 22px/1 var(--sans);cursor:pointer;color:#123d2e}
+.tile:disabled{opacity:.28}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.quiet{display:flex;gap:4px;flex-wrap:wrap}.quiet .btn{font-size:14px}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Sprout · D — Trailing planter · visual prototype; sample growth words derived for illustration</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-sprout.svg" alt=""><div class="titles"><p class="kicker">Growing anagrams</p><h1>Sprout</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <div class="hook" aria-hidden="true"></div>
+ <div class="planter"><div class="planter-head"><span>SOIL · ADD EXACTLY ONE</span><span>WILTS 0 / 5 · 3 STEPS TO BLOOM</span></div><div class="soilbed" id="soil" role="group" aria-label="Soil letters"></div></div>
+ <div class="vines"><svg viewBox="0 0 360 400" role="img" aria-label="Vines trailing from the planter. Each vine is one accepted word read top to bottom: ALL, ALLY, RALLY. A dashed six-letter vine is being built.">
+  <g id="v"></g></svg></div>
+ <div class="note"><span>Vines read downward. A pale node is the soil letter that word added.</span><button class="btn btn-quiet" id="replay" style="min-height:44px">▶ Replay last vine</button></div>
+ <div class="panel">
+  <h3>USE EVERY LETTER OF THE LONGEST VINE · RALLY</h3><div class="rack" id="word"></div>
+  <p class="msg" id="status"></p>
+  <div class="row-actions"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="grow">Grow</button></div>
+  <div class="quiet"><button class="btn btn-quiet">Undo growth</button><button class="btn btn-quiet">Restart</button><button class="btn btn-quiet">Which letter? · 1 wilt</button></div>
+  <p class="msg" id="msg" role="status">Picked letters drop into the dashed vine from the top.</p>
+ </div>
+</main>
+<footer class="app-foot"><span>Undo and Restart keep wilts</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Sprout</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const X={3:36,4:93,5:150,6:207,7:264,8:321},T0=34,STEP=45;
+const grown=[['ALL',-1],['ALLY',3],['RALLY',0]],cur='RALLY',soil=['M','N','O'];let typed=[];const $=id=>document.getElementById(id);
+const sway=(x,k)=>x+(k%2?4:-4);
+function vinePath(x,len){let d=`M${x} 0`;for(let k=0;k<len;k++){const y=T0+k*STEP;d+=` Q${x+(k%2?10:-10)} ${y-STEP/2} ${sway(x,k)} ${y}`;}return d+` q${len%2?-6:6} 14 0 24`;}
+function render(){let h='';
+ [7,8].forEach(l=>h+=`<path class="fut" d="M${X[l]} 0 V${T0+(l-1)*STEP+10}"/><text class="lab" x="${X[l]}" y="${T0+(l-1)*STEP+30}">${l}</text>`);
+ const t=typed.map(o=>o.s==='w'?cur[o.i]:soil[o.i]);
+ h+=`<path class="gv" d="${vinePath(X[6],6)}"/>`+[...Array(6)].map((_,k)=>{const y=T0+k*STEP,x=sway(X[6],k);return `<circle class="gn ${t[k]?'f':''} ${typed[k]?.s==='s'?'fs':''}" cx="${x}" cy="${y}" r="20"/><text class="gt" x="${x}" y="${y}">${t[k]||''}</text>`}).join('')+`<text class="lab" x="${X[6]}" y="${T0+5*STEP+40}">6</text>`;
+ grown.forEach(([w,a])=>{const l=w.length,x=X[l];h+=`<g data-len="${l}"><path class="vine" d="${vinePath(x,l)}"/>`+[...w].map((c,k)=>{const y=T0+k*STEP,cx=sway(x,k),side=k%2?1:-1;return `<path class="lfv" style="animation-delay:${.3+k*.12}s" d="M${cx} ${y+22} q${side*16} 2 ${side*20} 14 q${-side*14} 2 ${-side*20} -14z"/><g class="n" style="animation-delay:${.2+k*.12}s"><circle class="node ${k===a?'add':''}" cx="${cx}" cy="${y}" r="20"/><text class="nt ${k===a?'add':''}" x="${cx}" y="${y}">${c}</text></g>`}).join('')+'</g>';});
+ $('v').innerHTML=h;
+ const soilOn=typed.some(o=>o.s==='s');
+ $('soil').innerHTML=soil.map((c,i)=>`<button class="peb ${typed.some(o=>o.s==='s'&&o.i===i)?'used':''}" data-s="s" data-i="${i}" ${soilOn?'disabled':''} aria-label="Soil ${c}">${c}</button>`).join('');
+ $('word').innerHTML=[...cur].map((c,i)=>`<button class="tile" data-s="w" data-i="${i}" ${typed.some(o=>o.s==='w'&&o.i===i)?'disabled':''}>${c}</button>`).join('');
+ $('status').textContent=`${typed.length} of 6 letters · ${soilOn?'soil letter chosen':'pick one pebble from the soil'}`;$('grow').disabled=typed.length!==6;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b&&!b.disabled){typed.push({s:b.dataset.s,i:+b.dataset.i});render();}});
+document.addEventListener('keydown',e=>{if(/^[a-z]$/i.test(e.key)){const c=e.key.toUpperCase();let i=[...cur].findIndex((x,i)=>x===c&&!typed.some(o=>o.s==='w'&&o.i===i));if(i>=0){typed.push({s:'w',i});render();return;}i=soil.indexOf(c);if(i>=0&&!typed.some(o=>o.s==='s')){typed.push({s:'s',i});render();}}else if(e.key==='Backspace'&&typed.length){typed.pop();render();}});
+$('del').onclick=()=>{typed.pop();render()};$('clr').onclick=()=>{typed=[];render()};
+$('grow').onclick=()=>$('msg').textContent='Prototype: the live game checks the word; if accepted the dashed vine fills and unspools.';
+$('replay').onclick=()=>{const g=$('v').querySelector('[data-len="5"]');g.classList.remove('drop');void g.getBoundingClientRect();requestAnimationFrame(()=>g.classList.add('drop'));};
+render();setTimeout(()=>$('replay').click(),300);
+</script>
+</body></html>

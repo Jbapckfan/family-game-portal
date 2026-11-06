@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quadra · Concept B · Composer and dimples</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.stage{max-width:520px;margin:0 auto}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-radius:14px;background:var(--ink);color:#fff}
+.cat small{display:block;font:700 10px/1 var(--mono);letter-spacing:.18em;color:#9cc0d2}
+.cat strong{font:800 clamp(24px,6vw,30px)/1.1 var(--sans)}
+.cat .pips{display:flex;gap:6px;align-items:center;font-size:13px;color:#cfe2ec}
+.cat .pips i{width:12px;height:12px;border-radius:50%;background:#fff}
+.found{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 0}
+.found span{height:36px;border-radius:8px;border:1.5px dashed var(--line-2);display:flex;align-items:center;justify-content:center;font:700 12px/1 var(--mono);color:var(--muted)}
+.composer{margin:18px 0 0;padding:14px;border-radius:18px;background:var(--paper);border:1px solid var(--line-2);box-shadow:0 20px 28px -26px rgba(14,34,50,.6)}
+.composer-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.slot{aspect-ratio:1.1;border-radius:12px;background:#eaf1f6;box-shadow:inset 0 2px 4px rgba(14,34,50,.15);display:flex;align-items:center;justify-content:center;font:850 clamp(30px,9vw,44px)/1 var(--sans);border:0;cursor:pointer}
+.slot.f{background:#fff;box-shadow:0 6px 0 #b6c8d5,0 10px 14px -8px rgba(14,34,50,.4);animation:lift .22s ease-out}
+@keyframes lift{from{transform:translateY(40px) scale(.8);opacity:.3}to{transform:none;opacity:1}}
+.comp-meta{display:flex;justify-content:space-between;margin-top:10px;font-size:14px;color:var(--muted)}
+.field{margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px;border-radius:20px;background:#dfe8ef;box-shadow:inset 0 2px 6px rgba(14,34,50,.12)}
+.t{aspect-ratio:1;border:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#eef3f7 70%);box-shadow:0 4px 0 #b4c6d3,0 8px 12px -6px rgba(14,34,50,.35);font:800 clamp(24px,7vw,34px)/1 var(--sans);cursor:pointer;transition:transform .12s}
+.t:hover{transform:translateY(-2px)}
+.t.dimple{background:#d2dde6;box-shadow:inset 0 3px 6px rgba(14,34,50,.25);color:transparent}
+.actions{margin-top:14px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2);text-align:center}
+.lockinfo{display:flex;gap:10px;align-items:center;margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.lockinfo i{flex:none;width:26px;height:26px;border-radius:50%;background:#2c7a6a;box-shadow:inset 0 2px 3px rgba(0,0,0,.25)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Quadra · B — Composer and dimples · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/qwen-quadra.svg" alt=""><div class="titles"><p class="kicker">Four of a kind</p><h1>Quadra</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="stage" id="board" tabindex="0" aria-label="Quadra composer. Tap or type letters.">
+ <div class="cat"><div><small>CATEGORY</small><strong>Kitchen verbs</strong></div><span class="pips" aria-label="4 chances left"><i></i><i></i><i></i><i></i>4 chances</span></div>
+ <div class="found" aria-label="Found words: none yet"><span>WORD 1</span><span>WORD 2</span><span>WORD 3</span><span>WORD 4</span></div>
+ <div class="composer"><div class="composer-row" id="comp"></div><div class="comp-meta"><span id="cm">0 / 4</span><span>tap a letter here to send it back</span></div></div>
+ <div class="field" id="field" role="group" aria-label="Letter field"></div>
+ <div class="row-actions actions"><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="lock">Lock word</button></div>
+ <p class="msg" id="msg" role="status">Tiles lift out of the field into the composer and leave a dimple behind.</p>
+ <p class="lockinfo"><i aria-hidden="true"></i>A locked word’s tiles stay in the field, set deep in one of four muted tones, so the remaining letters read as a smaller puzzle.</p>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Quadra</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const T='HISAPAREIDETCWEB'.split('');let sel=[0,10];const $=id=>document.getElementById(id);
+function render(){
+ $('comp').innerHTML=[0,1,2,3].map(k=>sel[k]!==undefined?`<button class="slot f" data-back="${k}" aria-label="${T[sel[k]]}, return to field">${T[sel[k]]}</button>`:`<span class="slot" aria-hidden="true"></span>`).join('');
+ $('field').innerHTML=T.map((l,i)=>sel.includes(i)?`<span class="t dimple" aria-hidden="true">${l}</span>`:`<button class="t" data-i="${i}" aria-label="${l}, tile ${i+1}">${l}</button>`).join('');
+ $('cm').textContent=sel.length+' / 4';$('lock').disabled=sel.length!==4;$('clr').disabled=!sel.length;}
+function tap(i){if(sel.length<4&&!sel.includes(i)){sel.push(i);render();}else if(sel.length===4)$('msg').textContent='The composer holds four. Send one back or lock.';}
+$('field').onclick=e=>{const b=e.target.closest('[data-i]');if(b)tap(+b.dataset.i)};
+$('comp').onclick=e=>{const b=e.target.closest('[data-back]');if(b){sel.splice(+b.dataset.back,1);render();}};
+$('board').onkeydown=e=>{if(e.target.closest('button')&&(e.key==='Enter'||e.key===' '))return;
+ if(/^[a-z]$/i.test(e.key)){const i=T.findIndex((c,i)=>c===e.key.toUpperCase()&&!sel.includes(i));if(i>=0)tap(i);}
+ else if(e.key==='Backspace'){e.preventDefault();sel.pop();render();}else if(e.key==='Escape'){sel=[];render();}else if(e.key==='Enter'&&sel.length===4)$('lock').click();};
+$('clr').onclick=()=>{sel=[];render()};$('lock').onclick=()=>$('msg').textContent='Prototype: the live game checks the word; a miss dims one chance.';
+render();
+</script>
+</body></html>

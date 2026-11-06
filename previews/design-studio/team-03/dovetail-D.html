@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dovetail · Concept D · Spotlight</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:720px;margin:0 auto;display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px}
+@media(min-width:700px){.wrap{grid-template-columns:90px minmax(0,1fr);gap:28px}}
+.map{display:grid;gap:6px;align-content:start;position:sticky;top:12px}
+.mrow{display:flex;gap:2px;min-height:44px;align-items:center;border:0;background:transparent;cursor:pointer;padding:0 4px;border-radius:6px}
+.mrow i{width:7px;height:16px;border-radius:2px;background:#cbd8e2}
+@media(min-width:700px){.mrow i{width:12px}}
+.mrow.given i{background:var(--ink)}
+.mrow.on{background:var(--accent-wash)}
+.mrow.on i{background:var(--accent)}
+.spot{display:grid;gap:4px}
+.nb{display:flex;align-items:center;gap:10px;color:var(--muted);font:700 clamp(20px,5vw,26px)/1 var(--mono);letter-spacing:.18em;min-height:50px;padding:0 4px}
+.nb small{font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--muted);min-width:46px}
+.nb.given{color:var(--ink)}
+.join{font:600 13px/1 var(--mono);color:var(--accent-ink);padding:2px 4px 2px 60px;letter-spacing:.06em}
+.focus{position:relative;padding:16px 14px;border-radius:16px;background:var(--paper);border:2px solid var(--accent);box-shadow:0 22px 30px -26px rgba(10,106,138,.6)}
+.focus small{display:block;font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--accent-ink);margin-bottom:10px}
+.fcells{display:flex;gap:6px}
+.fcells span{flex:1 1 0;max-width:62px;aspect-ratio:.85;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#eef4f8;font:850 clamp(28px,8vw,44px)/1 var(--sans)}
+.fcells span.cur{background:#fff;box-shadow:inset 0 0 0 2px var(--accent)}
+.focus input{position:absolute;inset:0;opacity:0;font-size:16px;cursor:text}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.hud{grid-column:1/-1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:14px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Dovetail · D — Spotlight · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-dovetail.svg" alt=""><div class="titles"><p class="kicker">Compound chains</p><h1>Dovetail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <p class="hud"><span><b>0 / 6</b> placed · 6 misses left</span><span>Word above + this word, and this word + word below, must each spell a word.</span></p>
+ <nav class="map" id="map" aria-label="Chain overview"></nav>
+ <section>
+  <div class="spot" id="spot"></div>
+  <div class="nav"><button class="btn" id="prev">↑ Row above</button><button class="btn" id="next">Row below ↓</button></div>
+  <div class="row-actions" style="margin-top:8px"><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="fit">Fit word</button></div>
+  <p class="msg" id="msg" role="status">Only the row you are solving is large. Its two neighbours sit directly above and below; the map on the left shows the whole chain.</p>
+ </section>
+</main>
+<footer class="app-foot"><span>Reveal a letter · costs 1 miss</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Dovetail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const L=[4,4,3,4,3,5,5,4],W=['SNAP','','','','','','','HOOD'];let active=1,typed='';const $=id=>document.getElementById(id);
+const txt=r=>W[r]||'·'.repeat(L[r]);
+function render(){
+ $('map').innerHTML=L.map((n,r)=>`<button class="mrow ${r===0||r===7?'given':''} ${r===active?'on':''}" data-row="${r}" aria-label="Row ${r+1}, ${n} letters${W[r]?', '+W[r]:''}">${'<i></i>'.repeat(n)}</button>`).join('');
+ const a=active,up=a-1,dn=a+1,cur=typed;
+ $('spot').innerHTML=`<div class="nb ${up===0?'given':''}"><small>ROW ${up+1}</small>${txt(up)}</div>
+ <div class="join" aria-hidden="true">${W[up]||'····'}+${cur||'····'}</div>
+ <div class="focus"><small>ROW ${a+1} · ${L[a]} LETTERS · TAP TO TYPE</small><div class="fcells">${Array.from({length:L[a]},(_,k)=>`<span class="${k===cur.length?'cur':''}">${cur[k]||''}</span>`).join('')}</div><input id="inp" maxlength="${L[a]}" aria-label="Row ${a+1}, ${L[a]} letters" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${cur}"></div>
+ <div class="join" aria-hidden="true">${cur||'····'}+${W[dn]||'·'.repeat(L[dn])}</div>
+ <div class="nb ${dn===7?'given':''}"><small>ROW ${dn+1}</small>${txt(dn)}</div>`;
+ $('inp').oninput=()=>{typed=$('inp').value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,L[active]);render();$('inp').focus();};
+ $('prev').disabled=active===1;$('next').disabled=active===6;$('fit').disabled=typed.length!==L[active];}
+function go(n){active=Math.max(1,Math.min(6,n));typed='';render();}
+$('map').onclick=e=>{const b=e.target.closest('[data-row]');if(b)go(+b.dataset.row)};
+$('prev').onclick=()=>go(active-1);$('next').onclick=()=>go(active+1);$('clr').onclick=()=>{typed='';render()};
+$('fit').onclick=()=>$('msg').textContent='Prototype: the live game checks this word and both joins.';
+render();
+</script>
+</body></html>

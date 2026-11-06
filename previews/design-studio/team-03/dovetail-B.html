@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dovetail · Concept B · Seven joins</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:640px;margin:0 auto}
+.lede{margin:0 0 16px;font:600 clamp(19px,4.6vw,22px)/1.35 var(--sans)}
+.lede span{color:var(--muted);font-weight:500;font-size:15px;display:block;margin-top:4px}
+.joins{display:grid;gap:8px;counter-reset:j}
+.join{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:stretch;background:var(--paper);border:1px solid var(--line-2);border-radius:12px;overflow:hidden}
+.join .num{display:flex;align-items:center;justify-content:center;background:var(--bg-2);border-right:1px solid var(--line);font:700 12px/1 var(--mono);color:var(--muted)}
+.pair{display:flex;align-items:center;gap:0;padding:8px 10px;flex-wrap:nowrap;min-width:0}
+.half{display:flex;gap:3px;padding:4px;border-radius:8px;border:0;background:transparent;cursor:pointer;min-height:48px;align-items:center}
+.half span{width:clamp(22px,6.4vw,32px);height:38px;display:flex;align-items:center;justify-content:center;border-bottom:2px solid var(--line-2);font:800 clamp(17px,4.8vw,24px)/1 var(--sans)}
+@media(max-width:480px){.join{grid-template-columns:28px minmax(0,1fr)}.pair{padding:6px 4px}.half{gap:2px;padding:4px 3px}.half span{width:19px;font-size:17px}.dt{margin:0}}
+@media(min-width:401px) and (max-width:480px){.half span{width:24px;font-size:20px}}
+.half.carry span{color:#7d93a4;border-color:#e0e8ee}
+.half.given span{border-color:transparent;color:var(--ink)}
+.half.given{cursor:default}
+.half.sel{background:var(--accent-wash);box-shadow:inset 0 0 0 2px var(--accent)}
+.half.sel span{border-color:var(--accent);color:var(--ink)}
+.dt{flex:none;width:14px;height:30px;margin:0 2px}
+.dt path{fill:var(--line-2)}
+.half.sel+.dt path,.dt.hot path{fill:var(--accent)}
+.entry{margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.entry input{min-height:52px;border:1.5px solid var(--line-2);border-radius:10px;padding:0 14px;font:800 24px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;min-width:0;background:#fff}
+.entry label{grid-column:1/-1;font:700 13px/1 var(--sans);color:var(--ink-2)}
+.meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:14px;color:var(--muted)}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Dovetail · B — Seven joins · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-dovetail.svg" alt=""><div class="titles"><p class="kicker">Compound chains</p><h1>Dovetail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <p class="lede">Seven joins, six missing words.<span>Every missing word appears twice: as the end of one join and the start of the next. Fill it once; both places update.</span></p>
+ <div class="joins" id="joins"></div>
+ <div class="entry"><label for="inp" id="lab">Word 2 · 4 letters</label><input id="inp" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn btn-primary" id="fit">Fit word</button></div>
+ <p class="meta"><span>0 / 6 placed · 6 misses left</span><span>Reveal a letter costs 1 miss</span></p>
+ <p class="msg" id="msg" role="status">Tap any blank half to choose that word. Both of its joins light up.</p>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Dovetail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const L=[4,4,3,4,3,5,5,4],W=['SNAP','','','','','','','HOOD'];let active=1,typed='';const $=id=>document.getElementById(id);
+const tail='<svg class="dt" viewBox="0 0 14 30" aria-hidden="true"><path d="M0 9 L14 3 L14 27 L0 21Z"/></svg>';
+function half(w,role){const g=w===0||w===7,txt=W[w]||(w===active?typed:'');
+ return `<button class="half ${role} ${g?'given':''} ${w===active?'sel':''}" data-w="${w}" ${g?'tabindex="-1"':''} aria-label="Word ${w+1}${g?', given '+W[w]:', '+L[w]+' letters'}">${Array.from({length:L[w]},(_,k)=>`<span>${txt[k]||''}</span>`).join('')}</button>`;}
+function render(){
+ $('joins').innerHTML=Array.from({length:7},(_,j)=>`<div class="join"><span class="num">${j+1}</span><div class="pair">${half(j,'carry')}${tail}${half(j+1,'new')}</div></div>`).join('');
+ $('lab').textContent=`Word ${active+1} · ${L[active]} letters · appears in joins ${active} and ${active+1}`;$('inp').maxLength=L[active];$('fit').disabled=typed.length!==L[active];}
+$('joins').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;const w=+b.dataset.w;if(w===0||w===7)return;active=w;typed='';$('inp').value='';render();$('inp').focus();};
+$('inp').oninput=()=>{typed=$('inp').value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,L[active]);$('inp').value=typed;render();};
+$('fit').onclick=()=>$('msg').textContent='Prototype: the live game checks both joins this word belongs to.';
+render();
+</script>
+</body></html>

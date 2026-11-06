@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hunch A · Peg board — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:520px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.top b{font-size:18px}
+.board{padding:14px 12px;border-radius:22px;background:linear-gradient(180deg,#f6f8fa,#e4eaef);border:1px solid #c5d1db;box-shadow:inset 0 1px 0 #fff,0 22px 30px -24px rgba(14,34,50,.7)}
+.row{display:grid;grid-template-columns:22px repeat(5,minmax(0,1fr)) 62px;gap:6px;align-items:center;padding:5px 0}
+.row+.row{border-top:1px solid #d3dce4}
+.n{font:600 12px var(--mono);color:var(--muted);text-align:center}
+.peg{aspect-ratio:1;max-height:54px;border-radius:50%;display:grid;place-items:center;font-size:clamp(20px,6vw,26px);font-weight:800;background:#e9eef2;box-shadow:inset 0 2px 4px rgba(14,34,50,.2)}
+.peg.f{background:radial-gradient(circle at 38% 30%,#fff,#e8eef3 70%);box-shadow:0 3px 0 #a9bac8,0 6px 8px -4px rgba(14,34,50,.4)}
+.row.now{background:rgba(28,92,188,.07);border-radius:12px;box-shadow:inset 0 0 0 2px rgba(28,92,188,.35)}
+.row.now .peg.f{box-shadow:0 3px 0 #8ba7cb}
+.row.now .peg.caret{box-shadow:inset 0 2px 4px rgba(14,34,50,.2),0 0 0 2px var(--accent)}
+.well{display:grid;grid-template-columns:repeat(3,14px);grid-template-rows:14px 14px;gap:4px;justify-content:center;padding:6px;border-radius:10px;background:#dbe3ea;box-shadow:inset 0 1px 3px rgba(14,34,50,.25)}
+.well i{width:14px;height:14px;border-radius:50%;background:#c9d4dd;box-shadow:inset 0 1px 2px rgba(14,34,50,.3)}
+.well i.b{background:radial-gradient(circle at 35% 30%,#5b6b78,#0d1820 70%);box-shadow:0 1px 1px rgba(0,0,0,.4)}
+.well i.w{background:radial-gradient(circle at 35% 30%,#fff,#dfe5ea 75%);box-shadow:0 0 0 1px #8a9caa,0 1px 1px rgba(0,0,0,.25)}
+.well.none{position:relative}
+.well.none::after{content:"–";position:absolute;inset:0;display:grid;place-items:center;font-weight:800;color:var(--muted)}
+.key{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:14px 0;font-size:14px;color:var(--ink-2)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.kb{display:grid;gap:6px;margin-top:6px}
+.kr{display:grid;gap:4px}
+.kr button{height:52px;min-width:0;padding:0;border-radius:8px;border:1px solid #bccbd7;background:#fff;font-weight:700;font-size:17px;cursor:pointer;box-shadow:0 2px 0 #c8d4de}
+.kr button.w{font-size:13px}
+.r1{grid-template-columns:repeat(10,minmax(0,1fr))}.r2{grid-template-columns:.5fr repeat(9,minmax(0,1fr)) .5fr}.r3{grid-template-columns:1.6fr repeat(7,minmax(0,1fr)) 1.6fr}
+.explain{margin-top:16px;border-radius:14px;background:#fff;border:1px solid var(--line);padding:14px 16px;font-size:15px;color:var(--ink-2)}
+.explain[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Hunch A — Peg board</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-hunch.svg" alt=""><div><p class="eyebrow">Five-letter deduction</p><h1 class="gname">Hunch</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="false">Daily</button><button aria-pressed="true">Practice</button></div><span class="meta">Illustrative practice state</span></div>
+    <div class="top"><b>Guess 4 of 6</b><button class="btn quiet">Reveal a letter</button></div>
+
+    <section class="board" aria-label="Guess board">
+      <div class="row"><span class="n">1</span><span class="peg f">A</span><span class="peg f">D</span><span class="peg f">I</span><span class="peg f">E</span><span class="peg f">U</span><span class="well none" aria-label="No matches"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="row"><span class="n">2</span><span class="peg f">S</span><span class="peg f">O</span><span class="peg f">U</span><span class="peg f">T</span><span class="peg f">H</span><span class="well" aria-label="1 exact, 2 elsewhere"><i class="b"></i><i class="w"></i><i class="w"></i><i></i><i></i></span></div>
+      <div class="row"><span class="n">3</span><span class="peg f">S</span><span class="peg f">T</span><span class="peg f">O</span><span class="peg f">M</span><span class="peg f">P</span><span class="well" aria-label="3 exact, 1 elsewhere"><i class="b"></i><i class="b"></i><i class="b"></i><i class="w"></i><i></i></span></div>
+      <div class="row now"><span class="n">4</span><span class="peg f">S</span><span class="peg f">T</span><span class="peg caret"></span><span class="peg"></span><span class="peg"></span><span class="well" aria-label="Not yet scored"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="row"><span class="n">5</span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="well"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="row"><span class="n">6</span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="peg"></span><span class="well"><i></i><i></i><i></i><i></i><i></i></span></div>
+    </section>
+    <div class="key"><span><i style="background:#0d1820"></i>Black · right letter, right place</span><span><i style="background:#fff;box-shadow:0 0 0 1px #8a9caa"></i>White · in the word, elsewhere</span></div>
+    <div style="text-align:center"><button class="demo-toggle" id="why" aria-pressed="false" aria-controls="ex">Why are the pegs not under letters?</button></div>
+    <div class="explain" id="ex" hidden>Pegs are sorted — blacks first, then whites — and never line up with a letter. Guess 3 tells you three letters are exactly placed and one more is in the word somewhere else, but not which. Repeated letters count only as often as they appear in the answer.</div>
+    <div class="kb" aria-label="Keyboard"><div class="kr r1"></div><div class="kr r2"></div><div class="kr r3"></div></div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: a physical deduction board — neutral letter pegs, and a recessed well of five key-peg holes filled black-then-white. No per-letter colour anywhere, which keeps Hunch clearly unlike colour-tile word games. The answer behind this illustrative practice state is not shown; dot counts are computed consistently for it.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const why=document.getElementById('why'),ex=document.getElementById('ex');why.onclick=()=>{ex.hidden=!ex.hidden;why.setAttribute('aria-pressed',!ex.hidden);};
+['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach((r,ri)=>{const row=document.querySelectorAll('.kr')[ri];if(ri===1)row.appendChild(document.createElement('span'));if(ri===2){const b=document.createElement('button');b.className='w';b.textContent='Enter';row.appendChild(b);}r.split('').forEach(k=>{const b=document.createElement('button');b.textContent=k;row.appendChild(b);});if(ri===2){const b=document.createElement('button');b.className='w';b.textContent='⌫';b.setAttribute('aria-label','Delete');row.appendChild(b);}});
+</script>
+</body>
+</html>

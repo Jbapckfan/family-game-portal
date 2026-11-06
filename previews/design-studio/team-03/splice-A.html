@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Splice · Concept A · Splicing bench</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:760px;margin:0 auto}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.hud b{font-size:16px}
+.marks{font:600 13px/1 var(--mono);color:var(--ink-2)}
+.bench{padding:16px;border-radius:16px;background:var(--paper);border:1px solid var(--line-2)}
+.bench small{display:block;font:700 11px/1 var(--mono);letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.sockets{display:grid;grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr);gap:8px;align-items:center}
+.sock{min-height:64px;border-radius:10px;border:2px dashed var(--line-2);display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 clamp(20px,5.4vw,28px)/1 var(--sans);padding:6px;min-width:0;overflow-wrap:anywhere}
+.sock span{font:600 11px/1.6 var(--mono);color:var(--muted);letter-spacing:.08em}
+.sock.full{border:2px solid var(--ink);background:#f6f9fb}
+.sock.preview{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash)}
+.flip{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--line-2);background:#fff;font-size:20px;cursor:pointer}
+.readout{margin:12px 0 0;text-align:center;font:800 clamp(22px,6vw,30px)/1.2 var(--mono);letter-spacing:.06em;min-height:36px;color:var(--ink)}
+.readout i{color:var(--accent);font-style:normal}
+.rule{margin:10px 0 0;font-size:14px;color:var(--ink-2);text-align:center}
+.strips{margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:620px){.strips{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:860px){.strips{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.strip{position:relative;height:58px;border:0;background:#fff;font:800 clamp(17px,4.6vw,21px)/1 var(--sans);letter-spacing:.04em;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);box-shadow:inset 0 0 0 1.5px var(--line-2);transition:transform .12s}
+.strip:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 2px var(--ink-2)}
+.strip.s1{background:var(--ink);color:#fff;box-shadow:none}
+.strip small{position:absolute;top:4px;right:16px;font:700 11px/1 var(--mono);color:#8fc5d8}
+.tools{margin-top:12px}
+.done{margin-top:16px;padding:12px 14px;border-radius:12px;border:1px dashed var(--line-2);font-size:14px;color:var(--ink-2)}
+.done b{display:block;font:700 11px/1.6 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Splice · A — Splicing bench · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-splice.svg" alt=""><div class="titles"><p class="kicker">Word-half matching</p><h1>Splice</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <div class="hud"><b>0 / 6 words spliced</b><span class="marks">MISTAKES ○○○○ · 4 LEFT</span></div>
+ <section class="bench" aria-label="Splicing bench">
+  <small>ORDER MATTERS · FIRST HALF, THEN SECOND</small>
+  <div class="sockets"><div class="sock" id="a"></div><button class="flip" id="flip" aria-label="Flip order">⇄</button><div class="sock" id="b"></div></div>
+  <p class="readout" id="read" aria-live="polite"></p>
+  <div class="row-actions" style="margin-top:10px"><button class="btn" id="clr">Deselect</button><button class="btn btn-primary" id="go">Splice</button></div>
+  <p class="rule">Accepted when it is a listed word <b>and</b> every half left over can still find a partner. Any complete valid pairing counts — there is not one secret pairing.</p>
+ </section>
+ <div class="strips" id="strips" role="group" aria-label="Remaining halves"></div>
+ <div class="row-actions tools"><button class="btn" id="shuf">Shuffle</button><button class="btn">Show a safe splice</button></div>
+ <p class="msg" id="msg" role="status">Sample: FRESH is in the first socket. Hover or focus another half to preview the join before committing.</p>
+ <div class="done"><b>SPLICED WORDS</b>Finished words collect here as joined strips. Each can open a short “why accepted” line — in the word list, and it leaves a full pairing — so an unfamiliar word like the one queried in feedback is explained in place.</div>
+</main>
+<footer class="app-foot"><span>Unlisted joins and repeats cost nothing</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Splice</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+let H=['LESS','COLOR','MAN','SOME','RAIN','WATER','FALL','FRESH','BACK','TIME','HORSE','HOME'],sel=[7],hov=null;const $=id=>document.getElementById(id);
+function render(){
+ $('strips').innerHTML=H.map((h,i)=>{const k=sel.indexOf(i);return `<button class="strip ${k>=0?'s1':''}" data-i="${i}" aria-pressed="${k>=0}" aria-label="${h}${k>=0?', selected '+(k?'second':'first'):''}">${h}${k>=0?`<small>${k+1}</small>`:''}</button>`}).join('');
+ const A=sel[0],B=sel[1]??hov;$('a').className='sock'+(A!==undefined?' full':'');$('a').innerHTML=A!==undefined?`<span>FIRST</span>${H[A]}`:'<span>FIRST</span>—';
+ $('b').className='sock'+(sel[1]!==undefined?' full':hov!==null?' preview':'');$('b').innerHTML=B!==undefined&&B!==null?`<span>${sel[1]!==undefined?'SECOND':'PREVIEW'}</span>${H[B]}`:'<span>SECOND</span>—';
+ $('read').innerHTML=A!==undefined?`${H[A]}<i>${B!==undefined&&B!==null?'|':''}</i>${B!==undefined&&B!==null?H[B]:'<i>…</i>'}`:'';
+ $('go').disabled=sel.length!==2;$('flip').disabled=sel.length!==2;}
+$('strips').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const i=+b.dataset.i,k=sel.indexOf(i);if(k>=0)sel.splice(k,1);else if(sel.length<2)sel.push(i);else sel[1]=i;hov=null;render();};
+['mouseover','focusin'].forEach(ev=>$('strips').addEventListener(ev,e=>{const b=e.target.closest('[data-i]');if(!b||sel.length!==1)return;const i=+b.dataset.i;if(sel.includes(i)||hov===i)return;hov=i;render();if(ev==='focusin')$('strips').querySelector(`[data-i="${i}"]`)?.focus({preventScroll:true});}));
+$('strips').addEventListener('mouseleave',()=>{hov=null;render();});
+$('flip').onclick=()=>{sel.reverse();render()};$('clr').onclick=()=>{sel=[];hov=null;render()};
+$('shuf').onclick=()=>{const pick=sel.map(i=>H[i]);H=[...H].sort(()=>Math.random()-.5);sel=pick.map(h=>H.indexOf(h));render();};
+$('go').onclick=()=>$('msg').textContent='Prototype: the live game checks the word list and whether every remaining half keeps a partner.';
+render();
+</script>
+</body></html>

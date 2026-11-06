@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quadra · Concept C · Letter inventory</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.top h2{margin:0;font:800 clamp(28px,7vw,40px)/1 var(--sans);letter-spacing:-.02em}
+.top small{display:block;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--muted);margin-bottom:6px}
+.misses{font:600 14px/1 var(--mono);color:var(--ink-2)}
+.entry{margin:20px 0 6px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:360px}
+.entry span{height:72px;display:flex;align-items:center;justify-content:center;font:850 clamp(36px,10vw,48px)/1 var(--mono);background:var(--paper);border:1.5px solid var(--line-2);border-radius:10px}
+.entry span.caret{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-wash)}
+.entry-note{margin:0 0 14px;font-size:14px;color:var(--muted)}
+.tabs{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--paper)}
+.tabs button{min-height:44px;padding:0 14px;border:0;background:transparent;font-weight:650;font-size:14px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.inv{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.k{position:relative;height:64px;border:1.5px solid var(--line-2);border-radius:10px;background:#fff;font:800 28px/1 var(--sans);cursor:pointer}
+.k:hover{border-color:var(--ink)}
+.k .n{position:absolute;top:5px;right:6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--ink);color:#fff;font:700 12px/20px var(--mono)}
+.k.stack{box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 var(--line-2)}
+.k.stack3{box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 var(--line-2),6px 6px 0 -1px #fff,6px 6px 0 0 var(--line-2)}
+.k:disabled{opacity:.3;cursor:default}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px}
+.grid4 .k{height:auto;aspect-ratio:1}
+.solved{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media(min-width:620px){.solved{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.solved span{height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--bg-2);border:1px solid var(--line);font:600 14px/1 var(--mono);color:var(--muted)}
+.actions{margin-top:16px;max-width:520px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Quadra · C — Letter inventory · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/qwen-quadra.svg" alt=""><div class="titles"><p class="kicker">Four of a kind</p><h1>Quadra</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap" id="board" tabindex="0" aria-label="Quadra. Type a four-letter word, Enter locks.">
+ <div class="top"><div><small>CATEGORY</small><h2>Kitchen verbs</h2></div><span class="misses">MISSES ○○○○ · 4 LEFT</span></div>
+ <div class="entry" id="entry" aria-live="polite"></div>
+ <p class="entry-note">Type on your keyboard, or tap letters below. Backspace deletes · Enter locks.</p>
+ <div class="tabs" role="group" aria-label="Tile view"><button id="vAZ" aria-pressed="true">A–Z stacks</button><button id="vGrid" aria-pressed="false">Board order</button></div>
+ <div id="inv"></div>
+ <div class="row-actions actions"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="lock">Lock word</button></div>
+ <p class="msg" id="msg" role="status">A–Z stacks show duplicates as one key with a count (three E tiles, two A, two I). Each copy is still a separate tile.</p>
+ <div class="solved" aria-label="Found words"><span>1 · ····</span><span>2 · ····</span><span>3 · ····</span><span>4 · ····</span></div>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Quadra</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const T='HISAPAREIDETCWEB'.split('');let sel=[],az=true;const $=id=>document.getElementById(id);
+function render(){
+ $('entry').innerHTML=[0,1,2,3].map(k=>`<span class="${k===sel.length?'caret':''}">${sel[k]!==undefined?T[sel[k]]:''}</span>`).join('');
+ if(az){const letters=[...new Set(T)].sort();$('inv').className='inv';$('inv').innerHTML=letters.map(l=>{const all=T.map((c,i)=>c===l?i:-1).filter(i=>i>=0),free=all.filter(i=>!sel.includes(i)).length;return `<button class="k ${all.length===2?'stack':all.length>2?'stack3':''}" data-l="${l}" ${free?'':'disabled'} aria-label="${l}, ${free} of ${all.length} free">${l}${all.length>1?`<span class="n">${free}</span>`:''}</button>`}).join('');}
+ else{$('inv').className='inv grid4';$('inv').innerHTML=T.map((l,i)=>`<button class="k" data-i="${i}" ${sel.includes(i)?'disabled':''} aria-label="${l}, tile ${i+1}">${l}</button>`).join('');}
+ $('lock').disabled=sel.length!==4;$('del').disabled=$('clr').disabled=!sel.length;$('vAZ').setAttribute('aria-pressed',az);$('vGrid').setAttribute('aria-pressed',!az);}
+function pickLetter(l){const i=T.findIndex((c,i)=>c===l&&!sel.includes(i));if(i<0){$('msg').textContent=`No free ${l}.`;return}if(sel.length<4){sel.push(i);render();}}
+$('inv').onclick=e=>{const b=e.target.closest('button');if(!b||sel.length>=4)return;if(b.dataset.l)pickLetter(b.dataset.l);else{sel.push(+b.dataset.i);render();}};
+$('board').onkeydown=e=>{if(e.target.closest('button')&&(e.key==='Enter'||e.key===' '))return;
+ if(/^[a-z]$/i.test(e.key))pickLetter(e.key.toUpperCase());else if(e.key==='Backspace'){e.preventDefault();sel.pop();render();}else if(e.key==='Escape'){sel=[];render();}else if(e.key==='Enter'&&sel.length===4)$('lock').click();};
+$('vAZ').onclick=()=>{az=true;render()};$('vGrid').onclick=()=>{az=false;render()};
+$('del').onclick=()=>{sel.pop();render()};$('clr').onclick=()=>{sel=[];render()};
+$('lock').onclick=()=>$('msg').textContent='Prototype: the live game checks the word. Nothing is counted here.';
+render();
+</script>
+</body></html>

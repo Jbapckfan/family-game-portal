@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twin Hive C · The collection is the comb — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.lay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:center}
+@media(max-width:820px){.lay{grid-template-columns:minmax(0,1fr)}}
+.combwrap h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;text-align:center}
+.comb{--w:min(104px,calc((100vw - 48px)/3.6));--h:calc(var(--w)*1.1547);position:relative;width:calc(var(--w)*3.5 + 8px);height:calc(var(--h)*1.75 + 4px);margin:0 auto}
+.cell{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#cfdae3}
+.cell div{position:absolute;inset:3px;clip-path:inherit;background:#f4f7fa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.cell b{font:800 clamp(13px,3.6vw,17px) var(--mono);letter-spacing:.06em;color:var(--ink)}
+.cell small{font:12px var(--mono);color:var(--muted)}
+.cell.full{background:#c69f22}
+.cell.full div{background:linear-gradient(#fff6d6,#f7e3a2)}
+.cell.next{background:var(--accent)}
+.cell.next div{background:#eef4fd}
+.cell.next b{font-family:var(--sans);font-size:13px;color:var(--accent);letter-spacing:0}
+.cell.new{animation:grow .6s cubic-bezier(.2,1.4,.5,1)}
+@keyframes grow{from{transform:scale(.4);opacity:0}}
+.t0{top:0}.t1{top:calc(var(--h)*.75 + 4px)}
+.x0{left:0}.x1{left:calc(var(--w) + 4px)}.x2{left:calc(var(--w)*2 + 8px)}
+.y0{left:calc(var(--w)*.5 + 2px)}.y1{left:calc(var(--w)*1.5 + 6px)}.y2{left:calc(var(--w)*2.5 + 6px)}
+.tally{text-align:center;font-size:15px;color:var(--ink-2);margin:10px 0 0}
+.word{display:flex;align-items:center;justify-content:center;min-height:72px;font-size:clamp(34px,10vw,46px);font-weight:850;letter-spacing:.14em;border-bottom:3px solid var(--ink);margin-bottom:6px}
+.word em{font-style:normal;color:#b8901a}
+.hint{font-size:14px;color:var(--ink-2);text-align:center;margin:0 0 16px;min-height:20px}
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,64px));gap:10px;justify-content:center}
+.key{aspect-ratio:1;border-radius:50%;border:1px solid #b9c8d5;background:radial-gradient(circle at 40% 30%,#fff,#eaf0f5 75%);font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #b9c8d5}
+.key.g{background:radial-gradient(circle at 40% 30%,#ffeeb0,#f2c94c 75%);border-color:#c69f22;box-shadow:0 4px 0 #c69f22}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #b9c8d5}
+.btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+.aux{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Twin Hive C — The collection is the comb</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/deepseek-twin-hive.svg" alt=""><div><p class="eyebrow">Two-letter word search</p><h1 class="gname">Twin Hive</h1><p class="tagline">Every word needs both gold letters.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov</span></div>
+
+  <div class="lay">
+    <section class="combwrap" aria-label="Your collection: six cells, one per word">
+      <h2>Your hive · six words to fill it</h2>
+      <div class="comb" id="comb">
+        <div class="cell full t0 x0"><div><b>TEAM</b><small>+1</small></div></div>
+        <div class="cell full t0 x1"><div><b>STREAM</b><small>+3</small></div></div>
+        <div class="cell next t0 x2" id="c3"><div><b>next</b></div></div>
+        <div class="cell t1 y0"><div><small>4+</small></div></div>
+        <div class="cell t1 y1"><div><small>4+</small></div></div>
+        <div class="cell t1 y2"><div><small>4+</small></div></div>
+      </div>
+      <p class="tally"><b>2 of 6</b> · 4 points · illustrative words</p>
+    </section>
+    <section>
+      <div class="word" id="w" aria-live="polite"></div>
+      <p class="hint" id="h"></p>
+      <div class="keys" aria-label="Letters, gold letters first"><button class="key g">A</button><button class="key g">M</button><button class="key">E</button><button class="key">I</button><button class="key">N</button><button class="key">R</button><button class="key">S</button><button class="key">T</button></div>
+      <div class="btns"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn primary" id="add">Add word</button></div>
+      <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button><button class="demo-toggle" id="demo">Preview fill animation</button></div>
+    </section>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: each accepted word becomes a physical cell in a six-cell comb, so the collection and the goal are one object. Cells keep true hexagon proportions at a capped size. "Preview fill animation" drops the current entry into the next cell locally — it is not a dictionary check and nothing is saved.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+let v='MAIN';const w=document.getElementById('w'),h=document.getElementById('h');
+function upd(){w.innerHTML=v?[...v].map(c=>c==='A'||c==='M'?`<em>${c}</em>`:c).join(''):'&nbsp;';const n=['A','M'].filter(c=>!v.includes(c));h.textContent=!v?'Tap or type. Letters may repeat.':v.length<4?'Four letters minimum':n.length?'Still needs '+n.join(' + '):`Both gold letters in · +${v.length-3} if accepted`;}
+document.querySelectorAll('.key').forEach(k=>k.onclick=()=>{v+=k.textContent;upd();});document.getElementById('del').onclick=()=>{v=v.slice(0,-1);upd();};document.getElementById('clr').onclick=()=>{v='';upd();};
+document.getElementById('demo').onclick=()=>{const c=document.getElementById('c3');c.className='cell full t0 x2 new';c.innerHTML=`<div><b>${v||'MAIN'}</b><small>+${Math.max(1,(v||'MAIN').length-3)}</small></div>`;document.querySelector('.tally').innerHTML='<b>3 of 6</b> · preview only · not checked';};
+upd();
+</script>
+</body>
+</html>

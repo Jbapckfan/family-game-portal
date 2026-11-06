@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trail · Concept B · Ink trace</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.stage{max-width:520px;margin:0 auto}
+.clue-strip{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:14px 0 12px;border-top:3px solid var(--ink);border-bottom:1px solid var(--line)}
+.clue-strip p{margin:0;font:600 clamp(20px,4.8vw,24px)/1.3 var(--serif);flex:1 1 220px}
+.clue-strip .btn{min-height:44px;font-size:14px}
+.word{margin:22px 0 4px;display:flex;justify-content:center;gap:clamp(2px,1.2vw,8px)}
+.word span{width:clamp(24px,8vw,40px);text-align:center;font:800 clamp(28px,8.4vw,44px)/1.1 var(--sans);color:var(--ink);border-bottom:2px solid var(--line-2);padding-bottom:4px}
+.word span:empty{color:transparent}
+.word span:empty::before{content:"·";color:var(--line-2)}
+.word span.new{color:var(--accent)}
+.sub{margin:0;text-align:center;font-size:14px;color:var(--muted)}
+.lattice{position:relative;aspect-ratio:1;margin:18px auto 0;width:min(100%,460px);touch-action:none;user-select:none}
+.lattice svg{position:absolute;inset:0;width:100%;height:100%}
+.dots circle{fill:var(--line-2)}
+.trace{fill:none;stroke:var(--ink);stroke-width:22;stroke-linecap:round;stroke-linejoin:round}
+.trace-hi{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.35}
+.cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr)}
+.c{border:0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.c b{width:min(72%,74px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 clamp(28px,8vw,40px)/1 var(--sans);color:var(--ink);background:var(--bg);transition:transform .14s,background .14s,color .14s}
+.c:hover b{background:#dfe9f1}
+.c.sel b{background:var(--ink);color:#fff}
+.c.last b{background:var(--accent);transform:scale(1.08);box-shadow:0 0 0 5px rgba(10,106,138,.18)}
+.c.legal b{box-shadow:inset 0 0 0 2px var(--accent);background:#fff}
+.dock{position:sticky;bottom:0;margin-top:18px;padding:10px 0 12px;background:linear-gradient(rgba(237,243,248,0),var(--bg) 22%)}
+.dock .row-actions{background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:6px;gap:6px}
+.dock .btn{border:0}
+.msg{min-height:22px;margin:8px 0 0;font-size:15px;text-align:center;color:var(--ink-2)}
+.gesture{display:flex;justify-content:center;gap:16px;margin:10px 0 0;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.gesture span{display:inline-flex;gap:6px;align-items:center}
+.gesture i{display:inline-block;width:22px;height:4px;border-radius:2px;background:var(--ink)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Trail · B — Ink trace · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/deepseek-trail.svg" alt=""><div class="titles"><p class="kicker">Nine-letter trail</p><h1>Trail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="stage">
+ <div class="clue-strip"><p>“The moment ends. Something stays.”</p><button class="btn btn-quiet" id="def">Definition · counts as help</button></div>
+ <div class="word" id="word" aria-live="polite"></div>
+ <p class="sub" id="sub"></p>
+ <div class="lattice" id="lat">
+  <svg viewBox="0 0 400 400" aria-hidden="true"><g class="dots" id="dots"></g><polyline class="trace" id="tr"/><polyline class="trace-hi" id="tr2"/></svg>
+  <div class="cells" id="cells" role="group" aria-label="Letter grid. Drag or tap through touching letters."></div>
+ </div>
+ <div class="gesture"><span><i></i>Drag through letters, or tap one at a time</span><span>Lift and tap an earlier letter to cut back</span></div>
+ <p class="msg" id="msg" role="status">Sample state: three letters traced. Try dragging from the highlighted letter.</p>
+ <div class="dock"><div class="row-actions"><button class="btn" id="undo">↶ Undo</button><button class="btn" id="clear">Clear</button><button class="btn btn-primary" id="check">Check · 9 needed</button></div></div>
+</main>
+<footer class="app-foot"><span>0 checks · repeating a word is free</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Trail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const G='FTEOAALREGFWRTLO'.split(''),N=4;let path=[0,4,1],dragging=false,fresh=-1;
+const $=id=>document.getElementById(id);
+const adj=(a,b)=>a!==b&&Math.max(Math.abs(a%N-b%N),Math.abs((a/N|0)-(b/N|0)))===1;
+$('dots').innerHTML=Array.from({length:16},(_,i)=>`<circle cx="${(i%4)*100+50}" cy="${(i/4|0)*100+50}" r="3"/>`).join('');
+function render(){
+ const last=path.at(-1),pts=path.map(i=>`${(i%N)*100+50},${(i/N|0)*100+50}`).join(' ');
+ $('tr').setAttribute('points',pts);$('tr2').setAttribute('points',pts);
+ $('cells').innerHTML=G.map((l,i)=>{const k=path.indexOf(i),legal=path.length&&path.length<9&&k<0&&adj(last,i);
+  return `<button class="c ${k>=0?'sel':''} ${i===last?'last':''} ${legal?'legal':''}" data-i="${i}" aria-pressed="${k>=0}" aria-label="${l}, row ${(i/N|0)+1}, column ${i%N+1}${k>=0?', step '+(k+1):''}"><b>${l}</b></button>`}).join('');
+ $('word').innerHTML=Array.from({length:9},(_,k)=>`<span class="${k===fresh?'new':''}">${path[k]!==undefined?G[path[k]]:''}</span>`).join('');
+ $('sub').textContent=`${path.length} of 9 letters`;
+ $('check').disabled=path.length!==9;$('check').textContent=path.length===9?'Check trail':`Check · ${9-path.length} to go`;
+}
+function add(i){const k=path.indexOf(i);
+ if(k>=0){if(!dragging){path=path.slice(0,k+1);fresh=-1;render();}return;}
+ if(!path.length||adj(path.at(-1),i)){if(path.length<9){path.push(i);fresh=path.length-1;render();}}
+ else if(!dragging)$('msg').textContent='Not touching your last letter. Outlined letters are the legal next steps.';}
+const at=(x,y)=>{const el=document.elementFromPoint(x,y)?.closest('[data-i]');return el?+el.dataset.i:null};
+$('lat').addEventListener('pointerdown',e=>{const i=at(e.clientX,e.clientY);if(i===null)return;dragging=false;add(i);dragging=true;$('lat').setPointerCapture(e.pointerId)});
+$('lat').addEventListener('pointermove',e=>{if(!dragging)return;const i=at(e.clientX,e.clientY);if(i!==null&&path.indexOf(i)<0)add(i)});
+$('lat').addEventListener('pointerup',()=>dragging=false);
+$('cells').onkeydown=e=>{const b=e.target.closest('[data-i]');const d={ArrowLeft:-1,ArrowRight:1,ArrowUp:-N,ArrowDown:N}[e.key];
+ if(b&&d!==undefined){e.preventDefault();const i=+b.dataset.i,j=i+d;if(j>=0&&j<16&&!(Math.abs(d)===1&&(j/N|0)!==(i/N|0)))$('cells').querySelector(`[data-i="${j}"]`).focus();}
+ else if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();add(+b.dataset.i);$('cells').querySelector(`[data-i="${b.dataset.i}"]`).focus();}
+ else if(e.key==='Backspace'){e.preventDefault();path.pop();render();}else if(e.key==='Escape'){path=[];render();}};
+$('undo').onclick=()=>{path.pop();fresh=-1;render()};$('clear').onclick=()=>{path=[];render()};
+$('check').onclick=()=>$('msg').textContent='Prototype only: the live game checks the trail. No result is recorded here.';
+$('def').onclick=()=>$('msg').textContent='Live game: the definition opens below the clue and is noted in your result.';
+render();
+</script>
+</body></html>

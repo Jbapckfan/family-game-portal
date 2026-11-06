@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circuit A · Instrument dial — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+:root{--a1:#2f6fd6;--a2:#1f9d6a;--a3:#d39a12;--a4:#d1404a}
+.lay{display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:32px;align-items:center}
+@media(max-width:840px){.lay{grid-template-columns:minmax(0,1fr)}}
+.stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:15px}
+.stats b{font-size:20px}
+.dial{position:relative;max-width:460px;margin:0 auto}
+.dial svg{display:block;width:100%;height:auto}
+.band{stroke:#fff;stroke-width:4}
+.bezel{fill:#f3f6f9;stroke:#c5d2dc;stroke-width:1.5}
+.face{fill:#fff;stroke:#d5dfe7}
+.lt{cursor:pointer}
+.lt .cap{fill:#fff;stroke:rgba(14,34,50,.25);stroke-width:1}
+.lt .sh{fill:rgba(14,34,50,.28)}
+.lt text{font:800 26px var(--sans);fill:var(--ink);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.lt .no{font:600 10px var(--mono);fill:var(--muted)}
+.lt.lit .cap{fill:#0e2232}.lt.lit text{fill:#fff}.lt.lit .no{fill:#a9bac8}
+.lt.blocked{opacity:.38;cursor:not-allowed}
+.lt.cur .cap{stroke:#0e2232;stroke-width:3}
+.lt:focus{outline:none}.lt:focus-visible .cap{stroke:var(--focus);stroke-width:4}
+.lbl{font:700 13px var(--sans);text-anchor:middle}
+.center-word{font:850 44px var(--sans);text-anchor:middle;fill:var(--ink);letter-spacing:4px}
+.center-sub{font:600 13px var(--sans);text-anchor:middle;fill:var(--muted)}
+.side h2{margin:0 0 6px;font-size:22px}
+.side p{margin:0 0 14px;color:var(--ink-2)}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:16px}
+.chain .w{display:inline-flex;gap:2px;padding:6px 8px;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.chain .w i{font-style:normal;font:800 17px var(--mono);width:20px;text-align:center;border-bottom:3px solid}
+.chain .tail{color:var(--muted);font-size:14px}
+.lit-strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;margin:0 0 6px}
+.lit-strip i{height:10px;border-radius:2px;opacity:.22}
+.lit-strip i.on{opacity:1}
+.btns{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-top:16px}
+.aux{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.say{min-height:24px;font-size:15px;color:var(--ink-2);margin:10px 0 0}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Circuit A — Instrument dial</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/kimi-circuit.svg" alt=""><div><p class="eyebrow">Word chains</p><h1 class="gname">Circuit</h1><p class="tagline">Switch arcs. Connect words. Light every letter.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 172 · Fri 6 Nov</span></div>
+
+  <div class="lay">
+    <div>
+      <div class="stats"><span>Words <b id="wc">1</b> · target 3</span><span>Letters lit <b id="lc">4</b>/12</span></div>
+      <div class="dial"><svg id="ring" viewBox="0 0 400 400" role="group" aria-label="Letter ring in four arcs"></svg></div>
+    </div>
+    <section class="side">
+      <h2>Next word starts with K</h2>
+      <p>Each letter must come from a <b>different arc</b> than the one before. K is on Arc 1, so B and C wait until you've moved on.</p>
+      <div class="chain" aria-label="Your chain"><span class="w" id="w1"></span><span class="tail">→ K…</span></div>
+      <div class="lit-strip" id="strip" aria-hidden="true"></div>
+      <div style="font:12px var(--mono);color:var(--muted)">Coverage by arc · 1 · 2 · 3 · 4</div>
+      <p class="say" id="say" aria-live="polite"></p>
+      <div class="btns"><button class="btn" id="del" aria-label="Delete letter">⌫</button><button class="btn primary">Play word</button><button class="btn" id="clr" aria-label="Clear word">Clear</button></div>
+      <div class="aux"><button class="btn quiet">Undo word</button><button class="btn quiet">Restart chain</button><button class="btn quiet">Route clue · 1 free</button><button class="btn quiet">Reveal route</button></div>
+    </section>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: a machined dial — four colour bands split exactly on the 0°/90°/180°/270° axes with thin, even dividers, raised letter caps with arc numbers, and the current word in the dial face instead of an empty dark disc. Illustrative state: first word HAWK played (2→3→4→1), next word seeded with K. Tap letters to try the arc rule locally; words are not checked.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const C=['#2f6fd6','#1f9d6a','#d39a12','#d1404a'],L=[['K',1],['B',1],['C',1],['U',2],['S',2],['H',2],['A',3],['I',3],['R',3],['W',4],['M',4],['E',4]];
+const svg=document.getElementById('ring'),NS='http://www.w3.org/2000/svg';const lit=new Set(['H','A','W','K']);let word=['K'];
+const P=(r,d)=>[200+r*Math.sin(d*Math.PI/180),200-r*Math.cos(d*Math.PI/180)];
+function seg(a,ro,ri){const s=a*90,e=s+90,[x1,y1]=P(ro,s),[x2,y2]=P(ro,e),[x3,y3]=P(ri,e),[x4,y4]=P(ri,s);return `M${x1} ${y1}A${ro} ${ro} 0 0 1 ${x2} ${y2}L${x3} ${y3}A${ri} ${ri} 0 0 0 ${x4} ${y4}Z`;}
+function arcOf(l){return L.find(x=>x[0]===l)[1]}
+function draw(){const last=word.length?arcOf(word[word.length-1]):0;let h=`<circle class="bezel" cx="200" cy="200" r="194"/>`;for(let a=0;a<4;a++)h+=`<path class="band" d="${seg(a,184,116)}" fill="${C[a]}"/>`;
+h+=`<circle class="face" cx="200" cy="200" r="112"/><text class="center-word" x="200" y="196">${word.join('')||'—'}</text><text class="center-sub" x="200" y="232">${last?'Next: not Arc '+last:'Pick any letter'}</text>`;
+[['ARC 1',45],['ARC 2',135],['ARC 3',225],['ARC 4',315]].forEach(([t,d],i)=>{const[x,y]=P(90,d);h+=`<text class="lbl" x="${x}" y="${y+4}" fill="${C[i]}">${t}</text>`;});
+L.forEach(([l,a],i)=>{const d=i*30+15,[x,y]=P(150,d),cls=['lt',lit.has(l)?'lit':'',a===last?'blocked':'',word[word.length-1]===l?'cur':''].join(' ');h+=`<g class="${cls}" data-i="${i}" tabindex="0" role="button" aria-label="${l}, arc ${a}${a===last?', not allowed next':''}"><circle cx="${x}" cy="${y}" r="31" fill="transparent"/><circle class="sh" cx="${x}" cy="${y+3}" r="25"/><circle class="cap" cx="${x}" cy="${y}" r="25"/><text x="${x}" y="${y-3}">${l}</text><text class="no" x="${x}" y="${y+15}">${a}</text></g>`;});
+svg.innerHTML=h;svg.querySelectorAll('.lt').forEach(g=>{const f=()=>{const[l,a]=L[g.dataset.i];if(a===last){say.textContent=`${l} is on Arc ${a}, the same arc as the previous letter. Pick from another arc.`;return;}word.push(l);lit.add(l);say.textContent='';draw();};g.onclick=f;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+document.getElementById('lc').textContent=lit.size;document.getElementById('strip').innerHTML=L.map(([l,a])=>`<i class="${lit.has(l)?'on':''}" style="background:${C[a-1]}"></i>`).join('');}
+const say=document.getElementById('say');document.getElementById('w1').innerHTML=[['H',2],['A',3],['W',4],['K',1]].map(([l,a])=>`<i style="border-color:${C[a-1]}">${l}</i>`).join('');
+document.getElementById('del').onclick=()=>{if(word.length>1)word.pop();draw();};document.getElementById('clr').onclick=()=>{word=['K'];draw();};draw();
+</script>
+</body>
+</html>

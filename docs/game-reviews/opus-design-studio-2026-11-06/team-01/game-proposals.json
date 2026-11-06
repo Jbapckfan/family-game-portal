@@ -1,0 +1,460 @@
+[
+  {
+    "slug": "switchpath",
+    "name": "Switchpath",
+    "keeper": true,
+    "diagnosis": "The live game already has the clearest direction cue on the site: a solid blue 'GO HIGHER' banner. But the banner sits above the board, so on a phone the eye shuttles between it and the cell being chosen. The END cell uses a beige fill with a brown outline, which breaks the no-brown rule. Links between visited cells are faint dotted lines. Values 1–16 are spread so widely that most comparisons are trivial. James asked for clearer high/low indicators during play, tighter numbers and a possible 5×5. He approved blue = higher and teal = lower.",
+    "clarityRisk": "Medium. The requirement flips after every step, so it has to be visible where the next tap happens, not only in a header.",
+    "recommendedDesign": "A — Signal Board. The rule colour physically wraps the board, and legal neighbours carry a matching outline and ↑/↓ badge, so the rule is visible at the point of the tap. Add C's arrow-key handling (A lists keys but doesn't wire them) and D's share card. Closer numbers and a 5×5 board are content/mechanic changes that none of the four concepts implements; treat them as a separate optional bonus experiment.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Signal Board",
+        "summary": "The 4×4 board sits inside a frame that is solid blue when the next step must go higher and teal when it must go lower. Its header reads 'GO HIGHER / Greater than 3' with a large ↑/↓ glyph. Legal neighbours get a white face, a rule-coloured outline and a small ↑/↓ badge. The route is drawn as alternating blue/teal segments.",
+        "layout": "On desktop, the board (max 440px) sits to the left of a 300px side column holding 'Your rhythm' (the visited values joined by ↑/↓ chips, ending in a dashed '?'), a moves/hints/perfect tally and a collapsible Rules & keys panel. On phones it is a single column: board, then Undo / Reset path / Hint, a cost line, and a live message.",
+        "interaction": "Tap an outlined neighbour to extend the route, or tap an earlier step to rewind (+1 move). Illegal taps shake and explain why without spending a move: not adjacent, wrong direction, or END before the 16th cell. Undo and Reset add +1 move. Hint only shows a 'not wired' message.",
+        "motion": "The frame colour cross-fades over 0.3s when the direction flips. The current cell scales slightly. Illegal cells shake for 0.28s.",
+        "accessibility": "Cells are native buttons labelled with value, start/end, step number and 'legal next step'. The direction header is aria-live. Direction is carried by glyph and words ('GO LOWER'), not only colour. Keyboard shortcuts are listed in the rules panel but not wired in this prototype; cells are reachable with Tab and Enter.",
+        "sharing": "Not shown in this mockup. Use D's card: moves, hints, 16/16 connected, never the route.",
+        "tradeoff": "Has the strongest at-the-tap cue, but the full-colour frame is a large saturated area on a light page. Outlining legal neighbours also removes some of the scanning work, which may make an already easy game feel easier.",
+        "mockup": "switchpath-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Rhythm Line",
+        "summary": "Adds a plotted trace above the board: each visited value is a point on a 1–16 vertical scale, joined by blue (up) and teal (down) segments. A shaded band marks where the next number must fall. The board itself is a plain hairline grid with the current cell in solid ink.",
+        "layout": "On desktop the board is on the left (≤400px) with the trace panel, a moves/hints/perfect fact strip and a live message to its right. On phones the trace comes first and the board follows.",
+        "interaction": "Hovering or focusing a cell draws a dashed ghost segment to where that value would land on the line. It is drawn red if the value falls outside the band. Tapping commits or rewinds. Undo, Reset and Hint work as in A.",
+        "motion": "The ghost segment redraws on hover and focus. Illegal cells shake.",
+        "accessibility": "The trace is role=img with an aria-label. Focusing a cell with Tab triggers the same preview as hover. Step numbers carry a small coloured dot plus the number.",
+        "sharing": "Not shown. A dataless rhythm line (shape only, no values) could be a share image, but it could hint at the route on a fixed board, so plain counts are safer.",
+        "tradeoff": "Makes the 'higher then lower' rhythm visible and teaches the rule well, but it puts the main cue in a second panel away from the board, which is the shuttling problem the live game already has.",
+        "mockup": "switchpath-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Compass Pad",
+        "summary": "Beside a ruled 4×4 board, a 3×3 pad shows only your four neighbours as raised keys (UP / LEFT / RIGHT / DOWN). Each key shows the neighbour's value and its signed difference (+4, −2). The centre is a round blue or teal core with the current number and 'GO HIGHER' or 'GO LOWER'.",
+        "layout": "On desktop, the board and pad sit side by side (420px + 340px). On phones they stack, with board above pad. Edge and visited neighbours appear as disabled keys labelled 'edge' or 'visited'.",
+        "interaction": "Move by tapping a pad key, tapping the board, or pressing the arrow keys. Backspace undoes. Keys that fit the rule have a filled difference chip; keys that don't fit show the chip in red wash.",
+        "motion": "Pad keys travel down 2px with a thinning bottom edge when pressed. Illegal moves shake.",
+        "accessibility": "This is the only Switchpath concept with arrow-key and Backspace handling wired. Pad keys are 76px tall and speak, e.g., 'UP: 13, +2, fits'. Fit is shown by the signed number and the words, not only colour.",
+        "sharing": "Not shown. Same counts as A.",
+        "tradeoff": "This is the best keyboard and phone input of the four, and the difference numbers make 'higher/lower' arithmetic explicit. But the pad does the comparison for you, which lowers difficulty, and it splits attention between pad and board.",
+        "mockup": "switchpath-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Ink Route & Switch",
+        "summary": "A paper sheet with a dot grid and serif numerals, where the route is a thick ink stroke alternating blue and teal. A two-position HIGHER/LOWER switch sits beside the sheet (vertical on desktop, horizontal on phones), with 'than 15' beneath it. The side column includes a share-card preview.",
+        "layout": "On desktop there are three columns: a 92px switch, the sheet (≤440px) and a 260px side with Undo/Reset/Hint, a tally and a share-card toggle. On phones it stacks: switch, sheet, controls.",
+        "interaction": "Hovering a neighbour sketches a dashed stroke, blue/teal if legal or red if it would break the switch. Tap to commit; tap an earlier step to rewind. 'Preview share card' expands an illustrative card.",
+        "motion": "The switch lights the active half with a 0.3s colour change. The ghost stroke follows the hover. Illegal taps shake.",
+        "accessibility": "The switch is role=status, aria-live. Stroke previews are pointer-hover only, with no focus equivalent in this prototype. Cells are labelled buttons.",
+        "sharing": "Shown: 'Switchpath · No. 018 · Perfect route · 16/16 connected · 15 moves · 0 hints · Route never shown', marked as illustrative.",
+        "tradeoff": "The most refined, least gamey look, and the only concept with a share card. But the direction cue sits beside the board rather than on it, and the serif numerals on a dotted sheet lean editorial rather than physical.",
+        "mockup": "switchpath-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "counterpart",
+    "name": "Counterpart",
+    "keeper": true,
+    "diagnosis": "The live game has a word bank of ten small uppercase pills above five relationship rows (THESIS → ARGUMENT, PRISM → SPECTRUM…). The active row has dashed 'First/Second word' slots and small Reverse/Hint/Check controls. Type is 16–18px and James explicitly asked for larger. Direction is the core rule, but it is stated in a small 'Direction matters →' caption, and Reverse is a separate button rather than a property of the pair. It uses the older cream template.",
+    "clarityRisk": "Medium. Getting the direction wrong is the main failure, and the current UI does not make direction geometric.",
+    "recommendedDesign": "B — Relationship Bridge. The given pair and your pair are stacked as two parallel arrows with 'same role, same side' guides between them, so direction becomes geometry, and the words are the largest type in the set. Add D's number-key shortcuts and A's compact ledger as the solved-rows overview.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Analogy Ledger",
+        "summary": "All five relationships are ruled ledger lines (01–05) with the cue pair at 20–26px, a serif 'as' and two answer slots joined by a blue arrow. A sticky bottom tray holds the bank and Reverse / Hint / Check pair. Solved rows turn green and show a one-line reason (wording marked illustrative).",
+        "layout": "Single centred column (max 820px). On desktop each line reads cue | as | answer in one row; on phones the cue sits above the answer slots. The tray sticks to the bottom of the viewport.",
+        "interaction": "Tap a line or slot to make it active, then tap bank words to fill first and second. Tapping a placed word removes it. Reverse swaps the active pair. Check and Hint only show 'not wired' messages.",
+        "motion": "Minimal: a blue bar marks the active line. No animation beyond state changes.",
+        "accessibility": "Slots are buttons labelled 'Row 1 second word: empty'. Used words are disabled and struck through. No keyboard shortcuts.",
+        "sharing": "Not shown. Proposed: checks and hints used, five solved marks, no words.",
+        "tradeoff": "Gives the best overview of all five rows and the sticky tray suits phones. But direction is still only an arrow glyph in a row, and the type is smaller than B or D.",
+        "mockup": "counterpart-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Relationship Bridge",
+        "summary": "One relationship at a time on a white plate. The given pair (e.g. BASS → LOW) is set at up to 34px with an ink arrow bar between the words. Directly beneath, your pair sits in two large slots joined by a blue arrow bar, with dashed vertical guides labelled 'same role, same side'. A five-step rail above shows open, draft and paired rows.",
+        "layout": "On desktop the bridge plate sits beside a 330px two-column word bank. On phones the bank follows the plate. Reverse, 'Name the relationship' (hint) and Check pair sit under the plate.",
+        "interaction": "Choose a row from the step rail, then tap bank words into the highlighted slot. Bank words show a '1st'/'2nd' tag once placed. Reverse animates the two slots crossing before they swap. After a hint, the arrow label is meant to show the relationship name; in the solved row it shows 'protects ↦'.",
+        "motion": "On Reverse the two slots slide 30% toward each other with a springy ease, then swap. This makes direction a physical property of the pair.",
+        "accessibility": "Rail buttons speak 'Relationship 4: BASS to LOW'. Bank words are 52px tall in a two-column grid. Messages are aria-live. There are no keyboard shortcuts in this prototype.",
+        "sharing": "Not shown. Proposed: checks and hints, five solved marks, no words.",
+        "tradeoff": "Has the largest words and makes direction geometric, which answers James's readability request directly. But only one row is visible at a time, so cross-row elimination needs the step rail.",
+        "mockup": "counterpart-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Workbench",
+        "summary": "A two-column table ('Given relationship' | 'Your counterpart · same direction') with a per-row Check button. The bank is a column of physical labels with a grip texture. A lifted label tilts and raises, and every open space turns blue.",
+        "layout": "On desktop the bank is a sticky 240px column on the left of the table. On phones the bank wraps above, and table rows become single-column.",
+        "interaction": "Drag a label onto any space with the mouse (HTML drag-and-drop), or tap a label then tap a space. Tap a placed word to return it, or press Esc to drop the lifted label. Each row has its own Check.",
+        "motion": "The lifted label rises 3px and rotates −1.2° with a deeper shadow. The drop target fills solid blue on drag-over.",
+        "accessibility": "Spaces are buttons labelled with row and position. Tap-to-place is the touch path, because HTML drag-and-drop does not work on most touch browsers. Esc is wired.",
+        "sharing": "Not shown. Same as B.",
+        "tradeoff": "This is the most tactile, and it lets players fill any row in any order. But the table is dense on phones, and per-row Check buttons add five more controls.",
+        "mockup": "counterpart-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Sentence Focus",
+        "summary": "Each analogy is a large serif sentence: 'PRISM is to SPECTRUM as ___ is to ___'. The blanks are underlined inline buttons. A line below states which role each blank plays. Bank words are numbered keys (1–0) in a two-column grid (five columns on wider screens).",
+        "layout": "Single focused column (max 860px). A five-segment progress rail sits at top, then the sentence at 24–46px, the role line, the keys, Reverse / Hint / Check, and Previous/Next.",
+        "interaction": "Tap or press 1–0 to fill the current blank, R to reverse, Backspace to clear, ←/→ to change analogy, and Enter to check (message only).",
+        "motion": "None beyond state changes. The current blank gets a blue underline and wash.",
+        "accessibility": "This is the strongest keyboard path of the four, with all shortcuts wired. The sentence is aria-live, and each key shows its number in a kbd chip.",
+        "sharing": "Not shown. Same as B.",
+        "tradeoff": "Reading the analogy aloud makes direction natural, and keyboard play is fast. But the sentence form is wordy for long words on phones, and it is the least physical concept.",
+        "mockup": "counterpart-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "shortlist",
+    "name": "Shortlist",
+    "keeper": true,
+    "diagnosis": "The live game shows twelve words in a card grid, then 'Choose scan letters', then a dark navy scan panel with a 26-key alphabet. The scan panel is the heart of the game, but it is in a different (dark) material and below the fold on phones. 'Pencil mode: OFF' and tap-to-final-pick are hidden modes in a one-shot game.",
+    "clarityRisk": "High. There are three scans and one irreversible pick. Players need their evidence beside the words, and the final pick must be unmistakable.",
+    "recommendedDesign": "A — Pinned Evidence. Scan results stay pinned above the list, every word has its own cross-off control, and the final pick is a separate confirm bar with a 'Not yet' escape. Offer C's sorting trays as an optional Practice tool and D's growing type as a motion detail.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Pinned Evidence",
+        "summary": "A sticky strip of three scan cards stays at the top: SCAN 1 'A+E → 1' (illustrative), SCAN 2 marked NEXT in blue, and SCAN 3 dashed. Each word tile is split into a pick area and a ✕ cross-off button. A white dock below holds the '? + ?' composer, a QWERTY keyboard and a strategy hint.",
+        "layout": "Single column (max 760px). The evidence strip is sticky, then a count line ('6 on your list'), a 2- or 3-column word grid, an ink confirm bar, and the composer dock.",
+        "interaction": "✕ crosses a word off or restores it. Tapping a word opens 'Is it SAINT? You still have 2 scans. One pick ends the round' with 'Not yet' and 'Final pick'. Choose two letters by keyboard or typing, then Scan (message only). Esc clears.",
+        "motion": "The confirm bar appears in place. No other animation.",
+        "accessibility": "Pick and cross-off are separate buttons with explicit labels ('Cross off CRISP', 'SAINT, choose as final pick'). Letters scanned in scan 1 are greyed and labelled. Typing letters is wired.",
+        "sharing": "Not shown. Proposed: scans used (n/3), hint used or not, found or missed, no letters or words.",
+        "tradeoff": "This is the clearest one-shot pick flow and keeps evidence in view while scrolling. The ✕ marks are the player's own notes, not deductions, which the copy states. The board stays a grid of tiles, so it is the least novel of the four.",
+        "mockup": "shortlist-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Letter Lens",
+        "summary": "Each word is spelled in five small letter cells. With the 'Letter lens' toggle on, the two letters you are about to scan light up inside every word: first letter blue, second letter teal. A side panel holds the evidence list, the scan composer with an A–Z grid and a 'Final pick…' sheet with radio buttons.",
+        "layout": "On desktop the word case is on the left with a 340px evidence/compose panel on the right. On phones the panel follows the words.",
+        "interaction": "Tap a word to cross it off or restore it. Pick letters by the A–Z grid or by typing. Toggle the lens. 'Final pick…' expands a radio list of remaining words with a confirm button (message only).",
+        "motion": "The lens toggle slides. Letter cells fill instantly.",
+        "accessibility": "The toggle uses aria-pressed. The lens uses two colours plus position (first/second), and the composer repeats the letters as text. Typing is wired.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "The lens saves letter-hunting and makes a scan's reach visible. But it is an assist, so the footer proposes it off by default in the Daily. The final pick sits behind a sheet, which is safe but one step further away.",
+        "mockup": "shortlist-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Sorting Trays",
+        "summary": "Each scan is a tab ('SCAN 1 · RESULT 1 · A + E'). Under it, three trays are labelled 0 neither, 1 exactly one, 2 both. The player sorts words into trays by hand, and the tray matching the scan result is marked KEEP while the others dim and strike through.",
+        "layout": "Single column (max 900px): scan tabs, an unsorted pool, three side-by-side trays, and a composer that appears on the scan-2 tab. Strategy hint and 'Final pick…' sit at the bottom.",
+        "interaction": "Tap a word, then tap a tray. Nothing is checked automatically, and the copy says so. The scan-2 tab only offers words kept from scan 1. Letters come from the A–Z grid. Scan and Final pick show messages only.",
+        "motion": "Trays fade to 50% when they are not the kept tray.",
+        "accessibility": "Trays are role=button with tabindex. Tabs use role=tab and aria-selected. There are no keyboard shortcuts for sorting.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "This is the most faithful to how the deduction actually works, and it replaces Pencil mode with something meaningful. But it is the most work per scan, three trays are tight at 320px, and sorting is manual. Better suited to Practice or as an optional tool.",
+        "mockup": "shortlist-C.html"
+      },
+      {
+        "id": "D",
+        "title": "The Shelf",
+        "summary": "Remaining words are set as large free-flowing type, and the type grows as the list shrinks (22px at nine or more words, up to 46px at two). Set-aside words drop to a small shelf below. A dashed 'Final pick' slot has to be filled and then confirmed. Scans are a numbered timeline in a left column.",
+        "layout": "On desktop a 220px timeline and composer sit on the left of the word field. On phones the timeline becomes three small cards above.",
+        "interaction": "Scan letters are typed into two native single-letter inputs, with auto-advance and validation (two different letters A–Z). 'Show letter grid' is offered but not wired. Select a word, then 'Set aside' or 'Place in pick'; 'Confirm pick' is a second step. Tap a shelf word to restore it.",
+        "motion": "Word size eases over 0.35s as the list shrinks.",
+        "accessibility": "Real labelled text inputs use the system keyboard. Words are buttons with aria-pressed. The two-step pick prevents accidental endings.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "The narrowing list feels physical and readable. But relying on the system keyboard is less tactile on phones, the 26-key alternative is only promised, and the flowing layout varies from board to board.",
+        "mockup": "shortlist-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "second-sense",
+    "name": "Second Sense",
+    "keeper": true,
+    "diagnosis": "The live game has two narrow columns of noun (blue) and verb (teal) clue cards, then a 'Your two senses' panel with an answer field. Long clues wrap to three lines in the narrow columns, which makes a tall stack on phones. The chosen noun and verb are not visually joined to the word you type. The director also raised an unconfirmed ordering hypothesis: some noun/verb pairs appear aligned by list position in No. 018. The sample in these mockups is consistent with that observation (HAWK, CLUB and MATCH sit at matching positions), and it remains unverified.",
+    "clarityRisk": "Low to medium for rules. The pairing step (choose one of each, then type) needs to read as one action.",
+    "recommendedDesign": "A — Two-Faced Plate. The chosen noun and verb become the top and bottom faces of one plate with the word field between them, so 'one word, two meanings' is a single object. Borrow B's dictionary-entry ledger for solved words. Clue-order leakage is a content question, not a visual one; check the generator.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Two-Faced Plate",
+        "summary": "A central plate: the top face (blue wash, italic 'n.') shows the chosen noun meaning, the middle has a large underlined word field with First letter and Check, and the bottom face (teal wash, 'v.') shows the chosen verb meaning. Noun clues list on the left and verb clues on the right. Solved clues turn dashed with their word in green.",
+        "layout": "On desktop the plate sits in the middle (340px, sticky) with a clue column on each side. On phones the plate moves above both lists.",
+        "interaction": "Tap a noun and a verb, and each appears on its face of the plate. Choosing a verb scrolls the word field into view and focuses it. Check enables once both meanings and a word are present (message only). The first-letter hint is described, not wired.",
+        "motion": "Smooth scroll to the plate after the second choice. No other animation.",
+        "accessibility": "The word field is a labelled input with autocapitalise. Clues use aria-pressed. The n./v. badges duplicate the colour meaning. Enter-to-check is implied by the label but not wired in this prototype.",
+        "sharing": "Not shown. Proposed: checks and hints used, five solved marks, no words.",
+        "tradeoff": "Joins the two senses into one object, which is the core idea of the game. But on phones the plate plus two full lists makes a long page, and the plate repeats clue text already in the list.",
+        "mockup": "second-sense-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Dictionary Page",
+        "summary": "The game is one white page. At the top, a draft entry reads like a dictionary line: a headword input, then 'n.' and the chosen noun definition, then 'v.' and the chosen verb definition. Below, nouns (n.1–n.5) and verbs (v.a–v.e) are ruled serif lists. Solved words are set below as finished entries, e.g. 'BAT n. Flying mammal… v. Strike a ball…'.",
+        "layout": "One article (max 980px): draft entry with Check / First letter & length / Clear, then two columns of definitions on desktop (stacked on phones), then the found entries.",
+        "interaction": "Choose definitions from the lists; they fill the draft line in place. Type the headword and press Enter or Check (message only). Clear resets the draft.",
+        "motion": "Smooth scroll to the headword after the second choice. Otherwise static.",
+        "accessibility": "Serif text at 17–20px. Selected rows use a coloured inset bar plus wash. Enter on the headword is wired. Definitions are full-width rows, which avoids three-line wrapping in narrow columns.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "This is the most adult and editorial, and the solved-entry ledger is a satisfying record. But it is the least physical, and the serif page departs from the shared tactile 'Tray' material.",
+        "mockup": "second-sense-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Connector",
+        "summary": "Noun clues on the left and verb clues on the right each end in a socket. A dark ink hub in the middle holds 'ONE WORD FOR BOTH', chips showing which n./v. are selected, a large word input, Letter hint and Check. On desktop, blue and teal SVG wires run from the selected clues into the hub.",
+        "layout": "On desktop, three columns with the hub at 250px. On phones the wires are hidden and the hub becomes a sticky bottom panel.",
+        "interaction": "Tap one clue on each side, and the wires redraw (and on resize). Type in the hub and Check (message only). The mockup opens with a partial draft 'HAW' to show a draft state.",
+        "motion": "Wires redraw on each selection. No easing.",
+        "accessibility": "The hub input has a label. Chips state 'n. 1' or 'v. 1' as text, and the wires are decorative (aria-hidden). The 'Check ↵' label is not wired to Enter in this prototype.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "The wires make the pairing literal on desktop. But they vanish on phones, where the design falls back to two lists plus a sticky panel, and the dark hub is a large ink area, which the handoff discourages in game surfaces.",
+        "mockup": "second-sense-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Word First",
+        "summary": "Reverses the order: type a hunch first in a large field, then attach a verb and a noun meaning to it from radio lists. Attached meanings appear as removable tags under the field. A four-step strip (Word · Verb · Noun · Check) tracks progress, and found words show as green chips.",
+        "layout": "Single column (max 780px): steps, field with Check, tags, then noun and verb radio groups, then found words and the hint.",
+        "interaction": "Type a word, choose one noun and one verb (radio), and detach either with ✕. Enter submits the form (message only). The mockup opens with 'WIND' typed and a verb attached.",
+        "motion": "The step strip updates as each part is supplied.",
+        "accessibility": "Uses a real form with Enter to submit, role=radiogroup lists with aria-checked, and labelled detach buttons.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "Fits players who think of the word first, and has the cleanest keyboard path. But it reverses the intended clue-first reading, and the hint (first letter for a chosen noun) needs the noun attached first, which the copy notes.",
+        "mockup": "second-sense-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "tradeoff",
+    "name": "Tradeoff",
+    "keeper": true,
+    "diagnosis": "James likes Tradeoff a lot and also called it a bit too easy. Its raised letter tile is the best-received material on the site. Weaknesses: six identical bordered row cards make a long stack, a selected letter has no strong lifted state, and progress and goal text are 13–14px. Players can't easily see which rows are still off or what a swap will produce.",
+    "clarityRisk": "Low to medium. The swap rule is simple, but feedback on which swaps helped is thin.",
+    "recommendedDesign": "C — Blocks & Rails. Rows sit in recessed grooves, letters are thick raised blocks that lift when picked, solved rows seat flat with an end tick, and a par meter shows swaps against five. Borrow B's two-word swap preview. Keep D's unpinned-clue bonus as the separate, optional harder experiment that answers 'too easy'; it needs its own validated boards.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Trading Ledger",
+        "summary": "Card-free ruled rows: number, clue and five raised tiles per row. A ticker line above shows swaps, words home (n/6), nudges, undos and 'par 5 · perfect = 5, no nudge, no undo'. Solved rows show 'STUNT → STINT' in green under the clue.",
+        "layout": "Single column (max 860px). On desktop the tiles sit right of the clue; on phones, below it.",
+        "interaction": "Tap a letter to lift it (it rises 5px and turns blue), then tap any other unlocked letter, in any row, to trade. Solved rows lock. Undo restores the board, but the swap still counts. Ctrl/Cmd+Z and Esc are wired. Nudge shows a message only.",
+        "motion": "Lifted tile rises with a blue shadow. Both traded tiles pop in with a springy 0.42s animation.",
+        "accessibility": "Tiles are buttons labelled 'R, letter 3 of STRNT'. The ticker is aria-live. Solved tiles are disabled with green wash plus the ✓ row number.",
+        "sharing": "Not shown. Proposed: swaps vs par 5, nudges, undos, six solved marks, no letters.",
+        "tradeoff": "Clean, and keeps every clue next to its row. But it is close to the current structure, so it improves polish more than it changes the experience.",
+        "mockup": "tradeoff-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Trade Tray",
+        "summary": "Only unsolved words stay on the board, and solved ones collapse to green chips at the top. Tiles are larger (24–36px letters). A sticky bottom tray shows the lifted letter as a big blue block, 'Lifted from STRNT', and a live preview of both resulting words for whichever partner you hover or focus.",
+        "layout": "Single column (max 640px): solved chips, word plates with clue below each, counts line, and the sticky trade tray with icon-only Undo and Nudge.",
+        "interaction": "Tap to lift, tap to trade. Hovering or focusing a partner previews both words (e.g. STUNT · HORSE), including the within-word case. Esc puts the letter back.",
+        "motion": "Lifted tile rises 6px. Traded tiles scale in with a springy 0.45s pop.",
+        "accessibility": "Focus triggers the same preview as hover, so keyboard users get it too. The tray is aria-live. The icon buttons have aria-labels.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "The two-word preview is the most useful feedback in the set and makes swaps deliberate. Hiding solved rows shortens the board, but players lose sight of the completed words they might reason from.",
+        "mockup": "tradeoff-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Blocks & Rails",
+        "summary": "Each word sits in a recessed groove, and letters are thick white blocks built from stacked edge shadows. A lifted block turns blue and rises 9px, and every possible partner gets a dashed blue outline. Solved grooves seat their blocks flat in green with an end ✓. A segmented par meter fills one segment per swap and turns amber past five.",
+        "layout": "Single column (max 900px). On desktop the clue sits left and the groove right; on phones the clue is above the groove. The meter, count, Undo and Nudge sit beneath.",
+        "interaction": "With a mouse, drag a block onto another to trade (a tilted ghost follows the pointer). On touch, tap one block, then its partner. Undo keeps the swap count. Esc and Ctrl/Cmd+Z are wired.",
+        "motion": "Blocks rise on hover and lift with a deeper shadow when picked. The drag ghost tilts −4°. Seated rows drop flat.",
+        "accessibility": "Blocks are buttons with full labels. Partners are marked by an outline as well as colour. Drag is mouse-only; tap-tap is the touch and keyboard path.",
+        "sharing": "Not shown. Same as A, using the par meter's swaps vs five.",
+        "tradeoff": "This is the strongest physical expression of the tile material James likes, and the par meter gives the light challenge he wants without a rule change. Amber for over-par is outside the handoff's state palette (gold is reserved for targets), so it needs a decision. The thick blocks also make each row taller.",
+        "mockup": "tradeoff-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Clue Rail + Unpinned Bonus",
+        "summary": "Clues move into a separate rail beside a compact 6×5 tile grid. On phones the rail collapses to the clue for the row you are touching, with an 'All clues' toggle. A mode switch offers 'Bonus · unpinned clues', labelled as an experiment, in which clues are listed in no particular order and row numbers disappear, so you must also work out which clue each word is chasing.",
+        "layout": "On desktop the rail is on the left and the grid on the right. On phones the active clue sits above the grid. The bonus mode shows an explanatory note and a shuffled clue list, ticking clues as words are solved.",
+        "interaction": "Tapping a letter focuses its row's clue. Trading works as in A. Daily and Bonus keep separate local boards and counts.",
+        "motion": "Lifted tile rises 4px. Otherwise static.",
+        "accessibility": "Rail entries are buttons with focus outlines. The mode buttons use aria-pressed. The bonus note states that the Daily score and streak are unaffected.",
+        "sharing": "Not shown. The bonus would report separately from the Daily.",
+        "tradeoff": "The only concept that addresses 'a bit too easy' with a mechanic. It reuses today's words for illustration only, so real bonus boards would need validation. Separating clues from tiles weakens the at-a-glance clue-to-row link in the Daily.",
+        "mockup": "tradeoff-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "inbetween",
+    "name": "Inbetween",
+    "keeper": true,
+    "diagnosis": "James rated it 6/10 and kept it. He asked for drag-and-drop with strong placement visuals and for harder clues, and he approved the blue selected/drag highlight and a side explainer that mirrors it. In the live game the six pair chips (UN, RL, RE, AD, IT, AM) sit in a teal panel. Each base word has five '+' gap boxes in a strip beneath the letters rather than between them, and serif base letters next to sans pair chips weaken the 'this pair fits here' reading.",
+    "clarityRisk": "Medium. The insertion point is shown indirectly by boxes under the word.",
+    "recommendedDesign": "A — Insertion Rail. Real gaps between letters widen and turn blue as soon as a pair is held, the in-word preview uses the approved blue, and the side guide mirrors the selected pair exactly as James asked. Use B's spreading-letter animation as its motion layer. Treat C's harder clues as a separate editorial and bonus experiment.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Insertion Rail",
+        "summary": "Each base word is a row of large letters with thin gap rails between and around them. Holding a pair widens every gap and washes it blue. A preview strip shows the built word with the pair highlighted in blue, plus a 'Place pair' button. A sticky side guide shows the selected blue PR pair → S[PR]ING and three numbered steps.",
+        "layout": "On desktop the board column (bank, six rows, stats, actions) sits beside a 300px sticky guide. On phones it is a single column, and the guide follows the board.",
+        "interaction": "Drag a pair onto a gap with pointer events (touch and mouse), or tap a pair then tap a gap. The preview is free; 'Place pair' confirms, and a wrong confirm costs one attempt and keeps the pair. 'Clear choice' and Nudge (message only) sit below.",
+        "motion": "Gaps widen over 0.2s when a pair is held. A tilted drag ghost follows the finger, and the gap under it turns solid blue.",
+        "accessibility": "Gap buttons speak 'Insert AM between L and E'. Each gap's hit area extends over half of each neighbouring letter. The guide states a keyboard path (Tab, Enter, arrow keys), but arrow-key movement between gaps is not wired in this prototype.",
+        "sharing": "Not shown. Proposed: attempts and nudges, six solved marks, no pairs or words.",
+        "tradeoff": "This is the most direct answer to James's feedback, keeping the approved blue preview and mirrored guide. The two-step preview-then-place adds a tap compared with drop-to-commit, but it protects the attempt count.",
+        "mockup": "inbetween-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Split & Spread",
+        "summary": "Letters are raised tiles separated by thin seams. When a held pair passes a seam, the word physically splits and the two blue pair letters grow into the gap, so the preview is the word itself. Solved words keep the inserted pair in solid green. A sticky dock holds the six pairs and an inline example: SING + PR → S PR ING.",
+        "layout": "Single column (max 720px): six rows, a live message, then the sticky bottom dock with pairs, stats, Nudge and Clear.",
+        "interaction": "Drag a pair across words and the seam under the finger previews live. Tap a seam to preview. 'Place pair' or 'Close up' each preview. A wrong confirm shakes the inserted letters red and costs one attempt.",
+        "motion": "Inserted letters grow from zero width with a spring (0.38s, staggered). Solved words snap from wide letter-spacing to normal. Wrong fits shake.",
+        "accessibility": "Seams speak 'Preview RL between U and E'. Hit areas extend 10px each side. The dock example has an aria-label.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "This is the most satisfying placement visual. But seams are thin targets that rely on the extended hit area, and the explainer is a compact inline example rather than the full side panel James approved.",
+        "mockup": "inbetween-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Clue Focus + Harder Clues",
+        "summary": "One word at a time on a large card. A six-word overview strip sits on top. The clue is set at 24–36px serif, with a 'Standard clue / Harder clue BONUS' toggle above it. The base word is shown with dashed '+' gaps at up to 54px. The result line shows the built word with the pair highlighted.",
+        "layout": "Single column (max 760px): overview strip, focus card (toggle, clue, word, result, pairs grid, ← Word / Place pair / Word →).",
+        "interaction": "Choose a pair, tap a '+' gap to preview it in place, then Place pair. Navigate between words with the strip or the arrows. Toggling to Standard is noted as recorded in the bonus result.",
+        "motion": "The chosen gap expands to show the pair. Otherwise static.",
+        "accessibility": "This option has the largest clue and word type. The toggle uses aria-pressed. Gaps are labelled 'Gap n'.",
+        "sharing": "Not shown. The bonus would be scored separately from the Daily.",
+        "tradeoff": "Answers 'harder clues' directly, but the harder clues are editorial samples, not validated content. Focus mode hides the other five words, and it has no drag-and-drop, which James asked for.",
+        "mockup": "inbetween-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Dominoes & Slabs",
+        "summary": "Pairs are white dominoes with a centre divider and pip, in a recessed tray. Base words are engraved letters on slab plates with recessed notches between letters. When a domino is held, the notches widen; on preview, a notch opens to a blue block showing the pair. 'Set BARREN' confirms, and solved slabs turn green.",
+        "layout": "On desktop a 200px sticky domino tray sits beside a two-column grid of slabs. On phones the tray sits above one column of slabs.",
+        "interaction": "Drag a domino into a notch (pointer events), or tap one and then a notch. 'Lift out' cancels a preview. A wrong 'Set' costs one attempt.",
+        "motion": "Notches widen when armed and open to full pair width on hover or preview. The held domino lifts 4px, and a tilted domino ghost follows the drag.",
+        "accessibility": "Notches speak 'Insert RE at notch 4 of BARN'. Hit areas extend 10px. Engraved letters use text-shadow but keep dark ink for contrast.",
+        "sharing": "Not shown. Same as A.",
+        "tradeoff": "This is the most tactile material, and the domino reads clearly as an unbreakable pair. But engraved slab letters are lower contrast than A's, and the slab grid is busier than a single rail.",
+        "mockup": "inbetween-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "ringcount",
+    "name": "Ringcount",
+    "keeper": false,
+    "diagnosis": "James called it 'pretty easy and boring'. The live game has twelve serif numerals on a pale ring with twelve dashed '+' gap buttons outside it: 24 circular targets of similar weight, so the actual decision (where to cut) looks no more important than the numbers. On phones it is unclear which two numbers a cut separates. The hub states the target sum, and the solve becomes quick arithmetic. It uses the older cream template.",
+    "clarityRisk": "Low for rules. Medium for the cut targets on phones.",
+    "recommendedDesign": "A — Cut Ring, the only direction for this replacement candidate. The UI alone cannot fix 'boring'; the separately labelled Sealed-totals experiment is the lever for that.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Cut Ring",
+        "summary": "A dial with a thick grey band. Each arc between cuts is coloured from a blue/teal/navy set and shows its running sum inside the ring, in green when it reaches 16. Gap dots sit just outside the band between numbers and become ink cut marks when placed. The centre reads 'EACH ARC 16 · 3 of 4 cuts'. A side list repeats each arc as an addition (e.g. 4 + 4 + 4 + 4 = 16 ✓).",
+        "layout": "On desktop the 460px dial sits beside a 320px panel (arc list, Hint, Check circle, experiment box). On phones it stacks.",
+        "interaction": "Tap a gap dot to cut or uncut (up to four). Tap an arc in the list to highlight it on the ring and dim the others. Check evaluates the real 12-number sample locally. The 'Sealed totals' checkbox hides sums until Check.",
+        "motion": "Gap dots grow on hover. A placed cut becomes a rotated bar. Unfocused arcs fade to 25%.",
+        "accessibility": "Gap hit areas are 44px buttons labelled 'Place cut between 4 and 5'. Numbers are labelled by position. Arc sums appear as text in the list, not only as ring colour.",
+        "sharing": "Not shown. Proposed: checks and hints used, solved or not, no cut positions.",
+        "tradeoff": "Makes cutting the main decision and shows sums where they apply. Keeping the target '16' in the centre preserves the current rules but also the ease. Sealed totals is a separate mechanic experiment (three checks), not part of the current rules.",
+        "mockup": "ringcount-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "sideways",
+    "name": "Sideways",
+    "keeper": false,
+    "diagnosis": "James found it too easy and pointed out that solving three columns forces the fourth, which is true given each row's fixed letters. The live layout is legible and orderly: four clue cards (A–D), five four-letter strips with ← → buttons and a live column readout. The arrow buttons double the number of targets, and the forced last column removes the final decision.",
+    "clarityRisk": "Low. The problem is depth, not comprehension.",
+    "recommendedDesign": "A — Drum Lock, the only direction for this replacement candidate. The real fix for 'too easy' is the separately labelled spare-letter-drum experiment, which needs new validated boards.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Drum Lock",
+        "summary": "Each row is a cylinder-shaded drum of four letters with side turn keys. Selecting a clue (A–D) tints that column's reading window teal down all five drums. An untinted readout under the board shows the current columns (CLOND, BROWM, GTAON, SRAID at the start). Green appears only after a Check, and only for that arrangement.",
+        "layout": "On desktop the 480px machine (clue grid, column heads, drums, readout) sits beside a 300px panel (Undo, Nudge, Check board, stats, experiment box). On phones it stacks.",
+        "interaction": "Turn drums with the ← → keys (letters wrap). Tap a clue or column head to light its window. Check scores the current columns locally against the sample answers (GRAIN, STAND, CROWD, BLOOM), and the result clears on the next move. Undo does not refund moves. Nudge shows a message only.",
+        "motion": "Drum cells slide 18px in the turn direction, then spring back into place.",
+        "accessibility": "Turn keys are 44×56px and labelled 'Turn row 1 left'. Drums are groups labelled with their letters. Check results are shown with ✓ and text as well as colour.",
+        "sharing": "Not shown. Proposed: moves, checks and nudges, solved or not, no letters.",
+        "tradeoff": "Keeps the arrow keys the director suggested replacing with direct drag, and it does not change the forced fourth column. The spare-drum experiment would, but it needs new boards.",
+        "mockup": "sideways-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "kimi-quartet",
+    "name": "Quartet",
+    "keeper": false,
+    "diagnosis": "James found it fun and asked that it not be an exact copy of another game. The live game shows sixteen words in a grid with Shuffle, Clear, Submit, a mistakes counter and 'Pair glow · 1 free'. Its help text adds 'One away…' and numbered difficulty tiers, and today's groups (chess pieces, hats, poem forms, rocks) plus the select-four, four-mistake structure read very close to a well-known publisher's grouping game. At 393px the Shuffle and Clear labels look crowded (to be verified live).",
+    "clarityRisk": "Low for rules. High for originality.",
+    "recommendedDesign": "A — Assembly Tray, as an original interaction layer. Before adoption, drop or reword the 'three of these four connect' near-miss message; it echoes the 'one away' convention the director flagged.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Assembly Tray",
+        "summary": "Instead of highlighting tiles in place, words drop into a recessed four-socket tray above the grid, and 'Lock quartet' commits it. Solved quartets become full-width bands in navy, teal, blue and dark teal, each with a group name. A four-segment miss meter, 'Pair glow · 1 free' and Shuffle / Empty tray sit nearby.",
+        "layout": "Single column (max 760px): quartet count and miss meter, solved bands, the tray with Lock, a near-miss note, a 2-column word grid (4-column on wider screens), then controls.",
+        "interaction": "Tap a word to drop it into the next socket, and tap a socket to send it back. Lock checks the sample groups locally. A repeated wrong set costs no miss. Pair glow outlines two words from one quartet once. Shuffle reorders.",
+        "motion": "Words drop into sockets with a short fall and fade (0.25s). Solved bands drop in the same way.",
+        "accessibility": "Sockets speak 'Socket 2: ROOK'. Words use aria-pressed, and the near-miss note is role=status. The miss meter has text ('3 misses left'). Group names are the designer's reading of the words, as the review banner states.",
+        "sharing": "Not shown. The footer proposes misses and the order of quartets, never the words.",
+        "tradeoff": "The tray makes building a quartet a physical act distinct from tile-highlighting grids. But the underlying structure (16 words, four groups, four misses) is unchanged, so originality still depends on content and mechanic decisions beyond this UI.",
+        "mockup": "kimi-quartet-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "deepseek-spare",
+    "name": "Spare",
+    "keeper": false,
+    "diagnosis": "James called the original too easy and then approved a harder contextual sample. The live harder preview has four context tabs, only one visible context sentence ('A porter lifts a suitcase.'), two slots with ↔, and a dark navy bank of nine words (SHARP, DARK, LIGHT, BRIGHT, FLAT, LOUD, HEAVY, DULL, SOFT). The tabs hide three of four contexts, and the dark bank breaks the light frame. Earlier feedback suggests onboarding confusion.",
+    "clarityRisk": "High. 'The same word takes a different opposite depending on context' is subtle.",
+    "recommendedDesign": "A — Opposite Axes. A follow-up should show all four contexts at once, as the director suggested; this mockup still shows one at a time, because sentences 2–4 were not in the supplied source.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Opposite Axes",
+        "summary": "A one-line lead explains the task. A row of four context selectors shows '1 / 0/2'. The active context sentence is set large in serif above an axis: two end slots joined by a double-headed arrow bar. A light three-column bank sits below, then a 'spare' bay that fills itself once eight words are placed, and a four-dot check counter.",
+        "layout": "Single column (max 820px). On desktop the spare bay and check history sit side by side; on phones they stack. Return word / Clarify this context / Check all four sit at the bottom.",
+        "interaction": "Tap an end slot, then a bank word. Placing a word that is already used elsewhere swaps it in, and the focus moves to the next empty slot. Contexts 2–4 show a 'not in supplied source' placeholder. Check enables at eight placed words (message only). Clarify shows a message only.",
+        "motion": "None beyond state changes.",
+        "accessibility": "End slots speak 'Context 1, end 2: empty'. Placed words are dimmed and labelled. Check dots have an aria-label. The bank is light, replacing the dark navy panel.",
+        "sharing": "Not shown. Proposed: checks used out of four, Clarify notes used, solved or not, no words.",
+        "tradeoff": "Fixes the dark bank and makes 'opposite' a physical axis. But only one context is visible at a time. Check feedback ('how many pairs are right, not which') and Clarify are the prototype's proposals; I could not confirm them in the supplied source in this pass.",
+        "mockup": "deepseek-spare-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "deepseek-rung",
+    "name": "Rung",
+    "keeper": false,
+    "diagnosis": "Positive but brief feedback. The live game has a START REST → TARGET SOFT panel, 'Shortest route: 4 steps', current-word tiles, a text field and Undo/Restart/Add rung. It is legible, but it duplicates Morph's mechanic with a weaker presentation, and the shortest-route goal is a sentence rather than something you can see.",
+    "clarityRisk": "Low.",
+    "recommendedDesign": "A — The Climb. It makes the shortest route visible as empty rungs, and it should share Morph's ladder component if both games stay.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "The Climb",
+        "summary": "A literal ladder built bottom-up between two rails. REST is an ink START rung at the bottom and SOFT a dashed TARGET rung at the top. Empty dashed rungs show how many steps remain on the shortest route. Changed letters are tinted blue, and letters already matching the target get a green underline.",
+        "layout": "On desktop the 400px ladder sits beside a 340px panel (steps so far / shortest route / letters in place, a candidate word with Add rung, an A–Z grid, Undo rung / Restart / Hint). On phones it stacks.",
+        "interaction": "Tap a letter in the NOW rung, then a replacement letter (grid or keyboard). The candidate shows with the change in blue. Add rung checks a small demo word list only, and the prototype says so. ←/→ move between letters and Enter adds.",
+        "motion": "The selected letter lifts 3px. New rungs appear at the top of the stack.",
+        "accessibility": "Letters on the active rung are buttons labelled 'Change letter 1, L'. The step counters are text, not only the rung visuals. Letter keys, arrows and Enter are wired.",
+        "sharing": "Not shown. Proposed: steps vs shortest, hints, no words.",
+        "tradeoff": "Turns par into a visible ladder. The green 'letters in place' underline is a mild assist. Going over par needs a defined treatment that is not designed here (the director suggested extending the ladder in a secondary tone).",
+        "mockup": "deepseek-rung-A.html"
+      }
+    ]
+  }
+]

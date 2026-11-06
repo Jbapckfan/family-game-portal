@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Logic Lattice A · Line counters — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.lay{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:32px;align-items:start}
+@media(max-width:840px){.lay{grid-template-columns:minmax(0,1fr)}}
+.lesson{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);margin-bottom:16px;font-size:15px;color:var(--ink-2)}
+.lesson .demo{display:flex;align-items:center;gap:3px}
+.lesson .demo b{width:28px;height:28px;display:grid;place-items:center;font:800 15px var(--mono);color:var(--ink)}
+.lesson .demo i{width:22px;height:22px;border-radius:4px;border:1px solid #b9c8d5;background:#fff;display:grid;place-items:center;font-style:normal;color:#9fb2c2}
+.lesson .demo i.k{background:var(--ink);border-color:var(--ink)}
+.tools{display:inline-flex}
+.board{display:grid;grid-template-columns:44px repeat(5,minmax(0,1fr));grid-template-rows:auto repeat(5,auto) 44px;gap:4px;max-width:440px}
+.clue{border:0;background:transparent;cursor:pointer;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;padding:2px;font:800 20px var(--sans);color:var(--ink)}
+.clue small{font:600 11px var(--mono);color:var(--muted)}
+.clue.met{color:var(--ok)}.clue.met small{color:var(--ok)}
+.clue.bad{color:var(--bad)}.clue.bad small{color:var(--bad)}
+.clue[aria-pressed="true"]{background:var(--ink);color:#fff}.clue[aria-pressed="true"] small{color:#b8c7d3}
+.diag{font-size:16px}
+.cell{aspect-ratio:1;border-radius:6px;border:1px solid #b9c8d5;background:#fff;cursor:pointer;position:relative;padding:0}
+.cell.b{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 -3px 0 #000}
+.cell.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#9fb2c2}
+.cell.fix::before{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;transform:rotate(45deg);background:var(--teal)}
+.cell.b.fix::before{background:#7fd1de}
+.cell.hl{box-shadow:0 0 0 3px rgba(28,92,188,.45)}
+.cell.b.hl{box-shadow:0 0 0 3px rgba(28,92,188,.55),inset 0 -3px 0 #000}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:10px 0 0}
+.guide{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.guide small{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.guide h2{margin:4px 0 10px;font-size:24px}
+.strip{display:flex;gap:4px;margin:0 0 12px}
+.strip i{width:36px;height:36px;border-radius:6px;border:1px solid #b9c8d5;position:relative}
+.strip i.b{background:var(--ink);border-color:var(--ink)}
+.strip i.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#9fb2c2}
+.tally{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
+.tally div{padding:10px 0}.tally b{display:block;font-size:24px}.tally span{font-size:13px;color:var(--muted)}
+.guide p{margin:0 0 10px;color:var(--ink-2)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Logic Lattice A — Line counters</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/qwen-logic-lattice.svg" alt=""><div><p class="eyebrow">Grid deduction · parked for later</p><h1 class="gname">Logic Lattice</h1><p class="tagline">Numbers count whole lines, never neighbours.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov · <span id="dec">4</span>/25 decided</span></div>
+
+  <div class="lesson"><span class="demo" aria-label="Example: a line labelled 2 has two black squares in any positions"><b>2</b><i class="k"></i><i>·</i><i>·</i><i class="k"></i><i>·</i></span><span>A <b>2</b> means two black squares <b>anywhere</b> in that line of five. The rest are white.</span></div>
+  <div class="lay">
+    <section>
+      <div class="seg" role="group" aria-label="Marking tool" id="tools" style="margin-bottom:12px"><button aria-pressed="true" data-t="b">■ Black</button><button aria-pressed="false" data-t="w">· White</button><button aria-pressed="false" data-t="c">Clear</button></div>
+      <div class="board" id="board" aria-label="Five by five grid with line totals"></div>
+      <div class="legend"><span>■ black</span><span>· white (decided empty)</span><span>◆ fixed given</span><span>green total = met · red = impossible</span></div>
+    </section>
+    <aside class="guide" aria-live="polite" id="guide"></aside>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: undecided squares are plain (no "?" icons, so it stops reading as Minesweeper). Every total is a live counter (black so far / needed) and turns green or red. Selecting a total draws a band over its five squares; the ↘ total sits at the top-left corner where its diagonal starts and the ↙ total at the bottom-left where its diagonal ends. Totals and givens are today's supplied puzzle; marking is local.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const rows=[3,2,2,4,4],cols=[2,3,4,2,4],dd=3,da=4,cells=Array(25).fill(-1),fix=new Set([8,14,19,23]);cells[8]=0;cells[14]=1;cells[19]=1;cells[23]=0;
+let tool='b',sel={k:'r',i:0};
+const lines=[...rows.map((t,i)=>({k:'r',i,t,name:'Row '+(i+1),idx:[0,1,2,3,4].map(c=>i*5+c)})),...cols.map((t,i)=>({k:'c',i,t,name:'Column '+(i+1),idx:[0,1,2,3,4].map(r=>r*5+i)})),{k:'d',i:0,t:dd,name:'Diagonal ↘',idx:[0,6,12,18,24]},{k:'a',i:0,t:da,name:'Diagonal ↙',idx:[4,8,12,16,20]}];
+const L=(k,i)=>lines.find(l=>l.k===k&&l.i===i);
+function st(l){const b=l.idx.filter(x=>cells[x]===1).length,u=l.idx.filter(x=>cells[x]===-1).length,w=5-b-u;return {b,u,w,s:b>l.t||b+u<l.t?'bad':(!u&&b===l.t?'met':'')};}
+function clue(l,cls=''){const s=st(l);return `<button class="clue ${cls} ${s.s}" data-k="${l.k}" data-i="${l.i}" aria-pressed="${sel.k===l.k&&sel.i===l.i}" aria-label="${l.name}: ${l.t} black needed, ${s.b} marked">${cls?(l.k==='d'?'↘':'↙')+l.t:l.t}<small>${s.b}/${l.t}</small></button>`;}
+function draw(){const cur=L(sel.k,sel.i),hl=new Set(cur.idx);let h=clue(L('d',0),'diag');cols.forEach((_,i)=>h+=clue(L('c',i)));
+for(let r=0;r<5;r++){h+=clue(L('r',r));for(let c=0;c<5;c++){const x=r*5+c,v=cells[x];h+=`<button class="cell ${v===1?'b':v===0?'w':''} ${fix.has(x)?'fix':''} ${hl.has(x)?'hl':''}" data-x="${x}" ${fix.has(x)?'aria-disabled="true"':''} aria-label="Row ${r+1}, column ${c+1}: ${v===1?'black':v===0?'white':'undecided'}${fix.has(x)?', fixed':''}"></button>`;}}
+h+=clue(L('a',0),'diag');document.getElementById('board').innerHTML=h;
+document.querySelectorAll('.clue').forEach(b=>b.onclick=()=>{sel={k:b.dataset.k,i:+b.dataset.i};draw();});
+document.querySelectorAll('.cell').forEach(b=>b.onclick=()=>{const x=+b.dataset.x;if(fix.has(x))return;cells[x]=tool==='b'?1:tool==='w'?0:-1;draw();});
+const s=st(cur);let g;if(s.b>cur.t)g=`Too many black: remove ${s.b-cur.t}.`;else if(s.b+s.u<cur.t)g='Too many white: this line can no longer reach its total.';else if(!s.u)g='Count met. Its squares must also satisfy the crossing lines.';else if(s.b===cur.t)g=`Total reached — the ${s.u} undecided square${s.u>1?'s':''} must be white.`;else if(s.b+s.u===cur.t)g=`Every undecided square here must be black.`;else g=`Find ${cur.t-s.b} more black among ${s.u} undecided; the rest are white.`;
+document.getElementById('guide').innerHTML=`<small>Selected line</small><h2>${cur.name} · ${cur.t} black</h2><div class="strip">${cur.idx.map(x=>`<i class="${cells[x]===1?'b':cells[x]===0?'w':''}"></i>`).join('')}</div><div class="tally"><div><b>${s.b}</b><span>black</span></div><div><b>${s.w}</b><span>white</span></div><div><b>${s.u}</b><span>undecided</span></div></div><p>${g}</p><p style="font-size:14px;color:var(--muted)">All 12 totals — 5 rows, 5 columns, 2 diagonals — must agree. The centre square counts in both diagonals.</p><div class="acts"><button class="btn">Undo</button><button class="btn">Restart</button><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>`;
+document.getElementById('dec').textContent=cells.filter(v=>v!==-1).length;}
+document.querySelectorAll('#tools button').forEach(b=>b.onclick=()=>{tool=b.dataset.t;document.querySelectorAll('#tools button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+draw();
+</script>
+</body>
+</html>

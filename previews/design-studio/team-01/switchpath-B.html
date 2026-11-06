@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Switchpath · Concept B · Rhythm Line</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.layout{display:grid;gap:18px;align-items:start}
+@media (min-width:860px){.layout{grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:28px}.boardsec{order:-1}}
+.trace{background:#fff;border:1px solid var(--line2);border-radius:16px;padding:12px 12px 8px}
+.trace-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+.trace-h strong{font:800 20px/1.1 var(--display)}
+.trace-h strong.h{color:var(--blue)} .trace-h strong.l{color:var(--teal)}
+.trace svg{display:block;width:100%;height:auto}
+.trace .ax{stroke:var(--line2);stroke-width:.5}
+.trace .lab{font:600 4px var(--mono);fill:#8b99a7}
+.trace .seg-up{stroke:var(--blue);stroke-width:1.6;stroke-linecap:round}
+.trace .seg-dn{stroke:var(--teal);stroke-width:1.6;stroke-linecap:round}
+.trace .pt{fill:#fff;stroke:var(--ink);stroke-width:1}
+.trace .val{font:700 5px var(--display);fill:var(--ink);text-anchor:middle}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--line);border:2px solid var(--line);border-radius:14px;overflow:hidden;max-width:400px;margin:0 auto}
+.cell{position:relative;border:0;background:#fff;aspect-ratio:1;min-height:44px;font:700 clamp(28px,9vw,42px)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink);transition:background .15s}
+.cell:hover{background:#f2f6fa}
+.cell.v{background:#f4f7fa;color:#6a7a8a}
+.cell.cur{background:var(--ink);color:#fff}
+.cell .tag{position:absolute;left:8px;top:7px;font:700 10px/1 var(--sans);letter-spacing:.1em;color:var(--muted)}
+.cell.cur .tag{color:#c9d5e1}
+.cell .st{position:absolute;right:8px;bottom:7px;font:600 11px/1 var(--mono);display:flex;gap:3px;align-items:center}
+.cell .st::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c,#9aa8b6)}
+.cell.bad{animation:shake .28s;background:var(--bad-wash)}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.ctrls{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.ctrls .btn{flex:1 1 90px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line2);border-radius:14px;background:#fff;margin-top:14px}
+.facts div{padding:10px 12px;font-size:13px;color:var(--muted)}
+.facts div+div{border-left:1px solid var(--line2)}
+.facts b{display:block;font:700 20px/1.1 var(--display);color:var(--ink)}
+.live{margin-top:12px}
+</style></head>
+<body>
+<div class="rv"><span><b>Switchpath · Concept B “Rhythm Line”</b> · design review prototype, not a live game</span><nav aria-label="Switchpath concepts"><a href="switchpath-A.html">A</a><a href="switchpath-B.html" aria-current="page">B</a><a href="switchpath-C.html">C</a><a href="switchpath-D.html">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Switchpath" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Switchpath from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/switchpath.svg" alt=""><div><h1>Switchpath</h1><div class="meta">NO. 018 · FRI NOV 6 · SHARP</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap layout">
+  <section aria-label="Your route so far" style="order:0">
+    <div class="trace">
+      <div class="trace-h"><strong id="tLabel" class="l">Next: LOWER than 15</strong><span class="meta" id="tCount">4 / 16</span></div>
+      <svg id="trace" viewBox="0 0 168 104" role="img" aria-label="Route values plotted in order"></svg>
+      <div class="legend"><span><i style="background:var(--blue)"></i>higher step</span><span><i style="background:var(--teal)"></i>lower step</span><span><i style="background:repeating-linear-gradient(90deg,#9aa8b6 0 3px,transparent 3px 5px)"></i>hover preview</span></div>
+    </div>
+    <div class="facts"><div><b id="fm">3</b>moves</div><div><b>0</b>hints</div><div><b>15</b>moves = perfect</div></div>
+    <p class="live" id="live">Hover or focus a cell to see where it would land on your line. The shaded band is where the next number must fall.</p>
+  </section>
+  <section aria-label="Board" class="boardsec">
+    <div class="board" id="board"></div>
+    <div class="ctrls" style="max-width:400px;margin-inline:auto"><button class="btn" id="undo">↶ Undo</button><button class="btn" id="reset">Reset</button><button class="btn" onclick="document.getElementById('live').textContent='A hint asks for confirmation first (+1 move, +1 hint). Not wired in this prototype.'">✦ Hint</button></div>
+  </section>
+</div>
+<div class="foot"><span>Start at START, alternate higher/lower, visit every cell once, end on END.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const V=[10,7,11,5,1,14,9,12,15,3,13,2,4,6,8,16],S=12,E=0;
+let path=[12,13,9,8],moves=3;
+const dir=()=>path.length%2?'higher':'lower';
+const adj=(a,b)=>Math.abs((a>>2)-(b>>2))+Math.abs((a&3)-(b&3))===1;
+function why(c){const t=path[path.length-1];if(c===t)return'here';if(path.includes(c))return'rewind';if(!adj(t,c))return'far';if(c===E&&path.length<15)return'end';return(dir()==='higher'?V[c]>V[t]:V[c]<V[t])?'ok':'dir';}
+const $=id=>document.getElementById(id);
+const X=i=>8+i*10.2, Y=v=>94-(v-1)*5.6;
+function trace(ghost){
+  const t=path[path.length-1],n=path.length,h=dir()==='higher',done=n===16;
+  let s='';[1,4,8,12,16].forEach(v=>{s+=`<line class="ax" x1="4" x2="166" y1="${Y(v)}" y2="${Y(v)}"/><text class="lab" x="0" y="${Y(v)+1.4}">${v}</text>`;});
+  if(!done){const y0=Y(V[t]);const col=h?'var(--blue)':'var(--teal)';
+    s+= h?`<rect x="${X(n)-4.5}" y="${Y(16)-3}" width="9" height="${y0-Y(16)+1}" rx="2" fill="${col}" opacity=".16"/>`:`<rect x="${X(n)-4.5}" y="${y0+2}" width="9" height="${Y(1)+3-y0-2}" rx="2" fill="${col}" opacity=".16"/>`;
+    s+=`<line x1="${X(n-1)}" x2="${X(n)+4.5}" y1="${y0}" y2="${y0}" stroke="${col}" stroke-width=".6" stroke-dasharray="1.5 1.2"/>`;}
+  for(let i=1;i<n;i++){const a=V[path[i-1]],b=V[path[i]];s+=`<line class="${b>a?'seg-up':'seg-dn'}" x1="${X(i-1)}" y1="${Y(a)}" x2="${X(i)}" y2="${Y(b)}"/>`;}
+  if(ghost!=null&&!done){const ok=why(ghost)==='ok';s+=`<line x1="${X(n-1)}" y1="${Y(V[t])}" x2="${X(n)}" y2="${Y(V[ghost])}" stroke="${ok?(h?'var(--blue)':'var(--teal)'):'var(--bad)'}" stroke-width="1.2" stroke-dasharray="2 1.4"/><circle cx="${X(n)}" cy="${Y(V[ghost])}" r="2.6" fill="#fff" stroke="${ok?'#0f1d2a':'var(--bad)'}" stroke-width="1"/><text class="val" x="${X(n)}" y="${Y(V[ghost])-4}">${V[ghost]}</text>`;}
+  path.forEach((c,i)=>{s+=`<circle class="pt" cx="${X(i)}" cy="${Y(V[c])}" r="2.4"/><text class="val" x="${X(i)}" y="${Y(V[c])-4}">${V[c]}</text>`;});
+  for(let i=n;i<16;i++)s+=`<circle cx="${X(i)}" cy="100" r=".9" fill="#b8c4d0"/>`;
+  $('trace').innerHTML=s;
+}
+function render(){
+  const t=path[path.length-1],h=dir()==='higher',done=path.length===16;
+  $('tLabel').className=h?'h':'l';$('tLabel').textContent=done?'Route complete':`Next: ${h?'HIGHER':'LOWER'} than ${V[t]}`;
+  $('tCount').textContent=path.length+' / 16';$('fm').textContent=moves;
+  $('board').innerHTML=V.map((v,c)=>{const st=path.indexOf(c);const col=st>0?(V[c]>V[path[st-1]]?'var(--blue)':'var(--teal)'):'#9aa8b6';
+    return `<button class="cell${st>=0?' v':''}${c===t&&!done?' cur':''}" data-c="${c}" aria-label="${v}${c===S?', start':''}${c===E?', end':''}${st>=0?', step '+(st+1):''}">${v}${c===S?'<span class="tag">START</span>':c===E?'<span class="tag">END</span>':''}${st>=0?`<span class="st" style="--c:${col}">${st+1}</span>`:''}</button>`;}).join('');
+  trace();
+}
+const say=m=>$('live').textContent=m;
+const B=$('board');
+B.addEventListener('pointerover',e=>{const b=e.target.closest('[data-c]');if(b&&!path.includes(+b.dataset.c))trace(+b.dataset.c);});
+B.addEventListener('focusin',e=>{const b=e.target.closest('[data-c]');if(b&&!path.includes(+b.dataset.c))trace(+b.dataset.c);});
+B.addEventListener('pointerleave',()=>trace());
+B.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const c=+b.dataset.c,r=why(c);
+  if(r==='rewind'){path=path.slice(0,path.indexOf(c)+1);moves++;render();say(`Rewound to ${V[c]}.`);return;}
+  if(r==='ok'){path.push(c);moves++;render();say(path.length===16?'Route complete.':`${V[c]} placed on your line.`);return;}
+  if(r==='here')return;b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),300);
+  say({far:'Only up, down, left or right of your current cell. No move used.',end:'END must be the 16th cell. No move used.',dir:`${V[c]} falls outside the shaded band. No move used.`}[r]);});
+$('undo').onclick=()=>{if(path.length>1){path.pop();moves++;render();}};
+$('reset').onclick=()=>{if(path.length>1){path=[S];moves++;render();}};
+render();
+</script>
+</body></html>

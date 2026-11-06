@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sideways · Direction A · Drum Lock</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.layout{display:grid;gap:18px;justify-items:center}
+@media (min-width:900px){.layout{grid-template-columns:minmax(0,480px) 300px;justify-content:center;align-items:start;gap:36px}}
+.machine{width:100%;max-width:480px}
+.heads,.drum{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr)) 44px;gap:6px;align-items:stretch}
+.heads{margin-bottom:6px}
+.ch{border:0;background:transparent;padding:6px 2px 8px;border-radius:10px;text-align:center;font:500 12px/1.25 var(--sans);color:var(--ink2);min-height:44px;display:grid;align-content:end;gap:4px}
+.ch b{font:800 15px/1 var(--display);color:var(--ink)}
+.ch[aria-pressed="true"]{background:var(--teal-wash);color:var(--teal-ink)}
+.ch.ok b{color:var(--ok)}
+.drums{display:grid;gap:6px;position:relative}
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.cq{min-height:52px;display:grid;grid-template-columns:24px 1fr;gap:6px;align-items:start;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font:500 15px/1.3 var(--sans);color:var(--ink)}
+.cq b{font:800 15px/1.3 var(--display);color:var(--muted)}
+.cq[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-wash)}
+.cq.ok b{color:var(--ok)}
+.drum .cyl{grid-column:2/6;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;border-radius:12px;padding:0;position:relative}
+.drum .cyl::before{content:"";position:absolute;inset:-3px -3px;border-radius:14px;background:linear-gradient(#cdd7e1,#eef3f7 20%,#fff 50%,#eef3f7 80%,#cdd7e1);z-index:0;box-shadow:inset 0 0 0 1px #c3ced9}
+.cell{position:relative;z-index:1;display:grid;place-items:center;min-height:56px;font:800 clamp(24px,7.4vw,32px)/1 var(--display);color:var(--ink);transition:transform .22s cubic-bezier(.3,1.3,.5,1),background .2s;border-radius:8px}
+.cell.read{background:rgba(10,130,119,.14);color:var(--teal-ink)}
+.cell.ok{color:var(--ok)}
+.shift .cell{transform:translateX(var(--dx))}
+.rb{width:44px;min-height:56px;border-radius:12px;border:1px solid var(--line);background:#fff;font:700 18px/1 var(--sans);color:var(--ink2);box-shadow:0 2px 0 #c9d4df}
+.rb:active{transform:translateY(1px);box-shadow:none}
+.readout{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr)) 44px;gap:6px;margin-top:10px}
+.readout span{grid-column:auto;text-align:center;font:700 clamp(12px,3.6vw,15px)/1.2 var(--mono);letter-spacing:.06em;color:var(--muted);padding:8px 0;border-top:2px solid var(--line)}
+.readout span.ok{color:var(--ok);border-color:var(--ok)}
+.readout .sp{border:0}
+.panel{width:100%;max-width:480px;display:grid;gap:10px}
+.stat{font:13px/1.4 var(--mono);color:var(--muted)}
+.exp{border:1px solid #f0dcb4;background:#fffaf0;border-radius:12px;padding:10px 12px;font-size:14px;color:#6b4a12}
+.mini{display:flex;gap:4px;margin-top:8px;align-items:center;font:700 16px var(--display)}
+.mini span{width:28px;height:30px;border-radius:5px;display:grid;place-items:center;background:#fff;border:1px solid #e3d3b2}
+.mini span.h{opacity:.35;border-style:dashed}
+</style></head>
+<body>
+<div class="rv"><span><b>Sideways · Direction A “Drum Lock”</b> · design review prototype with the real rows, not a live game</span><nav aria-label="Sideways"><a href="sideways-A.html" aria-current="page">A</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Sideways" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Sideways from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/sideways.svg" alt=""><div><h1>Sideways</h1><div class="meta">NO. 018 · TRICKY · <span id="hm">0 MOVES</span></div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap layout">
+  <div class="machine">
+    <div class="clues" id="clues" aria-label="Clues, each read top to bottom"></div>
+    <div class="heads" id="heads"></div>
+    <div class="drums" id="drums"></div>
+    <div class="readout" id="readout" aria-label="Current columns, not checked"></div>
+  </div>
+  <div class="panel">
+    <div class="row"><button class="btn" id="undo">↶ Undo</button><button class="btn" id="nudge">✦ Nudge a drum</button><button class="btn pri" id="chk" style="flex:1">Check board</button></div>
+    <p class="stat" id="stat">0 moves · 0 checks · goal: 1 check, 0 nudges</p>
+    <p class="live" id="msg">Tap a clue to light its reading window. Turn drums with the side keys; the edge letter wraps around.</p>
+    <div class="exp"><b>Mechanic experiment · Spare letter drums.</b> Each drum carries five letters but shows four, so one letter per row is always hidden. Solving three columns no longer forces the fourth. Needs new validated boards; not shown in play here.<div class="mini" aria-hidden="true"><span>G</span><span>S</span><span>C</span><span>B</span><span class="h">K</span></div></div>
+  </div>
+</div>
+<div class="foot"><span>Move across, read down. Green appears only after a check, for that arrangement.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const CL=['Small seed used as food','Be upright on your feet','Many people gathered together','A flower at its fullest'];
+const ANS=['GRAIN','STAND','CROWD','BLOOM'];
+let rows=['CBGS','LRTR','OOAA','NWOI','DMND'],hist=[],moves=0,checks=0,follow=0,checked=null;
+const $=id=>document.getElementById(id);const say=m=>$('msg').textContent=m;
+const cols=()=>[0,1,2,3].map(c=>rows.map(r=>r[c]).join(''));
+function render(){const C=cols();const ok=checked&&checked.key===rows.join()?checked.res:null;
+  $('heads').innerHTML='<span></span>'+CL.map((t,c)=>`<button class="ch${ok&&ok[c]?' ok':''}" data-f="${c}" aria-pressed="${follow===c}" aria-label="Column ${'ABCD'[c]}: ${t}"><b>${'ABCD'[c]} ↓${ok&&ok[c]?' ✓':''}</b></button>`).join('')+'<span></span>';
+  $('clues').innerHTML=CL.map((t,c)=>`<button class="cq${ok&&ok[c]?' ok':''}" data-f="${c}" aria-pressed="${follow===c}"><b>${'ABCD'[c]}</b>${t}</button>`).join('');
+  $('drums').innerHTML=rows.map((r,i)=>`<div class="drum"><button class="rb" data-i="${i}" data-d="-1" aria-label="Turn row ${i+1} left">←</button><div class="cyl" role="group" aria-label="Row ${i+1}: ${[...r].join(' ')}">${[...r].map((l,c)=>`<span class="cell${follow===c?' read':''}${ok&&ok[c]?' ok':''}">${l}</span>`).join('')}</div><button class="rb" data-i="${i}" data-d="1" aria-label="Turn row ${i+1} right">→</button></div>`).join('');
+  $('readout').innerHTML='<span class="sp"></span>'+C.map((w,c)=>`<span class="${ok&&ok[c]?'ok':''}">${w}</span>`).join('')+'<span class="sp"></span>';
+  $('stat').textContent=`${moves} moves · ${checks} checks · goal: 1 check, 0 nudges`;$('hm').textContent=`${moves} MOVES`;
+  $('chk').disabled=!!ok;
+}
+$('clues').onclick=e=>$('heads').onclick(e);
+$('heads').onclick=e=>{const b=e.target.closest('[data-f]');if(b){follow=follow===+b.dataset.f?null:+b.dataset.f;render();if(follow!==null)say(`Window ${'ABCD'[follow]}: “${CL[follow]}” reads ${cols()[follow]}.`);}};
+$('drums').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const i=+b.dataset.i,d=+b.dataset.d;hist.push(rows.slice());const r=rows[i];rows[i]=d===1?r.slice(-1)+r.slice(0,-1):r.slice(1)+r[0];moves++;render();
+  const cyl=$('drums').children[i].querySelector('.cyl');cyl.style.setProperty('--dx',(d*-18)+'px');cyl.parentElement.classList.add('shift');requestAnimationFrame(()=>requestAnimationFrame(()=>{cyl.style.setProperty('--dx','0px');}));
+  if(follow!==null)say(`Row ${i+1} turned ${d===1?'right':'left'}. ${'ABCD'[follow]} now reads ${cols()[follow]}.`);};
+$('chk').onclick=()=>{checks++;const C=cols();const res=C.map((w,c)=>w===ANS[c]);checked={key:rows.join(),res};render();const n=res.filter(Boolean).length;say(n===4?'All four columns read true. Board solved.':`${n} of 4 columns match on this check. Feedback clears after your next move.`);};
+$('undo').onclick=()=>{if(hist.length){rows=hist.pop();render();say('Last turn undone. Moves are not refunded.');}};
+$('nudge').onclick=()=>say('A nudge turns one drum to its answer position after confirmation (+1 nudge, +1 move). Not wired in this prototype.');
+render();
+</script>
+</body></html>

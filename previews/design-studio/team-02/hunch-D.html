@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hunch D · Focus line — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:560px;margin:0 auto}
+.meter{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:0 0 6px}
+.meter i{height:6px;border-radius:3px;background:#d4dee7}
+.meter i.u{background:var(--ink)}.meter i.n{background:var(--accent)}
+.ml{display:flex;justify-content:space-between;font:13px var(--mono);color:var(--muted);margin-bottom:22px}
+.hero{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.hero span{aspect-ratio:.86;display:grid;place-items:center;font-size:clamp(36px,12vw,60px);font-weight:850;border-radius:14px;background:#fff;border:2px solid #b9c9d6;box-shadow:0 4px 0 #d3dde6}
+.hero span.c{border-color:var(--accent);box-shadow:0 4px 0 #a9c0e3,0 0 0 4px rgba(28,92,188,.12)}
+.hero span:empty{background:transparent;box-shadow:none;border-style:dashed}
+.await{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px;color:var(--ink-2);margin:10px 0 18px}
+.await .slot{display:inline-flex;gap:4px;padding:6px 10px;border-radius:16px;border:1px dashed #a9bccb}
+.await .slot i{width:10px;height:10px;border-radius:50%;background:#dfe6ec}
+.hist{border-top:1px solid var(--line)}
+.h{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line)}
+.h small{font:12px var(--mono);color:var(--muted)}
+.h b{font:800 22px var(--mono);letter-spacing:.24em}
+.dots{display:inline-flex;gap:4px;align-items:center}
+.dots i{width:12px;height:12px;border-radius:50%}
+.dots .b{background:var(--ink)}.dots .o{border:2px solid var(--ink)}
+.dots .d{font-style:normal;font-weight:800;color:var(--muted);width:auto;height:auto}
+.kb{display:grid;gap:6px;margin-top:18px}
+.kr{display:grid;gap:5px}
+.kr button{height:54px;min-width:0;padding:0;border-radius:9px;border:0;background:#fff;box-shadow:0 1px 0 #b9c9d6,0 0 0 1px #d0dbe4;font-weight:700;font-size:18px;cursor:pointer}
+.kr button.w{font-size:13px;background:var(--ink);color:#fff;box-shadow:none}
+.r1{grid-template-columns:repeat(10,minmax(0,1fr))}.r2{grid-template-columns:.5fr repeat(9,minmax(0,1fr)) .5fr}.r3{grid-template-columns:1.5fr repeat(7,minmax(0,1fr)) 1.5fr}
+.sharebox{margin-top:20px;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:16px;align-items:start}
+.sharebox[hidden]{display:none}
+@media(max-width:520px){.sharebox{grid-template-columns:minmax(0,1fr)}}
+.card{background:#fff;border:1px solid var(--line-2);border-radius:16px;padding:16px}
+.card header{font:12px var(--mono);color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px}
+.card h3{margin:0 0 10px;font-size:22px}
+.card .r{display:flex;gap:4px;align-items:center;height:18px}
+.card .r i{width:11px;height:11px;border-radius:50%}
+.card .r .b{background:var(--ink)}.card .r .o{border:2px solid var(--ink)}
+.card .r em{font-style:normal;color:var(--muted);font-weight:700}
+.sharebox p{font-size:14px;color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Hunch D — Focus line</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-hunch.svg" alt=""><div><p class="eyebrow">Five-letter deduction</p><h1 class="gname">Hunch</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="false">Daily</button><button aria-pressed="true">Practice</button></div><span class="meta">Illustrative practice state</span></div>
+
+    <div class="meter" aria-hidden="true"><i class="u"></i><i class="u"></i><i class="u"></i><i class="n"></i><i></i><i></i></div>
+    <div class="ml"><span>Guess 4 of 6</span><span>3 used</span></div>
+    <div class="hero" aria-label="Current guess: S T, three empty"><span>S</span><span>T</span><span class="c"></span><span></span><span></span></div>
+    <div class="await"><span>Dots appear here after Enter</span><span class="slot" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+
+    <div class="hist" aria-label="Earlier guesses, newest first">
+      <div class="h"><small>3</small><b>STOMP</b><span class="dots" aria-label="3 exact, 1 elsewhere"><i class="b"></i><i class="b"></i><i class="b"></i><i class="o"></i></span></div>
+      <div class="h"><small>2</small><b>SOUTH</b><span class="dots" aria-label="1 exact, 2 elsewhere"><i class="b"></i><i class="o"></i><i class="o"></i></span></div>
+      <div class="h"><small>1</small><b>ADIEU</b><span class="dots" aria-label="no matches"><i class="d">–</i></span></div>
+    </div>
+
+    <div class="kb" aria-label="Keyboard"><div class="kr r1"></div><div class="kr r2"></div><div class="kr r3"></div></div>
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn quiet">Reveal a letter</button><button class="demo-toggle" id="sh" aria-pressed="false" aria-controls="sb">Preview result card</button></div>
+    <div class="sharebox" id="sb" hidden>
+      <div class="card" aria-label="Illustrative result card">
+        <header><span>ALFORD DAILY</span><span>HUNCH</span></header>
+        <h3>Solved in 5 of 6</h3>
+        <div class="r"><em>–</em></div>
+        <div class="r"><i class="b"></i><i class="o"></i><i class="o"></i></div>
+        <div class="r"><i class="b"></i><i class="b"></i><i class="b"></i><i class="o"></i></div>
+        <div class="r"><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i></div>
+        <div class="r"><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i></div>
+      </div>
+      <p>Illustrative only — rows 4–5 are invented to show a finished card. The card shares grouped dots per guess, never letters, so it can't spoil the word and doesn't resemble a coloured letter grid.</p>
+    </div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: hierarchy flips — the guess you are writing is the largest object, earlier guesses compress into a newest-first list beneath. Large dock keyboard for phones; typing on a physical keyboard works the same.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const sh=document.getElementById('sh'),sb=document.getElementById('sb');sh.onclick=()=>{sb.hidden=!sb.hidden;sh.setAttribute('aria-pressed',!sb.hidden);};
+['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach((r,ri)=>{const row=document.querySelectorAll('.kr')[ri];if(ri===1)row.appendChild(document.createElement('span'));if(ri===2){const b=document.createElement('button');b.className='w';b.textContent='Enter';row.appendChild(b);}r.split('').forEach(k=>{const b=document.createElement('button');b.textContent=k;row.appendChild(b);});if(ri===2){const b=document.createElement('button');b.className='w';b.textContent='⌫';b.setAttribute('aria-label','Delete');row.appendChild(b);}});
+</script>
+</body>
+</html>

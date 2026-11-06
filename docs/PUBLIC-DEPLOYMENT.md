@@ -28,3 +28,7 @@ Evidence and guarded scripts: [November 6 public release](deployments/2026-11-06
 ## Latest addition: playable Sprout B/C
 
 Build `714ea7a69726c446` adds the two public practice previews at `/alford-daily/previews/sprout-bc/?view=b` and `?view=c`. All 368 public files were verified; the earlier 37-hex exact Territory update remains active. [Preview release evidence](deployments/2026-11-06-sprout-previews/REPORT.md).
+
+## Design review gallery
+
+The separate [Opus 5.5 comparison studio](https://pal-hand-strategic-competitions.trycloudflare.com/alford-daily/previews/design-studio/) adds 91 design concepts without changing the 368-file player build. All 132 gallery files passed public hash verification. [Release evidence](deployments/2026-11-06-design-studio/REPORT.md). This is a visual review area, not an applied game redesign.

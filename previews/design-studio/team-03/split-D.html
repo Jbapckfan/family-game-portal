@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Split · Concept D · One line, one cut</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:860px;margin:0 auto}
+.heads{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:3px solid var(--ink)}
+.h{padding:12px 12px 14px;border:0;background:none;text-align:left;cursor:pointer;display:block}
+.h+.h{border-left:1px solid var(--line-2)}
+.h small{display:flex;justify-content:space-between;font:700 11px/1 var(--mono);letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.h span{display:block;font:650 clamp(17px,4.2vw,24px)/1.25 var(--sans)}
+.h.on{background:var(--paper);box-shadow:inset 0 -3px 0 var(--accent)}
+.beam{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) 18px repeat(6,minmax(0,1fr));gap:4px;padding:14px 10px;background:var(--paper);border:1px solid var(--line-2);border-radius:0 0 14px 14px}
+@media(max-width:620px){.beam{grid-template-columns:repeat(6,minmax(0,1fr));row-gap:14px}.cut{grid-column:1/-1;height:16px!important;writing-mode:horizontal-tb!important}}
+.s{height:clamp(46px,11vw,60px);border:0;border-bottom:3px solid var(--line-2);background:transparent;font:800 clamp(22px,5.6vw,30px)/1 var(--sans);cursor:pointer}
+.s.full{border-color:var(--ink)}
+.s.next{border-color:var(--accent);background:var(--accent-wash)}
+.cut{display:flex;align-items:center;justify-content:center;font:700 10px/1 var(--mono);color:var(--muted);letter-spacing:.2em;height:100%;writing-mode:vertical-rl;position:relative}
+.cut::before{content:"";position:absolute;inset:0 50%;border-left:2px dashed var(--line-2)}
+@media(max-width:620px){.cut::before{inset:50% 0 auto;border-left:0;border-top:2px dashed var(--line-2)}.cut span{background:var(--paper);padding:0 8px;position:relative}}
+.cut span{position:relative;background:var(--paper);padding:6px 0}
+.rack{margin-top:18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media(min-width:560px){.rack{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.t{height:clamp(50px,13vw,58px);border:1.5px solid var(--ink);border-radius:6px;background:#fff;font:800 clamp(22px,6vw,26px)/1 var(--sans);cursor:pointer}
+.t:hover{background:var(--ink);color:#fff}
+.t:disabled{border:1.5px dashed var(--line-2);color:transparent;background:transparent}
+.grid2{display:grid;gap:18px;margin-top:16px}
+@media(min-width:760px){.grid2{grid-template-columns:1.2fr 1fr;align-items:start}}
+.log{border:1px solid var(--line-2);border-radius:12px;background:var(--paper)}
+.log h2{margin:0;padding:10px 14px;font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--muted);border-bottom:1px solid var(--line)}
+.log ol{list-style:none;margin:0;padding:6px 14px 12px}
+.log li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font:600 15px/1.3 var(--mono)}
+.log li:last-child{border-bottom:0}
+.dots{display:inline-flex;gap:4px}.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}.dots i.f{background:var(--ink)}
+.empty{color:var(--muted);font:500 14px/1.4 var(--sans)!important;display:block!important}
+.ex{font:600 11px/1 var(--mono);color:var(--warn);letter-spacing:.06em}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Split · D — One line, one cut · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/deepseek-split.svg" alt=""><div class="titles"><p class="kicker">Two clues · sixteen tiles</p><h1>Split</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap" id="board" tabindex="0" aria-label="Split. Left and right arrows choose a side, type rack letters.">
+ <div class="heads" id="heads"></div>
+ <div class="beam" id="beam"></div>
+ <div class="rack" id="rack" role="group" aria-label="Rack"></div>
+ <div class="grid2">
+  <div><div class="row-actions"><button class="btn" id="undo">Undo</button><button class="btn" id="clear">Clear</button><button class="btn btn-primary" id="check">Check both</button></div>
+   <p class="msg" id="msg" role="status">Twelve slots, one cut. Letters fill the highlighted side; ← / → switches sides.</p>
+   <p class="msg" style="color:var(--muted)">4 tiles always stay behind. Definitions sit under each clue on request and count as help.</p></div>
+  <section class="log" aria-label="Check log"><h2>CHECKS · 0</h2><ol id="log"><li class="empty">Each check records the pair you tried and how many fit — never which side.</li></ol>
+   <div style="padding:0 14px 12px"><button class="btn" id="ex">Show an example row</button></div></section>
+ </div>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Split</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const R='RAOEBGTCNRHUEIDO'.split(''),C=['Sharp without a blade.','Broken at someone’s best.'];
+let rows=[[],[]],active=0,stack=[];const $=id=>document.getElementById(id),used=()=>rows.flat();
+function render(){
+ $('heads').innerHTML=C.map((c,r)=>`<button class="h ${active===r?'on':''}" data-row="${r}" aria-pressed="${active===r}"><small><span>${r?'RIGHT':'LEFT'} · WORD ${r+1}</span><span>${rows[r].length}/6</span></small><span>${c}</span></button>`).join('');
+ const side=r=>Array.from({length:6},(_,s)=>`<button class="s ${rows[r][s]!==undefined?'full':''} ${active===r&&s===rows[r].length?'next':''}" data-slot="${r}:${s}" aria-label="Word ${r+1} slot ${s+1}">${rows[r][s]!==undefined?R[rows[r][s]]:''}</button>`).join('');
+ $('beam').innerHTML=side(0)+'<div class="cut" aria-hidden="true"><span>CUT</span></div>'+side(1);
+ $('rack').innerHTML=R.map((l,i)=>`<button class="t" data-i="${i}" ${used().includes(i)?'disabled aria-label="placed"':`aria-label="${l}"`}>${l}</button>`).join('');
+ const u=used().length;$('check').disabled=u!==12;$('undo').disabled=$('clear').disabled=!u;}
+function add(i){if(used().includes(i))return;if(rows[active].length===6){if(rows[1-active].length<6)active=1-active;else return;}rows[active].push(i);stack.push(active);if(rows[active].length===6&&rows[1-active].length<6)active=1-active;render();}
+const say=t=>$('msg').textContent=t;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(t){add(+t.dataset.i);return;}
+ const s=e.target.closest('[data-slot]');if(s){const[r,k]=s.dataset.slot.split(':').map(Number);if(rows[r][k]!==undefined)rows[r].splice(k,1);active=r;render();return;}
+ const h=e.target.closest('[data-row]');if(h){active=+h.dataset.row;render();}});
+$('board').onkeydown=e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();active=(e.key==='ArrowUp'||e.key==='ArrowLeft')?0:1;render();}
+ else if(/^[a-z]$/i.test(e.key)){const i=R.findIndex((c,i)=>c===e.key.toUpperCase()&&!used().includes(i));if(i<0)say(`No ${e.key.toUpperCase()} left.`);else add(i);}
+ else if(e.key==='Backspace'){e.preventDefault();$('undo').click();}};
+$('undo').onclick=()=>{const r=stack.pop();if(r!==undefined){rows[r].pop();active=r;}render();};
+$('clear').onclick=()=>{rows=[[],[]];stack=[];active=0;render();};
+$('check').onclick=()=>say('Prototype: the live game checks both sides and adds a row to the log.');
+$('ex').onclick=()=>{$('log').innerHTML='<li><span>1</span><span>●●●●●● | ●●●●●●</span><span class="dots" aria-label="1 of 2 fit"><i class="f"></i><i></i></span></li><li><span class="ex">EXAMPLE LAYOUT ONLY · letters hidden here to avoid inventing a guess</span></li>';$('ex').hidden=true;};
+render();
+</script>
+</body></html>

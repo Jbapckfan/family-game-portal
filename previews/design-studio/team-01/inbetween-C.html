@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inbetween · Concept C · Clue Focus + Harder Clues</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrapx{max-width:760px;margin:0 auto}
+.over{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-bottom:16px}
+.over button{min-height:52px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;gap:2px;padding:4px 2px;font:700 clamp(11px,3.3vw,14px)/1 var(--mono);letter-spacing:.06em;color:var(--ink2)}
+.over button small{font:600 10px/1 var(--mono);color:var(--muted)}
+.over button[aria-current="true"]{border:2px solid var(--ink)}
+.over button.ok{background:var(--ok-wash);border-color:transparent;color:var(--ok)}
+.card{background:#fff;border:1px solid var(--line2);border-radius:22px;padding:clamp(12px,4vw,30px);box-shadow:var(--shade)}
+.tog{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.tog button{min-height:44px;border:0;background:#fff;padding:0 14px;font:600 14px var(--sans);color:var(--muted)}
+.tog button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tog button .exp{font:600 10px var(--mono);color:var(--amber);margin-left:4px}
+.tog button[aria-pressed="true"] .exp{color:#ffd48a}
+.clue{font:500 clamp(24px,7vw,36px)/1.2 var(--serif);margin:0 0 6px;color:var(--ink)}
+.clue-meta{font-size:13px;color:var(--muted);margin:0 0 20px;min-height:18px}
+.word{display:flex;justify-content:center;align-items:stretch;flex-wrap:nowrap;margin:0 auto}
+.lt{display:grid;place-items:center;width:clamp(30px,9vw,60px);font:800 clamp(28px,9vw,54px)/1 var(--display)}
+.gp{position:relative;width:clamp(24px,7vw,44px);min-height:72px;border-radius:10px;border:2px dashed #c3cfdb;background:transparent;font:600 18px var(--mono);color:#a9b6c3;padding:0}
+.gp:not(:disabled):hover{border-color:var(--blue);color:var(--blue)}
+.gp:disabled{opacity:.4}
+.gp::after{content:"";position:absolute;inset:-4px -8px}/* hit area reaches into neighbouring letters */
+.gp.on{border:0;background:var(--blue);color:#fff;width:auto;padding:0 4px;font:800 clamp(24px,8vw,50px)/1 var(--display)}
+.res{text-align:center;margin:18px 0 0;font:800 clamp(26px,8vw,40px)/1 var(--display);letter-spacing:.08em}
+.res mark{background:var(--blue);color:#fff;border-radius:6px;padding:0 4px}
+.res.ok mark{background:var(--ok)}
+.res.bad{color:var(--bad)} .res.bad mark{background:var(--bad)}
+.pairs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:20px}
+@media (min-width:520px){.pairs{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.pair{min-height:54px;border-radius:12px;border:1px solid #c9d4df;border-bottom:4px solid #b9c6d3;background:#fff;font:800 clamp(17px,5vw,22px)/1 var(--display);letter-spacing:.06em;padding:0}
+.pair[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue-ink);transform:translateY(-3px)}
+.pair:disabled{opacity:.25}
+.acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.acts .btn{flex:1 1 120px}
+</style></head>
+<body>
+<div class="rv"><span><b>Inbetween · Concept C “Clue Focus + Harder Clues”</b> · design review prototype with real placements, not a live game · harder clues are editorial samples</span><nav aria-label="Inbetween concepts"><a href="inbetween-A.html">A</a><a href="inbetween-B.html">B</a><a href="inbetween-C.html" aria-current="page">C</a><a href="inbetween-D.html">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Inbetween" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Inbetween from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/inbetween.svg" alt=""><div><h1>Inbetween</h1><div class="meta">NO. 018 · MEDIUM · <span id="att">0</span> ATTEMPTS</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap"><div class="wrapx">
+  <nav class="over" id="over" aria-label="Words"></nav>
+  <div class="card">
+    <div class="tog" role="group" aria-label="Clue strength"><button id="tStd" aria-pressed="false">Standard clue</button><button id="tHard" aria-pressed="true">Harder clue<span class="exp">BONUS</span></button></div>
+    <p class="clue" id="clue"></p><p class="clue-meta" id="meta"></p>
+    <div class="word" id="word"></div>
+    <p class="res" id="res" aria-live="polite"></p>
+    <div class="pairs" id="pairs"></div>
+    <div class="acts"><button class="btn" id="prevw">← Word</button><button class="btn pri" id="place" disabled>Place pair</button><button class="btn" id="nextw">Word →</button></div>
+    <p class="live" id="msg" style="margin-top:10px"></p>
+  </div>
+</div></div>
+<div class="foot"><span>Harder clue is a proposed bonus layer: same words and pairs, tougher wording, scored separately. Standard clue stays the Daily default.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const P=['UN','RL','RE','AD','IT','AM'];
+const RW=[{c:'Express sorrow or regret',h:'Keen, as mourners do',s:'LENT',a:'LAMENT'},{c:'Too poor to support much vegetation',h:'Like a field that has given up',s:'BARN',a:'BARREN'},{c:'The front of a building',h:'A front you might put on',s:'FACE',a:'FACADE'},{c:'Except if',h:'Barring that',s:'LESS',a:'UNLESS'},{c:'A robber or outlaw',h:'One-armed one in a casino',s:'BAND',a:'BANDIT'},{c:'Formed into coils',h:'Like a cat asleep by the fire',s:'CUED',a:'CURLED'}];
+let placed=RW.map(()=>null),cur=0,sel=null,gap=null,bad=false,attempts=0,hard=true;
+const $=id=>document.getElementById(id);const say=m=>$('msg').textContent=m;
+const build=(s,p,g)=>s.slice(0,g)+p+s.slice(g);const used=()=>placed.filter(Boolean).map(x=>x.p);
+function render(){
+  const r=RW[cur],pl=placed[cur];
+  $('over').innerHTML=RW.map((x,i)=>`<button data-i="${i}" ${i===cur?'aria-current="true"':''} class="${placed[i]?'ok':''}">${placed[i]?x.a.slice(0,4):x.s}<small>${placed[i]?'✓':String(i+1).padStart(2,'0')}</small></button>`).join('');
+  $('clue').textContent=hard?r.h:r.c;$('meta').innerHTML=hard?'Harder clue <span class="illus">editorial sample</span> · tap “Standard clue” any time (noted in the bonus result)':'Standard clue';
+  $('tStd').setAttribute('aria-pressed',!hard);$('tHard').setAttribute('aria-pressed',hard);
+  if(pl){$('word').innerHTML='';const w=build(r.s,pl.p,pl.g);$('res').className='res ok';$('res').innerHTML=`${w.slice(0,pl.g)}<mark>${pl.p}</mark>${w.slice(pl.g+2)}`;}
+  else{let h='';for(let g=0;g<=4;g++){h+=g===gap&&sel?`<button class="gp on" data-g="${g}" aria-label="Remove preview">${sel}</button>`:`<button class="gp" data-g="${g}" ${sel?'':'disabled'} aria-label="Gap ${g+1}">+</button>`;if(g<4)h+=`<span class="lt">${r.s[g]}</span>`;}$('word').innerHTML=h;
+    if(sel&&gap!==null){const w=build(r.s,sel,gap);$('res').className='res'+(bad?' bad':'');$('res').innerHTML=`${w.slice(0,gap)}<mark>${sel}</mark>${w.slice(gap+2)}`;}else{$('res').className='res';$('res').textContent='';}}
+  $('pairs').innerHTML=P.map(p=>`<button class="pair" data-p="${p}" aria-pressed="${sel===p}" ${used().includes(p)||pl?'disabled':''}>${p}</button>`).join('');
+  $('place').disabled=!(sel&&gap!==null)||bad||!!pl;$('att').textContent=attempts;
+}
+$('over').onclick=e=>{const b=e.target.closest('[data-i]');if(b){cur=+b.dataset.i;gap=null;bad=false;render();}};
+$('pairs').onclick=e=>{const b=e.target.closest('[data-p]');if(b){sel=sel===b.dataset.p?null:b.dataset.p;bad=false;render();say(sel?`${sel} chosen. Tap a + in the word.`:'');}};
+$('word').onclick=e=>{const b=e.target.closest('[data-g]');if(!b||b.disabled)return;const g=+b.dataset.g;gap=gap===g?null:g;bad=false;render();};
+$('place').onclick=()=>{const r=RW[cur],w=build(r.s,sel,gap);attempts++;if(w===r.a){placed[cur]={p:sel,g:gap};sel=null;gap=null;render();say(`${w}. Placed.`);}else{bad=true;render();say('Not that one. One attempt used; the pair is still yours.');}};
+$('prevw').onclick=()=>{cur=(cur+5)%6;gap=null;bad=false;render();};$('nextw').onclick=()=>{cur=(cur+1)%6;gap=null;bad=false;render();};
+$('tStd').onclick=()=>{hard=false;render();};$('tHard').onclick=()=>{hard=true;render();};
+sel='AM';gap=1;render();say('AM previewed in the first gap. Place it, or try another gap; previews are free.');
+</script>
+</body></html>

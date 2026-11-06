@@ -1,0 +1,460 @@
+[
+  {
+    "slug": "kimi-cairn",
+    "name": "Cairn",
+    "keeper": true,
+    "diagnosis": "The game is a clean 3→7 letter anagram climb, but the current board doesn't show that climb. A tiny five-pill progress bar and a decorative stone icon sit apart from a generic card with dashed slots. Beige secondary buttons drift toward the brown palette James rejected. The Clean/Assisted/Shown legend floats at the bottom with no link to any level. The 'perfect summit' result image was called out as looking dumb.",
+    "clarityRisk": "Medium. The rack-to-slot input is clear, but 'a new letter drops in and you must reuse everything' is only explained in the help dialog, and the reason for the five levels isn't visible.",
+    "recommendedDesign": "A — Stairstep. The board becomes the climb, and each solved word stays engraved on its stair with its status mark. Pair it with D's result card, which replaces the summit picture.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Stairstep",
+        "summary": "Five left-aligned slabs grow one slot wider per level, from 3 at the bottom to 7 at the top, so the board itself is the climb. The active stair is enlarged and takes the letters directly.",
+        "layout": "On desktop the climb panel sits beside a slim side column (how levels are marked, what happens next, keyboard). On phones it is a single column: stairs, then the rack, then Enter/Shuffle/Delete, then quiet Hint and Skip.",
+        "interaction": "Tap a rack tile to drop it into the next empty slot on the active stair, and tap a placed letter to send it back. Typing and Enter work too. A local preview button shows the two-letters-placed state.",
+        "motion": "Letters drop into slots with a short fall. On a solve, the word would set into the slab and the next stair would light (described, not prototyped).",
+        "accessibility": "Slots are buttons with spoken state ('Placed T, tap to remove'). Rack tiles are 64×68px. Status uses fill pattern as well as colour (solid, split, dashed). Live text reports '2 of 3 placed'.",
+        "sharing": "Use D's five-bar result card, coloured by status, with no words.",
+        "tradeoff": "The board is taller than today's on phones, though the stairs are compact (26–36px cells). Seven-letter stairs sit at the top, so the start of play is at the bottom of the panel.",
+        "mockup": "cairn-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Monolith",
+        "summary": "One honed slab holds only the current level, in very large type with round pebble keys. Progress is a five-stone side profile at top right, and secondary actions live in a sheet.",
+        "layout": "A single centred column (max 600px). A big '1/5' level number sits top-left with the stone profile top-right. Below are three 64–84px answer cells, three pebble keys and the Shuffle/Enter/Delete row, with a 'More' sheet for Hint, Skip and Rules.",
+        "interaction": "Tap pebbles to fill cells. 'More' expands a sheet of 56px rows (shown open via the local toggle).",
+        "motion": "Pebbles lift on hover and press down on tap. A solved slab would slide down and a new, wider slab rise in.",
+        "accessibility": "This is the largest type of the four options. The profile has an aria-label explaining that stones widen per level. The sheet uses aria-expanded.",
+        "sharing": "Same status-bar card as D, without the summit picture.",
+        "tradeoff": "Earlier words are not visible on the board, so players lose the sense of the tower. Hint and Skip are one tap further away.",
+        "mockup": "cairn-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Carry and add",
+        "summary": "States the mechanic as an equation: a recessed tray of letter sorts → one rail of answer slots. A 3 +1 4 +1 5 +1 6 +1 7 chain makes the growth explicit.",
+        "layout": "On desktop the tray, an arrow and the rail sit side by side; on phones they stack vertically. The chain runs on top, controls are centred, and an expandable worked example uses the rules' own TEA + R → TEAR/RATE case.",
+        "interaction": "Tap sorts to fill the rail. 'How level 2 opens' expands the example, labelled as not today's letters.",
+        "motion": "In the example, the new letter R falls into place with a spring. In play, the dropped-in letter would do the same.",
+        "accessibility": "The chain has a spoken summary. Tall 56×76px sorts. The example is plain text.",
+        "sharing": "Status-bar card.",
+        "tradeoff": "The most instructional option, but the least atmospheric. The tray and rail duplicate letters on screen.",
+        "mockup": "cairn-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Altitude rail and result card",
+        "summary": "A persistent altitude rail of five nodes (3→7 letters) frees the panel for input. Keycaps have visible travel. Includes a redesigned result card with five bars sized 3→7, coloured by Clean/Assisted/Shown.",
+        "layout": "Desktop has the rail on the left and the input panel on the right. On phones the rail turns horizontal above the panel. The result card preview opens below.",
+        "interaction": "Tap keycaps or type. 'Preview result card' toggles an illustrative card.",
+        "motion": "Keycaps depress 5px on press. The rail marker would slide up a node on each solve.",
+        "accessibility": "The rail is a nav with text labels. 68px keycaps. Card bars carry an aria-label listing each level's status.",
+        "sharing": "Card shows 'n of 5 levels solved', counts of clean and assisted, and five status bars, never the words. The statuses shown are illustrative.",
+        "tradeoff": "Separates progress from the board, so it is less integrated than A. The rail costs width on desktop.",
+        "mockup": "cairn-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "kimi-morph",
+    "name": "Morph",
+    "keeper": true,
+    "diagnosis": "The core is readable, but the screen stacks GOAL card, START row, NEXT row, a counter, a big Check button, two beige buttons, two disabled buttons and a footnote, so the ladder itself never looks like a ladder. The NEXT row uses the same tile style as START, so it's unclear what is editable. Tapping a letter to swap it gives no visible picker until tapped.",
+    "clarityRisk": "Low to medium. The rules are simple, but it is unclear which row is editable, and the 'changed two letters' error only appears after submitting.",
+    "recommendedDesign": "A — Ladder rails, with D's live 'exactly one change' check added under the active rung. This keeps the strong readability James asked to preserve and makes input explicit.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Ladder rails",
+        "summary": "A literal ladder: the goal MESS is fixed in ink at the top and the start BANG at the bottom. Played rungs carry a blue tick under the changed letter. Dashed rungs show the suggested five moves.",
+        "layout": "On desktop, the ladder panel (≤460px) sits beside a rules column with feedback and the hint/give-up actions. On phones it is a single column with the swap picker directly beneath the ladder.",
+        "interaction": "Tap a letter on the active rung to open an A–Z picker (auto-fill grid with 44px keys) for that column. Type a four-letter word as an alternative. The prototype's picker is live.",
+        "motion": "On acceptance, the new rung would slide up into place and the dashed par rung above it would fill.",
+        "accessibility": "The active rung's letters are toggle buttons with aria-pressed. The picker states which letter is being swapped. Changed-letter ticks are positional, not colour-only.",
+        "sharing": "Rungs used vs suggested, plus Assisted if the route was shown, with no words.",
+        "tradeoff": "Tall on phones if a ladder runs long (each rung is 66px). The illustrative 'BAND' rung must not be read as a supplied route.",
+        "mockup": "morph-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Combination dials",
+        "summary": "Four tactile letter dials under a brushed GOAL plate. Turning one dial locks the other three, so the 'exactly one letter' rule is physically enforced before submitting.",
+        "layout": "Centred column: goal plate with moves and suggested count, dial housing, Check plus Reset, a ladder trail of stamped chips, then hint and give-up.",
+        "interaction": "▲/▼ buttons (44px) per dial, with arrow keys on a focused dial. Typing a word still works. The dials are live in the prototype.",
+        "motion": "Letters roll vertically on turn. The moved dial gains a blue frame while the others dim and show 'locked'.",
+        "accessibility": "Each window has an aria-label giving the letter. Lock state is shown as text, not only opacity. The read-out line is aria-live.",
+        "sharing": "Same as A.",
+        "tradeoff": "Reaching a distant letter takes many taps (B→M is 11 steps), so typing remains essential. More playful, and possibly slower for expert players.",
+        "mockup": "morph-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Bridge and target columns",
+        "summary": "START and GOAL face each other across a dotted bridge of five nodes. In the editor, the goal letter is printed under every column, and a column turns green once it matches.",
+        "layout": "Bridge across the top, then a centred editor with four 76px column buttons over goal letters. A QWERTY key bank sits below (48px tall keys).",
+        "interaction": "Select a column, then tap or type its new letter. Live text warns when two letters have been changed and says it costs nothing.",
+        "motion": "The bridge node advances one step per accepted rung.",
+        "accessibility": "Columns carry aria-pressed. Matches use a rule plus colour. The legend states what the top and bottom rows mean.",
+        "sharing": "Bridge glyph showing moves vs suggested.",
+        "tradeoff": "On a 320px phone the keys are narrower than 44px, as on a system keyboard. Showing goal letters per column slightly eases the puzzle.",
+        "mockup": "morph-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Typed editor with live checks",
+        "summary": "Keyboard-first: one giant text field for the next word, with three live checks underneath (four letters, exactly one change with the diff named, not a repeat). Word-list membership is honestly stated as 'checked on Enter'.",
+        "layout": "On desktop, the focus column sits beside a ladder log. On phones it is a single column using the native keyboard.",
+        "interaction": "Type freely. Demo buttons fill BEND (two changes) and BAND (one change) to show the check states.",
+        "motion": "Each check animates from neutral to ✓ or ✕ as you type.",
+        "accessibility": "A real input with a label. Checks are an aria-live list using icons and text. There is no colour-only meaning.",
+        "sharing": "Same as A.",
+        "tradeoff": "Least visual, and the ladder is less present. It depends on the system keyboard on phones, which is fine for Morph but less tactile.",
+        "mockup": "morph-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "kimi-tangle",
+    "name": "Tangle",
+    "keeper": true,
+    "diagnosis": "This is the grid word-trail game, distinct from the interleaved-bead Tangle. The board itself is solid, but the screen above it is busy: a 4×4/5×5 toggle, points, a medal label, a word count, a slider-like track and an instructions box. The traced path has no strong visual, so drags are hard to read. 'Found' is a bare list. James asked about 5×5 and repeatedly hit vocabulary gaps, so where accepted words appear and how the 5×5 board is presented both matter.",
+    "clarityRisk": "Medium. Adjacency and path order are hard to see mid-drag, and the purpose of the '5×5 Preview' is unclear.",
+    "recommendedDesign": "A — Engraved plate, using B's split workspace above 820px and C's 'optional bonus after Gold' placement for the 5×5 board, if James wants it.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Engraved plate",
+        "summary": "Letters sit in recessed wells on one machined plate. The trace is a thick translucent ribbon, so path order can't be misread. The medal goals become a precise tick ruler: Bronze 6, Silver 12, Gold 18.",
+        "layout": "Single column (max 540px): board-size switch, a points/words line, the ruler, the current word with its point value, then the plate, help line, Clear/Check/Clue and the Found summary.",
+        "interaction": "Drag or tap adjacent letters, diagonals included. Tapping the last letter again removes it. Tracing works locally in the prototype, and a demo traces HERB.",
+        "motion": "The ribbon draws between well centres as you move. On acceptance it would fade into the Found list.",
+        "accessibility": "Every cell is a button labelled with letter, row and column. The current word is aria-live. The ruler has an aria-label stating all three goals.",
+        "sharing": "Points, medal and word count (n/84), with no words.",
+        "tradeoff": "The ribbon can cover letters on very small screens; it is kept at 55% opacity to stay readable.",
+        "mockup": "tangle-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Split workspace",
+        "summary": "A desk layout: a flat, high-contrast board with numbered path order on the left, and a medal ladder plus found words grouped by length on the right. On phones a two-tab switch keeps the board full width.",
+        "layout": "Two columns above 820px. Below that, Board and Found tabs, with the word tray above the board.",
+        "interaction": "Tap or drag to trace; tiles show 1, 2, 3… path order. The tabs switch locally. Found words are an illustrative mid-game state (THE, HUT, PIE, BREW) traced from today's grid.",
+        "motion": "A newly accepted word would drop into its length row.",
+        "accessibility": "Strong 2px ink borders and solid fills for selection. The tabs use role=tab with aria-selected.",
+        "sharing": "Same as A.",
+        "tradeoff": "Flatter and less physical. The illustrative found words were not checked against the game's word list.",
+        "mockup": "tangle-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Keycaps and bonus board",
+        "summary": "Tactile keycaps that physically depress as you trace, joined by a thin wire. The medal track ends in an optional 'Bonus 5×5' step that opens after Gold, with its own score.",
+        "layout": "Single column: a four-step goal track, a points line, a recessed keycap deck, the current word, actions, and a collapsible bonus card (no 5×5 letters shown).",
+        "interaction": "Trace keys locally. Expand the bonus card to read how the optional round would work.",
+        "motion": "Keys travel down 5px when selected. The wire draws with end dots.",
+        "accessibility": "Key labels match the other options. The bonus card uses details/summary.",
+        "sharing": "Daily card unchanged; the bonus would be reported separately.",
+        "tradeoff": "Making 5×5 an earned bonus is a product decision (it changes where the 5×5 mode lives), not a rule change. Keycaps take more vertical space.",
+        "mockup": "tangle-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Type to trace",
+        "summary": "Letters float on a fine dot lattice without tile boxes. Typing a word lights every legal trail on the board (solid for the first, dashed for alternates), and impossible spellings are explained before submitting.",
+        "layout": "On desktop the field is on the left and the typing panel with score cells on the right. On phones they stack.",
+        "interaction": "Type or tap. Demos: HER (two trails, via either H), HOT, and TOW (no trail). The path finding is live.",
+        "motion": "Trails redraw on every keystroke.",
+        "accessibility": "This option gives keyboard users the most direct play. The status line is aria-live and states the trail count.",
+        "sharing": "Same as A.",
+        "tradeoff": "This is an optional input-method change, separate from the core UI. It makes typed play much easier than dragging, and the lightweight letters are less tactile.",
+        "mockup": "tangle-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "kimi-hunch",
+    "name": "Hunch",
+    "keeper": true,
+    "diagnosis": "The grouped black/white dots are the right mechanic, but the screen still looks like a five-column, six-row tile grid with a QWERTY keyboard under it, which is the exact silhouette James compared to Wordle. The dots are small and live in a separate legend line. The 'not aligned to letters' rule is stated rather than designed.",
+    "clarityRisk": "Medium. New players will still expect per-letter colours, and duplicate-letter counting needs an in-context explanation.",
+    "recommendedDesign": "A — Peg board. It is the most clearly differentiated, and the physical key-peg well makes 'grouped, not aligned' obvious. Borrow B's numerals in labels for screen readers.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Peg board",
+        "summary": "A physical deduction board: neutral round letter pegs, and on each row a recessed well of five key-peg holes filled black first, then white. There is no per-letter colour anywhere.",
+        "layout": "Single column (max 520px): guess counter with Reveal a letter, the board (six rows), the dot key, a 'why aren't pegs under letters?' expander, and a 52px-tall keyboard.",
+        "interaction": "Type or tap keys. The expander is a local toggle with a plain explanation.",
+        "motion": "After Enter, key pegs would drop into the well one by one: blacks, then whites.",
+        "accessibility": "Each well has an aria-label such as '3 exact, 1 elsewhere'. The empty row reads 'not yet scored'. Black and white pegs differ in fill and outline, not only colour.",
+        "sharing": "Rows of grouped pegs only, which can't spoil the word or resemble a colour grid.",
+        "tradeoff": "Letter pegs shrink to about 30px on a 320px phone, which is readable but small. The illustrative practice state hides its answer.",
+        "mockup": "hunch-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Ledger",
+        "summary": "A typographic table with columns #, Guess, Exact and Elsewhere. Numerals carry precision and the dots are for scanning. The side panel explains duplicates using the rules' ALLEY/APPLE example.",
+        "layout": "Desktop: table and keyboard on the left, rules panel on the right. Phone: single column; the second column keeps its numeral and drops repeated dots.",
+        "interaction": "Type, with the caret shown in the guess cell. On-screen keyboard.",
+        "motion": "Counts would tick up from zero on reveal.",
+        "accessibility": "A real table with header cells. Numerals mean nothing depends on telling dots apart.",
+        "sharing": "Numerals per guess, e.g. '1·2 / 3·1'.",
+        "tradeoff": "Feels analytical rather than playful, and the guess grid disappears into a table.",
+        "mockup": "hunch-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Deduction notebook",
+        "summary": "Guess cards with dot pills, plus a keyboard with a Type/Note switch. In Note mode the player marks letters 'ruled out' or 'likely in'. These are their own notes, clearly labelled as never coming from the game.",
+        "layout": "Desktop: guesses on the left, notebook keyboard on the right. Phone: stacked.",
+        "interaction": "Note mode cycles a key through none → out → in. Struck letters mirror into the guess cards. Live in the prototype.",
+        "motion": "A strike-through draws across the key.",
+        "accessibility": "Key labels speak the note state. The mode is a pressed toggle.",
+        "sharing": "Same as A.",
+        "tradeoff": "Adds a helper layer. Some players may feel it nudges toward Wordle-like keyboards, though nothing is auto-marked.",
+        "mockup": "hunch-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Focus line",
+        "summary": "Hierarchy flipped: the guess being written is the biggest object on screen. Earlier guesses compress into a newest-first list with dots. A large dock keyboard sits below, and there is an illustrative result-card preview.",
+        "layout": "Single column: six-segment try meter, hero entry, 'dots appear here' slot, history list, keyboard, then the card toggle.",
+        "interaction": "Type or tap. The card preview is a local toggle.",
+        "motion": "On Enter, the hero row would shrink into the history list and its dots would appear.",
+        "accessibility": "54px keys. History rows include spoken dot counts.",
+        "sharing": "Card with grouped dots per guess (rows 4–5 invented and labelled).",
+        "tradeoff": "Past guesses are smaller, so cross-referencing earlier rows takes more effort.",
+        "mockup": "hunch-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "kimi-circuit",
+    "name": "Circuit",
+    "keeper": true,
+    "diagnosis": "The cardinal quadrants and distinct blue/green/gold/red arcs are now correct and must stay. The large empty navy disc wastes the centre and is the darkest thing on a light page. Membership is repeated in four outlined cards. The same-arc restriction is only explained in text, and the 12-dash progress strip is unlabelled.",
+    "clarityRisk": "Medium to high. James asked how to tell the arcs apart, and the 'can't follow from the same arc' rule isn't visible at the moment of choosing.",
+    "recommendedDesign": "A — Instrument dial. The current word moves into the dial face, letters on the forbidden arc dim with a stated reason, and a coverage strip by arc replaces the dashes. Offer C's quadrant keypad as the phone layout below about 360px if testing shows ring taps are tight.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Instrument dial",
+        "summary": "A machined dial with four bands split exactly on the 0°/90°/180°/270° axes, thin even dividers, and raised letter caps showing arc numbers. A white face shows the current word and 'Next: not Arc n'.",
+        "layout": "Desktop: dial on the left; on the right the next-word heading, rule, chain, a coverage strip by arc, and actions. Phone: stacked.",
+        "interaction": "Tap or type letters. Same-arc taps are refused with a sentence explaining why. Live in the prototype from an illustrative HAWK-played state.",
+        "motion": "Lit caps invert to ink. The face word updates per letter.",
+        "accessibility": "Each cap is a role=button with an aria-label of letter, arc and allowed state, and a 62px hit area in a 400-unit viewBox (about 46px at 296px wide). Arc numbers are printed on every cap.",
+        "sharing": "Words used vs target, 12/12 lit, clue used or not.",
+        "tradeoff": "The ring needs at least 296px. Hit areas sit right at the 44px limit on the smallest phones.",
+        "mockup": "circuit-A.html"
+      },
+      {
+        "id": "B",
+        "title": "String chords",
+        "summary": "The chain is drawn as numbered chords across the ring. A legal word always zig-zags between quadrants, so the rule becomes visible geometry. The blocked quadrant gets a faint wash.",
+        "layout": "Centred column: a large current word, a rule sentence, the ring card, an aria-live refusal line, a 4-up arc legend with compass labels, then actions.",
+        "interaction": "Tap letters to extend the dashed chord path. Played words stay as solid chords.",
+        "motion": "Chords draw from letter to letter.",
+        "accessibility": "Letter buttons are labelled. The legend restates membership as text (Arc 1 · NE · KBC).",
+        "sharing": "A chord diagram with no letters would be a striking share image, if James wants one.",
+        "tradeoff": "Long chains can make the centre busy. Chord numbers help, but late in a round it gets dense.",
+        "mockup": "circuit-B.html"
+      },
+      {
+        "id": "C",
+        "title": "Quadrant keypad",
+        "summary": "For phones, the ring becomes a compact map and input moves to a 2×2 keypad in the same compass positions (Arc 4 NW, Arc 1 NE, Arc 3 SW, Arc 2 SE). The quadrant you just used greys out and says 'Not right after K'.",
+        "layout": "Desktop: map on the left, word and keypad on the right. Phone: a 220px map above the word, keypad and actions.",
+        "interaction": "Keys are 56px tall and about 40px wide at 320px, rising to 52px wide at 393px. Live in the prototype.",
+        "motion": "Blinking caret. The word letters are underlined in arc colours.",
+        "accessibility": "This option has the largest tap targets. Disabled keys carry aria-disabled and an overlay reason.",
+        "sharing": "Same as A.",
+        "tradeoff": "Separates seeing the ring from touching it, so the circuit feels less tactile.",
+        "mockup": "circuit-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Chain and coverage",
+        "summary": "The chain is the scoreboard: words as joined ink plates, with the next one opening on the shared letter. A 4×3 matrix grouped by arc shows exactly which letters still need lighting. Includes an illustrative result card.",
+        "layout": "Chain bar across the top. Desktop: ring on the left, coverage, actions and card on the right. Phone: stacked.",
+        "interaction": "Tap the ring. The matrix and chain update. Card preview toggle.",
+        "motion": "Matrix cells fill with their arc colour when lit.",
+        "accessibility": "The matrix is text plus colour. The ring centre states the next-arc rule.",
+        "sharing": "Twelve arc-coloured cells plus 'n words · target 3', never words. The finish shown is invented and labelled.",
+        "tradeoff": "More components on screen. The ring is slightly smaller on desktop.",
+        "mockup": "circuit-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "deepseek-twin-hive",
+    "name": "Twin Hive",
+    "keeper": true,
+    "diagnosis": "The stretched-hex issue was patched, but the eight letters still sit in a 4×2 rack inside a rounded box inside a card, so the two gold letters read as just two more tiles. Found words become loose pills under a 'little space' heading, and the six-word goal is only a thin meter. 'Still needs A + M' is small helper text.",
+    "clarityRisk": "Low to medium. The rule is simple, but it should be built into the letter layout rather than only written below it.",
+    "recommendedDesign": "D — Split-core flower. A + M become one gold object at the centre of a fixed-size seven-cell flower, which solves the 'twin' rule and the stretching at once. Use B's six-slot ledger for the collection.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Twin cells",
+        "summary": "A compact 3·2·3 comb in which the two gold cells touch at the centre. The entry bar has A and M sockets that fill as you type. Cells are a fixed 76px (68px under 360px) and never stretch.",
+        "layout": "Single column (max 520px): 2/6 progress pips, entry bar with sockets, the comb, action row, collection, hint/reveal.",
+        "interaction": "Tap cells or type. The rule line updates (letters to go, still needs A + M, points if accepted). Live.",
+        "motion": "Cells lift on hover and compress on tap. The sockets fill gold.",
+        "accessibility": "Gold cells are labelled 'required'. The focus state replaces the outline that clip-path would cut off.",
+        "sharing": "Words found out of 6 and points, with no words.",
+        "tradeoff": "Other letters sit around the gold pair unevenly, as the 3·2·3 shape requires.",
+        "mockup": "twinhive-A.html"
+      },
+      {
+        "id": "B",
+        "title": "Six-slot ledger",
+        "summary": "The goal becomes a numbered six-slot ledger with points per word. Input is a fixed 4×2 grid of 64px keycaps, gold first, with an underlined field and four live check chips.",
+        "layout": "Desktop: rack and field on the left, ledger on the right. Phone: stacked.",
+        "interaction": "Tap keys or type. Chips update: 4+ letters, has A, has M, hive letters only, and '+n if in dictionary'.",
+        "motion": "A new word would slide into the next ledger slot.",
+        "accessibility": "Chips use ✓ plus text. The ledger is an ordered list.",
+        "sharing": "Same as A.",
+        "tradeoff": "The least 'hive' of the four. Square keys lose the honeycomb identity.",
+        "mockup": "twinhive-B.html"
+      },
+      {
+        "id": "C",
+        "title": "The collection is the comb",
+        "summary": "Each accepted word becomes a physical cell in a six-cell comb, so the goal and the collection are one object. Letters are round keycaps, gold first.",
+        "layout": "Desktop: comb on the left, entry and keys on the right. Phone: comb on top.",
+        "interaction": "Tap keys. 'Preview fill animation' drops the current entry into the next cell locally, labelled as unchecked.",
+        "motion": "The cell springs in from 40% scale.",
+        "accessibility": "Cells contain text words. The comb has an aria-label naming the six-word goal.",
+        "sharing": "A six-cell outline filled with no words.",
+        "tradeoff": "Long words (8+) get tight inside a hex. Found words beyond six need overflow treatment.",
+        "mockup": "twinhive-C.html"
+      },
+      {
+        "id": "D",
+        "title": "Split-core flower",
+        "summary": "A classic seven-cell flower whose centre is a single gold hexagon split into A and M halves. The twin requirement is one object. Ticks under the entry preview points: grey for the first three letters, gold per scoring letter.",
+        "layout": "Desktop: flower on the left, entry, ticks, actions and collection on the right. Phone: stacked. Cells are a fixed 88px (80px under 360px).",
+        "interaction": "Tap petals or either half of the core. Typing works too.",
+        "motion": "Ticks fill as you type. The core would pulse once when both halves are used.",
+        "accessibility": "Each half is at least 40×92px with its own aria-label. Gold letters are also underlined in the entry.",
+        "sharing": "Same as A.",
+        "tradeoff": "The split core is a novel affordance; first-time players may tap the middle expecting one letter.",
+        "mockup": "twinhive-D.html"
+      }
+    ]
+  },
+  {
+    "slug": "deepseek-cipher",
+    "name": "Cipher",
+    "keeper": false,
+    "diagnosis": "James called it great. The UI is busy: the alphabet keyboard sits above the phrase, and each coded letter is a framed mini-tile inside a framed word group inside a framed panel. Selecting a code doesn't highlight its other occurrences strongly, and a large empty area sits under the phrase.",
+    "clarityRisk": "Low to medium. The rules are clear, but tracking which real letter is held by which code is hard.",
+    "recommendedDesign": "A — Typeset message.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Typeset message",
+        "summary": "The phrase is set like type: big guess letters over small code letters, with real word spacing and no tile frames. Selecting a code tints every occurrence. A side panel shows code → answer, how often the code appears, and an alphabet whose used keys show which code holds them.",
+        "layout": "Desktop: clue and message on the left, sticky assignment panel on the right. Phone: message first, then a panel with 46px auto-fill keys.",
+        "interaction": "Tap a code or use ←/→. Type or tap a letter to assign it. A letter already held by another code is refused until erased (the supplied rule). Live locally.",
+        "motion": "The selection tint sweeps across all occurrences.",
+        "accessibility": "Each code button speaks its code and guess. Givens are labelled and disabled. The keyboard path is complete.",
+        "sharing": "Solved, hints used, letters given, never the phrase.",
+        "tradeoff": "On a 320px phone the 7-letter final word fills the row exactly. Longer phrases would need word-level wrapping, which is already allowed.",
+        "mockup": "cipher-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "qwen-logic-lattice",
+    "name": "Logic Lattice",
+    "keeper": false,
+    "diagnosis": "Parked. The '?' in every square and the numbered border make it read like Minesweeper, which James noticed. Tools, an example, a selected-line summary, a legend, diagonal cards, a highlighted-line panel and a collapsed explanation all compete for attention, and the diagonal clues sit far from their diagonals.",
+    "clarityRisk": "High. James explicitly asked for more explanation; 'count the whole line' must be visible at first glance.",
+    "recommendedDesign": "A — Line counters. If James revisits the game, start here.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Line counters",
+        "summary": "Undecided squares are plain. Every total becomes a live counter (black so far / needed) that turns green when met and red when impossible. The ↘ total sits at the top-left corner where its diagonal starts, and the ↙ total at the bottom-left where it ends. A one-line lesson shows that '2' means two anywhere.",
+        "layout": "One-line lesson strip on top. Desktop: tools and board on the left, selected-line guide on the right. Phone: stacked. Board cells are about 46px at 320px.",
+        "interaction": "Pick Black, White or Clear, then tap squares. Tap a total to band its five squares and update the guide (strip, tally, deduction sentence). Live locally from today's totals and givens.",
+        "motion": "The band slides between selected lines.",
+        "accessibility": "Totals are buttons with full spoken status. Fixed squares carry a diamond mark plus a label. White is a dot, black is solid, and undecided is blank.",
+        "sharing": "Solved, hints used.",
+        "tradeoff": "Live counters are a mild assist compared with today's guide, which already reports counts. The game stays parked; this is for a later decision.",
+        "mockup": "lattice-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "qwen-syntax-siege",
+    "name": "Syntax Siege",
+    "keeper": false,
+    "diagnosis": "James loves the gameplay but says the UI needs work. It is a dark navy panel inside the light frame, which breaks cohesion. The enemy diamond doesn't move in practice, which James flagged. Pace text ('Auto pace · tiles 30s / typing 20s') reads like a settings dump.",
+    "clarityRisk": "Medium. Time pressure plus a dark, dense HUD makes it harder to see what to do next.",
+    "recommendedDesign": "A — Light firing range.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Light firing range",
+        "summary": "Keeps the tension on the shared light frame: a white range with a machined core on the left and a faceted enemy diamond that physically travels the lane, including a looping approach in untimed practice. A plain HUD shows core HP, word power and six wave chips.",
+        "layout": "Single column (max 720px): HUD, wave chips, range lane, pace line with clock, time bar, feedback line, word tray, six 44px+ rack tiles, Undo/Clear/Fire, Start, and assist and stats.",
+        "interaction": "Start begins the local motion preview. Tap tiles or type. The pace label switches to 'Keyboard detected · 20 s' on the first typed key. Fire shows a would-deal preview without checking the word.",
+        "motion": "The enemy approaches over 30s and the time bar drains in sync. A hit would knock the enemy back with a small HP tick.",
+        "accessibility": "The range has an aria-label with enemy HP. Feedback is aria-live. Reduced-motion users get a static distance meter instead of travel.",
+        "sharing": "Waves cleared, core HP left, points, impacts and whether untimed assist was used.",
+        "tradeoff": "Less dramatic than a dark arena. Motion must stay smooth on low-end phones.",
+        "mockup": "siege-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "qwen-pattern-prism",
+    "name": "Pattern Prism",
+    "keeper": false,
+    "diagnosis": "Rejected repeatedly. Satin triangles with tiny arrows and name captions still read as children's shape cards. Each token carries three lines of caption, so the eye reads words, not patterns. Direction is ambiguous for circles, and there is no tool for the actual task: separating four independent cycles.",
+    "clarityRisk": "High. The puzzle is four interleaved cycles, but the layout presents one row of mixed objects.",
+    "recommendedDesign": "A — Signal decoder. A rethink, not a recolour.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Signal decoder",
+        "summary": "The pieces become anodised machined pucks with an engraved shape and a rim notch for direction, seated in recessed wells on one sequence rail (01–08). A decoder table splits Shape, Colour, Size and Direction into rows so each cycle becomes readable. Choices A–D are pucks you preview in slot 06, then lock in.",
+        "layout": "The rail spans the top. Desktop: decoder on the left, choices on the right. Phone: stacked.",
+        "interaction": "Select a choice (or press A–D) to preview it seated in 06, then lock it in (local, no right/wrong shown). An optional experiment, off by default, adds per-row 'repeats every 1–4' controls that project the player's own guess into the 06 column.",
+        "motion": "The chosen puck slides into its well. The rim notch makes rotation visible.",
+        "accessibility": "Every puck has a full aria-label. Colour is backed by named rows in the decoder. The direction notch works for circles.",
+        "sharing": "Steps solved, misses and hints, with an optional row of three blank pucks.",
+        "tradeoff": "The decoder makes the IQ-test nature explicit and may lower difficulty. The cycle-tuning experiment lowers it further, so it is kept separate and off for Daily.",
+        "mockup": "prism-A.html"
+      }
+    ]
+  },
+  {
+    "slug": "qwen-territory-tactics",
+    "name": "Territory Tactics",
+    "keeper": false,
+    "diagnosis": "This is the current 37-hex, three-placement, exact-capture edition with 240 boards. The rule text is good but long. The board is small on phones with sideways swiping. Groups and their openings aren't shown on the board, so players must count by eye — the source of 'confusing even though I'm getting past levels'.",
+    "clarityRisk": "High. Counting groups and openings across 37 hexes is the core difficulty, and the UI currently gives no on-board help.",
+    "recommendedDesign": "A — Survey table.",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Survey table",
+        "summary": "The exact target is the headline ('Capture exactly 3 amber — not 2, not 4'), and the three remaining stones are physical tokens. Tapping any amber stone outlines its whole group and marks each opening, with a side readout of group size, openings and the resulting total, flagging overshoot. A three-step before/after lesson stays in context and collapses once learned.",
+        "layout": "Goal bar, collapsible lesson, then the board (desktop: board on the left, inspect card, last move and actions on the right; phone: stacked).",
+        "interaction": "Tap amber to inspect, tap empty to place. A local rule preview runs captures, the exact-total messages and the 'own group needs an opening' rule. Undo and Restart are free.",
+        "motion": "Captured hexes flash amber and clear. The stone tokens empty as you place.",
+        "accessibility": "Every hex is a button labelled by row and state. Hexes fit the width at about 35px on a 320px phone; 'Zoom board' sets 52px hexes that pan inside the board frame (not the page). Keyboard: Tab and Enter.",
+        "sharing": "Exact target met, stones used, hints, with no board.",
+        "tradeoff": "Inspect makes counting much easier, which may make the game feel easier. It shows only facts already visible on the board, so it can stay or be limited. The local capture preview is not the shipped engine.",
+        "mockup": "territory-A.html"
+      }
+    ]
+  }
+]

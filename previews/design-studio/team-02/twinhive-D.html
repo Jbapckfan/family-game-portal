@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twin Hive D · Split-core flower — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.lay{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:36px;align-items:center}
+@media(max-width:800px){.lay{grid-template-columns:minmax(0,1fr)}}
+.flower{--w:88px;--h:calc(var(--w)*1.1547);position:relative;width:calc(var(--w)*3 + 8px);height:calc(var(--h)*2.5 + 8px);margin:0 auto}
+@media(max-width:360px){.flower{--w:80px}}
+.hx{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:#c3d0db;cursor:pointer}
+.hx>span{position:absolute;inset:3px;clip-path:inherit;background:#fff;display:grid;place-items:center;font-size:32px;font-weight:800;color:var(--ink)}
+.hx:hover>span{background:#f1f5f9}
+.hx:focus-visible{outline:none;background:var(--focus)}
+.core{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#a8831a;left:calc(var(--w)*1 + 4px);top:calc(var(--h)*.75 + 4px);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px}
+.core button{border:0;background:linear-gradient(#ffe48a,#f2c94c);font-size:30px;font-weight:850;cursor:pointer;color:#0e2232;padding:0}
+.core button:first-child{clip-path:polygon(100% 0,100% 100%,0 76%,0 24%)}
+.core button:last-child{clip-path:polygon(0 0,100% 24%,100% 76%,0 100%)}
+.core button:hover{background:#ffe9a3}
+.core button:focus-visible{outline:none;background:#fff3c4}
+.p-n{top:0;left:calc(var(--w)*.5 + 2px)}.p-ne{top:0;left:calc(var(--w)*1.5 + 6px)}
+.p-w{top:calc(var(--h)*.75 + 4px);left:0}.p-e{top:calc(var(--h)*.75 + 4px);left:calc(var(--w)*2 + 8px)}
+.p-s{top:calc(var(--h)*1.5 + 8px);left:calc(var(--w)*.5 + 2px)}.p-se{top:calc(var(--h)*1.5 + 8px);left:calc(var(--w)*1.5 + 6px)}
+.cap{text-align:center;font-size:14px;color:var(--muted);margin:10px 0 0}
+.entry{font-size:clamp(34px,9vw,48px);font-weight:850;letter-spacing:.14em;min-height:60px;border-bottom:3px solid var(--ink);display:flex;align-items:center;flex-wrap:wrap}
+.entry em{font-style:normal;color:#a8831a;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+.ticks{display:flex;gap:4px;margin:10px 0 4px}
+.ticks i{width:22px;height:8px;border-radius:2px;background:#d6e0e8}
+.ticks i.on{background:var(--ink)}.ticks i.pt{background:#f2c94c}
+.tick-note{font:13px var(--mono);color:var(--muted);margin:0 0 16px}
+.btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.coll{margin-top:20px}
+.coll h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;justify-content:space-between}
+.coll p{margin:0;font:700 18px var(--mono);letter-spacing:.08em;line-height:1.8}
+.coll p small{font:12px var(--mono);color:var(--muted);letter-spacing:0;margin:0 14px 0 3px}
+.aux{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Twin Hive D — Split-core flower</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/deepseek-twin-hive.svg" alt=""><div><p class="eyebrow">Two-letter word search</p><h1 class="gname">Twin Hive</h1><p class="tagline">Two anchors. Many possibilities.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov · 2 / 6 words</span></div>
+
+  <div class="lay">
+    <div>
+      <div class="flower" aria-label="Letters: a split gold core of A and M, ringed by six letters">
+        <button class="hx p-n" data-l="E"><span>E</span></button><button class="hx p-ne" data-l="I"><span>I</span></button>
+        <button class="hx p-w" data-l="N"><span>N</span></button>
+        <div class="core"><button data-l="A" aria-label="A, required">A</button><button data-l="M" aria-label="M, required">M</button></div>
+        <button class="hx p-e" data-l="R"><span>R</span></button>
+        <button class="hx p-s" data-l="S"><span>S</span></button><button class="hx p-se" data-l="T"><span>T</span></button>
+      </div>
+      <p class="cap">One gold core, two halves: every word uses both.</p>
+    </div>
+    <section>
+      <div class="entry" id="e" aria-live="polite"></div>
+      <div class="ticks" id="t" aria-hidden="true"></div>
+      <p class="tick-note" id="tn"></p>
+      <div class="btns"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn primary">Add word</button></div>
+      <div class="coll"><h2><span>Collection</span><span>4 pts</span></h2><p>TEAM<small>+1</small>STREAM<small>+3</small></p></div>
+      <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>
+    </section>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the classic seven-cell flower, but the centre is one gold hexagon split into A and M halves (each half ≥40×92px) — the "twin" requirement is a single object. Cell size is fixed (88px; 80px under 360px). Letter ticks under the entry preview points: grey for the first three letters, gold for each scoring letter. Collection is illustrative.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+let v='MAST';const e=document.getElementById('e'),t=document.getElementById('t'),tn=document.getElementById('tn');
+function upd(){e.innerHTML=v?[...v].map(c=>c==='A'||c==='M'?`<em>${c}</em>`:c).join(''):'&nbsp;';t.innerHTML=[...Array(Math.max(4,v.length))].map((_,i)=>`<i class="${i<v.length?(i<3?'on':'pt'):''}"></i>`).join('');const n=['A','M'].filter(c=>!v.includes(c));tn.textContent=v.length<4?'Four letters minimum':n.length?'Still needs '+n.join(' + '):`+${v.length-3} point${v.length===4?'':'s'} if accepted`;}
+document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{v+=b.dataset.l;upd();});document.getElementById('del').onclick=()=>{v=v.slice(0,-1);upd();};document.getElementById('clr').onclick=()=>{v='';upd();};upd();
+</script>
+</body>
+</html>

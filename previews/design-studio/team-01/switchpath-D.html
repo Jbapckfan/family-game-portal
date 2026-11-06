@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Switchpath · Concept D · Ink Route &amp; Switch</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.stage{display:grid;gap:14px;justify-content:center;grid-template-columns:minmax(0,440px)}
+@media (min-width:760px){.stage{grid-template-columns:92px minmax(0,440px) 260px;gap:26px;align-items:start;padding-top:6px}}
+.sw{display:grid;grid-template-columns:1fr 1fr;border-radius:16px;background:#dfe6ee;padding:4px;gap:4px;position:relative}
+@media (min-width:760px){.sw{grid-template-columns:1fr;grid-template-rows:1fr 1fr;height:220px}}
+.sw div{border-radius:12px;display:grid;place-content:center;text-align:center;min-height:60px;color:#7b8a99;transition:background .3s,color .3s,box-shadow .3s}
+.sw b{font:800 26px/1 var(--display)} .sw span{font:700 11px/1.2 var(--sans);letter-spacing:.14em}
+.sw .on.hi{background:var(--blue);color:#fff;box-shadow:0 8px 18px -10px var(--blue)}
+.sw .on.lo{background:var(--teal);color:#fff;box-shadow:0 8px 18px -10px var(--teal)}
+.sw-cap{font:12px/1.35 var(--mono);color:var(--muted);text-align:center;margin:6px 0 0}
+.sheet{position:relative;background:#fff;border-radius:6px;box-shadow:0 1px 0 #d2dce6,0 24px 44px -32px rgba(15,29,42,.55);padding:10px;
+  background-image:radial-gradient(circle,#c7d2dc 1.2px,transparent 1.4px);background-size:25% 25%;background-position:calc(10px - 12.5%) calc(10px - 12.5%);background-origin:content-box}
+.grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.ink .rb{stroke-width:.3;stroke-linecap:round;fill:none}
+.ink .gh{stroke-width:.12;stroke-dasharray:.12 .1;stroke-linecap:round}
+.ink .node{fill:#fff;stroke-width:.045}
+.ink .curn{stroke:none}
+.cell{position:relative;z-index:1;aspect-ratio:1;min-height:44px;border:0;background:transparent;border-radius:10px;font:600 clamp(26px,8.4vw,40px)/1 var(--serif);font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
+.cell:hover{background:rgba(28,95,196,.05)}
+.cell.cur{color:#fff;font-weight:700}
+.cell.v{color:var(--ink2)}
+.cell .tag{position:absolute;left:4px;top:3px;font:700 9px/1 var(--sans);letter-spacing:.12em;color:var(--muted)}
+.cell.bad{animation:sh .28s}@keyframes sh{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.side{display:grid;gap:12px;align-content:start}
+.ctrl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (min-width:760px){.ctrl{grid-template-columns:1fr}}
+.tally{font:14px/1.6 var(--mono);color:var(--ink2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 0}
+.tally b{font-weight:700}
+.share{display:none}.share.open{display:block}
+</style></head>
+<body>
+<div class="rv"><span><b>Switchpath · Concept D “Ink Route &amp; Switch”</b> · design review prototype, not a live game</span><nav aria-label="Switchpath concepts"><a href="switchpath-A.html">A</a><a href="switchpath-B.html">B</a><a href="switchpath-C.html">C</a><a href="switchpath-D.html" aria-current="page">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="true" aria-label="Favorite Switchpath" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Switchpath from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/switchpath.svg" alt=""><div><h1>Switchpath</h1><div class="meta">NO. 018 · FRI NOV 6 · SHARP</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap stage">
+  <div><div class="sw" id="sw" role="status" aria-live="polite"><div class="hi" id="swH"><b>↑</b><span>HIGHER</span></div><div class="lo" id="swL"><b>↓</b><span>LOWER</span></div></div><p class="sw-cap" id="swCap">than 15</p></div>
+  <div class="sheet"><div class="grid" id="grid"></div></div>
+  <aside class="side">
+    <div class="ctrl"><button class="btn" id="undo">↶ Undo</button><button class="btn" id="reset">Reset path</button><button class="btn" onclick="say('A hint asks for confirmation first (+1 move, +1 hint). Not wired in this prototype.')">✦ Hint</button></div>
+    <div class="tally"><b id="cnt">5</b>/16 connected · <b id="mv">4</b> moves · <b>0</b> hints<br><span style="color:var(--muted)">Perfect: 15 moves, no hints</span></div>
+    <p class="live" id="live">Hover a neighbour to sketch the next stroke. Dashed red means it breaks the switch.</p>
+    <button class="btn" id="shareBtn" aria-expanded="false">Preview share card</button>
+    <div class="share" id="share"><p class="share-label"><span class="kicker">Share card</span><span class="illus">illustrative score</span></p>Switchpath · No. 018
+✦ Perfect route
+16/16 connected · 15 moves · 0 hints
+<span style="color:var(--muted)">Route never shown.</span></div>
+  </aside>
+</div>
+<div class="foot"><span>Start at START, alternate higher/lower, visit every cell once, end on END. Tap an earlier stroke to rewind.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const V=[10,7,11,5,1,14,9,12,15,3,13,2,4,6,8,16],S=12,E=0;
+let path=[12,13,9,8,4],moves=4;
+const dir=()=>path.length%2?'higher':'lower';
+const adj=(a,b)=>Math.abs((a>>2)-(b>>2))+Math.abs((a&3)-(b&3))===1;
+function why(c){const t=path[path.length-1];if(c===t)return'here';if(path.includes(c))return'rewind';if(!adj(t,c))return'far';if(c===E&&path.length<15)return'end';return(dir()==='higher'?V[c]>V[t]:V[c]<V[t])?'ok':'dir';}
+const $=id=>document.getElementById(id);const say=m=>$('live').textContent=m;
+const P=c=>[(c&3)+.5,(c>>2)+.5];
+function render(g){
+  const t=path[path.length-1],h=dir()==='higher',done=path.length===16;
+  $('swH').className='hi'+(h&&!done?' on':'');$('swL').className='lo'+(!h&&!done?' on':'');
+  $('swCap').textContent=done?'route complete':'than '+V[t];
+  $('cnt').textContent=path.length;$('mv').textContent=moves;
+  let s='';
+  for(let i=1;i<path.length;i++){const [x1,y1]=P(path[i-1]),[x2,y2]=P(path[i]);s+=`<line class="rb" stroke="${V[path[i]]>V[path[i-1]]?'var(--blue)':'var(--teal)'}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;}
+  if(g!=null){const ok=why(g)==='ok',[x1,y1]=P(t),[x2,y2]=P(g);s+=`<line class="gh" stroke="${ok?(h?'var(--blue)':'var(--teal)'):'var(--bad)'}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;}
+  path.forEach((c,i)=>{const [x,y]=P(c);const col=i?(V[c]>V[path[i-1]]?'var(--blue)':'var(--teal)'):'var(--ink)';
+    s+= c===t&&!done?`<circle class="curn" cx="${x}" cy="${y}" r=".3" fill="${h?'var(--blue)':'var(--teal)'}"/>`:`<circle class="node" cx="${x}" cy="${y}" r=".27" stroke="${col}"/>`;});
+  $('grid').innerHTML=`<svg class="ink" viewBox="0 0 4 4" aria-hidden="true">${s}</svg>`+V.map((v,c)=>{const st=path.indexOf(c);
+    return `<button class="cell${st>=0?' v':''}${c===t&&!done?' cur':''}" data-c="${c}" aria-label="${v}${c===S?', start':''}${c===E?', end':''}${st>=0?', step '+(st+1):''}">${v}${c===S?'<span class="tag">START</span>':c===E?'<span class="tag">END</span>':''}</button>`;}).join('');
+}
+const G=$('grid');
+G.addEventListener('pointerover',e=>{const b=e.target.closest('[data-c]');if(b){const c=+b.dataset.c;if(adj(path[path.length-1],c)&&!path.includes(c))render(c);}});
+G.addEventListener('pointerleave',()=>render());
+G.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const c=+b.dataset.c,r=why(c);
+  if(r==='rewind'){path=path.slice(0,path.indexOf(c)+1);moves++;render();say(`Rewound to ${V[c]}.`);return;}
+  if(r==='ok'){path.push(c);moves++;render();say(path.length===16?'Route complete.':`Stroke to ${V[c]}. The switch flips: ${dir()}.`);return;}
+  if(r==='here')return;const el=G.querySelector(`[data-c="${c}"]`);el&&el.classList.add('bad');setTimeout(()=>el&&el.classList.remove('bad'),300);
+  say({far:'Strokes only go up, down, left or right. No move used.',end:'END must be the 16th cell. No move used.',dir:`${V[c]} would break the switch: you need ${dir()}. No move used.`}[r]);});
+$('undo').onclick=()=>{if(path.length>1){path.pop();moves++;render();}};
+$('reset').onclick=()=>{if(path.length>1){path=[S];moves++;render();}};
+$('shareBtn').onclick=e=>{const o=$('share').classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',o);};
+render();
+</script>
+</body></html>

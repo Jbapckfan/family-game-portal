@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprout · Concept B · Rosette</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.layout{display:grid;gap:18px;max-width:980px;margin:0 auto}
+@media(min-width:900px){.layout{grid-template-columns:minmax(0,1fr) 360px;gap:36px;align-items:center}}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.hud b{font-size:16px}
+.wilts{font:600 13px/1 var(--mono);color:var(--ink-2)}
+.bed{position:relative;margin-top:8px;border-radius:50%;background:radial-gradient(circle,#f3f7f9 0 58%,#e6eef3 59% 100%);aspect-ratio:1;max-width:520px;margin-inline:auto;box-shadow:inset 0 3px 10px rgba(14,34,50,.08)}
+.bed svg{width:100%;height:100%}
+.ringguide{fill:none;stroke:#cfdbe3;stroke-width:1;stroke-dasharray:2 5}
+.lf{stroke:#1f5040;stroke-width:.8}
+.r3 .lf{fill:#1f5643}.r4 .lf{fill:#2b6a52}.r5 .lf{fill:#3b7f62}
+.lf.add{fill:#a5d48e!important;stroke:#5c9a72}
+.lt{font:800 24px var(--sans);text-anchor:middle;dominant-baseline:central;fill:#fff}
+.lt.add{fill:#123d2e}
+.gh .lf{fill:#fff;stroke:#5c9a72;stroke-dasharray:4 3;stroke-width:1.4}
+.gh .lf.f{fill:#e3f2dc;stroke-dasharray:none}
+.gh .lf.fs{fill:#a5d48e}
+.gh .lt{fill:#123d2e}
+.start{fill:var(--accent)}
+.seed{fill:#f5f8f2;stroke:#7fb48a}
+.grow .lf,.grow .lt{animation:open .7s cubic-bezier(.2,.9,.25,1.1) both;transform-origin:0 0}
+@keyframes open{from{transform:scale(.3) rotate(-25deg);opacity:0}}
+.legend{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:13px;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.panel h3{margin:14px 0 8px;font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
+.rack{display:flex;gap:8px;flex-wrap:wrap}
+.tile{width:48px;height:52px;border-radius:10px;border:1.5px solid #9fbfa9;background:#fff;font:800 24px/1 var(--sans);cursor:pointer;color:#123d2e}
+.tile.soil{border-radius:50%;background:#eef6ea}
+.tile:disabled{opacity:.28}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.quiet{display:flex;gap:4px;flex-wrap:wrap}
+.quiet .btn{font-size:14px}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Sprout · B — Rosette · visual prototype; sample growth words derived for illustration</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-sprout.svg" alt=""><div class="titles"><p class="kicker">Growing anagrams</p><h1>Sprout</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="layout">
+ <section>
+  <div class="hud"><b>Ring 6 of 8 · 3 steps to bloom</b><span class="wilts">WILTS ●●●●● 5 LEFT</span></div>
+  <div class="bed"><svg viewBox="-200 -200 400 400" role="img" aria-label="Rosette seen from above. Read each ring clockwise from the marker at the top. Ring 3 ALL, ring 4 ALLY, ring 5 RALLY, ring 6 being built.">
+   <circle class="ringguide" r="176"/><circle class="ringguide" r="196"/>
+   <g id="rings"></g>
+   <circle class="seed" r="15"/><text class="lt" y="1" style="fill:#3f7d5f;font-size:12px">3</text>
+  </svg></div>
+  <p class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>Each ring starts here · read clockwise</span><span><i style="background:#a5d48e"></i>Letter added from soil</span><button class="btn btn-quiet" id="replay" style="min-height:44px">▶ Replay last ring</button></p>
+ </section>
+ <section class="panel">
+  <h3>USE EVERY LETTER OF THE OUTER RING · RALLY</h3><div class="rack" id="word"></div>
+  <h3>ADD ONE FROM THE SOIL</h3><div class="rack" id="soil"></div>
+  <p class="msg" id="status"></p>
+  <div class="row-actions"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="grow">Grow ring</button></div>
+  <div class="quiet"><button class="btn btn-quiet">Undo growth</button><button class="btn btn-quiet">Restart</button><button class="btn btn-quiet">Which letter? · 1 wilt</button></div>
+  <p class="msg" id="msg" role="status">Your letters fill the dashed leaves of the next ring, clockwise from the marker.</p>
+ </section>
+</main>
+<footer class="app-foot"><span>Undo and Restart keep wilts</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Sprout</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const R={3:[18,58,26],4:[50,92,26],5:[84,126,27],6:[118,160,28]};
+const grown=[['ALL',-1],['ALLY',3],['RALLY',0]],cur='RALLY',soil=['M','N','O'];let typed=[];const $=id=>document.getElementById(id);
+function leaf(rin,rout,w){const m=(rin+rout)/2;return `M${-w*.25} ${-rin} Q${-w} ${-m} 0 ${-rout} Q${w} ${-m} ${w*.25} ${-rin}Z`;}
+function ring(word,added,len,cls,fill){const [rin,rout,w]=R[len],n=len;let h='';
+ for(let k=0;k<n;k++){const a=k*360/n,rad=a*Math.PI/180,lr=rout-20,x=(Math.sin(rad)*lr).toFixed(1),y=(-Math.cos(rad)*lr).toFixed(1),c=word[k]||'';
+  const f=fill?fill[k]:'';h+=`<g><path class="lf ${k===added?'add':''} ${f}" d="${leaf(rin,rout,w)}" transform="rotate(${a})" style="animation-delay:${k*.07}s"/><text class="lt ${k===added?'add':''}" x="${x}" y="${y}" style="animation-delay:${k*.07+.1}s">${c}</text></g>`;}
+ h+=`<circle class="start" cx="0" cy="${-rout-6}" r="4"/>`;return `<g class="${cls}" data-len="${len}">${h}</g>`;}
+function render(){const t=typed.map(o=>o.s==='w'?cur[o.i]:soil[o.i]),fill=Array.from({length:6},(_,k)=>t[k]?(typed[k].s==='s'?'f fs':'f'):'');
+ $('rings').innerHTML=ring(t.join(''),-1,6,'gh',fill)+grown.slice().reverse().map(([w,a])=>ring(w,a,w.length,'r'+w.length)).join('');
+ const soilOn=typed.some(o=>o.s==='s');
+ $('word').innerHTML=[...cur].map((c,i)=>`<button class="tile" data-s="w" data-i="${i}" ${typed.some(o=>o.s==='w'&&o.i===i)?'disabled':''}>${c}</button>`).join('');
+ $('soil').innerHTML=soil.map((c,i)=>`<button class="tile soil" data-s="s" data-i="${i}" ${soilOn?'disabled':''} aria-label="Soil ${c}">${c}</button>`).join('');
+ $('status').textContent=`${typed.length} of 6 leaves lettered · ${soilOn?'soil letter chosen':'choose one soil letter'}`;$('grow').disabled=typed.length!==6;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b&&!b.disabled){typed.push({s:b.dataset.s,i:+b.dataset.i});render();}});
+document.addEventListener('keydown',e=>{if(/^[a-z]$/i.test(e.key)){const c=e.key.toUpperCase();let i=[...cur].findIndex((x,i)=>x===c&&!typed.some(o=>o.s==='w'&&o.i===i));if(i>=0){typed.push({s:'w',i});render();return;}i=soil.indexOf(c);if(i>=0&&!typed.some(o=>o.s==='s')){typed.push({s:'s',i});render();}}else if(e.key==='Backspace'&&typed.length){typed.pop();render();}});
+$('del').onclick=()=>{typed.pop();render()};$('clr').onclick=()=>{typed=[];render()};
+$('grow').onclick=()=>$('msg').textContent='Prototype: the live game checks the word. If accepted, the dashed ring opens into living leaves.';
+$('replay').onclick=()=>{const g=$('rings').querySelector('[data-len="5"]');g.classList.remove('grow');void g.getBoundingClientRect();requestAnimationFrame(()=>g.classList.add('grow'));};
+render();setTimeout(()=>$('replay').click(),300);
+</script>
+</body></html>

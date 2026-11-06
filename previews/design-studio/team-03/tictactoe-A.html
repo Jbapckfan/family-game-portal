@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tic-Tac-Toe · Concept A · Route table</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+:root{--x:#1d5fa8;--o:#14806f}
+.wrap{max-width:1000px;margin:0 auto;display:grid;gap:18px}
+@media(min-width:860px){.wrap{grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}}
+.status{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--paper);border:1px solid var(--line-2)}
+.status .mk{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:800 28px/1 var(--sans);color:#fff;background:var(--x);flex:none}
+.status b{display:block;font-size:18px}
+.status span{font-size:14px;color:var(--ink-2)}
+.score{display:flex;gap:10px;margin-left:auto;font:700 14px/1 var(--mono);white-space:nowrap}
+.score i{font-style:normal;color:var(--x)}.score em{font-style:normal;color:var(--o)}
+.macro{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,1.6vw,12px);padding:clamp(6px,1.6vw,12px);border-radius:18px;background:#d9e4ec}
+.mini{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:6px;border-radius:12px;background:#fff;border:0;cursor:pointer;aspect-ratio:1;box-shadow:0 2px 0 #b8c9d6}
+.mini.forced{box-shadow:0 0 0 3px var(--x),0 2px 0 #b8c9d6}
+.mini.dest{box-shadow:0 0 0 3px var(--o)}
+.mini.dest::after{content:"AI goes here";position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);font:700 10px/1 var(--mono);background:var(--o);color:#fff;padding:3px 5px;border-radius:4px;white-space:nowrap}
+.mini.wait{opacity:.55}
+.mini .lab{position:absolute;top:-9px;left:8px;font:700 9px/1 var(--mono);letter-spacing:.08em;background:var(--x);color:#fff;padding:3px 5px;border-radius:4px}
+.cell{border:0;border-radius:4px;background:#f1f5f8;font:800 clamp(12px,3.4vw,26px)/1 var(--sans);padding:0;min-width:0;display:flex;align-items:center;justify-content:center}
+.cell.x{color:var(--x)}.cell.o{color:var(--o)}
+.mini.forced .cell:not(.x):not(.o):hover{background:var(--accent-wash)}
+@media(max-width:859px){.mini .cell{pointer-events:none}}
+.detail{padding:14px;border-radius:16px;background:var(--paper);border:1px solid var(--line-2)}
+.detail h2{margin:0;font:800 22px/1.1 var(--sans)}
+.detail .sub{margin:4px 0 12px;font-size:14px;color:var(--ink-2)}
+.big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bc{aspect-ratio:1;border:1.5px solid var(--line-2);border-radius:12px;background:#fbfdfe;font:800 40px/1 var(--sans);cursor:pointer;position:relative}
+.bc small{position:absolute;bottom:5px;left:0;right:0;font:600 10px/1.2 var(--mono);color:var(--muted)}
+.bc.x{color:var(--x)}.bc.o{color:var(--o)}
+.bc:not(:disabled):hover,.bc:not(:disabled):focus-visible{border-color:var(--o);background:#ecf6f3}
+.bc:disabled{cursor:default}
+.route{margin:12px 0 0;min-height:44px;padding:10px 12px;border-radius:10px;background:var(--bg-2);font-size:15px;color:var(--ink-2)}
+.side{display:grid;gap:12px}
+.lvl{display:flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:#fff}
+.lvl button{flex:1;min-height:44px;border:0;background:none;font-weight:650;cursor:pointer}
+.lvl button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.lvl button:disabled{opacity:.6}
+.rules{margin:0;padding:12px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line);font-size:14px;color:var(--ink-2);list-style:none}
+.rules li+li{margin-top:6px}
+.rules b{color:var(--ink)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.msg{min-height:22px;margin:0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Tic-Tac-Toe · A — Route table (light frame) · visual prototype; AI replies are not simulated</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/nested-tic-tac-toe.svg" alt=""><div class="titles"><p class="kicker">Bonus match · nine boards · local AI</p><h1>Tic-Tac-Toe</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap">
+ <section>
+  <div class="status"><span class="mk" aria-hidden="true">×</span><div><b>Your turn</b><span id="instr">Play in the outlined centre board.</span></div><span class="score" aria-label="Claimed boards"><i>× 0</i><em>○ 0</em></span></div>
+  <div class="macro" id="macro" role="group" aria-label="The big board"></div>
+ </section>
+ <aside class="side">
+  <div class="detail" aria-label="Board detail"><h2 id="dt">Centre board</h2><p class="sub" id="ds">Your square picks the AI’s next board.</p><div class="big" id="big"></div><p class="route" id="route" aria-live="polite">Hover or focus a square to see where it sends the AI.</p></div>
+  <div class="seg"><button class="btn" id="st0">Fresh match</button><button class="btn" id="st1">Sample mid-match</button></div>
+  <div><p class="msg" style="margin-bottom:6px;font-size:13px">AI level · choose before your first move</p><div class="lvl" role="group" aria-label="AI level"><button id="lc" aria-pressed="false">Casual</button><button id="lt" aria-pressed="true">Tactical</button></div></div>
+  <ul class="rules"><li><b>Claim a board:</b> three in a row inside it.</li><li><b>Follow the route:</b> your small square sends the AI to the matching big board. Closed destination = free choice.</li><li><b>Win the match:</b> three claimed boards in a line. Drawn boards stay unclaimed.</li></ul>
+  <p class="msg" id="msg" role="status"></p>
+ </aside>
+</main>
+<footer class="app-foot"><span>Match saved on this device · no daily streak needed</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Tic-Tac-Toe</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const POS=['top left','top middle','top right','middle left','centre','middle right','bottom left','bottom middle','bottom right'];
+let cells,forced,view,dest=null,placed=false;const $=id=>document.getElementById(id);
+function fresh(){cells=Array.from({length:9},()=>Array(9).fill(null));forced=null;view=4;placed=false;dest=null;}
+function sample(){fresh();cells[4][0]='X';cells[0][4]='O';cells[4][8]='X';cells[8][4]='O';forced=4;view=4;}
+const sym=v=>v==='X'?'×':v==='O'?'○':'';
+function render(){
+ $('macro').innerHTML=cells.map((b,bi)=>{const f=forced===null||forced===bi;return `<button class="mini ${forced===bi?'forced':''} ${dest===bi?'dest':''} ${!f?'wait':''}" data-b="${bi}" aria-label="${POS[bi]} board${forced===bi?', play here':''}">${forced===bi?'<span class="lab">PLAY HERE</span>':''}${b.map((v,ci)=>`<span class="cell ${v?v.toLowerCase():''}" data-c="${ci}">${sym(v)}</span>`).join('')}</button>`}).join('');
+ const b=cells[view],playable=!placed&&(forced===null||forced===view);
+ $('dt').textContent=POS[view][0].toUpperCase()+POS[view].slice(1)+' board';$('ds').textContent=playable?'Choose your square. Each square points to the matching big board.':'Inspecting · play in the outlined board';
+ $('big').innerHTML=b.map((v,ci)=>`<button class="bc ${v?v.toLowerCase():''}" data-c="${ci}" ${v||!playable?'disabled':''} aria-label="${POS[ci]} square${v?', '+(v==='X'?'your X':'AI O'):', sends AI to '+POS[ci]+' board'}">${sym(v)}${!v&&playable?`<small>→ ${POS[ci]}</small>`:''}</button>`).join('');
+ $('instr').textContent=placed?'Prototype: the AI reply is not simulated.':forced===null?'First move: any board, any square.':`Play in the outlined ${POS[forced]} board.`;}
+function preview(ci){dest=ci;$('route').textContent=`This square sends the AI to the ${POS[ci]} board.`;render();}
+$('big').addEventListener('mouseover',e=>{const c=e.target.closest('.bc:not(:disabled)');if(c&&dest!==+c.dataset.c)preview(+c.dataset.c)});
+$('big').addEventListener('focusin',e=>{const c=e.target.closest('.bc:not(:disabled)');if(c&&dest!==+c.dataset.c){const i=+c.dataset.c;preview(i);$('big').querySelector(`[data-c="${i}"]`).focus();}});
+$('big').addEventListener('click',e=>{const c=e.target.closest('.bc:not(:disabled)');if(!c)return;cells[view][+c.dataset.c]='X';placed=true;dest=+c.dataset.c;$('msg').textContent='× placed. In the live game the AI now moves in the highlighted board.';render();});
+$('macro').addEventListener('click',e=>{const m=e.target.closest('[data-b]');if(!m)return;const cell=e.target.closest('[data-c]');view=+m.dataset.b;
+ if(cell&&matchMedia('(min-width:860px)').matches&&!placed&&(forced===null||forced===view)&&!cells[view][+cell.dataset.c]){cells[view][+cell.dataset.c]='X';placed=true;dest=+cell.dataset.c;$('msg').textContent='× placed directly on the big board (desktop). AI reply not simulated.';}render();});
+$('macro').addEventListener('mouseover',e=>{if(!matchMedia('(min-width:860px)').matches||placed)return;const m=e.target.closest('[data-b]'),c=e.target.closest('[data-c]');if(m&&c&&(forced===null||forced===+m.dataset.b)&&!cells[+m.dataset.b][+c.dataset.c]&&dest!==+c.dataset.c)preview(+c.dataset.c);});
+$('st0').onclick=()=>{fresh();render();$('msg').textContent='Fresh match. AI level can still be changed.';$('lc').disabled=$('lt').disabled=false;};
+$('st1').onclick=()=>{sample();render();$('msg').textContent='Illustrative position after four legal moves. AI level is locked once play starts.';$('lc').disabled=$('lt').disabled=true;};
+$('lc').onclick=()=>{$('lc').setAttribute('aria-pressed','true');$('lt').setAttribute('aria-pressed','false')};$('lt').onclick=()=>{$('lt').setAttribute('aria-pressed','true');$('lc').setAttribute('aria-pressed','false')};
+sample();render();$('lc').disabled=$('lt').disabled=true;$('msg').textContent='Illustrative position after four legal moves.';
+</script>
+</body></html>

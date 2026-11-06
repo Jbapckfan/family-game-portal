@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trail · Concept C · Chart and ledger</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.sheet{display:grid;gap:22px}
+@media(min-width:880px){.sheet{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px}}
+.clue{margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid var(--line);font:600 clamp(22px,4.6vw,28px)/1.25 var(--sans)}
+.clue small{display:block;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--muted);margin-bottom:8px}
+.chart{display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:22px auto;gap:4px;max-width:470px}
+.cols,.rows{display:grid;font:700 12px/1 var(--mono);color:var(--muted)}
+.cols{grid-column:2;grid-template-columns:repeat(4,1fr);text-align:center;align-items:end}
+.rows{grid-row:2;grid-template-rows:repeat(4,1fr);align-items:center}
+.field{grid-column:2;grid-row:2;position:relative;aspect-ratio:1;background:
+ linear-gradient(var(--line) 1px,transparent 1px) 0 0/25% 25%,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/25% 25%,var(--paper);border:1px solid var(--line-2)}
+.field svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.field polyline{fill:none;stroke:var(--accent);stroke-width:5;stroke-linejoin:round;stroke-linecap:round}
+.field .arrow{fill:var(--accent)}
+.cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr)}
+.c{border:0;background:transparent;font:700 clamp(28px,7.6vw,38px)/1 var(--sans);cursor:pointer;position:relative}
+.c:hover{background:rgba(10,106,138,.06)}
+.c.sel{color:var(--accent-ink)}
+.c.sel::before{content:attr(data-step);position:absolute;top:6px;left:8px;font:700 12px/1 var(--mono);color:var(--accent)}
+.c.sel span{display:inline-flex;width:62%;aspect-ratio:1;align-items:center;justify-content:center;border:2.5px solid var(--accent);border-radius:8px;background:#fff}
+.c.last span{background:var(--accent);color:#fff}
+.c.blocked{color:#a9bccb}
+.ledger{border:1px solid var(--line-2);background:var(--paper);border-radius:12px;overflow:hidden}
+.ledger h2{margin:0;padding:12px 14px;font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--line);background:var(--bg-2)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.steps li{text-align:center;padding:8px 0 10px;border-right:1px solid var(--line)}
+.steps li:last-child{border-right:0}
+.steps small{display:block;font:600 11px/1 var(--mono);color:var(--muted)}
+.steps b{display:block;font:800 clamp(18px,4.6vw,24px)/1.4 var(--sans);min-height:34px}
+.steps em{display:block;font:500 10px/1 var(--mono);color:var(--muted);font-style:normal}
+.ledger section{padding:12px 14px;border-bottom:1px solid var(--line)}
+.ledger section:last-child{border-bottom:0}
+.ledger p{margin:0;font-size:15px;color:var(--ink-2)}
+.ledger .label{font:700 12px/1 var(--mono);letter-spacing:.08em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.checks{list-style:none;margin:6px 0 0;padding:0;font:600 15px/1.6 var(--mono)}
+.checks li span{color:var(--muted);font-family:var(--sans);font-weight:500}
+.actions{margin-top:14px}
+.msg{min-height:22px;margin:8px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Trail · C — Chart and ledger · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/deepseek-trail.svg" alt=""><div class="titles"><p class="kicker">Nine-letter trail · 4 × 4</p><h1>Trail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="sheet">
+ <section>
+  <p class="clue"><small>CLUE</small>The moment ends. Something stays.</p>
+  <div class="chart">
+   <div class="cols"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+   <div class="rows"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+   <div class="field"><svg viewBox="0 0 400 400" aria-hidden="true"><polyline id="line"/><circle class="arrow" id="head" r="7" cx="-20" cy="-20"/></svg><div class="cells" id="cells" role="group" aria-label="Letter chart, columns A to D, rows 1 to 4"></div></div>
+  </div>
+  <div class="row-actions actions"><button class="btn" id="undo">Undo</button><button class="btn" id="clear">Clear</button><button class="btn btn-primary" id="check">Check trail</button></div>
+  <p class="msg" id="msg" role="status">Sample state: three letters charted. Grey letters cannot be reached from the last step.</p>
+ </section>
+ <aside class="ledger" aria-label="Route ledger">
+  <h2>Route ledger</h2>
+  <ol class="steps" id="steps"></ol>
+  <section><p class="label">Moves</p><p>Each step touches the last: across, up, down or diagonal. Each tile once. Tap any earlier step to return there.</p></section>
+  <section><p class="label">Checked words · 0</p><p>No checks yet. There is no strike limit, and checking the same word again is free.</p><ul class="checks" id="checks"><li>— <span>example row appears here after a check</span></li></ul></section>
+  <section><p class="label">Help</p><p><button class="btn" id="def">Show definition · noted in result</button></p></section>
+  <section><p class="label">Keyboard</p><p>Arrows move · Space selects · Backspace undoes · Esc clears</p></section>
+ </aside>
+</main>
+<footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Trail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const G='FTEOAALREGFWRTLO'.split(''),N=4;let path=[0,4,1];
+const $=id=>document.getElementById(id),coord=i=>'ABCD'[i%N]+((i/N|0)+1);
+const adj=(a,b)=>a!==b&&Math.max(Math.abs(a%N-b%N),Math.abs((a/N|0)-(b/N|0)))===1;
+function render(){const last=path.at(-1);
+ $('cells').innerHTML=G.map((l,i)=>{const k=path.indexOf(i),blocked=path.length&&k<0&&!adj(last,i);
+  return `<button class="c ${k>=0?'sel':''} ${i===last?'last':''} ${blocked?'blocked':''}" data-i="${i}" data-step="${k+1}" aria-pressed="${k>=0}" aria-label="${l} at ${coord(i)}${k>=0?', step '+(k+1):blocked?', not reachable from last step':''}"><span>${l}</span></button>`}).join('');
+ const p=path.map(i=>[(i%N)*100+50,(i/N|0)*100+50]);$('line').setAttribute('points',p.map(x=>x.join(',')).join(' '));
+ if(p.length){$('head').setAttribute('cx',p.at(-1)[0]);$('head').setAttribute('cy',p.at(-1)[1]);}else $('head').setAttribute('cx',-20);
+ $('steps').innerHTML=Array.from({length:9},(_,k)=>`<li><small>${k+1}</small><b>${path[k]!==undefined?G[path[k]]:''}</b><em>${path[k]!==undefined?coord(path[k]):'·'}</em></li>`).join('');
+ $('check').disabled=path.length!==9;$('check').textContent=`Check trail · ${path.length}/9`;}
+function tap(i){const k=path.indexOf(i);if(k>=0)path=path.slice(0,k+1);else if(!path.length||adj(path.at(-1),i)){if(path.length<9)path.push(i)}else{$('msg').textContent=coord(i)+' does not touch '+coord(path.at(-1))+'.';return}render();$('cells').querySelector(`[data-i="${i}"]`).focus();}
+$('cells').onclick=e=>{const b=e.target.closest('[data-i]');if(b)tap(+b.dataset.i)};
+$('cells').onkeydown=e=>{const b=e.target.closest('[data-i]');const d={ArrowLeft:-1,ArrowRight:1,ArrowUp:-N,ArrowDown:N}[e.key];
+ if(b&&d!==undefined){e.preventDefault();const i=+b.dataset.i,j=i+d;if(j>=0&&j<16&&!(Math.abs(d)===1&&(j/N|0)!==(i/N|0)))$('cells').querySelector(`[data-i="${j}"]`).focus();}
+ else if(e.key==='Backspace'){e.preventDefault();path.pop();render();}else if(e.key==='Escape'){path=[];render();}};
+$('undo').onclick=()=>{path.pop();render()};$('clear').onclick=()=>{path=[];render()};
+$('check').onclick=()=>$('msg').textContent='Prototype only: the live game checks and logs the word in the ledger.';
+$('def').onclick=()=>$('msg').textContent='Live game: the definition appears in this ledger panel and is noted in your result.';
+render();
+</script>
+</body></html>

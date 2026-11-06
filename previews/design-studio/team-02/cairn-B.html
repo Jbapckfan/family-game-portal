@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cairn B · Monolith — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:600px;margin:0 auto}
+.mono{position:relative;background:#f8fafc;border:1px solid #cdd9e3;border-radius:22px;padding:22px 18px 26px;box-shadow:0 10px 0 -2px #d3dde6,0 10px 0 -1px #b9c8d5,0 26px 40px -24px rgba(14,34,50,.45)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.lvl{margin:0}
+.lvl b{display:block;font-size:56px;line-height:.9;font-weight:850;letter-spacing:-.04em}
+.lvl span{font:13px var(--mono);color:var(--muted)}
+.profile{display:flex;flex-direction:column-reverse;align-items:center;gap:3px;padding-top:4px}
+.profile i{display:block;height:9px;border-radius:5px;background:#dfe7ee;box-shadow:inset 0 -2px 0 #c9d5df}
+.profile i.now{background:var(--accent);box-shadow:inset 0 -2px 0 var(--accent-2)}
+.profile small{font:11px var(--mono);color:var(--muted);margin-top:4px}
+.word{display:flex;justify-content:center;gap:10px;margin:30px 0 8px}
+.cell{width:clamp(64px,20vw,84px);aspect-ratio:1/1.08;border-radius:14px;border:2px solid #b8c8d6;background:#fff;display:grid;place-items:center;font-size:clamp(36px,11vw,48px);font-weight:850;color:var(--ink)}
+.cell:empty{border-style:dashed;background:transparent}
+.cell.on{border-color:var(--accent);box-shadow:0 0 0 4px rgba(28,92,188,.12)}
+.rule{text-align:center;color:var(--ink-2);margin:6px 0 22px;font-size:15px}
+.pebbles{display:flex;justify-content:center;gap:14px}
+.peb{width:64px;height:64px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#ffffff,#e6edf3 62%,#cfdbe5);box-shadow:0 4px 0 #b3c3d1,0 10px 16px -10px rgba(14,34,50,.6);font-size:30px;font-weight:800;cursor:pointer;transition:transform .12s}
+.peb:hover{transform:translateY(-3px)}
+.peb:active{transform:translateY(2px);box-shadow:0 2px 0 #b3c3d1}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-top:26px}
+.row .btn{min-width:52px}
+.sheet{margin-top:14px;border-top:1px solid var(--line);padding-top:6px}
+.sheet[hidden]{display:none}
+.sheet button.opt{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:56px;border:0;border-bottom:1px solid var(--line);background:transparent;padding:0 4px;cursor:pointer;text-align:left}
+.sheet button.opt b{font-size:16px}
+.sheet button.opt span{font-size:14px;color:var(--muted)}
+.more{display:flex;justify-content:center;margin-top:12px}
+.legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:26px 0 0;font-size:14px;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Cairn B — Monolith</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-cairn.svg" alt=""><div><p class="eyebrow">Growing anagrams</p><h1 class="gname">Cairn</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 628 · Fri 6 Nov</span></div>
+
+    <section class="mono" aria-label="Level 1 of 5">
+      <div class="top">
+        <p class="lvl"><b>1<span style="font:inherit;font-size:28px;color:#8aa0b2">/5</span></b><span>Three letters · 1 hint left</span></p>
+        <div class="profile" aria-label="Progress: level 1 of 5. Stones grow one letter wider each level.">
+          <i class="now" style="width:24px"></i><i style="width:32px"></i><i style="width:40px"></i><i style="width:48px"></i><i style="width:56px"></i>
+          <small>3 → 7</small>
+        </div>
+      </div>
+      <div class="word" aria-label="Your word, three slots"><span class="cell on" id="c0"></span><span class="cell" id="c1"></span><span class="cell" id="c2"></span></div>
+      <p class="rule">Use every letter once. Tap a placed letter to return it.</p>
+      <div class="pebbles"><button class="peb">T</button><button class="peb">H</button><button class="peb">A</button></div>
+      <div class="row">
+        <button class="btn" aria-label="Shuffle">⟲</button>
+        <button class="btn primary">Enter</button>
+        <button class="btn" aria-label="Delete">⌫</button>
+      </div>
+      <div class="more"><button class="demo-toggle" id="more" aria-expanded="false" aria-controls="sheet">More · hint, skip, rules</button></div>
+      <div class="sheet" id="sheet" hidden>
+        <button class="opt"><b>Hint</b><span>Reveals the start of one answer · 1 left</span></button>
+        <button class="opt"><b>Skip level</b><span>Marked Shown · ends a perfect run</span></button>
+        <button class="opt"><b>How levels are marked</b><span>Clean · Assisted · Shown</span></button>
+      </div>
+    </section>
+    <div class="legend"><span><i style="background:var(--accent)"></i>Clean</span><span><i style="background:#9db3cf"></i>Assisted</span><span><i style="border:2px dashed #8ea3b6"></i>Shown</span></div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: one honed slab holds the current level only; the five-stone profile at top right is the whole progress system. Secondary actions live in a sheet so the phone view is letters first. The "More" control is a local preview toggle.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const m=document.getElementById('more'),s=document.getElementById('sheet');
+m.addEventListener('click',()=>{const o=s.hidden;s.hidden=!o;m.setAttribute('aria-expanded',o);m.setAttribute('aria-pressed',o);});
+const cells=[0,1,2].map(i=>document.getElementById('c'+i));
+document.querySelectorAll('.peb').forEach(p=>p.addEventListener('click',()=>{const c=cells.find(x=>!x.textContent);if(!c||p.disabled)return;c.textContent=p.textContent;p.disabled=true;p.style.opacity=.25;cells.forEach(x=>x.classList.remove('on'));const n=cells.find(x=>!x.textContent);if(n)n.classList.add('on');}));
+</script>
+</body>
+</html>

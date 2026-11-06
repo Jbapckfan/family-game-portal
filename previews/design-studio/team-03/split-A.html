@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Split · Concept A · The fork</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.fork{max-width:640px;margin:0 auto;display:grid;gap:0}
+.word{padding:16px 0;display:grid;gap:10px;cursor:pointer;border:0;background:none;text-align:left;width:100%}
+.word .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.word .tag{font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
+.word .state{font:600 13px/1 var(--sans);padding:6px 10px;border-radius:999px;background:var(--bg-2);color:var(--muted);border:1px solid var(--line)}
+.word.active .state{background:var(--ink);color:#fff;border-color:var(--ink)}
+.word .clue{margin:0;font:700 clamp(22px,5vw,28px)/1.2 var(--sans);letter-spacing:-.01em}
+.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.slot{height:clamp(48px,13vw,60px);border:0;border-bottom:3px solid var(--line-2);background:transparent;font:800 clamp(24px,6.6vw,32px)/1 var(--sans);cursor:pointer}
+.word.active .slot{border-color:var(--ink)}
+.word.active .slot.next{border-color:var(--accent);background:var(--accent-wash)}
+.slot.filled{border-color:var(--ink)}
+.rackzone{position:relative;padding:18px 14px;margin:4px 0;background:var(--paper);border:1px solid var(--line-2);border-radius:16px}
+.dir{position:absolute;left:50%;transform:translateX(-50%);width:44px;height:22px;display:flex;align-items:center;justify-content:center;background:var(--paper);border:1px solid var(--line-2);border-radius:999px;font:700 14px/1 var(--sans);color:var(--accent)}
+.dir.up{top:-12px}.dir.down{bottom:-12px}
+.dir.off{color:var(--line-2)}
+.rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(min-width:620px){.rack{grid-template-columns:repeat(8,1fr)}}
+.tile{aspect-ratio:1;min-height:48px;border:1.5px solid var(--line-2);border-radius:10px;background:#fbfdfe;font:800 clamp(24px,6vw,28px)/1 var(--sans);cursor:pointer;box-shadow:0 2px 0 var(--line-2)}
+.tile:hover{border-color:var(--ink-2)}
+.tile:disabled{background:transparent;border-style:dashed;box-shadow:none;color:transparent;cursor:default}
+.count{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin:12px 0 0;font-size:14px;color:var(--muted)}
+.count b{color:var(--ink)}
+.actions{margin-top:14px}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+.def{font-size:14px;min-height:44px;padding:0;justify-content:flex-start}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Split · A — The fork · visual prototype, not a live game</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/deepseek-split.svg" alt=""><div class="titles"><p class="kicker">Two clues · sixteen tiles</p><h1>Split</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="fork" id="board" tabindex="0" aria-label="Split. Up arrow chooses Word 1, Down arrow chooses Word 2, type rack letters.">
+ <div id="w0"></div>
+ <div class="rackzone"><span class="dir up" id="du" aria-hidden="true">↑</span><div class="rack" id="rack" role="group" aria-label="Letter rack"></div><span class="dir down off" id="dd" aria-hidden="true">↓</span></div>
+ <div id="w1"></div>
+ <p class="count"><span><b id="placed">0 / 12</b> placed</span><span id="left">4 tiles will be left behind</span><span>0 checks</span></p>
+ <div class="row-actions actions"><button class="btn" id="undo">Undo</button><button class="btn" id="clear">Clear</button><button class="btn btn-primary" id="check">Check both</button></div>
+ <p class="msg" id="msg" role="status">Word 1 is filling. Tap a tile, or type it. ↑ / ↓ switches rows.</p>
+</main>
+<footer class="app-foot"><span>Saved on this device · checks report how many words fit, not which</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Split</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const R='RAOEBGTCNRHUEIDO'.split(''),C=['Sharp without a blade.','Broken at someone’s best.'];
+let rows=[[],[]],active=0,stack=[];const $=id=>document.getElementById(id);
+const used=()=>rows.flat();
+function word(r){const on=active===r,n=rows[r].length;
+ return `<div class="word ${on?'active':''}" data-row="${r}" role="button" tabindex="-1" aria-pressed="${on}"><div class="top"><span class="tag">WORD ${r+1} · 6 LETTERS</span><span class="state">${on?'Filling':'Tap to fill'}</span></div>
+ ${r===0?`<p class="clue">${C[r]}</p>`:''}<div class="slots">${Array.from({length:6},(_,s)=>`<button class="slot ${rows[r][s]!==undefined?'filled':''} ${on&&s===n?'next':''}" data-slot="${r}:${s}" aria-label="Word ${r+1} slot ${s+1}${rows[r][s]!==undefined?', '+R[rows[r][s]]+', tap to return':' empty'}">${rows[r][s]!==undefined?R[rows[r][s]]:''}</button>`).join('')}</div>
+ ${r===1?`<p class="clue">${C[r]}</p>`:''}<button class="btn btn-quiet def">Need a definition? · counts as help</button></div>`}
+function render(){$('w0').innerHTML=word(0);$('w1').innerHTML=word(1);
+ $('rack').innerHTML=R.map((l,i)=>`<button class="tile" data-i="${i}" ${used().includes(i)?'disabled aria-label="placed"':`aria-label="${l}"`}>${l}</button>`).join('');
+ $('du').classList.toggle('off',active!==0);$('dd').classList.toggle('off',active!==1);
+ const u=used().length;$('placed').textContent=u+' / 12';$('left').textContent=`${16-u} in the rack · 4 stay behind`;$('check').disabled=u!==12;$('undo').disabled=$('clear').disabled=!u;}
+function add(i){if(used().includes(i))return;if(rows[active].length===6){if(rows[1-active].length<6)active=1-active;else return;}rows[active].push(i);stack.push(active);if(rows[active].length===6&&rows[1-active].length<6){active=1-active;say(`Word ${2-active} full · now filling Word ${active+1}.`);}render();}
+const say=t=>$('msg').textContent=t;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(t){add(+t.dataset.i);return;}
+ const s=e.target.closest('[data-slot]');if(s){const[r,k]=s.dataset.slot.split(':').map(Number);if(rows[r][k]!==undefined){rows[r].splice(k,1);say('Letter returned to the rack.');}active=r;render();return;}
+ if(e.target.closest('.def')){say('Live game: the definition opens under this clue and is noted in your result.');return;}
+ const w=e.target.closest('[data-row]');if(w){active=+w.dataset.row;render();}});
+$('board').onkeydown=e=>{if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();active=e.key==='ArrowUp'?0:1;render();}
+ else if(/^[a-z]$/i.test(e.key)){const i=R.findIndex((c,i)=>c===e.key.toUpperCase()&&!used().includes(i));if(i<0)say(`No ${e.key.toUpperCase()} left in the rack.`);else add(i);}
+ else if(e.key==='Backspace'){e.preventDefault();$('undo').click();}};
+$('undo').onclick=()=>{const r=stack.pop();if(r!==undefined){rows[r].pop();active=r;}render();};
+$('clear').onclick=()=>{rows=[[],[]];stack=[];active=0;render();};
+$('check').onclick=()=>say('Prototype: the live game checks both together and says “1 of 2 fit” without naming which.');
+render();
+</script>
+</body></html>

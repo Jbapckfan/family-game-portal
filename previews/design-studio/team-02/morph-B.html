@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morph B · Combination dials — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:560px;margin:0 auto}
+.plate{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-radius:14px;background:linear-gradient(180deg,#fdfefe,#e8eef3);border:1px solid #c5d3de;box-shadow:inset 0 1px 0 #fff}
+.plate small{font:700 12px var(--sans);letter-spacing:.14em;color:var(--muted)}
+.plate b{font-size:clamp(30px,9vw,40px);letter-spacing:.24em;font-weight:850}
+.plate span{font:13px var(--mono);color:var(--muted);text-align:right}
+.housing{margin-top:18px;padding:16px 12px;border-radius:20px;background:#dfe7ee;box-shadow:inset 0 2px 6px rgba(14,34,50,.16),0 1px 0 #fff}
+.dials{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.dial{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.dial button.turn{height:44px;border-radius:10px;border:1px solid #b5c6d4;background:#fff;cursor:pointer;font-size:16px;color:var(--ink-2)}
+.dial button.turn:disabled{opacity:.35;cursor:not-allowed}
+.window{position:relative;height:132px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#b9c7d3 0%,#f3f6f8 22%,#ffffff 50%,#f3f6f8 78%,#b9c7d3 100%);border:1px solid #a9bbc9;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.window i{font-style:normal;font-weight:700;font-size:20px;color:#93a5b4;line-height:1.1}
+.window b{font-size:46px;font-weight:850;line-height:1.05;margin:4px 0;transition:transform .18s}
+.window::after{content:"";position:absolute;left:4px;right:4px;top:50%;height:52px;transform:translateY(-50%);border-top:1px solid rgba(14,34,50,.15);border-bottom:1px solid rgba(14,34,50,.15)}
+.dial.moved .window{outline:3px solid var(--accent);outline-offset:-3px}
+.dial.locked .window{opacity:.6}
+.lock{height:18px;font:600 11px var(--mono);text-align:center;color:var(--muted)}
+.dial.moved .lock{color:var(--accent)}
+.read{margin:14px 0 0;text-align:center;font-size:15px;color:var(--ink-2);min-height:22px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:16px}
+.trail{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
+.trail h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chips span{font:700 16px var(--mono);letter-spacing:.12em;padding:8px 10px;border-radius:8px;background:#fff;border:1px solid var(--line)}
+.chips em{font-style:normal;color:#9aaab8}
+.chips .ghost{border-style:dashed;color:#9aaab8;background:transparent}
+.aux{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Morph B — Combination dials</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-morph.svg" alt=""><div><p class="eyebrow">Word ladders</p><h1 class="gname">Morph</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 64 · Fri 6 Nov</span></div>
+
+    <div class="plate"><div><small>GOAL</small><br><b>MESS</b></div><span>Moves 0<br>suggested 5</span></div>
+    <section class="housing" aria-label="Four letter dials. Turning one dial locks the other three.">
+      <div class="dials" id="dials"></div>
+      <p class="read" id="read" aria-live="polite">Turn any one dial. The other three lock until you turn it back.</p>
+    </section>
+    <div class="main"><button class="btn primary" id="check" disabled>Check word</button><button class="btn" id="reset">Reset dials</button></div>
+    <div class="trail"><h2>Your ladder</h2><div class="chips"><span>BANG</span><em>›</em><span class="ghost">····</span></div></div>
+    <div class="aux"><button class="btn">Show a route · 1 hint</button><button class="btn quiet">Give up</button><button class="btn quiet">Undo rung</button></div>
+    <p style="color:var(--muted);font-size:14px">Keyboard: type a four-letter word, or focus a dial and use <span class="kbd">↑</span> <span class="kbd">↓</span>. <span class="kbd">Enter</span> checks.</p>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the "exactly one letter" rule becomes physical — moving a dial locks the others, so a two-letter change can't be composed. Dials are live in this prototype (try the arrows); nothing is checked against the word list.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ',base='BANG'.split(''),cur=[...base],host=document.getElementById('dials'),read=document.getElementById('read'),check=document.getElementById('check');
+function L(c,d){return A[(A.indexOf(c)+d+26)%26]}
+function draw(){host.innerHTML='';const moved=cur.findIndex((c,i)=>c!==base[i]);cur.forEach((c,i)=>{const d=document.createElement('div');const lk=moved>-1&&moved!==i;d.className='dial'+(moved===i?' moved':'')+(lk?' locked':'');d.innerHTML=`<button class="turn" aria-label="Letter ${i+1} up" ${lk?'disabled':''}>▲</button><div class="window" tabindex="0" aria-label="Letter ${i+1}: ${c}"><i>${L(c,-1)}</i><b>${c}</b><i>${L(c,1)}</i></div><button class="turn" aria-label="Letter ${i+1} down" ${lk?'disabled':''}>▼</button><div class="lock">${moved===i?'changing':lk?'locked':''}</div>`;const [u,,dn]=d.querySelectorAll('.turn,.window');d.querySelectorAll('.turn')[0].onclick=()=>{cur[i]=L(cur[i],-1);draw()};d.querySelectorAll('.turn')[1].onclick=()=>{cur[i]=L(cur[i],1);draw()};host.appendChild(d);});
+read.textContent=moved<0?'Turn any one dial. The other three lock until you turn it back.':`Letter ${moved+1}: ${base[moved]} → ${cur[moved]}. Ready to check ${cur.join('')}.`;check.disabled=moved<0;}
+document.getElementById('reset').onclick=()=>{base.forEach((c,i)=>cur[i]=c);draw();};draw();
+</script>
+</body>
+</html>

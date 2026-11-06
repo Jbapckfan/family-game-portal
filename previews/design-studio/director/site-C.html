@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alford Daily · Design concept C · Console</title>
+<style>
+:root{
+  --rail:#F7FAFD;--work:#EEF3F8;--pane:#FFFFFF;--sel:#E2ECFB;--rule:#D5DFEA;--rule2:#E7EEF5;
+  --ink:#0F1F30;--ink2:#475B6F;--ink3:#6C8094;--accent:#1D5BD0;--accentSoft:#E2ECFB;--teal:#0C7A80;--gold:#E2A31B;--green:#2B8650;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--work);color:var(--ink);font:18px/1.5 var(--sans)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+kbd{font:12px/1 var(--mono);border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:2px 6px;color:var(--ink2);background:#fff}
+
+.review{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:10px 20px;font:13px/1.4 var(--sans);color:var(--ink2);background:#fff;border-bottom:1px dashed var(--ink3)}
+.review .tag{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:3px 8px;border-radius:3px}
+.review .seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.review .seg button{border:0;background:#fff;padding:6px 10px;cursor:pointer;font-size:13px}
+.review .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+.app{display:grid;grid-template-columns:264px minmax(0,1fr) 384px;min-height:calc(100vh - 44px)}
+
+/* rail */
+.rail{background:var(--rail);border-right:1px solid var(--rule);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;font:700 21px/1 var(--sans);letter-spacing:-.015em;padding:6px 10px 20px}
+.ri{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border-radius:10px;border:0;background:none;width:100%;text-align:left;cursor:pointer;font-weight:550;font-size:17px;color:var(--ink2);text-decoration:none}
+.ri:hover{background:var(--rule2);color:var(--ink)}
+.ri[aria-current="true"]{background:var(--sel);color:var(--ink)}
+.ri .n{margin-left:auto;font:500 13px var(--mono);color:var(--ink3)}
+.ri svg{flex:none}
+.rlabel{font:700 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding:20px 12px 8px}
+.ri .dot{width:10px;height:10px;border-radius:3px;flex:none}
+.rail .grow{flex:1}
+.who{border-top:1px solid var(--rule);padding-top:12px;margin-top:12px}
+.who .ri{color:var(--ink)}
+.who small{display:block;font-size:13px;color:var(--ink3);font-weight:400;line-height:1.2}
+
+/* main */
+.main{padding:28px 40px 64px;min-width:0}
+.mhead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 24px}
+.mhead h1{margin:0;font:650 36px/1.05 var(--sans);letter-spacing:-.025em}
+.mhead .sub{color:var(--ink2);font-size:17px;margin-top:6px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--rule);border-radius:10px;padding:0 12px;min-height:46px}
+.search input{border:0;outline:0;width:220px;font-size:16px}
+.sec{margin-top:32px}
+.sec-h{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.sec-h h2{margin:0;font:700 14px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.sec-h .r{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:16px;color:var(--ink2)}
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--ink);background:#fff;font-weight:600;font-size:16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:disabled{border-color:var(--rule);color:var(--ink3);cursor:not-allowed}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.blue{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* run */
+.run{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-top:30px}
+.run::before{content:"";position:absolute;top:13px;left:calc(16.66% - 8px);right:calc(16.66% - 8px);height:2px;background:var(--rule)}
+.stop{position:relative;text-align:left;border:1px solid var(--rule);background:#fff;border-radius:14px;padding:18px 18px 16px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:236px;transition:box-shadow .14s,border-color .14s}
+.stop .pin{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;background:var(--work);border:2px solid var(--ink3);display:grid;place-items:center;font:700 13px var(--mono);color:var(--ink2)}
+.stop.done .pin{background:var(--green);border-color:var(--green);color:#fff}
+.stop.prog .pin{background:var(--accent);border-color:var(--accent);color:#fff}
+.stop[aria-pressed="true"]{border:2px solid var(--accent);padding:17px 17px 15px;box-shadow:0 18px 30px -22px rgba(20,60,120,.55)}
+.stop .ic{width:52px;height:52px;border-radius:12px;background:var(--accentSoft);display:grid;place-items:center;color:var(--ink)}
+.stop .nm{font:700 23px/1.15 var(--sans);letter-spacing:-.015em;margin-top:6px}
+.stop .ct{font:700 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.stop .ds{font-size:17px;color:var(--ink2);line-height:1.4}
+.stop .stt{margin-top:auto;font-size:15px;font-weight:600;color:var(--ink2);padding-top:8px;border-top:1px solid var(--rule2)}
+.stop.prog .stt{color:var(--accent)}
+.stop.done .stt{color:var(--green)}
+.sharebox{display:none;margin-top:14px;font:14px/1.55 var(--mono);white-space:pre;background:#fff;border:1px solid var(--rule);border-radius:10px;padding:12px 14px;overflow:auto}
+.sharebox.show{display:block}
+
+/* table */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule);background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+thead th{font:700 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:14px 16px;border-bottom:1px solid var(--rule);background:#FAFCFE}
+tbody tr{cursor:pointer;border-top:1px solid var(--rule2)}
+tbody tr:hover{background:#F7FAFD}
+tbody tr[aria-selected="true"]{background:var(--sel)}
+td{padding:12px 16px;vertical-align:middle}
+.gcell{display:flex;align-items:center;gap:12px}
+.ico{position:relative;width:40px;height:40px;border-radius:10px;background:var(--accentSoft);display:grid;place-items:center;font:700 17px var(--sans);color:var(--accent);overflow:hidden;flex:none}
+.ico img{position:absolute;inset:0;width:100%;height:100%}
+.gname{font:650 19px/1.2 var(--sans)}
+.gmove{font-size:16px;color:var(--ink2);line-height:1.3;margin-top:2px}
+.td{font:700 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:3px 5px;margin-left:8px;vertical-align:2px}
+.kind{font-size:15px;color:var(--ink2);white-space:nowrap}
+.kind i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px}
+.num{font:500 15px var(--mono);color:var(--ink2);text-align:right;white-space:nowrap}
+.acts{white-space:nowrap;text-align:right}
+.ib{width:40px;height:40px;border-radius:9px;border:1px solid transparent;background:none;display:inline-grid;place-items:center;cursor:pointer;color:var(--ink3)}
+.ib:hover{border-color:var(--rule);background:#fff;color:var(--ink)}
+.ib svg{width:21px;height:21px}
+.ib .sp{fill:transparent}
+.ib.star[aria-pressed="true"]{color:#B87F0A}
+.ib.star[aria-pressed="true"] .sp{fill:var(--gold)}
+.ib.eye[aria-pressed="true"]{color:#fff;background:var(--ink2)}
+.empty td{padding:28px;color:var(--ink2);text-align:center;cursor:default}
+.hint{font-size:14px;color:var(--ink3);margin-top:10px}
+
+/* pane */
+.pane{background:var(--pane);border-left:1px solid var(--rule);position:sticky;top:0;height:100vh;overflow:auto;padding:24px 28px 40px}
+.pane .x{display:none}
+.pane h2{margin:12px 0 2px;font:700 32px/1.1 var(--sans);letter-spacing:-.02em}
+.pane .pct{font:700 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.pane .big{width:72px;height:72px;border-radius:16px;background:var(--accentSoft);display:grid;place-items:center;color:var(--ink);font:700 28px var(--sans)}
+.pane .big img{width:100%;height:100%}
+.pane h3{font:700 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:26px 0 10px}
+.rules{margin:0;padding:0;list-style:none;counter-reset:r}
+.rules li{counter-increment:r;display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--rule2);font-size:17px;line-height:1.45}
+.rules li::before{content:counter(r);width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 13px var(--mono)}
+.statusbox{background:var(--work);border-radius:12px;padding:14px 16px;font-size:16px}
+.statusbox b{display:block;font-size:17px}
+.pacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.pacts .btn{flex:1 1 auto;justify-content:center}
+.btn[aria-pressed="true"].fv{background:#FFF7E3;border-color:var(--gold)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:15px;color:var(--ink2);align-items:center}
+label.f{display:block;font-weight:650;font-size:16px;margin:14px 0 6px}
+select,textarea{width:100%;border:1px solid var(--ink3);border-radius:10px;padding:12px 14px;font-size:17px;background:#fff}
+textarea{min-height:140px;resize:vertical}
+.receipt{margin-top:16px;border:1.5px dashed var(--ink3);border-radius:10px;padding:14px;font-size:15px;color:var(--ink2)}
+.receipt.warn{border-style:solid;border-color:var(--ink);background:var(--work)}
+.priv{font-size:14px;color:var(--ink3);margin-top:12px}
+.inert{width:100%;min-height:46px;border:1.5px dashed var(--ink3);border-radius:10px;background:transparent;color:var(--ink2);cursor:not-allowed;font-size:15px;margin-top:10px}
+.pdl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:16px;margin:0}
+.pdl dt{color:var(--ink2)}.pdl dd{margin:0}
+
+.tabbar{display:none}
+.scrim{display:none}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+@media (max-width:1240px){
+  .app{grid-template-columns:240px minmax(0,1fr)}
+  .pane{position:fixed;top:0;right:0;width:400px;max-width:100%;height:100vh;z-index:30;box-shadow:-30px 0 60px -30px rgba(15,31,48,.45);transform:translateX(105%);transition:transform .2s ease-out}
+  .pane.open{transform:none}
+  .pane .x{display:inline-flex}
+  .scrim.open{display:block;position:fixed;inset:0;background:rgba(15,31,48,.25);z-index:29}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .rail{display:none}
+  .main{padding:20px 16px 110px}
+  .mhead h1{font-size:30px}
+  .search{margin-left:0;width:100%}
+  .search input{width:100%}
+  .run{grid-template-columns:1fr;padding-top:0;gap:12px}
+  .run::before{left:13px;right:auto;top:20px;bottom:20px;width:2px;height:auto}
+  .stop{margin-left:40px;min-height:0}
+  .stop .pin{top:18px;left:-40px;transform:none}
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;padding:10px 6px}
+  td{padding:4px 8px}
+  td.kcol,td.num{display:none}
+  td.acts{align-self:center}
+  .pane{top:auto;bottom:0;left:0;right:0;width:100%;height:auto;max-height:82vh;border-radius:20px 20px 0 0;border-left:0;transform:translateY(105%);padding-bottom:96px}
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--rule);z-index:40;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:52px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer}
+  .tabbar button[aria-current="true"]{color:var(--accent)}
+}
+</style>
+</head>
+<body>
+<div class="review" role="note" aria-label="Design review controls (not part of the product)">
+  <span class="tag">Design concept C · Console</span>
+  <span>Opus design review mockup. Not live. Nothing sends or saves. ◇ = illustrative state.</span>
+  <span class="seg" aria-label="Preview day state"><button type="button" data-state="fresh" aria-pressed="true">Fresh day</button><button type="button" data-state="progress" aria-pressed="false">Mid-day ◇</button><button type="button" data-state="done" aria-pressed="false">All finished ◇</button></span>
+</div>
+
+<div class="app">
+  <nav class="rail" aria-label="Alford Daily">
+    <div class="brand"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="8" fill="#0F1F30"/><circle cx="9" cy="15" r="3" fill="#fff"/><circle cx="15" cy="15" r="3" fill="#7FA6EE"/><circle cx="21" cy="15" r="3" fill="#5FC2C6"/><path d="M9 15h12" stroke="#fff" stroke-width="1.4" opacity=".5"/></svg>Alford Daily</div>
+    <a class="ri" href="#today" aria-current="true" data-nav="today"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Today<span class="n">3</span></a>
+    <button class="ri" type="button" data-f="all"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>Collection<span class="n" id="n-all">33</span></button>
+    <button class="ri" type="button" data-f="fav"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z"/></svg>Favourites<span class="n" id="n-fav">0</span></button>
+    <button class="ri" type="button" data-f="hid"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><path d="M4 20L20 4"/></svg>Hidden<span class="n" id="n-hid">0</span></button>
+    <div class="rlabel">How it plays</div>
+    <button class="ri" type="button" data-k="meaning"><span class="dot" style="background:#1D5BD0"></span>Clues &amp; meaning<span class="n">9</span></button>
+    <button class="ri" type="button" data-k="letters"><span class="dot" style="background:#0C7A80"></span>Letters &amp; words<span class="n">13</span></button>
+    <button class="ri" type="button" data-k="deduce"><span class="dot" style="background:#0F1F30"></span>Deduction<span class="n">4</span></button>
+    <button class="ri" type="button" data-k="logic"><span class="dot" style="background:#E2A31B"></span>Logic &amp; pattern<span class="n">7</span></button>
+    <span class="grow"></span>
+    <div class="who">
+      <button class="ri" type="button" data-open="feedback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Feedback</button>
+      <button class="ri" type="button" data-open="profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile<small>Private · this browser</small></span></button>
+    </div>
+  </nav>
+
+  <main class="main" id="main">
+    <div class="mhead" id="today">
+      <div><h1><time datetime="2026-11-06">Friday, November 6</time></h1><div class="sub">Today's Three · No. 018 · new set at midnight Central</div></div>
+      <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="vh">Find a game</span><input id="q" type="search" placeholder="Find a game"><kbd>/</kbd></label>
+    </div>
+
+    <section class="sec" aria-labelledby="run-h">
+      <div class="sec-h"><h2 id="run-h">Today's Three</h2><div class="r"><span id="dayc">0 of 3 finished</span><button class="btn" id="share" type="button" disabled>Share today</button></div></div>
+      <div class="run" id="run"></div>
+      <div class="sharebox" id="sharebox" aria-live="polite"></div>
+    </section>
+
+    <section class="sec" id="collection" aria-labelledby="col-h">
+      <div class="sec-h"><h2 id="col-h">Collection</h2>
+        <div class="tabs" role="radiogroup" aria-label="Show">
+          <button class="chip" type="button" role="radio" data-f="all" aria-pressed="true" aria-checked="true">All <span id="c-all">33</span></button>
+          <button class="chip" type="button" role="radio" data-f="fav" aria-pressed="false" aria-checked="false">Favourites <span id="c-fav">0</span></button>
+          <button class="chip" type="button" role="radio" data-f="hid" aria-pressed="false" aria-checked="false">Hidden <span id="c-hid">0</span></button>
+        </div>
+        <div class="r" id="kindlabel"></div>
+      </div>
+      <table aria-label="All games">
+        <thead><tr><th scope="col">Game</th><th scope="col" class="kcol">How it plays</th><th scope="col" style="text-align:right">Puzzles</th><th scope="col" style="text-align:right">Keep</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="hint">Keyboard: <kbd>J</kbd> <kbd>K</kbd> move · <kbd>F</kbd> favourite · <kbd>H</kbd> hide · <kbd>/</kbd> search. Puzzle counts are the prepared daily boards in the current build.</p>
+    </section>
+  </main>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="pane" id="pane" aria-label="Details" aria-live="polite"></aside>
+</div>
+
+<nav class="tabbar" aria-label="Sections">
+  <button type="button" data-tab="today" aria-current="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/></svg>Today</button>
+  <button type="button" data-tab="games"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>Games</button>
+  <button type="button" data-tab="saved"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z"/></svg>Saved</button>
+  <button type="button" data-tab="feedback"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Feedback</button>
+  <button type="button" data-tab="profile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
+</nav>
+
+<script>
+// [slug, name, kind, category, move, boards, rules[3]]
+const G=[
+['switchpath','Switchpath','logic','Path logic','Alternate higher, lower through every cell',217,['Start at S and finish at E.','Move up, down, left or right; each step must alternate higher, then lower.','Visit every number exactly once.']],
+['ringcount','Ringcount','logic','Number logic','Cut the ring into four equal sums',210,['Twelve numbers sit around a ring.','Tap four gaps to cut it into four parts.','Every part must add up to the same total.']],
+['counterpart','Counterpart','meaning','Word relationships','Match a pair to the same relationship',210,['Each row shows a related pair, read left to right.','Choose two bank words that share that relationship, in the same direction.','Each bank word is used once.']],
+['shortlist','Shortlist','deduce','Letter deduction','Scan two letters, then pick the secret word',210,['One of twelve words is the secret.','A scan of two letters tells you whether 0, 1 or 2 of them are in it, never which.','Three scans, then one final pick.']],
+['second-sense','Second Sense','meaning','Double meanings','Pair a noun clue with a verb clue',210,['Five noun clues and five verb clues.','Pair a noun with the verb that the same word answers, then type that word.','Five checks with no hints is perfect.']],
+['sideways','Sideways','letters','Word arrangement','Slide strips until columns spell the clues',210,['Five horizontal letter strips slide left and right.','Line them up so four clued words read down the columns.','Tap a clue to follow its column.']],
+['tradeoff','Tradeoff','meaning','Letter swaps','Swap letters between rows to fit each clue',210,['Each row starts one letter away from its clue.','Tap a letter, then another, to trade them between rows.','Fit every clue in as few swaps as you can.']],
+['inbetween','Inbetween','meaning','Word building','Drag a letter pair into the right gap',210,['Each clue’s answer is the shown word with two letters added.','Drag a pair into the gap where it belongs.','Six words, six pairs, each used once.']],
+['kimi-cairn','Cairn','letters','Growing anagrams','Add one letter, rearrange, climb a level',839,['Start with three letters and use them all.','Each level drops in one new letter. Rearrange into a new word.','Five levels to the summit.']],
+['kimi-morph','Morph','letters','Word ladders','Change one letter per rung to reach the target',450,['Change exactly one letter at a time.','Every rung must be a real word.','Reach the target word.']],
+['kimi-tangle','Tangle','letters','Word trails','Trace touching letters to spell words',430,['Drag across touching letters, diagonals included, to make words of three or more letters.','Longer words score more.','Work through Bronze and Silver to Gold.']],
+['kimi-hunch','Hunch','deduce','Five-letter deduction','Guess, then read the black and white dots',937,['Find the hidden five-letter word in six guesses.','Black dot: a right letter in the right place. White dot: a right letter elsewhere.','Dots are grouped for the whole guess, not tied to letters.']],
+['kimi-circuit','Circuit','letters','Word chains','Chain words, switching arcs every letter',286,['Twelve letters sit on four arcs.','Consecutive letters must come from different arcs; each word starts with the last letter of the one before.','Cover all twelve letters.']],
+['kimi-quartet','Quartet','meaning','Meaning & categories','Sort sixteen words into four groups',420,['Sixteen words hide four groups of four.','Select four that share a thread and submit.','Find all four groups.']],
+['deepseek-twin-hive','Twin Hive','letters','Two-letter word search','Make words that use both gold letters',200,['Make words of four or more letters from the eight shown.','Every word must include both gold letters. Letters may repeat.','Six words complete the day.']],
+['deepseek-spare','Spare','meaning','Meaning pairs','Pair the opposites, find the spare',200,['Four pairs of opposites hide among the words.','Match each pair.','The one word left over is the spare.']],
+['deepseek-rung','Rung','letters','Shortest word ladders','Reach the target in the fewest rungs',200,['Change one letter per step. Every rung is a four-letter word.','The target count is the shortest possible route.','A longer route still solves; there are no strikes.']],
+['deepseek-cipher','Cipher','deduce','Secret alphabets','Assign real letters to coded ones',200,['Each code letter stands for one different real letter.','The same code always means the same letter.','Two letters are given to start.']],
+['deepseek-trail','Trail','letters','Nine-letter trails','Trace one long word through the grid',200,['A clue points to one long word.','Trace it through touching letters in the grid.','Some letters are decoys.']],
+['deepseek-split','Split','meaning','Clued anagrams','Divide the tiles between two clued words',200,['Two clues share one rack of tiles.','Build both words; each tile is used once.','Check both answers together.']],
+['qwen-quadra','Quadra','letters','Category anagrams','Find four category words using all 16 tiles',200,['Today’s category names four four-letter words.','Together they use all sixteen tiles exactly once.','Four wrong locks end the round.']],
+['qwen-logic-lattice','Logic Lattice','logic','Grid deduction','Mark squares until every line count agrees',200,['Each number counts the black squares in a whole line of five.','Mark squares black or white until every count agrees.','Counts are for whole lines, not neighbours.']],
+['qwen-syntax-siege','Syntax Siege','letters','Word defense','Fire words before the wave reaches the core',200,['Six waves approach your 100 HP core.','Make words from six tiles. Each letter deals 10 damage.','The pace follows how you enter: touch or keyboard.']],
+['qwen-memory-maze','Memory Maze','logic','Path recall','Study the route, then retrace it',200,['A numbered route shows for six seconds on a 7 × 7 grid.','Tap it back in order, starting at S.','A wrong tap adds two seconds; correct squares stay.']],
+['qwen-pattern-prism','Pattern Prism','logic','Visual sequences','Predict the next three in the sequence',225,['Five examples follow repeating cycles: shape, colour, size, direction.','Predict the next three steps, one at a time.','There is no timer.']],
+['qwen-territory-tactics','Territory Tactics','logic','Hex strategy','Close openings to capture an exact total',240,['Place up to three blue stones on a 37-hex board.','Fill an amber group’s last opening to capture the whole group.','Capture exactly the target total. More or fewer does not solve it.']],
+['claude-dovetail','Dovetail','meaning','Compound chains','Fill each link so neighbours join into words',200,['The top and bottom words are given.','Fill each row so it joins the word below to make another word.','Six misses end the round.']],
+['claude-splice','Splice','letters','Word-half matching','Join twelve halves into six words',202,['Twelve fragments make six words.','Pick a first half, then a second half, and splice.','Every piece must be used.']],
+['claude-sprout','Sprout','letters','Growing anagrams','Add a soil letter, rearrange, grow the plant',211,['Start from a three-letter seed.','Add one soil letter and rearrange into a new word each step.','Grow to an eight-letter bloom; five wilts end the round.']],
+['claude-tangle','Tangle','letters','Interleaved words','Pull three ordered words from one string',200,['Numbered beads hide three words of the shown lengths, each with its letters in order.','Pull one word at a time. The beads left must still split into words.','Duplicate letters are separate beads.']],
+['claude-keystone','Keystone','meaning','Compound-word clues','Find the word that joins all five clues',200,['One hidden word joins five clue words, before or after each.','Two clues show first. Wrong guesses reveal more.','Fewer clues used means a better score.']],
+['claude-tumbler','Tumbler','deduce','Alphabet deduction','Read earlier/later dials to crack the lock',1054,['Guess a five-letter word in six turns.','Each position answers earlier ▼, later ▲ or exact ●.','The dials narrow each position’s range.']],
+['nested-tic-tac-toe','Tic-Tac-Toe','logic','Nine boards · local opponent','Your square picks their next board',null,['Nine small boards make one big board.','The square you play sends your opponent to the matching board.','Win three boards in a line.']]
+];
+const DESC={'shortlist':'Twelve words. Three letter scans. One final pick.','second-sense':'Match a noun clue with a verb clue. One word answers both.','sideways':'Slide the letter strips until four clued words read down the columns.'};
+const KIND={meaning:['Clues & meaning','#1D5BD0'],letters:['Letters & words','#0C7A80'],deduce:['Deduction','#0F1F30'],logic:['Logic & pattern','#E2A31B']};
+const TODAY=['shortlist','second-sense','sideways'];
+const ICON={
+ 'shortlist':'<svg width="32" height="32" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M11 12h22M11 20h26M11 28h18M11 36h24"/><rect x="6" y="16" width="36" height="8" rx="2" stroke="#1D5BD0" stroke-width="2.4"/></svg>',
+ 'second-sense':'<svg width="32" height="32" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="23" height="26" rx="3"/><rect x="20" y="11" width="23" height="26" rx="3"/><rect x="20" y="11" width="8" height="26" fill="#1D5BD0" stroke="none"/></svg>',
+ 'sideways':'<svg width="32" height="32" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><rect x="5" y="8" width="26" height="8" rx="2"/><rect x="15" y="20" width="26" height="8" rx="2"/><rect x="10" y="32" width="26" height="8" rx="2"/><path d="M24 4v40" stroke="#1D5BD0" stroke-width="3" stroke-linecap="round"/></svg>'
+};
+const STATES={
+ fresh:{shortlist:['','Not started · 3 scans ready','Play'],'second-sense':['','Not started · 0 of 5 found','Play'],sideways:['','Not started','Play']},
+ progress:{shortlist:['prog','In progress ◇ · 1 of 3 scans used','Continue'],'second-sense':['done','Finished ◇ · 5 of 5 · 6 checks','Review'],sideways:['','Not started','Play']},
+ done:{shortlist:['done','Finished ◇ · 3 scans · correct pick','Review'],'second-sense':['done','Finished ◇ · 5 of 5 · 6 checks','Review'],sideways:['done','Finished ◇ · solved · 0 hints','Review']}
+};
+const SHARE={progress:'Alford Daily · Fri Nov 6\nSecond Sense  5/5 · 6 checks',done:'Alford Daily · Fri Nov 6\nShortlist     ✓ 3 scans\nSecond Sense  5/5 · 6 checks\nSideways      ✓ 0 hints'};
+const fav=new Set(),hid=new Set();let st='fresh',filt='all',kind=null,q='',sel='shortlist',paneMode='game';
+const by=s=>G.find(g=>g[0]===s);
+const star='<svg viewBox="0 0 24 24" aria-hidden="true"><path class="sp" d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const eye='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg>';
+const ico=g=>`<span class="ico" aria-hidden="true"><b>${g[1][0]}</b><img src="../assets/icons/${g[0]}.svg" alt="" onerror="this.remove()"></span>`;
+function visible(){return G.filter(g=>(filt==='all'?!hid.has(g[0]):filt==='fav'?fav.has(g[0]):hid.has(g[0]))&&(!kind||g[2]===kind)&&(!q||(g[1]+' '+g[3]).toLowerCase().includes(q)));}
+function renderRun(){
+  document.getElementById('run').innerHTML=TODAY.map((s,i)=>{const g=by(s),x=STATES[st][s];
+   return `<button type="button" class="stop ${x[0]}" data-sel="${s}" aria-pressed="${sel===s}"><span class="pin" aria-hidden="true">${x[0]==='done'?'✓':i+1}</span><span class="ic">${ICON[s]}</span><span class="nm">${g[1]}</span><span class="ct">${g[3]}</span><span class="ds">${DESC[s]}</span><span class="stt">${x[1]}</span></button>`}).join('');
+  const d=TODAY.filter(s=>STATES[st][s][0]==='done').length;
+  document.getElementById('dayc').textContent=`${d} of 3 finished${st!=='fresh'?' ◇':''}`;
+  document.getElementById('share').disabled=!d;document.getElementById('sharebox').classList.remove('show');
+}
+function renderRows(){
+  const v=visible();
+  document.getElementById('rows').innerHTML=v.length?v.map(g=>`<tr data-sel="${g[0]}" aria-selected="${sel===g[0]}" tabindex="-1"><td><div class="gcell">${ico(g)}<div><div class="gname">${g[1]}${TODAY.includes(g[0])?'<span class="td">Today</span>':''}</div><div class="gmove">${g[4]}</div></div></div></td><td class="kcol"><span class="kind"><i style="background:${KIND[g[2]][1]}"></i>${g[3]}</span></td><td class="num">${g[5]?g[5].toLocaleString('en-US'):'Match'}</td><td class="acts"><button type="button" class="ib star" data-fav="${g[0]}" aria-pressed="${fav.has(g[0])}" title="Favourite"><span class="vh">Favourite ${g[1]}</span>${star}</button><button type="button" class="ib eye" data-hid="${g[0]}" aria-pressed="${hid.has(g[0])}" title="${hid.has(g[0])?'Unhide':'Hide'}"><span class="vh">${hid.has(g[0])?'Unhide':'Hide'} ${g[1]}</span>${eye}</button></td></tr>`).join('')
+   :`<tr class="empty"><td colspan="4">${filt==='fav'?'No favourites yet. Press F or the star on any game.':filt==='hid'?'Nothing hidden. Hidden games are kept here so you can bring them back.':'No games match.'}</td></tr>`;
+  document.getElementById('c-all').textContent=document.getElementById('n-all').textContent=33-hid.size;
+  document.getElementById('c-fav').textContent=document.getElementById('n-fav').textContent=fav.size;
+  document.getElementById('c-hid').textContent=document.getElementById('n-hid').textContent=hid.size;
+  document.getElementById('kindlabel').innerHTML=kind?`Showing ${KIND[kind][0]} <button class="chip" type="button" data-k="${kind}">Clear ✕</button>`:'';
+}
+function renderPane(){
+  const p=document.getElementById('pane');
+  const close='<button class="btn x" type="button" data-close>Close</button>';
+  if(paneMode==='feedback'){
+    const g=by(sel);
+    p.innerHTML=`${close}<div class="pct">Feedback</div><h2>Tell James</h2><p style="color:var(--ink2);margin:6px 0 0">An idea, a snag, something you liked. Please leave out answers and personal details.</p>
+    <label class="f" for="about">About</label><select id="about"><option>${g[1]} · ${g[3]}</option><option>The whole site</option></select>
+    <label class="f" for="msg">Your note</label><textarea id="msg" placeholder="What worked, what didn't?"></textarea>
+    <div style="display:flex;gap:12px;align-items:center;margin-top:12px"><button class="btn pri" id="send" type="button" disabled>Send note</button><span id="fbc" style="font-size:14px;color:var(--ink3)">0 / 1000</span></div>
+    <div class="receipt" id="receipt"><b>Receipt:</b> the server's stored-note reference appears here only after it confirms. Nothing shows until then.</div>
+    <p class="priv">Notes go privately to James. With a browser profile, the note is linked to that profile and to the game chosen above.</p>`;
+    const m=p.querySelector('#msg'),s=p.querySelector('#send');
+    m.addEventListener('input',()=>{p.querySelector('#fbc').textContent=m.value.length+' / 1000';s.disabled=!m.value.trim();});
+    s.addEventListener('click',()=>{const r=p.querySelector('#receipt');r.classList.add('warn');r.innerHTML='<b>Not sent.</b> This concept has no server. In the live site a receipt reference appears here only after the server confirms the note is stored.';});
+    return;
+  }
+  if(paneMode==='profile'){
+    p.innerHTML=`${close}<div class="pct">Browser profile</div><h2>Private to this browser</h2><p style="color:var(--ink2)">Optional. Without one, progress still stays on this device.</p>
+    <dl class="pdl"><dt>Status</dt><dd>No profile yet</dd><dt>Favourites</dt><dd>${fav.size}</dd><dt>Hidden</dt><dd>${hid.size}</dd><dt>Feedback</dt><dd>Sent notes and their receipts</dd></dl>
+    <button class="inert" type="button" disabled>Create profile (inert in this concept)</button>`;return;
+  }
+  const g=by(sel);const isT=TODAY.includes(sel);const x=isT?STATES[st][sel]:null;
+  const act=x?x[2]:'Play';
+  p.innerHTML=`${close}<span class="big" style="position:relative;overflow:hidden">${ICON[sel]||`<b>${g[1][0]}</b><img src="../assets/icons/${g[0]}.svg" alt="" onerror="this.remove()" style="position:absolute;inset:0">`}</span><h2>${g[1]}</h2><div class="pct">${g[3]} · ${KIND[g[2]][0]}</div>
+  <h3>How it works</h3><ol class="rules">${g[6].map(r=>`<li>${r}</li>`).join('')}</ol>
+  <h3>${isT?'Today · No. 018':'Your status'}</h3><div class="statusbox"><b>${x?x[1]:'Not played today'}</b>${hid.has(sel)?'Hidden from your collection view.':isT?'Part of today’s set.':'Available any day. Practice keeps a separate record.'}</div>
+  <div class="pacts"><a class="btn ${act==='Continue'?'blue':'pri'}" href="#" onclick="return false" aria-label="${act} ${g[1]} (mockup link)">${act} →</a><button class="btn fv" type="button" data-fav="${sel}" aria-pressed="${fav.has(sel)}">${fav.has(sel)?'★ Favourite':'☆ Favourite'}</button><button class="btn" type="button" data-hid="${sel}" aria-pressed="${hid.has(sel)}">${hid.has(sel)?'Unhide':'Hide'}</button></div>
+  <h3>Shortcuts</h3><div class="keys"><kbd>Enter</kbd><span>Play selected</span><kbd>F</kbd><span>Favourite</span><kbd>H</kbd><span>Hide / unhide</span></div>
+  <h3>Something off?</h3><button class="btn" type="button" data-open="feedback">Send feedback about ${g[1]}</button>`;
+}
+function openPane(){document.getElementById('pane').classList.add('open');document.getElementById('scrim').classList.add('open');}
+function closePane(){document.getElementById('pane').classList.remove('open');document.getElementById('scrim').classList.remove('open');}
+const all=()=>{renderRun();renderRows();renderPane();};
+function setFilter(f){filt=f;document.querySelectorAll('.chip[data-f]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.f===f);b.setAttribute('aria-checked',b.dataset.f===f);});document.querySelectorAll('.ri[data-f]').forEach(b=>b.setAttribute('aria-current',b.dataset.f===f&&!kind));renderRows();}
+document.addEventListener('click',e=>{
+  const fv=e.target.closest('[data-fav]');if(fv){e.stopPropagation();const s=fv.dataset.fav;fav.has(s)?fav.delete(s):fav.add(s);all();return;}
+  const hd=e.target.closest('[data-hid]');if(hd){e.stopPropagation();const s=hd.dataset.hid;hid.has(s)?hid.delete(s):hid.add(s);all();return;}
+  const se=e.target.closest('[data-sel]');if(se){sel=se.dataset.sel;paneMode='game';all();openPane();return;}
+  const f=e.target.closest('[data-f]');if(f){setFilter(f.dataset.f);document.getElementById('collection').scrollIntoView({block:'start'});return;}
+  const k=e.target.closest('[data-k]');if(k){kind=kind===k.dataset.k?null:k.dataset.k;document.querySelectorAll('.ri[data-k]').forEach(b=>b.setAttribute('aria-current',b.dataset.k===kind));renderRows();return;}
+  const o=e.target.closest('[data-open]');if(o){paneMode=o.dataset.open;renderPane();openPane();return;}
+  if(e.target.closest('[data-close]')||e.target.id==='scrim'){closePane();return;}
+  const s=e.target.closest('[data-state]');if(s){st=s.dataset.state;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',b===s));all();return;}
+  const t=e.target.closest('[data-tab]');if(t){document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b===t));const v=t.dataset.tab;
+    if(v==='today'){closePane();window.scrollTo(0,0);} if(v==='games'){closePane();setFilter('all');document.getElementById('collection').scrollIntoView();}
+    if(v==='saved'){closePane();setFilter('fav');document.getElementById('collection').scrollIntoView();}
+    if(v==='feedback'||v==='profile'){paneMode=v;renderPane();openPane();}}
+});
+document.getElementById('share').addEventListener('click',()=>{const b=document.getElementById('sharebox');b.textContent=SHARE[st]+'\n(◇ illustrative · mockup: nothing was copied)';b.classList.add('show');});
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();renderRows();});
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(e.key==='/'){e.preventDefault();document.getElementById('q').focus();return;}
+  const v=visible().map(g=>g[0]);let i=v.indexOf(sel);
+  if(e.key==='j'||e.key==='k'){i=e.key==='j'?Math.min(v.length-1,i+1):Math.max(0,i-1);if(v[i]){sel=v[i];paneMode='game';all();const r=document.querySelector(`tr[data-sel="${sel}"]`);r&&r.scrollIntoView({block:'nearest'});}}
+  if(e.key==='f'){fav.has(sel)?fav.delete(sel):fav.add(sel);all();}
+  if(e.key==='h'){hid.has(sel)?hid.delete(sel):hid.add(sel);all();}
+  if(e.key==='Escape')closePane();
+});
+all();
+</script>
+</body>
+</html>

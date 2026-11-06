@@ -1,0 +1,78 @@
+/* Alford Daily — team-01 shared concept frame.
+   Local/system fonts only. No external requests. Visual prototypes, not live games. */
+:root{
+  --bg:#e8eef4; --frame:#f5f8fb; --surface:#ffffff; --ink:#0f1d2a; --ink2:#273848; --muted:#526273;
+  --line:#d2dce6; --line2:#e4ebf2; --shade:0 1px 0 rgba(15,29,42,.04),0 6px 18px -10px rgba(15,29,42,.28);
+  --blue:#1c5fc4; --blue-ink:#123f86; --blue-wash:#e3edfc; --blue-mid:#9fbfee;
+  --teal:#0a8277; --teal-ink:#06574f; --teal-wash:#dbf1ee; --teal-mid:#8fd0c8;
+  --ok:#17784a; --ok-wash:#def2e7; --bad:#b42318; --bad-wash:#fde7e4; --amber:#a35f00; --amber-wash:#fff1d9;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans);overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid #2f7de1;outline-offset:2px}
+img,svg{max-width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Review strip — sits OUTSIDE the product frame */
+.rv{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;font:12px/1.4 var(--mono);color:var(--muted)}
+.rv b{color:var(--ink2);font-weight:600}
+.rv nav{display:flex;gap:4px;flex-wrap:wrap}
+.rv nav a{min-width:32px;min-height:32px;display:inline-grid;place-items:center;border-radius:8px;color:var(--ink2);text-decoration:none;border:1px solid transparent}
+.rv nav a[aria-current]{border-color:var(--line);background:#fff;font-weight:700}
+
+/* Product frame */
+.app{max-width:1120px;margin:0 auto 40px;background:var(--frame);border:1px solid var(--line);border-radius:20px;overflow:hidden;overflow:clip}/* clip keeps position:sticky working inside the frame */
+@media (max-width:640px){.app{border-radius:0;border-left:0;border-right:0;margin-bottom:0}}
+.bar{display:flex;align-items:center;gap:2px;padding:4px 6px 4px 12px;background:#fff;border-bottom:1px solid var(--line2)}
+.brand{margin-right:auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--ink);text-decoration:none;font:700 15px/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+.brand svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2}
+.ibtn{width:44px;height:44px;flex:none;border:0;background:transparent;border-radius:10px;display:inline-grid;place-items:center;color:var(--ink2)}
+.ibtn:hover{background:var(--line2)}
+.ibtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ibtn[aria-pressed="true"] svg{fill:#f2b53a;stroke:#9a6a00}
+
+.head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:16px 18px 12px}
+.head img{width:40px;height:40px;display:block}
+.head h1{margin:0;font:750 25px/1.1 var(--display);letter-spacing:-.02em}
+.meta{font:12px/1.35 var(--mono);color:var(--muted);letter-spacing:.02em}
+.seg{display:inline-flex;gap:2px;background:var(--line2);border-radius:11px;padding:2px}
+.seg button{min-height:40px;padding:0 12px;border:0;border-radius:9px;background:transparent;font-weight:600;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(15,29,42,.12)}
+@media (max-width:420px){.head{grid-template-columns:auto minmax(0,1fr)}.head .seg{grid-column:1/-1;justify-self:start}.seg button{min-height:44px}}
+
+.wrap{padding:0 18px 22px}
+@media (max-width:420px){.wrap{padding:0 12px 18px}.head{padding:14px 12px 10px}}
+.split{display:grid;gap:18px;align-items:start}
+@media (min-width:900px){.split{grid-template-columns:minmax(0,1fr) 320px}}
+
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);font:600 15px/1.1 var(--sans);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.btn:hover{border-color:#aebdcc}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.pri:hover{background:#1d3245}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kicker{font:700 11px/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
+.note{font-size:14px;color:var(--muted);margin:0}
+.live{min-height:24px;font-size:15px;color:var(--ink2);margin:0}
+.kbd{font:600 12px/1 var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 5px;background:#fff;color:var(--ink2)}
+.foot{padding:12px 18px 18px;border-top:1px solid var(--line2);font-size:13px;color:var(--muted);display:flex;gap:8px 16px;flex-wrap:wrap;justify-content:space-between}
+.foot a{color:var(--ink2)}
+.share{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 16px;font:14px/1.5 var(--mono);color:var(--ink2);white-space:pre-wrap}
+.share-label{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:0 0 6px}
+.illus{font:11px/1.3 var(--mono);color:var(--amber);background:var(--amber-wash);border-radius:6px;padding:2px 6px;display:inline-block}
+details.rules{border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+details.rules summary{min-height:44px;display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;list-style:none}
+details.rules summary::-webkit-details-marker{display:none}
+details.rules summary::before{content:"+";font:600 18px var(--mono);color:var(--muted);width:18px}
+details.rules[open] summary::before{content:"–"}
+details.rules > div{padding:0 0 14px;font-size:15px;color:var(--ink2)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

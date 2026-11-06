@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spare · Direction A · Opposite Axes</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrapx{max-width:820px;margin:0 auto}
+.lead{font:500 17px/1.4 var(--sans);margin:0 0 14px;color:var(--ink2)}
+.ctx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.ctx button{min-height:52px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;gap:2px;font:800 17px/1 var(--display)}
+.ctx button small{font:600 11px/1 var(--mono);color:var(--muted)}
+.ctx button[aria-current="true"]{border:2px solid var(--ink)}
+.axis{background:#fff;border:1px solid var(--line2);border-radius:20px;padding:18px clamp(12px,4vw,24px) 20px;box-shadow:var(--shade)}
+.axis .s{font:500 clamp(20px,6vw,28px)/1.25 var(--serif);text-align:center;margin:0 0 18px}
+.line{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);align-items:center}
+.end{min-height:58px;border-radius:12px;border:2px dashed #b3c2d1;background:var(--frame);font:800 clamp(17px,5vw,22px)/1 var(--display);letter-spacing:.04em;color:#9aa8b6}
+.end.f{border:0;background:var(--ink);color:#fff}
+.end.on{border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
+.bar2{height:4px;background:linear-gradient(90deg,var(--ink),#c7d2dd 50%,var(--ink));border-radius:2px;position:relative}
+.bar2::before,.bar2::after{content:"";position:absolute;top:-5px;border:7px solid transparent}
+.bar2::before{left:-6px;border-right:8px solid var(--ink);border-left:0}
+.bar2::after{right:-6px;border-left:8px solid var(--ink);border-right:0}
+.axis .cl{display:flex;justify-content:center;margin-top:12px}
+.bank{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.wd{min-height:54px;border-radius:12px;border:1px solid var(--line);border-bottom:3px solid #c3cfdb;background:#fff;font:800 clamp(16px,4.6vw,19px)/1 var(--display);letter-spacing:.04em}
+.wd.used{opacity:.35;border-bottom-width:1px}
+.lower{display:grid;gap:12px;margin-top:16px}
+@media (min-width:720px){.lower{grid-template-columns:1fr 1fr}}
+.bay{border-radius:14px;border:2px dashed #c3cfdb;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.bay b{font:800 20px/1 var(--display);color:#a9b6c3}
+.hist{border:1px solid var(--line2);border-radius:14px;background:#fff;padding:12px 14px;font:14px/1.5 var(--mono);color:var(--ink2)}
+.dots{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
+.dots i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
+.dots i.u{background:var(--ink)}
+</style></head>
+<body>
+<div class="rv"><span><b>Spare · Direction A “Opposite Axes”</b> (harder contextual format) · design review prototype, not a live game · contexts 2–4 not in supplied source</span><nav aria-label="Spare"><a href="deepseek-spare-A.html" aria-current="page">A</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Spare" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Spare from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/deepseek-spare.svg" alt=""><div><h1>Spare</h1><div class="meta">SAMPLE 01 · CONTEXTUAL OPPOSITES</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap"><div class="wrapx">
+  <p class="lead">Each sentence decides which meaning counts. Build one pair of opposites for each, using every word once. The word with no partner is the spare.</p>
+  <nav class="ctx" id="ctx" aria-label="Contexts"></nav>
+  <section class="axis" id="axis"></section>
+  <div class="bank" id="bank"></div>
+  <div class="lower">
+    <div class="bay" aria-live="polite"><span class="kicker">The spare</span><b id="spare">appears when 8 words are placed</b></div>
+    <div class="hist"><span class="kicker">Checks</span><span class="dots" aria-label="0 of 4 checks used"><i></i><i></i><i></i><i></i></span><br>No checks yet. Each check says how many pairs are right, not which.</div>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="ret">Return word</button><button class="btn" id="clar">Clarify this context</button><button class="btn pri" id="chk" style="margin-left:auto" disabled>Check all four</button></div>
+  <p class="live" id="msg" style="margin-top:10px">HEAVY is on one end. Choose its opposite for this sentence.</p>
+</div></div>
+<div class="foot"><span>Pair order doesn’t matter. Repeating a checked layout costs nothing. Clarify notes are counted in your result.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const WORDS=['SHARP','DARK','LIGHT','BRIGHT','FLAT','LOUD','HEAVY','DULL','SOFT'];
+const CTX=['A porter lifts a suitcase.',null,null,null];
+let slots=Array(8).fill(null);slots[0]='HEAVY';let active=1;
+const $=id=>document.getElementById(id);const say=m=>$('msg').textContent=m;
+function render(){const c=Math.floor(active/2);
+  $('ctx').innerHTML=CTX.map((t,i)=>`<button data-c="${i}" ${i===c?'aria-current="true"':''}>${i+1}<small>${slots.slice(i*2,i*2+2).filter(Boolean).length}/2</small></button>`).join('');
+  $('axis').innerHTML=`<p class="kicker" style="text-align:center;margin-bottom:6px">Context ${c+1}</p><p class="s">${CTX[c]?CTX[c]:'<span style="color:var(--muted);font-size:.7em">Sentence for this context is not in the supplied source.</span>'}</p><div class="line">${[c*2,c*2+1].map(s=>`<button class="end${slots[s]?' f':''}${s===active?' on':''}" data-s="${s}" aria-label="Context ${c+1}, end ${s%2+1}: ${slots[s]||'empty'}">${slots[s]||'choose'}</button>`).join('<div class="bar2" aria-hidden="true"></div>')}</div>`;
+  $('bank').innerHTML=WORDS.map(w=>`<button class="wd${slots.includes(w)?' used':''}" data-w="${w}" aria-label="${w}${slots.includes(w)?', placed':''}">${w}</button>`).join('');
+  const placed=slots.filter(Boolean).length;$('chk').disabled=placed<8;
+  $('spare').textContent=placed===8?WORDS.find(w=>!slots.includes(w)):'appears when 8 words are placed';
+}
+$('ctx').onclick=e=>{const b=e.target.closest('[data-c]');if(b){const c=+b.dataset.c;active=slots[c*2]?c*2+1:c*2;render();}};
+$('axis').onclick=e=>{const b=e.target.closest('[data-s]');if(b){active=+b.dataset.s;render();}};
+$('bank').onclick=e=>{const b=e.target.closest('[data-w]');if(!b)return;const w=b.dataset.w,prevAt=slots.indexOf(w),disp=slots[active];slots[active]=w;if(prevAt>=0&&prevAt!==active)slots[prevAt]=disp;const nx=Array.from({length:8},(_,i)=>(active+1+i)%8).find(i=>!slots[i]);if(nx!==undefined)active=nx;render();say(`${w} placed.${disp&&prevAt<0?` ${disp} back in the bank.`:''}`);};
+$('ret').onclick=()=>{slots[active]=null;render();};
+$('clar').onclick=()=>say('Clarify shows a short sense note for this context (counted in your result). Not wired in this prototype.');
+$('chk').onclick=()=>say('The live engine reports how many of four pairs are right and spends one of four checks. Not wired in this prototype.');
+render();
+</script>
+</body></html>

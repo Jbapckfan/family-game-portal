@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alford Daily · Design concept B · Tray</title>
+<style>
+:root{
+  --field:#E9F0F7;--recess:#DCE6F1;--recessDeep:#CFDCEA;--face:#FCFDFF;--edge:#C5D3E2;--edgeDark:#AFC0D3;
+  --ink:#11253A;--ink2:#465C72;--ink3:#6A8097;--accent:#1F5FD1;--accentEdge:#16479F;--accentSoft:#E3ECFB;
+  --teal:#0C7A80;--tealSoft:#DDF1F1;--gold:#E2A31B;--goldEdge:#B87F0A;--green:#2B8650;
+  --sans:system-ui,-apple-system,"SF Pro Display","Segoe UI Variable","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --raise:0 1px 0 #fff inset,0 6px 0 var(--edge),0 14px 22px -14px rgba(18,52,92,.45);
+  --raiseSm:0 1px 0 #fff inset,0 4px 0 var(--edge),0 10px 16px -12px rgba(18,52,92,.4);
+  --pressed:0 1px 0 #fff inset,0 2px 0 var(--edge),0 4px 8px -6px rgba(18,52,92,.35);
+  --inset:inset 0 2px 5px rgba(18,52,92,.16),inset 0 -1px 0 #fff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font:18px/1.5 var(--sans);background:var(--field);background-image:radial-gradient(1100px 520px at 50% -140px,#F8FBFE 0,rgba(248,251,254,0) 70%)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.review{max-width:1280px;margin:0 auto;padding:12px 28px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font:13px/1.4 var(--sans);color:var(--ink2);border-bottom:1px dashed var(--edgeDark)}
+.review .tag{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:3px 8px;border-radius:3px}
+.review .seg{display:inline-flex;border:1px solid var(--edge);border-radius:6px;overflow:hidden;background:#fff}
+.review .seg button{border:0;background:none;padding:6px 10px;cursor:pointer;font-size:13px}
+.review .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px 64px}
+
+/* header */
+.hdr{display:flex;align-items:center;gap:16px;padding:22px 0 10px;position:relative}
+.brand{display:flex;align-items:center;gap:12px;font:650 24px/1 var(--sans);letter-spacing:-.015em;color:inherit;text-decoration:none}
+.mark{width:40px;height:40px;border-radius:11px;background:var(--face);box-shadow:var(--raiseSm);display:grid;place-items:center}
+.hdr .sp{flex:1}
+.key{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--face);box-shadow:var(--raiseSm);cursor:pointer;font-weight:600;font-size:16px;color:var(--ink);text-decoration:none;transform:translateY(0);transition:transform .09s,box-shadow .09s}
+.key:active,.key[aria-pressed="true"],.key[aria-expanded="true"]{transform:translateY(2px);box-shadow:var(--pressed)}
+.puck{border-radius:999px;padding:0 16px 0 6px}
+.puck .av{width:36px;height:36px;border-radius:50%;background:var(--recess);box-shadow:var(--inset);display:grid;place-items:center;color:var(--accent)}
+.pop{position:absolute;right:0;top:78px;width:360px;background:var(--face);border-radius:16px;box-shadow:0 1px 0 #fff inset,0 6px 0 var(--edge),0 30px 50px -24px rgba(18,52,92,.5);padding:22px;z-index:6;display:none}
+.pop.open{display:block}
+.pop h3{margin:0 0 6px;font-size:20px}
+.pop p{margin:0 0 14px;color:var(--ink2);font-size:16px}
+.slotlist{background:var(--recess);box-shadow:var(--inset);border-radius:12px;padding:6px 14px;margin-bottom:14px;font-size:16px}
+.slotlist div{display:flex;justify-content:space-between;padding:7px 0}
+.slotlist div+div{border-top:1px solid var(--edge)}
+.inert{width:100%;min-height:46px;border:1.5px dashed var(--ink3);border-radius:12px;background:transparent;color:var(--ink2);cursor:not-allowed;font-size:15px}
+
+/* today */
+.today-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 28px;margin:34px 0 18px}
+.today-head h1{margin:0;font:700 48px/1 var(--sans);letter-spacing:-.03em}
+.today-head .date{font-size:19px;color:var(--ink2)}
+.today-head .date b{color:var(--ink);font-weight:600}
+.today-head .daybox{margin-left:auto;display:flex;align-items:center;gap:14px}
+.count{font:600 17px var(--sans);color:var(--ink2)}
+.count b{font:700 28px/1 var(--sans);color:var(--ink);font-variant-numeric:tabular-nums}
+.key.share:disabled{background:transparent;box-shadow:none;border:1.5px dashed var(--edgeDark);color:var(--ink3);cursor:not-allowed}
+.sharebox{display:none;margin:0 0 16px auto;max-width:420px;background:var(--recess);box-shadow:var(--inset);border-radius:12px;padding:12px 16px;font:14px/1.55 var(--mono);white-space:pre;overflow:auto}
+.sharebox.show{display:block}
+.tray{background:var(--recess);box-shadow:var(--inset);border-radius:28px;padding:22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.tile{background:var(--face);border-radius:20px;box-shadow:var(--raise);padding:26px 26px 22px;display:flex;flex-direction:column;min-height:420px;position:relative}
+.tile .top{display:flex;align-items:flex-start;gap:14px}
+.well{width:72px;height:72px;border-radius:18px;background:var(--recess);box-shadow:var(--inset);display:grid;place-items:center;color:var(--ink);flex:none}
+.toggles{margin-left:auto;display:flex;gap:8px}
+.tg{width:44px;height:44px;border-radius:11px;border:0;background:var(--face);box-shadow:var(--raiseSm);display:grid;place-items:center;cursor:pointer;color:var(--ink2);transition:transform .09s,box-shadow .09s}
+.tg svg{width:21px;height:21px}
+.tg .sp{fill:transparent}
+.tg[aria-pressed="true"]{transform:translateY(2px);box-shadow:var(--pressed)}
+.tg.star[aria-pressed="true"]{color:var(--goldEdge)}
+.tg.star[aria-pressed="true"] .sp{fill:var(--gold)}
+.tg.eye[aria-pressed="true"]{color:var(--ink);background:#EEF2F6}
+.cat{margin:22px 0 6px;font:700 13px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.tile h2{margin:0;font:700 34px/1.05 var(--sans);letter-spacing:-.02em}
+.tile p{margin:10px 0 18px;font-size:19px;color:var(--ink2);line-height:1.45}
+.slot{margin-top:auto;background:var(--recess);box-shadow:var(--inset);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;min-height:56px}
+.slot .st{font-weight:700;font-size:16px}
+.slot .st.prog{color:var(--accent)}
+.slot .st.done{color:var(--green)}
+.slot .ln{font-size:15px;color:var(--ink2)}
+.pips{margin-left:auto;display:flex;gap:5px}
+.pips i{width:12px;height:12px;border-radius:4px;background:var(--face);box-shadow:inset 0 0 0 1.5px var(--edgeDark)}
+.pips i.on{background:var(--accent);box-shadow:none}
+.pips i.ok{background:var(--green);box-shadow:none}
+.hidden-note{font-size:14px;color:var(--ink3);margin-top:8px}
+.play{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:58px;border-radius:14px;border:0;background:var(--ink);color:#fff;font-weight:650;font-size:19px;cursor:pointer;text-decoration:none;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 0 #061423,0 14px 20px -14px rgba(6,20,35,.6);transition:transform .09s,box-shadow .09s}
+.play.cont{background:var(--accent);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 6px 0 var(--accentEdge),0 14px 20px -14px rgba(22,71,159,.7)}
+.play.rev{background:var(--face);color:var(--ink);box-shadow:var(--raiseSm)}
+.play:active{transform:translateY(4px);box-shadow:0 2px 0 #061423}
+.tray-note{margin:16px 6px 0;font-size:15px;color:var(--ink2)}
+
+/* collection */
+.coll{margin-top:72px}
+.coll-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-bottom:22px}
+.coll-head h2{margin:0;font:700 36px/1 var(--sans);letter-spacing:-.025em}
+.coll-head .meta{color:var(--ink2);font-size:16px}
+.switch{position:relative;display:grid;grid-template-columns:repeat(3,1fr);background:var(--recess);box-shadow:var(--inset);border-radius:14px;padding:5px;min-width:390px}
+.switch .thumb{position:absolute;top:5px;bottom:5px;left:5px;width:calc((100% - 10px)/3);background:var(--face);border-radius:10px;box-shadow:var(--raiseSm);transition:transform .18s ease-out}
+.switch button{position:relative;z-index:1;border:0;background:none;min-height:46px;cursor:pointer;font-weight:600;font-size:16px;color:var(--ink2)}
+.switch button[aria-checked="true"]{color:var(--ink)}
+.switch .c{font:600 13px var(--mono);color:var(--ink3);margin-left:4px}
+.ctrl2{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:22px}
+.kk{min-height:42px;padding:0 14px;border-radius:10px;font-size:15px;font-weight:600;color:var(--ink2)}
+.kk[aria-pressed="true"]{color:var(--ink);background:#EEF3F8}
+.kk[aria-pressed="true"]::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:2px}
+.find{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--recess);box-shadow:var(--inset);border-radius:12px;padding:0 14px;min-height:46px}
+.find input{border:0;background:transparent;outline:0;width:200px;font-size:16px}
+.dens{display:flex;background:var(--recess);box-shadow:var(--inset);border-radius:12px;padding:4px}
+.dens button{border:0;background:none;min-height:38px;padding:0 12px;border-radius:9px;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink2)}
+.dens button[aria-pressed="true"]{background:var(--face);box-shadow:var(--raiseSm);color:var(--ink)}
+.caps{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:18px 16px}
+.cap{position:relative;background:var(--face);border-radius:16px;box-shadow:var(--raiseSm);padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px;min-height:180px;transition:transform .09s,box-shadow .09s}
+.cap:hover{transform:translateY(-1px)}
+.cap:active{transform:translateY(2px);box-shadow:var(--pressed)}
+.cap .hd{display:flex;align-items:center;gap:10px}
+.ico{position:relative;width:44px;height:44px;border-radius:12px;background:var(--recess);box-shadow:var(--inset);display:grid;place-items:center;font:700 18px var(--sans);color:var(--accent);overflow:hidden;flex:none}
+.ico img{position:absolute;inset:0;width:100%;height:100%}
+.cap a.nm{font:700 20px/1.15 var(--sans);color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.cap a.nm::after{content:"";position:absolute;inset:0;border-radius:16px}
+.cap .ct{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.cap .mv{font-size:17px;line-height:1.35;color:var(--ink2)}
+.cap .ft{margin-top:auto;display:flex;align-items:center;gap:6px;position:relative;z-index:2}
+.cap .td{font:700 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accentSoft);padding:6px 8px;border-radius:6px}
+.cap .ft .tg{width:40px;height:40px;margin-left:0}
+.cap .ft .tg:first-of-type{margin-left:auto}
+.caps.list{grid-template-columns:1fr;gap:12px}
+.caps.list .cap{flex-direction:row;align-items:center;min-height:72px;padding:12px 16px}
+.caps.list .cap .hd{min-width:280px}
+.caps.list .cap .mv{flex:1}
+.caps.list .cap .ft{margin-top:0}
+.empty{background:var(--recess);box-shadow:var(--inset);border-radius:16px;padding:28px;color:var(--ink2);text-align:center}
+
+/* service drawer */
+.service{margin-top:80px;background:var(--recess);box-shadow:var(--inset);border-radius:28px;padding:22px;display:grid;grid-template-columns:1.35fr 1fr;gap:22px}
+.panel{background:var(--face);border-radius:20px;box-shadow:var(--raise);padding:28px}
+.panel h2{margin:0 0 6px;font:700 28px/1.1 var(--sans);letter-spacing:-.02em}
+.panel .lead{margin:0 0 18px;color:var(--ink2)}
+label.f{display:block;font-weight:650;font-size:16px;margin:14px 0 6px}
+select,textarea{width:100%;border:0;background:var(--recess);box-shadow:var(--inset);border-radius:12px;padding:13px 14px;font-size:17px}
+textarea{min-height:128px;resize:vertical}
+.fbrow{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.send{min-height:52px;padding:0 22px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:650;cursor:pointer;box-shadow:0 5px 0 #061423}
+.send:disabled{background:#DDE5EE;color:var(--ink3);box-shadow:0 5px 0 var(--edge);cursor:not-allowed}
+.meta2{font-size:14px;color:var(--ink3)}
+.receipt{margin-top:18px;border-radius:12px;border:1.5px dashed var(--edgeDark);padding:14px 16px;font-size:15px;color:var(--ink2)}
+.receipt.warn{border-style:solid;border-color:var(--ink);background:#F3F7FB}
+.priv{font-size:14px;color:var(--ink3);margin:12px 0 0}
+.feat{display:grid;gap:10px;margin:0 0 18px;padding:0;list-style:none}
+.feat li{display:flex;gap:12px;align-items:flex-start;font-size:16px}
+.feat i{flex:none;width:30px;height:30px;border-radius:9px;background:var(--recess);box-shadow:var(--inset);display:grid;place-items:center;font-style:normal;color:var(--accent);font-weight:700;font-size:14px}
+.foot{margin-top:36px;color:var(--ink2);font-size:15px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.key:active,.cap:active,.play:active,.tg[aria-pressed="true"]{transform:none!important}}
+
+@media (max-width:1060px){
+  .tray{grid-template-columns:1fr}
+  .tile{min-height:0}
+  .service{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .wrap{padding:0 14px 48px}
+  .review{padding:10px 14px}
+  .hdr{padding-top:16px}
+  .brand{font-size:21px}
+  .hdr .lbl{display:none}
+  .puck{padding:0 6px}
+  .key.fbk{padding:0 12px}
+  .pop{left:0;right:0;width:auto;top:70px}
+  .today-head{margin:24px 0 14px}
+  .today-head h1{font-size:36px}
+  .today-head .daybox{margin-left:0;width:100%;justify-content:space-between}
+  .tray{padding:12px;border-radius:22px;gap:16px}
+  .tile{padding:20px 18px 18px;border-radius:18px}
+  .well{width:58px;height:58px}
+  .well svg{width:32px;height:32px}
+  .tile h2{font-size:30px}
+  .tile p{font-size:18px}
+  .coll{margin-top:52px}
+  .coll-head h2{font-size:30px}
+  .switch{min-width:0;width:100%}
+  .find{margin-left:0;width:100%}
+  .find input{width:100%}
+  .caps{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
+  .cap{padding:14px 12px 12px;min-height:200px}
+  .cap a.nm{font-size:18px}
+  .cap .mv{font-size:16px}
+  .caps.list .cap{flex-wrap:wrap}
+  .caps.list .cap .hd{min-width:0;flex:1}
+  .caps.list .cap .mv{flex-basis:100%;order:3}
+  .service{padding:12px;border-radius:22px;margin-top:56px}
+  .panel{padding:20px 18px}
+}
+</style>
+</head>
+<body>
+<div class="review" role="note" aria-label="Design review controls (not part of the product)">
+  <span class="tag">Design concept B · Tray (recommended)</span>
+  <span>Opus design review mockup. Not live. Nothing here sends or saves. ◇ = illustrative state.</span>
+  <span class="seg" aria-label="Preview day state">
+    <button type="button" data-state="fresh" aria-pressed="true">Fresh day</button>
+    <button type="button" data-state="progress" aria-pressed="false">Mid-day ◇</button>
+    <button type="button" data-state="done" aria-pressed="false">All finished ◇</button>
+  </span>
+</div>
+
+<div class="wrap">
+  <header class="hdr">
+    <a class="brand" href="#today" aria-label="Alford Daily home">
+      <span class="mark"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="4" fill="#DCE6F1"/><rect x="4.5" y="6" width="4" height="12" rx="1.5" fill="#11253A"/><rect x="10" y="6" width="4" height="12" rx="1.5" fill="#1F5FD1"/><rect x="15.5" y="6" width="4" height="12" rx="1.5" fill="#0C7A80"/></svg></span>
+      Alford Daily
+    </a>
+    <span class="sp"></span>
+    <a class="key fbk" href="#service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="lbl">Feedback</span></a>
+    <button class="key puck" id="pbtn" type="button" aria-expanded="false" aria-controls="pop"><span class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span class="lbl">Profile</span></button>
+    <div class="pop" id="pop" role="dialog" aria-label="Browser profile">
+      <h3>Browser profile</h3>
+      <p>Optional and private. One place for your progress, favourites, hidden games and feedback receipts in this browser.</p>
+      <div class="slotlist"><div><span>Status</span><b>No profile yet</b></div><div><span>Favourites</span><b id="pf-f">0</b></div><div><span>Hidden</span><b id="pf-h">0</b></div></div>
+      <button class="inert" type="button" disabled>Create profile (inert in this concept)</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="today" aria-labelledby="t-h">
+      <div class="today-head">
+        <h1 id="t-h">Today's Three</h1>
+        <div class="date"><b><time datetime="2026-11-06">Friday, November 6</time></b> · No. 018 · new set at midnight Central</div>
+        <div class="daybox">
+          <span class="count" id="count"><b>0</b> of 3 finished</span>
+          <button class="key share" id="share" type="button" disabled title="Unlocks after your first finish">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/></svg>Share today</button>
+        </div>
+      </div>
+      <div class="sharebox" id="sharebox" aria-live="polite"></div>
+      <div class="tray" id="tray"></div>
+      <p class="tray-note">Shares show scores only, never answers. Hiding a game removes it from your collection view, not from today's set or your records.</p>
+    </section>
+
+    <section class="coll" id="collection" aria-labelledby="c-h">
+      <div class="coll-head">
+        <h2 id="c-h">The collection</h2>
+        <span class="meta">33 games, grouped by how they play</span>
+        <div class="switch" role="radiogroup" aria-label="Show" id="switch">
+          <span class="thumb" id="thumb" aria-hidden="true"></span>
+          <button type="button" role="radio" aria-checked="true" data-f="all" data-i="0">All <span class="c" id="c-all">33</span></button>
+          <button type="button" role="radio" aria-checked="false" data-f="fav" data-i="1">Favourites <span class="c" id="c-fav">0</span></button>
+          <button type="button" role="radio" aria-checked="false" data-f="hid" data-i="2">Hidden <span class="c" id="c-hid">0</span></button>
+        </div>
+      </div>
+      <div class="ctrl2">
+        <button type="button" class="key kk" data-k="meaning" aria-pressed="false">Clues &amp; meaning</button>
+        <button type="button" class="key kk" data-k="letters" aria-pressed="false">Letters &amp; words</button>
+        <button type="button" class="key kk" data-k="deduce" aria-pressed="false">Deduction</button>
+        <button type="button" class="key kk" data-k="logic" aria-pressed="false">Logic &amp; pattern</button>
+        <span class="dens" role="group" aria-label="Layout"><button type="button" data-d="grid" aria-pressed="true">Keys</button><button type="button" data-d="list" aria-pressed="false">List</button></span>
+        <label class="find"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="vh">Find a game</span><input id="q" type="search" placeholder="Find a game"></label>
+      </div>
+      <div class="caps" id="caps"></div>
+    </section>
+
+    <section class="service" id="service" aria-label="Feedback and profile">
+      <div class="panel">
+        <h2>Feedback for James</h2>
+        <p class="lead">An idea, a snag, something you liked. Please leave out answers and personal details.</p>
+        <label class="f" for="about">About</label>
+        <select id="about"><option>The whole site</option></select>
+        <label class="f" for="msg">Your note</label>
+        <textarea id="msg" placeholder="What worked, what didn't?"></textarea>
+        <div class="fbrow"><button class="send" id="send" type="button" disabled>Send note</button><span class="meta2" id="fbcount">0 / 1000</span></div>
+        <div class="receipt" id="receipt" aria-live="polite"><b>Receipt slot.</b> The reference returned by the server appears here only after it confirms your note is stored. Until then nothing is shown.</div>
+        <p class="priv">Notes go privately to James. If you have a browser profile, the note is linked to it.</p>
+      </div>
+      <div class="panel">
+        <h2>Your browser profile</h2>
+        <p class="lead">Optional. Without one, progress still stays on this device.</p>
+        <ul class="feat">
+          <li><i>1</i><span><b>Progress</b>: daily results and streaks for each game</span></li>
+          <li><i>2</i><span><b>Favourites</b>: starred games, one switch away</span></li>
+          <li><i>3</i><span><b>Hidden</b>: games stowed out of your collection view</span></li>
+          <li><i>4</i><span><b>Feedback</b>: your sent notes and their receipts</span></li>
+        </ul>
+        <button class="inert" type="button" disabled>Manage profile (inert in this concept)</button>
+      </div>
+    </section>
+  </main>
+  <footer class="foot"><span>Alford Daily · 9,581 prepared daily puzzles · new puzzles at midnight Central</span><span>Progress stays in this browser unless you choose a profile.</span></footer>
+</div>
+
+<script>
+const G=[
+['switchpath','Switchpath','logic','Path logic','Alternate higher, lower through every cell'],
+['ringcount','Ringcount','logic','Number logic','Cut the ring into four equal sums'],
+['counterpart','Counterpart','meaning','Word relationships','Match a pair to the same relationship'],
+['shortlist','Shortlist','deduce','Letter deduction','Scan two letters, then pick the secret word'],
+['second-sense','Second Sense','meaning','Double meanings','Pair a noun clue with a verb clue'],
+['sideways','Sideways','letters','Word arrangement','Slide strips until columns spell the clues'],
+['tradeoff','Tradeoff','meaning','Letter swaps','Swap letters between rows to fit each clue'],
+['inbetween','Inbetween','meaning','Word building','Drag a letter pair into the right gap'],
+['kimi-cairn','Cairn','letters','Growing anagrams','Add one letter, rearrange, climb a level'],
+['kimi-morph','Morph','letters','Word ladders','Change one letter per rung to reach the target'],
+['kimi-tangle','Tangle','letters','Word trails','Trace touching letters to spell words'],
+['kimi-hunch','Hunch','deduce','Five-letter deduction','Guess, then read the black and white dots'],
+['kimi-circuit','Circuit','letters','Word chains','Chain words, switching arcs every letter'],
+['kimi-quartet','Quartet','meaning','Meaning & categories','Sort sixteen words into four groups'],
+['deepseek-twin-hive','Twin Hive','letters','Two-letter word search','Make words that use both gold letters'],
+['deepseek-spare','Spare','meaning','Meaning pairs','Pair the opposites, find the spare'],
+['deepseek-rung','Rung','letters','Shortest word ladders','Reach the target in the fewest rungs'],
+['deepseek-cipher','Cipher','deduce','Secret alphabets','Assign real letters to coded ones'],
+['deepseek-trail','Trail','letters','Nine-letter trails','Trace one long word through the grid'],
+['deepseek-split','Split','meaning','Clued anagrams','Divide the tiles between two clued words'],
+['qwen-quadra','Quadra','letters','Category anagrams','Find four category words using all 16 tiles'],
+['qwen-logic-lattice','Logic Lattice','logic','Grid deduction','Mark squares until every line count agrees'],
+['qwen-syntax-siege','Syntax Siege','letters','Word defense','Fire words before the wave reaches the core'],
+['qwen-memory-maze','Memory Maze','logic','Path recall','Study the route, then retrace it'],
+['qwen-pattern-prism','Pattern Prism','logic','Visual sequences','Predict the next three in the sequence'],
+['qwen-territory-tactics','Territory Tactics','logic','Hex strategy','Close openings to capture an exact total'],
+['claude-dovetail','Dovetail','meaning','Compound chains','Fill each link so neighbours join into words'],
+['claude-splice','Splice','letters','Word-half matching','Join twelve halves into six words'],
+['claude-sprout','Sprout','letters','Growing anagrams','Add a soil letter, rearrange, grow the plant'],
+['claude-tangle','Tangle','letters','Interleaved words','Pull three ordered words from one string'],
+['claude-keystone','Keystone','meaning','Compound-word clues','Find the word that joins all five clues'],
+['claude-tumbler','Tumbler','deduce','Alphabet deduction','Read earlier/later dials to crack the lock'],
+['nested-tic-tac-toe','Tic-Tac-Toe','logic','Nine boards · local opponent','Your square picks their next board']
+];
+const DESC={'shortlist':'Twelve words. Three letter scans. One final pick.','second-sense':'Match a noun clue with a verb clue. One word answers both.','sideways':'Slide the letter strips until four clued words read down the columns.'};
+const KIND={meaning:'Clues & meaning',letters:'Letters & words',deduce:'Deduction',logic:'Logic & pattern'};
+const TODAY=['shortlist','second-sense','sideways'];
+const ICON={
+ 'shortlist':'<svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M11 12h22M11 20h26M11 28h18M11 36h24"/><rect x="6" y="16" width="36" height="8" rx="2" stroke="#1F5FD1" stroke-width="2.2"/><circle cx="40" cy="36" r="3.2" fill="#1F5FD1" stroke="none"/></svg>',
+ 'second-sense':'<svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="23" height="26" rx="3"/><rect x="20" y="11" width="23" height="26" rx="3"/><rect x="20" y="11" width="8" height="26" fill="#1F5FD1" stroke="none" opacity=".85"/><path d="M10 19h6M35 29h4" stroke-linecap="round"/></svg>',
+ 'sideways':'<svg width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="8" width="26" height="8" rx="2"/><rect x="15" y="20" width="26" height="8" rx="2"/><rect x="10" y="32" width="26" height="8" rx="2"/><path d="M24 4v40" stroke="#1F5FD1" stroke-width="3" stroke-linecap="round"/></svg>'
+};
+// pips: metric slots per game; fill = used/earned (illustrative in non-fresh states)
+const STATES={
+ fresh:{shortlist:{t:'Not started',c:'',l:'3 scans ready',p:[0,0,0],a:'Play'},'second-sense':{t:'Not started',c:'',l:'0 of 5 found',p:[0,0,0,0,0],a:'Play'},sideways:{t:'Not started',c:'',l:'4 clues · 5 strips',p:[],a:'Play'}},
+ progress:{shortlist:{t:'In progress ◇',c:'prog',l:'1 of 3 scans used',p:[1,0,0],a:'Continue'},'second-sense':{t:'Finished ◇',c:'done',l:'6 checks',p:[2,2,2,2,2],a:'Review'},sideways:{t:'Not started',c:'',l:'4 clues · 5 strips',p:[],a:'Play'}},
+ done:{shortlist:{t:'Finished ◇',c:'done',l:'3 scans · correct pick',p:[2,2,2],a:'Review'},'second-sense':{t:'Finished ◇',c:'done',l:'6 checks',p:[2,2,2,2,2],a:'Review'},sideways:{t:'Finished ◇',c:'done',l:'Solved · 0 hints',p:[],a:'Review'}}
+};
+const SHARE={progress:'Alford Daily · Fri Nov 6\nSecond Sense  ■■■■■  6 checks',done:'Alford Daily · Fri Nov 6\nShortlist     ■■■    3 scans\nSecond Sense  ■■■■■  6 checks\nSideways      ✓      0 hints'};
+const fav=new Set(),hid=new Set();let st='fresh',filt='all',kind=null,q='',dens='grid';
+const by=s=>G.find(g=>g[0]===s);
+const star='<svg viewBox="0 0 24 24" aria-hidden="true"><path class="sp" d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const eye='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg>';
+const tg=(s,n)=>`<button type="button" class="tg star" data-fav="${s}" aria-pressed="${fav.has(s)}" title="${fav.has(s)?'Remove from favourites':'Add to favourites'}"><span class="vh">Favourite ${n}</span>${star}</button><button type="button" class="tg eye" data-hid="${s}" aria-pressed="${hid.has(s)}" title="${hid.has(s)?'Unhide':'Hide'}"><span class="vh">${hid.has(s)?'Unhide':'Hide'} ${n}</span>${eye}</button>`;
+function renderToday(){
+  document.getElementById('tray').innerHTML=TODAY.map(s=>{const g=by(s),x=STATES[st][s];
+    const pips=x.p.length?`<span class="pips" aria-hidden="true">${x.p.map(v=>`<i class="${v===1?'on':v===2?'ok':''}"></i>`).join('')}</span>`:'';
+    return `<article class="tile" aria-labelledby="t-${s}"><div class="top"><span class="well">${ICON[s]}</span><div class="toggles">${tg(s,g[1])}</div></div>
+    <div class="cat">${g[3]}</div><h2 id="t-${s}">${g[1]}</h2><p>${DESC[s]}</p>
+    <div class="slot"><div><div class="st ${x.c}">${x.t}</div><div class="ln">${x.l}</div></div>${pips}</div>
+    ${hid.has(s)?'<div class="hidden-note">Hidden from your collection view</div>':''}
+    <a href="#" onclick="return false" class="play ${x.a==='Continue'?'cont':x.a==='Review'?'rev':''}" aria-label="${x.a} ${g[1]} (mockup link)">${x.a}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>`}).join('');
+  const done=TODAY.filter(s=>STATES[st][s].c==='done').length;
+  document.getElementById('count').innerHTML=`<b>${done}</b> of 3 finished${st!=='fresh'?' ◇':''}`;
+  document.getElementById('share').disabled=!done;
+  const sb=document.getElementById('sharebox');sb.classList.remove('show');
+}
+function renderCaps(){
+  const el=document.getElementById('caps');
+  const list=G.filter(g=>(filt==='all'?!hid.has(g[0]):filt==='fav'?fav.has(g[0]):hid.has(g[0]))&&(!kind||g[2]===kind)&&(!q||(g[1]+' '+g[3]).toLowerCase().includes(q)));
+  el.className='caps'+(dens==='list'?' list':'');
+  el.innerHTML=list.length?list.map(g=>`<div class="cap"><div class="hd"><span class="ico" aria-hidden="true"><b>${g[1][0]}</b><img src="../assets/icons/${g[0]}.svg" alt="" onerror="this.remove()"></span><div><a class="nm" href="#" onclick="return false">${g[1]}</a><div class="ct">${g[3]}</div></div></div><div class="mv">${g[4]}</div><div class="ft">${TODAY.includes(g[0])?'<span class="td">Today</span>':''}${tg(g[0],g[1])}</div></div>`).join('')
+   :`<div class="empty" style="grid-column:1/-1">${filt==='fav'?'No favourites yet. Press the star key on any game.':filt==='hid'?'Nothing hidden. Hidden games wait here until you bring them back.':'No games match.'}</div>`;
+  document.getElementById('c-fav').textContent=fav.size;document.getElementById('c-hid').textContent=hid.size;document.getElementById('c-all').textContent=33-hid.size;
+  document.getElementById('pf-f').textContent=fav.size;document.getElementById('pf-h').textContent=hid.size;
+}
+const all=()=>{renderToday();renderCaps();};
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-fav]');if(f){const s=f.dataset.fav;fav.has(s)?fav.delete(s):fav.add(s);all();return;}
+  const h=e.target.closest('[data-hid]');if(h){const s=h.dataset.hid;hid.has(s)?hid.delete(s):hid.add(s);all();return;}
+  const t=e.target.closest('[data-f]');if(t){filt=t.dataset.f;document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-checked',b===t));document.getElementById('thumb').style.transform=`translateX(${t.dataset.i*100}%)`;renderCaps();}
+  const k=e.target.closest('[data-k]');if(k){kind=kind===k.dataset.k?null:k.dataset.k;document.querySelectorAll('[data-k]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===kind));renderCaps();}
+  const d=e.target.closest('[data-d]');if(d){dens=d.dataset.d;document.querySelectorAll('[data-d]').forEach(b=>b.setAttribute('aria-pressed',b===d));renderCaps();}
+  const s=e.target.closest('[data-state]');if(s){st=s.dataset.state;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',b===s));renderToday();}
+});
+document.getElementById('switch').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight'].includes(e.key))return;const bs=[...document.querySelectorAll('#switch [data-f]')];let i=bs.findIndex(b=>b.getAttribute('aria-checked')==='true');i=(i+(e.key==='ArrowRight'?1:2))%3;bs[i].click();bs[i].focus();});
+document.getElementById('share').addEventListener('click',()=>{const sb=document.getElementById('sharebox');sb.textContent=SHARE[st]+'\n(◇ illustrative · mockup: nothing was copied)';sb.classList.add('show');});
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();renderCaps();});
+const pb=document.getElementById('pbtn'),pop=document.getElementById('pop');pb.addEventListener('click',()=>{const o=pop.classList.toggle('open');pb.setAttribute('aria-expanded',o);});
+const sel=document.getElementById('about');G.forEach(g=>{const o=document.createElement('option');o.textContent=g[1]+' · '+g[3];sel.appendChild(o);});
+const msg=document.getElementById('msg'),send=document.getElementById('send');
+msg.addEventListener('input',()=>{document.getElementById('fbcount').textContent=msg.value.length+' / 1000';send.disabled=!msg.value.trim();});
+send.addEventListener('click',()=>{const r=document.getElementById('receipt');r.classList.add('warn');r.innerHTML='<b>Not sent.</b> This concept has no server connection. In the live site this slot shows the stored-note reference only after the server confirms it.';});
+all();
+</script>
+</body>
+</html>

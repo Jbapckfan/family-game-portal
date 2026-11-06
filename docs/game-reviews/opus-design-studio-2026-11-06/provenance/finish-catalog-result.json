@@ -1,0 +1,10 @@
+{
+  "job": "finish-catalog",
+  "exitCode": 0,
+  "seconds": 359.4,
+  "isError": false,
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "result": "The missing manifest and notes are written, and no mockups were changed. I didn't run a JSON parser, browser or tests, so please parse `team-01/game-proposals.json` during your QA.\n\n**team-01/game-proposals.json** (new)\n- Covers exactly the 11 assigned games, in assignment order. The six keepers have designs A\u2013D and the other five have A only, so there are 29 design entries with all the required fields.\n- Every `mockup` value is the exact name of an existing file. I wrote the entries after reading all 29 HTML files.\n- The diagnoses come from the director's game review and the owner feedback, not from re-reading the source screenshots.\n- A text search found no missing or trailing commas and no stray quotes.\n\n**team-01/NOTES.md** (new)\n- **Recommended picks:** Switchpath A, Counterpart B, Shortlist A, Second Sense A, Tradeoff C and Inbetween A. Tradeoff D's harder bonus round is kept as a separate optional experiment.\n- **Known gaps:**\n  - Some keyboard paths are listed in the mockups but don't work (Switchpath A, Inbetween A, Enter in Second Sense A and C).\n  - Several \"live engine\" messages in the mockups couldn't be confirmed against the source.\n  - Spare is missing three of its four context sentences, which weren't in the source.\n  - Quartet's \"three of these four connect\" message echoes the \"one away\" pattern the director flagged as an originality risk.\n  - None of the concepts tries the closer numbers or 5\u00d75 board James asked for in Switchpath.\n\n**team-02**\n- The existing manifest has the right 11 games and the right designs for each. All 29 mockups exist with matching titles and a \"Design concept\" mark, so I left it unchanged.\n- I wrote the missing `NOTES.md`. It flags one wording error: the manifest says Morph B's goal plate is \"brushed\", but the HTML is a plain gradient.\n\n**finish-catalog/COMPLETE.md** lists exactly what I finished and what I didn't do.\n\nNothing in `director/`, `team-03/`, `input/` or the root gallery was touched."
+}

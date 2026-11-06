@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twin Hive B · Six-slot ledger — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.lay{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:32px;align-items:start}
+@media(max-width:800px){.lay{grid-template-columns:minmax(0,1fr)}}
+.need{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:16px}
+.need b{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#f2c94c;font-size:20px;box-shadow:inset 0 -3px 0 #d4a92a}
+.rack{display:grid;grid-template-columns:repeat(4,64px);gap:8px;justify-content:start}
+@media(max-width:360px){.rack{grid-template-columns:repeat(4,58px)}}
+.k{height:64px;border-radius:12px;border:1px solid #b9c8d5;background:#fff;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #c5d2dd;transition:transform .08s,box-shadow .08s}
+.k:active{transform:translateY(3px);box-shadow:0 1px 0 #c5d2dd}
+.k.g{background:#f2c94c;border-color:#d4a92a;box-shadow:0 4px 0 #c69f22}
+.field{margin:18px 0 6px;display:flex;align-items:flex-end;gap:10px}
+.field input{flex:1;min-width:0;font:800 32px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:10px 0;border:0;border-bottom:3px solid var(--ink);background:transparent}
+.field input:focus{outline:none;border-bottom-color:var(--accent)}
+.checks{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 16px}
+.checks span{font-size:13px;font-weight:650;padding:6px 10px;border-radius:16px;background:#e6edf3;color:var(--muted)}
+.checks span.ok{background:#dcefe5;color:var(--ok)}
+.btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ledger{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.ledger header{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px;border-bottom:1px solid var(--line)}
+.ledger header b{font-size:22px}
+.ledger header span{font:13px var(--mono);color:var(--muted)}
+.ledger ol{list-style:none;margin:0;padding:0;counter-reset:s}
+.ledger li{counter-increment:s;display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:8px;height:56px;padding:0 16px;border-bottom:1px solid var(--line)}
+.ledger li:last-child{border:0}
+.ledger li::before{content:counter(s);font:600 13px var(--mono);color:var(--muted)}
+.ledger li b{font:800 20px var(--mono);letter-spacing:.12em}
+.ledger li b em{font-style:normal;background:#f7e3a2;border-radius:3px}
+.ledger li small{font:13px var(--mono);color:var(--ok)}
+.ledger li.empty b{color:#c4d0da;font-weight:400}
+.ledger li.next{background:#f4f8fd}
+.ledger li.next b{color:var(--accent);font-size:15px;font-family:var(--sans);letter-spacing:0;font-weight:650}
+.bonus{padding:12px 16px;background:#f6f9fb;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.aux{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Twin Hive B — Six-slot ledger</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/deepseek-twin-hive.svg" alt=""><div><p class="eyebrow">Two-letter word search</p><h1 class="gname">Twin Hive</h1><p class="tagline">Two anchors. Many possibilities.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov</span></div>
+
+  <div class="lay">
+    <section>
+      <p class="need">Every word needs <b>A</b> + <b>M</b></p>
+      <div class="rack" aria-label="Letters"><button class="k g">A</button><button class="k g">M</button><button class="k">E</button><button class="k">I</button><button class="k">N</button><button class="k">R</button><button class="k">S</button><button class="k">T</button></div>
+      <label class="field"><span class="sr">Your next word</span><input id="in" value="MAIN" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+      <div class="checks" id="ck" aria-live="polite"></div>
+      <div class="btns"><button class="btn">⌫ Delete</button><button class="btn">Clear</button><button class="btn primary">Add word</button></div>
+      <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>
+    </section>
+    <section class="ledger" aria-label="Six-word goal">
+      <header><b>2 / 6</b><span>4 points · +1 per letter beyond 3</span></header>
+      <ol>
+        <li><b>TEAM</b><small>+1</small></li>
+        <li><b>STREAM</b><small>+3</small></li>
+        <li class="next"><b>Next: your third word</b><span></span></li>
+        <li class="empty"><b>— — — —</b><span></span></li>
+        <li class="empty"><b>— — — —</b><span></span></li>
+        <li class="empty"><b>— — — —</b><span></span></li>
+      </ol>
+      <div class="bonus">Six words complete today's goal. Keep collecting after that for points.</div>
+    </section>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the six-word goal is a numbered ledger — slots, not loose chips — so progress and points read like a scorecard. The rack is a fixed 4×2 grid of 64px keys (gold first); it cannot stretch. Live checks update as you type. Collection entries are illustrative.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const i=document.getElementById('in'),ck=document.getElementById('ck');
+function upd(){const v=i.value.toUpperCase();const only=/^[AEIMNRST]*$/.test(v);ck.innerHTML=[[v.length>=4,'4+ letters'],[v.includes('A'),'has A'],[v.includes('M'),'has M'],[only&&v.length>0,'hive letters only']].map(([o,t])=>`<span class="${o?'ok':''}">${o?'✓ ':''}${t}</span>`).join('')+(v.length>=4?`<span>+${v.length-3} if in dictionary</span>`:'');}
+i.addEventListener('input',upd);document.querySelectorAll('.k').forEach(k=>k.onclick=()=>{i.value+=k.textContent;upd();});upd();
+</script>
+</body>
+</html>

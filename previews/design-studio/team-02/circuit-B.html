@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circuit B · String chords — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:560px;margin:0 auto}
+.wordline{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.wordline b{font-size:clamp(34px,10vw,46px);letter-spacing:.16em;font-weight:850}
+.wordline span{font:13px var(--mono);color:var(--muted)}
+.rule{margin:0 0 12px;font-size:15px;color:var(--ink-2)}
+.ringbox{background:#fff;border:1px solid var(--line);border-radius:24px;padding:10px}
+svg{display:block;width:100%;height:auto}
+.lt{cursor:pointer}
+.lt text{font:800 25px var(--sans);text-anchor:middle;dominant-baseline:central;pointer-events:none;fill:var(--ink)}
+.lt .dot{stroke:#fff;stroke-width:3}
+.lt.lit text{fill:#fff}
+.lt.blocked{opacity:.35;cursor:not-allowed}
+.lt:focus{outline:none}.lt:focus-visible .dot{stroke:var(--focus);stroke-width:4}
+.chord{stroke:#0e2232;stroke-width:3;fill:none;stroke-linecap:round}
+.chord.cur{stroke:#1c5cbc;stroke-dasharray:8 7}
+.num{font:700 12px var(--mono);fill:#0e2232;text-anchor:middle;dominant-baseline:central}
+.numbg{fill:#fff;stroke:#0e2232;stroke-width:1.5}
+.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.legend div{border-radius:10px;padding:8px;border:2px solid;font-size:13px;text-align:center}
+.legend b{display:block;font:800 16px var(--mono);letter-spacing:.2em}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-top:14px}
+.aux{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.say{min-height:22px;font-size:15px;color:var(--bad);margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Circuit B — String chords</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-circuit.svg" alt=""><div><p class="eyebrow">Word chains</p><h1 class="gname">Circuit</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 172 · Fri 6 Nov</span></div>
+
+    <div class="wordline" aria-live="polite"><b id="word">K</b><span>Words 1 · target 3 · lit <span id="lc">4</span>/12</span></div>
+    <p class="rule">Every chord must cross into a different arc. Solid chords are played; dashed is the word you're building.</p>
+    <div class="ringbox"><svg id="ring" viewBox="0 0 400 400" role="group" aria-label="Letter ring"></svg></div>
+    <p class="say" id="say" aria-live="polite"></p>
+    <div class="legend" aria-label="Arc membership">
+      <div style="border-color:#2f6fd6;color:#1d4f9f">Arc 1 · NE<b>KBC</b></div>
+      <div style="border-color:#1f9d6a;color:#14704a">Arc 2 · SE<b>USH</b></div>
+      <div style="border-color:#d39a12;color:#8a6200">Arc 3 · SW<b>AIR</b></div>
+      <div style="border-color:#d1404a;color:#a32b33">Arc 4 · NW<b>WME</b></div>
+    </div>
+    <div class="row"><button class="btn" id="del" aria-label="Delete letter">⌫</button><button class="btn primary">Play word</button><button class="btn" id="clr">Clear</button></div>
+    <div class="aux"><button class="btn quiet">Undo word</button><button class="btn quiet">Restart chain</button><button class="btn quiet">Route clue · 1 free</button><button class="btn quiet">Reveal route</button></div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: the chain is drawn as numbered chords across the ring — a legal word always zig-zags between quadrants, so the rule becomes visible geometry. Bands stay split exactly on the cardinal axes. Illustrative state: HAWK played; tap letters to extend the dashed word (same-arc taps are refused with a reason).</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const C=['#2f6fd6','#1f9d6a','#d39a12','#d1404a'],L=[['K',1],['B',1],['C',1],['U',2],['S',2],['H',2],['A',3],['I',3],['R',3],['W',4],['M',4],['E',4]];
+const P=(r,d)=>[200+r*Math.sin(d*Math.PI/180),200-r*Math.cos(d*Math.PI/180)],idx=l=>L.findIndex(x=>x[0]===l),svg=document.getElementById('ring'),say=document.getElementById('say');
+const played=['H','A','W','K'];let cur=['K'];const lit=new Set(played);
+function arcPath(a,r){const[x1,y1]=P(r,a*90),[x2,y2]=P(r,a*90+90);return `M${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}`;}
+function chords(seq,cls,start){let h='';for(let i=0;i<seq.length-1;i++){const[a,b]=[P(150,idx(seq[i])*30+15),P(150,idx(seq[i+1])*30+15)];h+=`<line class="chord ${cls}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;h+=`<circle class="numbg" cx="${mx}" cy="${my}" r="10"/><text class="num" x="${mx}" y="${my}">${start+i}</text>`;}return h;}
+function draw(){const last=L[idx(cur[cur.length-1])][1];let h='';for(let a=0;a<4;a++){h+=`<path d="${arcPath(a,186)}" stroke="${C[a]}" stroke-width="14" fill="none"/>`;}
+for(let a=0;a<4;a++){const[x,y]=P(196,a*90),[x2,y2]=P(176,a*90);h+=`<line x1="${x}" y1="${y}" x2="${x2}" y2="${y2}" stroke="#fff" stroke-width="4"/>`;}
+h+=`<path d="M200 200L${P(196,(last-1)*90).join(' ')}A196 196 0 0 1 ${P(196,last*90).join(' ')}Z" fill="${C[last-1]}" opacity=".07"/>`;
+h+=chords(played,'',1)+chords(cur,'cur',1);
+L.forEach(([l,a],i)=>{const[x,y]=P(150,i*30+15),bl=a===last;h+=`<g class="lt ${lit.has(l)?'lit':''} ${bl?'blocked':''}" data-i="${i}" tabindex="0" role="button" aria-label="${l}, arc ${a}${bl?', not allowed next':''}"><circle cx="${x}" cy="${y}" r="30" fill="transparent"/><circle class="dot" cx="${x}" cy="${y}" r="24" fill="${lit.has(l)?C[a-1]:'#fff'}" stroke="${C[a-1]}"/><text x="${x}" y="${y}">${l}</text></g>`;});
+svg.innerHTML=h;svg.querySelectorAll('.lt').forEach(g=>{const f=()=>{const[l,a]=L[g.dataset.i];if(a===last){say.textContent=`${l} is on Arc ${a} — the same arc as ${cur[cur.length-1]}. Cross to another arc.`;return;}say.textContent='';cur.push(l);lit.add(l);draw();};g.onclick=f;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+document.getElementById('word').textContent=cur.join('');document.getElementById('lc').textContent=lit.size;}
+document.getElementById('del').onclick=()=>{if(cur.length>1)cur.pop();draw();};document.getElementById('clr').onclick=()=>{cur=['K'];draw();};draw();
+</script>
+</body>
+</html>

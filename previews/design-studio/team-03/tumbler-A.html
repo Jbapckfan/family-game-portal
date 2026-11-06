@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tumbler · Concept A · Range columns</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:620px;margin:0 auto}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.hud b{font-size:16px}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:#fff}
+.seg button{min-height:44px;padding:0 12px;border:0;background:none;font-size:13px;font-weight:650;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.lock{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:14px 10px;border-radius:18px;background:#dfe8ef;box-shadow:inset 0 2px 6px rgba(14,34,50,.14)}
+.col{display:grid;gap:6px;justify-items:center}
+.rng{font:800 clamp(16px,4.4vw,20px)/1 var(--mono);white-space:nowrap}
+.cnt{font:600 11px/1 var(--mono);color:var(--muted)}
+.track{position:relative;width:34px;height:156px;border-radius:17px;background:#fff;box-shadow:inset 0 1px 3px rgba(14,34,50,.2)}
+.band{position:absolute;left:3px;right:3px;border-radius:14px;background:var(--accent);transition:top .5s,height .5s}
+.track .tick{position:absolute;left:50%;transform:translate(-50%,-50%);font:700 9px/1 var(--mono);color:#9fb1bf}
+.mark{position:absolute;left:-12px;transform:translateY(-50%);font:800 11px/1 var(--mono);color:var(--ink);background:#fff;border:1px solid var(--ink);border-radius:3px;padding:1px 3px;transition:top .5s}
+.draft{width:100%;height:56px;border-radius:10px;background:#fff;border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;font:850 28px/1 var(--sans)}
+.draft.cur{border-color:var(--accent)}
+.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:10px 0;font-size:14px;color:var(--ink-2)}
+.hist{display:grid;gap:5px}
+.hr{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:0 10px}
+.hr span{height:46px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:4px;font:800 20px/1 var(--sans);background:var(--paper);border:1px solid var(--line)}
+.hr span b{font-size:13px;color:var(--accent-ink)}
+.hr span.ex{background:var(--ink);color:#fff}
+.hr.empty span{background:transparent;border-style:dashed}
+.kb{margin-top:14px;display:grid;gap:5px}
+.kr{display:flex;gap:4px;justify-content:center}
+.key{flex:1 1 0;min-width:0;max-width:44px;height:50px;border:0;border-radius:6px;background:#fff;box-shadow:0 2px 0 #a8bbca;font:700 16px/1 var(--sans);cursor:pointer;padding:0}
+.key.wide{max-width:72px;flex:1.6 1 0;font-size:13px}
+.key.ent{background:var(--ink);color:#fff}
+.key.out{opacity:.35}
+.note{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
+</style></head><body>
+<p class="concept-tag"><b>Design concept</b>Tumbler · A — Range columns · visual prototype; the “after one guess” state uses an invented hidden word</p>
+<div class="app">
+<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<div class="game-head"><img src="../assets/icons/claude-tumbler.svg" alt=""><div class="titles"><p class="kicker">Alphabet deduction</p><h1>Tumbler</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
+<main class="wrap" id="board" tabindex="0" aria-label="Tumbler. Type a five-letter word, Enter turns the lock.">
+ <div class="hud"><b id="turns">6 turns left</b><span class="seg" role="group" aria-label="Sample state"><button id="s0" aria-pressed="false">Fresh</button><button id="s1" aria-pressed="true">After 1 guess</button></span></div>
+ <div class="lock" id="lock"></div>
+ <p class="legend"><span>▲ secret letter is later</span><span>▼ earlier</span><span>● exact</span></p>
+ <div class="hist" id="hist"></div>
+ <div class="kb" id="kb" role="group" aria-label="Keyboard"></div>
+ <p class="note">Each column only learns from its own position. Your typed word sits directly under the column it tests.</p>
+ <p class="msg" id="msg" role="status"></p>
+</main>
+<footer class="app-foot"><span>Unlisted and repeated words don’t use a turn · Hint locks one dial</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Tumbler</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
+</div>
+<script src="studio.js"></script>
+<script>
+const AB='ABCDEFGHIJKLMNOPQRSTUVWXYZ';const SECRET='MOIST';// invented for illustration only
+let guesses=['CRANE'],draft='';const $=id=>document.getElementById(id);
+const fb=(g,k)=>g[k]===SECRET[k]?0:SECRET[k]>g[k]?1:-1,gl=f=>f===0?'●':f>0?'▲':'▼';
+function ranges(){const lo=[0,0,0,0,0],hi=[25,25,25,25,25];guesses.forEach(g=>[...g].forEach((c,k)=>{const i=AB.indexOf(c),f=fb(g,k);if(f===0){lo[k]=hi[k]=i}else if(f>0)lo[k]=Math.max(lo[k],i+1);else hi[k]=Math.min(hi[k],i-1);}));return{lo,hi};}
+function render(){const{lo,hi}=ranges(),last=guesses.at(-1);
+ $('lock').innerHTML=[0,1,2,3,4].map(k=>{const top=lo[k]/26*100,h=(hi[k]-lo[k]+1)/26*100;return `<div class="col" aria-label="Position ${k+1}: ${AB[lo[k]]} to ${AB[hi[k]]}, ${hi[k]-lo[k]+1} letters"><span class="rng">${lo[k]===hi[k]?AB[lo[k]]:AB[lo[k]]+'–'+AB[hi[k]]}</span><span class="cnt">${hi[k]-lo[k]+1} left</span><div class="track"><span class="tick" style="top:5%">A</span><span class="tick" style="top:50%">M</span><span class="tick" style="top:95%">Z</span><span class="band" style="top:${top}%;height:${h}%"></span>${last?`<span class="mark" style="top:${(AB.indexOf(last[k])+.5)/26*100}%">${last[k]}${gl(fb(last,k))}</span>`:''}</div><div class="draft ${k===draft.length?'cur':''}">${draft[k]||''}</div></div>`}).join('');
+ $('hist').innerHTML=[0,1,2,3,4,5].map(n=>{const g=guesses[n];return g?`<div class="hr" aria-label="Guess ${n+1} ${g}">${[...g].map((c,k)=>{const f=fb(g,k);return `<span class="${f===0?'ex':''}">${c}<b>${gl(f)}</b></span>`}).join('')}</div>`:`<div class="hr empty">${'<span></span>'.repeat(5)}</div>`}).join('');
+ $('turns').textContent=`${6-guesses.length} turns left`;$('s0').setAttribute('aria-pressed',!guesses.length);$('s1').setAttribute('aria-pressed',!!guesses.length);
+ $('msg').textContent=guesses.length?'Illustration: CRANE tested against an invented hidden word. Bands shrink to the letters still possible.':'';}
+const rows=['QWERTYUIOP','ASDFGHJKL','⏎ZXCVBNM⌫'];$('kb').innerHTML=rows.map(r=>`<div class="kr">${[...r].map(c=>c==='⏎'?'<button class="key wide ent" data-k="E">Turn</button>':c==='⌫'?'<button class="key wide" data-k="B" aria-label="Delete">⌫</button>':`<button class="key" data-k="${c}">${c}</button>`).join('')}</div>`).join('');
+function key(k){if(k==='B')draft=draft.slice(0,-1);else if(k==='E'){$('msg').textContent='Prototype: the live game checks the guess list and turns the lock.';return}else if(draft.length<5)draft+=k;render();}
+$('kb').onclick=e=>{const b=e.target.closest('[data-k]');if(b)key(b.dataset.k)};
+$('board').onkeydown=e=>{if(e.target.closest('button')&&(e.key==='Enter'||e.key===' '))return;if(/^[a-z]$/i.test(e.key))key(e.key.toUpperCase());else if(e.key==='Backspace'){e.preventDefault();key('B')}else if(e.key==='Enter')key('E');};
+$('s0').onclick=()=>{guesses=[];render()};$('s1').onclick=()=>{guesses=['CRANE'];render()};
+render();
+</script>
+</body></html>

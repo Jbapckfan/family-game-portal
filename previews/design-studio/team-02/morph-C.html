@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morph C · Bridge and target columns — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.bridge{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px 0 20px}
+.end{text-align:center}
+.end small{display:block;font:700 11px var(--sans);letter-spacing:.14em;color:var(--muted);margin-bottom:4px}
+.end b{font-size:clamp(22px,6vw,34px);letter-spacing:.14em;font-weight:850}
+.end.goal b{color:var(--accent)}
+.span{position:relative;display:flex;justify-content:space-between;align-items:center;height:30px}
+.span::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:repeating-linear-gradient(90deg,#9fb3c4 0 6px,transparent 6px 11px)}
+.span i{position:relative;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid #9fb3c4}
+.span i.here{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 5px rgba(28,92,188,.16)}
+.span-note{grid-column:1/-1;text-align:center;font:12px var(--mono);color:var(--muted);margin-top:-4px}
+.editor{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 14px 16px;max-width:560px;margin:0 auto}
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:360px;margin:0 auto}
+.col{display:flex;flex-direction:column;align-items:center;gap:6px}
+.col button{width:100%;height:76px;border-radius:12px;border:2px solid #c3d1dd;background:#f9fbfc;font-size:42px;font-weight:850;cursor:pointer}
+.col button[aria-pressed="true"]{border-color:var(--accent);background:#eef4fd;box-shadow:0 0 0 4px rgba(28,92,188,.12)}
+.col .from{font:12px var(--mono);color:var(--muted);height:16px}
+.col .tgt{width:100%;text-align:center;font:700 18px var(--mono);color:#9aaab8;border-top:3px solid #dfe7ee;padding-top:4px}
+.col .tgt.match{color:var(--ok);border-top-color:var(--ok)}
+.legend{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:10px 0 0}
+.say{text-align:center;margin:12px 0 0;color:var(--ink-2);font-size:15px;min-height:22px}
+.kb{margin-top:14px;display:grid;gap:6px}
+.kr{display:grid;gap:4px}
+.kr button{height:48px;border-radius:7px;border:1px solid #c6d3de;background:#fff;font-weight:700;font-size:16px;cursor:pointer;padding:0;min-width:0}
+.kr button.wide{font-size:13px}
+.r1{grid-template-columns:repeat(10,minmax(0,1fr))}.r2{grid-template-columns:.5fr repeat(9,minmax(0,1fr)) .5fr}.r3{grid-template-columns:1.5fr repeat(7,minmax(0,1fr)) 1.5fr}
+.foot{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Morph C — Bridge and target columns</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/kimi-morph.svg" alt=""><div><p class="eyebrow">Word ladders</p><h1 class="gname">Morph</h1><p class="tagline">Change a letter. Find your way there.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 64 · Fri 6 Nov</span></div>
+
+  <div class="bridge" aria-label="Route from BANG to MESS, suggested five moves">
+    <div class="end"><small>START</small><b>BANG</b></div>
+    <div class="span"><i class="here"></i><i></i><i></i><i></i><i></i></div>
+    <div class="end goal"><small>GOAL</small><b>MESS</b></div>
+    <p class="span-note">Move 1 of a suggested 5 · shorter routes may exist</p>
+  </div>
+
+  <section class="editor" aria-label="Next rung editor">
+    <div class="cols" id="cols"></div>
+    <div class="legend"><span>Top: your next word</span><span>Below: the goal letter for that column</span></div>
+    <p class="say" id="say" aria-live="polite">Pick one column, then type or tap its new letter.</p>
+    <div class="kb" aria-label="Letter keys">
+      <div class="kr r1"></div><div class="kr r2"></div><div class="kr r3"></div>
+    </div>
+    <div class="foot"><button class="btn primary" style="min-width:180px">Check word</button><button class="btn">Undo rung</button><button class="btn quiet">Show a route · 1 hint</button><button class="btn quiet">Give up</button></div>
+  </section>
+</main>
+<p class="studio-foot">Concept notes: the goal is spelled under every column, so "which letters still differ" is readable at a glance (green rule = column already matches). Columns are live here: select one and tap a key. Keyboard keys are 48px tall but narrower than 44px on a 320px phone, like a system keyboard; physical typing remains the primary path on desktop.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const base='BANG'.split(''),goal='MESS'.split(''),cur=[...base];let sel=0;const host=document.getElementById('cols'),say=document.getElementById('say');
+function draw(){host.innerHTML='';cur.forEach((c,i)=>{const d=document.createElement('div');d.className='col';d.innerHTML=`<span class="from">${c!==base[i]?base[i]+' →':''}</span><button aria-pressed="${i===sel}" aria-label="Column ${i+1}, ${c}">${c}</button><span class="tgt ${c===goal[i]?'match':''}">${goal[i]}</span>`;d.querySelector('button').onclick=()=>{sel=i;draw();};host.appendChild(d);});
+const n=cur.filter((c,i)=>c!==base[i]).length;say.textContent=n===0?'Pick one column, then type or tap its new letter.':n===1?`One letter changed: ${cur.join('')}. Ready to check.`:`${n} letters changed — change exactly one. This doesn't count as a miss.`;say.style.color=n>1?'var(--bad)':'';}
+['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach((r,ri)=>{const row=document.querySelectorAll('.kr')[ri];if(ri===1)row.appendChild(document.createElement('span'));if(ri===2){const b=document.createElement('button');b.className='wide';b.textContent='Reset';b.onclick=()=>{base.forEach((c,i)=>cur[i]=c);draw();};row.appendChild(b);}r.split('').forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>{cur[sel]=k;draw();};row.appendChild(b);});if(ri===2){const b=document.createElement('button');b.className='wide';b.textContent='⌫';b.setAttribute('aria-label','Restore selected letter');b.onclick=()=>{cur[sel]=base[sel];draw();};row.appendChild(b);}});
+draw();
+</script>
+</body>
+</html>

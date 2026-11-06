@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Second Sense · Concept D · Word First</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrapx{max-width:780px;margin:0 auto}
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch;padding:8px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--shade)}
+.q input{min-width:0;min-height:64px;border:0;background:transparent;padding:0 10px;font:800 clamp(30px,9vw,46px)/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.q input:focus{outline:none}
+.q input::placeholder{color:#b3c0cc;letter-spacing:.02em;font-weight:600;font-size:.55em}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px;min-height:44px}
+.tag{display:inline-flex;align-items:center;gap:8px;min-height:44px;border-radius:22px;padding:0 6px 0 12px;font:500 15px/1.2 var(--sans);border:1.5px dashed #b5c3d1;color:var(--muted)}
+.tag i{font:italic 700 15px var(--serif)}
+.tag.n.on{border:0;background:var(--blue-wash);color:var(--blue-ink)}
+.tag.v.on{border:0;background:var(--teal-wash);color:var(--teal-ink)}
+.tag button{width:32px;height:32px;border-radius:50%;border:0;background:rgba(15,29,42,.08);font-size:14px}
+.steps{display:flex;gap:0;margin:0 0 14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.steps span{flex:1;min-height:44px;display:grid;place-items:center;font:600 13px/1.2 var(--sans);color:var(--muted);text-align:center;padding:4px}
+.steps span+span{border-left:1px solid var(--line)}
+.steps .ok{color:var(--ok)} .steps .now{background:var(--ink);color:#fff}
+.grp{margin-top:6px}
+.grp h2{display:flex;justify-content:space-between;margin:14px 0 6px;font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.opt{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:center;min-height:54px;text-align:left;border:0;border-bottom:1px solid var(--line2);background:transparent;padding:8px 6px;font:500 17px/1.3 var(--sans);color:var(--ink)}
+.opt::before{content:"";width:22px;height:22px;border-radius:50%;border:2px solid #aebdcc}
+.opt[aria-checked="true"]::before{border:7px solid var(--ink)}
+.grp.v .opt[aria-checked="true"]::before{border-color:var(--teal)}
+.grp.n .opt[aria-checked="true"]::before{border-color:var(--blue)}
+.opt.done{color:#9aa8b6}
+.opt.done::before{border-color:var(--ok);background:var(--ok-wash)}
+.found{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.found span{font:700 14px/1 var(--mono);letter-spacing:.08em;padding:8px 10px;border-radius:8px;background:var(--ok-wash);color:var(--ok)}
+.found span.e{background:transparent;border:1px dashed var(--line);color:#a9b6c3}
+</style></head>
+<body>
+<div class="rv"><span><b>Second Sense · Concept D “Word First”</b> · design review prototype, not a live game</span><nav aria-label="Second Sense concepts"><a href="second-sense-A.html">A</a><a href="second-sense-B.html">B</a><a href="second-sense-C.html">C</a><a href="second-sense-D.html" aria-current="page">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Second Sense" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Second Sense from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/second-sense.svg" alt=""><div><h1>Second Sense</h1><div class="meta">NO. 018 · TRICKY · 1 CHECK · 0 HINTS</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap"><div class="wrapx">
+  <div class="steps" aria-hidden="true"><span class="ok" id="s1">1 · Word</span><span class="ok" id="s2">2 · Verb</span><span class="now" id="s3">3 · Noun</span><span id="s4">Check</span></div>
+  <form class="q" id="f" onsubmit="event.preventDefault();check()"><input id="word" value="WIND" maxlength="12" placeholder="Type a word with two lives" aria-label="Your word" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn pri" id="chk" style="min-height:64px;border-radius:12px">Check</button></form>
+  <div class="tags" id="tags"></div>
+  <p class="live" id="msg">Your hunch first. Then attach the meanings it fits: one noun, one verb.</p>
+  <div class="grp n"><h2><span>Attach a noun meaning</span><span id="nc"></span></h2><div id="nouns" role="radiogroup" aria-label="Noun meanings"></div></div>
+  <div class="grp v"><h2><span>Attach a verb meaning</span><span id="vc"></span></h2><div id="verbs" role="radiogroup" aria-label="Verb meanings"></div></div>
+  <div class="found" aria-label="Found words"><span>BAT</span><span class="e">· · ·</span><span class="e">· · ·</span><span class="e">· · ·</span><span class="e">· · ·</span></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="say('A first-letter hint applies to a chosen noun (+1 hint). In word-first mode the noun must be attached first. Not wired in this prototype.')">✦ First-letter hint</button></div>
+</div></div>
+<div class="foot"><span>Same spelling, both senses. Pronunciation may change.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const N=['Hook-beaked bird of prey','Organization whose members share an interest','Flying mammal active mostly at night','Small stick with a flame-making tip','Air moving through the atmosphere'];
+const V=['Offer goods for sale with shouted calls','Hit with a heavy stick','Wrap thread around a reel','Correspond exactly','Strike a ball with a club'];
+const DN={2:'BAT'},DV={4:'BAT'};let n=null,v=2;
+const $=id=>document.getElementById(id);function say(m){$('msg').textContent=m;}
+function render(){
+  const w=$('word').value.trim();
+  $('nouns').innerHTML=N.map((c,i)=>`<button type="button" role="radio" class="opt${DN[i]?' done':''}" data-n="${i}" aria-checked="${n===i}" ${DN[i]?'disabled':''}><span>${c}${DN[i]?` · <b>${DN[i]}</b>`:''}</span></button>`).join('');
+  $('verbs').innerHTML=V.map((c,i)=>`<button type="button" role="radio" class="opt${DV[i]?' done':''}" data-v="${i}" aria-checked="${v===i}" ${DV[i]?'disabled':''}><span>${c}${DV[i]?` · <b>${DV[i]}</b>`:''}</span></button>`).join('');
+  $('tags').innerHTML=`<span class="tag n${n!==null?' on':''}"><i>n.</i>${n!==null?N[n]+'<button type="button" data-un="n" aria-label="Detach noun">✕</button>':'noun meaning not attached'}</span><span class="tag v${v!==null?' on':''}"><i>v.</i>${v!==null?V[v]+'<button type="button" data-un="v" aria-label="Detach verb">✕</button>':'verb meaning not attached'}</span>`;
+  $('s1').className=w?'ok':'now';$('s2').className=v!==null?'ok':(w?'now':'');$('s3').className=n!==null?'ok':(w&&v!==null?'now':'');$('s4').className=w&&n!==null&&v!==null?'now':'';
+  $('chk').disabled=!(w&&n!==null&&v!==null);
+}
+function check(){say('The live engine checks here (same nounId, verbId, word as today). Not wired in this prototype.');}
+$('nouns').onclick=e=>{const b=e.target.closest('[data-n]');if(b){n=+b.dataset.n;render();}};
+$('verbs').onclick=e=>{const b=e.target.closest('[data-v]');if(b){v=+b.dataset.v;render();}};
+$('tags').onclick=e=>{const b=e.target.closest('[data-un]');if(b){b.dataset.un==='n'?n=null:v=null;render();}};
+$('word').oninput=render;render();
+</script>
+</body></html>

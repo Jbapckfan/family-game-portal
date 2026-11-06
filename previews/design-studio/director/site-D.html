@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alford Daily · Design concept D · Specimen</title>
+<style>
+:root{
+  --field:#F0F5FA;--plate:#FFFFFF;--rule:#D6E0EA;--rule2:#E8EEF4;--well:#F4F7FB;
+  --ink:#0F1A26;--ink2:#46586A;--ink3:#6B7D8F;--accent:#2160CB;--accentSoft:#E4EDFB;--teal:#0C7A80;--tealSoft:#E0F2F2;--gold:#E2A31B;--green:#2B8650;
+  --sans:"Avenir Next","Helvetica Neue",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --plateShadow:0 1px 0 var(--rule),0 40px 60px -48px rgba(15,40,70,.45);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--field);color:var(--ink);font:18px/1.5 var(--sans)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.review{max-width:1360px;margin:0 auto;padding:12px 32px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font:13px/1.4 system-ui,sans-serif;color:var(--ink2)}
+.review .tag{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);border:1.5px solid var(--ink);padding:3px 8px;border-radius:3px}
+.review .seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:#fff}
+.review .seg button{border:0;background:none;padding:6px 10px;cursor:pointer;font-size:13px}
+.review .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+.wrap{max-width:1360px;margin:0 auto;padding:0 64px 72px}
+.hdr{display:flex;align-items:center;gap:28px;padding:18px 0;border-bottom:1px solid var(--rule);position:relative}
+.brand{display:flex;align-items:center;gap:12px;font:700 23px/1 var(--sans);letter-spacing:-.01em;color:inherit;text-decoration:none}
+.nav{display:flex;gap:2px}
+.nav a{padding:10px 12px;border-radius:8px;color:var(--ink2);text-decoration:none;font-weight:600;font-size:16px}
+.nav a:hover{color:var(--ink);background:var(--rule2)}
+.hdr .sp{flex:1}
+.pbtn{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:0 16px 0 6px;border-radius:999px;border:1px solid var(--rule);background:#fff;cursor:pointer;font-weight:600;font-size:16px}
+.pbtn .av{width:34px;height:34px;border-radius:50%;background:var(--accentSoft);display:grid;place-items:center;color:var(--accent)}
+.pop{position:absolute;right:0;top:76px;width:350px;background:#fff;border:1px solid var(--rule);border-radius:14px;box-shadow:0 30px 60px -30px rgba(15,40,70,.5);padding:22px;z-index:9;display:none}
+.pop.open{display:block}
+.pop h3{margin:0 0 6px;font-size:20px}
+.pop p{margin:0 0 12px;color:var(--ink2);font-size:16px}
+.pop dl{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:0 0 14px;font-size:16px}
+.pop dd{margin:0;font-weight:700}
+.inert{width:100%;min-height:46px;border:1.5px dashed var(--ink3);border-radius:10px;background:transparent;color:var(--ink2);cursor:not-allowed;font-size:15px}
+
+.dateline{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;margin:40px 0 22px}
+.dateline h1{margin:0;font:800 46px/1 var(--sans);letter-spacing:-.03em}
+.dateline .d{font-size:19px;color:var(--ink2)}
+.dateline .r{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:17px;color:var(--ink2)}
+.btn{min-height:46px;padding:0 18px;border-radius:10px;border:1.5px solid var(--ink);background:#fff;font-weight:700;font-size:16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none}
+.btn:disabled{border-color:var(--rule);color:var(--ink3);cursor:not-allowed}
+.sharebox{display:none;margin:0 0 18px auto;max-width:420px;font:14px/1.55 var(--mono);white-space:pre;background:#fff;border:1px solid var(--rule);border-radius:10px;padding:12px 14px;overflow:auto}
+.sharebox.show{display:block}
+
+/* specimens */
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.spec{background:var(--plate);border-radius:18px;box-shadow:var(--plateShadow);display:flex;flex-direction:column;overflow:hidden}
+.mini{position:relative;height:280px;background:var(--well);border-bottom:1px solid var(--rule);display:grid;place-items:center;overflow:hidden;padding:18px}
+.mini .lbl{position:absolute;left:16px;top:14px;font:700 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.spec .body{padding:22px 24px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+.spec .ct{font:700 13px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.spec h2{margin:2px 0 0;font:800 36px/1.05 var(--sans);letter-spacing:-.025em}
+.spec .mv{font-weight:600;font-size:19px;color:var(--ink)}
+.spec .ds{font-size:17px;color:var(--ink2)}
+.spec .row{margin-top:auto;padding-top:16px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--rule2)}
+.spec .stt{font-size:15px;font-weight:600;color:var(--ink2);margin-right:auto}
+.spec .stt.prog{color:var(--accent)}.spec .stt.done{color:var(--green)}
+.go{min-height:50px;padding:0 20px;border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-size:17px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.go.cont{background:var(--accent)}.go.rev{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.ib{width:44px;height:44px;border-radius:10px;border:1px solid var(--rule);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink3)}
+.ib svg{width:21px;height:21px}.ib .sp{fill:transparent}
+.ib.star[aria-pressed="true"]{color:#B87F0A;border-color:var(--gold);background:#FFF8E6}.ib.star[aria-pressed="true"] .sp{fill:var(--gold)}
+.ib.eye[aria-pressed="true"]{color:#fff;background:var(--ink2);border-color:var(--ink2)}
+.hnote{font-size:14px;color:var(--ink3)}
+
+/* shortlist miniature */
+.sl{width:100%;max-width:340px}
+.sl .words{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;position:relative}
+.sl .w{background:#fff;border:1px solid var(--rule);border-radius:7px;text-align:center;font:700 16px/1 var(--mono);letter-spacing:.06em;padding:9px 0;color:var(--ink)}
+.sl .beam{position:absolute;left:-8px;right:-8px;height:38px;top:-2px;border:2px solid var(--accent);border-radius:9px;background:rgba(33,96,203,.06);opacity:0}
+.sl .scan{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font:600 14px var(--sans);color:var(--ink2)}
+.sl .scan b{width:34px;height:38px;border-radius:8px;border:2px dashed var(--ink3);display:grid;place-items:center;font:700 18px var(--mono);color:var(--ink3)}
+.spec:hover .sl .beam,.spec:focus-within .sl .beam{animation:sweep .9s ease-in-out 1}
+@keyframes sweep{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(130px)}}
+/* second sense miniature */
+.ss{width:100%;max-width:360px;display:grid;grid-template-columns:1fr 26px 1fr;gap:0 6px;align-items:center}
+.ss .col{display:flex;flex-direction:column;gap:7px}
+.ss .h{font:800 13px/1 var(--sans);letter-spacing:.1em;color:var(--ink3);margin-bottom:2px}
+.ss .c{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:7px 9px;font-size:13.5px;line-height:1.25;color:var(--ink)}
+.ss .c.on{border:2px solid var(--accent);padding:6px 8px}
+.ss .c.vo{border:2px solid var(--teal);padding:6px 8px}
+.ss .amp{font:800 18px var(--sans);color:var(--ink3);text-align:center}
+/* sideways miniature */
+.sw{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 12px}
+.sw .strip{display:flex;gap:5px;transition:transform .35s ease}
+.sw .t{width:40px;height:40px;border-radius:8px;background:#fff;border:1px solid var(--rule);box-shadow:0 2px 0 var(--rule);display:grid;place-items:center;font:800 19px var(--sans)}
+.sw .cols{position:absolute;inset:-14px 0 -10px;display:flex;justify-content:center;gap:5px;pointer-events:none}
+.sw .cols i{width:40px;border-radius:10px;border:2px solid rgba(33,96,203,.22);background:rgba(33,96,203,.04)}
+.sw .cols i:first-child{border-color:var(--accent)}
+.sw .heads{display:flex;justify-content:center;gap:5px;margin-bottom:6px;font:800 13px var(--sans);color:var(--ink3)}
+.sw .heads span{width:40px;text-align:center}
+.spec:hover .sw .strip.n,.spec:focus-within .sw .strip.n{transform:translateX(45px)}
+.result{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--ink2);font-size:15px;text-align:center}
+.result .marks{display:flex;gap:8px}
+.result .marks i{width:26px;height:26px;border-radius:7px;background:var(--green)}
+.result .marks i.o{background:#fff;border:2px solid var(--rule)}
+
+/* catalogue */
+.coll{margin-top:88px}
+.coll-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px}
+.coll-h h2{margin:0;font:800 38px/1 var(--sans);letter-spacing:-.025em}
+.coll-h .m{color:var(--ink2);font-size:17px}
+.filters{position:sticky;top:0;z-index:5;background:rgba(240,245,250,.94);backdrop-filter:blur(6px);display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:16px 0;margin-top:14px;border-bottom:1px solid var(--rule)}
+.seg2{display:inline-flex;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:4px}
+.seg2 button{border:0;background:none;min-height:40px;padding:0 14px;border-radius:9px;font-weight:700;font-size:15px;color:var(--ink2);cursor:pointer}
+.seg2 button[aria-checked="true"]{background:var(--ink);color:#fff}
+.seg2 .c{font:500 13px var(--mono);opacity:.75;margin-left:4px}
+.kinds{display:flex;flex-wrap:wrap;gap:6px}
+.kinds button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--rule);background:#fff;cursor:pointer;font-weight:600;font-size:15px;color:var(--ink2)}
+.kinds button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accentSoft)}
+.find{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:0 12px;min-height:46px}
+.find input{border:0;outline:0;width:200px;font-size:16px}
+.grp{margin-top:36px}
+.grp h3{margin:0 0 14px;font:800 14px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);display:flex;gap:10px;align-items:center}
+.grp h3::after{content:"";flex:1;height:1px;background:var(--rule)}
+.plates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pl{background:var(--plate);border-radius:14px;box-shadow:var(--plateShadow);padding:18px 18px 14px;display:grid;grid-template-columns:48px minmax(0,1fr);gap:4px 14px;position:relative}
+.ico{grid-row:span 2;position:relative;width:48px;height:48px;border-radius:12px;background:var(--accentSoft);display:grid;place-items:center;font:800 19px var(--sans);color:var(--accent);overflow:hidden}
+.ico img{position:absolute;inset:0;width:100%;height:100%}
+.pl a.nm{font:800 21px/1.15 var(--sans);color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.pl a.nm::after{content:"";position:absolute;inset:0;border-radius:14px}
+.pl .ct{font:700 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.pl .mv{grid-column:1/-1;margin-top:10px;font-size:18px;font-weight:600;line-height:1.35}
+.pl .mv::before{content:"→ ";color:var(--accent)}
+.pl .ft{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin-top:10px;position:relative;z-index:2}
+.pl .td{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accentSoft);padding:6px 8px;border-radius:6px;margin-right:auto}
+.pl .ft .ib:first-of-type{margin-left:auto}
+.empty{background:#fff;border:1px dashed var(--rule);border-radius:14px;padding:28px;text-align:center;color:var(--ink2);margin-top:28px}
+
+/* feedback band */
+.band{margin-top:96px;background:var(--plate);border-radius:22px;box-shadow:var(--plateShadow);display:grid;grid-template-columns:1fr 1.25fr;overflow:hidden}
+.band .l{padding:40px;background:var(--well);border-right:1px solid var(--rule)}
+.band .l h2{margin:0 0 10px;font:800 34px/1.1 var(--sans);letter-spacing:-.02em}
+.band .l p{margin:0 0 14px;color:var(--ink2)}
+.steps{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:12px;font-size:16px}
+.steps b{width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:800 13px var(--sans)}
+.band .r{padding:40px}
+label.f{display:block;font-weight:700;font-size:16px;margin:0 0 6px}
+label.f+select,label.f+textarea{margin-bottom:14px}
+select,textarea{width:100%;border:1px solid var(--ink3);border-radius:10px;padding:12px 14px;font-size:17px;background:#fff}
+textarea{min-height:130px;resize:vertical}
+.send{min-height:50px;padding:0 22px;border-radius:12px;border:0;background:var(--ink);color:#fff;font-weight:700;cursor:pointer}
+.send:disabled{background:var(--rule);color:var(--ink3);cursor:not-allowed}
+.receipt{margin-top:16px;border:1.5px dashed var(--ink3);border-radius:10px;padding:14px;font-size:15px;color:var(--ink2)}
+.receipt.warn{border-style:solid;border-color:var(--ink);background:var(--well)}
+.foot{margin-top:40px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;color:var(--ink2);font-size:15px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:1100px){
+  .wrap{padding:0 28px 60px}
+  .specs{grid-template-columns:1fr}
+  .spec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .mini{height:auto;min-height:300px;border-bottom:0;border-right:1px solid var(--rule)}
+  .plates{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .band{grid-template-columns:1fr}
+  .band .l{border-right:0;border-bottom:1px solid var(--rule)}
+}
+@media (max-width:680px){
+  .review{padding:10px 14px}
+  .wrap{padding:0 14px 48px}
+  .hdr{flex-wrap:wrap;gap:8px}
+  .nav{order:3;width:100%;overflow-x:auto}
+  .nav a{font-size:15px;padding:8px 10px;white-space:nowrap}
+  .pbtn .lbl{display:none}.pbtn{padding:0 6px}
+  .pop{left:0;right:0;width:auto;top:64px}
+  .dateline{margin:26px 0 16px}
+  .dateline h1{font-size:34px}
+  .dateline .r{margin-left:0;width:100%;justify-content:space-between}
+  .spec{display:flex}
+  .mini{border-right:0;border-bottom:1px solid var(--rule);min-height:250px}
+  .spec .body{padding:18px}
+  .spec h2{font-size:30px}
+  .spec .row{flex-wrap:wrap}
+  .spec .row .go{flex:1;justify-content:center}
+  .sw .t{width:34px;height:34px;font-size:17px}
+  .sw .cols i,.sw .heads span{width:34px}
+  .coll{margin-top:60px}
+  .coll-h h2{font-size:30px}
+  .find{margin-left:0;width:100%}.find input{width:100%}
+  .filters{position:static}
+  .plates{grid-template-columns:1fr}
+  .band{margin-top:64px}
+  .band .l,.band .r{padding:24px 18px}
+}
+</style>
+</head>
+<body>
+<div class="review" role="note" aria-label="Design review controls (not part of the product)">
+  <span class="tag">Design concept D · Specimen</span>
+  <span>Opus design review mockup. Not live. Nothing sends or saves. Previews use the supplied No. 018 opening states; ◇ = illustrative state.</span>
+  <span class="seg" aria-label="Preview day state"><button type="button" data-state="fresh" aria-pressed="true">Fresh day</button><button type="button" data-state="progress" aria-pressed="false">Mid-day ◇</button><button type="button" data-state="done" aria-pressed="false">All finished ◇</button></span>
+</div>
+
+<div class="wrap">
+  <header class="hdr">
+    <a class="brand" href="#today" aria-label="Alford Daily home"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="9" fill="#0F1A26"/><rect x="7" y="9" width="9" height="16" rx="2.5" fill="#fff"/><rect x="18" y="9" width="9" height="7" rx="2.5" fill="#7FA6EE"/><rect x="18" y="18" width="9" height="7" rx="2.5" fill="#5FC2C6"/></svg>Alford Daily</a>
+    <nav class="nav" aria-label="Sections"><a href="#today">Today</a><a href="#collection">Collection</a><a href="#collection" data-jump="fav">Favourites</a><a href="#collection" data-jump="hid">Hidden</a><a href="#feedback">Feedback</a></nav>
+    <span class="sp"></span>
+    <button class="pbtn" id="pbtn" type="button" aria-expanded="false" aria-controls="pop"><span class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span class="lbl">Profile</span></button>
+    <div class="pop" id="pop" role="dialog" aria-label="Browser profile">
+      <h3>Browser profile</h3>
+      <p>Optional and private to this browser. It keeps progress, favourites, hidden games and feedback receipts together.</p>
+      <dl><dt>Status</dt><dd>No profile yet</dd><dt>Favourites</dt><dd id="pf-f">0</dd><dt>Hidden</dt><dd id="pf-h">0</dd></dl>
+      <button class="inert" type="button" disabled>Create profile (inert in this concept)</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="today" aria-labelledby="t-h">
+      <div class="dateline">
+        <h1 id="t-h">Today's Three</h1>
+        <span class="d"><time datetime="2026-11-06">Friday, November 6</time> · No. 018</span>
+        <span class="r"><span id="dayc">0 of 3 finished</span><button class="btn" id="share" type="button" disabled>Share today</button></span>
+      </div>
+      <div class="sharebox" id="sharebox" aria-live="polite"></div>
+      <div class="specs" id="specs"></div>
+    </section>
+
+    <section class="coll" id="collection" aria-labelledby="c-h">
+      <div class="coll-h"><h2 id="c-h">The collection</h2><span class="m">33 games · each one led by the move you make</span></div>
+      <div class="filters">
+        <div class="seg2" role="radiogroup" aria-label="Show">
+          <button type="button" role="radio" aria-checked="true" data-f="all">All<span class="c" id="c-all">33</span></button>
+          <button type="button" role="radio" aria-checked="false" data-f="fav">Favourites<span class="c" id="c-fav">0</span></button>
+          <button type="button" role="radio" aria-checked="false" data-f="hid">Hidden<span class="c" id="c-hid">0</span></button>
+        </div>
+        <div class="kinds" aria-label="How it plays">
+          <button type="button" data-k="meaning" aria-pressed="false">Clues &amp; meaning</button>
+          <button type="button" data-k="letters" aria-pressed="false">Letters &amp; words</button>
+          <button type="button" data-k="deduce" aria-pressed="false">Deduction</button>
+          <button type="button" data-k="logic" aria-pressed="false">Logic &amp; pattern</button>
+        </div>
+        <label class="find"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="vh">Find a game</span><input id="q" type="search" placeholder="Find a game"></label>
+      </div>
+      <div id="groups"></div>
+    </section>
+
+    <section class="band" id="feedback" aria-labelledby="fb-h">
+      <div class="l">
+        <h2 id="fb-h">Tell James what you think</h2>
+        <p>Every game page has this same box. Here it covers the whole site, or any game you pick.</p>
+        <ol class="steps">
+          <li><b>1</b><span>Write a note. Please leave out answers and personal details.</span></li>
+          <li><b>2</b><span>Send it. It goes privately to James, linked to your browser profile if you have one.</span></li>
+          <li><b>3</b><span>A receipt appears only once the server confirms the note is stored.</span></li>
+        </ol>
+      </div>
+      <div class="r">
+        <label class="f" for="about">About</label>
+        <select id="about"><option>The whole site</option></select>
+        <label class="f" for="msg">Your note</label>
+        <textarea id="msg" placeholder="An idea, a snag, or something you liked"></textarea>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><button class="send" id="send" type="button" disabled>Send note</button><span id="fbc" style="font-size:14px;color:var(--ink3)">0 / 1000</span></div>
+        <div class="receipt" id="receipt" aria-live="polite"><b>Receipt slot:</b> empty until the server confirms. No confirmation is ever shown before that.</div>
+      </div>
+    </section>
+  </main>
+  <footer class="foot"><span>Alford Daily · 9,581 prepared daily puzzles · new puzzles at midnight Central</span><span>Progress stays in this browser unless you choose a profile.</span></footer>
+</div>
+
+<script>
+const G=[
+['switchpath','Switchpath','logic','Path logic','Alternate higher, lower through every cell'],
+['ringcount','Ringcount','logic','Number logic','Cut the ring into four equal sums'],
+['counterpart','Counterpart','meaning','Word relationships','Match a pair to the same relationship'],
+['shortlist','Shortlist','deduce','Letter deduction','Scan two letters, then pick the secret word'],
+['second-sense','Second Sense','meaning','Double meanings','Pair a noun clue with a verb clue'],
+['sideways','Sideways','letters','Word arrangement','Slide strips until columns spell the clues'],
+['tradeoff','Tradeoff','meaning','Letter swaps','Swap letters between rows to fit each clue'],
+['inbetween','Inbetween','meaning','Word building','Drag a letter pair into the right gap'],
+['kimi-cairn','Cairn','letters','Growing anagrams','Add one letter, rearrange, climb a level'],
+['kimi-morph','Morph','letters','Word ladders','Change one letter per rung to reach the target'],
+['kimi-tangle','Tangle','letters','Word trails','Trace touching letters to spell words'],
+['kimi-hunch','Hunch','deduce','Five-letter deduction','Guess, then read the black and white dots'],
+['kimi-circuit','Circuit','letters','Word chains','Chain words, switching arcs every letter'],
+['kimi-quartet','Quartet','meaning','Meaning & categories','Sort sixteen words into four groups'],
+['deepseek-twin-hive','Twin Hive','letters','Two-letter word search','Make words that use both gold letters'],
+['deepseek-spare','Spare','meaning','Meaning pairs','Pair the opposites, find the spare'],
+['deepseek-rung','Rung','letters','Shortest word ladders','Reach the target in the fewest rungs'],
+['deepseek-cipher','Cipher','deduce','Secret alphabets','Assign real letters to coded ones'],
+['deepseek-trail','Trail','letters','Nine-letter trails','Trace one long word through the grid'],
+['deepseek-split','Split','meaning','Clued anagrams','Divide the tiles between two clued words'],
+['qwen-quadra','Quadra','letters','Category anagrams','Find four category words using all 16 tiles'],
+['qwen-logic-lattice','Logic Lattice','logic','Grid deduction','Mark squares until every line count agrees'],
+['qwen-syntax-siege','Syntax Siege','letters','Word defense','Fire words before the wave reaches the core'],
+['qwen-memory-maze','Memory Maze','logic','Path recall','Study the route, then retrace it'],
+['qwen-pattern-prism','Pattern Prism','logic','Visual sequences','Predict the next three in the sequence'],
+['qwen-territory-tactics','Territory Tactics','logic','Hex strategy','Close openings to capture an exact total'],
+['claude-dovetail','Dovetail','meaning','Compound chains','Fill each link so neighbours join into words'],
+['claude-splice','Splice','letters','Word-half matching','Join twelve halves into six words'],
+['claude-sprout','Sprout','letters','Growing anagrams','Add a soil letter, rearrange, grow the plant'],
+['claude-tangle','Tangle','letters','Interleaved words','Pull three ordered words from one string'],
+['claude-keystone','Keystone','meaning','Compound-word clues','Find the word that joins all five clues'],
+['claude-tumbler','Tumbler','deduce','Alphabet deduction','Read earlier/later dials to crack the lock'],
+['nested-tic-tac-toe','Tic-Tac-Toe','logic','Nine boards · local opponent','Your square picks their next board']
+];
+const KIND={meaning:'Clues & meaning',letters:'Letters & words',deduce:'Deduction',logic:'Logic & pattern'};
+const TODAY=['shortlist','second-sense','sideways'];
+const DESC={'shortlist':'Twelve words. Three letter scans. One final pick.','second-sense':'Match a noun clue with a verb clue. One word answers both.','sideways':'Slide the letter strips until four clued words read down the columns.'};
+// Opening states copied from the supplied No. 018 screens (initial state only; no answers).
+const SL=['CRISP','AUDIO','SPECK','WORRY','SAINT','CURRY','SNOUT','TOWER','MEDAL','DEBIT','RIPEN','TRUNK'];
+const NOUN=['Hook-beaked bird of prey','Organization whose members share an interest','Flying mammal active mostly at night'];
+// Verb subset deliberately offset so no row pairs a noun with its own verb (avoids a spoiler).
+const VERB=['Strike a ball with a club','Correspond exactly','Wrap thread around a reel'];
+const STRIPS=['CBGS','LRTR','OOAA','NWOI','DMND'];
+const MINI={
+ shortlist:()=>`<div class="sl" aria-hidden="true"><div class="words"><span class="beam"></span>${SL.map(w=>`<span class="w">${w}</span>`).join('')}</div><div class="scan"><b>?</b>+<b>?</b><span>scan · 3 left</span></div></div><span class="vh">Twelve five-letter words and a two-letter scan with three scans left.</span>`,
+ 'second-sense':()=>`<div class="ss" aria-hidden="true"><div class="col"><span class="h">NOUN</span>${NOUN.map((c,i)=>`<span class="c${i===0?' on':''}">${c}</span>`).join('')}</div><span class="amp">&amp;</span><div class="col"><span class="h">VERB</span>${VERB.map(c=>`<span class="c">${c}</span>`).join('')}</div></div><span class="vh">Five noun clues and five verb clues; three of each shown.</span>`,
+ sideways:()=>`<div aria-hidden="true"><div class="sw"><div class="heads"><span>A</span><span>B</span><span>C</span><span>D</span></div><div style="position:relative;display:flex;flex-direction:column;gap:6px"><div class="cols"><i></i><i></i><i></i><i></i></div>${STRIPS.map((s,i)=>`<div class="strip${i===1?' n':''}">${[...s].map(l=>`<span class="t">${l}</span>`).join('')}</div>`).join('')}</div></div></div><span class="vh">Five four-letter strips under four column guides A to D.</span>`
+};
+const STATES={
+ fresh:{shortlist:['','Not started · 3 scans ready','Play',null],'second-sense':['','Not started · 0 of 5 found','Play',null],sideways:['','Not started','Play',null]},
+ progress:{shortlist:['prog','In progress ◇ · 1 of 3 scans used','Continue',null],'second-sense':['done','Finished ◇ · 6 checks','Review',[1,1,1,1,1]],sideways:['','Not started','Play',null]},
+ done:{shortlist:['done','Finished ◇ · 3 scans','Review',[1,1,1]],'second-sense':['done','Finished ◇ · 6 checks','Review',[1,1,1,1,1]],sideways:['done','Finished ◇ · 0 hints','Review',[1]]}
+};
+const SHARE={progress:'Alford Daily · Fri Nov 6\nSecond Sense  5/5 · 6 checks',done:'Alford Daily · Fri Nov 6\nShortlist     ✓ 3 scans\nSecond Sense  5/5 · 6 checks\nSideways      ✓ 0 hints'};
+const fav=new Set(),hid=new Set();let st='fresh',filt='all',kind=null,q='';
+const by=s=>G.find(g=>g[0]===s);
+const star='<svg viewBox="0 0 24 24" aria-hidden="true"><path class="sp" d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const eye='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg>';
+const tg=(s,n)=>`<button type="button" class="ib star" data-fav="${s}" aria-pressed="${fav.has(s)}" title="Favourite"><span class="vh">Favourite ${n}</span>${star}</button><button type="button" class="ib eye" data-hid="${s}" aria-pressed="${hid.has(s)}" title="${hid.has(s)?'Unhide':'Hide'}"><span class="vh">${hid.has(s)?'Unhide':'Hide'} ${n}</span>${eye}</button>`;
+function renderSpecs(){
+  document.getElementById('specs').innerHTML=TODAY.map((s,i)=>{const g=by(s),x=STATES[st][s];
+   const mini=x[3]?`<div class="result"><div class="marks">${x[3].map(()=>'<i></i>').join('')}</div><span>Result figure built from the score only ◇</span></div>`:MINI[s]();
+   return `<article class="spec" aria-labelledby="s-${s}"><div class="mini"><span class="lbl">0${i+1} · ${x[3]?'Result':'Opening state'}</span>${mini}</div>
+   <div class="body"><span class="ct">${g[3]}</span><h2 id="s-${s}">${g[1]}</h2><span class="mv">${g[4]}</span><span class="ds">${DESC[s]}</span>${hid.has(s)?'<span class="hnote">Hidden from your collection view</span>':''}
+   <div class="row"><span class="stt ${x[0]}">${x[1]}</span><a class="go ${x[2]==='Continue'?'cont':x[2]==='Review'?'rev':''}" href="#" onclick="return false" aria-label="${x[2]} ${g[1]} (mockup link)">${x[2]} →</a>${tg(s,g[1])}</div></div></article>`}).join('');
+  const d=TODAY.filter(s=>STATES[st][s][0]==='done').length;
+  document.getElementById('dayc').textContent=`${d} of 3 finished${st!=='fresh'?' ◇':''}`;
+  document.getElementById('share').disabled=!d;document.getElementById('sharebox').classList.remove('show');
+}
+function renderColl(){
+  const list=G.filter(g=>(filt==='all'?!hid.has(g[0]):filt==='fav'?fav.has(g[0]):hid.has(g[0]))&&(!kind||g[2]===kind)&&(!q||(g[1]+' '+g[3]+' '+g[4]).toLowerCase().includes(q)));
+  const el=document.getElementById('groups');
+  el.innerHTML=list.length?Object.keys(KIND).map(k=>{const it=list.filter(g=>g[2]===k);if(!it.length)return'';
+   return `<div class="grp"><h3>${KIND[k]} · ${it.length}</h3><div class="plates">${it.map(g=>`<div class="pl"><span class="ico" aria-hidden="true"><b>${g[1][0]}</b><img src="../assets/icons/${g[0]}.svg" alt="" onerror="this.remove()"></span><a class="nm" href="#" onclick="return false">${g[1]}</a><span class="ct">${g[3]}</span><div class="mv">${g[4]}</div><div class="ft">${TODAY.includes(g[0])?'<span class="td">In today’s three</span>':''}${tg(g[0],g[1])}</div></div>`).join('')}</div></div>`}).join('')
+   :`<div class="empty">${filt==='fav'?'No favourites yet. Star any game to keep it here.':filt==='hid'?'Nothing hidden. Hidden games wait here so you can bring them back.':'No games match.'}</div>`;
+  document.getElementById('c-all').textContent=33-hid.size;document.getElementById('c-fav').textContent=fav.size;document.getElementById('c-hid').textContent=hid.size;
+  document.getElementById('pf-f').textContent=fav.size;document.getElementById('pf-h').textContent=hid.size;
+}
+const all=()=>{renderSpecs();renderColl();};
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-fav]');if(f){const s=f.dataset.fav;fav.has(s)?fav.delete(s):fav.add(s);all();return;}
+  const h=e.target.closest('[data-hid]');if(h){const s=h.dataset.hid;hid.has(s)?hid.delete(s):hid.add(s);all();return;}
+  const t=e.target.closest('[data-f]');if(t){filt=t.dataset.f;document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-checked',b===t));renderColl();}
+  const k=e.target.closest('[data-k]');if(k){kind=kind===k.dataset.k?null:k.dataset.k;document.querySelectorAll('[data-k]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===kind));renderColl();}
+  const j=e.target.closest('[data-jump]');if(j){const b=document.querySelector(`[data-f="${j.dataset.jump}"]`);b&&b.click();}
+  const s=e.target.closest('[data-state]');if(s){st=s.dataset.state;document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',b===s));renderSpecs();}
+});
+document.getElementById('share').addEventListener('click',()=>{const b=document.getElementById('sharebox');b.textContent=SHARE[st]+'\n(◇ illustrative · mockup: nothing was copied)';b.classList.add('show');});
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();renderColl();});
+const pb=document.getElementById('pbtn'),pop=document.getElementById('pop');pb.addEventListener('click',()=>{const o=pop.classList.toggle('open');pb.setAttribute('aria-expanded',o);});
+const sel=document.getElementById('about');G.forEach(g=>{const o=document.createElement('option');o.textContent=g[1]+' · '+g[3];sel.appendChild(o);});
+const msg=document.getElementById('msg'),send=document.getElementById('send');
+msg.addEventListener('input',()=>{document.getElementById('fbc').textContent=msg.value.length+' / 1000';send.disabled=!msg.value.trim();});
+send.addEventListener('click',()=>{const r=document.getElementById('receipt');r.classList.add('warn');r.innerHTML='<b>Not sent.</b> This concept has no server connection. In the live site a receipt reference appears here only after the server confirms the note is stored.';});
+all();
+</script>
+</body>
+</html>

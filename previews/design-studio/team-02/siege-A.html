@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Syntax Siege A · Light firing range — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:720px;margin:0 auto}
+.hud{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:end}
+.hud small{font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hud b{display:block;font-size:30px;font-weight:850;line-height:1.1}
+.hud b span{font-size:14px;color:var(--muted);font-weight:600}
+.hp{grid-column:1/-1;height:10px;border-radius:5px;background:#dbe4ec;overflow:hidden}
+.hp i{display:block;height:100%;width:100%;background:var(--ink)}
+.waves{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:14px 0 10px}
+.waves span{height:30px;border-radius:6px;display:grid;place-items:center;font:700 13px var(--mono);background:#fff;border:1px solid var(--line);color:var(--muted)}
+.waves span.now{background:var(--ink);color:#fff;border-color:var(--ink)}
+.range{position:relative;height:150px;border-radius:18px;background:#fff;border:1px solid var(--line);overflow:hidden}
+.range::before{content:"";position:absolute;left:96px;right:20px;top:50%;height:2px;background:repeating-linear-gradient(90deg,#b8c7d3 0 10px,transparent 10px 18px)}
+.range .ticks{position:absolute;left:96px;right:20px;bottom:12px;display:flex;justify-content:space-between;font:11px var(--mono);color:#9aaab8}
+.core{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:64px;height:84px;border-radius:14px;background:linear-gradient(#f6f9fc,#dfe8f0);border:1px solid #b8c7d3;display:grid;place-items:center;box-shadow:0 8px 14px -10px rgba(14,34,50,.6)}
+.core i{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#8fb7ff,#1c5cbc 70%);box-shadow:0 0 0 6px rgba(28,92,188,.15)}
+.core small{position:absolute;bottom:6px;font:700 10px var(--mono);letter-spacing:.1em;color:var(--muted)}
+.enemy{position:absolute;top:50%;right:20px;transform:translate(0,-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
+.enemy svg{width:54px;height:54px;filter:drop-shadow(0 6px 6px rgba(14,34,50,.3))}
+.enemy b{font:700 12px var(--mono);background:var(--ink);color:#fff;border-radius:6px;padding:2px 6px}
+.range.active .enemy{animation:approach 30s linear infinite}
+@keyframes approach{from{right:20px}to{right:calc(100% - 150px)}}
+.clock{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 0 4px;font-size:14px;color:var(--ink-2)}
+.clock b{font:700 14px var(--mono)}
+.timebar{height:6px;border-radius:3px;background:#dbe4ec;overflow:hidden}
+.timebar i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:left}
+.range.active~.timebar i,.active-mode .timebar i{animation:drain 30s linear infinite}
+@keyframes drain{to{transform:scaleX(0)}}
+.feed{min-height:24px;margin:12px 0;font-weight:700;font-size:16px}
+.feed.hit{color:var(--ok)}
+.word{display:flex;justify-content:center;gap:6px;min-height:60px;align-items:center;border-radius:14px;background:#eef3f7;padding:8px;margin-bottom:12px}
+.word span{width:min(44px,calc((100vw - 90px)/6));height:48px;border-radius:8px;background:#fff;display:grid;place-items:center;font:850 26px var(--sans);box-shadow:0 2px 0 #c7d4de}
+.word em{font-style:normal;color:#9aaab8;font-weight:700;letter-spacing:.14em;font-size:14px}
+.rack{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.tile{height:64px;border-radius:12px;border:1px solid #b8c7d3;background:#fff;font:850 28px var(--sans);cursor:pointer;box-shadow:0 4px 0 #b8c7d3;position:relative;padding:0}
+.tile:disabled{opacity:.25;box-shadow:none;transform:translateY(4px);cursor:default}
+.tile small{position:absolute;top:4px;right:6px;font:700 11px var(--mono);color:var(--accent)}
+.fire{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:8px;margin-top:12px}
+.fire .primary{font-size:16px}
+.start{width:100%;margin-top:12px;min-height:56px;font-size:17px}
+.foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Syntax Siege A — Light firing range</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap" id="wrap">
+    <div class="ghead"><img src="../assets/icons/qwen-syntax-siege.svg" alt=""><div><p class="eyebrow">Word defense</p><h1 class="gname">Syntax Siege</h1><p class="tagline">Build a word. Break the wave. Defend the core.</p></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Today</button><button aria-pressed="false">Practice</button></div><span class="meta">Fri 6 Nov</span></div>
+
+    <div class="hud"><div><small>Core</small><b>100<span> / 100 HP</span></b></div><div style="text-align:right"><small>Word power</small><b>0<span> pts</span></b></div><div class="hp"><i></i></div></div>
+    <div class="waves" aria-label="Wave 1 of 6"><span class="now">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+    <div class="range" id="range" aria-label="Approach lane: enemy with 60 HP">
+      <div class="core"><i></i><small>CORE</small></div>
+      <div class="enemy"><svg viewBox="0 0 54 54" aria-hidden="true"><path d="M27 3 51 27 27 51 3 27Z" fill="#1d2f3e"/><path d="M27 3 51 27 27 27Z" fill="#3c5466"/><path d="M27 27 51 27 27 51Z" fill="#0e1b26"/><path d="M27 3 27 27 3 27Z" fill="#5a7386"/><path d="M27 12 42 27 27 42 12 27Z" fill="none" stroke="#d1404a" stroke-width="2"/></svg><b>60 HP</b></div>
+      <div class="ticks"><span>core</span><span>·</span><span>·</span><span>·</span><span>arrival</span></div>
+    </div>
+    <div class="clock"><span id="pace">Ready · pace is set by how you play: touch 30 s, typing 20 s</span><b id="clk">—</b></div>
+    <div class="timebar"><i></i></div>
+    <p class="feed" id="feed" aria-live="polite">Six waves. One core. The clock starts when you do.</p>
+
+    <div class="word" id="word" aria-label="Your word"><em>BUILD A WORD</em></div>
+    <div class="rack" id="rack"></div>
+    <div class="fire"><button class="btn" id="undo">Undo</button><button class="btn" id="clr">Clear</button><button class="btn primary" id="fire" disabled>Fire word</button></div>
+    <button class="btn primary start" id="start">Start defense</button>
+    <div class="foot"><span>0 hints · 0 misses · 0 impacts</span><span><button class="btn quiet" style="min-height:44px">Use untimed assist</button></span></div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: keeps the tension but moves the game onto the shared light frame — a white firing range with a machined core and a faceted enemy that physically travels the lane (also in untimed practice, where it loops). Pace label states which input was detected. "Start defense" here only starts the local motion preview; the rack E L D C N A is today's wave 1, words are not checked.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const R='ELDCNA'.split(''),rack=document.getElementById('rack'),word=document.getElementById('word'),fire=document.getElementById('fire'),feed=document.getElementById('feed');let sel=[],started=false;
+function draw(){rack.innerHTML=R.map((l,i)=>`<button class="tile" data-i="${i}" ${sel.includes(i)||!started?'disabled':''} aria-label="${l}">${l}${sel.includes(i)?`<small>${sel.indexOf(i)+1}</small>`:''}</button>`).join('');rack.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{sel.push(+b.dataset.i);draw();});
+word.innerHTML=sel.length?sel.map(i=>`<span>${R[i]}</span>`).join(''):'<em>BUILD A WORD</em>';fire.disabled=sel.length<3;fire.textContent=sel.length>=3?`Fire word · ${sel.length*10} damage`:'Fire word';}
+document.getElementById('start').onclick=e=>{started=true;e.target.remove();document.getElementById('range').classList.add('active');document.getElementById('wrap').classList.add('active-mode');document.getElementById('pace').textContent='Touch detected · 30 s pace';document.getElementById('clk').textContent='30 s';feed.textContent='Defense active · build a word and fire.';draw();};
+document.getElementById('undo').onclick=()=>{sel.pop();draw();};document.getElementById('clr').onclick=()=>{sel=[];draw();};
+fire.onclick=()=>{feed.textContent=`${sel.map(i=>R[i]).join('')} · would deal ${sel.length*10} damage if accepted (preview, not checked)`;feed.className='feed hit';sel=[];draw();};
+document.addEventListener('keydown',e=>{if(!started||!/^[a-z]$/i.test(e.key))return;const i=R.findIndex((l,k)=>l===e.key.toUpperCase()&&!sel.includes(k));if(i>-1){sel.push(i);document.getElementById('pace').textContent='Keyboard detected · 20 s pace';draw();}});
+draw();
+</script>
+</body>
+</html>

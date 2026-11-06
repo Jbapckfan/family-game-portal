@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Counterpart · Concept A · Analogy Ledger</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.ledger{max-width:820px;margin:0 auto;border-top:2px solid var(--ink)}
+.lr{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 10px;padding:14px 0 14px;border-bottom:1px solid var(--line);cursor:pointer;position:relative}
+.lr::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:4px;border-radius:2px;background:transparent}
+.lr.on::before{background:var(--blue)}
+.num{font:600 13px/1 var(--mono);color:var(--muted);padding-top:12px}
+.lines{display:grid;gap:8px}
+@media (min-width:760px){.lines{grid-template-columns:minmax(0,1fr) 34px minmax(0,1.1fr);align-items:center}}
+.cue{font:750 clamp(20px,5.6vw,26px)/1.15 var(--display);letter-spacing:.01em;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.cue .ar{color:var(--blue);font-weight:600}
+.as{font:500 22px/1 var(--serif);color:var(--muted);text-align:center}
+@media (max-width:759px){.as{display:none}}
+.ans{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.slot{min-height:48px;border-radius:10px;border:1.5px dashed #b9c7d5;background:#fff;font:700 clamp(15px,4.4vw,19px)/1.1 var(--sans);letter-spacing:.02em;color:var(--muted);padding:6px 8px;overflow-wrap:anywhere}
+.slot.f{border-style:solid;border-color:#9fb3c8;color:var(--ink)}
+.slot.cur{border:2px solid var(--blue);box-shadow:0 0 0 4px var(--blue-wash)}
+.ans .ar{color:var(--blue);font-weight:700}
+.lr.solved .cue,.lr.solved .ans{opacity:1}
+.lr.solved .slot{border:0;background:var(--ok-wash);color:var(--ok)}
+.why{grid-column:2;margin:8px 0 0;font-size:15px;color:var(--ink2)}
+.why b{color:var(--ok)}
+.state{font:600 11px/1 var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.err{grid-column:2;margin:8px 0 0;color:var(--bad);font-size:15px}
+.tray{position:sticky;bottom:0;z-index:5;margin:18px -18px -22px;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 18px 14px;box-shadow:0 -12px 24px -18px rgba(15,29,42,.4)}
+@media (max-width:420px){.tray{margin:18px -12px -18px;padding:10px 12px 12px}}
+.tray-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.w{min-height:46px;padding:0 14px;border-radius:10px;border:1px solid var(--line);border-bottom-width:3px;background:#fff;font:750 clamp(15px,4.2vw,18px)/1 var(--sans);letter-spacing:.03em;color:var(--ink)}
+.w[aria-pressed="true"]{background:var(--blue);border-color:var(--blue-ink);color:#fff}
+.w:disabled{opacity:.35;text-decoration:line-through;border-bottom-width:1px}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts .btn{flex:1}
+</style></head>
+<body>
+<div class="rv"><span><b>Counterpart · Concept A “Analogy Ledger”</b> · design review prototype, not a live game</span><nav aria-label="Counterpart concepts"><a href="counterpart-A.html" aria-current="page">A</a><a href="counterpart-B.html">B</a><a href="counterpart-C.html">C</a><a href="counterpart-D.html">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Counterpart" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Counterpart from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/counterpart.svg" alt=""><div><h1>Counterpart</h1><div class="meta">NO. 018 · FRI NOV 6 · TRICKY · 1/5 PAIRED · 1 CHECK</div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap">
+  <p class="note" style="max-width:820px;margin:0 auto 10px">Each line gives a relationship. Build the <b>same relationship in the same direction</b> from the bank. Every word is used once.</p>
+  <div class="ledger" id="ledger"></div>
+  <div class="tray">
+    <div class="tray-h"><span class="kicker" id="trayLabel">Row 01 · choose the first word</span><span class="meta" id="left">8 unpaired</span></div>
+    <div class="bank" id="bank"></div>
+    <div class="acts"><button class="btn" id="rev">⇄ Reverse</button><button class="btn" id="hint">✦ Hint</button><button class="btn pri" id="chk">Check pair</button></div>
+  </div>
+</div>
+<div class="foot"><span>Five checks, no hints = perfect. Unlimited checks.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const ROWS=[['THESIS','ARGUMENT'],['PRISM','SPECTRUM'],['SHELL','TURTLE'],['BASS','LOW'],['INVOICE','PAYMENT']];
+const BANK=['HIGH','SOLDIER','PROOF','KILN','APPEARANCE','ARMOR','SUMMONS','SOPRANO','CERAMICS','THEOREM'];
+const SOLVED={2:['ARMOR','SOLDIER']};
+let drafts=ROWS.map(()=>[null,null]);drafts[0]=['THEOREM',null];
+let row=0,slot=1,msg='';
+const $=id=>document.getElementById(id);
+const used=()=>new Set(Object.values(SOLVED).flat());
+function render(){
+  $('ledger').innerHTML=ROWS.map((r,i)=>{const s=SOLVED[i],d=s||drafts[i],on=i===row&&!s;
+    return `<div class="lr${on?' on':''}${s?' solved':''}" data-row="${i}"><span class="num">${s?'✓':String(i+1).padStart(2,'0')}</span><div class="lines"><div class="cue"><span>${r[0]}</span><span class="ar">→</span><span>${r[1]}</span></div><span class="as" aria-hidden="true">as</span><div class="ans">${[0,1].map(k=>`<button class="slot${d[k]?' f':''}${on&&k===slot?' cur':''}" data-row="${i}" data-slot="${k}" ${s?'disabled':''} aria-label="Row ${i+1} ${k?'second':'first'} word: ${d[k]||'empty'}">${d[k]||(k?'second':'first')}</button>`).join('<span class="ar">→</span>')}</div></div>${s?`<p class="why"><b>Protective covering → what it protects.</b> <span class="illus">illustrative wording</span></p>`:''}${on&&msg?`<p class="err">${msg}</p>`:''}</div>`;}).join('');
+  const u=used(),d=drafts[row];
+  $('bank').innerHTML=BANK.map(w=>`<button class="w" data-w="${w}" aria-pressed="${d.includes(w)}" ${u.has(w)?'disabled':''}>${w}</button>`).join('');
+  $('trayLabel').textContent=`Row ${String(row+1).padStart(2,'0')} · ${d[0]&&d[1]?'check or change your pair':'choose the '+(slot?'second':'first')+' word'}`;
+  $('left').textContent=`${10-u.size} unpaired · use once`;
+  $('chk').disabled=!(d[0]&&d[1]);
+}
+$('ledger').addEventListener('click',e=>{const s=e.target.closest('[data-slot]');const r=e.target.closest('[data-row]');if(!r)return;const i=+r.dataset.row;if(SOLVED[i])return;row=i;msg='';slot=s?+s.dataset.slot:(drafts[i][0]?1:0);render();});
+$('bank').addEventListener('click',e=>{const b=e.target.closest('[data-w]');if(!b)return;const w=b.dataset.w,d=drafts[row];const k=d.indexOf(w);if(k>=0){d[k]=null;slot=k;}else{d[slot]=w;slot=d[0]?(d[1]?slot:1):0;}msg='';render();});
+$('rev').onclick=()=>{drafts[row].reverse();msg='';render();};
+$('hint').onclick=()=>{msg='A hint names this row’s relationship after you confirm (+1 hint). Not wired in this prototype.';render();};
+$('chk').onclick=()=>{msg='The live engine checks the pair here. Wrong checks keep every word available. Not wired in this prototype.';render();};
+render();
+</script>
+</body></html>

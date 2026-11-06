@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inbetween · Concept B · Split &amp; Spread</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrapx{max-width:720px;margin:0 auto}
+.rowb{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:14px 0;border-bottom:1px solid var(--line2)}
+.cl{display:flex;gap:10px;align-items:baseline;font:500 clamp(16px,4.4vw,18px)/1.3 var(--sans)}
+.cl i{font:600 12px var(--mono);font-style:normal;color:var(--muted)}
+.strip{display:flex;align-items:center;flex-wrap:nowrap;min-height:58px}
+.L{flex:none;width:clamp(38px,11vw,50px);height:clamp(46px,13vw,56px);display:grid;place-items:center;border-radius:9px;background:#fff;box-shadow:inset 0 0 0 1px #cfd9e3,0 2px 0 #cfd9e3;font:800 clamp(22px,7vw,30px)/1 var(--display);margin:0 2px;transition:transform .25s}
+.L.ins{background:var(--blue);color:#fff;box-shadow:0 10px 16px -10px rgba(28,95,196,.9);animation:spread .38s cubic-bezier(.25,1.3,.5,1) both}
+.L.ins+.L.ins{animation-delay:.05s}
+@keyframes spread{0%{width:0;margin:0;opacity:0;transform:translateY(-14px) scale(.6)}100%{opacity:1}}
+.L.ok{background:var(--ok-wash);color:var(--ok);box-shadow:none}
+.L.okin{background:var(--ok);color:#fff;box-shadow:none}
+.rowb.done .strip{animation:snap .4s ease}
+@keyframes snap{0%{letter-spacing:.3em;transform:scale(1.03)}100%{transform:none}}
+.seam{flex:none;width:6px;align-self:stretch;border:0;padding:0;background:transparent;position:relative;border-radius:3px}
+.seam::after{content:"";position:absolute;inset:0 -10px}
+.armed .seam{width:10px;background:var(--blue-mid)}
+.armed .seam:hover,.seam.hot{background:var(--blue)}
+.seam:disabled{cursor:default}
+.act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.act .note{flex:1 1 160px}
+.bad .L.ins{background:var(--bad);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.dock{position:sticky;bottom:0;z-index:5;margin:16px -18px -22px;padding:10px 18px 14px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);box-shadow:0 -14px 26px -20px rgba(15,29,42,.45)}
+@media (max-width:420px){.dock{margin:16px -12px -18px;padding:10px 12px 12px}}
+.dock-h{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
+.ex{display:flex;align-items:center;gap:6px;font:700 14px/1 var(--mono);color:var(--muted)}
+.ex b{background:var(--blue);color:#fff;border-radius:5px;padding:4px 5px}
+.bank{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.pair{min-height:52px;border-radius:11px;border:1px solid #c9d4df;border-bottom:4px solid #b9c6d3;background:#fff;font:800 clamp(17px,5vw,22px)/1 var(--display);letter-spacing:.06em;touch-action:none;user-select:none;-webkit-user-select:none;padding:0}
+.pair[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue-ink);transform:translateY(-4px)}
+.pair:disabled{opacity:.25;border-bottom-width:1px}
+.ghost{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-80%) rotate(-3deg);padding:12px 12px;border-radius:12px;background:var(--blue);color:#fff;font:800 24px var(--display);letter-spacing:.06em;box-shadow:0 22px 30px -14px rgba(28,95,196,.8)}
+.stat{display:flex;justify-content:space-between;font:12px/1.3 var(--mono);color:var(--muted);margin-top:8px;gap:8px;flex-wrap:wrap}
+</style></head>
+<body>
+<div class="rv"><span><b>Inbetween · Concept B “Split &amp; Spread”</b> · design review prototype with real placements, not a live game</span><nav aria-label="Inbetween concepts"><a href="inbetween-A.html">A</a><a href="inbetween-B.html" aria-current="page">B</a><a href="inbetween-C.html">C</a><a href="inbetween-D.html">D</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Inbetween" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Inbetween from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/inbetween.svg" alt=""><div><h1>Inbetween</h1><div class="meta">NO. 018 · MEDIUM · <span id="hd">1 OF 6 FIT</span></div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap"><div class="wrapx">
+  <div id="board"></div>
+  <p class="live" id="msg" style="margin-top:12px">RL is held. Drag it across the words: each seam you pass splits open as a free preview.</p>
+  <div class="dock">
+    <div class="dock-h"><span class="kicker">Your pairs</span><span class="ex" aria-label="Example: P R into SING makes SPRING">SING + <b>PR</b> → S<b>PR</b>ING</span></div>
+    <div class="bank" id="bank"></div>
+    <div class="stat"><span id="st"></span><span><button class="btn ghost" id="nudge" style="min-height:44px;padding:0 6px">✦ Nudge</button><button class="btn ghost" id="clear" style="min-height:44px;padding:0 6px">Clear</button></span></div>
+  </div>
+</div></div>
+<div class="foot"><span>Previews are free. A confirmed wrong fit costs one attempt. Six attempts, no nudges = perfect.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const P=['UN','RL','RE','AD','IT','AM'];
+const RW=[{c:'Express sorrow or regret',s:'LENT',a:'LAMENT'},{c:'Too poor to support much vegetation',s:'BARN',a:'BARREN'},{c:'The front of a building',s:'FACE',a:'FACADE'},{c:'Except if',s:'LESS',a:'UNLESS'},{c:'A robber or outlaw',s:'BAND',a:'BANDIT'},{c:'Formed into coils',s:'CUED',a:'CURLED'}];
+let placed=RW.map(()=>null);placed[4]={p:'IT',g:4};
+let sel='RL',prev={r:5,g:2},bad=false,attempts=1,hot=null,drag=null,justDone=null;
+const $=id=>document.getElementById(id);const say=m=>$('msg').textContent=m;
+const build=(s,p,g)=>s.slice(0,g)+p+s.slice(g);const used=()=>placed.filter(Boolean).map(x=>x.p);
+function strip(r,i){const pv=(hot&&hot.r===i)?hot:(prev&&prev.r===i?prev:null);let h='';
+  for(let g=0;g<=4;g++){if(pv&&sel&&pv.g===g)h+=`<span class="L ins" data-r="${i}" data-g="${g}">${sel[0]}</span><span class="L ins" data-r="${i}" data-g="${g}">${sel[1]}</span>`;else h+=`<button class="seam${hot&&hot.r===i&&hot.g===g?' hot':''}" data-r="${i}" data-g="${g}" ${sel?'':'disabled'} aria-label="${sel?'Preview '+sel+' ':'Choose a pair first, '}${g===0?'before '+r.s[0]:g===4?'after '+r.s[3]:'between '+r.s[g-1]+' and '+r.s[g]}"></button>`;if(g<4)h+=`<span class="L">${r.s[g]}</span>`;}
+  return h;}
+function render(){
+  $('bank').innerHTML=P.map(p=>`<button class="pair" data-p="${p}" aria-pressed="${sel===p}" ${used().includes(p)?'disabled':''}>${p}</button>`).join('');
+  $('board').className=sel?'armed':'';
+  $('board').innerHTML=RW.map((r,i)=>{const pl=placed[i];
+    if(pl){const w=build(r.s,pl.p,pl.g);return `<div class="rowb done${justDone===i?'':''}"><div class="cl"><i>✓</i>${r.c}</div><div class="strip">${[...w].map((l,k)=>`<span class="L ${k>=pl.g&&k<pl.g+2?'okin':'ok'}">${l}</span>`).join('')}</div></div>`;}
+    const showing=prev&&prev.r===i&&sel&&!(hot&&hot.r!==i&&false);
+    return `<div class="rowb${showing&&bad?' bad':''}"><div class="cl"><i>${String(i+1).padStart(2,'0')}</i>${r.c}</div><div class="strip">${strip(r,i)}</div>${showing?`<div class="act"><span class="note">${bad?'Doesn’t match the clue. One attempt used; pair still yours.':`Preview: <b>${build(r.s,sel,prev.g)}</b>. Free until you place it.`}</span><button class="btn" data-x>Close up</button><button class="btn pri" data-place ${bad?'disabled':''}>Place pair</button></div>`:''}</div>`;}).join('');
+  $('st').textContent=`${placed.filter(Boolean).length}/6 fit · ${attempts} attempt${attempts===1?'':'s'}`;$('hd').textContent=`${placed.filter(Boolean).length} OF 6 FIT`;justDone=null;
+}
+function preview(r,g){if(!sel||placed[r])return;prev={r,g};bad=false;hot=null;render();}
+$('bank').addEventListener('click',e=>{if(drag&&drag.moved)return;const b=e.target.closest('[data-p]');if(!b)return;sel=sel===b.dataset.p?null:b.dataset.p;prev=null;bad=false;render();say(sel?`${sel} held. Tap a blue seam or drag across the words.`:'Pair put back.');});
+$('board').addEventListener('click',e=>{
+  if(e.target.closest('[data-place]')){const r=prev.r,w=build(RW[r].s,sel,prev.g);attempts++;if(w===RW[r].a){placed[r]={p:sel,g:prev.g};justDone=r;sel=null;prev=null;render();say(`${w}. The seam closes.`+(placed.every(Boolean)?' Every pair is home.':''));}else{bad=true;render();say('Not quite. Try another seam or pair.');}return;}
+  if(e.target.closest('[data-x]')){prev=null;bad=false;render();return;}
+  const s=e.target.closest('[data-g]');if(s&&!s.disabled)preview(+s.dataset.r,+s.dataset.g);});
+$('bank').addEventListener('pointerdown',e=>{const b=e.target.closest('[data-p]');if(!b||b.disabled)return;drag={p:b.dataset.p,x:e.clientX,y:e.clientY,moved:false,el:null};});
+addEventListener('pointermove',e=>{if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>6){drag.moved=true;sel=drag.p;prev=null;bad=false;render();drag.el=document.createElement('div');drag.el.className='ghost';drag.el.textContent=drag.p;document.body.append(drag.el);}
+  if(!drag.el)return;drag.el.style.left=e.clientX+'px';drag.el.style.top=e.clientY+'px';
+  const t=document.elementFromPoint(e.clientX,e.clientY),s=t&&t.closest('[data-g]');const nh=s?{r:+s.dataset.r,g:+s.dataset.g}:null;
+  if(JSON.stringify(nh)!==JSON.stringify(hot)&&(nh||hot)){if(nh||!hot||true){hot=nh;render();}}});
+addEventListener('pointerup',()=>{if(!drag)return;const d=drag;if(d.el){d.el.remove();if(hot){const h=hot;preview(h.r,h.g);say(`${build(RW[h.r].s,sel,h.g)}: does it match “${RW[h.r].c}”?`);}else{render();}}hot=null;setTimeout(()=>{drag=null;},0);});
+$('clear').onclick=()=>{sel=null;prev=null;bad=false;render();};
+$('nudge').onclick=()=>say('A nudge opens one correct seam with its pair after confirmation (+1 nudge). Not wired in this prototype.');
+render();
+</script>
+</body></html>

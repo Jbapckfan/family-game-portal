@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cairn A · Stairstep — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.board{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:24px;align-items:start}
+@media(max-width:780px){.board{grid-template-columns:minmax(0,1fr)}}
+.climb{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 16px 20px;--s:clamp(26px,7.6vw,36px)}
+.climb-head{display:flex;justify-content:space-between;align-items:baseline;gap:4px 8px;flex-wrap:wrap;margin-bottom:14px}
+.climb-head h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.climb-head span{font:13px var(--mono);color:var(--muted)}
+.stairs{display:flex;flex-direction:column;gap:7px}
+.step{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:8px}
+.lab{font:600 12px/1.1 var(--mono);color:var(--muted);text-align:right}
+.lab small{display:block;font-weight:400}
+.slab{display:inline-flex;gap:3px;padding:4px;border-radius:9px;width:max-content;background:linear-gradient(#f4f7fa,#e3eaf0);box-shadow:inset 0 1px 0 #fff,0 2px 0 #c2cfda,0 8px 14px -10px rgba(14,34,50,.4)}
+.slot{width:var(--s);height:var(--s);border-radius:6px;background:#fff;border:1px solid #cdd8e2;display:grid;place-items:center;font-weight:800;font-size:18px;color:var(--ink)}
+.step.future .slab{background:#eef2f6;box-shadow:inset 0 0 0 1px #dde5ec}
+.step.future .slot{background:transparent;border-style:dashed;border-color:#ccd7e0}
+.step.future .lab{opacity:.7}
+.step.active .slab{padding:6px;gap:6px;background:linear-gradient(#eaf1fb,#d5e2f4);box-shadow:inset 0 1px 0 #fff,0 3px 0 #9db6da,0 14px 20px -12px rgba(28,92,188,.55)}
+.step.active .slot{width:56px;height:60px;font-size:32px;border:2px dashed #8fa9cb;background:#f8fbff;cursor:pointer;transition:transform .15s}
+.step.active .slot.filled{border:1px solid #91aad0;box-shadow:0 3px 0 #b5c7e0;animation:drop .22s ease-out}
+.step.active .slot.filled:hover{transform:translateY(-2px)}
+.step.active .lab{color:var(--accent);}
+.summit{font:12px var(--mono);color:var(--muted);margin:0 0 10px 42px;display:flex;align-items:center;gap:6px}
+.summit::before{content:"";width:18px;height:1px;background:#9fb3c4}
+@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.rack-area{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.rack{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
+.tile{width:64px;height:68px;border-radius:12px;border:1px solid #c3d0db;background:#fff;font-size:34px;font-weight:800;box-shadow:0 4px 0 #c3d0db;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 6px 0 #c3d0db}
+.tile.used{opacity:.25;box-shadow:none;transform:translateY(4px)}
+.ctrl{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;gap:8px;max-width:360px;margin:0 auto}
+.ctrl .btn{padding:0}
+.aux{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.say{font-size:15px;color:var(--ink-2);text-align:center;margin:0 0 14px;min-height:22px}
+.side{display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h3{margin:0 0 8px;font-size:16px}
+.card p{margin:0;color:var(--ink-2);font-size:15px}
+.marks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.marks li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:15px}
+.mk{width:18px;height:18px;border-radius:5px;margin-top:2px}
+.mk.clean{background:var(--accent)}.mk.assist{background:linear-gradient(135deg,var(--accent) 50%,#cfdcef 50%)}.mk.shown{border:2px dashed #8ea3b6}
+.toggles{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Cairn A — Stairstep</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="ghead"><img src="../assets/icons/kimi-cairn.svg" alt=""><div><p class="eyebrow">Growing anagrams</p><h1 class="gname">Cairn</h1><p class="tagline">One more letter. One stone higher.</p></div></div>
+  <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 628 · Fri 6 Nov</span></div>
+
+  <section class="board" id="board">
+    <div class="climb">
+      <div class="climb-head"><h2>Level 1 · 3 letters</h2><span>0 of 5 solved</span></div>
+      <p class="summit">Summit · 7 letters</p>
+      <div class="stairs" aria-label="Your five levels; level 1 is at the bottom">
+        <div class="step future"><div class="lab">L5<small>7</small></div><div class="slab"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
+        <div class="step future"><div class="lab">L4<small>6</small></div><div class="slab"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
+        <div class="step future"><div class="lab">L3<small>5</small></div><div class="slab"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
+        <div class="step future"><div class="lab">L2<small>4</small></div><div class="slab"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
+        <div class="step active"><div class="lab">L1<small>3</small></div><div class="slab" id="slots"><button class="slot" aria-label="Empty slot 1"></button><button class="slot" aria-label="Empty slot 2"></button><button class="slot" aria-label="Empty slot 3"></button></div></div>
+      </div>
+
+      <div class="rack-area">
+        <p class="say" id="say" aria-live="polite">Use all three letters. Tap a placed letter to send it back.</p>
+        <div class="rack" id="rack">
+          <button class="tile" data-l="T" aria-label="Letter T">T</button>
+          <button class="tile" data-l="H" aria-label="Letter H">H</button>
+          <button class="tile" data-l="A" aria-label="Letter A">A</button>
+        </div>
+        <div class="ctrl">
+          <button class="btn" aria-label="Shuffle rack"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3c5 0 5 10 10 10h3M4 17h3c1.8 0 3-1.3 4-3M17 7h3M14 9.5c.9-1.5 1.8-2.5 3-2.5M18 4l3 3-3 3M18 14l3 3-3 3"/></svg></button>
+          <button class="btn primary">Enter</button>
+          <button class="btn" aria-label="Delete last letter"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M9 5h11v14H9l-6-7z"/><path d="M12 9l5 6M17 9l-5 6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="aux"><button class="btn quiet">Hint · 1 left</button><button class="btn quiet">Skip level</button></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card">
+        <h3>How a level is marked</h3>
+        <ul class="marks">
+          <li><span class="mk clean"></span><span><b>Clean</b> — solved with no misses or hints.</span></li>
+          <li><span class="mk assist"></span><span><b>Assisted</b> — solved after a miss or hint.</span></li>
+          <li><span class="mk shown"></span><span><b>Shown</b> — skipped; not counted as solved.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What happens next</h3>
+        <p>Solve this word and a fourth letter joins the rack. The next stair is one slot wider; any valid word using every letter counts.</p>
+      </div>
+      <div class="card">
+        <h3>Keyboard</h3>
+        <p>Type letters, <span class="kbd">Enter</span> to submit, <span class="kbd">⌫</span> to remove. Editing and shuffling are free; a full invalid word is a miss.</p>
+      </div>
+    </aside>
+  </section>
+  <div class="toggles"><button class="demo-toggle" id="demo" aria-pressed="false">Preview: two letters placed</button></div>
+</main>
+<p class="studio-foot">Concept notes: the climb is the board. Solved stairs keep their word engraved with the status mark on the slab edge; no separate summit illustration. Rack letters T·H·A are today's supplied Level 1 sample.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const slots=[...document.querySelectorAll('#slots .slot')],tiles=[...document.querySelectorAll('#rack .tile')],say=document.getElementById('say');
+function place(t){const s=slots.find(x=>!x.textContent);if(!s||t.classList.contains('used'))return;s.textContent=t.dataset.l;s.classList.add('filled');s.dataset.src=tiles.indexOf(t);t.classList.add('used');s.setAttribute('aria-label','Placed '+t.dataset.l+', tap to remove');upd();}
+function lift(s){if(!s.textContent)return;tiles[s.dataset.src].classList.remove('used');s.textContent='';s.classList.remove('filled');s.setAttribute('aria-label','Empty slot');upd();}
+function upd(){const n=slots.filter(x=>x.textContent).length;say.textContent=n===3?'All three placed. Press Enter to check.':n+' of 3 placed. Tap a placed letter to send it back.';document.getElementById('demo').setAttribute('aria-pressed',n===2);}
+tiles.forEach(t=>t.addEventListener('click',()=>place(t)));slots.forEach(s=>s.addEventListener('click',()=>lift(s)));
+document.getElementById('demo').addEventListener('click',()=>{slots.forEach(lift);place(tiles[0]);place(tiles[1]);});
+</script>
+</body>
+</html>

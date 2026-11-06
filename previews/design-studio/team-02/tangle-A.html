@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tangle A · Engraved plate — Alford Daily design concept</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.wrap{max-width:540px;margin:0 auto}
+.score{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.score b{font-size:44px;line-height:1;font-weight:850;letter-spacing:-.03em}
+.score b small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:4px}
+.score span{font:13px var(--mono);color:var(--muted);text-align:right}
+.ruler{position:relative;height:44px;margin:14px 0 18px}
+.ruler .track{position:absolute;left:0;right:0;top:10px;height:6px;border-radius:3px;background:#d8e2ea}
+.ruler .fill{position:absolute;left:0;top:10px;height:6px;border-radius:3px;background:var(--ink);width:0%}
+.ruler .tk{position:absolute;top:2px;width:2px;height:22px;background:#7b91a3}
+.ruler .tk span{position:absolute;top:26px;left:50%;transform:translateX(-50%);font:600 12px var(--mono);color:var(--ink-2);white-space:nowrap}
+.ruler .tk.end span{transform:translateX(-100%)}
+.mini{position:absolute;top:8px;width:1px;height:10px;background:#b6c5d1}
+.mode{display:flex;gap:6px;margin-bottom:14px}
+.mode button{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line-2);background:#fff;font-weight:650;cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.current{height:64px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:38px;font-weight:850;letter-spacing:.18em}
+.current small{font:13px var(--mono);letter-spacing:0;color:var(--muted)}
+.plate{position:relative;padding:14px;border-radius:22px;background:linear-gradient(160deg,#f7f9fb,#e1e8ee);border:1px solid #c3d0db;box-shadow:inset 0 1px 0 #fff,0 18px 30px -22px rgba(14,34,50,.6)}
+.cells{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;aspect-ratio:1}
+.cell{border-radius:16px;border:0;background:#eef2f6;box-shadow:inset 0 3px 6px rgba(14,34,50,.16),inset 0 -1px 0 #fff;font-size:clamp(28px,9vw,40px);font-weight:800;color:var(--ink);cursor:pointer;position:relative;z-index:1;transition:background .12s}
+.cell:hover{background:#e3eaf1}
+.cell.on{background:#dbe7f8;color:var(--accent-2)}
+.cell.last{background:var(--accent);color:#fff;box-shadow:inset 0 -3px 0 var(--accent-2)}
+svg.path{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);pointer-events:none;z-index:2}
+svg.path polyline{fill:none;stroke:rgba(28,92,188,.55);stroke-width:14;stroke-linecap:round;stroke-linejoin:round}
+.help{text-align:center;color:var(--ink-2);font-size:15px;margin:14px 0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
+.found{margin-top:18px;border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:15px}
+</style>
+</head>
+<body>
+<div class="studio-note"><span><b>Design concept</b> · Tangle A — Engraved plate</span><span>Static prototype · not a live game</span></div>
+<main class="app">
+  <header class="bar">
+    <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
+    <span class="wordmark">Alford Daily</span>
+    <div class="tools">
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+      <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
+      <button class="icon-btn" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="ghead"><img src="../assets/icons/kimi-tangle.svg" alt=""><div><p class="eyebrow">Word trails</p><h1 class="gname">Tangle</h1></div></div>
+    <div class="modes"><div class="seg" role="group" aria-label="Mode"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div><span class="meta">No. 124 · Fri 6 Nov</span></div>
+    <div class="mode" role="group" aria-label="Board size"><button aria-pressed="true">4×4 Daily</button><button aria-pressed="false">5×5 Preview</button></div>
+
+    <div class="score"><b>0<small>points</small></b><span>0 / 84 words<br>97 points available</span></div>
+    <div class="ruler" aria-label="Medal goals: Bronze 6, Silver 12, Gold 18 points">
+      <div class="track"></div><div class="fill"></div>
+      <i class="tk" style="left:33.3%"><span>Bronze 6</span></i><i class="tk" style="left:66.6%"><span>Silver 12</span></i><i class="tk end" style="left:calc(100% - 2px)"><span>Gold 18</span></i>
+    </div>
+
+    <div class="current" aria-live="polite" id="cur"><span id="word">&nbsp;</span><small id="pts"></small></div>
+    <div class="plate">
+      <div class="cells" id="cells"></div>
+      <svg class="path" viewBox="0 0 400 400" aria-hidden="true"><polyline id="line" points=""/></svg>
+    </div>
+    <p class="help">Drag through touching letters (diagonals count) and release on a letter to check. Or tap letters, then Check.</p>
+    <div class="row"><button class="btn" id="clr">Clear</button><button class="btn primary">Check</button><button class="btn quiet">Clue · 1</button></div>
+    <div class="found"><span>Found (0) · your words appear here</span><span>0 misses</span></div>
+    <div style="margin-top:14px;text-align:center"><button class="demo-toggle" id="demo">Preview a traced word</button></div>
+  </div>
+</main>
+<p class="studio-foot">Concept notes: letters sit in recessed wells on a single machined plate; the trace is a thick translucent ribbon so the path order is unambiguous. Tap adjacent letters to trace locally. Grid and goals are today's supplied 4×4 sample; the preview trace is illustrative and nothing is checked.</p>
+<script>
+document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
+const G='EVEIMHBPUHERTOBW'.split(''),host=document.getElementById('cells'),line=document.getElementById('line'),word=document.getElementById('word'),pts=document.getElementById('pts');let path=[];
+const adj=(a,b)=>Math.max(Math.abs((a>>2)-(b>>2)),Math.abs((a&3)-(b&3)))===1;
+function draw(){host.querySelectorAll('.cell').forEach((c,i)=>{c.classList.toggle('on',path.includes(i));c.classList.toggle('last',path[path.length-1]===i);});const R=host.getBoundingClientRect(),cs=host.querySelectorAll('.cell');line.ownerSVGElement.setAttribute('viewBox',`0 0 ${R.width} ${R.height}`);line.setAttribute('points',path.map(i=>{const c=cs[i].getBoundingClientRect();return `${c.left-R.left+c.width/2},${c.top-R.top+c.height/2}`}).join(' '));const w=path.map(i=>G[i]).join('');word.textContent=w||' ';pts.textContent=w.length>=3?(w.length<=4?'1 pt':w.length===5?'2 pts':w.length===6?'3 pts':w.length===7?'5 pts':'11 pts'):'';}
+G.forEach((l,i)=>{const b=document.createElement('button');b.className='cell';b.textContent=l;b.setAttribute('aria-label',`${l}, row ${(i>>2)+1}, column ${(i&3)+1}`);b.onclick=()=>{if(path[path.length-1]===i){path.pop();}else if(!path.includes(i)&&(!path.length||adj(path[path.length-1],i))){path.push(i);}draw();};host.appendChild(b);});
+addEventListener('resize',draw);document.getElementById('clr').onclick=()=>{path=[];draw();};document.getElementById('demo').onclick=()=>{path=[9,10,11,6];draw();};
+</script>
+</body>
+</html>

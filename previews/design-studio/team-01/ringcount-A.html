@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ringcount · Direction A · Cut Ring</title>
+<link rel="stylesheet" href="studio.css">
+<style>
+.layout{display:grid;gap:20px;justify-items:center}
+@media (min-width:880px){.layout{grid-template-columns:minmax(0,460px) 320px;justify-content:center;align-items:center;gap:40px}}
+.dial{position:relative;width:min(100%,460px);aspect-ratio:1}
+.dial svg{position:absolute;inset:0;width:100%;height:100%}
+.num{position:absolute;transform:translate(-50%,-50%);width:13%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:0 0 0 1.5px var(--c,#c7d2dd);font:750 clamp(18px,5.6vw,26px)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink);z-index:2}
+.num.focus{box-shadow:0 0 0 3px var(--c)}
+.gap{position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;border:0;background:transparent;z-index:3;padding:0}
+.gap::before{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid #b3c1cf;background:#fff;transition:transform .15s}
+.gap:hover::before{transform:scale(1.25);border-color:var(--ink)}
+.gap[aria-pressed="true"]::before{width:6px;height:26px;margin:-13px -3px;border-radius:3px;border:0;background:var(--ink);transform:rotate(var(--a))}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;z-index:1}
+.center small{display:block;font:700 11px/1.2 var(--sans);letter-spacing:.14em;color:var(--muted)}
+.center b{display:block;font:800 clamp(44px,14vw,68px)/1 var(--display);font-variant-numeric:tabular-nums}
+.side{width:100%;max-width:460px;display:grid;gap:12px}
+.arcs{display:grid;gap:6px}
+.arc{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:48px;padding:0 12px;border-radius:10px;background:#fff;border:1px solid var(--line2);font:15px/1.3 var(--mono);color:var(--ink2);width:100%;text-align:left}
+.arc i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.arc b{font:800 22px/1 var(--display);font-variant-numeric:tabular-nums}
+.arc.ok b{color:var(--ok)} .arc.ok b::after{content:" ✓";font-size:16px}
+.arc.sealed b{color:var(--muted)}
+.empty{font-size:14px;color:var(--muted);padding:12px;border:1px dashed var(--line);border-radius:10px}
+.exp{border:1px solid #f0dcb4;background:#fffaf0;border-radius:12px;padding:10px 12px;font-size:14px;color:#6b4a12}
+.exp label{display:flex;gap:10px;align-items:center;min-height:44px;font-weight:600;cursor:pointer}
+.exp input{width:22px;height:22px;accent-color:var(--ink)}
+</style></head>
+<body>
+<div class="rv"><span><b>Ringcount · Direction A “Cut Ring”</b> · design review prototype with the real board, not a live game</span><nav aria-label="Ringcount"><a href="ringcount-A.html" aria-current="page">A</a></nav></div>
+<main class="app">
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<button class="ibtn" aria-pressed="false" aria-label="Favorite Ringcount" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
+<button class="ibtn" aria-label="Hide Ringcount from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
+<button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
+<section class="head"><img src="../assets/icons/ringcount.svg" alt=""><div><h1>Ringcount</h1><div class="meta">NO. 018 · SHARP · <span id="hm">3 / 4 CUTS</span></div></div><div class="seg"><button aria-pressed="true">Daily</button><button aria-pressed="false">Practice</button></div></section>
+<div class="wrap layout">
+  <div class="dial" id="dial" aria-label="Ring of twelve numbers"><svg viewBox="0 0 400 400" id="svg" aria-hidden="true"></svg><div class="center"><small>EACH ARC</small><b>16</b><small id="cc">3 of 4 cuts</small></div></div>
+  <div class="side">
+    <div class="arcs" id="arcs"></div>
+    <div class="row"><button class="btn" id="hint">Hint · place a cut</button><button class="btn pri" id="chk" style="flex:1">Check circle</button></div>
+    <p class="live" id="msg">Tap a dot between two numbers to cut there. Tap a cut to remove it.</p>
+    <div class="exp"><label><input type="checkbox" id="seal">Sealed totals <span class="illus">mechanic experiment</span></label>Arc totals stay hidden until you Check, with three checks allowed. Turns live arithmetic into planning. Not part of the current rules.</div>
+  </div>
+</div>
+<div class="foot"><span>One solution. Arcs can be long or short; only the total matters. One check, no hints = perfect.</span><a href="#">Full rules</a></div>
+</main>
+<script>
+const N=[4,5,7,4,4,4,4,7,9,9,1,6],T=16,COL=['#1c5fc4','#0a8277','#123f86','#06574f'];
+let cuts=[2,6,9],sealed=false,focus=null;
+const $=id=>document.getElementById(id);const say=m=>$('msg').textContent=m;
+const pt=(deg,r)=>[200+Math.cos(deg*Math.PI/180)*r,200+Math.sin(deg*Math.PI/180)*r];
+function segs(){if(!cuts.length)return[];const c=[...cuts].sort((a,b)=>a-b);return c.map((g,k)=>{const nx=c[(k+1)%c.length];const idx=[];let i=(g+1)%12;do{idx.push(i);i=(i+1)%12;}while(i!==(nx+1)%12);return{idx,sum:idx.reduce((s,j)=>s+N[j],0)};});}
+function render(){
+  const S=segs();const colorOf=j=>{const k=S.findIndex(s=>s.idx.includes(j));return k<0?'#c7d2dd':COL[k%4];};
+  let svg=`<circle cx="200" cy="200" r="132" fill="none" stroke="#e3e9ef" stroke-width="10"/>`;
+  S.forEach((s,k)=>{if(s.idx.length===12){svg+=`<circle cx="200" cy="200" r="132" fill="none" stroke="${COL[0]}" stroke-width="10"/>`;return;}const a0=-90+s.idx[0]*30-13,a1=a0+(s.idx.length-1)*30+26;const [x0,y0]=pt(a0,132),[x1,y1]=pt(a1,132);const big=(a1-a0)>180?1:0;svg+=`<path d="M${x0} ${y0} A132 132 0 ${big} 1 ${x1} ${y1}" fill="none" stroke="${COL[k%4]}" stroke-width="10" stroke-linecap="round" opacity="${focus===null||focus===k?1:.25}"/>`;
+    if(!sealed&&s.idx.length<12){const mid=(a0+a1)/2;const [lx,ly]=pt(mid,96);svg+=`<text x="${lx}" y="${ly+6}" text-anchor="middle" font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-weight="800" font-size="18" fill="${s.sum===T?'#17784a':COL[k%4]}">${s.sum}</text>`;}});
+  cuts.forEach(g=>{const a=-75+g*30;const [x0,y0]=pt(a,112),[x1,y1]=pt(a,156);svg+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#0f1d2a" stroke-width="3" stroke-linecap="round"/>`;});
+  $('svg').innerHTML=svg;
+  $('dial').querySelectorAll('.num,.gap').forEach(e=>e.remove());
+  N.forEach((n,j)=>{const [x,y]=pt(-90+j*30,132);const d=document.createElement('span');d.className='num'+(focus!==null&&S[focus]&&S[focus].idx.includes(j)?' focus':'');d.style.left=x/4+'%';d.style.top=y/4+'%';d.style.setProperty('--c',colorOf(j));d.textContent=n;d.setAttribute('role','img');d.setAttribute('aria-label',`Position ${j+1}, ${n}`);$('dial').append(d);
+    const a=-75+j*30;const [gx,gy]=pt(a,178);const b=document.createElement('button');b.className='gap';b.style.left=gx/4+'%';b.style.top=gy/4+'%';b.style.setProperty('--a',(a+90)+'deg');b.dataset.g=j;b.setAttribute('aria-pressed',cuts.includes(j));b.setAttribute('aria-label',`${cuts.includes(j)?'Remove':'Place'} cut between ${n} and ${N[(j+1)%12]}`);$('dial').append(b);});
+  $('arcs').innerHTML=S.length?S.map((s,k)=>`<button class="arc${!sealed&&s.sum===T?' ok':''}${sealed?' sealed':''}" style="--c:${COL[k%4]}" data-k="${k}" aria-pressed="${focus===k}"><i></i><span>${s.idx.map(j=>N[j]).join(' + ')}</span><b>${sealed?'?':s.sum}</b></button>`).join(''):'<p class="empty">Arc totals appear as you cut.</p>';
+  $('cc').textContent=`${cuts.length} of 4 cuts`;$('hm').textContent=`${cuts.length} / 4 CUTS`;$('chk').disabled=cuts.length!==4;
+}
+$('dial').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=+b.dataset.g;if(cuts.includes(g))cuts=cuts.filter(x=>x!==g);else if(cuts.length<4)cuts.push(g);else{say('Four cuts placed. Remove one first.');return;}focus=null;render();const S=segs();say(`${cuts.length} of 4 cuts.`+(!sealed&&cuts.length?` ${S.filter(s=>s.sum===T).length} arc(s) at 16.`:''));});
+$('arcs').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){focus=focus===+b.dataset.k?null:+b.dataset.k;render();}});
+$('chk').onclick=()=>{const S=segs();const ok=S.length===4&&S.every(s=>s.sum===T);say(ok?'Balanced. Four arcs of 16.':'Not balanced yet. Your cuts stay editable.');};
+$('hint').onclick=()=>say('A hint places one correct cut after confirmation (+1 hint). Not wired in this prototype.');
+$('seal').onchange=e=>{sealed=e.target.checked;render();say(sealed?'Sealed totals (experiment): sums hidden until Check.':'Live totals (current rules).');};
+render();
+</script>
+</body></html>

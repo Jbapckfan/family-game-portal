@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "product": "Alford Daily",
+    "author": "Opus 5.5 creative director (design review provenance; never shown inside product screens)",
+    "date": "2026-11-06",
+    "status": "Design proposals for review. Not live, not tested in production, not a retention decision.",
+    "sharedFrame": {
+      "rule": "Every direction keeps one LIGHT cool frame: pale blue page field, white working surfaces, deep blue-ink text. No brown, beige, cream, tan, purple, violet or lavender anywhere in UI chrome or game states.",
+      "baseTokens": {
+        "field": "#EEF3F8",
+        "surface": "#FFFFFF",
+        "ink": "#0E1D2D",
+        "inkSecondary": "#475B6F",
+        "hairline": "#D3DDE8",
+        "accentBlue": "#1F58C9",
+        "teal": "#0C7A80",
+        "gold": "#E2A31B",
+        "success": "#2B8650",
+        "error": "#C23B35",
+        "focusRing": "3px solid #1F58C9 with 2px white offset"
+      },
+      "stateColourLaw": "Blue = selected / higher / yours. Teal = secondary direction / lower (Switchpath) / confirmed. Gold = special or required letters (Twin Hive anchors, Territory targets). Red only for errors and blocking rules. Green only for accepted/solved. Never colour-only: every state also carries a shape, label or icon.",
+      "typeFloor": "Body never below 17px on phone, 18px desktop. Game letters never below 28px on phone. Clue text 19-22px. Tap targets >= 44x44px, primary game targets >= 52px.",
+      "providerLabels": "Remove 'Developed by Claude/Kimi/Qwen/DeepSeek' and 'Concept by …' lines and the provider filter row from all product screens. Provenance belongs only in internal review documents.",
+      "currentSiteDiagnosis": [
+        "The live hub uses a warm cream/beige field and a green serif 'A little pause. A good puzzle.' tagline that contradicts the cool collection frame inside the games.",
+        "The same games are repeated as full cards up to three times (Today's Three, 'Find your way with words', 'Look a little closer'), plus two large promo cards for Ringcount and Switchpath. On a 393px phone the page is about 15,000px tall.",
+        "Every game gets an identical rounded card with Favorite and Hide pills, so 33 cards look the same and nothing reads as more important.",
+        "A provider filter (All / Alford Daily / Kimi / DeepSeek / Qwen / Claude) and per-card provider credits sort games by who generated them rather than how they play.",
+        "Profile, favorites filter and feedback are collapsed disclosure rows in the hero area, competing with Today's Three."
+      ]
+    }
+  },
+  "directions": [
+    {
+      "id": "A",
+      "name": "Ledger",
+      "rationale": "A typography-led daily index. One white sheet on the pale blue field and hairline rules instead of boxes, so the hierarchy comes from type size and order, not from cards. It answers the 'plain/childish' complaint with editorial precision and shortens the page more than any other direction. Every game appears exactly once in a dense, readable index.",
+      "layoutStrategy": "Masthead (date + day status) → Today's Three as three full-width numbered rows (numeral, icon, name, description, state, action, favourite/hide) → collection index grouped by how the game plays (Clues & meaning, Letters & words, Deduction, Logic & pattern) in two to three columns of single-line entries → feedback and profile set side by side as a two-column colophon. No secondary promo strip.",
+      "typography": {
+        "display": "System serif stack (ui-serif, 'New York', 'Iowan Old Style', Georgia) at 64-72px desktop / 40px phone, used only for the date and section titles",
+        "ui": "System sans stack (system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica Neue, Arial)",
+        "scale": "72 / 34 / 24 / 20 / 18 / 15px; Today rows 30px names + 19px descriptions; index names 20px",
+        "numerals": "Tabular, lining figures; 01 02 03 row numerals set in serif at 44px"
+      },
+      "spacing": "8px base. Row padding 28px vertical. Sections separated by 72px and a 2px ink rule. Index line height 64px minimum so touch targets clear 44px.",
+      "palette": {
+        "field": "#F2F6FA",
+        "sheet": "#FFFFFF",
+        "rule": "#D3DDE8",
+        "ruleStrong": "#0E1D2D",
+        "accent": "#1D55C4",
+        "teal": "#0C7A80",
+        "inkSecondary": "#46596C"
+      },
+      "depthMaterial": "Almost flat. The sheet has a single soft 1px edge shadow; everything else is hairline rules, type weight and alignment. Depth is held back for the game boards, so tactile pieces inside games stand out against a calm hub.",
+      "motion": "Under 160ms. Row hover moves a 3px accent bar in from the left; star fills with a 120ms scale from 0.9 to 1. No parallax or scroll effects. Respects prefers-reduced-motion by removing all transforms.",
+      "accessibility": "Real list semantics and headings. Favourite/hide are aria-pressed toggle buttons with text labels on phone. Filters are a radiogroup with counts read aloud. The date is a <time> element. Contrast ≥ 7:1 for body text.",
+      "navigation": "Top bar: wordmark, Today, Collection, Favourites, Hidden, Profile. On phone the anchors collapse into one horizontally scrolling row under the wordmark. Pressing '/' focuses the collection filter.",
+      "resultSharing": "One 'Share today' line in the masthead, disabled until at least one of the three is finished. The share text uses a strict monospace block: date, each game name, its real scoring metric (scans, checks, hints) and solved/unsolved marks. Never letters, words or positions.",
+      "recommendationTradeoff": "Fastest to scan and cheapest to build. It fixes the page length and the duplication completely. Trade-off: it is the least physical direction and could feel austere next to James's stated wish for tactile, three-dimensional pieces. Best used as the catalogue density mode inside another direction."
+    },
+    {
+      "id": "B",
+      "name": "Tray",
+      "rationale": "Physical, molded objects in a precise setting: Today's Three are three large white molded tiles seated in a recessed pale-blue tray, and the collection is a grid of smaller keycap-like tiles. This is the same material language as the game pieces James has responded to (Tradeoff tiles, Inbetween drag pairs), so the hub and games feel like one product. Depth is functional: raised means pressable, recessed means a slot or container.",
+      "layoutStrategy": "Header with wordmark, a profile button on the right and a feedback key → the tray holding Today's Three (each tile: embossed icon, name, description, state strip, one primary key, corner favourite/hide toggles) → a thin day line with the share key → collection: a physical three-position slide switch (All / Favourites / Hidden) plus 'how it plays' keys, then a dense keycap grid (5 to 6 columns desktop, 2 phone) → a service drawer for feedback and profile at the bottom.",
+      "typography": {
+        "display": "System sans semibold (system-ui / SF Pro Display / Segoe UI Variable) 44-52px desktop, 32px phone, tight -0.02em tracking",
+        "ui": "Same family, 18px body; small caps-like 13px uppercase labels with 0.08em tracking used sparingly for slot labels",
+        "numerals": "Tabular figures for states and counts"
+      },
+      "spacing": "8px base. The tray has 20px internal padding, tiles 28px. Keycap grid gaps of 14px. Tile thickness is drawn as a 6px bottom edge, which also adds to the hit area.",
+      "palette": {
+        "field": "#E9F0F7",
+        "trayRecess": "#DCE6F1",
+        "tileFace": "#FCFDFF",
+        "tileEdge": "#C5D3E2",
+        "ink": "#11253A",
+        "accentKey": "#1F5FD1",
+        "accentKeyEdge": "#16479F",
+        "teal": "#0C7A80",
+        "gold": "#E2A31B"
+      },
+      "depthMaterial": "Matte white polymer/ceramic faces with a 1px top highlight, a 6px darker bottom edge and one short, tight ambient shadow. The tray uses an inset shadow. No metal textures, brushed effects or chrome, because the pale-metal card variants were rejected. Exactly two elevations: recessed (tray, switch track) and raised (tiles, keys).",
+      "motion": "Keys travel 3px down on press (edge shrinks from 6 to 3px) in 90ms. The switch thumb slides 180ms ease-out. Favourite toggles press in and stay latched, using the same physical metaphor. Reduced motion keeps the colour/edge change and drops the travel.",
+      "accessibility": "Latched toggles expose aria-pressed. The slide switch is a radiogroup with arrow-key support. The edge/shadow never carries meaning alone: every latched state also shows an icon fill and a text label. Keycap labels 18px minimum.",
+      "navigation": "Minimal chrome: wordmark, Collection anchor, profile button, feedback key. On phone the profile and feedback keys stay in the header (44px). The collection grid has an inline search field above it.",
+      "resultSharing": "When a tile is finished its state strip turns into a result readout: metric plus a row of filled/empty pips matching the game's actual scoring (for example 3 scans). 'Share today' composes the three readouts as text with no answers. Locked until the first finish.",
+      "recommendationTradeoff": "RECOMMENDED. It gives the most direct answer to 'professional polish and modern physical forms', shares a vocabulary with the game controls, and gives other sessions a clear rule (raised = actionable, recessed = slot) without forcing one board template. Trade-off: depth has to be handled carefully or it drifts into 'repeated rounded boxes'. Enforce two elevations, large-tile/small-key size contrast, and no card around plain text."
+    },
+    {
+      "id": "C",
+      "name": "Console",
+      "rationale": "An app-shell built for a returning daily player: a persistent rail, a centre work area and a context pane. It treats Alford Daily as a tool you open every day, not a page you scroll. Selecting any game (from Today or the list) fills a detail pane with its rules in three lines, your state and the Play/Favourite/Hide actions. This puts rule clarity (James's repeated 'explain it in context') on the hub itself.",
+      "layoutStrategy": "Desktop: 264px left rail (wordmark, Today, Collection with counts, Favourites, Hidden, how-it-plays groups, then the profile block and Feedback at the bottom) | centre: date header, Today's Three as a connected three-stop run, then a sortable collection table (game, how it plays, description, prepared puzzles) | 360px right detail pane. Phone: the rail becomes a five-tab bottom bar (Today, Games, Saved, Feedback, Profile) and the detail pane becomes an in-flow sheet below the selected item.",
+      "typography": {
+        "display": "System sans 34px semibold for the date; no serif",
+        "ui": "System sans 17-18px; table rows 18px; game names 20px semibold",
+        "mono": "ui-monospace for keyboard hints and puzzle numbers",
+        "numerals": "Tabular figures throughout"
+      },
+      "spacing": "4/8px grid. The rail uses 48px items. Table rows are 64px tall. Panes are separated by 1px rules, not gutters, so it reads as one instrument.",
+      "palette": {
+        "rail": "#F7FAFD",
+        "work": "#EEF3F8",
+        "pane": "#FFFFFF",
+        "selection": "#E2ECFB",
+        "accent": "#1D5BD0",
+        "teal": "#0C7A80",
+        "ink": "#0F1F30"
+      },
+      "depthMaterial": "Flat planes with 1px rules. The only raised object is the selected Today stop, a white plate with a crisp 2px accent edge and a short shadow. Calm and engineered rather than tactile.",
+      "motion": "The selection highlight slides between rows in 140ms. The detail pane cross-fades its content in 120ms with no movement. The phone bottom sheet uses a 200ms rise. Reduced motion uses instant swaps.",
+      "accessibility": "Landmarks: nav (rail), main, complementary (detail). The table uses real <table> markup with column headers. Keyboard: J/K move the selection, Enter plays, F favourites, H hides, '/' searches. Shortcuts are shown in the pane and never required.",
+      "navigation": "Persistent and always visible. Favourites and Hidden are first-class rail destinations with live counts, not disclosure rows.",
+      "resultSharing": "The detail pane of a finished game shows 'Share this result' (metric only). The Today header shows 'Share today' covering all three. Both are disabled until a finish and explain why when disabled.",
+      "recommendationTradeoff": "Best for power use, rule clarity and keyboard play. Trade-off: it reads as software more than as a daily pleasure, the three-pane layout is heavy for first-time phone visitors, and a sortable table can feel administrative. Borrow its detail-pane rule summaries even if it isn't chosen."
+    },
+    {
+      "id": "D",
+      "name": "Specimen",
+      "rationale": "Show the play, not a pictogram. Each of Today's Three is a large specimen plate drawn from the puzzle's actual opening state (Shortlist's twelve words, Second Sense's noun and verb clues, Sideways' five letter strips). The collection is a verb-first catalogue: every entry leads with the move you make ('Scan two letters', 'Slide strips', 'Close the last opening'). This attacks the generic-card problem by making each game recognisably itself.",
+      "layoutStrategy": "Slim header → date line → three specimen plates in a row (desktop) or a stacked column (phone), each with a live-looking opening-state miniature, the game name, a one-line move and its state/action → collection grouped by how it plays, each entry a compact plate with icon, name, 'the move' line and favourite/hide → full-width feedback band with the receipt slot → profile in the header.",
+      "typography": {
+        "display": "System sans heavy (800) 48px for names on specimens; condensed feel through tight tracking, not a downloaded font",
+        "ui": "System sans 18px; move lines 17px medium in ink",
+        "specimenLetters": "Puzzle letters set in the same weights the games use, at 22-26px inside the miniature so it stays legible"
+      },
+      "spacing": "Generous outer margins (64px desktop). Specimens 3-up at 1440. Catalogue plates 3-up desktop, 1-up phone, 16px gaps.",
+      "palette": {
+        "field": "#F0F5FA",
+        "plate": "#FFFFFF",
+        "plateRule": "#D6E0EA",
+        "ink": "#0F1A26",
+        "accent": "#2160CB",
+        "teal": "#0C7A80",
+        "gold": "#E2A31B"
+      },
+      "depthMaterial": "Plates are flat white with a precise 1px rule and a deep, very soft single shadow, like a printed specimen on a lightbox. Miniatures use the real game material (raised letter tiles, rings, hexes), so the depth lives inside the specimens rather than in the chrome.",
+      "motion": "On hover/focus a specimen plays one tiny, true-to-rules beat (Shortlist's scan bar passes over the list; Sideways' strip nudges one step) for 600ms, once. No looping. Disabled with reduced motion.",
+      "accessibility": "Miniatures are aria-hidden decorations with a text equivalent ('Twelve five-letter words; three letter scans'). The real controls are the plate's buttons. The catalogue's move line acts as a plain-language rule summary for screen readers.",
+      "navigation": "Header anchors: Today, Collection, Favourites, Hidden, Feedback, plus a Profile button. The catalogue filter row is sticky on desktop.",
+      "resultSharing": "A finished specimen swaps its miniature for an abstract result figure built only from metrics (for example three filled scan marks), never letters. 'Share today' sits under the three plates.",
+      "recommendationTradeoff": "The most distinctive and the best at teaching mechanics at a glance. Trade-off: specimens must be generated from each day's data and kept honest (no spoilers, no stale states), which means a renderer per game. A miniature can also read as a cramped second copy of the game. Viable for Today's Three only; the catalogue uses the verb-first line instead."
+    }
+  ],
+  "recommendation": {
+    "choose": "B",
+    "withBorrowings": [
+      "Use A's single-line index as the 'compact list' density toggle for the collection on phone.",
+      "Use C's three-line rule summary in a game detail sheet (opened from a keycap's info button) so rules are explained where you choose a game.",
+      "Use D's verb-first 'the move' line as the second line on every keycap instead of marketing taglines."
+    ],
+    "why": "B is the only direction that is tactile, physical and precise, as James asks, while also sharing a material grammar (raised = act, recessed = slot, latched = on) that game sessions can apply to very different boards (rings, hexes, ladders, plants) without a common card template."
+  }
+}

@@ -1,0 +1,11 @@
+@import url('./home-fonts.css');
+/* Alford Daily home theme, measured from the live main page on 2026-11-06.
+   Immutable visual baseline for the second design review. */
+:root{--ad-paper:#f6f3ec;--ad-surface:#fffefa;--ad-ink:#202c35;--ad-muted:#5b666c;--ad-line:#dcded8;--ad-green:#376c58;--ad-soft:#e0efea;--ad-sans:'DM Sans',system-ui,sans-serif;--ad-serif:'DM Serif',Georgia,serif;--ad-shadow:0 6px 0 #202c3505;--ad-card-radius:22px;color-scheme:light}
+html{background:var(--ad-paper)!important;min-height:100%}
+body{background:var(--ad-paper)!important;background-image:none!important;color:var(--ad-ink)!important;font-family:var(--ad-sans)!important;-webkit-font-smoothing:antialiased;min-height:100vh}
+button,input,select,textarea{font-family:var(--ad-sans)}
+/* The shared brand/type is invariant; board letters remain sans-serif. */
+h1,h2,.gname,.game-head h1,.head h1,.wordmark,.brand{font-family:var(--ad-serif)!important;font-weight:400!important}
+:focus-visible{outline-color:var(--ad-green)!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

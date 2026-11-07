@@ -1,44 +1,47 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Memory Maze · Concept A · Sticky instrument bar</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
-.instr{position:sticky;top:0;z-index:5;margin:0 -16px;padding:10px 16px;background:rgba(237,243,248,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line-2)}
+.instr{position:sticky;top:0;z-index:5;margin:0 -16px;padding:10px 16px;background:rgba(246,243,236,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+@media(min-width:701px){.instr{margin:0 -32px;padding:10px 32px}}
 .instr-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
 .phase{display:flex;gap:4px}
-.phase span{font:700 11px/1 var(--mono);letter-spacing:.08em;padding:7px 8px;border-radius:6px;color:var(--muted);background:var(--paper);border:1px solid var(--line)}
-.phase span.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.phase span{font:700 10px/1 var(--mono);letter-spacing:.12em;padding:8px 9px;border-radius:999px;color:var(--muted);background:var(--paper);border:1px solid var(--line)}
+.phase span.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 @media(max-width:420px){.phase span:not(.on){display:none}.phase span.on{display:inline-block}}
-.track{height:8px;border-radius:4px;background:#d6e2eb;overflow:hidden}
+.track{height:8px;border-radius:4px;background:#e4e1d6;overflow:hidden}
 .track i{display:block;height:100%;width:100%;background:var(--accent);transition:width .25s linear}
-.clock{font:800 28px/1 var(--mono);min-width:3.2ch;text-align:right}
+.clock{font:700 28px/1 var(--mono);min-width:3.2ch;text-align:right}
 .clock small{font-size:14px;color:var(--muted)}
-.stats{max-width:560px;margin:8px auto 0;display:flex;gap:14px;font:600 13px/1 var(--mono);color:var(--ink-2);flex-wrap:wrap}
-.stage{max-width:560px;margin:18px auto 0}
-.head h2{margin:0;font:800 clamp(24px,6vw,30px)/1.1 var(--sans)}
+.stats{max-width:560px;margin:8px auto 0;display:flex;gap:14px;font:600 13px/1.2 var(--mono);color:var(--ink-2);flex-wrap:wrap}
+.stage{max-width:560px;margin:20px auto 0}
+.head h2{margin:0;font:400 clamp(28px,6.4vw,36px)/1.1 var(--serif)}
 .head p{margin:4px 0 14px;color:var(--ink-2)}
-.board{position:relative;aspect-ratio:1;background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:6px}
-.board svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);pointer-events:none;z-index:2}
+.board{position:relative;aspect-ratio:1;background:var(--paper);border:1px solid var(--line);border-radius:var(--card-r);padding:8px;box-shadow:var(--shadow)}
+.board svg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:none;z-index:2}
 .board polyline{fill:none;stroke:var(--accent);stroke-width:.16;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
 .grid{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:3px;height:100%}
-.c{border:0;border-radius:6px;background:#eef3f7;font:800 clamp(14px,4vw,20px)/1 var(--sans);cursor:pointer;color:var(--ink);min-width:0}
-.c:hover:not(:disabled){background:#dde8f0}
-.c.start,.c.goal{background:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
-.c.shown{background:var(--accent);color:#fff}
-.c.done{background:var(--ink);color:#fff}
-.c.block{background:repeating-linear-gradient(45deg,#c9d6e0 0 4px,#e3ebf1 4px 8px);color:#7c90a0}
-.c.wrong{animation:shake .35s;background:#f3d9d2}
+.c{border:0;border-radius:8px;background:#f1eee6;font:700 clamp(14px,4vw,20px)/1 var(--sans);cursor:pointer;color:var(--ink);min-width:0}
+.c:hover:not(:disabled){background:#e7e3d8}
+.c.start,.c.goal{background:var(--paper);box-shadow:inset 0 0 0 2px var(--ink)}
+.c.shown{background:var(--accent);color:var(--paper)}
+.c.done{background:var(--ink);color:var(--paper)}
+.c.block{background:repeating-linear-gradient(45deg,#dad6cb 0 4px,#ece8df 4px 8px);color:#757b72}
+.c.wrong{animation:shake .35s;background:#f4ddd3}
 @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .c:disabled{cursor:default}
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .demo{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .demo .btn{min-height:44px;font-size:14px}
-.filler{margin-top:24px;padding:14px;border:1px dashed var(--line-2);border-radius:10px;color:var(--muted);font-size:14px}
-</style></head><body>
+.filler{margin-top:24px;padding:14px 16px;border:1px dashed var(--line-2);border-radius:16px;color:var(--muted);font-size:14px}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Memory Maze · A — Sticky instrument bar · visual prototype · route is illustrative</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/qwen-memory-maze.svg" alt=""><div class="titles"><p class="kicker">Remember the route</p><h1>Memory Maze</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <div class="instr" role="timer" aria-live="off">
  <div class="instr-in"><div class="phase" id="phase"><span>STUDY</span><span>RECALL</span><span>DONE</span></div><div class="track" aria-hidden="true"><i id="bar"></i></div><div class="clock" id="clock">6<small>s</small></div></div>
@@ -47,14 +50,14 @@
 <main class="stage">
  <div class="head"><h2 id="title">Ready to remember?</h2><p id="sub">8 squares · six seconds to study</p></div>
  <div class="board"><svg viewBox="0 0 7 7" aria-hidden="true"><polyline id="line"/></svg><div class="grid" id="grid" role="group" aria-label="Seven by seven maze"></div></div>
- <div class="row-actions actions"><button class="btn btn-accent" id="go">Study the route</button></div>
+ <div class="row-actions actions"><button class="btn btn-primary" id="go">Study the route</button></div>
  <p class="msg" id="msg" role="status"></p>
  <div class="demo"><button class="btn btn-quiet" id="replay">A little hint · replay 6s</button><button class="btn btn-quiet">Reveal solution…</button></div>
  <p class="filler">The bar above stays pinned while you scroll, so the countdown and recall timer are always in view — the issue raised in feedback.</p>
 </main>
 <footer class="app-foot"><span>Study and recall pause when the app is hidden</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Memory Maze</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const P=[0,1,8,9,16,15,22,21],B=[3,10,24,29,31,38,44];let ph='ready',left=6,trail=[],miss=0,t0=0,tick=null,wrong=-1;const $=id=>document.getElementById(id);
 function render(){

@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hunch B · Ledger — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}
 @media(max-width:820px){.lay{grid-template-columns:minmax(0,1fr)}}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
-th{font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);background:#f6f9fb}
+table{width:100%;border-collapse:separate;border-spacing:0;background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius);overflow:hidden}
+th{font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);background:var(--ad-well)}
 td{padding:0 10px;height:58px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
 td.n{font:600 13px var(--mono);color:var(--muted);width:28px}
-td.g{font:800 clamp(24px,7vw,32px)/1 var(--mono);letter-spacing:.2em;white-space:nowrap}
+td.g{font:700 clamp(24px,7vw,32px)/1 var(--mono);letter-spacing:.2em;white-space:nowrap}
 td.g .cur{display:inline-block;width:.62em;border-bottom:3px solid var(--accent);height:.9em;vertical-align:-2px}
-td.g .emp{color:#c5d1db}
+td.g .emp{color:var(--ad-line-2)}
 td.c{width:1%;white-space:nowrap}
 .cnt{display:inline-flex;align-items:center;gap:6px}
 .cnt b{font-size:22px;min-width:14px;text-align:right}
@@ -23,28 +23,29 @@ td.c{width:1%;white-space:nowrap}
 .dots i{width:10px;height:10px;border-radius:50%}
 .dots .b{background:var(--ink)}
 .dots .w{border:2px solid var(--ink)}
-.zero{color:#9aaab8;font-weight:700}
-tr.now{background:#f0f5fd}
+.zero{color:var(--ad-faint);font-weight:700}
+tr.now{background:var(--ad-soft)}
 tr.now td.n{color:var(--accent);font-weight:700}
 @media(max-width:400px){td.c2 .dots{display:none}th,td{padding-left:6px;padding-right:6px}th{font-size:10px;letter-spacing:.04em}td.g{letter-spacing:.1em}}
-.side h2{font-size:18px;margin:0 0 10px}
+.side h2{font-size:28px;line-height:1.1;margin:0 0 10px}
 .side p{margin:0 0 12px;color:var(--ink-2);font-size:15px}
-.ex{display:grid;grid-template-columns:auto auto;gap:6px 14px;align-items:center;font-size:15px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.ex{display:grid;grid-template-columns:auto auto;gap:6px 14px;align-items:center;font-size:15px;background:var(--ad-surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:12px}
 .ex code{font:700 18px var(--mono);letter-spacing:.14em}
 .typebar{display:flex;gap:8px;margin:14px 0 0;flex-wrap:wrap}
 .typebar .primary{flex:1;min-width:140px}
 .kb{display:grid;gap:6px;margin-top:14px}
 .kr{display:grid;gap:4px}
-.kr button{height:50px;min-width:0;padding:0;border-radius:8px;border:1px solid #bccbd7;background:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.kr button{height:50px;min-width:0;padding:0;border-radius:8px;border:1px solid var(--ad-line-2);background:var(--ad-surface);font-weight:700;font-size:16px;cursor:pointer}
 .r1{grid-template-columns:repeat(10,minmax(0,1fr))}.r2{grid-template-columns:.5fr repeat(9,minmax(0,1fr)) .5fr}.r3{grid-template-columns:.5fr repeat(7,minmax(0,1fr)) 1.5fr}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Hunch B — Ledger</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -79,7 +80,7 @@ tr.now td.n{color:var(--accent);font-weight:700}
     </aside>
   </div>
 </main>
-<p class="studio-foot">Concept notes: typographic and adult — guesses in a monospace ledger with two numbered columns, numerals for precision and dots for scanning. On 320px phones the second column keeps its numeral and drops the dot repeat. Practice state is illustrative; the ALLEY example's counts follow the supplied rules.</p>
+<p class="studio-foot">Concept notes: typographic and adult — guesses in a letter-spaced DM Sans ledger with two numbered columns, numerals for precision and dots for scanning. On 320px phones the second column keeps its numeral and drops the dot repeat. Practice state is illustrative; the ALLEY example's counts follow the supplied rules. Prototype wiring: none of the input is wired — the keyboard, typing, Enter, ⌫, Reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach((r,ri)=>{const row=document.querySelectorAll('.kr')[ri];if(ri)row.appendChild(document.createElement('span'));r.split('').forEach(k=>{const b=document.createElement('button');b.textContent=k;row.appendChild(b);});if(ri===2){const b=document.createElement('button');b.textContent='Enter';b.style.fontSize='13px';row.appendChild(b);}});

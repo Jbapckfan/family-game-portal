@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Territory Tactics A · Survey table — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
-.goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line)}
-.goal h2{margin:0;font-size:clamp(22px,5.4vw,30px);letter-spacing:-.02em}
-.goal h2 em{font-style:normal;color:var(--accent)}
-.goal p{margin:2px 0 0;color:var(--ink-2);font-size:15px}
+.goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;padding:18px 20px;border-radius:var(--ad-card-radius);background:var(--ad-surface);border:1px solid var(--line)}
+.goal h2{margin:0;font-size:clamp(26px,6vw,34px);line-height:1.1}
+.goal h2 em{font-style:italic;color:var(--accent)}
+.goal p{margin:4px 0 0;color:var(--ink-2);font-size:15px}
 .count{text-align:right}
-.count b{font-size:40px;font-weight:850;line-height:1}
+.count b{font-family:var(--ad-serif);font-size:48px;font-weight:400;line-height:1}
 .count small{display:block;font:12px var(--mono);color:var(--muted)}
-.stones{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
-.stones i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7fb0ff,#1c5cbc 65%,#123e82);box-shadow:0 2px 3px rgba(14,34,50,.35)}
-.stones i.used{background:#dbe4ec;box-shadow:inset 0 1px 2px rgba(14,34,50,.25)}
-.lesson{margin:14px 0;border-radius:16px;border:1px solid var(--line);background:#fff}
+.stones{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--muted)}
+.stones i{width:22px;height:22px;border-radius:50%;background:#1c5cbc;box-shadow:inset 0 -2px 0 #123e82}
+.stones i.used{background:var(--ad-wash);box-shadow:inset 0 0 0 1px var(--ad-line-2)}
+.lesson{margin:14px 0;border-radius:16px;border:1px solid var(--line);background:var(--ad-surface)}
 .lesson summary{min-height:48px;display:flex;align-items:center;padding:0 16px;font-weight:700;cursor:pointer}
 .lesson .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 12px 14px}
 .lesson figure{margin:0;text-align:center;font-size:13px;color:var(--ink-2)}
@@ -24,39 +24,40 @@
 .lay{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
 @media(max-width:860px){.lay{grid-template-columns:minmax(0,1fr)}}
 .boardbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:14px;color:var(--muted)}
-.view{overflow:auto;border-radius:18px;background:#f8fbfd;border:1px solid var(--line);padding:12px;-webkit-overflow-scrolling:touch}
+.view{overflow:auto;border-radius:var(--ad-card-radius);background:var(--ad-surface);border:1px solid var(--line);padding:12px;-webkit-overflow-scrolling:touch}
 .board{position:relative;margin:0 auto}
-.hx{position:absolute;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:#c8d5e0;cursor:pointer;display:grid;place-items:center}
-.hx::before{content:"";position:absolute;inset:2px;clip-path:inherit;background:#f2f6f9}
-.hx.E::before{background:#fff}
-.hx.E:hover::before{background:#e5eefb}
+.hx{position:absolute;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:var(--ad-line-2);cursor:pointer;display:grid;place-items:center}
+.hx::before{content:"";position:absolute;inset:2px;clip-path:inherit;background:var(--ad-well)}
+.hx.E::before{background:var(--ad-surface)}
+.hx.E:hover::before{background:var(--ad-soft)}
 .hx>i{position:relative;border-radius:50%;width:62%;height:54%}
-.hx.B>i,.hx.P>i{background:radial-gradient(circle at 35% 30%,#7fb0ff,#1c5cbc 60%,#123e82);box-shadow:0 2px 3px rgba(14,34,50,.4)}
-.hx.P>b{position:absolute;font:800 12px var(--mono);color:#fff}
-.hx.A>i{width:46%;height:40%;border-radius:4px;transform:rotate(45deg);background:linear-gradient(135deg,#ffe08a,#e2a919 60%,#b98510);box-shadow:0 2px 3px rgba(14,34,50,.35)}
-.hx.grp{background:#0e2232}
+.hx.B>i,.hx.P>i{background:#1c5cbc;box-shadow:inset 0 -2px 0 #123e82}
+.hx.P>b{position:absolute;font:700 12px var(--mono);color:#fff}
+.hx.A>i{width:46%;height:40%;border-radius:4px;transform:rotate(45deg);background:#e2a919;box-shadow:inset -2px -2px 0 #b98510}
+.hx.grp{background:var(--ink)}
 .hx.open{background:var(--accent)}
 .hx.open::after{content:"";position:relative;width:34%;height:30%;border-radius:50%;border:2px dashed var(--accent)}
 .hx.gone::before{background:#fff4d6;animation:flash .8s ease-out}
 @keyframes flash{from{background:#ffd54f}}
 .hx:focus-visible{outline:none;background:var(--focus)}
 .side{display:grid;gap:12px}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
-.card small{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.card h3{margin:4px 0 6px;font-size:19px}
+.card{background:var(--ad-surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card small{font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card h3{margin:4px 0 6px;font-size:23px;line-height:1.15}
 .card p{margin:0;color:var(--ink-2);font-size:15px}
 .status{font-weight:700}
 .status.bad{color:var(--bad)}.status.ok{color:var(--ok)}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .aux{display:flex;gap:8px;flex-wrap:wrap}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Territory Tactics A — Survey table</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -94,7 +95,7 @@
     </aside>
   </div>
 </main>
-<p class="studio-foot">Concept notes: the exact target is the headline, remaining stones are physical tokens, and an inspect tap shows a group's size and openings directly on the board. The before/after lesson stays in context and collapses once learned. Board is today's supplied 37-hex position; placements and captures run as a local rule preview (including the "own group needs an opening" rule) and are not the game's validation. Zoom enlarges hexes to 52px and pans inside the board frame, never the page.</p>
+<p class="studio-foot">Concept notes: the exact target is the headline, remaining stones are physical tokens, and an inspect tap shows a group's size and openings directly on the board. The before/after lesson stays in context and collapses once learned. Board is today's supplied 37-hex position; placements and captures run as a local rule preview (including the "own group needs an opening" rule) and are not the game's validation. Zoom enlarges hexes to 52px and pans inside the board frame, never the page. Blue stones and amber targets keep their game colours (flattened, no gloss); openings are marked in home green on the board and in the lesson. Prototype wiring: inspect, placing, the local capture preview, Undo, Restart, Zoom and the lesson disclosure work; hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const DEF=['ABBA','EEAAB','BEABAB','BAEBBBE','BAABEE','BEBEE','EEEE'];let cells,moves=[],captured=0,inspect=null,zoom=false,hist=[];
@@ -121,8 +122,8 @@ captured+=got;inspect=null;st.className='status '+(captured>3?'bad':captured===3
 document.getElementById('undo').onclick=()=>{if(!hist.length)return;const h=JSON.parse(hist.pop());cells=h.cells;moves=h.moves;captured=h.captured;document.getElementById('st').textContent='Last placement removed.';document.getElementById('st').className='status';draw();};
 document.getElementById('rs').onclick=()=>{reset();document.getElementById('st').textContent='Original position restored.';document.getElementById('st').className='status';draw();};
 document.getElementById('zoom').onclick=e=>{zoom=!zoom;e.target.setAttribute('aria-pressed',zoom);draw();};addEventListener('resize',draw);
-function mini(id,fill){const hx=(x,y,f,s)=>`<path d="M${x} ${y-13}l11.3 6.5v13L${x} ${y+13}l-11.3-6.5v-13Z" fill="${f}" stroke="#b5c6d4"/>${s||''}`;const am=(x,y)=>`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="1.5" transform="rotate(45 ${x} ${y})" fill="#e2a919"/>`,bl=(x,y)=>`<circle cx="${x}" cy="${y}" r="7" fill="#1c5cbc"/>`;
-const P=[[49,50],[71,50]],ring=[[38,30],[60,30],[82,30],[27,50],[93,50],[38,70],[60,70],[82,70]];const opens=[3,4];let h='';ring.forEach(([x,y],k)=>{const o=opens.indexOf(k);const filled=o>-1&&o<fill;h+=hx(x,y,o>-1&&!filled?'#e6effc':'#f2f6f9',o>-1&&!filled?`<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#1c5cbc" stroke-dasharray="2 2"/>`:bl(x,y));});P.forEach(([x,y])=>{h+=hx(x,y,fill===2?'#fff4d6':'#f2f6f9',fill===2?'':am(x,y));});document.getElementById(id).innerHTML=h;}
+function mini(id,fill){const hx=(x,y,f,s)=>`<path d="M${x} ${y-13}l11.3 6.5v13L${x} ${y+13}l-11.3-6.5v-13Z" fill="${f}" stroke="#c9cbc2"/>${s||''}`;const am=(x,y)=>`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="1.5" transform="rotate(45 ${x} ${y})" fill="#e2a919"/>`,bl=(x,y)=>`<circle cx="${x}" cy="${y}" r="7" fill="#1c5cbc"/>`;
+const P=[[49,50],[71,50]],ring=[[38,30],[60,30],[82,30],[27,50],[93,50],[38,70],[60,70],[82,70]];const opens=[3,4];let h='';ring.forEach(([x,y],k)=>{const o=opens.indexOf(k);const filled=o>-1&&o<fill;h+=hx(x,y,o>-1&&!filled?'#e0efea':'#f1ede4',o>-1&&!filled?`<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#376c58" stroke-width="1.5" stroke-dasharray="2 2"/>`:bl(x,y));});P.forEach(([x,y])=>{h+=hx(x,y,fill===2?'#fff4d6':'#f1ede4',fill===2?'':am(x,y));});document.getElementById(id).innerHTML=h;}
 mini('l1',0);mini('l2',1);mini('l3',2);
 reset();draw();
 </script>

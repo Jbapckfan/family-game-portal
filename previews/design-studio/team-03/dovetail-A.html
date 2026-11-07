@@ -1,24 +1,24 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dovetail · Concept A · Joinery column</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:560px;margin:0 auto}
 .hud{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .hud strong{font-size:16px}
 .notches{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--ink-2)}
 .notches i{width:10px;height:22px;border-radius:2px;background:var(--ink)}
-.rule{margin:0 0 16px;padding:10px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--line);font-size:15px;color:var(--ink-2)}
-.rule b{font-family:var(--mono);color:var(--ink)}
+.rule{margin:0 0 16px;padding:12px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line);font-size:15px;color:var(--ink-2)}
+.rule b{font-family:var(--mono);color:var(--ink);letter-spacing:.03em}
 .col{display:grid;gap:0}
-.row{position:relative;display:grid;grid-template-columns:28px 1fr 28px;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--paper);border:1.5px solid var(--line-2);cursor:pointer;min-height:60px}
+.row{position:relative;display:grid;grid-template-columns:28px 1fr 28px;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:var(--paper);border:1.5px solid var(--tile-edge);cursor:pointer;min-height:60px}
 .row .n,.row .len{font:700 12px/1 var(--mono);color:var(--muted)}
 .row .len{text-align:right}
 .cells{display:flex;justify-content:center;gap:6px}
-.cells span{width:clamp(34px,10vw,44px);height:44px;display:flex;align-items:center;justify-content:center;border-bottom:3px solid var(--line-2);font:800 clamp(22px,6vw,28px)/1 var(--sans)}
-.row.given{background:var(--ink);border-color:var(--ink);color:#fff;cursor:default}
+.cells span{width:clamp(34px,10vw,44px);height:44px;display:flex;align-items:center;justify-content:center;border-bottom:3px solid var(--line-2);font:700 clamp(22px,6vw,28px)/1 var(--sans)}
+.row.given{background:var(--ink);border-color:var(--ink);color:var(--paper);cursor:default}
 .row.given .cells span{border-color:transparent}
-.row.given .n,.row.given .len{color:#9cbccd}
+.row.given .n,.row.given .len{color:#b9c4bd}
 .row.active{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-wash)}
 .row.active .cells span{border-color:var(--accent)}
 .row.active .cells span.cur{background:var(--accent-wash)}
@@ -31,10 +31,13 @@
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .help{display:flex;gap:6px;flex-wrap:wrap}
-</style></head><body>
+.help .btn{padding:0 4px;font-size:14px}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Dovetail · A — Joinery column · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/claude-dovetail.svg" alt=""><div class="titles"><p class="kicker">Compound chains</p><h1>Dovetail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap">
  <div class="hud"><strong>0 / 6 words placed</strong><span class="notches" aria-label="6 of 6 misses left"><i></i><i></i><i></i><i></i><i></i><i></i>&nbsp;6 misses left</span></div>
@@ -46,7 +49,7 @@
 </main>
 <footer class="app-foot"><span>Unlisted or repeated guesses cost nothing</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Dovetail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const L=[4,4,3,4,3,5,5,4],W=['SNAP','','','','','','','HOOD'];let active=1,typed='';const $=id=>document.getElementById(id);
 const shown=r=>W[r]||(r===active?typed:'');

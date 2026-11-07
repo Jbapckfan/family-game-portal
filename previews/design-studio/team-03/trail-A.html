@@ -1,43 +1,45 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trail · Concept A · Survey plate</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .layout{display:grid;gap:20px}
 @media(min-width:860px){.layout{grid-template-columns:minmax(0,1fr) minmax(0,440px);align-items:start;gap:40px}}
 .clue-block{padding:4px 0 0}
 .clue-block .eyebrow{margin:0 0 8px;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--muted)}
-.clue{margin:0;font:700 clamp(26px,5.6vw,36px)/1.15 var(--sans);letter-spacing:-.02em;max-width:18ch}
+.clue{margin:0;font:400 clamp(30px,6vw,42px)/1.1 var(--serif);letter-spacing:-.015em;max-width:17ch}
 .define{margin-top:10px}
 .define-text{margin:4px 0 0;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent-wash);font-size:15px;color:var(--ink-2)}
 .readout{margin-top:22px;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px}
 .readout span{height:52px;display:flex;align-items:center;justify-content:center;font:700 clamp(20px,5vw,28px)/1 var(--mono);border-bottom:3px solid var(--line-2);color:var(--ink)}
 .readout span.on{border-color:var(--ink)}
-.readout span.next{border-color:var(--accent);background:linear-gradient(transparent 70%,var(--accent-wash) 70%)}
+.readout span.next{border-color:var(--accent);box-shadow:inset 0 -12px 0 var(--accent-wash)}
 .meta{display:flex;justify-content:space-between;margin:10px 0 0;font-size:15px;color:var(--muted)}
 .meta strong{color:var(--ink)}
 .rule{margin:16px 0 0;font-size:15px;color:var(--ink-2);display:flex;gap:10px;align-items:flex-start}
 .rule svg{flex:none;width:44px;height:44px}
-.plate{position:relative;background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:12px;box-shadow:0 1px 0 #fff inset,0 18px 30px -24px rgba(14,34,50,.45)}
+.plate{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--card-r);padding:14px;box-shadow:var(--shadow)}
 .plate-ticks{display:flex;justify-content:space-between;padding:0 6px 8px;font:600 11px/1 var(--mono);color:var(--muted)}
 .board{position:relative;aspect-ratio:1}
 .route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 .route polyline{fill:none;stroke:var(--accent);stroke-width:14;stroke-linecap:round;stroke-linejoin:round;opacity:.28}
 .grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:6px}
-.t{position:relative;z-index:2;border:1.5px solid var(--line-2);border-radius:10px;background:#fbfdfe;font:750 clamp(28px,8vw,40px)/1 var(--sans);cursor:pointer;transition:background .15s,transform .15s,opacity .15s}
+.t{position:relative;z-index:2;border:1.5px solid var(--tile-edge);border-radius:12px;background:var(--tile);font:700 clamp(28px,8vw,40px)/1 var(--sans);cursor:pointer;transition:background .15s,transform .15s,opacity .15s}
 .t:hover{border-color:var(--ink-2)}
-.t small{position:absolute;top:5px;left:7px;font:700 12px/1 var(--mono);color:#cde3ec}
-.t.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+.t small{position:absolute;top:5px;left:7px;font:700 12px/1 var(--mono);color:#d5e4dc}
+.t.sel{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 .t.last{background:var(--accent);border-color:var(--accent)}
 .t.legal::after{content:"";position:absolute;inset:-5px;border:2px dashed var(--accent);border-radius:13px;opacity:.7}
 .t.far{opacity:.42}
 .actions{margin-top:14px}
 .msg{min-height:24px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .reveal{margin-top:6px}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Trail · A — Survey plate · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/deepseek-trail.svg" alt=""><div class="titles"><p class="kicker">Nine-letter trail · 4 × 4</p><h1>Trail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="layout">
  <section>
@@ -45,7 +47,7 @@
    <div class="define"><button class="btn btn-quiet" id="def" aria-expanded="false">Need a definition? · counts as help</button><p class="define-text" id="deftext" hidden>The puzzle’s definition appears here and is noted in your result.</p></div></div>
   <div class="readout" id="readout" aria-live="polite"></div>
   <p class="meta"><span><strong id="count">0 / 9</strong> letters</span><span>0 checks · no strike limit</span></p>
-  <p class="rule"><svg viewBox="0 0 44 44" aria-hidden="true"><rect x="15" y="15" width="14" height="14" rx="3" fill="#0e2232"/><g fill="none" stroke="#0a6a8a" stroke-width="2" stroke-dasharray="3 2"><rect x="2" y="2" width="10" height="10" rx="2"/><rect x="17" y="2" width="10" height="10" rx="2"/><rect x="32" y="2" width="10" height="10" rx="2"/><rect x="2" y="17" width="10" height="10" rx="2"/><rect x="32" y="17" width="10" height="10" rx="2"/><rect x="2" y="32" width="10" height="10" rx="2"/><rect x="17" y="32" width="10" height="10" rx="2"/><rect x="32" y="32" width="10" height="10" rx="2"/></g></svg><span>Dashed tiles are the legal next steps: any touching tile, diagonals included. Tap an earlier tile to cut the trail back to it.</span></p>
+  <p class="rule"><svg viewBox="0 0 44 44" aria-hidden="true"><rect x="15" y="15" width="14" height="14" rx="3" fill="#202c35"/><g fill="none" stroke="#376c58" stroke-width="2" stroke-dasharray="3 2"><rect x="2" y="2" width="10" height="10" rx="2"/><rect x="17" y="2" width="10" height="10" rx="2"/><rect x="32" y="2" width="10" height="10" rx="2"/><rect x="2" y="17" width="10" height="10" rx="2"/><rect x="32" y="17" width="10" height="10" rx="2"/><rect x="2" y="32" width="10" height="10" rx="2"/><rect x="17" y="32" width="10" height="10" rx="2"/><rect x="32" y="32" width="10" height="10" rx="2"/></g></svg><span>Dashed tiles are the legal next steps: any touching tile, diagonals included. Tap an earlier tile to cut the trail back to it.</span></p>
  </section>
  <section>
   <div class="plate">
@@ -59,7 +61,7 @@
 </main>
 <footer class="app-foot"><span>Saved on this device · harder 4 × 4 sample</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Trail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const G='FTEOAALREGFWRTLO'.split(''),N=4;let path=[0,4,1];
 const $=id=>document.getElementById(id);

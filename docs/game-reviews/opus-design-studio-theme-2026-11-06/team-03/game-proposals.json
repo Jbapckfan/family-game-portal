@@ -1,0 +1,431 @@
+[
+  {
+    "slug": "deepseek-trail",
+    "name": "Trail",
+    "keeper": true,
+    "diagnosis": "The harder 4×4 is the right puzzle, but it sits in a generic rounded-card shell: a small clue, nine faint dot slots, sixteen identical white tiles and a path line that hides under the tiles. Nothing tells you which tiles you can reach next, so the diagonal-adjacency and backtrack rules live only in the collapsed How to play. Check trail sits disabled with no hint that it needs all nine letters.",
+    "clarityRisk": "Medium. Diagonal steps, tap-an-earlier-tile-to-cut-back, and 'no strike limit, repeats are free' are invisible during play. The definition button is an underlined link and its help cost is easy to miss.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Survey plate",
+        "summary": "The clue becomes the headline. A nine-slot readout sits under it, and the board is a single plate. Legal next tiles get a dashed ring, unreachable tiles dim, and the route is a thick line drawn across tile centres.",
+        "layout": "Phone: clue, readout, rule line, plate, actions, stacked. Desktop: clue, readout and rule on the left; plate and actions on the right.",
+        "interaction": "Tap or keyboard (arrows move, Space/Enter select, Backspace undo, Esc clear). Tapping an earlier tile cuts the trail back. Check enables only at 9/9. The definition sits beside the clue, labelled 'counts as help'.",
+        "motion": "150 ms tile press and dim transitions. The route line redraws per step. Nothing decorative.",
+        "accessibility": "Tiles are 60–90 px. Each tile's label includes row, column, step number and 'legal next step'. The readout is a live region. Reachability uses a dashed outline as well as dimming, not colour alone.",
+        "sharing": "Trail 4×4 · solved in [n] checks · definition used/not used. No letters or route.",
+        "tradeoff": "Highlighting legal neighbours removes some adjacency bookkeeping. Difficulty stays in finding the word, which is where the feedback put it. It could be made a setting if James wants it harder."
+      ,"mockup": "trail-A.html"},
+      {
+        "id": "B",
+        "title": "Ink trace",
+        "summary": "No tile boxes. Letters sit as large discs on a dot lattice and the trail is a thick ink stroke. You can drag through letters in one gesture. The word builds in large type directly under a quoted clue strip.",
+        "layout": "Single centred column, max 520 px. Clue strip with a rule above, then the word, then the lattice. A sticky bottom dock holds Undo / Clear / Check.",
+        "interaction": "Drag (pointer events) or tap. Lifting and tapping an earlier letter cuts back. Keyboard is the same as A. Check shows how many letters are still needed.",
+        "motion": "The newest letter scales slightly and the newest word letter is tinted. The stroke follows your finger.",
+        "accessibility": "Every cell is a full 1/4-board hit area even though the disc is smaller. Drag is optional and tap-only works. The dock keeps actions in thumb reach.",
+        "sharing": "Same spoiler-free line as A.",
+        "tradeoff": "Most tactile and modern, but drag can mis-select diagonals on small phones. It also needs touch-action:none on the board, so the page can't be scrolled from on top of the board."
+      ,"mockup": "trail-B.html"},
+      {
+        "id": "C",
+        "title": "Chart and ledger",
+        "summary": "The grid becomes a chart with A–D / 1–4 coordinates. A route ledger lists each step's letter and coordinate, the checked-word history (no strike limit, repeats free), the definition help and keyboard keys.",
+        "layout": "Desktop: chart beside the ledger. Phone: chart first, ledger below as a bordered panel.",
+        "interaction": "Same selection rules. An illegal tap gets a precise message ('C3 does not touch A2'). The ledger fills as you go.",
+        "motion": "Minimal: the route's head dot moves.",
+        "accessibility": "Strongest for screen readers and keyboard users: coordinates in every label and an explicit history.",
+        "sharing": "Spoiler-free line, plus the check count from the ledger.",
+        "tradeoff": "Precise and adult, but less playful. The ledger adds reading load on phones."
+      ,"mockup": "trail-C.html"},
+      {
+        "id": "D",
+        "title": "Keyed instrument",
+        "summary": "A single warm-white instrument card. A paper-toned clue window shows the clue (DM Serif) and the nine-cell readout. Below it, sixteen subtle keycaps depress when used; pressed keys turn charcoal and reachable keys get a green base edge.",
+        "layout": "Centred device up to 480 px wide. Window, keybed, controls, legend. Definition and Reveal sit outside the device.",
+        "interaction": "Press keys or use the keyboard. Pressed keys stay down with step numbers. Undo / Clear / Check are large 52 px controls.",
+        "motion": "80 ms key travel. Pressed keys sink by 4 px.",
+        "accessibility": "High contrast (warm white on charcoal for pressed keys). The legend explains all three key states in words.",
+        "sharing": "Same as A.",
+        "tradeoff": "The most tactile option. Revision 2 removed the dark navy window and metallic key gradients so it sits in the home paper theme; the keycap depth is now a 3 px flat edge. It is still the most object-like of the four."
+      ,"mockup": "trail-D.html"}
+    ]
+  },
+  {
+    "slug": "deepseek-split",
+    "name": "Split",
+    "keeper": true,
+    "diagnosis": "The harder sample works, but the screen is two stacked white cards and a sixteen-tile grid in one more card, all at the same weight. The active row is shown by a thin outline and the word 'Selected'. That 'four tiles stay behind' and that a check reports how many fit (not which) appear only in the intro and the collapsed rules.",
+    "clarityRisk": "Medium. Players may think every tile must be placed, or that check feedback names a row. Up/Down row switching is undiscoverable.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "The fork",
+        "summary": "Word 1 above the rack, Word 2 below it. An arrow on the rack edge points toward the row that is filling, so Up/Down on the keyboard matches the screen. A counter always says '4 stay behind'.",
+        "layout": "One column, max 640 px. Clue 1 and slots, then the rack (4×4 on phones, 8×2 from 620 px), then slots and clue 2, then status and actions.",
+        "interaction": "Tap a row or press ↑/↓ to aim. Tap or type rack letters. Tap a filled slot to return it. When a row fills, letters flow to the other row (as the engine does). Check enables at 12.",
+        "motion": "The arrow indicator switches ends. Slot underlines turn ink as they fill.",
+        "accessibility": "Rack tiles are at least 48 px. Slots are labelled with word and position. Up/Down is spatially honest.",
+        "sharing": "Split · both words in [n] checks · [d] definitions used. No letters.",
+        "tradeoff": "Clue 2 sits below its slots, which reads slightly backwards. That is the price of the symmetric fork."
+      ,"mockup": "split-A.html"},
+      {
+        "id": "B",
+        "title": "Facing pages",
+        "summary": "The two clues are two pages of one spread, numbered in large serif figures. On desktop both pages are equal. On phones the page you are not filling folds to a compact strip, so the active clue stays big. The rack is a docked tray labelled '→ Letters go to Word n'.",
+        "layout": "Spread (2 columns ≥760 px, stacked below that), then a dock tray with the rack and actions.",
+        "interaction": "Tap a page to aim. Arrows switch pages. Typing and slot return work as in A.",
+        "motion": "A top accent bar moves to the active page. The folded page shrinks its type.",
+        "accessibility": "The folded page keeps 44 px tap height and visible letters. Slots fill with solid ink for high contrast.",
+        "sharing": "Same as A.",
+        "tradeoff": "Clean and editorial, but on phones you can't see both clues at full size at once."
+      ,"mockup": "split-B.html"},
+      {
+        "id": "C",
+        "title": "Sorting tray",
+        "summary": "A recessed tray with three grooves: Word 1, Word 2 and an optional Set aside shelf for suspected decoys. Rack tiles are raised blocks.",
+        "layout": "Clues in two bordered rows (side by side on desktop), then the tray with three lanes, then the block rack.",
+        "interaction": "Choose a lane (tap or ↑/↓), then tap or type letters. The shelf is never checked and costs nothing. It is a UI-only planning aid, not a rule change.",
+        "motion": "Blocks lift on hover. Lanes highlight when active.",
+        "accessibility": "Lanes are labelled. The shelf is explicitly marked 'not checked'.",
+        "sharing": "Same as A. The shelf is not mentioned.",
+        "tradeoff": "Adds a planning surface the current game lacks. Treat it as an optional experiment, separate from the core restyle."
+      ,"mockup": "split-C.html"},
+      {
+        "id": "D",
+        "title": "One line, one cut",
+        "summary": "Both answers share one twelve-slot beam with a CUT mark in the middle, echoing the name. A check log records each attempt with 'n of 2 fit' dots, never naming the side.",
+        "layout": "Clue headers left and right, the beam, the rack, then actions and the check log (side by side on desktop). Under 620 px the beam wraps to 6 | cut | 6.",
+        "interaction": "←/→ (or ↑/↓) choose a side. Typing and returning letters work as in A. The log grows with each check.",
+        "motion": "Next-slot highlight only.",
+        "accessibility": "The log gives persistent, readable feedback instead of a one-off status line.",
+        "sharing": "Uses the log: Split · checks [n] · final 2/2.",
+        "tradeoff": "The joint-check log makes reasoning easier, which slightly softens the difficulty James liked. It also needs the engine to keep attempt history (not confirmed in the supplied snippet)."
+      ,"mockup": "split-D.html"}
+    ]
+  },
+  {
+    "slug": "qwen-quadra",
+    "name": "Quadra",
+    "keeper": true,
+    "diagnosis": "James likes the category. It is the best idea in the game, but it is set at the same weight as the card around it. The screen stacks four separate surfaces: category card, dotted found-words row, tile grid and a duplicate text input. The 'four chances' pill is tiny. 'A real word can still miss' only appears in help.",
+    "clarityRisk": "Medium. The text input and the tile selection can disagree in a player's head, and players may not realise a valid kitchen verb can still cost a chance.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Category masthead",
+        "summary": "The category is set huge as the page masthead. Four answer lanes sit under it and the current word builds directly in lane 1, with no separate input box. Chances are four solid bars.",
+        "layout": "Desktop: masthead and lanes left, tile grid and actions right. Phone: stacked, masthead first.",
+        "interaction": "Tap tiles in order or type anywhere. Backspace deletes, Esc clears, Enter locks. Tapping a selected tile removes it.",
+        "motion": "Selected tiles rise 2 px and show their order number.",
+        "accessibility": "Tiles are 60–90 px. Order numbers sit in labels. Chances are also given as text.",
+        "sharing": "Quadra · Kitchen verbs · 4/4 found · [m] misses · [h] hints. Category only, no words.",
+        "tradeoff": "Dropping the visible text field may surprise keyboard users at first. A typing hint line covers it."
+      ,"mockup": "quadra-A.html"},
+      {
+        "id": "B",
+        "title": "Composer and dimples",
+        "summary": "Tiles are round, flat warm-white pieces in a paper field. Choosing one lifts it into a large four-slot composer and leaves a dimple where it was. Locked words stay in the field in muted tones, so the board becomes a map.",
+        "layout": "Single column: soft-green category card (DM Serif category), found-word placeholders, composer, field, actions.",
+        "interaction": "Tap or type to lift letters. Tap a composer letter to send it back. Lock word.",
+        "motion": "A 220 ms lift from the field into the composer slot.",
+        "accessibility": "The composer shows the word in 30–44 px type. Dimples are aria-hidden and their letters stay readable in the composer.",
+        "sharing": "Same as A.",
+        "tradeoff": "Strong tactility, now with flat warm-white pieces instead of glossy gradients. The category card is quieter than A's masthead, so the category is less of a hero."
+      ,"mockup": "quadra-B.html"},
+      {
+        "id": "C",
+        "title": "Letter inventory",
+        "summary": "A typing-first layout. Four large mono entry cells, with tiles shown either as A–Z stacks (duplicates as one key with a count) or in board order.",
+        "layout": "Category header with a misses readout, entry cells, view toggle, inventory, actions, found row.",
+        "interaction": "Type freely, or tap a stack to take the next free copy.",
+        "motion": "None beyond caret focus.",
+        "accessibility": "Excellent for keyboard users. Counts make duplicate tiles explicit (three E, two A, two I).",
+        "sharing": "Same as A.",
+        "tradeoff": "Sorting A–Z changes how the puzzle feels and may make it easier. Offer it as a toggle and keep board order as the default if difficulty matters."
+      ,"mockup": "quadra-C.html"},
+      {
+        "id": "D",
+        "title": "Type case and ledger",
+        "summary": "A paper ledger with four numbered lines and punched miss holes on the margin, over a type case of tall letter sorts. A side column holds attempts, 'what counts' and help.",
+        "layout": "Desktop: ledger and case left, 300 px side column right. Phone: side panels follow below.",
+        "interaction": "Tap sorts (a raised sort is in the current line) or type. Lock line.",
+        "motion": "Sorts rise 10 px when selected.",
+        "accessibility": "The ledger lines use 28–36 px type. Each miss hole has a text equivalent.",
+        "sharing": "Same as A.",
+        "tradeoff": "The most distinctive material. The attempts list needs history that the snippet does not show is stored."
+      ,"mockup": "quadra-D.html"}
+    ]
+  },
+  {
+    "slug": "qwen-memory-maze",
+    "name": "Memory Maze",
+    "keeper": true,
+    "diagnosis": "The mechanic is clear, but the timer is a page element. James scrolled past it and asked for a countdown he can see off to the side. The 7×7 board is a generic grid of rounded boxes, and blocked squares appear with no visual weight.",
+    "clarityRisk": "High for timing. The study countdown and recall clock must stay visible whenever the board is visible.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Sticky instrument bar",
+        "summary": "A pinned bar under the header shows the phase (Study / Recall / Done), a draining track, a large seconds readout, and squares, misses and replays. It never scrolls away.",
+        "layout": "Sticky bar full width. Board, actions and hint follow in a 560 px column.",
+        "interaction": "Study the route runs the real 6 s countdown in the prototype, then recall on an illustrative route. A wrong tap adds +2 s and keeps the trail. The hint replays the route.",
+        "motion": "The track drains linearly. A wrong cell shakes for 350 ms.",
+        "accessibility": "role=timer. The phase is spelled out as text. Narrow phones show only the active phase label.",
+        "sharing": "Memory Maze · 8 squares · [t]s incl. penalties · [m] misses · [r] replays. No route.",
+        "tradeoff": "A small amount of header height is always used. This answers the feedback most directly."
+      ,"mockup": "maze-A.html"},
+      {
+        "id": "B",
+        "title": "Floor plan with side rail",
+        "summary": "The board is drawn as an architectural plan: walls are solid ink, the start is a ring and the finish a diamond. On desktop a vertical timer rail sits beside the board. On phones it becomes a fixed bottom dock.",
+        "layout": "Board plus a 150 px rail on desktop. On phones, board plus a fixed dock.",
+        "interaction": "Same as A.",
+        "motion": "The rail and dock drain over one-second steps.",
+        "accessibility": "The dock respects safe-area insets. Walls are announced as 'wall'.",
+        "sharing": "Same as A.",
+        "tradeoff": "This is literally 'off to the side', as requested. The fixed dock covers about 80 px at the bottom of a phone."
+      ,"mockup": "maze-B.html"},
+      {
+        "id": "C",
+        "title": "Perimeter clock",
+        "summary": "The board's own frame is the timer. While studying, its edge drains clockwise. While recalling, it fills with squares retraced. Cells are round pegs.",
+        "layout": "Caption and big readout above the framed board. Legend and actions below.",
+        "interaction": "Same as A.",
+        "motion": "The frame stroke animates over one-second steps.",
+        "accessibility": "The numeric readout duplicates the frame. Cells keep a full-cell hit area of about 40 px at 320 px wide.",
+        "sharing": "Same as A.",
+        "tradeoff": "Elegant and impossible to scroll away from the board. One frame carrying two meanings needs the legend line."
+      ,"mockup": "maze-C.html"},
+      {
+        "id": "D",
+        "title": "Chart and step tape",
+        "summary": "Graph-paper board with A–G / 1–7 coordinates. A sticky step tape logs each retraced square by coordinate. Misses float a '+2s' tag from the tapped cell.",
+        "layout": "Sticky tape with the clock, prompt ('Which square is step 4?'), charted board, actions.",
+        "interaction": "Same as A. Arrow-key focus skips disabled cells.",
+        "motion": "The +2s tag rises and fades over 1.2 s.",
+        "accessibility": "Coordinates in labels and messages ('C3 is not step 4').",
+        "sharing": "Same as A.",
+        "tradeoff": "Coordinates help memorisation for some players, which may make it slightly easier."
+      ,"mockup": "maze-D.html"}
+    ]
+  },
+  {
+    "slug": "claude-dovetail",
+    "name": "Dovetail",
+    "keeper": true,
+    "diagnosis": "Eight full-width bars with tiny row numbers. The thing you are actually solving, the joined word between rows, is never shown until both rows are solved. Typing happens in a separate input below the board, far from the row it fills.",
+    "clarityRisk": "Medium. That each missing word must work both above and below, and what the ↑/↓ guess arrows mean, are only in help.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Joinery column",
+        "summary": "Rows stay stacked, but each gap between rows shows the joined word as you type it (SNAP + your letters). You type straight into the row; a transparent input sits over the cells, so phone keyboards still open.",
+        "layout": "560 px column: misses notches, a one-line rule with BOOK+WORM / CAR+PET, then the alternating row and joint stack, then actions.",
+        "interaction": "Tap a row, type. Fit word enables at the right length. The joints update live; this is concatenation, not validation.",
+        "motion": "None needed. The joint text changes colour when live.",
+        "accessibility": "The input is labelled with row and length. Given rows are high contrast.",
+        "sharing": "Dovetail · 6/6 placed · [m] of 6 misses ([h] from letter hints).",
+        "tradeoff": "The live join preview makes the rule obvious without changing the difficulty."
+      ,"mockup": "dovetail-A.html"},
+      {
+        "id": "B",
+        "title": "Seven joins",
+        "summary": "The chain is shown as seven compound joins. Each missing word appears twice, as the end of one join and the start of the next. Selecting it highlights both. Halves are linked by a dovetail tab.",
+        "layout": "List of seven join rows, then an entry field labelled with both join numbers.",
+        "interaction": "Tap any blank half to choose that word. Type; both copies fill.",
+        "motion": "The tab colour links the selected word's two places.",
+        "accessibility": "Compact sizing below 480 px keeps 5+5-letter joins inside a 320 px screen.",
+        "sharing": "Same as A.",
+        "tradeoff": "Best at teaching the 'both neighbours' constraint. The repeated words add visual density."
+      ,"mockup": "dovetail-B.html"},
+      {
+        "id": "C",
+        "title": "Chain table with keyboard",
+        "summary": "A tight ruled table of all eight rows in mono type, a docked on-screen keyboard, and an in-context guess line explaining ↑ (fits above) and ↓ (fits below).",
+        "layout": "HUD, table, guess-feedback panel, keyboard.",
+        "interaction": "On-screen or physical keys. ↑/↓ change row. 'Fit' is the Enter key.",
+        "motion": "Key press travel only.",
+        "accessibility": "The keyboard avoids native-keyboard layout jumps. Key widths fall below 44 px at 320 px wide, as on any QWERTY layout, but keys are 50 px tall.",
+        "sharing": "Same as A.",
+        "tradeoff": "Fast for repeat players. The keyboard takes vertical space."
+      ,"mockup": "dovetail-C.html"},
+      {
+        "id": "D",
+        "title": "Spotlight",
+        "summary": "Only the row being solved is large. Its two neighbours sit directly above and below, with live joins. A slim map on the left shows the whole chain as letter-length bars.",
+        "layout": "Map column (56–90 px) plus the spotlight stack, prev/next buttons and actions.",
+        "interaction": "Tap a map bar or use the prev/next buttons. Tap the spotlight to type.",
+        "motion": "Optional 200 ms slide between rows (not built in the prototype).",
+        "accessibility": "Large type in focus; the map bars are labelled.",
+        "sharing": "Same as A.",
+        "tradeoff": "Calm on phones, but you lose the at-a-glance view of every solved word."
+      ,"mockup": "dovetail-D.html"}
+    ]
+  },
+  {
+    "slug": "claude-sprout",
+    "name": "Sprout",
+    "keeper": true,
+    "diagnosis": "Every version so far keeps the words separate from the plant. The current one stacks letter rows on top of a generic leaf-and-pot illustration, so the plant is a backdrop, not the record of play. Previous letter-leaf and word-vine attempts were rejected as looking bad. The plant must be built from the accepted words.",
+    "clarityRisk": "Medium. The rules (use every letter, add exactly one soil letter, wilts for listed dead-end words) are clear in the rack labels. The visual promise is what fails.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Espalier",
+        "summary": "A tree trained on precision trellis wires. Each accepted word is a horizontal tier: a branch made of letter segments, centred on the trunk, with leaves at its tips. The letter added from the soil is a fresh pale segment. The next word is a dashed branch on the next wire that fills as you pick letters.",
+        "layout": "Desktop: plant left, rack and controls right. Phone: plant, then 'use every letter of RALLY' tiles, soil pebbles, Grow and recovery.",
+        "interaction": "Tap or type. Letters fill the dashed branch on the plant itself. Grow / Delete / Clear / Undo growth / Restart / Which letter? (1 wilt) are kept.",
+        "motion": "On acceptance the branch extends from the trunk outward (700 ms), segments settle in sequence and leaves unfurl. 'Replay last growth' demonstrates this.",
+        "accessibility": "Horizontal words keep normal reading order. The SVG has a full text description, the rack tiles are 48×52 px, and motion respects reduced-motion settings.",
+        "sharing": "Sprout · bloomed at 8 letters · [w] of 5 wilts ([h] hints). Optionally a tiny letterless silhouette of tier lengths.",
+        "tradeoff": "The most readable integration. It is structurally related to the rejected 'letter branches', but symmetric, wire-guided and solid rather than organic and scattered. James should judge it against those directly."
+      ,"mockup": "sprout-A.html"},
+      {
+        "id": "B",
+        "title": "Rosette",
+        "summary": "A succulent seen from above. Each word is a ring of thick leaves, read clockwise from a marker at 12 o'clock. The seed is at the centre and each accepted word adds an outer ring. The soil letter's leaf is pale.",
+        "layout": "Circular bed (max 520 px), legend, then the rack panel. Two columns on desktop.",
+        "interaction": "Picked letters fill the dashed leaves of the next ring in order.",
+        "motion": "A new ring's leaves rotate open from the centre in a staggered sequence.",
+        "accessibility": "Letters stay upright. Inner letters are about 17 px at 320 px wide, the weakest readability of the four. The SVG description lists every word.",
+        "sharing": "Same as A.",
+        "tradeoff": "The most striking and least like a word list. Reading words around a circle is harder."
+      ,"mockup": "sprout-B.html"},
+      {
+        "id": "C",
+        "title": "Blade fan",
+        "summary": "Upright leaf blades rise from a planter. Each blade is one word, read tip to base, and longer words make taller blades. New blades rise from the centre, so the fan builds toward a tall middle. Faint outlines show where blades 7 and 8 will grow.",
+        "layout": "Scene panel, then the RALLY tiles and soil tray (side by side above 600 px), then controls.",
+        "interaction": "Picked letters fill the dashed blade from its tip.",
+        "motion": "A new blade rises with scaleY from its base (800 ms).",
+        "accessibility": "Vertical stacking keeps every letter upright. The legend explains the reading direction.",
+        "sharing": "Same as A.",
+        "tradeoff": "Sculptural and calm. Reading top-to-bottom is slower than horizontal."
+      ,"mockup": "sprout-C.html"},
+      {
+        "id": "D",
+        "title": "Trailing planter",
+        "summary": "A hanging planter whose soil is the soil rack: pebble letters in the pot. Each accepted word trails down as a vine of letter nodes with leaves between them. Strands lengthen left to right.",
+        "layout": "Hook, then the planter with soil pebbles, then the vines SVG, then a panel with the current-word tiles and controls.",
+        "interaction": "Tap pebbles in the pot and the current-word tiles. Letters drop into the dashed vine.",
+        "motion": "A new vine unspools downward and its nodes pop in sequence.",
+        "accessibility": "Node letters are about 16–20 px. The planter pebbles are 50 px.",
+        "sharing": "Same as A.",
+        "tradeoff": "The most literal 'growing' feel, and the soil is physically in the pot. It overlaps C's vertical reading, but the composition and input location differ."
+      ,"mockup": "sprout-D.html"}
+    ]
+  },
+  {
+    "slug": "claude-splice",
+    "name": "Splice",
+    "keeper": false,
+    "diagnosis": "Card tiles with fake connector nubs and a heavy navy instruction bar. The selected pair appears in the bar, but nothing explains why an unfamiliar word (HOUSEMAN, in the feedback) was accepted, or that any complete valid pairing counts.",
+    "clarityRisk": "Medium. 'Accepted only if every remaining half still has a partner' is the real rule and it is hidden.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Splicing bench",
+        "summary": "Two sockets (First / Second) with a Flip between them, and a live readout that shows hovered or focused candidates as a preview before you commit. Halves are angled tape strips. The acceptance rule is stated on the bench, and spliced words carry a 'why accepted' line.",
+        "layout": "HUD, bench (sockets, readout, actions, rule), strips grid (2/3/4 columns), tools, spliced-words area.",
+        "interaction": "Tap the first half and then the second (or hover/focus to preview). Flip, Splice, Shuffle, Show a safe splice.",
+        "motion": "Strips lift on hover. The preview socket tints.",
+        "accessibility": "Strip labels include the selection order. Previews also trigger on keyboard focus.",
+        "sharing": "Splice · 6/6 words · [m] of 4 mistakes · [h] hints.",
+        "tradeoff": "The 'why accepted' line needs the engine to expose the reason. The supplied snippet only shows accept/reject messages."
+      ,"mockup": "splice-A.html"}
+    ]
+  },
+  {
+    "slug": "claude-tangle",
+    "name": "Tangle",
+    "keeper": false,
+    "diagnosis": "Beads in a 5-wide grid hide the fact that they form one ordered string. When a valid word such as PEPPY or PREPS is refused, the player isn't told that the leftover letters can't split into 6 + 7. The name also collides with the kept grid-word Tangle.",
+    "clarityRisk": "High. The partition rule, bead-order reading and duplicate copies all need in-context feedback.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "One cord, three threads",
+        "summary": "Flat warm-white beads hang on a visible cord numbered 1–18, wrapping row to row. Selected beads lift, and the word reads in bead order with the bead numbers shown. A 'what remains' line shows the leftover beads in order and says they must split into 6 + 7. Three outcome cards explain free, blocked-copy and knot results. A demo shows the PEPPY knot message.",
+        "layout": "Thread lanes (5/6/7), cord box, selection readout, remaining strip, actions, result, outcome cards.",
+        "interaction": "Tap beads in any order, or type to take the next matching bead after the last one. Back / Clear / Pull.",
+        "motion": "Beads lift 8 px when selected.",
+        "accessibility": "Beads are at least 42 px (6 per row on phones, 9 on desktop). Every bead number is visible and in its label.",
+        "sharing": "Tangle · 3/3 threads · [k] of 4 knots · [h] hints.",
+        "tradeoff": "The 'these copies block — try other copies' card proposes highlighting alternatives. That needs engine support (it appears to compute allocations, but this isn't confirmed). Product naming should separate this from the grid Tangle."
+      ,"mockup": "tangle-A.html"}
+    ]
+  },
+  {
+    "slug": "claude-keystone",
+    "name": "Keystone",
+    "keeper": false,
+    "diagnosis": "Clue stones are scattered at different heights with '?' placeholders, and the scoring (lower is better, 2 best, 6 perfect day) is a footnote. The player can't see what a guess would form with each clue.",
+    "clarityRisk": "Medium-high. Inverse scoring and 'fits the visible clues but may miss a hidden one' confuse people.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Wedge and joins",
+        "summary": "Three arch tabs at the top. A wedge-shaped keystone input with a plain score sentence ('Solve now and this arch scores 2 — the best possible'). Five join rows show each visible clue with your draft both before and after it, live. Hidden rows explain how they reveal.",
+        "layout": "Arch tabs, then the wedge and score on the left with join rows on the right (desktop), stacked on phones. On-screen keyboard on phones only.",
+        "interaction": "Type or use the keys. Place keystone enables at 3+ letters.",
+        "motion": "None required.",
+        "accessibility": "Join previews are text. The hidden-clue cost is stated per row.",
+        "sharing": "Keystone · arches [a1]/[a2]/[a3] · total [t] (6 is perfect).",
+        "tradeoff": "Live before/after joins make guessing faster but don't validate anything."
+      ,"mockup": "keystone-A.html"}
+    ]
+  },
+  {
+    "slug": "claude-tumbler",
+    "name": "Tumbler",
+    "keeper": false,
+    "diagnosis": "The dial pills only repeat 'A–Z · 26 letters'. The six-row grid looks like an ordinary Wordle-style board, so the alphabetical-range idea, which is the game's whole identity, gets lost.",
+    "clarityRisk": "Medium. ▲ / ▼ apply per position only, and players may read them as hot/cold.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Range columns",
+        "summary": "Five vertical A–Z tracks, each with a green band for the letters still possible and a marker for your last letter with its ▲/▼. Your typed word sits directly under the column it tests. A Fresh / After-1-guess toggle shows the bands narrowing; that state uses an invented hidden word.",
+        "layout": "Lock panel of 5 columns, legend, history rows, keyboard.",
+        "interaction": "Type or use the on-screen keys. 'Turn' submits (prototype message only).",
+        "motion": "Bands animate to their new range (500 ms).",
+        "accessibility": "Each column announces its range and count. Glyphs are paired with a written legend.",
+        "sharing": "Tumbler · opened in [n]/6 · [h] hints. Arrows grid without letters.",
+        "tradeoff": "Tall on phones. The band visual must stay functional, not decorative."
+      ,"mockup": "tumbler-A.html"}
+    ]
+  },
+  {
+    "slug": "nested-tic-tac-toe",
+    "name": "Tic-Tac-Toe",
+    "keeper": false,
+    "diagnosis": "The only dark page in the collection, which breaks the shared light frame. The route rule is explained well, but by splitting overview and detail it asks phone players to scroll between them.",
+    "clarityRisk": "Medium. The 'your square picks the AI's board' route needs a live preview, which exists in the source and should be kept.",
+    "recommendedDesign": "A",
+    "designs": [
+      {
+        "id": "A",
+        "title": "Route table (light frame)",
+        "summary": "A paper-toned macro board of warm-white mini boards. Your × is charcoal and the AI's ○ is green. The forced board carries a 'PLAY HERE' tab, and hovering or focusing a square outlines the destination board with 'AI goes here'. Desktop players can play directly on the big board. Phone players tap a board to open the large detail grid, where each empty square is labelled with where it sends the AI.",
+        "layout": "Status bar, macro board. A side column holds the detail board, route text, AI level, three rules and sample-state buttons.",
+        "interaction": "Phone: zoom-by-selection (no pinch or pan), because mini cells are about 24 px at 320 px wide. Desktop: direct cell play plus the detail panel. The AI level locks after the first move.",
+        "motion": "Destination outline on preview. The claim animation from the source is kept (not rebuilt here).",
+        "accessibility": "Detail cells are about 80 px. Route text is a live region. The mini cells on phones are display-only.",
+        "sharing": "Tic-Tac-Toe · I won / AI won / draw vs Tactical AI · Alford Daily bonus.",
+        "tradeoff": "Two ways to play on desktop (direct and detail) could look redundant. Keep the detail panel mainly for keyboard and phone."
+      ,"mockup": "tictactoe-A.html"}
+    ]
+  }
+]

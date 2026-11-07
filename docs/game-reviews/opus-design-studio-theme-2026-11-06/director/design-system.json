@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "product": "Alford Daily",
+    "author": "Opus 5.5 creative director (design review provenance; never shown inside product screens)",
+    "date": "2026-11-06",
+    "revision": "Revision 2. James rejected the first set because it didn't follow the main site's style. The live home page (input/live-theme) is now the fixed visual system, and the earlier pale-blue frame, system fonts and per-direction palettes are withdrawn. A–D are four layouts within ONE home style, not four brands. See REVISION-02.md.",
+    "status": "Design proposals for review. Not live, not approved, not tested in production. Browser QA is run by the parent session, not the director.",
+    "sharedFrame": {
+      "rule": "Every direction uses the live home theme exactly: warm paper page with no gradient, warm-white cards, charcoal ink, muted slate secondary text, fine warm-grey lines and the home green. ../assets/site-theme.css is linked LAST in every concept's head and supplies the --ad-* tokens, bundled fonts and invariant body/heading rules. No direction defines its own body palette.",
+      "baseTokens": {
+        "--ad-paper": "#f6f3ec (page; body computes rgb(246,243,236))",
+        "--ad-surface": "#fffefa (cards, popovers, inputs on cards)",
+        "--ad-ink": "#202c35 (text, primary pill buttons, pressed segments)",
+        "--ad-muted": "#5b666c (secondary text, eyebrows)",
+        "--ad-line": "#dcded8 (all hairlines and card borders)",
+        "--ad-green": "#376c58 (wordmark 'Daily', italic heading emphasis, play actions, selected/finished states, focus ring)",
+        "--ad-soft": "#e0efea (green wash: play-arrow chip, pressed Favorite, Today tag)",
+        "--ad-shadow": "0 6px 0 #202c3505 (the home's only resting card shadow)",
+        "--ad-card-radius": "22px",
+        "localHomeValues": "Home values not named by the shared file, used sparingly as local helpers: #eeeee6 well (home daily-progress panel), #a45b42 clay (the home's ↗ arrow), #c4c8c0 stronger line, hover lift 0 9px 26px #202c350c (home card hover)."
+      },
+      "typography": "DM Serif (bundled) for the wordmark, h1/h2 and game names at 400 weight; italic DM Serif in green for one emphasised phrase per hero, as on the home. DM Sans (bundled) for body, controls and all board letters. Eyebrows: DM Sans 700, 11px, 0.14em tracking, uppercase, muted (the home uses 9–10px; raised slightly for legibility). Body 15–16px, descriptions 14–15px, controls 13px semibold.",
+      "brand": "assets/brand.svg at 44px (38px on phone) plus 'Alford <strong>Daily</strong>' in DM Serif 30px, with 'Daily' in green. Identical in A–D. No other logo marks.",
+      "controlVocabulary": [
+        "Primary action: ink pill (999px radius, 44px tall, paper-coloured text), as on the home's 'Share today's result'.",
+        "Play action: green 13px bold text plus a 30px green-wash arrow chip (↗), from the home card's 'Play today'. Review uses muted text and a well chip.",
+        "Secondary button and toggle: warm-white, 1px line, 8px radius, 44px tall, 13px semibold. Uses the home preference-button shape, recoloured from the home's pale blue to the green/ink family per Revision 2.",
+        "Favorite toggle: '☆ Favorite' becomes '★ Favorite' with a green-wash fill and green border. Hide becomes 'Unhide' with a well fill. State is always carried by text as well as colour.",
+        "Segmented filter: the home creator-filter container (warm-white, 1px line, 15px radius, 4px padding) with the pressed segment in ink. Used for All / Favorites / Hidden with counts.",
+        "Kind chips: pill, 1px line; pressed state is green-wash with a ✓ prefix.",
+        "Text link: muted 13px with a clay ↗, from the home's 'About the collection'.",
+        "Form fields: 12px radius, 1px line, paper fill inside cards, 16px text so phones don't zoom.",
+        "Focus: 3px green outline with offset everywhere."
+      ],
+      "gameIdentity": "Each game keeps its home identity colour (from identities.css) only on its small category eyebrow and its own icon (assets/icons/SLUG.svg). Chrome, buttons and states never take identity colours.",
+      "boardSemantics": "Board colours stay local to the board and are never applied by a blanket recolour: Circuit's four quadrant colours, Territory blue stones and amber targets, Hunch black/white pegs, Switchpath blue higher and teal lower, Second Sense noun and verb hues, and Sprout's green plant.",
+      "providerLabels": "No 'Developed by …', 'Concept by …' or provider filter in product UI. The collection is grouped by how a game plays.",
+      "banned": "Blue-grey or cool full-page backgrounds, page gradients, system-font headings, heavy navy panels, metallic or neon effects, inset 'hardware' wells, thick bottom-edge key shadows, strong drop shadows, and new purple or brown page themes."
+    }
+  },
+  "directions": [
+    {
+      "id": "A",
+      "name": "Ledger",
+      "rationale": "Editorial and typographic. Everything sits directly on the home paper with hairline rules, and nothing is boxed except the home's tilted daily-edition card, which here becomes the 'Your day' counter. Hierarchy comes from DM Serif scale and order. It is the calmest page and the shortest, and it shows every game once.",
+      "layoutStrategy": "Home masthead (brand left, text-link anchors, profile button) → hero: eyebrow, two-line DM Serif date with the month in green italic, plus the rotated 'Your day' card holding the finished count and Share → Today's Three as three full-width ruled rows (serif numeral, home icon, category eyebrow, serif name, description, status, Play ↗, ☆ Favorite, Hide) → collection index on paper with segment, kind chips, a descriptions toggle and search, grouped into two columns of ruled single entries → two-column colophon for feedback and profile, split by a hairline → home footer.",
+      "typography": "DM Serif 64px date, 32px section titles, 30px Today names, 22px index names. DM Sans 15–16px body, 14px descriptions, 11px eyebrows.",
+      "spacing": "Home page-shell width (1120px, 32px side margins; 14px on phone). Rows 24px vertical padding. Sections separated by 64px and a 1px rule; Today's list opens with a 1px ink rule.",
+      "palette": "Shared tokens only. Paper is visible across the whole page; the only warm-white surfaces are the day card, the popover and the form fields.",
+      "depthMaterial": "Flattest of the four: hairlines only, plus the home's 0 6px 0 shadow on the day card and its 2° tilt, which is the one playful note borrowed from the home hero.",
+      "motion": "None beyond hover underlines. The day card's tilt is removed under reduced motion.",
+      "accessibility": "Real list semantics and heading order. Favorite and Hide are aria-pressed buttons with visible text. The filter is a radiogroup with counts. '/' focuses search (wired). The date is a <time> element.",
+      "navigation": "Text-link anchors in the masthead (Today, Collection, Favorites, Hidden, Feedback). On phone they become one horizontally scrolling row, with the profile icon button beside the brand.",
+      "resultSharing": "'Share today's result' ink pill in the day card, disabled until the first finish. Preview text gives game, metric and ✓ only.",
+      "recommendationTradeoff": "Fastest to scan and cheapest to build, and very close to the home's own editorial voice. Trade-off: the least tactile direction, and long index rows read as a list rather than a collection. Best kept as B's List mode."
+    },
+    {
+      "id": "B",
+      "name": "Tray",
+      "rationale": "The live home's own cards, de-duplicated and given one quiet container. Today's Three are three standard home game cards seated in a #eeeee6 well (the home's daily-progress panel colour), so 'today' reads as a set without any new material. The collection is one grid of the same cards, each shown once, with Favorite and Hide in the familiar card footer. A returning player sees the site they know, minus the repetition.",
+      "layoutStrategy": "Home masthead (brand, Feedback text link, profile button) → eyebrow and DM Serif 'Today's Three, ready when you are.' with the green italic phrase, date line, finished count and Share pill → tray of three home cards (category eyebrow plus status dot, icon and serif name, description, paper slot with the real metric and score marks, footer with Play ↗, ☆ Favorite, Hide) → collection: 'Keep your favorites close.' with the All/Favorites/Hidden segment, kind chips, a Cards/List switch and search, then a card grid (four columns at 1440, one at 393) with List mode as one ruled card → a well holding two cards for feedback and profile → home footer.",
+      "typography": "DM Serif 56px heading, 32px Today names, 25px collection names. DM Sans 15px descriptions, 14px move lines, 12–13px controls.",
+      "spacing": "Home 1120px shell. Tray 14px padding and 14px gaps; cards 22px padding; collection gaps 16px.",
+      "palette": "Shared tokens plus the #eeeee6 well. Category eyebrows use each game's home identity colour.",
+      "depthMaterial": "The home card exactly: warm-white face, 1px line, 22px radius, 0 6px 0 #202c3505 at rest, and a 3px lift with the home's soft hover shadow. Score marks reuse the home progress-mark squares. No inset or keycap effects.",
+      "motion": "Cards lift 3px on hover in 180ms, as on the home. Nothing else moves. Reduced motion removes the lift.",
+      "accessibility": "The segment is a radiogroup with wired Left/Right arrow keys and a roving tabindex. Toggles carry text. The Cards/List switch uses aria-pressed. The status dot is always paired with a word.",
+      "navigation": "Minimal, like the home: brand, a Feedback text link and a profile button. The collection has inline search. Favorites and Hidden are first-class segment positions with counts.",
+      "resultSharing": "Each finished card's slot shows the metric and filled marks. 'Share today's result' composes all three as text with no answers, and is locked until the first finish.",
+      "recommendationTradeoff": "RECOMMENDED. It is the smallest visual step from the live home and fixes its real problems (each game shown up to three times, promo banners, the provider filter, profile and favorites hidden in disclosures) without a new look. It also gives game sessions a direct template: a home card is the unit, the well groups related cards, and green means act or done. Trade-off: it is the least novel, and 33 cards still form a grid. Use the List mode and the strict one-card-per-game rule to keep it from becoming the old repeated grid."
+    },
+    {
+      "id": "C",
+      "name": "Console",
+      "rationale": "For the returning daily player: a persistent rail, a main column and a detail card that explains any selected game in three numbered lines next to its Play, Favorite and Hide actions. Rules appear where you choose. It is built only from home parts: paper rail, home cards and the ink segment.",
+      "layoutStrategy": "Desktop: a 248px rail on paper, divided by a hairline (brand, Today, Collection, Favorites, Hidden with counts, How it plays with four kind markers, then Feedback and Profile) | main: DM Serif date heading with search, Today's Three as three connected home cards with numbered pins, then the collection table inside one home card | a 372px sticky detail card. Below 1240px the detail card slides in from the right. Below 860px the rail becomes a five-tab bottom bar and the detail card a bottom sheet.",
+      "typography": "DM Serif 50px date, 29px section titles, 34px detail title, 21px table names. DM Sans 13–14px table text, eyebrow column headers.",
+      "spacing": "8px grid. 44px rail items, about 64px table rows. The detail card keeps 24px of paper around it, so it never reads as a full-height panel.",
+      "palette": "Shared tokens. Selected table row uses the green wash; the selected Today card has a 2px green border. Kind markers use home colours: clay, green, ink and the home emblem gold.",
+      "depthMaterial": "Flat paper rail, home cards for stops, table and detail. The only overlay shadow is a soft home-dialog shadow on the narrow-screen drawer, with the home's ink scrim.",
+      "motion": "The drawer slides in 200ms; cards lift as on the home. Reduced motion makes both instant.",
+      "accessibility": "Landmarks: nav (rail), main, complementary (detail). Real <table> with headers. Each game name is a button, so rows are keyboard reachable. Wired shortcuts: / search, J/K move the selection, Enter opens details (when focus is not on a button or link), F favorite, H hide, Esc closes. No shortcut navigates away.",
+      "navigation": "Always visible. Favorites and Hidden are rail destinations with live counts.",
+      "resultSharing": "'Share today's result' sits in the Today's Three header. The detail card shows the selected game's metric state.",
+      "recommendationTradeoff": "Best for rule clarity and keyboard play. Trade-off: the most app-like, it is heavy for a first phone visit, and a table feels administrative next to the home's warmth. Borrow its three-line rule summary for a game detail sheet even if it isn't chosen."
+    },
+    {
+      "id": "D",
+      "name": "Specimen",
+      "rationale": "Show the play, not a pictogram. Each of Today's Three is a home card whose top half is a paper inset holding the puzzle's real opening state (Shortlist's twelve words, Second Sense's noun and verb clues, Sideways' strips). The collection leads every card with the move you make. It answers the generic-card problem while staying in the home's card language.",
+      "layoutStrategy": "Home masthead with text-link anchors and profile → 'Today's Three, at a glance.' with count and Share → three specimen cards (paper inset miniature labelled 'Opening state', category eyebrow, icon and serif name, bold move line, description, then status, Play ↗, ☆ Favorite, Hide) → collection grouped by how it plays, three cards across with icon, serif name, category and a '→ move' line, plus a sticky filter row on desktop → a feedback card with a paper explainer half and the form → home footer.",
+      "typography": "DM Serif 58px heading, 32px specimen names, 24px catalogue names. Board letters in miniatures are DM Sans bold at 14–17px.",
+      "spacing": "1200px shell. Specimens three across at 1440 and stacked on phone, with the miniature beside the copy between 760px and 1100px.",
+      "palette": "Shared tokens. Miniatures keep each game's local board semantics (Second Sense noun/verb hues; Sideways column guides in green).",
+      "depthMaterial": "Home cards outside; inside, the miniature tiles have a 2px flat bottom edge in the line colour, the same subtle tactility as the home and game tiles. No drop shadows on tiles.",
+      "motion": "On hover or focus a specimen plays one true-to-rules beat once (Shortlist's scan bar sweeps; one Sideways strip nudges a column). Disabled under reduced motion.",
+      "accessibility": "Miniatures are aria-hidden, with a text equivalent. Real controls sit in the card footer. Search also matches move lines.",
+      "navigation": "Masthead anchors (Today, Collection, Favorites, Hidden, Feedback) plus a profile button. A sticky filter row on desktop.",
+      "resultSharing": "A finished specimen swaps its miniature for score-only marks (green ✓ squares), never letters. 'Share today's result' sits in the heading row.",
+      "recommendationTradeoff": "The most distinctive, and the best at teaching mechanics at a glance. Trade-off: it needs a per-game miniature renderer fed by each day's data, kept spoiler-free. Viable for Today's Three; the catalogue uses the move line instead."
+    }
+  ],
+  "recommendation": {
+    "choose": "B",
+    "withBorrowings": [
+      "A's ruled single-line index as B's 'List' mode (already shown in the B mockup).",
+      "C's three-line rule summary in a game detail sheet opened from a card.",
+      "D's verb-first move line as the description on every collection card (already used in B)."
+    ],
+    "why": "James asked for designs that follow the main page's theme. B changes the least about how the site looks: the same paper, cards, wordmark, fonts and green. It changes what is wrong with the structure: duplicated promotion, provider filters, and favorites and profile buried in disclosures. All four directions share one home style, so the choice is about layout, not brand."
+  }
+}

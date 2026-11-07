@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quadra · Concept A · Category masthead</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .page{display:grid;gap:22px}
 @media(min-width:880px){.page{grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:44px;align-items:start}}
-.mast{border-top:6px solid var(--ink);padding-top:14px}
-.mast small{font:700 12px/1 var(--mono);letter-spacing:.16em;color:var(--muted)}
-.mast h2{margin:6px 0 4px;font:850 clamp(40px,11vw,72px)/.95 var(--sans);letter-spacing:-.04em}
+.mast{border-top:1px solid var(--line);padding-top:18px}
+.mast small{font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--accent)}
+.mast h2{margin:10px 0 8px;font:400 clamp(46px,11vw,82px)/.98 var(--serif);letter-spacing:-.03em;color:var(--ink)}
 .mast p{margin:0;color:var(--ink-2);font-size:16px}
 .chances{display:flex;align-items:center;gap:8px;margin:16px 0 0;font-size:15px;color:var(--ink-2)}
 .chances i{width:28px;height:8px;border-radius:2px;background:var(--ink)}
@@ -15,22 +15,25 @@
 .lanes{display:grid;gap:8px;margin-top:20px}
 .lane{display:grid;grid-template-columns:28px repeat(4,minmax(0,1fr));gap:6px;align-items:center}
 .lane b{font:700 13px/1 var(--mono);color:var(--muted)}
-.lane span{height:48px;display:flex;align-items:center;justify-content:center;border-bottom:3px solid var(--line-2);font:800 26px/1 var(--sans)}
+.lane span{height:48px;display:flex;align-items:center;justify-content:center;border-bottom:3px solid var(--line-2);font:700 26px/1 var(--sans)}
 .lane.build span{border-color:var(--accent)}
 .lane.build span.f{border-color:var(--ink)}
 .lane.build b{color:var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;background:var(--paper);border:1px solid var(--line-2);border-radius:16px}
-.t{aspect-ratio:1;border:1.5px solid var(--line-2);border-radius:12px;background:#fbfdfe;font:800 clamp(28px,8vw,38px)/1 var(--sans);position:relative;cursor:pointer;transition:transform .12s}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px;background:var(--paper);border:1px solid var(--line);border-radius:var(--card-r);box-shadow:var(--shadow)}
+.t{aspect-ratio:1;border:1.5px solid var(--tile-edge);border-radius:12px;background:var(--tile);font:700 clamp(28px,8vw,38px)/1 var(--sans);position:relative;cursor:pointer;transition:transform .12s}
 .t:hover{border-color:var(--ink-2)}
-.t.sel{background:var(--ink);color:#fff;border-color:var(--ink);transform:translateY(-2px)}
-.t.sel small{position:absolute;top:6px;right:8px;font:700 12px/1 var(--mono);color:#9fd0e2}
+.t.sel{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-2px)}
+.t.sel small{position:absolute;top:6px;right:8px;font:700 12px/1 var(--mono);color:#d5e4dc}
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .help{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-</style></head><body>
+.help .btn{padding:0 4px;font-size:14px}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Quadra · A — Category masthead · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/qwen-quadra.svg" alt=""><div class="titles"><p class="kicker">Four of a kind</p><h1>Quadra</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="page" id="board" tabindex="0" aria-label="Quadra. Type or tap four letters, Enter locks.">
  <section>
@@ -47,7 +50,7 @@
 </main>
 <footer class="app-foot"><span>Daily and practice tracked separately · saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Quadra</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const T='HISAPAREIDETCWEB'.split('');let sel=[13,8,2];const $=id=>document.getElementById(id);
 function render(){

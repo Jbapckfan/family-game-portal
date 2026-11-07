@@ -32,3 +32,7 @@ Build `714ea7a69726c446` adds the two public practice previews at `/alford-daily
 ## Design review gallery
 
 The separate [Opus 5.5 comparison studio](https://pal-hand-strategic-competitions.trycloudflare.com/alford-daily/previews/design-studio/) adds 91 design concepts without changing the 368-file player build. All 132 gallery files passed public hash verification. [Release evidence](deployments/2026-11-06-design-studio/REPORT.md). This is a visual review area, not an applied game redesign.
+
+## Latest gallery revision: follow the actual home theme
+
+[Round 2](https://pal-hand-strategic-competitions.trycloudflare.com/alford-daily/previews/design-studio/?theme=2) supersedes the disconnected cool theme. Actual Opus 5.5 revised all 91 concepts to the live home’s cream paper, charcoal/green, logo and DM Serif/DM Sans. All 143 gallery assets match the final published manifest; the 368 player files are unchanged. Chrome/WebKit gallery checks pass. [Revision evidence](deployments/2026-11-06-design-studio-theme/REPORT.md).

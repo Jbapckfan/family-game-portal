@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dovetail · Concept D · Spotlight</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:720px;margin:0 auto;display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px}
 @media(min-width:700px){.wrap{grid-template-columns:90px minmax(0,1fr);gap:28px}}
 .map{display:grid;gap:6px;align-content:start;position:sticky;top:12px}
 .mrow{display:flex;gap:2px;min-height:44px;align-items:center;border:0;background:transparent;cursor:pointer;padding:0 4px;border-radius:6px}
-.mrow i{width:7px;height:16px;border-radius:2px;background:#cbd8e2}
+.mrow i{width:7px;height:16px;border-radius:2px;background:#d6d2c6}
 @media(min-width:700px){.mrow i{width:12px}}
 .mrow.given i{background:var(--ink)}
 .mrow.on{background:var(--accent-wash)}
@@ -17,19 +17,22 @@
 .nb small{font:600 11px/1 var(--mono);letter-spacing:.1em;color:var(--muted);min-width:46px}
 .nb.given{color:var(--ink)}
 .join{font:600 13px/1 var(--mono);color:var(--accent-ink);padding:2px 4px 2px 60px;letter-spacing:.06em}
-.focus{position:relative;padding:16px 14px;border-radius:16px;background:var(--paper);border:2px solid var(--accent);box-shadow:0 22px 30px -26px rgba(10,106,138,.6)}
-.focus small{display:block;font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--accent-ink);margin-bottom:10px}
+.focus{position:relative;padding:16px 14px;border-radius:var(--card-r);background:var(--paper);border:2px solid var(--accent);box-shadow:var(--shadow)}
+.focus small{display:block;font:700 10px/1.35 var(--mono);letter-spacing:.13em;color:var(--accent-ink);margin-bottom:10px}
 .fcells{display:flex;gap:6px}
-.fcells span{flex:1 1 0;max-width:62px;aspect-ratio:.85;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#eef4f8;font:850 clamp(28px,8vw,44px)/1 var(--sans)}
-.fcells span.cur{background:#fff;box-shadow:inset 0 0 0 2px var(--accent)}
+.fcells span{flex:1 1 0;max-width:62px;aspect-ratio:.85;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#f1eee6;font:700 clamp(28px,8vw,44px)/1 var(--sans)}
+.fcells span.cur{background:var(--paper);box-shadow:inset 0 0 0 2px var(--accent)}
 .focus input{position:absolute;inset:0;opacity:0;font-size:16px;cursor:text}
 .nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .hud{grid-column:1/-1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:14px;color:var(--ink-2)}
-</style></head><body>
+.nav .btn{padding:0 10px}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Dovetail · D — Spotlight · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/claude-dovetail.svg" alt=""><div class="titles"><p class="kicker">Compound chains</p><h1>Dovetail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap">
  <p class="hud"><span><b>0 / 6</b> placed · 6 misses left</span><span>Word above + this word, and this word + word below, must each spell a word.</span></p>
@@ -43,7 +46,7 @@
 </main>
 <footer class="app-foot"><span>Reveal a letter · costs 1 miss</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Dovetail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const L=[4,4,3,4,3,5,5,4],W=['SNAP','','','','','','','HOOD'];let active=1,typed='';const $=id=>document.getElementById(id);
 const txt=r=>W[r]||'·'.repeat(L[r]);

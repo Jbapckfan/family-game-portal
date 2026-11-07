@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Switchpath · Concept A · Signal Board</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .layout{display:grid;gap:22px;align-items:start}
 @media (min-width:900px){.layout{grid-template-columns:minmax(0,1fr) 300px;padding-top:6px}}
-.signal{--sig:var(--blue);width:100%;max-width:440px;margin:0 auto;border-radius:22px;padding:0 6px 6px;background:var(--sig);transition:background .3s ease;box-shadow:0 18px 40px -28px rgba(15,29,42,.6)}
+.signal{--sig:var(--blue);width:100%;max-width:440px;margin:0 auto;border-radius:22px;padding:0 6px 6px;background:var(--sig);transition:background .3s ease;box-shadow:var(--shade)}
 .signal.lower{--sig:var(--teal)}
 .signal.done{--sig:var(--ink)}
 .sigbar{display:flex;align-items:center;gap:12px;color:#fff;padding:10px 8px 10px 6px;min-height:66px}
@@ -13,41 +13,44 @@
 .sigbar strong{display:block;font:800 clamp(19px,5.6vw,23px)/1.05 var(--display);letter-spacing:.01em}
 .sigbar small{display:block;font-size:14px;opacity:.92;margin-top:3px}
 .sigbar .ct{margin-left:auto;text-align:right;font:600 12px/1.35 var(--mono);opacity:.92;white-space:nowrap}
-.board{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-radius:16px;padding:4px}
+.board{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--surface);border-radius:16px;padding:4px}
 .route{position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);pointer-events:none;z-index:2;overflow:visible}
 .route line{stroke-width:.075;stroke-linecap:round}
 .route .up{stroke:var(--blue)} .route .dn{stroke:var(--teal)}
 .cell{position:relative;border:0;background:transparent;padding:0;aspect-ratio:1;min-height:44px}
-.face{position:absolute;inset:3px;border-radius:12px;background:#f0f4f8;border:1px solid #e0e7ee;display:grid;place-items:center;font:700 clamp(26px,8.4vw,40px)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink);transition:transform .14s ease,background .2s,border-color .2s}
-.cell:hover .face{background:#e8eef5}
-.cell.v .face{background:#eef2f7;color:#5b6b7b}
+.face{position:absolute;inset:3px;border-radius:12px;background:var(--well);border:1px solid var(--line2);display:grid;place-items:center;font:700 clamp(26px,8.4vw,40px)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--ink);transition:transform .14s ease,background .2s,border-color .2s}
+.cell:hover .face{background:var(--well2)}
+.cell.v .face{background:var(--well);color:var(--muted)}
 .cell.cur .face{background:var(--sig);border-color:transparent;color:#fff;transform:scale(1.02)}
-.cell.opt .face{background:#fff;border:2.5px solid var(--sig);color:var(--ink)}
+.cell.opt .face{background:var(--surface);border:2.5px solid var(--sig);color:var(--ink)}
 .cell.opt::after{content:attr(data-badge);position:absolute;top:8px;right:8px;z-index:3;font:800 12px/1 var(--display);color:#fff;background:var(--sig);border-radius:6px;padding:4px 5px}
 .tag{position:absolute;left:9px;top:8px;font:700 10px/1 var(--sans);letter-spacing:.1em;color:var(--muted)}
 .cell.cur .tag{color:rgba(255,255,255,.85)}
-.step{position:absolute;right:9px;bottom:7px;font:600 11px/1 var(--mono);color:#7d8c9b;z-index:3}
+.step{position:absolute;right:9px;bottom:7px;font:600 11px/1 var(--mono);color:var(--muted);z-index:3}
 .cell.cur .step{color:rgba(255,255,255,.8)}
-.cell.endc .face{box-shadow:inset 0 0 0 2px #0f1d2a22}
+.cell.endc .face{box-shadow:inset 0 0 0 2px #202c3522}
 .cell.bad .face{animation:shake .28s;background:var(--bad-wash);border-color:var(--bad)}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .ctrls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:440px;margin:14px auto 0}
 .cost{max-width:440px;margin:8px auto 0;font:12px/1.4 var(--mono);color:var(--muted);text-align:center}
 .live{max-width:440px;margin:12px auto 0;text-align:center}
 .side{display:grid;gap:14px}
-.panel{background:#fff;border:1px solid var(--line2);border-radius:16px;padding:16px}
-.panel h2{margin:0 0 8px;font:700 16px/1.2 var(--display)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
+.panel h2{margin:0 0 10px;font:400 22px/1.15 var(--serif)}
 .rhythm{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font:700 18px/1 var(--display);font-variant-numeric:tabular-nums}
 .rhythm i{font-style:normal;font-size:13px;padding:4px 6px;border-radius:6px;color:#fff}
 .rhythm .u{background:var(--blue)} .rhythm .d{background:var(--teal)}
 .rhythm .q{color:var(--muted);border:1.5px dashed var(--line);padding:3px 8px;border-radius:6px;font-size:16px}
 .stats{display:flex;gap:18px;font-size:14px;color:var(--muted)}
 .stats b{display:block;font:700 22px/1.1 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
-</style></head>
+.side details.rules{border:1px solid var(--line)!important}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Switchpath · Concept A “Signal Board”</b> · design review prototype, not a live game</span><nav aria-label="Switchpath concepts"><a href="switchpath-A.html" aria-current="page">A</a><a href="switchpath-B.html">B</a><a href="switchpath-C.html">C</a><a href="switchpath-D.html">D</a></nav></div>
+<div class="rv"><span><b>Switchpath · Concept A “Signal Board”</b> · design review prototype, not a live game</span><nav aria-label="Switchpath concepts"><a href="switchpath-A.html?theme=2" aria-current="page">A</a><a href="switchpath-B.html?theme=2">B</a><a href="switchpath-C.html?theme=2">C</a><a href="switchpath-D.html?theme=2">D</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="false" aria-label="Favorite Switchpath" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Switchpath from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>
@@ -65,7 +68,7 @@
   <aside class="side">
     <div class="panel"><h2>Your rhythm</h2><div class="rhythm" id="rhythm"></div><p class="note" style="margin-top:10px">The banner colour is the rule: <b style="color:var(--blue)">blue = higher</b>, <b style="color:var(--teal)">teal = lower</b>. It flips after every step.</p></div>
     <div class="panel"><div class="stats"><div><b id="sMoves">2</b>moves</div><div><b>0</b>hints</div><div><b>15</b>perfect</div></div></div>
-    <details class="rules panel" style="border:1px solid var(--line2)"><summary>Rules &amp; keys</summary><div>Start at <b>S</b>, visit all 16 cells once, finish on <b>E</b>. Move up, down, left or right. Tap an earlier step to rewind. <br><span class="kbd">←↑→↓</span> move focus · <span class="kbd">Enter</span> select · <span class="kbd">⌫</span> undo</div></details>
+    <details class="rules panel" style="border:1px solid var(--line2)"><summary>Rules &amp; keys</summary><div>Start at <b>S</b>, visit all 16 cells once, finish on <b>E</b>. Move up, down, left or right. Tap an earlier step to rewind. <br><span class="kbd">Tab</span> moves between cells · <span class="kbd">Enter</span> selects. Proposed <span class="kbd">←↑→↓</span> and <span class="kbd">⌫</span> shortcuts are not wired in this prototype.</div></details>
   </aside>
 </div>
 <div class="foot"><span>One solution. No timer. Progress saved in this browser.</span><a href="#">About Switchpath</a></div>

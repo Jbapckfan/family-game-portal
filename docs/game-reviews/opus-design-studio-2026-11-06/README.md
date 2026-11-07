@@ -1,5 +1,7 @@
 # Opus 5.5 design commission — November 6, 2026
 
+**Theme superseded:** James rejected this round’s visual divergence. See [the home-theme revision](../opus-design-studio-theme-2026-11-06/README.md), which preserves the alternatives inside the actual main-page style. This folder remains the historical first-round record.
+
 James requested a dedicated design agent, at least four alternatives for the whole site and four for every confirmed keeper, with design review of all games.
 
 [Open the comparison gallery](https://pal-hand-strategic-competitions.trycloudflare.com/alford-daily/previews/design-studio/). It contains **91 concepts**: four site directions, four alternatives for each of 18 confirmed keepers (72), and one direction for each of 15 other games. All 33 games are represented. No keeper disposition, fun rating or selected production design changed.

@@ -4,50 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Logic Lattice A · Line counters — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:32px;align-items:start}
 @media(max-width:840px){.lay{grid-template-columns:minmax(0,1fr)}}
-.lesson{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);margin-bottom:16px;font-size:15px;color:var(--ink-2)}
+.lesson{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;border-radius:16px;background:var(--ad-surface);border:1px solid var(--line);margin-bottom:16px;font-size:15px;color:var(--ink-2)}
 .lesson .demo{display:flex;align-items:center;gap:3px}
-.lesson .demo b{width:28px;height:28px;display:grid;place-items:center;font:800 15px var(--mono);color:var(--ink)}
-.lesson .demo i{width:22px;height:22px;border-radius:4px;border:1px solid #b9c8d5;background:#fff;display:grid;place-items:center;font-style:normal;color:#9fb2c2}
+.lesson .demo b{width:28px;height:28px;display:grid;place-items:center;font:700 15px var(--mono);color:var(--ink)}
+.lesson .demo i{width:22px;height:22px;border-radius:4px;border:1px solid var(--ad-line-2);background:var(--ad-surface);display:grid;place-items:center;font-style:normal;color:var(--ad-faint)}
 .lesson .demo i.k{background:var(--ink);border-color:var(--ink)}
 .tools{display:inline-flex}
 .board{display:grid;grid-template-columns:44px repeat(5,minmax(0,1fr));grid-template-rows:auto repeat(5,auto) 44px;gap:4px;max-width:440px}
-.clue{border:0;background:transparent;cursor:pointer;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;padding:2px;font:800 20px var(--sans);color:var(--ink)}
+.clue{border:0;background:transparent;cursor:pointer;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:44px;padding:2px;font:700 20px var(--sans);color:var(--ink)}
 .clue small{font:600 11px var(--mono);color:var(--muted)}
 .clue.met{color:var(--ok)}.clue.met small{color:var(--ok)}
 .clue.bad{color:var(--bad)}.clue.bad small{color:var(--bad)}
-.clue[aria-pressed="true"]{background:var(--ink);color:#fff}.clue[aria-pressed="true"] small{color:#b8c7d3}
+.clue[aria-pressed="true"]{background:var(--ink);color:var(--ad-surface)}.clue[aria-pressed="true"] small{color:#c9d0d3}
 .diag{font-size:16px}
-.cell{aspect-ratio:1;border-radius:6px;border:1px solid #b9c8d5;background:#fff;cursor:pointer;position:relative;padding:0}
-.cell.b{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 -3px 0 #000}
-.cell.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#9fb2c2}
+.cell{aspect-ratio:1;border-radius:6px;border:1px solid var(--ad-line-2);background:var(--ad-surface);cursor:pointer;position:relative;padding:0}
+.cell.b{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 -3px 0 #11181d}
+.cell.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--ad-faint)}
 .cell.fix::before{content:"";position:absolute;right:4px;top:4px;width:6px;height:6px;transform:rotate(45deg);background:var(--teal)}
-.cell.b.fix::before{background:#7fd1de}
-.cell.hl{box-shadow:0 0 0 3px rgba(28,92,188,.45)}
-.cell.b.hl{box-shadow:0 0 0 3px rgba(28,92,188,.55),inset 0 -3px 0 #000}
+.cell.b.fix::before{background:#a9d4c2}
+.cell.hl{box-shadow:0 0 0 3px rgba(55,108,88,.5)}
+.cell.b.hl{box-shadow:0 0 0 3px rgba(55,108,88,.6),inset 0 -3px 0 #11181d}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:10px 0 0}
-.guide{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
-.guide small{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.guide h2{margin:4px 0 10px;font-size:24px}
+.guide{background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius);padding:20px}
+.guide small{font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.guide h2{margin:4px 0 12px;font-size:28px;line-height:1.1}
 .strip{display:flex;gap:4px;margin:0 0 12px}
-.strip i{width:36px;height:36px;border-radius:6px;border:1px solid #b9c8d5;position:relative}
+.strip i{width:36px;height:36px;border-radius:6px;border:1px solid var(--ad-line-2);position:relative}
 .strip i.b{background:var(--ink);border-color:var(--ink)}
-.strip i.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#9fb2c2}
+.strip i.w::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--ad-faint)}
 .tally{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
-.tally div{padding:10px 0}.tally b{display:block;font-size:24px}.tally span{font-size:13px;color:var(--muted)}
+.tally div{padding:10px 0}.tally b{display:block;font-family:var(--ad-serif);font-weight:400;font-size:30px;line-height:1.1}.tally span{font-size:13px;color:var(--muted)}
 .guide p{margin:0 0 10px;color:var(--ink-2)}
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Logic Lattice A — Line counters</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -67,7 +68,7 @@
     <aside class="guide" aria-live="polite" id="guide"></aside>
   </div>
 </main>
-<p class="studio-foot">Concept notes: undecided squares are plain (no "?" icons, so it stops reading as Minesweeper). Every total is a live counter (black so far / needed) and turns green or red. Selecting a total draws a band over its five squares; the ↘ total sits at the top-left corner where its diagonal starts and the ↙ total at the bottom-left where its diagonal ends. Totals and givens are today's supplied puzzle; marking is local.</p>
+<p class="studio-foot">Concept notes: undecided squares are plain (no "?" icons, so it stops reading as Minesweeper). Every total is a live counter (black so far / needed) and turns green or red. Selecting a total draws a band over its five squares; the ↘ total sits at the top-left corner where its diagonal starts and the ↙ total at the bottom-left where its diagonal ends. Totals and givens are today's supplied puzzle; marking is local. Prototype wiring: tool switch, marking squares, selecting totals and the live guide work; Undo, Restart, hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const rows=[3,2,2,4,4],cols=[2,3,4,2,4],dd=3,da=4,cells=Array(25).fill(-1),fix=new Set([8,14,19,23]);cells[8]=0;cells[14]=1;cells[19]=1;cells[23]=0;

@@ -4,50 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morph A · Ladder rails — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .grid{display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:24px;align-items:start}
 @media(max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
-.ladder{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 14px}
+.ladder{position:relative;background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius);padding:20px 14px}
 .status{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.status b{font-size:20px}.status span{font:13px var(--mono);color:var(--muted)}
+.status b{font-family:var(--ad-serif);font-weight:400;font-size:24px;line-height:1.1}.status span{font:13px var(--mono);color:var(--muted)}
 .rails{position:relative;padding:0 26px}
-.rails::before,.rails::after{content:"";position:absolute;top:0;bottom:0;width:6px;border-radius:3px;background:linear-gradient(90deg,#c4d2de,#e9eff4 60%,#b9c9d6)}
+.rails::before,.rails::after{content:"";position:absolute;top:0;bottom:0;width:5px;border-radius:3px;background:var(--ad-line-2)}
 .rails::before{left:6px}.rails::after{right:6px}
 .rung{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:7px 8px;margin:0 0 10px;border-radius:10px}
 .rung::before{content:attr(data-tag);position:absolute;left:-24px;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font:600 10px var(--mono);letter-spacing:.08em;color:var(--muted)}
-.rung .l{height:52px;border-radius:8px;display:grid;place-items:center;font-size:30px;font-weight:850;letter-spacing:.02em;position:relative}
-.goal{background:#0e2232}.goal .l{color:#fff}
-.played{background:#f1f5f8;box-shadow:inset 0 0 0 1px #d6e0e8}
+.rung .l{height:52px;border-radius:8px;display:grid;place-items:center;font-size:30px;font-weight:700;letter-spacing:.02em;position:relative}
+.goal{background:var(--ink)}.goal .l{color:var(--ad-surface)}
+.played{background:var(--ad-well);box-shadow:inset 0 0 0 1px var(--line)}
 .played .l{color:var(--ink-2)}
 .played .l.ch::after{content:"";position:absolute;bottom:6px;left:50%;width:16px;height:3px;border-radius:2px;background:var(--accent);transform:translateX(-50%)}
-.par{height:24px;margin:0 8px 10px;border-radius:6px;border:1px dashed #c7d4df}
-.active{background:#e8f0fc;box-shadow:inset 0 0 0 2px var(--accent),0 10px 18px -12px rgba(28,92,188,.6)}
-.active button.l{border:1px solid #a9bfdd;background:#fff;cursor:pointer;color:var(--ink);box-shadow:0 3px 0 #b8c9e0}
-.active button.l[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 3px 0 var(--accent-2)}
-.start{background:#f1f5f8;box-shadow:inset 0 0 0 1px #d6e0e8}
+.par{height:24px;margin:0 8px 10px;border-radius:6px;border:1px dashed var(--ad-line-2)}
+.active{background:var(--ad-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.active button.l{border:1px solid var(--ad-line-2);background:var(--ad-surface);cursor:pointer;color:var(--ink);box-shadow:0 3px 0 var(--ad-edge)}
+.active button.l[aria-pressed="true"]{background:var(--accent);color:var(--ad-surface);border-color:var(--accent);box-shadow:0 3px 0 var(--accent-2)}
+.start{background:var(--ad-well);box-shadow:inset 0 0 0 1px var(--line)}
 .start .l{color:var(--ink-2)}
 .picker{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
 .picker p{margin:0 0 8px;font-size:15px;color:var(--ink-2)}
 .keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px}
-.keys button{height:44px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font-weight:700;font-size:17px;cursor:pointer}
+.keys button{height:44px;border-radius:8px;border:1px solid var(--line-2);background:var(--ad-surface);font-weight:700;font-size:17px;cursor:pointer}
 .keys button:hover{border-color:var(--accent);color:var(--accent)}
 .keys button.cur{background:var(--wash);color:var(--muted)}
 .act{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;margin-top:14px}
-.side h2{margin:0 0 10px;font-size:20px}
+.side h2{margin:0 0 12px;font-size:28px;line-height:1.1}
 .rules{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px}
 .rules li{padding-left:28px;position:relative;color:var(--ink-2)}
 .rules li::before{content:"";position:absolute;left:0;top:4px;width:16px;height:16px;border-radius:4px;border:2px solid var(--accent)}
-.feedback{border-left:3px solid var(--accent);background:#fff;padding:12px 14px;border-radius:0 12px 12px 0;color:var(--ink-2);margin-bottom:16px}
+.feedback{border-left:3px solid var(--accent);background:var(--ad-surface);padding:12px 14px;border-radius:0 12px 12px 0;color:var(--ink-2);margin-bottom:16px}
 .more{display:flex;gap:8px;flex-wrap:wrap}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Morph A — Ladder rails</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -84,13 +85,13 @@
         <li>Each rung must be in the word list; no repeats.</li>
         <li>Dashed spaces show the suggested five moves. Shorter routes may exist.</li>
       </ul>
-      <div class="feedback" aria-live="polite">Rung 1 accepted: one letter changed — the blue tick marks where.</div>
+      <div class="feedback" aria-live="polite">Rung 1 accepted: one letter changed — the green tick marks where.</div>
       <div class="more"><button class="btn">Show a route · 1 hint</button><button class="btn quiet">Give up</button></div>
       <p style="color:var(--muted);font-size:14px;margin-top:16px">Keyboard: type a four-letter word and press <span class="kbd">Enter</span>. Undo and restart keep hints and misses.</p>
     </aside>
   </div>
 </main>
-<p class="studio-foot">Concept notes: a literal ladder with the goal fixed at the top and the start at the bottom. "BAND" is an illustrative first rung, not the supplied route. Tap a letter on the active rung to open the swap picker beneath it (shown open).</p>
+<p class="studio-foot">Concept notes: a literal ladder with the goal fixed at the top and the start at the bottom. "BAND" is an illustrative first rung, not the supplied route. Tap a letter on the active rung to open the swap picker beneath it (shown open). Prototype wiring: rung letters and the picker work; typing a word, Check, Undo, Restart, the route hint and Give up are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const keys=document.getElementById('keys'),btns=[...document.querySelectorAll('#next .l')],pp=document.getElementById('pp');let col=3;

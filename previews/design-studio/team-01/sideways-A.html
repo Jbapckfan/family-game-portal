@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sideways · Direction A · Drum Lock</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .layout{display:grid;gap:18px;justify-items:center}
 @media (min-width:900px){.layout{grid-template-columns:minmax(0,480px) 300px;justify-content:center;align-items:start;gap:36px}}
@@ -9,38 +9,41 @@
 .heads,.drum{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr)) 44px;gap:6px;align-items:stretch}
 .heads{margin-bottom:6px}
 .ch{border:0;background:transparent;padding:6px 2px 8px;border-radius:10px;text-align:center;font:500 12px/1.25 var(--sans);color:var(--ink2);min-height:44px;display:grid;align-content:end;gap:4px}
-.ch b{font:800 15px/1 var(--display);color:var(--ink)}
+.ch b{font:700 15px/1 var(--display);color:var(--ink)}
 .ch[aria-pressed="true"]{background:var(--teal-wash);color:var(--teal-ink)}
 .ch.ok b{color:var(--ok)}
 .drums{display:grid;gap:6px;position:relative}
 .clues{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
-.cq{min-height:52px;display:grid;grid-template-columns:24px 1fr;gap:6px;align-items:start;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font:500 15px/1.3 var(--sans);color:var(--ink)}
-.cq b{font:800 15px/1.3 var(--display);color:var(--muted)}
+.cq{min-height:52px;display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;align-items:start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:9px 10px;font:400 15px/1.35 var(--sans);color:var(--ink)}
+.cq b{font:700 15px/1.35 var(--display);color:var(--muted)}
 .cq[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-wash)}
 .cq.ok b{color:var(--ok)}
 .drum .cyl{grid-column:2/6;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;border-radius:12px;padding:0;position:relative}
-.drum .cyl::before{content:"";position:absolute;inset:-3px -3px;border-radius:14px;background:linear-gradient(#cdd7e1,#eef3f7 20%,#fff 50%,#eef3f7 80%,#cdd7e1);z-index:0;box-shadow:inset 0 0 0 1px #c3ced9}
-.cell{position:relative;z-index:1;display:grid;place-items:center;min-height:56px;font:800 clamp(24px,7.4vw,32px)/1 var(--display);color:var(--ink);transition:transform .22s cubic-bezier(.3,1.3,.5,1),background .2s;border-radius:8px}
-.cell.read{background:rgba(10,130,119,.14);color:var(--teal-ink)}
+/* Drum: a soft warm roll (paper to warm white), not a metal cylinder */
+.drum .cyl::before{content:"";position:absolute;inset:-3px -3px;border-radius:16px;background:linear-gradient(#ebe6db,#f6f3ec 22%,#fffefa 50%,#f6f3ec 78%,#ebe6db);z-index:0;box-shadow:inset 0 0 0 1px var(--edge)}
+.cell{position:relative;z-index:1;display:grid;place-items:center;min-height:56px;font:700 clamp(24px,7.4vw,32px)/1 var(--display);color:var(--ink);transition:transform .22s cubic-bezier(.3,1.3,.5,1),background .2s;border-radius:10px}
+.cell.read{background:rgba(36,122,126,.14);color:var(--teal-ink)}
 .cell.ok{color:var(--ok)}
 .shift .cell{transform:translateX(var(--dx))}
-.rb{width:44px;min-height:56px;border-radius:12px;border:1px solid var(--line);background:#fff;font:700 18px/1 var(--sans);color:var(--ink2);box-shadow:0 2px 0 #c9d4df}
+.rb{width:44px;min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font:700 18px/1 var(--sans);color:var(--ink2);box-shadow:0 2px 0 var(--edge)}
 .rb:active{transform:translateY(1px);box-shadow:none}
 .readout{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr)) 44px;gap:6px;margin-top:10px}
-.readout span{grid-column:auto;text-align:center;font:700 clamp(12px,3.6vw,15px)/1.2 var(--mono);letter-spacing:.06em;color:var(--muted);padding:8px 0;border-top:2px solid var(--line)}
+.readout span{grid-column:auto;text-align:center;font:700 clamp(12px,3.6vw,15px)/1.2 var(--sans);letter-spacing:.06em;color:var(--muted);padding:8px 0;border-top:2px solid var(--line)}
 .readout span.ok{color:var(--ok);border-color:var(--ok)}
 .readout .sp{border:0}
 .panel{width:100%;max-width:480px;display:grid;gap:10px}
-.stat{font:13px/1.4 var(--mono);color:var(--muted)}
-.exp{border:1px solid #f0dcb4;background:#fffaf0;border-radius:12px;padding:10px 12px;font-size:14px;color:#6b4a12}
+.stat{font:13px/1.4 var(--sans);color:var(--muted)}
+.exp{border:1px solid #eadbb8;background:#fbf4e4;border-radius:16px;padding:12px 14px;font-size:14px;color:#5e4210}
 .mini{display:flex;gap:4px;margin-top:8px;align-items:center;font:700 16px var(--display)}
-.mini span{width:28px;height:30px;border-radius:5px;display:grid;place-items:center;background:#fff;border:1px solid #e3d3b2}
+.mini span{width:28px;height:30px;border-radius:6px;display:grid;place-items:center;background:var(--surface);border:1px solid #e2cfa6}
 .mini span.h{opacity:.35;border-style:dashed}
-</style></head>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Sideways · Direction A “Drum Lock”</b> · design review prototype with the real rows, not a live game</span><nav aria-label="Sideways"><a href="sideways-A.html" aria-current="page">A</a></nav></div>
+<div class="rv"><span><b>Sideways · Direction A “Drum Lock”</b> · design review prototype with the real rows, not a live game</span><nav aria-label="Sideways"><a href="sideways-A.html?theme=2" aria-current="page">A</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="false" aria-label="Favorite Sideways" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Sideways from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>

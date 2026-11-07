@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tradeoff · Concept D · Clue Rail + Bonus</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .modes{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
-.modes button{min-height:44px;border-radius:22px;border:1px solid var(--line);background:#fff;padding:0 16px;font:600 15px var(--sans)}
-.modes button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.modes button{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:4px 16px;font:600 15px/1.2 var(--sans)}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .modes .exp{font:600 11px var(--mono);color:var(--amber);background:var(--amber-wash);border-radius:5px;padding:2px 5px;margin-left:6px}
 .layout{display:grid;gap:16px}
 @media (min-width:860px){.layout{grid-template-columns:minmax(0,1fr) auto;gap:34px;align-items:start}}
 .rail{border-left:3px solid var(--ink);padding-left:14px;display:grid;gap:2px}
-.rail button{all:unset;cursor:pointer;display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:baseline;min-height:44px;padding:8px 8px;border-radius:8px;font:500 17px/1.3 var(--sans);color:var(--ink)}
-.rail button:focus-visible{outline:3px solid #2f7de1}
+.rail button{all:unset;cursor:pointer;display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:baseline;min-height:44px;padding:8px 10px;border-radius:12px;font:400 17px/1.35 var(--sans);color:var(--ink)}
+.rail button:focus-visible{outline:3px solid var(--green)}
 .rail button i{font:600 12px var(--mono);font-style:normal;color:var(--muted)}
 .rail button.on{background:var(--blue-wash)}
-.rail button.ok{color:#8796a5}
+.rail button.ok{color:var(--muted)}
 .rail button.ok b{color:var(--ok);font:700 12px var(--mono);letter-spacing:.06em}
 @media (max-width:859px){.rail.collapsed button:not(.on){display:none}}
 .more{margin-top:4px}
@@ -22,20 +22,22 @@
 .grid{display:grid;gap:8px}
 .gr{display:grid;grid-template-columns:24px repeat(5,minmax(0,54px));gap:6px;align-items:center}
 .gr i{font:600 12px var(--mono);font-style:normal;color:var(--muted)}
-.t{aspect-ratio:1;min-height:44px;border-radius:10px;border:1px solid #cad5e0;background:#fff;box-shadow:0 2px 0 #c9d4df;font:800 clamp(21px,6.4vw,27px)/1 var(--display);padding:0;transition:transform .15s}
+.t{aspect-ratio:1;min-height:44px;border-radius:10px;border:1px solid var(--edge);background:var(--surface);box-shadow:0 2px 0 var(--edge);font:700 clamp(21px,6.4vw,27px)/1 var(--display);padding:0;transition:transform .15s}
 .t[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue);transform:translateY(-4px)}
 .t:disabled{background:var(--ok-wash);border-color:transparent;box-shadow:none;color:var(--ok)}
 .gr.on .t:not(:disabled):not([aria-pressed="true"]){border-color:var(--blue-mid)}
-.bonus-note{border:1px solid var(--amber-wash);background:#fffaf0;border-radius:12px;padding:10px 12px;font-size:14px;color:#6b4a12;margin-bottom:12px}
+.bonus-note{border:1px solid #eadbb8;background:#fbf4e4;border-radius:16px;padding:12px 14px;font-size:14px;color:#5e4210;margin-bottom:12px}
 .unp{display:grid;gap:6px}
-.unp span{display:flex;gap:10px;align-items:baseline;min-height:40px;padding:8px 10px;border-radius:8px;border:1px dashed var(--line);font:500 16px/1.3 var(--sans)}
+.unp span{display:flex;gap:10px;align-items:baseline;min-height:40px;padding:8px 12px;border-radius:12px;border:1px dashed var(--dash);font:400 16px/1.35 var(--sans)}
 .unp span.ok{border-style:solid;border-color:transparent;background:var(--ok-wash);color:var(--ok)}
 .ctl{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center}
-</style></head>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Tradeoff · Concept D “Clue Rail + Unpinned Bonus”</b> · design review prototype with the real swap rule, not a live game</span><nav aria-label="Tradeoff concepts"><a href="tradeoff-A.html">A</a><a href="tradeoff-B.html">B</a><a href="tradeoff-C.html">C</a><a href="tradeoff-D.html" aria-current="page">D</a></nav></div>
+<div class="rv"><span><b>Tradeoff · Concept D “Clue Rail + Unpinned Bonus”</b> · design review prototype with the real swap rule, not a live game</span><nav aria-label="Tradeoff concepts"><a href="tradeoff-A.html?theme=2">A</a><a href="tradeoff-B.html?theme=2">B</a><a href="tradeoff-C.html?theme=2">C</a><a href="tradeoff-D.html?theme=2" aria-current="page">D</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="true" aria-label="Favorite Tradeoff" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Tradeoff from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>

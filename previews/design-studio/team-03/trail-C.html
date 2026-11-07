@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trail · Concept C · Chart and ledger</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .sheet{display:grid;gap:22px}
 @media(min-width:880px){.sheet{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px}}
-.clue{margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid var(--line);font:600 clamp(22px,4.6vw,28px)/1.25 var(--sans)}
+.clue{margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid var(--line);font:400 clamp(26px,5.4vw,34px)/1.15 var(--serif)}
+.clue small{font-family:var(--sans)}
 .clue small{display:block;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--muted);margin-bottom:8px}
 .chart{display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-rows:22px auto;gap:4px;max-width:470px}
 .cols,.rows{display:grid;font:700 12px/1 var(--mono);color:var(--muted)}
@@ -18,19 +19,20 @@
 .field .arrow{fill:var(--accent)}
 .cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr)}
 .c{border:0;background:transparent;font:700 clamp(28px,7.6vw,38px)/1 var(--sans);cursor:pointer;position:relative}
-.c:hover{background:rgba(10,106,138,.06)}
+.c{color:var(--ink)}
+.c:hover{background:rgba(55,108,88,.07)}
 .c.sel{color:var(--accent-ink)}
 .c.sel::before{content:attr(data-step);position:absolute;top:6px;left:8px;font:700 12px/1 var(--mono);color:var(--accent)}
-.c.sel span{display:inline-flex;width:62%;aspect-ratio:1;align-items:center;justify-content:center;border:2.5px solid var(--accent);border-radius:8px;background:#fff}
-.c.last span{background:var(--accent);color:#fff}
-.c.blocked{color:#a9bccb}
-.ledger{border:1px solid var(--line-2);background:var(--paper);border-radius:12px;overflow:hidden}
-.ledger h2{margin:0;padding:12px 14px;font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--line);background:var(--bg-2)}
+.c.sel span{display:inline-flex;width:62%;aspect-ratio:1;align-items:center;justify-content:center;border:2.5px solid var(--accent);border-radius:10px;background:var(--paper)}
+.c.last span{background:var(--accent);color:var(--paper)}
+.c.blocked{color:#9ba19a}
+.ledger{border:1px solid var(--line);background:var(--paper);border-radius:var(--card-r);overflow:hidden;box-shadow:var(--shadow)}
+.ledger h2{margin:0;padding:16px 16px 12px;font:400 24px/1.15 var(--serif);border-bottom:1px solid var(--line)}
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));border-bottom:1px solid var(--line)}
 .steps li{text-align:center;padding:8px 0 10px;border-right:1px solid var(--line)}
 .steps li:last-child{border-right:0}
 .steps small{display:block;font:600 11px/1 var(--mono);color:var(--muted)}
-.steps b{display:block;font:800 clamp(18px,4.6vw,24px)/1.4 var(--sans);min-height:34px}
+.steps b{display:block;font:700clamp(18px,4.6vw,24px)/1.4 var(--sans);min-height:34px}
 .steps em{display:block;font:500 10px/1 var(--mono);color:var(--muted);font-style:normal}
 .ledger section{padding:12px 14px;border-bottom:1px solid var(--line)}
 .ledger section:last-child{border-bottom:0}
@@ -40,10 +42,13 @@
 .checks li span{color:var(--muted);font-family:var(--sans);font-weight:500}
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:8px 0 0;font-size:15px;color:var(--ink-2)}
-</style></head><body>
+.ledger section .btn{min-height:44px;font-size:14px;white-space:normal}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Trail · C — Chart and ledger · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/deepseek-trail.svg" alt=""><div class="titles"><p class="kicker">Nine-letter trail · 4 × 4</p><h1>Trail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="sheet">
  <section>
@@ -67,7 +72,7 @@
 </main>
 <footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Trail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const G='FTEOAALREGFWRTLO'.split(''),N=4;let path=[0,4,1];
 const $=id=>document.getElementById(id),coord=i=>'ABCD'[i%N]+((i/N|0)+1);

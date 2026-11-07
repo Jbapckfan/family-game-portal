@@ -1,0 +1,383 @@
+{
+  "meta": {
+    "author": "Opus 5.5 creative director (internal review; provenance never appears in product UI)",
+    "date": "2026-11-06",
+    "basis": "Supplied games.json feedback, visible-text extracts, source snippets and the supplied 393px screenshots. The six Kimi diagnoses were revised against the corrected captures (settled normal-game boards after the initial help modal was closed with Escape) and their full visible/help text; the earlier translucent-overlay captures were a capture-timing artifact, not a UI defect. Each capture is one start-of-game state, so end states (results, solved rows, feedback after a guess) are not assessed from images. No live testing was performed by the director.",
+    "revision": "2026-11-06 refinement: Kimi reviews completed from corrected captures; Circuit arc letters corrected (earlier text quoted the help example); Second Sense ordering evidence restated and kept as a hypothesis; Territory board count 240. See REFINEMENT.md. Revision 2 (theme correction): the live home theme replaces the earlier pale-blue frame. Only wording that judged surfaces against the old cool frame was changed: the template finding, the navy/cream chrome note, Kimi secondary buttons, Switchpath END cell, and Cairn/Morph control notes. Mechanics, priorities and dispositions are unchanged. 'Light frame' below now means the home's warm paper and warm-white surfaces. See REVISION-02.md.",
+    "priorityScale": "Categorical, not a ranking: urgent = repeatedly rejected or blocking comprehension; high = keeper or strong-positive game with a named UI/clarity problem; medium = clear improvement available; low = acceptable, or not a keeper.",
+    "noScores": "No enjoyment scores invented. The only numeric rating in the source is Inbetween 6/10."
+  },
+  "crossGameFindings": [
+    "Three different page templates coexist: (1) the older cream template with a lowercase serif wordmark and italic tagline (Ringcount, Switchpath, Counterpart, Shortlist, Second Sense, Sideways, Tradeoff, Inbetween); (2) the Kimi variant with a serif 'Alford Daily' top line on cream; (3) the bold-sans pale-blue template (DeepSeek, Qwen and Claude games). Revision 2 correction: the live home page (paper #f6f3ec, DM Serif/DM Sans, green #376c58) is the fixed system. Templates 1 and 2 are closest to it and need their wordmark and controls aligned. Template 3, the pale-blue bold-sans one, is the outlier to bring onto paper. This replaces the earlier verdict that the cream templates were the problem.",
+    "Every game opens with a dark navy 'Your collection · Favorite · Hide · Feedback' bar plus a cream 'Your browser profile · private' disclosure. That is about 140px of chrome before the title on phone. The navy bar is heavy software chrome outside the home's green/ink vocabulary. The cream disclosure matches the paper but repeats hub chrome inside a game.",
+    "Provider credits ('Developed by Claude', 'Concept by Qwen · Built by Alford Daily', 'Developed by Kimi') appear under titles and in the hub filter. Remove them from product UI.",
+    "Dark panels inside light pages (Shortlist scan panel, Spare word bank, Syntax Siege, Tic-Tac-Toe, Split/Splice banners) break the shared light frame.",
+    "Kimi template, from the corrected captures: secondary buttons (hint, skip, give up, clue, reveal, shuffle, backspace) use beige/cream fills that don't match the home control vocabulary (warm-white surface, 1px #dcded8 line, ink or green states). Revision 2: the paper colour itself is correct; the issue is control consistency, not warmth. On all six pages a thin blue rectangle outlines the game area and runs past the card, leaving an empty band (largest on Cairn, about 180px, and Morph, about 120px). The supplied index.html files don't reveal the cause. It may be a focus outline left by the Escape step used during capture, but the reserved empty height reads as dead space either way. Verify in a live session before treating it as a defect.",
+    "Hint/Reveal sit as a pair of large buttons outside the game card, followed by '0 daily played · 0 solved · 0 day streak'. Both need one consistent, quieter home."
+  ],
+  "games": [
+    {
+      "slug": "ringcount",
+      "name": "Ringcount",
+      "keeper": false,
+      "disposition": "replacement_candidate",
+      "jamesFeedback": "\"pretty easy and boring game, okay, next gae\"",
+      "currentDesignDiagnosis": "Twelve serif numerals on a pale ring plus twelve dashed '+' gap buttons outside the ring: 24 circular targets of similar weight, so the actual decision (where to cut) looks no more important than the numbers. The 'EACH PART 16' hub hands over the key number, and the solve becomes quick arithmetic, which matches 'easy and boring'. It uses the older cream template with an italic serif tagline and a 'Try the bonus challenge' bar.",
+      "clarityRisk": "Low for rules. On phone, gap buttons outside the band make it unclear which two numbers a cut separates.",
+      "bestDesignOpportunity": "One direction only: a segmented machined band where the gaps are physical slots inside the ring between numbers, and each completed arc shows its running sum along its length. Optional mechanical experiment (separate from UI): a bonus ring that adds a second constraint (for example equal arc lengths for two parts) to answer 'easy'. Don't spend keeper-level effort.",
+      "priority": "low"
+    },
+    {
+      "slug": "switchpath",
+      "name": "Switchpath",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "Likes it; wants numbers closer together, a possible 5×5, more obvious high/low indicators; rejected brown and purple; approved blue = higher, teal = lower.",
+      "currentDesignDiagnosis": "It has the clearest direction cue on the site (a solid blue 'GO HIGHER · Greater than 4' banner) and a legible 4×4 grid with START/END labels. Problems: the cue sits above the board, so on phone the eye shuttles between banner and cell; the END cell uses a beige fill with a brown outline, which sits outside both the approved blue/teal board semantics and the home's ink/green chrome; links between visited cells are faint dotted lines; numbers 1–16 are spread so widely that comparisons are trivial.",
+      "clarityRisk": "Medium. The requirement alternates every step, so it must be visible at the point of the next tap.",
+      "bestDesignOpportunity": "Put the requirement on the board. The current cell carries a blue up-chevron (higher) or teal down-chevron (lower), and legal neighbours get a matching rim while illegal ones stay neutral. The path becomes a continuous engraved channel whose segments alternate blue/teal. Keep a compact banner as a restatement. Replace the brown END with an ink outline and flag glyph. Optional, separate: a 5×5 bonus board with tighter number spacing, as a harder bonus round rather than a replacement daily.",
+      "priority": "high"
+    },
+    {
+      "slug": "counterpart",
+      "name": "Counterpart",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"make the words/fonts larger and easier to read\"; would play again.",
+      "currentDesignDiagnosis": "A teal word-bank panel of ten uppercase pills (HIGH, SOLDIER, PROOF, KILN…), then five relationship rows (THESIS → ARGUMENT, PRISM → SPECTRUM…). The current row holds dashed 'First word / Second word' slots plus small Reverse, Hint and Check pair controls. The other rows show 'choose row', which wraps to two lines on phone. Type is 16–18px; James explicitly wants larger. It uses the cream older template.",
+      "clarityRisk": "Medium. Direction is the core rule, but 'Direction matters →' is a small right-aligned caption, and Reverse is a separate button rather than a property of the pair.",
+      "bestDesignOpportunity": "Make the relationship the hero: the example pair at 28–32px with a physical arrow bar between the words, and the answer pair below mirroring the same bar so direction is geometry. The bank becomes a large 22px two-column list. Selected words drop into slots, and Reverse rotates the arrow bar. Only the active row is expanded; solved rows collapse into a compact ledger.",
+      "priority": "high"
+    },
+    {
+      "slug": "shortlist",
+      "name": "Shortlist",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"yes, next game\" (would play again).",
+      "currentDesignDiagnosis": "Twelve words in a 3×4 card grid, then 'Choose scan letters', then a dark navy scan panel with a 26-key alphabet and '? + ?' slots, then 'Words & results ↑'. The scan panel is the heart of the game, but it is in a different (dark) material and below the fold on phone. 'Pencil mode: OFF' and tap-to-final-pick are hidden modes in a one-shot game.",
+      "clarityRisk": "High. With three scans and one irreversible pick, players need to see which words each scan eliminated next to the words themselves, and the pick action must be unmistakable.",
+      "bestDesignOpportunity": "Keep words and evidence together. Each scan adds a column of marks beside every word (consistent / ruled out), so the word list becomes an evidence ledger. The two-slot scan composer is pinned under the list, with the alphabet as a light sheet. Make 'Final pick' an explicit latched mode rather than tap-to-confirm. Pencil eliminations become a physical strike latch.",
+      "priority": "medium"
+    },
+    {
+      "slug": "second-sense",
+      "name": "Second Sense",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"yes, next game\" (would play again).",
+      "currentDesignDiagnosis": "Two narrow columns of noun (blue) and verb (teal) clue cards, then a 'Your two senses' panel with an answer field and 'Choose clues ↑'. Long clues wrap to three lines in narrow columns, which makes a tall stack. Ordering hypothesis (not a confirmed bug): in No. 018, by the director's reading of the clues, noun 1 pairs with verb 1, noun 2 with verb 2 and noun 4 with verb 4, while the remaining two are swapped. Source check: app.mjs renders puzzle.nouns and puzzle.verbs in the order supplied, with no client-side shuffle; the files that set that order (puzzles.mjs, engine.mjs) are not in the supplied input, so whether verb order is independently shuffled can't be determined. If the two lists were independently and uniformly shuffled, three or more aligned pairs would happen on about 9% of boards (11/120), so a single board is weak evidence.",
+      "clarityRisk": "Low-medium for rules. Possible pairing leakage is a content/ordering question, not a visual one. To confirm or rule it out, inspect the board generator or count aligned positions across many boards: independent shuffling averages about one aligned pair per board.",
+      "bestDesignOpportunity": "When a noun and a verb are selected, the two cards slide together into one answer slot, and the typed word sits on the seam between them. Solved pairs lock into a stacked ledger showing both senses. Use full-width clue rows on phone instead of two narrow columns. Optional, separate: a three-sense bonus round.",
+      "priority": "medium"
+    },
+    {
+      "slug": "sideways",
+      "name": "Sideways",
+      "keeper": false,
+      "disposition": "replacement_candidate",
+      "jamesFeedback": "Noticed three solved columns force the fourth; \"not a big fan of this game, it's too easy\".",
+      "currentDesignDiagnosis": "Four clue cards (A–D), five four-letter strips with ← → buttons, and a live column readout (CLOND, BROWM, GTAON, SRAID). Legible and orderly. The arrow buttons double the target count, and the fixed row multiset means the last column is always forced, which removes the final decision.",
+      "clarityRisk": "Low for rules; the problem is depth, not comprehension.",
+      "bestDesignOpportunity": "One direction: drag strips directly on a rail with detents (no arrow buttons), with column guides tinted only while a clue is selected. Optional mechanical experiment (separate): a decoy fifth column or a reversible strip so the last column isn't forced.",
+      "priority": "low"
+    },
+    {
+      "slug": "tradeoff",
+      "name": "Tradeoff",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"tradeoff is a keeper, a bit too easy\"; \"i like tradeoff a lot\".",
+      "currentDesignDiagnosis": "Six clue rows, each a bordered card with five raised letter tiles, a short rule line ('Each word starts one letter from its clue'), Undo and 'A little nudge'. The raised tile is the best-received material on the site. Weaknesses: six identical cards make a long stack; a selected or 'carried' letter has no visible lifted state in the capture; progress dots and goal text are 13–14px.",
+      "clarityRisk": "Low-medium. Players can't see which rows are still off, and there is no feedback on which swaps helped.",
+      "bestDesignOpportunity": "Treat it as the reference for the system's tile grammar. Remove the cards: rows sit on one recessed tray with hairline dividers. A selected tile lifts with a blue shadow while valid destinations glow, and a solved row seats its tiles with an end tick. Optional, separate: a 'tight' bonus round with a published swap par and one decoy letter, keeping the daily the same length.",
+      "priority": "medium"
+    },
+    {
+      "slug": "inbetween",
+      "name": "Inbetween",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "6/10, keep, harder clues; wanted drag-and-drop with cool placement visuals; approved the blue drag/selected highlight and the side explainer mirroring it.",
+      "currentDesignDiagnosis": "Six pair chips (UN, RL, RE, AD, IT, AM) in a teal panel above six clue rows. Each row shows a four-letter serif base word with five '+' gap boxes in a separate strip underneath. The approved blue drag state works, but the gaps live below the letters rather than between them, and serif base letters next to sans pair chips weaken the 'this pair fits here' reading.",
+      "clarityRisk": "Medium. The insertion point is shown indirectly (boxes under the letters).",
+      "bestDesignOpportunity": "Make gaps physical. Letters sit on a rail with real slots between them that open as a dragged pair approaches (letters slide apart and the blue preview sits inside the word). Keep the side explainer mirroring the blue drag state exactly as approved. Use one typeface for pairs and words. Harder clues are a separate content task.",
+      "priority": "medium"
+    },
+    {
+      "slug": "kimi-cairn",
+      "name": "Cairn",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"the perfect summit image looks really dumb and stands out\"; \"keeper, go next\".",
+      "currentDesignDiagnosis": "Corrected capture, No. 628 at level 1. One card holds: five level pills plus a faint stacked-slab glyph; 'Level 1 · 3 letters' with a two-line instruction and '0 of 3 placed'; a pale blue drop well with three dashed slots; a rack of three raised letter tiles (T H A); a shuffle / blue ENTER / backspace row; 'Hint · 1 left' and 'Skip level'; and a Clean/Assisted/Shown legend. It is legible and calm, and the raised rack tiles already fit the home's subtle tactile tiles (warm-white face, fine line, short flat edge). Weaknesses: the five pills are near-identical grey lozenges with no letter counts; the slab glyph is decoration and doesn't yet reflect solved levels; hint, skip, shuffle and backspace are beige; about 180px of empty space sits inside the outlined game frame (see cross-game findings). The cartoon summit image James criticised is an end state and is not in this start-of-game capture.",
+      "clarityRisk": "Medium. From level 2 on, the newly dropped letter must look different from the carried letters. Level 1 has no carried letters, so that state isn't visible in the capture.",
+      "bestDesignOpportunity": "Restrained stacked slabs. The faint slab glyph in the current card is the right seed: make it the real progress display. Each solved word becomes a horizontal stone slab with engraved letters, stacking from three to seven letters, with each level's new letter marked by a blue inset. This replaces the five grey pills. Replace the summit picture with a typographic result of five slabs marked clean, assisted or shown. Never a cartoon mountain.",
+      "priority": "medium"
+    },
+    {
+      "slug": "kimi-morph",
+      "name": "Morph",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"keeper, next\". Brief: preserve Morph readability and input control.",
+      "currentDesignDiagnosis": "Corrected capture, No. 64. 'Moves 0 · suggested 5', GOAL 'MESS' in a pale blue panel, a START 'BANG' row of light tiles, and an editable NEXT row of large solid-blue tiles. Below: '0 letters changed · change exactly one', a strong CHECK WORD, beige 'Show a route · 1 hint' / 'Give up', and disabled 'Undo rung' / 'Restart ladder'. The beige buttons don't match the home control vocabulary. About 120px of empty space sits inside the outlined game frame below the card; it is shared by all six Kimi pages and its cause is unverified (see cross-game findings). No rungs have been accepted yet, so how ladder history displays isn't visible.",
+      "clarityRisk": "Low. This is the clarity benchmark; the risk is losing it in a redesign.",
+      "bestDesignOpportunity": "Keep the tile input exactly. Add a ladder: accepted rungs stack between START and GOAL, with each rung's changed letter marked and the 'suggested 5' shown as five rung positions. Remove the reserved empty space under the card. Restyle the hint and give-up buttons as home secondary controls (warm-white, 1px line, ink text).",
+      "priority": "low"
+    },
+    {
+      "slug": "kimi-tangle",
+      "name": "Tangle (word trails)",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "Keeper; asked about 5×5; repeated vocabulary misses (STONED, TREAD, CORES, PORES, TARE); \"great, next game\" after the audited dictionary.",
+      "currentDesignDiagnosis": "Corrected capture, No. 124. At the top of the card, a '4×4 Daily | 5×5 Preview' segmented switch. Then a status line ('0 points · No medal yet · 0/84 words'), '18 more points to Gold · 97 available', and a three-stop Bronze 6 / Silver 12 / Gold 18 track. Then a boxed instruction ('Drag a word and release on a letter to check. Or tap letters, then Check.'), a 4×4 grid of large raised tiles in a pale tray, a beige 'Clue · 1 available' with '0 misses', and 'Found (0)'. The board is legible and the tiles are generous. The problem is the numbers: points, words-found-of-84, points-to-Gold, points-available and three thresholds all come before the board. '0/84 words' implies a completion target, but the goal is Gold at 18 points. The 5×5 Preview segment has the same weight as the daily. Diagonal adjacency is stated only in the help. James's feedback was about vocabulary, not visuals.",
+      "clarityRisk": "Medium. Goal maths and diagonal adjacency need on-board confirmation, and the words/points split invites the wrong target. The name collides with the other Tangle (interleaved words).",
+      "bestDesignOpportunity": "A physical trace: a thick stroke snaps between tile centres with a live word readout above the grid, and accepted words fly their points into the three-stage track, which is the one progress display. '84 words' and '97 available' move to stats. In the hub, label it 'Tangle · Word trails' to tell it apart. 5×5 already exists as a Preview: demote it from an equal segment to a secondary 'Larger board' link below the board, not the daily default.",
+      "priority": "medium"
+    },
+    {
+      "slug": "kimi-hunch",
+      "name": "Hunch",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"still seems very similar to wordle, keep it, maybe do white and black dots like in mastermind\". Grouped dots delivered.",
+      "currentDesignDiagnosis": "Corrected capture, No. 150 before the first guess. 'Guess 1 of 6' with a beige 'Reveal a letter', then a 6×5 grid of empty square tiles in a pale tray. The grid is left-aligned with an empty right-hand column, presumably the dot area (it is empty before any guess, so dot rendering isn't visible). Below: the legend '● Black: exact · ○ White: elsewhere · Dots are grouped, not aligned to letters', and a QWERTY keyboard with letter keys about 30px wide, a dark-teal Enter and a beige backspace. The six-by-five grid of squares is still the strongest Wordle signal, even with grouped dots.",
+      "clarityRisk": "Medium-high. Grouped feedback is less specific, so the peg area must be unmistakable and must never read as per-letter colour. Keyboard keys are narrow for phone use.",
+      "bestDesignOpportunity": "Break the silhouette, not the rules. Each guess is a single engraved code bar of five letters, with a separate peg block to its right where black and white pegs seat in holes (Mastermind-like), using the column the current layout already reserves. No green or yellow letter feedback (the home green stays in chrome and primary actions only). Keep keyboard input. Ten keys across 393px can't reach 44px width, so use the full card width and at least 52px key height, the usual phone-keyboard trade-off.",
+      "priority": "high"
+    },
+    {
+      "slug": "kimi-circuit",
+      "name": "Circuit",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "Vocabulary misses fixed; asked how to tell the arcs apart; fixed odd gaps; cardinal 0/90° splits; more distinct colours; \"circuit is a keeper\".",
+      "currentDesignDiagnosis": "Corrected capture, No. 172. 'Words 0 · target 3 · Letters lit 0/12', a one-line instruction and a dashed entry track. Then a ring split on the cardinal axes into four quadrants: Arc 1 blue top-right (K B C), Arc 2 green bottom-right (U S H), Arc 3 gold bottom-left (A I R) and Arc 4 red top-left (W M E). Each letter is a cream disc with its arc number beneath, which is a good non-colour cue. (Correction: the earlier '1·CPS, 2·AOE' cards came from the help example, not the board.) The ring's centre is a large solid dark-navy disc that carries no state at the start. Four arc cards repeat the ring's contents below it. Then come seven controls: clear, backspace, teal 'Play word', disabled 'Undo word' / 'Restart chain', 'Route clue · 1 free', and a dashed beige 'Reveal route'. The geometry and colours were hard-won and accepted.",
+      "clarityRisk": "Medium. 'Consecutive letters from different arcs' and 'start with the last letter' need live feedback while typing. The duplicate arc cards and the long control stack push the board's purpose down the page.",
+      "bestDesignOpportunity": "Preserve the quadrants, cardinal splits, arc colours and arc numbers exactly. Turn the dead dark centre into a light recessed well that shows the current word and the chain drawn as chords across the ring. This also removes a dark panel from the light frame. During entry, the last letter's arc dims (illegal next) while the others stay bright. Accepted words list beneath as a linked chain with shared letters. Drop the duplicate arc cards on phone, and group clue and reveal into one quiet row.",
+      "priority": "medium"
+    },
+    {
+      "slug": "kimi-quartet",
+      "name": "Quartet",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "\"fun game, make sure it's not an exact copy of another game\".",
+      "currentDesignDiagnosis": "Corrected capture, No. 184. 'Groups 0/4 · Mistakes ●●●●', an instruction with a live '0 of 4 selected', sixteen uppercase words in a 2×8 grid of wide raised tiles, Shuffle / Clear / 'Submit 0/4', and 'Pair glow · 1 free'. At 393px the Shuffle and Clear labels are crowded against their button edges, and 'Clear' appears clipped. Verify that live. The date reads 'Friday, Nov 6', where the other five Kimi pages use ISO dates. The help text adds 'One away…' and numbered difficulty tiers 1–4. Together with today's groups (chess pieces, hats, poem forms, rocks) and the select-four, four-mistake structure, these make it read even closer to a well-known publisher's grouping game, which is exactly the originality risk James raised.",
+      "clarityRisk": "Low for rules; high for originality.",
+      "bestDesignOpportunity": "One original direction: four empty, unlabelled lanes (trays) that words are dragged into, with a lane's theme label appearing only once it is full. Optional mechanical experiment (separate): a name-the-thread bonus, or one word that legitimately fits two groups and must be resolved by elimination.",
+      "priority": "medium"
+    },
+    {
+      "slug": "deepseek-twin-hive",
+      "name": "Twin Hive",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"the formatting looks weirdly stretched out\" → fixed; \"this one is a keeper\".",
+      "currentDesignDiagnosis": "Eight hex letters in two rows (gold A and M marked with small stars, six white), an entry field, Delete/Clear/Add word, a 0/6 progress bar, points and 'A little space for your first word'. It is compact now but plain: two rows of hexes aren't a hive, and the found-word area is empty filler.",
+      "clarityRisk": "Low-medium. The live 'Still needs A + M' text is good; repeats allowed and the four-letter minimum need equal visibility.",
+      "bestDesignOpportunity": "A true compact cluster: the two gold anchors side by side at the centre with six letters around them, each anchor lighting as the current entry includes it. Found words collect in a tidy column with points. The twin centre distinguishes it from single-centre honeycomb games.",
+      "priority": "medium"
+    },
+    {
+      "slug": "deepseek-spare",
+      "name": "Spare",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "\"the game is too easy\" → approved a harder sample → \"okay good, next game\"; earlier confusion noted.",
+      "currentDesignDiagnosis": "Harder preview: four context tabs (0/2 placed each), one visible context sentence ('A porter lifts a suitcase.'), two slots with ↔, and a dark navy bank of nine words (SHARP, DARK, LIGHT, BRIGHT, FLAT, LOUD, HEAVY, DULL, SOFT). Tabs hide three of the four contexts, and the dark bank breaks the light frame.",
+      "clarityRisk": "High. 'The same word takes a different opposite depending on context' is subtle, and hiding contexts behind tabs makes it harder to see.",
+      "bestDesignOpportunity": "Show all four contexts at once, each with a two-slot balance, and a light shared bank below. A placed word appears inside its sentence ('a LIGHT suitcase'), and the spare is one visible slot at the end.",
+      "priority": "low"
+    },
+    {
+      "slug": "deepseek-rung",
+      "name": "Rung",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "\"okay good, next game\".",
+      "currentDesignDiagnosis": "START REST → TARGET SOFT panel, 'Shortest route: 4 steps', current-word tiles, a text field ('Change one letter in REST') and Undo rung/Restart ladder/Add rung. Legible, but it duplicates Morph's mechanic with a different, weaker presentation.",
+      "clarityRisk": "Low.",
+      "bestDesignOpportunity": "Lean into par: show a fixed ladder with four empty rungs between START and TARGET so each step visibly uses a rung, and going over par extends the ladder in a secondary tone. Consider sharing Morph's ladder component for cohesion.",
+      "priority": "low"
+    },
+    {
+      "slug": "deepseek-cipher",
+      "name": "Cipher",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "\"cipher is great\".",
+      "currentDesignDiagnosis": "Clue line, then the A–Z selector above the puzzle, then the phrase as small code tiles (guess above, code letter below in ~11px mono), with two givens in green. On phone about 300px of empty white space sits under the phrase. The puzzle text is the smallest text on the screen.",
+      "clarityRisk": "Medium. The 'I → ?' selected-code state is good, but repeats of a code are hard to scan at that size.",
+      "bestDesignOpportunity": "Phrase first and large: guess letters at 26px and code letters at 15px. Selecting a code highlights every instance in the phrase. Dock the keyboard at the bottom on phone and remove the dead space.",
+      "priority": "medium"
+    },
+    {
+      "slug": "deepseek-trail",
+      "name": "Trail",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"trail seems way too easy\" → harder 4×4 → \"that is definitely a lot harder, keep it\".",
+      "currentDesignDiagnosis": "Harder 4×4 preview: clue headline ('The moment ends. Something stays.'), nine dot slots, a 4×4 grid of raised tiles, Undo/Clear/Check trail. Clean and legible, but generic, with no visible path language on the board.",
+      "clarityRisk": "Low-medium. Adjacency (including diagonals or not) isn't shown on the board itself.",
+      "bestDesignOpportunity": "Draw the trail as a continuous line through tile centres with step numbers, and give reachable next tiles a subtle rim. The nine slots fill as the path grows, and the clue stays the headline. The hub description ('tiny grid') should follow the shipped 4×4 variant.",
+      "priority": "medium"
+    },
+    {
+      "slug": "deepseek-split",
+      "name": "Split",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"good but too easy\" → harder sample → \"that is much better, keep it\".",
+      "currentDesignDiagnosis": "Two clue cards (six letters each, 'Need a definition?'), a 16-tile rack, and Undo/Clear/Check both. Readable. The active row is shown only by an outline. The hub description ('Divide ten letters between two clues') no longer matches the harder 16-tile, four-decoy keeper.",
+      "clarityRisk": "Medium. Which row receives the next tile, and the fact that four tiles must be left over, both need to be obvious.",
+      "bestDesignOpportunity": "Two slot rows face each other across the rack, plus a four-slot 'left behind' tray, so the decoys become a visible goal. Tapped tiles fly to the active row. Update the hub description when the variant ships.",
+      "priority": "medium"
+    },
+    {
+      "slug": "qwen-quadra",
+      "name": "Quadra",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"that is challenging, i like it, like the use of a category. keep it\".",
+      "currentDesignDiagnosis": "Category headline ('Kitchen verbs'), four dashed answer slots, a 4×4 tile grid, entry field, Delete/Clear/Lock word. Legible. The dashed slots read as decoration, and the square grid suggests adjacency matters, which it doesn't.",
+      "clarityRisk": "Low-medium. The grid shape could imply Boggle-style adjacency.",
+      "bestDesignOpportunity": "Category as hero, and tiles as a loose two-row rack rather than a grid. Locked words seat into four engraved slots and their tiles leave the rack, so the shrinking rack is the progress meter.",
+      "priority": "medium"
+    },
+    {
+      "slug": "qwen-logic-lattice",
+      "name": "Logic Lattice",
+      "keeper": false,
+      "disposition": "parked",
+      "jamesFeedback": "\"seems like minesweeper… need more explanation and the UI needs more improvement\"; park it.",
+      "currentDesignDiagnosis": "5×5 grid with row/column counts, two diagonal count cards, Cycle/Black/White/Clear mode buttons, a '?' in every undecided cell, and a large highlighted-line explainer. The '?'-filled grid and number edges recall Minesweeper. Four mode buttons for a two-state cell is heavy.",
+      "clarityRisk": "High. Counts cover whole lines, not neighbours.",
+      "bestDesignOpportunity": "For later: each line label becomes a five-slot gauge that fills as you mark black squares on that line, so 'counts the whole line' is visible. Undecided cells are blank, and tapping cycles states. Parked: no current effort.",
+      "priority": "low"
+    },
+    {
+      "slug": "qwen-syntax-siege",
+      "name": "Syntax Siege",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "\"great game, love this\"; \"UI needs work, but gameplay is gun\"; automatic pacing by input method; practice enemy should move.",
+      "currentDesignDiagnosis": "A dark navy game panel with cyan accents: core integrity 100/100 HP, word power, wave tabs 1–6, a small core-to-diamond lane (60 HP), six letter tiles and a glowing 'Start defense'. It reads as generic sci-fi dashboard (the 'fake neon' the brief bans) and breaks the light frame.",
+      "clarityRisk": "Medium. HP, points and the clock compete, and the approach lane is too small to feel the threat.",
+      "bestDesignOpportunity": "Bring it into the light frame as a precise instrument: a wide lane where a solid ink chevron advances toward the core at the left, with segmented HP under it. Big raised letter tiles, and fired words visibly travel along the lane and chip the enemy. Tension comes from motion and spacing, not glow. Keep input-based pacing and moving practice enemies.",
+      "priority": "high"
+    },
+    {
+      "slug": "qwen-memory-maze",
+      "name": "Memory Maze",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "Wanted a visible countdown while scrolled (acknowledged top timer); \"keep the game\".",
+      "currentDesignDiagnosis": "A 7×7 pale grid with S and a diamond finish, 'Ready to remember? 8 squares · six seconds to study', a Study button and three stat tiles. The grid is 49 identical outlined boxes, which is flat and generic, and the timer can still be separated from the board by scrolling.",
+      "clarityRisk": "Medium. The route and the countdown must be visible together during study.",
+      "bestDesignOpportunity": "A countdown ring that drains around the board's perimeter over the six seconds, so the timer can't be scrolled away from the route. Cells are raised studs; during study the route shows as numbered pressed-in studs, and retracing presses studs down.",
+      "priority": "medium"
+    },
+    {
+      "slug": "qwen-pattern-prism",
+      "name": "Pattern Prism",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "Likes IQ/pattern recognition; \"looks like a child's game\"; rejected the charcoal theme; \"they all look bad\"; \"still looks stupid… something more fun\".",
+      "currentDesignDiagnosis": "Five example cards with shaded triangle/square/circle forms in sage, rose and gold, each captioned with shape · colour · size · direction, then 06–08 slots and four A–D option cards. Pastel textbook shapes read as educational and childlike. Needing a text label on every attribute shows the visuals don't carry the information.",
+      "clarityRisk": "High. Four simultaneous cycles, and the visuals rely on captions.",
+      "bestDesignOpportunity": "A rethink, not a recolour: an instrument-grade sequence machine. Each step is a machined puck with one physical indicator per attribute: a notch angle (direction), engraved slot count 1–4 (shape cycle), fill depth (size) and one accent ring from blue/teal/gold/ink (colour). Pucks sit on a rail, and the player builds the next puck by turning the notch and setting the fill, like dialling a combination, which is more fun and adult than multiple choice. Keep the cycle logic. Optional, separate: a timed matrix bonus round.",
+      "priority": "urgent"
+    },
+    {
+      "slug": "qwen-territory-tactics",
+      "name": "Territory Tactics",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "Wants NYT-level polish and UI choices; confusing even while winning; exact capture total; larger board. Now 37 hexes, 3 placements, exact total, 240 boards.",
+      "currentDesignDiagnosis": "A 37-hex board of blue stones, amber diamond targets and '+' on every empty hex, a 'CAPTURE EXACTLY 3 · NEW STONES USED 0/3' counter, and a three-step 'How to capture a group' explainer with a before/after diagram. The rules are now well taught, but on phone the explainer pushes the board about 1,250px down, and the '+' glyphs add noise. The hub card still says 'Place two stones…', which contradicts the current rule.",
+      "clarityRisk": "High. Groups, openings and exact totals must be read off the board.",
+      "bestDesignOpportunity": "Teach on the board. Tapping an amber group outlines it, marks its openings with numbered rings and forecasts '+3 if all openings are filled'. The exact counter becomes a balance (captured vs target), with overshoot shown in red. The before/after lesson collapses after the first solve. Keep large hit targets and pan, and fix the hub description.",
+      "priority": "high"
+    },
+    {
+      "slug": "claude-dovetail",
+      "name": "Dovetail",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"keep it, next game\".",
+      "currentDesignDiagnosis": "A vertical chain of eight rows: SNAP (top) and HOOD (bottom) on dark slate plates, six white rows with underscores and length numbers, joined by tiny connector ticks, with an input field below. Legible but generic: the joint between words, which is the whole idea, is a 2px tick.",
+      "clarityRisk": "Medium. Which two rows form each compound isn't visible.",
+      "bestDesignOpportunity": "Make the joint the hero: between rows, a dovetail notch shows the compound once both neighbours exist (SNAP|___ → the joined word), lighting when valid. Rows interlock physically, and the slate end plates become light plates with an ink edge to stay in the frame. Keep six misses and hint costs.",
+      "priority": "medium"
+    },
+    {
+      "slug": "claude-splice",
+      "name": "Splice",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "Questioned HOUSEMAN and whether SKY/HOUSE + LIGHT/MAN needed re-pairing; \"okay, next game\".",
+      "currentDesignDiagnosis": "Twelve half tiles (LESS, COLOR, MAN, SOME, RAIN, WATER, FALL, FRESH, BACK, TIME, HORSE, HOME) with nubs on both sides, a dark instruction banner, and Flip/Splice/Shuffle/Deselect. The symmetrical nubs don't express first half vs second half, and accepted uncommon words appear with no explanation.",
+      "clarityRisk": "Medium. Order matters, and valid joins can strand the remaining halves.",
+      "bestDesignOpportunity": "A single splice bench with a left (first-half) and right (second-half) slot that previews the joined word before commit. Accepted uncommon words get a one-line definition in the solved list.",
+      "priority": "low"
+    },
+    {
+      "slug": "claude-sprout",
+      "name": "Sprout",
+      "keeper": true,
+      "disposition": "keep",
+      "jamesFeedback": "\"so plain and boring… but is challenging\"; \"still weird\"; \"i want the answers to be part of the plant\"; B/C previews \"still looks bad\"; keep it.",
+      "currentDesignDiagnosis": "A small leaf-and-pot illustration with an empty word box and an 'A L L' tile card pasted over the leaves, a 3→8 step track, separate 'Your word' and 'Soil' panels, then the entry field and controls. The answers are cards overlapping the plant, which is exactly the separation James rejected. The plant does not change with play.",
+      "clarityRisk": "Medium. The rules (keep every letter, add exactly one soil letter, rearrange, wilts) are long paragraphs below.",
+      "bestDesignOpportunity": "The word IS the plant. Each accepted word becomes a new stem segment with its letters set along it as nodes, extending upward with visible motion. The added soil letter unfurls as a leaf bud at its node. The eight-letter bloom forms a crown whose petals are the final word's letters. Soil letters wait as seeds in a soil bed under the stem and rise into place when used. Wilts appear as drooping leaves on the stem, not a counter. No history chips or cards anywhere.",
+      "priority": "urgent"
+    },
+    {
+      "slug": "claude-tangle",
+      "name": "Tangle (interleaved words)",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "No direct comments in games.json. Brief: confusing; PEPPY/PREPS are valid ordered words but leave no remaining 6/7-letter partition; duplicates matter; needs clear context and feedback, not another tutorial paragraph.",
+      "currentDesignDiagnosis": "Three thread headers (5, 6, 7 letters), 18 numbered beads wrapped into four rows (P A N R P / U E P S E / I P M Y N / A L T), 'Choose the beads of one word', Back/Clear/Pull thread, and a dense rules paragraph. Wrapping the 'string' into rows breaks the left-to-right order rule visually, so the bead numbers have to carry the order.",
+      "clarityRisk": "Urgent-level comprehension issue: a valid word costs a knot when it strands the remainder, and nothing on the board explains why.",
+      "bestDesignOpportunity": "One continuous string: beads on a single line (scrollable or serpentine with direction arrows). Selected beads lift onto a coloured thread. When a pull strands the rest, show exactly why in place: 'PEPPY is a word, but the 13 beads left can't form a 6 and a 7', with the remainder highlighted. Optional, separate (it changes difficulty): a pre-pull 'Safe / Strands the rest' indicator.",
+      "priority": "high"
+    },
+    {
+      "slug": "claude-keystone",
+      "name": "Keystone",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "No comments supplied.",
+      "currentDesignDiagnosis": "Arch tabs 1–3, five clue blocks arranged as an uneven arch (OUT, HOME shown; three '?' hidden), a keystone input, a keyboard, and 'Score 0 · 6 is perfect'. The arch idea is right but the blocks are small and irregular, and golf-style scoring (lower is better) is counter-intuitive.",
+      "clarityRisk": "Medium-high. Before/after joining and the scoring direction.",
+      "bestDesignOpportunity": "A true arch with an empty keystone slot at the crown. The guess drops into the crown, and each clue block shows its joined compound with tick or cross, so partial fits are visible. State the score as 'clues used' (fewer is better).",
+      "priority": "low"
+    },
+    {
+      "slug": "claude-tumbler",
+      "name": "Tumbler",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "No comments supplied.",
+      "currentDesignDiagnosis": "Five dark dial capsules ('Dial 1 · A–Z · 26 letters'), a ▲ Later ▼ Earlier ● Exact legend, a 6×5 guess grid, an entry field with Turn lock, and a keyboard. The dials are textual ranges rather than dials, and the 6×5 grid again echoes Wordle.",
+      "clarityRisk": "Medium.",
+      "bestDesignOpportunity": "Real tumbler drums: each position is a vertical alphabet drum whose window narrows after each guess, with out-of-range letters dimming and rolling away. Guesses log as a compact list with ▲▼● per letter, replacing the 6×5 grid.",
+      "priority": "low"
+    },
+    {
+      "slug": "nested-tic-tac-toe",
+      "name": "Tic-Tac-Toe",
+      "keeper": false,
+      "disposition": "undecided",
+      "jamesFeedback": "No comments supplied.",
+      "currentDesignDiagnosis": "A fully dark navy theme with its own 'a.' logo and an 'ALFORD DAILY · THE GAMES COLLECTION' lockup, a nine-board overview of dark mini boards plus a separate 'Play this board' zoom panel. It breaks the shared light frame and the brand lockup. The overview-plus-zoom pattern itself suits phones.",
+      "clarityRisk": "Medium. The send-to rule is explained by a banner, not shown as a move consequence.",
+      "bestDesignOpportunity": "Bring it into the light frame: one big board with the active mini board raised and the others recessed. Hovering or focusing a small square draws an arrow to the board it will send the opponent to. Use blue × and teal ○.",
+      "priority": "low"
+    }
+  ]
+}

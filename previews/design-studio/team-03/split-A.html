@@ -1,27 +1,28 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Split · Concept A · The fork</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .fork{max-width:640px;margin:0 auto;display:grid;gap:0}
 .word{padding:16px 0;display:grid;gap:10px;cursor:pointer;border:0;background:none;text-align:left;width:100%}
 .word .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .word .tag{font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
 .word .state{font:600 13px/1 var(--sans);padding:6px 10px;border-radius:999px;background:var(--bg-2);color:var(--muted);border:1px solid var(--line)}
-.word.active .state{background:var(--ink);color:#fff;border-color:var(--ink)}
-.word .clue{margin:0;font:700 clamp(22px,5vw,28px)/1.2 var(--sans);letter-spacing:-.01em}
+.word.active .state{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.word .clue{margin:0;font:400 clamp(26px,5.8vw,34px)/1.12 var(--serif);letter-spacing:-.01em}
+.word .state{white-space:nowrap}
 .slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
-.slot{height:clamp(48px,13vw,60px);border:0;border-bottom:3px solid var(--line-2);background:transparent;font:800 clamp(24px,6.6vw,32px)/1 var(--sans);cursor:pointer}
+.slot{height:clamp(48px,13vw,60px);border:0;border-bottom:3px solid var(--line-2);background:transparent;color:var(--ink);font:700 clamp(24px,6.6vw,32px)/1 var(--sans);cursor:pointer}
 .word.active .slot{border-color:var(--ink)}
 .word.active .slot.next{border-color:var(--accent);background:var(--accent-wash)}
 .slot.filled{border-color:var(--ink)}
-.rackzone{position:relative;padding:18px 14px;margin:4px 0;background:var(--paper);border:1px solid var(--line-2);border-radius:16px}
-.dir{position:absolute;left:50%;transform:translateX(-50%);width:44px;height:22px;display:flex;align-items:center;justify-content:center;background:var(--paper);border:1px solid var(--line-2);border-radius:999px;font:700 14px/1 var(--sans);color:var(--accent)}
+.rackzone{position:relative;padding:20px 14px;margin:4px 0;background:var(--paper);border:1px solid var(--line);border-radius:var(--card-r);box-shadow:var(--shadow)}
+.dir{position:absolute;left:50%;transform:translateX(-50%);width:44px;height:22px;display:flex;align-items:center;justify-content:center;background:var(--paper);border:1px solid var(--line);border-radius:999px;font:700 14px/1 var(--sans);color:var(--accent)}
 .dir.up{top:-12px}.dir.down{bottom:-12px}
 .dir.off{color:var(--line-2)}
 .rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 @media(min-width:620px){.rack{grid-template-columns:repeat(8,1fr)}}
-.tile{aspect-ratio:1;min-height:48px;border:1.5px solid var(--line-2);border-radius:10px;background:#fbfdfe;font:800 clamp(24px,6vw,28px)/1 var(--sans);cursor:pointer;box-shadow:0 2px 0 var(--line-2)}
+.tile{aspect-ratio:1;min-height:48px;border:1px solid var(--tile-edge);border-radius:12px;background:var(--tile);font:700 clamp(24px,6vw,28px)/1 var(--sans);cursor:pointer;box-shadow:0 2px 0 var(--tile-edge)}
 .tile:hover{border-color:var(--ink-2)}
 .tile:disabled{background:transparent;border-style:dashed;box-shadow:none;color:transparent;cursor:default}
 .count{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin:12px 0 0;font-size:14px;color:var(--muted)}
@@ -29,10 +30,12 @@
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
 .def{font-size:14px;min-height:44px;padding:0;justify-content:flex-start}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Split · A — The fork · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/deepseek-split.svg" alt=""><div class="titles"><p class="kicker">Two clues · sixteen tiles</p><h1>Split</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="fork" id="board" tabindex="0" aria-label="Split. Up arrow chooses Word 1, Down arrow chooses Word 2, type rack letters.">
  <div id="w0"></div>
@@ -44,7 +47,7 @@
 </main>
 <footer class="app-foot"><span>Saved on this device · checks report how many words fit, not which</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Split</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const R='RAOEBGTCNRHUEIDO'.split(''),C=['Sharp without a blade.','Broken at someone’s best.'];
 let rows=[[],[]],active=0,stack=[];const $=id=>document.getElementById(id);

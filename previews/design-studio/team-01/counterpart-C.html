@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Counterpart · Concept C · Workbench</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .layout{display:grid;gap:18px}
 @media (min-width:900px){.layout{grid-template-columns:240px minmax(0,1fr);align-items:start}}
-.bankp{background:#eef3f8;border:1px solid var(--line2);border-radius:16px;padding:14px}
+.bankp{background:var(--well);border:1px solid var(--line);border-radius:22px;padding:16px}
 @media (min-width:900px){.bankp{position:sticky;top:12px}}
 .bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 @media (min-width:900px){.bank{flex-direction:column}}
-.tag{min-height:46px;display:flex;align-items:center;gap:10px;padding:0 14px 0 10px;border-radius:8px;border:1px solid #c8d4e0;background:#fff;font:750 17px/1 var(--sans);letter-spacing:.03em;box-shadow:0 1px 0 #c8d4e0;transition:transform .15s,box-shadow .15s;touch-action:none}
-.tag::before{content:"";width:6px;height:16px;flex:none;background:radial-gradient(circle,#9aabbd 1.1px,transparent 1.3px) 0 0/3px 4px}
-.tag.lift{transform:translateY(-3px) rotate(-1.2deg);box-shadow:0 14px 22px -12px rgba(15,29,42,.5);border-color:var(--blue);color:var(--blue-ink)}
+.tag{min-height:46px;display:flex;align-items:center;gap:10px;padding:0 14px 0 10px;border-radius:10px;border:1px solid var(--edge);background:var(--surface);font:700 17px/1 var(--sans);letter-spacing:.02em;box-shadow:0 1px 0 var(--edge);transition:transform .15s,box-shadow .15s;touch-action:none}
+.tag::before{content:"";width:6px;height:16px;flex:none;background:radial-gradient(circle,#b3ad9f 1.1px,transparent 1.3px) 0 0/3px 4px}
+.tag.lift{transform:translateY(-3px) rotate(-1.2deg);box-shadow:0 10px 16px -12px rgba(32,44,53,.35);border-color:var(--blue);color:var(--blue-ink)}
 .tag.placed{opacity:.45}
 .tag:disabled{opacity:.3;box-shadow:none}
-.tbl{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}
-.th{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);padding:10px 16px;border-bottom:1px solid var(--line);background:var(--frame)}
+.tbl{border:1px solid var(--line);border-radius:22px;background:var(--surface);overflow:hidden}
+.th{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);padding:12px 16px;border-bottom:1px solid var(--line);background:var(--well)}
 @media (max-width:640px){.th{display:none}}
 .tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:10px 16px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line2)}
 .tr:last-child{border-bottom:0}
@@ -24,21 +24,23 @@
 .cue i{font-style:normal;color:var(--muted);font:600 12px var(--mono);margin-right:2px}
 .cue .ar{color:var(--muted)}
 .pair{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) auto;gap:6px;align-items:center}
-.drop{min-height:48px;border-radius:8px;border:1.5px dashed #b7c5d3;background:var(--frame);font:750 clamp(14px,4vw,17px)/1.1 var(--sans);letter-spacing:.03em;color:var(--muted);padding:4px;overflow-wrap:anywhere}
-.drop.f{border:1px solid #c8d4e0;background:#fff;color:var(--ink);box-shadow:0 1px 0 #c8d4e0}
+.drop{min-height:48px;border-radius:10px;border:1.5px dashed var(--dash);background:var(--well);font:700 clamp(13px,3.9vw,17px)/1.1 var(--sans);letter-spacing:.02em;color:var(--muted);padding:4px;overflow-wrap:anywhere}
+.drop.f{border:1px solid var(--edge);background:var(--surface);color:var(--ink);box-shadow:0 1px 0 var(--edge)}
 .armed .drop:not(.f){border-color:var(--blue);background:var(--blue-wash);color:var(--blue-ink)}
 .drop.over{background:var(--blue);color:#fff;border-style:solid}
 .pair .ar{text-align:center;color:var(--blue);font-weight:700}
-.ck{min-height:48px;min-width:48px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:#fff;font:700 14px var(--sans);padding:0 10px}
-.ck:disabled{background:#fff;color:var(--muted);border-color:var(--line)}
+.ck{min-height:48px;min-width:48px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:700 14px var(--sans);padding:0 12px}
+.ck:disabled{background:var(--surface);color:var(--muted);border-color:var(--line)}
 .tr.ok .drop{border:0;background:var(--ok-wash);color:var(--ok);box-shadow:none}
 .tr.ok .ck{background:var(--ok-wash);border-color:transparent;color:var(--ok)}
 .status{margin:12px 0 0}
-</style></head>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Counterpart · Concept C “Workbench”</b> · design review prototype, not a live game</span><nav aria-label="Counterpart concepts"><a href="counterpart-A.html">A</a><a href="counterpart-B.html">B</a><a href="counterpart-C.html" aria-current="page">C</a><a href="counterpart-D.html">D</a></nav></div>
+<div class="rv"><span><b>Counterpart · Concept C “Workbench”</b> · design review prototype, not a live game</span><nav aria-label="Counterpart concepts"><a href="counterpart-A.html?theme=2">A</a><a href="counterpart-B.html?theme=2">B</a><a href="counterpart-C.html?theme=2" aria-current="page">C</a><a href="counterpart-D.html?theme=2">D</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="false" aria-label="Favorite Counterpart" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Counterpart from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>

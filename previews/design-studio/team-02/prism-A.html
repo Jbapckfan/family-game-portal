@@ -4,53 +4,55 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pattern Prism A · Signal decoder — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
-.rail{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;padding:14px 10px 10px;border-radius:20px;background:linear-gradient(#e7edf2,#d9e2ea);box-shadow:inset 0 2px 5px rgba(14,34,50,.15),0 1px 0 #fff}
+.rail{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;padding:14px 10px 10px;border-radius:var(--ad-card-radius);background:var(--ad-surface);border:1px solid var(--line)}
 .slot{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
 .slot small{font:700 11px var(--mono);color:var(--muted)}
-.slot .well{width:100%;aspect-ratio:1;border-radius:50%;background:#cfd9e2;box-shadow:inset 0 2px 4px rgba(14,34,50,.25);display:grid;place-items:center}
+.slot .well{width:100%;aspect-ratio:1;border-radius:50%;background:var(--ad-well);box-shadow:inset 0 0 0 1px var(--line),inset 0 2px 0 var(--ad-edge);display:grid;place-items:center}
 .slot .well svg{width:100%;height:100%}
-.slot.now .well{box-shadow:inset 0 2px 4px rgba(14,34,50,.25),0 0 0 3px var(--accent)}
+.slot.now .well{box-shadow:inset 0 0 0 1px var(--line),0 0 0 3px var(--accent)}
 .slot.now small{color:var(--accent)}
 .slot.lock .well{opacity:.5}
-.q{font:800 22px var(--sans);color:var(--accent)}
+.q{font:700 22px var(--sans);color:var(--accent)}
 .lay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:20px;align-items:start}
 @media(max-width:860px){.lay{grid-template-columns:minmax(0,1fr)}}
-h2.sec{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.lanes{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+h2.sec{font-size:24px;line-height:1.15;color:var(--ink);margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:6px 10px;flex-wrap:wrap}
+h2.sec span+span{font:13px var(--sans);color:var(--muted)}
+.lanes{background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius);overflow:hidden}
 .lane{display:grid;grid-template-columns:76px repeat(6,minmax(0,1fr));align-items:center;border-bottom:1px solid var(--line);min-height:46px}
 .lane:last-child{border:0}
 .lane>b{font-size:13px;padding-left:12px}
 .lane>span{text-align:center;font:600 13px var(--mono);color:var(--ink-2)}
-.lane>span.p{color:var(--accent);font-weight:800;background:#eef4fd;align-self:stretch;display:grid;place-items:center}
+.lane>span.p{color:var(--accent);font-weight:700;background:var(--ad-soft);align-self:stretch;display:grid;place-items:center}
 .lane .sw{display:inline-block;width:14px;height:14px;border-radius:50%}
-.lane.head{min-height:30px;background:#f6f9fb}.lane.head span{font-size:11px;color:var(--muted)}
+.lane.head{min-height:30px;background:var(--ad-well)}.lane.head span{font-size:11px;color:var(--muted)}
 .tune{display:none;gap:3px;padding:0 0 0 12px;grid-column:1/-1;margin:-4px 0 8px}
 .exp .tune{display:flex;align-items:center;flex-wrap:wrap}
 .tune em{font-style:normal;font-size:12px;color:var(--muted);margin-right:4px}
-.tune button{min-width:44px;height:36px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font:700 13px var(--mono);cursor:pointer}
-.tune button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tune button{min-width:44px;height:36px;border-radius:8px;border:1px solid var(--line-2);background:var(--ad-surface);font:700 13px var(--mono);cursor:pointer}
+.tune button[aria-pressed="true"]{background:var(--ink);color:var(--ad-surface);border-color:var(--ink)}
 .opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.opt{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;text-align:left;padding:10px;border-radius:16px;border:1px solid var(--line-2);background:#fff;cursor:pointer;min-height:84px;box-shadow:0 3px 0 #d0dbe4}
+.opt{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;text-align:left;padding:10px;border-radius:16px;border:1px solid var(--line-2);background:var(--ad-surface);cursor:pointer;min-height:84px;box-shadow:0 3px 0 var(--ad-edge)}
 @media(max-width:380px){.opt{grid-template-columns:minmax(0,1fr);text-align:center;justify-items:center}}
-.opt:hover{border-color:#7f9bb6}
-.opt[aria-pressed="true"]{border:2px solid var(--accent);box-shadow:0 3px 0 #a9c0e3}
+.opt:hover{border-color:var(--muted)}
+.opt[aria-pressed="true"]{border:2px solid var(--accent);box-shadow:0 3px 0 #c3d8cd}
 .opt svg{width:64px;height:64px}
 .opt b{display:block;font-size:15px}
 .opt span{font-size:13px;color:var(--muted)}
-.opt i{font:800 13px var(--mono);font-style:normal;color:var(--accent)}
+.opt i{font:700 13px var(--mono);font-style:normal;color:var(--accent)}
 .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .confirm p{margin:0;font-size:14px;color:var(--ink-2);flex:1;min-width:180px}
 .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px;font-size:14px;color:var(--muted)}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Pattern Prism A — Signal decoder</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -76,7 +78,7 @@ h2.sec{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;c
     </section>
   </div>
 </main>
-<p class="studio-foot">Concept notes: pieces become anodised machined pucks with an engraved shape and a rim notch for direction, seated in recessed wells on one rail — adult, physical, and unambiguous (a circle's direction is the notch, not a guess). The decoder table splits the four signals into rows so cycles become readable. Sequence 01–05 and choices A–D are today's supplied state; locking in is a local preview with no right/wrong shown. "Tune cycles" is an optional mechanic experiment, off by default.</p>
+<p class="studio-foot">Concept notes: pieces become flat, matte pucks (one solid colour, a printed warm-white shape and a rim notch for direction) seated in shallow wells on one warm-white rail — adult, physical without gloss, and unambiguous (a circle's direction is the notch, not a guess). The four signal colours are unchanged. The decoder table splits the four signals into rows so cycles become readable. Sequence 01–05 and choices A–D are today's supplied state; locking in is a local preview with no right/wrong shown. "Tune cycles" is an optional mechanic experiment, off by default. Prototype wiring: choosing A–D (tap or key), the slot-06 preview, Lock in and the tune-cycles experiment work; hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const M={leaf:['#a9d0bd','#4f8f73','#2f5f4a'],rose:['#efb3bd','#c0566a','#7f2e3e'],gold:['#f3dc93','#c9a43a','#7f6420'],ocean:['#a9cfe6','#3f7fa6','#24506c']};
@@ -85,7 +87,7 @@ const seq=[['triangle','leaf',1,'N'],['triangle','rose',1,'S'],['square','gold',
 const choices=[['triangle','gold',1,'S'],['square','gold',1,'S'],['triangle','leaf',1,'S'],['triangle','gold',0,'W']];
 let uid=0;function puck([sh,co,big,d]){const m=M[co],id='p'+(uid++),s=big?1:.72,a=DIRS[d];let shape;
 if(sh==='triangle')shape='<polygon points="0,-20 18,13 -18,13"/>';else if(sh==='square')shape='<rect x="-14" y="-14" width="28" height="28" rx="2"/>';else shape='<circle r="15"/>';
-return `<svg viewBox="-50 -50 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="${m[0]}"/><stop offset=".55" stop-color="${m[1]}"/><stop offset="1" stop-color="${m[2]}"/></radialGradient></defs><g transform="scale(${s})"><circle r="40" cy="3" fill="rgba(14,34,50,.28)"/><circle r="40" fill="url(#${id})"/><circle r="36" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/><g transform="rotate(${a})"><path d="M0,-41 6,-33 -6,-33Z" fill="#fff"/><g transform="translate(0,1.5)" fill="rgba(0,0,0,.3)">${shape}</g><g fill="rgba(255,255,255,.92)">${shape}</g></g></g></svg>`;}
+return `<svg viewBox="-50 -50 100 100" aria-hidden="true"><g transform="scale(${s})" data-p="${id}"><circle r="40" cy="3" fill="rgba(32,44,53,.16)"/><circle r="40" fill="${m[1]}" stroke="${m[2]}" stroke-width="1.5"/><g transform="rotate(${a})"><path d="M0,-41 6,-33 -6,-33Z" fill="#fffefa"/><g fill="#fffefa">${shape}</g></g></g></svg>`;}
 const cap=s=>s[0].toUpperCase()+s.slice(1);
 document.getElementById('rail').innerHTML=seq.map((t,i)=>`<div class="slot" role="img" aria-label="${String(i+1).padStart(2,'0')}: ${t[2]?'large':'small'} ${t[1]} ${t[0]}, pointing ${t[3]}"><small>0${i+1}</small><div class="well">${puck(t)}</div></div>`).join('')+`<div class="slot now"><small>06</small><div class="well" id="w6"><span class="q">?</span></div></div><div class="slot lock"><small>07</small><div class="well"></div></div><div class="slot lock"><small>08</small><div class="well"></div></div>`;
 const per={};function lanes(){const rows=[['Shape',t=>`<span title="${t[0]}" aria-label="${t[0]}" style="font-size:17px">${({triangle:'▲',square:'■',circle:'●'})[t[0]]}</span>`],['Colour',t=>`<span class="sw" style="background:${M[t[1]][1]}"></span>`],['Size',t=>t[2]?'L':'S'],['Direction',t=>ARW[t[3]]]];

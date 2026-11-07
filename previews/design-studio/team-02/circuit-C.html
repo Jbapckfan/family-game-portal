@@ -4,35 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Circuit C · Quadrant keypad — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;align-items:start}
 @media(max-width:820px){.lay{grid-template-columns:minmax(0,1fr)}.map{max-width:220px;margin:0 auto}}
 .map svg{display:block;width:100%;height:auto}
 .map p{font:12px var(--mono);color:var(--muted);text-align:center;margin:6px 0 0}
-.word{display:flex;gap:6px;align-items:flex-end;min-height:64px;padding:8px 12px;border-radius:14px;background:#fff;border:1px solid var(--line);margin-bottom:6px;flex-wrap:wrap}
-.word i{font-style:normal;font:850 34px var(--sans);width:34px;text-align:center;border-bottom:5px solid}
+.word{display:flex;gap:6px;align-items:flex-end;min-height:64px;padding:8px 12px;border-radius:16px;background:var(--ad-surface);border:1px solid var(--line);margin-bottom:6px;flex-wrap:wrap}
+.word i{font-style:normal;font:700 34px var(--sans);width:34px;text-align:center;border-bottom:5px solid}
 .word .caret{width:3px;height:36px;background:var(--accent);animation:blink 1s steps(1) infinite;margin-bottom:5px}
 @keyframes blink{50%{opacity:0}}
 .info{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-bottom:14px}
 .pad{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.q{position:relative;border-radius:16px;padding:6px;border:2px solid;background:#fff}
+.q{position:relative;border-radius:16px;padding:6px;border:2px solid;background:var(--ad-surface)}
 .q header{display:flex;justify-content:space-between;font:700 12px var(--sans);letter-spacing:.06em;margin:0 2px 6px}
 .q .ks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
-.q button{height:56px;min-width:0;border-radius:10px;border:0;font:800 24px var(--sans);color:#fff;cursor:pointer;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
-.q button.lit::after{content:"";display:block;width:6px;height:6px;border-radius:50%;background:#fff;margin:2px auto 0}
+.q button{height:56px;min-width:0;border-radius:10px;border:0;font:700 24px var(--sans);color:#fff;cursor:pointer;box-shadow:inset 0 -3px 0 rgba(0,0,0,.16)}
+.q button.lit::after{content:"";display:block;width:6px;height:6px;border-radius:50%;background:currentColor;margin:2px auto 0}
 .q.blocked button{filter:grayscale(1);opacity:.35;cursor:not-allowed}
-.q.blocked::after{content:attr(data-why);position:absolute;left:8px;right:8px;bottom:12px;text-align:center;font:700 12px var(--sans);color:var(--ink);background:#fff;border-radius:6px;padding:4px}
+.q.blocked::after{content:attr(data-why);position:absolute;left:8px;right:8px;bottom:12px;text-align:center;font:700 12px var(--sans);color:var(--ink);background:var(--ad-surface);border-radius:6px;padding:4px}
 .row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;margin-top:14px}
 .aux{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Circuit C — Quadrant keypad</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -53,7 +54,7 @@
     </section>
   </div>
 </main>
-<p class="studio-foot">Concept notes: for phones, the ring becomes a compact map and input moves to a 2×2 keypad laid out in the same compass positions (Arc 4 NW, Arc 1 NE, Arc 3 SW, Arc 2 SE) with 56px keys. The quadrant you just used greys out and says why. Illustrative state: HAWK played, next word seeded with K. Keypad is live locally.</p>
+<p class="studio-foot">Concept notes: for phones, the ring becomes a compact map and input moves to a 2×2 keypad laid out in the same compass positions (Arc 4 NW, Arc 1 NE, Arc 3 SW, Arc 2 SE) with 56px keys. The quadrant you just used greys out and says why. Illustrative state: HAWK played, next word seeded with K. Keypad is live locally. Arc colours are unchanged; gold keys now use ink letters and the quadrant labels use darker shades of each arc colour for legibility on warm white. Prototype wiring: keypad, ⌫ and Clear work; Play word, Undo, Restart, the route clue, Reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const C=['#2f6fd6','#1f9d6a','#d39a12','#d1404a'],L=[['K',1],['B',1],['C',1],['U',2],['S',2],['H',2],['A',3],['I',3],['R',3],['W',4],['M',4],['E',4]];
@@ -61,10 +62,11 @@ const P=(r,d)=>[200+r*Math.sin(d*Math.PI/180),200-r*Math.cos(d*Math.PI/180)],arc
 const lit=new Set(['H','A','W','K']);let cur=['K'];
 function seg(a){const s=a*90,e=s+90,[x1,y1]=P(190,s),[x2,y2]=P(190,e),[x3,y3]=P(110,e),[x4,y4]=P(110,s);return `M${x1} ${y1}A190 190 0 0 1 ${x2} ${y2}L${x3} ${y3}A110 110 0 0 0 ${x4} ${y4}Z`;}
 const order=[4,1,3,2],dir={1:'NE',2:'SE',3:'SW',4:'NW'};
-function draw(){const last=arc(cur[cur.length-1]);let h='';for(let a=0;a<4;a++)h+=`<path d="${seg(a)}" fill="${C[a]}" stroke="#fff" stroke-width="4" opacity="${a+1===last?.35:1}"/>`;
-L.forEach(([l,a],i)=>{const[x,y]=P(150,i*30+15);h+=`<circle cx="${x}" cy="${y}" r="24" fill="${lit.has(l)?'#0e2232':'#fff'}"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-weight="800" font-size="24" font-family="system-ui,sans-serif" fill="${lit.has(l)?'#fff':'#0e2232'}">${l}</text>`;});
-h+=`<text x="200" y="200" text-anchor="middle" dominant-baseline="central" font-size="40" font-weight="850" font-family="system-ui,sans-serif" fill="#0e2232">${cur.join('')}</text>`;document.getElementById('map').innerHTML=h;
-document.getElementById('pad').innerHTML=order.map(a=>`<div class="q ${a===last?'blocked':''}" style="border-color:${C[a-1]}" data-why="Not right after ${cur[cur.length-1]}"><header style="color:${C[a-1]}"><span>Arc ${a}</span><span>${dir[a]}</span></header><div class="ks">${L.filter(x=>x[1]===a).map(([l])=>`<button style="background:${C[a-1]}" class="${lit.has(l)?'lit':''}" data-l="${l}" ${a===last?'aria-disabled="true"':''} aria-label="${l}, arc ${a}${lit.has(l)?', lit':''}">${l}</button>`).join('')}</div></div>`).join('');
+const HD=['#1d4f9f','#14704a','#8a6200','#a32b33'],FG=a=>a===3?'#202c35':'#fff';
+function draw(){const last=arc(cur[cur.length-1]);let h='';for(let a=0;a<4;a++)h+=`<path d="${seg(a)}" fill="${C[a]}" stroke="#f6f3ec" stroke-width="4" opacity="${a+1===last?.35:1}"/>`;
+L.forEach(([l,a],i)=>{const[x,y]=P(150,i*30+15);h+=`<circle cx="${x}" cy="${y}" r="24" fill="${lit.has(l)?'#202c35':'#fffefa'}"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-weight="700" font-size="24" font-family="DM Sans,sans-serif" fill="${lit.has(l)?'#fffefa':'#202c35'}">${l}</text>`;});
+h+=`<text x="200" y="200" text-anchor="middle" dominant-baseline="central" font-size="40" font-weight="700" font-family="DM Sans,sans-serif" fill="#202c35">${cur.join('')}</text>`;document.getElementById('map').innerHTML=h;
+document.getElementById('pad').innerHTML=order.map(a=>`<div class="q ${a===last?'blocked':''}" style="border-color:${C[a-1]}" data-why="Not right after ${cur[cur.length-1]}"><header style="color:${HD[a-1]}"><span>Arc ${a}</span><span>${dir[a]}</span></header><div class="ks">${L.filter(x=>x[1]===a).map(([l])=>`<button style="background:${C[a-1]};color:${FG(a)}" class="${lit.has(l)?'lit':''}" data-l="${l}" ${a===last?'aria-disabled="true"':''} aria-label="${l}, arc ${a}${lit.has(l)?', lit':''}">${l}</button>`).join('')}</div></div>`).join('');
 document.querySelectorAll('#pad button').forEach(b=>b.onclick=()=>{if(b.getAttribute('aria-disabled'))return;cur.push(b.dataset.l);lit.add(b.dataset.l);draw();});
 document.getElementById('word').innerHTML=cur.map(l=>`<i style="border-color:${C[arc(l)-1]}">${l}</i>`).join('')+'<span class="caret"></span>';document.getElementById('lc').textContent=lit.size;}
 document.getElementById('del').onclick=()=>{if(cur.length>1)cur.pop();draw();};document.getElementById('clr').onclick=()=>{cur=['K'];draw();};draw();

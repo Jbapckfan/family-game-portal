@@ -4,29 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Twin Hive A · Twin cells — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:520px;margin:0 auto}
 .prog{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.prog b{font-size:22px}
+.prog b{font-family:var(--ad-serif);font-weight:400;font-size:28px;line-height:1.1}
 .prog span{font:13px var(--mono);color:var(--muted)}
 .pips{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:8px 0 18px}
-.pips i{height:6px;border-radius:3px;background:#d4dee7}.pips i.on{background:var(--ink)}
-.entry{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:68px;padding:8px 10px 8px 16px;border-radius:14px;background:#fff;border:2px solid #c3d1dd}
-.entry b{font-size:clamp(28px,8vw,36px);letter-spacing:.14em;font-weight:850;min-width:0;overflow:hidden}
-.entry b em{font-style:normal;color:#c2a12a}
+.pips i{height:6px;border-radius:3px;background:var(--ad-line)}.pips i.on{background:var(--ink)}
+.entry{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:68px;padding:8px 10px 8px 16px;border-radius:16px;background:var(--ad-surface);border:2px solid var(--ad-line-2)}
+.entry b{font-size:clamp(28px,8vw,36px);letter-spacing:.14em;font-weight:700;min-width:0;overflow:hidden}
+.entry b em{font-style:normal;color:#93700f}
 .sock{display:flex;gap:4px;flex:none}
-.sock span{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;border:2px dashed #c8a93a;color:#b3982f;font-size:16px}
-.sock span.ok{border:0;background:#f2c94c;color:#0e2232}
+.sock span{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;border:2px dashed #c8a93a;color:#93700f;font-size:16px}
+.sock span.ok{border:0;background:#f2c94c;color:var(--ink)}
 .ruleline{font-size:14px;color:var(--ink-2);margin:6px 2px 18px;min-height:20px}
 .comb{--w:76px;--h:calc(var(--w)*1.1547);position:relative;width:calc(var(--w)*3 + 8px);height:calc(var(--h)*2.5 + 8px);margin:0 auto}
 @media(max-width:360px){.comb{--w:68px}}
-.hx{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;background:#c9d6e1;cursor:pointer;padding:0;display:grid;place-items:center;transition:transform .12s}
-.hx span{position:absolute;inset:3px;clip-path:inherit;background:linear-gradient(#fff,#eef3f7);display:grid;place-items:center;font-size:30px;font-weight:800;color:var(--ink)}
+.hx{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;background:var(--ad-line-2);cursor:pointer;padding:0;display:grid;place-items:center;transition:transform .12s}
+.hx span{position:absolute;inset:3px;clip-path:inherit;background:var(--ad-surface);display:grid;place-items:center;font-size:30px;font-weight:700;color:var(--ink)}
 .hx:hover{transform:translateY(-2px)}
 .hx:active{transform:scale(.96)}
 .hx.gold{background:#c69f22}
-.hx.gold span{background:linear-gradient(#ffe48a,#f2c94c);}
+.hx.gold span{background:#f2c94c}
 .hx:focus-visible{outline:none;background:var(--focus)}.hx:focus-visible span{inset:5px}
 .r0{top:0}.r1{top:calc(var(--h)*.75 + 4px)}.r2{top:calc(var(--h)*1.5 + 8px)}
 .c0{left:0}.c1{left:calc(var(--w) + 4px)}.c2{left:calc(var(--w)*2 + 8px)}
@@ -34,19 +34,20 @@
 .pair{text-align:center;font-size:13px;color:var(--muted);margin:8px 0 16px}
 .btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .found{margin-top:20px;border-top:1px solid var(--line);padding-top:12px}
-.found h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.found h2{font-size:22px;line-height:1.15;color:var(--ink);margin:0 0 8px}
 .found ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
 .found li{font:700 18px var(--mono);letter-spacing:.1em}
 .found li small{font:12px var(--mono);color:var(--muted);letter-spacing:0;margin-left:4px}
 .aux{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Twin Hive A — Twin cells</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -80,7 +81,7 @@
     <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>
   </div>
 </main>
-<p class="studio-foot">Concept notes: a compact 3·2·3 comb with fixed cell size (76px, 68px under 360px) — it never stretches with the viewport. The two gold cells touch at the centre, and the entry bar has two sockets that fill as A and M are typed. Tap cells to try it. Found words are illustrative, not checked.</p>
+<p class="studio-foot">Concept notes: a compact 3·2·3 comb with fixed cell size (76px, 68px under 360px) — it never stretches with the viewport. The two gold cells touch at the centre, and the entry bar has two sockets that fill as A and M are typed. Tap cells to try it. Found words are illustrative, not checked. Prototype wiring: tapping cells, Delete, Clear and the live rule line work; physical typing, Add word, hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 let v='MAI';const w=document.getElementById('w'),rl=document.getElementById('rl');

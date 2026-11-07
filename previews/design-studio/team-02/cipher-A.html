@@ -4,48 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cipher A · Typeset message — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
 @media(max-width:860px){.lay{grid-template-columns:minmax(0,1fr)}}
-.clue{font-family:var(--serif);font-size:clamp(20px,4.6vw,26px);line-height:1.35;margin:0 0 18px;max-width:640px}
-.clue small{display:block;font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.msg{display:flex;flex-wrap:wrap;gap:14px 18px;padding:20px 16px;background:#fff;border:1px solid var(--line);border-radius:18px}
+.clue{font-family:var(--serif);font-size:clamp(22px,4.8vw,28px);line-height:1.3;margin:0 0 18px;max-width:640px}
+.clue small{display:block;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.msg{display:flex;flex-wrap:wrap;gap:14px 18px;padding:22px 18px;background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius)}
 .wd{display:flex;gap:3px}
-.c{width:34px;display:flex;flex-direction:column;align-items:center;border:0;background:transparent;padding:4px 0 2px;border-radius:7px;cursor:pointer}
-.c .g{height:34px;width:100%;display:grid;place-items:center;font:800 26px var(--sans);color:var(--ink);border-bottom:2px solid #9fb2c2}
+.c{width:34px;display:flex;flex-direction:column;align-items:center;border:0;background:transparent;padding:4px 0 2px;border-radius:8px;cursor:pointer}
+.c .g{height:34px;width:100%;display:grid;place-items:center;font:700 26px var(--sans);color:var(--ink);border-bottom:2px solid var(--ad-line-2)}
 .c .k{font:600 12px var(--mono);color:var(--muted);margin-top:3px}
 .c.given .g{color:var(--teal)}
 .c.given .g::after{content:"";position:absolute}
 .c.given{cursor:default}
-.c.same{background:#e6effc}
-.c.sel{background:var(--accent)}
-.c.sel .g{color:#fff;border-color:#fff}.c.sel .k{color:#d7e5fb}
-.c:hover:not(.given){background:#eef3f8}
-.c.sel:hover{background:var(--accent)}
+.c.same{background:var(--ad-soft)}
+.c.sel{background:var(--ink)}
+.c.sel .g{color:var(--ad-surface);border-color:var(--ad-surface)}.c.sel .k{color:#c9d0d3}
+.c:hover:not(.given){background:var(--ad-well)}
+.c.sel:hover{background:var(--ink)}
 .meta2{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:10px 2px 0}
-.panel{position:sticky;top:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.panel{position:sticky;top:12px;background:var(--ad-surface);border:1px solid var(--line);border-radius:var(--ad-card-radius);padding:18px}
 .selbar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.selbar .big{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;background:var(--accent);color:#fff;font:800 28px var(--mono)}
+.selbar .big{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;background:var(--ink);color:var(--ad-surface);font:700 28px var(--mono);flex:none}
 .selbar .arrow{font-size:20px;color:var(--muted)}
-.selbar .ans{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;border:2px dashed #9fb2c2;font:800 28px var(--sans);color:#9fb2c2}
+.selbar .ans{display:grid;place-items:center;width:56px;height:56px;border-radius:12px;border:2px dashed var(--ad-line-2);font:700 28px var(--sans);color:var(--ad-faint);flex:none}
 .selbar p{margin:0;font-size:14px;color:var(--ink-2)}
 .alpha{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px}
-.alpha button{height:48px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font-weight:750;font-size:18px;cursor:pointer;position:relative;padding:0}
-.alpha button:hover{border-color:var(--accent)}
-.alpha button.used{background:#eef3f6;color:#90a2b1}
-.alpha button.used small{position:absolute;right:4px;bottom:2px;font:600 10px var(--mono);color:var(--teal)}
+.alpha button{height:48px;border-radius:8px;border:1px solid var(--line-2);background:var(--ad-surface);font-weight:700;font-size:18px;cursor:pointer;position:relative;padding:0}
+.alpha button:hover{border-color:var(--ink)}
+.alpha button.used{background:var(--ad-wash);color:var(--ad-faint)}
+.alpha button.used small{position:absolute;right:4px;bottom:2px;font:700 10px var(--mono);color:var(--teal)}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .rules{margin:14px 0 0;padding:0;list-style:none;font-size:14px;color:var(--ink-2);display:grid;gap:6px}
 .aux{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Cipher A — Typeset message</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -65,12 +66,12 @@
       <div class="selbar"><span class="big" id="sb">I</span><span class="arrow">→</span><span class="ans" id="sa">?</span><p id="sp"></p></div>
       <div class="alpha" id="alpha"></div>
       <div class="acts"><button class="btn" id="er">Erase guess</button><button class="btn" id="cl">Clear guesses</button></div>
-      <ul class="rules"><li>Each code stands for one different real letter.</li><li>A real letter can belong to only one code; greyed keys show which code holds them.</li><li>Teal letters are given and stay put.</li></ul>
+      <ul class="rules"><li>Each code stands for one different real letter.</li><li>A real letter can belong to only one code; greyed keys show which code holds them.</li><li>Green letters are given and stay put.</li></ul>
       <div class="aux"><button class="btn quiet">A little hint</button><button class="btn quiet">Reveal solution</button></div>
     </aside>
   </div>
 </main>
-<p class="studio-foot">Concept notes: the message is set like type — big guess letters over small code letters, real word spacing, no boxed tiles. Selecting a code tints every occurrence and the side panel states how often it appears. Encoded phrase, clue and the two givens (H→T, J→E) are today's supplied state; assignments here are local and unchecked.</p>
+<p class="studio-foot">Concept notes: the message is set like type — big guess letters over small code letters, real word spacing, no boxed tiles. Selecting a code tints every occurrence and the side panel states how often it appears. Encoded phrase, clue and the two givens (H→T, J→E) are today's supplied state; assignments here are local and unchecked. The selected code is ink, its other occurrences take the soft home green, and givens are printed in green. Prototype wiring: code selection, ←/→, typing or tapping a letter, Backspace, Erase and Clear work; hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 const words=['I','ADPP','HIWPJ','WJCOYZ','QOHX','IY','JUEHV','EPITJ','ZJHHOYC'],given={H:'T',J:'E'},guess={};let sel='I';

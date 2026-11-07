@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Twin Hive D · Split-core flower — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:36px;align-items:center}
 @media(max-width:800px){.lay{grid-template-columns:minmax(0,1fr)}}
 .flower{--w:88px;--h:calc(var(--w)*1.1547);position:relative;width:calc(var(--w)*3 + 8px);height:calc(var(--h)*2.5 + 8px);margin:0 auto}
 @media(max-width:360px){.flower{--w:80px}}
-.hx{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:#c3d0db;cursor:pointer}
-.hx>span{position:absolute;inset:3px;clip-path:inherit;background:#fff;display:grid;place-items:center;font-size:32px;font-weight:800;color:var(--ink)}
-.hx:hover>span{background:#f1f5f9}
+.hx{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:0;padding:0;background:var(--ad-line-2);cursor:pointer}
+.hx>span{position:absolute;inset:3px;clip-path:inherit;background:var(--ad-surface);display:grid;place-items:center;font-size:32px;font-weight:700;color:var(--ink)}
+.hx:hover>span{background:var(--ad-well)}
 .hx:focus-visible{outline:none;background:var(--focus)}
 .core{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#a8831a;left:calc(var(--w)*1 + 4px);top:calc(var(--h)*.75 + 4px);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px}
-.core button{border:0;background:linear-gradient(#ffe48a,#f2c94c);font-size:30px;font-weight:850;cursor:pointer;color:#0e2232;padding:0}
+.core button{border:0;background:#f2c94c;font-size:30px;font-weight:700;cursor:pointer;color:var(--ink);padding:0}
 .core button:first-child{clip-path:polygon(100% 0,100% 100%,0 76%,0 24%)}
 .core button:last-child{clip-path:polygon(0 0,100% 24%,100% 76%,0 100%)}
 .core button:hover{background:#ffe9a3}
@@ -24,26 +24,28 @@
 .p-w{top:calc(var(--h)*.75 + 4px);left:0}.p-e{top:calc(var(--h)*.75 + 4px);left:calc(var(--w)*2 + 8px)}
 .p-s{top:calc(var(--h)*1.5 + 8px);left:calc(var(--w)*.5 + 2px)}.p-se{top:calc(var(--h)*1.5 + 8px);left:calc(var(--w)*1.5 + 6px)}
 .cap{text-align:center;font-size:14px;color:var(--muted);margin:10px 0 0}
-.entry{font-size:clamp(34px,9vw,48px);font-weight:850;letter-spacing:.14em;min-height:60px;border-bottom:3px solid var(--ink);display:flex;align-items:center;flex-wrap:wrap}
-.entry em{font-style:normal;color:#a8831a;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+.entry{font-size:clamp(34px,9vw,48px);font-weight:700;letter-spacing:.14em;min-height:60px;border-bottom:3px solid var(--ink);display:flex;align-items:center;flex-wrap:wrap}
+.entry em{font-style:normal;color:#93700f;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .ticks{display:flex;gap:4px;margin:10px 0 4px}
-.ticks i{width:22px;height:8px;border-radius:2px;background:#d6e0e8}
+.ticks i{width:22px;height:8px;border-radius:2px;background:var(--ad-line)}
 .ticks i.on{background:var(--ink)}.ticks i.pt{background:#f2c94c}
 .tick-note{font:13px var(--mono);color:var(--muted);margin:0 0 16px}
 .btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .coll{margin-top:20px}
-.coll h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;justify-content:space-between}
+.coll h2{font-size:24px;line-height:1.15;color:var(--ink);margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.coll h2 span+span{font:13px var(--sans);color:var(--muted)}
 .coll p{margin:0;font:700 18px var(--mono);letter-spacing:.08em;line-height:1.8}
 .coll p small{font:12px var(--mono);color:var(--muted);letter-spacing:0;margin:0 14px 0 3px}
 .aux{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Twin Hive D — Split-core flower</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -74,7 +76,7 @@
     </section>
   </div>
 </main>
-<p class="studio-foot">Concept notes: the classic seven-cell flower, but the centre is one gold hexagon split into A and M halves (each half ≥40×92px) — the "twin" requirement is a single object. Cell size is fixed (88px; 80px under 360px). Letter ticks under the entry preview points: grey for the first three letters, gold for each scoring letter. Collection is illustrative.</p>
+<p class="studio-foot">Concept notes: the classic seven-cell flower, but the centre is one gold hexagon split into A and M halves (each half ≥40×92px) — the "twin" requirement is a single object. Cell size is fixed (88px; 80px under 360px). Letter ticks under the entry preview points: ink for the first three letters, gold for each scoring letter. Collection is illustrative. Prototype wiring: petals, both core halves, Delete, Clear and the ticks work; physical typing, Add word, hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 let v='MAST';const e=document.getElementById('e'),t=document.getElementById('t'),tn=document.getElementById('tn');

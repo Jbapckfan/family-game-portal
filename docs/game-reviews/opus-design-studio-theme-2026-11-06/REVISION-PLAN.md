@@ -1,0 +1,3 @@
+# Revision 2 plan
+
+James explicitly rejected theme divergence and requested the actual home theme. Keep the 91 alternatives and their game layouts, replace invented chrome/palettes/type with the live home style, and re-publish the same comparison URL. The former generic pale-blue direction is rejected. Use the measured paper #f6f3ec / warm white #fffefa / ink #202c35 / green #376c58, bundled DM Serif and DM Sans. Opus revises four independent concept batches; Codex owns the immutable theme source, gallery framing, phone/desktop visual comparison, guarded preview-directory exchange and Git checkpoint. No production game, account, rank or player data changes. This authorized correction needs no further design choice from James.

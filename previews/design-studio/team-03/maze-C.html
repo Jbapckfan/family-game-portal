@@ -1,41 +1,43 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Memory Maze · Concept C · Perimeter clock</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .stage{max-width:540px;margin:0 auto}
 .cap{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px}
-.cap h2{margin:0;font:800 clamp(22px,5.6vw,28px)/1.1 var(--sans)}
+.cap h2{margin:0;font:400 clamp(27px,6.2vw,34px)/1.1 var(--serif)}
 .cap p{margin:4px 0 0;color:var(--ink-2);font-size:15px}
-.readout{text-align:right;font:800 clamp(32px,9vw,44px)/1 var(--mono)}
-.readout small{display:block;font:600 11px/1.4 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.readout{text-align:right;font:700 clamp(32px,9vw,44px)/1 var(--mono);flex:none}
+.readout small{display:block;font:700 10px/1.4 var(--mono);letter-spacing:.12em;color:var(--muted)}
 .frame{position:relative;aspect-ratio:1;padding:14px}
 .frame>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.frame .base{fill:none;stroke:#d3dee7;stroke-width:6}
+.frame .base{fill:none;stroke:#e4e1d6;stroke-width:6}
 .frame .live{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:butt;transition:stroke-dashoffset 1s linear}
 .frame.recall .live{stroke:var(--ink)}
-.inner{position:relative;height:100%;background:var(--paper);border-radius:6px;padding:8px}
+.inner{position:relative;height:100%;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
 @media(max-width:420px){.frame{padding:9px;margin:0 -8px}.inner{padding:3px}.inner svg{inset:3px;width:calc(100% - 6px);height:calc(100% - 6px)}}
 .inner svg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:none;z-index:2}
 .inner polyline{fill:none;stroke:var(--ink);stroke-width:.06;stroke-linecap:round;stroke-linejoin:round}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);height:100%}
 .c{border:0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;min-width:0}
-.c b{width:70%;aspect-ratio:1;border-radius:50%;background:#e6eef4;display:flex;align-items:center;justify-content:center;font:800 clamp(13px,3.8vw,19px)/1 var(--sans);transition:transform .12s}
-.c:hover:not(:disabled) b{transform:scale(1.12);background:#d4e3ed}
-.c.start b,.c.goal b{background:#fff;box-shadow:inset 0 0 0 2.5px var(--ink)}
-.c.shown b{background:var(--accent);color:#fff}
-.c.done b{background:var(--ink);color:#fff}
-.c.block b{background:transparent;box-shadow:none;color:#90a3b2}
-.c.block b::before{content:"";width:46%;height:46%;background:#b5c5d1;transform:rotate(45deg)}
-.c.wrong b{background:#efc9bf}
+.c b{width:70%;aspect-ratio:1;border-radius:50%;background:#efebe2;color:var(--ink);display:flex;align-items:center;justify-content:center;font:700 clamp(13px,3.8vw,19px)/1 var(--sans);transition:transform .12s}
+.c:hover:not(:disabled) b{transform:scale(1.12);background:#e4e0d4}
+.c.start b,.c.goal b{background:var(--paper);box-shadow:inset 0 0 0 2.5px var(--ink)}
+.c.shown b{background:var(--accent);color:var(--paper)}
+.c.done b{background:var(--ink);color:var(--paper)}
+.c.block b{background:transparent;box-shadow:none;color:#757b72}
+.c.block b::before{content:"";width:46%;height:46%;background:#cdc8bb;transform:rotate(45deg)}
+.c.wrong b{background:#f0d3c7}
 .c:disabled{cursor:default}
 .legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:10px 0 0;font-size:13px;color:var(--muted)}
 .actions{margin-top:14px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2);text-align:center}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Memory Maze · C — Perimeter clock · visual prototype · route is illustrative</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/qwen-memory-maze.svg" alt=""><div class="titles"><p class="kicker">Remember the route</p><h1>Memory Maze</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="stage">
  <div class="cap"><div><h2 id="title">Ready to remember?</h2><p id="sub">8 squares · six seconds to study</p></div><div class="readout" role="timer" id="ro">6<small>STUDY S</small></div></div>
@@ -47,7 +49,7 @@
 </main>
 <footer class="app-foot"><span id="foot">0 misses · +2s each · 0 replays</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Memory Maze</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const P=[0,1,8,9,16,15,22,21],B=[3,10,24,29,31,38,44];let ph='ready',left=6,trail=[],miss=0,t0=0,tick=null,wrong=-1;const $=id=>document.getElementById(id);
 function render(){const show=ph==='study';

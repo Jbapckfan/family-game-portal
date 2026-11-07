@@ -1,54 +1,57 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tangle (interleaved words) · Concept A · One cord, three threads</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:820px;margin:0 auto}
 .hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.hud b{font-size:16px}
-.knots{font:600 13px/1 var(--mono);color:var(--ink-2)}
+.hud b{font:400 clamp(23px,5vw,27px)/1.15 var(--serif)}
+.knots{font:600 13px/1.2 var(--mono);color:var(--ink-2)}
 .threads{display:grid;gap:8px;margin:12px 0 18px}
 .th{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:10px}
 .th span{font:700 12px/1.2 var(--mono);color:var(--ink-2)}
 .th .line{display:flex;gap:4px;align-items:center;height:36px;border-left:4px solid var(--c);padding-left:8px}
 .th .line i{width:clamp(20px,6vw,30px);height:4px;border-radius:2px;background:var(--c);opacity:.35}
-.t1{--c:#2d6f9e}.t2{--c:#1f7a6a}.t3{--c:#4a6275}
-.cordbox{padding:14px 10px;border-radius:16px;background:var(--paper);border:1px solid var(--line-2)}
-.cordbox small{display:block;font:700 11px/1.3 var(--mono);letter-spacing:.1em;color:var(--muted);margin:0 4px 10px}
+/* Thread hues borrowed from the home page's edition emblems: distinct, warm-compatible. */
+.t1{--c:#39766f}.t2{--c:#355fa7}.t3{--c:#94701c}
+.cordbox{padding:16px 10px;border-radius:var(--card-r);background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow)}
+.cordbox small{display:block;font:700 10px/1.4 var(--mono);letter-spacing:.12em;color:var(--muted);margin:0 6px 12px}
 .row{position:relative;display:flex;justify-content:space-between;align-items:center;padding:6px 0}
-.row::before{content:"";position:absolute;left:18px;right:18px;top:50%;height:3px;margin-top:4px;background:#9fb3c2;border-radius:2px}
+.row::before{content:"";position:absolute;left:18px;right:18px;top:50%;height:3px;margin-top:4px;background:#c4bcab;border-radius:2px}
 .row+.row{margin-top:6px}
-.ret{position:absolute;right:-2px;bottom:-10px;font:700 12px/1 var(--mono);color:#9fb3c2}
-.bead{position:relative;z-index:1;width:clamp(42px,12vw,56px);height:clamp(42px,12vw,56px);border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff,#e7eef3 70%);box-shadow:0 3px 0 #b3c4d1,0 6px 10px -6px rgba(14,34,50,.4);font:800 clamp(18px,5vw,24px)/1 var(--sans);cursor:pointer;transition:transform .12s}
+.ret{position:absolute;right:-2px;bottom:-10px;font:700 12px/1 var(--mono);color:#9c9586}
+.bead{position:relative;z-index:1;width:clamp(42px,12vw,56px);height:clamp(42px,12vw,56px);border-radius:50%;border:0;background:var(--tile);color:var(--ink);box-shadow:0 0 0 1px var(--tile-edge),0 3px 0 var(--tile-edge);font:700 clamp(18px,5vw,24px)/1 var(--sans);cursor:pointer;transition:transform .12s}
 .bead small{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font:700 10px/1 var(--mono);color:var(--muted)}
 .bead:hover{transform:translateY(-2px)}
-.bead.sel{background:var(--ink);color:#fff;transform:translateY(-8px);box-shadow:0 10px 0 -4px #b3c4d1}
-.bead.sel small{color:var(--accent-ink);font-weight:800}
+.bead.sel{background:var(--ink);color:var(--paper);transform:translateY(-8px);box-shadow:0 8px 0 -4px var(--tile-edge)}
+.bead.sel small{color:var(--accent-ink);font-weight:700}
 .sel-line{margin:16px 0 0;display:grid;gap:4px}
-.sel-line .w{font:800 clamp(26px,7vw,36px)/1.1 var(--sans);letter-spacing:.08em}
+.sel-line .w{font:700 clamp(26px,7vw,36px)/1.1 var(--sans);letter-spacing:.08em}
 .sel-line .w:empty::before{content:"Choose the beads of one word";font:500 16px var(--sans);letter-spacing:0;color:var(--muted)}
 .sel-line .order{font:600 13px/1.4 var(--mono);color:var(--ink-2)}
-.left{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line)}
+.left{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--bg-2);border:1px solid var(--line)}
 .left p{margin:0;font-size:14px;color:var(--ink-2)}
 .left .rest{font:700 15px/1.6 var(--mono);letter-spacing:.12em;color:var(--ink);word-break:break-all}
-.left .rest i{color:#b5c5d1;font-style:normal}
+.left .rest i{color:#bdb7a8;font-style:normal}
 .actions{margin-top:14px}
 .outcomes{margin-top:16px;display:grid;gap:8px}
 @media(min-width:760px){.outcomes{grid-template-columns:repeat(3,1fr)}}
-.oc{padding:12px;border-radius:10px;border:1px solid var(--line-2);background:#fff;font-size:14px;color:var(--ink-2)}
-.oc b{display:block;font:700 12px/1.4 var(--mono);letter-spacing:.06em;color:var(--ink);margin-bottom:4px}
+.oc{padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--paper);font-size:14px;color:var(--ink-2)}
+.oc b{display:block;font:700 10px/1.4 var(--mono);letter-spacing:.12em;color:var(--ink);margin-bottom:6px}
 .oc.knot{border-color:var(--warn)}
 .oc.knot b{color:var(--warn)}
-.result{margin-top:12px;padding:14px;border-radius:12px;border:2px solid var(--warn);background:#fff7f4}
+.result{margin-top:12px;padding:16px;border-radius:16px;border:2px solid var(--warn);background:#fbf1eb}
 .result[hidden]{display:none}
-.result h3{margin:0 0 6px;font:800 18px/1.2 var(--sans)}
+.result h3{margin:0 0 6px;font:400 24px/1.2 var(--serif)}
 .result p{margin:0;font-size:15px;color:var(--ink-2)}
-.result small{display:block;margin-top:8px;font:600 11px/1.4 var(--mono);color:var(--muted)}
+.result small{display:block;margin-top:8px;font:700 10px/1.4 var(--mono);letter-spacing:.08em;color:var(--muted)}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Tangle (interleaved words, not the grid Tangle) · A — One cord, three threads · visual prototype</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/claude-tangle.svg" alt=""><div class="titles"><p class="kicker">Interleaved words · three threads on one cord</p><h1>Tangle</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap" id="board" tabindex="0" aria-label="Tangle. Type letters to pick the next matching bead, Enter pulls.">
  <div class="hud"><b>0 of 3 threads pulled</b><span class="knots">KNOTS ○○○○ · 4 LEFT</span></div>
@@ -68,7 +71,7 @@
 </main>
 <footer class="app-foot"><span>Undo pull and Restart keep knots and hints</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Tangle</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const S='PANRPUEPSEIPMYNALT'.split('');let sel=[0,6,7,11,13];const $=id=>document.getElementById(id);
 function render(){const per=matchMedia('(min-width:700px)').matches?9:6,rows=[];for(let r=0;r<S.length;r+=per)rows.push([...Array(Math.min(per,S.length-r))].map((_,k)=>r+k));

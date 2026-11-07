@@ -1,40 +1,42 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quadra · Concept D · Type case and ledger</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:900px;margin:0 auto;display:grid;gap:20px}
 @media(min-width:860px){.wrap{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}
-.ledger{position:relative;background:var(--paper);border:1px solid var(--line-2);border-radius:6px;padding:18px 18px 18px 52px}
-.holes{position:absolute;left:14px;top:18px;display:grid;gap:14px}
-.holes i{width:20px;height:20px;border-radius:50%;background:var(--bg);box-shadow:inset 0 2px 3px rgba(14,34,50,.3)}
+.ledger{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--card-r);padding:20px 20px 18px 56px;box-shadow:var(--shadow)}
+.holes{position:absolute;left:18px;top:22px;display:grid;gap:14px}
+.holes i{width:20px;height:20px;border-radius:50%;background:var(--bg);box-shadow:inset 0 2px 3px rgba(32,44,53,.2)}
 .holes i.used{background:var(--warn)}
-.holes-label{position:absolute;left:8px;bottom:14px;font:700 10px/1 var(--mono);color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.12em}
-.ledger h2{margin:0;font:600 clamp(26px,6.4vw,34px)/1.1 var(--serif)}
-.ledger .sub{margin:4px 0 14px;font-size:14px;color:var(--muted)}
+.holes-label{position:absolute;left:12px;bottom:18px;font:700 10px/1 var(--mono);color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.14em}
+.ledger h2{margin:0;font:400 clamp(32px,7vw,42px)/1.05 var(--serif);letter-spacing:-.02em}
+.ledger .sub{margin:6px 0 14px;font-size:14px;color:var(--muted)}
 .line{display:grid;grid-template-columns:34px repeat(4,minmax(0,1fr));align-items:end;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
-.line b{font:600 22px/1 var(--serif);color:var(--line-2)}
-.line span{height:46px;display:flex;align-items:flex-end;justify-content:center;font:800 clamp(28px,7.6vw,36px)/1 var(--sans);padding-bottom:4px;border-bottom:2px solid transparent}
+.line b{font:400 24px/1 var(--serif);color:#b4b9ae}
+.line span{height:46px;display:flex;align-items:flex-end;justify-content:center;font:700 clamp(28px,7.6vw,36px)/1 var(--sans);padding-bottom:4px;border-bottom:2px solid transparent}
 .line.cur b{color:var(--accent)}
 .line.cur span{border-color:var(--accent)}
-.case{margin-top:16px;padding:12px;border-radius:8px;background:#e1e9f0;box-shadow:inset 0 2px 4px rgba(14,34,50,.12)}
+.case{margin-top:16px;padding:12px;border-radius:var(--panel-r);background:var(--bg-2);border:1px solid var(--line)}
 .case-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media(min-width:560px){.case-row{grid-template-columns:repeat(8,minmax(0,1fr))}}
-.sort{height:72px;border:0;border-radius:4px 4px 8px 8px;background:linear-gradient(90deg,#f3f6f9,#fff 40%,#eef2f6);box-shadow:0 3px 0 #a9bccb;font:800 clamp(24px,6.4vw,28px)/1 var(--sans);cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative}
-.sort::after{content:"";position:absolute;left:50%;bottom:8px;width:10px;height:3px;margin-left:-5px;border-radius:2px;background:#c3d2dd}
+.sort{height:72px;border:1px solid var(--tile-edge);border-radius:6px 6px 10px 10px;background:var(--tile);box-shadow:0 3px 0 var(--tile-edge);font:700 clamp(24px,6.4vw,28px)/1 var(--sans);cursor:pointer;transition:transform .12s,box-shadow .12s;position:relative}
+.sort::after{content:"";position:absolute;left:50%;bottom:8px;width:10px;height:3px;margin-left:-5px;border-radius:2px;background:var(--tile-edge)}
 .sort:hover{transform:translateY(-3px)}
-.sort.up{transform:translateY(-10px);background:var(--ink);color:#fff;box-shadow:0 10px 0 -4px #a9bccb}
-.sort.up::after{background:#5fa9c4}
+.sort.up{transform:translateY(-10px);background:var(--ink);border-color:var(--ink);color:var(--paper);box-shadow:0 8px 0 -4px var(--tile-edge)}
+.sort.up::after{background:#8fbfa9}
 .side{display:grid;gap:12px}
-.panel{background:var(--paper);border:1px solid var(--line-2);border-radius:10px;padding:12px 14px}
-.panel h3{margin:0 0 8px;font:700 12px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--panel-r);padding:14px 16px}
+.panel h3{margin:0 0 6px;font:400 21px/1.2 var(--serif);color:var(--ink)}
 .panel p{margin:0;font-size:14px;color:var(--ink-2)}
 .side .btn{width:100%}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Quadra · D — Type case and ledger · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/qwen-quadra.svg" alt=""><div class="titles"><p class="kicker">Four of a kind</p><h1>Quadra</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap" id="board" tabindex="0" aria-label="Quadra ledger. Type or tap letters.">
  <section>
@@ -48,14 +50,14 @@
  </section>
  <aside class="side">
   <div class="row-actions"><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="lock">Lock line</button></div>
-  <div class="panel"><h3>ATTEMPTS</h3><p>None yet. Locked words and misses are listed here in order, so you can see what has already been tried.</p></div>
-  <div class="panel"><h3>WHAT COUNTS</h3><p>A real kitchen verb can still miss: only today’s four, which use all sixteen tiles, lock in.</p></div>
-  <div class="panel"><h3>HELP</h3><p style="margin-bottom:8px">A little hint picks one answer for you to submit and marks the day assisted.</p><button class="btn">A little hint</button></div>
+  <div class="panel"><h3>Attempts</h3><p>None yet. Locked words and misses are listed here in order, so you can see what has already been tried.</p></div>
+  <div class="panel"><h3>What counts</h3><p>A real kitchen verb can still miss: only today’s four, which use all sixteen tiles, lock in.</p></div>
+  <div class="panel"><h3>Help</h3><p style="margin-bottom:8px">A little hint picks one answer for you to submit and marks the day assisted.</p><button class="btn">A little hint</button></div>
  </aside>
 </main>
 <footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Quadra</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const T='HISAPAREIDETCWEB'.split('');let sel=[4,9];const $=id=>document.getElementById(id);
 function render(){
@@ -67,7 +69,7 @@ $('case').onclick=e=>{const b=e.target.closest('[data-i]');if(b)tap(+b.dataset.i
 $('board').onkeydown=e=>{if(e.target.closest('button')&&(e.key==='Enter'||e.key===' '))return;
  if(/^[a-z]$/i.test(e.key)){const i=T.findIndex((c,i)=>c===e.key.toUpperCase()&&!sel.includes(i));if(i>=0)tap(i);}
  else if(e.key==='Backspace'){e.preventDefault();sel.pop();render();}else if(e.key==='Escape'){sel=[];render();}else if(e.key==='Enter'&&sel.length===4)$('lock').click();};
-$('clr').onclick=()=>{sel=[];render()};$('lock').onclick=()=>$('msg').textContent='Prototype: the live game checks the line; a miss punches one hole red.';
+$('clr').onclick=()=>{sel=[];render()};$('lock').onclick=()=>$('msg').textContent='Prototype: the live game checks the line; a miss fills one margin hole in clay.';
 render();
 </script>
 </body></html>

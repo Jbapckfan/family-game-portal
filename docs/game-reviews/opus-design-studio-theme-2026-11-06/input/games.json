@@ -1,0 +1,1161 @@
+[
+  {
+    "runtime": "alford",
+    "slug": "ringcount",
+    "boards": 210,
+    "name": "Ringcount",
+    "group": "flagship",
+    "category": "Number logic",
+    "description": "Four cuts. Four equal sums. Find the balance around the ring.",
+    "detail": "A circle with a satisfying solution",
+    "motif": "ring",
+    "disposition": "replacement_candidate",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "pretty easy and boring game, okay, next gae",
+          "interpretation": "Low enjoyment; felt easy. Numeric rating and replay answer not supplied."
+        }
+      ],
+      "difficultyReaction": "easy",
+      "enjoymentReaction": "boring",
+      "preferenceTier": "replacement_candidate"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "alford",
+    "slug": "switchpath",
+    "boards": 217,
+    "name": "Switchpath",
+    "group": "flagship",
+    "category": "Path logic",
+    "description": "Go higher, then lower. Follow one alternating path through every number.",
+    "detail": "Every turn changes your thinking",
+    "motif": "path",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "yes, i like it",
+          "interpretation": "Answers yes to playing again. Likes Switchpath; no numeric enjoyment score supplied."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "consider numbers closer together and also a possible 5x5 grid",
+          "interpretation": "Requests a tighter layout and consideration of a larger grid."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "make the 'need to go high vs need to go low' indicators more obvious during gameplay",
+          "interpretation": "Improve visibility of the current comparison direction during play."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "not a huge fan of the brown color but otherwise i like it",
+          "interpretation": "Likes the clearer indicators; dislikes the brown lower-state colour. Change that colour."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "don't like purple",
+          "interpretation": "Rejects purple for the lower-state indicator. Teal is the next proposed colour."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "better",
+          "interpretation": "Approves teal for the lower-state indicator after rejecting brown and purple."
+        }
+      ],
+      "enjoymentReaction": "likes it",
+      "directionColourPreference": {
+        "higher": "blue",
+        "lower": "teal",
+        "avoidLower": [
+          "brown",
+          "purple"
+        ]
+      },
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "alford",
+    "slug": "counterpart",
+    "boards": 210,
+    "name": "Counterpart",
+    "group": "word",
+    "category": "Word relationships",
+    "description": "Read the relationship. Find the pair that follows the same logic.",
+    "detail": "Make the right connection",
+    "motif": "pairs",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "for counterpart make the words/fonts larger and easier to read",
+          "interpretation": "Readability request during playtest, not an enjoyment rating."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "yeah, next game",
+          "interpretation": "Yes to playing Counterpart again; asks to proceed to Shortlist. No relative preference between the two keepers was supplied."
+        }
+      ],
+      "enjoymentReaction": "would play again",
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "alford",
+    "slug": "shortlist",
+    "boards": 210,
+    "name": "Shortlist",
+    "group": "word",
+    "category": "Letter deduction",
+    "description": "Twelve words. Three letter scans. One final pick.",
+    "detail": "Make every clue count",
+    "motif": "scan",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "yes, next game",
+          "interpretation": "Yes to playing Shortlist again; asks to move to Second Sense. No numeric or relative ranking supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "would play again"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "alford",
+    "slug": "second-sense",
+    "boards": 210,
+    "name": "Second Sense",
+    "group": "word",
+    "category": "Double meanings",
+    "description": "Match a noun clue with a verb clue. One word answers both.",
+    "detail": "Same word. Another meaning.",
+    "motif": "sense",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "yes, next game",
+          "interpretation": "Yes to playing Second Sense again; requests Sideways next. No numeric or relative preference supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "would play again"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "alford",
+    "slug": "sideways",
+    "boards": 210,
+    "name": "Sideways",
+    "group": "word",
+    "category": "Word arrangement",
+    "description": "Slide the letter strips until four clued words read down the columns.",
+    "detail": "A different angle on words",
+    "motif": "strips",
+    "disposition": "replacement_candidate",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "if you solve the first 3 the fourth is already lined up right?",
+          "interpretation": "Asks whether three correct current columns force the fourth; yes by the fixed row-letter multiset. This is not a supplied enjoyment rating or replay verdict."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "not a big fan of this game, it's too easy",
+          "interpretation": "Low enjoyment and too easy; supports replacement-candidate tier. No numeric rating or explicit replay answer supplied."
+        }
+      ],
+      "preferenceTier": "replacement_candidate",
+      "enjoymentReaction": "not a big fan",
+      "difficultyReaction": "too easy"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "alford",
+    "slug": "tradeoff",
+    "boards": 210,
+    "name": "Tradeoff",
+    "group": "classic",
+    "category": "Letter swaps",
+    "description": "Trade letters between rows to make every clue fit.",
+    "motif": "trade",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "tradeoff is a keeper, a bit too easy",
+          "interpretation": "Explicit keeper verdict with an ease concern; numeric score and relative keeper order not supplied."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "i like tradeoff a lot, let's move to the next game",
+          "interpretation": "Strong positive preference for the existing keeper Tradeoff. Does not provide a numeric score or pairwise rank. Continue the unreviewed-game queue."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "likes it a lot",
+      "difficultyReaction": "a bit too easy"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "alford",
+    "slug": "inbetween",
+    "boards": 210,
+    "name": "Inbetween",
+    "group": "classic",
+    "category": "Word building",
+    "description": "Find where two missing letters belong. Build the bigger word.",
+    "motif": "insert",
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": 6,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "i like kit but make it drag and drop with really cool visuals for placement",
+          "interpretation": "Likes Inbetween; requests drag-and-drop with polished placement visuals."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "it's like a 6/10, keep it, could be harder clues",
+          "interpretation": "Explicit6/10 and keeper verdict; requests stronger clue difficulty. No relative keeper order supplied."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "that visual is so much better, make the side explainer show the blue collow when dragging",
+          "interpretation": "Positive feedback on placement visuals; asks for the side guide to mirror the blue drag state. No new numerical rating or relative rank supplied."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "the side should show the blue highlights as if being selected or dragged (like it does when you grab a 2 letter pair",
+          "interpretation": "Clarifies that the example should depict the selected/dragged highlight of a picked pair."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "good, that's better",
+          "interpretation": "Approves the selected/dragged blue example illustration. Existing6/10 keeper rating remains unchanged."
+        }
+      ],
+      "enjoymentScale": 10,
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "likes it; keeper",
+      "difficultyReaction": "could have harder clues"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-cairn",
+    "name": "Cairn",
+    "group": "word",
+    "category": "Growing anagrams",
+    "description": "Build a five-word tower. Every new level adds just one letter.",
+    "detail": "Five steps to the summit",
+    "motif": "cairn",
+    "boards": 839,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "the perfect summit image looks really dumb and stands out",
+          "interpretation": "Result graphic criticism only; no enjoyment, replay, numeric score or keeper verdict inferred."
+        },
+        {
+          "date": "2026-10-30",
+          "quote": "keeper, go next",
+          "interpretation": "Cairn is a keeper; proceed to Morph. No numerical score or relative keeper rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-morph",
+    "name": "Morph",
+    "group": "word",
+    "category": "Word ladders",
+    "description": "Change one letter at a time. Find your way from the start word to its target.",
+    "detail": "Every rung is a real word",
+    "motif": "morph",
+    "boards": 450,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "quote": "keeper, next",
+          "interpretation": "Morph is a keeper; continue to Kimi\u2019s Tangle. No numerical score or relative rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-tangle",
+    "name": "Tangle",
+    "group": "word",
+    "category": "Word trails",
+    "description": "Trace words through a field of letters. Keep finding paths until you reach gold.",
+    "detail": "A board full of possibilities",
+    "motif": "tangle",
+    "boards": 430,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": true,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-31",
+          "quote": "keeper, what about adding 5x5.... would that be too much? too complicated?",
+          "interpretation": "Keep Kimi\u2019s Tangle. Asks about the feasibility and gameplay complexity of a 5\u00d75 board; no numerical rating, relative rank or final mode design supplied."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "okay show me",
+          "interpretation": "Requested the 5\u00d75 sample."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "said 'stoned' was not in the word list... i believe it should be",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "also tread should be a word",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "cores",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "this list needs improvement",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "pores",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "and pore",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "tare and tares... what is going on???",
+          "interpretation": "Reported incomplete accepted vocabulary in the 5\u00d75 sample; corrected with exhaustive full-source solving and independent completeness tests. Not a new numerical enjoyment score or relative ranking."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "make sure all dictionary words/words used in a game like Words With Friends",
+          "interpretation": "Requested broad dictionary and established word-game acceptance. Both Tangle sizes now use the audited pinned union; exact current WWF/NASPA parity remains unverified. No new enjoyment score or relative rank."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "great, next game",
+          "interpretation": "Positive response to the vocabulary improvement and instruction to proceed to Hunch. Tangle remains a keeper; no separate numerical 5\u00d75 score or relative keeper rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-hunch",
+    "name": "Hunch",
+    "group": "word",
+    "category": "Five-letter deduction",
+    "description": "Six guesses. Follow the letter clues to discover the hidden five-letter word.",
+    "detail": "Trust a hunch. Test it.",
+    "motif": "hunch",
+    "boards": 937,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-10-31",
+          "quote": "hunch is good, make sure it's not too similar to words with friends",
+          "interpretation": "Positive verdict in response to keeper/improve/pass; retain Hunch and preserve a distinct identity from Words With Friends. No numerical score, relative keeper rank or explicit replay answer supplied."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "i meant wordle",
+          "interpretation": "Corrects the similarity target to Wordle. The positive Hunch verdict remains; the current five-letter/six-guess/per-letter feedback format is too close, so gameplay differentiation remains open."
+        },
+        {
+          "date": "2026-10-31",
+          "quote": "still seems very similar to wordle, keep it, maybe do white and black dots lie in mastermind. go to next game",
+          "interpretation": "Explicitly keeps Hunch and moves to Circuit, suggesting Mastermind-like black/white dots instead of a broader redesign. Grouped dots delivered; no numerical score, explicit replay answer or relative rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "good"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-circuit",
+    "name": "Circuit",
+    "group": "word",
+    "category": "Word chains",
+    "description": "Connect words around four arcs. Change arcs with each letter and cover the whole circuit.",
+    "detail": "Make every letter part of the chain",
+    "motif": "circuit",
+    "boards": 286,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-01",
+          "quote": "morn, nice, not in word list//",
+          "interpretation": "Reported valid-word omissions; full pinned-source acceptance applied to every legal ring."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "what??",
+          "interpretation": "Requested clarification after the vocabulary rejection."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "how can you tell what the 4 arcs are?",
+          "interpretation": "Arc membership was unclear; four labeled bands and letter-membership cards added."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "the 4 arcs have weird spaces between them, fix that",
+          "interpretation": "Bands now meet at narrow consistent dividers."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "make the arc color splits at 0 degrees, 90 degrees, etc",
+          "interpretation": "Quadrant boundaries aligned with cardinal axes, with each three-letter group centered inside."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "the arm colors are too similar",
+          "interpretation": "Changed to distinct blue, green, gold and red, retaining numbered membership cues."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "circuit is a keeper",
+          "interpretation": "Explicit keeper verdict after gameplay and UI/dictionary revisions; no numeric rating supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "kimi",
+    "slug": "kimi-quartet",
+    "name": "Quartet",
+    "group": "word",
+    "category": "Meaning & categories",
+    "description": "Sixteen words belong in four groups. Find the common thread in each quartet.",
+    "detail": "Four groups. Four discoveries.",
+    "motif": "quartet",
+    "boards": 420,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-01",
+          "quote": "fun game, make sure it's not an exact copy of another game, then go next",
+          "interpretation": "Enjoyed Quartet; requests an originality check and moving on. No numerical rating, relative rank or explicit replay answer supplied."
+        }
+      ],
+      "enjoymentReaction": "fun"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-twin-hive",
+    "name": "Twin Hive",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Two-letter word search",
+    "description": "Every word needs both golden letters. Build your daily collection.",
+    "detail": "Two anchors. Many possibilities.",
+    "motif": "hive",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-01",
+          "quote": "the formatting looks weirdly stretched out",
+          "interpretation": "Layout feedback during Twin Hive playtest. Constrain the board and correct stretched letter-tile proportions; no enjoyment verdict supplied."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "good, go to next game this one is a keeper",
+          "interpretation": "Explicit keeper verdict after the layout and input repairs. No numerical enjoyment score or relative keeper rank supplied."
+        }
+      ],
+      "enjoymentReaction": "keeper",
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-spare",
+    "name": "Spare",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Meaning pairs",
+    "description": "Match four pairs of opposites. Find the one word left over.",
+    "detail": "Four pairs. One spare.",
+    "motif": "spare",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-01",
+          "quote": "the game is too easy",
+          "interpretation": "Difficulty criticism of Spare during its individual review. No enjoyment score, keeper verdict, removal choice or relative rank supplied."
+        },
+        {
+          "date": "2026-11-01",
+          "quote": "try that",
+          "interpretation": "Approved trying a harder Spare sample with contextual clues and a plausible spare. No keeper decision or enjoyment score supplied."
+        },
+        {
+          "date": "2026-11-03",
+          "quote": "okay good, next game",
+          "interpretation": "Positive acknowledgment after the explanation of the harder Spare sample; requests moving on. Earlier confusion should inform onboarding. No numerical rating, relative rank or explicit keeper verdict supplied."
+        }
+      ],
+      "difficultyReaction": "too easy"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-rung",
+    "name": "Rung",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Shortest word ladders",
+    "description": "Change one letter at a time and reach the target in as few steps as possible.",
+    "detail": "Find the elegant route",
+    "motif": "morph",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-03",
+          "quote": "okay good, next game",
+          "interpretation": "Positive feedback on Rung, followed by a request to move on. No numerical score, relative ranking or explicit keeper verdict supplied."
+        }
+      ]
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-cipher",
+    "name": "Cipher",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Secret alphabets",
+    "description": "One letter stands for another. Uncover a hidden phrase.",
+    "detail": "A message waiting to emerge",
+    "motif": "cipher",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-03",
+          "quote": "cipher is great",
+          "interpretation": "Strong positive enjoyment feedback. No numerical score, relative rank or explicit request to advance supplied."
+        }
+      ],
+      "enjoymentLabel": "great",
+      "preferenceTier": "strong_positive"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-trail",
+    "name": "Trail",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Nine-letter trails",
+    "description": "Follow adjacent letters through a tiny grid to find one long word.",
+    "detail": "A winding route to an aha",
+    "motif": "trail",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-03",
+          "quote": "trail seems way too easy",
+          "interpretation": "Strong difficulty criticism. No numerical enjoyment score, removal choice, keeper verdict or relative rank supplied."
+        },
+        {
+          "date": "2026-11-03",
+          "quote": "try harder",
+          "interpretation": "Approves trying the proposed harder 4\u00d74 sample. No enjoyment score, keeper verdict or relative rank supplied."
+        },
+        {
+          "date": "2026-11-03",
+          "quote": "that is definitely a lot harder, keep it",
+          "interpretation": "Explicit keeper verdict for Trail after trying the harder 4\u00d74 sample. No numerical score or relative keeper rank supplied."
+        }
+      ],
+      "difficultyReaction": "Original 3\u00d73: way too easy. Harder 4\u00d74: definitely a lot harder.",
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "keep it",
+      "preferredVariant": "Harder 4\u00d74: nine-letter target, seven decoys, indirect clue and optional definition."
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "deepseek",
+    "slug": "deepseek-split",
+    "name": "Split",
+    "credit": "Concept by DeepSeek \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Clued anagrams",
+    "description": "Divide ten letters between two clues. Every tile has a home.",
+    "detail": "Two discoveries in one handful",
+    "motif": "split",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-03",
+          "quote": "good but too easy",
+          "interpretation": "Positive qualitative feedback and a difficulty concern. No numerical score, explicit keeper verdict or relative rank supplied."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "try the harde sample, open it for me",
+          "interpretation": "Approves building and opening the proposed harder sample. No keeper decision or numerical score supplied."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "that is much better, keep it, next game",
+          "interpretation": "Explicit keeper verdict for the harder Split sample and request to advance. No numeric score or relative rank supplied."
+        }
+      ],
+      "enjoymentReaction": "much better; keep it",
+      "difficultyReaction": "too easy",
+      "preferenceTier": "keeper",
+      "preferredVariant": "Harder sample: two six-letter words, four decoys, indirect clues and joint checks."
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-quadra",
+    "name": "Quadra",
+    "credit": "Developed by Qwen",
+    "group": "word",
+    "category": "Category anagrams",
+    "description": "Sixteen letters. Four words in one category. Use every tile exactly once.",
+    "detail": "Find the four that belong",
+    "motif": "quadra",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-04",
+          "quote": "that is challenging, i like it, like the use of a category. keep it. next",
+          "interpretation": "Explicit keeper verdict. Likes the challenge and using a category to guide word finding; no numeric score or relative rank supplied."
+        }
+      ],
+      "enjoymentReaction": "I like it",
+      "difficultyReaction": "challenging, positively received",
+      "preferenceTier": "keeper",
+      "likedFeature": "Use of a category"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-logic-lattice",
+    "name": "Logic Lattice",
+    "credit": "Concept by Qwen \u00b7 Built by Alford Daily",
+    "group": "logic",
+    "category": "Grid deduction",
+    "description": "Fill the grid until every counting clue agrees.",
+    "detail": "Make every square make sense",
+    "motif": "lattice",
+    "boards": 200,
+    "disposition": "parked",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-04",
+          "quote": "thi seems like minesweeper but the numbers are different, hmm, need more exlanation and the UI needs more improvement",
+          "interpretation": "Requests clearer whole-line counting explanation and improved UI; mentions visual similarity to Minesweeper. No enjoyment rating, keeper verdict or relative rank supplied."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "hmm, not sure about this game, don't fully delete, but let's park it and come back later",
+          "interpretation": "Explicitly park for later reconsideration and preserve the game. Not a keeper or removal verdict; no numerical rating supplied."
+        }
+      ],
+      "clarityReaction": "Needs more explanation; grid resembles Minesweeper",
+      "preferenceTier": "parked_for_later"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-syntax-siege",
+    "name": "Syntax Siege",
+    "credit": "Concept by Qwen \u00b7 Built by Alford Daily",
+    "group": "word",
+    "category": "Word defense",
+    "description": "Turn letters into words before the next wave reaches your core.",
+    "detail": "Quick words. A strong defense.",
+    "motif": "siege",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-04",
+          "quote": "okay, this is a great game, love this",
+          "interpretation": "Strong positive gameplay reaction; no numerical rating or explicit keeper wording supplied."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "UI needs work, but gameplay is gun",
+          "interpretation": "Gameplay is fun (apparent typo); requests a UI improvement."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "might be harder to type out with touch vs a keyboard, so may consider different speeds depending on the input method (automatically determined by us, not the user",
+          "interpretation": "Requests automatic pacing based on actual input method."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "in practice the diamond is not moving, it should move to simulate the real game",
+          "interpretation": "Requests visual approach motion during untimed practice."
+        }
+      ],
+      "enjoymentReaction": "great game; love this; gameplay is fun",
+      "preferenceTier": "strong_positive"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-memory-maze",
+    "name": "Memory Maze",
+    "credit": "Concept by Qwen \u00b7 Built by Alford Daily",
+    "group": "logic",
+    "category": "Path recall",
+    "description": "Study the glowing route, then retrace it from memory.",
+    "detail": "See the path. Keep the pattern.",
+    "motif": "maze",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-04",
+          "quote": "do a countdown timer that you can see off to the side, i was scrolled down and could not see the timer happening. hmm. i do see it on top now.",
+          "interpretation": "Requests a countdown visible while scrolled; acknowledges existing top timer."
+        },
+        {
+          "date": "2026-11-04",
+          "quote": "keep the game, we can move on to next",
+          "interpretation": "Explicit keeper verdict and request to advance. No numerical score or relative rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "keep the game"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-pattern-prism",
+    "name": "Pattern Prism",
+    "credit": "Concept by Qwen \u00b7 Built by Alford Daily",
+    "group": "logic",
+    "category": "Visual sequences",
+    "description": "Find how the shapes change. Predict the next three steps.",
+    "detail": "Spot the rhythm in the pattern",
+    "motif": "prism",
+    "boards": 225,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-05",
+          "quote": "i like the idea of intelligence/iq testing/pattern recognition. we can come back to that later....",
+          "interpretation": "Positive reaction to the broader intelligence/pattern-recognition concept; defer that direction for later. No explicit keeper verdict, rating or relative rank supplied for Pattern Prism."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "The UI of the pattern recognition prism game looks like a child's game because of the shapes and colors, make this look like an adult game 'Intentionally designed",
+          "interpretation": "Visual criticism: wants an adult, intentional visual design. No numeric rating or keeper/removal verdict supplied."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "Not good enough and it needs to maintain the overall Background of the other games to remain cohesive. Make it look a little bit more three-dimensional and Physical objects",
+          "interpretation": "Rejects the charcoal visual direction. Retain the collection background and give the pieces restrained physical depth; no gameplay or retention verdict."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "try b but they all look bad",
+          "interpretation": "B / Performance is a trial direction only. All displayed concepts were disliked; visual design remains unresolved. No enjoyment score or keeper verdict supplied."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "next game",
+          "interpretation": "Move to Territory Tactics now; defer Prism implementation rather than treating B as an accepted finished design."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "pattern prism still looks stupid, just so bad, we need to improve it. something more fun.",
+          "interpretation": "Rejects the current visual treatment again and requests a more enjoyable concept. The design remains unaccepted; no rating or keeper decision."
+        }
+      ],
+      "conceptReaction": "Likes intelligence/IQ-style testing and pattern recognition"
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "qwen",
+    "slug": "qwen-territory-tactics",
+    "name": "Territory Tactics",
+    "credit": "Concept by Qwen \u00b7 Built by Alford Daily",
+    "group": "logic",
+    "category": "Hex strategy",
+    "description": "Place two stones to surround and capture the target group.",
+    "detail": "A small board. A clever move.",
+    "motif": "territory",
+    "boards": 240,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-05",
+          "quote": "Give me several UI choices, this has to be at least as good as something that the New York Times would publish on their site",
+          "interpretation": "Requests original UI alternatives and a higher standard of polish. This is a quality benchmark, not a game enjoyment score or keeper decision."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "I will choose this later, move onto the next game",
+          "interpretation": "Defer selection among the three Territory Tactics UI previews and move to Dovetail. No chosen UI, enjoyment rating or keeper decision."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "the territory tactics is a little confusing even though I am getting past levels, can you put more clear instructions on that one",
+          "interpretation": "Self-reports progressing but finds the capture mechanic confusing. Requests clearer teaching; no keeper verdict or rating."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "on this puzzle it says to get 3 stones but you can only get 4, seems sloppy [Image #1] [Image #2] also this game seems too easy. we need to expand the board. and the stones needed must be exact",
+          "interpretation": "Requests exact capture totals and a larger, harder board. The earlier at-least rule permitted the shown 4/3 win, but no longer matches the desired design."
+        }
+      ],
+      "difficultyReaction": "too easy in the earlier 19-hex edition"
+    },
+    "alternativesRequired": 1,
+    "currentEditionNote": "37 hexes; up to 3 placements; EXACT capture total; 240 validated boards; old catalog count corrected."
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-dovetail",
+    "name": "Dovetail",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Compound chains",
+    "description": "Fill the missing words. Each word joins the next to make another.",
+    "detail": "Find every link in the chain",
+    "motif": "dovetail",
+    "boards": 200,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-05",
+          "quote": "keep it, next game",
+          "interpretation": "Explicit keeper verdict for Dovetail and request to advance. No numerical enjoyment score or relative rank supplied."
+        }
+      ],
+      "preferenceTier": "keeper",
+      "enjoymentReaction": "keep it"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-splice",
+    "name": "Splice",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Word-half matching",
+    "description": "Pair twelve word halves into six words. Every piece belongs somewhere.",
+    "detail": "Match the halves. Find the fit.",
+    "motif": "splice",
+    "boards": 202,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-05",
+          "quote": "hmm, i says i did it right... but house man? i thought maybe i needed to change sky-light and house-man to house-light and sky-man.",
+          "interpretation": "Questions the unfamiliar accepted word HOUSEMAN and whether an alternative pairing is needed. No enjoyment score or keeper verdict."
+        },
+        {
+          "date": "2026-11-05",
+          "quote": "okay, next game",
+          "interpretation": "Acknowledges the explanation and requests advancing to Sprout. Does not explicitly keep or remove Splice."
+        }
+      ]
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-sprout",
+    "name": "Sprout",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Growing anagrams",
+    "description": "Add one letter and rearrange. Grow a small seed into an eight-letter bloom.",
+    "detail": "Choose a path that keeps growing",
+    "motif": "cairn",
+    "boards": 211,
+    "disposition": "keep",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": [
+        {
+          "date": "2026-11-06",
+          "quote": "make it look like a really cool growing plant, it is so plain and boring right now, but is challening",
+          "interpretation": "Wants a substantially richer growing-plant visual. Calls the existing visuals plain/boring and gameplay challenging. No keeper verdict or numeric rating."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "the sprout Ui is still weird, show me several more options",
+          "interpretation": "Rejects the current plant UI and requests more visual alternatives. No approval of the current design, numeric score or keeper verdict."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "i don't like any. i want the answers to be part of the plant",
+          "interpretation": "Rejects the separated plant-window concepts; answers must physically form the plant."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "show me B and C of Sprout to play and see the visual movement",
+          "interpretation": "Requests real playable comparison of integrated letter branches and word vine, not final selection of one. No keeper verdict or numeric score."
+        },
+        {
+          "date": "2026-11-06",
+          "quote": "still looks bad, but let's keep it and move on to next game",
+          "interpretation": "Explicit keeper verdict for Sprout despite unresolved visual dissatisfaction. No B/C style selection, numeric enjoyment score or relative rank."
+        }
+      ],
+      "difficultyReaction": "challenging",
+      "preferenceTier": "keeper"
+    },
+    "alternativesRequired": 4
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-tangle",
+    "name": "Tangle",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Interleaved words",
+    "description": "Three words share one string. Untangle them without changing their letter order.",
+    "detail": "Keep the order. Find the threads.",
+    "motif": "weave",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": []
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-keystone",
+    "name": "Keystone",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Compound-word clues",
+    "description": "One hidden word joins every clue. Find the link across three arches.",
+    "detail": "The word that holds it together",
+    "motif": "keystone",
+    "boards": 200,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": []
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "runtime": "claude",
+    "slug": "claude-tumbler",
+    "name": "Tumbler",
+    "credit": "Developed by Claude",
+    "group": "word",
+    "category": "Alphabet deduction",
+    "description": "Each dial points earlier or later in the alphabet. Crack the five-letter lock.",
+    "detail": "Read the ranges. Turn the lock.",
+    "motif": "tumbler",
+    "boards": 1054,
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": []
+    },
+    "alternativesRequired": 1
+  },
+  {
+    "slug": "nested-tic-tac-toe",
+    "name": "Tic-Tac-Toe",
+    "description": "Nine boards. Your move sends the AI to its next board.",
+    "category": "Local AI \u00b7 Nine boards",
+    "disposition": "undecided",
+    "feedback": {
+      "enjoyment": null,
+      "playAgain": null,
+      "preferenceRank": null,
+      "comments": []
+    },
+    "alternativesRequired": 1
+  }
+]

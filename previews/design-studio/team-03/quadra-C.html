@@ -1,38 +1,41 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quadra · Concept C · Letter inventory</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:760px;margin:0 auto}
 .top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.top h2{margin:0;font:800 clamp(28px,7vw,40px)/1 var(--sans);letter-spacing:-.02em}
-.top small{display:block;font:700 11px/1 var(--mono);letter-spacing:.16em;color:var(--muted);margin-bottom:6px}
-.misses{font:600 14px/1 var(--mono);color:var(--ink-2)}
+.top h2{margin:0;font:400 clamp(36px,8.4vw,50px)/1 var(--serif);letter-spacing:-.025em}
+.top small{display:block;font:700 10px/1 var(--mono);letter-spacing:.15em;color:var(--accent);margin-bottom:8px}
+.misses{font:600 13px/1.3 var(--mono);letter-spacing:.04em;color:var(--ink-2)}
 .entry{margin:20px 0 6px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:360px}
-.entry span{height:72px;display:flex;align-items:center;justify-content:center;font:850 clamp(36px,10vw,48px)/1 var(--mono);background:var(--paper);border:1.5px solid var(--line-2);border-radius:10px}
+.entry span{height:72px;display:flex;align-items:center;justify-content:center;font:700 clamp(36px,10vw,46px)/1 var(--sans);background:var(--paper);border:1.5px solid var(--tile-edge);border-radius:14px}
 .entry span.caret{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-wash)}
 .entry-note{margin:0 0 14px;font-size:14px;color:var(--muted)}
-.tabs{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--paper)}
-.tabs button{min-height:44px;padding:0 14px;border:0;background:transparent;font-weight:650;font-size:14px;cursor:pointer}
-.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tabs{display:inline-flex;gap:3px;padding:4px;border:1px solid var(--line);border-radius:15px;background:var(--paper)}
+.tabs button{min-height:44px;padding:0 15px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.tabs button:hover:not([aria-pressed="true"]){background:var(--bg)}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .inv{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
-.k{position:relative;height:64px;border:1.5px solid var(--line-2);border-radius:10px;background:#fff;font:800 28px/1 var(--sans);cursor:pointer}
+.k{position:relative;height:64px;border:1.5px solid var(--tile-edge);border-radius:12px;background:var(--tile);font:700 28px/1 var(--sans);cursor:pointer}
 .k:hover{border-color:var(--ink)}
-.k .n{position:absolute;top:5px;right:6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--ink);color:#fff;font:700 12px/20px var(--mono)}
-.k.stack{box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 var(--line-2)}
-.k.stack3{box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 var(--line-2),6px 6px 0 -1px #fff,6px 6px 0 0 var(--line-2)}
+.k .n{position:absolute;top:5px;right:6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--ink);color:var(--paper);font:700 12px/20px var(--mono)}
+.k.stack{box-shadow:3px 3px 0 -1px var(--tile),3px 3px 0 0 var(--line-2)}
+.k.stack3{box-shadow:3px 3px 0 -1px var(--tile),3px 3px 0 0 var(--line-2),6px 6px 0 -1px var(--tile),6px 6px 0 0 var(--line-2)}
 .k:disabled{opacity:.3;cursor:default}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:360px}
 .grid4 .k{height:auto;aspect-ratio:1}
 .solved{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media(min-width:620px){.solved{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.solved span{height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--bg-2);border:1px solid var(--line);font:600 14px/1 var(--mono);color:var(--muted)}
+.solved span{height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);font:600 14px/1 var(--mono);color:var(--muted)}
 .actions{margin-top:16px;max-width:520px}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Quadra · C — Letter inventory · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/qwen-quadra.svg" alt=""><div class="titles"><p class="kicker">Four of a kind</p><h1>Quadra</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap" id="board" tabindex="0" aria-label="Quadra. Type a four-letter word, Enter locks.">
  <div class="top"><div><small>CATEGORY</small><h2>Kitchen verbs</h2></div><span class="misses">MISSES ○○○○ · 4 LEFT</span></div>
@@ -46,7 +49,7 @@
 </main>
 <footer class="app-foot"><span>Saved on this device</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Quadra</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const T='HISAPAREIDETCWEB'.split('');let sel=[],az=true;const $=id=>document.getElementById(id);
 function render(){

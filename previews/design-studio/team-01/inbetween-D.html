@@ -1,44 +1,48 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Inbetween · Concept D · Dominoes &amp; Slabs</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .layout{display:grid;gap:18px}
 @media (min-width:900px){.layout{grid-template-columns:200px minmax(0,1fr);align-items:start}}
-.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px;border-radius:16px;background:#e2e9f0;box-shadow:inset 0 2px 6px rgba(15,29,42,.14)}
+.tray{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px;border-radius:22px;background:var(--well2);box-shadow:inset 0 1px 3px rgba(32,44,53,.10)}
 @media (min-width:900px){.tray{grid-template-columns:1fr 1fr;position:sticky;top:12px}}
-.dom{display:grid;grid-template-columns:1fr 1fr;min-height:54px;border-radius:10px;border:0;padding:0;background:#fff;box-shadow:0 1px 0 #e8eef4,0 4px 0 #b9c6d3,0 10px 14px -8px rgba(15,29,42,.35);position:relative;touch-action:none;user-select:none;-webkit-user-select:none;font:800 24px/1 var(--display);color:var(--ink);transition:transform .15s}
+.dom{display:grid;grid-template-columns:1fr 1fr;min-height:54px;border-radius:12px;border:0;padding:0;background:var(--surface);box-shadow:0 0 0 1px var(--edge),0 3px 0 var(--edge);position:relative;touch-action:none;user-select:none;-webkit-user-select:none;font:700 24px/1 var(--display);color:var(--ink);transition:transform .15s}
 .dom span{display:grid;place-items:center}
-.dom::after{content:"";position:absolute;left:50%;top:9px;bottom:9px;width:2px;margin-left:-1px;background:#d3dce5;border-radius:1px}
-.dom::before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#c3ced9;z-index:1}
-.dom[aria-pressed="true"]{background:var(--blue);color:#fff;transform:translateY(-4px);box-shadow:0 4px 0 var(--blue-ink),0 16px 18px -10px rgba(28,95,196,.8)}
+.dom::after{content:"";position:absolute;left:50%;top:9px;bottom:9px;width:2px;margin-left:-1px;background:var(--line);border-radius:1px}
+.dom::before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--dash);z-index:1}
+.dom[aria-pressed="true"]{background:var(--blue);color:#fff;transform:translateY(-4px);box-shadow:0 0 0 1px var(--blue-ink),0 3px 0 var(--blue-ink),0 10px 12px -9px rgba(38,74,134,.45)}
 .dom[aria-pressed="true"]::after{background:rgba(255,255,255,.35)}
 .dom:disabled{opacity:.25;box-shadow:none;transform:none}
 .slabs{display:grid;gap:12px}
 @media (min-width:640px){.slabs{grid-template-columns:1fr 1fr}}
-.slab{border-radius:16px;background:linear-gradient(#f9fbfd,#eef3f7);border:1px solid #d5dee7;padding:12px 12px 14px;box-shadow:0 1px 0 #fff inset,0 12px 22px -18px rgba(15,29,42,.5)}
-.slab .cl{font:500 16px/1.3 var(--sans);margin:0 0 10px;display:flex;gap:8px}
+/* Slab: a home-style card with a recessed letter line; engraving reduced so letters keep full ink contrast */
+.slab{border-radius:22px;background:var(--surface);border:1px solid var(--line);padding:14px 12px 16px;box-shadow:var(--shade)}
+.slab .cl{font:400 16px/1.35 var(--sans);margin:0 0 10px;display:flex;gap:8px}
 .slab .cl i{font:600 12px var(--mono);font-style:normal;color:var(--muted)}
-.eng{display:flex;justify-content:center;align-items:center;min-height:62px}
-.eng .L{width:clamp(30px,9vw,40px);text-align:center;font:800 clamp(26px,8vw,34px)/1 var(--display);color:#3a4b5c;text-shadow:0 1px 0 #fff,0 -1px 0 rgba(15,29,42,.25)}
-.notch{width:12px;height:50px;border:0;padding:0;border-radius:6px;background:#dbe3ea;box-shadow:inset 0 2px 3px rgba(15,29,42,.22);position:relative;transition:width .2s,background .2s}
+.eng{display:flex;justify-content:center;align-items:center;min-height:62px;border-radius:14px;background:var(--well)}
+.eng .L{width:clamp(28px,8.4vw,40px);text-align:center;font:700 clamp(25px,7.6vw,34px)/1 var(--display);color:var(--ink);text-shadow:0 1px 0 var(--surface)}
+.notch{width:12px;height:50px;border:0;padding:0;border-radius:6px;background:var(--well2);box-shadow:inset 0 1px 2px rgba(32,44,53,.16);position:relative;transition:width .2s,background .2s}
 .notch::after{content:"";position:absolute;inset:-6px -10px}
-.armed .notch{width:18px;background:#cfe0f6}
+.armed .notch{width:18px;background:var(--blue-wash);box-shadow:inset 0 0 0 1px var(--blue-mid)}
 .notch.hot,.notch[aria-pressed="true"]{width:clamp(56px,16vw,72px);background:var(--blue);box-shadow:none}
-.notch[aria-pressed="true"]::before,.notch.hot::before{content:attr(data-pair);position:absolute;inset:0;display:grid;place-items:center;font:800 clamp(22px,6.6vw,28px)/1 var(--display);color:#fff;letter-spacing:.04em}
+.notch[aria-pressed="true"]::before,.notch.hot::before{content:attr(data-pair);position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(22px,6.6vw,28px)/1 var(--display);color:#fff;letter-spacing:.04em}
 .notch:disabled{cursor:default}
 .slab .go{display:flex;gap:8px;margin-top:10px}
 .slab .go .btn{flex:1}
 .slab.ok{background:var(--ok-wash);border-color:transparent}
+.slab.ok .eng{background:transparent}
 .slab.ok .L{color:var(--ok);text-shadow:none}
 .slab.ok .L.in{background:var(--ok);color:#fff;border-radius:6px}
 .slab.bad .notch[aria-pressed="true"]{background:var(--bad)}
-.ghost{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-80%) rotate(-4deg);width:92px;height:54px;border-radius:10px;background:var(--blue);color:#fff;display:grid;grid-template-columns:1fr 1fr;place-items:center;font:800 24px var(--display);box-shadow:0 22px 28px -12px rgba(28,95,196,.8)}
-</style></head>
+.ghost{position:fixed;z-index:60;pointer-events:none;transform:translate(-50%,-80%) rotate(-4deg);width:92px;height:54px;border-radius:12px;background:var(--blue);color:#fff;display:grid;grid-template-columns:1fr 1fr;place-items:center;font:700 24px var(--display);box-shadow:0 14px 18px -12px rgba(38,74,134,.5)}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Inbetween · Concept D “Dominoes &amp; Slabs”</b> · design review prototype with real placements, not a live game</span><nav aria-label="Inbetween concepts"><a href="inbetween-A.html">A</a><a href="inbetween-B.html">B</a><a href="inbetween-C.html">C</a><a href="inbetween-D.html" aria-current="page">D</a></nav></div>
+<div class="rv"><span><b>Inbetween · Concept D “Dominoes &amp; Slabs”</b> · design review prototype with real placements, not a live game</span><nav aria-label="Inbetween concepts"><a href="inbetween-A.html?theme=2">A</a><a href="inbetween-B.html?theme=2">B</a><a href="inbetween-C.html?theme=2">C</a><a href="inbetween-D.html?theme=2" aria-current="page">D</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="false" aria-label="Favorite Inbetween" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Inbetween from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>

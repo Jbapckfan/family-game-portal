@@ -4,20 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Twin Hive C · The collection is the comb — Alford Daily design concept</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .lay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:center}
 @media(max-width:820px){.lay{grid-template-columns:minmax(0,1fr)}}
-.combwrap h2{font:700 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;text-align:center}
+.combwrap h2{font-size:24px;line-height:1.15;color:var(--ink);margin:0 0 12px;text-align:center}
 .comb{--w:min(104px,calc((100vw - 48px)/3.6));--h:calc(var(--w)*1.1547);position:relative;width:calc(var(--w)*3.5 + 8px);height:calc(var(--h)*1.75 + 4px);margin:0 auto}
-.cell{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#cfdae3}
-.cell div{position:absolute;inset:3px;clip-path:inherit;background:#f4f7fa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.cell b{font:800 clamp(13px,3.6vw,17px) var(--mono);letter-spacing:.06em;color:var(--ink)}
+.cell{position:absolute;width:var(--w);height:var(--h);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--ad-line-2)}
+.cell div{position:absolute;inset:3px;clip-path:inherit;background:var(--ad-well);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.cell b{font:700 clamp(13px,3.6vw,17px) var(--mono);letter-spacing:.04em;color:var(--ink)}
 .cell small{font:12px var(--mono);color:var(--muted)}
 .cell.full{background:#c69f22}
-.cell.full div{background:linear-gradient(#fff6d6,#f7e3a2)}
+.cell.full div{background:#f8e7ad}
 .cell.next{background:var(--accent)}
-.cell.next div{background:#eef4fd}
+.cell.next div{background:var(--ad-soft)}
 .cell.next b{font-family:var(--sans);font-size:13px;color:var(--accent);letter-spacing:0}
 .cell.new{animation:grow .6s cubic-bezier(.2,1.4,.5,1)}
 @keyframes grow{from{transform:scale(.4);opacity:0}}
@@ -25,23 +25,24 @@
 .x0{left:0}.x1{left:calc(var(--w) + 4px)}.x2{left:calc(var(--w)*2 + 8px)}
 .y0{left:calc(var(--w)*.5 + 2px)}.y1{left:calc(var(--w)*1.5 + 6px)}.y2{left:calc(var(--w)*2.5 + 6px)}
 .tally{text-align:center;font-size:15px;color:var(--ink-2);margin:10px 0 0}
-.word{display:flex;align-items:center;justify-content:center;min-height:72px;font-size:clamp(34px,10vw,46px);font-weight:850;letter-spacing:.14em;border-bottom:3px solid var(--ink);margin-bottom:6px}
-.word em{font-style:normal;color:#b8901a}
+.word{display:flex;align-items:center;justify-content:center;min-height:72px;font-size:clamp(34px,10vw,46px);font-weight:700;letter-spacing:.14em;border-bottom:3px solid var(--ink);margin-bottom:6px}
+.word em{font-style:normal;color:#93700f}
 .hint{font-size:14px;color:var(--ink-2);text-align:center;margin:0 0 16px;min-height:20px}
 .keys{display:grid;grid-template-columns:repeat(4,minmax(0,64px));gap:10px;justify-content:center}
-.key{aspect-ratio:1;border-radius:50%;border:1px solid #b9c8d5;background:radial-gradient(circle at 40% 30%,#fff,#eaf0f5 75%);font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #b9c8d5}
-.key.g{background:radial-gradient(circle at 40% 30%,#ffeeb0,#f2c94c 75%);border-color:#c69f22;box-shadow:0 4px 0 #c69f22}
-.key:active{transform:translateY(3px);box-shadow:0 1px 0 #b9c8d5}
+.key{aspect-ratio:1;border-radius:50%;border:1px solid var(--ad-line-2);background:var(--ad-surface);font-size:26px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 var(--ad-edge)}
+.key.g{background:#f2c94c;border-color:#c69f22;box-shadow:0 4px 0 #c69f22}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ad-edge)}
 .btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
 .aux{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px}
 </style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
 </head>
 <body>
 <div class="studio-note"><span><b>Design concept</b> · Twin Hive C — The collection is the comb</span><span>Static prototype · not a live game</span></div>
 <main class="app">
   <header class="bar">
     <a class="back" href="#" aria-label="All games"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>All games</span></a>
-    <span class="wordmark">Alford Daily</span>
+    <span class="wordmark"><img src="../assets/brand.svg" alt="" width="30" height="30"><span class="wm-text">Alford <em>Daily</em></span></span>
     <div class="tools">
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
       <button class="icon-btn" data-press aria-pressed="false" aria-label="Hide from hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 20L20 4"/></svg></button>
@@ -73,7 +74,7 @@
     </section>
   </div>
 </main>
-<p class="studio-foot">Concept notes: each accepted word becomes a physical cell in a six-cell comb, so the collection and the goal are one object. Cells keep true hexagon proportions at a capped size. "Preview fill animation" drops the current entry into the next cell locally — it is not a dictionary check and nothing is saved.</p>
+<p class="studio-foot">Concept notes: each accepted word becomes a physical cell in a six-cell comb, so the collection and the goal are one object. Cells keep true hexagon proportions at a capped size. "Preview fill animation" drops the current entry into the next cell locally — it is not a dictionary check and nothing is saved. Prototype wiring: letter keys, Delete, Clear and the fill preview work; physical typing, Add word, hint, reveal and the mode switch are visual only.</p>
 <script>
 document.querySelectorAll('[data-press]').forEach(b=>b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')));
 let v='MAIN';const w=document.getElementById('w'),h=document.getElementById('h');

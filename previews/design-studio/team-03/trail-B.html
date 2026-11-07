@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trail · Concept B · Ink trace</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .stage{max-width:520px;margin:0 auto}
 .clue-strip{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:14px 0 12px;border-top:3px solid var(--ink);border-bottom:1px solid var(--line)}
-.clue-strip p{margin:0;font:600 clamp(20px,4.8vw,24px)/1.3 var(--serif);flex:1 1 220px}
+.clue-strip p{margin:0;font:400 clamp(23px,5.2vw,28px)/1.22 var(--serif);flex:1 1 220px}
 .clue-strip .btn{min-height:44px;font-size:14px}
 .word{margin:22px 0 4px;display:flex;justify-content:center;gap:clamp(2px,1.2vw,8px)}
-.word span{width:clamp(24px,8vw,40px);text-align:center;font:800 clamp(28px,8.4vw,44px)/1.1 var(--sans);color:var(--ink);border-bottom:2px solid var(--line-2);padding-bottom:4px}
+.word span{width:clamp(24px,8vw,40px);text-align:center;font:700clamp(28px,8.4vw,44px)/1.1 var(--sans);color:var(--ink);border-bottom:2px solid var(--line-2);padding-bottom:4px}
 .word span:empty{color:transparent}
 .word span:empty::before{content:"·";color:var(--line-2)}
 .word span.new{color:var(--accent)}
@@ -20,22 +20,24 @@
 .trace-hi{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.35}
 .cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr)}
 .c{border:0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
-.c b{width:min(72%,74px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 clamp(28px,8vw,40px)/1 var(--sans);color:var(--ink);background:var(--bg);transition:transform .14s,background .14s,color .14s}
-.c:hover b{background:#dfe9f1}
-.c.sel b{background:var(--ink);color:#fff}
-.c.last b{background:var(--accent);transform:scale(1.08);box-shadow:0 0 0 5px rgba(10,106,138,.18)}
-.c.legal b{box-shadow:inset 0 0 0 2px var(--accent);background:#fff}
-.dock{position:sticky;bottom:0;margin-top:18px;padding:10px 0 12px;background:linear-gradient(rgba(237,243,248,0),var(--bg) 22%)}
-.dock .row-actions{background:var(--paper);border:1px solid var(--line-2);border-radius:14px;padding:6px;gap:6px}
+.c b{width:min(72%,74px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 clamp(28px,8vw,40px)/1 var(--sans);color:var(--ink);background:var(--paper);box-shadow:inset 0 0 0 1px var(--line);transition:transform .14s,background .14s,color .14s}
+.c:hover b{background:var(--bg-2)}
+.c.sel b{background:var(--ink);color:var(--paper);box-shadow:none}
+.c.last b{background:var(--accent);transform:scale(1.08);box-shadow:0 0 0 5px rgba(55,108,88,.18)}
+.c.legal b{box-shadow:inset 0 0 0 2px var(--accent);background:var(--paper)}
+.dock{position:sticky;bottom:0;margin-top:18px;padding:10px 0 12px;background:var(--bg)}
+.dock .row-actions{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:6px;gap:6px;box-shadow:var(--shadow)}
 .dock .btn{border:0}
 .msg{min-height:22px;margin:8px 0 0;font-size:15px;text-align:center;color:var(--ink-2)}
 .gesture{display:flex;justify-content:center;gap:16px;margin:10px 0 0;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .gesture span{display:inline-flex;gap:6px;align-items:center}
 .gesture i{display:inline-block;width:22px;height:4px;border-radius:2px;background:var(--ink)}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Trail · B — Ink trace · visual prototype, not a live game</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/deepseek-trail.svg" alt=""><div class="titles"><p class="kicker">Nine-letter trail</p><h1>Trail</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="stage">
  <div class="clue-strip"><p>“The moment ends. Something stays.”</p><button class="btn btn-quiet" id="def">Definition · counts as help</button></div>
@@ -51,7 +53,7 @@
 </main>
 <footer class="app-foot"><span>0 checks · repeating a word is free</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Trail</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const G='FTEOAALREGFWRTLO'.split(''),N=4;let path=[0,4,1],dragging=false,fresh=-1;
 const $=id=>document.getElementById(id);

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Shortlist · Concept C · Sorting Trays</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrapx{max-width:900px;margin:0 auto}
 .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid var(--ink);margin-bottom:14px}
@@ -9,32 +9,34 @@
 .tabs button span{font:600 10px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
 .tabs button b{font:800 clamp(16px,4.8vw,22px)/1 var(--display);letter-spacing:.04em}
 .tabs button[aria-selected="true"]{border-bottom-color:var(--blue)}
-.tabs button:disabled b{color:#a9b6c3}
+.tabs button:disabled b{color:var(--faint)}
 .pool{min-height:56px;display:flex;flex-wrap:wrap;gap:6px;padding:10px;border:1.5px dashed var(--line);border-radius:12px;margin-bottom:12px;align-items:center}
 .pool:empty::before{content:"All words sorted for this scan.";color:var(--muted);font-size:14px}
 .trays{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.tray{border-radius:14px;background:#fff;border:1px solid var(--line);padding:8px;min-height:220px;display:flex;flex-direction:column;gap:6px;transition:opacity .25s}
-.tray h3{margin:0 0 4px;display:flex;align-items:baseline;gap:6px;font:800 26px/1 var(--display)}
+.tray{border-radius:18px;background:var(--surface);border:1px solid var(--line);padding:10px 8px;min-height:220px;display:flex;flex-direction:column;gap:6px;transition:opacity .25s}
+.tray h3{margin:0 0 4px;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;font:700 26px/1 var(--display)}
 .tray h3 small{font:600 11px/1.2 var(--sans);color:var(--muted);letter-spacing:.04em}
-.tray.keep{border:2px solid var(--ink);box-shadow:0 12px 24px -18px rgba(15,29,42,.6)}
-.tray.keep h3::after{content:"KEEP";margin-left:auto;font:700 10px/1 var(--mono);letter-spacing:.1em;background:var(--ink);color:#fff;border-radius:5px;padding:4px 6px}
-.tray.drop{opacity:.5;background:var(--frame)}
+.tray.keep{border:2px solid var(--ink)}
+.tray.keep h3::after{content:"KEEP";margin-left:auto;font:700 10px/1 var(--sans);letter-spacing:.12em;background:var(--ink);color:var(--bg);border-radius:999px;padding:4px 7px}
+.tray.drop{opacity:.5;background:var(--well)}
 .tray.drop .chip{text-decoration:line-through}
 .tray.target{border-color:var(--blue);background:var(--blue-wash)}
-.chip{min-height:44px;border-radius:9px;border:1px solid var(--line);background:#fff;font:750 clamp(13px,3.9vw,17px)/1 var(--mono);letter-spacing:.04em;padding:0 8px;text-align:left}
+.chip{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font:700 clamp(13px,3.9vw,17px)/1 var(--sans);letter-spacing:.03em;padding:0 8px;text-align:left}
 .chip[aria-pressed="true"]{border:2px solid var(--blue);background:var(--blue);color:#fff}
 .pool .chip{flex:0 0 auto}
 .help{margin:12px 0 0;font-size:14px;color:var(--muted)}
-.compose{margin-top:16px;display:grid;gap:10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.compose{margin-top:16px;display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:14px}
 .alpha{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 @media (min-width:640px){.alpha{grid-template-columns:repeat(13,minmax(0,1fr))}}
-.alpha button{min-height:46px;border-radius:8px;border:1px solid var(--line);background:var(--frame);font:700 16px/1 var(--sans)}
+.alpha button{min-height:46px;border-radius:10px;border:1px solid var(--line);background:var(--well);font:700 16px/1 var(--sans)}
 .alpha button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
-</style></head>
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head>
 <body>
-<div class="rv"><span><b>Shortlist · Concept C “Sorting Trays”</b> · design review prototype, not a live game · scan result shown is illustrative</span><nav aria-label="Shortlist concepts"><a href="shortlist-A.html">A</a><a href="shortlist-B.html">B</a><a href="shortlist-C.html" aria-current="page">C</a><a href="shortlist-D.html">D</a></nav></div>
+<div class="rv"><span><b>Shortlist · Concept C “Sorting Trays”</b> · design review prototype, not a live game · scan result shown is illustrative</span><nav aria-label="Shortlist concepts"><a href="shortlist-A.html?theme=2">A</a><a href="shortlist-B.html?theme=2">B</a><a href="shortlist-C.html?theme=2" aria-current="page">C</a><a href="shortlist-D.html?theme=2">D</a></nav></div>
 <main class="app">
-<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Alford Daily</a>
+<header class="bar"><a class="brand" href="#" aria-label="Alford Daily, all games"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg><img src="../assets/brand.svg" alt="">Alford <span>Daily</span></a>
 <button class="ibtn" aria-pressed="false" aria-label="Favorite Shortlist" onclick="this.setAttribute('aria-pressed',this.getAttribute('aria-pressed')!=='true')"><svg viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
 <button class="ibtn" aria-label="Hide Shortlist from your collection"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.4.7-1.5 2.1-3 3.5M6.2 7.6C4.3 8.9 2.7 10.8 2 12c1 1.5 5 6 10 6 1.5 0 2.9-.4 4.1-1"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg></button>
 <button class="ibtn" aria-label="How to play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6M12 17h.01"/></svg></button></header>

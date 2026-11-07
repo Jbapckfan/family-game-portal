@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sprout · Concept D · Trailing planter</title>
-<link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="studio.css?theme=2">
 <style>
 .wrap{max-width:540px;margin:0 auto}
-.hook{width:2px;height:22px;margin:0 auto;background:#9fb3c2}
-.planter{position:relative;z-index:2;margin:0 6px;padding:10px 14px 14px;border-radius:14px 14px 30px 30px;background:linear-gradient(#f4f7f9,#e1e9ef);border:1px solid #b5c7d4;box-shadow:0 14px 20px -18px rgba(14,34,50,.6)}
-.planter-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font:700 11px/1.2 var(--mono);letter-spacing:.1em;color:#5b7385;margin-bottom:8px;flex-wrap:wrap}
-.soilbed{display:flex;gap:10px;justify-content:center;padding:8px;border-radius:999px;background:#d4dfe6;box-shadow:inset 0 3px 6px rgba(14,34,50,.18)}
-.peb{width:50px;height:50px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff,#e8f2e3 70%);box-shadow:0 3px 0 #9fbfa9;font:800 22px/1 var(--sans);color:#123d2e;cursor:pointer}
+.hook{width:2px;height:22px;margin:0 auto;background:#bdb8aa}
+.planter{position:relative;z-index:2;margin:0 6px;padding:12px 14px 14px;border-radius:16px 16px 32px 32px;background:#f6ece4;border:1px solid #dcc3b2;box-shadow:var(--shadow)}
+.planter-head{display:flex;justify-content:space-between;align-items:center;gap:4px 8px;font:700 10px/1.3 var(--mono);letter-spacing:.12em;color:var(--muted);margin-bottom:8px;flex-wrap:wrap}
+.soilbed{display:flex;gap:10px;justify-content:center;padding:8px;border-radius:999px;background:#e6d8ca;box-shadow:inset 0 2px 4px rgba(32,44,53,.12)}
+.peb{width:50px;height:50px;border-radius:50%;border:0;background:#f4f9f1;box-shadow:0 0 0 1px #b9d3c0,0 3px 0 #9fbfa9;font:700 22px/1 var(--sans);color:#123d2e;cursor:pointer}
 .peb:disabled{opacity:.3}
 .peb.used{visibility:hidden}
 .vines{margin-top:-14px}
@@ -16,15 +16,15 @@
 .vine{fill:none;stroke:#2b6650;stroke-width:3;stroke-linecap:round}
 .node{fill:#245c48}
 .node.add{fill:#a5d48e;stroke:#3f7d5f;stroke-width:1.5}
-.nt{font:800 22px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.nt{font:700 22px var(--sans);fill:#fff;text-anchor:middle;dominant-baseline:central}
 .nt.add{fill:#123d2e}
 .lfv{fill:#4f8f67}
 .gv{fill:none;stroke:#8ab89a;stroke-width:2;stroke-dasharray:4 5}
-.gn{fill:#fff;stroke:#5c9a72;stroke-width:1.6;stroke-dasharray:4 3}
+.gn{fill:#fffefa;stroke:#5c9a72;stroke-width:1.6;stroke-dasharray:4 3}
 .gn.f{fill:#e3f2dc;stroke-dasharray:none}.gn.fs{fill:#a5d48e}
-.gt{font:800 22px var(--sans);fill:#123d2e;text-anchor:middle;dominant-baseline:central}
-.fut{fill:none;stroke:#c3d2dc;stroke-width:1.5;stroke-dasharray:2 7}
-.lab{font:700 12px var(--mono);fill:#7a8f9f;text-anchor:middle}
+.gt{font:700 22px var(--sans);fill:#123d2e;text-anchor:middle;dominant-baseline:central}
+.fut{fill:none;stroke:#cfcabd;stroke-width:1.5;stroke-dasharray:2 7}
+.lab{font:700 12px var(--mono);fill:#7d8379;text-anchor:middle}
 .drop .vine{stroke-dasharray:400;animation:spool 1s ease-out both}
 .drop .n{animation:pop .35s ease-out both}
 .drop .lfv{animation:pop .4s ease-out both}
@@ -32,17 +32,19 @@
 @keyframes pop{from{opacity:0;transform:scale(.4)}}
 .drop .n,.drop .lfv{transform-box:fill-box;transform-origin:center}
 .note{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--ink-2);margin-top:4px}
-.panel{margin-top:10px;padding:14px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
-.panel h3{margin:0 0 8px;font:700 11px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.panel{margin-top:10px;padding:16px;border-radius:var(--card-r);background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow)}
+.panel h3{margin:0 0 10px;font:400 20px/1.2 var(--serif);color:var(--ink)}
 .rack{display:flex;gap:6px;flex-wrap:wrap}
-.tile{width:48px;height:52px;border-radius:10px;border:1.5px solid #9fbfa9;background:#fff;font:800 22px/1 var(--sans);cursor:pointer;color:#123d2e}
+.tile{width:48px;height:52px;border-radius:12px;border:1.5px solid #9fbfa9;background:var(--paper);font:700 22px/1 var(--sans);cursor:pointer;color:#123d2e}
 .tile:disabled{opacity:.28}
 .msg{min-height:22px;margin:10px 0 0;font-size:15px;color:var(--ink-2)}
-.quiet{display:flex;gap:4px;flex-wrap:wrap}.quiet .btn{font-size:14px}
-</style></head><body>
+.quiet{display:flex;gap:4px;flex-wrap:wrap}.quiet .btn{font-size:14px;padding:0 8px}
+</style>
+<link rel="stylesheet" href="../assets/site-theme.css?theme=2">
+</head><body>
 <p class="concept-tag"><b>Design concept</b>Sprout · D — Trailing planter · visual prototype; sample growth words derived for illustration</p>
 <div class="app">
-<header class="app-bar"><a class="back" href="#">← Alford Daily</a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
+<header class="app-bar"><a class="back" href="#" aria-label="Back to Alford Daily"><span class="arr" aria-hidden="true">←</span><img src="../assets/brand.svg" alt=""><span class="wordmark">Alford <strong>Daily</strong></span></a><div class="bar-tools"><button class="chip-btn" data-toggle="fav" aria-pressed="false">☆ Favorite</button><button class="chip-btn" data-toggle="hide" aria-pressed="false">Hide</button></div></header>
 <div class="game-head"><img src="../assets/icons/claude-sprout.svg" alt=""><div class="titles"><p class="kicker">Growing anagrams</p><h1>Sprout</h1></div><button class="help-btn" aria-label="How to play">?</button></div>
 <main class="wrap">
  <div class="hook" aria-hidden="true"></div>
@@ -51,7 +53,7 @@
   <g id="v"></g></svg></div>
  <div class="note"><span>Vines read downward. A pale node is the soil letter that word added.</span><button class="btn btn-quiet" id="replay" style="min-height:44px">▶ Replay last vine</button></div>
  <div class="panel">
-  <h3>USE EVERY LETTER OF THE LONGEST VINE · RALLY</h3><div class="rack" id="word"></div>
+  <h3>Use every letter of the longest vine · RALLY</h3><div class="rack" id="word"></div>
   <p class="msg" id="status"></p>
   <div class="row-actions"><button class="btn" id="del">Delete</button><button class="btn" id="clr">Clear</button><button class="btn btn-primary" id="grow">Grow</button></div>
   <div class="quiet"><button class="btn btn-quiet">Undo growth</button><button class="btn btn-quiet">Restart</button><button class="btn btn-quiet">Which letter? · 1 wilt</button></div>
@@ -60,7 +62,7 @@
 </main>
 <footer class="app-foot"><span>Undo and Restart keep wilts</span><button class="btn" data-fb="fb" aria-expanded="false">Feedback about Sprout</button><p class="fb-note" id="fb" hidden>In the live site this opens the private feedback form and shows its real receipt. This concept sends nothing.</p></footer>
 </div>
-<script src="studio.js"></script>
+<script src="studio.js?theme=2"></script>
 <script>
 const X={3:36,4:93,5:150,6:207,7:264,8:321},T0=34,STEP=45;
 const grown=[['ALL',-1],['ALLY',3],['RALLY',0]],cur='RALLY',soil=['M','N','O'];let typed=[];const $=id=>document.getElementById(id);

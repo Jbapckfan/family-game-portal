@@ -197,7 +197,27 @@ async function main() {
         }
         await ctx.close();
       }
-      // Contact sheet: the three sizes side by side, per shot.
+      process.stdout.write(`${g.id} `);
+    }
+  } finally {
+    await browser.close().catch(() => {});
+    // Save what was captured even if a later game failed.
+    const prevPath = join(out, 'report.json');
+    const redone = new Set(report.map((x) => `${x.id}|${x.viewport}`));
+    const prev = existsSync(prevPath) ? JSON.parse(readFileSync(prevPath, 'utf8')).filter((x) => !redone.has(`${x.id}|${x.viewport}`)) : [];
+    writeFileSync(prevPath, JSON.stringify([...prev, ...report], null, 2) + '\n');
+  }
+  // Contact sheets come from a fresh browser: a heavy WebGL game can leave the capture browser's
+  // GPU process unable to take further screenshots.
+  await makeSheets(chromium, out, games);
+  console.log(`\n${report.length} captures -> ${out}`);
+}
+
+// Contact sheet: every size side by side, per shot.
+async function makeSheets(chromium, out, games) {
+  const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--mute-audio'] });
+  try {
+    for (const g of games) {
       for (const shot of g.shots || [{ name: 'start' }]) {
         const imgs = Object.keys(VIEWPORTS).map((v) => [v, join(out, g.id, `${v}-${shot.name}.png`)]).filter(([, p]) => existsSync(p));
         if (!imgs.length) continue;
@@ -207,19 +227,14 @@ async function main() {
           return `<figure><img src="data:image/png;base64,${readFileSync(p).toString('base64')}" width="${Math.round(w * s)}" height="620"><figcaption>${v} ${w}x${h}</figcaption></figure>`;
         }).join('');
         await page.setContent(`<body style="margin:0;background:#888;font:14px system-ui;display:flex;gap:12px;padding:12px;align-items:flex-start">${cells}<style>figure{margin:0}img{display:block;outline:1px solid #000}figcaption{color:#fff;padding-top:4px}</style></body>`);
-        await page.screenshot({ path: join(out, g.id, `sheet-${shot.name}.png`), fullPage: true });
+        try { await page.screenshot({ path: join(out, g.id, `sheet-${shot.name}.png`), fullPage: true }); }
+        catch (e) { console.error(`sheet ${g.id}/${shot.name}: ${String(e.message || e).split('\n')[0]}`); }
         await page.close();
       }
-      process.stdout.write(`${g.id} `);
     }
   } finally {
     await browser.close();
   }
-  const prevPath = join(out, 'report.json');
-  const redone = new Set(report.map((x) => `${x.id}|${x.viewport}`));
-  const prev = existsSync(prevPath) ? JSON.parse(readFileSync(prevPath, 'utf8')).filter((x) => !redone.has(`${x.id}|${x.viewport}`)) : [];
-  writeFileSync(prevPath, JSON.stringify([...prev, ...report], null, 2) + '\n');
-  console.log(`\n${report.length} captures -> ${out}`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

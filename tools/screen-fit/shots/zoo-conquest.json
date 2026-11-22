@@ -1,0 +1,36 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "button[data-army=\"turtles\"]"
+        },
+        {
+          "clickText": "Start Game!"
+        },
+        {
+          "wait": 350
+        },
+        {
+          "eval": "(() => { const own=[...document.querySelectorAll('.territory')].find(el=>el.querySelector('circle[fill=\"#22c55e\"]')); if(!own)throw Error('No turtle territory'); own.dispatchEvent(new MouseEvent('click',{bubbles:true})); })()"
+        },
+        {
+          "wait": 300
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

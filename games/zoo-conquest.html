@@ -14,11 +14,1523 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Zoo Conquest">
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <style>
+  <style id="local-utilities">
+/* Embedded utilities compiled locally with Tailwind 4.2.1 (MIT); no runtime CSS dependency. */
+/*! tailwindcss v4.2.1 | MIT License | https://tailwindcss.com */
+@layer properties;
+@layer theme, base, components, utilities;
+:root, :host {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  --color-red-400: oklch(70.4% 0.191 22.216);
+  --color-red-500: oklch(63.7% 0.237 25.331);
+  --color-red-600: oklch(57.7% 0.245 27.325);
+  --color-red-800: oklch(44.4% 0.177 26.899);
+  --color-orange-500: oklch(70.5% 0.213 47.604);
+  --color-orange-600: oklch(64.6% 0.222 41.116);
+  --color-amber-50: oklch(98.7% 0.022 95.277);
+  --color-amber-100: oklch(96.2% 0.059 95.617);
+  --color-amber-200: oklch(92.4% 0.12 95.746);
+  --color-amber-400: oklch(82.8% 0.189 84.429);
+  --color-amber-500: oklch(76.9% 0.188 70.08);
+  --color-amber-600: oklch(66.6% 0.179 58.318);
+  --color-amber-700: oklch(55.5% 0.163 48.998);
+  --color-amber-800: oklch(47.3% 0.137 46.201);
+  --color-amber-900: oklch(41.4% 0.112 45.904);
+  --color-yellow-100: oklch(97.3% 0.071 103.193);
+  --color-yellow-200: oklch(94.5% 0.129 101.54);
+  --color-yellow-300: oklch(90.5% 0.182 98.111);
+  --color-yellow-400: oklch(85.2% 0.199 91.936);
+  --color-yellow-500: oklch(79.5% 0.184 86.047);
+  --color-yellow-600: oklch(68.1% 0.162 75.834);
+  --color-yellow-800: oklch(47.6% 0.114 61.907);
+  --color-green-50: oklch(98.2% 0.018 155.826);
+  --color-green-100: oklch(96.2% 0.044 156.743);
+  --color-green-200: oklch(92.5% 0.084 155.995);
+  --color-green-400: oklch(79.2% 0.209 151.711);
+  --color-green-500: oklch(72.3% 0.219 149.579);
+  --color-green-600: oklch(62.7% 0.194 149.214);
+  --color-green-700: oklch(52.7% 0.154 150.069);
+  --color-green-800: oklch(44.8% 0.119 151.328);
+  --color-blue-50: oklch(97% 0.014 254.604);
+  --color-blue-100: oklch(93.2% 0.032 255.585);
+  --color-blue-400: oklch(70.7% 0.165 254.624);
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-blue-600: oklch(54.6% 0.245 262.881);
+  --color-blue-700: oklch(48.8% 0.243 264.376);
+  --color-blue-800: oklch(42.4% 0.199 265.638);
+  --color-purple-50: oklch(97.7% 0.014 308.299);
+  --color-purple-200: oklch(90.2% 0.063 306.703);
+  --color-purple-500: oklch(62.7% 0.265 303.9);
+  --color-purple-600: oklch(55.8% 0.288 302.321);
+  --color-purple-800: oklch(43.8% 0.218 303.724);
+  --color-pink-500: oklch(65.6% 0.241 354.308);
+  --color-slate-600: oklch(44.6% 0.043 257.281);
+  --color-slate-800: oklch(27.9% 0.041 260.031);
+  --color-slate-900: oklch(20.8% 0.042 265.755);
+  --color-gray-50: oklch(98.5% 0.002 247.839);
+  --color-gray-100: oklch(96.7% 0.003 264.542);
+  --color-gray-200: oklch(92.8% 0.006 264.531);
+  --color-gray-300: oklch(87.2% 0.01 258.338);
+  --color-gray-400: oklch(70.7% 0.022 261.325);
+  --color-gray-500: oklch(55.1% 0.027 264.364);
+  --color-gray-600: oklch(44.6% 0.03 256.802);
+  --color-gray-700: oklch(37.3% 0.034 259.733);
+  --color-gray-800: oklch(27.8% 0.033 256.848);
+  --color-gray-900: oklch(21% 0.034 264.665);
+  --color-black: #000;
+  --color-white: #fff;
+  --spacing: 0.25rem;
+  --container-sm: 24rem;
+  --container-lg: 32rem;
+  --container-2xl: 42rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 1rem;
+  --text-base--line-height: calc(1.5 / 1);
+  --text-lg: 1.125rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-xl: 1.25rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: calc(2.25 / 1.875);
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  html, :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b, strong {
+    font-weight: bolder;
+  }
+  code, kbd, samp, pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol, ul, menu {
+    list-style: none;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button, input:where([type='button'], [type='reset'], [type='submit']), ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden='until-found'])) {
+    display: none !important;
+  }
+}
+.absolute {
+  position: absolute;
+}
+.fixed {
+  position: fixed;
+}
+.relative {
+  position: relative;
+}
+.static {
+  position: static;
+}
+.inset-0 {
+  inset: calc(var(--spacing) * 0);
+}
+.start {
+  inset-inline-start: var(--spacing);
+}
+.end {
+  inset-inline-end: var(--spacing);
+}
+.z-50 {
+  z-index: 50;
+}
+.container {
+  width: 100%;
+  @media (width >= 40rem) {
+    max-width: 40rem;
+  }
+  @media (width >= 48rem) {
+    max-width: 48rem;
+  }
+  @media (width >= 64rem) {
+    max-width: 64rem;
+  }
+  @media (width >= 80rem) {
+    max-width: 80rem;
+  }
+  @media (width >= 96rem) {
+    max-width: 96rem;
+  }
+}
+.mx-0\.5 {
+  margin-inline: calc(var(--spacing) * 0.5);
+}
+.mx-4 {
+  margin-inline: calc(var(--spacing) * 4);
+}
+.mt-0\.5 {
+  margin-top: calc(var(--spacing) * 0.5);
+}
+.mt-1 {
+  margin-top: calc(var(--spacing) * 1);
+}
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+.mt-3 {
+  margin-top: calc(var(--spacing) * 3);
+}
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
+}
+.mt-auto {
+  margin-top: auto;
+}
+.mb-1 {
+  margin-bottom: calc(var(--spacing) * 1);
+}
+.mb-2 {
+  margin-bottom: calc(var(--spacing) * 2);
+}
+.mb-3 {
+  margin-bottom: calc(var(--spacing) * 3);
+}
+.mb-4 {
+  margin-bottom: calc(var(--spacing) * 4);
+}
+.mb-6 {
+  margin-bottom: calc(var(--spacing) * 6);
+}
+.ml-1 {
+  margin-left: calc(var(--spacing) * 1);
+}
+.ml-2 {
+  margin-left: calc(var(--spacing) * 2);
+}
+.ml-3 {
+  margin-left: calc(var(--spacing) * 3);
+}
+.ml-auto {
+  margin-left: auto;
+}
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.inline-block {
+  display: inline-block;
+}
+.table {
+  display: table;
+}
+.h-3 {
+  height: calc(var(--spacing) * 3);
+}
+.h-8 {
+  height: calc(var(--spacing) * 8);
+}
+.h-10 {
+  height: calc(var(--spacing) * 10);
+}
+.h-11 {
+  height: calc(var(--spacing) * 11);
+}
+.h-14 {
+  height: calc(var(--spacing) * 14);
+}
+.h-screen {
+  height: 100vh;
+}
+.max-h-\[90vh\] {
+  max-height: 90vh;
+}
+.max-h-\[95vh\] {
+  max-height: 95vh;
+}
+.min-h-\[36px\] {
+  min-height: 36px;
+}
+.min-h-\[44px\] {
+  min-height: 44px;
+}
+.min-h-\[80px\] {
+  min-height: 80px;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.w-3 {
+  width: calc(var(--spacing) * 3);
+}
+.w-8 {
+  width: calc(var(--spacing) * 8);
+}
+.w-10 {
+  width: calc(var(--spacing) * 10);
+}
+.w-11 {
+  width: calc(var(--spacing) * 11);
+}
+.w-14 {
+  width: calc(var(--spacing) * 14);
+}
+.w-16 {
+  width: calc(var(--spacing) * 16);
+}
+.w-24 {
+  width: calc(var(--spacing) * 24);
+}
+.w-72 {
+  width: calc(var(--spacing) * 72);
+}
+.w-full {
+  width: 100%;
+}
+.max-w-2xl {
+  max-width: var(--container-2xl);
+}
+.max-w-lg {
+  max-width: var(--container-lg);
+}
+.max-w-sm {
+  max-width: var(--container-sm);
+}
+.min-w-0 {
+  min-width: calc(var(--spacing) * 0);
+}
+.flex-1 {
+  flex: 1;
+}
+.scale-105 {
+  --tw-scale-x: 105%;
+  --tw-scale-y: 105%;
+  --tw-scale-z: 105%;
+  scale: var(--tw-scale-x) var(--tw-scale-y);
+}
+.transform {
+  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+}
+.animate-pulse {
+  animation: var(--animate-pulse);
+}
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.items-center {
+  align-items: center;
+}
+.items-start {
+  align-items: flex-start;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+.gap-0\.5 {
+  gap: calc(var(--spacing) * 0.5);
+}
+.gap-1 {
+  gap: calc(var(--spacing) * 1);
+}
+.gap-1\.5 {
+  gap: calc(var(--spacing) * 1.5);
+}
+.gap-2 {
+  gap: calc(var(--spacing) * 2);
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
+}
+.gap-4 {
+  gap: calc(var(--spacing) * 4);
+}
+.gap-6 {
+  gap: calc(var(--spacing) * 6);
+}
+.space-y-1 {
+  :where(& > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 1) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+.space-y-2 {
+  :where(& > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-x-auto {
+  overflow-x: auto;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.rounded {
+  border-radius: 0.25rem;
+}
+.rounded-2xl {
+  border-radius: var(--radius-2xl);
+}
+.rounded-3xl {
+  border-radius: var(--radius-3xl);
+}
+.rounded-full {
+  border-radius: calc(infinity * 1px);
+}
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+.border {
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+}
+.border-2 {
+  border-style: var(--tw-border-style);
+  border-width: 2px;
+}
+.border-4 {
+  border-style: var(--tw-border-style);
+  border-width: 4px;
+}
+.border-b {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+.border-l-2 {
+  border-left-style: var(--tw-border-style);
+  border-left-width: 2px;
+}
+.border-amber-600 {
+  border-color: var(--color-amber-600);
+}
+.border-amber-700\/50 {
+  border-color: color-mix(in srgb, oklch(55.5% 0.163 48.998) 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    border-color: color-mix(in oklab, var(--color-amber-700) 50%, transparent);
+  }
+}
+.border-gray-200 {
+  border-color: var(--color-gray-200);
+}
+.border-gray-300 {
+  border-color: var(--color-gray-300);
+}
+.border-gray-700 {
+  border-color: var(--color-gray-700);
+}
+.border-gray-700\/50 {
+  border-color: color-mix(in srgb, oklch(37.3% 0.034 259.733) 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    border-color: color-mix(in oklab, var(--color-gray-700) 50%, transparent);
+  }
+}
+.border-green-200 {
+  border-color: var(--color-green-200);
+}
+.border-purple-200 {
+  border-color: var(--color-purple-200);
+}
+.border-slate-600 {
+  border-color: var(--color-slate-600);
+}
+.border-yellow-400 {
+  border-color: var(--color-yellow-400);
+}
+.bg-amber-50 {
+  background-color: var(--color-amber-50);
+}
+.bg-amber-500 {
+  background-color: var(--color-amber-500);
+}
+.bg-amber-700 {
+  background-color: var(--color-amber-700);
+}
+.bg-amber-900\/40 {
+  background-color: color-mix(in srgb, oklch(41.4% 0.112 45.904) 40%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-amber-900) 40%, transparent);
+  }
+}
+.bg-black\/70 {
+  background-color: color-mix(in srgb, #000 70%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-black) 70%, transparent);
+  }
+}
+.bg-blue-50 {
+  background-color: var(--color-blue-50);
+}
+.bg-blue-100 {
+  background-color: var(--color-blue-100);
+}
+.bg-blue-500 {
+  background-color: var(--color-blue-500);
+}
+.bg-blue-500\/80 {
+  background-color: color-mix(in srgb, oklch(62.3% 0.214 259.815) 80%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-blue-500) 80%, transparent);
+  }
+}
+.bg-blue-600 {
+  background-color: var(--color-blue-600);
+}
+.bg-gray-50 {
+  background-color: var(--color-gray-50);
+}
+.bg-gray-100 {
+  background-color: var(--color-gray-100);
+}
+.bg-gray-200 {
+  background-color: var(--color-gray-200);
+}
+.bg-gray-300 {
+  background-color: var(--color-gray-300);
+}
+.bg-gray-500 {
+  background-color: var(--color-gray-500);
+}
+.bg-gray-600 {
+  background-color: var(--color-gray-600);
+}
+.bg-gray-700 {
+  background-color: var(--color-gray-700);
+}
+.bg-gray-800 {
+  background-color: var(--color-gray-800);
+}
+.bg-gray-900 {
+  background-color: var(--color-gray-900);
+}
+.bg-green-50 {
+  background-color: var(--color-green-50);
+}
+.bg-green-100 {
+  background-color: var(--color-green-100);
+}
+.bg-green-500 {
+  background-color: var(--color-green-500);
+}
+.bg-green-600 {
+  background-color: var(--color-green-600);
+}
+.bg-orange-500 {
+  background-color: var(--color-orange-500);
+}
+.bg-pink-500 {
+  background-color: var(--color-pink-500);
+}
+.bg-purple-50 {
+  background-color: var(--color-purple-50);
+}
+.bg-purple-500 {
+  background-color: var(--color-purple-500);
+}
+.bg-red-500 {
+  background-color: var(--color-red-500);
+}
+.bg-red-600 {
+  background-color: var(--color-red-600);
+}
+.bg-white {
+  background-color: var(--color-white);
+}
+.bg-white\/20 {
+  background-color: color-mix(in srgb, #fff 20%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+  }
+}
+.bg-white\/30 {
+  background-color: color-mix(in srgb, #fff 30%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-white) 30%, transparent);
+  }
+}
+.bg-white\/40 {
+  background-color: color-mix(in srgb, #fff 40%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-white) 40%, transparent);
+  }
+}
+.bg-white\/50 {
+  background-color: color-mix(in srgb, #fff 50%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-white) 50%, transparent);
+  }
+}
+.bg-white\/90 {
+  background-color: color-mix(in srgb, #fff 90%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(in oklab, var(--color-white) 90%, transparent);
+  }
+}
+.bg-yellow-500 {
+  background-color: var(--color-yellow-500);
+}
+.bg-gradient-to-b {
+  --tw-gradient-position: to bottom in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-amber-100 {
+  --tw-gradient-from: var(--color-amber-100);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-amber-400 {
+  --tw-gradient-from: var(--color-amber-400);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-amber-700 {
+  --tw-gradient-from: var(--color-amber-700);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-green-500 {
+  --tw-gradient-from: var(--color-green-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-slate-800 {
+  --tw-gradient-from: var(--color-slate-800);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-yellow-100 {
+  --tw-gradient-from: var(--color-yellow-100);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-yellow-500 {
+  --tw-gradient-from: var(--color-yellow-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-amber-200 {
+  --tw-gradient-to: var(--color-amber-200);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-amber-500 {
+  --tw-gradient-to: var(--color-amber-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-amber-800 {
+  --tw-gradient-to: var(--color-amber-800);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-green-600 {
+  --tw-gradient-to: var(--color-green-600);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-orange-500 {
+  --tw-gradient-to: var(--color-orange-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-slate-900 {
+  --tw-gradient-to: var(--color-slate-900);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-yellow-200 {
+  --tw-gradient-to: var(--color-yellow-200);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.p-2 {
+  padding: calc(var(--spacing) * 2);
+}
+.p-3 {
+  padding: calc(var(--spacing) * 3);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
+.p-5 {
+  padding: calc(var(--spacing) * 5);
+}
+.p-6 {
+  padding: calc(var(--spacing) * 6);
+}
+.p-8 {
+  padding: calc(var(--spacing) * 8);
+}
+.px-1 {
+  padding-inline: calc(var(--spacing) * 1);
+}
+.px-2 {
+  padding-inline: calc(var(--spacing) * 2);
+}
+.px-2\.5 {
+  padding-inline: calc(var(--spacing) * 2.5);
+}
+.px-3 {
+  padding-inline: calc(var(--spacing) * 3);
+}
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+.px-5 {
+  padding-inline: calc(var(--spacing) * 5);
+}
+.px-6 {
+  padding-inline: calc(var(--spacing) * 6);
+}
+.px-8 {
+  padding-inline: calc(var(--spacing) * 8);
+}
+.py-0\.5 {
+  padding-block: calc(var(--spacing) * 0.5);
+}
+.py-1 {
+  padding-block: calc(var(--spacing) * 1);
+}
+.py-1\.5 {
+  padding-block: calc(var(--spacing) * 1.5);
+}
+.py-2 {
+  padding-block: calc(var(--spacing) * 2);
+}
+.py-3 {
+  padding-block: calc(var(--spacing) * 3);
+}
+.py-4 {
+  padding-block: calc(var(--spacing) * 4);
+}
+.pt-8 {
+  padding-top: calc(var(--spacing) * 8);
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-2xl {
+  font-size: var(--text-2xl);
+  line-height: var(--tw-leading, var(--text-2xl--line-height));
+}
+.text-3xl {
+  font-size: var(--text-3xl);
+  line-height: var(--tw-leading, var(--text-3xl--line-height));
+}
+.text-4xl {
+  font-size: var(--text-4xl);
+  line-height: var(--tw-leading, var(--text-4xl--line-height));
+}
+.text-6xl {
+  font-size: var(--text-6xl);
+  line-height: var(--tw-leading, var(--text-6xl--line-height));
+}
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-lg {
+  font-size: var(--text-lg);
+  line-height: var(--tw-leading, var(--text-lg--line-height));
+}
+.text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.text-xl {
+  font-size: var(--text-xl);
+  line-height: var(--tw-leading, var(--text-xl--line-height));
+}
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+.text-\[8px\] {
+  font-size: 8px;
+}
+.text-\[10px\] {
+  font-size: 10px;
+}
+.font-bold {
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+.text-amber-100 {
+  color: var(--color-amber-100);
+}
+.text-amber-200 {
+  color: var(--color-amber-200);
+}
+.text-amber-400 {
+  color: var(--color-amber-400);
+}
+.text-amber-600 {
+  color: var(--color-amber-600);
+}
+.text-amber-700 {
+  color: var(--color-amber-700);
+}
+.text-amber-800 {
+  color: var(--color-amber-800);
+}
+.text-amber-900 {
+  color: var(--color-amber-900);
+}
+.text-black {
+  color: var(--color-black);
+}
+.text-blue-400 {
+  color: var(--color-blue-400);
+}
+.text-blue-600 {
+  color: var(--color-blue-600);
+}
+.text-blue-800 {
+  color: var(--color-blue-800);
+}
+.text-gray-200 {
+  color: var(--color-gray-200);
+}
+.text-gray-300 {
+  color: var(--color-gray-300);
+}
+.text-gray-400 {
+  color: var(--color-gray-400);
+}
+.text-gray-500 {
+  color: var(--color-gray-500);
+}
+.text-gray-600 {
+  color: var(--color-gray-600);
+}
+.text-gray-700 {
+  color: var(--color-gray-700);
+}
+.text-gray-800 {
+  color: var(--color-gray-800);
+}
+.text-green-400 {
+  color: var(--color-green-400);
+}
+.text-green-600 {
+  color: var(--color-green-600);
+}
+.text-green-700 {
+  color: var(--color-green-700);
+}
+.text-green-800 {
+  color: var(--color-green-800);
+}
+.text-purple-800 {
+  color: var(--color-purple-800);
+}
+.text-red-400 {
+  color: var(--color-red-400);
+}
+.text-red-600 {
+  color: var(--color-red-600);
+}
+.text-red-800 {
+  color: var(--color-red-800);
+}
+.text-white {
+  color: var(--color-white);
+}
+.text-white\/80 {
+  color: color-mix(in srgb, #fff 80%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    color: color-mix(in oklab, var(--color-white) 80%, transparent);
+  }
+}
+.text-yellow-300 {
+  color: var(--color-yellow-300);
+}
+.text-yellow-400 {
+  color: var(--color-yellow-400);
+}
+.text-yellow-800 {
+  color: var(--color-yellow-800);
+}
+.opacity-30 {
+  opacity: 30%;
+}
+.opacity-40 {
+  opacity: 40%;
+}
+.opacity-60 {
+  opacity: 60%;
+}
+.shadow {
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.shadow-lg {
+  --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.shadow-md {
+  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-2 {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-4 {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-yellow-300 {
+  --tw-ring-color: var(--color-yellow-300);
+}
+.ring-yellow-400 {
+  --tw-ring-color: var(--color-yellow-400);
+}
+.ring-offset-2 {
+  --tw-ring-offset-width: 2px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+}
+.ring-offset-gray-700 {
+  --tw-ring-offset-color: var(--color-gray-700);
+}
+.backdrop-blur {
+  --tw-backdrop-blur: blur(8px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+}
+.transition-all {
+  transition-property: all;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+.ease-in {
+  --tw-ease: var(--ease-in);
+  transition-timing-function: var(--ease-in);
+}
+.ease-in-out {
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
+}
+.ease-out {
+  --tw-ease: var(--ease-out);
+  transition-timing-function: var(--ease-out);
+}
+.hover\:scale-105 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-scale-x: 105%;
+      --tw-scale-y: 105%;
+      --tw-scale-z: 105%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
+}
+.hover\:border-gray-400 {
+  &:hover {
+    @media (hover: hover) {
+      border-color: var(--color-gray-400);
+    }
+  }
+}
+.hover\:bg-amber-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-amber-600);
+    }
+  }
+}
+.hover\:bg-blue-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-blue-600);
+    }
+  }
+}
+.hover\:bg-blue-700 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-blue-700);
+    }
+  }
+}
+.hover\:bg-gray-300 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-gray-300);
+    }
+  }
+}
+.hover\:bg-gray-500 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-gray-500);
+    }
+  }
+}
+.hover\:bg-gray-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-gray-600);
+    }
+  }
+}
+.hover\:bg-green-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-green-600);
+    }
+  }
+}
+.hover\:bg-orange-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-orange-600);
+    }
+  }
+}
+.hover\:bg-purple-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-purple-600);
+    }
+  }
+}
+.hover\:bg-red-500 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-red-500);
+    }
+  }
+}
+.hover\:bg-red-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-red-600);
+    }
+  }
+}
+.hover\:bg-yellow-400 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-yellow-400);
+    }
+  }
+}
+.hover\:bg-yellow-600 {
+  &:hover {
+    @media (hover: hover) {
+      background-color: var(--color-yellow-600);
+    }
+  }
+}
+.hover\:from-amber-500 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-from: var(--color-amber-500);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:from-green-600 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-from: var(--color-green-600);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:from-yellow-600 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-from: var(--color-yellow-600);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:to-amber-600 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-to: var(--color-amber-600);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:to-green-700 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-to: var(--color-green-700);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:to-orange-600 {
+  &:hover {
+    @media (hover: hover) {
+      --tw-gradient-to: var(--color-orange-600);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+  }
+}
+.hover\:text-purple-600 {
+  &:hover {
+    @media (hover: hover) {
+      color: var(--color-purple-600);
+    }
+  }
+}
+.disabled\:cursor-not-allowed {
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+.disabled\:opacity-30 {
+  &:disabled {
+    opacity: 30%;
+  }
+}
+.disabled\:opacity-50 {
+  &:disabled {
+    opacity: 50%;
+  }
+}
+.md\:hidden {
+  @media (width >= 48rem) {
+    display: none;
+  }
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-gradient-position {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-via {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-to {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-via-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --tw-gradient-via-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --tw-gradient-to-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-backdrop-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ease {
+  syntax: "*";
+  inherits: false;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
+      --tw-space-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-gradient-position: initial;
+      --tw-gradient-from: #0000;
+      --tw-gradient-via: #0000;
+      --tw-gradient-to: #0000;
+      --tw-gradient-stops: initial;
+      --tw-gradient-via-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%;
+      --tw-font-weight: initial;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-backdrop-blur: initial;
+      --tw-backdrop-brightness: initial;
+      --tw-backdrop-contrast: initial;
+      --tw-backdrop-grayscale: initial;
+      --tw-backdrop-hue-rotate: initial;
+      --tw-backdrop-invert: initial;
+      --tw-backdrop-opacity: initial;
+      --tw-backdrop-saturate: initial;
+      --tw-backdrop-sepia: initial;
+      --tw-ease: initial;
+    }
+  }
+}
+
+</style>
+<style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
 
     body {
@@ -46,11 +1558,12 @@
       transition: all 0.3s ease;
       cursor: pointer;
     }
+@media (hover: hover) {
 
     .territory:hover {
       filter: brightness(1.2);
-      transform: scale(1.02);
-    }
+
+    }}
 
     .territory.selected {
       filter: brightness(1.3);
@@ -100,10 +1613,11 @@
       0%, 100% { transform: rotate(-5deg); }
       50% { transform: rotate(5deg); }
     }
+@media (hover: hover) {
 
     .animal-piece:hover {
       animation: wiggle 0.3s ease infinite;
-    }
+    }}
 
     @keyframes placeAnimal {
       0% { transform: scale(1); opacity: 1; }
@@ -403,10 +1917,74 @@
         border-radius: 4px;
         transition: width 0.3s ease;
       }
+
+    html,body,#root { width:100%; height:100dvh; margin:0; }
+    body { font-family:ui-rounded,system-ui,sans-serif; }
+    button,select { min-height:44px; cursor:pointer; }
+    .zoo-setup { height:100dvh; min-height:0; overflow:auto; align-items:safe center; padding:76px 24px 24px; background:radial-gradient(ellipse at 20% 20%,#20534a,#111b2a 75%); }
+    .zoo-setup-card { max-width:1100px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:20px; padding:24px; border:1px solid #fff5; }
+    .zoo-setup-card > h1,.zoo-setup-card > p { grid-column:1 / -1; }
+    .zoo-setup-card > h1 { font-size:clamp(28px,4vw,48px); }
+    .zoo-setup-card > button,.zoo-setup-card > details,.zoo-player-preview { grid-column:1 / -1; }
+    .zoo-help { text-align:left; background:#f0f6f4; border-radius:12px; margin-bottom:8px; }
+    .zoo-help summary { min-height:44px; padding:12px; cursor:pointer; font-weight:700; color:#166534; }
+    .zoo-setup-card > details:last-child { margin-top:8px; }
+    @media(min-width:701px) and (max-width:999px) { .zoo-setup-card { grid-template-columns:1fr 1fr; } }
+    .zoo-setup-card > div { min-width:0; margin-bottom:16px; }
+    .zoo-setup-card button[aria-label] { min-width:44px; }
+    .zoo-game { height:100dvh; padding:max(70px,calc(env(safe-area-inset-top) + 60px)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); gap:12px; background:radial-gradient(ellipse at center,#223f49,#0e1928); }
+    .game-map-area { min-height:0; padding:0!important; }
+    .game-message-bar { padding:12px!important; border:1px solid #ffffff15; }
+    .game-sidebar { flex-shrink:0; border:1px solid #ffffff16; border-radius:18px; }
+    .zoo-map-frame { min-height:0; border:1px solid #ffffff20; box-shadow:0 16px 60px #0005; background:radial-gradient(ellipse at center,#1a3a4a,#142d3d); }
+    .zoo-map { display:block; }
+
+    .zoo-map > g > rect { fill:transparent; }
+    .mobile-phase-bar > div > div { display:flex; align-items:center; justify-content:center; min-height:44px; }
+    .mobile-toggle-btn { bottom:max(16px,env(safe-area-inset-bottom)); }
+    @media(max-width:700px) {
+      .zoo-setup { padding:76px 12px 20px; }
+      .zoo-setup-card { display:block; padding:22px 16px; }
+      .zoo-setup-card > h1 { font-size:28px; }
+      .zoo-game { padding:70px 8px 72px; gap:6px; }
+      .game-message-bar { padding:8px!important; }
+      .game-message-bar > span { display:block; margin:0; }
+      .game-message-bar > span:last-child { font-size:11px; margin-top:3px; }
+      .game-sidebar { top:70px!important; bottom:76px!important; }
+      .territory text:last-child { font-size:14px; }
+    }
+    @media(orientation:portrait) and (min-width:701px) {
+      .zoo-game { padding-bottom:76px; }
+      .game-sidebar { top:70px!important; bottom:76px!important; }
+    }
+
+    /* Round 2: crisp family board-game finish. */
+    .zoo-setup-card { background:#f2f4ed; box-shadow:0 3px 0 #b9c8c1,0 22px 70px #0007,inset 0 1px #fff; border:1px solid #e3f3e8; border-radius:24px; }
+    .zoo-setup-card p,.zoo-setup-card small,.zoo-setup-card .text-xs,.zoo-setup-card .text-sm,.zoo-setup-card summary,.zoo-setup-card button { font-size:14px; color:#334155; }
+    .zoo-setup-card h1 { font-family:ui-rounded,system-ui,sans-serif; font-weight:900; }
+    .zoo-setup-card button { border-radius:10px; transition:transform .18s ease,box-shadow .18s ease,background .18s ease; }
+    .zoo-setup-card button:active:not(:disabled) { transform:translateY(2px); }
+    .zoo-setup-card > button { color:#fff; font-size:20px; background:#08753e; box-shadow:inset 0 1px #beffd650,0 4px 0 #054f2d; }
+    .zoo-setup-card button[data-army] { min-height:48px; background:#fffdf5; border:1px solid #a6b7a9; box-shadow:inset 0 1px #fff,0 2px 0 #c6cfc5; }
+    .zoo-setup-card button[data-army] span { color:#334155; }
+    .zoo-setup-card .text-gray-400,.zoo-setup-card .text-gray-500 { color:#4a5d64; }
+    .game-message-bar { background:#101f2e; color:#f2f7fd; box-shadow:inset 0 1px #e9fffb15; }
+    .game-message-bar span,.game-sidebar .text-xs,.game-sidebar .text-sm,.game-sidebar button,.mobile-phase-bar { font-size:14px!important; }
+    .game-sidebar { color:#e4edf8; background:#172436; box-shadow:0 12px 36px #0006; }
+    .zoo-map-frame { border:2px solid #8fa99255; border-radius:22px; background:radial-gradient(ellipse at 45% 35%,#235064,#102d3e 80%); box-shadow:inset 0 0 90px #071c3277,0 16px 40px #0005; }
+    .territory { transition:filter .18s ease; }
+    .territory:active { filter:brightness(1.25); }
+    .territory text { font-family:ui-rounded,system-ui,sans-serif; font-weight:700; }
+    .zoo-help summary { color:#14532d; }
+    .zoo-setup-card [disabled] { opacity:1; color:#53616e; background:#e2e8e7; }
+
+    .game-sidebar .text-gray-400,.game-sidebar .text-gray-500 { color:#c3d1e3; }
+    .mobile-phase-bar > div > div { color:#d8e8f8; }
+    [class*="victory-dance-"] { animation-iteration-count:2; }
   </style>
 </head>
 <body>
-  <a href="../" aria-label="Return to home menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
+  <a href="../" aria-label="Return to home menu" style="position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:100001;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">🏠 Menu</a>
   <div id="root">
       <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:#fff;font-family:sans-serif;flex-direction:column">
         <div style="font-size:3rem;margin-bottom:1rem">🦁</div>
@@ -935,7 +2513,7 @@
     };
 
     // Territory on Map - Clean design with region colors
-    const Territory = ({ id, data, owner, troops, isSelected, isValidTarget, onClick, onHover, onHoverEnd }) => {
+    const Territory = ({ id, data, owner, troops, isSelected, isValidTarget, onClick, onHover, onHoverEnd, portrait }) => {
       const army = owner ? ANIMAL_ARMIES[owner] : null;
       const baseColor = army ? army.color : '#6b7280';
       const region = REGIONS[data.region];
@@ -943,6 +2521,8 @@
 
       return (
         <g
+          transform={portrait ? `rotate(-90 ${data.x} ${data.y})` : undefined}
+          role="button" aria-label={`${data.name}, ${troops} animals`}
           className={`territory ${isSelected ? 'selected' : ''}`}
           onClick={(e) => onClick(id, e.shiftKey)}
           onDoubleClick={() => onClick(id, true)}
@@ -950,7 +2530,7 @@
           onMouseLeave={() => onHoverEnd && onHoverEnd()}
         >
           {/* Invisible enlarged hit target for touch */}
-          <circle cx={data.x} cy={data.y} r="32" fill="transparent" />
+          <circle cx={data.x} cy={data.y} r={portrait ? 36 : 32} fill="transparent" />
 
           {/* Outer glow for selected/valid */}
           {(isSelected || isValidTarget) && (
@@ -1023,8 +2603,15 @@
 
     // Game Board Map - Properly sized with region colors
     const GameMap = ({ gameState, selectedTerritory, validTargets, onTerritoryClick, turnPhase, onTerritoryHover, onTerritoryHoverEnd, rippleEffects }) => {
+      const [portrait, setPortrait] = useState(() => innerHeight > innerWidth);
+      useEffect(() => {
+        const refit = () => setPortrait(innerHeight > innerWidth);
+        window.addEventListener('resize', refit);
+        return () => window.removeEventListener('resize', refit);
+      }, []);
       return (
-      <svg viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
+      <svg className={portrait ? "zoo-map portrait-map" : "zoo-map"} viewBox={portrait ? "0 0 560 900" : "0 0 900 560"} preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
+        <g transform={portrait ? "translate(560 0) rotate(90)" : undefined}>
         {/* SVG defs for arrow markers */}
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -1048,7 +2635,7 @@
         {/* Australia - bottom right */}
         <ellipse cx="750" cy="450" rx="90" ry="80" fill={REGIONS.Australia.color} opacity="0.2" />
 
-        {/* Region Labels */}
+        {!portrait && <g>{/* Region Labels */}
         <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} EAGLE RIDGE +{REGIONS.NorthAmerica.bonus}</text>
         <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} PARROT PARADISE +{REGIONS.SouthAmerica.bonus}</text>
         <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} DEER WOODS +{REGIONS.Europe.bonus}</text>
@@ -1056,6 +2643,7 @@
         <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} TIGER TERRITORY +{REGIONS.Asia.bonus}</text>
         <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} KANGAROO OUTBACK +{REGIONS.Australia.bonus}</text>
 
+        </g>}
         {/* Eagle's Peak-Crane Marsh wrap-around connection */}
         <path d="M 70 70 Q 0 70, 0 300 Q 0 530, 70 530 M 830 70 Q 900 70, 900 300 Q 900 530, 830 530"
               stroke="#666" strokeWidth="2" strokeDasharray="8,5" fill="none" opacity="0.5" />
@@ -1122,6 +2710,7 @@
         {Object.entries(TERRITORIES).map(([id, data]) => (
           <Territory
             key={id}
+            portrait={portrait}
             id={id}
             data={data}
             owner={gameState.territories[id]?.owner}
@@ -1148,7 +2737,7 @@
             style={{ animationDelay: `${ripple.delay}ms` }}
           />
         ))}
-      </svg>
+      </g></svg>
     );
     };
 
@@ -3146,8 +4735,8 @@
         const canRemoveAI = setupAIs > 0 && totalPlayers > minTotal;
 
         return (
-          <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="bg-white/90 backdrop-blur rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
+          <div className="zoo-setup min-h-screen flex items-center justify-center p-4">
+            <div className="zoo-setup-card bg-white/90 backdrop-blur rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
               <h1 className="text-4xl mb-2 game-title text-amber-800">🦁 Zoo Conquest 🐘</h1>
               <p className="text-gray-600 mb-6">A Risk-style adventure at the Kansas City Zoo!</p>
 
@@ -3249,6 +4838,8 @@
                             return (
                               <button
                                 key={key}
+                                data-army={key}
+                                aria-label={`Choose ${army.name} army for player ${playerIdx + 1}`}
                                 disabled={isTaken}
                                 onClick={() => {
                                   setHumanArmyChoices(prev => {
@@ -3286,7 +4877,7 @@
               )}
 
               {/* Player Preview */}
-              <div className="bg-amber-50 rounded-xl p-3 mb-4">
+              <div className="zoo-player-preview bg-amber-50 rounded-xl p-3 mb-4">
                 <div className="text-sm font-bold text-amber-800 mb-2">Players in this game:</div>
                 <div className="flex flex-wrap justify-center gap-2">
                   {(() => {
@@ -3338,6 +4929,7 @@
                 🎮 Start Game!
               </button>
 
+              <details className="zoo-help"><summary>How to Play &amp; Dice Rules</summary>
               <div className="text-left bg-gray-50 rounded-xl p-4">
                 <div className="font-bold text-gray-800 mb-2">🎮 How to Play:</div>
                 <ul className="text-sm text-gray-700 space-y-1">
@@ -3358,6 +4950,8 @@
                   <li>• Highest dice compare - ties go to defender!</li>
                 </ul>
               </div>
+
+              </details>
 
               {/* Collapsible QR Code Share */}
               <details className="mt-4 bg-purple-50 rounded-xl p-3">
@@ -3470,7 +5064,7 @@
 
       // Main Game Screen - Map ~70% width, sidebar on right
       return (
-        <div className="h-screen flex overflow-hidden bg-gray-900">
+        <div className="zoo-game h-screen flex overflow-hidden bg-gray-900">
           {/* MAP AREA */}
           <div className="game-map-area flex-1 p-3 flex flex-col min-w-0">
             {/* Message bar */}
@@ -3506,7 +5100,7 @@
               )}
             </div>
             {/* Map container */}
-            <div className="flex-1 bg-gray-800 rounded-xl overflow-hidden">
+            <div className="zoo-map-frame flex-1 bg-gray-800 rounded-xl overflow-hidden">
               <GameMap
                 gameState={gameState}
                 selectedTerritory={selectedTerritory}

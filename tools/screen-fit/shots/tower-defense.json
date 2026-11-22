@@ -1,0 +1,39 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": ".map-card:not(.locked)"
+        },
+        {
+          "click": "#buildBtn"
+        },
+        {
+          "click": ".tower-card"
+        },
+        {
+          "eval": "(() => {const c=document.querySelector('#gameCanvas'),r=c.getBoundingClientRect();for(let y=65;y<viewH-60;y+=45){for(let x=65;x<viewW-60;x+=45){if(path.every((point,i)=>i===path.length-1||distToSegment(x,y,point,path[i+1])>=CFG.PATH_CLEARANCE)&&towers.every(t=>dist(x,y,t.x,t.y)>=CFG.TOWER_SPACING)){c.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+x,clientY:r.y+y}));return;}}} })()"
+        },
+        {
+          "click": "#startBtn"
+        },
+        {
+          "wait": 900
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

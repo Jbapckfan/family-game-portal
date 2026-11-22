@@ -1,0 +1,27 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "eval": "(() => { const g=window.game;g.renderer.render(g.scene,g.camera);const e=g.edges.find(e=>e.visible&&!e.userData.completed);const v=e.position.clone().project(g.camera),c=g.renderer.domElement,r=c.getBoundingClientRect();const init={bubbles:true,clientX:r.x+(v.x+1)*r.width/2,clientY:r.y+(1-v.y)*r.height/2};c.dispatchEvent(new MouseEvent('mousedown',init));c.dispatchEvent(new MouseEvent('mouseup',init)); })()"
+        },
+        {
+          "wait": 1200
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

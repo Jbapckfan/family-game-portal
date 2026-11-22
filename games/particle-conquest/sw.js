@@ -1,4 +1,4 @@
-const CACHE_NAME = 'particle-conquest-v2';
+const CACHE_NAME = 'particle-conquest-v4-polish-20261122';
 const ASSETS = [
   './',
   './index.html',

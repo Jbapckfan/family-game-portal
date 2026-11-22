@@ -105,7 +105,8 @@
     }
 
     .home-button { gap: 7px; grid-auto-flow: column; font-size: .82rem; font-weight: 850; }
-    .icon-button:hover, .home-button:hover { background: rgba(25,46,79,.9); }
+@media (hover: hover) {
+    .icon-button:hover, .home-button:hover { background: rgba(25,46,79,.9); }}
 
     .logo {
       margin: 0;
@@ -193,7 +194,8 @@
     }
 
     button.playing-card { cursor: pointer; touch-action: none; transition: transform .1s ease, filter .1s ease, box-shadow .1s ease, opacity .15s ease; }
-    button.playing-card:hover:not(:disabled) { transform: translateY(-6px); }
+@media (hover: hover) {
+    button.playing-card:hover:not(:disabled) { transform: translateY(-6px); }}
     button.playing-card:active:not(:disabled) { transform: translateY(1px) scale(.96); }
     button.playing-card:disabled { cursor: default; }
 
@@ -493,15 +495,109 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
+
+    button { min-width:44px; min-height:44px; }
+    /* Screen-fit table: viewport-sized cards, reserved navigation, no scaled text. */
+    .app { height:100dvh; min-height:0; overflow:hidden; isolation:auto; gap:8px; }
+    .topbar, .status-bar, .status-strip { width:100%; }
+    .home-button { position:fixed; top:max(10px,env(safe-area-inset-top)); left:max(12px,env(safe-area-inset-left)); z-index:100001; min-width:44px; min-height:44px; }
+    .home-button span { display:inline; }
+    .icon-button { min-width:44px; min-height:44px; }
+    .overlay { padding-top:max(74px,calc(env(safe-area-inset-top) + 64px)); align-items:safe center; }
+    #menu-overlay .panel { width:min(100%,1100px); display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(24px,4vw,64px); align-items:center; padding:clamp(22px,3vw,44px); }
+    .menu-heading .tagline { font-size:clamp(16px,1.5vw,20px); }
+    .menu-heading .hero-title { font-size:clamp(72px,10vw,140px); }
+    .menu-settings { min-width:0; }
+    .option-button, .rule-toggle, .variant-button { min-height:44px; }
+    .option-label { margin-top:10px; }
+    .primary-button, .secondary-button { margin-top:12px; }
+    @media(max-width:700px) {
+      .home-button { padding:8px; font-size:14px; }
+      .topbar { grid-template-columns:80px 1fr auto; gap:5px; }
+      .top-actions { gap:4px; }
+      .logo { font-size:clamp(18px,5vw,28px); letter-spacing:.04em; }
+      #menu-overlay .panel { display:block; padding:22px 18px; }
+      .menu-heading .hero-title { font-size:64px; }
+      .menu-heading .tagline { font-size:14px; margin:12px auto; }
+      .eyebrow { font-size:11px; }
+    }
+
+    :root { --card-w:min(16.5vw,17dvh); --center-w:min(21vw,21.5dvh); }
+    .game-board { width:100%; height:100%; grid-template-rows:minmax(0,.7fr) auto minmax(0,1fr); padding:12px clamp(8px,3vw,44px); border:1px solid #ffffff18; border-radius:28px; background:radial-gradient(ellipse at center,#12416c66,transparent 70%),#08192b66; box-shadow:inset 0 0 90px #0004; }
+    .game-board:has(.center-piles .playing-card:nth-child(3)) { --center-w:min(17vw,21.5dvh); }
+    .ai-hand { --card-w:min(11vw,10.5dvh); --card-h:calc(var(--card-w) * 1.4); }
+    .arena-row { gap:clamp(12px,4vw,64px); }
+    .reserve { width:min(12vw,11dvh); font-size:clamp(11px,1.2vw,15px); }
+    .zone-heading { font-size:clamp(12px,1.2vw,16px); }
+    .corner { font-size:calc(var(--card-w) * .2); }
+    .big-suit { font-size:calc(var(--card-w) * .58); }
+    @media(max-width:700px) {
+      .game-board { border-radius:22px; padding:12px 5px; }
+      .hand { gap:5px; }
+      .arena-row { gap:10px; }
+      .center-piles { gap:10px; }
+    }
+
+
+    /* Round 2: printed card stock on photographic baize. */
+    :root { --muted:#d4dced; }
+    .playing-card { border:1px solid #fff; background:radial-gradient(ellipse at 30% 10%,#fffefb,#f8f5ed 80%); color:#17202b; box-shadow:0 1px 0 #d6d1c7,0 3px 0 #bfc0c6,0 12px 22px #0007,inset 0 0 0 1px #d2cbbb66; border-radius:10px; font-family:Georgia,'Times New Roman',serif; }
+    .playing-card.red { color:#b91f3b; }
+    .corner { font-family:Georgia,'Times New Roman',serif; font-weight:700; font-size:clamp(20px,calc(var(--card-w) * .2),38px); line-height:.95; left:7%; top:6%; text-shadow:none; }
+    .corner.bottom { right:7%; bottom:6%; }
+    .corner .suit { margin-top:2px; font-size:.72em; }
+    .printed-face { position:absolute; inset:16% 18%; width:64%; height:68%; overflow:visible; fill:currentColor; font-family:Georgia,'Times New Roman',serif; }
+    .printed-face text { font-size:26px; font-weight:400; }
+    .court-face { inset:18% 22%; width:56%; height:64%; }
+    .ace-mark { position:absolute; inset:0; display:grid; place-items:center; font-size:calc(var(--card-w) * .58); }
+    .playing-card::after { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:repeating-linear-gradient(0deg,#8f825507 0 1px,transparent 1px 3px); }
+    .mini-deck,.human-deck,.card-back { border:3px solid #f4f1e8; background:repeating-conic-gradient(from 45deg,#d9d3f630 0 25%,transparent 0 50%) 0 0/10px 10px,linear-gradient(135deg,#38255c,#182f60); box-shadow:inset 0 0 0 3px #28385f,inset 0 0 0 4px #e1d9f677,0 2px 0 #d0cbc2,0 5px 0 #a5a5b2,0 12px 22px #0006; }
+    .mini-deck::before,.human-deck::before { font-family:Georgia,serif; font-style:normal; color:#fff6df; border:1px solid #e9e0cd88; padding:8px 5px; border-radius:50%; background:#26345b; transform:none; letter-spacing:1px; font-size:clamp(12px,1.5vw,22px); }
+    .option-button,.difficulty-button,.choice-button,.rule-toggle { font-size:14px; color:#e4eaf4; transition:background .18s ease,border-color .18s ease,transform .18s ease; }
+    .option-button small,.difficulty-button small,.choice-button small,.stat,.eyebrow,.option-label,.choice-label { font-size:14px; opacity:1; letter-spacing:.04em; }
+    .status-bar,.status-strip,.zone-heading,.seat-name,.play-caption { font-size:14px; }
+    .primary-button,.secondary-button { font-size:16px; }
+    .option-button:active,.difficulty-button:active,.choice-button:active,.rule-toggle:active,.icon-button:active { transform:translateY(2px); }
+    .topbar { min-width:0; }
+    .app { grid-template-columns:minmax(0,1fr); }
+
+    .game-board { min-width:0; background:radial-gradient(ellipse at center,#2486aa22,transparent 68%),url('speed-card-game/felt.jpg') center/384px 384px; box-shadow:inset 0 0 130px #031220c9,inset 0 0 0 2px #8eeaff12; }
+    .zone,.center-zone,.arena-row,.hand { min-width:0; max-width:100%; }
+    .ai-hand .playing-card { margin-left:0; }
+    .slot-number { font:700 14px system-ui,sans-serif; width:20px; height:20px; top:4px; right:4px; background:#162238; }
+    .reserve { background:#0a1528e8; color:#dbeafe; }
+    .versus { color:#dbeafe; font-size:14px; }
+    @media(max-width:700px) {
+      .topbar { grid-template-columns:90px minmax(0,1fr) auto; }
+      .logo { font-size:24px; text-align:left; }
+      .logo-sub { display:none; }
+      .game-board { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(110px,.65fr) minmax(0,1fr) auto; padding:16px 10px; gap:16px; }
+      .player-zone { width:100%; }
+      .player-zone .hand { width:100%; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:4px; }
+      .player-zone .playing-card { width:100%; height:auto; aspect-ratio:5/7; }
+      .ai-hand { --card-w:13vw; --card-h:calc(var(--card-w) * 1.4); gap:4px; }
+      .arena-row { width:100%; grid-template-columns:1fr 1fr; grid-template-rows:auto auto; gap:12px; }
+      .center-piles { --center-w:min(33vw,22dvh); --center-h:calc(var(--center-w) * 1.4); grid-column:1/-1; grid-row:2; justify-content:center; width:100%; gap:12px; }
+      .game-board:has(.center-piles .playing-card:nth-child(3)) .center-piles { --center-w:26vw; }
+      .reserve { grid-column:1; grid-row:1; width:100%; aspect-ratio:auto; min-height:44px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:14px; }
+      .reserve strong { margin:0; font-size:18px; }
+      .versus { grid-column:2; grid-row:1; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:4px; letter-spacing:0; }
+      .versus strong { font-size:20px; }
+      .versus span { font-size:14px; }
+      .zone-heading { letter-spacing:.03em; font-size:14px; }
+      .status-strip { grid-template-columns:auto minmax(0,1fr) auto; font-size:14px; gap:6px; padding:8px; }
+      .message { max-width:100%; }
+    }
+
   </style>
 </head>
 <body>
   <main class="app" id="app">
     <header class="topbar">
       <div class="top-actions">
-        <a class="home-button" href="../index.html" aria-label="Back to Alford Family Game Portal">⌂ <span>Games</span></a>
+        <a class="home-button" href="../index.html" aria-label="Back to Alford Family Game Portal">⌂ <span>Menu</span></a>
       </div>
-      <h1 class="logo">Speed · Beat the Bot</h1>
+      <h1 class="logo">Speed<span class="logo-sub"> · Beat the Bot</span></h1>
       <div class="top-actions">
         <button class="icon-button" id="help-button" type="button" aria-label="How to play">?</button>
         <button class="icon-button" id="sound-button" type="button" aria-label="Turn sound off" aria-pressed="true">♪</button>
@@ -541,9 +637,9 @@
 
   <section class="overlay open" id="menu-overlay" role="dialog" aria-modal="true" aria-labelledby="menu-title">
     <div class="panel">
-      <p class="eyebrow">Lightning card duel</p>
+      <div class="menu-heading"><p class="eyebrow">Lightning card duel</p>
       <h2 class="hero-title" id="menu-title">Speed</h2>
-      <p class="tagline">No turns. No waiting. Play one rank higher or lower than either center card and empty your deck before the bot.</p>
+      <p class="tagline">No turns. No waiting. Play one rank higher or lower than either center card and empty your deck before the bot.</p></div><div class="menu-settings">
       <span class="choice-label">Race mode</span>
       <div class="choice-grid modes" id="mode-row">
         <button class="choice-button" type="button" data-mode="ai">Bot Race<small>Adaptive rival</small></button>
@@ -578,7 +674,7 @@
         <div class="stat"><strong id="stat-streak">0</strong>Streak</div>
         <div class="stat"><strong id="stat-best">—</strong>Best</div>
       </div>
-    </div>
+    </div></div>
   </section>
 
   <section class="overlay" id="rules-overlay" role="dialog" aria-modal="true" aria-labelledby="rules-title">
@@ -904,6 +1000,24 @@
       if (navigator.vibrate) navigator.vibrate(pattern);
     }
 
+    // Printed faces are presentation only; card rank/suit/rules are untouched.
+    const PRINTED_PIP_LAYOUTS = {
+        2:[[50,28],[50,112]], 3:[[50,24],[50,70],[50,116]],
+        4:[[29,27],[71,27],[29,113],[71,113]],
+        5:[[29,27],[71,27],[50,70],[29,113],[71,113]],
+        6:[[29,25],[71,25],[29,70],[71,70],[29,115],[71,115]],
+        7:[[29,25],[71,25],[50,47],[29,70],[71,70],[29,115],[71,115]],
+        8:[[29,25],[71,25],[50,47],[29,70],[71,70],[50,93],[29,115],[71,115]],
+        9:[[29,23],[71,23],[29,54],[71,54],[50,70],[29,86],[71,86],[29,117],[71,117]],
+        10:[[29,23],[71,23],[50,40],[29,54],[71,54],[29,86],[71,86],[50,100],[29,117],[71,117]]
+      };
+    function printedCardFace(card) {
+      const pips = PRINTED_PIP_LAYOUTS[Number(card.rank)];
+      if (pips) return `<svg class="printed-face" viewBox="0 0 100 140" aria-hidden="true">${pips.map(([x,y])=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" ${y>70?`transform="rotate(180 ${x} ${y})"`:''}>${card.symbol}</text>`).join('')}</svg>`;
+      if (card.rank === 'A' || card.wild) return `<span class="ace-mark" aria-hidden="true">${card.symbol}</span>`;
+      return `<svg class="printed-face court-face" viewBox="0 0 100 140" aria-hidden="true"><rect x="12" y="8" width="76" height="124" rx="2" fill="none" stroke="currentColor" stroke-width="1"/><path d="M25 36l-4-15 18 9 11-17 11 17 18-9-4 15z M25 104l-4 15 18-9 11 17 11-17 18 9-4-15z" fill="currentColor"/><path d="M18 44h64M18 96h64M23 49l54 42M77 49L23 91" stroke="currentColor" stroke-width="1"/><circle cx="50" cy="70" r="21" fill="#fffdf6" stroke="currentColor"/><text x="50" y="73" text-anchor="middle" dominant-baseline="central" style="font-size:34px">${card.rank}</text></svg>`;
+    }
+
     function cardMarkup(card, options = {}) {
       const centerCard = Number.isInteger(options.pileIndex);
       const tag = options.button || centerCard ? 'button' : 'div';
@@ -920,7 +1034,7 @@
       const slot = options.slot ? `<span class="slot-number" aria-hidden="true">${options.slot}</span>` : '';
       return `<${tag} class="${classes.join(' ')}" ${attributes}>
         <span class="corner"><span>${card.rank}</span><span class="suit">${card.symbol}</span></span>
-        <span class="big-suit" aria-hidden="true">${card.symbol}</span>
+        ${printedCardFace(card)}
         <span class="corner bottom"><span>${card.rank}</span><span class="suit">${card.symbol}</span></span>
         ${slot}
       </${tag}>`;

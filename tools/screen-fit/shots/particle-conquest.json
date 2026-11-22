@@ -1,0 +1,36 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": ".diff-btn.easy"
+        },
+        {
+          "wait": 300
+        },
+        {
+          "eval": "document.querySelector('#tutorialSkip')?.click()"
+        },
+        {
+          "eval": "(() => { const source=planets.find(p=>p.owner===PLAYER); const target=planets.find(p=>p.owner===NEUTRAL); if(!source||!target)throw Error('No battlefield'); const c=document.querySelector('#canvas'); c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:source.x,clientY:source.y}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:source.x,clientY:source.y}));c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:target.x,clientY:target.y}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:target.x,clientY:target.y})); })()"
+        },
+        {
+          "wait": 350
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

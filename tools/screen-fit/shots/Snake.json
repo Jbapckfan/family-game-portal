@@ -1,0 +1,29 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "settle": 100,
+      "steps": [
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 300
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "eval": "(() => { const pause = document.querySelector('button[aria-label=\"Pause game\"]'); const board = document.querySelector('[aria-label^=\"Snake board,\"]'); if (!pause || pause.disabled || !board || /paused|game over/i.test(board.getAttribute('aria-label'))) throw new Error('Snake must be running and unobscured for the play shot'); })()"
+        }
+      ]
+    }
+  ]
+}

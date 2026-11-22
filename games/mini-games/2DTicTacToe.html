@@ -867,7 +867,11 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 .mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
 .mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
 .mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
-</style><style>.mini-shell>div.max-w-md button{border-radius:12px;transition:transform .18s ease,background-color .18s ease,box-shadow .18s ease}.mini-shell>div.max-w-md button:active,.mute-btn:active,.modal-close-button:active{transform:translateY(2px)!important}</style></head>
+</style><style>.mini-shell>div.max-w-md button{border-radius:12px;transition:transform .18s ease,background-color .18s ease,box-shadow .18s ease}.mini-shell>div.max-w-md button:active,.mute-btn:active,.modal-close-button:active{transform:translateY(2px)!important}</style><style id="round-four-fit">
+/* Captions are not touch targets; preserve the existing 44px labels, inputs and buttons. */
+.tic-setup-card p{min-height:0!important}.tic-setup-card>h1{margin-bottom:12px}.tic-setup-card>p{margin-bottom:12px}.tic-setup-card>button{margin-top:16px}
+@media(min-width:701px){.tic-setup-shell{justify-content:center!important;align-items:center!important}}
+</style></head>
 <body>
   <a href="../../"
      aria-label="Back to menu"
@@ -2199,12 +2203,12 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 
             if (!gameMode) {
                 return (
-                    <div className="mini-shell min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+                    <div className="tic-setup-shell mini-shell min-h-screen relative bg-gray-900 text-white flex flex-col items-center justify-center p-4">
                         <div className="scanline-overlay" aria-hidden="true"></div>
                         <button className="mute-btn" onClick={handleMuteToggle} aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}>
                             {isMuted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
                         </button>
-                        <div className="relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
+                        <div className="tic-setup-card relative z-10 bg-black/40 rounded-xl shadow-2xl p-6 w-full max-w-md border border-blue-700/50 shadow-blue-900/40 text-center">
                             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
                                 TIC-TAC-TOE
                             </h1>
@@ -2591,7 +2595,9 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
    if (grid) { const ar = getComputedStyle(grid).aspectRatio.split('/').map(Number); if (ar.length === 2 && ar[0] > 0 && ar[1] > 0) ratio = ar[0] / ar[1]; }
   }
   const overhead = Math.max(0, r.height - r.width / ratio);
-  let available = innerHeight - number(ss.paddingTop) - number(ss.paddingBottom) - number(cs.paddingTop) - number(cs.paddingBottom);
+  // The layout's borders sit outside its padding/content; retain one pixel for rounding.
+  const frameHeight = number(cs.paddingTop) + number(cs.paddingBottom) + number(cs.borderTopWidth) + number(cs.borderBottomWidth);
+  let available = innerHeight - number(ss.paddingTop) - number(ss.paddingBottom) - frameHeight - 1;
   let width;
   if (vertical) {
    available -= (controls?.getBoundingClientRect().height || 0) + (bottom?.getBoundingClientRect().height || 0) + number(cs.rowGap) * 2;

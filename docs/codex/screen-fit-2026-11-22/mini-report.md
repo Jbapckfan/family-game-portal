@@ -302,3 +302,52 @@ The three project images total **308696 bytes**. Each prompt file preserves the 
 - `games/mini-games/Minesweeper-pro.css`
 - The three JPEGs and three prompt files listed above.
 - `docs/codex/screen-fit-2026-11-22/mini-report.md`
+
+## Round 4 — scoped overflow, capture shots and texture cleanup
+
+Base commit: `443ecc6`. Inspected Tic-Tac-Toe's start/play sheets from `output/screen-fit/mini-verify3/` and its report entries. Claude's measured regressions were 62px of start-screen scroll on iPad landscape and 2px during play on iPad landscape, laptop and iPad portrait. No browser or capture was launched for this round; actual post-change scroll remains for Claude to measure.
+
+### Tic-Tac-Toe
+
+- Added setup-specific classes so the changes apply to the start card. Non-interactive captions no longer inherit a 44px minimum height. Reduced the title, challenge-caption and Rules-button margins. Labels, inputs and buttons retain their existing 44px minimum targets, and text sizes remain unchanged at the Round 3 minimums.
+- Centered the start card within the padded viewport on screens at least 701px wide, including iPad portrait. Phone keeps its tighter top alignment.
+- Fixed the play fitter's height budget: it previously subtracted padding but omitted the outer layout's top/bottom borders. It now includes those borders and a one-pixel rounding allowance. No overflow clipping or text/target scaling was used to hide the issue.
+- A plain-JavaScript bordered-frame fixture reproduced the old 2px overflow for the three larger layouts. The revised calculation stayed within all four fixture viewports. These are modeled bounds, not new browser measurements or certification of the menu's rendered height.
+
+### Solved Lasers & Mirrors shot
+
+Added `tools/screen-fit/shots/lasers_mirrors_game.json`; `games.json` and the game HTML remain unchanged.
+
+The shot loads level 1 through the existing loader, uses the target's x-coordinate and the source's y-coordinate as the reflection point, and adds the canvas rectangle's left/top offsets to form the double-click's screen position. This accounts for the canvas's inset rather than using a fixed percentage of the whole viewport. Optional snap is turned off through the existing toggle if necessary, matching the default layout.
+
+Placement goes through the actual double-click handler, then the existing Fire action. The shot checks that pointer coordinates, logical mirror center and the midpoint of its drawn endpoints agree, with at most one CSS pixel of event rounding. It waits for the real winning state, target-hit flag and completed beam animation, rejecting after eight seconds if they do not arrive. After the existing celebration delay, it hides only the victory panel with the game's presentation helper so the solved beam remains visible; it does not set victory flags or advance the level.
+
+**Geometry confirmation:** this game uses continuous CSS-pixel coordinates; the background grid is not a separate logical-cell system. `Mirror.draw()` and `Mirror.intersectsRay()` both use `getEndpoints()` derived from the same mirror x/y/angle/length. DPR scales the shared drawing context. There is no separate drawn-position offset to repair in the engine. Plain-JavaScript checks using the actual mirror, placement handler, beam calculation, victory logic and beam-draw animation solved level 1 on the four capture board sizes and the validator's five board sizes. All nine checks used one mirror and confirmed that its drawn center matched its logical center. This does not replace the browser capture.
+
+### Running Snake shot
+
+Added `tools/screen-fit/shots/Snake.json`. It starts with ArrowUp, runs for 300ms, turns left, runs for another 200ms, and uses a 100ms screenshot settling period supported by the current harness. It never pauses. An assertion rejects a ready, paused or game-over state before capture. The short path stays near the starting center of the default 17×17 field; `Snake.html` is unchanged.
+
+### One shared ebony texture
+
+The 2048 and Peg Jumper JPEGs had the same SHA-256 (`c7a228407e1f3121b72f60d1802685810f803c83d188caa35400cb4ce29936e1`), and their prompt files were also byte-identical. Retained `games/mini-games/PegJumper-assets/ebony-board-r3.jpg` and its prompt. Updated 2048's relative CSS URL to `./PegJumper-assets/ebony-board-r3.jpg`, then removed the two duplicate `2048-assets/classic-wood-r3.*` files and their empty directory. The material image itself is unchanged. This supersedes the duplicate asset paths recorded in Round 3.
+
+### Verification and handoff
+
+- Six inline scripts in the two edited HTML files passed local JSX conversion where required and `node --check`.
+- Nineteen style blocks parsed without CSS warnings. Both new shot JSON files and all four evaluation programs passed syntax checks.
+- Bordered-frame budget fixtures passed for all four sizes; real laser geometry/animation checks passed on nine board sizes.
+- The retained texture and prompt exist, the new 2048 URL resolves, and the duplicate files are absent. Targeted `git diff --check` passed.
+- Laser/Snake game HTML, `capture.mjs` and `games.json` match HEAD. The laser level validator was not rerun because no laser game/level source changed. No Git write was performed.
+
+**Claude's next check:** zero page scroll and fully visible Rules on Tic-Tac-Toe start/play at all four sizes, the vertically centered portrait setup card, a solved visible laser beam with no step errors, an active unblurred Snake board, and 2048 Classic Wood loading the shared texture.
+
+### Files changed in Round 4
+
+- `games/mini-games/2DTicTacToe.html`
+- `games/mini-games/2048.html`
+- `tools/screen-fit/shots/lasers_mirrors_game.json` (new)
+- `tools/screen-fit/shots/Snake.json` (new)
+- `games/mini-games/2048-assets/classic-wood-r3.jpg` (removed duplicate)
+- `games/mini-games/2048-assets/classic-wood-r3.prompt.txt` (removed duplicate)
+- `docs/codex/screen-fit-2026-11-22/mini-report.md`

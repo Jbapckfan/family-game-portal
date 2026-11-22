@@ -1,0 +1,26 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "settle": 100,
+      "steps": [
+        {
+          "eval": "(() => {\n  loadLevel(0);\n  if (snapToGridEnabled) toggleSnapToGrid();\n  const board = document.getElementById('gameCanvas');\n  const rect = board.getBoundingClientRect();\n  // Level 1 turns a horizontal ray upward: the target's x meets the source's y.\n  const x = gameState.target.x;\n  const y = gameState.laserSource.y;\n  const pointer = new MouseEvent('dblclick', { bubbles: true, clientX: rect.left + x, clientY: rect.top + y });\n  board.dispatchEvent(pointer);\n  const mirror = gameState.mirrors[0];\n  if (!mirror || gameState.mirrors.length !== 1) throw new Error('Level 1 mirror was not placed');\n  // MouseEvent may round fractional CSS pixels; physics and drawing must use that same point.\n  if (Math.abs(mirror.x - x) > 1 || Math.abs(mirror.y - y) > 1) throw new Error('Mirror missed the source/target intersection');\n  if (Math.abs(mirror.x - (pointer.clientX - rect.left)) > 1e-6 || Math.abs(mirror.y - (pointer.clientY - rect.top)) > 1e-6) throw new Error('Pointer and logical mirror coordinates disagree');\n  const edge = mirror.getEndpoints();\n  if (Math.abs((edge.x1 + edge.x2) / 2 - mirror.x) > 1e-6 || Math.abs((edge.y1 + edge.y2) / 2 - mirror.y) > 1e-6) throw new Error('Drawn mirror endpoints disagree with its logical center');\n  fireLaser();\n  closeControlsPanelOnMobile();\n})()"
+        },
+        {
+          "eval": "(async () => {\n  const deadline = performance.now() + 8000;\n  await new Promise((resolve, reject) => {\n    const check = () => {\n      if (gameState.won && gameState.target.hit && !laserAnimating && (laserAnimDone || prefersReducedMotion)) return resolve();\n      if (performance.now() > deadline) return reject(new Error('Level 1 did not finish a winning beam trace'));\n      requestAnimationFrame(check);\n    };\n    check();\n  });\n})()"
+        },
+        {
+          "wait": 900
+        },
+        {
+          "eval": "(() => { if (!gameState.won || !gameState.target.hit || laserAnimating) throw new Error('Solved laser state was lost'); hideVictoryModal(); })()"
+        }
+      ]
+    }
+  ]
+}

@@ -1260,7 +1260,16 @@ canvas#gameCanvas {
 }
 </style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style>
 canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-panel{top:max(12px,env(safe-area-inset-top))!important;left:max(116px,calc(env(safe-area-inset-left) + 104px))!important}.controls-toggle{top:max(12px,env(safe-area-inset-top))!important;right:max(12px,env(safe-area-inset-right))}.controls-panel{top:max(88px,calc(env(safe-area-inset-top) + 76px))!important}.mirror-toolbar{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}.lab-head{flex-wrap:wrap;gap:8px}.lab-head button{min-height:44px}.optics-lab-overlay{padding-top:max(74px,calc(env(safe-area-inset-top) + 62px))!important}.lab-head h2{font-size:clamp(14px,2vw,24px)}@media(max-width:700px){.level-panel{left:max(104px,calc(env(safe-area-inset-left) + 92px))!important}}
-</style></head>
+</style><style id="round-three-polish">
+/* Round 3: chrome only. Canvas coordinates, dimensions and optics are unchanged. */
+.ui-panel{background:linear-gradient(145deg,#182b55f5,#0d1938f5);border-color:#708dc6;border-radius:14px;box-shadow:inset 0 1px #e0ecff33,0 6px 18px #0005}.ui-panel::before,body::before{animation:none!important}.level-panel{background:linear-gradient(145deg,#19325d,#101d3c)!important;border-color:#738fc5}.level-panel .level-text{color:#f1f6ff;font:750 clamp(14px,1.6vw,20px)/1.15 system-ui,sans-serif!important;letter-spacing:.025em;white-space:nowrap!important;text-overflow:ellipsis}.level-panel .level-progress{font:500 14px/1.1 system-ui,sans-serif!important;color:#d0def4!important}.level-panel .move-counter{font:650 14px/1.1 system-ui,sans-serif!important;color:#a7f3d0}
+.controls-toggle,.game-button,.mute-btn,.lab-close,.lab-tool,.victory-btn,.level-btn{font:650 14px/1.25 system-ui,sans-serif!important;min-height:44px;border-radius:10px!important;border:1px solid #7892c1!important;background:linear-gradient(145deg,#1d3563,#102141)!important;color:#ecf4ff!important;box-shadow:inset 0 1px #fff3,0 2px 0 #050c1a;transition:transform .18s ease,background-color .18s ease,box-shadow .18s ease}
+.controls-toggle{background:#102141!important;color:#dcf6ff!important;border-color:#7dd3fc!important}.game-button[aria-label="Fire laser"]{background:#a5f3fc!important;color:#07111f!important;border-color:#a5f3fc!important;font-weight:800!important}.game-button:disabled,.victory-btn:disabled{opacity:.6}.controls-panel{border-color:#7892c1;background:#0d1938fc!important}.score-text,.laser-help p,.laser-help summary,.lab-help{font-size:14px!important;line-height:1.4;color:#dbeafe}.mirror-toolbar{background:linear-gradient(#14254bf5,#080f24fa);border-color:#6c88bc;box-shadow:0 -4px 16px #0003}.mirror-slot{border:1px solid #8aa8d1;background:linear-gradient(145deg,#23395f,#0d1a34);box-shadow:inset 0 1px #e0edff55,0 2px 4px #0007;border-radius:12px;animation:none!important}.mirror-slot.next-to-place{outline:2px solid #67e8f9;outline-offset:2px;animation:none!important}.mirror-slot span{font-size:14px}.mirror-touch-controls button{background:#142d56;color:#f0f9ff;border:1px solid #93c5fd;min-height:44px;min-width:44px;box-shadow:inset 0 1px #fff4,0 3px 7px #0005}
+.level-select-overlay,.victory-modal-overlay{color:#eaf2ff}.victory-modal,.level-select-panel{background:#0d1938;border-color:#7892c1}.victory-stat-label,.victory-par-comparison,.win-moves{font-size:14px!important;color:#dbeafe}.optics-lab-overlay{background:#080f23}.lab-tools{gap:8px}.lab-help{color:#dbeafe}.lab-tool.active{background:#a5f3fc!important;color:#07111f!important}.game-button:active:not(:disabled),.controls-toggle:active,.lab-tool:active,.lab-close:active,.mirror-slot:active,.victory-btn:active{transform:translateY(2px)!important;box-shadow:inset 0 2px 5px #0008}.game-button:focus-visible,.controls-toggle:focus-visible,.mirror-slot:focus-visible,.lab-tool:focus-visible,.lab-close:focus-visible{outline:3px solid #fde68a;outline-offset:3px}
+@media(hover:hover){.game-button:hover:not(:disabled),.controls-toggle:hover,.lab-tool:hover{filter:brightness(1.12)}}
+@media(max-width:700px){.level-panel{padding:6px 8px!important}.level-panel .level-text{font-size:14px!important;letter-spacing:0}.level-panel .level-progress,.level-panel .move-counter{font-size:14px!important}.controls-toggle{font-size:14px!important;padding:6px 3px}.instruction-text{font-size:14px}.mirror-slots-row{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style><style>.victory-title,.victory-stars,.win-message,.win-stars{animation-iteration-count:2!important}.mirror-touch-controls button:active{transform:translateY(2px);box-shadow:inset 0 2px 4px #0008}</style></head>
 <body>
   <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#x1F3E0; Menu</a>
     <div class="game-container">
@@ -3912,24 +3921,9 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
         }
 
         function createBackgroundParticles() {
-            if (prefersReducedMotion) return;
-            if (backgroundParticleInterval) {
-                clearInterval(backgroundParticleInterval);
-            }
-            backgroundParticleInterval = setInterval(() => {
-                if (!document.hidden && document.querySelectorAll('.particle').length < 50) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = Math.random() * window.innerWidth + 'px';
-                    particle.style.animationDuration = (8 + Math.random() * 4) + 's';
-                    particle.style.animationDelay = Math.random() * 2 + 's';
-                    document.body.appendChild(particle);
-
-                    setTimeout(() => {
-                        particle.remove();
-                    }, 12000);
-                }
-            }, 500);
+            // Static chrome replaces floating DOM stars; optics/impact particles are unchanged.
+            if (backgroundParticleInterval) clearInterval(backgroundParticleInterval);
+            backgroundParticleInterval = null;
         }
 
         function updateUI() {

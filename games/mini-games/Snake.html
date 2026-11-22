@@ -314,7 +314,44 @@ html.mini-hidden *::after {
   padding-top: 74px;
   padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
-</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style></head>
+</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-three-polish">
+/* Round 3: readable controls, quiet chrome, bounded feedback and material depth. */
+:root{--polish-accent:#6ee7b7;--polish-ink:#e8effc;--polish-muted:#bdcbe0;--polish-control:#111c30;--polish-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body,.mini-shell,.mini-controls,.mini-bottom,.breaker-layout{font-family:var(--polish-font);color:var(--polish-ink)}
+.mini-controls h1,.game-title{font-family:Orbitron,var(--polish-font);letter-spacing:.025em;text-shadow:0 2px 18px #0005!important}
+button,input,select,summary{font-family:var(--polish-font);font-size:14px;line-height:1.35;touch-action:manipulation}
+.mini-controls button:not(.theme-dot),.mini-bottom button,.breaker-setup button,.breaker-input .action-btn,.breaker-input .notepad-toggle-btn{min-width:44px;min-height:44px;border-radius:12px;border:1px solid #526580!important;background:var(--polish-control)!important;color:var(--polish-ink)!important;font:650 14px/1.3 var(--polish-font)!important;box-shadow:inset 0 1px #ffffff1c,0 2px 0 #0005!important;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.mini-controls :is(select,input),.breaker-layout select{min-height:44px;font:500 14px/1.3 var(--polish-font);border:1px solid #526580;border-radius:10px;background:#111c30;color:#e8effc;padding:8px}
+.mini-controls p,.mini-controls label,.mini-controls small,.mini-controls .text-xs,.mini-controls .text-sm,.mini-bottom .text-xs,.breaker-layout .text-xs,.breaker-layout .text-sm{font-size:14px!important;line-height:1.4}
+.mini-controls p,.mini-controls .text-gray-400,.mini-controls .text-gray-500,.mini-controls .text-gray-600,.mini-bottom .text-gray-600{color:var(--polish-muted)!important}
+.mini-controls :is(button[aria-pressed=true],button[aria-checked=true],button.active,button.bg-cyan-500,button.bg-cyan-600,button.bg-cyan-700,button.bg-blue-600,button.bg-purple-500,button.bg-purple-600,button.bg-purple-700,button.bg-rose-500,button.bg-green-500,button.bg-amber-400,button.bg-yellow-500),.breaker-setup :is(button.bg-cyan-700,button.bg-purple-700){color:#091020!important;background:var(--polish-accent)!important;border-color:var(--polish-accent)!important;box-shadow:inset 0 1px #fff8,0 2px 0 #0007!important}
+.mini-bottom footer button,.mini-bottom button[aria-label^="Reset"],.mini-bottom button[aria-label="Start a new game"],.breaker-input button[aria-label="Submit your guess"]{background:var(--polish-accent)!important;color:#091020!important;border-color:var(--polish-accent)!important;font-size:16px!important;box-shadow:inset 0 1px #fff9,0 3px 0 #0006,0 8px 20px #0003!important}
+.mini-settings,.mq-settings,.mq-records,.mini-2048-records{border:1px solid #526580!important;border-radius:12px;background:#0d1729!important;color:#e8effc}
+summary{min-height:44px;font:650 14px/1.3 var(--polish-font)!important;color:#e8effc!important;cursor:pointer}
+.mini-controls header{padding-bottom:12px!important}.mini-controls header p{font-size:14px!important;line-height:1.4}
+.mini-board{border-radius:20px!important;border-color:#8aabc455!important;box-shadow:0 18px 42px #0007,inset 0 1px #ffffff35,inset 0 -2px #0008!important}
+.mini-bottom .stats-bar{font:500 14px/1.4 var(--polish-font);color:var(--polish-muted);gap:8px}.mini-bottom footer{padding:8px 0!important}
+.scanline-animation,.scanline-animation::before,.scanline-overlay,.mini-shell>.absolute .animate-pulse{animation:none!important}.scanline-animation,.scanline-overlay{opacity:.18}
+.win-animation{animation-iteration-count:2!important}.mini-board .animate-pulse{animation:none!important}
+.mini-controls button:active:not(:disabled),.mini-bottom button:active:not(:disabled),.breaker-layout button:active:not(:disabled),summary:active{transform:translateY(2px)!important;box-shadow:inset 0 2px 5px #0007!important}
+button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #fef08a!important;outline-offset:3px}
+@media(hover:hover){.mini-controls button:hover:not(:disabled),.mini-bottom button:hover:not(:disabled),.breaker-layout .action-btn:hover:not(:disabled){border-color:var(--polish-accent)!important;filter:brightness(1.08)}}
+@media(max-width:700px){.mini-shell{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:center!important;padding-top:max(68px,calc(env(safe-area-inset-top) + 60px))!important}.mini-layout{gap:12px;align-content:start}.mini-controls,.mini-bottom{max-width:none}.mini-controls header{padding-bottom:8px!important}.mini-controls h1{font-size:clamp(23px,6vw,30px)!important}}
+@media(min-width:701px) and (orientation:portrait){.mini-shell{align-items:flex-start!important;justify-content:flex-start!important}.mini-layout{gap:12px;align-content:start}.mini-controls{max-width:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.mini-shell{background:radial-gradient(ellipse at 80% 8%,color-mix(in srgb,var(--polish-accent) 9%,transparent),transparent 60%),radial-gradient(ellipse at 5% 100%,#16264066,transparent 55%),#05170f}.mini-shell>.absolute[aria-hidden=true]{opacity:.35}.mini-controls>div,.mini-bottom>div{border-radius:12px}
+
+
+.snake-options{margin:6px 0 10px}.snake-options>div{padding:8px;display:flex;justify-content:center;flex-wrap:wrap;gap:6px}.mini-board{background:linear-gradient(145deg,#17392b,#06170f)!important;border-color:#58a781!important;box-shadow:inset 0 1px 2px #a7f3d044,0 5px 0 #020a06,0 22px 36px #0008!important}
+.mini-board [role=grid]{border:1px solid #4a8a5c;background:#020e07;box-shadow:inset 0 0 30px #0009}.mini-board [role=gridcell]{border-radius:3px;background-image:linear-gradient(145deg,#ffffff12,transparent 65%)}.mini-board [role=gridcell]>.rounded-full{background-image:radial-gradient(ellipse at 30% 25%,#fff9,transparent 45%)}
+.mini-board [role=alert],.mini-board .bg-black\/80{color:#eafff4}.mini-board button{font:700 16px/1.3 var(--polish-font);min-height:44px;border-radius:12px;transition:transform .18s ease}.mini-board button:active{transform:translateY(2px)}
+
+/* Legible secondary text includes setup and help, not only the in-round controls. */
+.mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
+.mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
+.mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
+</style></head>
 <body>
   <noscript>
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#4ade80;font-family:sans-serif;text-align:center;padding:2rem;">
@@ -771,9 +808,10 @@ html.mini-hidden *::after {
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
-                        <div className="flex gap-1 overflow-x-auto mb-2">{Object.entries(MODES).map(([id,label])=><button key={id} onClick={()=>chooseMode(id)} className={`shrink-0 px-2 py-1 rounded border text-xs font-bold ${mode===id?'bg-green-500 text-black':'bg-black/60 border-green-800 text-green-200'}`}>{label}</button>)}</div>
+                        <details className="mini-settings snake-options" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}><summary>Mode, mission &amp; skin</summary><div className="flex gap-1 overflow-x-auto mb-2">{Object.entries(MODES).map(([id,label])=><button key={id} onClick={()=>chooseMode(id)} className={`shrink-0 px-2 py-1 rounded border text-xs font-bold ${mode===id?'bg-green-500 text-black':'bg-black/60 border-green-800 text-green-200'}`}>{label}</button>)}</div>
                         <div className="flex justify-center gap-2 mb-3 flex-wrap"><select value={mission} onChange={event=>setMission(event.target.value)} className="bg-gray-900 border border-purple-600 rounded px-2 py-1 text-xs">{MISSIONS.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}</select><select value={skin} onChange={event=>{const next=event.target.value;if(SKINS[next].unlock<=best){setSkin(next);localStorage.setItem('snake-skin',next);}}} className="bg-gray-900 border border-green-600 rounded px-2 py-1 text-xs">{Object.entries(SKINS).map(([id,item])=><option key={id} value={id} disabled={best<item.unlock}>{best<item.unlock?'🔒 ':''}{item.label}{item.unlock?` (${item.unlock})`:''}</option>)}</select>{mode==='time'&&<span className="px-2 py-1 rounded bg-red-900 border border-red-500 text-sm font-bold">⏱ {timeLeft}s</span>}</div>
                         {mission!=='free'&&<div className="mb-2 text-xs text-purple-100">Mission: {missionData.label} · {Math.min(missionProgress,missionData.goal)}/{missionData.goal}</div>}
+                        </details>
                         <div className="flex justify-center gap-1 mb-2 text-xs">{effects.shield>0&&<span className="px-2 py-1 rounded bg-blue-900">🛡 {effects.shield}</span>}{effects.magnet>0&&<span className="px-2 py-1 rounded bg-purple-900">🧲 {effects.magnet}</span>}{effects.slow>0&&<span className="px-2 py-1 rounded bg-cyan-900">❄ {effects.slow}</span>}{effects.multiplier>0&&<span className="px-2 py-1 rounded bg-yellow-900">×2 {effects.multiplier}</span>}</div>
 
                         <div className="flex items-center justify-center gap-3 mb-4">

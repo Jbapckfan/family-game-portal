@@ -941,7 +941,47 @@ html.mini-hidden *::after {
 .breaker-history > div {
   min-height: 68px;
 }
-</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style></head>
+</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-three-polish">
+/* Round 3: readable controls, quiet chrome, bounded feedback and material depth. */
+:root{--polish-accent:#67e8f9;--polish-ink:#e8effc;--polish-muted:#bdcbe0;--polish-control:#111c30;--polish-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body,.mini-shell,.mini-controls,.mini-bottom,.breaker-layout{font-family:var(--polish-font);color:var(--polish-ink)}
+.mini-controls h1,.game-title{font-family:Orbitron,var(--polish-font);letter-spacing:.025em;text-shadow:0 2px 18px #0005!important}
+button,input,select,summary{font-family:var(--polish-font);font-size:14px;line-height:1.35;touch-action:manipulation}
+.mini-controls button:not(.theme-dot),.mini-bottom button,.breaker-setup button,.breaker-input .action-btn,.breaker-input .notepad-toggle-btn{min-width:44px;min-height:44px;border-radius:12px;border:1px solid #526580!important;background:var(--polish-control)!important;color:var(--polish-ink)!important;font:650 14px/1.3 var(--polish-font)!important;box-shadow:inset 0 1px #ffffff1c,0 2px 0 #0005!important;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.mini-controls :is(select,input),.breaker-layout select{min-height:44px;font:500 14px/1.3 var(--polish-font);border:1px solid #526580;border-radius:10px;background:#111c30;color:#e8effc;padding:8px}
+.mini-controls p,.mini-controls label,.mini-controls small,.mini-controls .text-xs,.mini-controls .text-sm,.mini-bottom .text-xs,.breaker-layout .text-xs,.breaker-layout .text-sm{font-size:14px!important;line-height:1.4}
+.mini-controls p,.mini-controls .text-gray-400,.mini-controls .text-gray-500,.mini-controls .text-gray-600,.mini-bottom .text-gray-600{color:var(--polish-muted)!important}
+.mini-controls :is(button[aria-pressed=true],button[aria-checked=true],button.active,button.bg-cyan-500,button.bg-cyan-600,button.bg-cyan-700,button.bg-blue-600,button.bg-purple-500,button.bg-purple-600,button.bg-purple-700,button.bg-rose-500,button.bg-green-500,button.bg-amber-400,button.bg-yellow-500),.breaker-setup :is(button.bg-cyan-700,button.bg-purple-700){color:#091020!important;background:var(--polish-accent)!important;border-color:var(--polish-accent)!important;box-shadow:inset 0 1px #fff8,0 2px 0 #0007!important}
+.mini-bottom footer button,.mini-bottom button[aria-label^="Reset"],.mini-bottom button[aria-label="Start a new game"],.breaker-input button[aria-label="Submit your guess"]{background:var(--polish-accent)!important;color:#091020!important;border-color:var(--polish-accent)!important;font-size:16px!important;box-shadow:inset 0 1px #fff9,0 3px 0 #0006,0 8px 20px #0003!important}
+.mini-settings,.mq-settings,.mq-records,.mini-2048-records{border:1px solid #526580!important;border-radius:12px;background:#0d1729!important;color:#e8effc}
+summary{min-height:44px;font:650 14px/1.3 var(--polish-font)!important;color:#e8effc!important;cursor:pointer}
+.mini-controls header{padding-bottom:12px!important}.mini-controls header p{font-size:14px!important;line-height:1.4}
+.mini-board{border-radius:20px!important;border-color:#8aabc455!important;box-shadow:0 18px 42px #0007,inset 0 1px #ffffff35,inset 0 -2px #0008!important}
+.mini-bottom .stats-bar{font:500 14px/1.4 var(--polish-font);color:var(--polish-muted);gap:8px}.mini-bottom footer{padding:8px 0!important}
+.scanline-animation,.scanline-animation::before,.scanline-overlay,.mini-shell>.absolute .animate-pulse{animation:none!important}.scanline-animation,.scanline-overlay{opacity:.18}
+.win-animation{animation-iteration-count:2!important}.mini-board .animate-pulse{animation:none!important}
+.mini-controls button:active:not(:disabled),.mini-bottom button:active:not(:disabled),.breaker-layout button:active:not(:disabled),summary:active{transform:translateY(2px)!important;box-shadow:inset 0 2px 5px #0007!important}
+button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #fef08a!important;outline-offset:3px}
+@media(hover:hover){.mini-controls button:hover:not(:disabled),.mini-bottom button:hover:not(:disabled),.breaker-layout .action-btn:hover:not(:disabled){border-color:var(--polish-accent)!important;filter:brightness(1.08)}}
+@media(max-width:700px){.mini-shell{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:center!important;padding-top:max(68px,calc(env(safe-area-inset-top) + 60px))!important}.mini-layout{gap:12px;align-content:start}.mini-controls,.mini-bottom{max-width:none}.mini-controls header{padding-bottom:8px!important}.mini-controls h1{font-size:clamp(23px,6vw,30px)!important}}
+@media(min-width:701px) and (orientation:portrait){.mini-shell{align-items:flex-start!important;justify-content:flex-start!important}.mini-layout{gap:12px;align-content:start}.mini-controls{max-width:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.mini-shell{background:radial-gradient(ellipse at 80% 8%,color-mix(in srgb,var(--polish-accent) 9%,transparent),transparent 60%),radial-gradient(ellipse at 5% 100%,#16264066,transparent 55%),#071321}.mini-shell>.absolute[aria-hidden=true]{opacity:.35}.mini-controls>div,.mini-bottom>div{border-radius:12px}
+
+
+.breaker-layout{border-color:#59758b!important;border-radius:20px;background:linear-gradient(145deg,#0e2032,#070f1e)!important;grid-template-rows:auto 1fr auto}.breaker-records{grid-column:1;grid-row:3;gap:8px;flex-wrap:wrap;opacity:1;font-size:14px!important;color:#bdcbe0}
+.breaker-config{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin:10px 0}.breaker-difficulty,.breaker-duplicates{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:14px;color:#dbeefa}.breaker-difficulty select{width:88px;padding:6px!important}.breaker-duplicates .switch{height:44px;min-height:44px;min-width:48px;flex:none;margin:0}.breaker-duplicates .slider{top:10px;bottom:10px;border:1px solid #647c95;background:#27394f}.breaker-duplicates .slider:before{top:1px;bottom:auto;height:20px;width:20px;background:#bff7ff;box-shadow:0 1px 3px #0008}
+.breaker-setup [role=status]{font-size:14px!important;min-height:24px;margin:8px 0;color:#dbeefa;text-shadow:none}.breaker-history{background:repeating-linear-gradient(to bottom,#d2e9ff0a 0 1px,transparent 1px 78px),linear-gradient(145deg,#122c4266,#050c18)!important;border-color:#49657f!important;box-shadow:inset 0 2px 8px #0005;border-radius:16px}.breaker-history>div{border:1px solid #6c839b;border-radius:12px;box-shadow:inset 0 1px #ffffff20,0 3px 7px #0005}
+.touch-target-peg,.color-picker-button{background-image:radial-gradient(ellipse at 30% 20%,#ffffffa0,transparent 38%),linear-gradient(145deg,#fff2,transparent 60%,#0003);box-shadow:inset 0 2px 2px #fff9,inset 0 -3px 4px #0005,0 3px 5px #0007!important;border:1px solid #ffffff60!important}.active-slot-indicator{animation:none!important;outline:2px dashed #a5f3fc;outline-offset:-3px}.breaker-input .color-picker-button{border-radius:50%;min-width:44px;min-height:44px}.breaker-input [aria-label="Current guess input area"]{background:#0b1729;border:1px solid #59758b;border-radius:14px}.stats-box{border-color:#4b728c!important;background:#0b1729;color:#dbeefa}.stats-value{font-variant-numeric:tabular-nums;color:#a5f3fc}.breaker-input .action-btn{white-space:nowrap}.breaker-setup .text-sm{color:#dbeefa!important}
+@media(max-width:700px){.breaker-layout{grid-template-rows:auto minmax(100px,1fr) auto auto;gap:8px;padding:12px!important}.breaker-records{grid-column:1;grid-row:4;justify-content:center!important;column-gap:16px;row-gap:4px}.breaker-layout .game-title{font-size:24px}.breaker-config{gap:6px;margin:6px 0}.breaker-history:empty::after{font-size:14px;letter-spacing:.04em}.breaker-input .action-btn{padding:8px 10px;font-size:14px!important}.breaker-input [aria-label="Color selection palette"]{gap:6px}}
+@media(min-width:701px) and (orientation:portrait){.breaker-layout{grid-template-columns:1fr;grid-template-rows:auto auto minmax(180px,1fr) auto;gap:12px;padding:20px!important}.breaker-setup{grid-column:1;grid-row:1}.breaker-input{grid-column:1;grid-row:2;gap:8px}.breaker-history{grid-column:1;grid-row:3;min-height:180px}.breaker-records{grid-column:1;grid-row:4;justify-content:center!important;gap:24px}.breaker-layout .touch-target-peg,.breaker-layout .color-picker-button{width:56px;height:56px}.breaker-input [aria-label="Current guess input area"]{padding:12px}.breaker-history>div{min-height:80px}}
+
+/* Legible secondary text includes setup and help, not only the in-round controls. */
+.mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
+.mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
+.mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
+</style></head>
 <body>
   <a href="../../" class="home-link" aria-label="Return to main menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#127968; Menu</a>
     <div id="root"></div>
@@ -2247,7 +2287,7 @@ html.mini-hidden *::after {
                 <main className="mini-shell h-screen h-[100dvh] relative bg-gray-900 text-white flex flex-col items-center p-2 pt-14 overflow-hidden" role="main">
                     {/* Scanline and particle effects */}
                     <div className="scanline-overlay" aria-hidden="true"></div>
-                    <ParticleBackground availableColors={gameConfig.availableColors} />
+                    {/* Ambient lighting is static; no floating idle particles. */}
 
                     {/* Feature 5: Animated Tutorial */}
                     {showTutorial && (
@@ -2293,9 +2333,8 @@ html.mini-hidden *::after {
                             <div className="flex justify-center gap-2">{GAME_PRESETS.medium.availableColors.map(color => <button key={color} onClick={() => makerDraft.length < 4 && setMakerDraft(d => [...d, color])} className="w-8 h-8 rounded-full" style={{backgroundColor: color}} aria-label={`Add ${COLOR_NAMES[color]}`} />)}</div>
                             <button onClick={lockMakerCode} disabled={makerDraft.length !== 4} className="mt-2 w-full py-2 rounded bg-purple-600 font-bold disabled:opacity-40">Lock Secret &amp; Pass Device</button>
                         </div>}
-                        <div className="flex items-center justify-center mb-2 flex-wrap gap-1 text-sm">
-                             <span className="mr-2 text-cyan-300">Difficulty:</span>
-                             <select
+                        <div className="breaker-config">
+                            <label className="breaker-difficulty"><span>Difficulty</span><select
                                 className="bg-gray-800 text-white rounded p-1 touch-select"
                                 value={currentPreset}
                                 onChange={(e) => dispatch({ type: 'SET_DIFFICULTY', preset: e.target.value })}
@@ -2307,9 +2346,8 @@ html.mini-hidden *::after {
                                          {presetKey.charAt(0).toUpperCase() + presetKey.slice(1)}
                                      </option>
                                  ))}
-                             </select>
-                            <span className="ml-4 mr-2 text-cyan-300">Duplicates:</span>
-                            <label className="switch">
+                             </select></label>
+                            <div className="breaker-duplicates"><span>Duplicates</span><label className="switch">
                                 <input
                                     type="checkbox"
                                     checked={allowDuplicates}
@@ -2318,12 +2356,11 @@ html.mini-hidden *::after {
                                     aria-label="Toggle duplicate colors"
                                 />
                                 <span className="slider"></span>
-                            </label>
-                            <span className="ml-2 text-cyan-300">{allowDuplicates ? "On" : "Off"}</span>
+                            </label><span>{allowDuplicates ? "On" : "Off"}</span></div>
                         </div>
 
                         <p className="text-center text-cyan-300/80 mb-1 text-sm text-shadow-neon" role="status" aria-live="polite" aria-atomic="true">
-                            {comboMessage && <span className="text-yellow-300 mr-2">{comboMessage}</span>}
+                            {comboMessage && comboMessage !== message && <span className="text-yellow-300 mr-2">{comboMessage}</span>}
                             {message}
                         </p>
 
@@ -2592,7 +2629,7 @@ html.mini-hidden *::after {
                         )}
 
                         {/* Compact statistics row */}
-                        <div className="mt-2 flex justify-between text-xs opacity-70 px-1" role="contentinfo" aria-label="Game statistics">
+                        <div className="breaker-records mt-2 flex justify-between text-xs px-1" role="contentinfo" aria-label="Game statistics">
                             <span className="text-cyan-300">Played: <span className="text-white font-bold">{stats.gamesPlayed}</span></span>
                             <span className="text-cyan-300">Wins: <span className="text-white font-bold">{stats.wins}</span></span>
                             <span className="text-cyan-300">Best: <span className="text-white font-bold">{stats.bestTime === Infinity ? '--:--' : formatTime(stats.bestTime)}</span></span>

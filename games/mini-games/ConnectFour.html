@@ -356,7 +356,46 @@ html.mini-hidden *::after {
  .mini-shell:has(.mini-layout){padding-left:max(8px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
  .mini-layout{gap:8px}
  .mini-board{padding:8px!important}.mini-controls h1{font-size:26px!important}.mini-settings{margin-top:4px;margin-bottom:8px}.mini-bottom>div{margin-top:4px;padding:6px}
-}</style></head>
+}</style><style id="round-three-polish">
+/* Round 3: readable controls, quiet chrome, bounded feedback and material depth. */
+:root{--polish-accent:#93c5fd;--polish-ink:#e8effc;--polish-muted:#bdcbe0;--polish-control:#111c30;--polish-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body,.mini-shell,.mini-controls,.mini-bottom,.breaker-layout{font-family:var(--polish-font);color:var(--polish-ink)}
+.mini-controls h1,.game-title{font-family:Orbitron,var(--polish-font);letter-spacing:.025em;text-shadow:0 2px 18px #0005!important}
+button,input,select,summary{font-family:var(--polish-font);font-size:14px;line-height:1.35;touch-action:manipulation}
+.mini-controls button:not(.theme-dot),.mini-bottom button,.breaker-setup button,.breaker-input .action-btn,.breaker-input .notepad-toggle-btn{min-width:44px;min-height:44px;border-radius:12px;border:1px solid #526580!important;background:var(--polish-control)!important;color:var(--polish-ink)!important;font:650 14px/1.3 var(--polish-font)!important;box-shadow:inset 0 1px #ffffff1c,0 2px 0 #0005!important;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.mini-controls :is(select,input),.breaker-layout select{min-height:44px;font:500 14px/1.3 var(--polish-font);border:1px solid #526580;border-radius:10px;background:#111c30;color:#e8effc;padding:8px}
+.mini-controls p,.mini-controls label,.mini-controls small,.mini-controls .text-xs,.mini-controls .text-sm,.mini-bottom .text-xs,.breaker-layout .text-xs,.breaker-layout .text-sm{font-size:14px!important;line-height:1.4}
+.mini-controls p,.mini-controls .text-gray-400,.mini-controls .text-gray-500,.mini-controls .text-gray-600,.mini-bottom .text-gray-600{color:var(--polish-muted)!important}
+.mini-controls :is(button[aria-pressed=true],button[aria-checked=true],button.active,button.bg-cyan-500,button.bg-cyan-600,button.bg-cyan-700,button.bg-blue-600,button.bg-purple-500,button.bg-purple-600,button.bg-purple-700,button.bg-rose-500,button.bg-green-500,button.bg-amber-400,button.bg-yellow-500),.breaker-setup :is(button.bg-cyan-700,button.bg-purple-700){color:#091020!important;background:var(--polish-accent)!important;border-color:var(--polish-accent)!important;box-shadow:inset 0 1px #fff8,0 2px 0 #0007!important}
+.mini-bottom footer button,.mini-bottom button[aria-label^="Reset"],.mini-bottom button[aria-label="Start a new game"],.breaker-input button[aria-label="Submit your guess"]{background:var(--polish-accent)!important;color:#091020!important;border-color:var(--polish-accent)!important;font-size:16px!important;box-shadow:inset 0 1px #fff9,0 3px 0 #0006,0 8px 20px #0003!important}
+.mini-settings,.mq-settings,.mq-records,.mini-2048-records{border:1px solid #526580!important;border-radius:12px;background:#0d1729!important;color:#e8effc}
+summary{min-height:44px;font:650 14px/1.3 var(--polish-font)!important;color:#e8effc!important;cursor:pointer}
+.mini-controls header{padding-bottom:12px!important}.mini-controls header p{font-size:14px!important;line-height:1.4}
+.mini-board{border-radius:20px!important;border-color:#8aabc455!important;box-shadow:0 18px 42px #0007,inset 0 1px #ffffff35,inset 0 -2px #0008!important}
+.mini-bottom .stats-bar{font:500 14px/1.4 var(--polish-font);color:var(--polish-muted);gap:8px}.mini-bottom footer{padding:8px 0!important}
+.scanline-animation,.scanline-animation::before,.scanline-overlay,.mini-shell>.absolute .animate-pulse{animation:none!important}.scanline-animation,.scanline-overlay{opacity:.18}
+.win-animation{animation-iteration-count:2!important}.mini-board .animate-pulse{animation:none!important}
+.mini-controls button:active:not(:disabled),.mini-bottom button:active:not(:disabled),.breaker-layout button:active:not(:disabled),summary:active{transform:translateY(2px)!important;box-shadow:inset 0 2px 5px #0007!important}
+button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #fef08a!important;outline-offset:3px}
+@media(hover:hover){.mini-controls button:hover:not(:disabled),.mini-bottom button:hover:not(:disabled),.breaker-layout .action-btn:hover:not(:disabled){border-color:var(--polish-accent)!important;filter:brightness(1.08)}}
+@media(max-width:700px){.mini-shell{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:center!important;padding-top:max(68px,calc(env(safe-area-inset-top) + 60px))!important}.mini-layout{gap:12px;align-content:start}.mini-controls,.mini-bottom{max-width:none}.mini-controls header{padding-bottom:8px!important}.mini-controls h1{font-size:clamp(23px,6vw,30px)!important}}
+@media(min-width:701px) and (orientation:portrait){.mini-shell{align-items:flex-start!important;justify-content:flex-start!important}.mini-layout{gap:12px;align-content:start}.mini-controls{max-width:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.mini-shell{background:radial-gradient(ellipse at 80% 8%,color-mix(in srgb,var(--polish-accent) 9%,transparent),transparent 60%),radial-gradient(ellipse at 5% 100%,#16264066,transparent 55%),#08132b}.mini-shell>.absolute[aria-hidden=true]{opacity:.35}.mini-controls>div,.mini-bottom>div{border-radius:12px}
+
+
+.mini-board{background:linear-gradient(135deg,#3564c6 0,#234b9f 42%,#11285f 100%)!important;border:1px solid #94bdfcaa!important;box-shadow:inset 0 2px 2px #c9e0ff88,inset -4px -5px 9px #061737,0 6px 0 #081b43,0 22px 40px #0008!important;padding:clamp(10px,1.5vw,20px)!important}
+.disc-well{background:radial-gradient(ellipse at 50% 60%,#081329,#050b17)!important;border:1px solid #06132b;box-shadow:inset 2px 5px 9px #000d,0 1px 1px #b4d4ff80!important}
+.physical-disc{position:relative;background-image:radial-gradient(ellipse at 31% 22%,#ffffff60,transparent 38%),linear-gradient(155deg,#ffffff20,transparent 50%,#0004);border:1px solid #ffffff55;box-shadow:inset 0 2px 2px #ffffffb0,inset -2px -4px 5px #0005,0 3px 3px #0008!important}
+.physical-disc::after{content:"";position:absolute;inset:15%;border-radius:50%;border:2px solid #0002;box-shadow:0 1px 0 #ffffff55,inset 0 1px 3px #0002;pointer-events:none}.physical-disc.disc-winner{outline:3px solid #fef08a;outline-offset:-5px;animation-iteration-count:2}
+.mini-board>div[role=grid] button:active{transform:translateY(1px)}.mini-controls [aria-live=polite]>div{background:#101c31;border-color:#6784b3;color:#e8effc}
+
+/* Legible secondary text includes setup and help, not only the in-round controls. */
+.mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
+.mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
+.mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
+</style></head>
 <body>
   <noscript>
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#60a5fa;font-family:sans-serif;text-align:center;padding:2rem;">
@@ -584,7 +623,7 @@ html.mini-hidden *::after {
                     }}
                 >
                     <div
-                        className={`w-full h-full rounded-full ${isWinning ? 'disc-winner' : ''}`}
+                        className={`physical-disc w-full h-full rounded-full ${isWinning ? 'disc-winner' : ''}`}
                         style={{
                             backgroundColor: info.bg,
                             color: info.ring,
@@ -626,7 +665,7 @@ html.mini-hidden *::after {
                         <div className="absolute inset-0 grid pointer-events-none" style={{ gridTemplateRows: `repeat(${ROWS}, 1fr)` }} aria-hidden="true">
                             {Array.from({ length: ROWS }).map((_, r) => (
                                 <div key={r} className="p-1 md:p-1.5">
-                                    <div className="w-full h-full rounded-full bg-black/40" style={{ boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.6)' }} />
+                                    <div className="disc-well w-full h-full rounded-full bg-black/40" style={{ boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.6)' }} />
                                 </div>
                             ))}
                         </div>

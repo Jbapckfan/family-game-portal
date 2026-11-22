@@ -1177,7 +1177,19 @@ html.mini-hidden *::after {
 }
 </style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-two-phone">
 @media(max-width:700px){.bee-settings>div:first-child>p{display:none}.bee-layout{padding-top:max(70px,calc(env(safe-area-inset-top) + 62px))!important;padding-bottom:max(14px,env(safe-area-inset-bottom))!important}.bee-settings,.bee-play,.bee-words{flex-shrink:0}}
-</style></head>
+</style><style id="round-three-polish">
+/* Round 3: enamel honeycomb, paper-like panels and deliberate type roles. */
+:root{--text-muted:#b9c6de;--text-dim:#acbad2;--text-dimmer:#b9c6de;--text-secondary:#c9d4e8;--hex-outer-bg:linear-gradient(145deg,#7c3aed,#5b21b6);--hex-outer-color:#fffaff;--word-filter-color:#ddd6fe}
+:root.light-theme{--text-muted:#425269;--text-dim:#4c5b70;--text-dimmer:#4c5b70;--text-secondary:#334155;--word-filter-color:#5b21b6;--hex-outer-bg:linear-gradient(145deg,#7c3aed,#5b21b6);--hex-outer-color:#fffaff}
+body,.bee-layout,button,select,.mode-btn,.game-btn,.practice-toggle-btn{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.font-title{font-family:'Fredoka One',system-ui,sans-serif}.bee-settings p,.bee-settings label,.bee-settings select,.bee-settings button,.bee-words,.bee-words button,.bee-play .game-btn{font-size:14px!important;line-height:1.4}.bee-settings button,.bee-play button,.bee-words button{min-height:44px;min-width:44px;transition:transform .18s ease,background-color .18s ease,border-color .18s ease}
+.bee-layout{gap:16px}.bee-play{background:linear-gradient(145deg,var(--panel-bg),transparent),var(--bg-primary);border-color:var(--accent-purple-border);border-radius:20px;box-shadow:inset 0 1px #ffffff18,0 20px 36px #0003}.hex-btn{isolation:isolate;text-shadow:0 1px 2px #0004;font-weight:750;filter:drop-shadow(0 3px 0 #281148) drop-shadow(0 5px 7px #0006);transition:filter .18s ease,transform .18s ease}.hex-outer::after,.hex-center::after{background:linear-gradient(145deg,#ffffff40,transparent 35%,#0002);border:2px solid #ffffff30}.hex-center{color:#21112b;background:linear-gradient(145deg,#fcd34d,#f59e0b);text-shadow:0 1px #fff4}.hex-btn:active{filter:brightness(.92) drop-shadow(0 1px 1px #0006)}
+.bee-play .game-btn,.mode-toggle,.practice-toggle{border-radius:12px}.bee-play .game-btn{background:#1b1836;color:#e8edff;border:1px solid #8270b5;font-weight:700;letter-spacing:.03em}.bee-play .game-btn-enter{background:#6d28d9;color:white;border-color:#bca3f5;box-shadow:inset 0 1px #fff4,0 3px 0 #281148}.bee-settings .mode-btn,.bee-settings .practice-toggle-btn{font-size:14px;letter-spacing:.025em;padding:8px 10px}.bee-settings .mode-btn.active{background:#4c277c;color:#fff}.bee-play .current-word{font-weight:750;letter-spacing:.06em;min-height:42px}.bee-words>div>div:first-child{border-color:var(--accent-purple-border)!important;min-height:44px}.bee-words>div>div:first-child:active{transform:translateY(1px)}.bee-words>div:last-child{font-size:14px!important;color:var(--text-muted)!important}.rank-banner-text{animation-iteration-count:1}.timer-urgent,.timer-critical{animation-iteration-count:2!important}
+.light-theme .bee-play{background:#fffcf7;box-shadow:inset 0 1px white,0 16px 32px #49376515}.light-theme .bee-play .game-btn{background:#f0e9fb;color:#4c1d95;border-color:#9378b6}.light-theme .bee-play .game-btn-enter{background:#6d28d9;color:#fff}.light-theme .bee-settings .mode-btn.active{background:#6d28d9;color:white}.light-theme .timer-urgent,.light-theme .timer-critical{color:#9f1239}
+button:focus-visible,select:focus-visible,.word-chip:focus-visible{outline:3px solid #d97706;outline-offset:3px}.bee-layout button:active:not(:disabled){transform:translateY(2px)!important}
+@media(hover:hover){.bee-play .game-btn:hover{border-color:#c4b5fd;filter:brightness(1.1)}}
+@media(max-width:700px){.bee-layout{justify-content:flex-start;gap:10px;padding-top:max(68px,calc(env(safe-area-inset-top) + 60px))!important}.bee-play{padding:12px}.bee-settings .font-title{font-size:28px!important}.bee-words{max-height:18dvh}.bee-words>div:last-child{font-size:14px!important}.bee-settings .practice-indicator{font-size:14px}.bee-settings button{line-height:1.3}.bee-play .game-btn{font-size:14px!important;padding:9px 12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.bee-settings span,.bee-words span{font-size:14px!important}.bee-settings .streak-num{font-size:18px!important}.bee-layout [role=dialog] :is(p,li,label,small){font-size:14px!important}.bee-layout button:disabled{opacity:1;color:#aebfd8;background:#161b35}.light-theme .bee-layout button:disabled{color:#475569;background:#e2e8f0}</style></head>
 <body>
     <a href="../../" class="back-btn">&#x1F3E0; Menu</a>
     <div class="scanline"></div>
@@ -1755,7 +1767,7 @@ html.mini-hidden *::after {
                     <h2 className="font-title" style={{ fontSize: 24, color: 'var(--accent-gold)', marginBottom: 6, textAlign: 'center' }}>
                         Hints
                     </h2>
-                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>
+                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, marginBottom: 12 }}>
                         {unfound.length} word{unfound.length !== 1 ? 's' : ''} remaining
                     </p>
                     {unfound.length === 0 ? (
@@ -1847,7 +1859,7 @@ html.mini-hidden *::after {
                                     <p style={{ margin: '4px 0' }}>Longer words = <b>1 point per letter</b></p>
                                     <p style={{ margin: '4px 0' }}>Pangram (all 7 letters) = <b>+7 bonus!</b></p>
                                 </div>
-                                <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--text-muted)' }}>
+                                <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--text-muted)' }}>
                                     This puzzle: <b>{puzzle.wordCount}</b> words &bull; <b>{puzzle.pangrams.length}</b> pangram{puzzle.pangrams.length!==1?'s':''} &bull; max <b>{puzzle.maxScore}</b> pts
                                 </p>
                             </>
@@ -1940,7 +1952,7 @@ html.mini-hidden *::after {
         return (
             <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 14,
                           background: 'var(--panel-bg)', border: '1px solid var(--panel-border)' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 8,
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 8,
                               textTransform: 'uppercase', letterSpacing: 1 }}>
                     Word Lengths
                 </div>
@@ -2556,7 +2568,7 @@ html.mini-hidden *::after {
                     }}>
                         &#x1F41D; Spelling Bee
                     </h1>
-                    <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
+                    <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
                         How many words can you spell?
                     </p>
                 </div>
@@ -2594,14 +2606,14 @@ html.mini-hidden *::after {
                 </div>
 
                 {mode !== 'sprint' && <div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:8,marginBottom:12,flexWrap:'wrap'}}>
-                    <label htmlFor="grade-band" style={{fontSize:12,color:'var(--text-muted)',fontWeight:700}}>Vocabulary:</label>
+                    <label htmlFor="grade-band" style={{fontSize: 14,color:'var(--text-muted)',fontWeight:700}}>Vocabulary:</label>
                     <select id="grade-band" value={gradeBand} onChange={event=>chooseGradeBand(event.target.value)} style={{background:'var(--panel-bg)',color:'var(--text-primary)',border:'1px solid var(--accent-purple-border)',borderRadius:8,padding:'7px 9px',fontWeight:700}}>
                         <option value="family">Family / All Words</option>
                         <option value="k2">Grades K–2</option>
                         <option value="g34">Grades 3–4</option>
                         <option value="g56">Grades 5–6</option>
                     </select>
-                    {gradeBand !== 'family' && <span style={{fontSize:11,color:'#34d399',background:'rgba(16,185,129,.12)',border:'1px solid rgba(52,211,153,.3)',borderRadius:999,padding:'5px 9px'}}>
+                    {gradeBand !== 'family' && <span style={{fontSize: 14,color:'#34d399',background:'rgba(16,185,129,.12)',border:'1px solid rgba(52,211,153,.3)',borderRadius:999,padding:'5px 9px'}}>
                         Adaptive level {Math.floor(adaptiveSkill)+1} · words up to {puzzle.adaptiveMaxLength} letters
                     </span>}
                 </div>}
@@ -2761,18 +2773,18 @@ html.mini-hidden *::after {
                         {/* Secondary buttons row: Hint + New Puzzle (random) + Show Answers */}
                         <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
                             {mode !== 'sprint' && !practiceMode && (
-                                <button className="game-btn" onClick={() => setShowHints(true)} style={{ fontSize: 12 }}>
+                                <button className="game-btn" onClick={() => setShowHints(true)} style={{ fontSize: 14 }}>
                                     &#x1F4A1; Hint
                                 </button>
                             )}
                             {mode === 'random' && (
-                                <button className="game-btn" onClick={newRandom} style={{ fontSize: 12 }}>
+                                <button className="game-btn" onClick={newRandom} style={{ fontSize: 14 }}>
                                     &#x1F504; New Puzzle
                                 </button>
                             )}
                             {mode !== 'sprint' && !practiceMode && canRevealAnswers && (
                                 <button className="game-btn" onClick={handleRevealAnswers}
-                                        style={{ fontSize: 12, borderColor: 'rgba(100,116,139,0.4)', color: '#94a3b8' }}>
+                                        style={{ fontSize: 14, borderColor: 'rgba(100,116,139,0.4)', color: '#94a3b8' }}>
                                     &#x1F441; Show Answers
                                 </button>
                             )}
@@ -2794,7 +2806,7 @@ html.mini-hidden *::after {
                         )}
 
                         {/* Puzzle Info */}
-                        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: 'var(--text-dim)' }}>
+                        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 14, color: 'var(--text-dim)' }}>
                             Puzzle #{pidx + 1} &bull;{' '}
                             {practiceMode ? (
                                 <>{practiceWordsRef.current.length} practice words</>

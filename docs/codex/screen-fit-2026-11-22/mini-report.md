@@ -234,3 +234,71 @@ This supersedes the Round 1 decision to inline MineQuest. The active renderer an
 - `games/mini-games/ConnectFour.html`
 - `games/mini-games/SpellingBee.html`
 - `docs/codex/screen-fit-2026-11-22/mini-report.md`
+
+## Round 3 — visual polish across all eleven mini games
+
+**Source pass ready for Claude's next capture.** Rounds 1–2 are the accepted base at `e51d161`. Inspected all 22 start/play sheets in `output/screen-fit/mini-verify2/`, each showing phone, iPad landscape, laptop, and iPad portrait. Those screenshots predate this pass. No browser, window, capture command, local server, network install, or Git write was used for Round 3. No new after-layout, overflow, FPS, or battery measurements are claimed.
+
+### Shared finish
+
+- Removed vertical centering from the normal phone game shells, putting the title shortly below the safe-area-aware Menu clearance. Portrait tablet layouts start at the top as well. The existing board fit observers still budget around the actual controls.
+- Gave secondary controls a consistent dark, opaque surface; clear active states; a restrained radius family; visible keyboard focus; and short press feedback. Primary reset/new-round/submit actions use each game's accent. Labels and secondary text use 14px rules, primary actions 16px, and scores remain larger. Display headings retain the games' established fonts; body/control typography has consistent roles and fallbacks.
+- Static vignette lighting replaces the decorative scanline/floating-particle/pulsing effects where applicable. Selection markers remain visible without blinking. Win/hint effects are bounded; reduced-motion rules remain. This is a source/performance hygiene change, not a device battery certification.
+- Retained Menu layering, help, sound controls, game rules, authored content, difficulty settings, timers, and storage formats. No runtime Tailwind, new CDN, or library was introduced.
+
+### Per-game polish and what I would still change
+
+| Game | Polished in Round 3 | Remaining / next visual refinement |
+| --- | --- | --- |
+| Tic Tac Toe | Top-aligned phone play, quiet theme controls, consistent setup buttons, a framed stats strip, beveled acrylic-looking cells, and a softer neon treatment. Selected themes and X/O identity remain. | Check long player names and all win/draw overlays in the new shots. Ultimate's dense phone grid still needs the previously noted precision-input design; visual polish does not solve that constraint. |
+| Code Breaker | Kept Duplicates, its switch, and On/Off together as one unbreakable group; the switch retains a full touch area around a smaller visual track. Identical combo/status text is rendered once. Palette/guess pegs have edge light and contact shadow. History has a ruled tray surface. Portrait tablet puts the input above the history instead of pinning it to the bottom; records have an explicit grid position. | Review a full history, an expanded notepad and Code Maker on phone. If the maker's extra controls remain crowded, a dedicated setup disclosure would be the next layout change. |
+| Lasers & Mirrors | Replaced the desktop white Tools button with matching dark chrome, made Fire the clear primary action, raised HUD labels to 14px, and finished the inventory, tool, help, level/victory and lab controls with consistent edges and press states. Removed the decorative DOM-star emitter and ambient HUD shimmer. | Check the longest late-level names and open Tools at phone size. Further idle-power work on the canvas renderer would be separate from this chrome-only scope. No optics, canvas fitting, level coordinates or mirror budgets changed. |
+| Lights Out | Added molded-cap edges, highlights, inset seams and contact shadows over the existing on/off colors. The frame has a physical lip; hint markers remain explicit but stop pulsing continuously. Controls are quieter and labels larger. | Tune bloom strength from the actual new captures across all four color themes. Large custom grids retain the earlier dense-target limitation. |
+| Peg Jumper | Added a generated dark hardwood surface, rounded glass-like pegs and recessed wells. Staggered nine-column triangle layouts now have equilateral-style row spacing rather than a squat triangle, using more portrait height; board indices and legal moves are unchanged. The moving peg uses its measured displayed diameter at both endpoints, with the existing jump timing retained. | Inspect all six shapes and a jump on each device. I would tune grain strength and the glass rim only from those captures; wide rectangular boards remain constrained by their shape rather than being stretched. |
+| Spelling Bee | Added enamel-like purple/gold hexes with edge light, stronger text contrast in dark/light themes, a consistent control family, clearer current-word type, and 14px secondary labels. Retained the honeycomb fit calculation and its 48px minimum hex width. | Check long accepted words, an expanded word list, light theme and definition tooltips. Those are the next places I would adjust spacing if the new captures show crowding. |
+| 2048 | Wrapped all six mode chips instead of clipping the strip. Portrait tablet uses the same quiet setup/records disclosures as phone so the board can take more width/height. Added raised tile edges, recessed slots and contact shadows; Classic Wood gets the generated wood texture. Rendering now selects a contrasting number color without changing tile values or background colors. | Review five-digit tiles, all six modes, and Classic Wood on a physical iPad. I would adjust the wood's tint only after seeing the new material in the browser. |
+| Connect Four | Added a molded blue chassis, dark recessed holes, raised discs with concentric ridges, edge light and contact shadows. Winning discs keep a persistent outline after a brief animation. Turn status and setup share the quieter control style. | Check the wider variants and long names in the next shots. An optional embossed player symbol on discs would be a separate accessibility/art refinement. |
+| Snake | Added a glass-like grid frame, restrained pixel highlights and food sheen. Grouped mode/mission/skin setup into a portrait disclosure while keeping effects, score and pause visible. Removed the idle scanline animation. | The supplied play sheets are paused, so inspect active play in every skin next. Head/food edge definition is the material detail I would tune from those shots. |
+| Minesweeper | Added tactile field caps, a machined-looking frame and distinct inset revealed cells. Labels are 14px; cell numbers have a 16px minimum. Extended the compact title/options/mark layout to portrait tablets and top-aligned the shell. Help/sound and the single external JSX/CSS sources remain. | Dense late adventure boards still need precision navigation or zoom to meet the earlier touch-target goal. Check the power-up row and large score values at phone width. |
+| Memory Match | Added generated card-stock texture, printed-back borders/patterning, brighter paw emblems, paper-like fronts, card edges and contact shadows. Flip presentation is 220ms; matching timers and rules are unchanged. | A dedicated animal-art pass could replace the existing emoji faces with printed illustrations; that content/art substitution is not included here. Check face-up recognition in Expert/Huge and the final-win overlay. |
+
+### Generated local material assets
+
+Used the built-in `image_gen` tool, not the API/CLI fallback. Generated two original texture images: dark hardwood and ivory card stock. Reused the hardwood image for Peg Jumper and 2048 Classic Wood. Converted project copies with macOS `sips` to 768×768 JPEG at quality 75; inspected the compressed images. Original generated PNGs remain in the tool's default generated-images directory.
+
+| Saved project asset | Bytes | Exact prompt / provenance |
+| --- | ---: | --- |
+| `games/mini-games/PegJumper-assets/ebony-board-r3.jpg` | 101533 | `games/mini-games/PegJumper-assets/ebony-board-r3.prompt.txt` |
+| `games/mini-games/2048-assets/classic-wood-r3.jpg` | 101533 | `games/mini-games/2048-assets/classic-wood-r3.prompt.txt` |
+| `games/mini-games/MemoryMatch-assets/card-stock-r3.jpg` | 105630 | `games/mini-games/MemoryMatch-assets/card-stock-r3.prompt.txt` |
+
+The three project images total **308696 bytes**. Each prompt file preserves the full generation prompt and conversion settings. Textures are local CSS backgrounds with solid-color fallbacks; game initialization does not wait for them.
+
+### Verification actually run
+
+- Local JSX conversion where required followed by `node --check`: **33 scripts passed**.
+- esbuild/PostCSS source checks: **81 style sources parsed without warnings; 123 hover rules are media-scoped**.
+- `node games/mini-games/validate-laser-levels.mjs`: **all 20 levels passed** at every board size it checks.
+- AST comparison: **39 authored configuration arrays/objects unchanged**. Laser scripts match HEAD after excluding only the decorative DOM-star emitter, confirming that optics, fitting and interactions were left alone.
+- Node React first-render checks passed for Peg Jumper, 2048 and the external MineQuest renderer. All six Peg Jumper level-selection checks passed with the expected row/column counts, peg counts and one empty hole. A rendering check confirmed that a measured 72px moving peg stays 72px at both centered endpoints. These are runtime/component checks, not browser animation verification.
+- Code Breaker status reproduction: HEAD rendered identical “Good Guess!” text twice; this source renders it once. Different combo and status messages are still both retained. The reducer and feedback calculations were not changed.
+- Independent Python WCAG calculations against 42 actual 2048 tile/theme render samples found **15 below 4.5:1 before** the foreground fix and **zero afterward**. Fourteen declared normal/primary control text pairs also passed, with a minimum ratio of **5.53:1**. These checks cover the declared colors, not every composited pixel, theme state, hover state or disabled element in a screenshot; a full rendered contrast audit is still pending.
+- Material paths resolve, compressed dimensions were checked, and targeted `git diff --check` passed. `capture.mjs`, `games.json`, MineQuest's HTML loader and its JSX are unchanged in this round. Other batches' files were left alone.
+
+**Next capture priorities:** phone title clearance and 14px label wrapping; iPad portrait Peg Jumper/2048 board height and Code Breaker's reordered input/history; six uncut 2048 chips in landscape; physical pieces and light-theme contrast; and Menu access above every overlay. No new rendered measurements are supplied in this report.
+
+### Files changed in Round 3
+
+- `games/mini-games/2DTicTacToe.html`
+- `games/mini-games/CodeBreakerV4.html`
+- `games/mini-games/lasers_mirrors_game.html`
+- `games/mini-games/LightsOut.html`
+- `games/mini-games/PegJumper.html`
+- `games/mini-games/SpellingBee.html`
+- `games/mini-games/2048.html`
+- `games/mini-games/ConnectFour.html`
+- `games/mini-games/Snake.html`
+- `games/mini-games/MemoryMatch.html`
+- `games/mini-games/Minesweeper-pro.css`
+- The three JPEGs and three prompt files listed above.
+- `docs/codex/screen-fit-2026-11-22/mini-report.md`

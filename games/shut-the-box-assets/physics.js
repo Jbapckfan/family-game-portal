@@ -56,5 +56,10 @@
         const closing=(b.vx-a.vx)*nx+(b.vz-a.vz)*nz;
         if(closing<0){a.vx+=closing*.65*nx;a.vz+=closing*.65*nz;b.vx-=closing*.65*nx;b.vz-=closing*.65*nz;}
     }
-    return Object.freeze({ faceQuaternion, topFace, stepDie, separateDice });
+    function rollingBounds(width,depth,twoBanks) {
+        // Hinge inset + full folded tile + circumscribed tumbling-die radius.
+        const bankClearance=1.95+1.67+Math.sqrt(3)*.46+.1;
+        return {x:width/2-1.5,zMin:-depth/2+bankClearance,zMax:depth/2-(twoBanks?bankClearance:1.25),floor:.65};
+    }
+    return Object.freeze({ faceQuaternion, topFace, stepDie, separateDice, rollingBounds });
 });

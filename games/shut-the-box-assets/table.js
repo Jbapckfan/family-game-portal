@@ -6,7 +6,7 @@
         common: Object.freeze({ sky:'#fff3df',ground:'#30231d',keyPosition:[-7,16,6],fillPosition:[9,10,-8],woodBump:.025,feltBump:.055,engravingBump:.02,pipBump:.055,brassMetalness:.65,brassRoughness:.32,accentMetalness:.45,accentRoughness:.3,tableShadowOpacity:.19,seamRoughness:.9,dieMetalness:.02,shadowSize:1024,shadowRadius:3 }),
         walnut: { name:'Walnut', wood:'#927362', edge:'#563e30', felt:'#195a3d', table:'#705b49', ink:'#221810', brass:'#c5a168', ivory:'#fff5df', accent:'#ecd0a0', ui:'#21170ff0', text:'#fff3df',
             roughness:.58, feltRoughness:1, dieRoughness:.26, key:'#fff0db', keyPower:2.8, fill:'#cbd8f1', fillPower:.8, ambient:1.45, exposure:1.03 },
-        maple: { name:'Maple', wood:'#fff1d2', edge:'#b38957', felt:'#153f78', table:'#c4a079', ink:'#35200e', brass:'#b5945d', ivory:'#fffaf0', accent:'#d7e6ff', ui:'#172334ed', text:'#f5f9ff',
+        maple: { name:'Maple', wood:'#fff1d2', edge:'#dfd2bc', felt:'#153f78', table:'#c4a079', ink:'#35200e', brass:'#b5945d', ivory:'#fffaf0', accent:'#d7e6ff', ui:'#172334ed', text:'#f5f9ff',
             roughness:.4, feltRoughness:1, dieRoughness:.23, key:'#fff6e7', keyPower:3.5, fill:'#b9d8ff', fillPower:1.1, ambient:1.7, exposure:1.05 },
         ebony: { name:'Ebony', wood:'#252728', edge:'#191817', felt:'#681b34', table:'#302522', ink:'#f4cb80', brass:'#c99b4d', ivory:'#fff0d5', accent:'#f2cb80', ui:'#201613f2', text:'#fff0d9',
             roughness:.44, feltRoughness:1, dieRoughness:.21, key:'#ffe0b3', keyPower:3.6, fill:'#cad1e9', fillPower:.9, ambient:1.55, exposure:1.13 }
@@ -339,6 +339,7 @@
                 d.target=P.faceQuaternion(v,(i===0?-.28:.35)+(this.side?-Math.PI/2:0));
                 if(!this.throwing) {
                     d.mesh.quaternion.copy(d.target);d.mesh.position.set((i-(this.values.length-1)/2)*1.8,.65,this.D*.12+(i?-.4:.35));
+                    this.containDie(d);
                     this.updateShadow(d);
                 }
             });
@@ -352,15 +353,20 @@
         showDice(values) {
             this.values=values.slice();this.restoreDice();this.invalidate();
         }
+        containDie(d) {
+            const bounds=P.rollingBounds(this.W,this.D,this.twoBanks);
+            d.mesh.position.x=Math.max(-bounds.x,Math.min(bounds.x,d.mesh.position.x));
+            d.mesh.position.z=Math.max(bounds.zMin,Math.min(bounds.zMax,d.mesh.position.z));
+        }
         throwDice(values,quick) {
             this.finishMotion();this.values=values.slice();this.restoreDice();
             if(quick || reduced.matches || !this.active || document.hidden) {this.invalidate();return Promise.resolve();}
             const time=1.65;
             return new Promise(resolve=>{
-                this.throwing={t:0,duration:time,resolve,bounds:{x:this.W/2-.9,zMin:-this.D/2+2.95,zMax:this.D/2-(this.twoBanks?2.95:.9),floor:.65}};
+                this.throwing={t:0,duration:time,resolve,bounds:P.rollingBounds(this.W,this.D,this.twoBanks)};
                 this.dice.forEach((d,i)=>{
                     // Forward launch from the player rail, then gravity/contact restitution.
-                    d.body={x:(i?1:-1)*1.1,y:1.6+i*.5,z:this.throwing.bounds.zMax-.12,vx:(i?1:-1)*(11+Math.random()*3),vy:4.5+i,vz:-(10+Math.random()*4),bounces:0,walls:0};
+                    d.body={x:(i?1:-1)*1.1,y:1.6+i*.5,z:Math.max(this.throwing.bounds.zMin,this.throwing.bounds.zMax-.12),vx:(i?1:-1)*(11+Math.random()*3),vy:4.5+i,vz:-(10+Math.random()*4),bounces:0,walls:0};
                     d.spin=new T.Euler(.3+i,.5,.8);d.mesh.rotation.copy(d.spin);
                     d.settleFrom=new T.Quaternion();
                 });this.lastTime=performance.now();this.invalidate();
@@ -369,7 +375,7 @@
         finishMotion() {
             if(this.throwing) {
                 const done=this.throwing;this.throwing=null;
-                this.dice.forEach(d=>{if(d.target)d.mesh.quaternion.copy(d.target);d.mesh.position.y=.65;this.updateShadow(d);});
+                this.dice.forEach(d=>{if(d.target)d.mesh.quaternion.copy(d.target);d.mesh.position.y=.65;this.containDie(d);this.updateShadow(d);});
                 done.resolve();
             }
             this.flips.forEach(f=>{f.item.pivot.rotation.x=f.to;});this.flips.length=0;
@@ -426,6 +432,7 @@
         debug() {
             return { renderer:'webgl', logicalDice:window.STBTable.logicalValues(), topFaces:this.dice.map(d=>P.topFace(d.mesh.quaternion)), settled:!this.throwing,
                 table:this.theme, sideTiles:this.side, banks:this.twoBanks?2:1, tileCount:this.tiles.size, renderCount:this.draws, scheduled:!!this.frame, dpr:this.renderer.getPixelRatio(),
+                feltBounds:P.rollingBounds(this.W,this.D,this.twoBanks),dicePositions:this.dice.map(d=>({x:d.mesh.position.x,y:d.mesh.position.y,z:d.mesh.position.z})),
                 contacts:this.dice.map(d=>({felt:d.body?.bounces||0,walls:d.body?.walls||0})) };
         }
     }

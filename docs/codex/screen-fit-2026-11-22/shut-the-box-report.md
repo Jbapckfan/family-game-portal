@@ -114,3 +114,32 @@ No physical iPhone/iPad/Safari, audible sound, thermal, battery or hardware 120H
 - `tools/screen-fit/shots/shut-the-box.json`
 - `docs/codex/screen-fit-2026-11-22/shut-the-box-report.md`
 - Generated captures, contact sheets, reports, recipes and artifact manifest under `output/screen-fit/shut-the-box-after/` and `output/screen-fit/shut-the-box-looks/`.
+
+## Round 2 — small polish
+
+November 22, 2026, following committed checkpoint `41135cf`. Only the three requested polish items were changed; no git writes.
+
+1. **Maple plinth:** changed Maple's edge/base stain from orange-brown `#b38957` to neutral pale maple `#dfd2bc`. The plinth now reads as the same wood with a slightly darker stain. Inspected Maple beside Walnut and Ebony at phone and tablet sizes; the latter themes' material values are unchanged.
+2. **Dice stay in the felt:** the shared rolling bounds now reserve the complete folded tile length, the die's full tumbling radius and a small clearance. Both tile banks are protected. The same bounds constrain animated throws, instant rolls, restored poses and final settling; the outer-rail inset is larger too. Added copied die positions and felt bounds to the read-only debug output, and capture assertions check containment during movement and after settling. The captured phone landing leaves the shut tiles exposed, and settled mesh faces still match the logical dice.
+3. **Phone setup:** compact player grids and one segmented variant row reduce vertical space. Full variant names remain accessible through button labels; the phone shows compact visual labels. Start Game is at the top of the setup card and is fully visible without scrolling. The measured default phone setup scroll is **201px**, down from **436px** and below the old **308px**. In-shot assertions passed for setup text at least **14px** and button/input targets at least **44 × 44px**. All other requested viewport sizes retain zero setup scroll.
+
+Validation:
+
+- `node games/shut-the-box-assets/validate.mjs` passed: the existing 153 orientation/collision/refresh-rate checks and four separation cases, plus **15 new felt-corridor trajectories** covering shallow/deep trays, one/two tile banks and 30/60/120Hz integration.
+- Preserved the validator's **`origin/main`** comparison (and existing `STB_BASE` override). Twelve rule/scoring/AI functions and both roll-decision blocks still match that reference.
+- `node --check` passed for `table.js`, `physics.js`, `validate.mjs` and the inline game script. `git diff --check` passed.
+- **16 silent captures** at all four sizes: start, play, mid-throw and the new settled landing shot. Zero step/browser errors, zero horizontal overflow, and zero gameplay page scroll.
+- **10 further silent captures** at phone/tablet sizes: setup, Walnut, Maple, Ebony and Double Box. All in-shot checks passed, including two-bank dice containment and logical/mesh agreement. Every capture reports muted audio.
+
+Evidence: `output/screen-fit/shut-the-box-round-2-after/` and its `looks/` subfolder, each with `report.json` and contact sheets. The extra look recipe is saved alongside its captures; the primary start/play/throw/landing recipe is restored in `tools/screen-fit/shots/shut-the-box.json`. Captures used the same previously approved muted headless tool outside the macOS sandbox; no visible window or server was opened. All capture commands completed and closed their browser. No new textures or vendor changes; physical-device limits from Round 1 remain.
+
+Round 2 files changed:
+
+- `games/shut-the-box.html`
+- `games/shut-the-box-assets/table.css`
+- `games/shut-the-box-assets/table.js`
+- `games/shut-the-box-assets/physics.js`
+- `games/shut-the-box-assets/validate.mjs`
+- `tools/screen-fit/shots/shut-the-box.json`
+- `docs/codex/screen-fit-2026-11-22/shut-the-box-report.md`
+- Generated captures, reports and recipes under `output/screen-fit/shut-the-box-round-2-after/`.

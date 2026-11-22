@@ -31,6 +31,7 @@ button:focus-visible,a:focus-visible { outline:3px solid var(--table-accent);out
 .table-choice-row { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px; }
 .table-choice { gap:8px; }
 .table-swatch { width:16px;height:16px;border:2px solid #ffefc780;border-radius:50%;background:var(--swatch);box-shadow:0 1px 4px #0008;flex-shrink:0; }
+.variant-short { display:none; }
 .start-btn { min-height:52px;background:linear-gradient(#edd4a8,#c9a46c);color:#281b10;box-shadow:0 5px 18px #0003;font-weight:800; }
 .speed-mode-row { min-height:52px; }
 .speed-mode-label { color:#f5e5c9; }
@@ -117,13 +118,30 @@ body.light-theme .setup-subtitle { color:#fff1d3; }
     .setup-box>.start-btn { margin-top:18px; }
 }
 @media (max-width:700px) {
-    #setup-screen { padding:80px 14px 26px; }
-    .setup-box { width:100%;padding:20px 16px; }
-    .player-configs { grid-template-columns:1fr; }
-    .setup-title { font-size:2.65rem; }
-    .setup-subtitle { font-size:14px;margin-bottom:22px; }
+    #setup-screen { padding:68px 14px 14px; }
+    .setup-box { width:100%;padding:14px 12px;display:flex;flex-direction:column; }
+    .setup-box>.start-btn { order:-1;margin:0 0 12px; }
+    .player-configs { grid-template-columns:1fr;gap:8px; }
+    .player-config { display:grid;grid-template-columns:12px minmax(0,1fr) auto;padding:8px;gap:6px; }
+    .player-config .emoji-picker { grid-column:1/-1;grid-row:2;order:0; }
+    .player-config .ai-diff-select { grid-column:1/-1;margin:0;padding:0; }
+    .player-config .type-toggle button { padding:7px 9px; }
+    .setup-title { font-size:36px; }
+    .setup-subtitle { font-size:14px;margin:6px 0 12px; }
+    #setup-screen :is(button,input,small,.player-count-label,.rounds-label,.ai-diff-label,.speed-mode-label,.stats-table,.rules-panel) { font-size:14px; }
+    #setup-screen .emoji-pick-btn { font-size:18px; }
+    #setup-screen .stats-table :is(th,td) { font-size:14px; }
+    .setup-box>.player-count-label { margin-bottom:6px; }
+    .setup-box>.rounds-label { margin:12px 0 6px; }
+    .player-count-row { margin-bottom:12px; }
+    #setup-screen .speed-mode-row { margin:12px 0 0;padding:8px 10px; }
+    #setup-screen .stats-section { margin-top:12px; }
+    #setup-screen>.rules-toggle { margin-top:10px!important; }
     .rounds-row { flex-wrap:wrap;gap:8px; }
-    #variant-row { display:grid;grid-template-columns:1fr 1fr; }
+    #variant-row { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; }
+    #variant-row .count-btn { padding:6px 4px;line-height:1.15; }
+    .variant-full { display:none; }
+    .variant-short { display:inline; }
     .table-choice { padding:10px 6px;font-size:13px;gap:5px; }
     .game-header { top:max(12px,var(--stb-safe-top));left:110px;right:116px; }
     .turn-indicator { min-height:44px;font-size:12px;padding:8px 10px;white-space:normal;line-height:1.15; }

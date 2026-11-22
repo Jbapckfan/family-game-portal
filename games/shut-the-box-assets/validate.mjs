@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const require = createRequire(import.meta.url);
 globalThis.THREE = require('./vendor/three.min.js');
-const { faceQuaternion, topFace, stepDie, separateDice } = require('./physics.js');
+const { faceQuaternion, topFace, stepDie, separateDice, rollingBounds } = require('./physics.js');
 let checks = 0;
 for (let value = 1; value <= 6; value++) {
     for (let i = 0; i < 24; i++) {
@@ -29,6 +29,23 @@ for(const distance of [0,.1,.8,1.11]) {
     assert.ok(Math.hypot(a.x-b.x,a.z-b.z)>=1.11999,'dice must separate even when coincident');
 }
 console.log('4 die-to-die contact checks passed');
+// The complete tumbling cube must clear the farthest edge of a shut tile.
+let bedChecks=0;
+for(const [depth,twoBanks] of [[6.8,false],[8.1,false],[9.2,true],[17,false],[17,true]]) {
+    const bounds=rollingBounds(14,depth,twoBanks),radius=Math.sqrt(3)*.46;
+    assert.ok(bounds.zMin<=bounds.zMax,'felt corridor must remain usable');
+    assert.ok(bounds.zMin-radius > -depth/2+1.95+1.67,'die clears folded back bank');
+    if(twoBanks)assert.ok(bounds.zMax+radius < depth/2-1.95-1.67,'die clears folded front bank');
+    for(const hz of [30,60,120]) {
+        const body={x:0,y:2,z:bounds.zMax,vx:14,vy:4,vz:-12,bounces:0,walls:0};
+        for(let n=0;n<hz*2;n++) {
+            stepDie(body,1/hz,bounds);
+            assert.ok(Math.abs(body.x)<=bounds.x && body.z>=bounds.zMin && body.z<=bounds.zMax,'throw stays inside felt corridor');
+        }
+        bedChecks++;
+    }
+}
+console.log(`${bedChecks} felt corridor/refresh-rate trajectories passed`);
 const current = readFileSync(new URL('../shut-the-box.html',import.meta.url),'utf8');
 const previous = execFileSync('git',['show',(process.env.STB_BASE||'origin/main')+':games/shut-the-box.html'],{encoding:'utf8'}); // compare with the published game, not HEAD, so the check still means something after commit
 const unchanged = ['sumOpen','getOpenTiles','findCombinations','computeValidTiles','usesOneDie','tileValue','tileLabel','futureRollCoverage','rankStrategicCombo','pickBestCombo','recordChampionship','recordGameStats'];

@@ -160,6 +160,8 @@ async function main() {
   const games = JSON.parse(readFileSync(join(ROOT, 'tools/screen-fit/games.json'), 'utf8'))
     .map((g) => {
       const f = join(ROOT, 'tools/screen-fit/shots', `${g.id}.json`);
+      // --shots <file> swaps in a one-off shot list (for example a theme study) without editing shots/.
+      if (args.shots) return { ...g, shots: JSON.parse(readFileSync(resolve(ROOT, args.shots), 'utf8')).shots };
       return existsSync(f) ? { ...g, shots: JSON.parse(readFileSync(f, 'utf8')).shots } : g;
     })
     .filter((g) => !args.only || args.only.split(',').includes(g.id))

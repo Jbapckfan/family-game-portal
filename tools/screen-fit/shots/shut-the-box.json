@@ -2,7 +2,11 @@
   "shots": [
     {
       "name": "start",
-      "steps": []
+      "steps": [
+        {
+          "eval": "(() => {if(innerWidth>700)return;const scroll=document.documentElement.scrollHeight-innerHeight;if(scroll>308)throw Error('Phone setup scroll '+scroll+'px exceeds 308px');const start=document.querySelector('.start-btn').getBoundingClientRect();if(start.top<0||start.bottom>innerHeight)throw Error('Start Game is below the fold');for(const e of document.querySelectorAll('#setup-screen *')){const b=e.getBoundingClientRect();if(!b.width||!b.height||getComputedStyle(e).display==='none')continue;if([...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim())&&parseFloat(getComputedStyle(e).fontSize)<13.99)throw Error('Setup text below 14px: '+e.className);if(e.matches('button,input')&&(b.width<43.99||b.height<43.99))throw Error('Setup target below 44px: '+e.className);}})()"
+        }
+      ]
     },
     {
       "name": "play",
@@ -27,6 +31,9 @@
         },
         {
           "eval": "new Promise((resolve,reject)=>{const before=__stbDebug().renderCount;setTimeout(()=>{if(__stbDebug().renderCount!==before){reject(Error('Idle board kept rendering'));return;}resolve();},500);})"
+        },
+        {
+          "eval": "(() => {const d=__stbDebug(),b=d.feltBounds;for(const p of d.dicePositions){if(Math.abs(p.x)>b.x+.0001||p.z<b.zMin-.0001||p.z>b.zMax+.0001)throw Error('Die left felt corridor: '+JSON.stringify(d));}})()"
         }
       ]
     },
@@ -48,6 +55,20 @@
         },
         {
           "eval": "if(window.__stbDebug().settled)throw Error('Throw capture missed movement')"
+        },
+        {
+          "eval": "(() => {const d=__stbDebug(),b=d.feltBounds;for(const p of d.dicePositions){if(Math.abs(p.x)>b.x+.0001||p.z<b.zMin-.0001||p.z>b.zMax+.0001)throw Error('Die left felt corridor: '+JSON.stringify(d));}})()"
+        }
+      ]
+    },
+    {
+      "name": "landing",
+      "steps": [
+        {
+          "eval": "(async()=>{const start=performance.now();while(!__stbDebug().settled&&performance.now()-start<10000)await new Promise(r=>setTimeout(r,50));const d=__stbDebug();if(!d.settled||d.logicalDice.some((v,i)=>v!==d.topFaces[i]))throw Error('Settled faces differ');})()"
+        },
+        {
+          "eval": "(() => {const d=__stbDebug(),b=d.feltBounds;for(const p of d.dicePositions){if(Math.abs(p.x)>b.x+.0001||p.z<b.zMin-.0001||p.z>b.zMax+.0001)throw Error('Die left felt corridor: '+JSON.stringify(d));}})()"
         }
       ]
     }

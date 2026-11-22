@@ -1,0 +1,55 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": ".start-btn"
+        },
+        {
+          "wait": 1600
+        },
+        {
+          "click": "#btn-roll"
+        },
+        {
+          "wait": 2100
+        },
+        {
+          "eval": "(async () => { const start=performance.now();while(!__stbDebug().settled&&performance.now()-start<10000)await new Promise(r=>setTimeout(r,50));const d=window.__stbDebug();if(d.dpr>2)throw Error('DPR cap exceeded'); if(d.renderer!=='webgl'||!d.settled||d.logicalDice.length!==d.topFaces.length||d.logicalDice.some((v,i)=>v!==d.topFaces[i])) throw Error('Logical dice differ from settled mesh faces: '+JSON.stringify(d)); const r=document.querySelector('.back-btn').getBoundingClientRect();if(!document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('.back-btn'))throw Error('Menu covered'); const tiles=[...document.querySelectorAll('#box-area .tile:not(:disabled)')];for(const t of tiles){const b=t.getBoundingClientRect();if(b.width<43.99||b.height<43.99)throw Error('Tile target below 44px');} })()"
+        },
+        {
+          "eval": "(() => { const ts=[...document.querySelectorAll('#box-area .tile:not(:disabled)')].map(x=>x.getBoundingClientRect());for(let i=0;i<ts.length;i++)for(let j=i+1;j<ts.length;j++){const a=ts[i],b=ts[j];if(Math.min(a.right,b.right)-Math.max(a.left,b.left)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1)throw Error('Tile hit areas overlap: '+JSON.stringify({i,j,a:a.toJSON(),b:b.toJSON()}));} if(getComputedStyle(document.querySelector('#btn-coach')).display==='none')throw Error('Coach hidden'); })()"
+        },
+        {
+          "eval": "new Promise((resolve,reject)=>{const before=__stbDebug().renderCount;setTimeout(()=>{if(__stbDebug().renderCount!==before){reject(Error('Idle board kept rendering'));return;}resolve();},500);})"
+        }
+      ]
+    },
+    {
+      "name": "throw",
+      "settle": 0,
+      "steps": [
+        {
+          "eval": "(() => { const combo=findCombinations(getOpenTiles(players[currentPlayerIdx]),diceTotal)[0]; if(!combo)throw Error('No legal first move'); combo.forEach(toggleTile); })()"
+        },
+        {
+          "wait": 850
+        },
+        {
+          "click": "#btn-roll"
+        },
+        {
+          "wait": 150
+        },
+        {
+          "eval": "if(window.__stbDebug().settled)throw Error('Throw capture missed movement')"
+        }
+      ]
+    }
+  ]
+}

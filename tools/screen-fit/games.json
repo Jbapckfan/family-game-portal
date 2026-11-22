@@ -1,0 +1,360 @@
+[
+  {
+    "id": "tradeoff",
+    "url": "/games/tradeoff/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "inbetween",
+    "url": "/games/inbetween/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "counterpart",
+    "url": "/games/counterpart/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "shortlist",
+    "url": "/games/shortlist/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "second-sense",
+    "url": "/games/second-sense/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "sideways",
+    "url": "/games/sideways/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "ringcount",
+    "url": "/games/ringcount/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "switchpath",
+    "url": "/games/switchpath/",
+    "batch": "daily",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "ers",
+    "url": "/games/ers.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "speed-card-game",
+    "url": "/games/speed-card-game.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "socktopus",
+    "url": "/games/socktopus/",
+    "batch": "large",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "reflex-riot",
+    "url": "/games/reflex-riot/index.html",
+    "batch": "large",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "zoo-conquest",
+    "url": "/games/zoo-conquest.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "particle-conquest",
+    "url": "/games/particle-conquest/",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "tower-defense",
+    "url": "/games/tower-defense/index.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "dots-and-boxes-3d",
+    "url": "/games/dots-and-boxes-3d.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "snowman-siege",
+    "url": "/games/snowman-siege.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "shut-the-box",
+    "url": "/games/shut-the-box.html",
+    "batch": "shut-the-box",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "eval": "startGame()"
+          },
+          {
+            "wait": 600
+          },
+          {
+            "click": "#btn-roll"
+          },
+          {
+            "wait": 1800
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cube-jumper",
+    "url": "/games/cube-jumper.html",
+    "batch": "arcade-table",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "2DTicTacToe",
+    "url": "/games/mini-games/2DTicTacToe.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "CodeBreakerV4",
+    "url": "/games/mini-games/CodeBreakerV4.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "lasers-3d",
+    "url": "/games/lasers-3d/",
+    "batch": "large",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "lasers_mirrors_game",
+    "url": "/games/mini-games/lasers_mirrors_game.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "LightsOut",
+    "url": "/games/mini-games/LightsOut.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "PegJumper",
+    "url": "/games/mini-games/PegJumper.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "SpellingBee",
+    "url": "/games/mini-games/SpellingBee.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "2048",
+    "url": "/games/mini-games/2048.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "ConnectFour",
+    "url": "/games/mini-games/ConnectFour.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "Snake",
+    "url": "/games/mini-games/Snake.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "Minesweeper",
+    "url": "/games/mini-games/Minesweeper.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  },
+  {
+    "id": "MemoryMatch",
+    "url": "/games/mini-games/MemoryMatch.html",
+    "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      }
+    ]
+  }
+]

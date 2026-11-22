@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   function attach(app) {
-    var doc = document, seen = '', selected = '', eventIndex = 0, lastTrace = null;
+    var doc = document, seen = '', selected = '', eventIndex = 0, lastTrace = null, lastView = null;
     var describe = doc.createElement('div'); describe.id = 'cursor-description'; describe.className = 'glass'; describe.setAttribute('role','status');
     doc.getElementById('stage').appendChild(describe);
     var layers=doc.createElement('div');layers.id='layer-controls';layers.className='glass';layers.hidden=true;layers.setAttribute('role','group');layers.setAttribute('aria-label','Board face to edit');
@@ -43,7 +43,9 @@
         var cell={x:ev.x,y:ev.y,side:side};app.focusCell(cell,true);app.render.pulseCell(cell);app.motion.requestRender();
       }
     });
+    var stopViewport = app.ui.onViewport(function(){if(lastView)update(lastView)});
     function update(v) {
+      lastView=v;
       layers.hidden=!(v.level&&v.level.duplex);
       doc.getElementById('app').classList.toggle('has-decks',!layers.hidden);
       ['above','below'].forEach(function(side){var b=layers.querySelector('#btn-'+side);b.setAttribute('aria-pressed',v.activeLayer===side?'true':'false');b.classList.toggle('btn-selected',v.activeLayer===side);b.disabled=v.status==='tracing'||v.revealPlaying||v.resetting;});
@@ -57,8 +59,11 @@
       doc.querySelectorAll('.tray-card').forEach(function(b){var t=b.dataset.type,introduced=t==='SPLITTER'?a.level.tray.indexOf(t)!==-1:app.levels.slice(0,v.levelIndex+1).some(function(l){return l.tray.indexOf(t)!==-1;});b.setAttribute('data-unintroduced',introduced?'false':'true');});
       if(v.levelIndex===0&&!p.tutorialDone&&!app.ui.isModalOpen()){
         var first=v.placed[0],step=v.status==='won'?'done':!v.selectedTray&&!first?'pick':!first?'place':app.sim.trace(a.level,v.placed).allTargetsHit?'fire':'rotate';
-        if(step!==seen){seen=step;
-          var words={pick:'Choose MIRROR in the tray below.',place:'Tap the marked square to place your mirror.',rotate:'Tap your mirror to rotate it. Follow the beam toward the ring.',fire:'The beam reaches the target. Press FIRE!',done:'Connected! Tilt freely to explore. Your next puzzle is ready.'};
+        var trayRect=doc.getElementById('tray').getBoundingClientRect(),stageRect=doc.getElementById('stage').getBoundingClientRect();
+        var traySide=trayRect.width>0&&trayRect.left>=stageRect.right-2?'on the right':'below';
+        var lessonKey=step+(step==='pick'?traySide:'');
+        if(lessonKey!==seen){seen=lessonKey;
+          var words={pick:'Choose MIRROR in the tray '+traySide+'.',place:'Tap the marked square to place your mirror.',rotate:'Tap your mirror to rotate it. Follow the beam toward the ring.',fire:'The beam reaches the target. Press FIRE!',done:'Connected! Tilt freely to explore. Your next puzzle is ready.'};
           app.ui.showToast(words[step],{kind:'intro',ms:10000});
           if(step==='place'){app.focusCell(a.solution[0],false);app.render.pulseCell(a.solution[0]);}
           if(step==='done'){p.tutorialDone=true;app.ui.saveProgress(p);}
@@ -66,7 +71,7 @@
       }
 
     }
-    return {close:close,update:update,destroy:function(){describe.remove();layers.remove();doc.getElementById('app').classList.remove('has-decks');move.remove();tools.remove();panel.remove();}};
+    return {close:close,update:update,destroy:function(){stopViewport();describe.remove();layers.remove();doc.getElementById('app').classList.remove('has-decks');move.remove();tools.remove();panel.remove();}};
   }
   root.LaserLearning={attach:attach};
 }(typeof self!=='undefined'?self:this));

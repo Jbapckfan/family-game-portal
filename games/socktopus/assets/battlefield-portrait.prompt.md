@@ -1,0 +1,13 @@
+# Portrait battlefield — November 22, 2026
+
+Generated with the built-in image generation tool, using `battlefield.webp` as a style and subject reference. Original generation was inspected inline; selected output compressed as JPEG with the installed macOS `sips`, quality 85 (the installed FFmpeg has no WebP encoder and Pillow is absent; no dependencies were installed). No resizing or compositing was applied to the generated artwork.
+
+## Prompt
+
+Use case: stylized-concept. Asset type: finished portrait battlefield background for Socktopus, a family laundry tactics game. The provided landscape image is a STYLE AND SUBJECT REFERENCE; create a new cohesive portrait 4:5 composition, not a collage or screenshot. Match its premium detailed 3D illustrated miniature look and original warm coral wood / cool cyan washing machine identity.
+
+A magical laundry room with EXACTLY THREE horizontal navy-purple plush carpet lanes stacked vertically, running LEFT TO RIGHT. At the left end of EACH lane stands a little warm red-orange wooden chest-of-drawers castle, and at the right end stands an icy blue washing-machine castle with a round cyan glowing door. Exactly three drawer castles and three washer castles. Sculpted bevels, wood grain, brass handles, lint and laundry details, soft contact shadows and rich carpet fibers. They are built into ONE continuous room, softly lit and blended naturally with their lane, with no rectangular cutouts or pasted boxes. Background wall and hanging socks confined to the upper edge; warm lantern light on the left, cool bounce light on the right, subtle atmospheric depth and corner vignette. No characters or units, no UI, no text, no lettering or numbers.
+
+Composition is for an interactive playfield: generous CLEAR carpet between x=22% and x=78% on each lane for moving characters. Side castles stay within the outer 22% of the picture so they do not block travel. Row baselines about 28%, 62%, and 92% down the picture; each lane has convincing room detail and distinct depth, not a large flat purple fill. Separators at one-third and two-thirds of the image height. Camera slightly elevated, looking across the rugs like the reference, with horizontal travel lanes. Keep the castles upright and proportionate. The three lane ends are visible together. Portrait 4:5 full-bleed artwork, carefully framed for both phone and portrait iPad, no borders, no watermarks.
+
+The renderer preserves the image aspect ratio. Its portrait play projection follows the room's three rugs; the inverse projection is used for lane taps. Logical unit distances, rates, combat and lane assignments are unchanged.

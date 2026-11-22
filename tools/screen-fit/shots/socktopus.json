@@ -1,0 +1,34 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "#startBtn"
+        },
+        {
+          "key": "1"
+        },
+        {
+          "key": "q"
+        },
+        {
+          "wait": 1100
+        },
+        {
+          "key": "2"
+        },
+        {
+          "key": "w"
+        },
+        {
+          "wait": 2400
+        }
+      ]
+    }
+  ]
+}

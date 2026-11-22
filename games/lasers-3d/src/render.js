@@ -467,7 +467,17 @@
       fitToBoard: rig.fitToBoard, canFit: rig.canFit, getCellPx: rig.getCellPx, getBoardScreenBox: rig.getBoardScreenBox,
       setLayer:setLayer, getLayer:function(){return activeLayer;},
       restoreCamera: function(c){if(level&&level.duplex)setLayer(c&&c.layer,{keepCamera:true});return rig.restoreCamera(c);},
-      focusCell: function (c, zoom) { if(level&&level.duplex){var side=c.side || (c.z<0?'below':'above');if(side!==activeLayer)setLayer(side,{animate:false});} if (zoom) rig.setViewMode('working', {animate:false}); var p = projectCell(c, 0), r = canvas.getBoundingClientRect(); rig.panBy(r.left + r.width / 2 - p.x, r.top + r.height / 2 - p.y); },
+      focusCell: function (c, zoom) {
+        if(level&&level.duplex){var side=c.side || (c.z<0?'below':'above');if(side!==activeLayer)setLayer(side,{animate:false});}
+        if (zoom) rig.setViewMode('working', {animate:false});
+        var r = canvas.getBoundingClientRect(), host = canvas.parentElement;
+        // The stage is a separate grid cell from the tray/HUD. Intersect its
+        // clip rectangle too, rather than treating any covered canvas as usable.
+        var v = host && host.getBoundingClientRect ? host.getBoundingClientRect() : r;
+        var visible = {left:Math.max(r.left,v.left), top:Math.max(r.top,v.top),
+          right:Math.min(r.left+r.width,v.left+v.width), bottom:Math.min(r.top+r.height,v.top+v.height)};
+        rig.focusScreenPoint(projectCell(c, 0), r, visible, !!zoom);
+      },
       setViewMode: rig.setViewMode, getViewMode: rig.getViewMode, hasOverview: rig.hasOverview,
       pickCell: pickCell, projectCell: projectCell, cellToScreen: function (cell) { return projectCell(cell, 0); },
       /* DESIGN.md 13: bitmask of the levels punched out of a column (0 = an ordinary solid column). The renderer

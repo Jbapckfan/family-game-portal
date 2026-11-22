@@ -30,6 +30,10 @@
   let animationId = 0;
   let toastTimer = 0;
   let pendingRecord = null;
+  let hiddenAt = null;
+  let reactionScheduledAt = 0;
+  let backgroundNormal = null, backgroundFever = null;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let settings = readJson("reflexRiotSettings", { level:"normal", skin:"neon", reduceFlash:false, largeTargets:false, symbolCues:false, oneHand:false, calibration:0, totalScore:0 });
 
   const state = {
@@ -62,18 +66,29 @@
   function applySettings(){document.body.dataset.riotSkin=settings.skin;document.body.classList.toggle("reduce-flash",settings.reduceFlash);}
 
   function resize() {
+    const oldW = W, oldH = H;
     W = innerWidth; H = innerHeight; dpr = Math.min(devicePixelRatio || 1, 2);
+    for (const items of [state.entities, state.particles, state.floaters, state.ripples]) {
+      for (const item of items) { item.x *= W / oldW; item.y *= H / oldH; }
+    }
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     canvas.style.width = `${W}px`; canvas.style.height = `${H}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    function backdrop(center) {
+      const g = ctx.createRadialGradient(W*.5,H*.48,10,W*.5,H*.48,Math.max(W,H)*.72);
+      g.addColorStop(0,center); g.addColorStop(1,"#070a16"); return g;
+    }
+    backgroundNormal = backdrop("#171d48"); backgroundFever = backdrop("#48135f");
     state.stars = Array.from({ length: Math.min(100, Math.floor(W * H / 12000)) }, () => ({
       x: Math.random() * W, y: Math.random() * H, r: Math.random() * 2 + .4, speed: Math.random() * 16 + 6, alpha: Math.random() * .5 + .12
     }));
+    requestFrame();
   }
 
   function showScreen(id) {
     screens.forEach(s => $(s).classList.add("hidden"));
     if (id) $(id).classList.remove("hidden");
+    requestFrame();
   }
 
   function audioContext() {
@@ -114,6 +129,10 @@
 
   function updateSound() {
     ui.sound.textContent = muted ? "🔇" : "🔊"; ui.soundState.textContent = muted ? "🔇" : "🔊";
+    for (const button of [ui.sound, ui.soundState]) {
+      button.setAttribute("aria-label", muted ? "Turn sound on" : "Turn sound off");
+      button.setAttribute("aria-pressed", String(!muted));
+    }
   }
 
   function bestScore() { return Number(localStorage.getItem("reflexRiotBest") || 0); }
@@ -151,10 +170,11 @@
     state.difficulty = 1; state.fever = 0; state.feverUntil = 0; state.shake = 0; state.flash = 0; state.paused = false;
     state.playing = true; state.screen = "game"; showScreen(null); ui.hud.classList.remove("hidden");
     switchMode(MODE_ORDER[state.modeIndex], true); updateHud(); sound("start");
+    if(document.hidden){state.paused=true;hiddenAt=performance.now()}
   }
 
   function startReaction(calibrating=false){state.gameKind=calibrating?"calibrate":"reaction";state.mode="reaction";state.calibrating=calibrating;state.reactionTrials=[];state.playing=true;state.screen="game";state.entities=[];showScreen(null);ui.hud.classList.add("hidden");scheduleReactionTarget()}
-  function scheduleReactionTarget(){state.entities=[];state.reactionBorn=0;state.reactionReadyAt=performance.now()+900+Math.random()*2200;showToast(state.calibrating?`CALIBRATION ${state.reactionTrials.length+1}/3 · WAIT…`:"WAIT FOR IT…","#22d3ee")}
+  function scheduleReactionTarget(){reactionScheduledAt=performance.now();state.entities=[];state.reactionBorn=0;state.reactionReadyAt=performance.now()+900+Math.random()*2200;showToast(state.calibrating?`CALIBRATION ${state.reactionTrials.length+1}/3 · WAIT…`:"WAIT FOR IT…","#22d3ee")}
   function finishReaction(milliseconds){state.reactionTrials.push(milliseconds);state.entities=[];if(state.calibrating&&state.reactionTrials.length<3){setTimeout(scheduleReactionTarget,650);return}state.playing=false;const result=state.calibrating?Math.round(state.reactionTrials.reduce((a,b)=>a+b,0)/state.reactionTrials.length):milliseconds;if(state.calibrating){settings.calibration=result;saveSettings()}state.screen="results";showScreen("#results");ui.resultScore.textContent=`${result} ms`;ui.resultKicker.textContent=state.calibrating?"CALIBRATION SAVED":"REACTION COMPLETE";ui.resultRank.textContent=result<180?"⚡ LIGHTNING":result<250?"🔥 BLAZING":result<350?"👍 QUICK HANDS":"🐢 WARMING UP";ui.bestCombo.textContent="1";ui.accuracy.textContent="100%";const board=readBoard("reflexRiotReactionBoard");ui.statBest.textContent=board.length?`${board[0].value} ms`:"—";ui.duelResult.classList.add("hidden");ui.nameEntry.classList.add("hidden");$("#again-button").textContent=state.calibrating?"TRY REACTION MODE":"↻ TRY AGAIN";if(!state.calibrating)offerRecord("reaction",result);renderSettings()}
 
   function switchMode(mode, first = false) {
@@ -263,7 +283,7 @@
   }
 
   function update(dt) {
-    for (const s of state.stars) { s.y += s.speed * dt; if (s.y > H) { s.y = 0; s.x = Math.random() * W; } }
+    if (!reducedMotion.matches) for (const s of state.stars) { s.y += s.speed * dt; if (s.y > H) { s.y = 0; s.x = Math.random() * W; } }
     updateEffects(dt);
     if (!state.playing || state.paused) return;
     now = performance.now();
@@ -308,7 +328,7 @@
   }
 
   function updateEffects(dt) {
-    for (const p of state.particles) { p.x += p.vx*dt; p.y += p.vy*dt; p.vy += p.gravity*dt; p.life -= dt*1.8; p.r *= .992; }
+    for (const p of state.particles) { p.x += p.vx*dt; p.y += p.vy*dt; p.vy += p.gravity*dt; p.life -= dt*1.8; p.r *= Math.pow(.992, dt * 60); }
     for (const f of state.floaters) { f.y += f.vy*dt; f.life -= dt*1.45; }
     for (const r of state.ripples) { r.r += 240*dt; r.life -= dt*2.25; }
     state.particles = state.particles.filter(p => p.life > 0); state.floaters = state.floaters.filter(f => f.life > 0); state.ripples = state.ripples.filter(r => r.life > 0);
@@ -397,7 +417,8 @@
 
   function draw() {
     ctx.save(); ctx.clearRect(0,0,W,H);
-    const sx=(Math.random()-.5)*state.shake, sy=(Math.random()-.5)*state.shake; ctx.translate(sx,sy);
+    const shake=reducedMotion.matches?0:state.shake;
+    const sx=(Math.random()-.5)*shake, sy=(Math.random()-.5)*shake; ctx.translate(sx,sy);
     drawBackground();
     if (state.playing) { drawModeBackdrop(); for (const e of state.entities) drawEntity(e); }
     drawEffects();
@@ -407,13 +428,12 @@
 
   function drawBackground() {
     ctx.fillStyle="#080b18"; ctx.fillRect(0,0,W,H);
-    const gradient=ctx.createRadialGradient(W*.5,H*.48,10,W*.5,H*.48,Math.max(W,H)*.72);
-    const fever=state.feverUntil>now; gradient.addColorStop(0,fever?"#48135f":"#171d48"); gradient.addColorStop(1,"#070a16"); ctx.fillStyle=gradient; ctx.fillRect(0,0,W,H);
+    const fever=state.feverUntil>now; ctx.fillStyle=fever?backgroundFever:backgroundNormal; ctx.fillRect(0,0,W,H);
     for (const s of state.stars) { ctx.globalAlpha=s.alpha; ctx.fillStyle="#cbd8ff"; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); }
     ctx.globalAlpha=1;
     if (state.playing) {
       ctx.strokeStyle=fever?"rgba(255,61,154,.18)":"rgba(114,134,207,.09)"; ctx.lineWidth=1;
-      const gap=Math.max(48,Math.min(74,W/12)); const offset=(now*.018)%gap;
+      const gap=Math.max(48,Math.min(74,W/12)); const offset=reducedMotion.matches?0:(now*.018)%gap;
       for(let x=-gap+offset;x<W+gap;x+=gap){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x-gap*.4,H);ctx.stroke();}
       for(let y=-gap+offset;y<H+gap;y+=gap){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y+gap*.25);ctx.stroke();}
     }
@@ -477,6 +497,7 @@
   }
 
   function drawEffects(){
+    if(reducedMotion.matches)return;
     for(const r of state.ripples){ctx.globalAlpha=r.life*.7;ctx.strokeStyle=r.color;ctx.lineWidth=4;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke();}
     for(const p of state.particles){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.x*.01);ctx.fillRect(-p.r,-p.r,p.r*2,p.r*2);ctx.restore();}
     ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="1000 25px ui-rounded,system-ui";
@@ -490,7 +511,37 @@
     $("#reduce-flash").checked=Boolean(settings.reduceFlash);$("#large-targets").checked=Boolean(settings.largeTargets);$("#symbol-cues").checked=Boolean(settings.symbolCues);$("#one-hand").checked=Boolean(settings.oneHand);$("#calibration-copy").textContent=settings.calibration?`Calibrated baseline: ${settings.calibration} ms · lifetime points ${(settings.totalScore||0).toLocaleString()}`:`No calibration yet · lifetime points ${(settings.totalScore||0).toLocaleString()}`;
   }
 
-  function loop(timestamp) { now=timestamp; const dt=Math.min(.034,(timestamp-last)/1000||.016); last=timestamp; update(dt); draw(); animationId=requestAnimationFrame(loop); }
+  function requestFrame() {
+    if(!animationId&&!document.hidden){last=performance.now();animationId=requestAnimationFrame(loop)}
+  }
+  function loop(timestamp) {
+    animationId=0;if(document.hidden)return;
+    now=timestamp; const dt=Math.min(.034,Math.max(0,(timestamp-last)/1000)); last=timestamp;
+    update(dt); draw();
+    const motion=(state.playing&&!state.paused)||state.particles.length||state.floaters.length||state.ripples.length||state.flash>0||state.shake>.05;
+    if(motion)animationId=requestAnimationFrame(loop);
+  }
+
+  function onVisibility() {
+    document.body.classList.toggle("tab-hidden", document.hidden);
+    if(document.hidden){
+      hiddenAt=performance.now();state.paused=state.playing;state.pointer=null;
+      cancelAnimationFrame(animationId);animationId=0;
+      return;
+    }
+    const resumedAt=performance.now();
+    if(state.playing && hiddenAt!==null){
+      // Freeze all existing deadlines, including reaction and hold clocks. Hiding
+      // the tab must never add time to a measured reaction or consume a target.
+      const beganAt=state.gameKind==="reaction"||state.gameKind==="calibrate"?reactionScheduledAt:state.startedAt;
+      const gap=Math.max(0,resumedAt-Math.max(hiddenAt,beganAt));
+      for(const key of ["startedAt","lastModeAt","modeIntroUntil","spawnAt","feverUntil","freezeChangeAt","reactionBorn","reactionReadyAt"]){if(state[key]>0)state[key]+=gap}
+      for(const e of state.entities){if(e.born>0)e.born+=gap;if(e.holdAt>0)e.holdAt+=gap;e.held=false}
+      state.paused=false;
+    }
+    hiddenAt=null;last=resumedAt;now=resumedAt;
+    requestFrame();
+  }
 
   $("#play-button").addEventListener("click",()=>startGame("solo"));
   $("#duel-button").addEventListener("click",()=>startGame("duel"));
@@ -508,11 +559,12 @@
   [["#reduce-flash","reduceFlash"],["#large-targets","largeTargets"],["#symbol-cues","symbolCues"],["#one-hand","oneHand"]].forEach(([selector,key])=>$(selector).addEventListener("change",event=>{settings[key]=event.target.checked;saveSettings()}));
   $("#calibrate-button").addEventListener("click",()=>startReaction(true));
   canvas.addEventListener("pointerdown",onPointerDown,{passive:false});canvas.addEventListener("pointerup",onPointerUp,{passive:false});canvas.addEventListener("pointercancel",()=>state.pointer=null);
-  addEventListener("resize",resize);document.addEventListener("visibilitychange",()=>{if(state.playing){if(document.hidden){state.paused=true;}else{state.startedAt=performance.now()-(state.duration-state.remaining)*1000;state.lastModeAt=performance.now();state.paused=false;showToast("WELCOME BACK!","#22d3ee");}}});
+  addEventListener("resize",resize);window.visualViewport?.addEventListener("resize",resize);
+  document.addEventListener("visibilitychange",onVisibility);
   document.addEventListener("contextmenu",event=>event.preventDefault());
 
   resize(); updateSound(); applySettings();renderSettings();renderLeaderboards();ui.best.textContent=bestScore().toLocaleString();
-  if (location.protocol === "file:") $("#exit-button").classList.add("hidden");
+  // The portal Menu stays available for disk-served checks as well.
   if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  cancelAnimationFrame(animationId); animationId=requestAnimationFrame(loop);
+  requestFrame();
 })();

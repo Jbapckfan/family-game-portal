@@ -21,10 +21,13 @@
           "wait": 350
         },
         {
-          "eval": "(() => { const own=[...document.querySelectorAll('.territory')].find(el=>el.querySelector('circle[fill=\"#22c55e\"]')); if(!own)throw Error('No turtle territory'); own.dispatchEvent(new MouseEvent('click',{bubbles:true})); })()"
+          "eval": "(() => { const own=[...document.querySelectorAll('.territory')].find(el=>el.querySelector('circle[fill=\"#22c55e\"]')); if(!own)throw Error('No turtle territory'); window.__screenFitTerritoryName=own.getAttribute('aria-label').split(',')[0]; own.dispatchEvent(new MouseEvent('click',{bubbles:true})); })()"
         },
         {
           "wait": 300
+        },
+        {
+          "eval": "(() => { const name=document.querySelector('.territory-readout strong'); if(name?.textContent!==window.__screenFitTerritoryName)throw Error('Tapped territory name is not displayed in full');const r=name.getBoundingClientRect();if(r.left<0||r.right>innerWidth||r.top<0||r.bottom>innerHeight)throw Error('Territory readout is clipped'); })()"
         },
         {
           "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"

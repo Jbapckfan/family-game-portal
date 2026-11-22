@@ -1981,6 +1981,15 @@
     .game-sidebar .text-gray-400,.game-sidebar .text-gray-500 { color:#c3d1e3; }
     .mobile-phase-bar > div > div { color:#d8e8f8; }
     [class*="victory-dance-"] { animation-iteration-count:2; }
+
+    /* Round 3: map names paint above all nodes, in clear backed label boxes. */
+    .map-name { cursor:pointer; }
+    .map-name text { font-family:ui-rounded,system-ui,sans-serif; letter-spacing:0; paint-order:stroke; stroke:#0b2030; stroke-width:.6px; }
+    .map-name.selected-name rect { stroke:#fde047; stroke-width:2px; }
+    .map-region-titles text { font-size:14px; paint-order:stroke; stroke:#0b2030; stroke-width:5px; stroke-linejoin:round; }
+    .territory-readout { display:flex; align-items:center; flex-wrap:wrap; gap:4px 12px; flex:none; min-height:44px; margin-bottom:8px; padding:8px 12px; border:1px solid #8cb6c34d; border-radius:12px; color:#f1f7ff; background:#102537; font-size:14px; line-height:1.4; }
+    .territory-readout span { color:#b9d4e4; }
+    .territory-readout strong { font-size:16px; font-weight:700; }
   </style>
 </head>
 <body>
@@ -2512,6 +2521,44 @@
       );
     };
 
+    // ZOO LABEL LAYOUT START — presentation only; canonical node coordinates stay unchanged.
+    function zooLabelNodes(territories, portrait) {
+      return Object.entries(territories).map(([id,data])=>({id,name:data.name,x:portrait?560-data.y:data.x,y:portrait?data.x:data.y,r:28}));
+    }
+    function layoutZooLabels(territories, portrait) {
+      const nodes=zooLabelNodes(territories,portrait), font=portrait?12:14, height=font+8;
+      const bounds=portrait?{left:-28,right:588,top:-8,bottom:912}:{left:-8,right:908,top:-8,bottom:564};
+      const boxes=[];
+      const intersects=(a,b,gap=3)=>a.x<b.x+b.width+gap&&a.x+a.width+gap>b.x&&a.y<b.y+b.height+gap&&a.y+a.height+gap>b.y;
+      const hitsNode=(box,node)=>{
+        const distance=(x,y)=>Math.hypot(x-Math.max(box.x,Math.min(x,box.x+box.width)),y-Math.max(box.y,Math.min(y,box.y+box.height)));
+        return distance(node.x,node.y)<node.r+3||distance(node.x+15,node.y+15)<15;
+      };
+      const ordered=[...nodes].sort((a,b)=>{
+        const density=n=>nodes.reduce((sum,o)=>sum+(Math.hypot(n.x-o.x,n.y-o.y)<140?1:0),0);
+        return density(b)-density(a)||b.name.length-a.name.length||a.id.localeCompare(b.id);
+      });
+      for(const node of ordered) {
+        // Conservative text width plus padding. Printed text is never ellipsized.
+        const width=Math.ceil(node.name.length*font*.65+14), candidates=[];
+        const add=(cx,cy)=>candidates.push({x:cx-width/2,y:cy-height/2,width,height});
+        add(node.x,node.y+34+height/2);add(node.x,node.y-34-height/2);
+        add(node.x+34+width/2,node.y);add(node.x-34-width/2,node.y);
+        for(const radius of [48,66,88,116,150,190])for(let i=0;i<24;i++){
+          const angle=i*Math.PI/12;add(node.x+Math.cos(angle)*radius,node.y+Math.sin(angle)*radius);
+        }
+        const valid=box=>box.x>=bounds.left&&box.y>=bounds.top&&box.x+width<=bounds.right&&box.y+height<=bounds.bottom&&!nodes.some(n=>hitsNode(box,n))&&!boxes.some(b=>intersects(box,b));
+        let choices=candidates.filter(valid);
+        if(!choices.length)for(let y=bounds.top;y+height<=bounds.bottom;y+=8)for(let x=bounds.left;x+width<=bounds.right;x+=8){const box={x,y,width,height};if(valid(box))choices.push(box);}
+        if(!choices.length)throw new Error('No clear map label position for '+node.name);
+        choices.sort((a,b)=>Math.hypot(a.x+width/2-node.x,a.y+height/2-node.y)-Math.hypot(b.x+width/2-node.x,b.y+height/2-node.y));
+        boxes.push({...choices[0],id:node.id,name:node.name,nodeX:node.x,nodeY:node.y,font});
+      }
+      return boxes;
+    }
+    // ZOO LABEL LAYOUT END
+    const ZOO_LABEL_LAYOUTS={landscape:layoutZooLabels(TERRITORIES,false),portrait:layoutZooLabels(TERRITORIES,true)};
+
     // Territory on Map - Clean design with region colors
     const Territory = ({ id, data, owner, troops, isSelected, isValidTarget, onClick, onHover, onHoverEnd, portrait }) => {
       const army = owner ? ANIMAL_ARMIES[owner] : null;
@@ -2530,7 +2577,7 @@
           onMouseLeave={() => onHoverEnd && onHoverEnd()}
         >
           {/* Invisible enlarged hit target for touch */}
-          <circle cx={data.x} cy={data.y} r={portrait ? 36 : 32} fill="transparent" />
+          <circle cx={data.x} cy={data.y} r={portrait ? 42 : 32} fill="transparent" />
 
           {/* Outer glow for selected/valid */}
           {(isSelected || isValidTarget) && (
@@ -2592,11 +2639,7 @@
             {troops}
           </text>
 
-          {/* Territory name below */}
-          <text x={data.x} y={data.y + 36} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold"
-                style={{ textShadow: '1px 1px 2px rgba(0,0,0,1)' }}>
-            {data.name}
-          </text>
+
         </g>
       );
     };
@@ -2610,7 +2653,7 @@
         return () => window.removeEventListener('resize', refit);
       }, []);
       return (
-      <svg className={portrait ? "zoo-map portrait-map" : "zoo-map"} viewBox={portrait ? "0 0 560 900" : "0 0 900 560"} preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
+      <svg className={portrait ? "zoo-map portrait-map" : "zoo-map"} viewBox={portrait ? "-40 -20 640 940" : "-20 -40 940 640"} preserveAspectRatio="xMidYMid meet" style={{width: '100%', height: '100%'}}>
         <g transform={portrait ? "translate(560 0) rotate(90)" : undefined}>
         {/* SVG defs for arrow markers */}
         <defs>
@@ -2635,13 +2678,13 @@
         {/* Australia - bottom right */}
         <ellipse cx="750" cy="450" rx="90" ry="80" fill={REGIONS.Australia.color} opacity="0.2" />
 
-        {!portrait && <g>{/* Region Labels */}
-        <text x="150" y="25" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} EAGLE RIDGE +{REGIONS.NorthAmerica.bonus}</text>
-        <text x="175" y="540" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} PARROT PARADISE +{REGIONS.SouthAmerica.bonus}</text>
-        <text x="410" y="25" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} DEER WOODS +{REGIONS.Europe.bonus}</text>
-        <text x="430" y="540" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} LION SAVANNA +{REGIONS.Africa.bonus}</text>
-        <text x="700" y="25" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} TIGER TERRITORY +{REGIONS.Asia.bonus}</text>
-        <text x="750" y="540" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} KANGAROO OUTBACK +{REGIONS.Australia.bonus}</text>
+        {!portrait && <g className="map-region-titles">{/* Region Labels */}
+        <text x="150" y="-22" textAnchor="middle" fill={REGIONS.NorthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.NorthAmerica.emoji} EAGLE RIDGE +{REGIONS.NorthAmerica.bonus}</text>
+        <text x="175" y="586" textAnchor="middle" fill={REGIONS.SouthAmerica.color} fontSize="13" fontWeight="bold">{REGIONS.SouthAmerica.emoji} PARROT PARADISE +{REGIONS.SouthAmerica.bonus}</text>
+        <text x="410" y="-22" textAnchor="middle" fill={REGIONS.Europe.color} fontSize="13" fontWeight="bold">{REGIONS.Europe.emoji} DEER WOODS +{REGIONS.Europe.bonus}</text>
+        <text x="430" y="586" textAnchor="middle" fill={REGIONS.Africa.color} fontSize="13" fontWeight="bold">{REGIONS.Africa.emoji} LION SAVANNA +{REGIONS.Africa.bonus}</text>
+        <text x="700" y="-22" textAnchor="middle" fill={REGIONS.Asia.color} fontSize="13" fontWeight="bold">{REGIONS.Asia.emoji} TIGER TERRITORY +{REGIONS.Asia.bonus}</text>
+        <text x="750" y="586" textAnchor="middle" fill={REGIONS.Australia.color} fontSize="13" fontWeight="bold">{REGIONS.Australia.emoji} KANGAROO OUTBACK +{REGIONS.Australia.bonus}</text>
 
         </g>}
         {/* Eagle's Peak-Crane Marsh wrap-around connection */}
@@ -2736,6 +2779,21 @@
             className="territory-ripple"
             style={{ animationDelay: `${ripple.delay}ms` }}
           />
+        ))}
+      </g>
+      <g className="territory-label-layer" pointerEvents="none" aria-hidden="true">
+        {(portrait?ZOO_LABEL_LAYOUTS.portrait:ZOO_LABEL_LAYOUTS.landscape).map(label=>{
+          const endX=Math.max(label.x,Math.min(label.nodeX,label.x+label.width)),endY=Math.max(label.y,Math.min(label.nodeY,label.y+label.height));
+          const dx=endX-label.nodeX,dy=endY-label.nodeY,length=Math.hypot(dx,dy);
+          return <path key={'leader-'+label.id} d={`M ${label.nodeX+dx*Math.min(34,length)/length} ${label.nodeY+dy*Math.min(34,length)/length} L ${endX} ${endY}`} fill="none" stroke="#aac5d0" strokeWidth="1" opacity=".55"/>;
+        })}
+        {(portrait?ZOO_LABEL_LAYOUTS.portrait:ZOO_LABEL_LAYOUTS.landscape).map(label=>(
+          <g key={label.id} pointerEvents="all" className={selectedTerritory===label.id?'map-name selected-name':'map-name'}
+             onClick={event=>onTerritoryClick(label.id,event.shiftKey)} onDoubleClick={()=>onTerritoryClick(label.id,true)}
+             onMouseEnter={event=>onTerritoryHover&&onTerritoryHover(label.id,event)} onMouseLeave={()=>onTerritoryHoverEnd&&onTerritoryHoverEnd()}>
+            <rect x={label.x} y={label.y} width={label.width} height={label.height} rx="5" fill="#0b2030" stroke="#a4bac7" strokeWidth=".6"/>
+            <text x={label.x+label.width/2} y={label.y+label.height/2} dominantBaseline="central" textAnchor="middle" fontSize={label.font} fontWeight="700" fill="#f5faff">{label.name}</text>
+          </g>
         ))}
       </g></svg>
     );
@@ -3380,6 +3438,7 @@
       const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
       const [gameState, setGameState] = useState({ territories: {} });
       const [selectedTerritory, setSelectedTerritory] = useState(null);
+      const [inspectedTerritory,setInspectedTerritory] = useState(null);
       const [troopsToPlace, setTroopsToPlace] = useState(0);
       const [turnPhase, setTurnPhase] = useState('reinforce'); // reinforce, attack, fortify
       const [battleState, setBattleState] = useState(null);
@@ -3429,6 +3488,7 @@
 
       // Setup functions
       const startGame = (numHumans, numAI) => {
+        setInspectedTerritory(null);
         const totalPlayers = numHumans + numAI;
         const allArmyKeys = Object.keys(ANIMAL_ARMIES);
         const aiNames = ['Captain Claw', 'Baron Beak', 'Duke Fang', 'Lady Paw', 'Sir Scales'];
@@ -3710,6 +3770,7 @@
       // Handle territory click - shift+click or double-click/double-tap places all troops
       const lastTapRef = React.useRef({ id: null, time: 0 });
       const handleTerritoryClick = (id, placeAll = false) => {
+        setInspectedTerritory(id);
         // Dismiss any lingering tooltip (touch devices never fire mouseleave)
         setTooltipInfo(null);
 
@@ -5098,6 +5159,10 @@
                   End Turn
                 </button>
               )}
+            </div>
+            <div className="territory-readout" role="status" aria-live="polite">
+              <span>Territory</span>
+              <strong>{TERRITORIES[inspectedTerritory || selectedTerritory]?.name || 'Tap a territory to see its full name'}</strong>
             </div>
             {/* Map container */}
             <div className="zoo-map-frame flex-1 bg-gray-800 rounded-xl overflow-hidden">

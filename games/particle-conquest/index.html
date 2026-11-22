@@ -2356,6 +2356,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let W, H;
+let battleScale = 1; // Uniform presentation scale; planet sizes/production stay in world units.
 let arenaTop = 180, arenaBottom = 640;
 let DPR = 1; // devicePixelRatio scale so canvas text/shapes are crisp on retina iPads
 
@@ -3888,6 +3889,7 @@ function generateMultiplayerLevel(seed) {
         rightPlanets[i].units = 25;
     }
 
+    resize();
     game.state = 'playing';
     wakeBattleRenderer();
 }
@@ -5060,34 +5062,78 @@ function updateRallyAutoSend(dt) {
     }
 }
 
-function resize() {
-    const oldW = W, oldH = H, oldTop = arenaTop, oldBottom = arenaBottom;
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    const topElements = ['levelInfo','hud','speedControls'].map(id=>document.getElementById(id)).filter(Boolean);
-    arenaTop = Math.max(100,...topElements.map(el=>el.getBoundingClientRect().bottom)) + 18;
-    arenaBottom = document.getElementById('battleDock').getBoundingClientRect().top - 18;
-
-    if (oldW && oldH) {
-        // Keep the active battlefield visible through an orientation change.
-        for (const group of [planets, flyingParticles, effects, harvestParticles, comets]) {
-            for (const item of group) { item.x *= W / oldW; item.y = arenaTop + (item.y - oldTop) * (arenaBottom - arenaTop) / Math.max(1, oldBottom - oldTop); }
+// PLANET LAYOUT START — pure presentation geometry, no RNG or gameplay mutations.
+function layoutPlanetMap(radii, width, top, bottom) {
+    const padding=16, gap=16, height=Math.max(1,bottom-top);
+    if(!radii.length)return {scale:1,points:[]};
+    const order=radii.map((r,index)=>({index,r:r+10})).sort((a,b)=>b.r-a.r||a.index-b.index);
+    let best=null;
+    for(let rowCount=1;rowCount<=radii.length;rowCount++) {
+        const rows=Array.from({length:rowCount},()=>[]);
+        const capacity=Math.ceil(radii.length/rowCount);
+        for(const item of order) {
+            const row=rows.filter(r=>r.length<capacity).sort((a,b)=>a.reduce((n,p)=>n+p.r*2,0)-b.reduce((n,p)=>n+p.r*2,0)||a.length-b.length)[0];
+            row.push(item);
         }
+        const active=rows.filter(row=>row.length);
+        const rowHeights=active.map(row=>Math.max(...row.map(p=>p.r))*2);
+        let scale=Math.min(1,(height-padding*2-gap*(active.length-1))/rowHeights.reduce((a,b)=>a+b,0));
+        for(const row of active)scale=Math.min(scale,(width-padding*2-gap*(row.length-1))/row.reduce((n,p)=>n+p.r*2,0));
+        if(!(scale>0))continue;
+        const aspectCost=Math.abs(Math.log((Math.max(...active.map(r=>r.length))/active.length)/(width/height)));
+        if(!best||scale>best.scale+1e-8||(Math.abs(scale-best.scale)<1e-8&&aspectCost<best.aspectCost))best={rows:active,rowHeights,scale,aspectCost};
     }
+    if(!best)throw new Error('No room for the planet field');
+    const {rows,rowHeights,scale}=best,points=Array(radii.length);
+    const rowGap=rows.length>1?(height-padding*2-rowHeights.reduce((a,b)=>a+b,0)*scale)/(rows.length-1):0;
+    let y=top+(rows.length===1?(height-rowHeights[0]*scale)/2:padding);
+    rows.forEach((row,rowIndex)=>{
+        row.sort((a,b)=>a.index-b.index);
+        const used=row.reduce((n,p)=>n+p.r*2*scale,0);
+        const columnGap=row.length>1?(width-padding*2-used)/(row.length-1):0;
+        let x=row.length===1?(width-used)/2:padding;
+        for(const item of row) {
+            points[item.index]={x:x+item.r*scale,y:y+rowHeights[rowIndex]*scale/2};
+            x+=item.r*2*scale+columnGap;
+        }
+        y+=rowHeights[rowIndex]*scale+rowGap;
+    });
+    return {scale,points};
+}
+// PLANET LAYOUT END
 
-    // Minimap keeps its 140px CSS size but gets a crisp backing store
-    minimapCanvas.width = MINIMAP_SIZE * DPR;
-    minimapCanvas.height = MINIMAP_SIZE * DPR;
-    minimapCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-    // Force fog canvas re-init at the new size
-    fogCanvas = null;
+function resize() {
+    const oldW=W,oldH=H,oldTop=arenaTop,oldBottom=arenaBottom;
+    const screenW=window.innerWidth,screenH=window.innerHeight;
+    const topElements=['levelInfo','hud','speedControls'].map(id=>document.getElementById(id)).filter(Boolean);
+    const screenTop=Math.max(100,...topElements.map(el=>el.getBoundingClientRect().bottom))+18;
+    const screenBottom=document.getElementById('battleDock').getBoundingClientRect().top-18;
+    const layout=layoutPlanetMap(planets.map(p=>p.size),screenW,screenTop,screenBottom);
+    battleScale=layout.scale;
+    W=screenW/battleScale; H=screenH/battleScale;
+    arenaTop=screenTop/battleScale; arenaBottom=screenBottom/battleScale;
+    const screenDPR=Math.min(window.devicePixelRatio||1,2);
+    DPR=screenDPR*battleScale;
+    // The backing store follows physical screen pixels, even for a dense map.
+    canvas.width=Math.round(screenW*screenDPR); canvas.height=Math.round(screenH*screenDPR);
+    canvas.style.width=screenW+'px'; canvas.style.height=screenH+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if(oldW&&oldH) {
+        for(const group of [flyingParticles,effects,harvestParticles,comets])for(const item of group) {
+            item.x*=W/oldW;
+            item.y=arenaTop+(item.y-oldTop)*(arenaBottom-arenaTop)/Math.max(1,oldBottom-oldTop);
+        }
+        for(const item of bgParticles) { item.x*=W/oldW; item.y*=H/oldH; }
+    }
+    // Assign positions only. Identity, size, capacity, production and owners are untouched.
+    planets.forEach((planet,index)=>{
+        planet.x=layout.points[index].x/battleScale;
+        planet.y=layout.points[index].y/battleScale;
+    });
+    minimapCanvas.width=Math.round(MINIMAP_SIZE*screenDPR);
+    minimapCanvas.height=Math.round(MINIMAP_SIZE*screenDPR);
+    minimapCtx.setTransform(screenDPR,0,0,screenDPR,0,0);
+    fogCanvas=null;
 }
 
 // Effects system
@@ -5486,7 +5532,7 @@ class Planet {
         }
 
         ctx.fillStyle = '#fff';
-        ctx.font = `bold ${Math.max(14, this.size / 3)}px system-ui`;
+        ctx.font = `bold ${Math.max(14 / battleScale, this.size / 3)}px system-ui`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
@@ -6008,8 +6054,8 @@ function showFloatText(x, y, text, color) {
     }
     const el = document.createElement('div');
     el.className = 'float-text';
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    el.style.left = (x * battleScale) + 'px';
+    el.style.top = (y * battleScale) + 'px';
     el.style.color = color;
     el.textContent = text;
     document.body.appendChild(el);
@@ -6193,6 +6239,8 @@ function generateLevel() {
         }
     }
 
+    resize();
+
     // Reset rally points and timeline for new level
     rallyPoints.clear();
     discoveredPlanets.clear();
@@ -6230,6 +6278,7 @@ function generateLevel() {
     document.getElementById('rallyHint').classList.remove('hidden');
     game._lastMilestone = 0;
 
+    resize();
     // Start tutorial for first-time players
     if (game.state === 'playing' && game.level === 1) {
         tutorial.start();
@@ -7525,6 +7574,7 @@ function animate(time) {
 
 // Input handling with double-click detection
 function handleStart(x, y) {
+    x/=battleScale; y/=battleScale;
     // Ignore input when paused (except during the tutorial, which pauses the
     // sim but still needs real taps for its select/attack steps)
     if (game.paused && !tutorial.active) return;
@@ -7611,10 +7661,12 @@ function handleStart(x, y) {
 }
 
 function handleEnd(x, y) {
+    x/=battleScale; y/=battleScale;
     // Not used for drag anymore, but keep for potential future use
 }
 
 function handleMove(x, y) {
+    x/=battleScale; y/=battleScale;
     currentTouch = { x, y };
 }
 
@@ -7629,7 +7681,7 @@ canvas.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
 canvas.addEventListener('contextmenu', e => {
     e.preventDefault();
     if (game.state !== 'playing' || game.paused) return;
-    const x = e.clientX, y = e.clientY;
+    const x = e.clientX / battleScale, y = e.clientY / battleScale;
 
     // Find clicked planet
     for (let i = 0; i < planets.length; i++) {
@@ -7673,10 +7725,10 @@ let touchStartPos = null;
 canvas.addEventListener('touchstart', e => {
     e.preventDefault();
     if (e.touches.length === 0) return;
-    const x = e.touches[0].clientX;
-    const y = e.touches[0].clientY;
+    const x = e.touches[0].clientX / battleScale;
+    const y = e.touches[0].clientY / battleScale;
     touchStartTime = Date.now();
-    touchStartPos = { x, y };
+    touchStartPos = { x:e.touches[0].clientX, y:e.touches[0].clientY };
 
     // Start long-press timer for rally points
     if (game.state === 'playing' && !game.paused) {

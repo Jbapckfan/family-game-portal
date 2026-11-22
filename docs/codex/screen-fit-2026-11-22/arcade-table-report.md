@@ -219,3 +219,53 @@ No new screenshots, runtime interaction results, frame-rate measurements, physic
 - `games/snowman-siege/PROMPTS.json`
 - `docs/codex/screen-fit-2026-11-22/arcade-table-report.md`
 - Static verification evidence refreshed in `output/screen-fit/arcade-table-after/static-checks/round-2-results.json` and its extracted syntax-check inputs.
+
+## Round 3 — continuous scene, clear labels and planet spacing
+
+Input: Claude's captures in `output/screen-fit/arcade-verify2/` and checkpoint `6dec559`. I inspected the three play contact sheets, Zoo's laptop play image, and Particle's phone play image, and read the corresponding report entries. They confirm clean page/step errors, document bounds and audio muting before this round, while the images expose the remaining internal presentation issues.
+
+**No app, window, browser or capture was launched. No git writes were made.** Only the three requested games, their relevant shot definitions and this report changed. The other five arcade-table games were left alone.
+
+### Snowman Siege
+
+The field-only translucent sky and ground rectangles caused the visible column. The biome/night tint now covers the complete viewport before the uniform battlefield transform is applied. Freeze tint also covers the complete viewport. The extra field-width snow rectangle is removed; the existing panorama supplies one continuous ground surface across the center and sides. The danger line and actual game objects remain in their established positions.
+
+Compared with `6dec559`, the field-fitting helper, inverse pointer mapping and simulation/update callback are byte-for-byte unchanged. Thus the playable width, field transform, aim, enemy/weapon timing and difficulty are preserved. Sixteen forward/inverse aiming checks across the four requested sizes passed. New screenshots are still needed to confirm the visual seam is gone, including during night/freeze effects.
+
+### Zoo Conquest
+
+Territory names now occupy a separate foreground layer, above every node and badge. A cached label layout finds clear backed rectangles around the unchanged node graph, with short leader lines. It explicitly excludes both the node's outer ring and the offset troop-count badge, and separates labels from one another. Leader lines are painted before all label backings so they cannot cross printed names. The top and bottom region titles moved into clear outer gutters and have dark halos.
+
+Every label remains selectable through the existing territory action; portrait node hit areas account for the additional label gutters. A persistent, readable territory-name bar shows the full name after any tap, including reinforcement taps and inspection during an AI turn. It also displays restored selections. This is transient presentation state and adds nothing to the saved-data format.
+
+All 42 canonical node coordinates, names, regions and adjacency records match `6dec559` exactly. Both orientation layouts passed checks for all 42 labels: no label/node, label/badge or label/label collisions in the calculated map geometry, with at least three map units of clearance. These are geometry checks, not new raster/font measurements. The next capture should confirm actual typography, the five named problem areas, region-title gutters and the phone name bar. The Zoo play shot now asserts that the tapped name appears in full and stays inside the viewport.
+
+### Particle Conquest
+
+The old center-distance search could accept an invalid position after exhausting its attempts, and did not account for actual radii. Final layout now uses the generated planets' real radii, ring buffers, balanced rows and a minimum display-space gap. Rows span the available field, rather than leaving an accidental narrow central cluster. A uniformly scaled view is used only when necessary to fit a dense field; every planet keeps its raw size, size ratios, capacity, production, units, type and starting owner. Mouse, touch, long-press/rally, floating text and the play shot use the same forward/inverse scale. Main unit counts retain their minimum screen type size. The canvas backing store remains bounded by the native viewport and capped device DPR.
+
+Layout is applied after the existing generation, boss setup and starting-owner/upgrade assignment, and on resize. It does not consume RNG. Source comparisons with `6dec559` passed for the Planet constructor, production/defense/capacity getters, simulation update and hit testing, AI logic and difficulty settings. Generation/owner/RNG source also matches except for the added final layout calls. Authored moving-boss behavior is retained; the geometry tests cover generated/resized layouts, not every later boss trajectory.
+
+Checks covered 1,200 layouts over all four viewport field sizes, counts 6/8/10/12/18/24, generated radius sets and worst-case large radii. All 116,600 pair checks passed, with a minimum 16 CSS-pixel gap between the buffered planet footprints and no field-boundary violations. Data-only tests of the actual resize function preserved all non-position attributes for 48 planets, passed 48 pointer round trips, and retained the capped native pixel budget at all four sizes. The play shot now asserts bounds and the minimum gap in the real page. Its new assertions have not run here.
+
+Particle's cache is bumped to `particle-conquest-v5-clear-map-20261122`; all precache paths still exist. New captures should check phone and portrait distribution, input after scaling/rotation, higher-density maps and the unchanged HUD bands.
+
+### Checks and remaining verification
+
+- All three game scripts parsed; JSX was transformed only for `node --check`, and all three passed. CSS parsing passed.
+- Particle's service worker passed `node --check`, and its precache targets exist.
+- All three relevant shot specs/eval programs parsed.
+- The source-invariant and geometry checks above passed against `6dec559`.
+- Scoped `git diff --check` passed.
+
+No rendered after-results, physical-device results or performance measurements are claimed for this round. Claude will run the browser captures. No process started by this round remains running.
+
+### Round-3 files changed
+
+- `games/snowman-siege.html`
+- `games/zoo-conquest.html`
+- `games/particle-conquest/index.html`
+- `games/particle-conquest/sw.js`
+- `tools/screen-fit/shots/zoo-conquest.json`
+- `tools/screen-fit/shots/particle-conquest.json`
+- `docs/codex/screen-fit-2026-11-22/arcade-table-report.md`

@@ -2884,14 +2884,6 @@
             const frame = frameRef.current;
             ctx.setTransform(DPR,0,0,DPR,0,0);
             ctx.clearRect(0,0,frame.width,frame.height);
-            ctx.setTransform(DPR * frame.scale,0,0,DPR * frame.scale,DPR * frame.x,DPR * frame.y);
-            ctx.save();
-
-            if (s.screenShake > 0) {
-                ctx.translate((Math.random() - 0.5) * s.screenShake, (Math.random() - 0.5) * s.screenShake);
-                s.screenShake *= Math.pow(0.88, dt);
-            }
-
             // Background Gradient with Night/Day Cycle
             const nightT = s.nightCycleTransition; // 0=day/dusk, 1=night
             const lerpColor = (dayHex, nightHex, t) => {
@@ -2904,14 +2896,26 @@
             const skyMid = lerpColor(biome.skyBottom, '#101828', nightT);
             const skyLow = lerpColor('#1a2a3a', '#080c15', nightT);
 
-            const skyGrad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, frame.height);
             skyGrad.addColorStop(0, skyTop);
             skyGrad.addColorStop(0.7, skyMid);
-            skyGrad.addColorStop(0.7, skyLow);
+            skyGrad.addColorStop(1, skyLow);
             ctx.fillStyle = skyGrad;
             ctx.globalAlpha = .16;
-            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            ctx.fillRect(0, 0, frame.width, frame.height);
             ctx.globalAlpha = 1;
+            if (freezeActive) {
+                ctx.fillStyle = 'rgba(0, 210, 211, 0.06)';
+                ctx.fillRect(0,0,frame.width,frame.height);
+            }
+
+            ctx.setTransform(DPR * frame.scale,0,0,DPR * frame.scale,DPR * frame.x,DPR * frame.y);
+            ctx.save();
+
+            if (s.screenShake > 0) {
+                ctx.translate((Math.random() - 0.5) * s.screenShake, (Math.random() - 0.5) * s.screenShake);
+                s.screenShake *= Math.pow(0.88, dt);
+            }
 
             // Stars (visible during night)
             if (nightT > 0.05) {
@@ -2926,12 +2930,6 @@
                 ctx.globalAlpha = 1.0;
             }
 
-            // Freeze overlay tint
-            if (freezeActive) {
-                ctx.fillStyle = 'rgba(0, 210, 211, 0.06)';
-                ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-            }
-
             // Background Snowflakes
             ctx.fillStyle = 'rgba(255,255,255,0.3)';
             s.backgroundSnow.forEach(sn => {
@@ -2940,11 +2938,8 @@
                 ctx.fill();
             });
 
-            // Ground
-            ctx.fillStyle = COLORS.SNOW;
-            ctx.globalAlpha = .35;
-            ctx.fillRect(0, DANGER_LINE_Y, GAME_WIDTH, GAME_HEIGHT - DANGER_LINE_Y);
-            ctx.globalAlpha = 1;
+            // The panorama already supplies the continuous snow ground.
+            // No field-width color rectangle is painted over it.
 
             // Danger Line Glow
             ctx.shadowBlur = 15;

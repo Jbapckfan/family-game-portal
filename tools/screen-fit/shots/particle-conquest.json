@@ -21,10 +21,13 @@
           "eval": "document.querySelector('#tutorialSkip')?.click()"
         },
         {
-          "eval": "(() => { const source=planets.find(p=>p.owner===PLAYER); const target=planets.find(p=>p.owner===NEUTRAL); if(!source||!target)throw Error('No battlefield'); const c=document.querySelector('#canvas'); c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:source.x,clientY:source.y}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:source.x,clientY:source.y}));c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:target.x,clientY:target.y}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:target.x,clientY:target.y})); })()"
+          "eval": "(() => { const source=planets.find(p=>p.owner===PLAYER); const target=planets.find(p=>p.owner===NEUTRAL); if(!source||!target)throw Error('No battlefield'); const c=document.querySelector('#canvas'); c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:source.x*battleScale,clientY:source.y*battleScale}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:source.x*battleScale,clientY:source.y*battleScale}));c.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,clientX:target.x*battleScale,clientY:target.y*battleScale}));c.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,clientX:target.x*battleScale,clientY:target.y*battleScale})); })()"
         },
         {
           "wait": 350
+        },
+        {
+          "eval": "(() => { for(let i=0;i<planets.length;i++){const p=planets[i],r=(p.size+10)*battleScale,x=p.x*battleScale,y=p.y*battleScale;if(x-r<0||x+r>innerWidth||y-r<arenaTop*battleScale||y+r>arenaBottom*battleScale)throw Error('Planet is outside its clear field');for(let j=0;j<i;j++){const q=planets[j];if((Math.hypot(p.x-q.x,p.y-q.y)-p.size-q.size-20)*battleScale<15.9)throw Error('Planet footprint gap is below 16px');}} })()"
         },
         {
           "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"

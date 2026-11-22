@@ -143,3 +143,29 @@ Round 2 files changed:
 - `tools/screen-fit/shots/shut-the-box.json`
 - `docs/codex/screen-fit-2026-11-22/shut-the-box-report.md`
 - Generated captures, reports and recipes under `output/screen-fit/shut-the-box-round-2-after/`.
+
+## Round 3 — rolling hint and phone Start visibility
+
+Following committed checkpoint `6c23535`. No app, window, browser or capture command was started. No git writes.
+
+**Rolling hint:** `updateSelectionInfo()` previously checked the logical phase and AI player, but did not independently check whether a dice presentation was still pending. The human `rolling` flag is not used by `aiRoll()`. The shared `animateThrow()` entry point now clears the hint and holds a presentation-only `diceInFlight` flag for the existing animation promise, including AI, one-die, speed-mode and fallback paths. Hint and coach rendering refuse to display selection instructions during that interval. Unavailable/nonpositive totals also leave the hint empty. The existing human selection prompt is restored by `afterRoll()` once the animation finishes; AI turns retain no human tap instructions.
+
+Removed the legacy 350ms fade/scale animation from the playing total badge, so its numeral is immediately visible when the settled hint appears. The tile-close pipeline still clears its Closing message on returning to the roll phase. No delays or gameplay transitions were added: source comparison against `6c23535` confirmed that the original animation body (now named `animateDicePresentation`), `rollDice`, `afterRoll`, `aiRoll` and `autoConfirmSelection` are unchanged.
+
+**Phone setup:** Start Game is already first visually in the phone setup card through `.setup-box > .start-btn { order: -1; }`. The Round 2 capture recorded it fully visible without scrolling; its **201px** page scroll belongs to the remaining settings and help. The existing start-shot assertion already requires Start Game's complete rectangle inside the viewport, along with setup text at least 14px and button/input targets at least 44 × 44px. Retained this layout and these assertions. No new phone measurement or claim that the entire settings page fits was made in this round.
+
+Validation:
+
+- `node games/shut-the-box-assets/validate.mjs` passed, preserving the **`origin/main`** rules comparison and existing numerical checks.
+- New Node-only regressions execute the page's actual roll, hint, animation-wrapper and close functions with controlled renderer promises and timers. Four human/AI one/two-die paths verify clearing old hints, suppressing delayed selection refreshes while a throw is pending, showing the correct settled human total, and keeping AI hints empty. They also check invalid totals and the real tile-close → roll → settled-selection handoff. The in-flight assertion failed before the presentation guard was added, then passed after the fix.
+- `node --check` passed for the inline game script, `validate.mjs` and `validate-hints.mjs`; `git diff --check` passed.
+- Added future capture assertions for an empty hint/no badge during the throw and the correct visible total after settling. **These browser assertions have not been run in Round 3; Claude will run the capture.**
+
+Round 3 files changed:
+
+- `games/shut-the-box.html`
+- `games/shut-the-box-assets/table.css`
+- `games/shut-the-box-assets/validate-hints.mjs`
+- `games/shut-the-box-assets/validate.mjs`
+- `tools/screen-fit/shots/shut-the-box.json`
+- `docs/codex/screen-fit-2026-11-22/shut-the-box-report.md`

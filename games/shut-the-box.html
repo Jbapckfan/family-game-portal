@@ -1888,6 +1888,7 @@ let recommendedTiles = new Set();
 let phase = 'roll';
 let playerCount = 2;
 let rolling = false;
+let diceInFlight = false; // Presentation state shared by human, AI and one-die throws.
 let totalRounds = 1;
 let currentRound = 0;
 let speedMode = false;
@@ -2635,7 +2636,17 @@ function ensureDiceInDOM() {
     buildDiceScenes({ thrown: true });
 }
 
-function animateThrow(targetValues) {
+async function animateThrow(targetValues) {
+    diceInFlight = true;
+    updateSelectionInfo();
+    try {
+        await animateDicePresentation(targetValues);
+    } finally {
+        diceInFlight = false;
+    }
+}
+
+function animateDicePresentation(targetValues) {
     const result = STBTable.throw(targetValues, speedMode);
     if (result) return result;
     // Working flat-board fallback, including instant motion preferences.
@@ -2746,7 +2757,7 @@ function rankStrategicCombo(combo, openTiles) {
 }
 
 function showStrategyCoach() {
-    if (phase !== 'select' || players[currentPlayerIdx].isAI) return;
+    if (diceInFlight || rolling || phase !== 'select' || players[currentPlayerIdx].isAI) return;
     const openTiles = getOpenTiles(players[currentPlayerIdx]);
     const combos = findCombinations(openTiles, diceTotal);
     if (!combos.length) return;
@@ -2761,7 +2772,9 @@ function showStrategyCoach() {
 
 function updateSelectionInfo() {
     const info = document.getElementById('selection-info');
-    if (phase !== 'select' || players[currentPlayerIdx].isAI) { info.innerHTML = ''; return; }
+    const cp = players[currentPlayerIdx];
+    if (diceInFlight || rolling || phase !== 'select' || !cp || cp.isAI || cp.done
+        || !Number.isInteger(diceTotal) || diceTotal < 1) { info.innerHTML = ''; return; }
 
     const selSum = [...selectedTiles].reduce((sum, tile) => sum + tileValue(tile), 0);
     const undoHtml = selectedTiles.size > 0 ? ` <button class="undo-btn" onclick="undoTileSelection()">Undo</button>` : '';

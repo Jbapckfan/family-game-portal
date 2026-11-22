@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { validateHintPresentation } from './validate-hints.mjs';
 const require = createRequire(import.meta.url);
 globalThis.THREE = require('./vendor/three.min.js');
 const { faceQuaternion, topFace, stepDie, separateDice, rollingBounds } = require('./physics.js');
@@ -61,3 +62,4 @@ for (const name of ['rollDice','aiRoll']) {
     assert.equal(logic,previous.slice(oldStart,previous.indexOf('    ensureDiceInDOM();',oldStart)),`${name} must decide values before animation exactly as before`);
 }
 console.log(`${unchanged.length} rule/score/AI functions and both roll-decision blocks match ${process.env.STB_BASE||'origin/main'}`);
+await validateHintPresentation(current);

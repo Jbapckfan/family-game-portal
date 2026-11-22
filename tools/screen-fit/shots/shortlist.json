@@ -1,0 +1,39 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "[data-letter=\"A\"]"
+        },
+        {
+          "click": "[data-letter=\"E\"]"
+        },
+        {
+          "click": "#scan-button"
+        },
+        {
+          "click": "#puzzle .pencil-button"
+        },
+        {
+          "eval": "window.scrollTo(0, 0)"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "steps": [
+        {
+          "click": "#help-button"
+        }
+      ]
+    }
+  ]
+}

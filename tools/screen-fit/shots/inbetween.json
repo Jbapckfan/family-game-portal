@@ -1,0 +1,36 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "#bank .pair:not(:disabled)"
+        },
+        {
+          "click": "#puzzle .gap:not(:disabled)"
+        },
+        {
+          "click": "#puzzle [data-fit]"
+        },
+        {
+          "eval": "window.scrollTo(0, 0)"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "steps": [
+        {
+          "click": "#help-button"
+        }
+      ]
+    }
+  ]
+}

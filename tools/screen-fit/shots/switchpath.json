@@ -1,0 +1,30 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "eval": "(() => { const current = document.querySelector('#puzzle .current-cell'); const cell = Number(current.dataset.cell); const value = Number(current.querySelector('.cell-value').textContent); const next = [...document.querySelectorAll('#puzzle [data-cell]')].find(b => { const n = Number(b.dataset.cell); return (Math.abs(n - cell) === 4 || (Math.floor(n / 4) === Math.floor(cell / 4) && Math.abs(n - cell) === 1)) && Number(b.querySelector('.cell-value').textContent) > value && !b.classList.contains('end-cell'); }); if (!next) throw new Error('No legal first higher step'); next.click(); })()"
+        },
+        {
+          "eval": "window.scrollTo(0, 0)"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "steps": [
+        {
+          "click": "#help-button"
+        }
+      ]
+    }
+  ]
+}

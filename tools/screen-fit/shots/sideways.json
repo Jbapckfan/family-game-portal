@@ -1,0 +1,33 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "[data-rotate=\"0\"][data-direction=\"1\"]"
+        },
+        {
+          "click": "[data-rotate=\"1\"][data-direction=\"-1\"]"
+        },
+        {
+          "eval": "window.scrollTo(0, 0)"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "steps": [
+        {
+          "click": "#help-button"
+        }
+      ]
+    }
+  ]
+}

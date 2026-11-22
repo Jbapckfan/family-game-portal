@@ -14,7 +14,6 @@
     <title>Connect Four</title>
 
     <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- React Libraries -->
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
@@ -28,7 +27,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
-    <style>
+
+    <style id="local-utilities">*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.inset-x-0{left:0;right:0}.left-0{left:0}.right-2{right:.5rem}.top-0{top:0}.top-2{top:.5rem}.z-10{z-index:10}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-0\.5{margin-top:.125rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-5{margin-top:1.25rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-\[7\/6\]{aspect-ratio:7/6}.h-6{height:1.5rem}.h-full{height:100%}.min-h-\[32px\]{min-height:32px}.min-h-\[44px\]{min-height:44px}.min-h-screen{min-height:100vh}.w-6{width:1.5rem}.w-full{width:100%}.min-w-\[44px\]{min-width:44px}.max-w-lg{max-width:32rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-shrink-0,.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.select-none{user-select:none}.list-none{list-style-type:none}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-7{grid-template-columns:repeat(7,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-blue-400{--tw-border-opacity: 1;border-color:rgb(96 165 250 / var(--tw-border-opacity, 1))}.border-blue-400\/30{border-color:#60a5fa4d}.border-blue-500\/30{border-color:#3b82f64d}.border-blue-500\/50{border-color:#3b82f680}.border-blue-800{--tw-border-opacity: 1;border-color:rgb(30 64 175 / var(--tw-border-opacity, 1))}.border-red-500{--tw-border-opacity: 1;border-color:rgb(239 68 68 / var(--tw-border-opacity, 1))}.border-yellow-500{--tw-border-opacity: 1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.bg-black{--tw-bg-opacity: 1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-black\/40{background-color:#0006}.bg-black\/70{background-color:#000000b3}.bg-black\/80{background-color:#000c}.bg-blue-500\/10{background-color:#3b82f61a}.bg-blue-600{--tw-bg-opacity: 1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-blue-950{--tw-bg-opacity: 1;background-color:rgb(23 37 84 / var(--tw-bg-opacity, 1))}.bg-cyan-600{--tw-bg-opacity: 1;background-color:rgb(8 145 178 / var(--tw-bg-opacity, 1))}.bg-gray-900{--tw-bg-opacity: 1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.bg-purple-600{--tw-bg-opacity: 1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-black{--tw-gradient-from: #000 var(--tw-gradient-from-position);--tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-600{--tw-gradient-from: #2563eb var(--tw-gradient-from-position);--tw-gradient-to: rgb(37 99 235 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.from-red-400{--tw-gradient-from: #f87171 var(--tw-gradient-from-position);--tw-gradient-to: rgb(248 113 113 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.from-yellow-300{--tw-gradient-from: #fde047 var(--tw-gradient-from-position);--tw-gradient-to: rgb(253 224 71 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-blue-300{--tw-gradient-to: rgb(147 197 253 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #93c5fd var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-blue-950\/50{--tw-gradient-to: rgb(23 37 84 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), rgb(23 37 84 / .5) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-amber-400{--tw-gradient-to: #fbbf24 var(--tw-gradient-to-position)}.to-black{--tw-gradient-to: #000 var(--tw-gradient-to-position)}.to-blue-800{--tw-gradient-to: #1e40af var(--tw-gradient-to-position)}.to-yellow-300{--tw-gradient-to: #fde047 var(--tw-gradient-to-position)}.to-yellow-400{--tw-gradient-to: #facc15 var(--tw-gradient-to-position)}.bg-clip-text{background-clip:text}.bg-repeat{background-repeat:repeat}.p-1{padding:.25rem}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-10{padding-left:2.5rem;padding-right:2.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-6{padding-bottom:1.5rem}.pt-16{padding-top:4rem}.text-center{text-align:center}.font-sans{font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji"}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.capitalize{text-transform:capitalize}.leading-none{line-height:1}.tracking-wider{letter-spacing:.05em}.text-black{--tw-text-opacity: 1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.text-blue-100{--tw-text-opacity: 1;color:rgb(219 234 254 / var(--tw-text-opacity, 1))}.text-blue-100\/90{color:#dbeafee6}.text-blue-300{--tw-text-opacity: 1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.text-blue-300\/80{color:#93c5fdcc}.text-blue-400{--tw-text-opacity: 1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-red-300{--tw-text-opacity: 1;color:rgb(252 165 165 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity: 1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity: 1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-200{--tw-text-opacity: 1;color:rgb(254 240 138 / var(--tw-text-opacity, 1))}.text-yellow-300{--tw-text-opacity: 1;color:rgb(253 224 71 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow: 0 25px 50px -12px rgb(0 0 0 / .25);--tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-lg{--tw-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);--tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-blue-500\/20{--tw-shadow-color: rgb(59 130 246 / .2);--tw-shadow: var(--tw-shadow-colored)}.shadow-blue-800\/50{--tw-shadow-color: rgb(30 64 175 / .5);--tw-shadow: var(--tw-shadow-colored)}.outline{outline-style:solid}.ring{--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-sm{--tw-backdrop-blur: blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.duration-700{transition-duration:.7s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}@media(hover:hover){.hover\:scale-105:hover{--tw-scale-x: 1.05;--tw-scale-y: 1.05;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media(hover:hover){.hover\:bg-blue-500\/30:hover{background-color:#3b82f64d}}@media(hover:hover){.hover\:from-red-300:hover{--tw-gradient-from: #fca5a5 var(--tw-gradient-from-position);--tw-gradient-to: rgb(252 165 165 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}}@media(hover:hover){.hover\:to-yellow-300:hover{--tw-gradient-to: #fde047 var(--tw-gradient-to-position)}}@media(hover:hover){.hover\:text-white:hover{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}}.disabled\:cursor-not-allowed:disabled{cursor:not-allowed}.disabled\:opacity-40:disabled{opacity:.4}.group:focus-visible .group-focus-visible\:opacity-100{opacity:1}@media(min-width:640px){.sm\:py-6{padding-top:1.5rem;padding-bottom:1.5rem}}@media(min-width:768px){.md\:gap-1\.5{gap:.375rem}.md\:p-1\.5{padding:.375rem}.md\:p-4{padding:1rem}.md\:text-5xl{font-size:3rem;line-height:1}}
+</style>
+<style>
         html, body {
             background-color: #000;
             overscroll-behavior: none;
@@ -91,14 +93,277 @@
             }
         }
     </style>
-</head>
+<style id="screen-fit">:root {
+  --mini-gap:clamp(12px,2vw,30px);
+  --board-size:min(64vw,calc(100dvh - 120px));
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body > a[aria-label="Back to menu"],
+.home-link {
+  z-index: 99999 !important;
+  top: max(12px, env(safe-area-inset-top)) !important;
+  left: max(12px, env(safe-area-inset-left)) !important;
+  min-height: 44px;
+}
+.mute-btn {
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+}
+.mini-shell {
+  min-height: 100dvh !important;
+  padding: max(74px, calc(env(safe-area-inset-top) + 62px)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)) !important;
+}
+.mini-layout {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(270px, .72fr) minmax(0, 1.6fr);
+  grid-template-rows: auto auto;
+  gap: var(--mini-gap);
+  align-items: center;
+  align-content: center;
+  margin: 0 !important;
+  min-width: 0;
+}
+.mini-controls {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  text-align: center;
+  align-self: end;
+}
+.mini-bottom {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  text-align: center;
+  align-self: start;
+}
+.mini-board {
+  grid-column: 2;
+  grid-row: 1/span 2;
+  width: min(100%, var(--board-size)) !important;
+  justify-self: center;
+  margin: 0 !important;
+  min-width: 0;
+  box-shadow: 0 24px 70px #0008, inset 0 1px 0 #ffffff12 !important;
+}
+.mini-controls header {
+  padding: 4px 0 18px !important;
+}
+.mini-controls h1 {
+  font-family:
+    Orbitron,
+    system-ui,
+    sans-serif;
+  font-size: clamp(24px, 2.8vw, 43px) !important;
+  line-height: 1.15;
+  letter-spacing: .025em;
+  text-shadow: 0 0 24px #67e8f933 !important;
+}
+.mini-controls header p {
+  font: 500 14px/1.4 system-ui, sans-serif;
+  margin-top: 8px;
+}
+.mini-controls button,
+.mini-bottom button,
+.mini-controls select,
+.mini-controls input {
+  min-height: 44px;
+  line-height: 1.25;
+}
+.mini-controls button,
+.mini-bottom button {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+.mini-controls > div {
+  max-width: 100%;
+  min-width: 0;
+}
+.mini-controls input {
+  width: 100%;
+}
+.mini-bottom footer {
+  padding: 8px 0 !important;
+}
+.mini-bottom footer button {
+  margin: 0 !important;
+}
+.mini-controls .overflow-x-auto {
+  scrollbar-width: thin;
+  padding-bottom: 6px;
+}
+.modal-overlay,
+[role=dialog] {
+  z-index: 1000;
+}
+.modal-content,
+[role=dialog] > div.relative {
+  max-height: calc(100dvh - 150px);
+  overflow-y: auto;
+}
+@media (max-width: 700px), (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 32px),calc(100dvh - 410px));
+  }
+  .mini-layout {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  .mini-controls,
+  .mini-bottom {
+    width: 100%;
+    align-self: auto;
+  }
+  .mini-controls header {
+    padding: 0 0 8px !important;
+  }
+  .mini-controls h1 {
+    font-size: clamp(24px, 5vw, 38px) !important;
+  }
+  .mini-controls header p {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  .mini-controls > div {
+    margin-bottom: 7px;
+  }
+  .mini-board {
+    flex: none;
+  }
+  .mini-bottom footer {
+    padding: 4px 0 !important;
+  }
+}
+@media (min-width: 701px) and (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 64px),calc(100dvh - 390px));
+  }
+  .mini-controls {
+    max-width: 700px;
+  }
+  .mini-shell {
+    justify-content: center !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html.mini-hidden *,
+html.mini-hidden *::before,
+html.mini-hidden *::after {
+  animation-play-state: paused !important;
+}
+</style>
+<style id="board-fit">:root {
+  --board-size:min(65vw,calc((100dvh - 125px) * 7 / 6));
+}
+.mini-board {
+  border: 1px solid #60a5fa88;
+  background:
+    linear-gradient(
+      145deg,
+      #1e40af,
+      #172554) !important;
+}
+.mini-controls > div.grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.mini-controls input {
+  font-size: 14px;
+}
+.mini-controls .overflow-x-auto {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mini-board button[aria-label^=Pop] {
+  min-height: 44px;
+}
+@media (max-width: 700px) {
+  :root {
+    --board-size:min(calc(100vw - 32px),calc((100dvh - 450px)*7/6));
+  }
+  .mini-controls button {
+    padding: 6px 9px;
+  }
+  .mini-controls header p {
+    display: none;
+  }
+  .mini-controls h1 {
+    font-size: 26px !important;
+  }
+  .mini-bottom:has(> div:empty) {
+    display: none;
+  }
+}
+</style>
+<style>.mini-settings {
+  margin: 8px 0 12px;
+  border: 1px solid #94a3b83a;
+  border-radius: 14px;
+  background: #0f172a66;
+  text-align: center;
+}
+.mini-settings summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px;
+  color: #cbd5e1;
+  font: 650 14px/1.3 system-ui, sans-serif;
+}
+.mini-settings[open] {
+  padding: 0 10px 10px;
+}
+.mini-settings > div,
+.mini-settings > nav {
+  margin-bottom: 8px !important;
+}
+.mini-campaign summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px;
+  color: #c4b5fd;
+  font: 650 14px system-ui, sans-serif;
+}
+.mini-board [role=gridcell]:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 1px;
+  z-index: 2;
+}
+.mini-shell [role=dialog] {
+  padding-top: 74px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-two-phone">
+@media(max-width:700px){
+ .mini-shell:has(.mini-layout){padding-left:max(8px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
+ .mini-layout{gap:8px}
+ .mini-board{padding:8px!important}.mini-controls h1{font-size:26px!important}.mini-settings{margin-top:4px;margin-bottom:8px}.mini-bottom>div{margin-top:4px;padding:6px}
+}</style></head>
 <body>
   <noscript>
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#60a5fa;font-family:sans-serif;text-align:center;padding:2rem;">
       <p>JavaScript is required to play Connect Four. Please enable JavaScript in your browser settings.</p>
     </div>
   </noscript>
-  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#127968; Menu</a>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -557,10 +822,11 @@
             }
 
             return (
-                <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                <div className="mini-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-blue-950/50 to-black" aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
-                    <div className="relative z-10 w-full max-w-lg mx-auto text-center">
+                    <div className="mini-layout relative z-10 w-full max-w-lg mx-auto text-center">
+                        <aside className="mini-controls">
                         <header className="pt-16 pb-6 sm:py-6">
                             <div className="flex items-center justify-center gap-3">
                                 <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-red-400 via-blue-300 to-yellow-300 bg-clip-text text-transparent tracking-wider text-shadow-neon">
@@ -581,11 +847,12 @@
 
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
-                        <div className="grid grid-cols-2 gap-2 mb-2"><input value={names[0]} onChange={e=>{const next=[e.target.value,names[1]];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" className="bg-gray-900 border border-red-500 rounded px-2 py-1 text-center" aria-label="Red player name"/><input value={names[1]} onChange={e=>{const next=[names[0],e.target.value];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" disabled={vsAI} className="bg-gray-900 border border-yellow-500 rounded px-2 py-1 text-center disabled:opacity-40" aria-label="Yellow player name"/></div>
+                        <details className="mini-settings" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}><summary>Match options</summary><div className="grid grid-cols-2 gap-2 mb-2"><input value={names[0]} onChange={e=>{const next=[e.target.value,names[1]];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" className="bg-gray-900 border border-red-500 rounded px-2 py-1 text-center" aria-label="Red player name"/><input value={names[1]} onChange={e=>{const next=[names[0],e.target.value];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" disabled={vsAI} className="bg-gray-900 border border-yellow-500 rounded px-2 py-1 text-center disabled:opacity-40" aria-label="Yellow player name"/></div>
                         <div className="flex flex-wrap justify-center gap-1 mb-2"><button onClick={()=>setVsAI(false)} className={`px-2 py-1 rounded border text-xs ${!vsAI?'bg-blue-600':'bg-gray-900'}`}>2 Players</button>{['easy','smart','perfect'].map(level=><button key={level} onClick={()=>{setVsAI(true);setDifficulty(level);}} className={`px-2 py-1 rounded border text-xs capitalize ${vsAI&&difficulty===level?'bg-purple-600':'bg-gray-900'}`}>AI {level}</button>)}<select value={seriesLength} onChange={e=>{setSeriesLength(Number(e.target.value));setMatchScore([0,0]);}} className="bg-gray-900 border rounded px-2 text-xs"><option value="3">Best of 3</option><option value="5">Best of 5</option></select></div>
                         <div className="flex gap-1 overflow-x-auto mb-3">{[['classic','Classic'],['pop','Pop Out'],['five','Five in Row'],['obstacle','Obstacles'],['rotate','Rotating']].map(([id,label])=><button key={id} onClick={()=>changeVariant(id)} className={`shrink-0 px-2 py-1 rounded border text-xs ${variant===id?'bg-cyan-600':'bg-gray-900'}`}>{label}</button>)}</div>
                         <div className="mb-2 text-sm text-blue-100">Series: <b className="text-red-300">{names[0]||'Player 1'} {matchScore[0]}</b> – <b className="text-yellow-200">{vsAI?'Bot':names[1]||'Player 2'} {matchScore[1]}</b> · first to {matchTarget}</div>
 
+</details>
                         <div
                             className="flex items-center justify-center gap-3 mb-4"
                             aria-live="polite"
@@ -606,8 +873,9 @@
                             </div>
                         </div>
 
+                        </aside>
                         <main
-                            className="relative rounded-2xl p-3 md:p-4 shadow-2xl select-none"
+                            className="mini-board relative rounded-2xl p-3 md:p-4 shadow-2xl select-none"
                             style={{
                                 background: 'linear-gradient(180deg, #1e40af 0%, #1e3a8a 100%)',
                                 boxShadow: '0 10px 40px rgba(30, 58, 138, 0.6), inset 0 2px 4px rgba(255,255,255,0.15)',
@@ -654,6 +922,7 @@
                                 </div>
                             )}
                         </main>
+                        <div className="mini-bottom">
 
                         <div className="mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100"><b>Family records:</b> {Object.entries(records).slice(-3).reverse().map(([key,row])=><div key={key}>{key}: {row.p1}-{row.p2} ({row.draws} draws)</div>)}</div>
 
@@ -666,6 +935,7 @@
                                 {matchScore.some(value=>value>=matchTarget)?'New Match':'New Round'}
                             </button>
                         </footer>
+                        </div>
                     </div>
                 </div>
             );
@@ -673,5 +943,57 @@
 
         ReactDOM.render(<ConnectFourGame />, document.getElementById('root'));
     </script>
+<script>document.addEventListener("visibilitychange",()=>document.documentElement.classList.toggle("mini-hidden",document.hidden));</script>
+
+<script>
+// Fit only on element resize, DOM mount and viewport changes; no animation-frame layout loop.
+(() => {
+ let queued = false, layout, board, observer;
+ const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(fit); } };
+ function fit() {
+  queued = false;
+  if (!layout || !board || !layout.isConnected || document.hidden) return;
+  const shell = layout.closest('.mini-shell,.minequest-shell');
+  const cs = getComputedStyle(layout), ss = getComputedStyle(shell || layout);
+  const number = value => parseFloat(value) || 0;
+  const vertical = cs.display === 'flex';
+  const controls = layout.querySelector(':scope > .mini-controls');
+  const bottom = layout.querySelector(':scope > .mini-bottom');
+  const r = board.getBoundingClientRect();
+  let ratio = 1;
+  if (board.style.getPropertyValue('--peg-cols')) ratio = number(board.style.getPropertyValue('--peg-cols')) / number(board.style.getPropertyValue('--peg-rows'));
+  else if (board.style.getPropertyValue('--memory-cols')) ratio = number(board.style.getPropertyValue('--memory-cols')) / number(board.style.getPropertyValue('--memory-rows'));
+  else {
+   const grid = board.querySelector('[role="grid"]');
+   if (grid) { const ar = getComputedStyle(grid).aspectRatio.split('/').map(Number); if (ar.length === 2 && ar[0] > 0 && ar[1] > 0) ratio = ar[0] / ar[1]; }
+  }
+  const overhead = Math.max(0, r.height - r.width / ratio);
+  let available = innerHeight - number(ss.paddingTop) - number(ss.paddingBottom) - number(cs.paddingTop) - number(cs.paddingBottom);
+  let width;
+  if (vertical) {
+   available -= (controls?.getBoundingClientRect().height || 0) + (bottom?.getBoundingClientRect().height || 0) + number(cs.rowGap) * 2;
+   width = layout.clientWidth - number(cs.paddingLeft) - number(cs.paddingRight);
+  } else {
+   width = number(cs.gridTemplateColumns.split(' ')[1]);
+  }
+  const next = Math.max(100, Math.min(width || r.width, (available - overhead) * ratio));
+  if (Math.abs(r.width - next) > 1) board.style.setProperty('width', next + 'px', 'important');
+ }
+ function connect() {
+  const next = document.querySelector('.mini-layout');
+  const nextBoard = next?.querySelector(':scope > .mini-board');
+  if (next === layout && nextBoard === board) return;
+  observer?.disconnect(); layout = next; board = nextBoard;
+  if (!layout || !board) return;
+  observer = new ResizeObserver(schedule);
+  observer.observe(layout); observer.observe(board);
+  for (const el of layout.querySelectorAll(':scope > .mini-controls,:scope > .mini-bottom')) observer.observe(el);
+  schedule();
+ }
+ new MutationObserver(connect).observe(document.getElementById('root'), {childList:true,subtree:true});
+ addEventListener('resize',schedule); document.addEventListener('visibilitychange',schedule);
+ document.fonts?.ready.then(schedule); connect();
+})();
+</script>
 </body>
 </html>

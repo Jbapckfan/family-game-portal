@@ -172,6 +172,10 @@ const MQCell = React.memo(({ cell, theme, disabled, highlighted, exploded, onOpe
 });
 
 function MineQuestGame() {
+  const [showHelp, setShowHelp] = React.useState(false);
+  const helpTrigger = React.useRef(null);
+  const [muted, setMuted] = React.useState(false);
+  const mutedRef = React.useRef(false);
   const [mode, setMode] = React.useState('classic');
   const [difficulty, setDifficulty] = React.useState('classic');
   const [mission, setMission] = React.useState(0);
@@ -219,6 +223,7 @@ function MineQuestGame() {
   }, []);
 
   const tone = React.useCallback((frequency, duration = .06, volume = .025) => {
+    if (mutedRef.current || document.hidden) return;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
     if (!audioRef.current) audioRef.current = new AudioContext();
@@ -461,11 +466,13 @@ function MineQuestGame() {
       <div className="mq-particles" aria-hidden="true">
         {particles.map((particle) => <i key={particle.id} className="mq-particle" style={{ '--px': `${particle.x}%`, '--py': `${particle.y}%`, '--dx': particle.dx, '--dy': particle.dy }} />)}
       </div>
-      <div className="mq-wrap">
-        <h1 className="mq-title">MINESWEEPER</h1>
+      <div className="mini-layout mq-wrap"><aside className="mini-controls mq-controls">
+        <div className="mq-heading"><h1 className="mq-title">MINESWEEPER</h1>
+        <div className="mq-tools mq-tabs"><button ref={helpTrigger} className="mq-button" onClick={()=>setShowHelp(true)} aria-label="How to Play"><span className="mq-tool-label">How to Play</span><span className="mq-tool-icon" aria-hidden="true">?</span></button><button className="mq-button" onClick={()=>{mutedRef.current=!mutedRef.current;setMuted(mutedRef.current);}} aria-label={muted?'Unmute sounds':'Mute sounds'}><span className="mq-tool-label">{muted?'Sound off':'Sound on'}</span><span className="mq-tool-icon" aria-hidden="true">{muted?'×':'♪'}</span></button></div></div>
+        <HowToPlayModal isOpen={showHelp} onClose={()=>setShowHelp(false)} triggerRef={helpTrigger} />
         <p className="mq-subtitle">MineQuest modes · Logic-only fields · Every board has a fair solution.</p>
 
-        <div className="mq-tabs" aria-label="Game mode">
+        <details className="mq-settings" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}><summary>Game options</summary><div className="mq-tabs" aria-label="Game mode">
           <button className={`mq-button ${mode === 'classic' ? 'active' : ''}`} onClick={() => setMode('classic')}>CLASSIC</button>
           <button className={`mq-button ${mode === 'adventure' ? 'active' : ''}`} onClick={() => setMode('adventure')}>ADVENTURE</button>
         </div>
@@ -490,7 +497,7 @@ function MineQuestGame() {
           })}
         </div>
 
-        <div className="mq-status">
+        </details><div className="mq-status">
           <div className="mq-stat"><small>HAZARDS</small><strong>{String(activeMines - flags).padStart(2, '0')}</strong></div>
           <div className="mq-stat"><small>TIME</small><strong>{String(time).padStart(3, '0')}</strong></div>
           <button className="mq-button mq-face" onClick={reset} aria-label="Start a new board">{state === 'won' ? '😎' : state === 'lost' ? '😵' : '🙂'}</button>
@@ -498,7 +505,7 @@ function MineQuestGame() {
           <div className="mq-stat"><small>SCORE</small><strong>{score}</strong></div>
         </div>
 
-        <div className="mq-tabs">
+        <div className="mq-mark-mode mq-tabs">
           <button className={`mq-button ${flagMode ? 'active' : ''}`} onClick={() => setFlagMode(!flagMode)} aria-pressed={flagMode}>{theme.flag} MARK MODE {flagMode ? 'ON' : 'OFF'}</button>
         </div>
 
@@ -514,15 +521,9 @@ function MineQuestGame() {
 
         <div className="mq-objective">{mode === 'adventure' ? `Mission ${mission + 1}: ${config.story}` : `${config.label} field · ${config.mines} hazards`} · Best {best ? `${best}s` : '—'}</div>
         <div className="mq-progress">Tap a revealed number to chord when its neighboring marks match.</div>
-        <div className="mq-tabs" aria-label="Tactical achievements">
-          {[
-            ['noFlags','🚩','No Flags'],['noPowers','⚡','No Powers'],['perfectMarking','🎯','Perfect Marking'],['logicStreak','🧠','10 Logic Streak']
-          ].map(([id,icon,label]) => <span key={id} className={`mq-button ${(profile.achievements || {})[id] ? 'active' : ''}`} title={(profile.achievements || {})[id] ? 'Unlocked' : 'Not unlocked yet'}>{(profile.achievements || {})[id] ? icon : '🔒'} {label}</span>)}
-          <span className="mq-button">Best streak ×{profile.longestLogicStreak || 0}</span>
-        </div>
         <div className="mq-message" role="status" aria-live="polite">{message}</div>
 
-        <main className="mq-board-frame">
+        </aside><main className="mini-board mq-board-frame">
           <div className="mq-board" style={{ '--grid-size': config.size }} role="grid" aria-label={`${config.size} by ${config.size} MineQuest field`}>
             {board.map((row) => row.map((cell) => <MQCell key={mqKey(cell.row, cell.col)} cell={cell} theme={theme} disabled={state !== 'playing'} highlighted={radarCells.has(mqKey(cell.row, cell.col))} onOpen={openCell} onFlag={flagCell} />))}
           </div>
@@ -533,10 +534,67 @@ function MineQuestGame() {
             </div>
           )}
         </main>
-        <p className="mq-progress">{profile.wins} total win{profile.wins === 1 ? '' : 's'} · Themes unlock at 1, 3, and 6 wins · Adventure powers recharge by clearing safe tiles.</p>
+        <div className="mini-bottom"><details className="mq-records"><summary>Family records</summary>        <div className="mq-tabs" aria-label="Tactical achievements">
+          {[
+            ['noFlags','🚩','No Flags'],['noPowers','⚡','No Powers'],['perfectMarking','🎯','Perfect Marking'],['logicStreak','🧠','10 Logic Streak']
+          ].map(([id,icon,label]) => <span key={id} className={`mq-button ${(profile.achievements || {})[id] ? 'active' : ''}`} title={(profile.achievements || {})[id] ? 'Unlocked' : 'Not unlocked yet'}>{(profile.achievements || {})[id] ? icon : '🔒'} {label}</span>)}
+          <span className="mq-button">Best streak ×{profile.longestLogicStreak || 0}</span>
+        </div>
+<p className="mq-progress">{profile.wins} total win{profile.wins === 1 ? '' : 's'} · Themes unlock at 1, 3, and 6 wins · Adventure powers recharge by clearing safe tiles.</p></details></div>
       </div>
     </div>
   );
 }
 
 ReactDOM.render(<MineQuestGame />, document.getElementById('root'));
+
+
+
+// Fit only on element resize, DOM mount and viewport changes; no animation-frame layout loop.
+(() => {
+ let queued = false, layout, board, observer;
+ const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(fit); } };
+ function fit() {
+  queued = false;
+  if (!layout || !board || !layout.isConnected || document.hidden) return;
+  const shell = layout.closest('.mini-shell,.minequest-shell');
+  const cs = getComputedStyle(layout), ss = getComputedStyle(shell || layout);
+  const number = value => parseFloat(value) || 0;
+  const vertical = cs.display === 'flex';
+  const controls = layout.querySelector(':scope > .mini-controls');
+  const bottom = layout.querySelector(':scope > .mini-bottom');
+  const r = board.getBoundingClientRect();
+  let ratio = 1;
+  if (board.style.getPropertyValue('--peg-cols')) ratio = number(board.style.getPropertyValue('--peg-cols')) / number(board.style.getPropertyValue('--peg-rows'));
+  else if (board.style.getPropertyValue('--memory-cols')) ratio = number(board.style.getPropertyValue('--memory-cols')) / number(board.style.getPropertyValue('--memory-rows'));
+  else {
+   const grid = board.querySelector('[role="grid"]');
+   if (grid) { const ar = getComputedStyle(grid).aspectRatio.split('/').map(Number); if (ar.length === 2 && ar[0] > 0 && ar[1] > 0) ratio = ar[0] / ar[1]; }
+  }
+  const overhead = Math.max(0, r.height - r.width / ratio);
+  let available = innerHeight - number(ss.paddingTop) - number(ss.paddingBottom) - number(cs.paddingTop) - number(cs.paddingBottom);
+  let width;
+  if (vertical) {
+   available -= (controls?.getBoundingClientRect().height || 0) + (bottom?.getBoundingClientRect().height || 0) + number(cs.rowGap) * 2;
+   width = layout.clientWidth - number(cs.paddingLeft) - number(cs.paddingRight);
+  } else {
+   width = number(cs.gridTemplateColumns.split(' ')[1]);
+  }
+  const next = Math.max(100, Math.min(width || r.width, (available - overhead) * ratio));
+  if (Math.abs(r.width - next) > 1) board.style.setProperty('width', next + 'px', 'important');
+ }
+ function connect() {
+  const next = document.querySelector('.mini-layout');
+  const nextBoard = next?.querySelector(':scope > .mini-board');
+  if (next === layout && nextBoard === board) return;
+  observer?.disconnect(); layout = next; board = nextBoard;
+  if (!layout || !board) return;
+  observer = new ResizeObserver(schedule);
+  observer.observe(layout); observer.observe(board);
+  for (const el of layout.querySelectorAll(':scope > .mini-controls,:scope > .mini-bottom')) observer.observe(el);
+  schedule();
+ }
+ new MutationObserver(connect).observe(document.getElementById('root'), {childList:true,subtree:true});
+ addEventListener('resize',schedule); document.addEventListener('visibilitychange',schedule);
+ document.fonts?.ready.then(schedule); connect();
+})();

@@ -9,13 +9,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Spelling Bee">
     <title>Spelling Bee</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style id="local-utilities">*,*:before,*:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}html{line-height:1.5;-webkit-text-size-adjust:100%}body,h1,h2,h3,p,ul{margin:0}button,input,select,textarea{font:inherit;color:inherit}button{background:transparent;cursor:pointer}button:disabled{cursor:default}input,select{min-width:0}a{color:inherit;text-decoration:inherit}svg,canvas{display:block}ul{padding:0}button,[role=button],a,input,select{touch-action:manipulation}button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}@keyframes mini-pulse{50%{opacity:.6}}@keyframes mini-bounce{50%{transform:translateY(-5px)}}.absolute{position:absolute}.block{display:block}.border{border-width:1px}.capitalize{text-transform:capitalize}.fixed{position:fixed}.flex{display:flex}.flex-wrap{flex-wrap:wrap}.grid{display:grid}.hidden{display:none}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.relative{position:relative}.uppercase{text-transform:uppercase}.z-index{z-index:index}
+</style>
     <style>
         /* ===== THEME VARIABLES ===== */
         :root {
@@ -125,7 +126,9 @@
             letter-spacing: 1px;
             transition: filter 0.15s;
         }
+        @media (hover: hover) {
         .hex-btn:hover { filter: brightness(1.25); }
+}
         .hex-btn:active { filter: brightness(0.85); }
         .hex-center {
             background: var(--hex-center-bg);
@@ -373,10 +376,12 @@
             cursor: pointer;
             position: relative;
         }
+        @media (hover: hover) {
         .word-chip:hover {
             background: rgba(139, 92, 246, 0.2);
             transform: translateY(-1px);
         }
+}
         .word-chip.pangram {
             background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), rgba(236, 72, 153, 0.15));
             border-color: rgba(251, 191, 36, 0.5);
@@ -396,10 +401,12 @@
             cursor: default;
             animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        @media (hover: hover) {
         .word-chip.revealed:hover {
             background: rgba(100, 116, 139, 0.15);
             transform: none;
         }
+}
 
         /* ===== DEFINITION TOOLTIP ===== */
         .def-tooltip {
@@ -441,9 +448,11 @@
             font-size: 16px;
             line-height: 1;
         }
+        @media (hover: hover) {
         .def-tooltip .def-close:hover {
             color: var(--text-primary);
         }
+}
 
         /* ===== CURRENT WORD ===== */
         .current-word {
@@ -471,21 +480,25 @@
             font-family: 'Rajdhani', sans-serif;
             text-transform: uppercase; letter-spacing: 1px;
         }
+        @media (hover: hover) {
         .game-btn:hover {
             background: rgba(139, 92, 246, 0.2);
             border-color: #8b5cf6;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
         }
+}
         .game-btn:active { transform: scale(0.92) !important; }
         .game-btn-enter {
             background: linear-gradient(135deg, #7c3aed, #6d28d9);
             border-color: #8b5cf6; color: white;
         }
+        @media (hover: hover) {
         .game-btn-enter:hover {
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
         }
+}
 
         /* ===== CONFETTI ===== */
         .confetti-piece {
@@ -518,10 +531,12 @@
             display: flex;
             align-items: center;
         }
+        @media (hover: hover) {
         .back-btn:hover {
             border-color: var(--accent-purple); color: var(--text-primary);
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
         }
+}
 
         /* ===== SCANLINE ===== */
         .scanline {
@@ -683,7 +698,9 @@
             font-family: 'Rajdhani', sans-serif; text-transform: uppercase;
             transition: all 0.15s; letter-spacing: 0.5px;
         }
+        @media (hover: hover) {
         .word-filter-tab:hover { background: var(--word-filter-active-bg); }
+}
         .word-filter-tab.active {
             background: var(--word-filter-active-bg); color: white;
             border-color: var(--accent-purple);
@@ -742,7 +759,9 @@
             cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
+        @media (hover: hover) {
         .theme-toggle-btn:hover { background: var(--accent-purple-dim); }
+}
 
         /* ===== MUTE TOGGLE ===== */
         .mute-toggle-btn {
@@ -752,7 +771,9 @@
             cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
+        @media (hover: hover) {
         .mute-toggle-btn:hover { background: var(--accent-purple-dim); }
+}
 
         /* ===== STREAK BADGE ===== */
         .streak-badge {
@@ -840,7 +861,323 @@
             .hex-grid { width: 265px; height: 275px; }
         }
     </style>
-</head>
+<style id="screen-fit">:root {
+  --mini-gap:clamp(12px,2vw,30px);
+  --board-size:min(64vw,calc(100dvh - 120px));
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body > a[aria-label="Back to menu"],
+.home-link {
+  z-index: 99999 !important;
+  top: max(12px, env(safe-area-inset-top)) !important;
+  left: max(12px, env(safe-area-inset-left)) !important;
+  min-height: 44px;
+}
+.mute-btn {
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+}
+.mini-shell {
+  min-height: 100dvh !important;
+  padding: max(74px, calc(env(safe-area-inset-top) + 62px)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)) !important;
+}
+.mini-layout {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(270px, .72fr) minmax(0, 1.6fr);
+  grid-template-rows: auto auto;
+  gap: var(--mini-gap);
+  align-items: center;
+  align-content: center;
+  margin: 0 !important;
+  min-width: 0;
+}
+.mini-controls {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  text-align: center;
+  align-self: end;
+}
+.mini-bottom {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  text-align: center;
+  align-self: start;
+}
+.mini-board {
+  grid-column: 2;
+  grid-row: 1/span 2;
+  width: min(100%, var(--board-size)) !important;
+  justify-self: center;
+  margin: 0 !important;
+  min-width: 0;
+  box-shadow: 0 24px 70px #0008, inset 0 1px 0 #ffffff12 !important;
+}
+.mini-controls header {
+  padding: 4px 0 18px !important;
+}
+.mini-controls h1 {
+  font-family:
+    Orbitron,
+    system-ui,
+    sans-serif;
+  font-size: clamp(24px, 2.8vw, 43px) !important;
+  line-height: 1.15;
+  letter-spacing: .025em;
+  text-shadow: 0 0 24px #67e8f933 !important;
+}
+.mini-controls header p {
+  font: 500 14px/1.4 system-ui, sans-serif;
+  margin-top: 8px;
+}
+.mini-controls button,
+.mini-bottom button,
+.mini-controls select,
+.mini-controls input {
+  min-height: 44px;
+  line-height: 1.25;
+}
+.mini-controls button,
+.mini-bottom button {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+.mini-controls > div {
+  max-width: 100%;
+  min-width: 0;
+}
+.mini-controls input {
+  width: 100%;
+}
+.mini-bottom footer {
+  padding: 8px 0 !important;
+}
+.mini-bottom footer button {
+  margin: 0 !important;
+}
+.mini-controls .overflow-x-auto {
+  scrollbar-width: thin;
+  padding-bottom: 6px;
+}
+.modal-overlay,
+[role=dialog] {
+  z-index: 1000;
+}
+.modal-content,
+[role=dialog] > div.relative {
+  max-height: calc(100dvh - 150px);
+  overflow-y: auto;
+}
+@media (max-width: 700px), (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 32px),calc(100dvh - 410px));
+  }
+  .mini-layout {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  .mini-controls,
+  .mini-bottom {
+    width: 100%;
+    align-self: auto;
+  }
+  .mini-controls header {
+    padding: 0 0 8px !important;
+  }
+  .mini-controls h1 {
+    font-size: clamp(24px, 5vw, 38px) !important;
+  }
+  .mini-controls header p {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  .mini-controls > div {
+    margin-bottom: 7px;
+  }
+  .mini-board {
+    flex: none;
+  }
+  .mini-bottom footer {
+    padding: 4px 0 !important;
+  }
+}
+@media (min-width: 701px) and (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 64px),calc(100dvh - 390px));
+  }
+  .mini-controls {
+    max-width: 700px;
+  }
+  .mini-shell {
+    justify-content: center !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html.mini-hidden *,
+html.mini-hidden *::before,
+html.mini-hidden *::after {
+  animation-play-state: paused !important;
+}
+</style>
+<style id="bee-fit">.bee-layout {
+  max-width: none !important;
+  width: 100%;
+  min-height: 100dvh;
+  padding: 74px max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)) !important;
+  display: grid;
+  grid-template-columns: minmax(260px, .8fr) minmax(0, 1.6fr);
+  grid-template-rows: auto auto;
+  gap: 20px;
+  align-content: center;
+  align-items: center;
+}
+.bee-settings {
+  grid-column: 1;
+  grid-row: 1;
+}
+.bee-play {
+  grid-column: 2;
+  grid-row: 1/span 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: clamp(18px, 3vw, 42px);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  background: var(--panel-bg);
+  box-shadow: 0 24px 60px #0003;
+  --hex-size:clamp(90px,min(15vw,17dvh),145px);
+}
+.bee-words {
+  grid-column: 1;
+  grid-row: 2;
+  max-height: 30dvh;
+  overflow-y: auto;
+}
+.hex-grid {
+  width: calc(var(--hex-size) * 3.64);
+  height: calc(var(--hex-size) * 3.12);
+  flex-shrink: 0;
+}
+.hex-btn {
+  width: var(--hex-size);
+  height: calc(var(--hex-size) * 1.108);
+  font-size: clamp(28px, 4vw, 48px);
+}
+.bee-layout button,
+.bee-layout select {
+  min-height: 44px;
+}
+.bee-layout .game-btn {
+  font: 700 15px system-ui, sans-serif;
+  padding: 10px 16px;
+}
+.bee-play .current-word {
+  font-size: clamp(24px, 3vw, 40px);
+}
+.bee-words > div {
+  margin-top: 0 !important;
+}
+.bee-settings .font-title {
+  font-size: clamp(30px, 3vw, 44px) !important;
+}
+.bee-words .words-list {
+  max-height: 200px;
+}
+.bee-settings > div {
+  margin-bottom: 9px !important;
+}
+@media (max-width: 700px), (orientation: portrait) {
+  .bee-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 70px 16px 14px !important;
+  }
+  .bee-settings,
+  .bee-play,
+  .bee-words {
+    width: 100%;
+  }
+  .bee-play {
+    padding: 12px;
+    border-radius: 20px;
+    --hex-size:clamp(74px,min(16vw,12dvh),125px);
+  }
+  .bee-settings .font-title {
+    font-size: 28px !important;
+  }
+  .bee-settings > div {
+    margin-bottom: 5px !important;
+  }
+  .bee-play .hex-grid {
+    margin: 5px auto 8px !important;
+  }
+  .bee-play > div:has(.current-word) {
+    margin: 8px 0 0 !important;
+    min-height: 40px !important;
+  }
+  .bee-settings .mode-toggle {
+    flex-shrink: 0;
+  }
+  .bee-play .game-btn {
+    padding: 9px 12px;
+    font-size: 14px;
+  }
+  .bee-settings .mode-btn {
+    padding: 8px 10px;
+  }
+  .bee-settings .theme-toggle-btn,
+  .bee-settings .mute-toggle-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .bee-words {
+    max-height: 20dvh;
+  }
+  .bee-settings .practice-toggle-btn {
+    padding: 8px 12px;
+  }
+  .bee-play > div:first-child {
+    padding: 0 !important;
+  }
+}
+@media (min-width: 701px) and (orientation: portrait) {
+  .bee-play {
+    --hex-size:145px;
+  }
+  .bee-layout {
+    justify-content: center;
+  }
+  .bee-settings {
+    max-width: 720px;
+  }
+}
+</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-two-phone">
+@media(max-width:700px){.bee-settings>div:first-child>p{display:none}.bee-layout{padding-top:max(70px,calc(env(safe-area-inset-top) + 62px))!important;padding-bottom:max(14px,env(safe-area-inset-bottom))!important}.bee-settings,.bee-play,.bee-words{flex-shrink:0}}
+</style></head>
 <body>
     <a href="../../" class="back-btn">&#x1F3E0; Menu</a>
     <div class="scanline"></div>
@@ -2208,7 +2545,8 @@
         }
 
         return (
-            <div style={{ maxWidth: 440, margin: '0 auto', padding: '56px 16px 30px', position: 'relative' }}>
+            <div className="bee-layout" style={{ maxWidth: 440, margin: '0 auto', padding: '56px 16px 30px', position: 'relative' }}>
+                <aside className="bee-settings">
                 {/* Title */}
                 <div style={{ textAlign: 'center', marginBottom: 6 }}>
                     <h1 className="font-title" style={{
@@ -2322,9 +2660,11 @@
                     </div>
                 )}
 
+                </aside>
                 {/* Main game area (show for daily/random, or sprint when active) */}
                 {(mode !== 'sprint' || sprintActive) && (
                     <>
+                        <section className="bee-play">
                         {/* Rank Bar (standard) or Practice Score */}
                         {practiceMode ? (
                             <div style={{ padding: '0 4px' }}>
@@ -2438,6 +2778,8 @@
                             )}
                         </div>
 
+                        </section>
+                        <section className="bee-words">
                         {/* Words Panel */}
                         <WordsPanel found={practiceMode ? practiceFound : found} pangrams={puzzle.pangrams}
                                     isOpen={wordsOpen} onToggle={() => setWordsOpen(p => !p)}
@@ -2463,6 +2805,7 @@
                             )}
                             {puzzlesLoadError && <span style={{ color: '#f59e0b' }}> (offline mode)</span>}
                         </div>
+                        </section>
                     </>
                 )}
 
@@ -2505,5 +2848,30 @@
 
     ReactDOM.render(<App />, document.getElementById('root'));
     </script>
-</body>
+<script>document.addEventListener("visibilitychange",()=>document.documentElement.classList.toggle("mini-hidden",document.hidden));</script>
+<script>
+(() => {
+ let play, settings, words, layout, ro, pending = false;
+ const schedule = () => { if (!pending) { pending = true; requestAnimationFrame(fit); } };
+ function fit() {
+  pending = false; if (!play?.isConnected || document.hidden) return;
+  const cs = getComputedStyle(play), ls = getComputedStyle(layout);
+  const n = value => parseFloat(value) || 0;
+  const hex = play.querySelector('.hex-grid'); if (!hex) return;
+  let available = innerHeight - n(ls.paddingTop) - n(ls.paddingBottom);
+  if (ls.display === 'flex') available -= (settings?.offsetHeight || 0) + (words?.offsetHeight || 0) + n(ls.gap) * 2;
+  const extra = play.offsetHeight - hex.offsetHeight;
+  const maximum = (play.clientWidth - n(cs.paddingLeft) - n(cs.paddingRight)) / 3.64;
+  const size = Math.max(48, Math.min(maximum, (available - extra - 2) / 3.12, 160));
+  if (Math.abs(n(cs.getPropertyValue('--hex-size')) - size) > .5) play.style.setProperty('--hex-size', size + 'px');
+ }
+ new MutationObserver(() => {
+  const next = document.querySelector('.bee-play'); if (next === play) return;
+  ro?.disconnect(); play = next; if (!play) return;
+  layout = document.querySelector('.bee-layout'); settings = document.querySelector('.bee-settings'); words = document.querySelector('.bee-words');
+  ro = new ResizeObserver(schedule); for (const el of [play,settings,words]) if (el) ro.observe(el); schedule();
+ }).observe(document.getElementById('root'), {childList:true,subtree:true});
+ addEventListener('resize', schedule); document.addEventListener('visibilitychange',()=>{if(play)schedule()});
+})();
+</script></body>
 </html>

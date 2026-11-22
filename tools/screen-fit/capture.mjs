@@ -155,7 +155,13 @@ async function runStep(page, step, vpName) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const out = resolve(ROOT, args.out || 'output/screen-fit/latest');
+  // Optional per-game shot lists in tools/screen-fit/shots/<id>.json ({ shots: [...] }) replace the
+  // shots in games.json, so batches running at the same time never edit the same file.
   const games = JSON.parse(readFileSync(join(ROOT, 'tools/screen-fit/games.json'), 'utf8'))
+    .map((g) => {
+      const f = join(ROOT, 'tools/screen-fit/shots', `${g.id}.json`);
+      return existsSync(f) ? { ...g, shots: JSON.parse(readFileSync(f, 'utf8')).shots } : g;
+    })
     .filter((g) => !args.only || args.only.split(',').includes(g.id))
     .filter((g) => !args.batch || args.batch.split(',').includes(g.batch));
   const vps = (args.viewports ? args.viewports.split(',') : Object.keys(VIEWPORTS));

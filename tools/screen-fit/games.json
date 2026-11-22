@@ -233,6 +233,20 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "clickText": "1 vs 1 (Local)"
+          },
+          {
+            "click": "[aria-label=\"Tic-Tac-Toe board\"] [role=\"gridcell\"]"
+          },
+          {
+            "wait": 500
+          }
+        ]
       }
     ]
   },
@@ -244,6 +258,32 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "clickText": "Skip"
+          },
+          {
+            "click": "[aria-label=\"Select color Pink\"]"
+          },
+          {
+            "click": "[aria-label=\"Select color Cyan\"]"
+          },
+          {
+            "click": "[aria-label=\"Select color Green\"]"
+          },
+          {
+            "click": "[aria-label=\"Select color Yellow\"]"
+          },
+          {
+            "click": "[aria-label=\"Submit your guess\"]"
+          },
+          {
+            "wait": 500
+          }
+        ]
       }
     ]
   },
@@ -266,6 +306,26 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "eval": "document.getElementById(\"gameCanvas\").dispatchEvent(new MouseEvent(\"dblclick\",{bubbles:true,clientX:innerWidth*.4,clientY:innerHeight*.48}))"
+          },
+          {
+            "wait": 500
+          },
+          {
+            "click": "#controlsToggle"
+          },
+          {
+            "click": "[aria-label=\"Fire laser\"]"
+          },
+          {
+            "wait": 600
+          }
+        ]
       }
     ]
   },
@@ -277,6 +337,17 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": "[role=\"gridcell\"]:nth-child(1)"
+          },
+          {
+            "wait": 300
+          }
+        ]
       }
     ]
   },
@@ -288,6 +359,20 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": "[aria-label=\"Peg at row 3, column 3\"]"
+          },
+          {
+            "click": "[aria-label^=\"Empty hole at row 1, column 5\"]"
+          },
+          {
+            "wait": 600
+          }
+        ]
       }
     ]
   },
@@ -299,6 +384,20 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": ".hex-center"
+          },
+          {
+            "click": ".hex-outer"
+          },
+          {
+            "wait": 300
+          }
+        ]
       }
     ]
   },
@@ -310,6 +409,23 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "key": "ArrowLeft"
+          },
+          {
+            "key": "ArrowDown"
+          },
+          {
+            "key": "ArrowRight"
+          },
+          {
+            "wait": 300
+          }
+        ]
       }
     ]
   },
@@ -321,6 +437,20 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": "button[aria-label^=\"Column 4,\"]"
+          },
+          {
+            "click": "button[aria-label^=\"Column 3,\"]"
+          },
+          {
+            "wait": 600
+          }
+        ]
       }
     ]
   },
@@ -332,6 +462,29 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "key": "ArrowUp"
+          },
+          {
+            "wait": 400
+          },
+          {
+            "key": "ArrowLeft"
+          },
+          {
+            "wait": 250
+          },
+          {
+            "click": "[aria-label=\"Pause game\"]"
+          },
+          {
+            "wait": 100
+          }
+        ]
       }
     ]
   },
@@ -343,6 +496,17 @@
       {
         "name": "start",
         "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": ".mq-cell"
+          },
+          {
+            "wait": 300
+          }
+        ]
       }
     ]
   },
@@ -350,6 +514,31 @@
     "id": "MemoryMatch",
     "url": "/games/mini-games/MemoryMatch.html",
     "batch": "mini",
+    "shots": [
+      {
+        "name": "start",
+        "steps": []
+      },
+      {
+        "name": "play",
+        "steps": [
+          {
+            "click": "button[aria-label=\"Card, face down, tap to flip\"]"
+          },
+          {
+            "click": "button[aria-label=\"Card, face down, tap to flip\"]"
+          },
+          {
+            "wait": 300
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "daily-hub",
+    "url": "/games/daily/",
+    "batch": "daily",
     "shots": [
       {
         "name": "start",

@@ -1,6 +1,6 @@
 /* Portal offline support. Generated assets are updated by tools/offline/build-precache.mjs. */
 // BEGIN GENERATED PRECACHE
-const PRECACHE_VERSION = 'b6a920ef26f1fe64f39f6ed8';
+const PRECACHE_VERSION = '41abff38c0e5ba30696a6b26';
 const PRECACHE_FILES = [
   "games/2048-thumb.jpg",
   "games/2DTicTacToe-thumb.jpg",

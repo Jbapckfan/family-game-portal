@@ -25,7 +25,7 @@ const source = inlineScript.slice(engineStart, engineEnd);
 const engine = new Function(`${source}; return {
   SUITS, RANKS, FACE_CHANCES, createDeck, shuffleInPlace, getSlapReasons,
   nextPlayerWithCards, createGame, totalCards, playCard, awardPile, slapPile,
-  getWinnerIndex
+  getWinnerIndex, isOut, canSlap, settleStall
 };`)();
 
 function seededRandom(seed) {
@@ -54,7 +54,7 @@ for (const [rank, attempts] of Object.entries({ J: 1, Q: 2, K: 3, A: 4 })) {
   if (engine.FACE_CHANCES[rank] !== attempts) throw new Error(`${rank} must allow ${attempts} challenge attempts.`);
 }
 
-const penaltyState = engine.createGame(1, 30, seededRandom(500));
+const penaltyState = engine.createGame(1, 'full', seededRandom(500));
 penaltyState.pile.push(byRank('2'), byRank('5'));
 const totalBeforePenalty = engine.totalCards(penaltyState);
 const handBeforePenalty = penaltyState.players[0].deck.length;
@@ -64,21 +64,55 @@ if (penalty.valid || penalty.penalty !== 2 || penaltyState.players[0].deck.lengt
 }
 if (engine.totalCards(penaltyState) !== totalBeforePenalty) throw new Error('Bad slap penalty lost cards.');
 
+// Regression: winning one ordinary pile must never end a match (the old "first to 30" bug).
+for (const matchType of ['full', 'quick']) {
+  const early = engine.createGame(1, matchType, seededRandom(77));
+  early.pile.push(...early.players[1].deck.splice(0, 6));
+  engine.awardPile(early, 0);
+  if (engine.getWinnerIndex(early) !== -1) throw new Error(`${matchType}: a 6-card pile ended the match.`);
+}
+// Classic: an empty-handed player is still in (can slap back in) until someone holds all 52.
+const classicEmpty = engine.createGame(1, 'full', seededRandom(78));
+classicEmpty.pile.push(...classicEmpty.players[0].deck.splice(0));
+if (engine.getWinnerIndex(classicEmpty) !== -1 || !engine.canSlap(classicEmpty, 0)) throw new Error('Classic must allow slapping back in.');
+// Out Is Out: an empty deck knocks you out unless a face challenge owes you the pile.
+const quickEmpty = engine.createGame(1, 'quick', seededRandom(79));
+quickEmpty.pile.push(...quickEmpty.players[0].deck.splice(0));
+if (engine.canSlap(quickEmpty, 0) || engine.getWinnerIndex(quickEmpty) !== 1) throw new Error('Out Is Out must knock out an empty deck.');
+quickEmpty.pendingAward = 0;
+if (engine.isOut(quickEmpty, 0) || engine.getWinnerIndex(quickEmpty) !== -1) throw new Error('A player owed the pile is still in.');
+
+// Stalled table: every card is in the pile or burn, so nobody can flip. The last flipper takes it.
+const stall = engine.createGame(1, 'full', seededRandom(80));
+stall.pile.push(...stall.players[1].deck.splice(0), ...stall.players[0].deck.splice(0));
+stall.lastPlayer = 0;
+stall.turnIndex = 1;
+if (!engine.settleStall(stall) || stall.pendingAward !== 0) throw new Error('A stalled table must award the pile.');
+engine.awardPile(stall, 0);
+if (engine.getWinnerIndex(stall) !== 0) throw new Error('Taking every card must win.');
+
 let longestGame = 0;
+let shortestGame = Infinity;
 let fullDeckGames = 0;
+let stallsSettled = 0;
 for (let seed = 1; seed <= 240; seed += 1) {
   const random = seededRandom(seed);
   const botCount = seed % 2 ? 1 : 2;
-  const target = seed % 12 === 0 ? 52 : 30;
-  const state = engine.createGame(botCount, target, random);
+  const matchType = seed % 3 === 0 ? 'quick' : 'full';
+  const state = engine.createGame(botCount, matchType, random);
   if (engine.totalCards(state) !== 52) throw new Error(`Deal ${seed} lost cards.`);
   let steps = 0;
-  while (engine.getWinnerIndex(state) < 0 && steps < 30000) {
+  while (steps < 30000) {
+    if (engine.settleStall(state)) stallsSettled += 1;
+    if (engine.getWinnerIndex(state) >= 0) break;
     const slapReasons = engine.getSlapReasons(state.pile);
-    if (slapReasons.length) {
-      const slapper = Math.floor(random() * state.players.length);
+    const slappers = state.players.map((_, index) => index).filter(index => engine.canSlap(state, index));
+    if (slapReasons.length && slappers.length) {
+      const slapper = slappers[Math.floor(random() * slappers.length)];
       const result = engine.slapPile(state, slapper);
       if (!result.valid) throw new Error(`Simulation ${seed} missed a valid slap.`);
+    } else if (!slapReasons.length && state.pile.length && random() < 0.02) {
+      engine.slapPile(state, slappers[Math.floor(random() * slappers.length)]); // occasional bad slap
     } else if (state.pendingAward !== null) {
       engine.awardPile(state, state.pendingAward);
     } else {
@@ -89,8 +123,15 @@ for (let seed = 1; seed <= 240; seed += 1) {
     steps += 1;
   }
   if (steps >= 30000) throw new Error(`Simulation ${seed} did not finish.`);
-  if (target === 52) fullDeckGames += 1;
-  longestGame = Math.max(longestGame, steps);
+  const winner = engine.getWinnerIndex(state);
+  const others = state.players.filter((_, index) => index !== winner);
+  if (matchType === 'full' && state.players[winner].deck.length !== 52) throw new Error(`Classic ${seed} ended before one player held all 52.`);
+  if (matchType === 'quick' && others.some((_, offset) => !engine.isOut(state, state.players.indexOf(others[offset])))) {
+    throw new Error(`Out Is Out ${seed} ended while another player was still in.`);
+  }
+  if (matchType === 'full') fullDeckGames += 1;
+  longestGame = Math.max(longestGame, state.plays);
+  shortestGame = Math.min(shortestGame, state.plays);
 }
 
 if (!html.includes('href="../index.html"') || !html.includes('Back to Alford Family Game Portal')) {
@@ -118,5 +159,6 @@ if (portalCards < 23) throw new Error(`Expected at least 23 portal cards, found 
 
 console.log(
   `ERS validated: 52 unique cards, 6 slap patterns, face challenges 1/2/3/4, ` +
-  `240 complete simulated matches (${fullDeckGames} full-deck), longest ${longestGame} actions, card conservation and portal navigation passed.`,
+  `240 complete simulated matches (${fullDeckGames} classic, ${240 - fullDeckGames} out-is-out, flips ${shortestGame}-${longestGame}, ` +
+  `${stallsSettled} stalled tables settled), win rules, card conservation and portal navigation passed.`,
 );

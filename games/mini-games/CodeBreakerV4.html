@@ -981,7 +981,18 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 .mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
 .mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
 .mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
-</style></head>
+</style><style id="rough-code-board">
+/* Rough-games pass: a walnut instrument board, inset sockets and photographic peg caps. */
+.breaker-layout{background-color:#33271f!important;background-image:linear-gradient(145deg,#241b1455,#090e14bb),url('./2DTicTacToe-assets/walnut-surface-r1.jpg')!important;background-size:cover!important;border:2px solid #9e8565!important;box-shadow:inset 0 2px #ffe9ba55,inset 0 -5px 8px #100a05,0 5px 0 #110c08,0 20px 38px #0008}
+.breaker-setup,.breaker-input{background:#0e1722ed;border:0;border-radius:14px;padding:0;box-shadow:inset 0 0 0 1px #9b8b7540}.breaker-history{background-color:#3d2e22!important;background-image:linear-gradient(145deg,#493c2955,#140f0bcc),url('./2DTicTacToe-assets/walnut-surface-r1.jpg')!important;background-size:cover!important;border:2px solid #a18c6e!important;box-shadow:inset 0 3px 9px #0009,0 1px #e4cda366!important}
+.breaker-history>[role=listitem]{background:linear-gradient(145deg,#2b323b,#10161e)!important;border:1px solid #9f9c8a;border-radius:10px;box-shadow:inset 0 2px #e9e0cd30,0 4px 6px #0008;padding:8px}
+.touch-target-peg,.material-palette-peg{position:relative;overflow:visible;background-color:#071019!important;background-image:radial-gradient(ellipse at 50% 70%,#182836,#03070b 65%)!important;border:1px solid #c7c1ad9c!important;box-shadow:inset 1px 4px 7px #000,0 1px 0 #fff7!important;flex:none;isolation:isolate}
+.peg-material{position:absolute;inset:-15%;width:130%;height:130%;background-image:url('./CodeBreakerV4-assets/peg-atlas-r1.webp');background-size:400% 200%;background-repeat:no-repeat;pointer-events:none;border-radius:0;z-index:1}
+.material-palette-peg{min-width:44px;min-height:44px;border-radius:50%!important}.material-palette-peg.selected{outline:3px solid #fde68a!important;outline-offset:3px}.touch-target-peg.active-slot-indicator{outline:2px dashed #a5f3fc;outline-offset:-4px}
+.feedback-peg-black,.feedback-peg-white,.feedback-peg-empty{position:relative;overflow:visible;border:1px solid #aaa28d;background:#071019!important;box-shadow:inset 0 2px 3px #000,0 1px #fff5!important}.feedback-peg-black .peg-material,.feedback-peg-white .peg-material{inset:-18%;width:136%;height:136%}
+.breaker-input [aria-label="Current guess input area"]{background:linear-gradient(145deg,#3f3728,#1a1c1d)!important;border:1px solid #c4b798;box-shadow:inset 0 2px 6px #0009}.breaker-records{background:#111820e8;border:0;border-radius:10px;padding:0;opacity:1;color:#e2e8f0}
+@media(max-width:700px){.breaker-setup,.breaker-input{padding:0;border:0;box-shadow:inset 0 0 0 1px #9b8b7540}.breaker-layout{padding:10px!important;gap:8px}.breaker-history>[role=listitem]{padding:6px}.breaker-records{padding:0;border:0;background:transparent}}
+</style><style>.secret-peg-back{background:#071019!important;border:1px solid #aaa28b;box-shadow:inset 0 3px 5px #0009!important}.secret-peg-back .peg-material{inset:-15%;width:130%;height:130%}</style></head>
 <body>
   <a href="../../" class="home-link" aria-label="Return to main menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#127968; Menu</a>
     <div id="root"></div>
@@ -1138,6 +1149,11 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
         };
 
         // --- COMPONENTS ---
+        // Sprite positions are presentation metadata; the original color values drive all feedback.
+        const PEG_MATERIAL_INDEX={Pink:0,Cyan:1,Green:2,Yellow:3,Purple:4,Orange:5,Black:6,White:7};
+        const pegMaterialIndex = color => (PEG_MATERIAL_INDEX[COLOR_NAMES[color]] ?? -1);
+        const PegMaterial = ({index}) => index<0?null:<span className="peg-material" aria-hidden="true" style={{backgroundPosition:`${(index%4)*100/3}% ${Math.floor(index/4)*100}%`}}/>;
+
         const CodePeg = ({ color, onClick, index, totalPegs, isActiveSlot }) => {
             const pegStyle = {
                 backgroundColor: color || '#2d3748',
@@ -1163,6 +1179,7 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                     tabIndex={onClick ? 0 : -1}
                     aria-label={ariaLabel}
                 >
+                    {color&&<PegMaterial index={pegMaterialIndex(color)}/>}
                 </div>
             );
         };
@@ -1174,6 +1191,7 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                 role="img"
                 aria-label={type === 'black' ? 'Correct color and position' : type === 'white' ? 'Correct color, wrong position' : 'No match'}
             >
+                {(type==='black'||type==='white')&&<PegMaterial index={type==='black'?6:7}/>}
             </div>
         );
 
@@ -1716,7 +1734,7 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                                          backgroundColor: color,
                                          boxShadow: index < revealedCount ? `0 0 12px ${color}, 0 0 24px ${color}` : 'none'
                                      }}
-                                />
+                                ><PegMaterial index={pegMaterialIndex(color)}/></div>
                             </div>
                         </div>
                     ))}
@@ -2329,8 +2347,8 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                         </div>
                         {specialMode === 'maker' && <div className="mb-2 p-2 rounded-lg bg-purple-950/80 border border-purple-500">
                             <p className="text-xs text-center text-purple-200 mb-2">Maker only: tap four colors. Duplicates are allowed.</p>
-                            <div className="flex justify-center gap-2 mb-2">{makerDraft.map((color, i) => <button key={i} onClick={() => setMakerDraft(d => d.filter((_, j) => j !== i))} className="w-8 h-8 rounded-full border-2 border-white" style={{backgroundColor: color}} aria-label="Remove maker color" />)}</div>
-                            <div className="flex justify-center gap-2">{GAME_PRESETS.medium.availableColors.map(color => <button key={color} onClick={() => makerDraft.length < 4 && setMakerDraft(d => [...d, color])} className="w-8 h-8 rounded-full" style={{backgroundColor: color}} aria-label={`Add ${COLOR_NAMES[color]}`} />)}</div>
+                            <div className="flex justify-center gap-2 mb-2">{makerDraft.map((color, i) => <button key={i} onClick={() => setMakerDraft(d => d.filter((_, j) => j !== i))} className="material-palette-peg w-8 h-8 rounded-full border-2 border-white" style={{backgroundColor: color}} aria-label="Remove maker color"><PegMaterial index={pegMaterialIndex(color)}/></button>)}</div>
+                            <div className="flex justify-center gap-2">{GAME_PRESETS.medium.availableColors.map(color => <button key={color} onClick={() => makerDraft.length < 4 && setMakerDraft(d => [...d, color])} className="material-palette-peg w-8 h-8 rounded-full" style={{backgroundColor: color}} aria-label={`Add ${COLOR_NAMES[color]}`}><PegMaterial index={pegMaterialIndex(color)}/></button>)}</div>
                             <button onClick={lockMakerCode} disabled={makerDraft.length !== 4} className="mt-2 w-full py-2 rounded bg-purple-600 font-bold disabled:opacity-40">Lock Secret &amp; Pass Device</button>
                         </div>}
                         <div className="breaker-config">
@@ -2398,12 +2416,12 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                                 <button
                                     key={color}
                                     onClick={() => handlePaletteColorClick(color)}
-                                    className={`rounded-full transition-transform duration-100 ease-in-out hover:scale-110 active:scale-90 color-picker-button ${selectedColorFromPalette === color ? 'selected' : ''}`}
+                                    className={`material-palette-peg rounded-full transition-transform duration-100 ease-in-out hover:scale-110 active:scale-90 color-picker-button ${selectedColorFromPalette === color ? 'selected' : ''}`}
                                     style={{ backgroundColor: color }}
                                     disabled={gameStatus !== 'playing'}
                                     aria-label={`Select color ${COLOR_NAMES[color] || color}`}
                                     aria-pressed={selectedColorFromPalette === color}
-                                ></button>
+                                ><PegMaterial index={pegMaterialIndex(color)}/></button>
                             ))}
                         </div>
 

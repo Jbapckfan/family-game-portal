@@ -351,6 +351,12 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 .mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
 .mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
 .mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
+</style><style id="rough-snake">
+/* Rough-games pass: a continuous three-dimensional body over real slate. */
+.snake-grid{gap:0!important;background-color:#152124!important;background-image:radial-gradient(ellipse at 25% 10%,#b3d7b529,transparent 70%),url('./Snake-assets/slate-surface-r1.jpg')!important;background-size:cover;border:2px solid #849d8b;border-radius:12px!important;box-shadow:inset 0 0 22px #0009}
+.snake-grid>[role=row]{gap:0!important}.snake-grid .snake-floor-cell{border-radius:0!important;border-right:1px solid #c4ddd516;border-bottom:1px solid #c4ddd516;background-image:none!important;box-shadow:none!important}.snake-grid .snake-floor-cell[data-obstacle=true]{background-image:linear-gradient(145deg,#dce4df44,#09130e88),url('./Snake-assets/slate-surface-r1.jpg')!important;background-size:cover;border:1px solid #9daaa0;border-radius:4px!important;box-shadow:inset 0 2px #d9e8df55,0 3px 4px #0009!important}
+.snake-scene{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}.mini-board{background:linear-gradient(145deg,color-mix(in srgb,var(--snake-head) 35%,#84958a),color-mix(in srgb,var(--snake-body) 30%,#101c26))!important;border-color:#a1b5a6!important;padding:clamp(8px,1.2vw,16px)!important;box-shadow:inset 0 2px 2px #e8f5e966,0 5px 0 #101c14,0 20px 36px #0009!important}
+.mini-board .snake-ready{backdrop-filter:none;background:#06120a38}.snake-ready h2,.snake-ready p{background:#0a1825ed;padding:10px 16px;border:1px solid #6a8a7c;border-radius:12px}.snake-ready p{font-size:14px!important;max-width:90%}
 </style></head>
 <body>
   <noscript>
@@ -514,6 +520,89 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                 </div>
             );
         };
+
+        // Rendering only: logical positions and the existing movement clock stay in SnakeGame.
+        const snakeBodyPaths = (segments) => {
+            const groups = [];
+            let group = [];
+            for (const segment of segments) {
+                if (group.length) {
+                    const previous = group[group.length - 1];
+                    if (Math.abs(previous.row - segment.row) + Math.abs(previous.col - segment.col) !== 1) {
+                        groups.push(group); group = [];
+                    }
+                }
+                group.push(segment);
+            }
+            if (group.length) groups.push(group);
+            return groups.map(part => {
+                const points = part.map(cell => ({x:cell.col+.5,y:cell.row+.5}));
+                let path = `M ${points[0].x} ${points[0].y}`;
+                if (points.length === 1) return path + ' l .0001 0';
+                for (let i=1;i<points.length-1;i++) {
+                    const previous=points[i-1],point=points[i],next=points[i+1];
+                    const dx=point.x-previous.x,dy=point.y-previous.y,nx=next.x-point.x,ny=next.y-point.y;
+                    if (dx===nx && dy===ny) path+=` L ${point.x} ${point.y}`;
+                    else path+=` L ${point.x-dx*.42} ${point.y-dy*.42} Q ${point.x} ${point.y} ${point.x+nx*.42} ${point.y+ny*.42}`;
+                }
+                const last=points[points.length-1];
+                return path+` L ${last.x} ${last.y}`;
+            });
+        };
+
+        const SnakeFloor = React.memo(({obstacleCells}) => <>
+            {Array.from({length:GRID_SIZE},(_,r)=><div key={r} role="row" className="flex flex-1 gap-[1px]">
+                {Array.from({length:GRID_SIZE},(_,c)=>{const obstacle=obstacleCells.has(`${r},${c}`);return <div key={c} role="gridcell" aria-hidden="true" className="snake-floor-cell flex-1" data-obstacle={obstacle?'true':undefined} style={{backgroundColor:obstacle?'#475569':(r+c)%2?'rgba(255,255,255,.025)':'rgba(0,0,0,.055)'}}/>;})}
+            </div>)}
+        </>);
+        const SNAKE_FOOD_MATERIAL_INDEX={'●':0,'🐟':1,'🔥':2,'⭐':3};
+
+        const snakeSurfaceBands = (body,head) => {
+            const rgb=color=>[1,3,5].map(index=>parseInt(color.slice(index,index+2),16));
+            const mix=(a,b,t)=>a.map((value,index)=>value+(b[index]-value)*t);
+            const dark=mix(rgb(body),[0,0,0],.5),bright=mix(rgb(head),[255,255,255],.38);
+            return Array.from({length:14},(_,i)=>{const t=i/13,color=mix(dark,bright,Math.pow(t,.65));return {width:.87-t*.72,x:-.09*t,y:-.13*t,color:`rgb(${color.map(Math.round).join(',')})`};});
+        };
+
+        const SnakeScene = React.memo(({snake,food,headColor,bodyColor,foodSymbol,bonusFood}) => {
+            const paths=React.useMemo(()=>snakeBodyPaths(snake),[snake]);
+            const bands=React.useMemo(()=>snakeSurfaceBands(bodyColor,headColor),[bodyColor,headColor]);
+            const tint=[1,3,5].map(index=>parseInt(headColor.slice(index,index+2),16)/255);
+            const head=snake[0],neck=snake[1]||{row:head.row,col:head.col-1};
+            let dx=head.col-neck.col,dy=head.row-neck.row;
+            if(Math.abs(dx)>1)dx=-Math.sign(dx); if(Math.abs(dy)>1)dy=-Math.sign(dy);
+            const angle=Math.atan2(dy,dx)*180/Math.PI;
+            const foodIndex=SNAKE_FOOD_MATERIAL_INDEX[foodSymbol]??0;
+            return <svg className="snake-scene" viewBox={`0 0 ${GRID_SIZE} ${GRID_SIZE}`} aria-hidden="true">
+                <defs>
+                    <radialGradient id="snake-head-material" cx="30%" cy="23%" r="85%"><stop offset="0" stopColor="#ecfff4"/><stop offset=".18" stopColor={headColor}/><stop offset=".65" stopColor={bodyColor}/><stop offset="1" stopColor="#031b16"/></radialGradient>
+                    <filter id="snake-scale-tint" colorInterpolationFilters="sRGB"><feComponentTransfer><feFuncR type="linear" slope={tint[0]}/><feFuncG type="linear" slope={tint[1]}/><feFuncB type="linear" slope={tint[2]}/></feComponentTransfer></filter><pattern id="snake-scale-grain" width="2" height="2" patternUnits="userSpaceOnUse"><image href="./Snake-assets/scale-grain-r1.jpg" width="2" height="2" filter="url(#snake-scale-tint)"/></pattern><filter id="snake-contact-shadow" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation=".055"/></filter>
+                </defs>
+                <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    {paths.map((path,i)=><g key={i}>
+                        <path d={path} stroke="#000" strokeWidth=".94" opacity=".42" transform="translate(.035 .14)" filter="url(#snake-contact-shadow)"/>
+                        {bands.map((band,index)=><path key={index} d={path} stroke={band.color} strokeWidth={band.width} transform={`translate(${band.x} ${band.y})`}/>)}
+                        <path d={path} stroke="url(#snake-scale-grain)" strokeWidth=".82" opacity=".30"/>
+                        <path d={path} stroke="#f3fff5" strokeWidth=".045" opacity=".38" transform="translate(-.095 -.19)"/>
+                    </g>)}
+                </g>
+                <g transform={`translate(${head.col+.5} ${head.row+.5}) rotate(${angle})`}>
+                    <ellipse cx=".015" cy=".11" rx=".48" ry=".43" fill="#000" opacity=".35"/>
+                    <ellipse rx=".49" ry=".43" fill="url(#snake-head-material)" stroke={headColor} strokeWidth=".025"/>
+                    <ellipse rx=".48" ry=".42" fill="url(#snake-scale-grain)" opacity=".20"/><path d="M -.29 -.22 Q -.03 -.39 .28 -.21" fill="none" stroke="#d5ffeb" strokeWidth=".055" opacity=".55"/>
+                    {[-1,1].map(side=><g key={side}>
+                        <ellipse cx=".13" cy={side*.27} rx=".13" ry=".14" fill="#06241c"/>
+                        <ellipse cx=".145" cy={side*.265} rx=".105" ry=".115" fill="#fcfff4"/>
+                        <ellipse cx=".185" cy={side*.26} rx=".053" ry=".073" fill="#08151b"/>
+                        <circle cx=".175" cy={side*.26-.025} r=".022" fill="white"/>
+                        <ellipse cx=".37" cy={side*.10} rx=".022" ry=".015" fill="#05251b" opacity=".8"/>
+                    </g>)}
+                    <path d="M .29 .18 Q .42 .12 .43 .02" fill="none" stroke="#05251b" strokeWidth=".024" opacity=".6"/>
+                </g>
+                {food&&<svg x={food.col-.08} y={food.row-.08} width="1.16" height="1.16" viewBox={`${(foodIndex%2)*256} ${Math.floor(foodIndex/2)*256} 256 256`} overflow="hidden"><image href="./Snake-assets/food-atlas-r1.webp" width="512" height="512"/></svg>}
+                {bonusFood&&<text x={bonusFood.col+.5} y={bonusFood.row+.76} textAnchor="middle" fontSize=".72">{bonusFood.type==='shield'?'🛡':bonusFood.type==='magnet'?'🧲':bonusFood.type==='slow'?'❄':'×2'}</text>}
+            </svg>;
+        });
 
         const SnakeGame = () => {
             const MODES = {classic:'Classic',wrap:'Wraparound',maze:'Maze',zen:'Zen',time:'Time Attack'};
@@ -774,11 +863,7 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
             const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
             const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
 
-            const snakeIndexByCell = React.useMemo(() => {
-                const map = new Map();
-                snake.forEach((seg, i) => map.set(`${seg.row},${seg.col}`, i));
-                return map;
-            }, [snake]);
+            const obstacleCells=React.useMemo(()=>new Set(obstacles.map(cell=>`${cell.row},${cell.col}`)),[obstacles]);
             const activeSkin=SKINS[skin]||SKINS.neon;
             const missionData=MISSIONS.find(item=>item.id===mission);
             const missionProgress=mission==='score'?score:foodsEaten;
@@ -839,61 +924,22 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 
                         </aside><main
                             className="mini-board relative bg-black/30 backdrop-blur-sm rounded-2xl p-2 md:p-3 border border-green-500/30 shadow-2xl shadow-green-500/20 select-none"
-                            style={{ touchAction: 'none' }}
+                            style={{ touchAction: 'none','--snake-head':activeSkin.head,'--snake-body':activeSkin.body }}
                             onTouchStart={handleTouchStart}
                             onTouchEnd={handleTouchEnd}
                         >
                             <div
                                 role="grid"
                                 aria-label={`Snake board, ${GRID_SIZE} by ${GRID_SIZE}, score ${score}${gameOver ? ', game over' : paused ? ', paused' : ''}`}
-                                className="relative w-full aspect-square flex flex-col gap-[1px] bg-black rounded-lg overflow-hidden"
+                                className="snake-grid relative w-full aspect-square flex flex-col gap-[1px] bg-black rounded-lg overflow-hidden"
                             >
-                                {Array.from({ length: GRID_SIZE }).map((_, r) => (
-                                    <div key={r} role="row" className="flex flex-1 gap-[1px]">
-                                        {Array.from({ length: GRID_SIZE }).map((_, c) => {
-                                            const idx = snakeIndexByCell.get(`${r},${c}`);
-                                            const isHead = idx === 0;
-                                            const isBody = idx !== undefined && idx > 0;
-                                            const isFood = !!food && food.row === r && food.col === c;
-                                            const obstacle = obstacles.some(cell=>cell.row===r&&cell.col===c);
-                                            const special = bonusFood && bonusFood.row===r&&bonusFood.col===c ? bonusFood : null;
-                                            const base = (r + c) % 2 === 0 ? CELL_A : CELL_B;
-                                            let bg = base;
-                                            let boxShadow = 'none';
-                                            if(obstacle){bg='#475569';boxShadow='inset 0 0 8px #0f172a';}
-                                            else if (isHead) { bg = activeSkin.head; boxShadow = `0 0 9px ${activeSkin.head}`; }
-                                            else if (isBody) { bg = activeSkin.body; boxShadow=idx<5?`0 0 ${Math.max(1,6-idx)}px ${activeSkin.body}`:'none'; }
-
-                                            return (
-                                                <div
-                                                    key={c}
-                                                    role="gridcell"
-                                                    aria-hidden="true"
-                                                    className="flex-1 rounded-[2px] flex items-center justify-center"
-                                                    style={{ backgroundColor: bg, boxShadow }}
-                                                >
-                                                    {isFood && (
-                                                        <div
-                                                            className="rounded-full"
-                                                            style={{
-                                                                width: '55%',
-                                                                height: '55%',
-                                                                backgroundColor: FOOD_COLOR,
-                                                                boxShadow: `0 0 6px ${FOOD_GLOW}`,
-                                                            }}
-                                                        >{activeSkin.food!=='●'&&<span style={{fontSize:'clamp(8px,1.6vw,16px)'}}>{activeSkin.food}</span>}</div>
-                                                    )}
-                                                    {special&&<span style={{fontSize:'clamp(9px,1.8vw,18px)'}}>{special.type==='shield'?'🛡':special.type==='magnet'?'🧲':special.type==='slow'?'❄':'×2'}</span>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ))}
+                                <SnakeFloor obstacleCells={obstacleCells}/>
+                                <SnakeScene snake={snake} food={food} headColor={activeSkin.head} bodyColor={activeSkin.body} foodSymbol={activeSkin.food} bonusFood={bonusFood}/>
                             </div>
 
                             {!isStarted && !gameOver && (
                                 <div
-                                    className="absolute inset-0 rounded-2xl bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in cursor-pointer"
+                                    className="snake-ready absolute inset-0 rounded-2xl bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in cursor-pointer"
                                     role="button"
                                     tabIndex={0}
                                     aria-label="Start game"

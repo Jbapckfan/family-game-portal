@@ -871,7 +871,15 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 /* Captions are not touch targets; preserve the existing 44px labels, inputs and buttons. */
 .tic-setup-card p{min-height:0!important}.tic-setup-card>h1{margin-bottom:12px}.tic-setup-card>p{margin-bottom:12px}.tic-setup-card>button{margin-top:16px}
 @media(min-width:701px){.tic-setup-shell{justify-content:center!important;align-items:center!important}}
-</style></head>
+</style><style id="rough-physical-board">
+/* Rough-games pass: solid walnut chassis, fitted stone squares and actual raised pieces. */
+.mini-layout:has(.mini-board){background:linear-gradient(145deg,#27192ecc,#0a101be6)!important;border-color:#8c6e89!important}
+.mini-board,.variant-board{background-color:#43291c!important;background-image:linear-gradient(145deg,#f0c48b18,#1e100b33),url('./2DTicTacToe-assets/walnut-surface-r1.jpg')!important;background-size:cover!important;border:2px solid #ad8260!important;border-radius:18px!important;box-shadow:inset 0 2px 2px #efd7b275,inset 0 -4px 8px #140b07,0 5px 0 #1d120d,0 18px 30px #0008!important;padding:clamp(8px,1.4vw,18px)!important}
+.mini-board .cell,.variant-board button{background-position:0 0,var(--stone-x,50%) var(--stone-y,50%)!important;background-color:#263039!important;background-image:linear-gradient(145deg,#d9d5c836,transparent 35%,#070b1466),url('./Snake-assets/slate-surface-r1.jpg')!important;background-size:auto,300% 300%!important;border:1px solid #b6b9b55c!important;border-radius:10px!important;box-shadow:inset 0 2px 1px #e9e5dc66,inset 0 -5px 5px #0007,0 3px 0 #120c09,0 7px 7px #0008!important}.variant-board button{display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
+.physical-mark{display:block;width:82%;height:82%;overflow:visible;filter:drop-shadow(0 4px 3px #0009);pointer-events:none}.mini-board .cell-content{filter:none;animation-duration:.25s}.cell-ghost .physical-mark{filter:none}.mini-board .cell:active:not(.occupied){box-shadow:inset 0 3px 7px #000b!important}
+[data-theme=classic] .mini-board,[data-theme=classic] .variant-board{border-color:#a8a8a1!important;background-image:linear-gradient(145deg,#ffffff18,#0003),url('./Snake-assets/slate-surface-r1.jpg')!important}[data-theme=classic] .cell{filter:saturate(.35)}
+[data-theme=retro-green] .mini-board,[data-theme=retro-green] .variant-board{border-color:#5b8061!important;background-image:linear-gradient(#061e1488,#030d0888),url('./2DTicTacToe-assets/walnut-surface-r1.jpg')!important}[data-theme=retro-green] .cell{border-color:#73a58180!important}
+</style><style>.physical-mark.x-color{color:#ff70b3}.physical-mark.o-color{color:#a5f3fc}[data-theme=classic] .physical-mark.x-color{color:#fff4df}[data-theme=classic] .physical-mark.o-color{color:#b3c3cf}[data-theme=retro-green] .physical-mark.x-color{color:#86efac}[data-theme=retro-green] .physical-mark.o-color{color:#34d399}</style><style>.variant-board button:disabled{opacity:1!important}</style></head>
 <body>
   <a href="../../"
      aria-label="Back to menu"
@@ -1429,14 +1437,30 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
         /**
          * Represents a single cell on the Tic-Tac-Toe board.
          */
+        // Raised resin pieces share the existing X/O theme colors and all original hit areas.
+        const PhysicalMark = ({mark,pieceId}) => {
+            const x=mark===PLAYERS.X;
+            const shape=x?'M22 10 50 38 78 10 90 22 62 50 90 78 78 90 50 62 22 90 10 78 38 50 10 22Z':'M50 9a41 41 0 1 0 0 82a41 41 0 1 0 0-82Z M50 29a21 21 0 1 1 0 42a21 21 0 1 1 0-42Z';
+            const id='piece-face-'+pieceId;
+            return <svg className={`physical-mark ${x?'x-color':'o-color'}`} viewBox="0 0 100 108" aria-hidden="true">
+                <defs><linearGradient id={id} x1=".1" y1="0" x2=".8" y2="1"><stop offset="0" stopColor="#fff9f5"/><stop offset=".20" stopColor="currentColor"/><stop offset=".7" stopColor="currentColor"/><stop offset="1" stopColor="#121d24"/></linearGradient></defs>
+                <path d={shape} fill="#090d14" fillRule="evenodd" transform="translate(0 7)" opacity=".65"/>
+                <path d={shape} fill="currentColor" fillRule="evenodd" transform="translate(0 4)" stroke="#06111d" strokeWidth="1.8"/>
+                <path d={shape} fill={`url(#${id})`} fillRule="evenodd" stroke="currentColor" strokeWidth="1"/>
+                <path d={shape} fill="none" fillRule="evenodd" stroke="#ffffffb0" strokeWidth="1.3" transform="translate(-.5 -.5)"/>
+                {x?<path d="M24 17 48 41 M17 25 40 48" stroke="#fff" strokeWidth="2" opacity=".65" fill="none"/>:<path d="M19 46a32 32 0 0 1 37-28" stroke="#fff" strokeWidth="2.2" opacity=".7" fill="none"/>}
+            </svg>;
+        };
+
         const Cell = ({ value, onClick, row, col, ghostMark, canInteract, entranceDelay }) => {
             const [hovered, setHovered] = React.useState(false);
             const isOccupied = !!value;
             const showGhost = window.matchMedia('(hover: hover)').matches && hovered && !isOccupied && canInteract && ghostMark;
 
-            const entranceStyle = entranceDelay !== undefined ? {
-                animationDelay: `${entranceDelay}ms`,
-            } : {};
+            const entranceStyle = {
+                '--stone-x':`${col*50}%`,'--stone-y':`${row*50}%`,
+                ...(entranceDelay !== undefined ? {animationDelay:`${entranceDelay}ms`} : {})
+            };
 
             const entranceClass = entranceDelay !== undefined ? 'cell-entrance' : '';
 
@@ -1455,12 +1479,12 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                 >
                     {value && (
                         <div className={`cell-content ${value === PLAYERS.X ? 'x-color' : 'o-color'}`} aria-hidden="true">
-                            {value}
+                            <PhysicalMark mark={value} pieceId={`${row}-${col}`}/>
                         </div>
                     )}
                     {showGhost && (
                         <div className={`cell-ghost ${ghostMark === PLAYERS.X ? 'x-color' : 'o-color'}`} aria-hidden="true">
-                            {ghostMark}
+                            <PhysicalMark mark={ghostMark} pieceId={`ghost-${row}-${col}`}/>
                         </div>
                     )}
                 </div>
@@ -1648,11 +1672,11 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                     <p className="min-h-[3rem] text-cyan-100 bg-cyan-950/60 rounded-lg p-3 mb-4" role="status">{status}</p>
                     {isUltimate ? <div className="variant-board grid grid-cols-3 gap-2 max-w-[560px] mx-auto">
                         {Array.from({length:9}, (_, mini) => <div key={mini} className={`relative grid grid-cols-3 gap-1 p-1 rounded-lg border-2 ${activeMini === null || activeMini === mini ? 'border-cyan-400' : 'border-gray-700 opacity-60'} ${miniWinners[mini] ? 'bg-purple-950' : 'bg-gray-800'}`}>
-                            {Array.from({length:9}, (_, local) => { const idx = mini * 9 + local; return <button key={local} onClick={() => makeMove(idx)} className="aspect-square rounded bg-gray-950 text-lg sm:text-2xl font-black hover:bg-cyan-950 disabled:opacity-50" disabled={!!cells[idx] || !!miniWinners[mini] || (activeMini !== null && activeMini !== mini)}>{cells[idx]}</button>; })}
-                            {miniWinners[mini] && <span className="absolute inset-0 flex items-center justify-center bg-black/70 text-6xl font-black text-yellow-300 pointer-events-none">{miniWinners[mini] === 'D' ? '•' : miniWinners[mini]}</span>}
+                            {Array.from({length:9}, (_, local) => { const idx = mini * 9 + local; return <button key={local} onClick={() => makeMove(idx)} aria-label={`Board ${mini+1}, square ${local+1}${cells[idx]?`, ${cells[idx]}`:', empty'}`} className="aspect-square rounded bg-gray-950 text-lg sm:text-2xl font-black hover:bg-cyan-950 disabled:opacity-50" disabled={!!cells[idx] || !!miniWinners[mini] || (activeMini !== null && activeMini !== mini)}>{cells[idx]&&<PhysicalMark mark={cells[idx]} pieceId={`ultimate-${mini}-${local}`}/>}</button>; })}
+                            {miniWinners[mini] && <span className="absolute inset-0 flex items-center justify-center bg-black/70 text-6xl font-black text-yellow-300 pointer-events-none">{miniWinners[mini] === 'D' ? '•' : <PhysicalMark mark={miniWinners[mini]} pieceId={`board-winner-${mini}`}/>}</span>}
                         </div>)}
                     </div> : <div className={`variant-board grid gap-2 mx-auto max-w-[480px] ${isFour ? 'grid-cols-4' : 'grid-cols-3'}`}>
-                        {cells.map((v,i) => <button key={i} onClick={() => makeMove(i)} disabled={!!v || over || (isCoach && turn === 'O')} aria-label={`Square ${i + 1}`} className="aspect-square rounded-xl border-2 border-cyan-700 bg-gray-950 text-4xl sm:text-6xl font-black hover:bg-cyan-950 disabled:cursor-default">{v}</button>)}
+                        {cells.map((v,i) => <button key={i} onClick={() => makeMove(i)} disabled={!!v || over || (isCoach && turn === 'O')} aria-label={`Square ${i + 1}`} className="aspect-square rounded-xl border-2 border-cyan-700 bg-gray-950 text-4xl sm:text-6xl font-black hover:bg-cyan-950 disabled:cursor-default">{v&&<PhysicalMark mark={v} pieceId={`variant-${i}`}/>}</button>)}
                     </div>}
                     <div className="mt-4 flex justify-center gap-3">
                         {isPuzzle && <button onClick={nextPuzzle} className="action-btn px-5 py-2 rounded-lg bg-green-700">Next Puzzle</button>}
